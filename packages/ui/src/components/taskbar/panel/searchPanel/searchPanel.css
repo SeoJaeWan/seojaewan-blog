@@ -1,0 +1,189 @@
+.wb-search-panel {
+  /* 원본 SearchPanel: w-screen md:w-[50vw] xl:w-[40vw] h-[600px] px-5 pt-5 text-sm
+     검색 결과 뷰는 TaskSearchResultView가 담당한다 */
+  --wb-search-panel-hover-surface: rgb(255 255 255);
+  --wb-search-panel-card-surface: rgb(250 252 252);
+  --wb-search-panel-card-border: rgb(214 217 224);
+
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 20px 20px 0;
+  width: 100vw;
+}
+
+@media (min-width: 768px) {
+  .wb-search-panel {
+    width: 50vw;
+  }
+}
+
+@media (min-width: 1280px) {
+  .wb-search-panel {
+    width: 40vw;
+  }
+}
+
+.wb-search-panel__body {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+}
+
+.wb-search-panel__heading {
+  font-size: inherit;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* :where()로 특이도를 0으로 낮춰 아래 클래스 규칙이 리셋을 항상 이기게 한다 */
+:where(.wb-search-panel button) {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  text-align: left;
+}
+
+.wb-search-panel button:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}
+
+:where(.wb-search-panel ul) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+:where(.wb-search-panel h3, .wb-search-panel h4, .wb-search-panel p) {
+  margin: 0;
+}
+
+/* 아이콘 공통: 원본은 next/image + object-cover */
+.wb-search-panel__recommend-icon > img,
+.wb-search-panel__recommend-icon > svg,
+.wb-search-panel__best-icon > img,
+.wb-search-panel__best-icon > svg {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* === 추천 뷰 === */
+.wb-search-panel__recommend {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 8px;
+  width: 40%;
+}
+
+.wb-search-panel__recommend .wb-search-panel__heading {
+  margin-bottom: 8px;
+}
+
+.wb-search-panel__recommend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  overflow: auto;
+}
+
+.wb-search-panel__recommend-item {
+  align-items: center;
+  border-radius: var(--wb-radius-md);
+  display: flex;
+  gap: 8px;
+  margin-right: 4px;
+  padding: 8px;
+  transition: background-color var(--wb-transition-fast);
+  width: 100%;
+}
+
+.wb-search-panel__recommend-item:hover {
+  background: var(--wb-search-panel-hover-surface);
+}
+
+.wb-search-panel__recommend-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 25px;
+  width: 25px;
+}
+
+.wb-search-panel__recommend-title {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+/* === 최고의 블로그글/프로젝트 === */
+.wb-search-panel__best {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding-bottom: 20px;
+  width: 60%;
+}
+
+.wb-search-panel__best-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 50%;
+}
+
+.wb-search-panel__best-list {
+  display: grid;
+  flex: 1;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.wb-search-panel__best-card {
+  background: var(--wb-search-panel-card-surface);
+  border: 1px solid var(--wb-search-panel-card-border);
+  border-radius: var(--wb-radius-md);
+  min-height: 0;
+}
+
+.wb-search-panel__best-item {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  justify-content: center;
+  padding: 8px;
+  width: 100%;
+}
+
+.wb-search-panel__best-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 35px;
+  width: 35px;
+}
+
+.wb-search-panel__best-title {
+  display: -webkit-box;
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}

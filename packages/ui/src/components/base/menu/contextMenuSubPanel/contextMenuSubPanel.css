@@ -1,0 +1,76 @@
+/* 원본 LeftSubPanel: absolute invisible group-hover:visible
+   bg-gray-50 rounded-md shadow-lg flex-col justify-start p-1 */
+.wb-context-menu-sub-panel {
+  background: rgb(249 250 251);
+  border-radius: var(--wb-radius-md);
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 4px;
+  position: absolute;
+  visibility: hidden;
+  width: max-content;
+}
+
+/* 기능 계층이 전달한 open 상태를 그대로 표시한다. */
+.wb-context-menu-sub-panel[data-open="true"] {
+  visibility: visible;
+}
+
+/* 서브 메뉴를 여는 row가 절대 위치 기준이 된다 (원본 group relative) */
+.wb-context-menu-button:has(> .wb-context-menu-sub-panel) {
+  position: relative;
+}
+
+/* 원본 서브 row(LeftSubButton): gap-2 py-1 px-3 hover:bg-gray-200/50 rounded-md — 한 줄 유지 */
+.wb-context-menu-sub-panel .wb-context-menu-button {
+  border-radius: var(--wb-radius-md);
+  gap: 8px;
+  height: 28px;
+  min-width: 0;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-button:hover {
+  background: rgb(229 231 235 / 0.5);
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-button__icon {
+  --wb-context-menu-button-icon-size: 16px;
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-button__label {
+  flex: none;
+  font-size: 14px;
+}
+
+/* 현재 값 표시 슬롯: 원본 w-2.5 span + 선택 시 6px ● 텍스트 (아이콘 아님) */
+.wb-context-menu-sub-panel .wb-context-menu-button::before {
+  align-items: center;
+  content: "";
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 6px;
+  justify-content: center;
+  width: 10px;
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-button[data-selected="true"]::before {
+  content: "●";
+}
+
+/* 선택 표시는 ●로만 — ContextMenuButton 기본 selected surface는 쓰지 않는다 */
+.wb-context-menu-sub-panel .wb-context-menu-button[data-selected="true"] {
+  background: transparent;
+  border-color: transparent;
+  color: inherit;
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-button[data-selected="true"]:hover {
+  background: rgb(229 231 235 / 0.5);
+}

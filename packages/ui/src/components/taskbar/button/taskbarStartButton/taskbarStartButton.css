@@ -1,0 +1,12 @@
+/* 원본 WindowsButton: 40x40 버튼 + 30px Windows logo, 패널 open 시 selected 배경 */
+.wb-taskbar-start-button {
+  --wb-icon-button-icon-size: 30px;
+
+  border-radius: var(--wb-radius-md);
+}
+
+.wb-taskbar-start-button[data-selected="true"] {
+  background: rgb(255 255 255 / 0.72);
+  border-color: transparent;
+  color: var(--wb-color-accent);
+}

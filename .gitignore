@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Package managers
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Turborepo
+.turbo/
+
+# Framework and build output
+.next/
+out/
+dist/
+build/
+storybook-static/
+
+# Tests and coverage
+coverage/
+test-results/
+playwright-report/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log

@@ -1,0 +1,6 @@
+/* 원본 TaskButtons 컨테이너: flex gap-1 */
+.wb-taskbar-app-list {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}

@@ -1,0 +1,12 @@
+/* 원본 아이콘 레이어: absolute w-full h-full p-2 flex flex-col flex-wrap content-start gap-2 */
+.wb-desktop-icon-grid {
+  align-content: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+  inset: 0;
+  padding: 8px;
+  position: absolute;
+}

@@ -1,0 +1,6 @@
+.wb-taskbar-panel-item {
+  /* 외부 controller가 위치를 계산하기 전에는 깜빡이지 않도록 숨긴다 */
+  pointer-events: auto;
+  position: fixed;
+  visibility: hidden;
+}

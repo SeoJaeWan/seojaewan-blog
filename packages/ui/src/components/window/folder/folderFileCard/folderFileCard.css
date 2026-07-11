@@ -1,0 +1,72 @@
+/* 원본 FolderIcon: flex flex-col items-start gap-2 p-3 rounded-md
+   hover:bg-blue-200/30 focus:bg-blue-200/30 (Tailwind v4 실측값) */
+.wb-folder-file-card {
+  align-items: flex-start;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--wb-radius-md);
+  box-sizing: border-box;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-family: inherit;
+  font-size: inherit;
+  gap: 8px;
+  padding: 12px;
+  text-align: left;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-folder-file-card:hover,
+.wb-folder-file-card:focus-visible {
+  background: rgb(190 219 255 / 0.3);
+}
+
+/* 카드 폭은 그리드 viewMode가 결정: big w-80 / middle w-60 / small w-40, 모바일 w-1/2 */
+.wb-folder-file-grid[data-view="big"] .wb-folder-file-card {
+  width: 320px;
+}
+
+.wb-folder-file-grid[data-view="middle"] .wb-folder-file-card {
+  width: 240px;
+}
+
+.wb-folder-file-grid[data-view="small"] .wb-folder-file-card {
+  width: 160px;
+}
+
+@media (max-width: 767px) {
+  .wb-folder-file-grid .wb-folder-file-card {
+    width: 50%;
+  }
+}
+
+/* 원본 커버: w-full aspect-3/2 object-cover (로딩은 skeleton — 여기서는 placeholder 배경) */
+.wb-folder-file-card__cover {
+  aspect-ratio: 3 / 2;
+  background: var(--wb-color-surface-muted);
+  display: block;
+  overflow: hidden;
+  width: 100%;
+}
+
+.wb-folder-file-card__cover > img,
+.wb-folder-file-card__cover > svg {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wb-folder-file-card__title {
+  width: 100%;
+}
+
+.wb-folder-file-card:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}

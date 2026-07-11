@@ -1,0 +1,44 @@
+.wb-taskbar-search {
+  /* 원본 task-search-form: relative w-[220px] h-full */
+  align-items: center;
+  display: flex;
+  height: 100%;
+  margin: 0;
+  position: relative;
+  width: 220px;
+}
+
+.wb-taskbar-search__trigger {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: text;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.wb-taskbar-search__trigger:focus-visible {
+  border-radius: 9999px;
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}
+
+.wb-taskbar-search[data-open="true"] .wb-taskbar-search__trigger {
+  visibility: hidden;
+}
+
+/* 닫힌 상태 hover: 원본 group-hover:bg-white/50 */
+.wb-taskbar-search:hover
+  .wb-task-search-input[data-disabled="true"]
+  .wb-task-search-input__control {
+  background: rgb(255 255 255 / 0.5);
+}
+
+/* trigger 누르는 동안 돋보기 아이콘 축소 (원본 press feedback) */
+.wb-taskbar-search__trigger:active ~ .wb-task-search-input .wb-task-search-input__icon {
+  transform: scale(0.8);
+}

@@ -1,0 +1,15 @@
+/* 원본 타이틀 행: flex justify-between h-[30px], 좌측 드래그 영역 items-end pl-6 */
+.wb-window-title-bar {
+  display: flex;
+  height: 30px;
+  justify-content: space-between;
+}
+
+.wb-window-title-bar__drag {
+  align-items: flex-end;
+  display: flex;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  padding-left: 24px;
+}

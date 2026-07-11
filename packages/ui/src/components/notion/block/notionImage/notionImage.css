@@ -1,0 +1,16 @@
+.wb-notion-image {
+  margin: 6px 0;
+}
+
+.wb-notion-image__img {
+  border-radius: 2px;
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.wb-notion-image__caption {
+  color: var(--wb-notion-gray);
+  font-size: 13px;
+  padding: 6px 2px 2px;
+}

@@ -1,0 +1,5 @@
+/* 전달받은 viewport inset에 context menu visual을 고정한다 */
+.wb-context-menu-positioner {
+  position: fixed;
+  pointer-events: auto;
+}

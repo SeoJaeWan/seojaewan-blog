@@ -1,0 +1,104 @@
+.wb-task-search-input {
+  /* 원본(seojaewan.com)의 실측 렌더링 높이. 폰트 메트릭에 따라 흔들리지 않게 고정 */
+  --wb-task-search-input-height: 30px;
+  --wb-task-search-input-border-color: rgb(204 208 217);
+  --wb-task-search-input-accent: rgb(58 121 254);
+  --wb-task-search-input-icon-color: rgb(16 16 20);
+  --wb-task-search-input-icon-mask: url("../../../../assets/task-input-mask.svg");
+
+  color: var(--wb-color-text);
+  display: inline-flex;
+  font-family: var(--wb-font-family-sans);
+  min-width: 0;
+  position: relative;
+  width: 100%;
+}
+
+.wb-task-search-input__control {
+  appearance: none;
+  background: rgb(255 255 255 / 0.9);
+  border: 1px solid var(--wb-task-search-input-border-color);
+  border-radius: 9999px;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  height: var(--wb-task-search-input-height);
+  /* 원본은 line-height 20px을 선언하지만 h-full 순환 참조로 무시되어
+     폰트 메트릭 기반으로 렌더링됨 — 그 결과를 재현 */
+  line-height: normal;
+  min-width: 0;
+  outline: none;
+  padding: 6px 6px 6px 30px;
+  width: 100%;
+}
+
+.wb-task-search-input__control::placeholder {
+  color: color-mix(in srgb, currentColor 50%, transparent);
+  opacity: 1;
+}
+
+.wb-task-search-input__icon {
+  background-color: var(--wb-task-search-input-icon-color);
+  border-radius: 9999px;
+  height: 18px;
+  left: 10px;
+  mask-image: var(--wb-task-search-input-icon-mask);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-type: alpha;
+  pointer-events: none;
+  position: absolute;
+  top: 60%;
+  transform-origin: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  translate: 0 -50%;
+  width: 18px;
+  will-change: transform;
+  -webkit-mask-image: var(--wb-task-search-input-icon-mask);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+.wb-task-search-input__icon::after {
+  background: linear-gradient(
+    60deg,
+    oklch(85.703% 0.14426 198.715) 20%,
+    oklch(50.114% 0.22422 262.084) 40%
+  );
+  border-radius: inherit;
+  content: "";
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: rotate(60deg);
+  transition:
+    opacity 0.3s ease,
+    transform 1s ease;
+}
+
+.wb-task-search-input__control:focus ~ .wb-task-search-input__icon {
+  box-shadow: 0 0 0 1px rgb(58 121 254 / 0.35);
+}
+
+.wb-task-search-input__control:focus ~ .wb-task-search-input__icon::after {
+  opacity: 1;
+  transform: rotate(160deg);
+}
+
+/* iOS Safari에서는 그라디언트 대신 단색 accent 폴백을 사용 */
+@supports (-webkit-touch-callout: none) {
+  .wb-task-search-input__icon::after {
+    display: none;
+  }
+
+  .wb-task-search-input__control:focus ~ .wb-task-search-input__icon {
+    background-color: var(--wb-task-search-input-accent);
+  }
+}

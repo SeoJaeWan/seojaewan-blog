@@ -1,0 +1,38 @@
+{
+  "name": "window-blog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=10.32.1"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev --parallel",
+    "dev:ui": "pnpm --filter @window/ui dev",
+    "dev:web": "turbo run dev:web",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "inventory": "node scripts/notion-inventory.mjs",
+    "lint": "turbo run lint",
+    "sync": "tsx scripts/notion-sync.mts",
+    "typecheck:scripts": "tsc --noEmit -p scripts",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test"
+  },
+  "devDependencies": {
+    "@notionhq/client": "^5.22.0",
+    "@types/node": "^24.13.2",
+    "@window/prettier-config": "workspace:*",
+    "eslint": "^9.39.4",
+    "prettier": "^3.9.4",
+    "tsx": "^4.23.0",
+    "turbo": "^2.10.2",
+    "typescript": "^6.0.3"
+  },
+  "prettier": "@window/prettier-config"
+}

@@ -1,0 +1,60 @@
+.wb-window-controls {
+  --wb-window-control-icon-size: 14px;
+  --wb-window-control-size: 30px;
+
+  display: flex;
+  height: 100%;
+}
+
+/* 원본 컨트롤 버튼: w-auto h-full aspect-square text-gray-500 (30x30) */
+.wb-window-controls__button {
+  align-items: center;
+  appearance: none;
+  aspect-ratio: auto;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: rgb(106 114 130); /* 원본 text-gray-500 (Tailwind v4 실측값) */
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 var(--wb-window-control-size);
+  height: 100%;
+  justify-content: center;
+  line-height: 0;
+  padding: 0;
+  transition: background-color var(--wb-transition-fast);
+  width: var(--wb-window-control-size);
+}
+
+/* 원본: 최소화/최대화는 hidden md:flex, 닫기는 항상 표시 */
+@media (max-width: 767px) {
+  .wb-window-controls__button--minimize,
+  .wb-window-controls__button--maximize {
+    display: none;
+  }
+}
+
+.wb-window-controls__button--minimize:hover,
+.wb-window-controls__button--maximize:hover {
+  background: rgb(106 114 130 / 0.1); /* 원본 hover:bg-gray-500/10 */
+  color: rgb(0 0 0);
+}
+
+.wb-window-controls__button--close:hover {
+  background: rgb(231 0 11); /* 원본 hover:bg-red-600 (Tailwind v4 실측값) */
+  color: rgb(255 255 255);
+}
+
+.wb-window-controls__button > svg {
+  flex: none;
+  font-size: var(--wb-window-control-icon-size);
+  height: var(--wb-window-control-icon-size);
+  width: var(--wb-window-control-icon-size);
+}
+
+.wb-window-controls__button:focus-visible {
+  box-shadow:
+    inset 0 0 0 2px var(--wb-color-surface),
+    inset 0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}

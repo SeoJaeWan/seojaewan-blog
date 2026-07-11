@@ -1,0 +1,301 @@
+.wb-windows-panel {
+  /* 원본 WindowsPanel: w-screen md:w-[50vw] xl:w-[30vw] h-[600px] px-5 pt-5 text-sm */
+  --wb-windows-panel-hover-surface: rgb(255 255 255);
+  /* 원본 view toggle: border-gray-400, hover:bg-gray-100/50 (Tailwind v4 팔레트 실측값) */
+  --wb-windows-panel-toggle-border: rgb(153 161 175);
+  --wb-windows-panel-toggle-hover: rgb(243 244 246 / 0.5);
+
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  padding: 20px 20px 0;
+  width: 100vw;
+}
+
+@media (min-width: 768px) {
+  .wb-windows-panel {
+    width: 50vw;
+  }
+}
+
+@media (min-width: 1280px) {
+  .wb-windows-panel {
+    width: 30vw;
+  }
+}
+
+.wb-windows-panel__search {
+  margin: 0;
+}
+
+/* 검색어 입력 시 검색 결과 뷰 (원본: pt-7 flex-1 flex gap-2 min-h-0) */
+.wb-windows-panel__search-results {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-height: 0;
+  padding-top: 28px;
+}
+
+/* 고정됨 <-> 모두 전환: 두 레이어를 겹쳐 두고 500ms transform 슬라이드 */
+.wb-windows-panel__views {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wb-windows-panel__view {
+  box-sizing: border-box;
+  left: 0;
+  padding: 28px 0;
+  position: absolute;
+  top: 0;
+  transition: transform 500ms;
+  width: 100%;
+}
+
+.wb-windows-panel__view--all {
+  height: 100%;
+  left: 100%;
+}
+
+.wb-windows-panel__views[data-view="all"] .wb-windows-panel__view {
+  transform: translateX(-100%);
+}
+
+.wb-windows-panel__section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wb-windows-panel__header {
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 24px;
+}
+
+.wb-windows-panel__title {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+.wb-windows-panel__view-toggle {
+  align-items: center;
+  appearance: none;
+  background: var(--wb-windows-panel-hover-surface);
+  border: 1px solid var(--wb-windows-panel-toggle-border);
+  border-radius: var(--wb-radius-sm);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+  line-height: 1.333;
+  padding: 2px 4px;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-windows-panel__view-toggle:hover {
+  background: var(--wb-windows-panel-toggle-hover);
+}
+
+.wb-windows-panel__pinned-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* 원본 고정됨 타일: 가변 폭, 아이콘 34px, 제목 text-xs 2줄 고정, hover:bg-white */
+.wb-windows-panel__pinned-grid .wb-panel-icon-button {
+  --wb-icon-button-icon-size: 34px;
+
+  gap: 2px;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.wb-windows-panel__pinned-grid .wb-panel-icon-button:hover {
+  background: var(--wb-windows-panel-hover-surface);
+}
+
+/* reorder 애니메이션 (원본 transition-all + windows-fadeIn 150ms ease-in-out):
+   이동 타일을 축소(out)했다가 순서 반영 후 새 위치에서 fade-in(in)한다 */
+.wb-windows-panel__pinned-item {
+  transition:
+    background-color var(--wb-transition-fast),
+    opacity 150ms ease-in-out,
+    transform 150ms ease-in-out;
+}
+
+.wb-windows-panel__pinned-item--out {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.wb-windows-panel__pinned-item--in {
+  animation: wb-windows-fade-in 150ms ease-in-out forwards;
+}
+
+@keyframes wb-windows-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.wb-windows-panel__pinned-grid .wb-panel-icon-button__title {
+  line-height: 1.333;
+}
+
+.wb-windows-panel__all-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* 카테고리 점프 오버레이: 닫힘 상태에서 scale(1.5)로 확대되어 있다가 줌 인 */
+.wb-windows-panel__category-overlay {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: scale(1.5);
+  transform-origin: center;
+  transition:
+    opacity 500ms,
+    transform 500ms;
+  width: 100%;
+  z-index: 1;
+}
+
+.wb-windows-panel__category-overlay[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.wb-windows-panel__category-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 40%;
+}
+
+.wb-windows-panel__category-jump {
+  appearance: none;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: 0;
+  border-radius: var(--wb-radius-md);
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 20px;
+  height: auto;
+  text-align: center;
+  transition: background-color var(--wb-transition-fast);
+  width: 100%;
+}
+
+.wb-windows-panel__all-list {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  left: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 16px;
+  position: absolute;
+  top: 0;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    opacity 500ms,
+    transform 500ms;
+  width: 100%;
+}
+
+.wb-windows-panel__category-overlay[data-open="true"] ~ .wb-windows-panel__all-list {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.wb-windows-panel__category,
+.wb-windows-panel__item {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--wb-radius-md);
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-windows-panel__category {
+  padding: 10px 18px;
+}
+
+.wb-windows-panel__item {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 16px;
+  padding: 10px;
+  width: 100%;
+}
+
+.wb-windows-panel__item-icon {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 25px;
+  justify-content: center;
+  width: 25px;
+}
+
+.wb-windows-panel__item-icon > svg,
+.wb-windows-panel__item-icon > img {
+  display: block;
+  flex-shrink: 0;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wb-windows-panel__category-jump:hover,
+.wb-windows-panel__category:hover,
+.wb-windows-panel__item:hover {
+  background: var(--wb-windows-panel-hover-surface);
+}
+
+.wb-windows-panel__view-toggle:focus-visible,
+.wb-windows-panel__category-jump:focus-visible,
+.wb-windows-panel__category:focus-visible,
+.wb-windows-panel__item:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}

@@ -1,0 +1,42 @@
+/* 원본 Timestamp: hidden md:block absolute right-6 text-right text-xs cursor-default */
+.wb-taskbar-clock {
+  cursor: default;
+  display: none;
+  font-size: 12px;
+  position: absolute;
+  right: 24px;
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .wb-taskbar-clock {
+    display: block;
+  }
+}
+
+.wb-taskbar-clock__time,
+.wb-taskbar-clock__date {
+  margin: 0;
+}
+
+/* 원본 skeleton: h-4 bg-black/10 rounded + pulse */
+.wb-taskbar-clock__skeleton {
+  animation: wb-taskbar-clock-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.wb-taskbar-clock__skeleton-line {
+  background: rgb(0 0 0 / 0.1);
+  border-radius: var(--wb-radius-sm);
+  height: 16px;
+  width: 64px;
+}
+
+.wb-taskbar-clock__skeleton-line + .wb-taskbar-clock__skeleton-line {
+  margin-top: 2px;
+}
+
+@keyframes wb-taskbar-clock-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

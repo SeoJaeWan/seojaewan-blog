@@ -1,0 +1,142 @@
+.wb-task-hover-panel {
+  /* 원본 TaskHoverPanel:
+     grid gap-2 h-fit + inline width: min(80vw, n*200px), grid-template-columns: repeat(n, 1fr) */
+  --wb-task-hover-panel-columns: 1;
+  /* 원본 hover:bg-gray-200/30 · text-gray-600 · text-gray-400 · hover:bg-red-700
+     (Tailwind v4 팔레트 실측값) */
+  --wb-task-hover-panel-thumbnail-hover: rgb(229 231 235 / 0.3);
+  --wb-task-hover-panel-titlebar-color: rgb(74 85 101);
+  --wb-task-hover-panel-close-color: rgb(153 161 175);
+  --wb-task-hover-panel-close-hover-surface: rgb(193 0 7);
+
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(var(--wb-task-hover-panel-columns), 1fr);
+  height: fit-content;
+  width: min(80vw, calc(var(--wb-task-hover-panel-columns) * 200px));
+}
+
+/* 원본 썸네일: relative aspect-4/3 overflow-hidden p-1 group hover:bg-gray-200/30 cursor-pointer */
+.wb-task-hover-panel__thumbnail {
+  aspect-ratio: 4 / 3;
+  box-sizing: border-box;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 4px;
+  position: relative;
+}
+
+.wb-task-hover-panel__thumbnail:hover {
+  background: var(--wb-task-hover-panel-thumbnail-hover);
+}
+
+/* 세션 전환 버튼은 썸네일 전체를 덮는 투명 히트 영역 (원본 z-1 overlay button) */
+.wb-task-hover-panel__select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  height: 100%;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+/* 원본 타이틀 행: flex gap-1.5 text-gray-600 min-w-0 h-[30px] items-center */
+.wb-task-hover-panel__titlebar {
+  align-items: center;
+  color: var(--wb-task-hover-panel-titlebar-color);
+  display: flex;
+  gap: 6px;
+  height: 30px;
+  min-width: 0;
+}
+
+.wb-task-hover-panel__titlebar-icon {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  justify-content: center;
+  width: 18px;
+}
+
+.wb-task-hover-panel__titlebar-icon > svg,
+.wb-task-hover-panel__titlebar-icon > img {
+  display: block;
+  flex-shrink: 0;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wb-task-hover-panel__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* hover 시 close 버튼이 차지할 자리를 타이틀 행에서 미리 비워 둔다
+   (원본 hidden group-hover:flex w-[30px] h-[30px] spacer) */
+.wb-task-hover-panel__close-spacer {
+  display: none;
+  flex-shrink: 0;
+  height: 30px;
+  width: 30px;
+}
+
+.wb-task-hover-panel__thumbnail:hover .wb-task-hover-panel__close-spacer {
+  display: flex;
+}
+
+/* 원본 close 버튼: absolute top-1 right-1 z-2 hidden group-hover:flex rounded-md
+   text-gray-400 w-[30px] h-[30px] hover:bg-red-700 hover:text-white */
+.wb-task-hover-panel__close {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--wb-radius-md);
+  color: var(--wb-task-hover-panel-close-color);
+  cursor: pointer;
+  display: none;
+  height: 30px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 30px;
+  z-index: 2;
+}
+
+.wb-task-hover-panel__thumbnail:hover .wb-task-hover-panel__close {
+  display: flex;
+}
+
+.wb-task-hover-panel__close:hover {
+  background: var(--wb-task-hover-panel-close-hover-surface);
+  color: rgb(255 255 255);
+}
+
+/* 원본 미리보기 영역: w-full h-[calc(100%-30px)] pointer-events-none
+   (앱에서는 ScaledWindow로 세션 화면을 축소해 채운다) */
+.wb-task-hover-panel__preview {
+  height: calc(100% - 30px);
+  overflow: hidden;
+  pointer-events: none;
+  width: 100%;
+}
+
+.wb-task-hover-panel__select:focus-visible,
+.wb-task-hover-panel__close:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}

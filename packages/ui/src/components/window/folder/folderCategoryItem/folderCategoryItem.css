@@ -1,0 +1,148 @@
+.wb-folder-category {
+  /* 원본 FolderCategory: text-xs, hover:bg-blue-200/30, 선택 시 bg-gray-200 hover:border-black
+     (Tailwind v4 실측값) */
+  --wb-folder-category-hover: rgb(190 219 255 / 0.3);
+  --wb-folder-category-selected: rgb(229 231 235);
+
+  font-size: 12px;
+}
+
+.wb-folder-category__row {
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius-sm);
+  display: flex;
+  position: relative;
+  transition: background-color var(--wb-transition-fast);
+  width: 100%;
+}
+
+.wb-folder-category__row:hover {
+  background: var(--wb-folder-category-hover);
+}
+
+.wb-folder-category__row[data-selected="true"] {
+  background: var(--wb-folder-category-selected);
+}
+
+.wb-folder-category__row[data-selected="true"]:hover {
+  border-color: rgb(0 0 0);
+}
+
+/* chevron 토글: absolute left-1, 닫힘 상태 text-gray-500 */
+.wb-folder-category__toggle {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: rgb(106 114 130);
+  cursor: pointer;
+  left: 4px;
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.wb-folder-category__toggle:hover,
+.wb-folder-category__toggle[data-expanded="true"] {
+  color: rgb(0 0 0);
+}
+
+.wb-folder-category__toggle > svg,
+.wb-folder-category__item-chevron > svg {
+  display: block;
+  font-size: 15px;
+  height: 15px;
+  width: 15px;
+}
+
+/* 카테고리 본체: flex-1 flex gap-1 py-2 pl-5 */
+.wb-folder-category__button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  font-family: inherit;
+  font-size: inherit;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 0 8px 20px;
+  text-align: left;
+}
+
+.wb-folder-category__icon {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 15px;
+  justify-content: center;
+  width: 15px;
+}
+
+.wb-folder-category__icon > svg,
+.wb-folder-category__icon > img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wb-folder-category__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wb-folder-category__item {
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius-sm);
+  transition: background-color var(--wb-transition-fast);
+  width: 100%;
+}
+
+.wb-folder-category__item:hover {
+  background: var(--wb-folder-category-hover);
+}
+
+/* 하위 파일 행: flex gap-0.5 pl-2 py-2 w-full text-left */
+.wb-folder-category__item-button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: inherit;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 0 8px 8px;
+  text-align: left;
+  width: 100%;
+}
+
+.wb-folder-category__item-chevron {
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+.wb-folder-category__item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb-folder-category__toggle:focus-visible,
+.wb-folder-category__button:focus-visible,
+.wb-folder-category__item-button:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}

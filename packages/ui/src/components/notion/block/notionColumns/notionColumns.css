@@ -1,0 +1,18 @@
+.wb-notion-columns {
+  display: flex;
+  gap: 24px;
+  margin: 4px 0;
+}
+
+.wb-notion-columns__column {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 좁은 화면에서는 세로로 쌓는다 (원본 Notion 모바일 동작) */
+@media (max-width: 768px) {
+  .wb-notion-columns {
+    flex-direction: column;
+    gap: 0;
+  }
+}
