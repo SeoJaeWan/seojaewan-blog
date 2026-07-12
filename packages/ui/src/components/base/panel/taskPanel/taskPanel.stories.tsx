@@ -13,7 +13,7 @@ const meta = {
           "taskbar 위로 떠오르는 패널(시작/검색 등)의 공통 surface — " +
           "data-state(open/closed)로 등장/퇴장 애니메이션을 표현한다. " +
           "열기/닫기 상태 전이와 배치는 useTaskbarPanelController가 제어하고, " +
-          "WindowsPanel/SearchPanel이 이 surface 위에 내용을 얹는다.",
+          "WindowsPanelUI/SearchPanel이 이 surface 위에 내용을 얹는다.",
       },
     },
   },

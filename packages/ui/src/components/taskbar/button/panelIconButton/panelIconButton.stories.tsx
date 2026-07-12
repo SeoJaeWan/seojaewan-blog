@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "taskbar 패널 내부 그리드의 항목 타일 버튼(아이콘 + 제목). 시작 패널(WindowsPanel)의 " +
+          "taskbar 패널 내부 그리드의 항목 타일 버튼(아이콘 + 제목). 시작 패널(WindowsPanelUI)의 " +
           "고정됨 그리드가 패널 스코프 CSS 오버라이드와 함께 이 버튼으로 항목을 그린다.",
       },
     },

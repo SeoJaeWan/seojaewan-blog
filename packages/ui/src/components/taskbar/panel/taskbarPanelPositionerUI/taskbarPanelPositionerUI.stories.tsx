@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { TaskPanel } from "../../../base/panel/taskPanel";
-import { TaskbarPanelPositioner } from "./index";
+import { TaskbarPanelPositionerUI } from "./index";
 
 const meta = {
-  title: "Taskbar/Panel/TaskbarPanelPositioner",
-  component: TaskbarPanelPositioner,
+  title: "Taskbar/Panel/TaskbarPanelPositionerUI",
+  component: TaskbarPanelPositionerUI,
   tags: ["autodocs"],
   parameters: {
     docs: {
@@ -18,7 +18,7 @@ const meta = {
     },
     layout: "fullscreen",
   },
-} satisfies Meta<typeof TaskbarPanelPositioner>;
+} satisfies Meta<typeof TaskbarPanelPositionerUI>;
 
 export default meta;
 
@@ -26,8 +26,8 @@ type Story = StoryObj<typeof meta>;
 
 export const BottomLeft: Story = {
   render: () => (
-    <TaskbarPanelPositioner style={{ bottom: 24, left: 24, visibility: "visible" }}>
+    <TaskbarPanelPositionerUI style={{ bottom: 24, left: 24, visibility: "visible" }}>
       <TaskPanel style={{ padding: 24, width: 280 }}>Bottom-left panel visual</TaskPanel>
-    </TaskbarPanelPositioner>
+    </TaskbarPanelPositionerUI>
   ),
 };

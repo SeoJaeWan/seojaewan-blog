@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { FolderIcon } from "../../../storyIcons";
 import type { WindowsPanelItem, WindowsPanelSection } from "./index";
-import { WindowsPanel } from "./index";
+import { WindowsPanelUI } from "./index";
 
 const PINNED_ITEMS: WindowsPanelItem[] = [
   { categoryId: "blog", icon: <FolderIcon />, id: "blog", title: "블로그" },
@@ -53,8 +53,8 @@ const SECTIONS: WindowsPanelSection[] = [
 const SEARCH_RESULTS = PINNED_ITEMS.filter((item) => item.title.includes("정리"));
 
 const meta = {
-  title: "Taskbar/Panel/WindowsPanel",
-  component: WindowsPanel,
+  title: "Taskbar/Panel/WindowsPanelUI",
+  component: WindowsPanelUI,
   tags: ["autodocs"],
   parameters: {
     docs: {
@@ -71,7 +71,7 @@ const meta = {
     // Storybook 캔버스에서는 viewport 기반 반응형 폭 대신 고정 폭으로 확인
     style: { width: 520 },
   },
-} satisfies Meta<typeof WindowsPanel>;
+} satisfies Meta<typeof WindowsPanelUI>;
 
 export default meta;
 

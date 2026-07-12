@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { TaskbarStartButton } from "./index";
+import { TaskbarStartButtonUI } from "./index";
 
 const meta = {
-  title: "Taskbar/Button/TaskbarStartButton",
-  component: TaskbarStartButton,
+  title: "Taskbar/Button/TaskbarStartButtonUI",
+  component: TaskbarStartButtonUI,
   tags: ["autodocs"],
   parameters: {
     docs: {
@@ -15,7 +15,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof TaskbarStartButton>;
+} satisfies Meta<typeof TaskbarStartButtonUI>;
 
 export default meta;
 

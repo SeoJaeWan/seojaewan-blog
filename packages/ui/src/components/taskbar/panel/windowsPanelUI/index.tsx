@@ -17,7 +17,7 @@ import { TaskSearchResultView } from "../taskSearchResultView";
 /** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
 export type WindowsPanelView = "all" | "pinned";
 
-/** contextmenu 이벤트가 발생한 WindowsPanel 목록 영역. */
+/** contextmenu 이벤트가 발생한 WindowsPanelUI 목록 영역. */
 export type WindowsPanelItemSource = "all" | "pinned" | "search";
 
 /** 고정 타일 reorder visual의 CSS animation 단계. */
@@ -34,7 +34,7 @@ export interface WindowsPanelPinnedItemAnimation {
 /** WindowsPanel의 고정됨/모두/검색 결과에 표시할 항목. */
 export type WindowsPanelItem = WindowItem;
 
-/** WindowsPanel 모두 보기에서 category header와 항목 목록을 묶는 section. */
+/** WindowsPanelUI 모두 보기에서 category header와 항목 목록을 묶는 section. */
 export interface WindowsPanelSection {
   /** 카테고리 점프 overlay와 header에 표시할 category 이름. */
   category: string;
@@ -42,7 +42,7 @@ export interface WindowsPanelSection {
   items: WindowsPanelItem[];
 }
 
-export interface WindowsPanelProps extends Omit<TaskPanelProps, "children"> {
+export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children"> {
   /** 모두 보기의 scroll container를 외부 기능 계층에 전달할 ref. */
   allListRef?: Ref<HTMLDivElement>;
   /** category jump overlay의 열린 visual 상태. 기본값은 false이다. */
@@ -97,7 +97,7 @@ export interface WindowsPanelProps extends Omit<TaskPanelProps, "children"> {
 const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
 
 /**
- * 시작 패널의 pinned/all/search visual을 controlled props로 렌더링한다 (원본 WindowsPanel).
+ * 시작 패널의 pinned/all/search visual을 controlled props로 렌더링한다 (원본 WindowsPanelUI).
  * view, overlay, reorder, context menu와 pin 동작은 모두 외부 기능 계층에 위임한다.
  *
  * @param props.view 현재 표시할 pinned/all visual. 기본값은 "pinned"
@@ -121,7 +121,7 @@ const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
  * @param props.onPinnedItemAnimationEnd 고정 타일 animation 종료 callback
  * @param props.className panel root에 추가할 className
  */
-export const WindowsPanel = ({
+export const WindowsPanelUI = ({
   allListRef,
   categoryOverlayOpen = false,
   className,
@@ -143,7 +143,7 @@ export const WindowsPanel = ({
   sections = [],
   view = "pinned",
   ...props
-}: WindowsPanelProps) => {
+}: WindowsPanelUIProps) => {
   const requestPinnedView = () => {
     onCategoryOverlayOpenChange?.(false);
     onViewChange?.("pinned");

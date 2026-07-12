@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { FolderIcon } from "../../storyIcons";
-import { TaskbarStartButton } from "../button/taskbarStartButton";
+import { TaskbarStartButtonUI } from "../button/taskbarStartButtonUI";
 import { TaskbarTaskButton } from "../button/taskbarTaskButton";
 import { TaskbarClock } from "../taskbarClock";
 import { TaskbarSearch } from "../taskbarSearch";
@@ -33,7 +33,7 @@ type Story = StoryObj<typeof meta>;
 export const Taskbar: Story = {
   render: () => (
     <TaskbarRoot>
-      <TaskbarStartButton />
+      <TaskbarStartButtonUI />
       <TaskbarSearch />
       <TaskbarTaskButton icon={<FolderIcon />} label="블로그" state="active" />
       <TaskbarTaskButton icon={<FolderIcon />} label="프로젝트" state="inactive" />
@@ -45,7 +45,7 @@ export const Taskbar: Story = {
 export const SearchOpen: Story = {
   render: () => (
     <TaskbarRoot>
-      <TaskbarStartButton />
+      <TaskbarStartButtonUI />
       <TaskbarSearch inputProps={{ defaultValue: "window" }} open />
       <TaskbarTaskButton icon={<FolderIcon />} label="블로그" state="active" />
       <TaskbarTaskButton icon={<FolderIcon />} label="프로젝트" state="inactive" />

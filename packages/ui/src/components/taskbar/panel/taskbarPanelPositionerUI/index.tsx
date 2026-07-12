@@ -2,7 +2,7 @@ import type { ComponentPropsWithRef } from "react";
 
 import { clsx } from "clsx";
 
-export type TaskbarPanelPositionerProps = ComponentPropsWithRef<"div">;
+export type TaskbarPanelPositionerUIProps = ComponentPropsWithRef<"div">;
 
 /**
  * Taskbar panel visual을 외부에서 주입한 viewport 좌표에 고정한다.
@@ -12,11 +12,11 @@ export type TaskbarPanelPositionerProps = ComponentPropsWithRef<"div">;
  * @param props.className positioner root에 추가할 className
  * @param props.style bottom, left, visibility 등 외부에서 계산한 visual style
  */
-export const TaskbarPanelPositioner = ({
+export const TaskbarPanelPositionerUI = ({
   children,
   className,
   ...props
-}: TaskbarPanelPositionerProps) => (
+}: TaskbarPanelPositionerUIProps) => (
   <div className={clsx("wb-taskbar-panel-item", className)} {...props}>
     {children}
   </div>

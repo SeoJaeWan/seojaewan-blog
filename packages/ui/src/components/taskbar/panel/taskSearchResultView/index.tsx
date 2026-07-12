@@ -52,7 +52,7 @@ const DETAIL_ACTIONS: { action: TaskSearchDetailAction; icon: ReactNode; label: 
 
 /**
  * 검색 결과 뷰 (원본 TaskSearchResult) — 최적의 일치 목록 + 선택 항목 상세 pane.
- * SearchPanel과 WindowsPanel(검색어 입력 시)이 공유한다.
+ * SearchPanel과 WindowsPanelUI(검색어 입력 시)가 공유한다.
  * 상세 pane 선택은 detailItemId로 제어하고 모든 항목 동작은 callback으로 외부에 위임한다.
  *
  * @param props.results 검색 결과 row와 상세 pane 후보로 표시할 항목

@@ -2,7 +2,7 @@ import type { ComponentPropsWithRef } from "react";
 
 import { clsx } from "clsx";
 
-export type TaskbarPanelLayerProps = ComponentPropsWithRef<"div">;
+export type TaskbarPanelLayerUIProps = ComponentPropsWithRef<"div">;
 
 /**
  * Taskbar floating panel을 viewport 위에 표시할 수 있는 고정 visual layer를 렌더링한다.
@@ -11,7 +11,11 @@ export type TaskbarPanelLayerProps = ComponentPropsWithRef<"div">;
  * @param props.children layer 안에 정적으로 배치할 panel visual
  * @param props.className layer root에 추가할 className
  */
-export const TaskbarPanelLayer = ({ children, className, ...props }: TaskbarPanelLayerProps) => (
+export const TaskbarPanelLayerUI = ({
+  children,
+  className,
+  ...props
+}: TaskbarPanelLayerUIProps) => (
   <div className={clsx("wb-taskbar-panel-layer", className)} {...props}>
     {children}
   </div>

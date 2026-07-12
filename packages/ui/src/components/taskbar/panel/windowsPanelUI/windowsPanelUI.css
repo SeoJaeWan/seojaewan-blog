@@ -1,5 +1,5 @@
 .wb-windows-panel {
-  /* 원본 WindowsPanel: w-screen md:w-[50vw] xl:w-[30vw] h-[600px] px-5 pt-5 text-sm */
+  /* 원본 WindowsPanelUI: w-screen md:w-[50vw] xl:w-[30vw] h-[600px] px-5 pt-5 text-sm */
   --wb-windows-panel-hover-surface: rgb(255 255 255);
   /* 원본 view toggle: border-gray-400, hover:bg-gray-100/50 (Tailwind v4 팔레트 실측값) */
   --wb-windows-panel-toggle-border: rgb(153 161 175);

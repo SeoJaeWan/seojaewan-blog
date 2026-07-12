@@ -19,7 +19,7 @@ export interface PanelIconButtonProps extends Omit<
 }
 
 /**
- * WindowsPanel/SearchPanel 등 큰 panel 안에서 쓰는 아이콘 tile button.
+ * WindowsPanelUI/SearchPanel 등 큰 panel 안에서 쓰는 아이콘 tile button.
  * IconButton의 lg 크기를 고정하고 제목 줄수와 selected 상태만 노출한다.
  *
  * @param props.title tile 아래에 표시할 제목

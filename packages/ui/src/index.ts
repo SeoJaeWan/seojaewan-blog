@@ -46,8 +46,8 @@ export type {
   TaskbarIconButtonState,
 } from "./components/taskbar/button/taskbarIconButton";
 export { TaskbarIconButton } from "./components/taskbar/button/taskbarIconButton";
-export type { TaskbarStartButtonProps } from "./components/taskbar/button/taskbarStartButton";
-export { TaskbarStartButton } from "./components/taskbar/button/taskbarStartButton";
+export type { TaskbarStartButtonUIProps } from "./components/taskbar/button/taskbarStartButtonUI";
+export { TaskbarStartButtonUI } from "./components/taskbar/button/taskbarStartButtonUI";
 export type { TaskbarTaskButtonProps } from "./components/taskbar/button/taskbarTaskButton";
 export { TaskbarTaskButton } from "./components/taskbar/button/taskbarTaskButton";
 export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearchInput";
@@ -64,10 +64,10 @@ export type {
   TaskbarContextMenuTask,
 } from "./components/taskbar/panel/taskbarContextMenu";
 export { TaskbarContextMenu } from "./components/taskbar/panel/taskbarContextMenu";
-export type { TaskbarPanelLayerProps } from "./components/taskbar/panel/taskbarPanelLayer";
-export { TaskbarPanelLayer } from "./components/taskbar/panel/taskbarPanelLayer";
-export type { TaskbarPanelPositionerProps } from "./components/taskbar/panel/taskbarPanelPositioner";
-export { TaskbarPanelPositioner } from "./components/taskbar/panel/taskbarPanelPositioner";
+export type { TaskbarPanelLayerUIProps } from "./components/taskbar/panel/taskbarPanelLayerUI";
+export { TaskbarPanelLayerUI } from "./components/taskbar/panel/taskbarPanelLayerUI";
+export type { TaskbarPanelPositionerUIProps } from "./components/taskbar/panel/taskbarPanelPositionerUI";
+export { TaskbarPanelPositionerUI } from "./components/taskbar/panel/taskbarPanelPositionerUI";
 export type {
   TaskHoverPanelItem,
   TaskHoverPanelProps,
@@ -84,11 +84,11 @@ export type {
   WindowsPanelItemSource,
   WindowsPanelPinnedItemAnimation,
   WindowsPanelPinnedItemAnimationPhase,
-  WindowsPanelProps,
+  WindowsPanelUIProps,
   WindowsPanelSection,
   WindowsPanelView,
-} from "./components/taskbar/panel/windowsPanel";
-export { WindowsPanel } from "./components/taskbar/panel/windowsPanel";
+} from "./components/taskbar/panel/windowsPanelUI";
+export { WindowsPanelUI } from "./components/taskbar/panel/windowsPanelUI";
 export type { TaskbarAppListProps } from "./components/taskbar/taskbarAppList";
 export { TaskbarAppList } from "./components/taskbar/taskbarAppList";
 export type { TaskbarClockProps } from "./components/taskbar/taskbarClock";

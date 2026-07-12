@@ -1,4 +1,4 @@
-/* 원본 TaskSearchResult — SearchPanel/WindowsPanel(검색어 입력 시)이 공유하는 결과 뷰 */
+/* 원본 TaskSearchResult — SearchPanel/WindowsPanelUI(검색어 입력 시)가 공유하는 결과 뷰 */
 .wb-task-search-result {
   --wb-task-search-result-hover-surface: rgb(255 255 255);
   --wb-task-search-result-card-border: rgb(214 217 224);

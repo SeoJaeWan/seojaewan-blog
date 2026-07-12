@@ -5,7 +5,7 @@ import { clsx } from "clsx";
 import windowsLogoSrc from "../../../../assets/windows.svg";
 import { IconButton } from "../../../base/button/iconButton";
 
-export interface TaskbarStartButtonProps extends Omit<
+export interface TaskbarStartButtonUIProps extends Omit<
   ComponentProps<typeof IconButton>,
   "icon" | "label" | "size"
 > {
@@ -28,12 +28,12 @@ const DefaultWindowsLogoIcon = () => (
  * @param props.selected true이면 열린 시작 패널을 나타내는 selected visual을 표시한다
  * @param props.className 버튼 control에 추가할 className
  */
-export const TaskbarStartButton = ({
+export const TaskbarStartButtonUI = ({
   className,
   icon = <DefaultWindowsLogoIcon />,
   label = "시작",
   ...props
-}: TaskbarStartButtonProps) => (
+}: TaskbarStartButtonUIProps) => (
   <IconButton
     className={clsx("wb-taskbar-start-button", className)}
     icon={icon}
