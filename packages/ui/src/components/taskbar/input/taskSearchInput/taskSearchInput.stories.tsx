@@ -60,15 +60,15 @@ export const TaskbarContext: Story = {
       }}
     >
       <IconButton
+        aria-label="시작"
         className="wb-taskbar-start-button"
         icon={<WindowsLogoIcon />}
-        label="시작"
         selected
         size="lg"
       />
       <TaskSearchInput defaultValue="window" />
-      <TaskbarIconButton icon={<FolderIcon />} label="블로그" state="active" />
-      <TaskbarIconButton icon={<FolderIcon />} label="프로젝트" state="inactive" />
+      <TaskbarIconButton aria-label="블로그" icon={<FolderIcon />} state="active" />
+      <TaskbarIconButton aria-label="프로젝트" icon={<FolderIcon />} state="inactive" />
     </div>
   ),
 };

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { createElement } from "react";
-import { createPortal } from "react-dom";
 
 import {
   act,
@@ -69,16 +68,7 @@ const TaskbarPanelProbe = ({
       "시작",
     ),
     createElement("output", { "data-testid": "open-state" }, String(panel.isOpen)),
-    panel.isOpen && panel.layerElement
-      ? createPortal(
-          createElement("div", {
-            "data-testid": "panel",
-            ref: panel.panelRef,
-            style: panel.positionStyle,
-          }),
-          panel.layerElement,
-        )
-      : null,
+    panel.renderPanel(createElement("div", { "data-testid": "panel" })),
   );
 };
 
@@ -86,8 +76,22 @@ const mockElementRects = (rects: Record<string, DOMRect>) =>
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
     this: HTMLElement,
   ) {
-    return rects[this.dataset.testid ?? ""] ?? createRect();
+    const rectKey = this.classList.contains("wb-taskbar-panel-item")
+      ? "panel"
+      : (this.dataset.testid ?? "");
+
+    return rects[rectKey] ?? createRect();
   });
+
+const getPanelPositioner = () => {
+  const positioner = screen.getByTestId("panel").parentElement;
+
+  if (!(positioner instanceof HTMLDivElement)) {
+    throw new Error("TaskbarPanelPositionerUI를 찾을 수 없습니다.");
+  }
+
+  return positioner;
+};
 
 const mockViewport = (width: number, height: number) => {
   vi.spyOn(window, "innerWidth", "get").mockReturnValue(width);
@@ -106,7 +110,7 @@ describe("useTaskbarPanel", () => {
     );
   });
 
-  it("패널을 열고 교체하고 닫을 때 하나의 active panel만 유지한다", async () => {
+  it("패널을 열고 교체하고 닫을 때 하나의 active panel만 유지한다", () => {
     const { result } = renderHook(
       () => ({
         search: useTaskbarPanel({ panelId: "search" }),
@@ -115,8 +119,7 @@ describe("useTaskbarPanel", () => {
       { wrapper: HostWrapper },
     );
 
-    expect(result.current.start.positionStyle).toEqual({ visibility: "hidden" });
-    await waitFor(() => expect(result.current.start.layerElement).toBeInstanceOf(HTMLDivElement));
+    expect(result.current.start.renderPanel(createElement("div"))).toBeNull();
 
     act(() => {
       result.current.start.open();
@@ -159,10 +162,10 @@ describe("useTaskbarPanel", () => {
     render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe, { placement })));
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(screen.getByTestId("panel").style.visibility).toBe("visible"));
+    await waitFor(() => expect(getPanelPositioner().style.visibility).toBe("visible"));
 
-    expect(screen.getByTestId("panel").style.left).toBe(`${expectedLeft}px`);
-    expect(screen.getByTestId("panel").style.bottom).toBe("108px");
+    expect(getPanelPositioner().style.left).toBe(`${expectedLeft}px`);
+    expect(getPanelPositioner().style.bottom).toBe("108px");
   });
 
   it("위치가 화면 경계를 넘으면 viewport 안으로 보정한다", async () => {
@@ -181,9 +184,9 @@ describe("useTaskbarPanel", () => {
     );
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(screen.getByTestId("panel").style.visibility).toBe("visible"));
+    await waitFor(() => expect(getPanelPositioner().style.visibility).toBe("visible"));
 
-    expect(screen.getByTestId("panel").style.left).toBe("92px");
+    expect(getPanelPositioner().style.left).toBe("92px");
   });
 
   it("viewport 크기가 바뀌면 열린 패널 위치를 다시 계산한다", async () => {
@@ -199,12 +202,12 @@ describe("useTaskbarPanel", () => {
     render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(screen.getByTestId("panel").style.left).toBe("400px"));
+    await waitFor(() => expect(getPanelPositioner().style.left).toBe("400px"));
 
     viewportWidth = 1000;
     fireEvent(window, new Event("resize"));
 
-    await waitFor(() => expect(screen.getByTestId("panel").style.left).toBe("300px"));
+    await waitFor(() => expect(getPanelPositioner().style.left).toBe("300px"));
   });
 
   it("trigger와 panel 내부 pointerdown은 유지하고 바깥 pointerdown은 닫는다", async () => {

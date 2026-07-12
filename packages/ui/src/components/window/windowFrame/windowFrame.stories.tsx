@@ -52,7 +52,7 @@ const Desktop = ({ children }: { children: ReactNode }) => (
         right: 0,
       }}
     >
-      <TaskbarIconButton icon={<FolderIcon />} label="블로그" state="active" />
+      <TaskbarIconButton aria-label="블로그" icon={<FolderIcon />} state="active" />
     </div>
   </div>
 );

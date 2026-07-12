@@ -4,9 +4,10 @@ import { Slot, Slottable } from "@radix-ui/react-slot";
 import { clsx } from "clsx";
 
 export interface IconButtonProps extends Omit<ComponentPropsWithRef<"button">, "aria-label"> {
+  /** icon button의 필수 접근성 이름. */
+  "aria-label": string;
   asChild?: boolean;
   icon: ReactNode;
-  label: string;
   selected?: boolean;
   size?: "lg" | "md" | "sm";
 }
@@ -16,19 +17,19 @@ export interface IconButtonProps extends Omit<ComponentPropsWithRef<"button">, "
  * taskbar, panel tile, window chrome action이 같은 size/selected/disabled 규칙을 쓰도록
  * `IconButton`을 primitive로 둔다.
  *
+ * @param props.aria-label 버튼의 접근성 이름
  * @param props.icon 버튼 안쪽에 표시할 시각 아이콘
- * @param props.label aria-label로 쓰는 접근성 이름
  * @param props.size 버튼 크기 variant. 기본값은 "md"
  * @param props.selected true이면 aria-pressed와 selected visual을 켠다
  * @param props.asChild true이면 Radix Slot으로 자식 요소에 버튼 스타일을 합성한다
  */
 export const IconButton = ({
+  "aria-label": ariaLabel,
   asChild = false,
   children,
   className,
   disabled = false,
   icon,
-  label,
   selected = false,
   size = "md",
   type = "button",
@@ -41,7 +42,7 @@ export const IconButton = ({
 
   return (
     <Component
-      aria-label={label}
+      aria-label={ariaLabel}
       aria-pressed={selected || undefined}
       className={clsx("wb-icon-button", `wb-icon-button--${size}`, className)}
       data-disabled={disabled ? "true" : undefined}

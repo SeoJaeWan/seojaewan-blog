@@ -12,10 +12,10 @@
 @import "../components/taskbar/button/taskbarStartButtonUI/taskbarStartButtonUI.css";
 @import "../components/taskbar/panel/taskbarPanelLayerUI/taskbarPanelLayerUI.css";
 @import "../components/taskbar/panel/taskbarPanelPositionerUI/taskbarPanelPositionerUI.css";
-@import "../components/taskbar/taskbarRoot/taskbarRoot.css";
-@import "../components/taskbar/taskbarAppList/taskbarAppList.css";
-@import "../components/taskbar/taskbarClock/taskbarClock.css";
-@import "../components/taskbar/taskbarSearch/taskbarSearch.css";
+@import "../components/taskbar/root/taskbarRoot.css";
+@import "../components/taskbar/appList/taskbarAppList.css";
+@import "../components/taskbar/clock/taskbarClock.css";
+@import "../components/taskbar/search/taskbarSearch.css";
 @import "../components/taskbar/panel/searchPanel/searchPanel.css";
 @import "../components/taskbar/panel/taskbarContextMenu/taskbarContextMenu.css";
 @import "../components/taskbar/panel/taskSearchResultView/taskSearchResultView.css";

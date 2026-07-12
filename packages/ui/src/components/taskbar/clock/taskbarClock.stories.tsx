@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { TaskbarRoot } from "../taskbarRoot";
+import { TaskbarRoot } from "../root";
 import { TaskbarClock } from "./index";
 
 const FIXED_TIME = new Date("2026-07-10T06:24:00.000Z");

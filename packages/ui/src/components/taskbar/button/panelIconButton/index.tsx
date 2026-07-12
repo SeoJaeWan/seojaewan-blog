@@ -6,10 +6,10 @@ import { IconButton } from "../../../base/button/iconButton";
 
 export interface PanelIconButtonProps extends Omit<
   ComponentPropsWithoutRef<typeof IconButton>,
-  "children" | "label" | "selected" | "size" | "title"
+  "aria-label" | "children" | "selected" | "size" | "title"
 > {
-  /** title과 다른 접근성 label이 필요할 때 쓰는 aria-label. 기본값은 title이다. */
-  ariaLabel?: string;
+  /** title과 다른 접근성 이름. 기본값은 title이다. */
+  "aria-label"?: string;
   /** title을 한 줄 또는 두 줄로 clamp하는 variant. 기본값은 2이다. */
   lines?: 1 | 2;
   /** true이면 selected visual과 aria-pressed를 켠다. 기본값은 false이다. */
@@ -22,13 +22,13 @@ export interface PanelIconButtonProps extends Omit<
  * WindowsPanelUI/SearchPanel 등 큰 panel 안에서 쓰는 아이콘 tile button.
  * IconButton의 lg 크기를 고정하고 제목 줄수와 selected 상태만 노출한다.
  *
+ * @param props.aria-label title과 다른 접근성 이름이 필요할 때 쓰는 값
  * @param props.title tile 아래에 표시할 제목
- * @param props.ariaLabel title과 다른 접근성 이름이 필요할 때 쓰는 값
  * @param props.lines 제목 clamp 줄수. 기본값은 2
  * @param props.selected true이면 selected visual과 aria-pressed를 켠다
  */
 export const PanelIconButton = ({
-  ariaLabel,
+  "aria-label": ariaLabel,
   className,
   lines = 2,
   selected = false,
@@ -36,9 +36,9 @@ export const PanelIconButton = ({
   ...props
 }: PanelIconButtonProps) => (
   <IconButton
+    aria-label={ariaLabel ?? title}
     className={clsx("wb-panel-icon-button", className)}
     data-lines={lines}
-    label={ariaLabel ?? title}
     selected={selected}
     size="lg"
     {...props}

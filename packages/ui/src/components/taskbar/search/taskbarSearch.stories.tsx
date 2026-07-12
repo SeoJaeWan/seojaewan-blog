@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { TaskbarRoot } from "../taskbarRoot";
+import { TaskbarRoot } from "../root";
 import { TaskbarSearch } from "./index";
 
 const meta = {

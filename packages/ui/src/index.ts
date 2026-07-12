@@ -39,6 +39,8 @@ export type {
   NotionListItem,
   NotionRichTextSpan,
 } from "./components/notion/types";
+export type { TaskbarAppListProps } from "./components/taskbar/appList";
+export { TaskbarAppList } from "./components/taskbar/appList";
 export type { PanelIconButtonProps } from "./components/taskbar/button/panelIconButton";
 export { PanelIconButton } from "./components/taskbar/button/panelIconButton";
 export type {
@@ -50,6 +52,8 @@ export type { TaskbarStartButtonUIProps } from "./components/taskbar/button/task
 export { TaskbarStartButtonUI } from "./components/taskbar/button/taskbarStartButtonUI";
 export type { TaskbarTaskButtonProps } from "./components/taskbar/button/taskbarTaskButton";
 export { TaskbarTaskButton } from "./components/taskbar/button/taskbarTaskButton";
+export type { TaskbarClockProps } from "./components/taskbar/clock";
+export { TaskbarClock } from "./components/taskbar/clock";
 export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearchInput";
 export { TaskSearchInput } from "./components/taskbar/input/taskSearchInput";
 export type {
@@ -84,19 +88,15 @@ export type {
   WindowsPanelItemSource,
   WindowsPanelPinnedItemAnimation,
   WindowsPanelPinnedItemAnimationPhase,
-  WindowsPanelUIProps,
   WindowsPanelSection,
+  WindowsPanelUIProps,
   WindowsPanelView,
 } from "./components/taskbar/panel/windowsPanelUI";
 export { WindowsPanelUI } from "./components/taskbar/panel/windowsPanelUI";
-export type { TaskbarAppListProps } from "./components/taskbar/taskbarAppList";
-export { TaskbarAppList } from "./components/taskbar/taskbarAppList";
-export type { TaskbarClockProps } from "./components/taskbar/taskbarClock";
-export { TaskbarClock } from "./components/taskbar/taskbarClock";
-export type { TaskbarRootProps } from "./components/taskbar/taskbarRoot";
-export { TaskbarRoot } from "./components/taskbar/taskbarRoot";
-export type { TaskbarSearchProps } from "./components/taskbar/taskbarSearch";
-export { TaskbarSearch } from "./components/taskbar/taskbarSearch";
+export type { TaskbarRootProps } from "./components/taskbar/root";
+export { TaskbarRoot } from "./components/taskbar/root";
+export type { TaskbarSearchProps } from "./components/taskbar/search";
+export { TaskbarSearch } from "./components/taskbar/search";
 export type { WindowControlsProps } from "./components/window/chrome/windowControls";
 export { WindowControls } from "./components/window/chrome/windowControls";
 export type {

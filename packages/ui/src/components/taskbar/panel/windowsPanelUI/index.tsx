@@ -42,7 +42,7 @@ export interface WindowsPanelSection {
   items: WindowsPanelItem[];
 }
 
-export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children"> {
+export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "role"> {
   /** 모두 보기의 scroll container를 외부 기능 계층에 전달할 ref. */
   allListRef?: Ref<HTMLDivElement>;
   /** category jump overlay의 열린 visual 상태. 기본값은 false이다. */
@@ -99,6 +99,7 @@ const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
 /**
  * 시작 패널의 pinned/all/search visual을 controlled props로 렌더링한다 (원본 WindowsPanelUI).
  * view, overlay, reorder, context menu와 pin 동작은 모두 외부 기능 계층에 위임한다.
+ * 시작 패널의 접근성 role은 dialog로 고정한다.
  *
  * @param props.view 현재 표시할 pinned/all visual. 기본값은 "pinned"
  * @param props.categoryOverlayOpen category jump overlay의 열린 visual 상태
@@ -155,7 +156,7 @@ export const WindowsPanelUI = ({
   };
 
   return (
-    <TaskPanel className={clsx("wb-windows-panel", className)} {...props}>
+    <TaskPanel {...props} className={clsx("wb-windows-panel", className)} role="dialog">
       <div className="wb-windows-panel__search">
         <TaskSearchInput placeholder="앱 및 문서 검색" {...searchInputProps} />
       </div>

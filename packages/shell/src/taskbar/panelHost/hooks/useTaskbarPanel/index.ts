@@ -1,7 +1,10 @@
 "use client";
 
-import type { CSSProperties, RefObject } from "react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode, ReactPortal, RefObject } from "react";
+import { createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+
+import { TaskbarPanelPositionerUI } from "@window/ui";
 
 import { TaskbarPanelHostContext } from "../..";
 
@@ -28,14 +31,10 @@ export interface UseTaskbarPanelResult {
   close: () => void;
   /** 지정한 panelId가 현재 active panel인지 나타낸다. */
   isOpen: boolean;
-  /** panel visual을 portal로 연결할 TaskbarPanelLayerUI DOM. */
-  layerElement: HTMLDivElement | null;
   /** 현재 panel을 열고 기존 active panel을 교체한다. */
   open: () => void;
-  /** 위치 측정 대상인 TaskbarPanelPositionerUI에 연결할 ref. */
-  panelRef: RefObject<HTMLDivElement | null>;
-  /** TaskbarPanelPositionerUI에 전달할 viewport 좌표와 표시 상태. */
-  positionStyle: CSSProperties;
+  /** panel visual을 Positioner와 Host layer portal로 조립한다. */
+  renderPanel: (panel: ReactNode) => ReactPortal | null;
   /** 현재 panel의 열린 상태를 전환한다. */
   toggle: () => void;
   /** panel을 여는 taskbar button에 연결할 ref. */
@@ -143,6 +142,20 @@ export const useTaskbarPanel = ({
     open();
   }, [close, isOpen, open]);
 
+  const renderPanel = useCallback(
+    (panel: ReactNode) => {
+      if (!isOpen || layerElement === null) {
+        return null;
+      }
+
+      return createPortal(
+        createElement(TaskbarPanelPositionerUI, { ref: panelRef, style: positionStyle }, panel),
+        layerElement,
+      );
+    },
+    [isOpen, layerElement, positionStyle],
+  );
+
   useEffect(() => {
     if (!isOpen) {
       setPositionStyle(HIDDEN_POSITION_STYLE);
@@ -186,10 +199,8 @@ export const useTaskbarPanel = ({
   return {
     close,
     isOpen,
-    layerElement,
     open,
-    panelRef,
-    positionStyle,
+    renderPanel,
     toggle,
     triggerRef,
   };

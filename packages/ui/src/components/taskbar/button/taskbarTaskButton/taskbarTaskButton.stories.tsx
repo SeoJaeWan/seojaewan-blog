@@ -17,8 +17,8 @@ const meta = {
     },
   },
   args: {
+    "aria-label": "블로그",
     icon: <FolderIcon />,
-    label: "블로그",
   },
 } satisfies Meta<typeof TaskbarTaskButton>;
 

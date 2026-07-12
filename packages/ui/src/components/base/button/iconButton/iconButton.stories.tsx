@@ -18,8 +18,8 @@ const meta = {
     },
   },
   args: {
+    "aria-label": "블로그",
     icon: <FolderIcon />,
-    label: "블로그",
     size: "lg",
   },
   argTypes: {
@@ -38,45 +38,45 @@ export const Default: Story = {};
 
 export const File: Story = {
   args: {
+    "aria-label": "게시글 열기",
     icon: <FileIcon />,
-    label: "게시글 열기",
     size: "lg",
   },
 };
 
 export const WindowsStart: Story = {
   args: {
+    "aria-label": "시작",
     icon: <WindowsLogoIcon />,
-    label: "시작",
     size: "lg",
   },
 };
 
 export const Selected: Story = {
   args: {
+    "aria-label": "프로젝트",
     icon: <FolderIcon />,
-    label: "프로젝트",
     selected: true,
   },
 };
 
 export const Disabled: Story = {
   args: {
+    "aria-label": "비활성 게시글",
     disabled: true,
     icon: <FileIcon />,
-    label: "비활성 게시글",
   },
 };
 
 export const Sizes: Story = {
   args: {
-    label: "프로젝트",
+    "aria-label": "프로젝트",
   },
   render: (args) => (
     <div style={{ alignItems: "center", display: "flex", gap: 12 }}>
-      <IconButton {...args} icon={<FolderIcon />} label="작은 폴더" size="sm" />
-      <IconButton {...args} icon={<FolderIcon />} label="기본 폴더" size="md" />
-      <IconButton {...args} icon={<FolderIcon />} label="큰 폴더" size="lg" />
+      <IconButton {...args} aria-label="작은 폴더" icon={<FolderIcon />} size="sm" />
+      <IconButton {...args} aria-label="기본 폴더" icon={<FolderIcon />} size="md" />
+      <IconButton {...args} aria-label="큰 폴더" icon={<FolderIcon />} size="lg" />
     </div>
   ),
 };

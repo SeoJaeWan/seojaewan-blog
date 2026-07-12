@@ -18,8 +18,8 @@ const meta = {
     },
   },
   args: {
+    "aria-label": "블로그",
     icon: <FolderIcon />,
-    label: "블로그",
   },
   argTypes: {
     state: {
@@ -38,10 +38,15 @@ export const Default: Story = {};
 export const Categories: Story = {
   render: (args) => (
     <div style={{ alignItems: "center", display: "flex", gap: 4 }}>
-      <TaskbarIconButton {...args} icon={<FolderIcon />} label="블로그" state="active" />
-      <TaskbarIconButton {...args} icon={<FolderIcon />} label="프로젝트" state="inactive" />
-      <TaskbarIconButton {...args} icon={<FolderIcon />} label="코딩 테스트" />
-      <TaskbarIconButton {...args} icon={<FolderIcon />} label="소개" />
+      <TaskbarIconButton {...args} aria-label="블로그" icon={<FolderIcon />} state="active" />
+      <TaskbarIconButton
+        {...args}
+        aria-label="프로젝트"
+        icon={<FolderIcon />}
+        state="inactive"
+      />
+      <TaskbarIconButton {...args} aria-label="코딩 테스트" icon={<FolderIcon />} />
+      <TaskbarIconButton {...args} aria-label="소개" icon={<FolderIcon />} />
     </div>
   ),
 };

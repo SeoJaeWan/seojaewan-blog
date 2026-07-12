@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { FolderIcon } from "../../storyIcons";
 import { TaskbarTaskButton } from "../button/taskbarTaskButton";
-import { TaskbarRoot } from "../taskbarRoot";
+import { TaskbarRoot } from "../root";
 import { TaskbarAppList } from "./index";
 
 const meta = {
@@ -29,9 +29,9 @@ export const Default: Story = {
   render: () => (
     <TaskbarRoot>
       <TaskbarAppList>
-        <TaskbarTaskButton icon={<FolderIcon />} label="블로그" state="active" />
-        <TaskbarTaskButton icon={<FolderIcon />} label="프로젝트" state="inactive" />
-        <TaskbarTaskButton icon={<FolderIcon />} label="코딩 테스트" state="default" />
+        <TaskbarTaskButton aria-label="블로그" icon={<FolderIcon />} state="active" />
+        <TaskbarTaskButton aria-label="프로젝트" icon={<FolderIcon />} state="inactive" />
+        <TaskbarTaskButton aria-label="코딩 테스트" icon={<FolderIcon />} state="default" />
       </TaskbarAppList>
     </TaskbarRoot>
   ),
@@ -41,8 +41,13 @@ export const PanelOpen: Story = {
   render: () => (
     <TaskbarRoot>
       <TaskbarAppList>
-        <TaskbarTaskButton icon={<FolderIcon />} label="블로그" open state="active" />
-        <TaskbarTaskButton dragging icon={<FolderIcon />} label="프로젝트" state="inactive" />
+        <TaskbarTaskButton aria-label="블로그" icon={<FolderIcon />} open state="active" />
+        <TaskbarTaskButton
+          aria-label="프로젝트"
+          dragging
+          icon={<FolderIcon />}
+          state="inactive"
+        />
       </TaskbarAppList>
     </TaskbarRoot>
   ),

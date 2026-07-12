@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FolderIcon } from "../../storyIcons";
 import { TaskbarStartButtonUI } from "../button/taskbarStartButtonUI";
 import { TaskbarTaskButton } from "../button/taskbarTaskButton";
-import { TaskbarClock } from "../taskbarClock";
-import { TaskbarSearch } from "../taskbarSearch";
+import { TaskbarClock } from "../clock";
+import { TaskbarSearch } from "../search";
 import { TaskbarRoot } from "./index";
 
 const FIXED_TIME = new Date("2026-07-10T06:24:00.000Z");
@@ -35,8 +35,8 @@ export const Taskbar: Story = {
     <TaskbarRoot>
       <TaskbarStartButtonUI />
       <TaskbarSearch />
-      <TaskbarTaskButton icon={<FolderIcon />} label="블로그" state="active" />
-      <TaskbarTaskButton icon={<FolderIcon />} label="프로젝트" state="inactive" />
+      <TaskbarTaskButton aria-label="블로그" icon={<FolderIcon />} state="active" />
+      <TaskbarTaskButton aria-label="프로젝트" icon={<FolderIcon />} state="inactive" />
       <TaskbarClock value={FIXED_TIME} />
     </TaskbarRoot>
   ),
@@ -47,8 +47,8 @@ export const SearchOpen: Story = {
     <TaskbarRoot>
       <TaskbarStartButtonUI />
       <TaskbarSearch inputProps={{ defaultValue: "window" }} open />
-      <TaskbarTaskButton icon={<FolderIcon />} label="블로그" state="active" />
-      <TaskbarTaskButton icon={<FolderIcon />} label="프로젝트" state="inactive" />
+      <TaskbarTaskButton aria-label="블로그" icon={<FolderIcon />} state="active" />
+      <TaskbarTaskButton aria-label="프로젝트" icon={<FolderIcon />} state="inactive" />
       <TaskbarClock value={FIXED_TIME} />
     </TaskbarRoot>
   ),

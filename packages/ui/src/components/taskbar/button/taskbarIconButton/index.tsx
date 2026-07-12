@@ -23,8 +23,8 @@ export interface TaskbarIconButtonProps extends Omit<
  * taskbar의 40px app/start/search icon button shell.
  * IconButton을 감싸 open/active indicator, dragging disabled 상태, taskbar hover 배경을 통일한다.
  *
+ * @param props.aria-label 접근성 이름
  * @param props.icon 버튼 안쪽에 표시할 앱/시스템 아이콘
- * @param props.label 접근성 이름
  * @param props.state 실행 상태 indicator와 selected visual을 결정하는 값
  * @param props.open true이면 panel open 상태 배경을 표시한다
  * @param props.dragging true이면 버튼을 비활성화하고 drag visual을 표시한다
