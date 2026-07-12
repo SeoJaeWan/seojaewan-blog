@@ -1,5 +1,3 @@
-import type { CSSProperties } from "react";
-
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { TaskPanel } from "../../../base/panel/taskPanel";
@@ -7,9 +5,7 @@ import type { TaskbarPanelContainerState } from "./index";
 import { TaskbarPanelContainerUI } from "./index";
 
 const containerStyle = { bottom: 24, left: 24, visibility: "visible" } as const;
-
-// REMOVE: Container animation을 단독으로 보여주기 위한 임시 override; Work Unit 2에서 TaskPanel animation을 제거하면 함께 삭제한다.
-const panelStyle: CSSProperties = { animation: "none", padding: 24, width: 280 };
+const panelStyle = { padding: 24, width: 280 } as const;
 
 const meta = {
   title: "Taskbar/Panel/TaskbarPanelContainerUI",

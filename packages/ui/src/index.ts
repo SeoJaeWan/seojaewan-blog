@@ -21,7 +21,7 @@ export {
   SCALED_PREVIEW_DEFAULT_BASE_WIDTH,
   ScaledPreview,
 } from "./components/base/panel/scaledPreview";
-export type { TaskPanelProps, TaskPanelState } from "./components/base/panel/taskPanel";
+export type { TaskPanelProps } from "./components/base/panel/taskPanel";
 export { TaskPanel } from "./components/base/panel/taskPanel";
 export type { DesktopIconProps } from "./components/desktop/desktopIcon";
 export { DesktopIcon } from "./components/desktop/desktopIcon";
