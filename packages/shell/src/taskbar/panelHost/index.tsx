@@ -8,11 +8,16 @@ import type { TaskbarPanelContainerState } from "@window/ui";
 import { TaskbarPanelLayerUI } from "@window/ui";
 
 import { useIsHydrated } from "../../hooks/useIsHydrated";
+import type { TaskbarPanelTransitionState } from "./utils/panelHostReducer";
+import {
+  hasTransitioningPanel,
+  INITIAL_HOST_STATE,
+  taskbarPanelHostReducer,
+} from "./utils/panelHostReducer";
+
+export type { TaskbarPanelTransitionState } from "./utils/panelHostReducer";
 
 const PANEL_TRANSITION_WATCHDOG_MS = 1000;
-
-/** Host가 완료 신호를 검증하는 taskbar panel transition phase. */
-export type TaskbarPanelTransitionState = Exclude<TaskbarPanelContainerState, "open">;
 
 /** TaskbarPanelHost와 shell 내부 panel hook이 공유하는 상태 계약. */
 export interface TaskbarPanelHostContextValue {
@@ -40,100 +45,6 @@ export interface TaskbarPanelHostProps {
   portalContainer?: Element;
 }
 
-interface TaskbarPanelHostState {
-  activePanelId: string | null;
-  panelStates: Record<string, TaskbarPanelContainerState>;
-}
-
-type TaskbarPanelHostAction =
-  | { panelId: string; type: "open" }
-  | { panelId: string | undefined; type: "close" }
-  | {
-      panelId: string;
-      state: TaskbarPanelTransitionState;
-      type: "completeTransition";
-    }
-  | { type: "settleTransitions" };
-
-const INITIAL_HOST_STATE: TaskbarPanelHostState = {
-  activePanelId: null,
-  panelStates: {},
-};
-
-const hasTransitioningPanel = (panelStates: TaskbarPanelHostState["panelStates"]) =>
-  Object.values(panelStates).some((state) => state !== "open");
-
-const taskbarPanelHostReducer = (
-  state: TaskbarPanelHostState,
-  action: TaskbarPanelHostAction,
-): TaskbarPanelHostState => {
-  if (action.type === "open") {
-    if (hasTransitioningPanel(state.panelStates) || state.activePanelId === action.panelId) {
-      return state;
-    }
-
-    const panelStates = { ...state.panelStates };
-
-    if (state.activePanelId !== null) {
-      panelStates[state.activePanelId] = "closing";
-    }
-
-    panelStates[action.panelId] = "opening";
-
-    return { activePanelId: action.panelId, panelStates };
-  }
-
-  if (action.type === "close") {
-    if (hasTransitioningPanel(state.panelStates)) {
-      return state;
-    }
-
-    const panelId = action.panelId ?? state.activePanelId;
-
-    if (panelId === null || panelId !== state.activePanelId) {
-      return state;
-    }
-
-    return {
-      activePanelId: null,
-      panelStates: { ...state.panelStates, [panelId]: "closing" },
-    };
-  }
-
-  if (action.type === "completeTransition") {
-    if (state.panelStates[action.panelId] !== action.state) {
-      return state;
-    }
-
-    const panelStates = { ...state.panelStates };
-
-    if (action.state === "opening") {
-      panelStates[action.panelId] = "open";
-    } else {
-      delete panelStates[action.panelId];
-    }
-
-    return { ...state, panelStates };
-  }
-
-  if (!hasTransitioningPanel(state.panelStates)) {
-    return state;
-  }
-
-  const panelStates = Object.fromEntries(
-    Object.entries(state.panelStates).flatMap(([panelId, panelState]) =>
-      panelState === "closing" ? [] : [[panelId, "open" as const]],
-    ),
-  );
-
-  return {
-    activePanelId:
-      state.activePanelId !== null && panelStates[state.activePanelId] === "open"
-        ? state.activePanelId
-        : null,
-    panelStates,
-  };
-};
 
 /**
  * Taskbar floating panel이 공유하는 활성 상태와 단일 visual layer를 제공한다.

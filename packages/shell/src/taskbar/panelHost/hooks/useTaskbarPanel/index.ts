@@ -144,10 +144,9 @@ export const useTaskbarPanel = ({
   const toggle = useCallback(() => {
     if (isOpen) {
       close();
-      return;
+    } else {
+      open();
     }
-
-    open();
   }, [close, isOpen, open]);
 
   const renderPanel = useCallback(
