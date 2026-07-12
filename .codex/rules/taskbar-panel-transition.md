@@ -22,7 +22,7 @@
 - Taskbar panel의 단일 visual transition은 CSS `animation-duration`과 양수 `animation-delay`의 합이 500ms를 초과하지 않아야 한다.
 - 동시에 실행되는 교체 transition의 정상 lock 시간도 가장 긴 참여 animation을 기준으로 500ms를 초과하지 않아야 한다.
 - Watchdog은 visual transition 시간이 아니라 비정상적인 event 누락으로 남은 lock을 강제로 정리하는 안전장치다.
-- Watchdog 제한은 정상 최대 시간 500ms보다 충분히 길게 설정하고, 정상 `animationend` 또는 유효한 `animationcancel`에서 즉시 해제한다.
+- Watchdog 제한은 1000ms로 고정하고, 정상 `animationend` 또는 유효한 `animationcancel`에서 즉시 해제한다.
 
 ## 완료와 안전장치
 
