@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { TaskPanel } from "../../../base/panel/taskPanel";
-import { TaskbarPanelPositionerUI } from "../taskbarPanelPositionerUI";
+import { TaskbarPanelContainerUI } from "../taskbarPanelContainerUI";
 import { TaskbarPanelLayerUI } from "./index";
 
 const meta = {
@@ -13,7 +13,7 @@ const meta = {
       description: {
         component:
           "Taskbar floating panel이 올라오는 viewport visual layer다. " +
-          "Story에서는 고정된 Positioner와 TaskPanel을 조립해 stacking 구성을 보여 준다.",
+          "Story에서는 고정된 Container와 TaskPanel을 조립해 stacking 구성을 보여 준다.",
       },
       story: { iframeHeight: 360, inline: false },
     },
@@ -28,9 +28,9 @@ type Story = StoryObj<typeof meta>;
 export const WithPanel: Story = {
   render: () => (
     <TaskbarPanelLayerUI>
-      <TaskbarPanelPositionerUI style={{ bottom: 24, left: 24, visibility: "visible" }}>
+      <TaskbarPanelContainerUI style={{ bottom: 24, left: 24, visibility: "visible" }}>
         <TaskPanel style={{ padding: 24, width: 280 }}>Taskbar panel visual</TaskPanel>
-      </TaskbarPanelPositionerUI>
+      </TaskbarPanelContainerUI>
     </TaskbarPanelLayerUI>
   ),
 };

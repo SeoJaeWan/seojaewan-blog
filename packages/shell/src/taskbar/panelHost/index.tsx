@@ -14,7 +14,7 @@ export interface TaskbarPanelHostContextValue {
   activePanelId: string | null;
   /** 지정한 panel이 활성 상태일 때 닫는다. ID를 생략하면 현재 panel을 닫는다. */
   closePanel: (panelId?: string) => void;
-  /** TaskbarPanelPositionerUI를 portal로 연결할 layer DOM. */
+  /** TaskbarPanelContainerUI를 portal로 연결할 layer DOM. */
   layerElement: HTMLDivElement | null;
   /** 지정한 panel을 활성화하고 기존 활성 panel을 교체한다. */
   openPanel: (panelId: string) => void;

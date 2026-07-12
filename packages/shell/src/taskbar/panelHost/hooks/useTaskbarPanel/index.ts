@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode, ReactPortal, RefObject } from "react";
 import { createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { TaskbarPanelPositionerUI } from "@window/ui";
+import { TaskbarPanelContainerUI } from "@window/ui";
 
 import { TaskbarPanelHostContext } from "../..";
 
@@ -33,7 +33,7 @@ export interface UseTaskbarPanelResult {
   isOpen: boolean;
   /** 현재 panel을 열고 기존 active panel을 교체한다. */
   open: () => void;
-  /** panel visual을 Positioner와 Host layer portal로 조립한다. */
+  /** panel visual을 Container와 Host layer portal로 조립한다. */
   renderPanel: (panel: ReactNode) => ReactPortal | null;
   /** 현재 panel의 열린 상태를 전환한다. */
   toggle: () => void;
@@ -149,7 +149,7 @@ export const useTaskbarPanel = ({
       }
 
       return createPortal(
-        createElement(TaskbarPanelPositionerUI, { ref: panelRef, style: positionStyle }, panel),
+        createElement(TaskbarPanelContainerUI, { ref: panelRef, style: positionStyle }, panel),
         layerElement,
       );
     },

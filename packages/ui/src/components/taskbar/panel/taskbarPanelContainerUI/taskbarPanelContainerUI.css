@@ -1,0 +1,40 @@
+.wb-taskbar-panel-container {
+  /* 기능 계층이 위치를 계산하기 전에는 panel이 화면에 노출되지 않는다. */
+  pointer-events: auto;
+  position: fixed;
+  visibility: hidden;
+}
+
+.wb-taskbar-panel-container[data-state="opening"] {
+  animation: wb-taskbar-panel-container-open 220ms cubic-bezier(0.2, 0.75, 0.25, 1) forwards;
+  pointer-events: none;
+}
+
+.wb-taskbar-panel-container[data-state="closing"] {
+  animation: wb-taskbar-panel-container-close 200ms cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes wb-taskbar-panel-container-open {
+  0% {
+    opacity: 0;
+    transform: translateY(1000px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wb-taskbar-panel-container-close {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(1000px);
+  }
+}

@@ -68,10 +68,13 @@ export type {
   TaskbarContextMenuTask,
 } from "./components/taskbar/panel/taskbarContextMenu";
 export { TaskbarContextMenu } from "./components/taskbar/panel/taskbarContextMenu";
+export type {
+  TaskbarPanelContainerState,
+  TaskbarPanelContainerUIProps,
+} from "./components/taskbar/panel/taskbarPanelContainerUI";
+export { TaskbarPanelContainerUI } from "./components/taskbar/panel/taskbarPanelContainerUI";
 export type { TaskbarPanelLayerUIProps } from "./components/taskbar/panel/taskbarPanelLayerUI";
 export { TaskbarPanelLayerUI } from "./components/taskbar/panel/taskbarPanelLayerUI";
-export type { TaskbarPanelPositionerUIProps } from "./components/taskbar/panel/taskbarPanelPositionerUI";
-export { TaskbarPanelPositionerUI } from "./components/taskbar/panel/taskbarPanelPositionerUI";
 export type {
   TaskHoverPanelItem,
   TaskHoverPanelProps,

@@ -76,21 +76,21 @@ const mockElementRects = (rects: Record<string, DOMRect>) =>
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
     this: HTMLElement,
   ) {
-    const rectKey = this.classList.contains("wb-taskbar-panel-item")
+    const rectKey = this.classList.contains("wb-taskbar-panel-container")
       ? "panel"
       : (this.dataset.testid ?? "");
 
     return rects[rectKey] ?? createRect();
   });
 
-const getPanelPositioner = () => {
-  const positioner = screen.getByTestId("panel").parentElement;
+const getPanelContainer = () => {
+  const container = screen.getByTestId("panel").parentElement;
 
-  if (!(positioner instanceof HTMLDivElement)) {
-    throw new Error("TaskbarPanelPositionerUI를 찾을 수 없습니다.");
+  if (!(container instanceof HTMLDivElement)) {
+    throw new Error("TaskbarPanelContainerUI를 찾을 수 없습니다.");
   }
 
-  return positioner;
+  return container;
 };
 
 const mockViewport = (width: number, height: number) => {
@@ -162,10 +162,10 @@ describe("useTaskbarPanel", () => {
     render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe, { placement })));
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(getPanelPositioner().style.visibility).toBe("visible"));
+    await waitFor(() => expect(getPanelContainer().style.visibility).toBe("visible"));
 
-    expect(getPanelPositioner().style.left).toBe(`${expectedLeft}px`);
-    expect(getPanelPositioner().style.bottom).toBe("108px");
+    expect(getPanelContainer().style.left).toBe(`${expectedLeft}px`);
+    expect(getPanelContainer().style.bottom).toBe("108px");
   });
 
   it("위치가 화면 경계를 넘으면 viewport 안으로 보정한다", async () => {
@@ -184,9 +184,9 @@ describe("useTaskbarPanel", () => {
     );
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(getPanelPositioner().style.visibility).toBe("visible"));
+    await waitFor(() => expect(getPanelContainer().style.visibility).toBe("visible"));
 
-    expect(getPanelPositioner().style.left).toBe("92px");
+    expect(getPanelContainer().style.left).toBe("92px");
   });
 
   it("viewport 크기가 바뀌면 열린 패널 위치를 다시 계산한다", async () => {
@@ -202,12 +202,12 @@ describe("useTaskbarPanel", () => {
     render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
     fireEvent.click(screen.getByTestId("trigger"));
 
-    await waitFor(() => expect(getPanelPositioner().style.left).toBe("400px"));
+    await waitFor(() => expect(getPanelContainer().style.left).toBe("400px"));
 
     viewportWidth = 1000;
     fireEvent(window, new Event("resize"));
 
-    await waitFor(() => expect(getPanelPositioner().style.left).toBe("300px"));
+    await waitFor(() => expect(getPanelContainer().style.left).toBe("300px"));
   });
 
   it("trigger와 panel 내부 pointerdown은 유지하고 바깥 pointerdown은 닫는다", async () => {
