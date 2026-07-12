@@ -1,11 +1,21 @@
 import { createElement } from "react";
 
-import { cleanup, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { TaskbarPanelHost } from "../..";
 import type { TaskbarPanelPlacement } from "./index";
 import { useTaskbarPanel } from "./index";
+
+const PANEL_TRANSITION_WATCHDOG_MS = 1000;
 
 const createRect = ({
   height = 0,
@@ -101,8 +111,31 @@ const mockViewport = (width: number, height: number) => {
   vi.spyOn(window, "innerHeight", "get").mockReturnValue(height);
 };
 
+const renderPanelPair = () =>
+  render(
+    createElement(
+      TaskbarPanelHost,
+      null,
+      createElement(TaskbarPanelProbe, {
+        closeTestId: "start-close",
+        openStateTestId: "start-open-state",
+        panelId: "start",
+        panelTestId: "start-panel",
+        triggerTestId: "start-trigger",
+      }),
+      createElement(TaskbarPanelProbe, {
+        closeTestId: "search-close",
+        openStateTestId: "search-open-state",
+        panelId: "search",
+        panelTestId: "search-panel",
+        triggerTestId: "search-trigger",
+      }),
+    ),
+  );
+
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -114,26 +147,7 @@ describe("useTaskbarPanel", () => {
   });
 
   it("패널을 열고 교체하고 닫을 때 하나의 active panel만 유지한다", () => {
-    render(
-      createElement(
-        TaskbarPanelHost,
-        null,
-        createElement(TaskbarPanelProbe, {
-          closeTestId: "start-close",
-          openStateTestId: "start-open-state",
-          panelId: "start",
-          panelTestId: "start-panel",
-          triggerTestId: "start-trigger",
-        }),
-        createElement(TaskbarPanelProbe, {
-          closeTestId: "search-close",
-          openStateTestId: "search-open-state",
-          panelId: "search",
-          panelTestId: "search-panel",
-          triggerTestId: "search-trigger",
-        }),
-      ),
-    );
+    renderPanelPair();
 
     expect(screen.queryByTestId("start-panel")).toBeNull();
 
@@ -159,6 +173,128 @@ describe("useTaskbarPanel", () => {
     expect(screen.getByTestId("search-open-state").textContent).toBe("false");
     fireEvent.animationEnd(getPanelContainer("search-panel"));
     expect(screen.queryByTestId("search-panel")).toBeNull();
+  });
+
+  it("교체 transition은 두 패널 animation이 끝날 때까지 추가 요청을 무시한다", () => {
+    renderPanelPair();
+    fireEvent.click(screen.getByTestId("start-trigger"));
+    fireEvent.animationEnd(getPanelContainer("start-panel"));
+
+    fireEvent.click(screen.getByTestId("search-trigger"));
+
+    const closingContainer = getPanelContainer("start-panel");
+    const openingContainer = getPanelContainer("search-panel");
+
+    expect(closingContainer.dataset.state).toBe("closing");
+    expect(closingContainer.getAttribute("aria-hidden")).toBe("true");
+    expect(closingContainer.hasAttribute("inert")).toBe(true);
+    expect(openingContainer.dataset.state).toBe("opening");
+    expect(openingContainer.hasAttribute("inert")).toBe(true);
+
+    fireEvent.animationEnd(closingContainer);
+    fireEvent.click(screen.getByTestId("start-trigger"));
+
+    expect(screen.queryByTestId("start-panel")).toBeNull();
+    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
+    expect(getPanelContainer("search-panel").dataset.state).toBe("opening");
+
+    fireEvent.animationEnd(getPanelContainer("search-panel"));
+    fireEvent.click(screen.getByTestId("start-trigger"));
+
+    expect(getPanelContainer("search-panel").dataset.state).toBe("closing");
+    expect(getPanelContainer("start-panel").dataset.state).toBe("opening");
+  });
+
+  it("자식 animationend는 무시하고 Container root animationend만 완료 처리한다", () => {
+    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
+    fireEvent.click(screen.getByTestId("trigger"));
+
+    fireEvent.animationEnd(screen.getByTestId("panel"));
+
+    expect(getPanelContainer().dataset.state).toBe("opening");
+
+    fireEvent.animationEnd(getPanelContainer());
+
+    expect(getPanelContainer().dataset.state).toBe("open");
+    expect(getPanelContainer().hasAttribute("inert")).toBe(false);
+  });
+
+  it("animationcancel은 현재 opening과 closing transition을 완료한다", () => {
+    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
+    fireEvent.click(screen.getByTestId("trigger"));
+
+    fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
+
+    expect(getPanelContainer().dataset.state).toBe("open");
+
+    fireEvent.click(screen.getByTestId("trigger"));
+    expect(getPanelContainer().dataset.state).toBe("closing");
+
+    fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
+
+    expect(screen.queryByTestId("panel")).toBeNull();
+  });
+
+  it("animation event가 없으면 1000ms watchdog이 패널 상태를 정리한다", () => {
+    vi.useFakeTimers();
+    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
+    fireEvent.click(screen.getByTestId("trigger"));
+
+    act(() => {
+      vi.advanceTimersByTime(PANEL_TRANSITION_WATCHDOG_MS - 1);
+    });
+    expect(getPanelContainer().dataset.state).toBe("opening");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(getPanelContainer().dataset.state).toBe("open");
+
+    fireEvent.click(screen.getByTestId("trigger"));
+    act(() => {
+      vi.advanceTimersByTime(PANEL_TRANSITION_WATCHDOG_MS);
+    });
+
+    expect(screen.queryByTestId("panel")).toBeNull();
+  });
+
+  it("교체 transition의 일부가 완료돼도 watchdog 시작 시간을 다시 계산하지 않는다", () => {
+    vi.useFakeTimers();
+    renderPanelPair();
+    fireEvent.click(screen.getByTestId("start-trigger"));
+    fireEvent.animationEnd(getPanelContainer("start-panel"));
+    fireEvent.click(screen.getByTestId("search-trigger"));
+
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    fireEvent.animationEnd(getPanelContainer("start-panel"));
+
+    act(() => {
+      vi.advanceTimersByTime(399);
+    });
+    expect(getPanelContainer("search-panel").dataset.state).toBe("opening");
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(screen.queryByTestId("start-panel")).toBeNull();
+    expect(getPanelContainer("search-panel").dataset.state).toBe("open");
+  });
+
+  it("Host가 unmount되면 실행 중인 watchdog을 정리한다", () => {
+    vi.useFakeTimers();
+    const { unmount } = render(
+      createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)),
+    );
+    fireEvent.click(screen.getByTestId("trigger"));
+
+    expect(vi.getTimerCount()).toBe(1);
+
+    unmount();
+
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it.each([
