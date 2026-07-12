@@ -33,7 +33,7 @@ export interface UseTaskbarPanelResult {
   isOpen: boolean;
   /** 현재 panel을 열고 기존 active panel을 교체한다. */
   open: () => void;
-  /** panel visual을 Container와 Host layer portal로 조립한다. */
+  /** presence phase 동안 panel visual을 Container와 Host layer portal로 조립한다. */
   renderPanel: (panel: ReactNode) => ReactPortal | null;
   /** 현재 panel의 열린 상태를 전환한다. */
   toggle: () => void;
@@ -70,8 +70,8 @@ const resolvePanelLeft = (
 };
 
 /**
- * TaskbarPanelHost의 active panel 상태와 trigger/panel DOM 동작을 연결한다.
- * 위치 측정, viewport 보정, resize 재계산과 바깥 pointerdown 닫기를 담당한다.
+ * TaskbarPanelHost의 presence phase와 trigger/panel DOM 동작을 연결한다.
+ * 위치 측정, Container animation 완료 전달, resize 재계산과 바깥 pointerdown 닫기를 담당한다.
  *
  * @param options.panelId TaskbarPanelHost가 panel을 식별할 고유 ID
  * @param options.placement panel의 가로 배치 기준. 기본값은 "left"
@@ -91,10 +91,19 @@ export const useTaskbarPanel = ({
     throw new Error("useTaskbarPanel은 TaskbarPanelHost 안에서 사용해야 합니다.");
   }
 
-  const { activePanelId, closePanel, layerElement, openPanel } = context;
+  const {
+    activePanelId,
+    closePanel,
+    completePanelTransition,
+    layerElement,
+    openPanel,
+    panelStates,
+  } = context;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [positionStyle, setPositionStyle] = useState<CSSProperties>(HIDDEN_POSITION_STYLE);
+  const panelState = panelStates[panelId] ?? null;
+  const isPresent = panelState !== null;
   const isOpen = activePanelId === panelId;
 
   const calculatePosition = useCallback(() => {
@@ -125,7 +134,6 @@ export const useTaskbarPanel = ({
   }, [gap, placement, viewportPadding]);
 
   const open = useCallback(() => {
-    setPositionStyle(HIDDEN_POSITION_STYLE);
     openPanel(panelId);
   }, [openPanel, panelId]);
 
@@ -144,20 +152,52 @@ export const useTaskbarPanel = ({
 
   const renderPanel = useCallback(
     (panel: ReactNode) => {
-      if (!isOpen || layerElement === null) {
+      if (panelState === null || layerElement === null) {
         return null;
       }
 
       return createPortal(
-        createElement(TaskbarPanelContainerUI, { ref: panelRef, style: positionStyle }, panel),
+        createElement(
+          TaskbarPanelContainerUI,
+          {
+            ref: panelRef,
+            state: panelState,
+            style: positionStyle,
+          },
+          panel,
+        ),
         layerElement,
       );
     },
-    [isOpen, layerElement, positionStyle],
+    [layerElement, panelState, positionStyle],
   );
 
   useEffect(() => {
-    if (!isOpen) {
+    const panelElement = panelRef.current;
+
+    if (panelElement === null || panelState === null || panelState === "open") {
+      return;
+    }
+
+    const handlePanelAnimationComplete = (event: AnimationEvent) => {
+      if (event.target !== panelElement) {
+        return;
+      }
+
+      completePanelTransition(panelId, panelState);
+    };
+
+    panelElement.addEventListener("animationend", handlePanelAnimationComplete);
+    panelElement.addEventListener("animationcancel", handlePanelAnimationComplete);
+
+    return () => {
+      panelElement.removeEventListener("animationend", handlePanelAnimationComplete);
+      panelElement.removeEventListener("animationcancel", handlePanelAnimationComplete);
+    };
+  }, [completePanelTransition, panelId, panelState]);
+
+  useEffect(() => {
+    if (!isPresent) {
       setPositionStyle(HIDDEN_POSITION_STYLE);
       return;
     }
@@ -168,10 +208,10 @@ export const useTaskbarPanel = ({
     return () => {
       window.removeEventListener("resize", calculatePosition);
     };
-  }, [calculatePosition, isOpen, layerElement]);
+  }, [calculatePosition, isPresent, layerElement]);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (panelState !== "open") {
       return;
     }
 
@@ -194,7 +234,7 @@ export const useTaskbarPanel = ({
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
     };
-  }, [closePanel, isOpen, panelId]);
+  }, [closePanel, panelId, panelState]);
 
   return {
     close,

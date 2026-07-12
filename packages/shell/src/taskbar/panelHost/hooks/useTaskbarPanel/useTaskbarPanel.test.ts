@@ -1,15 +1,6 @@
-import type { ReactNode } from "react";
 import { createElement } from "react";
 
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { TaskbarPanelHost } from "../..";
@@ -33,23 +24,30 @@ const createRect = ({
   toJSON: () => ({}),
 });
 
-const HostWrapper = ({ children }: { children: ReactNode }) =>
-  createElement(TaskbarPanelHost, null, children);
-
 interface TaskbarPanelProbeProps {
+  closeTestId?: string;
   gap?: number;
+  openStateTestId?: string;
+  panelId?: string;
+  panelTestId?: string;
   placement?: TaskbarPanelPlacement;
+  triggerTestId?: string;
   viewportPadding?: number;
 }
 
 const TaskbarPanelProbe = ({
+  closeTestId = "close",
   gap,
+  openStateTestId = "open-state",
+  panelId = "start",
+  panelTestId = "panel",
   placement = "rootCenter",
+  triggerTestId = "trigger",
   viewportPadding,
 }: TaskbarPanelProbeProps) => {
   const panel = useTaskbarPanel({
     gap,
-    panelId: "start",
+    panelId,
     placement,
     viewportPadding,
   });
@@ -60,15 +58,20 @@ const TaskbarPanelProbe = ({
     createElement(
       "button",
       {
-        "data-testid": "trigger",
+        "data-testid": triggerTestId,
         onClick: panel.toggle,
         ref: panel.triggerRef,
         type: "button",
       },
-      "시작",
+      panelId,
     ),
-    createElement("output", { "data-testid": "open-state" }, String(panel.isOpen)),
-    panel.renderPanel(createElement("div", { "data-testid": "panel" })),
+    createElement(
+      "button",
+      { "data-testid": closeTestId, onClick: panel.close, type: "button" },
+      "닫기",
+    ),
+    createElement("output", { "data-testid": openStateTestId }, String(panel.isOpen)),
+    panel.renderPanel(createElement("div", { "data-testid": panelTestId })),
   );
 };
 
@@ -83,8 +86,8 @@ const mockElementRects = (rects: Record<string, DOMRect>) =>
     return rects[rectKey] ?? createRect();
   });
 
-const getPanelContainer = () => {
-  const container = screen.getByTestId("panel").parentElement;
+const getPanelContainer = (panelTestId = "panel") => {
+  const container = screen.getByTestId(panelTestId).parentElement;
 
   if (!(container instanceof HTMLDivElement)) {
     throw new Error("TaskbarPanelContainerUI를 찾을 수 없습니다.");
@@ -111,41 +114,51 @@ describe("useTaskbarPanel", () => {
   });
 
   it("패널을 열고 교체하고 닫을 때 하나의 active panel만 유지한다", () => {
-    const { result } = renderHook(
-      () => ({
-        search: useTaskbarPanel({ panelId: "search" }),
-        start: useTaskbarPanel({ panelId: "start" }),
-      }),
-      { wrapper: HostWrapper },
+    render(
+      createElement(
+        TaskbarPanelHost,
+        null,
+        createElement(TaskbarPanelProbe, {
+          closeTestId: "start-close",
+          openStateTestId: "start-open-state",
+          panelId: "start",
+          panelTestId: "start-panel",
+          triggerTestId: "start-trigger",
+        }),
+        createElement(TaskbarPanelProbe, {
+          closeTestId: "search-close",
+          openStateTestId: "search-open-state",
+          panelId: "search",
+          panelTestId: "search-panel",
+          triggerTestId: "search-trigger",
+        }),
+      ),
     );
 
-    expect(result.current.start.renderPanel(createElement("div"))).toBeNull();
+    expect(screen.queryByTestId("start-panel")).toBeNull();
 
-    act(() => {
-      result.current.start.open();
-    });
+    fireEvent.click(screen.getByTestId("start-trigger"));
 
-    expect(result.current.start.isOpen).toBe(true);
-    expect(result.current.search.isOpen).toBe(false);
+    expect(screen.getByTestId("start-open-state").textContent).toBe("true");
+    expect(screen.getByTestId("search-open-state").textContent).toBe("false");
+    fireEvent.animationEnd(getPanelContainer("start-panel"));
 
-    act(() => {
-      result.current.search.open();
-    });
+    fireEvent.click(screen.getByTestId("search-trigger"));
 
-    expect(result.current.start.isOpen).toBe(false);
-    expect(result.current.search.isOpen).toBe(true);
+    expect(screen.getByTestId("start-open-state").textContent).toBe("false");
+    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
+    fireEvent.animationEnd(getPanelContainer("start-panel"));
+    fireEvent.animationEnd(getPanelContainer("search-panel"));
 
-    act(() => {
-      result.current.start.close();
-    });
+    fireEvent.click(screen.getByTestId("start-close"));
 
-    expect(result.current.search.isOpen).toBe(true);
+    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
 
-    act(() => {
-      result.current.search.toggle();
-    });
+    fireEvent.click(screen.getByTestId("search-trigger"));
 
-    expect(result.current.search.isOpen).toBe(false);
+    expect(screen.getByTestId("search-open-state").textContent).toBe("false");
+    fireEvent.animationEnd(getPanelContainer("search-panel"));
+    expect(screen.queryByTestId("search-panel")).toBeNull();
   });
 
   it.each([
@@ -221,6 +234,7 @@ describe("useTaskbarPanel", () => {
     fireEvent.click(screen.getByTestId("trigger"));
 
     await waitFor(() => expect(screen.getByTestId("open-state").textContent).toBe("true"));
+    fireEvent.animationEnd(getPanelContainer());
 
     fireEvent.pointerDown(screen.getByTestId("trigger"));
     fireEvent.pointerDown(screen.getByTestId("panel"));
@@ -229,6 +243,7 @@ describe("useTaskbarPanel", () => {
     fireEvent.pointerDown(document.body);
 
     await waitFor(() => expect(screen.getByTestId("open-state").textContent).toBe("false"));
+    fireEvent.animationEnd(getPanelContainer());
     expect(screen.queryByTestId("panel")).toBeNull();
   });
 });
