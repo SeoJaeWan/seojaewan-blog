@@ -48,14 +48,15 @@
 | `TaskbarPanel` | `TaskPanel` | 원본명 유지. `state: "open" \| "closed"` + `task-up/task-down` 애니메이션, 닫힘은 `onAnimationEnd`에서 소비자가 언마운트 |
 | `StartPanel` | `WindowsPanel` | 원본명 유지. `pinnedItems`, `sections`, `defaultView`, `onSelectItem`, `searchInputProps` props. 고정됨/모두 뷰 전환과 카테고리 오버레이는 내부 상태 |
 | `StartPinnedView` / `StartAllView` | `WindowsPanel` 내부 뷰 | 별도 export 없음. 고정 타일은 `PanelIconButton` 재사용(패널 스코프 CSS 오버라이드) |
-| `SearchPanel` | `SearchPanel` | `recommendedItems`, `bestSections`, `results`, `searchValue`, `onSelectItem`, `onDetailAction` props. 검색어 유무로 추천/결과 뷰 전환, 상세 pane 선택은 내부 상태 |
+| `SearchPanel` | `SearchPanel` | `recommendedItems`, `bestSections`, `results`, `searchValue`, `onSelectItem`, `onDetailAction` props. 검색어 유무로 `TaskSearchRecommendationView`/`TaskSearchResultView` 전환 |
 | `TaskItemContextMenu` | `ContextMenuPanel` | 원본 `LeftClickPanel`의 200px 플로팅 컨테이너. row는 `ContextMenuButton`을 그대로 children으로 받고 패널 스코프 CSS로 원본 metric(28px row, 14px text)에 맞춤 |
 | `TaskbarContextMenu` | `TaskbarContextMenu` | 원본 `TaskLeftClickPanel`. `TaskPanel` 기반 300px, `tasks`(작업 섹션) + children(액션 row) |
 | `TaskbarHoverPreview` | `TaskHoverPanel` | 원본명 유지. `items`(icon/title/`preview` slot) + `onSelectItem/onCloseItem`. 폭 `min(80vw, n*200px)` grid, 썸네일 hover 시 닫기 버튼. preview에는 `ScaledPreview` + `WindowFrame(overrideFullscreen)`을 주입한다 |
 | `TaskbarAppButton` | `TaskbarTaskButton` | `TaskbarIconButton` + 두 개의 `useTaskbarPanelController` 조합. hover 1000ms 유지 → `renderHoverPanel`, 우클릭 → `renderContextMenu`, `multiSession` 클릭 시 hover panel 즉시 오픈. hover/context group은 서로를 닫는다 |
 | `TaskbarAppList` | `TaskbarAppList` | 데이터(items: sessions/tasks/pinned/state) 기반 목록. `TaskHoverPanel`/`TaskbarContextMenu` 조립을 UI가 소유하고 앱은 액션 콜백만 넘긴다 |
 | `TaskbarClock` | `TaskbarClock` | `value: Date`(앱이 10초 tick 주입) → `오후 h:mm` + `YYYY-MM-DD`(Intl), 없으면 skeleton |
-| `TaskSearchResultView` | `TaskSearchResultView` | 원본 `TaskSearchResult`. 최적의 일치 + 상세 pane. `SearchPanel`과 `WindowsPanel`(searchValue 입력 시)이 공유 |
+| `TaskSearchRecommendationView` | `TaskSearchRecommendationView` | 추천 목록 + best section. `SearchPanel`이 검색어가 없을 때 사용하며 `taskbar/view/`에 위치 |
+| `TaskSearchResultView` | `TaskSearchResultView` | 원본 `TaskSearchResult`. 최적의 일치 + 상세 pane. `SearchPanel`과 `WindowsPanel`(searchValue 입력 시)이 공유하며 `taskbar/view/`에 위치 |
 | `TaskbarStartButton` | `TaskbarStartButton` | 원본 `WindowsButton`. `TaskbarStartIconButton`을 흡수해 visual(30px logo + open selected)과 패널 컨트롤러를 함께 소유 — `taskbar/button/`에 위치 |
 | 고정 상태 공유 | `PinProvider` (`components/root/pinProvider`) | 원본 `windowsStore`(시작 고정, 순서) + `taskbarStore`(작업 표시줄 고정). 상태 로직은 `usePinState`가 소유하고 provider는 context 배포만 담당. `usePins()`/`useOptionalPins()` 훅으로 읽고 조작. taskbar·folder·desktop이 공유하고 앱 root에서 마운트하므로 `components/root/`에 둔다 |
 | `TaskItemContextMenu` (커서 위치) | `usePinItemMenu` (`components/root/pinProvider/hooks`) | 원본 `TaskSearchLeftPanel` + `TaskWindowsLeftPanel` + `FolderFileLeftPanel` + `FolderCategoryLeftPanel`. 파일/카테고리가 어디서 우클릭되든(시작·검색 패널, 폴더 파일 카드, 사이드바, 데스크톱 아이콘) 같은 액션. `openLabel`/`openIcon`으로 "파일 실행"↔"새창에서 열기" 분기, `renderExtraActions`로 folder "다음으로 공유" 주입. 고정/이동 row가 이 메뉴의 도메인이라 pinProvider의 훅으로 colocate — 커서 위치/portal은 `useContextMenuController`(`components/controllers`)가 담당. taskbar app button은 task-panel 메뉴(`TaskbarContextMenu`)에 열기/시작 화면 고정 row를 직접 넣는다 |
@@ -69,7 +70,7 @@
 
 `base`에는 여러 UI 영역이 조립해서 쓰는 최소 단위(`IconButton`, `ContextMenuButton`, `ContextMenuPanel`, `TaskPanel`)만 둔다. taskbar에서 열리거나 Windows taskbar 경험에 묶인 컴포넌트(`TaskbarRoot`, `TaskbarSearch`, `WindowsPanel`, `SearchPanel`, `TaskbarContextMenu` 등)는 `components/taskbar` 아래에 둔다. 단 `TaskbarPanelProvider`는 소비자가 taskbar여도 앱 root에서 마운트해야 하므로 `components/root/`에 둔다.
 
-폴더 규칙: 각 영역 **루트에는 앱(또는 상위 조립)이 직접 배치하는 단위**(Component Tree의 1-depth — `TaskbarRoot`, `TaskbarSearch`, `TaskbarAppList`, `TaskbarClock`)를 두고, **다른 컴포넌트의 재료로만 쓰이는 부품은 종류(kind) 폴더**(`button/`, `panel/`, `input/`)에 둔다. `base`는 kind 폴더(`button/`, `menu/`, `panel/`)만 가진다. 예외: `TaskbarStartButton`은 버튼 계열 모아보기를 위해 `button/`에 둔다. **앱 root에서 전체를 감싸야 하는 provider**(`pinProvider`, `taskbarPanelProvider`)와 통합 root 조립(스토리)은 `components/root/`에, **provider 없이 어디서든 쓰는 headless 상호작용 컨트롤러**(`contextMenuController`)는 `components/controllers/`에 둔다.
+폴더 규칙: 각 영역 **루트에는 앱(또는 상위 조립)이 직접 배치하는 단위**(Component Tree의 1-depth — `TaskbarRoot`, `TaskbarSearch`, `TaskbarAppList`, `TaskbarClock`)를 두고, **다른 컴포넌트의 재료로만 쓰이는 부품은 종류(kind) 폴더**(`button/`, `panel/`, `input/`, `view/`)에 둔다. `taskbar/view/`는 panel 안에서 교체되는 콘텐츠 visual을, `taskbar/panel/`은 panel container와 조립을 소유한다. `base`는 kind 폴더(`button/`, `menu/`, `panel/`)만 가진다. 예외: `TaskbarStartButton`은 버튼 계열 모아보기를 위해 `button/`에 둔다. **앱 root에서 전체를 감싸야 하는 provider**(`pinProvider`, `taskbarPanelProvider`)와 통합 root 조립(스토리)은 `components/root/`에, **provider 없이 어디서든 쓰는 headless 상호작용 컨트롤러**(`contextMenuController`)는 `components/controllers/`에 둔다.
 
 모두(All) 뷰의 그룹 키는 콘텐츠 카테고리가 아니라 원본 `useMixList.sortList`처럼 제목 첫 글자(한글 초성/영문 대문자) 인덱스다. 카테고리 오버레이는 이 한 글자 키의 점프 그리드다.
 
@@ -126,8 +127,8 @@ Taskbar
         - TaskSearchResultView (searchValue 입력 시)
         - ContextMenuPanel
       - SearchPanel
-        - 추천/최고의 블로그글·프로젝트 뷰 (내부)
-        - 최적의 일치 + 상세 pane (내부)
+        - TaskSearchRecommendationView (searchValue가 없을 때)
+        - TaskSearchResultView (searchValue 입력 시)
         - ContextMenuPanel
       - TaskbarHoverPreview
         - WindowPreviewTile[]
@@ -1192,12 +1193,14 @@ Animation:
 구성:
 
 - 검색어 없음:
-  - 추천 목록
-  - 최고의 블로그글
-  - 최고의 프로젝트
+  - `TaskSearchRecommendationView`
+    - 추천 목록
+    - 최고의 블로그글
+    - 최고의 프로젝트
 - 검색어 있음:
-  - search result list
-  - selected item detail
+  - `TaskSearchResultView`
+    - search result list
+    - selected item detail
 
 동작:
 
