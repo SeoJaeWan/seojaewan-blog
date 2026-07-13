@@ -14,14 +14,6 @@ import type { WindowItem } from "../../../../types/windowItem";
 /** TaskSearchResultView 상세 pane에서 선택 가능한 action id. */
 export type TaskSearchDetailAction = "open" | "openLocation" | "pinToStart" | "pinToTaskbar";
 
-/**
- * TaskSearchResultView가 결과 row와 상세 pane에 표시할 항목.
- */
-export interface TaskSearchResultItem extends WindowItem {
-  /** 상세 pane에서 제목 아래에 표시할 타입 설명. */
-  typeLabel?: string;
-}
-
 export interface TaskSearchResultViewProps extends Omit<
   ComponentPropsWithoutRef<"div">,
   "results"
@@ -29,15 +21,15 @@ export interface TaskSearchResultViewProps extends Omit<
   /** 상세 pane에 표시할 결과 항목 id. null이거나 결과에 없으면 상세 pane을 비운다. */
   detailItemId?: string | null;
   /** 상세 pane action 클릭 시 action id와 item을 전달한다. */
-  onDetailAction?: (action: TaskSearchDetailAction, item: TaskSearchResultItem) => void;
+  onDetailAction?: (action: TaskSearchDetailAction, item: WindowItem) => void;
   /** 상세 보기 버튼 클릭 시 선택한 item을 전달한다. */
-  onDetailItemChange?: (item: TaskSearchResultItem) => void;
+  onDetailItemChange?: (item: WindowItem) => void;
   /** 결과 row의 contextmenu 이벤트와 대상 item을 기능 계층에 전달한다. */
-  onItemContextMenu?: (event: MouseEvent<HTMLButtonElement>, item: TaskSearchResultItem) => void;
+  onItemContextMenu?: (event: MouseEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** 결과 row 또는 상세 summary 클릭 시 선택 item을 전달한다. */
-  onSelectItem?: (item: TaskSearchResultItem) => void;
+  onSelectItem?: (item: WindowItem) => void;
   /** 검색 결과 목록. 기본값은 빈 배열이다. */
-  results?: TaskSearchResultItem[];
+  results?: WindowItem[];
 }
 
 // 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값
@@ -119,8 +111,8 @@ export const TaskSearchResultView = ({
               {detailItem.icon ?? defaultFileIcon}
             </span>
             <h4 className="wb-task-search-result__detail-title">{detailItem.title}</h4>
-            {detailItem.typeLabel ? (
-              <p className="wb-task-search-result__detail-type">{detailItem.typeLabel}</p>
+            {detailItem.description ? (
+              <p className="wb-task-search-result__detail-description">{detailItem.description}</p>
             ) : null}
           </button>
           <div className="wb-task-search-result__detail-actions">

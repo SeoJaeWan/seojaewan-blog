@@ -58,7 +58,6 @@ export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearch
 export { TaskSearchInput } from "./components/taskbar/input/taskSearchInput";
 export type {
   SearchPanelDetailAction,
-  SearchPanelItem,
   SearchPanelProps,
   SearchPanelSection,
 } from "./components/taskbar/panel/searchPanel";
@@ -82,12 +81,10 @@ export type {
 export { TaskHoverPanel } from "./components/taskbar/panel/taskHoverPanel";
 export type {
   TaskSearchDetailAction,
-  TaskSearchResultItem,
   TaskSearchResultViewProps,
 } from "./components/taskbar/panel/taskSearchResultView";
 export { TaskSearchResultView } from "./components/taskbar/panel/taskSearchResultView";
 export type {
-  WindowsPanelItem,
   WindowsPanelItemSource,
   WindowsPanelPinnedItemAnimation,
   WindowsPanelPinnedItemAnimationPhase,

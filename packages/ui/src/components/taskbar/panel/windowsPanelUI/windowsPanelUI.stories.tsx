@@ -1,18 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import type { WindowItem } from "../../../../types/windowItem";
 import { FolderIcon } from "../../../storyIcons";
-import type { WindowsPanelItem, WindowsPanelSection } from "./index";
+import type { WindowsPanelSection } from "./index";
 import { WindowsPanelUI } from "./index";
 
-const PINNED_ITEMS: WindowsPanelItem[] = [
-  { categoryId: "blog", icon: <FolderIcon />, id: "blog", title: "블로그" },
-  { categoryId: "project", icon: <FolderIcon />, id: "project", title: "프로젝트" },
-  { categoryId: "coding", icon: <FolderIcon />, id: "coding-test", title: "코딩 테스트" },
-  { categoryId: "about", icon: <FolderIcon />, id: "about", title: "소개" },
-  { categoryId: "about", id: "resume", title: "서재완 - 이력서" },
-  { categoryId: "blog", id: "rsc", title: "React Server Components 정리" },
-  { categoryId: "blog", id: "media-list", title: "미디어 리스트 속도 개선기" },
-  { categoryId: "blog", id: "monorepo", title: "모노레포 디자인 시스템 구축" },
+const PINNED_ITEMS: WindowItem[] = [
+  { icon: <FolderIcon />, id: "blog", title: "블로그" },
+  { icon: <FolderIcon />, id: "project", title: "프로젝트" },
+  { icon: <FolderIcon />, id: "coding-test", title: "코딩 테스트" },
+  { icon: <FolderIcon />, id: "about", title: "소개" },
+  { id: "resume", title: "서재완 - 이력서" },
+  { description: "블로그", id: "rsc", title: "React Server Components 정리" },
+  { id: "media-list", title: "미디어 리스트 속도 개선기" },
+  { id: "monorepo", title: "모노레포 디자인 시스템 구축" },
 ];
 
 // 원본 sortList는 제목 첫 글자(한글 초성/영문 대문자)를 키로 묶는다

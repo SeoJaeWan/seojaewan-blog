@@ -3,23 +3,21 @@ import type { MouseEvent } from "react";
 import { clsx } from "clsx";
 
 import fileIconSrc from "../../../../assets/file.png";
+import type { WindowItem } from "../../../../types/windowItem";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
-import type { TaskSearchDetailAction, TaskSearchResultItem } from "../taskSearchResultView";
+import type { TaskSearchDetailAction } from "../taskSearchResultView";
 import { TaskSearchResultView } from "../taskSearchResultView";
 
 /** SearchPanel 상세 pane action 식별자. */
 export type SearchPanelDetailAction = TaskSearchDetailAction;
-
-/** SearchPanel 추천/결과에 표시할 항목. */
-export type SearchPanelItem = TaskSearchResultItem;
 
 /**
  * SearchPanel 검색 전 추천 영역에 표시할 best section.
  */
 export interface SearchPanelSection {
   /** 섹션 안의 추천 항목 목록. */
-  items: SearchPanelItem[];
+  items: WindowItem[];
   /** 섹션 제목. */
   title: string;
 }
@@ -30,17 +28,17 @@ export interface SearchPanelProps extends Omit<TaskPanelProps, "children" | "res
   /** 검색 결과 상세 pane에 표시할 항목 id. null이면 상세 pane을 비운다. */
   detailItemId?: string | null;
   /** 결과 상세 pane의 열기/위치 열기/고정 action을 위임한다. */
-  onDetailAction?: (action: SearchPanelDetailAction, item: SearchPanelItem) => void;
+  onDetailAction?: (action: SearchPanelDetailAction, item: WindowItem) => void;
   /** 검색 결과의 상세 보기 버튼 클릭 시 선택한 item을 전달한다. */
-  onDetailItemChange?: (item: SearchPanelItem) => void;
+  onDetailItemChange?: (item: WindowItem) => void;
   /** 추천/결과 항목의 contextmenu 이벤트와 대상 item을 기능 계층에 전달한다. */
-  onItemContextMenu?: (event: MouseEvent<HTMLButtonElement>, item: SearchPanelItem) => void;
+  onItemContextMenu?: (event: MouseEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** 추천/결과 항목 클릭 시 선택 항목을 전달한다. */
-  onSelectItem?: (item: SearchPanelItem) => void;
+  onSelectItem?: (item: WindowItem) => void;
   /** 검색어가 없을 때 상단 추천 목록에 표시할 항목. 기본값은 빈 배열이다. */
-  recommendedItems?: SearchPanelItem[];
+  recommendedItems?: WindowItem[];
   /** searchValue가 있을 때 결과 뷰에 전달할 항목. 기본값은 빈 배열이다. */
-  results?: SearchPanelItem[];
+  results?: WindowItem[];
   /** 값이 있으면 검색 결과 뷰를, 없으면 추천/best 뷰를 렌더한다. 기본값은 빈 문자열이다. */
   searchValue?: string;
 }
@@ -122,9 +120,7 @@ export const SearchPanel = ({
                         className="wb-search-panel__best-item"
                         onClick={() => onSelectItem?.(item)}
                         onContextMenu={
-                          onItemContextMenu
-                            ? (event) => onItemContextMenu(event, item)
-                            : undefined
+                          onItemContextMenu ? (event) => onItemContextMenu(event, item) : undefined
                         }
                         type="button"
                       >

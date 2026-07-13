@@ -1,16 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import type { TaskSearchResultItem } from "./index";
+import type { WindowItem } from "../../../../types/windowItem";
 import { TaskSearchResultView } from "./index";
 
-const RESULTS: TaskSearchResultItem[] = [
-  { categoryId: "blog", id: "server-count", title: "서버 증설 횟수", typeLabel: "블로그" },
-  { categoryId: "about", id: "resume", title: "서재완 - 이력서", typeLabel: "소개" },
+const RESULTS: WindowItem[] = [
+  { description: "블로그", id: "server-count", title: "서버 증설 횟수" },
+  { description: "소개", id: "resume", title: "서재완 - 이력서" },
   {
-    categoryId: "blog",
+    description: "블로그",
     id: "ssr-csr",
     title: "SSR에서 CSR 왜 바꿨을까?",
-    typeLabel: "블로그",
   },
 ];
 

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import type { SearchPanelItem, SearchPanelSection } from "./index";
+import type { WindowItem } from "../../../../types/windowItem";
+import type { SearchPanelSection } from "./index";
 import { SearchPanel } from "./index";
 
-const RECOMMENDED_ITEMS: SearchPanelItem[] = [
+const RECOMMENDED_ITEMS: WindowItem[] = [
   { id: "component-vs-css", title: "Component VS CSS 세분화" },
   { id: "ssr-csr", title: "SSR에서 CSR 왜 바꿨을까?" },
   { id: "data-type", title: "데이터 타입을 공부하고" },
@@ -38,14 +39,13 @@ const BEST_SECTIONS: SearchPanelSection[] = [
   },
 ];
 
-const RESULTS: SearchPanelItem[] = [
-  { categoryId: "blog", id: "server-count", title: "서버 증설 횟수", typeLabel: "블로그" },
-  { categoryId: "about", id: "resume", title: "서재완 - 이력서", typeLabel: "소개" },
+const RESULTS: WindowItem[] = [
+  { description: "블로그", id: "server-count", title: "서버 증설 횟수" },
+  { description: "소개", id: "resume", title: "서재완 - 이력서" },
   {
-    categoryId: "blog",
+    description: "블로그",
     id: "ssr-csr-result",
     title: "SSR에서 CSR 왜 바꿨을까?",
-    typeLabel: "블로그",
   },
 ];
 

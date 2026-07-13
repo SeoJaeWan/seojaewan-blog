@@ -11,7 +11,7 @@ import { TaskPanel } from "../../../base/panel/taskPanel";
 import { PanelIconButton } from "../../button/panelIconButton";
 import type { TaskSearchInputProps } from "../../input/taskSearchInput";
 import { TaskSearchInput } from "../../input/taskSearchInput";
-import type { TaskSearchDetailAction, TaskSearchResultItem } from "../taskSearchResultView";
+import type { TaskSearchDetailAction } from "../taskSearchResultView";
 import { TaskSearchResultView } from "../taskSearchResultView";
 
 /** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
@@ -31,15 +31,12 @@ export interface WindowsPanelPinnedItemAnimation {
   phase: WindowsPanelPinnedItemAnimationPhase;
 }
 
-/** WindowsPanel의 고정됨/모두/검색 결과에 표시할 항목. */
-export type WindowsPanelItem = WindowItem;
-
 /** WindowsPanelUI 모두 보기에서 category header와 항목 목록을 묶는 section. */
 export interface WindowsPanelSection {
   /** 카테고리 점프 overlay와 header에 표시할 category 이름. */
   category: string;
   /** 해당 category 아래에 표시할 전체 항목 목록. */
-  items: WindowsPanelItem[];
+  items: WindowItem[];
 }
 
 export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "role"> {
@@ -54,37 +51,31 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   /** category jump 항목 선택을 기능 계층에 전달한다. */
   onCategorySelect?: (category: string) => void;
   /** 검색 결과 상세 pane action 클릭을 기능 계층에 전달한다. */
-  onDetailAction?: (action: TaskSearchDetailAction, item: TaskSearchResultItem) => void;
+  onDetailAction?: (action: TaskSearchDetailAction, item: WindowItem) => void;
   /** 검색 결과 상세 보기 버튼 클릭 시 선택한 item을 전달한다. */
-  onDetailItemChange?: (item: TaskSearchResultItem) => void;
+  onDetailItemChange?: (item: WindowItem) => void;
   /** 항목 contextmenu 이벤트와 대상/source를 기능 계층에 전달한다. */
   onItemContextMenu?: (
     event: MouseEvent<HTMLButtonElement>,
-    item: WindowsPanelItem,
+    item: WindowItem,
     source: WindowsPanelItemSource,
   ) => void;
   /** 고정 타일 fade-in animation 종료 이벤트를 기능 계층에 전달한다. */
-  onPinnedItemAnimationEnd?: (
-    event: AnimationEvent<HTMLButtonElement>,
-    item: WindowsPanelItem,
-  ) => void;
+  onPinnedItemAnimationEnd?: (event: AnimationEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** 고정 타일 축소 transition 종료 이벤트를 기능 계층에 전달한다. */
-  onPinnedItemTransitionEnd?: (
-    event: TransitionEvent<HTMLButtonElement>,
-    item: WindowsPanelItem,
-  ) => void;
+  onPinnedItemTransitionEnd?: (event: TransitionEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** 고정됨/모두/검색 결과 항목 클릭 시 선택 item을 전달한다. */
-  onSelectItem?: (item: WindowsPanelItem) => void;
+  onSelectItem?: (item: WindowItem) => void;
   /** pinned/all view 변경 요청을 기능 계층에 전달한다. */
   onViewChange?: (view: WindowsPanelView) => void;
   /** 고정 타일 하나에 적용할 reorder visual 상태. null이면 animation class를 적용하지 않는다. */
   pinnedItemAnimation?: WindowsPanelPinnedItemAnimation | null;
   /** 고정됨 view에 표시할 항목 목록. 기본값은 빈 배열이다. */
-  pinnedItems?: WindowsPanelItem[];
+  pinnedItems?: WindowItem[];
   /** 상단 검색 input에 전달할 visual/native input props. */
   searchInputProps?: TaskSearchInputProps;
   /** searchValue가 있을 때 보여줄 검색 결과. 기본값은 빈 배열이다. */
-  searchResults?: TaskSearchResultItem[];
+  searchResults?: WindowItem[];
   /** 검색어가 있으면 pinned/all 대신 검색 결과 visual을 보여준다. 기본값은 빈 문자열이다. */
   searchValue?: string;
   /** 모두 보기에서 category별로 표시할 section 목록. 기본값은 빈 배열이다. */

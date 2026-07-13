@@ -172,7 +172,7 @@
   word-break: keep-all;
 }
 
-.wb-task-search-result__detail-type {
+.wb-task-search-result__detail-description {
   color: var(--wb-task-search-result-muted);
   font-size: 12px;
 }
