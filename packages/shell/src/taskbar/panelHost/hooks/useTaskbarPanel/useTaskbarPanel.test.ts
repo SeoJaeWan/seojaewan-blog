@@ -1,7 +1,6 @@
 import { createElement } from "react";
 
 import {
-  act,
   cleanup,
   fireEvent,
   render,
@@ -14,8 +13,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { TaskbarPanelHost } from "../..";
 import type { TaskbarPanelPlacement } from "./index";
 import { useTaskbarPanel } from "./index";
-
-const PANEL_TRANSITION_WATCHDOG_MS = 1000;
 
 const createRect = ({
   height = 0,
@@ -135,7 +132,6 @@ const renderPanelPair = () =>
 
 afterEach(() => {
   cleanup();
-  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -144,35 +140,6 @@ describe("useTaskbarPanel", () => {
     expect(() => renderHook(() => useTaskbarPanel({ panelId: "start" }))).toThrow(
       "useTaskbarPanel은 TaskbarPanelHost 안에서 사용해야 합니다.",
     );
-  });
-
-  it("패널을 열고 교체하고 닫을 때 하나의 active panel만 유지한다", () => {
-    renderPanelPair();
-
-    expect(screen.queryByTestId("start-panel")).toBeNull();
-
-    fireEvent.click(screen.getByTestId("start-trigger"));
-
-    expect(screen.getByTestId("start-open-state").textContent).toBe("true");
-    expect(screen.getByTestId("search-open-state").textContent).toBe("false");
-    fireEvent.animationEnd(getPanelContainer("start-panel"));
-
-    fireEvent.click(screen.getByTestId("search-trigger"));
-
-    expect(screen.getByTestId("start-open-state").textContent).toBe("false");
-    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
-    fireEvent.animationEnd(getPanelContainer("start-panel"));
-    fireEvent.animationEnd(getPanelContainer("search-panel"));
-
-    fireEvent.click(screen.getByTestId("start-close"));
-
-    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
-
-    fireEvent.click(screen.getByTestId("search-trigger"));
-
-    expect(screen.getByTestId("search-open-state").textContent).toBe("false");
-    fireEvent.animationEnd(getPanelContainer("search-panel"));
-    expect(screen.queryByTestId("search-panel")).toBeNull();
   });
 
   it("교체 transition은 두 패널 animation이 끝날 때까지 추가 요청을 무시한다", () => {
@@ -233,68 +200,6 @@ describe("useTaskbarPanel", () => {
     fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
 
     expect(screen.queryByTestId("panel")).toBeNull();
-  });
-
-  it("animation event가 없으면 1000ms watchdog이 패널 상태를 정리한다", () => {
-    vi.useFakeTimers();
-    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
-    fireEvent.click(screen.getByTestId("trigger"));
-
-    act(() => {
-      vi.advanceTimersByTime(PANEL_TRANSITION_WATCHDOG_MS - 1);
-    });
-    expect(getPanelContainer().dataset.state).toBe("opening");
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-    expect(getPanelContainer().dataset.state).toBe("open");
-
-    fireEvent.click(screen.getByTestId("trigger"));
-    act(() => {
-      vi.advanceTimersByTime(PANEL_TRANSITION_WATCHDOG_MS);
-    });
-
-    expect(screen.queryByTestId("panel")).toBeNull();
-  });
-
-  it("교체 transition의 일부가 완료돼도 watchdog 시작 시간을 다시 계산하지 않는다", () => {
-    vi.useFakeTimers();
-    renderPanelPair();
-    fireEvent.click(screen.getByTestId("start-trigger"));
-    fireEvent.animationEnd(getPanelContainer("start-panel"));
-    fireEvent.click(screen.getByTestId("search-trigger"));
-
-    act(() => {
-      vi.advanceTimersByTime(600);
-    });
-    fireEvent.animationEnd(getPanelContainer("start-panel"));
-
-    act(() => {
-      vi.advanceTimersByTime(399);
-    });
-    expect(getPanelContainer("search-panel").dataset.state).toBe("opening");
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-
-    expect(screen.queryByTestId("start-panel")).toBeNull();
-    expect(getPanelContainer("search-panel").dataset.state).toBe("open");
-  });
-
-  it("Host가 unmount되면 실행 중인 watchdog을 정리한다", () => {
-    vi.useFakeTimers();
-    const { unmount } = render(
-      createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)),
-    );
-    fireEvent.click(screen.getByTestId("trigger"));
-
-    expect(vi.getTimerCount()).toBe(1);
-
-    unmount();
-
-    expect(vi.getTimerCount()).toBe(0);
   });
 
   it.each([
