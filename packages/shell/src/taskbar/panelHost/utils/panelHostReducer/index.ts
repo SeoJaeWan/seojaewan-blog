@@ -44,70 +44,80 @@ export const taskbarPanelHostReducer = (
   state: TaskbarPanelHostState,
   action: TaskbarPanelHostAction,
 ): TaskbarPanelHostState => {
-  if (action.type === "open") {
-    if (hasTransitioningPanel(state.panelStates) || state.activePanelId === action.panelId) {
-      return state;
+  switch (action.type) {
+    case "open": {
+      if (hasTransitioningPanel(state.panelStates) || state.activePanelId === action.panelId) {
+        return state;
+      }
+
+      const panelStates = { ...state.panelStates };
+
+      if (state.activePanelId !== null) {
+        panelStates[state.activePanelId] = "closing";
+      }
+
+      panelStates[action.panelId] = "opening";
+
+      return { activePanelId: action.panelId, panelStates };
     }
 
-    const panelStates = { ...state.panelStates };
+    case "close": {
+      if (hasTransitioningPanel(state.panelStates)) {
+        return state;
+      }
 
-    if (state.activePanelId !== null) {
-      panelStates[state.activePanelId] = "closing";
+      const panelId = action.panelId ?? state.activePanelId;
+
+      if (panelId === null || panelId !== state.activePanelId) {
+        return state;
+      }
+
+      return {
+        activePanelId: null,
+        panelStates: { ...state.panelStates, [panelId]: "closing" },
+      };
     }
 
-    panelStates[action.panelId] = "opening";
+    case "completeTransition": {
+      if (state.panelStates[action.panelId] !== action.state) {
+        return state;
+      }
 
-    return { activePanelId: action.panelId, panelStates };
+      const panelStates = { ...state.panelStates };
+
+      if (action.state === "opening") {
+        panelStates[action.panelId] = "open";
+      } else {
+        delete panelStates[action.panelId];
+      }
+
+      return { ...state, panelStates };
+    }
+
+    case "settleTransitions": {
+      if (!hasTransitioningPanel(state.panelStates)) {
+        return state;
+      }
+
+      const panelStates = Object.fromEntries(
+        Object.entries(state.panelStates).flatMap(([panelId, panelState]) =>
+          panelState === "closing" ? [] : [[panelId, "open" as const]],
+        ),
+      );
+
+      return {
+        activePanelId:
+          state.activePanelId !== null && panelStates[state.activePanelId] === "open"
+            ? state.activePanelId
+            : null,
+        panelStates,
+      };
+    }
+
+    default: {
+      const exhaustiveAction: never = action;
+
+      return exhaustiveAction;
+    }
   }
-
-  if (action.type === "close") {
-    if (hasTransitioningPanel(state.panelStates)) {
-      return state;
-    }
-
-    const panelId = action.panelId ?? state.activePanelId;
-
-    if (panelId === null || panelId !== state.activePanelId) {
-      return state;
-    }
-
-    return {
-      activePanelId: null,
-      panelStates: { ...state.panelStates, [panelId]: "closing" },
-    };
-  }
-
-  if (action.type === "completeTransition") {
-    if (state.panelStates[action.panelId] !== action.state) {
-      return state;
-    }
-
-    const panelStates = { ...state.panelStates };
-
-    if (action.state === "opening") {
-      panelStates[action.panelId] = "open";
-    } else {
-      delete panelStates[action.panelId];
-    }
-
-    return { ...state, panelStates };
-  }
-
-  if (!hasTransitioningPanel(state.panelStates)) {
-    return state;
-  }
-
-  const panelStates = Object.fromEntries(
-    Object.entries(state.panelStates).flatMap(([panelId, panelState]) =>
-      panelState === "closing" ? [] : [[panelId, "open" as const]],
-    ),
-  );
-
-  return {
-    activePanelId:
-      state.activePanelId !== null && panelStates[state.activePanelId] === "open"
-        ? state.activePanelId
-        : null,
-    panelStates,
-  };
 };
