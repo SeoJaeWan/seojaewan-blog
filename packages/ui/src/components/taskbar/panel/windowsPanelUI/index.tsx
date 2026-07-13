@@ -1,44 +1,25 @@
 import type { AnimationEvent, MouseEvent, Ref, TransitionEvent } from "react";
-import { Fragment } from "react";
 
-import { ChevronLeft12Regular, ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
-import fileIconSrc from "../../../../assets/file.png";
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
-import { PanelIconButton } from "../../button/panelIconButton";
 import type { TaskSearchInputProps } from "../../input/taskSearchInput";
 import { TaskSearchInput } from "../../input/taskSearchInput";
 import { TaskSearchResultView } from "../../view/taskSearchResultView";
-
-/** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
-export type WindowsPanelViewMode = "all" | "pinned";
+import type {
+  WindowsPanelPinnedItemAnimation,
+  WindowsPanelSection,
+  WindowsPanelViewMode,
+} from "../../view/windowsPanelView";
+import { WindowsPanelView } from "../../view/windowsPanelView";
 
 /** contextmenu 이벤트가 발생한 WindowsPanelUI 목록 영역. */
-export type WindowsPanelItemSource = "all" | "pinned" | "search";
+export type WindowsPanelItemSource = WindowsPanelViewMode | "search";
 
-/** 고정 타일 reorder visual의 CSS animation 단계. */
-export type WindowsPanelPinnedItemAnimationPhase = "in" | "out";
-
-/** 특정 고정 타일에 적용할 reorder visual 상태. */
-export interface WindowsPanelPinnedItemAnimation {
-  /** animation class를 적용할 고정 항목 id. */
-  itemId: string;
-  /** out은 축소 transition, in은 새 위치 fade-in animation을 표시한다. */
-  phase: WindowsPanelPinnedItemAnimationPhase;
-}
-
-/** WindowsPanelUI 모두 보기에서 category header와 항목 목록을 묶는 section. */
-export interface WindowsPanelSection {
-  /** 카테고리 점프 overlay와 header에 표시할 category 이름. */
-  category: string;
-  /** 해당 category 아래에 표시할 전체 항목 목록. */
-  items: WindowItem[];
-}
-
+/** WindowsPanelUI가 조합할 화면 상태와 외부 기능 계층에 위임할 interaction callback. */
 export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "role"> {
   /** 모두 보기의 scroll container를 외부 기능 계층에 전달할 ref. */
   allListRef?: Ref<HTMLDivElement>;
@@ -86,13 +67,10 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   view?: WindowsPanelViewMode;
 }
 
-// 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값
-const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
-
 /**
- * 시작 패널의 pinned/all/search visual을 controlled props로 렌더링한다 (원본 WindowsPanelUI).
- * view, overlay, reorder, context menu와 pin 동작은 모두 외부 기능 계층에 위임한다.
- * 시작 패널의 접근성 role은 dialog로 고정한다.
+ * 작업 표시줄 시작 패널의 검색 input과 본문 view를 조합한다.
+ * searchValue가 있으면 TaskSearchResultView를, 없으면 WindowsPanelView를 렌더링한다.
+ * 패널의 접근성 role은 dialog로 고정하고 모든 항목 interaction은 callback으로 외부에 위임한다.
  *
  * @param props.view 현재 표시할 pinned/all visual. 기본값은 "pinned"
  * @param props.categoryOverlayOpen category jump overlay의 열린 visual 상태
@@ -118,7 +96,7 @@ const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
  */
 export const WindowsPanelUI = ({
   allListRef,
-  categoryOverlayOpen = false,
+  categoryOverlayOpen,
   className,
   detailActions = [],
   detailItemId = null,
@@ -131,174 +109,51 @@ export const WindowsPanelUI = ({
   onPinnedItemTransitionEnd,
   onSelectItem,
   onViewChange,
-  pinnedItemAnimation = null,
-  pinnedItems = [],
+  pinnedItemAnimation,
+  pinnedItems,
   searchInputProps,
   searchResults = [],
   searchValue = "",
-  sections = [],
-  view = "pinned",
+  sections,
+  view,
   ...props
-}: WindowsPanelUIProps) => {
-  const requestPinnedView = () => {
-    onCategoryOverlayOpenChange?.(false);
-    onViewChange?.("pinned");
-  };
-
-  const requestCategory = (category: string) => {
-    onCategorySelect?.(category);
-    onCategoryOverlayOpenChange?.(false);
-  };
-
-  return (
-    <TaskPanel {...props} className={clsx("wb-windows-panel", className)} role="dialog">
-      <div className="wb-windows-panel__search">
-        <TaskSearchInput placeholder="앱 및 문서 검색" {...searchInputProps} />
+}: WindowsPanelUIProps) => (
+  <TaskPanel {...props} className={clsx("wb-windows-panel", className)} role="dialog">
+    <div className="wb-windows-panel__search">
+      <TaskSearchInput placeholder="앱 및 문서 검색" {...searchInputProps} />
+    </div>
+    {searchValue ? (
+      <div className="wb-windows-panel__search-results">
+        <TaskSearchResultView
+          detailActions={detailActions}
+          detailItemId={detailItemId}
+          onDetailAction={onDetailAction}
+          onDetailItemChange={onDetailItemChange}
+          onItemContextMenu={
+            onItemContextMenu
+              ? (event, item) => onItemContextMenu(event, item, "search")
+              : undefined
+          }
+          onSelectItem={onSelectItem}
+          results={searchResults}
+        />
       </div>
-      {searchValue ? (
-        <div className="wb-windows-panel__search-results">
-          <TaskSearchResultView
-            detailActions={detailActions}
-            detailItemId={detailItemId}
-            onDetailAction={onDetailAction}
-            onDetailItemChange={onDetailItemChange}
-            onItemContextMenu={
-              onItemContextMenu
-                ? (event, item) => onItemContextMenu(event, item, "search")
-                : undefined
-            }
-            onSelectItem={onSelectItem}
-            results={searchResults}
-          />
-        </div>
-      ) : (
-        <div className="wb-windows-panel__views" data-view={view}>
-          <div
-            className="wb-windows-panel__view wb-windows-panel__view--pinned"
-            inert={view !== "pinned"}
-          >
-            <section className="wb-windows-panel__section">
-              <header className="wb-windows-panel__header">
-                <h2 className="wb-windows-panel__title">고정됨</h2>
-                <button
-                  className="wb-windows-panel__view-toggle"
-                  onClick={() => onViewChange?.("all")}
-                  type="button"
-                >
-                  모두 <ChevronRight12Regular aria-hidden="true" />
-                </button>
-              </header>
-              <div className="wb-windows-panel__pinned-grid">
-                {pinnedItems.map((item) => (
-                  <PanelIconButton
-                    key={item.id}
-                    className={clsx(
-                      "wb-windows-panel__pinned-item",
-                      pinnedItemAnimation?.itemId === item.id &&
-                        pinnedItemAnimation.phase === "out" &&
-                        "wb-windows-panel__pinned-item--out",
-                      pinnedItemAnimation?.itemId === item.id &&
-                        pinnedItemAnimation.phase === "in" &&
-                        "wb-windows-panel__pinned-item--in",
-                    )}
-                    icon={item.icon ?? defaultFileIcon}
-                    onAnimationEnd={
-                      onPinnedItemAnimationEnd
-                        ? (event) => onPinnedItemAnimationEnd(event, item)
-                        : undefined
-                    }
-                    onClick={() => onSelectItem?.(item)}
-                    onContextMenu={
-                      onItemContextMenu
-                        ? (event) => onItemContextMenu(event, item, "pinned")
-                        : undefined
-                    }
-                    onTransitionEnd={
-                      onPinnedItemTransitionEnd
-                        ? (event) => onPinnedItemTransitionEnd(event, item)
-                        : undefined
-                    }
-                    title={item.title}
-                  />
-                ))}
-              </div>
-            </section>
-          </div>
-          <div
-            className="wb-windows-panel__view wb-windows-panel__view--all"
-            inert={view !== "all"}
-          >
-            <section className="wb-windows-panel__section">
-              <header className="wb-windows-panel__header">
-                <h2 className="wb-windows-panel__title">모두</h2>
-                <button
-                  className="wb-windows-panel__view-toggle"
-                  onClick={requestPinnedView}
-                  type="button"
-                >
-                  뒤로 <ChevronLeft12Regular aria-hidden="true" />
-                </button>
-              </header>
-              <div className="wb-windows-panel__all-body">
-                <div
-                  className="wb-windows-panel__category-overlay"
-                  data-open={categoryOverlayOpen ? "true" : undefined}
-                  inert={!categoryOverlayOpen}
-                >
-                  <div className="wb-windows-panel__category-grid">
-                    {sections.map((section) => (
-                      <button
-                        key={section.category}
-                        className="wb-windows-panel__category-jump"
-                        onClick={() => requestCategory(section.category)}
-                        type="button"
-                      >
-                        {section.category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div
-                  ref={allListRef}
-                  className="wb-windows-panel__all-list"
-                  inert={categoryOverlayOpen}
-                >
-                  {sections.map((section) => (
-                    <Fragment key={section.category}>
-                      <button
-                        className="wb-windows-panel__category"
-                        data-category={section.category}
-                        onClick={() => onCategoryOverlayOpenChange?.(true)}
-                        type="button"
-                      >
-                        {section.category}
-                      </button>
-                      {section.items.map((item) => (
-                        <button
-                          key={item.id}
-                          className="wb-windows-panel__item"
-                          onClick={() => onSelectItem?.(item)}
-                          onContextMenu={
-                            onItemContextMenu
-                              ? (event) => onItemContextMenu(event, item, "all")
-                              : undefined
-                          }
-                          type="button"
-                        >
-                          <span aria-hidden="true" className="wb-windows-panel__item-icon">
-                            {item.icon ?? defaultFileIcon}
-                          </span>
-                          {item.title}
-                        </button>
-                      ))}
-                    </Fragment>
-                  ))}
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      )}
-    </TaskPanel>
-  );
-};
+    ) : (
+      <WindowsPanelView
+        allListRef={allListRef}
+        categoryOverlayOpen={categoryOverlayOpen}
+        onCategoryOverlayOpenChange={onCategoryOverlayOpenChange}
+        onCategorySelect={onCategorySelect}
+        onItemContextMenu={onItemContextMenu}
+        onPinnedItemAnimationEnd={onPinnedItemAnimationEnd}
+        onPinnedItemTransitionEnd={onPinnedItemTransitionEnd}
+        onSelectItem={onSelectItem}
+        onViewChange={onViewChange}
+        pinnedItemAnimation={pinnedItemAnimation}
+        pinnedItems={pinnedItems}
+        sections={sections}
+        view={view}
+      />
+    )}
+  </TaskPanel>
+);

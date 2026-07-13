@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import { FolderIcon } from "../../../storyIcons";
-import type { WindowsPanelSection } from "./index";
+import type { WindowsPanelSection } from "../../view/windowsPanelView";
 import { WindowsPanelUI } from "./index";
 
 const PINNED_ITEMS: WindowItem[] = [
