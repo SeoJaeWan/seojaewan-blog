@@ -12,7 +12,7 @@ import { TaskPanel } from "../../../base/panel/taskPanel";
 import { PanelIconButton } from "../../button/panelIconButton";
 import type { TaskSearchInputProps } from "../../input/taskSearchInput";
 import { TaskSearchInput } from "../../input/taskSearchInput";
-import { TaskSearchResultView } from "../taskSearchResultView";
+import { TaskSearchResultView } from "../../view/taskSearchResultView";
 
 /** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
 export type WindowsPanelView = "all" | "pinned";

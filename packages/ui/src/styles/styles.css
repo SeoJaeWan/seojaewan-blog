@@ -18,7 +18,7 @@
 @import "../components/taskbar/search/taskbarSearch.css";
 @import "../components/taskbar/panel/searchPanel/searchPanel.css";
 @import "../components/taskbar/panel/taskbarContextMenu/taskbarContextMenu.css";
-@import "../components/taskbar/panel/taskSearchResultView/taskSearchResultView.css";
+@import "../components/taskbar/view/taskSearchResultView/taskSearchResultView.css";
 @import "../components/taskbar/panel/windowsPanelUI/windowsPanelUI.css";
 @import "../components/taskbar/panel/taskHoverPanel/taskHoverPanel.css";
 @import "../components/base/panel/scaledPreview/scaledPreview.css";

@@ -22,7 +22,7 @@ const DETAIL_ACTIONS: WindowItemActionState[] = [
 ];
 
 const meta = {
-  title: "Taskbar/Panel/TaskSearchResultView",
+  title: "Taskbar/View/TaskSearchResultView",
   component: TaskSearchResultView,
   tags: ["autodocs"],
   parameters: {

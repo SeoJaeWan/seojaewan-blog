@@ -75,8 +75,6 @@ export type {
   TaskHoverPanelProps,
 } from "./components/taskbar/panel/taskHoverPanel";
 export { TaskHoverPanel } from "./components/taskbar/panel/taskHoverPanel";
-export type { TaskSearchResultViewProps } from "./components/taskbar/panel/taskSearchResultView";
-export { TaskSearchResultView } from "./components/taskbar/panel/taskSearchResultView";
 export type {
   WindowsPanelItemSource,
   WindowsPanelPinnedItemAnimation,
@@ -90,6 +88,8 @@ export type { TaskbarRootProps } from "./components/taskbar/root";
 export { TaskbarRoot } from "./components/taskbar/root";
 export type { TaskbarSearchProps } from "./components/taskbar/search";
 export { TaskbarSearch } from "./components/taskbar/search";
+export type { TaskSearchResultViewProps } from "./components/taskbar/view/taskSearchResultView";
+export { TaskSearchResultView } from "./components/taskbar/view/taskSearchResultView";
 export type { WindowControlsProps } from "./components/window/chrome/windowControls";
 export { WindowControls } from "./components/window/chrome/windowControls";
 export type {

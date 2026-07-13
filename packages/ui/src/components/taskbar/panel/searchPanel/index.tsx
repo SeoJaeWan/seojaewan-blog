@@ -7,7 +7,7 @@ import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
-import { TaskSearchResultView } from "../taskSearchResultView";
+import { TaskSearchResultView } from "../../view/taskSearchResultView";
 
 /**
  * SearchPanel 검색 전 추천 영역에 표시할 best section.
