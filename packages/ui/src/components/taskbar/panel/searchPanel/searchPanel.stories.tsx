@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionState } from "../../../../types/windowItemAction";
-import type { SearchPanelSection } from "./index";
+import type { TaskSearchRecommendationSection } from "../../view/taskSearchRecommendationView";
 import { SearchPanel } from "./index";
 
 const RECOMMENDED_ITEMS: WindowItem[] = [
@@ -18,7 +18,7 @@ const RECOMMENDED_ITEMS: WindowItem[] = [
   { id: "critical-js", title: "Critical JavaScript. 언제, 어떻게" },
 ];
 
-const BEST_SECTIONS: SearchPanelSection[] = [
+const BEST_SECTIONS: TaskSearchRecommendationSection[] = [
   {
     items: [
       { id: "media-list", title: "미디어 리스트 속도 개선기" },

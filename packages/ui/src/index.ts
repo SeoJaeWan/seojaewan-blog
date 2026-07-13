@@ -56,7 +56,7 @@ export type { TaskbarClockProps } from "./components/taskbar/clock";
 export { TaskbarClock } from "./components/taskbar/clock";
 export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearchInput";
 export { TaskSearchInput } from "./components/taskbar/input/taskSearchInput";
-export type { SearchPanelProps, SearchPanelSection } from "./components/taskbar/panel/searchPanel";
+export type { SearchPanelProps } from "./components/taskbar/panel/searchPanel";
 export { SearchPanel } from "./components/taskbar/panel/searchPanel";
 export type {
   TaskbarContextMenuProps,
@@ -88,6 +88,7 @@ export type { TaskbarRootProps } from "./components/taskbar/root";
 export { TaskbarRoot } from "./components/taskbar/root";
 export type { TaskbarSearchProps } from "./components/taskbar/search";
 export { TaskbarSearch } from "./components/taskbar/search";
+export type { TaskSearchRecommendationSection } from "./components/taskbar/view/taskSearchRecommendationView";
 export type { TaskSearchResultViewProps } from "./components/taskbar/view/taskSearchResultView";
 export { TaskSearchResultView } from "./components/taskbar/view/taskSearchResultView";
 export type { WindowControlsProps } from "./components/window/chrome/windowControls";

@@ -6,22 +6,13 @@ import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
+import type { TaskSearchRecommendationSection } from "../../view/taskSearchRecommendationView";
 import { TaskSearchRecommendationView } from "../../view/taskSearchRecommendationView";
 import { TaskSearchResultView } from "../../view/taskSearchResultView";
 
-/**
- * SearchPanel 검색 전 추천 영역에 표시할 best section.
- */
-export interface SearchPanelSection {
-  /** 섹션 안의 추천 항목 목록. */
-  items: WindowItem[];
-  /** 섹션 제목. */
-  title: string;
-}
-
 export interface SearchPanelProps extends Omit<TaskPanelProps, "children" | "results"> {
   /** 검색어가 없을 때 추천 영역 아래에 표시할 best section 목록. 기본값은 빈 배열이다. */
-  bestSections?: SearchPanelSection[];
+  bestSections?: TaskSearchRecommendationSection[];
   /** 현재 검색 결과 상세 항목에 표시할 action 상태 목록. 기본값은 빈 배열이다. */
   detailActions?: readonly WindowItemActionState[];
   /** 검색 결과 상세 pane에 표시할 항목 id. null이면 상세 pane을 비운다. */

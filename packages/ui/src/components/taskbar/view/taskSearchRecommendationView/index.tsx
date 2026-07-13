@@ -3,8 +3,11 @@ import type { MouseEvent } from "react";
 import fileIconSrc from "../../../../assets/file.png";
 import type { WindowItem } from "../../../../types/windowItem";
 
-interface TaskSearchRecommendationSection {
-  items: readonly WindowItem[];
+/** taskbar 검색 전 추천 화면의 best section. */
+export interface TaskSearchRecommendationSection {
+  /** 섹션 안의 추천 항목 목록. */
+  items: WindowItem[];
+  /** 섹션 제목. */
   title: string;
 }
 
