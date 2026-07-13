@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import type { WindowItem } from "../../../../types/windowItem";
+import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import { TaskSearchResultView } from "./index";
 
 const RESULTS: WindowItem[] = [
@@ -11,6 +12,13 @@ const RESULTS: WindowItem[] = [
     id: "ssr-csr",
     title: "SSR에서 CSR 왜 바꿨을까?",
   },
+];
+
+const DETAIL_ACTIONS: WindowItemActionState[] = [
+  { id: "open" },
+  { id: "openLocation" },
+  { id: "pinToStart" },
+  { id: "pinToTaskbar" },
 ];
 
 const meta = {
@@ -40,6 +48,20 @@ export const ResultList: Story = {};
 
 export const DetailSelected: Story = {
   args: {
+    detailActions: DETAIL_ACTIONS,
     detailItemId: "server-count",
+    onDetailAction: () => undefined,
+  },
+};
+
+export const DetailPinned: Story = {
+  args: {
+    detailActions: [
+      { id: "open" },
+      { disabled: true, id: "unpinFromStart" },
+      { id: "unpinFromTaskbar" },
+    ],
+    detailItemId: "server-count",
+    onDetailAction: () => undefined,
   },
 };

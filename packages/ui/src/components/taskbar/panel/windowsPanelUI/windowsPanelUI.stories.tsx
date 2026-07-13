@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import type { WindowItem } from "../../../../types/windowItem";
+import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import { FolderIcon } from "../../../storyIcons";
 import type { WindowsPanelSection } from "./index";
 import { WindowsPanelUI } from "./index";
@@ -52,6 +53,13 @@ const SECTIONS: WindowsPanelSection[] = [
 ];
 
 const SEARCH_RESULTS = PINNED_ITEMS.filter((item) => item.title.includes("정리"));
+
+const DETAIL_ACTIONS: WindowItemActionState[] = [
+  { id: "open" },
+  { id: "openLocation" },
+  { id: "pinToStart" },
+  { id: "pinToTaskbar" },
+];
 
 const meta = {
   title: "Taskbar/Panel/WindowsPanelUI",
@@ -106,7 +114,9 @@ export const SearchView: Story = {
 
 export const SearchDetail: Story = {
   args: {
+    detailActions: DETAIL_ACTIONS,
     detailItemId: "rsc",
+    onDetailAction: () => undefined,
     searchInputProps: {
       readOnly: true,
       value: "정리",

@@ -190,3 +190,9 @@
   font-size: 12px;
   gap: 12px;
 }
+
+.wb-task-search-result__detail-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.54;
+  pointer-events: none;
+}

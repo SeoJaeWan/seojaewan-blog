@@ -6,12 +6,12 @@ import { clsx } from "clsx";
 
 import fileIconSrc from "../../../../assets/file.png";
 import type { WindowItem } from "../../../../types/windowItem";
+import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
 import { PanelIconButton } from "../../button/panelIconButton";
 import type { TaskSearchInputProps } from "../../input/taskSearchInput";
 import { TaskSearchInput } from "../../input/taskSearchInput";
-import type { TaskSearchDetailAction } from "../taskSearchResultView";
 import { TaskSearchResultView } from "../taskSearchResultView";
 
 /** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
@@ -44,6 +44,8 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   allListRef?: Ref<HTMLDivElement>;
   /** category jump overlay의 열린 visual 상태. 기본값은 false이다. */
   categoryOverlayOpen?: boolean;
+  /** 현재 검색 결과 상세 항목에 표시할 action 상태 목록. 기본값은 빈 배열이다. */
+  detailActions?: readonly WindowItemActionState[];
   /** 검색 결과 상세 pane에 표시할 항목 id. null이면 상세 pane을 비운다. */
   detailItemId?: string | null;
   /** category overlay의 다음 open 상태를 기능 계층에 요청한다. */
@@ -51,7 +53,7 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   /** category jump 항목 선택을 기능 계층에 전달한다. */
   onCategorySelect?: (category: string) => void;
   /** 검색 결과 상세 pane action 클릭을 기능 계층에 전달한다. */
-  onDetailAction?: (action: TaskSearchDetailAction, item: WindowItem) => void;
+  onDetailAction?: (action: WindowItemActionId, item: WindowItem) => void;
   /** 검색 결과 상세 보기 버튼 클릭 시 선택한 item을 전달한다. */
   onDetailItemChange?: (item: WindowItem) => void;
   /** 항목 contextmenu 이벤트와 대상/source를 기능 계층에 전달한다. */
@@ -99,6 +101,7 @@ const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
  * @param props.sections 모두 보기의 category별 항목
  * @param props.searchValue 검색 결과 visual 전환에 사용할 검색어
  * @param props.searchResults 검색 결과 visual에 표시할 항목
+ * @param props.detailActions 현재 검색 결과 상세 항목에 표시할 action 상태 목록
  * @param props.detailItemId 검색 결과 상세 pane에 표시할 항목 id
  * @param props.searchInputProps 상단 TaskSearchInput에 전달할 props
  * @param props.allListRef 모두 보기 scroll container를 외부에 연결할 ref
@@ -117,6 +120,7 @@ export const WindowsPanelUI = ({
   allListRef,
   categoryOverlayOpen = false,
   className,
+  detailActions = [],
   detailItemId = null,
   onCategoryOverlayOpenChange,
   onCategorySelect,
@@ -154,6 +158,7 @@ export const WindowsPanelUI = ({
       {searchValue ? (
         <div className="wb-windows-panel__search-results">
           <TaskSearchResultView
+            detailActions={detailActions}
             detailItemId={detailItemId}
             onDetailAction={onDetailAction}
             onDetailItemChange={onDetailItemChange}

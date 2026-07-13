@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import type { WindowItem } from "../../../../types/windowItem";
+import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import type { SearchPanelSection } from "./index";
 import { SearchPanel } from "./index";
 
@@ -49,6 +50,13 @@ const RESULTS: WindowItem[] = [
   },
 ];
 
+const DETAIL_ACTIONS: WindowItemActionState[] = [
+  { id: "open" },
+  { id: "openLocation" },
+  { id: "pinToStart" },
+  { id: "pinToTaskbar" },
+];
+
 const meta = {
   title: "Taskbar/Panel/SearchPanel",
   component: SearchPanel,
@@ -86,7 +94,9 @@ export const SearchResults: Story = {
 
 export const SearchResultDetail: Story = {
   args: {
+    detailActions: DETAIL_ACTIONS,
     detailItemId: "server-count",
+    onDetailAction: () => undefined,
     results: RESULTS,
     searchValue: "서",
   },

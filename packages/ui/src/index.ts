@@ -56,11 +56,7 @@ export type { TaskbarClockProps } from "./components/taskbar/clock";
 export { TaskbarClock } from "./components/taskbar/clock";
 export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearchInput";
 export { TaskSearchInput } from "./components/taskbar/input/taskSearchInput";
-export type {
-  SearchPanelDetailAction,
-  SearchPanelProps,
-  SearchPanelSection,
-} from "./components/taskbar/panel/searchPanel";
+export type { SearchPanelProps, SearchPanelSection } from "./components/taskbar/panel/searchPanel";
 export { SearchPanel } from "./components/taskbar/panel/searchPanel";
 export type {
   TaskbarContextMenuProps,
@@ -79,10 +75,7 @@ export type {
   TaskHoverPanelProps,
 } from "./components/taskbar/panel/taskHoverPanel";
 export { TaskHoverPanel } from "./components/taskbar/panel/taskHoverPanel";
-export type {
-  TaskSearchDetailAction,
-  TaskSearchResultViewProps,
-} from "./components/taskbar/panel/taskSearchResultView";
+export type { TaskSearchResultViewProps } from "./components/taskbar/panel/taskSearchResultView";
 export { TaskSearchResultView } from "./components/taskbar/panel/taskSearchResultView";
 export type {
   WindowsPanelItemSource,
@@ -139,3 +132,4 @@ export type {
 } from "./components/window/windowFrame";
 export { WindowFrame } from "./components/window/windowFrame";
 export type { WindowItem } from "./types/windowItem";
+export type { WindowItemActionId, WindowItemActionState } from "./types/windowItemAction";
