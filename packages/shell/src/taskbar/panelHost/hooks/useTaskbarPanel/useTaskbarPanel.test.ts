@@ -10,7 +10,11 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { TaskbarPanelHost } from "../..";
+import type {
+  TaskbarPanelHostContextValue,
+  TaskbarPanelTransitionState,
+} from "../..";
+import { TaskbarPanelHost, TaskbarPanelHostContext } from "../..";
 import type { TaskbarPanelPlacement } from "./index";
 import { useTaskbarPanel } from "./index";
 
@@ -32,24 +36,16 @@ const createRect = ({
 });
 
 interface TaskbarPanelProbeProps {
-  closeTestId?: string;
   gap?: number;
-  openStateTestId?: string;
   panelId?: string;
-  panelTestId?: string;
   placement?: TaskbarPanelPlacement;
-  triggerTestId?: string;
   viewportPadding?: number;
 }
 
 const TaskbarPanelProbe = ({
-  closeTestId = "close",
   gap,
-  openStateTestId = "open-state",
   panelId = "start",
-  panelTestId = "panel",
   placement = "rootCenter",
-  triggerTestId = "trigger",
   viewportPadding,
 }: TaskbarPanelProbeProps) => {
   const panel = useTaskbarPanel({
@@ -65,7 +61,7 @@ const TaskbarPanelProbe = ({
     createElement(
       "button",
       {
-        "data-testid": triggerTestId,
+        "data-testid": "trigger",
         onClick: panel.toggle,
         ref: panel.triggerRef,
         type: "button",
@@ -74,13 +70,15 @@ const TaskbarPanelProbe = ({
     ),
     createElement(
       "button",
-      { "data-testid": closeTestId, onClick: panel.close, type: "button" },
+      { "data-testid": "close", onClick: panel.close, type: "button" },
       "닫기",
     ),
-    createElement("output", { "data-testid": openStateTestId }, String(panel.isOpen)),
-    panel.renderPanel(createElement("div", { "data-testid": panelTestId })),
+    createElement("output", { "data-testid": "open-state" }, String(panel.isOpen)),
+    panel.renderPanel(createElement("div", { "data-testid": "panel" })),
   );
 };
+
+const testLayerElements: HTMLDivElement[] = [];
 
 const mockElementRects = (rects: Record<string, DOMRect>) =>
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
@@ -108,31 +106,38 @@ const mockViewport = (width: number, height: number) => {
   vi.spyOn(window, "innerHeight", "get").mockReturnValue(height);
 };
 
-const renderPanelPair = () =>
+const renderPanelWithContext = (panelState: TaskbarPanelTransitionState) => {
+  const layerElement = document.createElement("div");
+  const completePanelTransition = vi.fn();
+  const contextValue: TaskbarPanelHostContextValue = {
+    activePanelId: "start",
+    closePanel: vi.fn(),
+    completePanelTransition,
+    layerElement,
+    openPanel: vi.fn(),
+    panelStates: { start: panelState },
+  };
+
+  document.body.append(layerElement);
+  testLayerElements.push(layerElement);
   render(
     createElement(
-      TaskbarPanelHost,
-      null,
-      createElement(TaskbarPanelProbe, {
-        closeTestId: "start-close",
-        openStateTestId: "start-open-state",
-        panelId: "start",
-        panelTestId: "start-panel",
-        triggerTestId: "start-trigger",
-      }),
-      createElement(TaskbarPanelProbe, {
-        closeTestId: "search-close",
-        openStateTestId: "search-open-state",
-        panelId: "search",
-        panelTestId: "search-panel",
-        triggerTestId: "search-trigger",
-      }),
+      TaskbarPanelHostContext.Provider,
+      { value: contextValue },
+      createElement(TaskbarPanelProbe),
     ),
   );
+
+  return { completePanelTransition };
+};
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+
+  for (const layerElement of testLayerElements.splice(0)) {
+    layerElement.remove();
+  }
 });
 
 describe("useTaskbarPanel", () => {
@@ -142,65 +147,34 @@ describe("useTaskbarPanel", () => {
     );
   });
 
-  it("교체 transition은 두 패널 animation이 끝날 때까지 추가 요청을 무시한다", () => {
-    renderPanelPair();
-    fireEvent.click(screen.getByTestId("start-trigger"));
-    fireEvent.animationEnd(getPanelContainer("start-panel"));
-
-    fireEvent.click(screen.getByTestId("search-trigger"));
-
-    const closingContainer = getPanelContainer("start-panel");
-    const openingContainer = getPanelContainer("search-panel");
-
-    expect(closingContainer.dataset.state).toBe("closing");
-    expect(closingContainer.getAttribute("aria-hidden")).toBe("true");
-    expect(closingContainer.hasAttribute("inert")).toBe(true);
-    expect(openingContainer.dataset.state).toBe("opening");
-    expect(openingContainer.hasAttribute("inert")).toBe(true);
-
-    fireEvent.animationEnd(closingContainer);
-    fireEvent.click(screen.getByTestId("start-trigger"));
-
-    expect(screen.queryByTestId("start-panel")).toBeNull();
-    expect(screen.getByTestId("search-open-state").textContent).toBe("true");
-    expect(getPanelContainer("search-panel").dataset.state).toBe("opening");
-
-    fireEvent.animationEnd(getPanelContainer("search-panel"));
-    fireEvent.click(screen.getByTestId("start-trigger"));
-
-    expect(getPanelContainer("search-panel").dataset.state).toBe("closing");
-    expect(getPanelContainer("start-panel").dataset.state).toBe("opening");
-  });
-
-  it("자식 animationend는 무시하고 Container root animationend만 완료 처리한다", () => {
-    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
-    fireEvent.click(screen.getByTestId("trigger"));
+  it("자식의 animationend는 transition 완료로 전달하지 않는다", () => {
+    const { completePanelTransition } = renderPanelWithContext("opening");
 
     fireEvent.animationEnd(screen.getByTestId("panel"));
 
-    expect(getPanelContainer().dataset.state).toBe("opening");
+    expect(completePanelTransition).not.toHaveBeenCalled();
+  });
+
+  it("Container root의 animationend는 현재 transition 완료로 전달한다", () => {
+    const { completePanelTransition } = renderPanelWithContext("opening");
 
     fireEvent.animationEnd(getPanelContainer());
 
-    expect(getPanelContainer().dataset.state).toBe("open");
-    expect(getPanelContainer().hasAttribute("inert")).toBe(false);
+    expect(completePanelTransition).toHaveBeenCalledOnce();
+    expect(completePanelTransition).toHaveBeenCalledWith("start", "opening");
   });
 
-  it("animationcancel은 현재 opening과 closing transition을 완료한다", () => {
-    render(createElement(TaskbarPanelHost, null, createElement(TaskbarPanelProbe)));
-    fireEvent.click(screen.getByTestId("trigger"));
+  it.each(["opening", "closing"] as const)(
+    "%s 중 animationcancel은 transition 완료로 전달한다",
+    (panelState) => {
+      const { completePanelTransition } = renderPanelWithContext(panelState);
 
-    fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
+      fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
 
-    expect(getPanelContainer().dataset.state).toBe("open");
-
-    fireEvent.click(screen.getByTestId("trigger"));
-    expect(getPanelContainer().dataset.state).toBe("closing");
-
-    fireEvent(getPanelContainer(), new Event("animationcancel", { bubbles: true }));
-
-    expect(screen.queryByTestId("panel")).toBeNull();
-  });
+      expect(completePanelTransition).toHaveBeenCalledOnce();
+      expect(completePanelTransition).toHaveBeenCalledWith("start", panelState);
+    },
+  );
 
   it.each([
     { expectedLeft: 300, label: "왼쪽", placement: "left" },
