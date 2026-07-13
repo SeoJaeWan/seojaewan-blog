@@ -15,7 +15,7 @@ import { TaskSearchInput } from "../../input/taskSearchInput";
 import { TaskSearchResultView } from "../../view/taskSearchResultView";
 
 /** WindowsPanel에서 표시할 시작 화면 고정됨/전체 목록 visual. */
-export type WindowsPanelView = "all" | "pinned";
+export type WindowsPanelViewMode = "all" | "pinned";
 
 /** contextmenu 이벤트가 발생한 WindowsPanelUI 목록 영역. */
 export type WindowsPanelItemSource = "all" | "pinned" | "search";
@@ -69,7 +69,7 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   /** 고정됨/모두/검색 결과 항목 클릭 시 선택 item을 전달한다. */
   onSelectItem?: (item: WindowItem) => void;
   /** pinned/all view 변경 요청을 기능 계층에 전달한다. */
-  onViewChange?: (view: WindowsPanelView) => void;
+  onViewChange?: (view: WindowsPanelViewMode) => void;
   /** 고정 타일 하나에 적용할 reorder visual 상태. null이면 animation class를 적용하지 않는다. */
   pinnedItemAnimation?: WindowsPanelPinnedItemAnimation | null;
   /** 고정됨 view에 표시할 항목 목록. 기본값은 빈 배열이다. */
@@ -83,7 +83,7 @@ export interface WindowsPanelUIProps extends Omit<TaskPanelProps, "children" | "
   /** 모두 보기에서 category별로 표시할 section 목록. 기본값은 빈 배열이다. */
   sections?: WindowsPanelSection[];
   /** 현재 표시할 pinned/all visual. 기본값은 "pinned"이다. */
-  view?: WindowsPanelView;
+  view?: WindowsPanelViewMode;
 }
 
 // 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값

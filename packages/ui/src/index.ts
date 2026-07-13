@@ -81,7 +81,7 @@ export type {
   WindowsPanelPinnedItemAnimationPhase,
   WindowsPanelSection,
   WindowsPanelUIProps,
-  WindowsPanelView,
+  WindowsPanelViewMode,
 } from "./components/taskbar/panel/windowsPanelUI";
 export { WindowsPanelUI } from "./components/taskbar/panel/windowsPanelUI";
 export type { TaskbarRootProps } from "./components/taskbar/root";
