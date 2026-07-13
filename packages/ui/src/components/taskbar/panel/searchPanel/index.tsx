@@ -2,11 +2,11 @@ import type { MouseEvent } from "react";
 
 import { clsx } from "clsx";
 
-import fileIconSrc from "../../../../assets/file.png";
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
 import type { TaskPanelProps } from "../../../base/panel/taskPanel";
 import { TaskPanel } from "../../../base/panel/taskPanel";
+import { TaskSearchRecommendationView } from "../../view/taskSearchRecommendationView";
 import { TaskSearchResultView } from "../../view/taskSearchResultView";
 
 /**
@@ -41,9 +41,6 @@ export interface SearchPanelProps extends Omit<TaskPanelProps, "children" | "res
   /** 값이 있으면 검색 결과 뷰를, 없으면 추천/best 뷰를 렌더한다. 기본값은 빈 문자열이다. */
   searchValue?: string;
 }
-
-// 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값
-const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
 
 /**
  * taskbar 검색 floating panel (원본 SearchPanel).
@@ -88,56 +85,12 @@ export const SearchPanel = ({
           results={results}
         />
       ) : (
-        <>
-          <div className="wb-search-panel__recommend">
-            <h2 className="wb-search-panel__heading">추천</h2>
-            <ul className="wb-search-panel__recommend-list">
-              {recommendedItems.map((item) => (
-                <li key={item.id}>
-                  <button
-                    className="wb-search-panel__recommend-item"
-                    onClick={() => onSelectItem?.(item)}
-                    onContextMenu={
-                      onItemContextMenu ? (event) => onItemContextMenu(event, item) : undefined
-                    }
-                    type="button"
-                  >
-                    <span aria-hidden="true" className="wb-search-panel__recommend-icon">
-                      {item.icon ?? defaultFileIcon}
-                    </span>
-                    <span className="wb-search-panel__recommend-title">{item.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="wb-search-panel__best">
-            {bestSections.map((section) => (
-              <section key={section.title} className="wb-search-panel__best-section">
-                <h2 className="wb-search-panel__heading">{section.title}</h2>
-                <ul className="wb-search-panel__best-list">
-                  {section.items.slice(0, 6).map((item) => (
-                    <li key={item.id} className="wb-search-panel__best-card">
-                      <button
-                        className="wb-search-panel__best-item"
-                        onClick={() => onSelectItem?.(item)}
-                        onContextMenu={
-                          onItemContextMenu ? (event) => onItemContextMenu(event, item) : undefined
-                        }
-                        type="button"
-                      >
-                        <span aria-hidden="true" className="wb-search-panel__best-icon">
-                          {item.icon ?? defaultFileIcon}
-                        </span>
-                        <span className="wb-search-panel__best-title">{item.title}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
-        </>
+        <TaskSearchRecommendationView
+          bestSections={bestSections}
+          onItemContextMenu={onItemContextMenu}
+          onSelectItem={onSelectItem}
+          recommendedItems={recommendedItems}
+        />
       )}
     </div>
   </TaskPanel>
