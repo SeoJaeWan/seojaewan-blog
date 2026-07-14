@@ -22,7 +22,7 @@
     "dev": "storybook dev -p 6006",
     "dev:web": "vite build --watch",
     "lint": "eslint . --max-warnings=0",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {

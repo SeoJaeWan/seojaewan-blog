@@ -47,3 +47,8 @@ pnpm format:check
 
 When validating package changes directly, build `@window/ui` before `@window/shell` because
 the shell consumes the UI package's public `dist` exports.
+
+## Architecture
+
+- [Windows domain architecture](./.codex/architecture/windows-domain.md)
+- [Taskbar layout](./.codex/layout/taskbar.md)
