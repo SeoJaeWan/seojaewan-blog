@@ -30,8 +30,6 @@ export interface TaskbarStartButtonItemInteractions {
 }
 
 export interface TaskbarStartButtonProps {
-  /** REMOVE: Unit 6 전까지 접근성 이름을 전달한다; 내부 고정 한글 문구 전환 시 제거한다. */
-  "aria-label"?: string;
   /** 검색 결과 상세 item에 표시할 action 상태 목록. */
   detailActions?: readonly WindowItemActionState[];
   /** panel item의 실행과 context menu 요청 callback. */
@@ -50,7 +48,6 @@ export interface TaskbarStartButtonProps {
  * Taskbar 시작 버튼과 Windows 시작 패널을 TaskbarPanelHost에 연결한다.
  * button 상태, 접근성 연결, panel 위치와 portal 조립을 소유한다.
  *
- * @param props.aria-label button과 panel의 접근성 이름. 기본값은 "시작"
  * @param props.detailActions 검색 상세 item에 표시할 action 상태 목록
  * @param props.itemInteractions item action과 context menu 요청 callback
  * @param props.pinnedItems pinned view에 표시할 item 목록
@@ -60,7 +57,6 @@ export interface TaskbarStartButtonProps {
  * @returns 시작 button과 열린 panel portal
  */
 export const TaskbarStartButton = ({
-  "aria-label": ariaLabel = "시작",
   detailActions,
   itemInteractions,
   pinnedItems,
@@ -90,7 +86,6 @@ export const TaskbarStartButton = ({
         aria-controls={panelElementId}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
-        aria-label={ariaLabel}
         asChild={false}
         onClick={toggle}
         ref={handleTriggerRef}
@@ -99,7 +94,6 @@ export const TaskbarStartButton = ({
       />
       {renderPanel(
         <TaskbarWindowPanel
-          aria-label={ariaLabel}
           detailActions={detailActions}
           id={panelElementId}
           onAction={itemInteractions?.onAction}

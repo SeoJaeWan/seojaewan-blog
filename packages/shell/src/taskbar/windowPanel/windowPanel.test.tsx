@@ -17,7 +17,6 @@ describe("TaskbarWindowPanel", () => {
   it("검색어가 없으면 전체 결과를 section으로 변환한 pinned/all view를 렌더링한다", () => {
     const { container } = render(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         results={RESULTS}
         searchInputProps={{ readOnly: true, value: "" }}
@@ -39,7 +38,6 @@ describe("TaskbarWindowPanel", () => {
   it("검색 상세 선택 후 결과 객체가 갱신되면 같은 ID의 최신 item을 렌더링한다", () => {
     const { container, rerender } = render(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         results={RESULTS}
         searchInputProps={{ readOnly: true, value: "re" }}
@@ -57,7 +55,6 @@ describe("TaskbarWindowPanel", () => {
     const updatedItem: WindowItem = { id: "react", title: "React 업데이트" };
     rerender(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         results={[updatedItem, ...RESULTS.slice(1)]}
         searchInputProps={{ readOnly: true, value: "re" }}
@@ -73,7 +70,6 @@ describe("TaskbarWindowPanel", () => {
     const onAction = vi.fn();
     const { container } = render(
       <TaskbarWindowPanel
-        aria-label="시작"
         detailActions={[{ id: "openLocation" }]}
         id="start-panel"
         onAction={onAction}
@@ -110,7 +106,6 @@ describe("TaskbarWindowPanel", () => {
     const onAction = vi.fn();
     const { container } = render(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         onAction={onAction}
         pinnedItems={RESULTS}
@@ -143,7 +138,6 @@ describe("TaskbarWindowPanel", () => {
     const onItemContextMenu = vi.fn();
     const { container, rerender } = render(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         onItemContextMenu={onItemContextMenu}
         results={RESULTS}
@@ -165,7 +159,6 @@ describe("TaskbarWindowPanel", () => {
 
     rerender(
       <TaskbarWindowPanel
-        aria-label="시작"
         id="start-panel"
         onItemContextMenu={onItemContextMenu}
         pinnedItems={RESULTS}

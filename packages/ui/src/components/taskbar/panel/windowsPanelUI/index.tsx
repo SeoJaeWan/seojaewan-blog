@@ -13,7 +13,9 @@ import { WindowsPanelView } from "../../view/windowsPanelView";
 export type WindowsPanelItemSource = WindowsPanelViewMode | "search";
 
 /** WindowsPanelUI root에 전달할 panel props. 본문은 compound children으로 조합한다. */
-export type WindowsPanelUIProps = Omit<TaskPanelProps, "role">;
+export type WindowsPanelUIProps = Omit<TaskPanelProps, "aria-label" | "role">;
+
+const WINDOWS_PANEL_ARIA_LABEL = "시작";
 
 /**
  * WindowsPanelUI의 시작 panel 전용 검색 input을 렌더링한다.
@@ -45,7 +47,12 @@ const WindowsPanelUISearchResults = (props: TaskSearchResultViewProps) => (
  * @param props.className panel root에 추가할 className
  */
 const WindowsPanelUIRoot = ({ children, className, ...props }: WindowsPanelUIProps) => (
-  <TaskPanel {...props} className={clsx("wb-windows-panel", className)} role="dialog">
+  <TaskPanel
+    {...props}
+    aria-label={WINDOWS_PANEL_ARIA_LABEL}
+    className={clsx("wb-windows-panel", className)}
+    role="dialog"
+  >
     {children}
   </TaskPanel>
 );

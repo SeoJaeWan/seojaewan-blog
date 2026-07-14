@@ -39,7 +39,6 @@ const meta = {
     },
   },
   args: {
-    "aria-label": "시작",
     // Storybook 캔버스에서는 viewport 기반 반응형 폭 대신 고정 폭으로 확인
     style: { width: 520 },
   },

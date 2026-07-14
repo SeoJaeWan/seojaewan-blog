@@ -15,8 +15,6 @@ type WindowsPanelSearchResultsProps = ComponentProps<typeof WindowsPanelUI.Searc
 type WindowsPanelViewProps = ComponentProps<typeof WindowsPanelUI.View>;
 
 export interface TaskbarWindowPanelProps {
-  /** REMOVE: Unit 6 전까지 시작 panel 이름을 전달한다; 내부 고정 한글 문구 전환 시 제거한다. */
-  "aria-label": string;
   /** 검색 결과 상세 item에 표시할 action 상태 목록. */
   detailActions?: WindowsPanelSearchResultsProps["detailActions"];
   /** 시작 button의 aria-controls와 연결할 panel element ID. */
@@ -44,7 +42,6 @@ export interface TaskbarWindowPanelProps {
  * Taskbar 시작 panel의 검색 input, 검색 결과와 pinned/all view를 조립한다.
  * navigation과 상세 선택 상태를 내부에서 관리하고 item action 실행은 외부 callback에 위임한다.
  *
- * @param props.aria-label 시작 panel의 접근성 이름
  * @param props.id 시작 button aria-controls와 연결할 panel element ID
  * @param props.searchInputProps 검색 input의 controlled value와 native input props
  * @param props.results 검색 결과 또는 빈 검색어에서의 전체 item 목록
@@ -52,7 +49,6 @@ export interface TaskbarWindowPanelProps {
  * @returns compound WindowsPanelUI로 조립한 taskbar 시작 panel
  */
 export const TaskbarWindowPanel = ({
-  "aria-label": ariaLabel,
   detailActions,
   id,
   onAction,
@@ -68,7 +64,7 @@ export const TaskbarWindowPanel = ({
   const handleOpenItem = onAction ? (item: WindowItem) => onAction("open", item) : undefined;
 
   return (
-    <WindowsPanelUI aria-label={ariaLabel} id={id}>
+    <WindowsPanelUI id={id}>
       <WindowsPanelUI.SearchInput {...searchInputProps} />
       {searchValue ? (
         <WindowsPanelUI.SearchResults
