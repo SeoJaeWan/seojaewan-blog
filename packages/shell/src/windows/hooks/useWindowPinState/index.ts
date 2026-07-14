@@ -101,7 +101,11 @@ export const useWindowPinState = ({
       }
 
       persistPinStatePatch(commit.patch);
-      onCommit(commit.event);
+
+      if (commit.event !== null) {
+        onCommit(commit.event);
+      }
+
       applyPinStatePatch(commit.patch);
     },
     [applyPinStatePatch, onCommit],

@@ -6,6 +6,7 @@ import { WindowsControllerContext, WindowsStateContext } from "../..";
 import type {
   WindowMutableStateEvent,
   WindowPinEvent,
+  WindowPinsReorderedEvent,
   WindowPinStatePatch,
   WindowPinTarget,
   WindowsState,
@@ -15,6 +16,7 @@ export interface UseWindowPinsResult {
   isPinned: (itemId: string) => boolean;
   pin: (itemId: string) => void;
   pinnedIds: readonly string[];
+  reorder: (itemId: string, toIndex: number) => void;
   unpin: (itemId: string) => void;
 }
 
@@ -42,6 +44,14 @@ const createUnpinEvent = (
   target === "windows"
     ? { name: "windowUnpinFromStart", payload }
     : { name: "windowUnpinFromTaskbar", payload };
+
+const createReorderedEvent = (
+  target: WindowPinTarget,
+  payload: WindowPinsReorderedEvent,
+): WindowMutableStateEvent =>
+  target === "windows"
+    ? { name: "windowsPinsReordered", payload }
+    : { name: "taskbarPinsReordered", payload };
 
 /**
  * Target별 pin ID를 읽고 add/remove 계산, persistence와 Provider commit을 조립한다.
@@ -89,6 +99,41 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
     [controller, target],
   );
 
+  const reorder = useCallback(
+    (itemId: string, toIndex: number) => {
+      controller.commitState((currentState) => {
+        const previousPinnedIds = getPinnedIds(currentState, target);
+        const fromIndex = previousPinnedIds.indexOf(itemId);
+
+        if (
+          fromIndex === -1 ||
+          !Number.isInteger(toIndex) ||
+          toIndex < 0 ||
+          toIndex >= previousPinnedIds.length ||
+          fromIndex === toIndex
+        ) {
+          return null;
+        }
+
+        const nextPinnedIds = [...previousPinnedIds];
+        nextPinnedIds.splice(fromIndex, 1);
+        nextPinnedIds.splice(toIndex, 0, itemId);
+
+        return {
+          event: createReorderedEvent(target, {
+            fromIndex,
+            movedItemId: itemId,
+            pinnedIds: nextPinnedIds,
+            previousPinnedIds,
+            toIndex,
+          }),
+          patch: createPinStatePatch(target, nextPinnedIds),
+        };
+      });
+    },
+    [controller, target],
+  );
+
   const unpin = useCallback(
     (itemId: string) => {
       controller.commitState((currentState) => {
@@ -115,7 +160,7 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
   );
 
   return useMemo(
-    () => ({ isPinned, pin, pinnedIds, unpin }),
-    [isPinned, pin, pinnedIds, unpin],
+    () => ({ isPinned, pin, pinnedIds, reorder, unpin }),
+    [isPinned, pin, pinnedIds, reorder, unpin],
   );
 };

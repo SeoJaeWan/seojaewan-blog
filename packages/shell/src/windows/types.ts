@@ -92,11 +92,17 @@ export interface WindowPinStatePatch {
   windowsPinnedIds?: readonly string[];
 }
 
-/** Pin hook이 계산을 마치고 Provider에 전달할 state와 event. */
-export interface WindowStateCommit {
-  event: WindowMutableStateEvent;
-  patch: WindowPinStatePatch;
-}
+/** Pin hook이 계산을 마치고 Provider에 전달할 state와 명시적인 observer event. */
+export type WindowStateCommit =
+  | {
+      event: WindowMutableStateEvent;
+      patch: WindowPinStatePatch;
+    }
+  | {
+      /** stale item 정리처럼 사용자에게 알리지 않는 내부 상태 변경. */
+      event: null;
+      patch: WindowPinStatePatch;
+    };
 
 /** 최신 Provider snapshot에서 완료된 pin commit을 만드는 내부 계약. */
 export type WindowStateCommitProducer = (state: WindowsState) => WindowStateCommit | null;
