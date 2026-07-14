@@ -50,8 +50,8 @@ export interface WindowsPanelViewProps {
   onPinnedItemAnimationEnd?: (event: AnimationEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** 고정 타일 축소 transition 종료 이벤트를 기능 계층에 전달한다. */
   onPinnedItemTransitionEnd?: (event: TransitionEvent<HTMLButtonElement>, item: WindowItem) => void;
-  /** 고정됨/모두 항목 클릭 시 선택 item을 기능 계층에 전달한다. */
-  onSelectItem?: (item: WindowItem) => void;
+  /** 고정됨/모두 항목 클릭 시 선택 item과 발생 화면을 기능 계층에 전달한다. */
+  onSelectItem?: (item: WindowItem, source: WindowsPanelViewMode) => void;
   /** pinned/all 화면 변경을 기능 계층에 요청한다. */
   onViewChange?: (view: WindowsPanelViewMode) => void;
   /** 고정 타일 하나에 적용할 reorder visual 상태. 기본값은 null이다. */
@@ -81,7 +81,7 @@ const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
  * @param props.onViewChange pinned/all view 변경 요청 callback
  * @param props.onCategoryOverlayOpenChange category overlay open 변경 요청 callback
  * @param props.onCategorySelect category jump 선택 callback
- * @param props.onSelectItem 고정됨/모두 항목 선택 callback
+ * @param props.onSelectItem 고정됨/모두 항목과 발생 화면 선택 callback
  * @param props.onItemContextMenu 항목 contextmenu 이벤트와 source를 전달하는 callback
  * @param props.onPinnedItemTransitionEnd 고정 타일 transition 종료 callback
  * @param props.onPinnedItemAnimationEnd 고정 타일 animation 종료 callback
@@ -147,7 +147,7 @@ export const WindowsPanelView = ({
                     ? (event) => onPinnedItemAnimationEnd(event, item)
                     : undefined
                 }
-                onClick={() => onSelectItem?.(item)}
+                onClick={() => onSelectItem?.(item, "pinned")}
                 onContextMenu={
                   onItemContextMenu
                     ? (event) => onItemContextMenu(event, item, "pinned")
@@ -214,7 +214,7 @@ export const WindowsPanelView = ({
                     <button
                       key={item.id}
                       className="wb-windows-panel__item"
-                      onClick={() => onSelectItem?.(item)}
+                      onClick={() => onSelectItem?.(item, "all")}
                       onContextMenu={
                         onItemContextMenu
                           ? (event) => onItemContextMenu(event, item, "all")

@@ -1,29 +1,79 @@
 import type { WindowItem } from "@window/ui";
 
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { Windows } from "../../windows";
+import { useWindowEvent } from "../../windows/hooks/useWindowEvent";
+import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
+import { WINDOW_PIN_STORAGE_KEYS } from "../../windows/utils/windowPinStorage";
+import { TaskbarPanelHost } from "../panelHost";
 import { TaskbarWindowPanel } from "./index";
 
-const RESULTS: WindowItem[] = [
-  { id: "react", title: "React" },
-  { id: "redux", title: "Redux" },
-  { id: "media", title: "미디어" },
-];
+const REACT = { id: "react", title: "React" } satisfies WindowItem;
+const REDUX = { id: "redux", title: "Redux" } satisfies WindowItem;
+const MEDIA = { id: "media", title: "미디어" } satisfies WindowItem;
+const RESULTS = [REACT, REDUX, MEDIA] satisfies readonly WindowItem[];
 
-afterEach(cleanup);
+interface ObserverProps {
+  onContextMenu?: (event: WindowContextMenuEvent) => void;
+  onOpen?: (event: WindowItemEvent) => void;
+  onOpenLocation?: (event: WindowItemEvent) => void;
+  onTaskbarPin?: (event: WindowPinEvent) => void;
+  onTaskbarUnpin?: (event: WindowPinEvent) => void;
+  onWindowsPin?: (event: WindowPinEvent) => void;
+  onWindowsUnpin?: (event: WindowPinEvent) => void;
+}
+
+const Observer = ({
+  onContextMenu,
+  onOpen,
+  onOpenLocation,
+  onTaskbarPin,
+  onTaskbarUnpin,
+  onWindowsPin,
+  onWindowsUnpin,
+}: ObserverProps) => {
+  useWindowEvent("windowContextMenuRequested", (event) => onContextMenu?.(event));
+  useWindowEvent("windowOpen", (event) => onOpen?.(event));
+  useWindowEvent("windowOpenLocation", (event) => onOpenLocation?.(event));
+  useWindowEvent("windowPinToStart", (event) => onWindowsPin?.(event));
+  useWindowEvent("windowPinToTaskbar", (event) => onTaskbarPin?.(event));
+  useWindowEvent("windowUnpinFromStart", (event) => onWindowsUnpin?.(event));
+  useWindowEvent("windowUnpinFromTaskbar", (event) => onTaskbarUnpin?.(event));
+  return null;
+};
+
+const createTree = (windowsItems: readonly WindowItem[], observerProps: ObserverProps = {}) => (
+  <Windows windowsItems={windowsItems}>
+    <TaskbarPanelHost portalContainer={document.body}>
+      <Observer {...observerProps} />
+      <TaskbarWindowPanel id="start-panel" />
+    </TaskbarPanelHost>
+  </Windows>
+);
+
+const getSearchInput = () => screen.getByRole("textbox", { name: "앱 및 문서 검색" });
+
+beforeEach(() => {
+  window.localStorage.clear();
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  window.localStorage.clear();
+});
 
 describe("TaskbarWindowPanel", () => {
-  it("검색어가 없으면 전체 결과를 section으로 변환한 pinned/all view를 렌더링한다", () => {
-    const { container } = render(
-      <TaskbarWindowPanel
-        id="start-panel"
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "" }}
-      />,
-    );
+  it("지역 검색어가 비어 있으면 전체 item을 section으로 변환한다", () => {
+    const { container } = render(createTree(RESULTS));
 
     expect(screen.getByRole("dialog", { name: "시작" }).id).toBe("start-panel");
+    expect((getSearchInput() as HTMLInputElement).value).toBe("");
+
+    fireEvent.change(getSearchInput(), { target: { value: "   " } });
+    expect(screen.queryByRole("heading", { name: "최적의 일치" })).toBeNull();
 
     const views = container.querySelector(".wb-windows-panel__views");
     expect(views?.getAttribute("data-view")).toBe("pinned");
@@ -35,83 +85,102 @@ describe("TaskbarWindowPanel", () => {
     expect(container.querySelector('[data-category="ㅁ"]')?.textContent).toBe("ㅁ");
   });
 
-  it("검색 상세 선택 후 결과 객체가 갱신되면 같은 ID의 최신 item을 렌더링한다", () => {
-    const { container, rerender } = render(
-      <TaskbarWindowPanel
-        id="start-panel"
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "re" }}
-      />,
-    );
+  it("검색 상세 선택 뒤 windowsItems가 갱신되면 같은 ID의 최신 item을 렌더링한다", () => {
+    const { container, rerender } = render(createTree(RESULTS));
 
-    expect(screen.getByRole("heading", { name: "최적의 일치" }).textContent).toBe(
-      "최적의 일치",
-    );
+    fireEvent.change(getSearchInput(), { target: { value: "re" } });
     fireEvent.click(screen.getByRole("button", { name: "React 자세히" }));
     expect(container.querySelector(".wb-task-search-result__detail-title")?.textContent).toBe(
       "React",
     );
 
     const updatedItem: WindowItem = { id: "react", title: "React 업데이트" };
-    rerender(
-      <TaskbarWindowPanel
-        id="start-panel"
-        results={[updatedItem, ...RESULTS.slice(1)]}
-        searchInputProps={{ readOnly: true, value: "re" }}
-      />,
-    );
+    rerender(createTree([updatedItem, ...RESULTS.slice(1)]));
 
     expect(container.querySelector(".wb-task-search-result__detail-title")?.textContent).toBe(
       "React 업데이트",
     );
   });
 
-  it("검색 item 선택과 상세 action을 하나의 onAction으로 전달한다", () => {
-    const onAction = vi.fn();
-    const { container } = render(
-      <TaskbarWindowPanel
-        detailActions={[{ id: "openLocation" }]}
-        id="start-panel"
-        onAction={onAction}
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "re" }}
-      />,
+  it("상세 action을 고정 구성하고 현재 pin 상태에 맞춰 전환한다", async () => {
+    const onTaskbarPin = vi.fn();
+    const onTaskbarUnpin = vi.fn();
+    const onWindowsPin = vi.fn();
+    const onWindowsUnpin = vi.fn();
+
+    render(
+      createTree(RESULTS, {
+        onTaskbarPin,
+        onTaskbarUnpin,
+        onWindowsPin,
+        onWindowsUnpin,
+      }),
     );
-    const searchResult = container.querySelector(".wb-task-search-result__main");
-    if (!(searchResult instanceof HTMLButtonElement)) {
-      throw new Error("검색 결과 button을 찾을 수 없습니다.");
-    }
-
-    fireEvent.click(searchResult);
-
-    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
-
+    fireEvent.change(getSearchInput(), { target: { value: "react" } });
     fireEvent.click(screen.getByRole("button", { name: "React 자세히" }));
 
-    const detailSummary = container.querySelector(".wb-task-search-result__detail-summary");
-    if (!(detailSummary instanceof HTMLButtonElement)) {
-      throw new Error("검색 상세 summary button을 찾을 수 없습니다.");
-    }
+    expect(
+      screen.getByRole("button", { name: "파일 위치 열기" }).hasAttribute("disabled"),
+    ).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "시작 화면에 고정" }));
+    fireEvent.click(screen.getByRole("button", { name: "작업 표시줄에 고정" }));
 
-    fireEvent.click(detailSummary);
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "시작 화면에서 제거" }).hasAttribute("disabled"),
+      ).toBe(false);
+      expect(
+        screen
+          .getByRole("button", { name: "작업 표시줄에서 제거" })
+          .hasAttribute("disabled"),
+      ).toBe(false);
+    });
+    expect(onWindowsPin).toHaveBeenCalledWith({
+      itemId: "react",
+      pinnedIds: ["react"],
+      previousPinnedIds: [],
+    });
+    expect(onTaskbarPin).toHaveBeenCalledWith({
+      itemId: "react",
+      pinnedIds: ["react"],
+      previousPinnedIds: [],
+    });
+    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
+      JSON.stringify(["react"]),
+    );
+    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(
+      JSON.stringify(["react"]),
+    );
 
-    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+    fireEvent.click(screen.getByRole("button", { name: "시작 화면에서 제거" }));
+    fireEvent.click(screen.getByRole("button", { name: "작업 표시줄에서 제거" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "파일 위치 열기" }));
-
-    expect(onAction).toHaveBeenLastCalledWith("openLocation", RESULTS[0]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "시작 화면에 고정" })).toBeDefined();
+      expect(screen.getByRole("button", { name: "작업 표시줄에 고정" })).toBeDefined();
+    });
+    expect(onWindowsUnpin).toHaveBeenCalledWith({
+      itemId: "react",
+      pinnedIds: [],
+      previousPinnedIds: ["react"],
+    });
+    expect(onTaskbarUnpin).toHaveBeenCalledWith({
+      itemId: "react",
+      pinnedIds: [],
+      previousPinnedIds: ["react"],
+    });
+    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(JSON.stringify([]));
+    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(JSON.stringify([]));
   });
 
-  it("pinned와 all item 선택을 open action으로 전달한다", () => {
-    const onAction = vi.fn();
-    const { container } = render(
-      <TaskbarWindowPanel
-        id="start-panel"
-        onAction={onAction}
-        pinnedItems={RESULTS}
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "" }}
-      />,
+  it("pinned와 all item open event에 발생 화면을 보존한다", async () => {
+    const onOpen = vi.fn();
+
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["react"]));
+    const { container } = render(createTree(RESULTS, { onOpen }));
+
+    await waitFor(() =>
+      expect(container.querySelector(".wb-windows-panel__pinned-item")).not.toBeNull(),
     );
     const pinnedItem = container.querySelector(".wb-windows-panel__pinned-item");
     if (!(pinnedItem instanceof HTMLButtonElement)) {
@@ -119,79 +188,77 @@ describe("TaskbarWindowPanel", () => {
     }
 
     fireEvent.click(pinnedItem);
-
-    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+    expect(onOpen).toHaveBeenLastCalledWith({ item: REACT, source: "pinned" });
 
     fireEvent.click(screen.getByRole("button", { name: /^모두/ }));
-
     const allItem = container.querySelector(".wb-windows-panel__item");
     if (!(allItem instanceof HTMLButtonElement)) {
       throw new Error("all item button을 찾을 수 없습니다.");
     }
 
     fireEvent.click(allItem);
-
-    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+    expect(onOpen).toHaveBeenLastCalledWith({ item: REACT, source: "all" });
   });
 
-  it("검색 결과와 pinned/all item의 context menu source를 구분해 전달한다", () => {
-    const onItemContextMenu = vi.fn();
-    const { container, rerender } = render(
-      <TaskbarWindowPanel
-        id="start-panel"
-        onItemContextMenu={onItemContextMenu}
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "re" }}
-      />,
-    );
-    const searchResult = container.querySelector(".wb-task-search-result__main");
-    if (!(searchResult instanceof HTMLButtonElement)) {
-      throw new Error("검색 결과 button을 찾을 수 없습니다.");
+  it("context menu 기본 동작을 막고 search/pinned/all source만 dispatch한다", async () => {
+    const onContextMenu = vi.fn();
+
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["react"]));
+    const { container } = render(createTree(RESULTS, { onContextMenu }));
+
+    fireEvent.change(getSearchInput(), { target: { value: "react" } });
+    const searchItem = container.querySelector(".wb-task-search-result__main");
+    if (!(searchItem instanceof HTMLButtonElement)) {
+      throw new Error("search item button을 찾을 수 없습니다.");
     }
 
-    fireEvent.contextMenu(searchResult);
+    expect(fireEvent.contextMenu(searchItem)).toBe(false);
+    expect(onContextMenu).toHaveBeenLastCalledWith({ item: REACT, source: "search" });
 
-    expect(onItemContextMenu).toHaveBeenLastCalledWith(
-      expect.anything(),
-      RESULTS[0],
-      "search",
-    );
-
-    rerender(
-      <TaskbarWindowPanel
-        id="start-panel"
-        onItemContextMenu={onItemContextMenu}
-        pinnedItems={RESULTS}
-        results={RESULTS}
-        searchInputProps={{ readOnly: true, value: "" }}
-      />,
+    fireEvent.change(getSearchInput(), { target: { value: "" } });
+    await waitFor(() =>
+      expect(container.querySelector(".wb-windows-panel__pinned-item")).not.toBeNull(),
     );
     const pinnedItem = container.querySelector(".wb-windows-panel__pinned-item");
     if (!(pinnedItem instanceof HTMLButtonElement)) {
       throw new Error("pinned item button을 찾을 수 없습니다.");
     }
 
-    fireEvent.contextMenu(pinnedItem);
-
-    expect(onItemContextMenu).toHaveBeenLastCalledWith(
-      expect.anything(),
-      RESULTS[0],
-      "pinned",
-    );
+    expect(fireEvent.contextMenu(pinnedItem)).toBe(false);
+    expect(onContextMenu).toHaveBeenLastCalledWith({ item: REACT, source: "pinned" });
 
     fireEvent.click(screen.getByRole("button", { name: /^모두/ }));
-
     const allItem = container.querySelector(".wb-windows-panel__item");
     if (!(allItem instanceof HTMLButtonElement)) {
       throw new Error("all item button을 찾을 수 없습니다.");
     }
 
-    fireEvent.contextMenu(allItem);
+    expect(fireEvent.contextMenu(allItem)).toBe(false);
+    expect(onContextMenu).toHaveBeenLastCalledWith({ item: REACT, source: "all" });
+  });
 
-    expect(onItemContextMenu).toHaveBeenLastCalledWith(
-      expect.anything(),
-      RESULTS[0],
-      "all",
+  it("사라진 pinned item의 exit lifecycle을 view에 연결한다", async () => {
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["react"]));
+    const { container, rerender } = render(createTree(RESULTS));
+
+    await waitFor(() =>
+      expect(container.querySelector(".wb-windows-panel__pinned-item")).not.toBeNull(),
     );
+    rerender(createTree([REDUX, MEDIA]));
+
+    await waitFor(() =>
+      expect(container.querySelector(".wb-windows-panel__pinned-item--out")).not.toBeNull(),
+    );
+    const staleItem = container.querySelector(".wb-windows-panel__pinned-item");
+    if (!(staleItem instanceof HTMLButtonElement)) {
+      throw new Error("stale pinned item button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.transitionEnd(staleItem, { propertyName: "transform" });
+
+    await waitFor(() =>
+      expect(container.querySelector(".wb-windows-panel__pinned-item")).toBeNull(),
+    );
+    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(JSON.stringify([]));
   });
 });

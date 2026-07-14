@@ -30,7 +30,7 @@ export interface TaskSearchResultViewProps extends Omit<
   /** 결과 row 또는 상세 summary 클릭 시 선택 item을 전달한다. */
   onSelectItem?: (item: WindowItem) => void;
   /** 검색 결과 목록. 기본값은 빈 배열이다. */
-  results?: WindowItem[];
+  results?: readonly WindowItem[];
 }
 
 // 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값

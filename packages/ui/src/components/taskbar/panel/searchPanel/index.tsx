@@ -28,7 +28,7 @@ export interface SearchPanelProps extends Omit<TaskPanelProps, "children" | "res
   /** 검색어가 없을 때 상단 추천 목록에 표시할 항목. 기본값은 빈 배열이다. */
   recommendedItems?: WindowItem[];
   /** searchValue가 있을 때 결과 뷰에 전달할 항목. 기본값은 빈 배열이다. */
-  results?: WindowItem[];
+  results?: readonly WindowItem[];
   /** 값이 있으면 검색 결과 뷰를, 없으면 추천/best 뷰를 렌더한다. 기본값은 빈 문자열이다. */
   searchValue?: string;
 }
