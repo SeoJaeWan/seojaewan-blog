@@ -1,9 +1,14 @@
 "use client";
 
-import type { MouseEventHandler, RefObject } from "react";
+import type { ComponentProps, MouseEvent, MouseEventHandler, RefObject } from "react";
 import { useCallback, useId } from "react";
 
-import type { TaskbarStartButtonUIProps, WindowsPanelUIProps } from "@window/ui";
+import type {
+  TaskbarStartButtonUIProps,
+  WindowItem,
+  WindowsPanelItemSource,
+  WindowsPanelUIProps,
+} from "@window/ui";
 import { TaskbarStartButtonUI, WindowsPanelUI } from "@window/ui";
 
 import { useTaskbarPanel } from "../panelHost/hooks/useTaskbarPanel";
@@ -21,14 +26,44 @@ type TaskbarStartButtonControlledProp =
   | "selected"
   | "type";
 
-type WindowsPanelControlledProp = "aria-label" | "id" | "state";
+type WindowsPanelSearchInputProps = ComponentProps<typeof WindowsPanelUI.SearchInput>;
+type WindowsPanelSearchResultsProps = ComponentProps<typeof WindowsPanelUI.SearchResults>;
+type WindowsPanelViewProps = ComponentProps<typeof WindowsPanelUI.View>;
+
+// REMOVE: Work Unit 1에서 기존 panelProps를 compound children에 연결하기 위한 shell-local bridge다. Work Unit 5의 최종 TaskbarStartButton props 전환 시 제거한다.
+type TaskbarStartPanelProps = Omit<WindowsPanelUIProps, "aria-label" | "children" | "id"> & {
+  allListRef?: WindowsPanelViewProps["allListRef"];
+  categoryOverlayOpen?: WindowsPanelViewProps["categoryOverlayOpen"];
+  detailActions?: WindowsPanelSearchResultsProps["detailActions"];
+  detailItemId?: WindowsPanelSearchResultsProps["detailItemId"];
+  onCategoryOverlayOpenChange?: WindowsPanelViewProps["onCategoryOverlayOpenChange"];
+  onCategorySelect?: WindowsPanelViewProps["onCategorySelect"];
+  onDetailAction?: WindowsPanelSearchResultsProps["onDetailAction"];
+  onDetailItemChange?: WindowsPanelSearchResultsProps["onDetailItemChange"];
+  onItemContextMenu?: (
+    event: MouseEvent<HTMLButtonElement>,
+    item: WindowItem,
+    source: WindowsPanelItemSource,
+  ) => void;
+  onPinnedItemAnimationEnd?: WindowsPanelViewProps["onPinnedItemAnimationEnd"];
+  onPinnedItemTransitionEnd?: WindowsPanelViewProps["onPinnedItemTransitionEnd"];
+  onSelectItem?: WindowsPanelSearchResultsProps["onSelectItem"];
+  onViewChange?: WindowsPanelViewProps["onViewChange"];
+  pinnedItemAnimation?: WindowsPanelViewProps["pinnedItemAnimation"];
+  pinnedItems?: WindowsPanelViewProps["pinnedItems"];
+  searchInputProps?: WindowsPanelSearchInputProps;
+  searchResults?: WindowsPanelSearchResultsProps["results"];
+  searchValue?: string;
+  sections?: WindowsPanelViewProps["sections"];
+  view?: WindowsPanelViewProps["view"];
+};
 
 export interface TaskbarStartButtonProps extends Omit<
   TaskbarStartButtonUIProps,
   TaskbarStartButtonControlledProp
 > {
-  /** 시작 패널 visual에 전달할 controlled content props. */
-  panelProps?: Omit<WindowsPanelUIProps, WindowsPanelControlledProp>;
+  /** 시작 panel compound children에 나눠 전달할 임시 controlled content props. */
+  panelProps?: TaskbarStartPanelProps;
   /** useRef로 생성한 시작 button DOM 참조. */
   ref?: RefObject<HTMLButtonElement | null>;
 }
@@ -55,6 +90,29 @@ export const TaskbarStartButton = ({
     panelId: TASKBAR_START_PANEL_ID,
     placement: "rootCenter",
   });
+  const {
+    allListRef,
+    categoryOverlayOpen,
+    detailActions,
+    detailItemId,
+    onCategoryOverlayOpenChange,
+    onCategorySelect,
+    onDetailAction,
+    onDetailItemChange,
+    onItemContextMenu,
+    onPinnedItemAnimationEnd,
+    onPinnedItemTransitionEnd,
+    onSelectItem,
+    onViewChange,
+    pinnedItemAnimation,
+    pinnedItems,
+    searchInputProps,
+    searchResults,
+    searchValue,
+    sections,
+    view,
+    ...windowsPanelProps
+  } = panelProps ?? {};
 
   const handleTriggerRef = useCallback(
     (element: HTMLButtonElement | null) => {
@@ -78,6 +136,44 @@ export const TaskbarStartButton = ({
     [onClick, toggle],
   );
 
+  // REMOVE: 기존 panelProps 동작을 보존하는 inline compound 조립이다. Work Unit 4의 TaskbarWindowPanel 도입 시 이동한다.
+  const windowsPanel = (
+    <WindowsPanelUI {...windowsPanelProps} aria-label={ariaLabel} id={panelElementId}>
+      <WindowsPanelUI.SearchInput {...searchInputProps} />
+      {searchValue ? (
+        <WindowsPanelUI.SearchResults
+          detailActions={detailActions}
+          detailItemId={detailItemId}
+          onDetailAction={onDetailAction}
+          onDetailItemChange={onDetailItemChange}
+          onItemContextMenu={
+            onItemContextMenu
+              ? (event, item) => onItemContextMenu(event, item, "search")
+              : undefined
+          }
+          onSelectItem={onSelectItem}
+          results={searchResults}
+        />
+      ) : (
+        <WindowsPanelUI.View
+          allListRef={allListRef}
+          categoryOverlayOpen={categoryOverlayOpen}
+          onCategoryOverlayOpenChange={onCategoryOverlayOpenChange}
+          onCategorySelect={onCategorySelect}
+          onItemContextMenu={onItemContextMenu}
+          onPinnedItemAnimationEnd={onPinnedItemAnimationEnd}
+          onPinnedItemTransitionEnd={onPinnedItemTransitionEnd}
+          onSelectItem={onSelectItem}
+          onViewChange={onViewChange}
+          pinnedItemAnimation={pinnedItemAnimation}
+          pinnedItems={pinnedItems}
+          sections={sections}
+          view={view}
+        />
+      )}
+    </WindowsPanelUI>
+  );
+
   return (
     <>
       <TaskbarStartButtonUI
@@ -92,7 +188,7 @@ export const TaskbarStartButton = ({
         selected={isOpen}
         type="button"
       />
-      {renderPanel(<WindowsPanelUI {...panelProps} aria-label={ariaLabel} id={panelElementId} />)}
+      {renderPanel(windowsPanel)}
     </>
   );
 };

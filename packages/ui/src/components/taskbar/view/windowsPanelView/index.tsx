@@ -31,7 +31,7 @@ export interface WindowsPanelSection {
 }
 
 /** WindowsPanelView의 화면 상태와 외부 기능 계층에 위임할 interaction callback. */
-interface WindowsPanelViewProps {
+export interface WindowsPanelViewProps {
   /** 모두 화면의 scroll container를 외부 기능 계층에 전달할 ref. */
   allListRef?: Ref<HTMLDivElement>;
   /** category jump overlay의 열린 visual 상태. 기본값은 false이다. */

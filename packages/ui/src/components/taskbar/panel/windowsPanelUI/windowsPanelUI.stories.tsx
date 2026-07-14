@@ -33,13 +33,13 @@ const meta = {
     docs: {
       description: {
         component:
-          "시작 패널의 검색 input과 WindowsPanelView/TaskSearchResultView 조립을 렌더링한다. " +
-          "각 Story는 기본 panel 또는 searchValue에 따른 검색 상태를 controlled props로 보여 준다.",
+          "시작 패널의 compound root와 SearchInput/SearchResults/View namespaced visual을 제공한다. " +
+          "각 Story는 children 조합으로 기본, 검색, 상세 상태를 보여 준다.",
       },
     },
   },
   args: {
-    pinnedItems: PINNED_ITEMS,
+    "aria-label": "시작",
     // Storybook 캔버스에서는 viewport 기반 반응형 폭 대신 고정 폭으로 확인
     style: { width: 520 },
   },
@@ -49,29 +49,34 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  render: (args) => (
+    <WindowsPanelUI {...args}>
+      <WindowsPanelUI.SearchInput readOnly />
+      <WindowsPanelUI.View pinnedItems={PINNED_ITEMS} />
+    </WindowsPanelUI>
+  ),
+};
 
 export const SearchView: Story = {
-  args: {
-    searchInputProps: {
-      readOnly: true,
-      value: "정리",
-    },
-    searchResults: SEARCH_RESULTS,
-    searchValue: "정리",
-  },
+  render: (args) => (
+    <WindowsPanelUI {...args}>
+      <WindowsPanelUI.SearchInput readOnly value="정리" />
+      <WindowsPanelUI.SearchResults results={SEARCH_RESULTS} />
+    </WindowsPanelUI>
+  ),
 };
 
 export const SearchDetail: Story = {
-  args: {
-    detailActions: DETAIL_ACTIONS,
-    detailItemId: "rsc",
-    onDetailAction: () => undefined,
-    searchInputProps: {
-      readOnly: true,
-      value: "정리",
-    },
-    searchResults: SEARCH_RESULTS,
-    searchValue: "정리",
-  },
+  render: (args) => (
+    <WindowsPanelUI {...args}>
+      <WindowsPanelUI.SearchInput readOnly value="정리" />
+      <WindowsPanelUI.SearchResults
+        detailActions={DETAIL_ACTIONS}
+        detailItemId="rsc"
+        onDetailAction={() => undefined}
+        results={SEARCH_RESULTS}
+      />
+    </WindowsPanelUI>
+  ),
 };
