@@ -15,6 +15,7 @@ export type { UseWindowPinnedItemsResult } from "./windows/hooks/useWindowPinned
 export { useWindowPinnedItems } from "./windows/hooks/useWindowPinnedItems";
 export type { UseWindowPinsResult } from "./windows/hooks/useWindowPins";
 export { useWindowPins } from "./windows/hooks/useWindowPins";
+export { useWindowSearch } from "./windows/hooks/useWindowSearch";
 export type {
   WindowContextMenuEvent,
   WindowDispatch,

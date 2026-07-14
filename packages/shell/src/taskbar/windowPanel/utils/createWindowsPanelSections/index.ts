@@ -1,30 +1,6 @@
 import type { WindowItem, WindowsPanelSection } from "@window/ui";
 
-const CHOSEONG = [
-  "ㄱ",
-  "ㄲ",
-  "ㄴ",
-  "ㄷ",
-  "ㄸ",
-  "ㄹ",
-  "ㅁ",
-  "ㅂ",
-  "ㅃ",
-  "ㅅ",
-  "ㅆ",
-  "ㅇ",
-  "ㅈ",
-  "ㅉ",
-  "ㅊ",
-  "ㅋ",
-  "ㅌ",
-  "ㅍ",
-  "ㅎ",
-] as const;
-
-const HANGUL_START = 0xac00;
-const HANGUL_END = 0xd7a3;
-const HANGUL_SYLLABLE_STEP = 21 * 28;
+import { getHangulInitialConsonant } from "../../../../windows/utils/hangul";
 
 const createWindowsPanelInitialKey = (title: string) => {
   const trimmedTitle = title.trim();
@@ -32,14 +8,11 @@ const createWindowsPanelInitialKey = (title: string) => {
     return "";
   }
 
-  const codePoint = trimmedTitle.codePointAt(0) ?? 0;
-  if (codePoint >= HANGUL_START && codePoint <= HANGUL_END) {
-    return CHOSEONG[Math.floor((codePoint - HANGUL_START) / HANGUL_SYLLABLE_STEP)];
-  }
-
   const firstCharacter = trimmedTitle[0] ?? "";
-  if (codePoint >= 0x3131 && codePoint <= 0x314e) {
-    return firstCharacter;
+  const hangulInitialConsonant = getHangulInitialConsonant(firstCharacter);
+
+  if (hangulInitialConsonant !== null) {
+    return hangulInitialConsonant;
   }
   if (/[A-Za-z]/.test(firstCharacter)) {
     return firstCharacter.toLowerCase();
