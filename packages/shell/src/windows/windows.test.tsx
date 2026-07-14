@@ -49,7 +49,7 @@ const PinCommitProbe = ({ onEvent }: PinCommitProbeProps) => {
     "button",
     {
       onClick: () =>
-        controller.commitState({
+        controller.commitState(() => ({
           event: {
             name: "windowPinToStart",
             payload: {
@@ -59,14 +59,17 @@ const PinCommitProbe = ({ onEvent }: PinCommitProbeProps) => {
             },
           },
           patch: { windowsPinnedIds: ["calculator"] },
-        }),
+        })),
       type: "button",
     },
     "pin",
   );
 };
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+});
 
 describe("Windows", () => {
   it("최초 mount와 같은 items 참조에는 event를 발생시키지 않고 새 참조만 전달한다", () => {

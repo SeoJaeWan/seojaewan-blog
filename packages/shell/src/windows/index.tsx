@@ -1,53 +1,34 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { createContext, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import type { WindowItem } from "@window/ui";
 
+import { useWindowPinState } from "./hooks/useWindowPinState";
 import type {
   WindowDispatch,
   WindowMutableStateEvent,
   WindowsState,
+  WindowStateCommitProducer,
 } from "./types";
 import {
   createWindowEventRegistry,
   type WindowEventRegistry,
 } from "./utils/createWindowEventRegistry";
 
-interface MutableWindowsState {
-  taskbarPinnedIds: readonly string[];
-  windowsPinnedIds: readonly string[];
-}
-
-interface MutableWindowsStatePatch {
-  taskbarPinnedIds?: readonly string[];
-  windowsPinnedIds?: readonly string[];
-}
-
-export interface WindowStateCommit {
-  event: WindowMutableStateEvent;
-  patch: MutableWindowsStatePatch;
-}
-
 export interface WindowsControllerContextValue {
-  commitState: (commit: WindowStateCommit) => void;
+  commitState: (produceCommit: WindowStateCommitProducer) => void;
   dispatch: WindowDispatch;
   subscribe: WindowEventRegistry["subscribe"];
 }
-
-const INITIAL_MUTABLE_STATE: MutableWindowsState = {
-  taskbarPinnedIds: [],
-  windowsPinnedIds: [],
-};
-
-const mutableWindowsStateReducer = (
-  state: MutableWindowsState,
-  patch: MutableWindowsStatePatch,
-): MutableWindowsState => ({
-  taskbarPinnedIds: patch.taskbarPinnedIds ?? state.taskbarPinnedIds,
-  windowsPinnedIds: patch.windowsPinnedIds ?? state.windowsPinnedIds,
-});
 
 /** Windows 상태를 읽는 shell domain hook이 사용할 context. */
 export const WindowsStateContext = createContext<WindowsState | null>(null);
@@ -70,17 +51,17 @@ export interface WindowsProps {
  */
 export const Windows = ({ children, windowsItems }: WindowsProps) => {
   const [eventRegistry] = useState(createWindowEventRegistry);
-  const [mutableState, updateMutableState] = useReducer(
-    mutableWindowsStateReducer,
-    INITIAL_MUTABLE_STATE,
-  );
   const previousWindowsItemsRef = useRef(windowsItems);
   const pendingStateEventsRef = useRef<WindowMutableStateEvent[]>([]);
 
-  const commitState = useCallback((commit: WindowStateCommit) => {
-    pendingStateEventsRef.current.push(commit.event);
-    updateMutableState(commit.patch);
+  const queueStateEvent = useCallback((event: WindowMutableStateEvent) => {
+    pendingStateEventsRef.current.push(event);
   }, []);
+
+  const { commitState, pinState } = useWindowPinState({
+    onCommit: queueStateEvent,
+    windowsItems,
+  });
 
   const dispatch = useCallback<WindowDispatch>(
     (eventName, payload) => {
@@ -115,15 +96,15 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
     for (const event of pendingStateEvents) {
       eventRegistry.emit(event.name, event.payload);
     }
-  }, [eventRegistry, mutableState]);
+  }, [eventRegistry, pinState]);
 
   const stateValue = useMemo<WindowsState>(
     () => ({
-      taskbarPinnedIds: mutableState.taskbarPinnedIds,
+      taskbarPinnedIds: pinState.taskbarPinnedIds,
       windowsItems,
-      windowsPinnedIds: mutableState.windowsPinnedIds,
+      windowsPinnedIds: pinState.windowsPinnedIds,
     }),
-    [mutableState, windowsItems],
+    [pinState, windowsItems],
   );
 
   const controllerValue = useMemo<WindowsControllerContextValue>(

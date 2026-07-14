@@ -11,6 +11,8 @@ export type { WindowsProps } from "./windows";
 export { Windows } from "./windows";
 export { useWindowDispatch } from "./windows/hooks/useWindowDispatch";
 export { useWindowEvent } from "./windows/hooks/useWindowEvent";
+export type { UseWindowPinsResult } from "./windows/hooks/useWindowPins";
+export { useWindowPins } from "./windows/hooks/useWindowPins";
 export type {
   WindowContextMenuEvent,
   WindowDispatch,
@@ -21,6 +23,7 @@ export type {
   WindowItemEvent,
   WindowPinEvent,
   WindowPinsReorderedEvent,
+  WindowPinTarget,
   WindowsItemsUpdatedEvent,
   WindowsState,
   WindowStateEventMap,

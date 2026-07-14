@@ -7,6 +7,9 @@ export interface WindowsState {
   windowsPinnedIds: readonly string[];
 }
 
+/** pin 상태를 구분하는 전역 surface. */
+export type WindowPinTarget = "taskbar" | "windows";
+
 /** windowsItems prop의 참조가 변경되어 반영된 뒤 전달할 payload. */
 export interface WindowsItemsUpdatedEvent {
   items: readonly WindowItem[];
@@ -82,3 +85,18 @@ export type WindowMutableStateEvent = {
     payload: WindowStateEventMap[Name];
   };
 }[Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">];
+
+/** Provider가 반영할 수 있는 mutable pin state patch. */
+export interface WindowPinStatePatch {
+  taskbarPinnedIds?: readonly string[];
+  windowsPinnedIds?: readonly string[];
+}
+
+/** Pin hook이 계산을 마치고 Provider에 전달할 state와 event. */
+export interface WindowStateCommit {
+  event: WindowMutableStateEvent;
+  patch: WindowPinStatePatch;
+}
+
+/** 최신 Provider snapshot에서 완료된 pin commit을 만드는 내부 계약. */
+export type WindowStateCommitProducer = (state: WindowsState) => WindowStateCommit | null;
