@@ -3,7 +3,7 @@
 import type { ComponentProps, MouseEvent } from "react";
 import { useMemo } from "react";
 
-import type { WindowItem, WindowsPanelItemSource } from "@window/ui";
+import type { WindowItem, WindowItemActionId, WindowsPanelItemSource } from "@window/ui";
 import { WindowsPanelUI } from "@window/ui";
 
 import { useSearchResultDetail } from "./hooks/useSearchResultDetail";
@@ -14,40 +14,30 @@ type WindowsPanelSearchInputProps = ComponentProps<typeof WindowsPanelUI.SearchI
 type WindowsPanelSearchResultsProps = ComponentProps<typeof WindowsPanelUI.SearchResults>;
 type WindowsPanelViewProps = ComponentProps<typeof WindowsPanelUI.View>;
 
-const EMPTY_RESULTS: WindowItem[] = [];
-
 export interface TaskbarWindowPanelProps {
-  /** 시작 panel의 접근성 이름. Work Unit 6에서 내부 고정 명칭으로 전환한다. */
+  /** REMOVE: Unit 6 전까지 시작 panel 이름을 전달한다; 내부 고정 한글 문구 전환 시 제거한다. */
   "aria-label": string;
   /** 검색 결과 상세 item에 표시할 action 상태 목록. */
   detailActions?: WindowsPanelSearchResultsProps["detailActions"];
   /** 시작 button의 aria-controls와 연결할 panel element ID. */
   id: string;
-  /** 검색 결과 상세 action 요청을 기능 계층에 전달한다. */
-  onDetailAction?: WindowsPanelSearchResultsProps["onDetailAction"];
+  /** item에 요청한 semantic action과 대상을 기능 계층에 전달한다. */
+  onAction?: (action: WindowItemActionId, item: WindowItem) => void;
   /** item context menu 요청과 발생 영역을 기능 계층에 전달한다. */
   onItemContextMenu?: (
     event: MouseEvent<HTMLButtonElement>,
     item: WindowItem,
     source: WindowsPanelItemSource,
   ) => void;
-  /** pinned item fade-in animation 종료를 기능 계층에 전달한다. */
-  onPinnedItemAnimationEnd?: WindowsPanelViewProps["onPinnedItemAnimationEnd"];
-  /** pinned item 축소 transition 종료를 기능 계층에 전달한다. */
-  onPinnedItemTransitionEnd?: WindowsPanelViewProps["onPinnedItemTransitionEnd"];
-  /** item 선택을 기능 계층에 전달한다. */
-  onSelectItem?: WindowsPanelSearchResultsProps["onSelectItem"];
-  /** pinned item reorder visual 상태. */
-  pinnedItemAnimation?: WindowsPanelViewProps["pinnedItemAnimation"];
   /** pinned view에 표시할 item 목록. */
   pinnedItems?: WindowsPanelViewProps["pinnedItems"];
   /**
    * 현재 검색어에 해당하는 결과 목록.
    * 검색어가 비어 있을 때는 모두 보기 section을 만들 전체 item을 포함해야 한다.
    */
-  results?: WindowsPanelSearchResultsProps["results"];
+  results: WindowItem[];
   /** 검색 input의 controlled value와 native input props. */
-  searchInputProps?: WindowsPanelSearchInputProps;
+  searchInputProps: WindowsPanelSearchInputProps;
 }
 
 /**
@@ -65,20 +55,17 @@ export const TaskbarWindowPanel = ({
   "aria-label": ariaLabel,
   detailActions,
   id,
-  onDetailAction,
+  onAction,
   onItemContextMenu,
-  onPinnedItemAnimationEnd,
-  onPinnedItemTransitionEnd,
-  onSelectItem,
-  pinnedItemAnimation,
   pinnedItems,
-  results = EMPTY_RESULTS,
+  results,
   searchInputProps,
 }: TaskbarWindowPanelProps) => {
-  const searchValue = String(searchInputProps?.value ?? "");
+  const searchValue = String(searchInputProps.value ?? "");
   const sections = useMemo(() => createWindowsPanelSections(results), [results]);
   const navigation = useWindowsPanelNavigation();
   const searchDetail = useSearchResultDetail({ results, searchValue });
+  const handleOpenItem = onAction ? (item: WindowItem) => onAction("open", item) : undefined;
 
   return (
     <WindowsPanelUI aria-label={ariaLabel} id={id}>
@@ -87,24 +74,21 @@ export const TaskbarWindowPanel = ({
         <WindowsPanelUI.SearchResults
           detailActions={detailActions}
           detailItemId={searchDetail.detailItem?.id ?? null}
-          onDetailAction={onDetailAction}
+          onDetailAction={onAction}
           onDetailItemChange={searchDetail.onDetailItemChange}
           onItemContextMenu={
             onItemContextMenu
               ? (event, item) => onItemContextMenu(event, item, "search")
               : undefined
           }
-          onSelectItem={onSelectItem}
+          onSelectItem={handleOpenItem}
           results={results}
         />
       ) : (
         <WindowsPanelUI.View
           {...navigation}
           onItemContextMenu={onItemContextMenu}
-          onPinnedItemAnimationEnd={onPinnedItemAnimationEnd}
-          onPinnedItemTransitionEnd={onPinnedItemTransitionEnd}
-          onSelectItem={onSelectItem}
-          pinnedItemAnimation={pinnedItemAnimation}
+          onSelectItem={handleOpenItem}
           pinnedItems={pinnedItems}
           sections={sections}
         />

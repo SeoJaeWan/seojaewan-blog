@@ -69,7 +69,77 @@ describe("TaskbarWindowPanel", () => {
     );
   });
 
-  it("검색 결과와 pinned item의 context menu source를 구분해 전달한다", () => {
+  it("검색 item 선택과 상세 action을 하나의 onAction으로 전달한다", () => {
+    const onAction = vi.fn();
+    const { container } = render(
+      <TaskbarWindowPanel
+        aria-label="시작"
+        detailActions={[{ id: "openLocation" }]}
+        id="start-panel"
+        onAction={onAction}
+        results={RESULTS}
+        searchInputProps={{ readOnly: true, value: "re" }}
+      />,
+    );
+    const searchResult = container.querySelector(".wb-task-search-result__main");
+    if (!(searchResult instanceof HTMLButtonElement)) {
+      throw new Error("검색 결과 button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.click(searchResult);
+
+    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+
+    fireEvent.click(screen.getByRole("button", { name: "React 자세히" }));
+
+    const detailSummary = container.querySelector(".wb-task-search-result__detail-summary");
+    if (!(detailSummary instanceof HTMLButtonElement)) {
+      throw new Error("검색 상세 summary button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.click(detailSummary);
+
+    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+
+    fireEvent.click(screen.getByRole("button", { name: "파일 위치 열기" }));
+
+    expect(onAction).toHaveBeenLastCalledWith("openLocation", RESULTS[0]);
+  });
+
+  it("pinned와 all item 선택을 open action으로 전달한다", () => {
+    const onAction = vi.fn();
+    const { container } = render(
+      <TaskbarWindowPanel
+        aria-label="시작"
+        id="start-panel"
+        onAction={onAction}
+        pinnedItems={RESULTS}
+        results={RESULTS}
+        searchInputProps={{ readOnly: true, value: "" }}
+      />,
+    );
+    const pinnedItem = container.querySelector(".wb-windows-panel__pinned-item");
+    if (!(pinnedItem instanceof HTMLButtonElement)) {
+      throw new Error("pinned item button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.click(pinnedItem);
+
+    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+
+    fireEvent.click(screen.getByRole("button", { name: /^모두/ }));
+
+    const allItem = container.querySelector(".wb-windows-panel__item");
+    if (!(allItem instanceof HTMLButtonElement)) {
+      throw new Error("all item button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.click(allItem);
+
+    expect(onAction).toHaveBeenLastCalledWith("open", RESULTS[0]);
+  });
+
+  it("검색 결과와 pinned/all item의 context menu source를 구분해 전달한다", () => {
     const onItemContextMenu = vi.fn();
     const { container, rerender } = render(
       <TaskbarWindowPanel
@@ -114,6 +184,21 @@ describe("TaskbarWindowPanel", () => {
       expect.anything(),
       RESULTS[0],
       "pinned",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^모두/ }));
+
+    const allItem = container.querySelector(".wb-windows-panel__item");
+    if (!(allItem instanceof HTMLButtonElement)) {
+      throw new Error("all item button을 찾을 수 없습니다.");
+    }
+
+    fireEvent.contextMenu(allItem);
+
+    expect(onItemContextMenu).toHaveBeenLastCalledWith(
+      expect.anything(),
+      RESULTS[0],
+      "all",
     );
   });
 });
