@@ -14,7 +14,7 @@ import {
 import type { WindowItem, WindowsPanelPinnedItemAnimation } from "@window/ui";
 
 import { WindowsControllerContext, WindowsStateContext } from "../..";
-import type { WindowPinStatePatch, WindowPinTarget, WindowsState } from "../../types";
+import type { WindowPinTarget } from "../../types";
 import { useWindowPins } from "../useWindowPins";
 
 const PIN_ANIMATION_NAME = "wb-windows-fade-in";
@@ -36,33 +36,18 @@ interface StaleTransition {
 
 type PinTransition = ReorderTransition | StaleTransition;
 
-export interface UseWindowPinnedItemsResult {
+export interface UseWindowPinAnimation {
   /** 현재 surface에 렌더할 pin item. stale item은 out 완료 전까지 마지막 값을 유지한다. */
   pinnedItems: WindowItem[];
   /** 현재 item에 적용할 out/in visual phase. */
   pinnedItemAnimation: WindowsPanelPinnedItemAnimation | null;
   /** fade-in animation 완료를 현재 lifecycle에 전달한다. */
-  onPinnedItemAnimationEnd: (
-    event: AnimationEvent<HTMLButtonElement>,
-    item: WindowItem,
-  ) => void;
+  onPinnedItemAnimationEnd: (event: AnimationEvent<HTMLButtonElement>, item: WindowItem) => void;
   /** out transition 완료를 현재 lifecycle에 전달한다. */
-  onPinnedItemTransitionEnd: (
-    event: TransitionEvent<HTMLButtonElement>,
-    item: WindowItem,
-  ) => void;
-  /** out/in visual을 거쳐 item을 최종 index로 이동하도록 요청한다. */
-  requestReorder: (itemId: string, toIndex: number) => void;
+  onPinnedItemTransitionEnd: (event: TransitionEvent<HTMLButtonElement>, item: WindowItem) => void;
+  /** out/in visual을 거쳐 item을 최종 index로 이동한다. */
+  reorder: (itemId: string, toIndex: number) => void;
 }
-
-const getPinnedIds = (state: WindowsState, target: WindowPinTarget) =>
-  target === "windows" ? state.windowsPinnedIds : state.taskbarPinnedIds;
-
-const createPinStatePatch = (
-  target: WindowPinTarget,
-  pinnedIds: readonly string[],
-): WindowPinStatePatch =>
-  target === "windows" ? { windowsPinnedIds: pinnedIds } : { taskbarPinnedIds: pinnedIds };
 
 const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
   left === right ||
@@ -72,9 +57,7 @@ const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
  * target surface의 pin item cache와 reorder/stale exit lifecycle을 소유한다.
  * Provider pin 배열은 out 완료 뒤에만 변경하고 animation event가 누락되면 watchdog으로 완료한다.
  */
-export const useWindowPinnedItems = (
-  target: WindowPinTarget,
-): UseWindowPinnedItemsResult => {
+export const useWindowPinAnimation = (target: WindowPinTarget): UseWindowPinAnimation => {
   const state = useContext(WindowsStateContext);
   const controller = useContext(WindowsControllerContext);
   const pins = useWindowPins(target);
@@ -86,7 +69,7 @@ export const useWindowPinnedItems = (
   const transitionRef = useRef(transition);
 
   if (state === null || controller === null) {
-    throw new Error("useWindowPinnedItems는 Windows 안에서 사용해야 합니다.");
+    throw new Error("useWindowPinAnimation은 Windows 안에서 사용해야 합니다.");
   }
 
   const itemsById = useMemo(
@@ -129,10 +112,9 @@ export const useWindowPinnedItems = (
   const removeMissingPinnedIds = useCallback(
     (itemIds: readonly string[]) => {
       const requestedIds = new Set(itemIds);
+      const availableItemIds = new Set(state.windowsItems.map((item) => item.id));
 
-      controller.commitState((currentState) => {
-        const previousPinnedIds = getPinnedIds(currentState, target);
-        const availableItemIds = new Set(currentState.windowsItems.map((item) => item.id));
+      controller.updatePinnedIds(target, (previousPinnedIds) => {
         const nextPinnedIds = previousPinnedIds.filter(
           (itemId) => !requestedIds.has(itemId) || availableItemIds.has(itemId),
         );
@@ -143,11 +125,11 @@ export const useWindowPinnedItems = (
 
         return {
           event: null,
-          patch: createPinStatePatch(target, nextPinnedIds),
+          pinnedIds: nextPinnedIds,
         };
       });
     },
-    [controller, target],
+    [controller, state.windowsItems, target],
   );
 
   const completeOutTransition = useCallback(
@@ -173,7 +155,7 @@ export const useWindowPinnedItems = (
         return;
       }
 
-      pins.reorder(itemId, currentTransition.toIndex);
+      pins.applyReorder(itemId, currentTransition.toIndex);
       updateTransition({ ...currentTransition, phase: "in" });
     },
     [pins, removeMissingPinnedIds, updateTransition],
@@ -194,7 +176,7 @@ export const useWindowPinnedItems = (
     [updateTransition],
   );
 
-  const requestReorder = useCallback(
+  const reorder = useCallback(
     (itemId: string, toIndex: number) => {
       const pinnedIds = pinnedIdsRef.current;
       const fromIndex = pinnedIds.indexOf(itemId);
@@ -269,10 +251,7 @@ export const useWindowPinnedItems = (
     const missingIdSet = new Set(missingPinnedIds);
     const currentTransition = transitionRef.current;
 
-    if (
-      currentTransition?.kind === "stale" &&
-      !missingIdSet.has(currentTransition.itemId)
-    ) {
+    if (currentTransition?.kind === "stale" && !missingIdSet.has(currentTransition.itemId)) {
       updateTransition(null);
     } else if (
       currentTransition?.kind === "reorder" &&
@@ -308,12 +287,7 @@ export const useWindowPinnedItems = (
 
       return arePinnedIdsEqual(currentQueue, nextQueue) ? currentQueue : nextQueue;
     });
-  }, [
-    missingPinnedIds,
-    removeMissingPinnedIds,
-    updateStaleQueue,
-    updateTransition,
-  ]);
+  }, [missingPinnedIds, removeMissingPinnedIds, updateStaleQueue, updateTransition]);
 
   useEffect(() => {
     if (transition !== null || staleQueue.length === 0) {
@@ -353,14 +327,14 @@ export const useWindowPinnedItems = (
       onPinnedItemTransitionEnd,
       pinnedItemAnimation,
       pinnedItems,
-      requestReorder,
+      reorder,
     }),
     [
       onPinnedItemAnimationEnd,
       onPinnedItemTransitionEnd,
       pinnedItemAnimation,
       pinnedItems,
-      requestReorder,
+      reorder,
     ],
   );
 };

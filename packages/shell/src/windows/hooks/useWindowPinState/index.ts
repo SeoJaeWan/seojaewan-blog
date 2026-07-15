@@ -1,24 +1,9 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { WindowItem } from "@window/ui";
-
-import type {
-  WindowMutableStateEvent,
-  WindowPinStatePatch,
-  WindowStateCommitProducer,
-} from "../../types";
-import {
-  readWindowPinnedIds,
-  writeWindowPinnedIds,
-} from "../../utils/windowPinStorage";
+import type { UpdatePinnedIds, WindowMutableStateEvent, WindowPinTarget } from "../../types";
+import { readWindowPinnedIds, writeWindowPinnedIds } from "../../utils/windowPinStorage";
 
 interface WindowPinState {
   taskbarPinnedIds: readonly string[];
@@ -26,101 +11,83 @@ interface WindowPinState {
 }
 
 interface UseWindowPinStateOptions {
-  onCommit: (event: WindowMutableStateEvent) => void;
-  windowsItems: readonly WindowItem[];
+  onStateEvent: (event: WindowMutableStateEvent) => void;
 }
 
 interface UseWindowPinStateResult {
-  commitState: (produceCommit: WindowStateCommitProducer) => void;
   pinState: WindowPinState;
+  updatePinnedIds: UpdatePinnedIds;
 }
-
-const INITIAL_PIN_STATE: WindowPinState = {
-  taskbarPinnedIds: [],
-  windowsPinnedIds: [],
-};
 
 const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
   left === right ||
   (left.length === right.length && left.every((itemId, index) => itemId === right[index]));
 
-const windowPinStateReducer = (
-  state: WindowPinState,
-  patch: WindowPinStatePatch,
-): WindowPinState => {
-  const taskbarPinnedIds = patch.taskbarPinnedIds ?? state.taskbarPinnedIds;
-  const windowsPinnedIds = patch.windowsPinnedIds ?? state.windowsPinnedIds;
-
-  if (
-    arePinnedIdsEqual(state.taskbarPinnedIds, taskbarPinnedIds) &&
-    arePinnedIdsEqual(state.windowsPinnedIds, windowsPinnedIds)
-  ) {
-    return state;
-  }
-
-  return { taskbarPinnedIds, windowsPinnedIds };
-};
-
-const persistPinStatePatch = (patch: WindowPinStatePatch) => {
-  if (patch.taskbarPinnedIds !== undefined) {
-    writeWindowPinnedIds("taskbar", patch.taskbarPinnedIds);
-  }
-
-  if (patch.windowsPinnedIds !== undefined) {
-    writeWindowPinnedIds("windows", patch.windowsPinnedIds);
-  }
-};
+const getPinnedIds = (state: WindowPinState, target: WindowPinTarget) =>
+  target === "windows" ? state.windowsPinnedIds : state.taskbarPinnedIds;
 
 /**
- * Provider가 소유하는 pin state의 복원, 최신 snapshot과 완료된 commit 반영을 캡슐화한다.
+ * Provider가 소유하는 target별 pin state의 복원, 저장과 완료 update 반영을 캡슐화한다.
  * localStorage 복원은 client effect에서 수행하며 반복 실행돼도 observer event를 만들지 않는다.
  */
 export const useWindowPinState = ({
-  onCommit,
-  windowsItems,
+  onStateEvent,
 }: UseWindowPinStateOptions): UseWindowPinStateResult => {
-  const [pinState, updatePinState] = useReducer(windowPinStateReducer, INITIAL_PIN_STATE);
-  const pinStateRef = useRef(pinState);
-  const windowsItemsRef = useRef(windowsItems);
+  const [taskbarPinnedIds, setTaskbarPinnedIds] = useState<readonly string[]>([]);
+  const [windowsPinnedIds, setWindowsPinnedIds] = useState<readonly string[]>([]);
+  const pinStateRef = useRef<WindowPinState>({
+    taskbarPinnedIds: [],
+    windowsPinnedIds: [],
+  });
 
-  const applyPinStatePatch = useCallback((patch: WindowPinStatePatch) => {
-    pinStateRef.current = windowPinStateReducer(pinStateRef.current, patch);
-    updatePinState(patch);
+  const applyPinnedIds = useCallback((target: WindowPinTarget, pinnedIds: readonly string[]) => {
+    const currentState = pinStateRef.current;
+
+    if (arePinnedIdsEqual(getPinnedIds(currentState, target), pinnedIds)) {
+      return false;
+    }
+
+    pinStateRef.current =
+      target === "windows"
+        ? { ...currentState, windowsPinnedIds: pinnedIds }
+        : { ...currentState, taskbarPinnedIds: pinnedIds };
+
+    if (target === "windows") {
+      setWindowsPinnedIds(pinnedIds);
+    } else {
+      setTaskbarPinnedIds(pinnedIds);
+    }
+
+    return true;
   }, []);
 
-  const commitState = useCallback(
-    (produceCommit: WindowStateCommitProducer) => {
-      const commit = produceCommit({
-        taskbarPinnedIds: pinStateRef.current.taskbarPinnedIds,
-        windowsItems: windowsItemsRef.current,
-        windowsPinnedIds: pinStateRef.current.windowsPinnedIds,
-      });
+  const updatePinnedIds = useCallback<UpdatePinnedIds>(
+    (target, update) => {
+      const currentPinnedIds = getPinnedIds(pinStateRef.current, target);
+      const result = update(currentPinnedIds);
 
-      if (commit === null) {
+      if (result === null || !applyPinnedIds(target, result.pinnedIds)) {
         return;
       }
 
-      persistPinStatePatch(commit.patch);
+      writeWindowPinnedIds(target, result.pinnedIds);
 
-      if (commit.event !== null) {
-        onCommit(commit.event);
+      if (result.event !== null) {
+        onStateEvent(result.event);
       }
-
-      applyPinStatePatch(commit.patch);
     },
-    [applyPinStatePatch, onCommit],
+    [applyPinnedIds, onStateEvent],
   );
 
-  useLayoutEffect(() => {
-    windowsItemsRef.current = windowsItems;
-  }, [windowsItems]);
-
   useEffect(() => {
-    applyPinStatePatch({
-      taskbarPinnedIds: readWindowPinnedIds("taskbar"),
-      windowsPinnedIds: readWindowPinnedIds("windows"),
-    });
-  }, [applyPinStatePatch]);
+    applyPinnedIds("taskbar", readWindowPinnedIds("taskbar"));
+    applyPinnedIds("windows", readWindowPinnedIds("windows"));
+  }, [applyPinnedIds]);
 
-  return { commitState, pinState };
+  const pinState = useMemo<WindowPinState>(
+    () => ({ taskbarPinnedIds, windowsPinnedIds }),
+    [taskbarPinnedIds, windowsPinnedIds],
+  );
+
+  return { pinState, updatePinnedIds };
 };

@@ -24,16 +24,11 @@ const WindowsItemsObserver = ({ listener }: WindowsItemsObserverProps) => {
   return null;
 };
 
-interface PinCommitObservation {
-  payload: WindowPinEvent;
-  windowsPinnedIds: readonly string[];
+interface PinUpdateProbeProps {
+  onEvent: (payload: WindowPinEvent) => void;
 }
 
-interface PinCommitProbeProps {
-  onEvent: (observation: PinCommitObservation) => void;
-}
-
-const PinCommitProbe = ({ onEvent }: PinCommitProbeProps) => {
+const PinUpdateProbe = ({ onEvent }: PinUpdateProbeProps) => {
   const state = useContext(WindowsStateContext);
   const controller = useContext(WindowsControllerContext);
 
@@ -42,27 +37,40 @@ const PinCommitProbe = ({ onEvent }: PinCommitProbeProps) => {
   }
 
   useWindowEvent("windowPinToStart", (payload) => {
-    onEvent({ payload, windowsPinnedIds: state.windowsPinnedIds });
+    onEvent(payload);
   });
 
   return createElement(
-    "button",
-    {
-      onClick: () =>
-        controller.commitState(() => ({
-          event: {
-            name: "windowPinToStart",
-            payload: {
-              itemId: "calculator",
-              pinnedIds: ["calculator"],
-              previousPinnedIds: [],
-            },
-          },
-          patch: { windowsPinnedIds: ["calculator"] },
-        })),
-      type: "button",
-    },
-    "pin",
+    "div",
+    null,
+    createElement(
+      "output",
+      { "data-testid": "windows-pins" },
+      JSON.stringify(state.windowsPinnedIds),
+    ),
+    createElement(
+      "button",
+      {
+        onClick: () =>
+          controller.updatePinnedIds("windows", (previousPinnedIds) => {
+            const pinnedIds = [...previousPinnedIds, "calculator"];
+
+            return {
+              event: {
+                name: "windowPinToStart",
+                payload: {
+                  itemId: "calculator",
+                  pinnedIds,
+                  previousPinnedIds,
+                },
+              },
+              pinnedIds,
+            };
+          }),
+        type: "button",
+      },
+      "pin",
+    ),
   );
 };
 
@@ -75,13 +83,10 @@ describe("Windows", () => {
   it("최초 mount와 같은 items 참조에는 event를 발생시키지 않고 새 참조만 전달한다", () => {
     const listener = vi.fn();
     const createTree = (windowsItems: readonly WindowItem[]) =>
-      createElement(
-        Windows,
-        {
-          children: createElement(WindowsItemsObserver, { listener }),
-          windowsItems,
-        },
-      );
+      createElement(Windows, {
+        children: createElement(WindowsItemsObserver, { listener }),
+        windowsItems,
+      });
     const { rerender } = render(createTree(INITIAL_ITEMS));
 
     expect(listener).not.toHaveBeenCalled();
@@ -103,13 +108,10 @@ describe("Windows", () => {
       createElement(
         StrictMode,
         null,
-        createElement(
-          Windows,
-          {
-            children: createElement(WindowsItemsObserver, { listener }),
-            windowsItems,
-          },
-        ),
+        createElement(Windows, {
+          children: createElement(WindowsItemsObserver, { listener }),
+          windowsItems,
+        }),
       );
     const { rerender } = render(createTree(INITIAL_ITEMS));
 
@@ -118,29 +120,26 @@ describe("Windows", () => {
     expect(listener).toHaveBeenCalledOnce();
   });
 
-  it("mutable state를 commit한 render 뒤에 state event를 전달한다", async () => {
-    const onEvent = vi.fn<(observation: PinCommitObservation) => void>();
+  it("pin update에서 완료 payload를 직접 전달하고 다음 render에 state를 반영한다", async () => {
+    const onEvent = vi.fn<(payload: WindowPinEvent) => void>();
 
     render(
-      createElement(
-        Windows,
-        {
-          children: createElement(PinCommitProbe, { onEvent }),
-          windowsItems: INITIAL_ITEMS,
-        },
-      ),
+      createElement(Windows, {
+        children: createElement(PinUpdateProbe, { onEvent }),
+        windowsItems: INITIAL_ITEMS,
+      }),
     );
 
     fireEvent.click(screen.getByRole("button", { name: "pin" }));
 
-    await waitFor(() => expect(onEvent).toHaveBeenCalledOnce());
+    expect(onEvent).toHaveBeenCalledOnce();
     expect(onEvent).toHaveBeenCalledWith({
-      payload: {
-        itemId: "calculator",
-        pinnedIds: ["calculator"],
-        previousPinnedIds: [],
-      },
-      windowsPinnedIds: ["calculator"],
+      itemId: "calculator",
+      pinnedIds: ["calculator"],
+      previousPinnedIds: [],
     });
+    await waitFor(() =>
+      expect(screen.getByTestId("windows-pins").textContent).toBe(JSON.stringify(["calculator"])),
+    );
   });
 });

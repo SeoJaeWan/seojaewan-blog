@@ -52,23 +52,23 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 );
 ```
 
-`useWindowEvent`, `useWindowDispatch`, `useWindowPins`, `useWindowPinnedItems`와
+`useWindowEvent`, `useWindowDispatch`, `useWindowPins`, `useWindowPinAnimation`과
 `useWindowSearch`는 모두 `Windows` 아래에서만 호출한다.
 
 ## State Ownership
 
-| State                 | Source of truth                         | Update path                                                        |
-| --------------------- | --------------------------------------- | ------------------------------------------------------------------ |
-| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | prop 배열 참조가 변경될 때 Provider snapshot 갱신                  |
-| `taskbarPinnedIds`    | `Windows` 내부 pin state                | `useWindowPins("taskbar")` 또는 pin lifecycle hook의 완료된 commit |
-| `windowsPinnedIds`    | `Windows` 내부 pin state                | `useWindowPins("windows")` 또는 pin lifecycle hook의 완료된 commit |
-| observer registry     | `Windows` instance                      | `useWindowEvent` subscribe/unsubscribe, Provider emit              |
-| 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생                |
-| pinned item animation | `useWindowPinnedItems`                  | visual lifecycle 완료 뒤 Provider에 최종 commit                    |
+| State                 | Source of truth                         | Update path                                                    |
+| --------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | prop 배열 참조가 변경될 때 Provider snapshot 갱신              |
+| `taskbarPinnedIds`    | `Windows` 내부 pin state                | `useWindowPins("taskbar")`가 완료한 target ID update           |
+| `windowsPinnedIds`    | `Windows` 내부 pin state                | `useWindowPins("windows")` 또는 animation의 완료된 ID update   |
+| observer registry     | `Windows` instance                      | `useWindowEvent` subscribe/unsubscribe, Provider direct emit   |
+| 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생            |
+| pinned item animation | `useWindowPinAnimation`                 | item cache와 reorder/stale visual lifecycle을 surface에서 소유 |
 
-Provider는 `pin`, `unpin`, `reorder`의 정책과 animation 순서를 직접 결정하지 않는다. Hook이
-최신 Provider snapshot에서 최종 patch와 event를 계산하고, Provider는 patch 반영과 observer
-호출을 원자적인 commit 순서로 연결한다.
+Provider는 `pin`, `unpin`, `reorder`의 정책과 animation 순서를 직접 결정하지 않는다. Hook은
+target의 최신 ID 배열에서 다음 ID와 event를 계산하고, Provider 내부 `useWindowPinState`는 완료된
+ID를 반영·저장한 뒤 event가 있으면 직접 전달한다.
 
 ## `windowsItems` Contract
 
@@ -99,24 +99,41 @@ Provider는 `pin`, `unpin`, `reorder`의 정책과 animation 순서를 직접 �
 - client effect에서 두 key를 읽어 복원하며 복원 자체는 observer event를 만들지 않는다.
 - key 누락, JSON 파싱 실패, string 배열이 아닌 값, localStorage 접근 실패는 빈 배열로 복구한다.
 - 중복 ID는 처음 등장한 순서만 유지한다.
-- 쓰기 실패는 런타임 동작을 중단시키지 않는다. 현재 메모리 commit은 유지한다.
+- 쓰기 실패는 런타임 동작을 중단시키지 않는다. 현재 메모리 update는 유지한다.
 - key schema를 바꿀 때는 `_v2`, `_v3`처럼 새 key를 만들고 migration 정책을 별도로 정의한다.
 
 ### Mutation And Visual Lifecycle
 
-`useWindowPins(target)`은 현재 ID를 읽고 다음 동작을 제공한다.
+Provider 내부 update gateway는 target의 최신 ID 배열만 functional updater에 전달한다.
+
+```ts
+type PinnedIdsUpdate = {
+  pinnedIds: readonly string[];
+  event: WindowMutableStateEvent | null;
+};
+
+type UpdatePinnedIds = (
+  target: WindowPinTarget,
+  update: (currentPinnedIds: readonly string[]) => PinnedIdsUpdate | null,
+) => void;
+```
+
+`useWindowPins(target)`은 animation 지역 상태 없이 현재 ID를 읽고 다음 동작을 제공한다.
 
 - `isPinned(itemId)`
 - `pin(itemId)`
 - `unpin(itemId)`
-- `reorder(itemId, toIndex)`
+- `applyReorder(itemId, toIndex)`
 - `pinnedIds`
 
-`useWindowPinnedItems(target)`은 ID를 실제 `WindowItem`으로 변환하고 reorder 및 stale item의
-out/in lifecycle을 소유한다. Reorder는 out transition이 끝난 뒤 순서를 commit하고 새 위치의
-in animation을 완료한다. `windowsItems`에서 사라진 pinned item은 마지막 item snapshot으로
-exit visual을 마친 뒤 ID와 localStorage를 정리한다. 이 자동 정리는 사용자 action이 아니므로
-unpin observer event를 전달하지 않는다.
+`useWindowPinAnimation(target)`은 내부에서 `useWindowPins(target)`을 사용하고 ID를 실제
+`WindowItem`으로 변환한다. 이 hook만 item cache와 reorder 및 stale item의 out/in lifecycle을
+소유한다. Reorder는 `reorder(itemId, toIndex)`로 visual을 시작하고 out transition이 끝난 뒤
+`applyReorder`로 순서를 반영한 다음 새 위치의 in animation을 완료한다.
+
+`windowsItems`에서 사라진 pinned item은 마지막 item snapshot으로 exit visual을 마친 뒤 내부
+update gateway를 통해 ID와 localStorage를 정리한다. 이 자동 정리는 사용자 action이 아니므로
+public stale 제거 API나 unpin observer event를 만들지 않는다.
 
 Animation event가 누락되어도 500ms watchdog이 lifecycle을 완료한다. Transition 진행 중에는
 충돌하는 새 reorder 요청을 무시한다.
@@ -151,7 +168,10 @@ Listener 하나가 예외를 던져도 다른 listener와 원래 update/dispatch
 - `windowOpenLocation`
 - `windowContextMenuRequested`
 
-Pin과 item update event는 완료된 Provider commit에 묶여야 하므로 public dispatch 대상이 아니다.
+Pin과 item update event는 완료된 state update 경로에서만 만들어지므로 public dispatch 대상이
+아니다. Pin event는 별도 render 대기 queue 없이 직접 전달한다. Observer가 해당 변경의 완료
+결과를 필요로 할 때는 event payload의 `pinnedIds`와 `previousPinnedIds`를 사용하며 context state는
+다음 React render에서 같은 값으로 갱신된다.
 
 ## Event Contract
 
@@ -166,17 +186,17 @@ Pin과 item update event는 완료된 Provider commit에 묶여야 하므로 pub
 `source`는 `"pinned" | "all" | "search"`다. Context menu payload에는 React
 `MouseEvent`나 좌표를 포함하지 않는다.
 
-### State commit events
+### State update events
 
 | Event                    | Payload                                                             | Timing                                       |
 | ------------------------ | ------------------------------------------------------------------- | -------------------------------------------- |
 | `windowsItemsUpdated`    | `{ items, previousItems }`                                          | `windowsItems` prop의 배열 참조 변경 반영 후 |
-| `windowPinToStart`       | `{ itemId, pinnedIds, previousPinnedIds }`                          | 시작 화면 pin commit 후                      |
-| `windowUnpinFromStart`   | `{ itemId, pinnedIds, previousPinnedIds }`                          | 시작 화면 unpin commit 후                    |
-| `windowPinToTaskbar`     | `{ itemId, pinnedIds, previousPinnedIds }`                          | taskbar pin commit 후                        |
-| `windowUnpinFromTaskbar` | `{ itemId, pinnedIds, previousPinnedIds }`                          | taskbar unpin commit 후                      |
-| `windowsPinsReordered`   | `{ fromIndex, movedItemId, pinnedIds, previousPinnedIds, toIndex }` | 시작 화면 reorder commit 후                  |
-| `taskbarPinsReordered`   | `{ fromIndex, movedItemId, pinnedIds, previousPinnedIds, toIndex }` | taskbar reorder commit 후                    |
+| `windowPinToStart`       | `{ itemId, pinnedIds, previousPinnedIds }`                          | 시작 화면 pin ID update 후                   |
+| `windowUnpinFromStart`   | `{ itemId, pinnedIds, previousPinnedIds }`                          | 시작 화면 unpin ID update 후                 |
+| `windowPinToTaskbar`     | `{ itemId, pinnedIds, previousPinnedIds }`                          | taskbar pin ID update 후                     |
+| `windowUnpinFromTaskbar` | `{ itemId, pinnedIds, previousPinnedIds }`                          | taskbar unpin ID update 후                   |
+| `windowsPinsReordered`   | `{ fromIndex, movedItemId, pinnedIds, previousPinnedIds, toIndex }` | 시작 화면 reorder ID update 후               |
+| `taskbarPinsReordered`   | `{ fromIndex, movedItemId, pinnedIds, previousPinnedIds, toIndex }` | taskbar reorder ID update 후                 |
 
 `pinnedIds`와 `previousPinnedIds`는 해당 target의 목록만 나타낸다. Stale item 자동 정리는 이
 표의 event를 발생시키지 않는다.
@@ -185,17 +205,17 @@ Pin과 item update event는 완료된 Provider commit에 묶여야 하므로 pub
 
 `@window/shell`은 Windows domain에 다음 API를 공개한다.
 
-| API                                                   | Responsibility                                      |
-| ----------------------------------------------------- | --------------------------------------------------- |
-| `Windows` / `WindowsProps`                            | 전역 item, pin state와 observer registry 제공       |
-| `useWindowEvent`                                      | typed flat event 구독                               |
-| `useWindowDispatch`                                   | 상태 없는 open/location/context menu event dispatch |
-| `useWindowPins` / `UseWindowPinsResult`               | target별 pin add/remove/reorder 계산과 commit       |
-| `useWindowPinnedItems` / `UseWindowPinnedItemsResult` | pin item lookup과 reorder/stale animation lifecycle |
-| `useWindowSearch`                                     | 현재 item의 derived 검색 결과                       |
-| `WindowEventMap`과 관련 event/payload types           | observer 및 dispatch 타입 계약                      |
+| API                                               | Responsibility                                      |
+| ------------------------------------------------- | --------------------------------------------------- |
+| `Windows` / `WindowsProps`                        | 전역 item, pin state와 observer registry 제공       |
+| `useWindowEvent`                                  | typed flat event 구독                               |
+| `useWindowDispatch`                               | 상태 없는 open/location/context menu event dispatch |
+| `useWindowPins` / `UseWindowPins`                 | target별 pin 조회와 완료 update                     |
+| `useWindowPinAnimation` / `UseWindowPinAnimation` | pin item lookup과 reorder/stale animation lifecycle |
+| `useWindowSearch`                                 | 현재 item의 derived 검색 결과                       |
+| `WindowEventMap`과 관련 event/payload types       | observer 및 dispatch 타입 계약                      |
 
-내부 context, `commitState`, pin storage helper와 event registry는 public API가 아니다.
+내부 context, `UpdatePinnedIds`, pin storage helper와 event registry는 public API가 아니다.
 
 ## Taskbar Adapter Policy
 
@@ -215,5 +235,7 @@ interaction 순서를 결정하고, 앱 observer는 이미 발생한 semantic ev
 - `PinProvider`, `usePins`, `useOptionalPins`
 - app callback과 `pinnedItems`를 `TaskbarStartButton`까지 전달하는 props drilling
 - Provider가 public `pin`, `unpin`, `reorder` action policy를 직접 소유하는 구조
+- `useWindowPinnedItems`, `UseWindowPinnedItemsResult`, `UseWindowPinsResult`
+- 범용 `WindowStateCommitProducer`, patch와 render 이후 event queue
 - action 종류를 payload 안에서 다시 분기하는 단일 `itemActionRequested` event
 - `windowsItems`를 hook으로 직접 교체하는 `updateWindowsItems`

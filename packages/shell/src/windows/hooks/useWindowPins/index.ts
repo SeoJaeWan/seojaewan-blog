@@ -7,27 +7,21 @@ import type {
   WindowMutableStateEvent,
   WindowPinEvent,
   WindowPinsReorderedEvent,
-  WindowPinStatePatch,
   WindowPinTarget,
   WindowsState,
 } from "../../types";
 
-export interface UseWindowPinsResult {
+export interface UseWindowPins {
+  /** Animation 완료 뒤 실제 target 순서를 반영한다. */
+  applyReorder: (itemId: string, toIndex: number) => void;
   isPinned: (itemId: string) => boolean;
   pin: (itemId: string) => void;
   pinnedIds: readonly string[];
-  reorder: (itemId: string, toIndex: number) => void;
   unpin: (itemId: string) => void;
 }
 
 const getPinnedIds = (state: WindowsState, target: WindowPinTarget) =>
   target === "windows" ? state.windowsPinnedIds : state.taskbarPinnedIds;
-
-const createPinStatePatch = (
-  target: WindowPinTarget,
-  pinnedIds: readonly string[],
-): WindowPinStatePatch =>
-  target === "windows" ? { windowsPinnedIds: pinnedIds } : { taskbarPinnedIds: pinnedIds };
 
 const createPinEvent = (
   target: WindowPinTarget,
@@ -54,12 +48,12 @@ const createReorderedEvent = (
     : { name: "taskbarPinsReordered", payload };
 
 /**
- * Target별 pin ID를 읽고 add/remove 계산, persistence와 Provider commit을 조립한다.
+ * Target별 pin ID를 읽고 add/remove와 완료된 reorder update를 계산한다.
  *
  * @param target windows panel 또는 taskbar pin surface
  * @returns 현재 pin ID와 pin/unpin 동작
  */
-export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
+export const useWindowPins = (target: WindowPinTarget): UseWindowPins => {
   const state = useContext(WindowsStateContext);
   const controller = useContext(WindowsControllerContext);
 
@@ -73,12 +67,10 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
 
   const pin = useCallback(
     (itemId: string) => {
-      controller.commitState((currentState) => {
-        const previousPinnedIds = getPinnedIds(currentState, target);
-
+      controller.updatePinnedIds(target, (previousPinnedIds) => {
         if (
           previousPinnedIds.includes(itemId) ||
-          !currentState.windowsItems.some((item) => item.id === itemId)
+          !state.windowsItems.some((item) => item.id === itemId)
         ) {
           return null;
         }
@@ -92,17 +84,16 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
 
         return {
           event: createPinEvent(target, payload),
-          patch: createPinStatePatch(target, nextPinnedIds),
+          pinnedIds: nextPinnedIds,
         };
       });
     },
-    [controller, target],
+    [controller, state.windowsItems, target],
   );
 
-  const reorder = useCallback(
+  const applyReorder = useCallback(
     (itemId: string, toIndex: number) => {
-      controller.commitState((currentState) => {
-        const previousPinnedIds = getPinnedIds(currentState, target);
+      controller.updatePinnedIds(target, (previousPinnedIds) => {
         const fromIndex = previousPinnedIds.indexOf(itemId);
 
         if (
@@ -127,7 +118,7 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
             previousPinnedIds,
             toIndex,
           }),
-          patch: createPinStatePatch(target, nextPinnedIds),
+          pinnedIds: nextPinnedIds,
         };
       });
     },
@@ -136,9 +127,7 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
 
   const unpin = useCallback(
     (itemId: string) => {
-      controller.commitState((currentState) => {
-        const previousPinnedIds = getPinnedIds(currentState, target);
-
+      controller.updatePinnedIds(target, (previousPinnedIds) => {
         if (!previousPinnedIds.includes(itemId)) {
           return null;
         }
@@ -152,7 +141,7 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
 
         return {
           event: createUnpinEvent(target, payload),
-          patch: createPinStatePatch(target, nextPinnedIds),
+          pinnedIds: nextPinnedIds,
         };
       });
     },
@@ -160,7 +149,7 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPinsResult => {
   );
 
   return useMemo(
-    () => ({ isPinned, pin, pinnedIds, reorder, unpin }),
-    [isPinned, pin, pinnedIds, reorder, unpin],
+    () => ({ applyReorder, isPinned, pin, pinnedIds, unpin }),
+    [applyReorder, isPinned, pin, pinnedIds, unpin],
   );
 };

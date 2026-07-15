@@ -1,23 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { WindowItem } from "@window/ui";
 
 import { useWindowPinState } from "./hooks/useWindowPinState";
 import type {
+  UpdatePinnedIds,
   WindowDispatch,
   WindowMutableStateEvent,
   WindowsState,
-  WindowStateCommitProducer,
 } from "./types";
 import {
   createWindowEventRegistry,
@@ -25,9 +18,9 @@ import {
 } from "./utils/createWindowEventRegistry";
 
 export interface WindowsControllerContextValue {
-  commitState: (produceCommit: WindowStateCommitProducer) => void;
   dispatch: WindowDispatch;
   subscribe: WindowEventRegistry["subscribe"];
+  updatePinnedIds: UpdatePinnedIds;
 }
 
 /** Windows 상태를 읽는 shell domain hook이 사용할 context. */
@@ -44,7 +37,7 @@ export interface WindowsProps {
 
 /**
  * 앱 root에서 전체 WindowItem, surface별 pin ID와 observer registry를 제공한다.
- * windowsItems는 props만 source of truth로 사용하고 mutable pin state 변경은 완료된 commit만 받는다.
+ * windowsItems는 props만 source of truth로 사용하고 pin hook이 완료한 ID update만 반영한다.
  *
  * @param props.children Windows domain을 사용할 shell과 앱 컴포넌트
  * @param props.windowsItems 앱이 소유하는 전체 WindowItem
@@ -52,15 +45,16 @@ export interface WindowsProps {
 export const Windows = ({ children, windowsItems }: WindowsProps) => {
   const [eventRegistry] = useState(createWindowEventRegistry);
   const previousWindowsItemsRef = useRef(windowsItems);
-  const pendingStateEventsRef = useRef<WindowMutableStateEvent[]>([]);
 
-  const queueStateEvent = useCallback((event: WindowMutableStateEvent) => {
-    pendingStateEventsRef.current.push(event);
-  }, []);
+  const emitStateEvent = useCallback(
+    (event: WindowMutableStateEvent) => {
+      eventRegistry.emit(event.name, event.payload);
+    },
+    [eventRegistry],
+  );
 
-  const { commitState, pinState } = useWindowPinState({
-    onCommit: queueStateEvent,
-    windowsItems,
+  const { pinState, updatePinnedIds } = useWindowPinState({
+    onStateEvent: emitStateEvent,
   });
 
   const dispatch = useCallback<WindowDispatch>(
@@ -84,20 +78,6 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
     });
   }, [eventRegistry, windowsItems]);
 
-  useEffect(() => {
-    const pendingStateEvents = pendingStateEventsRef.current;
-
-    if (pendingStateEvents.length === 0) {
-      return;
-    }
-
-    pendingStateEventsRef.current = [];
-
-    for (const event of pendingStateEvents) {
-      eventRegistry.emit(event.name, event.payload);
-    }
-  }, [eventRegistry, pinState]);
-
   const stateValue = useMemo<WindowsState>(
     () => ({
       taskbarPinnedIds: pinState.taskbarPinnedIds,
@@ -109,11 +89,11 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
 
   const controllerValue = useMemo<WindowsControllerContextValue>(
     () => ({
-      commitState,
       dispatch,
       subscribe: eventRegistry.subscribe,
+      updatePinnedIds,
     }),
-    [commitState, dispatch, eventRegistry],
+    [dispatch, eventRegistry, updatePinnedIds],
   );
 
   return (

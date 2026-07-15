@@ -7,15 +7,11 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../..";
-import type {
-  WindowPinEvent,
-  WindowPinsReorderedEvent,
-  WindowPinTarget,
-} from "../../types";
+import type { WindowPinEvent, WindowPinsReorderedEvent, WindowPinTarget } from "../../types";
 import { WINDOW_PIN_STORAGE_KEYS } from "../../utils/windowPinStorage";
 import { useWindowEvent } from "../useWindowEvent";
 import { useWindowPins } from "../useWindowPins";
-import { useWindowPinnedItems } from "./index";
+import { useWindowPinAnimation } from "./index";
 
 const CALCULATOR = { id: "calculator", title: "계산기" } satisfies WindowItem;
 const TERMINAL = { id: "terminal", title: "터미널" } satisfies WindowItem;
@@ -33,16 +29,12 @@ interface LifecycleHarnessProps {
   target?: WindowPinTarget;
 }
 
-const LifecycleHarness = ({
-  onReorder,
-  onUnpin,
-  target = "windows",
-}: LifecycleHarnessProps) => {
+const LifecycleHarness = ({ onReorder, onUnpin, target = "windows" }: LifecycleHarnessProps) => {
   const pins = useWindowPins(target);
-  const lifecycle = useWindowPinnedItems(target);
+  const lifecycle = useWindowPinAnimation(target);
 
   useWindowEvent("windowsPinsReordered", (payload) => {
-    onReorder?.({ payload, pinnedIds: pins.pinnedIds });
+    onReorder?.({ payload, pinnedIds: payload.pinnedIds });
   });
   useWindowEvent("windowUnpinFromStart", (payload) => {
     onUnpin?.(payload);
@@ -67,7 +59,7 @@ const LifecycleHarness = ({
     ),
     createElement(
       "button",
-      { onClick: () => lifecycle.requestReorder("terminal", 0), type: "button" },
+      { onClick: () => lifecycle.reorder("terminal", 0), type: "button" },
       "request terminal first",
     ),
     createElement(
@@ -93,10 +85,7 @@ const LifecycleHarness = ({
   );
 };
 
-const createTree = (
-  windowsItems: readonly WindowItem[],
-  props: LifecycleHarnessProps = {},
-) =>
+const createTree = (windowsItems: readonly WindowItem[], props: LifecycleHarnessProps = {}) =>
   createElement(Windows, {
     children: createElement(LifecycleHarness, props),
     windowsItems,
@@ -106,9 +95,7 @@ const expectOutput = async (
   testId: "pin-animation" | "pinned-ids" | "pinned-items",
   value: unknown,
 ) => {
-  await waitFor(() =>
-    expect(screen.getByTestId(testId).textContent).toBe(JSON.stringify(value)),
-  );
+  await waitFor(() => expect(screen.getByTestId(testId).textContent).toBe(JSON.stringify(value)));
 };
 
 beforeEach(() => {
@@ -122,8 +109,8 @@ afterEach(() => {
   window.localStorage.clear();
 });
 
-describe("useWindowPinnedItems", () => {
-  it("out 완료 뒤 reorder를 commit하고 in 완료 뒤 animation을 정리한다", async () => {
+describe("useWindowPinAnimation", () => {
+  it("out 완료 뒤 reorder를 반영하고 in 완료 뒤 animation을 정리한다", async () => {
     const onReorder = vi.fn<(observation: ReorderObservation) => void>();
 
     window.localStorage.setItem(
@@ -261,10 +248,7 @@ describe("useWindowPinnedItems", () => {
   it("Taskbar의 cache 없는 stale ID는 Windows key에 영향 없이 정리한다", async () => {
     const onUnpin = vi.fn();
 
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["terminal"]),
-    );
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["terminal"]));
     window.localStorage.setItem(
       WINDOW_PIN_STORAGE_KEYS.taskbar,
       JSON.stringify(["missing", "calculator"]),

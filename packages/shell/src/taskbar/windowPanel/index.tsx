@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { WindowsPanelUI } from "@window/ui";
 
-import { useWindowPinnedItems } from "../../windows/hooks/useWindowPinnedItems";
+import { useWindowPinAnimation } from "../../windows/hooks/useWindowPinAnimation";
 import { useWindowSearch } from "../../windows/hooks/useWindowSearch";
 import { useSearchResultDetail } from "./hooks/useSearchResultDetail";
 import { useTaskbarWindowPanelInteractions } from "./hooks/useTaskbarWindowPanelInteractions";
@@ -27,7 +27,7 @@ export const TaskbarWindowPanel = ({ id }: TaskbarWindowPanelProps) => {
   const [searchValue, setSearchValue] = useState("");
   const hasSearchQuery = searchValue.trim().length > 0;
   const results = useWindowSearch(searchValue);
-  const pinnedItems = useWindowPinnedItems("windows");
+  const pinAnimation = useWindowPinAnimation("windows");
   const sections = useMemo(() => createWindowsPanelSections(results), [results]);
   const navigation = useWindowsPanelNavigation();
   const searchDetail = useSearchResultDetail({ results, searchValue });
@@ -53,11 +53,11 @@ export const TaskbarWindowPanel = ({ id }: TaskbarWindowPanelProps) => {
         <WindowsPanelUI.View
           {...navigation}
           onItemContextMenu={interactions.onItemContextMenu}
-          onPinnedItemAnimationEnd={pinnedItems.onPinnedItemAnimationEnd}
-          onPinnedItemTransitionEnd={pinnedItems.onPinnedItemTransitionEnd}
+          onPinnedItemAnimationEnd={pinAnimation.onPinnedItemAnimationEnd}
+          onPinnedItemTransitionEnd={pinAnimation.onPinnedItemTransitionEnd}
           onSelectItem={interactions.onOpenItem}
-          pinnedItemAnimation={pinnedItems.pinnedItemAnimation}
-          pinnedItems={pinnedItems.pinnedItems}
+          pinnedItemAnimation={pinAnimation.pinnedItemAnimation}
+          pinnedItems={pinAnimation.pinnedItems}
           sections={sections}
         />
       )}

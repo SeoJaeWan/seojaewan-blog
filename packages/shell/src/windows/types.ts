@@ -44,7 +44,7 @@ export interface WindowContextMenuEvent {
   source: WindowsPanelItemSource;
 }
 
-/** Provider state commit 뒤에만 발생할 수 있는 event map. */
+/** Provider state update 뒤에만 발생할 수 있는 event map. */
 export interface WindowStateEventMap {
   taskbarPinsReordered: WindowPinsReorderedEvent;
   windowPinToStart: WindowPinEvent;
@@ -78,7 +78,7 @@ export type WindowDispatch = <Name extends keyof WindowDispatchEventMap>(
   payload: WindowDispatchEventMap[Name],
 ) => void;
 
-/** Provider 내부 pin state commit과 함께 대기시킬 event. */
+/** 완료된 pin state update와 함께 전달할 event. */
 export type WindowMutableStateEvent = {
   [Name in Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">]: {
     name: Name;
@@ -86,23 +86,16 @@ export type WindowMutableStateEvent = {
   };
 }[Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">];
 
-/** Provider가 반영할 수 있는 mutable pin state patch. */
-export interface WindowPinStatePatch {
-  taskbarPinnedIds?: readonly string[];
-  windowsPinnedIds?: readonly string[];
+/** Target pin update가 계산한 다음 ID와 선택적인 observer event. */
+export interface PinnedIdsUpdate {
+  /** 완료된 다음 target pin ID. */
+  pinnedIds: readonly string[];
+  /** stale cleanup처럼 observer에 알리지 않을 때는 null. */
+  event: WindowMutableStateEvent | null;
 }
 
-/** Pin hook이 계산을 마치고 Provider에 전달할 state와 명시적인 observer event. */
-export type WindowStateCommit =
-  | {
-      event: WindowMutableStateEvent;
-      patch: WindowPinStatePatch;
-    }
-  | {
-      /** stale item 정리처럼 사용자에게 알리지 않는 내부 상태 변경. */
-      event: null;
-      patch: WindowPinStatePatch;
-    };
-
-/** 최신 Provider snapshot에서 완료된 pin commit을 만드는 내부 계약. */
-export type WindowStateCommitProducer = (state: WindowsState) => WindowStateCommit | null;
+/** 최신 target ID에서 완료된 pin update를 계산하고 반영하는 내부 계약. */
+export type UpdatePinnedIds = (
+  target: WindowPinTarget,
+  update: (currentPinnedIds: readonly string[]) => PinnedIdsUpdate | null,
+) => void;
