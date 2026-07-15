@@ -7,10 +7,10 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../..";
-import type { WindowPinEvent, WindowPinsReorderedEvent, WindowPinTarget } from "../../types";
+import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../types";
 import { WINDOW_PIN_STORAGE_KEYS } from "../../utils/windowPinStorage";
 import { useWindowEvent } from "../useWindowEvent";
-import { useWindowPins } from "../useWindowPins";
+import { useWindowsPins } from "../useWindowsPins";
 import { useWindowPinAnimation } from "./index";
 
 const CALCULATOR = { id: "calculator", title: "계산기" } satisfies WindowItem;
@@ -26,12 +26,11 @@ interface ReorderObservation {
 interface LifecycleHarnessProps {
   onReorder?: (observation: ReorderObservation) => void;
   onUnpin?: (payload: WindowPinEvent) => void;
-  target?: WindowPinTarget;
 }
 
-const LifecycleHarness = ({ onReorder, onUnpin, target = "windows" }: LifecycleHarnessProps) => {
-  const pins = useWindowPins(target);
-  const lifecycle = useWindowPinAnimation(target);
+const LifecycleHarness = ({ onReorder, onUnpin }: LifecycleHarnessProps) => {
+  const pins = useWindowsPins();
+  const lifecycle = useWindowPinAnimation();
 
   useWindowEvent("windowsPinsReordered", (payload) => {
     onReorder?.({ payload, pinnedIds: payload.pinnedIds });
@@ -39,10 +38,6 @@ const LifecycleHarness = ({ onReorder, onUnpin, target = "windows" }: LifecycleH
   useWindowEvent("windowUnpinFromStart", (payload) => {
     onUnpin?.(payload);
   });
-  useWindowEvent("windowUnpinFromTaskbar", (payload) => {
-    onUnpin?.(payload);
-  });
-
   return createElement(
     "div",
     null,
@@ -186,8 +181,11 @@ describe("useWindowPinAnimation", () => {
     expect(screen.getByTestId("pinned-items").textContent).toBe(
       JSON.stringify(["calculator", "terminal"]),
     );
-    expect(screen.getByTestId("pinned-ids").textContent).toBe(
-      JSON.stringify(["calculator", "terminal"]),
+    await expectOutput("pinned-ids", ["calculator"]);
+    await waitFor(() =>
+      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
+        JSON.stringify(["calculator"]),
+      ),
     );
 
     fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
@@ -228,7 +226,7 @@ describe("useWindowPinAnimation", () => {
     expect(onUnpin).not.toHaveBeenCalled();
   });
 
-  it("복원 시 item cache가 없는 stale ID는 즉시 조용히 제거한다", async () => {
+  it("복원 시 windowsItems에 없는 ID는 렌더하지 않고 즉시 조용히 제거한다", async () => {
     const onUnpin = vi.fn();
 
     window.localStorage.setItem(
@@ -241,26 +239,6 @@ describe("useWindowPinAnimation", () => {
     await expectOutput("pinned-items", ["calculator"]);
     expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
       JSON.stringify(["calculator"]),
-    );
-    expect(onUnpin).not.toHaveBeenCalled();
-  });
-
-  it("Taskbar의 cache 없는 stale ID는 Windows key에 영향 없이 정리한다", async () => {
-    const onUnpin = vi.fn();
-
-    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["terminal"]));
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.taskbar,
-      JSON.stringify(["missing", "calculator"]),
-    );
-    render(createTree([CALCULATOR, TERMINAL], { onUnpin, target: "taskbar" }));
-
-    await expectOutput("pinned-ids", ["calculator"]);
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(
-      JSON.stringify(["calculator"]),
-    );
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["terminal"]),
     );
     expect(onUnpin).not.toHaveBeenCalled();
   });
@@ -284,7 +262,7 @@ describe("useWindowPinAnimation", () => {
       vi.advanceTimersByTime(500);
     });
 
-    expect(screen.getByTestId("pinned-ids").textContent).toBe(JSON.stringify(["calculator"]));
+    expect(screen.getByTestId("pinned-items").textContent).toBe(JSON.stringify(["calculator"]));
     expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
       JSON.stringify(["calculator"]),
     );

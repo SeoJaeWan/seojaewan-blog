@@ -27,7 +27,7 @@ export const TaskbarWindowPanel = ({ id }: TaskbarWindowPanelProps) => {
   const [searchValue, setSearchValue] = useState("");
   const hasSearchQuery = searchValue.trim().length > 0;
   const results = useWindowSearch(searchValue);
-  const pinAnimation = useWindowPinAnimation("windows");
+  const pinAnimation = useWindowPinAnimation();
   const sections = useMemo(() => createWindowsPanelSections(results), [results]);
   const navigation = useWindowsPanelNavigation();
   const searchDetail = useSearchResultDetail({ results, searchValue });

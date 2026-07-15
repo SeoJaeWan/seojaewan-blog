@@ -1,5 +1,3 @@
-import type { WindowPinTarget } from "../../types";
-
 interface WindowPinStorage {
   getItem: (key: string) => string | null;
   setItem: (key: string, value: string) => void;
@@ -8,7 +6,7 @@ interface WindowPinStorage {
 export const WINDOW_PIN_STORAGE_KEYS = {
   taskbar: "taskbarPinnedIds_v1",
   windows: "windowsPinnedIds_v1",
-} as const satisfies Record<WindowPinTarget, string>;
+} as const;
 
 const getBrowserWindowPinStorage = (): WindowPinStorage | null => {
   if (typeof window === "undefined") {
@@ -29,8 +27,8 @@ const getBrowserWindowPinStorage = (): WindowPinStorage | null => {
  * @param storage localStorage 호환 저장소
  * @returns 복원 가능한 pin ID 또는 빈 배열
  */
-export const readWindowPinnedIds = (
-  target: WindowPinTarget,
+const readPinnedIds = (
+  key: string,
   storage: WindowPinStorage | null = getBrowserWindowPinStorage(),
 ): readonly string[] => {
   if (storage === null) {
@@ -38,7 +36,7 @@ export const readWindowPinnedIds = (
   }
 
   try {
-    const value = storage.getItem(WINDOW_PIN_STORAGE_KEYS[target]);
+    const value = storage.getItem(key);
 
     if (value === null) {
       return [];
@@ -64,8 +62,8 @@ export const readWindowPinnedIds = (
  * @param storage localStorage 호환 저장소
  * @returns 저장 성공 여부
  */
-export const writeWindowPinnedIds = (
-  target: WindowPinTarget,
+const writePinnedIds = (
+  key: string,
   pinnedIds: readonly string[],
   storage: WindowPinStorage | null = getBrowserWindowPinStorage(),
 ): boolean => {
@@ -74,9 +72,25 @@ export const writeWindowPinnedIds = (
   }
 
   try {
-    storage.setItem(WINDOW_PIN_STORAGE_KEYS[target], JSON.stringify(pinnedIds));
+    storage.setItem(key, JSON.stringify(pinnedIds));
     return true;
   } catch {
     return false;
   }
 };
+
+export const readTaskbarPinnedIds = (storage?: WindowPinStorage | null) =>
+  readPinnedIds(WINDOW_PIN_STORAGE_KEYS.taskbar, storage);
+
+export const readWindowsPinnedIds = (storage?: WindowPinStorage | null) =>
+  readPinnedIds(WINDOW_PIN_STORAGE_KEYS.windows, storage);
+
+export const writeTaskbarPinnedIds = (
+  pinnedIds: readonly string[],
+  storage?: WindowPinStorage | null,
+) => writePinnedIds(WINDOW_PIN_STORAGE_KEYS.taskbar, pinnedIds, storage);
+
+export const writeWindowsPinnedIds = (
+  pinnedIds: readonly string[],
+  storage?: WindowPinStorage | null,
+) => writePinnedIds(WINDOW_PIN_STORAGE_KEYS.windows, pinnedIds, storage);

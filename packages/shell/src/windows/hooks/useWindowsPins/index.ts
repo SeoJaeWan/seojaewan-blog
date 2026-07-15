@@ -3,16 +3,10 @@
 import { useCallback, useContext, useMemo } from "react";
 
 import { WindowsControllerContext, WindowsStateContext } from "../..";
-import type {
-  WindowMutableStateEvent,
-  WindowPinEvent,
-  WindowPinsReorderedEvent,
-  WindowPinTarget,
-  WindowsState,
-} from "../../types";
+import type { WindowPinEvent } from "../../types";
 
-export interface UseWindowPins {
-  /** Animation 완료 뒤 실제 target 순서를 반영한다. */
+export interface UseWindowsPins {
+  /** Animation 완료 뒤 Windows panel의 실제 순서를 반영한다. */
   applyReorder: (itemId: string, toIndex: number) => void;
   isPinned: (itemId: string) => boolean;
   pin: (itemId: string) => void;
@@ -20,54 +14,21 @@ export interface UseWindowPins {
   unpin: (itemId: string) => void;
 }
 
-const getPinnedIds = (state: WindowsState, target: WindowPinTarget) =>
-  target === "windows" ? state.windowsPinnedIds : state.taskbarPinnedIds;
-
-const createPinEvent = (
-  target: WindowPinTarget,
-  payload: WindowPinEvent,
-): WindowMutableStateEvent =>
-  target === "windows"
-    ? { name: "windowPinToStart", payload }
-    : { name: "windowPinToTaskbar", payload };
-
-const createUnpinEvent = (
-  target: WindowPinTarget,
-  payload: WindowPinEvent,
-): WindowMutableStateEvent =>
-  target === "windows"
-    ? { name: "windowUnpinFromStart", payload }
-    : { name: "windowUnpinFromTaskbar", payload };
-
-const createReorderedEvent = (
-  target: WindowPinTarget,
-  payload: WindowPinsReorderedEvent,
-): WindowMutableStateEvent =>
-  target === "windows"
-    ? { name: "windowsPinsReordered", payload }
-    : { name: "taskbarPinsReordered", payload };
-
-/**
- * Target별 pin ID를 읽고 add/remove와 완료된 reorder update를 계산한다.
- *
- * @param target windows panel 또는 taskbar pin surface
- * @returns 현재 pin ID와 pin/unpin 동작
- */
-export const useWindowPins = (target: WindowPinTarget): UseWindowPins => {
+/** Windows panel pin ID와 add/remove 및 완료된 reorder update를 제공한다. */
+export const useWindowsPins = (): UseWindowsPins => {
   const state = useContext(WindowsStateContext);
   const controller = useContext(WindowsControllerContext);
 
   if (state === null || controller === null) {
-    throw new Error("useWindowPins는 Windows 안에서 사용해야 합니다.");
+    throw new Error("useWindowsPins는 Windows 안에서 사용해야 합니다.");
   }
 
-  const pinnedIds = getPinnedIds(state, target);
-
+  const pinnedIds = state.windowsPinnedIds;
   const isPinned = useCallback((itemId: string) => pinnedIds.includes(itemId), [pinnedIds]);
 
   const pin = useCallback(
     (itemId: string) => {
-      controller.updatePinnedIds(target, (previousPinnedIds) => {
+      controller.updateWindowsPinnedIds((previousPinnedIds) => {
         if (
           previousPinnedIds.includes(itemId) ||
           !state.windowsItems.some((item) => item.id === itemId)
@@ -83,17 +44,17 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPins => {
         };
 
         return {
-          event: createPinEvent(target, payload),
+          event: { name: "windowPinToStart", payload },
           pinnedIds: nextPinnedIds,
         };
       });
     },
-    [controller, state.windowsItems, target],
+    [controller, state.windowsItems],
   );
 
   const applyReorder = useCallback(
     (itemId: string, toIndex: number) => {
-      controller.updatePinnedIds(target, (previousPinnedIds) => {
+      controller.updateWindowsPinnedIds((previousPinnedIds) => {
         const fromIndex = previousPinnedIds.indexOf(itemId);
 
         if (
@@ -111,23 +72,26 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPins => {
         nextPinnedIds.splice(toIndex, 0, itemId);
 
         return {
-          event: createReorderedEvent(target, {
-            fromIndex,
-            movedItemId: itemId,
-            pinnedIds: nextPinnedIds,
-            previousPinnedIds,
-            toIndex,
-          }),
+          event: {
+            name: "windowsPinsReordered",
+            payload: {
+              fromIndex,
+              movedItemId: itemId,
+              pinnedIds: nextPinnedIds,
+              previousPinnedIds,
+              toIndex,
+            },
+          },
           pinnedIds: nextPinnedIds,
         };
       });
     },
-    [controller, target],
+    [controller],
   );
 
   const unpin = useCallback(
     (itemId: string) => {
-      controller.updatePinnedIds(target, (previousPinnedIds) => {
+      controller.updateWindowsPinnedIds((previousPinnedIds) => {
         if (!previousPinnedIds.includes(itemId)) {
           return null;
         }
@@ -140,12 +104,12 @@ export const useWindowPins = (target: WindowPinTarget): UseWindowPins => {
         };
 
         return {
-          event: createUnpinEvent(target, payload),
+          event: { name: "windowUnpinFromStart", payload },
           pinnedIds: nextPinnedIds,
         };
       });
     },
-    [controller, target],
+    [controller],
   );
 
   return useMemo(

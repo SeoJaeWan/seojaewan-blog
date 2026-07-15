@@ -205,8 +205,8 @@ button click
 | pinned/all/search item 선택 | 먼저 닫음 | `windowOpen` dispatch                                    |
 | detail `open`               | 먼저 닫음 | `windowOpen` dispatch                                    |
 | detail `openLocation`       | 먼저 닫음 | `windowOpenLocation` dispatch                            |
-| detail start pin/unpin      | 유지      | `useWindowPins("windows")` update                        |
-| detail taskbar pin/unpin    | 유지      | `useWindowPins("taskbar")` update                        |
+| detail start pin/unpin      | 유지      | `useWindowsPins()` update                                |
+| detail taskbar pin/unpin    | 유지      | `useTaskbarPins()` update                                |
 | item context menu           | 유지      | native menu를 막고 `windowContextMenuRequested` dispatch |
 
 검색 상세 action은 모든 item에 다음 순서로 고정한다.
@@ -219,12 +219,12 @@ button click
 
 ## Pinned Item Lifecycle
 
-Pinned item reorder와 stale item 제거는 `useWindowPinAnimation("windows")`가 관리한다.
+Pinned item reorder와 stale item snapshot은 `useWindowPinAnimation()`이 관리한다.
 
 ```text
 `useWindowPinAnimation.reorder` 호출
 → 대상 tile out transition
-→ transition 완료 후 `useWindowPins.applyReorder`
+→ transition 완료 후 `useWindowsPins.applyReorder`
 → 새 위치에서 in animation
 → animation 완료
 ```
@@ -232,7 +232,8 @@ Pinned item reorder와 stale item 제거는 `useWindowPinAnimation("windows")`�
 - out은 `transform` 500ms transition을 사용한다.
 - in은 `wb-windows-fade-in` 150ms animation을 사용한다.
 - 현재 transition 중이거나 stale item 정리 중이면 새 reorder를 시작하지 않는다.
-- item이 `windowsItems`에서 사라지면 마지막 snapshot으로 out visual을 마친 뒤 pin ID를 정리한다.
+- item이 `windowsItems`에서 사라지면 pin ID와 storage는 즉시 정리하고 마지막 visual snapshot만
+  out 완료까지 유지한다.
 - DOM event가 누락되면 500ms watchdog이 현재 단계의 완료를 보장한다.
 - 현재 production UI에는 reorder를 시작하는 drag/drop, 이동 button 또는 keyboard interaction이 없다.
   Hook API를 실제 UI에 연결하는 작업은

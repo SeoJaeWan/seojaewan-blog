@@ -6,7 +6,7 @@ TODO
 
 ## 배경
 
-`useWindowPinAnimation("windows")`은 pinned item의 reorder out/update/in lifecycle과 500ms
+`useWindowPinAnimation()`은 pinned item의 reorder out/update/in lifecycle과 500ms
 watchdog을 제공한다. 하지만 현재 `TaskbarWindowPanel`과 `WindowsPanelUI.View`에는 사용자가
 reorder를 시작할 수 있는 입력 동작이 연결되어 있지 않다. Reorder API는 hook contract와
 테스트에만 존재한다.

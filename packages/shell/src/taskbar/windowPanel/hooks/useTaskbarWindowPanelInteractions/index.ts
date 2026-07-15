@@ -10,8 +10,9 @@ import type {
   WindowsPanelItemSource,
 } from "@window/ui";
 
+import { useTaskbarPins } from "../../../../windows/hooks/useTaskbarPins";
 import { useWindowDispatch } from "../../../../windows/hooks/useWindowDispatch";
-import { useWindowPins } from "../../../../windows/hooks/useWindowPins";
+import { useWindowsPins } from "../../../../windows/hooks/useWindowsPins";
 import { TaskbarPanelHostContext } from "../../../panelHost";
 
 export interface UseTaskbarWindowPanelInteractionsResult {
@@ -38,8 +39,8 @@ export const useTaskbarWindowPanelInteractions = (
 ): UseTaskbarWindowPanelInteractionsResult => {
   const panelHost = useContext(TaskbarPanelHostContext);
   const dispatch = useWindowDispatch();
-  const taskbarPins = useWindowPins("taskbar");
-  const windowsPins = useWindowPins("windows");
+  const taskbarPins = useTaskbarPins();
+  const windowsPins = useWindowsPins();
 
   if (panelHost === null) {
     throw new Error("useTaskbarWindowPanelInteractions는 TaskbarPanelHost 안에서 사용해야 합니다.");

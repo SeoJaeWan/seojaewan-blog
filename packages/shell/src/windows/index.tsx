@@ -20,7 +20,8 @@ import {
 export interface WindowsControllerContextValue {
   dispatch: WindowDispatch;
   subscribe: WindowEventRegistry["subscribe"];
-  updatePinnedIds: UpdatePinnedIds;
+  updateTaskbarPinnedIds: UpdatePinnedIds;
+  updateWindowsPinnedIds: UpdatePinnedIds;
 }
 
 /** Windows 상태를 읽는 shell domain hook이 사용할 context. */
@@ -53,8 +54,9 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
     [eventRegistry],
   );
 
-  const { pinState, updatePinnedIds } = useWindowPinState({
+  const { pinState, updateTaskbarPinnedIds, updateWindowsPinnedIds } = useWindowPinState({
     onStateEvent: emitStateEvent,
+    windowsItems,
   });
 
   const dispatch = useCallback<WindowDispatch>(
@@ -91,9 +93,10 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
     () => ({
       dispatch,
       subscribe: eventRegistry.subscribe,
-      updatePinnedIds,
+      updateTaskbarPinnedIds,
+      updateWindowsPinnedIds,
     }),
-    [dispatch, eventRegistry, updatePinnedIds],
+    [dispatch, eventRegistry, updateTaskbarPinnedIds, updateWindowsPinnedIds],
   );
 
   return (

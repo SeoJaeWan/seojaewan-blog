@@ -2,8 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { UpdatePinnedIds, WindowMutableStateEvent, WindowPinTarget } from "../../types";
-import { readWindowPinnedIds, writeWindowPinnedIds } from "../../utils/windowPinStorage";
+import type { WindowItem } from "@window/ui";
+
+import type { UpdatePinnedIds, WindowMutableStateEvent } from "../../types";
+import {
+  readTaskbarPinnedIds,
+  readWindowsPinnedIds,
+  writeTaskbarPinnedIds,
+  writeWindowsPinnedIds,
+} from "../../utils/windowPinStorage";
 
 interface WindowPinState {
   taskbarPinnedIds: readonly string[];
@@ -12,26 +19,31 @@ interface WindowPinState {
 
 interface UseWindowPinStateOptions {
   onStateEvent: (event: WindowMutableStateEvent) => void;
+  windowsItems: readonly WindowItem[];
 }
 
 interface UseWindowPinStateResult {
   pinState: WindowPinState;
-  updatePinnedIds: UpdatePinnedIds;
+  updateTaskbarPinnedIds: UpdatePinnedIds;
+  updateWindowsPinnedIds: UpdatePinnedIds;
 }
 
 const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
   left === right ||
   (left.length === right.length && left.every((itemId, index) => itemId === right[index]));
 
-const getPinnedIds = (state: WindowPinState, target: WindowPinTarget) =>
-  target === "windows" ? state.windowsPinnedIds : state.taskbarPinnedIds;
+const filterPinnedIds = (pinnedIds: readonly string[], validItemIds: ReadonlySet<string>) => {
+  const nextPinnedIds = pinnedIds.filter((itemId) => validItemIds.has(itemId));
+  return nextPinnedIds.length === pinnedIds.length ? pinnedIds : nextPinnedIds;
+};
 
 /**
- * Provider가 소유하는 target별 pin state의 복원, 저장과 완료 update 반영을 캡슐화한다.
- * localStorage 복원은 client effect에서 수행하며 반복 실행돼도 observer event를 만들지 않는다.
+ * Provider가 소유하는 Taskbar/Windows pin state의 복원, 저장과 완료 update를 캡슐화한다.
+ * windowsItems를 canonical item source로 사용하고 사라진 ID는 event 없이 즉시 정리한다.
  */
 export const useWindowPinState = ({
   onStateEvent,
+  windowsItems,
 }: UseWindowPinStateOptions): UseWindowPinStateResult => {
   const [taskbarPinnedIds, setTaskbarPinnedIds] = useState<readonly string[]>([]);
   const [windowsPinnedIds, setWindowsPinnedIds] = useState<readonly string[]>([]);
@@ -39,55 +51,125 @@ export const useWindowPinState = ({
     taskbarPinnedIds: [],
     windowsPinnedIds: [],
   });
+  const validItemIds = useMemo(() => new Set(windowsItems.map((item) => item.id)), [windowsItems]);
+  const validItemIdsRef = useRef<ReadonlySet<string>>(validItemIds);
+  validItemIdsRef.current = validItemIds;
 
-  const applyPinnedIds = useCallback((target: WindowPinTarget, pinnedIds: readonly string[]) => {
+  const applyTaskbarPinnedIds = useCallback((pinnedIds: readonly string[]) => {
     const currentState = pinStateRef.current;
 
-    if (arePinnedIdsEqual(getPinnedIds(currentState, target), pinnedIds)) {
+    if (arePinnedIdsEqual(currentState.taskbarPinnedIds, pinnedIds)) {
       return false;
     }
 
-    pinStateRef.current =
-      target === "windows"
-        ? { ...currentState, windowsPinnedIds: pinnedIds }
-        : { ...currentState, taskbarPinnedIds: pinnedIds };
-
-    if (target === "windows") {
-      setWindowsPinnedIds(pinnedIds);
-    } else {
-      setTaskbarPinnedIds(pinnedIds);
-    }
-
+    pinStateRef.current = { ...currentState, taskbarPinnedIds: pinnedIds };
+    setTaskbarPinnedIds(pinnedIds);
     return true;
   }, []);
 
-  const updatePinnedIds = useCallback<UpdatePinnedIds>(
-    (target, update) => {
-      const currentPinnedIds = getPinnedIds(pinStateRef.current, target);
+  const applyWindowsPinnedIds = useCallback((pinnedIds: readonly string[]) => {
+    const currentState = pinStateRef.current;
+
+    if (arePinnedIdsEqual(currentState.windowsPinnedIds, pinnedIds)) {
+      return false;
+    }
+
+    pinStateRef.current = { ...currentState, windowsPinnedIds: pinnedIds };
+    setWindowsPinnedIds(pinnedIds);
+    return true;
+  }, []);
+
+  const updateTaskbarPinnedIds = useCallback<UpdatePinnedIds>(
+    (update) => {
+      const storedPinnedIds = pinStateRef.current.taskbarPinnedIds;
+      const currentPinnedIds = filterPinnedIds(storedPinnedIds, validItemIdsRef.current);
       const result = update(currentPinnedIds);
 
-      if (result === null || !applyPinnedIds(target, result.pinnedIds)) {
+      if (result === null) {
+        if (currentPinnedIds !== storedPinnedIds && applyTaskbarPinnedIds(currentPinnedIds)) {
+          writeTaskbarPinnedIds(currentPinnedIds);
+        }
         return;
       }
 
-      writeWindowPinnedIds(target, result.pinnedIds);
+      const nextPinnedIds = filterPinnedIds(result.pinnedIds, validItemIdsRef.current);
+
+      if (!applyTaskbarPinnedIds(nextPinnedIds)) {
+        return;
+      }
+
+      writeTaskbarPinnedIds(nextPinnedIds);
 
       if (result.event !== null) {
         onStateEvent(result.event);
       }
     },
-    [applyPinnedIds, onStateEvent],
+    [applyTaskbarPinnedIds, onStateEvent],
+  );
+
+  const updateWindowsPinnedIds = useCallback<UpdatePinnedIds>(
+    (update) => {
+      const storedPinnedIds = pinStateRef.current.windowsPinnedIds;
+      const currentPinnedIds = filterPinnedIds(storedPinnedIds, validItemIdsRef.current);
+      const result = update(currentPinnedIds);
+
+      if (result === null) {
+        if (currentPinnedIds !== storedPinnedIds && applyWindowsPinnedIds(currentPinnedIds)) {
+          writeWindowsPinnedIds(currentPinnedIds);
+        }
+        return;
+      }
+
+      const nextPinnedIds = filterPinnedIds(result.pinnedIds, validItemIdsRef.current);
+
+      if (!applyWindowsPinnedIds(nextPinnedIds)) {
+        return;
+      }
+
+      writeWindowsPinnedIds(nextPinnedIds);
+
+      if (result.event !== null) {
+        onStateEvent(result.event);
+      }
+    },
+    [applyWindowsPinnedIds, onStateEvent],
   );
 
   useEffect(() => {
-    applyPinnedIds("taskbar", readWindowPinnedIds("taskbar"));
-    applyPinnedIds("windows", readWindowPinnedIds("windows"));
-  }, [applyPinnedIds]);
+    const storedTaskbarPinnedIds = readTaskbarPinnedIds();
+    const storedWindowsPinnedIds = readWindowsPinnedIds();
+    const nextTaskbarPinnedIds = filterPinnedIds(storedTaskbarPinnedIds, validItemIdsRef.current);
+    const nextWindowsPinnedIds = filterPinnedIds(storedWindowsPinnedIds, validItemIdsRef.current);
+
+    applyTaskbarPinnedIds(nextTaskbarPinnedIds);
+    applyWindowsPinnedIds(nextWindowsPinnedIds);
+
+    if (!arePinnedIdsEqual(storedTaskbarPinnedIds, nextTaskbarPinnedIds)) {
+      writeTaskbarPinnedIds(nextTaskbarPinnedIds);
+    }
+    if (!arePinnedIdsEqual(storedWindowsPinnedIds, nextWindowsPinnedIds)) {
+      writeWindowsPinnedIds(nextWindowsPinnedIds);
+    }
+  }, [applyTaskbarPinnedIds, applyWindowsPinnedIds]);
+
+  useEffect(() => {
+    updateTaskbarPinnedIds((currentPinnedIds) => {
+      const pinnedIds = filterPinnedIds(currentPinnedIds, validItemIds);
+      return pinnedIds === currentPinnedIds ? null : { event: null, pinnedIds };
+    });
+    updateWindowsPinnedIds((currentPinnedIds) => {
+      const pinnedIds = filterPinnedIds(currentPinnedIds, validItemIds);
+      return pinnedIds === currentPinnedIds ? null : { event: null, pinnedIds };
+    });
+  }, [updateTaskbarPinnedIds, updateWindowsPinnedIds, validItemIds]);
 
   const pinState = useMemo<WindowPinState>(
-    () => ({ taskbarPinnedIds, windowsPinnedIds }),
-    [taskbarPinnedIds, windowsPinnedIds],
+    () => ({
+      taskbarPinnedIds: filterPinnedIds(taskbarPinnedIds, validItemIds),
+      windowsPinnedIds: filterPinnedIds(windowsPinnedIds, validItemIds),
+    }),
+    [taskbarPinnedIds, validItemIds, windowsPinnedIds],
   );
 
-  return { pinState, updatePinnedIds };
+  return { pinState, updateTaskbarPinnedIds, updateWindowsPinnedIds };
 };

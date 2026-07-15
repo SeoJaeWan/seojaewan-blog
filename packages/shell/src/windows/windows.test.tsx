@@ -52,7 +52,7 @@ const PinUpdateProbe = ({ onEvent }: PinUpdateProbeProps) => {
       "button",
       {
         onClick: () =>
-          controller.updatePinnedIds("windows", (previousPinnedIds) => {
+          controller.updateWindowsPinnedIds((previousPinnedIds) => {
             const pinnedIds = [...previousPinnedIds, "calculator"];
 
             return {

@@ -7,9 +7,6 @@ export interface WindowsState {
   windowsPinnedIds: readonly string[];
 }
 
-/** pin 상태를 구분하는 전역 surface. */
-export type WindowPinTarget = "taskbar" | "windows";
-
 /** windowsItems prop의 참조가 변경되어 반영된 뒤 전달할 payload. */
 export interface WindowsItemsUpdatedEvent {
   items: readonly WindowItem[];
@@ -46,7 +43,6 @@ export interface WindowContextMenuEvent {
 
 /** Provider state update 뒤에만 발생할 수 있는 event map. */
 export interface WindowStateEventMap {
-  taskbarPinsReordered: WindowPinsReorderedEvent;
   windowPinToStart: WindowPinEvent;
   windowPinToTaskbar: WindowPinEvent;
   windowsItemsUpdated: WindowsItemsUpdatedEvent;
@@ -86,16 +82,15 @@ export type WindowMutableStateEvent = {
   };
 }[Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">];
 
-/** Target pin update가 계산한 다음 ID와 선택적인 observer event. */
+/** Pin update가 계산한 다음 ID와 선택적인 observer event. */
 export interface PinnedIdsUpdate {
-  /** 완료된 다음 target pin ID. */
+  /** 완료된 다음 pin ID. */
   pinnedIds: readonly string[];
   /** stale cleanup처럼 observer에 알리지 않을 때는 null. */
   event: WindowMutableStateEvent | null;
 }
 
-/** 최신 target ID에서 완료된 pin update를 계산하고 반영하는 내부 계약. */
+/** 최신 ID에서 완료된 pin update를 계산하고 반영하는 내부 계약. */
 export type UpdatePinnedIds = (
-  target: WindowPinTarget,
   update: (currentPinnedIds: readonly string[]) => PinnedIdsUpdate | null,
 ) => void;

@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
-  readWindowPinnedIds,
+  readTaskbarPinnedIds,
+  readWindowsPinnedIds,
   WINDOW_PIN_STORAGE_KEYS,
-  writeWindowPinnedIds,
+  writeTaskbarPinnedIds,
+  writeWindowsPinnedIds,
 } from "./index";
 
 const createStorage = (values: Record<string, string> = {}) => {
@@ -18,14 +20,14 @@ const createStorage = (values: Record<string, string> = {}) => {
 };
 
 describe("windowPinStorage", () => {
-  it("target별 versioned key에서 pin ID를 읽는다", () => {
+  it("각 surface의 versioned key에서 pin ID를 읽는다", () => {
     const storage = createStorage({
       [WINDOW_PIN_STORAGE_KEYS.taskbar]: JSON.stringify(["terminal"]),
       [WINDOW_PIN_STORAGE_KEYS.windows]: JSON.stringify(["calculator"]),
     });
 
-    expect(readWindowPinnedIds("windows", storage)).toEqual(["calculator"]);
-    expect(readWindowPinnedIds("taskbar", storage)).toEqual(["terminal"]);
+    expect(readWindowsPinnedIds(storage)).toEqual(["calculator"]);
+    expect(readTaskbarPinnedIds(storage)).toEqual(["terminal"]);
   });
 
   it.each([
@@ -38,25 +40,21 @@ describe("windowPinStorage", () => {
       value === null ? {} : { [WINDOW_PIN_STORAGE_KEYS.windows]: value },
     );
 
-    expect(readWindowPinnedIds("windows", storage)).toEqual([]);
+    expect(readWindowsPinnedIds(storage)).toEqual([]);
   });
 
   it("중복 ID는 최초 순서를 유지하며 한 번만 복원한다", () => {
     const storage = createStorage({
-      [WINDOW_PIN_STORAGE_KEYS.windows]: JSON.stringify([
-        "calculator",
-        "terminal",
-        "calculator",
-      ]),
+      [WINDOW_PIN_STORAGE_KEYS.windows]: JSON.stringify(["calculator", "terminal", "calculator"]),
     });
 
-    expect(readWindowPinnedIds("windows", storage)).toEqual(["calculator", "terminal"]);
+    expect(readWindowsPinnedIds(storage)).toEqual(["calculator", "terminal"]);
   });
 
-  it("최종 pin ID를 target key에 JSON으로 저장한다", () => {
+  it("최종 pin ID를 surface별 key에 JSON으로 저장한다", () => {
     const storage = createStorage();
 
-    expect(writeWindowPinnedIds("taskbar", ["terminal"], storage)).toBe(true);
+    expect(writeTaskbarPinnedIds(["terminal"], storage)).toBe(true);
     expect(storage.setItem).toHaveBeenCalledWith(
       WINDOW_PIN_STORAGE_KEYS.taskbar,
       JSON.stringify(["terminal"]),
@@ -73,7 +71,7 @@ describe("windowPinStorage", () => {
       }),
     };
 
-    expect(readWindowPinnedIds("windows", storage)).toEqual([]);
-    expect(writeWindowPinnedIds("windows", ["calculator"], storage)).toBe(false);
+    expect(readWindowsPinnedIds(storage)).toEqual([]);
+    expect(writeWindowsPinnedIds(["calculator"], storage)).toBe(false);
   });
 });

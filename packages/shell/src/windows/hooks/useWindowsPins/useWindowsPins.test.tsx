@@ -19,8 +19,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Windows } from "../..";
 import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../types";
 import { WINDOW_PIN_STORAGE_KEYS } from "../../utils/windowPinStorage";
+import { useTaskbarPins } from "../useTaskbarPins";
 import { useWindowEvent } from "../useWindowEvent";
-import { useWindowPins } from "./index";
+import { useWindowsPins } from "./index";
 
 const WINDOWS_ITEMS = [
   { id: "calculator", title: "계산기" },
@@ -39,7 +40,7 @@ interface ReorderObservation {
 
 interface PinHarnessProps {
   onTaskbarPin?: (observation: PinObservation) => void;
-  onTaskbarReorder?: (observation: ReorderObservation) => void;
+  onTaskbarUnpin?: (observation: PinObservation) => void;
   onWindowsPin?: (observation: PinObservation) => void;
   onWindowsReorder?: (observation: ReorderObservation) => void;
   onWindowsUnpin?: (observation: PinObservation) => void;
@@ -47,13 +48,13 @@ interface PinHarnessProps {
 
 const PinHarness = ({
   onTaskbarPin,
-  onTaskbarReorder,
+  onTaskbarUnpin,
   onWindowsPin,
   onWindowsReorder,
   onWindowsUnpin,
 }: PinHarnessProps) => {
-  const taskbarPins = useWindowPins("taskbar");
-  const windowsPins = useWindowPins("windows");
+  const taskbarPins = useTaskbarPins();
+  const windowsPins = useWindowsPins();
 
   useWindowEvent("windowPinToStart", (payload) => {
     onWindowsPin?.({ payload, pinnedIds: payload.pinnedIds });
@@ -64,11 +65,11 @@ const PinHarness = ({
   useWindowEvent("windowPinToTaskbar", (payload) => {
     onTaskbarPin?.({ payload, pinnedIds: payload.pinnedIds });
   });
+  useWindowEvent("windowUnpinFromTaskbar", (payload) => {
+    onTaskbarUnpin?.({ payload, pinnedIds: payload.pinnedIds });
+  });
   useWindowEvent("windowsPinsReordered", (payload) => {
     onWindowsReorder?.({ payload, pinnedIds: payload.pinnedIds });
-  });
-  useWindowEvent("taskbarPinsReordered", (payload) => {
-    onTaskbarReorder?.({ payload, pinnedIds: payload.pinnedIds });
   });
 
   return createElement(
@@ -122,6 +123,11 @@ const PinHarness = ({
     ),
     createElement(
       "button",
+      { onClick: () => taskbarPins.unpin("terminal"), type: "button" },
+      "taskbar unpin terminal",
+    ),
+    createElement(
+      "button",
       { onClick: () => windowsPins.applyReorder("terminal", 0), type: "button" },
       "windows reorder terminal first",
     ),
@@ -139,11 +145,6 @@ const PinHarness = ({
       "button",
       { onClick: () => windowsPins.applyReorder("calculator", 0), type: "button" },
       "windows reorder same",
-    ),
-    createElement(
-      "button",
-      { onClick: () => taskbarPins.applyReorder("terminal", 0), type: "button" },
-      "taskbar reorder terminal first",
     ),
   );
 };
@@ -173,10 +174,13 @@ afterEach(() => {
   window.localStorage.clear();
 });
 
-describe("useWindowPins", () => {
-  it("Windows 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {
-    expect(() => renderHook(() => useWindowPins("windows"))).toThrow(
-      "useWindowPins는 Windows 안에서 사용해야 합니다.",
+describe("useWindowsPins와 useTaskbarPins", () => {
+  it("Windows 밖에서 호출하면 각 hook의 사용 위치 오류를 발생시킨다", () => {
+    expect(() => renderHook(() => useWindowsPins())).toThrow(
+      "useWindowsPins는 Windows 안에서 사용해야 합니다.",
+    );
+    expect(() => renderHook(() => useTaskbarPins())).toThrow(
+      "useTaskbarPins는 Windows 안에서 사용해야 합니다.",
     );
   });
 
@@ -270,9 +274,6 @@ describe("useWindowPins", () => {
     fireEvent.click(screen.getByRole("button", { name: "windows pin both" }));
 
     await expectPinnedIds("windows-pins", ["calculator", "terminal"]);
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator", "terminal"]),
-    );
     expect(onWindowsPin).toHaveBeenCalledTimes(2);
     expect(onWindowsPin.mock.calls[1]?.[0].payload).toEqual({
       itemId: "terminal",
@@ -295,7 +296,7 @@ describe("useWindowPins", () => {
     expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBeNull();
   });
 
-  it("unpin 결과를 반영·저장하고 완료 event를 전달한다", async () => {
+  it("Windows unpin 결과를 반영·저장하고 완료 event를 전달한다", async () => {
     const onWindowsUnpin = vi.fn<(observation: PinObservation) => void>();
 
     window.localStorage.setItem(
@@ -321,11 +322,12 @@ describe("useWindowPins", () => {
     });
   });
 
-  it("Taskbar pin은 별도 key와 event만 변경한다", async () => {
+  it("Taskbar는 등록·취소와 전용 storage/event만 제공한다", async () => {
     const onTaskbarPin = vi.fn<(observation: PinObservation) => void>();
+    const onTaskbarUnpin = vi.fn<(observation: PinObservation) => void>();
     const onWindowsPin = vi.fn();
 
-    render(createTree({ onTaskbarPin, onWindowsPin }));
+    render(createTree({ onTaskbarPin, onTaskbarUnpin, onWindowsPin }));
     fireEvent.click(screen.getByRole("button", { name: "taskbar pin terminal" }));
 
     await expectPinnedIds("taskbar-pins", ["terminal"]);
@@ -333,9 +335,69 @@ describe("useWindowPins", () => {
     expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(
       JSON.stringify(["terminal"]),
     );
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBeNull();
     expect(onTaskbarPin).toHaveBeenCalledOnce();
     expect(onWindowsPin).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "taskbar unpin terminal" }));
+    await expectPinnedIds("taskbar-pins", []);
+    expect(onTaskbarUnpin).toHaveBeenCalledOnce();
+  });
+
+  it("windowsItems에 없는 pin ID는 양쪽 state와 storage에서 event 없이 정리한다", async () => {
+    const onTaskbarUnpin = vi.fn();
+    const onWindowsUnpin = vi.fn();
+
+    window.localStorage.setItem(
+      WINDOW_PIN_STORAGE_KEYS.windows,
+      JSON.stringify(["missing", "calculator"]),
+    );
+    window.localStorage.setItem(
+      WINDOW_PIN_STORAGE_KEYS.taskbar,
+      JSON.stringify(["terminal", "missing"]),
+    );
+
+    render(createTree({ onTaskbarUnpin, onWindowsUnpin }));
+
+    await expectPinnedIds("windows-pins", ["calculator"]);
+    await expectPinnedIds("taskbar-pins", ["terminal"]);
+    await waitFor(() => {
+      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
+        JSON.stringify(["calculator"]),
+      );
+      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(
+        JSON.stringify(["terminal"]),
+      );
+    });
+    expect(onWindowsUnpin).not.toHaveBeenCalled();
+    expect(onTaskbarUnpin).not.toHaveBeenCalled();
+  });
+
+  it("windowsItems prop에서 item이 사라지면 hook mount와 무관하게 양쪽 pin을 정리한다", async () => {
+    const onTaskbarUnpin = vi.fn();
+    const onWindowsUnpin = vi.fn();
+    const createRuntimeTree = (windowsItems: readonly WindowItem[]) =>
+      createElement(Windows, {
+        children: createElement(PinHarness, { onTaskbarUnpin, onWindowsUnpin }),
+        windowsItems,
+      });
+
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.windows, JSON.stringify(["terminal"]));
+    window.localStorage.setItem(WINDOW_PIN_STORAGE_KEYS.taskbar, JSON.stringify(["terminal"]));
+
+    const { rerender } = render(createRuntimeTree(WINDOWS_ITEMS));
+    await expectPinnedIds("windows-pins", ["terminal"]);
+    await expectPinnedIds("taskbar-pins", ["terminal"]);
+
+    rerender(createRuntimeTree([WINDOWS_ITEMS[0]]));
+
+    await expectPinnedIds("windows-pins", []);
+    await expectPinnedIds("taskbar-pins", []);
+    await waitFor(() => {
+      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(JSON.stringify([]));
+      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(JSON.stringify([]));
+    });
+    expect(onWindowsUnpin).not.toHaveBeenCalled();
+    expect(onTaskbarUnpin).not.toHaveBeenCalled();
   });
 
   it("Windows pin을 최종 index로 반영하고 reorder event를 전달한다", async () => {
@@ -366,33 +428,6 @@ describe("useWindowPins", () => {
     });
   });
 
-  it("Taskbar reorder는 Windows 순서와 storage를 변경하지 않는다", async () => {
-    const onTaskbarReorder = vi.fn<(observation: ReorderObservation) => void>();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.taskbar,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    render(createTree({ onTaskbarReorder }));
-    await expectPinnedIds("taskbar-pins", ["calculator", "terminal"]);
-
-    fireEvent.click(screen.getByRole("button", { name: "taskbar reorder terminal first" }));
-
-    await expectPinnedIds("taskbar-pins", ["terminal", "calculator"]);
-    await expectPinnedIds("windows-pins", ["calculator", "terminal"]);
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.taskbar)).toBe(
-      JSON.stringify(["terminal", "calculator"]),
-    );
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    expect(onTaskbarReorder).toHaveBeenCalledOnce();
-  });
-
   it("없는 ID, 범위 밖 index와 같은 위치 reorder는 no-op이다", async () => {
     const onWindowsReorder = vi.fn();
 
@@ -408,9 +443,6 @@ describe("useWindowPins", () => {
     fireEvent.click(screen.getByRole("button", { name: "windows reorder same" }));
 
     expect(screen.getByTestId("windows-pins").textContent).toBe(
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
       JSON.stringify(["calculator", "terminal"]),
     );
     expect(onWindowsReorder).not.toHaveBeenCalled();
