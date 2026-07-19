@@ -14,7 +14,7 @@ interface WindowsItemsProviderProps extends PropsWithChildren {
 
 /** 앱 prop을 source of truth로 사용하고 참조 변경을 Windows event로 전달한다. */
 export const WindowsItemsProvider = ({ children, windowsItems }: WindowsItemsProviderProps) => {
-  const { emitStateEvent } = useWindowsEventsContext();
+  const { dispatch } = useWindowsEventsContext();
   const previousWindowsItemsRef = useRef(windowsItems);
 
   useEffect(() => {
@@ -25,8 +25,8 @@ export const WindowsItemsProvider = ({ children, windowsItems }: WindowsItemsPro
     }
 
     previousWindowsItemsRef.current = windowsItems;
-    emitStateEvent("windowsItemsUpdated", { items: windowsItems, previousItems });
-  }, [emitStateEvent, windowsItems]);
+    dispatch("windowsItemsUpdated", { items: windowsItems, previousItems });
+  }, [dispatch, windowsItems]);
 
   return (
     <WindowsItemsContext.Provider value={windowsItems}>{children}</WindowsItemsContext.Provider>

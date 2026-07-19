@@ -14,7 +14,7 @@ import {
 import type { WindowItem, WindowsPanelPinnedItemAnimation } from "@window/ui";
 
 import { WindowsItemsContext } from "../../providers/windowsItemsProvider/context";
-import { useWindowsPins } from "../useWindowsPins";
+import { WindowsPinsContext } from "../../providers/windowsPinsProvider/context";
 
 const PIN_ANIMATION_NAME = "wb-windows-fade-in";
 const PIN_ANIMATION_WATCHDOG_MS = 500;
@@ -52,13 +52,23 @@ const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
   left === right ||
   (left.length === right.length && left.every((itemId, index) => itemId === right[index]));
 
+const useWindowPinAnimationContext = () => {
+  const windowsItems = useContext(WindowsItemsContext);
+  const pins = useContext(WindowsPinsContext);
+
+  if (windowsItems === null || pins === null) {
+    throw new Error("useWindowPinAnimation은 Windows 안에서 사용해야 합니다.");
+  }
+
+  return { pins, windowsItems };
+};
+
 /**
  * Windows panel의 pin item snapshot과 reorder/stale exit lifecycle을 소유한다.
  * Canonical pin ID는 windowsItems 변경 즉시 정리되고, 사라진 item snapshot만 out 완료까지 유지한다.
  */
 export const useWindowPinAnimation = (): UseWindowPinAnimation => {
-  const windowsItems = useContext(WindowsItemsContext);
-  const pins = useWindowsPins();
+  const { pins, windowsItems } = useWindowPinAnimationContext();
   const [renderedPinnedIds, setRenderedPinnedIdsState] = useState<readonly string[]>(
     pins.pinnedIds,
   );
@@ -69,10 +79,6 @@ export const useWindowPinAnimation = (): UseWindowPinAnimation => {
   const renderedPinnedIdsRef = useRef(renderedPinnedIds);
   const staleQueueRef = useRef(staleQueue);
   const transitionRef = useRef(transition);
-
-  if (windowsItems === null) {
-    throw new Error("useWindowPinAnimation은 Windows 안에서 사용해야 합니다.");
-  }
 
   const itemsById = useMemo(
     () => new Map(windowsItems.map((item) => [item.id, item])),

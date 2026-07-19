@@ -1,13 +1,8 @@
-import type {
-  WindowDispatch,
-  WindowEventListener,
-  WindowEventName,
-  WindowStateEventMap,
-} from "../../types";
+import type { WindowEventListener, WindowEventMap, WindowEventName } from "../../types";
 
-export type EmitWindowStateEvent = <Name extends keyof WindowStateEventMap>(
+export type DispatchWindowEvent = <Name extends WindowEventName>(
   eventName: Name,
-  payload: WindowStateEventMap[Name],
+  payload: WindowEventMap[Name],
 ) => void;
 
 export type SubscribeWindowEvent = <Name extends WindowEventName>(
@@ -16,7 +11,6 @@ export type SubscribeWindowEvent = <Name extends WindowEventName>(
 ) => () => void;
 
 export interface WindowsEventsContextValue {
-  dispatch: WindowDispatch;
-  emitStateEvent: EmitWindowStateEvent;
+  dispatch: DispatchWindowEvent;
   subscribe: SubscribeWindowEvent;
 }

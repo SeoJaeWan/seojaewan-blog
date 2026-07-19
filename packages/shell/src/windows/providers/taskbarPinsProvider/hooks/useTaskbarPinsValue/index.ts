@@ -11,7 +11,7 @@ import type { UseTaskbarPins } from "../../types";
 /** Taskbar pin 상태, persistence, action과 완료 event를 하나의 Context 값으로 조립한다. */
 export const useTaskbarPinsValue = (): UseTaskbarPins => {
   const windowsItems = useWindowsItemsContext();
-  const { emitStateEvent } = useWindowsEventsContext();
+  const { dispatch } = useWindowsEventsContext();
   const validItemIds = useMemo(() => new Set(windowsItems.map((item) => item.id)), [windowsItems]);
   const { pinnedIds, updatePinnedIds } = usePinnedIdsState({
     storageKey: TASKBAR_PIN_STORAGE_KEY,
@@ -31,10 +31,10 @@ export const useTaskbarPinsValue = (): UseTaskbarPins => {
       });
 
       if (change !== null) {
-        emitStateEvent("windowPinToTaskbar", { itemId, ...change });
+        dispatch("windowPinToTaskbar", { itemId, ...change });
       }
     },
-    [emitStateEvent, updatePinnedIds, validItemIds],
+    [dispatch, updatePinnedIds, validItemIds],
   );
 
   const unpin = useCallback(
@@ -48,10 +48,10 @@ export const useTaskbarPinsValue = (): UseTaskbarPins => {
       });
 
       if (change !== null) {
-        emitStateEvent("windowUnpinFromTaskbar", { itemId, ...change });
+        dispatch("windowUnpinFromTaskbar", { itemId, ...change });
       }
     },
-    [emitStateEvent, updatePinnedIds],
+    [dispatch, updatePinnedIds],
   );
 
   return useMemo(() => ({ isPinned, pin, pinnedIds, unpin }), [isPinned, pin, pinnedIds, unpin]);

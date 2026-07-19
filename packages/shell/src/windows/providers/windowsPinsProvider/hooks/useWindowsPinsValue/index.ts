@@ -11,7 +11,7 @@ import type { UseWindowsPins } from "../../types";
 /** Windows pin 상태, persistence, action과 완료 event를 하나의 Context 값으로 조립한다. */
 export const useWindowsPinsValue = (): UseWindowsPins => {
   const windowsItems = useWindowsItemsContext();
-  const { emitStateEvent } = useWindowsEventsContext();
+  const { dispatch } = useWindowsEventsContext();
   const validItemIds = useMemo(() => new Set(windowsItems.map((item) => item.id)), [windowsItems]);
   const { pinnedIds, updatePinnedIds } = usePinnedIdsState({
     storageKey: WINDOWS_PIN_STORAGE_KEY,
@@ -31,10 +31,10 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
-        emitStateEvent("windowPinToStart", { itemId, ...change });
+        dispatch("windowPinToStart", { itemId, ...change });
       }
     },
-    [emitStateEvent, updatePinnedIds, validItemIds],
+    [dispatch, updatePinnedIds, validItemIds],
   );
 
   const applyReorder = useCallback(
@@ -60,7 +60,7 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
-        emitStateEvent("windowsPinsReordered", {
+        dispatch("windowsPinsReordered", {
           fromIndex: change.previousPinnedIds.indexOf(itemId),
           movedItemId: itemId,
           pinnedIds: change.pinnedIds,
@@ -69,7 +69,7 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
         });
       }
     },
-    [emitStateEvent, updatePinnedIds],
+    [dispatch, updatePinnedIds],
   );
 
   const unpin = useCallback(
@@ -83,10 +83,10 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
-        emitStateEvent("windowUnpinFromStart", { itemId, ...change });
+        dispatch("windowUnpinFromStart", { itemId, ...change });
       }
     },
-    [emitStateEvent, updatePinnedIds],
+    [dispatch, updatePinnedIds],
   );
 
   return useMemo(

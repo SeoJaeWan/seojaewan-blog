@@ -3,7 +3,15 @@ import { createElement } from "react";
 
 import type { WindowItem } from "@window/ui";
 
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../..";
@@ -107,6 +115,12 @@ afterEach(() => {
 });
 
 describe("useWindowPinAnimation", () => {
+  it("Windows 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {
+    expect(() => renderHook(() => useWindowPinAnimation())).toThrow(
+      "useWindowPinAnimation은 Windows 안에서 사용해야 합니다.",
+    );
+  });
+
   it("out 완료 뒤 reorder를 반영하고 in 완료 뒤 animation을 정리한다", async () => {
     const onReorder = vi.fn<(observation: ReorderObservation) => void>();
 

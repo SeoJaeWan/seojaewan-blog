@@ -41,8 +41,11 @@ export interface WindowContextMenuEvent {
   source: WindowsPanelItemSource;
 }
 
-/** Provider state update 뒤에만 발생할 수 있는 event map. */
-export interface WindowStateEventMap {
+/** useWindowEvent가 구독할 수 있는 전체 event map. */
+export interface WindowEventMap {
+  windowContextMenuRequested: WindowContextMenuEvent;
+  windowOpen: WindowItemEvent;
+  windowOpenLocation: WindowItemEvent;
   windowPinToStart: WindowPinEvent;
   windowPinToTaskbar: WindowPinEvent;
   windowsItemsUpdated: WindowsItemsUpdatedEvent;
@@ -51,17 +54,17 @@ export interface WindowStateEventMap {
   windowUnpinFromTaskbar: WindowPinEvent;
 }
 
-/** Provider state 변경 없이 직접 발생할 수 있는 event map. */
-export interface WindowDispatchEventMap {
-  windowContextMenuRequested: WindowContextMenuEvent;
-  windowOpen: WindowItemEvent;
-  windowOpenLocation: WindowItemEvent;
-}
-
-/** useWindowEvent가 구독할 수 있는 전체 event map. */
-export interface WindowEventMap extends WindowDispatchEventMap, WindowStateEventMap {}
-
 export type WindowEventName = keyof WindowEventMap;
+
+/** Public dispatch가 직접 발생시킬 수 있는 상태 없는 event name. */
+export type WindowDispatchEventName =
+  "windowContextMenuRequested" | "windowOpen" | "windowOpenLocation";
+
+/** 이전 public event map 계약을 단일 WindowEventMap에서 파생한다. */
+export type WindowDispatchEventMap = Pick<WindowEventMap, WindowDispatchEventName>;
+
+/** Provider가 상태 반영 후 발생시키는 event map을 단일 WindowEventMap에서 파생한다. */
+export type WindowStateEventMap = Omit<WindowEventMap, WindowDispatchEventName>;
 
 /** 특정 event name에 대응하는 observer callback. */
 export type WindowEventListener<Name extends WindowEventName> = (
@@ -69,7 +72,7 @@ export type WindowEventListener<Name extends WindowEventName> = (
 ) => void;
 
 /** 상태 없는 event만 허용하는 public dispatch 계약. */
-export type WindowDispatch = <Name extends keyof WindowDispatchEventMap>(
+export type WindowDispatch = <Name extends WindowDispatchEventName>(
   eventName: Name,
-  payload: WindowDispatchEventMap[Name],
+  payload: WindowEventMap[Name],
 ) => void;

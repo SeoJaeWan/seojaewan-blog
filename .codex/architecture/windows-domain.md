@@ -78,7 +78,7 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 | `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | `WindowsItemsProvider`가 참조와 update event 제공              |
 | `taskbarPinnedIds`    | `TaskbarPinsProvider`                   | Provider value hook의 등록·취소 action                         |
 | `windowsPinnedIds`    | `WindowsPinsProvider`                   | Provider value hook의 등록·취소·reorder action                 |
-| observer registry     | `WindowsEventsProvider`                 | `useWindowEvent` subscribe/unsubscribe, 내부 Provider emit     |
+| observer registry     | `WindowsEventsProvider`                 | `useWindowEvent` subscribe/unsubscribe, 단일 typed dispatch    |
 | 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생            |
 | pinned item animation | `useWindowPinAnimation`                 | item cache와 reorder/stale visual lifecycle을 surface에서 소유 |
 
@@ -155,10 +155,11 @@ type UpdatePinnedIds = (
 `applyReorder(itemId, toIndex)`를 제공한다.
 
 `useTaskbarPinsValue()`와 `useWindowsPinsValue()`는 update 결과가 `null`이 아닐 때만 action에
-대응하는 pin, unpin 또는 reorder event를 만들어 내부 `emitStateEvent`로 전달한다. 이 emitter는
-public `useWindowDispatch` 대상이 아니며 `WindowsEventsProvider`에 연결하는 내부 계약이다.
+대응하는 pin, unpin 또는 reorder event를 만들어 `WindowsEventsProvider`의 단일 `dispatch`로
+전달한다. 내부 Context의 dispatch는 전체 `WindowEventMap`을 처리하지만 public
+`useWindowDispatch` 반환 타입은 상태 없는 세 event로만 좁힌다.
 
-`useWindowPinAnimation()`은 Windows panel 전용이며 내부에서 `useWindowsPins()`를 사용해 ID를
+`useWindowPinAnimation()`은 Windows panel 전용이며 내부 pin/item Context의 값을 결합해 ID를
 실제 `WindowItem`으로 변환한다. 이 hook만 item snapshot과 reorder 및 stale item의 out/in
 lifecycle을 소유한다. Reorder는 `reorder(itemId, toIndex)`로 visual을 시작하고 out transition이
 끝난 뒤 `applyReorder`로 순서를 반영한 다음 새 위치의 in animation을 완료한다.
@@ -201,7 +202,11 @@ Listener 하나가 예외를 던져도 다른 listener와 원래 update/dispatch
 - `windowOpenLocation`
 - `windowContextMenuRequested`
 
-Pin과 item update event는 완료된 state update 결과를 받은 action hook에서만 만들어지므로 public
+`WindowEventMap`은 stateless와 state update event를 모두 담는 canonical 계약이며
+`WindowsEventsProvider`는 이 map을 받는 dispatch 하나만 제공한다. Public `useWindowDispatch`는
+같은 dispatch를 stateless event 이름으로 타입 제한해서 반환한다.
+
+Pin과 item update event는 완료된 state update 결과를 받은 내부 Provider에서만 만들어지므로 public
 dispatch 대상이 아니다. Pin event는 별도 render 대기 queue 없이 직접 전달한다. Observer가 해당
 변경의 완료 결과를 필요로 할 때는 event payload의 `pinnedIds`와 `previousPinnedIds`를 사용하며
 context state는 다음 React render에서 같은 값으로 갱신된다.
