@@ -1,12 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  readTaskbarPinnedIds,
-  readWindowsPinnedIds,
-  WINDOW_PIN_STORAGE_KEYS,
-  writeTaskbarPinnedIds,
-  writeWindowsPinnedIds,
-} from "./index";
+import { readPinnedIds, writePinnedIds } from "./index";
+
+const TASKBAR_PIN_STORAGE_KEY = "taskbarPinnedIds_v1";
+const WINDOWS_PIN_STORAGE_KEY = "windowsPinnedIds_v1";
 
 const createStorage = (values: Record<string, string> = {}) => {
   const entries = new Map(Object.entries(values));
@@ -19,15 +16,15 @@ const createStorage = (values: Record<string, string> = {}) => {
   };
 };
 
-describe("windowPinStorage", () => {
-  it("각 surface의 versioned key에서 pin ID를 읽는다", () => {
+describe("pinnedIdsStorage", () => {
+  it("전달된 versioned key에서 pin ID를 읽는다", () => {
     const storage = createStorage({
-      [WINDOW_PIN_STORAGE_KEYS.taskbar]: JSON.stringify(["terminal"]),
-      [WINDOW_PIN_STORAGE_KEYS.windows]: JSON.stringify(["calculator"]),
+      [TASKBAR_PIN_STORAGE_KEY]: JSON.stringify(["terminal"]),
+      [WINDOWS_PIN_STORAGE_KEY]: JSON.stringify(["calculator"]),
     });
 
-    expect(readWindowsPinnedIds(storage)).toEqual(["calculator"]);
-    expect(readTaskbarPinnedIds(storage)).toEqual(["terminal"]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual(["calculator"]);
+    expect(readPinnedIds(TASKBAR_PIN_STORAGE_KEY, storage)).toEqual(["terminal"]);
   });
 
   it.each([
@@ -36,27 +33,25 @@ describe("windowPinStorage", () => {
     { label: "배열이 아닌 값", value: JSON.stringify({ id: "calculator" }) },
     { label: "문자열 외 항목이 섞인 배열", value: JSON.stringify(["calculator", 1]) },
   ])("$label은 빈 배열로 복구한다", ({ value }) => {
-    const storage = createStorage(
-      value === null ? {} : { [WINDOW_PIN_STORAGE_KEYS.windows]: value },
-    );
+    const storage = createStorage(value === null ? {} : { [WINDOWS_PIN_STORAGE_KEY]: value });
 
-    expect(readWindowsPinnedIds(storage)).toEqual([]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual([]);
   });
 
   it("중복 ID는 최초 순서를 유지하며 한 번만 복원한다", () => {
     const storage = createStorage({
-      [WINDOW_PIN_STORAGE_KEYS.windows]: JSON.stringify(["calculator", "terminal", "calculator"]),
+      [WINDOWS_PIN_STORAGE_KEY]: JSON.stringify(["calculator", "terminal", "calculator"]),
     });
 
-    expect(readWindowsPinnedIds(storage)).toEqual(["calculator", "terminal"]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual(["calculator", "terminal"]);
   });
 
-  it("최종 pin ID를 surface별 key에 JSON으로 저장한다", () => {
+  it("최종 pin ID를 전달된 key에 JSON으로 저장한다", () => {
     const storage = createStorage();
 
-    expect(writeTaskbarPinnedIds(["terminal"], storage)).toBe(true);
+    expect(writePinnedIds(TASKBAR_PIN_STORAGE_KEY, ["terminal"], storage)).toBe(true);
     expect(storage.setItem).toHaveBeenCalledWith(
-      WINDOW_PIN_STORAGE_KEYS.taskbar,
+      TASKBAR_PIN_STORAGE_KEY,
       JSON.stringify(["terminal"]),
     );
   });
@@ -71,7 +66,7 @@ describe("windowPinStorage", () => {
       }),
     };
 
-    expect(readWindowsPinnedIds(storage)).toEqual([]);
-    expect(writeWindowsPinnedIds(["calculator"], storage)).toBe(false);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual([]);
+    expect(writePinnedIds(WINDOWS_PIN_STORAGE_KEY, ["calculator"], storage)).toBe(false);
   });
 });

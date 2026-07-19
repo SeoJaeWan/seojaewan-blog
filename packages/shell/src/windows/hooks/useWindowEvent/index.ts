@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 
-import { WindowsControllerContext } from "../..";
+import { WindowsEventsContext } from "../../providers/windowsEventsProvider/context";
 import type { WindowEventListener, WindowEventName } from "../../types";
 
 /**
@@ -15,7 +15,7 @@ export const useWindowEvent = <Name extends WindowEventName>(
   eventName: Name,
   listener: WindowEventListener<Name>,
 ) => {
-  const context = useContext(WindowsControllerContext);
+  const context = useContext(WindowsEventsContext);
   const listenerRef = useRef(listener);
 
   if (context === null) {

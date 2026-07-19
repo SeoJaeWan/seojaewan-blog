@@ -17,11 +17,17 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../..";
+import { TASKBAR_PIN_STORAGE_KEY } from "../../providers/taskbarPinsProvider/constants";
+import { WINDOWS_PIN_STORAGE_KEY } from "../../providers/windowsPinsProvider/constants";
 import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../types";
-import { WINDOW_PIN_STORAGE_KEYS } from "../../utils/windowPinStorage";
 import { useTaskbarPins } from "../useTaskbarPins";
 import { useWindowEvent } from "../useWindowEvent";
 import { useWindowsPins } from "./index";
+
+const WINDOW_PIN_STORAGE_KEYS = {
+  taskbar: TASKBAR_PIN_STORAGE_KEY,
+  windows: WINDOWS_PIN_STORAGE_KEY,
+} as const;
 
 const WINDOWS_ITEMS = [
   { id: "calculator", title: "계산기" },

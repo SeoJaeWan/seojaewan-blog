@@ -1,18 +1,11 @@
-import type {
-  WindowEventListener,
-  WindowEventMap,
-  WindowEventName,
-} from "../../types";
+import type { WindowEventListener, WindowEventMap, WindowEventName } from "../../../../types";
 
 type StoredWindowEventListener = (...payload: never[]) => void;
 
 export type WindowEventErrorReporter = (error: unknown) => void;
 
 export interface WindowEventRegistry {
-  emit: <Name extends WindowEventName>(
-    eventName: Name,
-    payload: WindowEventMap[Name],
-  ) => void;
+  emit: <Name extends WindowEventName>(eventName: Name, payload: WindowEventMap[Name]) => void;
   subscribe: <Name extends WindowEventName>(
     eventName: Name,
     listener: WindowEventListener<Name>,
@@ -38,12 +31,7 @@ const reportWindowEventError: WindowEventErrorReporter = (error) => {
   console.error(error);
 };
 
-/**
- * Window event별 observer를 보관하고 listener 하나의 오류를 나머지 dispatch와 격리한다.
- *
- * @param options.reportError observer 오류 보고 함수
- * @returns typed subscribe와 emit 계약
- */
+/** Window event별 listener를 보관하고 listener 오류를 다른 observer와 격리한다. */
 export const createWindowEventRegistry = ({
   reportError = reportWindowEventError,
 }: CreateWindowEventRegistryOptions = {}): WindowEventRegistry => {

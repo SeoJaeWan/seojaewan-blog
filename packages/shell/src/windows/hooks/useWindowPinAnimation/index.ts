@@ -13,7 +13,7 @@ import {
 
 import type { WindowItem, WindowsPanelPinnedItemAnimation } from "@window/ui";
 
-import { WindowsStateContext } from "../..";
+import { WindowsItemsContext } from "../../providers/windowsItemsProvider/context";
 import { useWindowsPins } from "../useWindowsPins";
 
 const PIN_ANIMATION_NAME = "wb-windows-fade-in";
@@ -57,7 +57,7 @@ const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
  * Canonical pin ID는 windowsItems 변경 즉시 정리되고, 사라진 item snapshot만 out 완료까지 유지한다.
  */
 export const useWindowPinAnimation = (): UseWindowPinAnimation => {
-  const state = useContext(WindowsStateContext);
+  const windowsItems = useContext(WindowsItemsContext);
   const pins = useWindowsPins();
   const [renderedPinnedIds, setRenderedPinnedIdsState] = useState<readonly string[]>(
     pins.pinnedIds,
@@ -70,13 +70,13 @@ export const useWindowPinAnimation = (): UseWindowPinAnimation => {
   const staleQueueRef = useRef(staleQueue);
   const transitionRef = useRef(transition);
 
-  if (state === null) {
+  if (windowsItems === null) {
     throw new Error("useWindowPinAnimation은 Windows 안에서 사용해야 합니다.");
   }
 
   const itemsById = useMemo(
-    () => new Map(state.windowsItems.map((item) => [item.id, item])),
-    [state.windowsItems],
+    () => new Map(windowsItems.map((item) => [item.id, item])),
+    [windowsItems],
   );
   const pinnedItems = useMemo(
     () =>

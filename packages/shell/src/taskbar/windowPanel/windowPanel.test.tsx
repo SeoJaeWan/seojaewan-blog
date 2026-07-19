@@ -5,10 +5,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../../windows";
 import { useWindowEvent } from "../../windows/hooks/useWindowEvent";
+import { TASKBAR_PIN_STORAGE_KEY } from "../../windows/providers/taskbarPinsProvider/constants";
+import { WINDOWS_PIN_STORAGE_KEY } from "../../windows/providers/windowsPinsProvider/constants";
 import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
-import { WINDOW_PIN_STORAGE_KEYS } from "../../windows/utils/windowPinStorage";
 import { TaskbarPanelHost } from "../panelHost";
 import { TaskbarWindowPanel } from "./index";
+
+const WINDOW_PIN_STORAGE_KEYS = {
+  taskbar: TASKBAR_PIN_STORAGE_KEY,
+  windows: WINDOWS_PIN_STORAGE_KEY,
+} as const;
 
 const REACT = { id: "react", title: "React" } satisfies WindowItem;
 const REDUX = { id: "redux", title: "Redux" } satisfies WindowItem;
@@ -119,9 +125,9 @@ describe("TaskbarWindowPanel", () => {
     fireEvent.change(getSearchInput(), { target: { value: "react" } });
     fireEvent.click(screen.getByRole("button", { name: "React 자세히" }));
 
-    expect(
-      screen.getByRole("button", { name: "파일 위치 열기" }).hasAttribute("disabled"),
-    ).toBe(false);
+    expect(screen.getByRole("button", { name: "파일 위치 열기" }).hasAttribute("disabled")).toBe(
+      false,
+    );
     fireEvent.click(screen.getByRole("button", { name: "시작 화면에 고정" }));
     fireEvent.click(screen.getByRole("button", { name: "작업 표시줄에 고정" }));
 
@@ -130,9 +136,7 @@ describe("TaskbarWindowPanel", () => {
         screen.getByRole("button", { name: "시작 화면에서 제거" }).hasAttribute("disabled"),
       ).toBe(false);
       expect(
-        screen
-          .getByRole("button", { name: "작업 표시줄에서 제거" })
-          .hasAttribute("disabled"),
+        screen.getByRole("button", { name: "작업 표시줄에서 제거" }).hasAttribute("disabled"),
       ).toBe(false);
     });
     expect(onWindowsPin).toHaveBeenCalledWith({

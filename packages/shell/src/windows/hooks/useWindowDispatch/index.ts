@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 
-import { WindowsControllerContext } from "../..";
+import { WindowsEventsContext } from "../../providers/windowsEventsProvider/context";
 import type { WindowDispatch } from "../../types";
 
 /**
@@ -11,7 +11,7 @@ import type { WindowDispatch } from "../../types";
  * @returns windowOpen, windowOpenLocation, windowContextMenuRequested 전용 dispatch
  */
 export const useWindowDispatch = (): WindowDispatch => {
-  const context = useContext(WindowsControllerContext);
+  const context = useContext(WindowsEventsContext);
 
   if (context === null) {
     throw new Error("useWindowDispatch는 Windows 안에서 사용해야 합니다.");

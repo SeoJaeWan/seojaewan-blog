@@ -1,4 +1,4 @@
-import { createElement, StrictMode, useContext } from "react";
+import { createElement, StrictMode } from "react";
 
 import type { WindowItem } from "@window/ui";
 
@@ -6,7 +6,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useWindowEvent } from "./hooks/useWindowEvent";
-import { Windows, WindowsControllerContext, WindowsStateContext } from "./index";
+import { useWindowsPins } from "./hooks/useWindowsPins";
+import { Windows } from "./index";
 import type { WindowPinEvent, WindowsItemsUpdatedEvent } from "./types";
 
 const INITIAL_ITEMS = [{ id: "calculator", title: "계산기" }] satisfies readonly WindowItem[];
@@ -29,51 +30,20 @@ interface PinUpdateProbeProps {
 }
 
 const PinUpdateProbe = ({ onEvent }: PinUpdateProbeProps) => {
-  const state = useContext(WindowsStateContext);
-  const controller = useContext(WindowsControllerContext);
-
-  if (state === null || controller === null) {
-    throw new Error("Windows context를 찾을 수 없습니다.");
-  }
+  const pins = useWindowsPins();
 
   useWindowEvent("windowPinToStart", (payload) => {
     onEvent(payload);
   });
 
-  const updateCalculatorPin = (emitEvent: boolean) => {
-    const change = controller.updateWindowsPinnedIds((currentPinnedIds) => [
-      ...currentPinnedIds,
-      "calculator",
-    ]);
-
-    if (emitEvent && change !== null) {
-      controller.emitStateEvent({
-        name: "windowPinToStart",
-        payload: { itemId: "calculator", ...change },
-      });
-    }
-  };
-
   return createElement(
     "div",
     null,
-    createElement(
-      "output",
-      { "data-testid": "windows-pins" },
-      JSON.stringify(state.windowsPinnedIds),
-    ),
+    createElement("output", { "data-testid": "windows-pins" }, JSON.stringify(pins.pinnedIds)),
     createElement(
       "button",
       {
-        onClick: () => updateCalculatorPin(false),
-        type: "button",
-      },
-      "update only",
-    ),
-    createElement(
-      "button",
-      {
-        onClick: () => updateCalculatorPin(true),
+        onClick: () => pins.pin("calculator"),
         type: "button",
       },
       "pin",
@@ -127,7 +97,7 @@ describe("Windows", () => {
     expect(listener).toHaveBeenCalledOnce();
   });
 
-  it("pin update에서 완료 payload를 직접 전달하고 다음 render에 state를 반영한다", async () => {
+  it("pin action은 완료 payload를 전달하고 다음 render에 state를 반영한다", async () => {
     const onEvent = vi.fn<(payload: WindowPinEvent) => void>();
 
     render(
@@ -145,24 +115,6 @@ describe("Windows", () => {
       pinnedIds: ["calculator"],
       previousPinnedIds: [],
     });
-    await waitFor(() =>
-      expect(screen.getByTestId("windows-pins").textContent).toBe(JSON.stringify(["calculator"])),
-    );
-  });
-
-  it("pin state update 자체는 observer event를 발생시키지 않는다", async () => {
-    const onEvent = vi.fn<(payload: WindowPinEvent) => void>();
-
-    render(
-      createElement(Windows, {
-        children: createElement(PinUpdateProbe, { onEvent }),
-        windowsItems: INITIAL_ITEMS,
-      }),
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: "update only" }));
-
-    expect(onEvent).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(screen.getByTestId("windows-pins").textContent).toBe(JSON.stringify(["calculator"])),
     );

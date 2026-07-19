@@ -73,23 +73,3 @@ export type WindowDispatch = <Name extends keyof WindowDispatchEventMap>(
   eventName: Name,
   payload: WindowDispatchEventMap[Name],
 ) => void;
-
-/** 완료된 pin state update와 함께 전달할 event. */
-export type WindowMutableStateEvent = {
-  [Name in Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">]: {
-    name: Name;
-    payload: WindowStateEventMap[Name];
-  };
-}[Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">];
-
-/** 실제로 반영된 pin ID 변경 결과. */
-export interface PinnedIdsChange {
-  pinnedIds: readonly string[];
-  previousPinnedIds: readonly string[];
-}
-
-/** 최신 ID에서 다음 pin ID를 계산하는 내부 updater. */
-export type PinnedIdsUpdater = (currentPinnedIds: readonly string[]) => readonly string[] | null;
-
-/** Pin ID 변경을 시도하고 실제 반영 결과를 동기적으로 반환하는 내부 계약. */
-export type UpdatePinnedIds = (update: PinnedIdsUpdater) => PinnedIdsChange | null;

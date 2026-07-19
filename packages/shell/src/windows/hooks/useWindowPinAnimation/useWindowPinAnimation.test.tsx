@@ -7,11 +7,13 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../..";
+import { WINDOWS_PIN_STORAGE_KEY } from "../../providers/windowsPinsProvider/constants";
 import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../types";
-import { WINDOW_PIN_STORAGE_KEYS } from "../../utils/windowPinStorage";
 import { useWindowEvent } from "../useWindowEvent";
 import { useWindowsPins } from "../useWindowsPins";
 import { useWindowPinAnimation } from "./index";
+
+const WINDOW_PIN_STORAGE_KEYS = { windows: WINDOWS_PIN_STORAGE_KEY } as const;
 
 const CALCULATOR = { id: "calculator", title: "계산기" } satisfies WindowItem;
 const TERMINAL = { id: "terminal", title: "터미널" } satisfies WindowItem;

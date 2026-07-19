@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { WindowItemEvent } from "../../types";
+import type { WindowItemEvent } from "../../../../types";
 import { createWindowEventRegistry } from "./index";
 
 const WINDOW_ITEM_EVENT: WindowItemEvent = {
