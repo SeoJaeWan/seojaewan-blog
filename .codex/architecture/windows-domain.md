@@ -66,9 +66,10 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 | 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생            |
 | pinned item animation | `useWindowPinAnimation`                 | item cache와 reorder/stale visual lifecycle을 surface에서 소유 |
 
-Provider는 `pin`, `unpin`, `reorder`의 정책과 animation 순서를 직접 결정하지 않는다. 각 pin
-hook은 독립된 최신 ID 배열에서 다음 ID와 event를 계산하고, Provider 내부 `useWindowPinState`는
-완료된 ID를 반영·저장한 뒤 event가 있으면 직접 전달한다.
+Provider는 `pin`, `unpin`, `reorder`의 정책과 animation 순서를 직접 결정하지 않는다. Provider
+내부 `useWindowPinState`는 단일 pin state 객체에 완료된 ID를 반영·저장하고 이전/다음 배열을
+반환한다. 각 action hook은 이 결과로 자신의 semantic event를 만들고 Provider registry에 직접
+전달한다.
 
 ## `windowsItems` Contract
 
@@ -108,22 +109,24 @@ hook은 독립된 최신 ID 배열에서 다음 ID와 event를 계산하고, Pro
 
 ### Mutation And Visual Lifecycle
 
-Provider 내부 update gateway는 Taskbar와 Windows용으로 분리되어 있으며 각 최신 ID 배열만
-functional updater에 전달한다.
+`useWindowPinState`는 두 배열을 하나의 state와 ref로 보관하고 field key를 받는 공통 commit/update
+구현 하나로 복원, 정규화와 localStorage 저장을 처리한다. Controller에 노출할 때만 Taskbar와
+Windows용 updater로 나누며 각 updater는 해당 surface의 최신 ID 배열을 callback에 전달한다.
 
 ```ts
-type PinnedIdsUpdate = {
+type PinnedIdsChange = {
   pinnedIds: readonly string[];
-  event: WindowMutableStateEvent | null;
+  previousPinnedIds: readonly string[];
 };
 
 type UpdatePinnedIds = (
-  update: (currentPinnedIds: readonly string[]) => PinnedIdsUpdate | null,
-) => void;
+  update: (currentPinnedIds: readonly string[]) => readonly string[] | null,
+) => PinnedIdsChange | null;
 ```
 
 `WindowsControllerContext`는 이 타입의 `updateTaskbarPinnedIds`와 `updateWindowsPinnedIds`를
-독립적으로 제공한다.
+독립적으로 제공한다. Update 함수는 state와 storage만 변경하고 observer event를 만들지 않는다.
+실제 변경이 없으면 `null`, 변경됐으면 완료된 이전/다음 배열을 동기적으로 반환한다.
 
 `useTaskbarPins()`는 animation 지역 상태 없이 다음 등록·취소 동작만 제공한다.
 
@@ -134,6 +137,10 @@ type UpdatePinnedIds = (
 
 `useWindowsPins()`는 같은 조회·등록·취소 동작과 animation 완료 뒤 호출하는
 `applyReorder(itemId, toIndex)`를 제공한다.
+
+`useTaskbarPins()`와 `useWindowsPins()`는 update 결과가 `null`이 아닐 때만 action에 대응하는 pin,
+unpin 또는 reorder event를 만들어 내부 `emitStateEvent`로 전달한다. 이 emitter는 public
+`useWindowDispatch` 대상이 아니며 Provider observer registry에 연결하는 내부 controller 계약이다.
 
 `useWindowPinAnimation()`은 Windows panel 전용이며 내부에서 `useWindowsPins()`를 사용해 ID를
 실제 `WindowItem`으로 변환한다. 이 hook만 item snapshot과 reorder 및 stale item의 out/in
@@ -178,10 +185,10 @@ Listener 하나가 예외를 던져도 다른 listener와 원래 update/dispatch
 - `windowOpenLocation`
 - `windowContextMenuRequested`
 
-Pin과 item update event는 완료된 state update 경로에서만 만들어지므로 public dispatch 대상이
-아니다. Pin event는 별도 render 대기 queue 없이 직접 전달한다. Observer가 해당 변경의 완료
-결과를 필요로 할 때는 event payload의 `pinnedIds`와 `previousPinnedIds`를 사용하며 context state는
-다음 React render에서 같은 값으로 갱신된다.
+Pin과 item update event는 완료된 state update 결과를 받은 action hook에서만 만들어지므로 public
+dispatch 대상이 아니다. Pin event는 별도 render 대기 queue 없이 직접 전달한다. Observer가 해당
+변경의 완료 결과를 필요로 할 때는 event payload의 `pinnedIds`와 `previousPinnedIds`를 사용하며
+context state는 다음 React render에서 같은 값으로 갱신된다.
 
 ## Event Contract
 

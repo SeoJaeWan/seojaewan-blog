@@ -19,6 +19,7 @@ import {
 
 export interface WindowsControllerContextValue {
   dispatch: WindowDispatch;
+  emitStateEvent: (event: WindowMutableStateEvent) => void;
   subscribe: WindowEventRegistry["subscribe"];
   updateTaskbarPinnedIds: UpdatePinnedIds;
   updateWindowsPinnedIds: UpdatePinnedIds;
@@ -55,7 +56,6 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
   );
 
   const { pinState, updateTaskbarPinnedIds, updateWindowsPinnedIds } = useWindowPinState({
-    onStateEvent: emitStateEvent,
     windowsItems,
   });
 
@@ -92,11 +92,12 @@ export const Windows = ({ children, windowsItems }: WindowsProps) => {
   const controllerValue = useMemo<WindowsControllerContextValue>(
     () => ({
       dispatch,
+      emitStateEvent,
       subscribe: eventRegistry.subscribe,
       updateTaskbarPinnedIds,
       updateWindowsPinnedIds,
     }),
-    [dispatch, eventRegistry, updateTaskbarPinnedIds, updateWindowsPinnedIds],
+    [dispatch, emitStateEvent, eventRegistry, updateTaskbarPinnedIds, updateWindowsPinnedIds],
   );
 
   return (

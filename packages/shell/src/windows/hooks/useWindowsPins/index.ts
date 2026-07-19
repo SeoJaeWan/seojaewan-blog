@@ -3,7 +3,6 @@
 import { useCallback, useContext, useMemo } from "react";
 
 import { WindowsControllerContext, WindowsStateContext } from "../..";
-import type { WindowPinEvent } from "../../types";
 
 export interface UseWindowsPins {
   /** Animation 완료 뒤 Windows panel의 실제 순서를 반영한다. */
@@ -28,86 +27,81 @@ export const useWindowsPins = (): UseWindowsPins => {
 
   const pin = useCallback(
     (itemId: string) => {
-      controller.updateWindowsPinnedIds((previousPinnedIds) => {
+      const change = controller.updateWindowsPinnedIds((currentPinnedIds) => {
         if (
-          previousPinnedIds.includes(itemId) ||
+          currentPinnedIds.includes(itemId) ||
           !state.windowsItems.some((item) => item.id === itemId)
         ) {
           return null;
         }
 
-        const nextPinnedIds = [...previousPinnedIds, itemId];
-        const payload: WindowPinEvent = {
-          itemId,
-          pinnedIds: nextPinnedIds,
-          previousPinnedIds,
-        };
-
-        return {
-          event: { name: "windowPinToStart", payload },
-          pinnedIds: nextPinnedIds,
-        };
+        return [...currentPinnedIds, itemId];
       });
+
+      if (change !== null) {
+        controller.emitStateEvent({
+          name: "windowPinToStart",
+          payload: { itemId, ...change },
+        });
+      }
     },
     [controller, state.windowsItems],
   );
 
   const applyReorder = useCallback(
     (itemId: string, toIndex: number) => {
-      controller.updateWindowsPinnedIds((previousPinnedIds) => {
-        const fromIndex = previousPinnedIds.indexOf(itemId);
+      const change = controller.updateWindowsPinnedIds((currentPinnedIds) => {
+        const fromIndex = currentPinnedIds.indexOf(itemId);
 
         if (
           fromIndex === -1 ||
           !Number.isInteger(toIndex) ||
           toIndex < 0 ||
-          toIndex >= previousPinnedIds.length ||
+          toIndex >= currentPinnedIds.length ||
           fromIndex === toIndex
         ) {
           return null;
         }
 
-        const nextPinnedIds = [...previousPinnedIds];
+        const nextPinnedIds = [...currentPinnedIds];
         nextPinnedIds.splice(fromIndex, 1);
         nextPinnedIds.splice(toIndex, 0, itemId);
 
-        return {
-          event: {
-            name: "windowsPinsReordered",
-            payload: {
-              fromIndex,
-              movedItemId: itemId,
-              pinnedIds: nextPinnedIds,
-              previousPinnedIds,
-              toIndex,
-            },
-          },
-          pinnedIds: nextPinnedIds,
-        };
+        return nextPinnedIds;
       });
+
+      if (change !== null) {
+        controller.emitStateEvent({
+          name: "windowsPinsReordered",
+          payload: {
+            fromIndex: change.previousPinnedIds.indexOf(itemId),
+            movedItemId: itemId,
+            pinnedIds: change.pinnedIds,
+            previousPinnedIds: change.previousPinnedIds,
+            toIndex,
+          },
+        });
+      }
     },
     [controller],
   );
 
   const unpin = useCallback(
     (itemId: string) => {
-      controller.updateWindowsPinnedIds((previousPinnedIds) => {
-        if (!previousPinnedIds.includes(itemId)) {
+      const change = controller.updateWindowsPinnedIds((currentPinnedIds) => {
+        if (!currentPinnedIds.includes(itemId)) {
           return null;
         }
 
-        const nextPinnedIds = previousPinnedIds.filter((pinnedId) => pinnedId !== itemId);
-        const payload: WindowPinEvent = {
-          itemId,
-          pinnedIds: nextPinnedIds,
-          previousPinnedIds,
-        };
-
-        return {
-          event: { name: "windowUnpinFromStart", payload },
-          pinnedIds: nextPinnedIds,
-        };
+        return currentPinnedIds.filter((pinnedId) => pinnedId !== itemId);
       });
+
+      if (change !== null) {
+        controller.emitStateEvent({
+          name: "windowUnpinFromStart",
+          payload: { itemId, ...change },
+        });
+      }
     },
     [controller],
   );

@@ -3,7 +3,6 @@
 import { useCallback, useContext, useMemo } from "react";
 
 import { WindowsControllerContext, WindowsStateContext } from "../..";
-import type { WindowPinEvent } from "../../types";
 
 export interface UseTaskbarPins {
   isPinned: (itemId: string) => boolean;
@@ -26,49 +25,43 @@ export const useTaskbarPins = (): UseTaskbarPins => {
 
   const pin = useCallback(
     (itemId: string) => {
-      controller.updateTaskbarPinnedIds((previousPinnedIds) => {
+      const change = controller.updateTaskbarPinnedIds((currentPinnedIds) => {
         if (
-          previousPinnedIds.includes(itemId) ||
+          currentPinnedIds.includes(itemId) ||
           !state.windowsItems.some((item) => item.id === itemId)
         ) {
           return null;
         }
 
-        const nextPinnedIds = [...previousPinnedIds, itemId];
-        const payload: WindowPinEvent = {
-          itemId,
-          pinnedIds: nextPinnedIds,
-          previousPinnedIds,
-        };
-
-        return {
-          event: { name: "windowPinToTaskbar", payload },
-          pinnedIds: nextPinnedIds,
-        };
+        return [...currentPinnedIds, itemId];
       });
+
+      if (change !== null) {
+        controller.emitStateEvent({
+          name: "windowPinToTaskbar",
+          payload: { itemId, ...change },
+        });
+      }
     },
     [controller, state.windowsItems],
   );
 
   const unpin = useCallback(
     (itemId: string) => {
-      controller.updateTaskbarPinnedIds((previousPinnedIds) => {
-        if (!previousPinnedIds.includes(itemId)) {
+      const change = controller.updateTaskbarPinnedIds((currentPinnedIds) => {
+        if (!currentPinnedIds.includes(itemId)) {
           return null;
         }
 
-        const nextPinnedIds = previousPinnedIds.filter((pinnedId) => pinnedId !== itemId);
-        const payload: WindowPinEvent = {
-          itemId,
-          pinnedIds: nextPinnedIds,
-          previousPinnedIds,
-        };
-
-        return {
-          event: { name: "windowUnpinFromTaskbar", payload },
-          pinnedIds: nextPinnedIds,
-        };
+        return currentPinnedIds.filter((pinnedId) => pinnedId !== itemId);
       });
+
+      if (change !== null) {
+        controller.emitStateEvent({
+          name: "windowUnpinFromTaskbar",
+          payload: { itemId, ...change },
+        });
+      }
     },
     [controller],
   );

@@ -82,15 +82,14 @@ export type WindowMutableStateEvent = {
   };
 }[Exclude<keyof WindowStateEventMap, "windowsItemsUpdated">];
 
-/** Pin update가 계산한 다음 ID와 선택적인 observer event. */
-export interface PinnedIdsUpdate {
-  /** 완료된 다음 pin ID. */
+/** 실제로 반영된 pin ID 변경 결과. */
+export interface PinnedIdsChange {
   pinnedIds: readonly string[];
-  /** stale cleanup처럼 observer에 알리지 않을 때는 null. */
-  event: WindowMutableStateEvent | null;
+  previousPinnedIds: readonly string[];
 }
 
-/** 최신 ID에서 완료된 pin update를 계산하고 반영하는 내부 계약. */
-export type UpdatePinnedIds = (
-  update: (currentPinnedIds: readonly string[]) => PinnedIdsUpdate | null,
-) => void;
+/** 최신 ID에서 다음 pin ID를 계산하는 내부 updater. */
+export type PinnedIdsUpdater = (currentPinnedIds: readonly string[]) => readonly string[] | null;
+
+/** Pin ID 변경을 시도하고 실제 반영 결과를 동기적으로 반환하는 내부 계약. */
+export type UpdatePinnedIds = (update: PinnedIdsUpdater) => PinnedIdsChange | null;

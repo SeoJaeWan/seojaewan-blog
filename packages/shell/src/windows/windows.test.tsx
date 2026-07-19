@@ -40,6 +40,20 @@ const PinUpdateProbe = ({ onEvent }: PinUpdateProbeProps) => {
     onEvent(payload);
   });
 
+  const updateCalculatorPin = (emitEvent: boolean) => {
+    const change = controller.updateWindowsPinnedIds((currentPinnedIds) => [
+      ...currentPinnedIds,
+      "calculator",
+    ]);
+
+    if (emitEvent && change !== null) {
+      controller.emitStateEvent({
+        name: "windowPinToStart",
+        payload: { itemId: "calculator", ...change },
+      });
+    }
+  };
+
   return createElement(
     "div",
     null,
@@ -51,22 +65,15 @@ const PinUpdateProbe = ({ onEvent }: PinUpdateProbeProps) => {
     createElement(
       "button",
       {
-        onClick: () =>
-          controller.updateWindowsPinnedIds((previousPinnedIds) => {
-            const pinnedIds = [...previousPinnedIds, "calculator"];
-
-            return {
-              event: {
-                name: "windowPinToStart",
-                payload: {
-                  itemId: "calculator",
-                  pinnedIds,
-                  previousPinnedIds,
-                },
-              },
-              pinnedIds,
-            };
-          }),
+        onClick: () => updateCalculatorPin(false),
+        type: "button",
+      },
+      "update only",
+    ),
+    createElement(
+      "button",
+      {
+        onClick: () => updateCalculatorPin(true),
         type: "button",
       },
       "pin",
@@ -138,6 +145,24 @@ describe("Windows", () => {
       pinnedIds: ["calculator"],
       previousPinnedIds: [],
     });
+    await waitFor(() =>
+      expect(screen.getByTestId("windows-pins").textContent).toBe(JSON.stringify(["calculator"])),
+    );
+  });
+
+  it("pin state update 자체는 observer event를 발생시키지 않는다", async () => {
+    const onEvent = vi.fn<(payload: WindowPinEvent) => void>();
+
+    render(
+      createElement(Windows, {
+        children: createElement(PinUpdateProbe, { onEvent }),
+        windowsItems: INITIAL_ITEMS,
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "update only" }));
+
+    expect(onEvent).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(screen.getByTestId("windows-pins").textContent).toBe(JSON.stringify(["calculator"])),
     );
