@@ -123,6 +123,31 @@ Windows
 `SearchPanel`, `TaskHoverPanel`, `TaskbarContextMenu` 등의 visual도 공개되어 있다. 현재
 `@window/shell` public API가 이들의 app behavior를 조립한다고 간주하지 않는다.
 
+## Functional Storybook Harness
+
+`packages/shell`의 Storybook은 개별 shell connector의 visual catalog가 아니라 현재 구현된
+taskbar 기능을 실제 Provider와 portal로 조립하는 integration surface다.
+
+```text
+ShellHarness
+└─ Windows
+   ├─ event probe와 story fixture controls
+   └─ TaskbarPanelHost
+      └─ TaskbarRoot
+         └─ taskbarItems slot
+            └─ TaskbarStartButton (현재)
+```
+
+- Start panel story는 `TaskbarWindowPanel`을 직접 렌더링하지 않고 production
+  `TaskbarStartButton`이 만드는 portal을 사용한다.
+- `taskbarItems` slot은 이후 `TaskbarSearch`와 app list의 shell connector를 형제로 추가하는
+  확장 지점이다.
+- Start와 Search처럼 상호 배타적인 root panel은 같은 `TaskbarPanelHost`의 active panel 계약을
+  공유한다.
+- Hover와 Context panel은 실제 connector의 lifecycle이 정의될 때 같은 harness에 추가한다.
+  현재 Storybook이 이들의 미구현 상태나 동시성 정책을 미리 결정하지 않는다.
+- Story 전용 CSS, fixture와 event probe는 library `dist`와 public export에 포함하지 않는다.
+
 ## Taskbar Visual Contract
 
 ### Root

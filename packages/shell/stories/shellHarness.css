@@ -1,0 +1,92 @@
+.wb-shell-story {
+  background:
+    radial-gradient(circle at 25% 20%, rgb(255 255 255 / 0.55), transparent 28%),
+    linear-gradient(145deg, #b9dfff 0%, #7bc2ee 45%, #4f98d0 100%);
+  box-sizing: border-box;
+  color: #111827;
+  height: 100vh;
+  min-height: 720px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wb-shell-story__events,
+.wb-shell-story__fixtures {
+  backdrop-filter: blur(18px);
+  background: rgb(255 255 255 / 0.78);
+  border: 1px solid rgb(255 255 255 / 0.82);
+  border-radius: 10px;
+  box-shadow: 0 16px 36px rgb(15 23 42 / 0.16);
+  box-sizing: border-box;
+  font:
+    12px/1.4 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  max-width: min(420px, calc(100vw - 32px));
+  position: fixed;
+  top: 16px;
+  z-index: 10;
+}
+
+.wb-shell-story__events {
+  right: 16px;
+  width: 380px;
+}
+
+.wb-shell-story__fixtures {
+  left: 16px;
+  padding-bottom: 10px;
+  width: 280px;
+}
+
+.wb-shell-story__tool-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.wb-shell-story__tool-header button,
+.wb-shell-story__fixture-actions button {
+  background: rgb(255 255 255 / 0.72);
+  border: 1px solid rgb(148 163 184 / 0.65);
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 8px;
+}
+
+.wb-shell-story__events ol {
+  list-style: none;
+  margin: 0;
+  max-height: 240px;
+  overflow: auto;
+  padding: 0 12px 12px;
+}
+
+.wb-shell-story__events li {
+  border-top: 1px solid rgb(148 163 184 / 0.3);
+  display: grid;
+  gap: 3px;
+  padding: 7px 0;
+}
+
+.wb-shell-story__events code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.wb-shell-story__fixture-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px;
+}
+
+@media (max-width: 767px) {
+  .wb-shell-story__events {
+    width: min(320px, calc(100vw - 32px));
+  }
+}

@@ -3,14 +3,22 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
+const isStorybookLifecycle = ["build:storybook", "dev", "test:storybook"].includes(
+  process.env.npm_lifecycle_event ?? "",
+);
+
 export default defineConfig({
   plugins: [
     react(),
-    dts({
-      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-      insertTypesEntry: true,
-      tsconfigPath: "./tsconfig.json",
-    }),
+    ...(isStorybookLifecycle
+      ? []
+      : [
+          dts({
+            exclude: [".storybook/**/*", "stories/**/*", "src/**/*.test.ts", "src/**/*.test.tsx"],
+            insertTypesEntry: true,
+            tsconfigPath: "./tsconfig.json",
+          }),
+        ]),
   ],
   build: {
     lib: {

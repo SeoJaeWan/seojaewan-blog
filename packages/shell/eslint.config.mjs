@@ -8,7 +8,7 @@ const tsconfigRootDir = dirname(fileURLToPath(import.meta.url));
 export default [
   ...reactConfig({ tsconfigRootDir }),
   {
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}", "stories/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
         "error",
