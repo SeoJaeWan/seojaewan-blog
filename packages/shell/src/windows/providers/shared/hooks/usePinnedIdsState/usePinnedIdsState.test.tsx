@@ -67,6 +67,28 @@ describe("usePinnedIdsState", () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(["calculator"]));
   });
 
+  it("문자열이 아닌 값이 포함된 배열은 빈 상태로 복구하고 storage를 덮어쓴다", async () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(["calculator", 1]));
+
+    const { result } = renderHook(() =>
+      usePinnedIdsState({ storageKey: STORAGE_KEY, validItemIds: VALID_ITEM_IDS }),
+    );
+
+    await waitFor(() => expect(window.localStorage.getItem(STORAGE_KEY)).toBe("[]"));
+    expect(result.current.pinnedIds).toEqual([]);
+  });
+
+  it("pin ID 배열 대신 객체가 저장되면 빈 상태로 복구하고 storage를 []로 덮어쓴다", async () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: "calculator" }));
+
+    const { result } = renderHook(() =>
+      usePinnedIdsState({ storageKey: STORAGE_KEY, validItemIds: VALID_ITEM_IDS }),
+    );
+
+    await waitFor(() => expect(window.localStorage.getItem(STORAGE_KEY)).toBe("[]"));
+    expect(result.current.pinnedIds).toEqual([]);
+  });
+
   it("같은 tick의 연속 update를 최신 ID에서 계산하고 완료 결과를 반환한다", async () => {
     const { result } = renderHook(() =>
       usePinnedIdsState({ storageKey: STORAGE_KEY, validItemIds: VALID_ITEM_IDS }),

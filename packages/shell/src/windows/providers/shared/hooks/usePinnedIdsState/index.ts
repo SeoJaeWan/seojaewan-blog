@@ -72,12 +72,12 @@ export const usePinnedIdsState = ({
   );
 
   useEffect(() => {
-    const storedPinnedIds = readPinnedIds(storageKey);
+    const { needsWriteBack, pinnedIds: storedPinnedIds } = readPinnedIds(storageKey);
     const nextPinnedIds = filterPinnedIds(storedPinnedIds, validItemIdsRef.current);
 
     applyPinnedIdsState(nextPinnedIds);
 
-    if (!arePinnedIdsEqual(storedPinnedIds, nextPinnedIds)) {
+    if (needsWriteBack || !arePinnedIdsEqual(storedPinnedIds, nextPinnedIds)) {
       writePinnedIds(storageKey, nextPinnedIds);
     }
   }, [applyPinnedIdsState, storageKey]);

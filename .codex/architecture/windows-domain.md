@@ -118,10 +118,13 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 - server render의 초기 pin state는 빈 배열이다.
 - 각 pin Provider의 client effect에서 자신의 key를 읽어 복원하며 복원 자체는 observer event를
   만들지 않는다.
-- key 누락, JSON 파싱 실패, string 배열이 아닌 값, localStorage 접근 실패는 빈 배열로 복구한다.
-- 중복 ID는 처음 등장한 순서만 유지한다.
+- key 누락은 정상적인 빈 상태로 취급하며 빈 배열로 복원한다.
+- 읽을 수 있지만 JSON 파싱에 실패하거나 string 배열이 아닌 값은 빈 배열로 복구하고 같은 key를
+  `[]`로 덮어쓴다. localStorage 접근 실패는 빈 메모리 상태로 격리하되 write-back을 보장하지 않는다.
+- 중복 ID는 처음 등장한 순서만 유지하고 정리된 배열을 같은 key에 저장한다.
 - 복원 값이나 이후 상태에 현재 `windowsItems`에 없는 ID가 있으면 event 없이 제거하고 정리된
-  배열을 같은 key에 저장한다.
+  배열을 같은 key에 저장한다. 이 복구와 정규화는 사용자 action이 아니므로 pin/unpin event를
+  만들지 않는다.
 - 쓰기 실패는 런타임 동작을 중단시키지 않는다. 현재 메모리 update는 유지한다.
 - key schema를 바꿀 때는 `_v2`, `_v3`처럼 새 key를 만들고 migration 정책을 별도로 정의한다.
 

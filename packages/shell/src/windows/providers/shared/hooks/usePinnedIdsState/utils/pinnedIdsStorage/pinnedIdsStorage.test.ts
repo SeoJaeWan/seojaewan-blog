@@ -23,27 +23,45 @@ describe("pinnedIdsStorage", () => {
       [WINDOWS_PIN_STORAGE_KEY]: JSON.stringify(["calculator"]),
     });
 
-    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual(["calculator"]);
-    expect(readPinnedIds(TASKBAR_PIN_STORAGE_KEY, storage)).toEqual(["terminal"]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual({
+      needsWriteBack: false,
+      pinnedIds: ["calculator"],
+    });
+    expect(readPinnedIds(TASKBAR_PIN_STORAGE_KEY, storage)).toEqual({
+      needsWriteBack: false,
+      pinnedIds: ["terminal"],
+    });
+  });
+
+  it("누락된 값은 빈 배열로 읽되 write-back 대상으로 표시하지 않는다", () => {
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, createStorage())).toEqual({
+      needsWriteBack: false,
+      pinnedIds: [],
+    });
   });
 
   it.each([
-    { label: "누락된 값", value: null },
     { label: "잘못된 JSON", value: "[" },
-    { label: "배열이 아닌 값", value: JSON.stringify({ id: "calculator" }) },
+    { label: "pin ID 배열 대신 저장된 객체 값", value: JSON.stringify({ id: "calculator" }) },
     { label: "문자열 외 항목이 섞인 배열", value: JSON.stringify(["calculator", 1]) },
-  ])("$label은 빈 배열로 복구한다", ({ value }) => {
-    const storage = createStorage(value === null ? {} : { [WINDOWS_PIN_STORAGE_KEY]: value });
+  ])("$label은 빈 배열과 write-back 대상으로 읽는다", ({ value }) => {
+    const storage = createStorage({ [WINDOWS_PIN_STORAGE_KEY]: value });
 
-    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual([]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual({
+      needsWriteBack: true,
+      pinnedIds: [],
+    });
   });
 
-  it("중복 ID는 최초 순서를 유지하며 한 번만 복원한다", () => {
+  it("중복 ID는 최초 순서를 유지하며 write-back 대상으로 읽는다", () => {
     const storage = createStorage({
       [WINDOWS_PIN_STORAGE_KEY]: JSON.stringify(["calculator", "terminal", "calculator"]),
     });
 
-    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual(["calculator", "terminal"]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual({
+      needsWriteBack: true,
+      pinnedIds: ["calculator", "terminal"],
+    });
   });
 
   it("최종 pin ID를 전달된 key에 JSON으로 저장한다", () => {
@@ -66,7 +84,10 @@ describe("pinnedIdsStorage", () => {
       }),
     };
 
-    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual([]);
+    expect(readPinnedIds(WINDOWS_PIN_STORAGE_KEY, storage)).toEqual({
+      needsWriteBack: false,
+      pinnedIds: [],
+    });
     expect(writePinnedIds(WINDOWS_PIN_STORAGE_KEY, ["calculator"], storage)).toBe(false);
   });
 });

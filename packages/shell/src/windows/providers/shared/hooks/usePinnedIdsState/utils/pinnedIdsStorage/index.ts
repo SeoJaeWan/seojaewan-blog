@@ -3,6 +3,11 @@ export interface PinnedIdsStorage {
   setItem: (key: string, value: string) => void;
 }
 
+export interface PinnedIdsReadResult {
+  needsWriteBack: boolean;
+  pinnedIds: readonly string[];
+}
+
 const getBrowserPinnedIdsStorage = (): PinnedIdsStorage | null => {
   if (typeof window === "undefined") {
     return null;
@@ -15,32 +20,45 @@ const getBrowserPinnedIdsStorage = (): PinnedIdsStorage | null => {
   }
 };
 
-/** 저장된 pin ID를 검증하고 중복은 처음 등장한 순서만 유지한다. */
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "string");
+
+/** 저장된 pin ID와 정규화 write-back 필요 여부를 읽는다. */
 export const readPinnedIds = (
   storageKey: string,
   storage: PinnedIdsStorage | null = getBrowserPinnedIdsStorage(),
-): readonly string[] => {
+): PinnedIdsReadResult => {
   if (storage === null) {
-    return [];
+    return { needsWriteBack: false, pinnedIds: [] };
   }
+
+  let value: string | null;
 
   try {
-    const value = storage.getItem(storageKey);
-
-    if (value === null) {
-      return [];
-    }
-
-    const parsedValue: unknown = JSON.parse(value);
-
-    if (!Array.isArray(parsedValue) || !parsedValue.every((item) => typeof item === "string")) {
-      return [];
-    }
-
-    return [...new Set(parsedValue)];
+    value = storage.getItem(storageKey);
   } catch {
-    return [];
+    return { needsWriteBack: false, pinnedIds: [] };
   }
+
+  if (value === null) {
+    return { needsWriteBack: false, pinnedIds: [] };
+  }
+
+  let parsedValue: unknown;
+
+  try {
+    parsedValue = JSON.parse(value);
+  } catch {
+    return { needsWriteBack: true, pinnedIds: [] };
+  }
+
+  if (!isStringArray(parsedValue)) {
+    return { needsWriteBack: true, pinnedIds: [] };
+  }
+
+  const pinnedIds = [...new Set(parsedValue)];
+
+  return { needsWriteBack: pinnedIds.length !== parsedValue.length, pinnedIds };
 };
 
 /** 최종 pin ID를 versioned localStorage key에 저장하고 실패를 격리한다. */
