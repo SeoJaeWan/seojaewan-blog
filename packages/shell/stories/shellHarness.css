@@ -1,3 +1,8 @@
+/*
+ * Storybook canvas 전용 shell surface다. 실제 fixed Taskbar와 600px Start panel을 한 화면에서
+ * 조작하고 바깥 pointer 영역을 확보하며, 배경은 production glass/blur visual을 드러낸다.
+ * 이 스타일은 @window/shell runtime CSS나 package public export에 포함되지 않는다.
+ */
 .wb-shell-story {
   background:
     radial-gradient(circle at 25% 20%, rgb(255 255 255 / 0.55), transparent 28%),
@@ -10,6 +15,7 @@
   position: relative;
 }
 
+/* 실제 connector가 전달하는 event와 Story 전용 item 상태를 관찰·조작하는 도구 surface다. */
 .wb-shell-story__events,
 .wb-shell-story__fixtures {
   backdrop-filter: blur(18px);
@@ -47,6 +53,13 @@
   padding: 10px 12px;
 }
 
+.wb-shell-story__tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
 .wb-shell-story__tool-header button,
 .wb-shell-story__fixture-actions button {
   background: rgb(255 255 255 / 0.72);
@@ -58,6 +71,7 @@
   padding: 4px 8px;
 }
 
+/* 최근 semantic event와 icon을 제외한 payload를 표시해 실제 app이 없는 Story에서도 결과를 본다. */
 .wb-shell-story__events ol {
   list-style: none;
   margin: 0;
@@ -78,11 +92,27 @@
   white-space: normal;
 }
 
+/* 초기 storage preset과 현재 Provider에 전달할 item 변경을 구분해 한 Story에서 재현한다. */
+.wb-shell-story__fixture-group {
+  display: grid;
+  gap: 6px;
+  padding: 0 12px 10px;
+}
+
+.wb-shell-story__fixture-group > strong {
+  color: #475569;
+  font-size: 11px;
+}
+
 .wb-shell-story__fixture-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 0 12px;
+}
+
+.wb-shell-story__fixture-actions button[aria-pressed="true"] {
+  background: #dbeafe;
+  border-color: #60a5fa;
 }
 
 @media (max-width: 767px) {

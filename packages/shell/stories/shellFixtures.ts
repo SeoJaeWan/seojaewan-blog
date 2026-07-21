@@ -53,8 +53,3 @@ export const seedShellStoryStorage = ({
   window.localStorage.setItem(TASKBAR_PIN_STORAGE_KEY, JSON.stringify(taskbarPinnedIds));
   window.localStorage.setItem(WINDOWS_PIN_STORAGE_KEY, JSON.stringify(windowsPinnedIds));
 };
-
-export const readShellStoryStorage = () => ({
-  taskbarPinnedIds: window.localStorage.getItem(TASKBAR_PIN_STORAGE_KEY),
-  windowsPinnedIds: window.localStorage.getItem(WINDOWS_PIN_STORAGE_KEY),
-});

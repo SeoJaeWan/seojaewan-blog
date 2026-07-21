@@ -23,9 +23,12 @@ The runtime dependency direction is `@window/ui ← @window/shell ← apps/web`.
   `@window/ui` API and does not ship runtime CSS or story-only harness code.
 - UI Storybook is a visual catalog for fixed modes, variants, and states. It does not import
   `@window/shell` or demonstrate state transitions through clicks, timers, or browser APIs.
-- Shell Storybook assembles the real shell connectors in one shared harness and documents
-  user-visible state transitions with interaction stories. Future Start, Search, Hover, and
-  Context panel connectors reuse the same taskbar slot and provider boundary.
+- Shell Storybook assembles the real shell connectors in one shared harness so developers can
+  explore user-visible state transitions manually. Each connector pairs focused MDX Docs with one
+  behavior story, and deterministic state presets keep every supported flow in that canvas.
+  Diagnostics live in the canvas instead of Storybook's addon panel. Automated behavior
+  verification remains in colocated test files. Future Start, Search, Hover, and Context panel
+  connectors reuse the same taskbar slot and provider boundary.
 
 ## Tooling
 
@@ -39,13 +42,14 @@ The runtime dependency direction is `@window/ui ← @window/shell ← apps/web`.
 
 ```bash
 pnpm dev
-pnpm dev:shell
+pnpm storybook:ui
+pnpm storybook:shell
 pnpm build
+pnpm build:storybook:ui
 pnpm build:storybook:shell
 pnpm lint
 pnpm typecheck
 pnpm test
-pnpm test:storybook:shell
 pnpm verify
 pnpm format
 pnpm format:check

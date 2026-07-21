@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-const isStorybookLifecycle = ["build:storybook", "dev", "test:storybook"].includes(
+const isStorybookLifecycle = ["build:storybook", "dev"].includes(
   process.env.npm_lifecycle_event ?? "",
 );
 

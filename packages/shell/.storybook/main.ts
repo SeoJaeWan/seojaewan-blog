@@ -6,8 +6,8 @@ const uiRequire = createRequire(new URL("../../ui/package.json", import.meta.url
 const fluentRequire = createRequire(uiRequire.resolve("@fluentui/react-icons"));
 
 const config: StorybookConfig = {
-  stories: ["../stories/**/*.stories.@(ts|tsx|mdx)"],
-  addons: ["@storybook/addon-docs", "@storybook/addon-vitest"],
+  stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(ts|tsx)"],
+  addons: ["@storybook/addon-docs"],
   framework: {
     name: "@storybook/react-vite",
     options: {},

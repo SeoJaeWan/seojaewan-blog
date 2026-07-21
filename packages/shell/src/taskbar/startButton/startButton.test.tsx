@@ -137,4 +137,42 @@ describe("TaskbarStartButton", () => {
     expect(onContextMenu).toHaveBeenCalledWith({ item: REACT, source: "search" });
     expect(startButton.getAttribute("aria-expanded")).toBe("true");
   });
+
+  it("Escape는 panel을 closing으로 전환하고 animation 완료 뒤 DOM에서 제거한다", async () => {
+    render(createTree());
+    const { panelContainer, startButton } = await openSettledPanel();
+    const panelElementId = startButton.getAttribute("aria-controls");
+
+    expect(panelElementId).not.toBeNull();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    await waitFor(() => expect(startButton.getAttribute("aria-expanded")).toBe("false"));
+    expect(panelContainer.dataset.state).toBe("closing");
+    expect(document.getElementById(panelElementId!)).not.toBeNull();
+
+    fireEvent.animationEnd(panelContainer);
+
+    await waitFor(() => expect(document.getElementById(panelElementId!)).toBeNull());
+    expect(panelContainer.isConnected).toBe(false);
+  });
+
+  it("defaultPrevented된 Escape는 열린 상태와 panel DOM을 유지한다", async () => {
+    render(createTree());
+    const { panelContainer, startButton } = await openSettledPanel();
+    const escapeEvent = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key: "Escape",
+    });
+    escapeEvent.preventDefault();
+
+    fireEvent(document, escapeEvent);
+
+    expect(escapeEvent.defaultPrevented).toBe(true);
+    expect(startButton.getAttribute("aria-expanded")).toBe("true");
+    expect(panelContainer.dataset.state).toBe("open");
+    expect(panelContainer.isConnected).toBe(true);
+    expect(screen.getByRole("dialog", { name: "시작" })).toBeDefined();
+  });
 });

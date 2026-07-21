@@ -125,8 +125,9 @@ Windows
 
 ## Functional Storybook Harness
 
-`packages/shell`의 Storybook은 개별 shell connector의 visual catalog가 아니라 현재 구현된
-taskbar 기능을 실제 Provider와 portal로 조립하는 integration surface다.
+`packages/shell`의 Storybook은 개별 shell connector의 visual catalog나 자동 test runner가 아니라
+현재 구현된 taskbar 기능을 실제 Provider와 portal로 조립해 직접 탐색하는 manual behavior
+catalog다.
 
 ```text
 ShellHarness
@@ -138,6 +139,11 @@ ShellHarness
             └─ TaskbarStartButton (현재)
 ```
 
+- Start panel은 `Shell/Taskbar/Start panel` 아래에 전용 `Docs`와 하나의 `동작 확인` Story만
+  제공한다. Docs는 기능, 조작 방법과 검증 책임을 설명하고 Story의 상태 프리셋은 기본 상태와 저장된
+  pin 복원을, item 변경 control은 동적 갱신과 stale pin 정리를 재현한다.
+- Shell Storybook의 addon panel은 숨긴다. 수동 결과는 canvas 안의 event probe와 상태 control에서
+  관찰하며 프리셋을 바꾸거나 전체 초기화하면 item, storage, Provider와 event log를 함께 복원한다.
 - Start panel story는 `TaskbarWindowPanel`을 직접 렌더링하지 않고 production
   `TaskbarStartButton`이 만드는 portal을 사용한다.
 - `taskbarItems` slot은 이후 `TaskbarSearch`와 app list의 shell connector를 형제로 추가하는
@@ -147,6 +153,8 @@ ShellHarness
 - Hover와 Context panel은 실제 connector의 lifecycle이 정의될 때 같은 harness에 추가한다.
   현재 Storybook이 이들의 미구현 상태나 동시성 정책을 미리 결정하지 않는다.
 - Story 전용 CSS, fixture와 event probe는 library `dist`와 public export에 포함하지 않는다.
+- 자동 behavior 검증은 가까운 `*.test.ts`와 `*.test.tsx`가 소유하며 Story에는 `play` assertion을
+  두지 않는다. Story 변경은 정적 build와 수동 조작으로 확인한다.
 
 ## Taskbar Visual Contract
 
