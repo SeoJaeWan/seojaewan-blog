@@ -13,8 +13,8 @@ import {
 
 import type { WindowItem, WindowsPanelPinnedItemAnimation } from "@window/ui";
 
-import { WindowsItemsContext } from "../../providers/windowsItemsProvider/context";
-import { WindowsPinsContext } from "../../providers/windowsPinsProvider/context";
+import { WindowsItemsContext } from "../../../windowsItemsProvider/context";
+import { WindowsPinsContext } from "../../context";
 
 const PIN_ANIMATION_NAME = "wb-windows-fade-in";
 const PIN_ANIMATION_WATCHDOG_MS = 500;

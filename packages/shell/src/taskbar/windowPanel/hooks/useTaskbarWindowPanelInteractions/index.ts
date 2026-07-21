@@ -10,9 +10,9 @@ import type {
   WindowsPanelItemSource,
 } from "@window/ui";
 
-import { useTaskbarPins } from "../../../../windows/hooks/useTaskbarPins";
 import { useWindowDispatch } from "../../../../windows/hooks/useWindowDispatch";
-import { useWindowsPins } from "../../../../windows/hooks/useWindowsPins";
+import { useTaskbarPins } from "../../../../windows/providers/taskbarPinsProvider";
+import { useWindowsPins } from "../../../../windows/providers/windowsPinsProvider";
 import { TaskbarPanelHostContext } from "../../../panelHost";
 
 export interface UseTaskbarWindowPanelInteractionsResult {

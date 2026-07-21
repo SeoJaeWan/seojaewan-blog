@@ -6,8 +6,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useWindowEvent } from "./hooks/useWindowEvent";
-import { useWindowsPins } from "./hooks/useWindowsPins";
 import { Windows } from "./index";
+import { useWindowsPins } from "./providers/windowsPinsProvider";
 import type { WindowPinEvent, WindowsItemsUpdatedEvent } from "./types";
 
 const INITIAL_ITEMS = [{ id: "calculator", title: "계산기" }] satisfies readonly WindowItem[];

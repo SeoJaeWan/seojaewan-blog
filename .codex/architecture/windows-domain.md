@@ -82,8 +82,9 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 | 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생            |
 | pinned item animation | `useWindowPinAnimation`                 | item cache와 reorder/stale visual lifecycle을 surface에서 소유 |
 
-각 pin Provider는 자신의 state, persistence, action과 semantic event를 함께 소유한다. 공개
-`useTaskbarPins`와 `useWindowsPins`는 해당 Context의 완성된 state/action 값을 읽기만 한다.
+각 pin Provider는 자신의 state, persistence, action과 semantic event를 함께 소유한다. Provider
+모듈이 export하는 `useTaskbarPins`와 `useWindowsPins`는 해당 Context의 완성된 state/action 값을
+읽기만 한다.
 두 Provider는 공통 단일 목록 메커니즘인 내부 `usePinnedIdsState`만 공유하며 서로의 상태에는
 의존하지 않는다.
 
@@ -242,18 +243,31 @@ context state는 다음 React render에서 같은 값으로 갱신된다.
 
 `@window/shell`은 Windows domain에 다음 API를 공개한다.
 
-| API                                               | Responsibility                                      |
-| ------------------------------------------------- | --------------------------------------------------- |
-| `Windows` / `WindowsProps`                        | Windows domain Provider 조합과 전역 경계 제공       |
-| `useWindowEvent`                                  | typed flat event 구독                               |
-| `useWindowDispatch`                               | 상태 없는 open/location/context menu event dispatch |
-| `useTaskbarPins` / `UseTaskbarPins`               | taskbar pin 조회와 등록·취소                        |
-| `useWindowsPins` / `UseWindowsPins`               | 시작 화면 pin 조회와 등록·취소·완료 reorder         |
-| `useWindowPinAnimation` / `UseWindowPinAnimation` | Windows pin snapshot과 reorder/stale animation      |
-| `useWindowSearch`                                 | 현재 item의 derived 검색 결과                       |
-| `WindowEventMap`과 관련 event/payload types       | observer 및 dispatch 타입 계약                      |
+| API                                         | Responsibility                                      |
+| ------------------------------------------- | --------------------------------------------------- |
+| `Windows` / `WindowsProps`                  | Windows domain Provider 조합과 전역 경계 제공       |
+| `useWindowEvent`                            | typed flat event 구독                               |
+| `useWindowDispatch`                         | 상태 없는 open/location/context menu event dispatch |
+| `useWindowSearch`                           | 현재 item의 derived 검색 결과                       |
+| `WindowEventMap`과 관련 event/payload types | observer 및 dispatch 타입 계약                      |
 
-내부 Provider/context, `UpdatePinnedIds`, pin storage helper와 event registry는 public API가 아니다.
+pin consumer hook, 내부 Provider/context, `UpdatePinnedIds`, pin storage helper와 event registry는
+package public API가 아니다.
+
+## Provider Module API
+
+pin consumer hook은 소유 Provider의 모듈 루트에서 export하고 shell 내부 adapter가 이 경계를 통해
+사용한다.
+
+| Provider module       | Consumer API                                      |
+| --------------------- | ------------------------------------------------- |
+| `taskbarPinsProvider` | `useTaskbarPins` / `UseTaskbarPins`               |
+| `windowsPinsProvider` | `useWindowsPins` / `UseWindowsPins`               |
+| `windowsPinsProvider` | `useWindowPinAnimation` / `UseWindowPinAnimation` |
+
+consumer는 Context나 개별 hook 파일을 직접 import하지 않는다. `useWindowPinAnimation`은
+`WindowsItemsContext`도 소비하지만 Windows pin snapshot과 reorder lifecycle을 소유하므로
+`windowsPinsProvider` 모듈에 둔다.
 
 ## Taskbar Adapter Policy
 

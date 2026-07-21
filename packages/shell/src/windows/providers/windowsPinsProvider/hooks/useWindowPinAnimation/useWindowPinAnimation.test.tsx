@@ -14,10 +14,10 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Windows } from "../..";
-import { WINDOWS_PIN_STORAGE_KEY } from "../../providers/windowsPinsProvider/constants";
-import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../types";
-import { useWindowEvent } from "../useWindowEvent";
+import { Windows } from "../../../..";
+import { useWindowEvent } from "../../../../hooks/useWindowEvent";
+import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../../../types";
+import { WINDOWS_PIN_STORAGE_KEY } from "../../constants";
 import { useWindowsPins } from "../useWindowsPins";
 import { useWindowPinAnimation } from "./index";
 

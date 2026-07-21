@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 
 import { WindowsPanelUI } from "@window/ui";
 
-import { useWindowPinAnimation } from "../../windows/hooks/useWindowPinAnimation";
 import { useWindowSearch } from "../../windows/hooks/useWindowSearch";
+import { useWindowPinAnimation } from "../../windows/providers/windowsPinsProvider";
 import { useSearchResultDetail } from "./hooks/useSearchResultDetail";
 import { useTaskbarWindowPanelInteractions } from "./hooks/useTaskbarWindowPanelInteractions";
 import { useWindowsPanelNavigation } from "./hooks/useWindowsPanelNavigation";

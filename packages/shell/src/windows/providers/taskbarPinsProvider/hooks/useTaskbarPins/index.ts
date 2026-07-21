@@ -2,10 +2,10 @@
 
 import { useContext } from "react";
 
-import { TaskbarPinsContext } from "../../providers/taskbarPinsProvider/context";
-import type { UseTaskbarPins } from "../../providers/taskbarPinsProvider/types";
+import { TaskbarPinsContext } from "../../context";
+import type { UseTaskbarPins } from "../../types";
 
-export type { UseTaskbarPins } from "../../providers/taskbarPinsProvider/types";
+export type { UseTaskbarPins } from "../../types";
 
 /** Windows가 제공하는 Taskbar pin state와 action을 반환한다. */
 export const useTaskbarPins = (): UseTaskbarPins => {
