@@ -2,8 +2,8 @@
 
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 
-import { WindowsEventsContext } from "../../providers/windowsEventsProvider/context";
-import type { WindowEventListener, WindowEventName } from "../../types";
+import type { WindowEventListener, WindowEventName } from "../../../../types";
+import { WindowsEventsContext } from "../../context";
 
 /**
  * Windows event 하나를 구독하고 unmount 또는 event name 변경 시 구독을 해제한다.

@@ -15,8 +15,8 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../../../..";
-import { useWindowEvent } from "../../../../hooks/useWindowEvent";
 import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../../../types";
+import { useWindowEvent } from "../../../windowsEventsProvider";
 import { WINDOWS_PIN_STORAGE_KEY } from "../../constants";
 import { useWindowsPins } from "../useWindowsPins";
 import { useWindowPinAnimation } from "./index";

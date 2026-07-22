@@ -4,8 +4,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../../windows";
-import { useWindowEvent } from "../../windows/hooks/useWindowEvent";
 import { TASKBAR_PIN_STORAGE_KEY } from "../../windows/providers/taskbarPinsProvider/constants";
+import { useWindowEvent } from "../../windows/providers/windowsEventsProvider";
 import { WINDOWS_PIN_STORAGE_KEY } from "../../windows/providers/windowsPinsProvider/constants";
 import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
 import { TaskbarPanelHost } from "../panelHost";

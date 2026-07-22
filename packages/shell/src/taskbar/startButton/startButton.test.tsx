@@ -7,7 +7,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import { Windows } from "../../windows";
-import { useWindowEvent } from "../../windows/hooks/useWindowEvent";
+import { useWindowEvent } from "../../windows/providers/windowsEventsProvider";
 import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
 import { TaskbarPanelHost } from "../panelHost";
 import type { TaskbarStartButtonProps } from "./index";

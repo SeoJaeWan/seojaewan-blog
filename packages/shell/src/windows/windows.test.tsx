@@ -5,8 +5,8 @@ import type { WindowItem } from "@window/ui";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { useWindowEvent } from "./hooks/useWindowEvent";
 import { Windows } from "./index";
+import { useWindowEvent } from "./providers/windowsEventsProvider";
 import { useWindowsPins } from "./providers/windowsPinsProvider";
 import type { WindowPinEvent, WindowsItemsUpdatedEvent } from "./types";
 

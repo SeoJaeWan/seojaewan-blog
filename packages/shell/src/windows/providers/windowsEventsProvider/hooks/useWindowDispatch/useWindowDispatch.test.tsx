@@ -1,19 +1,15 @@
-import type { ReactNode } from "react";
-import { createElement } from "react";
+import type { PropsWithChildren } from "react";
 
 import { cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, expectTypeOf, it } from "vitest";
 
-import { Windows } from "../..";
-import type { WindowDispatch, WindowDispatchEventMap } from "../../types";
-import { useWindowDispatch } from "./index";
+import type { WindowDispatch, WindowDispatchEventMap } from "../../../../types";
+import { WindowsEventsProvider } from "../..";
+import { useWindowDispatch } from ".";
 
-interface WrapperProps {
-  children: ReactNode;
-}
-
-const Wrapper = ({ children }: WrapperProps) =>
-  createElement(Windows, { children, windowsItems: [] });
+const Wrapper = ({ children }: PropsWithChildren) => (
+  <WindowsEventsProvider>{children}</WindowsEventsProvider>
+);
 
 afterEach(cleanup);
 

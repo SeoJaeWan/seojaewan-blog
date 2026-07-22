@@ -2,11 +2,11 @@
 
 import { useContext } from "react";
 
-import { WindowsEventsContext } from "../../providers/windowsEventsProvider/context";
-import type { WindowDispatch } from "../../types";
+import type { WindowDispatch } from "../../../../types";
+import { WindowsEventsContext } from "../../context";
 
 /**
- * Provider state 변경이 없는 Window event를 발생시키는 typed dispatch를 반환한다.
+ * Provider 상태 변경이 없는 Window event를 발생시키는 typed dispatch를 반환한다.
  *
  * @returns windowOpen, windowOpenLocation, windowContextMenuRequested 전용 dispatch
  */

@@ -201,6 +201,11 @@ Animation event가 누락되어도 500ms watchdog이 lifecycle을 완료한다. 
 컴포넌트가 unmount되면 자동으로 구독을 해제하며, listener 함수가 바뀌어도 불필요하게 다시
 구독하지 않고 최신 listener를 호출한다.
 
+내부 `createWindowEventRegistry.subscribe`에 같은 event와 같은 listener 참조를 반복 등록하면 하나의
+논리적 구독으로 취급한다. 어느 등록에서 반환된 unsubscribe를 호출해도 해당 구독이 해제되며 이후
+unsubscribe는 no-op이다. Dispatch는 시작 시점의 listener snapshot을 순회하므로 도중에 제거된
+listener는 현재 dispatch까지 실행하고, 도중에 추가된 listener는 다음 dispatch부터 실행한다.
+
 Listener 하나가 예외를 던져도 다른 listener와 원래 update/dispatch 흐름은 계속된다. 예외는
 `globalThis.reportError`가 있으면 그쪽으로, 없으면 `console.error`로 보고한다.
 
@@ -215,6 +220,10 @@ Listener 하나가 예외를 던져도 다른 listener와 원래 update/dispatch
 `WindowEventMap`은 stateless와 state update event를 모두 담는 canonical 계약이며
 `WindowsEventsProvider`는 이 map을 받는 dispatch 하나만 제공한다. Public `useWindowDispatch`는
 같은 dispatch를 stateless event 이름으로 타입 제한해서 반환한다.
+
+`useWindowEvent`, `useWindowDispatch`와 내부 Provider용 `useWindowsEventsContext`는
+`windowsEventsProvider` module root에서 export한다. Package root는 public 두 hook만 선택적으로
+재노출한다.
 
 Pin과 item update event는 완료된 state update 결과를 받은 내부 Provider에서만 만들어지므로 public
 dispatch 대상이 아니다. Pin event는 별도 render 대기 queue 없이 직접 전달한다. Observer가 해당
@@ -265,14 +274,15 @@ package public API가 아니다.
 
 ## Provider Module API
 
-pin consumer hook은 소유 Provider의 모듈 루트에서 export하고 shell 내부 adapter가 이 경계를 통해
-사용한다.
+Provider consumer hook은 소유 Provider의 모듈 루트에서 export하고 shell 내부 adapter와 다른
+Provider가 이 경계를 통해 사용한다.
 
-| Provider module       | Consumer API                                      |
-| --------------------- | ------------------------------------------------- |
-| `taskbarPinsProvider` | `useTaskbarPins` / `UseTaskbarPins`               |
-| `windowsPinsProvider` | `useWindowsPins` / `UseWindowsPins`               |
-| `windowsPinsProvider` | `useWindowPinAnimation` / `UseWindowPinAnimation` |
+| Provider module         | Consumer API                                                              |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `windowsEventsProvider` | `useWindowEvent`, `useWindowDispatch`, internal `useWindowsEventsContext` |
+| `taskbarPinsProvider`   | `useTaskbarPins` / `UseTaskbarPins`                                       |
+| `windowsPinsProvider`   | `useWindowsPins` / `UseWindowsPins`                                       |
+| `windowsPinsProvider`   | `useWindowPinAnimation` / `UseWindowPinAnimation`                         |
 
 consumer는 Context나 개별 hook 파일을 직접 import하지 않는다. `useWindowPinAnimation`은
 `WindowsItemsContext`도 소비하지만 Windows pin snapshot과 reorder lifecycle을 소유하므로

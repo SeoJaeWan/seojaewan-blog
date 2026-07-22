@@ -3,7 +3,7 @@
 import { useCallback, useMemo } from "react";
 
 import { usePinnedIdsState } from "../../../shared/hooks/usePinnedIdsState";
-import { useWindowsEventsContext } from "../../../windowsEventsProvider/hooks/useWindowsEventsContext";
+import { useWindowsEventsContext } from "../../../windowsEventsProvider";
 import { useWindowsItemsContext } from "../../../windowsItemsProvider/hooks/useWindowsItemsContext";
 import { WINDOWS_PIN_STORAGE_KEY } from "../../constants";
 import type { UseWindowsPins } from "../../types";

@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 import type { WindowItem } from "@window/ui";
 
-import { useWindowsEventsContext } from "../windowsEventsProvider/hooks/useWindowsEventsContext";
+import { useWindowsEventsContext } from "../windowsEventsProvider";
 import { WindowsItemsContext } from "./context";
 
 interface WindowsItemsProviderProps extends PropsWithChildren {
