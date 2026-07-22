@@ -4,7 +4,10 @@ import { useContext } from "react";
 
 import { WindowsItemsContext } from "../../context";
 
-/** Windows 내부 Provider와 hook이 현재 WindowItem을 읽을 때 사용한다. */
+/**
+ * Windows 내부 Provider와 hook이 현재 WindowItem을 읽을 때 사용한다.
+ * @returns WindowsItemsProvider가 제공한 현재 목록 참조
+ */
 export const useWindowsItemsContext = () => {
   const context = useContext(WindowsItemsContext);
 

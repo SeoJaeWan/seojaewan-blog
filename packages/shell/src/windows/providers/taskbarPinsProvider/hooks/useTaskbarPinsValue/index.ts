@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 
 import { usePinnedIdsState } from "../../../shared/hooks/usePinnedIdsState";
 import { useWindowsEventsContext } from "../../../windowsEventsProvider";
-import { useWindowsItemsContext } from "../../../windowsItemsProvider/hooks/useWindowsItemsContext";
+import { useWindowsItemsContext } from "../../../windowsItemsProvider";
 import { TASKBAR_PIN_STORAGE_KEY } from "../../constants";
 import type { UseTaskbarPins } from "../../types";
 

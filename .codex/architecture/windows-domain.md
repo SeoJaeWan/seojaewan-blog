@@ -75,7 +75,7 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 
 | State                 | Source of truth                         | Update path                                                    |
 | --------------------- | --------------------------------------- | -------------------------------------------------------------- |
-| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | `WindowsItemsProvider`가 참조와 update event 제공              |
+| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | `useWindowsItemsValue`가 참조와 update event 제공              |
 | `taskbarPinnedIds`    | `TaskbarPinsProvider`                   | Provider value hook의 등록·취소 action                         |
 | `windowsPinnedIds`    | `WindowsPinsProvider`                   | Provider value hook의 등록·취소·reorder action                 |
 | observer registry     | `WindowsEventsProvider`                 | `useWindowEvent` subscribe/unsubscribe, 단일 typed dispatch    |
@@ -88,13 +88,18 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 두 Provider는 공통 단일 목록 메커니즘인 내부 `usePinnedIdsState`만 공유하며 서로의 상태에는
 의존하지 않는다.
 
+`WindowsItemsProvider`는 `useWindowsItemsValue(windowsItems)`가 반환한 값을 Context에 전달하는
+조립만 담당한다. Private `useWindowsItemsValue`가 이전 item 배열 참조의 lifecycle과
+`windowsItemsUpdated` event를 소유하고, internal `useWindowsItemsContext`는 완성된 Context 값을
+읽는다.
+
 ## `windowsItems` Contract
 
 - `WindowItem`은 `@window/ui`가 소유하며 `id`, `title`, 선택적 `description`, `icon`으로
   구성된다.
 - `windowsItems`의 source of truth는 props 하나뿐이다. Public `updateWindowsItems` API는 없다.
-- Provider는 이전 배열과 새 배열의 참조가 다를 때 `windowsItemsUpdated`를 전달한다. 항목별
-  semantic diff는 계산하지 않는다.
+- `useWindowsItemsValue`는 이전 배열과 새 배열의 참조가 다를 때 `windowsItemsUpdated`를 전달한다.
+  항목별 semantic diff는 계산하지 않는다.
 - 소비자는 실제 목록이 바뀌지 않았다면 배열 참조를 안정적으로 유지해야 한다.
   `windowsItems={[...items]}`처럼 매 render마다 새 배열을 만들면 매번 update event가 발생한다.
 - `WindowItem.id`는 pin persistence와 item lookup의 식별자이므로 surface 전체에서 안정적이고
@@ -269,8 +274,8 @@ context state는 다음 React render에서 같은 값으로 갱신된다.
 | `useWindowSearch`                           | 현재 item의 derived 검색 결과                       |
 | `WindowEventMap`과 관련 event/payload types | observer 및 dispatch 타입 계약                      |
 
-pin consumer hook, 내부 Provider/context, `usePinnedIdsState`, `UpdatePinnedIds`와 event registry는
-package public API가 아니다.
+pin consumer hook, internal `useWindowsEventsContext`와 `useWindowsItemsContext`, Provider context,
+value hook, `usePinnedIdsState`, `UpdatePinnedIds`와 event registry는 package public API가 아니다.
 
 ## Provider Module API
 
@@ -280,13 +285,15 @@ Provider가 이 경계를 통해 사용한다.
 | Provider module         | Consumer API                                                              |
 | ----------------------- | ------------------------------------------------------------------------- |
 | `windowsEventsProvider` | `useWindowEvent`, `useWindowDispatch`, internal `useWindowsEventsContext` |
+| `windowsItemsProvider`  | internal `useWindowsItemsContext`                                         |
 | `taskbarPinsProvider`   | `useTaskbarPins` / `UseTaskbarPins`                                       |
 | `windowsPinsProvider`   | `useWindowsPins` / `UseWindowsPins`                                       |
 | `windowsPinsProvider`   | `useWindowPinAnimation` / `UseWindowPinAnimation`                         |
 
 consumer는 Context나 개별 hook 파일을 직접 import하지 않는다. `useWindowPinAnimation`은
 `WindowsItemsContext`도 소비하지만 Windows pin snapshot과 reorder lifecycle을 소유하므로
-`windowsPinsProvider` 모듈에 둔다.
+`windowsPinsProvider` 모듈에 둔다. 이 hook은 두 Context의 결합 경계와 자체 오류 계약을 함께
+소유하므로 `WindowsItemsContext`를 직접 읽는 명시적 예외다.
 
 ## Taskbar Adapter Policy
 
