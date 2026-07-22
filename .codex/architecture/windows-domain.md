@@ -118,6 +118,8 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 - server render의 초기 pin state는 빈 배열이다.
 - 각 pin Provider의 client effect에서 자신의 key를 읽어 복원하며 복원 자체는 observer event를
   만들지 않는다.
+- localStorage는 client 복원 입력과 best-effort persistence이며, hydration 이후 pin state의 source of
+  truth는 각 Provider의 메모리 상태다. 다른 browsing context의 storage 변경을 실시간 동기화하지 않는다.
 - key 누락은 정상적인 빈 상태로 취급하며 빈 배열로 복원한다.
 - 읽을 수 있지만 JSON 파싱에 실패하거나 string 배열이 아닌 값은 빈 배열로 복구하고 같은 key를
   `[]`로 덮어쓴다. localStorage 접근 실패는 빈 메모리 상태로 격리하되 write-back을 보장하지 않는다.
@@ -130,9 +132,13 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 
 ### Mutation And Visual Lifecycle
 
-각 pin Provider의 value hook은 `usePinnedIdsState`를 한 번 호출해 자신의 배열, ref, 복원,
-정규화와 localStorage 저장을 관리한다. `usePinnedIdsState`는 `storageKey`와 유효한 item ID만
-입력받으며 Taskbar, Windows, pin action 또는 observer event의 의미를 알지 않는다.
+각 pin Provider의 value hook은 `usePinnedIdsState`를 한 번 호출한다. `usePinnedIdsState`는 배열과
+최신 ref, client 복원, localStorage 읽기·쓰기 실패 격리와 canonical 정규화를 함께 소유한다. 별도 pin
+storage module은 두지 않는다. Hook은 `storageKey`와 유효한 item ID만 입력받으며 Taskbar, Windows,
+pin action 또는 observer event의 의미를 알지 않는다.
+
+Canonical pin ID는 처음 등장한 순서를 유지하는 중복 없는 현재 item ID의 부분집합이다. Storage 복원,
+functional updater 결과와 유효 item 목록 변경은 모두 같은 정규화 규칙을 거친다.
 
 ```ts
 type PinnedIdsChange = {
@@ -254,7 +260,7 @@ context state는 다음 React render에서 같은 값으로 갱신된다.
 | `useWindowSearch`                           | 현재 item의 derived 검색 결과                       |
 | `WindowEventMap`과 관련 event/payload types | observer 및 dispatch 타입 계약                      |
 
-pin consumer hook, 내부 Provider/context, `UpdatePinnedIds`, pin storage helper와 event registry는
+pin consumer hook, 내부 Provider/context, `usePinnedIdsState`, `UpdatePinnedIds`와 event registry는
 package public API가 아니다.
 
 ## Provider Module API

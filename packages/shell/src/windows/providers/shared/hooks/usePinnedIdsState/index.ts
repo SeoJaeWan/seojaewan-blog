@@ -8,17 +8,69 @@ import type {
   UsePinnedIdsStateOptions,
   UsePinnedIdsStateResult,
 } from "./types";
-import { readPinnedIds, writePinnedIds } from "./utils/pinnedIdsStorage";
 
 const EMPTY_PINNED_IDS: readonly string[] = [];
+
+interface StoredPinnedIds {
+  needsWriteBack: boolean;
+  pinnedIds: readonly string[];
+}
 
 const arePinnedIdsEqual = (left: readonly string[], right: readonly string[]) =>
   left === right ||
   (left.length === right.length && left.every((itemId, index) => itemId === right[index]));
 
-const filterPinnedIds = (pinnedIds: readonly string[], validItemIds: ReadonlySet<string>) => {
-  const nextPinnedIds = pinnedIds.filter((itemId) => validItemIds.has(itemId));
+const isStringArray = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "string");
+
+const normalizePinnedIds = (pinnedIds: readonly string[], validItemIds: ReadonlySet<string>) => {
+  const seenItemIds = new Set<string>();
+  const nextPinnedIds: string[] = [];
+
+  for (const itemId of pinnedIds) {
+    if (!validItemIds.has(itemId) || seenItemIds.has(itemId)) {
+      continue;
+    }
+
+    seenItemIds.add(itemId);
+    nextPinnedIds.push(itemId);
+  }
+
   return nextPinnedIds.length === pinnedIds.length ? pinnedIds : nextPinnedIds;
+};
+
+const readStoredPinnedIds = (storageKey: string): StoredPinnedIds => {
+  let storedValue: string | null;
+
+  try {
+    storedValue = window.localStorage.getItem(storageKey);
+  } catch {
+    return { needsWriteBack: false, pinnedIds: EMPTY_PINNED_IDS };
+  }
+
+  if (storedValue === null) {
+    return { needsWriteBack: false, pinnedIds: EMPTY_PINNED_IDS };
+  }
+
+  let parsedValue: unknown;
+
+  try {
+    parsedValue = JSON.parse(storedValue);
+  } catch {
+    return { needsWriteBack: true, pinnedIds: EMPTY_PINNED_IDS };
+  }
+
+  return isStringArray(parsedValue)
+    ? { needsWriteBack: false, pinnedIds: parsedValue }
+    : { needsWriteBack: true, pinnedIds: EMPTY_PINNED_IDS };
+};
+
+const writeStoredPinnedIds = (storageKey: string, pinnedIds: readonly string[]) => {
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(pinnedIds));
+  } catch {
+    // Persistence 실패는 Provider가 소유한 메모리 상태 변경을 취소하지 않는다.
+  }
 };
 
 /** 한 surface의 pin ID 상태, persistence와 유효 ID 정리를 관리한다. */
@@ -43,14 +95,14 @@ export const usePinnedIdsState = ({
   const commitPinnedIds = useCallback(
     (requestedPinnedIds: readonly string[]): PinnedIdsChange | null => {
       const previousPinnedIds = pinnedIdsRef.current;
-      const pinnedIds = filterPinnedIds(requestedPinnedIds, validItemIdsRef.current);
+      const pinnedIds = normalizePinnedIds(requestedPinnedIds, validItemIdsRef.current);
 
       if (arePinnedIdsEqual(previousPinnedIds, pinnedIds)) {
         return null;
       }
 
       applyPinnedIdsState(pinnedIds);
-      writePinnedIds(storageKey, pinnedIds);
+      writeStoredPinnedIds(storageKey, pinnedIds);
 
       return { pinnedIds, previousPinnedIds };
     },
@@ -59,7 +111,7 @@ export const usePinnedIdsState = ({
 
   const updatePinnedIds = useCallback<UpdatePinnedIds>(
     (update) => {
-      const currentPinnedIds = filterPinnedIds(pinnedIdsRef.current, validItemIdsRef.current);
+      const currentPinnedIds = normalizePinnedIds(pinnedIdsRef.current, validItemIdsRef.current);
 
       if (!arePinnedIdsEqual(pinnedIdsRef.current, currentPinnedIds)) {
         commitPinnedIds(currentPinnedIds);
@@ -72,23 +124,23 @@ export const usePinnedIdsState = ({
   );
 
   useEffect(() => {
-    const { needsWriteBack, pinnedIds: storedPinnedIds } = readPinnedIds(storageKey);
-    const nextPinnedIds = filterPinnedIds(storedPinnedIds, validItemIdsRef.current);
+    const { needsWriteBack, pinnedIds: storedPinnedIds } = readStoredPinnedIds(storageKey);
+    const nextPinnedIds = normalizePinnedIds(storedPinnedIds, validItemIdsRef.current);
 
     applyPinnedIdsState(nextPinnedIds);
 
     if (needsWriteBack || !arePinnedIdsEqual(storedPinnedIds, nextPinnedIds)) {
-      writePinnedIds(storageKey, nextPinnedIds);
+      writeStoredPinnedIds(storageKey, nextPinnedIds);
     }
   }, [applyPinnedIdsState, storageKey]);
 
   useEffect(() => {
-    const nextPinnedIds = filterPinnedIds(pinnedIdsRef.current, validItemIds);
+    const nextPinnedIds = normalizePinnedIds(pinnedIdsRef.current, validItemIds);
     commitPinnedIds(nextPinnedIds);
   }, [commitPinnedIds, validItemIds]);
 
   const pinnedIds = useMemo(
-    () => filterPinnedIds(pinnedIdsState, validItemIds),
+    () => normalizePinnedIds(pinnedIdsState, validItemIds),
     [pinnedIdsState, validItemIds],
   );
 
