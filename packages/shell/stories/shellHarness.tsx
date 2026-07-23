@@ -5,7 +5,7 @@ import type { WindowItem } from "@window/ui";
 import { TaskbarRoot } from "@window/ui";
 
 import type { WindowEventName } from "../src";
-import { TaskbarPanelHost, useWindowEvent, Windows } from "../src";
+import { TaskbarPanel, useWindowEvent, Windows } from "../src";
 import type { ShellStorageSeed } from "./shellFixtures";
 import { resetShellStoryStorage, seedShellStoryStorage } from "./shellFixtures";
 
@@ -177,9 +177,9 @@ export const ShellHarness = ({
               ) : null}
             </aside>
           ) : null}
-          <TaskbarPanelHost portalContainer={portalContainer}>
+          <TaskbarPanel portalContainer={portalContainer}>
             <TaskbarRoot>{taskbarItems}</TaskbarRoot>
-          </TaskbarPanelHost>
+          </TaskbarPanel>
         </Windows>
       ) : null}
     </div>

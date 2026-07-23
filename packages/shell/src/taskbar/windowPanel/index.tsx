@@ -11,19 +11,11 @@ import { useTaskbarWindowPanelInteractions } from "./hooks/useTaskbarWindowPanel
 import { useWindowsPanelNavigation } from "./hooks/useWindowsPanelNavigation";
 import { createWindowsPanelSections } from "./utils/createWindowsPanelSections";
 
-export interface TaskbarWindowPanelProps {
-  /** 시작 button의 aria-controls와 연결할 panel element ID. */
-  id: string;
-}
-
 /**
  * Taskbar 시작 panel의 검색 input, 검색 결과와 pinned/all view를 조립한다.
  * query/navigation/detail은 panel 내부에서 관리하고 item/pin/event는 Windows hook으로 연결한다.
- *
- * @param props.id 시작 button aria-controls와 연결할 panel element ID
- * @returns compound WindowsPanelUI로 조립한 taskbar 시작 panel
  */
-export const TaskbarWindowPanel = ({ id }: TaskbarWindowPanelProps) => {
+export const TaskbarWindowPanel = () => {
   const [searchValue, setSearchValue] = useState("");
   const hasSearchQuery = searchValue.trim().length > 0;
   const results = useWindowSearch(searchValue);
@@ -34,7 +26,7 @@ export const TaskbarWindowPanel = ({ id }: TaskbarWindowPanelProps) => {
   const interactions = useTaskbarWindowPanelInteractions(searchDetail.detailItem);
 
   return (
-    <WindowsPanelUI id={id}>
+    <WindowsPanelUI>
       <WindowsPanelUI.SearchInput
         onChange={(event) => setSearchValue(event.currentTarget.value)}
         value={searchValue}

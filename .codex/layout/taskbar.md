@@ -14,7 +14,7 @@ Windows item, pin, 검색과 observer의 canonical 계약은
 포함:
 
 - 하단 taskbar glass surface와 visual component 계층
-- `TaskbarPanelHost`의 floating panel layer
+- `TaskbarPanel` compound component의 floating panel layer와 scope
 - `TaskbarStartButton`과 시작 panel 조립
 - 시작 panel의 검색, pinned/all, detail action interaction
 - panel과 pinned item의 animation lifecycle
@@ -52,58 +52,65 @@ Windows item, pin, 검색과 observer의 canonical 계약은
 ## Current Composition
 
 ```tsx
-import { TaskbarPanelHost, TaskbarStartButton, Windows } from "@window/shell";
+import { TaskbarPanel, TaskbarStartButton, Windows } from "@window/shell";
 import { TaskbarRoot } from "@window/ui";
 import "@window/ui/styles.css";
 
 <Windows windowsItems={items}>
-  <TaskbarPanelHost>
+  <TaskbarPanel>
     <TaskbarRoot>
-      <TaskbarStartButton ref={startButtonRef} />
+      <TaskbarStartButton />
       {/* TaskbarSearch, TaskbarAppList, TaskbarClock 등 visual 조립 */}
     </TaskbarRoot>
-  </TaskbarPanelHost>
+  </TaskbarPanel>
 </Windows>;
 ```
 
-`TaskbarStartButtonProps`에는 선택적인 button `ref`만 있다. 시작 panel item, 검색 결과, pin 상태와
-callback을 app이 button props로 전달하지 않는다.
+`TaskbarStartButton`은 외부 props 없이 시작 button과 panel을 조립한다. 시작 panel item, 검색 결과,
+pin 상태와 callback을 app이 button props로 전달하지 않는다.
 
 ## Component Tree
 
 ```text
 Windows
-└─ TaskbarPanelHost
+└─ TaskbarPanel
    ├─ app composition
    │  └─ TaskbarRoot (@window/ui)
    │     └─ TaskbarStartButton (@window/shell)
-   │        └─ TaskbarStartButtonUI (@window/ui)
+   │        └─ TaskbarPanel.Root
+   │           ├─ TaskbarPanel.Trigger
+   │           │  └─ TaskbarStartButtonUI (@window/ui)
+   │           └─ TaskbarPanel.Content
+   │              └─ TaskbarWindowPanel (@window/shell)
    └─ TaskbarPanelLayerUI portal (@window/ui)
       └─ TaskbarPanelContainerUI (@window/ui)
-         └─ TaskbarWindowPanel (@window/shell)
-            └─ WindowsPanelUI (@window/ui)
-               ├─ WindowsPanelUI.SearchInput
-               ├─ WindowsPanelUI.View
-               │  ├─ pinned view
-               │  └─ all view + initial/category jump overlay
-               └─ WindowsPanelUI.SearchResults
-                  ├─ result list
-                  └─ selected item detail/actions
+         └─ WindowsPanelUI (@window/ui)
+            ├─ WindowsPanelUI.SearchInput
+            ├─ WindowsPanelUI.View
+            │  ├─ pinned view
+            │  └─ all view + initial/category jump overlay
+            └─ WindowsPanelUI.SearchResults
+               ├─ result list
+               └─ selected item detail/actions
 ```
 
 ## Implemented Component Map
 
 ### Functional shell
 
-| Component/hook                      | Current responsibility                                                                          |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `TaskbarPanelHost`                  | active panel ID, panel별 visual phase, portal layer, Escape close와 1초 transition watchdog     |
-| `useTaskbarPanel`                   | trigger/panel ref, viewport placement, outside pointer close, animation 완료 전달과 portal 조립 |
-| `TaskbarStartButton`                | 시작 button UI, accessible 연결, panel toggle과 `TaskbarWindowPanel` 조립                       |
-| `TaskbarWindowPanel`                | query/detail/navigation 지역 상태와 Windows hooks를 `WindowsPanelUI`에 연결                     |
-| `useWindowsPanelNavigation`         | pinned/all 전환, category overlay와 all-list scroll                                             |
-| `useSearchResultDetail`             | 검색 결과의 현재 detail item 선택                                                               |
-| `useTaskbarWindowPanelInteractions` | open/context/pin action을 panel host와 Windows domain에 연결                                    |
+| Component/hook                      | Current responsibility                                                                        |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| `TaskbarPanel`                      | active panel ID, panel별 visual phase, portal layer, Escape close와 1초 transition watchdog   |
+| `TaskbarPanel.Root`                 | 선택 ID 또는 자동 ID로 한 panel의 Trigger와 Content scope를 제공                              |
+| `TaskbarPanel.Trigger`              | 자식 button에 toggle, ref, selected visual과 accessible 연결을 합성                           |
+| `TaskbarPanel.Content`              | visual phase 동안 Container와 공용 layer portal을 조립                                       |
+| `useTaskbarPanelValue`              | 전역 reducer, layer, Escape와 transition watchdog을 관리하는 private hook                    |
+| `useTaskbarPanelRootValue`          | 한 panel의 ref, viewport placement, outside pointer와 animation 완료를 관리하는 private hook |
+| `TaskbarStartButton`                | 시작 button UI와 `TaskbarWindowPanel`을 하나의 Root로 조립                                   |
+| `TaskbarWindowPanel`                | query/detail/navigation 지역 상태와 Windows hooks를 `WindowsPanelUI`에 연결                   |
+| `useWindowsPanelNavigation`         | pinned/all 전환, category overlay와 all-list scroll                                           |
+| `useSearchResultDetail`             | 검색 결과의 현재 detail item 선택                                                             |
+| `useTaskbarWindowPanelInteractions` | open/context/pin action을 현재 panel Root와 Windows domain에 연결                            |
 
 ### Presentational UI
 
@@ -133,7 +140,7 @@ catalog다.
 ShellHarness
 └─ Windows
    ├─ event probe와 story fixture controls
-   └─ TaskbarPanelHost
+   └─ TaskbarPanel
       └─ TaskbarRoot
          └─ taskbarItems slot
             └─ TaskbarStartButton (현재)
@@ -148,7 +155,7 @@ ShellHarness
   `TaskbarStartButton`이 만드는 portal을 사용한다.
 - `taskbarItems` slot은 이후 `TaskbarSearch`와 app list의 shell connector를 형제로 추가하는
   확장 지점이다.
-- Start와 Search처럼 상호 배타적인 root panel은 같은 `TaskbarPanelHost`의 active panel 계약을
+- Start와 Search처럼 상호 배타적인 root panel은 같은 `TaskbarPanel`의 active panel 계약을
   공유한다.
 - Hover와 Context panel은 실제 connector의 lifecycle이 정의될 때 같은 harness에 추가한다.
   현재 Storybook이 이들의 미구현 상태나 동시성 정책을 미리 결정하지 않는다.
@@ -192,13 +199,13 @@ ShellHarness
 
 ## Panel Lifecycle
 
-`TaskbarPanelHost`는 한 host에서 논리적인 active panel 하나를 유지한다. Panel 교체 시 기존
+`TaskbarPanel`은 한 provider에서 논리적인 active panel 하나를 유지한다. Panel 교체 시 기존
 panel의 closing과 새 panel의 opening은 동시에 존재할 수 있다.
 
 ```text
 button click
-→ TaskbarPanelHost.openPanel/toggle
-→ useTaskbarPanel이 trigger 기준 위치 측정
+→ TaskbarPanel.Trigger가 현재 Root toggle
+→ useTaskbarPanelRootValue가 trigger 기준 위치 측정
 → TaskbarPanelLayerUI에 portal
 → TaskbarPanelContainerUI opening
 → animation 완료 후 open
@@ -209,7 +216,7 @@ button click
 - `opening`: 220ms, 아래에서 올라오며 fade in
 - `closing`: 200ms, 아래로 내려가며 fade out
 - transition 중 추가 open/close 요청은 무시한다.
-- animation event가 누락되면 host의 1초 watchdog이 transition lock을 정리한다.
+- animation event가 누락되면 전역 panel 훅의 1초 watchdog이 transition lock을 정리한다.
 - Escape와 panel/trigger 바깥 pointer는 열린 panel을 닫는다.
 - 세부 reducer와 DOM event 규칙은
   [`taskbar-panel-transition.md`](../rules/taskbar-panel-transition.md)를 따른다.
@@ -306,4 +313,5 @@ reorder
 - app이 `pinnedItems`, `results`, detail callback을 시작 button까지 전달하는 구조
 - `TaskbarStartButton` 또는 Provider가 app의 실제 window open 동작을 직접 실행하는 구조
 
-새 기능은 이 이름들을 복원하지 않고 `Windows` hooks와 `TaskbarPanelHost` 경계에 맞춰 조립한다.
+새 기능은 이 이름들을 복원하지 않고 `Windows` hooks와 `TaskbarPanel` compound 경계에 맞춰
+조립한다.

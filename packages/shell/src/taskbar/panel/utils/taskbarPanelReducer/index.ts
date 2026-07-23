@@ -1,14 +1,14 @@
 import type { TaskbarPanelContainerState } from "@window/ui";
 
-/** Host가 완료 신호를 검증하는 taskbar panel transition phase. */
+/** panel manager가 완료 신호를 검증하는 taskbar panel transition phase. */
 export type TaskbarPanelTransitionState = Exclude<TaskbarPanelContainerState, "open">;
 
-export interface TaskbarPanelHostState {
+export interface TaskbarPanelState {
   activePanelId: string | null;
   panelStates: Record<string, TaskbarPanelContainerState>;
 }
 
-export type TaskbarPanelHostAction =
+export type TaskbarPanelAction =
   | { panelId: string; type: "open" }
   | { panelId: string | undefined; type: "close" }
   | {
@@ -18,7 +18,7 @@ export type TaskbarPanelHostAction =
     }
   | { type: "settleTransitions" };
 
-export const INITIAL_HOST_STATE: TaskbarPanelHostState = {
+export const INITIAL_PANEL_STATE: TaskbarPanelState = {
   activePanelId: null,
   panelStates: {},
 };
@@ -29,7 +29,7 @@ export const INITIAL_HOST_STATE: TaskbarPanelHostState = {
  * @param panelStates panel ID별 현재 visual phase
  * @returns 완료되지 않은 transition이 있으면 true
  */
-export const hasTransitioningPanel = (panelStates: TaskbarPanelHostState["panelStates"]) =>
+export const hasTransitioningPanel = (panelStates: TaskbarPanelState["panelStates"]) =>
   Object.values(panelStates).some((state) => state !== "open");
 
 /**
@@ -40,10 +40,10 @@ export const hasTransitioningPanel = (panelStates: TaskbarPanelHostState["panelS
  * @param action panel 열기, 닫기 또는 transition 완료 action
  * @returns action을 반영한 다음 panel host 상태
  */
-export const taskbarPanelHostReducer = (
-  state: TaskbarPanelHostState,
-  action: TaskbarPanelHostAction,
-): TaskbarPanelHostState => {
+export const taskbarPanelReducer = (
+  state: TaskbarPanelState,
+  action: TaskbarPanelAction,
+): TaskbarPanelState => {
   switch (action.type) {
     case "open": {
       if (hasTransitioningPanel(state.panelStates) || state.activePanelId === action.panelId) {

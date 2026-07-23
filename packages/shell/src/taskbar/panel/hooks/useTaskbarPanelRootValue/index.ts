@@ -1,12 +1,20 @@
 "use client";
 
-import type { CSSProperties, ReactNode, ReactPortal, RefObject } from "react";
-import { createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import type { CSSProperties } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import { TaskbarPanelContainerUI } from "@window/ui";
-
-import { TaskbarPanelHostContext } from "../..";
+import {
+  TaskbarPanelContext,
+  type TaskbarPanelRootContextValue,
+} from "../../context";
 
 const DEFAULT_GAP = 8;
 const DEFAULT_VIEWPORT_PADDING = 8;
@@ -15,30 +23,15 @@ const HIDDEN_POSITION_STYLE: CSSProperties = { visibility: "hidden" };
 /** Taskbar panel의 가로 배치 기준. */
 export type TaskbarPanelPlacement = "center" | "left" | "rootCenter";
 
-export interface UseTaskbarPanelOptions {
+export interface UseTaskbarPanelRootValueOptions {
   /** trigger와 panel 사이의 세로 간격. 기본값은 8px이다. */
   gap?: number;
-  /** TaskbarPanelHost가 active panel을 식별할 고유 ID. */
-  panelId: string;
+  /** 전역 panel 상태에서 이 Root를 식별할 ID. 생략하면 React ID를 사용한다. */
+  panelId?: string;
   /** panel의 가로 배치 기준. 기본값은 trigger 왼쪽이다. */
   placement?: TaskbarPanelPlacement;
   /** panel을 viewport 안으로 보정할 때 적용할 최소 여백. 기본값은 8px이다. */
   viewportPadding?: number;
-}
-
-export interface UseTaskbarPanelResult {
-  /** 현재 panel을 닫는다. 다른 active panel에는 영향을 주지 않는다. */
-  close: () => void;
-  /** 지정한 panelId가 현재 active panel인지 나타낸다. */
-  isOpen: boolean;
-  /** 현재 panel을 열고 기존 active panel을 교체한다. */
-  open: () => void;
-  /** presence phase 동안 panel visual을 Container와 Host layer portal로 조립한다. */
-  renderPanel: (panel: ReactNode) => ReactPortal | null;
-  /** 현재 panel의 열린 상태를 전환한다. */
-  toggle: () => void;
-  /** panel을 여는 taskbar button에 연결할 ref. */
-  triggerRef: RefObject<HTMLButtonElement | null>;
 }
 
 const clamp = (value: number, minimum: number, maximum: number) =>
@@ -70,27 +63,29 @@ const resolvePanelLeft = (
 };
 
 /**
- * TaskbarPanelHost의 presence phase와 trigger/panel DOM 동작을 연결한다.
- * 위치 측정, Container animation 완료 전달, resize 재계산과 바깥 pointerdown 닫기를 담당한다.
+ * 한 TaskbarPanel.Root를 전역 panel 상태에 연결하고 위치와 DOM lifecycle을 관리한다.
  *
- * @param options.panelId TaskbarPanelHost가 panel을 식별할 고유 ID
+ * @param options.panelId 전역 panel 상태에서 Root를 식별할 선택 ID
  * @param options.placement panel의 가로 배치 기준. 기본값은 "left"
  * @param options.gap trigger와 panel 사이의 세로 간격. 기본값은 8px
  * @param options.viewportPadding viewport 경계 보정 여백. 기본값은 8px
- * @returns panel 상태 제어 함수, DOM ref, portal layer와 position style
+ * @returns Trigger와 Content가 공유할 Root context 값
  */
-export const useTaskbarPanel = ({
+export const useTaskbarPanelRootValue = ({
   gap = DEFAULT_GAP,
   panelId,
   placement = "left",
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
-}: UseTaskbarPanelOptions): UseTaskbarPanelResult => {
-  const context = useContext(TaskbarPanelHostContext);
+}: UseTaskbarPanelRootValueOptions = {}): TaskbarPanelRootContextValue => {
+  const generatedId = useId();
+  const context = useContext(TaskbarPanelContext);
 
   if (context === null) {
-    throw new Error("useTaskbarPanel은 TaskbarPanelHost 안에서 사용해야 합니다.");
+    throw new Error("TaskbarPanel.Root는 TaskbarPanel 안에서 사용해야 합니다.");
   }
 
+  const resolvedPanelId = panelId ?? `taskbar-panel-${generatedId}`;
+  const contentId = `taskbar-panel-content-${generatedId}`;
   const {
     activePanelId,
     closePanel,
@@ -102,9 +97,9 @@ export const useTaskbarPanel = ({
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [positionStyle, setPositionStyle] = useState<CSSProperties>(HIDDEN_POSITION_STYLE);
-  const panelState = panelStates[panelId] ?? null;
+  const panelState = panelStates[resolvedPanelId] ?? null;
   const isPresent = panelState !== null;
-  const isOpen = activePanelId === panelId;
+  const isOpen = activePanelId === resolvedPanelId;
 
   const calculatePosition = useCallback(() => {
     const triggerElement = triggerRef.current;
@@ -133,13 +128,13 @@ export const useTaskbarPanel = ({
     });
   }, [gap, placement, viewportPadding]);
 
-  const open = useCallback(() => {
-    openPanel(panelId);
-  }, [openPanel, panelId]);
-
   const close = useCallback(() => {
-    closePanel(panelId);
-  }, [closePanel, panelId]);
+    closePanel(resolvedPanelId);
+  }, [closePanel, resolvedPanelId]);
+
+  const open = useCallback(() => {
+    openPanel(resolvedPanelId);
+  }, [openPanel, resolvedPanelId]);
 
   const toggle = useCallback(() => {
     if (isOpen) {
@@ -148,28 +143,6 @@ export const useTaskbarPanel = ({
       open();
     }
   }, [close, isOpen, open]);
-
-  const renderPanel = useCallback(
-    (panel: ReactNode) => {
-      if (panelState === null || layerElement === null) {
-        return null;
-      }
-
-      return createPortal(
-        createElement(
-          TaskbarPanelContainerUI,
-          {
-            ref: panelRef,
-            state: panelState,
-            style: positionStyle,
-          },
-          panel,
-        ),
-        layerElement,
-      );
-    },
-    [layerElement, panelState, positionStyle],
-  );
 
   useEffect(() => {
     const panelElement = panelRef.current;
@@ -183,7 +156,7 @@ export const useTaskbarPanel = ({
         return;
       }
 
-      completePanelTransition(panelId, panelState);
+      completePanelTransition(resolvedPanelId, panelState);
     };
 
     panelElement.addEventListener("animationend", handlePanelAnimationComplete);
@@ -193,7 +166,7 @@ export const useTaskbarPanel = ({
       panelElement.removeEventListener("animationend", handlePanelAnimationComplete);
       panelElement.removeEventListener("animationcancel", handlePanelAnimationComplete);
     };
-  }, [completePanelTransition, panelId, panelState]);
+  }, [completePanelTransition, panelState, resolvedPanelId]);
 
   useEffect(() => {
     if (!isPresent) {
@@ -225,7 +198,7 @@ export const useTaskbarPanel = ({
         return;
       }
 
-      closePanel(panelId);
+      closePanel(resolvedPanelId);
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
@@ -233,14 +206,20 @@ export const useTaskbarPanel = ({
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
     };
-  }, [closePanel, panelId, panelState]);
+  }, [closePanel, panelState, resolvedPanelId]);
 
-  return {
-    close,
-    isOpen,
-    open,
-    renderPanel,
-    toggle,
-    triggerRef,
-  };
+  return useMemo(
+    () => ({
+      close,
+      contentId,
+      isOpen,
+      layerElement,
+      panelRef,
+      panelState,
+      positionStyle,
+      toggle,
+      triggerRef,
+    }),
+    [close, contentId, isOpen, layerElement, panelState, positionStyle, toggle],
+  );
 };

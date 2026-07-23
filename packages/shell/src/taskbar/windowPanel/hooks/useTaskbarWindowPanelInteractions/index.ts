@@ -13,7 +13,7 @@ import type {
 import { useTaskbarPins } from "../../../../windows/providers/taskbarPinsProvider";
 import { useWindowDispatch } from "../../../../windows/providers/windowsEventsProvider";
 import { useWindowsPins } from "../../../../windows/providers/windowsPinsProvider";
-import { TaskbarPanelHostContext } from "../../../panelHost";
+import { TaskbarPanelRootContext } from "../../../panel/context";
 
 export interface UseTaskbarWindowPanelInteractionsResult {
   /** 현재 상세 item의 pin 상태에서 계산한 고정 action 목록. */
@@ -31,19 +31,21 @@ export interface UseTaskbarWindowPanelInteractionsResult {
 }
 
 /**
- * 시작 panel의 item action을 TaskbarPanelHost와 Windows domain hook에 연결한다.
+ * 시작 panel의 item action을 TaskbarPanel.Root와 Windows domain hook에 연결한다.
  * open 계열만 panel을 닫고 pin/context menu 동작은 열린 panel 상태를 유지한다.
  */
 export const useTaskbarWindowPanelInteractions = (
   detailItem: WindowItem | null,
 ): UseTaskbarWindowPanelInteractionsResult => {
-  const panelHost = useContext(TaskbarPanelHostContext);
+  const panel = useContext(TaskbarPanelRootContext);
   const dispatch = useWindowDispatch();
   const taskbarPins = useTaskbarPins();
   const windowsPins = useWindowsPins();
 
-  if (panelHost === null) {
-    throw new Error("useTaskbarWindowPanelInteractions는 TaskbarPanelHost 안에서 사용해야 합니다.");
+  if (panel === null) {
+    throw new Error(
+      "useTaskbarWindowPanelInteractions는 TaskbarPanel.Root 안에서 사용해야 합니다.",
+    );
   }
 
   const detailActions = useMemo<readonly WindowItemActionState[]>(() => {
@@ -68,10 +70,10 @@ export const useTaskbarWindowPanelInteractions = (
       item: WindowItem,
       source: WindowsPanelItemSource,
     ) => {
-      panelHost.closePanel();
+      panel.close();
       dispatch(eventName, { item, source });
     },
-    [dispatch, panelHost],
+    [dispatch, panel],
   );
 
   const onOpenItem = useCallback(

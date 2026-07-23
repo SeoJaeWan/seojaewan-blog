@@ -1,8 +1,13 @@
 "use client";
 
-export type { TaskbarPanelHostProps } from "./taskbar/panelHost";
-export { TaskbarPanelHost } from "./taskbar/panelHost";
-export type { TaskbarStartButtonProps } from "./taskbar/startButton";
+export type {
+  TaskbarPanelContentProps,
+  TaskbarPanelPlacement,
+  TaskbarPanelProps,
+  TaskbarPanelRootProps,
+  TaskbarPanelTriggerProps,
+} from "./taskbar/panel";
+export { TaskbarPanel } from "./taskbar/panel";
 export { TaskbarStartButton } from "./taskbar/startButton";
 export type { WindowsProps } from "./windows";
 export { Windows } from "./windows";

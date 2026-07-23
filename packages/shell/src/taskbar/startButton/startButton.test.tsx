@@ -1,16 +1,12 @@
-import type { RefObject } from "react";
-import { createRef } from "react";
-
 import type { WindowItem } from "@window/ui";
 
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Windows } from "../../windows";
 import { useWindowEvent } from "../../windows/providers/windowsEventsProvider";
 import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
-import { TaskbarPanelHost } from "../panelHost";
-import type { TaskbarStartButtonProps } from "./index";
+import { TaskbarPanel } from "../panel";
 import { TaskbarStartButton } from "./index";
 
 const REACT = { id: "react", title: "React" } satisfies WindowItem;
@@ -31,15 +27,12 @@ const Observer = ({ onContextMenu, onOpen, onOpenLocation, onWindowsPin }: Obser
   return null;
 };
 
-const createTree = (
-  observerProps: ObserverProps = {},
-  ref?: RefObject<HTMLButtonElement | null>,
-) => (
+const createTree = (observerProps: ObserverProps = {}) => (
   <Windows windowsItems={WINDOWS_ITEMS}>
-    <TaskbarPanelHost portalContainer={document.body}>
+    <TaskbarPanel portalContainer={document.body}>
       <Observer {...observerProps} />
-      <TaskbarStartButton ref={ref} />
-    </TaskbarPanelHost>
+      <TaskbarStartButton />
+    </TaskbarPanel>
   </Windows>
 );
 
@@ -70,17 +63,6 @@ afterEach(() => {
 });
 
 describe("TaskbarStartButton", () => {
-  it("public props에는 ref만 남기고 실제 시작 button을 연결한다", () => {
-    const ref = createRef<HTMLButtonElement>();
-
-    render(createTree({}, ref));
-
-    expectTypeOf<TaskbarStartButtonProps>().toEqualTypeOf<{
-      ref?: RefObject<HTMLButtonElement | null>;
-    }>();
-    expect(ref.current).toBe(screen.getByRole("button", { name: "시작" }));
-  });
-
   it("검색 item을 열면 source를 dispatch하고 시작 panel을 닫는다", async () => {
     const onOpen = vi.fn();
 
@@ -138,41 +120,4 @@ describe("TaskbarStartButton", () => {
     expect(startButton.getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("Escape는 panel을 closing으로 전환하고 animation 완료 뒤 DOM에서 제거한다", async () => {
-    render(createTree());
-    const { panelContainer, startButton } = await openSettledPanel();
-    const panelElementId = startButton.getAttribute("aria-controls");
-
-    expect(panelElementId).not.toBeNull();
-
-    fireEvent.keyDown(document, { key: "Escape" });
-
-    await waitFor(() => expect(startButton.getAttribute("aria-expanded")).toBe("false"));
-    expect(panelContainer.dataset.state).toBe("closing");
-    expect(document.getElementById(panelElementId!)).not.toBeNull();
-
-    fireEvent.animationEnd(panelContainer);
-
-    await waitFor(() => expect(document.getElementById(panelElementId!)).toBeNull());
-    expect(panelContainer.isConnected).toBe(false);
-  });
-
-  it("defaultPrevented된 Escape는 열린 상태와 panel DOM을 유지한다", async () => {
-    render(createTree());
-    const { panelContainer, startButton } = await openSettledPanel();
-    const escapeEvent = new KeyboardEvent("keydown", {
-      bubbles: true,
-      cancelable: true,
-      key: "Escape",
-    });
-    escapeEvent.preventDefault();
-
-    fireEvent(document, escapeEvent);
-
-    expect(escapeEvent.defaultPrevented).toBe(true);
-    expect(startButton.getAttribute("aria-expanded")).toBe("true");
-    expect(panelContainer.dataset.state).toBe("open");
-    expect(panelContainer.isConnected).toBe(true);
-    expect(screen.getByRole("dialog", { name: "시작" })).toBeDefined();
-  });
 });

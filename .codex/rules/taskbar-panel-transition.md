@@ -2,7 +2,7 @@
 
 ## 적용 범위
 
-`TaskbarPanelHost`, `useTaskbarPanel`과 이를 사용하는 taskbar panel에 적용한다.
+`TaskbarPanel`, `TaskbarPanel.Root`와 이를 구현하는 private panel hook에 적용한다.
 
 ## Transition 방식
 

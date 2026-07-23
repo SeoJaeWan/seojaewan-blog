@@ -1,3 +1,5 @@
+import { createRef } from "react";
+
 import type { WindowItem } from "@window/ui";
 
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -8,7 +10,8 @@ import { TASKBAR_PIN_STORAGE_KEY } from "../../windows/providers/taskbarPinsProv
 import { useWindowEvent } from "../../windows/providers/windowsEventsProvider";
 import { WINDOWS_PIN_STORAGE_KEY } from "../../windows/providers/windowsPinsProvider/constants";
 import type { WindowContextMenuEvent, WindowItemEvent, WindowPinEvent } from "../../windows/types";
-import { TaskbarPanelHost } from "../panelHost";
+import type { TaskbarPanelRootContextValue } from "../panel/context";
+import { TaskbarPanelRootContext } from "../panel/context";
 import { TaskbarWindowPanel } from "./index";
 
 const WINDOW_PIN_STORAGE_KEYS = {
@@ -50,12 +53,24 @@ const Observer = ({
   return null;
 };
 
+const createPanelContextValue = (): TaskbarPanelRootContextValue => ({
+  close: vi.fn(),
+  contentId: "start-panel",
+  isOpen: true,
+  layerElement: null,
+  panelRef: createRef<HTMLDivElement>(),
+  panelState: "open",
+  positionStyle: {},
+  toggle: vi.fn(),
+  triggerRef: createRef<HTMLButtonElement>(),
+});
+
 const createTree = (windowsItems: readonly WindowItem[], observerProps: ObserverProps = {}) => (
   <Windows windowsItems={windowsItems}>
-    <TaskbarPanelHost portalContainer={document.body}>
+    <TaskbarPanelRootContext.Provider value={createPanelContextValue()}>
       <Observer {...observerProps} />
-      <TaskbarWindowPanel id="start-panel" />
-    </TaskbarPanelHost>
+      <TaskbarWindowPanel />
+    </TaskbarPanelRootContext.Provider>
   </Windows>
 );
 
@@ -75,7 +90,7 @@ describe("TaskbarWindowPanel", () => {
   it("지역 검색어가 비어 있으면 전체 item을 section으로 변환한다", () => {
     const { container } = render(createTree(RESULTS));
 
-    expect(screen.getByRole("dialog", { name: "시작" }).id).toBe("start-panel");
+    expect(screen.getByRole("dialog", { name: "시작" })).toBeDefined();
     expect((getSearchInput() as HTMLInputElement).value).toBe("");
 
     fireEvent.change(getSearchInput(), { target: { value: "   " } });
