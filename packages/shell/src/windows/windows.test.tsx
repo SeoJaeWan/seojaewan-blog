@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 describe("Windows", () => {
-  it("pin action은 완료 payload를 전달하고 다음 render에 state를 반영한다", async () => {
+  it("item을 pin하면 완료 event를 전달하고 다음 화면에 변경된 pin 목록을 제공한다", async () => {
     const onEvent = vi.fn<(payload: WindowPinEvent) => void>();
 
     render(

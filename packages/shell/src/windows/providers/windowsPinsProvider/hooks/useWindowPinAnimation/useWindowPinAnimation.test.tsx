@@ -82,6 +82,50 @@ const fireAnimationEnd = (element: Element, animationName: string) => {
   fireEvent(element, event);
 };
 
+const renderPinAddition = () => {
+  const rendered = render(
+    <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, TERMINAL]} />,
+  );
+  const pinnedIds = ["calculator", "terminal"];
+
+  rendered.rerender(
+    <HookHarness
+      pins={createPinsValue(pinnedIds, {
+        itemId: "terminal",
+        pinnedIds,
+        previousPinnedIds: ["calculator"],
+        revision: 1,
+        type: "pin",
+      })}
+      windowsItems={[CALCULATOR, TERMINAL]}
+    />,
+  );
+
+  return rendered;
+};
+
+const renderCalculatorRemoval = () => {
+  const previousPinnedIds = ["calculator", "terminal"];
+  const rendered = render(
+    <HookHarness pins={createPinsValue(previousPinnedIds)} windowsItems={[CALCULATOR, TERMINAL]} />,
+  );
+
+  rendered.rerender(
+    <HookHarness
+      pins={createPinsValue(["terminal"], {
+        itemId: "calculator",
+        pinnedIds: ["terminal"],
+        previousPinnedIds,
+        revision: 1,
+        type: "unpin",
+      })}
+      windowsItems={[CALCULATOR, TERMINAL]}
+    />,
+  );
+
+  return rendered;
+};
+
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
@@ -89,186 +133,208 @@ afterEach(() => {
 });
 
 describe("useWindowPinAnimation", () => {
-  it("Windows 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {
-    expect(() => renderHook(() => useWindowPinAnimation())).toThrow(
-      "useWindowPinAnimation은 Windows 안에서 사용해야 합니다.",
-    );
-  });
-
-  it("Context의 canonical ID 순서대로 현재 WindowItem을 반환한다", () => {
-    render(
-      <HookHarness
-        pins={createPinsValue(["terminal", "calculator"])}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    expectPinnedItems(["terminal", "calculator"]);
-    expectAnimation(null);
-  });
-
-  it("pin mutation을 받으면 새 item에 in animation을 적용하고 animationend로 완료한다", () => {
-    const { rerender } = render(
-      <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, TERMINAL]} />,
-    );
-    const pinnedIds = ["calculator", "terminal"];
-
-    rerender(
-      <HookHarness
-        pins={createPinsValue(pinnedIds, {
-          itemId: "terminal",
-          pinnedIds,
-          previousPinnedIds: ["calculator"],
-          revision: 1,
-          type: "pin",
-        })}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    expectPinnedItems(pinnedIds);
-    expectAnimation({ itemId: "terminal", phase: "in" });
-
-    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "other-animation");
-    expectAnimation({ itemId: "terminal", phase: "in" });
-
-    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
-    expectAnimation(null);
-  });
-
-  it("unpin mutation을 받으면 이전 item을 out 동안 유지하고 transitionend 뒤 제거한다", () => {
-    const previousPinnedIds = ["calculator", "terminal"];
-    const { rerender } = render(
-      <HookHarness
-        pins={createPinsValue(previousPinnedIds)}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    rerender(
-      <HookHarness
-        pins={createPinsValue(["terminal"], {
-          itemId: "calculator",
-          pinnedIds: ["terminal"],
-          previousPinnedIds,
-          revision: 1,
-          type: "unpin",
-        })}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    expectPinnedItems(previousPinnedIds);
-    expectAnimation({ itemId: "calculator", phase: "out" });
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
-      propertyName: "opacity",
-    });
-    expectPinnedItems(previousPinnedIds);
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
-      propertyName: "transform",
-    });
-    expectPinnedItems(["terminal"]);
-    expectAnimation(null);
-  });
-
-  it("windowsItems에서 사라진 stale item snapshot을 out 완료까지 유지한다", () => {
-    const previousPinnedIds = ["calculator", "terminal"];
-    const { rerender } = render(
-      <HookHarness
-        pins={createPinsValue(previousPinnedIds)}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    rerender(
-      <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, NOTES]} />,
-    );
-
-    expectPinnedItems(previousPinnedIds);
-    expect(screen.getByTestId("pin-item-terminal").textContent).toBe("터미널");
-    expectAnimation({ itemId: "terminal", phase: "out" });
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
-      propertyName: "transform",
+  describe("사용 조건과 초기 표시", () => {
+    it("Windows 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {
+      expect(() => renderHook(() => useWindowPinAnimation())).toThrow(
+        "useWindowPinAnimation은 Windows 안에서 사용해야 합니다.",
+      );
     });
 
-    expectPinnedItems(["calculator"]);
-    expect(screen.queryByTestId("pin-item-terminal")).toBeNull();
+    it("Provider가 제공한 pin ID 순서대로 현재 WindowItem을 반환한다", () => {
+      render(
+        <HookHarness
+          pins={createPinsValue(["terminal", "calculator"])}
+          windowsItems={[CALCULATOR, TERMINAL]}
+        />,
+      );
+
+      expectPinnedItems(["terminal", "calculator"]);
+      expectAnimation(null);
+    });
+
+    it("이전 변경 내용이 남은 상태로 다시 열어도 과거 animation을 재실행하지 않는다", () => {
+      const pinnedIds = ["calculator", "terminal"];
+
+      render(
+        <HookHarness
+          pins={createPinsValue(pinnedIds, {
+            itemId: "terminal",
+            pinnedIds,
+            previousPinnedIds: ["calculator"],
+            revision: 5,
+            type: "pin",
+          })}
+          windowsItems={[CALCULATOR, TERMINAL]}
+        />,
+      );
+
+      expectPinnedItems(pinnedIds);
+      expectAnimation(null);
+    });
   });
 
-  it("reorder mutation은 이전 순서의 out 뒤 canonical 순서의 in으로 투영한다", () => {
-    const previousPinnedIds = ["calculator", "terminal"];
-    const pinnedIds = ["terminal", "calculator"];
-    const { rerender } = render(
-      <HookHarness
-        pins={createPinsValue(previousPinnedIds)}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
+  describe("들어오는 animation", () => {
+    it("item이 pin 목록에 추가되면 새 위치에서 들어오는 animation을 실행한다", () => {
+      renderPinAddition();
 
-    rerender(
-      <HookHarness
-        pins={createPinsValue(pinnedIds, {
-          fromIndex: 1,
-          itemId: "terminal",
-          pinnedIds,
-          previousPinnedIds,
-          revision: 1,
-          toIndex: 0,
-          type: "reorder",
-        })}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-
-    expectPinnedItems(previousPinnedIds);
-    expectAnimation({ itemId: "terminal", phase: "out" });
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
-      propertyName: "transform",
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation({ itemId: "terminal", phase: "in" });
     });
-    expectPinnedItems(pinnedIds);
-    expectAnimation({ itemId: "terminal", phase: "in" });
 
-    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
-    expectAnimation(null);
+    it("다른 animation과 하위 element의 완료 event는 현재 item의 animation을 끝내지 않는다", () => {
+      renderPinAddition();
+
+      fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "other-animation");
+      fireAnimationEnd(screen.getByText("터미널"), "wb-windows-fade-in");
+
+      expectAnimation({ itemId: "terminal", phase: "in" });
+    });
+
+    it("들어오는 animation이 완료되면 해당 item의 animation 상태를 정리한다", () => {
+      renderPinAddition();
+
+      fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
+
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation(null);
+    });
   });
 
-  it("DOM 완료 event가 누락되면 500ms watchdog이 현재 단계를 완료한다", () => {
-    vi.useFakeTimers();
-    const previousPinnedIds = ["calculator", "terminal"];
-    const { rerender } = render(
-      <HookHarness
-        pins={createPinsValue(previousPinnedIds)}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
+  describe("나가는 animation", () => {
+    it("item이 unpin되면 이전 화면에 남겨 두고 나가는 animation을 실행한다", () => {
+      renderCalculatorRemoval();
 
-    rerender(
-      <HookHarness
-        pins={createPinsValue(["terminal"], {
-          itemId: "calculator",
-          pinnedIds: ["terminal"],
-          previousPinnedIds,
-          revision: 1,
-          type: "unpin",
-        })}
-        windowsItems={[CALCULATOR, TERMINAL]}
-      />,
-    );
-    expectAnimation({ itemId: "calculator", phase: "out" });
-
-    act(() => {
-      vi.advanceTimersByTime(499);
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation({ itemId: "calculator", phase: "out" });
     });
-    expectPinnedItems(previousPinnedIds);
 
-    act(() => {
-      vi.advanceTimersByTime(1);
+    it("다른 CSS 속성과 하위 element의 transition 완료 event는 item을 제거하지 않는다", () => {
+      renderCalculatorRemoval();
+
+      fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
+        propertyName: "opacity",
+      });
+      fireEvent.transitionEnd(screen.getByText("계산기"), {
+        propertyName: "transform",
+      });
+
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation({ itemId: "calculator", phase: "out" });
     });
-    expectPinnedItems(["terminal"]);
-    expectAnimation(null);
+
+    it("나가는 animation이 완료되면 해당 item을 화면에서 제거한다", () => {
+      renderCalculatorRemoval();
+
+      fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
+        propertyName: "transform",
+      });
+
+      expectPinnedItems(["terminal"]);
+      expect(screen.queryByTestId("pin-item-calculator")).toBeNull();
+      expectAnimation(null);
+    });
+  });
+
+  describe("사라진 item 정보 유지", () => {
+    it("windowsItems에서 사라진 item의 마지막 정보를 나가는 animation이 끝날 때까지 유지한다", () => {
+      const previousPinnedIds = ["calculator", "terminal"];
+      const { rerender } = render(
+        <HookHarness
+          pins={createPinsValue(previousPinnedIds)}
+          windowsItems={[CALCULATOR, TERMINAL]}
+        />,
+      );
+
+      rerender(
+        <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, NOTES]} />,
+      );
+
+      expectPinnedItems(previousPinnedIds);
+      expect(screen.getByTestId("pin-item-terminal").textContent).toBe("터미널");
+      expectAnimation({ itemId: "terminal", phase: "out" });
+
+      fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
+        propertyName: "transform",
+      });
+
+      expectPinnedItems(["calculator"]);
+      expect(screen.queryByTestId("pin-item-terminal")).toBeNull();
+    });
+  });
+
+  describe("pin 순서 변경", () => {
+    it("pin 순서가 바뀌면 이동한 item을 이전 위치에서 내보내고 새 위치에서 다시 들어오게 한다", () => {
+      const previousPinnedIds = ["calculator", "terminal"];
+      const pinnedIds = ["terminal", "calculator"];
+      const { rerender } = render(
+        <HookHarness
+          pins={createPinsValue(previousPinnedIds)}
+          windowsItems={[CALCULATOR, TERMINAL]}
+        />,
+      );
+
+      rerender(
+        <HookHarness
+          pins={createPinsValue(pinnedIds, {
+            fromIndex: 1,
+            itemId: "terminal",
+            pinnedIds,
+            previousPinnedIds,
+            revision: 1,
+            toIndex: 0,
+            type: "reorder",
+          })}
+          windowsItems={[CALCULATOR, TERMINAL]}
+        />,
+      );
+
+      expectPinnedItems(previousPinnedIds);
+      expectAnimation({ itemId: "terminal", phase: "out" });
+
+      fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
+        propertyName: "transform",
+      });
+      expectPinnedItems(pinnedIds);
+      expectAnimation({ itemId: "terminal", phase: "in" });
+
+      fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
+      expectAnimation(null);
+    });
+  });
+
+  describe("완료 event fallback", () => {
+    it("나가는 animation의 완료 event가 없어도 500ms 뒤 item을 화면에서 제거한다", () => {
+      vi.useFakeTimers();
+      renderCalculatorRemoval();
+
+      act(() => {
+        vi.advanceTimersByTime(499);
+      });
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation({ itemId: "calculator", phase: "out" });
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expectPinnedItems(["terminal"]);
+      expectAnimation(null);
+    });
+
+    it("들어오는 animation의 완료 event가 없어도 500ms 뒤 animation 상태를 정리한다", () => {
+      vi.useFakeTimers();
+      renderPinAddition();
+
+      act(() => {
+        vi.advanceTimersByTime(499);
+      });
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation({ itemId: "terminal", phase: "in" });
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expectPinnedItems(["calculator", "terminal"]);
+      expectAnimation(null);
+    });
   });
 });
