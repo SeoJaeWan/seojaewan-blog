@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 describe("usePinnedIdsState", () => {
-  describe("server render와 storage 복원", () => {
+  describe("server render와 localStorage 복원", () => {
     it("server render에는 빈 상태를 사용하고 hydration 뒤 storage 값을 복원한다", async () => {
       const container = document.createElement("div");
       storePinnedIds(["calculator"]);
@@ -62,7 +62,7 @@ describe("usePinnedIdsState", () => {
       }
     });
 
-    it("storage key가 없으면 빈 상태를 유지하고 빈 배열을 저장하지 않는다", () => {
+    it("localStorage key가 없으면 빈 상태를 유지하고 빈 배열을 저장하지 않는다", () => {
       const setItem = vi.spyOn(Storage.prototype, "setItem");
 
       const { result } = renderPinnedIds();
@@ -72,7 +72,7 @@ describe("usePinnedIdsState", () => {
       expect(setItem).not.toHaveBeenCalled();
     });
 
-    it("유효한 storage 값은 순서대로 복원하고 다시 저장하지 않는다", async () => {
+    it("정상적인 localStorage 값은 순서대로 복원하고 다시 저장하지 않는다", async () => {
       storePinnedIds(["terminal", "calculator"]);
       const setItem = vi.spyOn(Storage.prototype, "setItem");
 
@@ -82,7 +82,7 @@ describe("usePinnedIdsState", () => {
       expect(setItem).not.toHaveBeenCalled();
     });
 
-    it("잘못된 JSON은 빈 상태로 복구하고 storage를 빈 배열로 덮어쓴다", async () => {
+    it("잘못된 JSON은 빈 상태로 복구하고 localStorage를 빈 배열로 덮어쓴다", async () => {
       window.localStorage.setItem(STORAGE_KEY, "[");
       const setItem = vi.spyOn(Storage.prototype, "setItem");
 
@@ -96,7 +96,7 @@ describe("usePinnedIdsState", () => {
     it.each([
       { label: "pin ID 배열 대신 저장된 객체", value: { id: "calculator" } },
       { label: "문자열 외 항목이 섞인 배열", value: ["calculator", 1] },
-    ])("$label 값은 빈 상태로 복구하고 storage를 덮어쓴다", async ({ value }) => {
+    ])("$label 값은 빈 상태로 복구하고 localStorage를 덮어쓴다", async ({ value }) => {
       storePinnedIds(value);
 
       const { result } = renderPinnedIds();
@@ -105,7 +105,7 @@ describe("usePinnedIdsState", () => {
       expect(result.current.pinnedIds).toEqual([]);
     });
 
-    it("중복과 유효하지 않은 ID를 제거하고 최초 순서를 storage에 유지한다", async () => {
+    it("중복과 사용할 수 없는 ID를 제거하고 최초 순서를 localStorage에 유지한다", async () => {
       storePinnedIds(["calculator", "missing", "calculator", "terminal"]);
 
       const { result } = renderPinnedIds();
@@ -117,8 +117,8 @@ describe("usePinnedIdsState", () => {
     });
   });
 
-  describe("updatePinnedIds", () => {
-    it("canonical 상태와 storage를 변경하고 이전 목록과 변경된 목록을 반환한다", async () => {
+  describe("pin 목록 변경", () => {
+    it("pin 목록과 localStorage를 변경하고 이전 목록과 변경된 목록을 반환한다", async () => {
       storePinnedIds(["calculator"]);
       const { result } = renderPinnedIds();
       await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator"]));
@@ -138,7 +138,7 @@ describe("usePinnedIdsState", () => {
       );
     });
 
-    it("같은 tick의 연속 update를 최신 canonical 상태에서 계산한다", async () => {
+    it("화면이 다시 그려지기 전에 연속으로 변경해도 바로 직전 pin 목록을 기준으로 처리한다", async () => {
       const { result } = renderPinnedIds();
       let firstChange: PinnedIdsChange | null = null;
       let secondChange: PinnedIdsChange | null = null;
@@ -156,7 +156,7 @@ describe("usePinnedIdsState", () => {
       await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]));
     });
 
-    it("updater가 null을 반환하면 state와 storage를 변경하지 않는다", async () => {
+    it("변경 함수가 null을 반환하면 pin 목록과 localStorage를 변경하지 않는다", async () => {
       storePinnedIds(["calculator"]);
       const { result } = renderPinnedIds();
       await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator"]));
@@ -173,7 +173,7 @@ describe("usePinnedIdsState", () => {
       expect(setItem).not.toHaveBeenCalled();
     });
 
-    it("같은 목록을 새 배열로 반환해도 state와 storage를 변경하지 않는다", async () => {
+    it("현재와 같은 목록을 새 배열로 반환해도 pin 목록과 localStorage를 변경하지 않는다", async () => {
       storePinnedIds(["calculator", "terminal"]);
       const { result } = renderPinnedIds();
       await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]));
@@ -189,7 +189,7 @@ describe("usePinnedIdsState", () => {
       expect(setItem).not.toHaveBeenCalled();
     });
 
-    it("updater 결과의 중복과 유효하지 않은 ID도 canonical 값으로 정리한다", async () => {
+    it("변경 결과의 중복과 사용할 수 없는 ID를 제거한다", async () => {
       storePinnedIds(["calculator"]);
       const { result } = renderPinnedIds();
       await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator"]));
@@ -214,7 +214,7 @@ describe("usePinnedIdsState", () => {
       );
     });
 
-    it("정규화 결과가 현재 빈 상태와 같으면 storage를 변경하지 않는다", () => {
+    it("사용할 수 없는 ID만 요청해 최종 목록이 같으면 localStorage를 변경하지 않는다", () => {
       const { result } = renderPinnedIds();
       const setItem = vi.spyOn(Storage.prototype, "setItem");
       let change: PinnedIdsChange | null = null;
@@ -230,7 +230,7 @@ describe("usePinnedIdsState", () => {
     });
   });
 
-  describe("validItemIds 변경", () => {
+  describe("사용 가능한 item 변경", () => {
     it("사라진 중간 ID를 state와 storage에서 제거하고 나머지 순서를 유지한다", async () => {
       const initialValidItemIds = new Set(["calculator", "terminal", "notepad"]);
       storePinnedIds(["calculator", "terminal", "notepad"]);
@@ -252,8 +252,8 @@ describe("usePinnedIdsState", () => {
     });
   });
 
-  describe("storage 실패", () => {
-    it("storage read 실패는 빈 메모리 상태로 격리하고 write-back하지 않는다", () => {
+  describe("localStorage 실패", () => {
+    it("localStorage 읽기 실패는 빈 메모리 상태로 격리하고 다시 저장하지 않는다", () => {
       vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
         throw new Error("read failed");
       });
@@ -265,7 +265,7 @@ describe("usePinnedIdsState", () => {
       expect(setItem).not.toHaveBeenCalled();
     });
 
-    it("storage write 실패에도 메모리 상태를 갱신하고 변경 결과를 반환한다", async () => {
+    it("localStorage 쓰기 실패에도 메모리 상태를 갱신하고 변경 결과를 반환한다", async () => {
       const { result } = renderPinnedIds();
       vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
         throw new Error("write failed");
