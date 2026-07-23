@@ -1,117 +1,91 @@
 import type { AnimationEvent, TransitionEvent } from "react";
-import { createElement } from "react";
 
 import type { WindowItem } from "@window/ui";
 
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, fireEvent, render, renderHook, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { Windows } from "../../../..";
-import type { WindowPinEvent, WindowPinsReorderedEvent } from "../../../../types";
-import { useWindowEvent } from "../../../windowsEventsProvider";
-import { WINDOWS_PIN_STORAGE_KEY } from "../../constants";
-import { useWindowsPins } from "../useWindowsPins";
+import { WindowsItemsContext } from "../../../windowsItemsProvider/context";
+import { WindowsPinsContext } from "../../context";
+import type { WindowsPinsContextValue, WindowsPinsMutation } from "../../types";
 import { useWindowPinAnimation } from "./index";
-
-const WINDOW_PIN_STORAGE_KEYS = { windows: WINDOWS_PIN_STORAGE_KEY } as const;
 
 const CALCULATOR = { id: "calculator", title: "계산기" } satisfies WindowItem;
 const TERMINAL = { id: "terminal", title: "터미널" } satisfies WindowItem;
 const NOTES = { id: "notes", title: "메모장" } satisfies WindowItem;
-const WINDOWS_ITEMS = [CALCULATOR, TERMINAL, NOTES] satisfies readonly WindowItem[];
 
-interface ReorderObservation {
-  payload: WindowPinsReorderedEvent;
-  pinnedIds: readonly string[];
+const createPinsValue = (
+  pinnedIds: readonly string[],
+  mutation: WindowsPinsMutation | null = null,
+): WindowsPinsContextValue => ({
+  isPinned: (itemId) => pinnedIds.includes(itemId),
+  mutation,
+  pin: vi.fn(),
+  pinnedIds,
+  reorder: vi.fn(),
+  unpin: vi.fn(),
+});
+
+interface HookHarnessProps {
+  pins: WindowsPinsContextValue;
+  windowsItems: readonly WindowItem[];
 }
 
-interface LifecycleHarnessProps {
-  onReorder?: (observation: ReorderObservation) => void;
-  onUnpin?: (payload: WindowPinEvent) => void;
-}
+const HookHarness = ({ pins, windowsItems }: HookHarnessProps) => (
+  <WindowsItemsContext.Provider value={windowsItems}>
+    <WindowsPinsContext.Provider value={pins}>
+      <AnimationObservation />
+    </WindowsPinsContext.Provider>
+  </WindowsItemsContext.Provider>
+);
 
-const LifecycleHarness = ({ onReorder, onUnpin }: LifecycleHarnessProps) => {
-  const pins = useWindowsPins();
-  const lifecycle = useWindowPinAnimation();
+const AnimationObservation = () => {
+  const animation = useWindowPinAnimation();
 
-  useWindowEvent("windowsPinsReordered", (payload) => {
-    onReorder?.({ payload, pinnedIds: payload.pinnedIds });
-  });
-  useWindowEvent("windowUnpinFromStart", (payload) => {
-    onUnpin?.(payload);
-  });
-  return createElement(
-    "div",
-    null,
-    createElement("output", { "data-testid": "pinned-ids" }, JSON.stringify(pins.pinnedIds)),
-    createElement(
-      "output",
-      { "data-testid": "pinned-items" },
-      JSON.stringify(lifecycle.pinnedItems.map((item) => item.id)),
-    ),
-    createElement(
-      "output",
-      { "data-testid": "pin-animation" },
-      JSON.stringify(lifecycle.pinnedItemAnimation),
-    ),
-    createElement(
-      "button",
-      { onClick: () => lifecycle.reorder("terminal", 0), type: "button" },
-      "request terminal first",
-    ),
-    createElement(
-      "button",
-      { onClick: () => pins.unpin("calculator"), type: "button" },
-      "unpin calculator",
-    ),
-    lifecycle.pinnedItems.map((item) =>
-      createElement(
-        "button",
-        {
-          "data-testid": `pin-item-${item.id}`,
-          key: item.id,
-          onAnimationEnd: (event: AnimationEvent<HTMLButtonElement>) =>
-            lifecycle.onPinnedItemAnimationEnd(event, item),
-          onTransitionEnd: (event: TransitionEvent<HTMLButtonElement>) =>
-            lifecycle.onPinnedItemTransitionEnd(event, item),
-          type: "button",
-        },
-        item.title,
-      ),
-    ),
+  return (
+    <div>
+      <output data-testid="pinned-items">
+        {JSON.stringify(animation.pinnedItems.map((item) => item.id))}
+      </output>
+      <output data-testid="pin-animation">{JSON.stringify(animation.pinnedItemAnimation)}</output>
+      {animation.pinnedItems.map((item) => (
+        <button
+          data-testid={`pin-item-${item.id}`}
+          key={item.id}
+          onAnimationEnd={(event: AnimationEvent<HTMLButtonElement>) =>
+            animation.onPinnedItemAnimationEnd(event, item)
+          }
+          onTransitionEnd={(event: TransitionEvent<HTMLButtonElement>) =>
+            animation.onPinnedItemTransitionEnd(event, item)
+          }
+          type="button"
+        >
+          <span>{item.title}</span>
+        </button>
+      ))}
+    </div>
   );
 };
 
-const createTree = (windowsItems: readonly WindowItem[], props: LifecycleHarnessProps = {}) =>
-  createElement(Windows, {
-    children: createElement(LifecycleHarness, props),
-    windowsItems,
-  });
-
-const expectOutput = async (
-  testId: "pin-animation" | "pinned-ids" | "pinned-items",
-  value: unknown,
-) => {
-  await waitFor(() => expect(screen.getByTestId(testId).textContent).toBe(JSON.stringify(value)));
+const expectPinnedItems = (pinnedIds: readonly string[]) => {
+  expect(screen.getByTestId("pinned-items").textContent).toBe(JSON.stringify(pinnedIds));
 };
 
-beforeEach(() => {
-  window.localStorage.clear();
-});
+const expectAnimation = (animation: { itemId: string; phase: "in" | "out" } | null) => {
+  expect(screen.getByTestId("pin-animation").textContent).toBe(JSON.stringify(animation));
+};
+
+const fireAnimationEnd = (element: Element, animationName: string) => {
+  const event = document.createEvent("Event");
+  event.initEvent("webkitAnimationEnd", true, false);
+  Object.defineProperty(event, "animationName", { value: animationName });
+  fireEvent(element, event);
+};
 
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
   vi.restoreAllMocks();
-  window.localStorage.clear();
 });
 
 describe("useWindowPinAnimation", () => {
@@ -121,190 +95,180 @@ describe("useWindowPinAnimation", () => {
     );
   });
 
-  it("out 완료 뒤 reorder를 반영하고 in 완료 뒤 animation을 정리한다", async () => {
-    const onReorder = vi.fn<(observation: ReorderObservation) => void>();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    render(createTree(WINDOWS_ITEMS, { onReorder }));
-    await expectOutput("pinned-items", ["calculator", "terminal"]);
-
-    fireEvent.click(screen.getByRole("button", { name: "request terminal first" }));
-
-    await expectOutput("pin-animation", { itemId: "terminal", phase: "out" });
-    expect(screen.getByTestId("pinned-ids").textContent).toBe(
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator", "terminal"]),
+  it("Context의 canonical ID 순서대로 현재 WindowItem을 반환한다", () => {
+    render(
+      <HookHarness
+        pins={createPinsValue(["terminal", "calculator"])}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
     );
 
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
+    expectPinnedItems(["terminal", "calculator"]);
+    expectAnimation(null);
+  });
+
+  it("pin mutation을 받으면 새 item에 in animation을 적용하고 animationend로 완료한다", () => {
+    const { rerender } = render(
+      <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, TERMINAL]} />,
+    );
+    const pinnedIds = ["calculator", "terminal"];
+
+    rerender(
+      <HookHarness
+        pins={createPinsValue(pinnedIds, {
+          itemId: "terminal",
+          pinnedIds,
+          previousPinnedIds: ["calculator"],
+          revision: 1,
+          type: "pin",
+        })}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
+    );
+
+    expectPinnedItems(pinnedIds);
+    expectAnimation({ itemId: "terminal", phase: "in" });
+
+    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "other-animation");
+    expectAnimation({ itemId: "terminal", phase: "in" });
+
+    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
+    expectAnimation(null);
+  });
+
+  it("unpin mutation을 받으면 이전 item을 out 동안 유지하고 transitionend 뒤 제거한다", () => {
+    const previousPinnedIds = ["calculator", "terminal"];
+    const { rerender } = render(
+      <HookHarness
+        pins={createPinsValue(previousPinnedIds)}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
+    );
+
+    rerender(
+      <HookHarness
+        pins={createPinsValue(["terminal"], {
+          itemId: "calculator",
+          pinnedIds: ["terminal"],
+          previousPinnedIds,
+          revision: 1,
+          type: "unpin",
+        })}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
+    );
+
+    expectPinnedItems(previousPinnedIds);
+    expectAnimation({ itemId: "calculator", phase: "out" });
+
+    fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
       propertyName: "opacity",
     });
-    expect(screen.getByTestId("pin-animation").textContent).toBe(
-      JSON.stringify({ itemId: "terminal", phase: "out" }),
+    expectPinnedItems(previousPinnedIds);
+
+    fireEvent.transitionEnd(screen.getByTestId("pin-item-calculator"), {
+      propertyName: "transform",
+    });
+    expectPinnedItems(["terminal"]);
+    expectAnimation(null);
+  });
+
+  it("windowsItems에서 사라진 stale item snapshot을 out 완료까지 유지한다", () => {
+    const previousPinnedIds = ["calculator", "terminal"];
+    const { rerender } = render(
+      <HookHarness
+        pins={createPinsValue(previousPinnedIds)}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
     );
+
+    rerender(
+      <HookHarness pins={createPinsValue(["calculator"])} windowsItems={[CALCULATOR, NOTES]} />,
+    );
+
+    expectPinnedItems(previousPinnedIds);
+    expect(screen.getByTestId("pin-item-terminal").textContent).toBe("터미널");
+    expectAnimation({ itemId: "terminal", phase: "out" });
 
     fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
       propertyName: "transform",
     });
 
-    await expectOutput("pinned-ids", ["terminal", "calculator"]);
-    await expectOutput("pin-animation", { itemId: "terminal", phase: "in" });
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["terminal", "calculator"]),
-    );
-    expect(onReorder).toHaveBeenCalledWith({
-      payload: {
-        fromIndex: 1,
-        movedItemId: "terminal",
-        pinnedIds: ["terminal", "calculator"],
-        previousPinnedIds: ["calculator", "terminal"],
-        toIndex: 0,
-      },
-      pinnedIds: ["terminal", "calculator"],
-    });
-
-    fireEvent.animationEnd(screen.getByTestId("pin-item-terminal"), {
-      animationName: "other-animation",
-    });
-    expect(screen.getByTestId("pin-animation").textContent).toBe(
-      JSON.stringify({ itemId: "terminal", phase: "in" }),
-    );
-
-    fireEvent.animationEnd(screen.getByTestId("pin-item-terminal"), {
-      animationName: "wb-windows-fade-in",
-    });
-    await expectOutput("pin-animation", null);
+    expectPinnedItems(["calculator"]);
+    expect(screen.queryByTestId("pin-item-terminal")).toBeNull();
   });
 
-  it("사라진 item을 out 동안 유지하고 완료 뒤 event 없이 정리한다", async () => {
-    const onUnpin = vi.fn();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal"]),
+  it("reorder mutation은 이전 순서의 out 뒤 canonical 순서의 in으로 투영한다", () => {
+    const previousPinnedIds = ["calculator", "terminal"];
+    const pinnedIds = ["terminal", "calculator"];
+    const { rerender } = render(
+      <HookHarness
+        pins={createPinsValue(previousPinnedIds)}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
     );
-    const { rerender } = render(createTree(WINDOWS_ITEMS, { onUnpin }));
-    await expectOutput("pinned-items", ["calculator", "terminal"]);
 
-    rerender(createTree([CALCULATOR, NOTES], { onUnpin }));
+    rerender(
+      <HookHarness
+        pins={createPinsValue(pinnedIds, {
+          fromIndex: 1,
+          itemId: "terminal",
+          pinnedIds,
+          previousPinnedIds,
+          revision: 1,
+          toIndex: 0,
+          type: "reorder",
+        })}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
+    );
 
-    await expectOutput("pin-animation", { itemId: "terminal", phase: "out" });
-    expect(screen.getByTestId("pinned-items").textContent).toBe(
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    await expectOutput("pinned-ids", ["calculator"]);
-    await waitFor(() =>
-      expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-        JSON.stringify(["calculator"]),
-      ),
-    );
+    expectPinnedItems(previousPinnedIds);
+    expectAnimation({ itemId: "terminal", phase: "out" });
 
     fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
       propertyName: "transform",
     });
+    expectPinnedItems(pinnedIds);
+    expectAnimation({ itemId: "terminal", phase: "in" });
 
-    await expectOutput("pinned-items", ["calculator"]);
-    await expectOutput("pinned-ids", ["calculator"]);
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator"]),
-    );
-    expect(onUnpin).not.toHaveBeenCalled();
+    fireAnimationEnd(screen.getByTestId("pin-item-terminal"), "wb-windows-fade-in");
+    expectAnimation(null);
   });
 
-  it("여러 stale item을 pin 순서대로 하나씩 정리한다", async () => {
-    const onUnpin = vi.fn();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal", "notes"]),
-    );
-    const { rerender } = render(createTree(WINDOWS_ITEMS, { onUnpin }));
-    await expectOutput("pinned-items", ["calculator", "terminal", "notes"]);
-
-    rerender(createTree([CALCULATOR], { onUnpin }));
-    await expectOutput("pin-animation", { itemId: "terminal", phase: "out" });
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
-      propertyName: "transform",
-    });
-    await expectOutput("pin-animation", { itemId: "notes", phase: "out" });
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-notes"), {
-      propertyName: "transform",
-    });
-    await expectOutput("pinned-ids", ["calculator"]);
-    await expectOutput("pin-animation", null);
-    expect(onUnpin).not.toHaveBeenCalled();
-  });
-
-  it("복원 시 windowsItems에 없는 ID는 렌더하지 않고 즉시 조용히 제거한다", async () => {
-    const onUnpin = vi.fn();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["missing", "calculator"]),
-    );
-    render(createTree([CALCULATOR], { onUnpin }));
-
-    await expectOutput("pinned-ids", ["calculator"]);
-    await expectOutput("pinned-items", ["calculator"]);
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator"]),
-    );
-    expect(onUnpin).not.toHaveBeenCalled();
-  });
-
-  it("animation event가 누락되면 watchdog이 stale cleanup을 완료한다", async () => {
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    const { rerender } = render(createTree(WINDOWS_ITEMS));
-    await expectOutput("pinned-items", ["calculator", "terminal"]);
+  it("DOM 완료 event가 누락되면 500ms watchdog이 현재 단계를 완료한다", () => {
     vi.useFakeTimers();
-
-    rerender(createTree([CALCULATOR]));
-    act(() => undefined);
-    expect(screen.getByTestId("pin-animation").textContent).toBe(
-      JSON.stringify({ itemId: "terminal", phase: "out" }),
+    const previousPinnedIds = ["calculator", "terminal"];
+    const { rerender } = render(
+      <HookHarness
+        pins={createPinsValue(previousPinnedIds)}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
     );
+
+    rerender(
+      <HookHarness
+        pins={createPinsValue(["terminal"], {
+          itemId: "calculator",
+          pinnedIds: ["terminal"],
+          previousPinnedIds,
+          revision: 1,
+          type: "unpin",
+        })}
+        windowsItems={[CALCULATOR, TERMINAL]}
+      />,
+    );
+    expectAnimation({ itemId: "calculator", phase: "out" });
 
     act(() => {
-      vi.advanceTimersByTime(500);
+      vi.advanceTimersByTime(499);
     });
+    expectPinnedItems(previousPinnedIds);
 
-    expect(screen.getByTestId("pinned-items").textContent).toBe(JSON.stringify(["calculator"]));
-    expect(window.localStorage.getItem(WINDOW_PIN_STORAGE_KEYS.windows)).toBe(
-      JSON.stringify(["calculator"]),
-    );
-  });
-
-  it("out 중 pin 배열이 바뀌면 캡처한 reorder를 취소한다", async () => {
-    const onReorder = vi.fn();
-
-    window.localStorage.setItem(
-      WINDOW_PIN_STORAGE_KEYS.windows,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    render(createTree(WINDOWS_ITEMS, { onReorder }));
-    await expectOutput("pinned-items", ["calculator", "terminal"]);
-
-    fireEvent.click(screen.getByRole("button", { name: "request terminal first" }));
-    await expectOutput("pin-animation", { itemId: "terminal", phase: "out" });
-    fireEvent.click(screen.getByRole("button", { name: "unpin calculator" }));
-    await expectOutput("pinned-ids", ["terminal"]);
-
-    fireEvent.transitionEnd(screen.getByTestId("pin-item-terminal"), {
-      propertyName: "transform",
+    act(() => {
+      vi.advanceTimersByTime(1);
     });
-
-    await expectOutput("pin-animation", null);
-    expect(screen.getByTestId("pinned-ids").textContent).toBe(JSON.stringify(["terminal"]));
-    expect(onReorder).not.toHaveBeenCalled();
+    expectPinnedItems(["terminal"]);
+    expectAnimation(null);
   });
 });

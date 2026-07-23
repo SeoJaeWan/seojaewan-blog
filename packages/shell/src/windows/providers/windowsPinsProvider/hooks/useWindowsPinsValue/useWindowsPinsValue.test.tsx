@@ -33,6 +33,19 @@ const createWrapper = (
     );
   };
 
+const renderPinsValue = (dispatch: DispatchWindowEvent = vi.fn<DispatchWindowEvent>()) =>
+  renderHook(() => useWindowsPinsValue(), { wrapper: createWrapper(dispatch) });
+
+const restorePins = async (
+  pinnedIds: readonly string[],
+  dispatch: DispatchWindowEvent = vi.fn<DispatchWindowEvent>(),
+) => {
+  window.localStorage.setItem(WINDOWS_PIN_STORAGE_KEY, JSON.stringify(pinnedIds));
+  const rendered = renderPinsValue(dispatch);
+  await waitFor(() => expect(rendered.result.current.pinnedIds).toEqual(pinnedIds));
+  return rendered;
+};
+
 beforeEach(() => {
   window.localStorage.clear();
 });
@@ -44,108 +57,177 @@ afterEach(() => {
 });
 
 describe("useWindowsPinsValue", () => {
-  it("전용 storage를 event 없이 복원한다", async () => {
+  it("전용 storage의 pin 목록을 event 없이 복원한다", async () => {
     const dispatch = vi.fn<DispatchWindowEvent>();
-    window.localStorage.setItem(WINDOWS_PIN_STORAGE_KEY, JSON.stringify(["terminal"]));
 
-    const { result } = renderHook(() => useWindowsPinsValue(), {
-      wrapper: createWrapper(dispatch),
-    });
+    const { result } = await restorePins(["terminal"], dispatch);
 
-    await waitFor(() => expect(result.current.pinnedIds).toEqual(["terminal"]));
+    expect(result.current.pinnedIds).toEqual(["terminal"]);
+    expect(result.current.mutation).toBeNull();
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("pin과 unpin을 저장하고 완료 event를 전달한다", async () => {
+  it("현재 pin 여부를 반환한다", async () => {
+    const { result } = await restorePins(["calculator"]);
+
+    expect(result.current.isPinned("calculator")).toBe(true);
+    expect(result.current.isPinned("terminal")).toBe(false);
+  });
+
+  it("유효한 item을 pin하고 state·storage·event·mutation을 함께 갱신한다", async () => {
     const dispatch = vi.fn<DispatchWindowEvent>();
-    const { result } = renderHook(() => useWindowsPinsValue(), {
-      wrapper: createWrapper(dispatch),
-    });
+    const { result } = renderPinsValue(dispatch);
 
     act(() => result.current.pin("calculator"));
 
     await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator"]));
-    expect(result.current.isPinned("calculator")).toBe(true);
     expect(window.localStorage.getItem(WINDOWS_PIN_STORAGE_KEY)).toBe(
       JSON.stringify(["calculator"]),
     );
-    expect(dispatch).toHaveBeenLastCalledWith("windowPinToStart", {
+    expect(dispatch).toHaveBeenCalledWith("windowPinToStart", {
       itemId: "calculator",
       pinnedIds: ["calculator"],
       previousPinnedIds: [],
     });
+    expect(result.current.mutation).toEqual({
+      itemId: "calculator",
+      pinnedIds: ["calculator"],
+      previousPinnedIds: [],
+      revision: 1,
+      type: "pin",
+    });
+  });
+
+  it("이미 pin된 item의 pin 요청은 no-op이다", async () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = await restorePins(["calculator"], dispatch);
+
+    act(() => result.current.pin("calculator"));
+
+    expect(result.current.pinnedIds).toEqual(["calculator"]);
+    expect(result.current.mutation).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("존재하지 않는 item의 pin 요청은 no-op이다", () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = renderPinsValue(dispatch);
+
+    act(() => result.current.pin("missing"));
+
+    expect(result.current.pinnedIds).toEqual([]);
+    expect(result.current.mutation).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("pin된 item을 unpin하고 state·storage·event·mutation을 함께 갱신한다", async () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = await restorePins(["calculator", "terminal"], dispatch);
 
     act(() => result.current.unpin("calculator"));
 
-    await waitFor(() => expect(result.current.pinnedIds).toEqual([]));
-    expect(dispatch).toHaveBeenLastCalledWith("windowUnpinFromStart", {
+    await waitFor(() => expect(result.current.pinnedIds).toEqual(["terminal"]));
+    expect(window.localStorage.getItem(WINDOWS_PIN_STORAGE_KEY)).toBe(JSON.stringify(["terminal"]));
+    expect(dispatch).toHaveBeenCalledWith("windowUnpinFromStart", {
       itemId: "calculator",
-      pinnedIds: [],
-      previousPinnedIds: ["calculator"],
+      pinnedIds: ["terminal"],
+      previousPinnedIds: ["calculator", "terminal"],
+    });
+    expect(result.current.mutation).toEqual({
+      itemId: "calculator",
+      pinnedIds: ["terminal"],
+      previousPinnedIds: ["calculator", "terminal"],
+      revision: 1,
+      type: "unpin",
     });
   });
 
-  it("중복·없는 item pin과 없는 ID unpin은 no-op이다", () => {
+  it("pin되지 않은 item의 unpin 요청은 no-op이다", () => {
     const dispatch = vi.fn<DispatchWindowEvent>();
-    const { result } = renderHook(() => useWindowsPinsValue(), {
-      wrapper: createWrapper(dispatch),
-    });
+    const { result } = renderPinsValue(dispatch);
 
-    act(() => {
-      result.current.pin("calculator");
-      result.current.pin("calculator");
-      result.current.pin("missing");
-      result.current.unpin("missing");
-    });
+    act(() => result.current.unpin("calculator"));
 
-    expect(result.current.pinnedIds).toEqual(["calculator"]);
-    expect(dispatch).toHaveBeenCalledOnce();
+    expect(result.current.pinnedIds).toEqual([]);
+    expect(result.current.mutation).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
   });
 
-  it("유효한 reorder를 저장하고 완료 event를 전달한다", async () => {
-    const dispatch = vi.fn<DispatchWindowEvent>();
-    window.localStorage.setItem(
-      WINDOWS_PIN_STORAGE_KEY,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    const { result } = renderHook(() => useWindowsPinsValue(), {
-      wrapper: createWrapper(dispatch),
-    });
-    await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]));
+  it("성공한 action마다 animation mutation revision을 증가시킨다", async () => {
+    const { result } = renderPinsValue();
 
-    act(() => result.current.applyReorder("terminal", 0));
+    act(() => result.current.pin("calculator"));
+    await waitFor(() => expect(result.current.mutation?.revision).toBe(1));
+
+    act(() => result.current.pin("terminal"));
+    await waitFor(() => expect(result.current.mutation?.revision).toBe(2));
+
+    act(() => result.current.unpin("calculator"));
+    await waitFor(() => expect(result.current.mutation?.revision).toBe(3));
+  });
+
+  it("reorder 요청 즉시 canonical state·storage·event·mutation을 갱신한다", async () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = await restorePins(["calculator", "terminal"], dispatch);
+
+    act(() => result.current.reorder("terminal", 0));
 
     await waitFor(() => expect(result.current.pinnedIds).toEqual(["terminal", "calculator"]));
     expect(window.localStorage.getItem(WINDOWS_PIN_STORAGE_KEY)).toBe(
       JSON.stringify(["terminal", "calculator"]),
     );
-    expect(dispatch).toHaveBeenLastCalledWith("windowsPinsReordered", {
+    expect(dispatch).toHaveBeenCalledWith("windowsPinsReordered", {
       fromIndex: 1,
       movedItemId: "terminal",
       pinnedIds: ["terminal", "calculator"],
       previousPinnedIds: ["calculator", "terminal"],
       toIndex: 0,
     });
+    expect(result.current.mutation).toEqual({
+      fromIndex: 1,
+      itemId: "terminal",
+      pinnedIds: ["terminal", "calculator"],
+      previousPinnedIds: ["calculator", "terminal"],
+      revision: 1,
+      toIndex: 0,
+      type: "reorder",
+    });
   });
 
-  it("없는 ID, 범위 밖 index와 같은 위치 reorder는 no-op이다", async () => {
+  it("pin되지 않은 item의 reorder 요청은 no-op이다", async () => {
     const dispatch = vi.fn<DispatchWindowEvent>();
-    window.localStorage.setItem(
-      WINDOWS_PIN_STORAGE_KEY,
-      JSON.stringify(["calculator", "terminal"]),
-    );
-    const { result } = renderHook(() => useWindowsPinsValue(), {
-      wrapper: createWrapper(dispatch),
-    });
-    await waitFor(() => expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]));
+    const { result } = await restorePins(["calculator", "terminal"], dispatch);
+
+    act(() => result.current.reorder("missing", 0));
+
+    expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]);
+    expect(result.current.mutation).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("범위 밖 index의 reorder 요청은 no-op이다", async () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = await restorePins(["calculator", "terminal"], dispatch);
 
     act(() => {
-      result.current.applyReorder("missing", 0);
-      result.current.applyReorder("calculator", -1);
-      result.current.applyReorder("calculator", 0);
+      result.current.reorder("calculator", -1);
+      result.current.reorder("calculator", 2);
+      result.current.reorder("calculator", 0.5);
     });
 
     expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]);
+    expect(result.current.mutation).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("같은 위치의 reorder 요청은 no-op이다", async () => {
+    const dispatch = vi.fn<DispatchWindowEvent>();
+    const { result } = await restorePins(["calculator", "terminal"], dispatch);
+
+    act(() => result.current.reorder("calculator", 0));
+
+    expect(result.current.pinnedIds).toEqual(["calculator", "terminal"]);
+    expect(result.current.mutation).toBeNull();
     expect(dispatch).not.toHaveBeenCalled();
   });
 });

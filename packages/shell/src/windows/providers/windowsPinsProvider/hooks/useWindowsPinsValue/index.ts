@@ -1,17 +1,19 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { usePinnedIdsState } from "../../../shared/hooks/usePinnedIdsState";
 import { useWindowsEventsContext } from "../../../windowsEventsProvider";
 import { useWindowsItemsContext } from "../../../windowsItemsProvider";
 import { WINDOWS_PIN_STORAGE_KEY } from "../../constants";
-import type { UseWindowsPins } from "../../types";
+import type { WindowsPinsContextValue, WindowsPinsMutation } from "../../types";
 
 /** Windows pin 상태, persistence, action과 완료 event를 하나의 Context 값으로 조립한다. */
-export const useWindowsPinsValue = (): UseWindowsPins => {
+export const useWindowsPinsValue = (): WindowsPinsContextValue => {
   const windowsItems = useWindowsItemsContext();
   const { dispatch } = useWindowsEventsContext();
+  const mutationRef = useRef<WindowsPinsMutation | null>(null);
+  const mutationRevisionRef = useRef(0);
   const validItemIds = useMemo(() => new Set(windowsItems.map((item) => item.id)), [windowsItems]);
   const { pinnedIds, updatePinnedIds } = usePinnedIdsState({
     storageKey: WINDOWS_PIN_STORAGE_KEY,
@@ -31,13 +33,20 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
+        mutationRevisionRef.current += 1;
+        mutationRef.current = {
+          itemId,
+          ...change,
+          revision: mutationRevisionRef.current,
+          type: "pin",
+        };
         dispatch("windowPinToStart", { itemId, ...change });
       }
     },
     [dispatch, updatePinnedIds, validItemIds],
   );
 
-  const applyReorder = useCallback(
+  const reorder = useCallback(
     (itemId: string, toIndex: number) => {
       const change = updatePinnedIds((currentPinnedIds) => {
         const fromIndex = currentPinnedIds.indexOf(itemId);
@@ -60,8 +69,18 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
+        const fromIndex = change.previousPinnedIds.indexOf(itemId);
+        mutationRevisionRef.current += 1;
+        mutationRef.current = {
+          fromIndex,
+          itemId,
+          ...change,
+          revision: mutationRevisionRef.current,
+          toIndex,
+          type: "reorder",
+        };
         dispatch("windowsPinsReordered", {
-          fromIndex: change.previousPinnedIds.indexOf(itemId),
+          fromIndex,
           movedItemId: itemId,
           pinnedIds: change.pinnedIds,
           previousPinnedIds: change.previousPinnedIds,
@@ -83,6 +102,13 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
       });
 
       if (change !== null) {
+        mutationRevisionRef.current += 1;
+        mutationRef.current = {
+          itemId,
+          ...change,
+          revision: mutationRevisionRef.current,
+          type: "unpin",
+        };
         dispatch("windowUnpinFromStart", { itemId, ...change });
       }
     },
@@ -90,7 +116,7 @@ export const useWindowsPinsValue = (): UseWindowsPins => {
   );
 
   return useMemo(
-    () => ({ applyReorder, isPinned, pin, pinnedIds, unpin }),
-    [applyReorder, isPinned, pin, pinnedIds, unpin],
+    () => ({ isPinned, mutation: mutationRef.current, pin, pinnedIds, reorder, unpin }),
+    [isPinned, pin, pinnedIds, reorder, unpin],
   );
 };

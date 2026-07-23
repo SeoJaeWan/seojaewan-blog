@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-import type { UseWindowsPins } from "./types";
+import type { WindowsPinsContextValue } from "./types";
 
-export const WindowsPinsContext = createContext<UseWindowsPins | null>(null);
+export const WindowsPinsContext = createContext<WindowsPinsContextValue | null>(null);

@@ -252,24 +252,38 @@ button click
 
 ## Pinned Item Lifecycle
 
-Pinned item reorder와 stale item snapshot은 `useWindowPinAnimation()`이 관리한다.
+`useWindowsPins()`가 canonical pin state, localStorage와 semantic event를 즉시 갱신한다.
+`useWindowPinAnimation()`은 이 결과를 panel의 일시적인 visual 목록으로만 투영하며 canonical action을
+호출하지 않는다.
 
 ```text
-`useWindowPinAnimation.reorder` 호출
-→ 대상 tile out transition
-→ transition 완료 후 `useWindowsPins.applyReorder`
-→ 새 위치에서 in animation
-→ animation 완료
+pin
+→ canonical state/storage/event 완료
+→ 새 canonical 위치에서 tile in
+
+unpin 또는 stale item 자동 정리
+→ canonical state/storage 즉시 정리
+→ 이전 visual snapshot에서 tile out
+→ visual 목록에서 제거
+
+reorder
+→ `useWindowsPins.reorder`가 canonical state/storage/event 완료
+→ 이전 visual 순서에서 moved tile out
+→ canonical 순서로 visual 전환
+→ 새 위치에서 moved tile in
 ```
 
-- out은 `transform` 500ms transition을 사용한다.
+- out은 `opacity`와 `transform`의 150ms transition을 사용한다.
 - in은 `wb-windows-fade-in` 150ms animation을 사용한다.
-- 현재 transition 중이거나 stale item 정리 중이면 새 reorder를 시작하지 않는다.
-- item이 `windowsItems`에서 사라지면 pin ID와 storage는 즉시 정리하고 마지막 visual snapshot만
-  out 완료까지 유지한다.
-- DOM event가 누락되면 500ms watchdog이 현재 단계의 완료를 보장한다.
+- 사용자 unpin과 `windowsItems`에서 사라진 stale item은 같은 out visual을 사용한다. Stale 정리는
+  사용자 action이 아니므로 unpin event를 만들지 않는다.
+- 여러 item이 한 번에 사라지면 이전 visual 순서대로 하나씩 out한다.
+- storage 복원은 animation 없이 canonical 목록에 즉시 동기화한다.
+- animation 중 새 canonical 변경이 오면 latest-wins로 visual 계획을 다시 계산한다. 복합 변경에서
+  안전한 중간 단계를 만들 수 없으면 animation보다 최신 state 정확성을 우선한다.
+- DOM event가 누락되면 실제 CSS duration과 별개인 500ms watchdog이 현재 단계를 완료한다.
 - 현재 production UI에는 reorder를 시작하는 drag/drop, 이동 button 또는 keyboard interaction이 없다.
-  Hook API를 실제 UI에 연결하는 작업은
+  `useWindowsPins.reorder`를 실제 UI에 연결하는 작업은
   [`windows-pinned-reorder-interaction.md`](../todo/windows-pinned-reorder-interaction.md)에서 추적한다.
 
 ## Accessibility

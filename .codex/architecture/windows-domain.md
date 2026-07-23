@@ -73,14 +73,14 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 
 ## State Ownership
 
-| State                 | Source of truth                         | Update path                                                    |
-| --------------------- | --------------------------------------- | -------------------------------------------------------------- |
-| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | `useWindowsItemsValue`가 참조와 update event 제공              |
-| `taskbarPinnedIds`    | `TaskbarPinsProvider`                   | Provider value hook의 등록·취소 action                         |
-| `windowsPinnedIds`    | `WindowsPinsProvider`                   | Provider value hook의 등록·취소·reorder action                 |
-| observer registry     | `WindowsEventsProvider`                 | `useWindowEvent` subscribe/unsubscribe, 단일 typed dispatch    |
-| 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생            |
-| pinned item animation | `useWindowPinAnimation`                 | item cache와 reorder/stale visual lifecycle을 surface에서 소유 |
+| State                 | Source of truth                         | Update path                                                 |
+| --------------------- | --------------------------------------- | ----------------------------------------------------------- |
+| `windowsItems`        | 앱이 전달한 `Windows.windowsItems` prop | `useWindowsItemsValue`가 참조와 update event 제공           |
+| `taskbarPinnedIds`    | `TaskbarPinsProvider`                   | Provider value hook의 등록·취소 action                      |
+| `windowsPinnedIds`    | `WindowsPinsProvider`                   | Provider value hook의 등록·취소·reorder action              |
+| observer registry     | `WindowsEventsProvider`                 | `useWindowEvent` subscribe/unsubscribe, 단일 typed dispatch |
+| 검색 query/result     | 소비 panel/hook                         | query는 지역 상태, result는 `windowsItems`에서 파생         |
+| pinned item animation | `useWindowPinAnimation`                 | canonical 변경을 item cache와 out/in visual로 투영          |
 
 각 pin Provider는 자신의 state, persistence, action과 semantic event를 함께 소유한다. Provider
 모듈이 export하는 `useTaskbarPins`와 `useWindowsPins`는 해당 Context의 완성된 state/action 값을
@@ -111,10 +111,10 @@ export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
 
 ### Surfaces
 
-| Hook             | State              | localStorage key      | 제공 동작                     |
-| ---------------- | ------------------ | --------------------- | ----------------------------- |
-| `useWindowsPins` | `windowsPinnedIds` | `windowsPinnedIds_v1` | pin, unpin, completed reorder |
-| `useTaskbarPins` | `taskbarPinnedIds` | `taskbarPinnedIds_v1` | pin, unpin                    |
+| Hook             | State              | localStorage key      | 제공 동작           |
+| ---------------- | ------------------ | --------------------- | ------------------- |
+| `useWindowsPins` | `windowsPinnedIds` | `windowsPinnedIds_v1` | pin, unpin, reorder |
+| `useTaskbarPins` | `taskbarPinnedIds` | `taskbarPinnedIds_v1` | pin, unpin          |
 
 두 목록은 독립적이다. 시작 화면 pin 변경이 taskbar pin을 변경하거나 그 반대가 되는 일은 없다.
 
@@ -166,26 +166,39 @@ type UpdatePinnedIds = (
 - `unpin(itemId)`
 - `pinnedIds`
 
-`useWindowsPins()`는 같은 조회·등록·취소 동작과 animation 완료 뒤 호출하는
-`applyReorder(itemId, toIndex)`를 제공한다.
+`useWindowsPins()`는 같은 조회·등록·취소 동작과 `reorder(itemId, toIndex)`를 제공한다. 세 action은
+모두 canonical state와 localStorage를 즉시 갱신하고 완료된 배열로 semantic event를 전달한다.
+Animation 완료를 기다리거나 animation hook에서 다시 pin action을 호출하지 않는다.
 
 `useTaskbarPinsValue()`와 `useWindowsPinsValue()`는 update 결과가 `null`이 아닐 때만 action에
 대응하는 pin, unpin 또는 reorder event를 만들어 `WindowsEventsProvider`의 단일 `dispatch`로
 전달한다. 내부 Context의 dispatch는 전체 `WindowEventMap`을 처리하지만 public
 `useWindowDispatch` 반환 타입은 상태 없는 세 event로만 좁힌다.
 
+`WindowsPinsProvider`의 내부 Context 값에는 public `UseWindowsPins` action/state와 함께 각 사용자
+action의 최신 mutation snapshot을 둔다. Snapshot은 단조 증가하는 revision, 이전/다음 ID 목록과
+action 종류를 포함하며 `useWindowPinAnimation()`의 visual projection에만 사용한다. Public
+`useWindowsPins()` 타입에는 이 내부 metadata를 노출하지 않는다.
+
 `useWindowPinAnimation()`은 Windows panel 전용이며 내부 pin/item Context의 값을 결합해 ID를
-실제 `WindowItem`으로 변환한다. 이 hook만 item snapshot과 reorder 및 stale item의 out/in
-lifecycle을 소유한다. Reorder는 `reorder(itemId, toIndex)`로 visual을 시작하고 out transition이
-끝난 뒤 `applyReorder`로 순서를 반영한 다음 새 위치의 in animation을 완료한다.
+실제 `WindowItem`으로 변환한다. Canonical state를 갱신하지 않고 다음 visual만 소유한다.
+
+- pin: 이미 갱신된 canonical 위치에서 새 tile을 in한다.
+- unpin: 이전 visual snapshot을 유지해 tile을 out한 뒤 제거한다.
+- reorder: 이전 visual 순서에서 moved tile을 out하고 canonical 순서로 전환한 뒤 같은 tile을 in한다.
+- stale item 자동 정리: 마지막 `WindowItem` snapshot을 유지해 unpin과 같은 out을 수행한다.
+- storage 복원: 사용자 mutation이 아니므로 animation 없이 canonical 목록에 즉시 동기화한다.
 
 `windowsItems`에서 item이 사라지면 canonical pin ID와 localStorage는 즉시 정리된다. Windows
 panel의 animation hook만 마지막 item snapshot을 별도 visual cache에 남겨 exit visual을 마친다.
 Taskbar에는 pinned item renderer와 animation lifecycle이 없으며 자동 정리는 사용자 action이
 아니므로 unpin observer event를 만들지 않는다.
 
-Animation event가 누락되어도 500ms watchdog이 lifecycle을 완료한다. Transition 진행 중에는
-충돌하는 새 reorder 요청을 무시한다.
+여러 stale item은 이전 visual 순서대로 하나씩 out한다. Animation 도중 더 최신 canonical 변경이
+오면 진행 중 계획을 취소하고 최신 목록을 기준으로 다시 계산한다. 단순한 다음 단계는 계속
+animation하며, 여러 종류의 변경이 겹쳐 안전한 단계를 만들 수 없으면 중간 animation을 생략하고
+최신 canonical 목록을 우선한다. DOM 완료 event가 누락되어도 단계별 500ms watchdog이 lifecycle을
+완료한다.
 
 ## Search Contract
 
@@ -291,7 +304,7 @@ Provider가 이 경계를 통해 사용한다.
 | `windowsPinsProvider`   | `useWindowPinAnimation` / `UseWindowPinAnimation`                         |
 
 consumer는 Context나 개별 hook 파일을 직접 import하지 않는다. `useWindowPinAnimation`은
-`WindowsItemsContext`도 소비하지만 Windows pin snapshot과 reorder lifecycle을 소유하므로
+`WindowsItemsContext`도 소비하지만 Windows pin snapshot과 visual lifecycle을 소유하므로
 `windowsPinsProvider` 모듈에 둔다. 이 hook은 두 Context의 결합 경계와 자체 오류 계약을 함께
 소유하므로 `WindowsItemsContext`를 직접 읽는 명시적 예외다.
 
@@ -312,7 +325,6 @@ interaction 순서를 결정하고, 앱 observer는 이미 발생한 semantic ev
 
 - `PinProvider`, `usePins`, `useOptionalPins`
 - app callback과 `pinnedItems`를 `TaskbarStartButton`까지 전달하는 props drilling
-- Provider가 public `pin`, `unpin`, `reorder` action policy를 직접 소유하는 구조
 - `useWindowPinnedItems`, `UseWindowPinnedItemsResult`, `UseWindowPinsResult`
 - target을 받아 Taskbar와 Windows를 같은 기능으로 취급한 `useWindowPins`, `WindowPinTarget`
 - 실제 interaction이 없는 `taskbarPinsReordered` event와 Taskbar reorder/animation API
