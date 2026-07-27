@@ -3,7 +3,6 @@
 import type { CSSProperties } from "react";
 import {
   useCallback,
-  useContext,
   useEffect,
   useId,
   useMemo,
@@ -12,9 +11,10 @@ import {
 } from "react";
 
 import {
-  TaskbarPanelContext,
   type TaskbarPanelRootContextValue,
 } from "../../context";
+import { resolveTaskbarPanelPosition } from "../../utils/resolveTaskbarPanelPosition";
+import { useTaskbarPanelContext } from "../useTaskbarPanelContext";
 
 const DEFAULT_GAP = 8;
 const DEFAULT_VIEWPORT_PADDING = 8;
@@ -34,34 +34,6 @@ export interface UseTaskbarPanelRootValueOptions {
   viewportPadding?: number;
 }
 
-const clamp = (value: number, minimum: number, maximum: number) =>
-  Math.min(Math.max(value, minimum), maximum);
-
-const resolvePanelLeft = (
-  placement: TaskbarPanelPlacement,
-  panelRect: DOMRect,
-  triggerRect: DOMRect,
-  viewportPadding: number,
-) => {
-  const viewportWidth = window.innerWidth;
-  const effectivePadding =
-    panelRect.width + viewportPadding * 2 <= viewportWidth ? viewportPadding : 0;
-  const maximumLeft = Math.max(
-    effectivePadding,
-    viewportWidth - panelRect.width - effectivePadding,
-  );
-
-  let requestedLeft = triggerRect.left;
-
-  if (placement === "center") {
-    requestedLeft = triggerRect.left + triggerRect.width / 2 - panelRect.width / 2;
-  } else if (placement === "rootCenter") {
-    requestedLeft = (viewportWidth - panelRect.width) / 2;
-  }
-
-  return clamp(requestedLeft, effectivePadding, maximumLeft);
-};
-
 /**
  * 한 TaskbarPanel.Root를 전역 panel 상태에 연결하고 위치와 DOM lifecycle을 관리한다.
  *
@@ -78,11 +50,7 @@ export const useTaskbarPanelRootValue = ({
   viewportPadding = DEFAULT_VIEWPORT_PADDING,
 }: UseTaskbarPanelRootValueOptions = {}): TaskbarPanelRootContextValue => {
   const generatedId = useId();
-  const context = useContext(TaskbarPanelContext);
-
-  if (context === null) {
-    throw new Error("TaskbarPanel.Root는 TaskbarPanel 안에서 사용해야 합니다.");
-  }
+  const context = useTaskbarPanelContext();
 
   const resolvedPanelId = panelId ?? `taskbar-panel-${generatedId}`;
   const contentId = `taskbar-panel-content-${generatedId}`;
@@ -112,8 +80,15 @@ export const useTaskbarPanelRootValue = ({
 
     const triggerRect = triggerElement.getBoundingClientRect();
     const panelRect = panelElement.getBoundingClientRect();
-    const bottom = window.innerHeight - triggerRect.top + gap;
-    const left = resolvePanelLeft(placement, panelRect, triggerRect, viewportPadding);
+    const { bottom, left } = resolveTaskbarPanelPosition({
+      gap,
+      panelRect,
+      placement,
+      triggerRect,
+      viewportHeight: window.innerHeight,
+      viewportPadding,
+      viewportWidth: window.innerWidth,
+    });
 
     setPositionStyle((currentStyle) => {
       if (

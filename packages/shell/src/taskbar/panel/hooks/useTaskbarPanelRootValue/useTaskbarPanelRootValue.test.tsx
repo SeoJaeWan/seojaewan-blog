@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { cleanup, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { TaskbarPanelContextValue } from "../../context";
@@ -99,12 +99,6 @@ afterEach(() => {
 
 describe("useTaskbarPanelRootValue", () => {
   describe("Root scope", () => {
-    it("TaskbarPanel context 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {
-      expect(() => renderHook(() => useTaskbarPanelRootValue())).toThrow(
-        "TaskbarPanel.Root는 TaskbarPanel 안에서 사용해야 합니다.",
-      );
-    });
-
     it("제공한 panel ID로 열기와 닫기를 전역 action에 전달한다", () => {
       const value = createContextValue();
       renderProbe(value);
@@ -194,47 +188,24 @@ describe("useTaskbarPanelRootValue", () => {
   });
 
   describe("placement", () => {
-    it.each([
-      { expectedLeft: 300, label: "왼쪽", placement: "left" },
-      { expectedLeft: 120, label: "버튼 중심", placement: "center" },
-      { expectedLeft: 400, label: "화면 중심", placement: "rootCenter" },
-    ] as const)(
-      "$label 배치는 기준에 맞는 좌표를 계산한다",
-      async ({ expectedLeft, placement }) => {
-        mockViewport(1200, 800);
-        mockElementRects({
-          "panel-root": createRect({ height: 600, width: 400 }),
-          trigger: createRect({ height: 40, left: 300, top: 700, width: 40 }),
-        });
-        const value = createContextValue({
-          activePanelId: "start",
-          panelStates: { start: "open" },
-        });
-
-        renderProbe(value, { placement });
-
-        await waitFor(() =>
-          expect(screen.getByTestId("panel-root").style.visibility).toBe("visible"),
-        );
-        expect(screen.getByTestId("panel-root").style.left).toBe(`${expectedLeft}px`);
-        expect(screen.getByTestId("panel-root").style.bottom).toBe("108px");
-      },
-    );
-
-    it("위치가 화면 경계를 넘으면 viewport 안으로 보정한다", async () => {
-      mockViewport(300, 800);
+    it("측정한 trigger와 panel의 계산 좌표를 style에 연결한다", async () => {
+      mockViewport(1200, 800);
       mockElementRects({
-        "panel-root": createRect({ height: 600, width: 200 }),
-        trigger: createRect({ height: 40, left: 280, top: 700, width: 40 }),
+        "panel-root": createRect({ height: 600, width: 400 }),
+        trigger: createRect({ height: 40, left: 300, top: 700, width: 40 }),
       });
       const value = createContextValue({
         activePanelId: "start",
         panelStates: { start: "open" },
       });
 
-      renderProbe(value, { placement: "left", viewportPadding: 8 });
+      renderProbe(value);
 
-      await waitFor(() => expect(screen.getByTestId("panel-root").style.left).toBe("92px"));
+      await waitFor(() =>
+        expect(screen.getByTestId("panel-root").style.visibility).toBe("visible"),
+      );
+      expect(screen.getByTestId("panel-root").style.left).toBe("300px");
+      expect(screen.getByTestId("panel-root").style.bottom).toBe("108px");
     });
 
     it("viewport 크기가 바뀌면 열린 panel 위치를 다시 계산한다", async () => {

@@ -1,7 +1,6 @@
 "use client";
 
-import type { MouseEvent, ReactElement, ReactNode } from "react";
-import { useContext } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import { TaskbarPanelContainerUI, TaskbarPanelLayerUI } from "@window/ui";
@@ -10,11 +9,13 @@ import { Slot } from "@radix-ui/react-slot";
 
 import { useIsHydrated } from "../../hooks/useIsHydrated";
 import { TaskbarPanelContext, TaskbarPanelRootContext } from "./context";
+import { useTaskbarPanelRootContext } from "./hooks/useTaskbarPanelRootContext";
 import type {
   TaskbarPanelPlacement,
   UseTaskbarPanelRootValueOptions,
 } from "./hooks/useTaskbarPanelRootValue";
 import { useTaskbarPanelRootValue } from "./hooks/useTaskbarPanelRootValue";
+import { useTaskbarPanelTriggerValue } from "./hooks/useTaskbarPanelTriggerValue";
 import { useTaskbarPanelValue } from "./hooks/useTaskbarPanelValue";
 
 export type { TaskbarPanelTransitionState } from "./utils/taskbarPanelReducer";
@@ -93,31 +94,9 @@ const TaskbarPanelRoot = ({
  * @param props.children trigger 계약을 받을 단일 button 컴포넌트
  */
 const TaskbarPanelTrigger = ({ children }: TaskbarPanelTriggerProps) => {
-  const context = useContext(TaskbarPanelRootContext);
+  const triggerValue = useTaskbarPanelTriggerValue();
 
-  if (context === null) {
-    throw new Error("TaskbarPanel.Trigger는 TaskbarPanel.Root 안에서 사용해야 합니다.");
-  }
-
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
-    if (!event.defaultPrevented) {
-      context.toggle();
-    }
-  };
-
-  return (
-    <Slot
-      aria-controls={context.contentId}
-      aria-expanded={context.isOpen}
-      aria-haspopup="dialog"
-      aria-pressed={context.isOpen || undefined}
-      data-selected={context.isOpen ? "true" : undefined}
-      onClick={handleClick}
-      ref={context.triggerRef}
-    >
-      {children}
-    </Slot>
-  );
+  return <Slot {...triggerValue}>{children}</Slot>;
 };
 
 /**
@@ -126,11 +105,7 @@ const TaskbarPanelTrigger = ({ children }: TaskbarPanelTriggerProps) => {
  * @param props.children panel visual
  */
 const TaskbarPanelContent = ({ children }: TaskbarPanelContentProps) => {
-  const context = useContext(TaskbarPanelRootContext);
-
-  if (context === null) {
-    throw new Error("TaskbarPanel.Content는 TaskbarPanel.Root 안에서 사용해야 합니다.");
-  }
+  const context = useTaskbarPanelRootContext();
 
   if (context.panelState === null || context.layerElement === null) {
     return null;
