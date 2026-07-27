@@ -1,7 +1,7 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import type {
   WindowItem,
@@ -13,7 +13,7 @@ import type {
 import { useTaskbarPins } from "../../../../windows/providers/taskbarPinsProvider";
 import { useWindowDispatch } from "../../../../windows/providers/windowsEventsProvider";
 import { useWindowsPins } from "../../../../windows/providers/windowsPinsProvider";
-import { TaskbarPanelRootContext } from "../../../panel/context";
+import { useTaskbarPanelRootContext } from "../../../panel/hooks/useTaskbarPanelRootContext";
 
 export interface UseTaskbarWindowPanelInteractionsResult {
   /** 현재 상세 item의 pin 상태에서 계산한 고정 action 목록. */
@@ -37,16 +37,10 @@ export interface UseTaskbarWindowPanelInteractionsResult {
 export const useTaskbarWindowPanelInteractions = (
   detailItem: WindowItem | null,
 ): UseTaskbarWindowPanelInteractionsResult => {
-  const panel = useContext(TaskbarPanelRootContext);
+  const panel = useTaskbarPanelRootContext();
   const dispatch = useWindowDispatch();
   const taskbarPins = useTaskbarPins();
   const windowsPins = useWindowsPins();
-
-  if (panel === null) {
-    throw new Error(
-      "useTaskbarWindowPanelInteractions는 TaskbarPanel.Root 안에서 사용해야 합니다.",
-    );
-  }
 
   const detailActions = useMemo<readonly WindowItemActionState[]>(() => {
     if (detailItem === null) {

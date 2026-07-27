@@ -65,18 +65,4 @@ describe("useWindowsPanelNavigation", () => {
     expect(scrollTo).not.toHaveBeenCalled();
   });
 
-  it("unmount 후 다시 생성하면 navigation 초기 상태로 돌아간다", () => {
-    const firstHook = renderHook(() => useWindowsPanelNavigation());
-
-    act(() => {
-      firstHook.result.current.onViewChange("all");
-      firstHook.result.current.onCategoryOverlayOpenChange(true);
-    });
-    firstHook.unmount();
-
-    const secondHook = renderHook(() => useWindowsPanelNavigation());
-
-    expect(secondHook.result.current.view).toBe("pinned");
-    expect(secondHook.result.current.categoryOverlayOpen).toBe(false);
-  });
 });

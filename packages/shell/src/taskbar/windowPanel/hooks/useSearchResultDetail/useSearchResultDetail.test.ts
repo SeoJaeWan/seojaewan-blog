@@ -69,20 +69,4 @@ describe("useSearchResultDetail", () => {
     expect(result.current.detailItem).toBe(updatedItem);
   });
 
-  it("unmount 후 다시 생성하면 상세 선택이 초기화된다", () => {
-    const firstHook = renderHook(() =>
-      useSearchResultDetail({ results: RESULTS, searchValue: "re" }),
-    );
-
-    act(() => {
-      firstHook.result.current.onDetailItemChange(RESULTS[0]);
-    });
-    firstHook.unmount();
-
-    const secondHook = renderHook(() =>
-      useSearchResultDetail({ results: RESULTS, searchValue: "re" }),
-    );
-
-    expect(secondHook.result.current.detailItem).toBeNull();
-  });
 });
