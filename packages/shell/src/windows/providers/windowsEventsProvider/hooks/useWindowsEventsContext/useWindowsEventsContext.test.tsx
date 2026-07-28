@@ -9,7 +9,7 @@ import type {
   SubscribeWindowEvent,
   WindowsEventsContextValue,
 } from "../../types";
-import { useWindowsEventsContext } from ".";
+import { useWindowsEventsContext } from "./";
 
 afterEach(cleanup);
 

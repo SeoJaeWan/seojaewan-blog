@@ -44,64 +44,74 @@
 
 ## Implemented UI (packages/ui)
 
-`components/window`와 `components/base/panel/scaledPreview`에 구현 완료. 설계 이름과 구현의 차이:
+`components/window`와 `components/base/panel/scaledPreviewUI`에 구현 완료. 설계 이름과 구현의 차이:
 
-| 문서 설계 이름 | 구현 이름 | 비고 |
-| --- | --- | --- |
-| `WindowFrame` | `WindowFrame` | `variant/state/fullscreen/dragging/zIndex/bounds`(CSS 변수 주입) + `animation: open\|close\|minimize\|restore\|none` + `onAnimationEnd`. `titleBar`/`routeBar` slot, `onResizeStart`로 리사이즈 위임. `overrideFullscreen`이 원본 `isOverrideFullScreen` 대응(100% 채움 + 애니메이션 미적용). activate는 `onPointerDown` passthrough |
-| `WindowTitleBar` | `WindowTitleBar` | children=`WindowTab`, `controls` slot. 창 이동 시작은 `onMoveStart`(pointer down) — 네이티브 `onDragStart`(DragEvent)와 타입이 충돌해 이름 변경 |
-| `WindowTab` | `WindowTab` | `icon`(기본 file asset)/`title`/`variant` |
-| `WindowControls` | `WindowControls` | `fullscreen/onMinimize/onToggleFullscreen/onClose` + `showMinimize/showMaximize`(원본 other 세션 대응). 닫기는 stopPropagation으로 activate 방지 |
-| `WindowResizeHandles` | `WindowResizeHandles` | `onResizeStart(event, direction)` 8방향. `WindowFrame`이 내부에서 렌더 |
-| `WindowRouteBar` | `WindowRouteBar` | `canGoBack/canGoForward/onBack/onForward` + children(`RouteInput`) + `tag` slot(창 폭 `@container 48rem`에서 160→320px) |
-| `RouteInput` | `RouteInput` | 포커스 시 편집 모드 + `suggestions` 드롭다운, `onSelectSuggestion`. folder `rounded-md` / file pill |
-| `TagInput` | `TagInput` | `tags/selectedTag/onSelectTag/onRemoveTag`. 태그 색은 Tailwind 클래스 대신 CSS color 값(`WindowTag.color`) |
-| `FolderViewer` | `FolderViewer` | `sidebar` slot + children(그리드). 창 대신 자신이 container(inline-size)가 되어 창 폭에 반응 |
-| `FolderSidebar` | `FolderSidebar` | `@container 48rem` 미만에서 숨김 |
-| `FolderCategoryItem` | `FolderCategoryItem` | `selected/defaultExpanded/items` + `onSelect/onSelectItem/onContextMenu`. 펼침은 내부 상태 |
-| `FolderFileGrid` | `FolderFileGrid` | `viewMode: big\|middle\|small` — 카드 폭은 grid의 `data-view`가 결정 |
-| `FolderFileCard` | `FolderFileCard` | `cover` slot + `title`. 열기/우클릭은 `onClick/onDoubleClick/onContextMenu` 그대로 위임 |
-| `ScaledPreview` | `ScaledPreview` (`components/base/panel`) | 기준 1920×1024(`baseWidth/baseHeight` 조절 가능). `Base/ScaledPreview` 스토리에 `TaskHoverPanel` preview slot 통합 예시 |
+| 문서 설계 이름          | 구현 이름                                   | 비고                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `WindowFrameUI`         | `WindowFrameUI`                             | `variant/state/fullscreen/dragging/zIndex/bounds`(CSS 변수 주입) + `animation: open\|close\|minimize\|restore\|none` + `onAnimationEnd`. `titleBar`/`routeBar` slot, `onResizeStart`로 리사이즈 위임. `overrideFullscreen`이 원본 `isOverrideFullScreen` 대응(100% 채움 + 애니메이션 미적용). activate는 `onPointerDown` passthrough |
+| `WindowTitleBarUI`      | `WindowTitleBarUI`                          | children=`WindowTabUI`, `controls` slot. 창 이동 시작은 `onMoveStart`(pointer down) — 네이티브 `onDragStart`(DragEvent)와 타입이 충돌해 이름 변경                                                                                                                                                                                    |
+| `WindowTabUI`           | `WindowTabUI`                               | `icon`(기본 file asset)/`title`/`variant`                                                                                                                                                                                                                                                                                            |
+| `WindowControlsUI`      | `WindowControlsUI`                          | `fullscreen/onMinimize/onToggleFullscreen/onClose` + `showMinimize/showMaximize`(원본 other 세션 대응). 닫기는 stopPropagation으로 activate 방지                                                                                                                                                                                     |
+| `WindowResizeHandlesUI` | `WindowResizeHandlesUI`                     | `onResizeStart(event, direction)` 8방향. `WindowFrameUI`이 내부에서 렌더                                                                                                                                                                                                                                                             |
+| `WindowRouteBarUI`      | `WindowRouteBarUI`                          | `canGoBack/canGoForward/onBack/onForward` + children(`RouteInputUI`) + `tag` slot(창 폭 `@container 48rem`에서 160→320px)                                                                                                                                                                                                            |
+| `RouteInputUI`          | `RouteInputUI`                              | 포커스 시 편집 모드 + `suggestions` 드롭다운, `onSelectSuggestion`. folder `rounded-md` / file pill                                                                                                                                                                                                                                  |
+| `TagInputUI`            | `TagInputUI`                                | `tags/selectedTag/onSelectTag/onRemoveTag`. 태그 색은 Tailwind 클래스 대신 CSS color 값(`WindowTag.color`)                                                                                                                                                                                                                           |
+| `FolderViewerUI`        | `FolderViewerUI`                            | `sidebar` slot + children(그리드). 창 대신 자신이 container(inline-size)가 되어 창 폭에 반응                                                                                                                                                                                                                                         |
+| `FolderSidebarUI`       | `FolderSidebarUI`                           | `@container 48rem` 미만에서 숨김                                                                                                                                                                                                                                                                                                     |
+| `FolderCategoryItemUI`  | `FolderCategoryItemUI`                      | `selected/defaultExpanded/items` + `onSelect/onSelectItem/onContextMenu`. 펼침은 내부 상태                                                                                                                                                                                                                                           |
+| `FolderFileGridUI`      | `FolderFileGridUI`                          | `viewMode: big\|middle\|small` — 카드 폭은 grid의 `data-view`가 결정                                                                                                                                                                                                                                                                 |
+| `FolderFileCardUI`      | `FolderFileCardUI`                          | `cover` slot + `title`. 열기/우클릭은 `onClick/onDoubleClick/onContextMenu` 그대로 위임                                                                                                                                                                                                                                              |
+| `ScaledPreviewUI`       | `ScaledPreviewUI` (`components/base/panel`) | 기준 1920×1024(`baseWidth/baseHeight` 조절 가능). `Base/ScaledPreviewUI` 스토리에 `TaskHoverPanelUI` preview slot 통합 예시                                                                                                                                                                                                          |
 
 관계된 기존 구현:
 
-| 관계 | 구현 이름 | 비고 |
-| --- | --- | --- |
-| hover preview thumbnail | `TaskHoverPanel` | `preview` slot에 `ScaledPreview` + `WindowFrame(overrideFullscreen)`을 주입한다 |
-| context menu 계열 | `ContextMenuPanel`, `ContextMenuButton` | 폴더 본문의 카테고리/파일/정렬 우클릭 메뉴가 재사용 (조립은 앱 레이어) |
+| 관계                    | 구현 이름                                   | 비고                                                                                |
+| ----------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| hover preview thumbnail | `TaskHoverPanelUI`                          | `preview` slot에 `ScaledPreviewUI` + `WindowFrameUI(overrideFullscreen)`을 주입한다 |
+| context menu 계열       | `ContextMenuPanelUI`, `ContextMenuButtonUI` | 폴더 본문의 카테고리/파일/정렬 우클릭 메뉴가 재사용 (조립은 앱 레이어)              |
 
-파일 본문 뷰어는 계획대로 앱 영역으로 남겨두었다 (스토리에서는 스크롤 컨테이너 목업). 드래그/리사이즈는 `useWindowBounds`로 `WindowFrame`에 기본 내장했다(`bounds` 지정 시 controlled로 전환). 세션 store 연동 등 `apps/web` 단계는 미착수.
+파일 본문 뷰어는 계획대로 앱 영역으로 남겨두었다 (스토리에서는 스크롤 컨테이너 목업). 드래그/리사이즈는 `useWindowBounds`로 `WindowFrameUI`에 기본 내장했다(`bounds` 지정 시 controlled로 전환). 세션 store 연동 등 `apps/web` 단계는 미착수.
 
 ## Component Tree
 
 ```tsx
-<WindowFrame>            {/* 원본 SessionControlBar — 창 chrome + 배치 + 애니메이션 표면 */}
-  <WindowTitleBar>       {/* 30px 행: 탭 제목 + 창 컨트롤, 드래그/더블클릭 영역 */}
-    <WindowTab />        {/* 아이콘 + 제목, 탭 모양 */}
-    <WindowControls />   {/* 최소화/최대화(복원)/닫기 */}
-  </WindowTitleBar>
-  <WindowRouteBar>       {/* 원본 SessionRoute — 뒤로/앞으로 + 주소창 + 태그 검색 */}
-    <RouteInput />
-    <TagInput />         {/* 폴더 창 전용 */}
-  </WindowRouteBar>
-  <WindowResizeHandles />{/* 4변 + 4모서리, md 이상 */}
-
+<WindowFrameUI>
+  {" "}
+  {/* 원본 SessionControlBar — 창 chrome + 배치 + 애니메이션 표면 */}
+  <WindowTitleBarUI>
+    {" "}
+    {/* 30px 행: 탭 제목 + 창 컨트롤, 드래그/더블클릭 영역 */}
+    <WindowTabUI /> {/* 아이콘 + 제목, 탭 모양 */}
+    <WindowControlsUI /> {/* 최소화/최대화(복원)/닫기 */}
+  </WindowTitleBarUI>
+  <WindowRouteBarUI>
+    {" "}
+    {/* 원본 SessionRoute — 뒤로/앞으로 + 주소창 + 태그 검색 */}
+    <RouteInputUI />
+    <TagInputUI /> {/* 폴더 창 전용 */}
+  </WindowRouteBarUI>
+  <WindowResizeHandlesUI />
+  {/* 4변 + 4모서리, md 이상 */}
   {/* 본문 slot */}
-  <FolderViewer>         {/* 폴더 창 본문 */}
-    <FolderSidebar>      {/* 카테고리 트리, @md 이상 */}
-      <FolderCategoryItem />
-    </FolderSidebar>
-    <FolderFileGrid>
-      <FolderFileCard />
-    </FolderFileGrid>
-  </FolderViewer>
+  <FolderViewerUI>
+    {" "}
+    {/* 폴더 창 본문 */}
+    <FolderSidebarUI>
+      {" "}
+      {/* 카테고리 트리, @md 이상 */}
+      <FolderCategoryItemUI />
+    </FolderSidebarUI>
+    <FolderFileGridUI>
+      <FolderFileCardUI />
+    </FolderFileGridUI>
+  </FolderViewerUI>
   {/* 또는 파일 창 본문: 앱 영역(react-notion-x) — UI 패키지는 스크롤 컨테이너 경계만 */}
-</WindowFrame>
+</WindowFrameUI>
 ```
 
 ## Component Connection Map
 
-### WindowFrame
+### WindowFrameUI
 
 역할:
 
@@ -131,7 +141,7 @@ UI:
 구현된 props:
 
 ```tsx
-<WindowFrame
+<WindowFrameUI
   variant="folder"            /* folder | file — header 색 계열 결정 */
   state="active"              /* active | background */
   fullscreen={false}
@@ -141,14 +151,14 @@ UI:
   onAnimationEnd={handleAnimationEnd}
   onPointerDown={activateSession}
   onResizeStart={startResize} /* (event, direction) — 핸들 pointer down 위임 */
-  titleBar={<WindowTitleBar ... />}
-  routeBar={<WindowRouteBar ... />}
+  titleBar={<WindowTitleBarUI ... />}
+  routeBar={<WindowRouteBarUI ... />}
 >
   {body}
-</WindowFrame>
+</WindowFrameUI>
 ```
 
-### WindowTitleBar
+### WindowTitleBarUI
 
 역할:
 
@@ -157,15 +167,15 @@ UI:
 UI:
 
 - variant별 색: 파일 `surface-highlight`/`surface-soft`(warm), 폴더 `blue-200/40`/`white/90`
-- 좌측 탭 모양 제목(`WindowTab`): 아이콘 18px + 1줄 제목, min 200px / max 50%
-- 우측 `WindowControls`
+- 좌측 탭 모양 제목(`WindowTabUI`): 아이콘 18px + 1줄 제목, min 200px / max 50%
+- 우측 `WindowControlsUI`
 
 동작:
 
 - 제목 영역 pointer down → 창 이동 시작 (앱 위임)
 - 행 더블클릭 → fullscreen 토글
 
-### WindowControls
+### WindowControlsUI
 
 역할:
 
@@ -184,7 +194,7 @@ UI:
 - 최대화/복원 → fullscreen 토글
 - 닫기 → close 애니메이션 시작 (`stopPropagation`으로 activate 방지)
 
-### WindowRouteBar
+### WindowRouteBarUI
 
 역할:
 
@@ -194,13 +204,13 @@ UI:
 
 - 내부 높이 36px, 탭 제목과 같은 면으로 이어지는 배경(variant별)
 - 뒤로/앞으로: 원형 hover, 히스토리 없으면 40% 투명도
-- `RouteInput`이 flex-1, `TagInput`은 폴더 창 전용 `w-40 @md:w-80`
+- `RouteInputUI`이 flex-1, `TagInputUI`은 폴더 창 전용 `w-40 @md:w-80`
 
 동작:
 
 - 뒤로/앞으로 → route 히스토리 이동 (앱 위임)
 
-### RouteInput
+### RouteInputUI
 
 역할:
 
@@ -218,7 +228,7 @@ UI:
 - 포커스 시 편집 모드 + 제안 목록 표시
 - 항목 선택 → route 변경 (앱 위임)
 
-### TagInput
+### TagInputUI
 
 역할:
 
@@ -234,7 +244,7 @@ UI:
 - 칩 선택/제거 → 목록 필터 (앱 위임)
 - 외부 클릭 → 드롭다운 닫기
 
-### WindowResizeHandles
+### WindowResizeHandlesUI
 
 역할:
 
@@ -249,7 +259,7 @@ UI:
 
 - pointer down에 방향(`n|s|w|e|nw|ne|sw|se`)을 실어 앱에 위임
 
-### FolderViewer
+### FolderViewerUI
 
 역할:
 
@@ -257,10 +267,10 @@ UI:
 
 구성:
 
-- `FolderSidebar` (@md 이상) + `FolderFileGrid`
-- 카테고리/파일/정렬 context menu는 `ContextMenuPanel` 계열로 앱 레이어에서 조립
+- `FolderSidebarUI` (@md 이상) + `FolderFileGridUI`
+- 카테고리/파일/정렬 context menu는 `ContextMenuPanelUI` 계열로 앱 레이어에서 조립
 
-### FolderSidebar / FolderCategoryItem
+### FolderSidebarUI / FolderCategoryItemUI
 
 역할:
 
@@ -279,7 +289,7 @@ UI:
 - 하위 파일 클릭 → 파일 창 열기
 - 우클릭 → 카테고리 context menu
 
-### FolderFileGrid / FolderFileCard
+### FolderFileGridUI / FolderFileCardUI
 
 역할:
 
@@ -303,7 +313,7 @@ UI:
 - 파일 창 본문은 react-notion-x 렌더링으로 앱 영역이다.
 - UI 패키지는 `h-full overflow-y-auto select-text` 스크롤 컨테이너와 로딩 스피너(중앙 32px)까지만 책임진다.
 
-### ScaledPreview
+### ScaledPreviewUI
 
 역할:
 
@@ -311,23 +321,23 @@ UI:
 
 사용처:
 
-- `TaskHoverPanel`의 `preview` slot (taskbar hover preview)
+- `TaskHoverPanelUI`의 `preview` slot (taskbar hover preview)
 - 이후 창 minimize 미리보기 등
 
 ## Animation
 
-창 상태 전이는 `WindowFrame`에 애니메이션 클래스를 붙이고 `onAnimationEnd`에서 앱이 상태를 정리한다.
+창 상태 전이는 `WindowFrameUI`에 애니메이션 클래스를 붙이고 `onAnimationEnd`에서 앱이 상태를 정리한다.
 
-| 전이 | keyframe | 타이밍 |
-| --- | --- | --- |
-| open | `scale(0.6) -> 1` + fade | 200ms `cubic-bezier(0.2, 0.75, 0.25, 1)` forwards |
-| close | `scale(1) -> 0.6` + fade | 150ms `cubic-bezier(0.4, 0, 0.6, 1)` forwards |
-| minimize | `translateY(0 -> 500px) scale(1 -> 0.4)` + fade | 150ms `cubic-bezier(0.4, 0, 0.6, 1)` forwards |
-| restore | `translateY(500px -> 0) scale(0.4 -> 1)` + fade | 200ms `cubic-bezier(0.2, 0.75, 0.25, 1)` forwards |
+| 전이     | keyframe                                        | 타이밍                                            |
+| -------- | ----------------------------------------------- | ------------------------------------------------- |
+| open     | `scale(0.6) -> 1` + fade                        | 200ms `cubic-bezier(0.2, 0.75, 0.25, 1)` forwards |
+| close    | `scale(1) -> 0.6` + fade                        | 150ms `cubic-bezier(0.4, 0, 0.6, 1)` forwards     |
+| minimize | `translateY(0 -> 500px) scale(1 -> 0.4)` + fade | 150ms `cubic-bezier(0.4, 0, 0.6, 1)` forwards     |
+| restore  | `translateY(500px -> 0) scale(0.4 -> 1)` + fade | 200ms `cubic-bezier(0.2, 0.75, 0.25, 1)` forwards |
 
 - easing 곡선은 taskbar panel의 `task-up/task-down`과 동일하고 keyframe만 다르다.
-- `onAnimationEnd`: minimize → hidden 처리, close → 세션 제거, 그 외 → active 확정. taskbar `TaskPanel`과 같은 "닫힘 애니메이션 후 언마운트" 패턴.
-- hover preview(`ScaledPreview`) 안에서는 창 애니메이션을 붙이지 않는다 (원본 `isOverrideFullScreen`).
+- `onAnimationEnd`: minimize → hidden 처리, close → 세션 제거, 그 외 → active 확정. taskbar `TaskPanelUI`과 같은 "닫힘 애니메이션 후 언마운트" 패턴.
+- hover preview(`ScaledPreviewUI`) 안에서는 창 애니메이션을 붙이지 않는다 (원본 `isOverrideFullScreen`).
 - 크기/위치 변화 자체는 `transition-all`로 부드럽게 처리하되, 드래그 중에는 transition을 끈다.
 
 ## Icon Mapping
@@ -358,41 +368,41 @@ type FolderViewMode = "big" | "middle" | "small";
 - `state`: z-index 우선순위(active는 최상위)와 activate 동작 여부.
 - `fullscreen`: 크기/radius/최대화 아이콘 전환. 모바일은 항상 fullscreen.
 - `dragging`: transition off, pointer 이벤트 제한.
-- `viewMode`: `FolderFileCard` 폭. 정렬 context menu로 변경.
-- 반응형 분기는 두 종류를 구분한다: 모바일 여부(viewport md)는 창 배치/컨트롤 표시, 사이드바/TagInput 폭은 창 폭(container query `@md`).
+- `viewMode`: `FolderFileCardUI` 폭. 정렬 context menu로 변경.
+- 반응형 분기는 두 종류를 구분한다: 모바일 여부(viewport md)는 창 배치/컨트롤 표시, 사이드바/TagInputUI 폭은 창 폭(container query `@md`).
 
 ## Relationship Summary
 
 ```txt
-WindowFrame
+WindowFrameUI
   owns 창 배치(fixed + CSS 변수), fullscreen visual, 상태 전이 애니메이션 표면
   delegates activate/drag/resize/session mutation to app layer
 
-WindowTitleBar
+WindowTitleBarUI
   owns 30px 타이틀 행과 variant 색
-  contains WindowTab, WindowControls
+  contains WindowTabUI, WindowControlsUI
   starts drag / toggles fullscreen
 
-WindowControls
+WindowControlsUI
   owns 최소화/최대화/닫기 visual
   triggers minimize/close animation via app callbacks
 
-WindowRouteBar
+WindowRouteBarUI
   owns 36px route 행
-  contains 뒤로/앞으로, RouteInput, TagInput(folder)
+  contains 뒤로/앞으로, RouteInputUI, TagInputUI(folder)
 
-FolderViewer
+FolderViewerUI
   owns 흰 배경 탐색기 레이아웃
-  contains FolderSidebar(@md), FolderFileGrid
-  opens 카테고리/파일/정렬 context menu (ContextMenuPanel 계열, 앱 조립)
+  contains FolderSidebarUI(@md), FolderFileGridUI
+  opens 카테고리/파일/정렬 context menu (ContextMenuPanelUI 계열, 앱 조립)
 
-FolderFileCard
+FolderFileCardUI
   owns 카드 visual (viewMode 폭, cover 3:2, hover)
   opens file on double click (PC) / click (mobile)
 
-ScaledPreview
+ScaledPreviewUI
   owns 1920×1024 -> 부모 크기 scale
-  is used by TaskHoverPanel preview slot
+  is used by TaskHoverPanelUI preview slot
 
 파일 본문
   앱 영역 (react-notion-x). UI는 스크롤 컨테이너 + 로딩 스피너 경계만
@@ -401,19 +411,19 @@ ScaledPreview
 ## Implementation Direction
 
 1. Define window primitives: (완료)
-   - `WindowFrame` (variant/fullscreen/애니메이션 표면)
-   - `WindowTitleBar` + `WindowTab` + `WindowControls`
-   - `WindowResizeHandles`
+   - `WindowFrameUI` (variant/fullscreen/애니메이션 표면)
+   - `WindowTitleBarUI` + `WindowTabUI` + `WindowControlsUI`
+   - `WindowResizeHandlesUI`
 2. Define route bar: (완료)
-   - `WindowRouteBar`
-   - `RouteInput` (편집 모드 + 제안 드롭다운)
-   - `TagInput` (칩 + 드롭다운)
+   - `WindowRouteBarUI`
+   - `RouteInputUI` (편집 모드 + 제안 드롭다운)
+   - `TagInputUI` (칩 + 드롭다운)
 3. Define folder body: (완료)
-   - `FolderViewer` 레이아웃
-   - `FolderSidebar` / `FolderCategoryItem`
-   - `FolderFileGrid` / `FolderFileCard`
+   - `FolderViewerUI` 레이아웃
+   - `FolderSidebarUI` / `FolderCategoryItemUI`
+   - `FolderFileGridUI` / `FolderFileCardUI`
 4. Define preview: (완료)
-   - `ScaledPreview` → `TaskHoverPanel` preview slot 연결
+   - `ScaledPreviewUI` → `TaskHoverPanelUI` preview slot 연결
 5. Attach app behavior in `apps/web`:
    - session store(위치/크기/상태), 드래그/리사이즈 hook
    - route 히스토리, 태그 필터, 콘텐츠 데이터

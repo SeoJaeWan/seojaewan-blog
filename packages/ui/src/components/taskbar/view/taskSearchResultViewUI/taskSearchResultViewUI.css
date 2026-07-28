@@ -1,0 +1,198 @@
+/* 원본 TaskSearchResult — SearchPanelUI과 시작 panel 검색 결과가 공유하는 결과 뷰 */
+.wb-task-search-result {
+  --wb-task-search-result-hover-surface: rgb(255 255 255);
+  --wb-task-search-result-card-border: rgb(214 217 224);
+  --wb-task-search-result-surface: rgb(229 231 235 / 0.1);
+  --wb-task-search-result-divider: rgb(229 231 235);
+  --wb-task-search-result-muted: rgb(153 161 175);
+
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.wb-task-search-result__heading {
+  font-size: inherit;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+/* :where()로 특이도를 0으로 낮춰 아래 클래스 규칙이 리셋을 항상 이기게 한다 */
+:where(.wb-task-search-result button) {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  text-align: left;
+}
+
+.wb-task-search-result button:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}
+
+:where(.wb-task-search-result ul) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+:where(.wb-task-search-result h3, .wb-task-search-result h4, .wb-task-search-result p) {
+  margin: 0;
+}
+
+/* 아이콘 공통: 원본은 next/image + object-cover */
+.wb-task-search-result__icon > img,
+.wb-task-search-result__icon > svg,
+.wb-task-search-result__detail-icon > img,
+.wb-task-search-result__detail-icon > svg {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* === 최적의 일치 목록 === */
+.wb-task-search-result__list-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50%;
+}
+
+.wb-task-search-result__list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+}
+
+.wb-task-search-result__row {
+  display: flex;
+  gap: 2px;
+}
+
+.wb-task-search-result__main {
+  align-items: center;
+  background: var(--wb-task-search-result-surface);
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 8px;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-task-search-result__main:hover {
+  background: var(--wb-task-search-result-hover-surface);
+}
+
+.wb-task-search-result__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 30px;
+  width: 30px;
+}
+
+.wb-task-search-result__title {
+  display: -webkit-box;
+  font-size: inherit;
+  font-weight: inherit;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.wb-task-search-result__detail-toggle {
+  align-items: center;
+  background: var(--wb-task-search-result-surface);
+  color: var(--wb-task-search-result-muted);
+  display: inline-flex;
+  justify-content: center;
+  padding: 4px;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-task-search-result__detail-toggle:hover,
+.wb-task-search-result__detail-toggle[data-selected="true"] {
+  background: var(--wb-task-search-result-hover-surface);
+}
+
+/* === 선택 항목 상세 === */
+.wb-task-search-result__detail {
+  background: var(--wb-task-search-result-hover-surface);
+  border: 1px solid var(--wb-task-search-result-card-border);
+  border-bottom-color: transparent;
+  border-radius: 16px 16px 0 0;
+  box-sizing: border-box;
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  overflow: auto;
+  padding: 24px;
+}
+
+.wb-task-search-result__detail-summary {
+  align-items: center;
+  border-bottom: 1px solid var(--wb-task-search-result-divider);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 40px;
+  width: 100%;
+}
+
+.wb-task-search-result__detail-icon {
+  border-radius: 16px;
+  display: inline-flex;
+  height: 80px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  width: 80px;
+}
+
+.wb-task-search-result__detail-title {
+  font-size: 20px;
+  font-weight: inherit;
+  margin-bottom: 4px;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.wb-task-search-result__detail-description {
+  color: var(--wb-task-search-result-muted);
+  font-size: 12px;
+}
+
+.wb-task-search-result__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+.wb-task-search-result__detail-action {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  gap: 12px;
+}
+
+.wb-task-search-result__detail-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.54;
+  pointer-events: none;
+}

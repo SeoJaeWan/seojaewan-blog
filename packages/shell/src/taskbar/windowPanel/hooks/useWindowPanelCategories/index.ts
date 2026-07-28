@@ -9,8 +9,8 @@ import { useWindowsItemsContext } from "../../../../windows/providers/windowsIte
 import { createWindowsPanelSections } from "../../utils/createWindowsPanelSections";
 
 export interface UseWindowPanelCategoriesOptions {
-  /** all browse 화면이 선택되어 category 상태를 유지해야 하는지 나타낸다. */
-  allViewSelected: boolean;
+  /** all browse 화면이 현재 활성화되어 category 상태를 유지해야 하는지 나타낸다. */
+  allViewActive: boolean;
 }
 
 export interface UseWindowPanelCategoriesResult {
@@ -28,13 +28,13 @@ export interface UseWindowPanelCategoriesResult {
 
 /**
  * Window panel 모두 보기의 category section, overlay와 scroll을 관리한다.
- * pinned 화면으로 전환하면 overlay를 닫고 search 화면에서는 all browse 상태를 보존한다.
+ * pinned 화면으로 전환하면 overlay를 닫고 화면이 unmount되면 지역 상태를 초기화한다.
  *
- * @param options.allViewSelected search 뒤에 보존된 browse 화면이 all인지 여부
- * @returns WindowsPanelUI.View에 연결할 category data, state와 callback
+ * @param options.allViewActive 현재 활성 browse 화면이 all인지 여부
+ * @returns WindowsPanelViewUI에 연결할 category data, state와 callback
  */
 export const useWindowPanelCategories = ({
-  allViewSelected,
+  allViewActive,
 }: UseWindowPanelCategoriesOptions): UseWindowPanelCategoriesResult => {
   const windowsItems = useWindowsItemsContext();
   const allListRef = useRef<HTMLDivElement | null>(null);
@@ -42,10 +42,10 @@ export const useWindowPanelCategories = ({
   const sections = useMemo(() => createWindowsPanelSections(windowsItems), [windowsItems]);
 
   useEffect(() => {
-    if (!allViewSelected) {
+    if (!allViewActive) {
       setCategoryOverlayOpen(false);
     }
-  }, [allViewSelected]);
+  }, [allViewActive]);
 
   const onCategoryOverlayOpenChange = (open: boolean) => {
     setCategoryOverlayOpen(open);

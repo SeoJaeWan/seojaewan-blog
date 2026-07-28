@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 
 import type { WindowItem } from "@window/ui";
-import { TaskbarRoot } from "@window/ui";
+import { TaskbarRootUI } from "@window/ui";
 
 import type { WindowEventName } from "../src";
 import { TaskbarPanel, useWindowEvent, Windows } from "../src";
@@ -178,7 +178,7 @@ export const ShellHarness = ({
             </aside>
           ) : null}
           <TaskbarPanel portalContainer={portalContainer}>
-            <TaskbarRoot>{taskbarItems}</TaskbarRoot>
+            <TaskbarRootUI>{taskbarItems}</TaskbarRootUI>
           </TaskbarPanel>
         </Windows>
       ) : null}

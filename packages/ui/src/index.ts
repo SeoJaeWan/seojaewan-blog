@@ -1,68 +1,67 @@
 import "./styles/styles.css";
 
-export type { ContextMenuButtonProps } from "./components/base/button/contextMenuButton";
-export { ContextMenuButton } from "./components/base/button/contextMenuButton";
-export type { IconButtonProps } from "./components/base/button/iconButton";
-export { IconButton } from "./components/base/button/iconButton";
-export type { ContextMenuLayerProps } from "./components/base/menu/contextMenuLayer";
-export { ContextMenuLayer } from "./components/base/menu/contextMenuLayer";
-export type { ContextMenuPanelProps } from "./components/base/menu/contextMenuPanel";
-export { ContextMenuPanel } from "./components/base/menu/contextMenuPanel";
-export type { ContextMenuPositionerProps } from "./components/base/menu/contextMenuPositioner";
-export { ContextMenuPositioner } from "./components/base/menu/contextMenuPositioner";
+export type { ContextMenuButtonUIProps } from "./components/base/button/contextMenuButtonUI";
+export { ContextMenuButtonUI } from "./components/base/button/contextMenuButtonUI";
+export type { IconButtonUIProps } from "./components/base/button/iconButtonUI";
+export { IconButtonUI } from "./components/base/button/iconButtonUI";
+export type { ContextMenuLayerUIProps } from "./components/base/menu/contextMenuLayerUI";
+export { ContextMenuLayerUI } from "./components/base/menu/contextMenuLayerUI";
+export type { ContextMenuPanelUIProps } from "./components/base/menu/contextMenuPanelUI";
+export { ContextMenuPanelUI } from "./components/base/menu/contextMenuPanelUI";
+export type { ContextMenuPositionerUIProps } from "./components/base/menu/contextMenuPositionerUI";
+export { ContextMenuPositionerUI } from "./components/base/menu/contextMenuPositionerUI";
 export type {
   ContextMenuSubPanelPlacement,
-  ContextMenuSubPanelProps,
-} from "./components/base/menu/contextMenuSubPanel";
-export { ContextMenuSubPanel } from "./components/base/menu/contextMenuSubPanel";
-export type { ScaledPreviewProps } from "./components/base/panel/scaledPreview";
+  ContextMenuSubPanelUIProps,
+} from "./components/base/menu/contextMenuSubPanelUI";
+export { ContextMenuSubPanelUI } from "./components/base/menu/contextMenuSubPanelUI";
+export type { ScaledPreviewUIProps } from "./components/base/panel/scaledPreviewUI";
 export {
   SCALED_PREVIEW_DEFAULT_BASE_HEIGHT,
   SCALED_PREVIEW_DEFAULT_BASE_WIDTH,
-  ScaledPreview,
-} from "./components/base/panel/scaledPreview";
-export type { TaskPanelProps } from "./components/base/panel/taskPanel";
-export { TaskPanel } from "./components/base/panel/taskPanel";
-export type { DesktopIconProps } from "./components/desktop/desktopIcon";
-export { DesktopIcon } from "./components/desktop/desktopIcon";
-export type { DesktopIconGridProps, DesktopViewMode } from "./components/desktop/desktopIconGrid";
-export { DesktopIconGrid } from "./components/desktop/desktopIconGrid";
-export type { WallpaperProps } from "./components/desktop/wallpaper";
-export { Wallpaper } from "./components/desktop/wallpaper";
-export type { NotionCodeBlockProps } from "./components/notion/block/notionCodeBlock";
-export { NotionCodeBlock } from "./components/notion/block/notionCodeBlock";
-export type { NotionContentProps } from "./components/notion/notionContent";
-export { NotionContent } from "./components/notion/notionContent";
+  ScaledPreviewUI,
+} from "./components/base/panel/scaledPreviewUI";
+export type { TaskPanelUIProps } from "./components/base/panel/taskPanelUI";
+export { TaskPanelUI } from "./components/base/panel/taskPanelUI";
+export type {
+  DesktopIconGridUIProps,
+  DesktopViewMode,
+} from "./components/desktop/desktopIconGridUI";
+export { DesktopIconGridUI } from "./components/desktop/desktopIconGridUI";
+export type { DesktopIconUIProps } from "./components/desktop/desktopIconUI";
+export { DesktopIconUI } from "./components/desktop/desktopIconUI";
+export type { WallpaperUIProps } from "./components/desktop/wallpaperUI";
+export { WallpaperUI } from "./components/desktop/wallpaperUI";
+export type { NotionCodeBlockUIProps } from "./components/notion/block/notionCodeBlockUI";
+export { NotionCodeBlockUI } from "./components/notion/block/notionCodeBlockUI";
+export type { NotionContentUIProps } from "./components/notion/notionContentUI";
+export { NotionContentUI } from "./components/notion/notionContentUI";
 export type {
   NotionBlockNode,
   NotionColor,
   NotionListItem,
   NotionRichTextSpan,
 } from "./components/notion/types";
-export type { TaskbarAppListProps } from "./components/taskbar/appList";
-export { TaskbarAppList } from "./components/taskbar/appList";
-export type { PanelIconButtonProps } from "./components/taskbar/button/panelIconButton";
-export { PanelIconButton } from "./components/taskbar/button/panelIconButton";
+export type { PanelIconButtonUIProps } from "./components/taskbar/button/panelIconButtonUI";
+export { PanelIconButtonUI } from "./components/taskbar/button/panelIconButtonUI";
 export type {
-  TaskbarIconButtonProps,
   TaskbarIconButtonState,
-} from "./components/taskbar/button/taskbarIconButton";
-export { TaskbarIconButton } from "./components/taskbar/button/taskbarIconButton";
+  TaskbarIconButtonUIProps,
+} from "./components/taskbar/button/taskbarIconButtonUI";
+export { TaskbarIconButtonUI } from "./components/taskbar/button/taskbarIconButtonUI";
 export type { TaskbarStartButtonUIProps } from "./components/taskbar/button/taskbarStartButtonUI";
 export { TaskbarStartButtonUI } from "./components/taskbar/button/taskbarStartButtonUI";
-export type { TaskbarTaskButtonProps } from "./components/taskbar/button/taskbarTaskButton";
-export { TaskbarTaskButton } from "./components/taskbar/button/taskbarTaskButton";
-export type { TaskbarClockProps } from "./components/taskbar/clock";
-export { TaskbarClock } from "./components/taskbar/clock";
-export type { TaskSearchInputProps } from "./components/taskbar/input/taskSearchInput";
-export { TaskSearchInput } from "./components/taskbar/input/taskSearchInput";
-export type { SearchPanelProps } from "./components/taskbar/panel/searchPanel";
-export { SearchPanel } from "./components/taskbar/panel/searchPanel";
+export type { TaskbarTaskButtonUIProps } from "./components/taskbar/button/taskbarTaskButtonUI";
+export { TaskbarTaskButtonUI } from "./components/taskbar/button/taskbarTaskButtonUI";
+export type { TaskSearchInputUIProps } from "./components/taskbar/input/taskSearchInputUI";
+export { TaskSearchInputUI } from "./components/taskbar/input/taskSearchInputUI";
+export type { SearchPanelUIProps } from "./components/taskbar/panel/searchPanelUI";
+export { SearchPanelUI } from "./components/taskbar/panel/searchPanelUI";
 export type {
-  TaskbarContextMenuProps,
   TaskbarContextMenuTask,
-} from "./components/taskbar/panel/taskbarContextMenu";
-export { TaskbarContextMenu } from "./components/taskbar/panel/taskbarContextMenu";
+  TaskbarContextMenuUIProps,
+} from "./components/taskbar/panel/taskbarContextMenuUI";
+export { TaskbarContextMenuUI } from "./components/taskbar/panel/taskbarContextMenuUI";
 export type {
   TaskbarPanelContainerState,
   TaskbarPanelContainerUIProps,
@@ -72,67 +71,73 @@ export type { TaskbarPanelLayerUIProps } from "./components/taskbar/panel/taskba
 export { TaskbarPanelLayerUI } from "./components/taskbar/panel/taskbarPanelLayerUI";
 export type {
   TaskHoverPanelItem,
-  TaskHoverPanelProps,
-} from "./components/taskbar/panel/taskHoverPanel";
-export { TaskHoverPanel } from "./components/taskbar/panel/taskHoverPanel";
-export type {
-  WindowsPanelItemSource,
-  WindowsPanelUIProps,
-} from "./components/taskbar/panel/windowsPanelUI";
+  TaskHoverPanelUIProps,
+} from "./components/taskbar/panel/taskHoverPanelUI";
+export { TaskHoverPanelUI } from "./components/taskbar/panel/taskHoverPanelUI";
+export type { WindowsPanelUIProps } from "./components/taskbar/panel/windowsPanelUI";
 export { WindowsPanelUI } from "./components/taskbar/panel/windowsPanelUI";
-export type { TaskbarRootProps } from "./components/taskbar/root";
-export { TaskbarRoot } from "./components/taskbar/root";
-export type { TaskbarSearchProps } from "./components/taskbar/search";
-export { TaskbarSearch } from "./components/taskbar/search";
-export type { TaskSearchRecommendationSection } from "./components/taskbar/view/taskSearchRecommendationView";
-export type { TaskSearchResultViewProps } from "./components/taskbar/view/taskSearchResultView";
-export { TaskSearchResultView } from "./components/taskbar/view/taskSearchResultView";
+export type { TaskbarAppListUIProps } from "./components/taskbar/taskbarAppListUI";
+export { TaskbarAppListUI } from "./components/taskbar/taskbarAppListUI";
+export type { TaskbarClockUIProps } from "./components/taskbar/taskbarClockUI";
+export { TaskbarClockUI } from "./components/taskbar/taskbarClockUI";
+export type { TaskbarRootUIProps } from "./components/taskbar/taskbarRootUI";
+export { TaskbarRootUI } from "./components/taskbar/taskbarRootUI";
+export type { TaskbarSearchUIProps } from "./components/taskbar/taskbarSearchUI";
+export { TaskbarSearchUI } from "./components/taskbar/taskbarSearchUI";
+export type { TaskSearchRecommendationSection } from "./components/taskbar/view/taskSearchRecommendationViewUI";
+export type { TaskSearchResultViewUIProps } from "./components/taskbar/view/taskSearchResultViewUI";
+export { TaskSearchResultViewUI } from "./components/taskbar/view/taskSearchResultViewUI";
 export type {
   WindowsPanelPinnedItemAnimation,
   WindowsPanelPinnedItemAnimationPhase,
   WindowsPanelSection,
   WindowsPanelViewMode,
-} from "./components/taskbar/view/windowsPanelView";
-export type { WindowControlsProps } from "./components/window/chrome/windowControls";
-export { WindowControls } from "./components/window/chrome/windowControls";
+  WindowsPanelViewUIProps,
+} from "./components/taskbar/view/windowsPanelViewUI";
+export { WindowsPanelViewUI } from "./components/taskbar/view/windowsPanelViewUI";
+export type { WindowControlsUIProps } from "./components/window/chrome/windowControlsUI";
+export { WindowControlsUI } from "./components/window/chrome/windowControlsUI";
 export type {
   WindowResizeDirection,
-  WindowResizeHandlesProps,
-} from "./components/window/chrome/windowResizeHandles";
-export { WindowResizeHandles } from "./components/window/chrome/windowResizeHandles";
-export type { WindowRouteBarProps } from "./components/window/chrome/windowRouteBar";
-export { WindowRouteBar } from "./components/window/chrome/windowRouteBar";
-export type { WindowTabProps } from "./components/window/chrome/windowTab";
-export { WindowTab } from "./components/window/chrome/windowTab";
-export type { WindowTitleBarProps } from "./components/window/chrome/windowTitleBar";
-export { WindowTitleBar } from "./components/window/chrome/windowTitleBar";
+  WindowResizeHandlesUIProps,
+} from "./components/window/chrome/windowResizeHandlesUI";
+export { WindowResizeHandlesUI } from "./components/window/chrome/windowResizeHandlesUI";
+export type { WindowRouteBarUIProps } from "./components/window/chrome/windowRouteBarUI";
+export { WindowRouteBarUI } from "./components/window/chrome/windowRouteBarUI";
+export type { WindowTabUIProps } from "./components/window/chrome/windowTabUI";
+export { WindowTabUI } from "./components/window/chrome/windowTabUI";
+export type { WindowTitleBarUIProps } from "./components/window/chrome/windowTitleBarUI";
+export { WindowTitleBarUI } from "./components/window/chrome/windowTitleBarUI";
 export type {
   FolderCategoryChildItem,
-  FolderCategoryItemProps,
-} from "./components/window/folder/folderCategoryItem";
-export { FolderCategoryItem } from "./components/window/folder/folderCategoryItem";
-export type { FolderFileCardProps } from "./components/window/folder/folderFileCard";
-export { FolderFileCard } from "./components/window/folder/folderFileCard";
+  FolderCategoryItemUIProps,
+} from "./components/window/folder/folderCategoryItemUI";
+export { FolderCategoryItemUI } from "./components/window/folder/folderCategoryItemUI";
+export type { FolderFileCardUIProps } from "./components/window/folder/folderFileCardUI";
+export { FolderFileCardUI } from "./components/window/folder/folderFileCardUI";
 export type {
-  FolderFileGridProps,
+  FolderFileGridUIProps,
   FolderViewMode,
-} from "./components/window/folder/folderFileGrid";
-export { FolderFileGrid } from "./components/window/folder/folderFileGrid";
-export type { FolderSidebarProps } from "./components/window/folder/folderSidebar";
-export { FolderSidebar } from "./components/window/folder/folderSidebar";
-export type { FolderViewerProps } from "./components/window/folder/folderViewer";
-export { FolderViewer } from "./components/window/folder/folderViewer";
-export type { RouteInputProps, RouteInputSuggestion } from "./components/window/input/routeInput";
-export { RouteInput } from "./components/window/input/routeInput";
-export type { TagInputProps, WindowTag } from "./components/window/input/tagInput";
-export { TagInput } from "./components/window/input/tagInput";
+} from "./components/window/folder/folderFileGridUI";
+export { FolderFileGridUI } from "./components/window/folder/folderFileGridUI";
+export type { FolderSidebarUIProps } from "./components/window/folder/folderSidebarUI";
+export { FolderSidebarUI } from "./components/window/folder/folderSidebarUI";
+export type { FolderViewerUIProps } from "./components/window/folder/folderViewerUI";
+export { FolderViewerUI } from "./components/window/folder/folderViewerUI";
+export type {
+  RouteInputSuggestion,
+  RouteInputUIProps,
+} from "./components/window/input/routeInputUI";
+export { RouteInputUI } from "./components/window/input/routeInputUI";
+export type { TagInputUIProps, WindowTag } from "./components/window/input/tagInputUI";
+export { TagInputUI } from "./components/window/input/tagInputUI";
 export type {
   WindowAnimation,
   WindowFrameBounds,
-  WindowFrameProps,
+  WindowFrameUIProps,
   WindowState,
   WindowVariant,
-} from "./components/window/windowFrame";
-export { WindowFrame } from "./components/window/windowFrame";
+} from "./components/window/windowFrameUI";
+export { WindowFrameUI } from "./components/window/windowFrameUI";
 export type { WindowItem } from "./types/windowItem";
 export type { WindowItemActionId, WindowItemActionState } from "./types/windowItemAction";

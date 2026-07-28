@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { TaskbarPinsContext } from "../../context";
 import type { UseTaskbarPins } from "../../types";
-import { useTaskbarPins } from ".";
+import { useTaskbarPins } from "./";
 
 describe("useTaskbarPins", () => {
   it("Provider가 제공한 Taskbar pin state와 action을 그대로 반환한다", () => {

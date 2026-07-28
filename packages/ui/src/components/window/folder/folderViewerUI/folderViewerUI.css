@@ -1,0 +1,9 @@
+/* 원본 FolderViewerUI: flex w-full h-full bg-white
+   창(부모 container)이 아니라 뷰어 자신을 container로 두어 창 폭에 반응한다 */
+.wb-folder-viewer {
+  background: rgb(255 255 255);
+  container-type: inline-size;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}

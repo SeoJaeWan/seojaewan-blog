@@ -24,11 +24,8 @@
   }
 }
 
-/* 검색어 입력 시 검색 결과 뷰 (원본: pt-7 flex-1 flex gap-2 min-h-0) */
+/* Window panel 검색 결과의 본문 시작 위치 (원본: pt-7) */
 .wb-windows-panel__search-results {
-  display: flex;
-  flex: 1;
-  gap: 8px;
-  min-height: 0;
+  box-sizing: border-box;
   padding-top: 28px;
 }

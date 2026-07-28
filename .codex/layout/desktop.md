@@ -54,42 +54,42 @@ main (w-full h-full overflow-hidden relative)
 
 ## Implemented UI (packages/ui)
 
-`components/desktop`(wallpaper/desktopIconGrid/desktopIcon — wallpaper는 설계명 DesktopRoot)과 컨텍스트 메뉴 확장(`components/base/menu`) 구현 완료:
+`components/desktop`(wallpaperUI/desktopIconGridUI/desktopIconUI — wallpaper는 설계명 DesktopRoot)과 컨텍스트 메뉴 확장(`components/base/menu`) 구현 완료:
 
-| 설계 이름 | 구현 이름 | 비고 |
-| --- | --- | --- |
-| `DesktopRoot` | `Wallpaper` (`components/desktop/wallpaper`) | 배경 surface (`backgroundSrc` prop, taskbar 50px 제외). 우클릭은 `onContextMenu` 위임 |
-| `DesktopIconGrid` | `DesktopIconGrid` | flex-col wrap 배치, `viewMode`를 `data-view`로 내림 |
-| `DesktopIcon` | `DesktopIcon` | `IconButton` primitive + 세로 라벨(26px). 크기는 그리드 `data-view`가 결정 |
-| `ContextMenuSubPanel` | `ContextMenuSubPanel` | 원본 `LeftSubPanel`. 부모 row hover 표시 + 화면 경계 플립 |
-| 커서 위치 컨트롤러 | `useContextMenuController` (`components/controllers/contextMenuController`) | 원본 `useContextMenu` + `LeftClickPanel`. 커서 기준 경계 플립(200×300), 전역 단일 열림, 외부 클릭 닫힘. provider 불필요한 headless 컨트롤러라 `controllers/`에 둔다 |
+| 설계 이름               | 구현 이름                                                                   | 비고                                                                                                                                                                |
+| ----------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DesktopRoot`           | `WallpaperUI` (`components/desktop/wallpaperUI`)                            | 배경 surface (`backgroundSrc` prop, taskbar 50px 제외). 우클릭은 `onContextMenu` 위임                                                                               |
+| `DesktopIconGridUI`     | `DesktopIconGridUI`                                                         | flex-col wrap 배치, `viewMode`를 `data-view`로 내림                                                                                                                 |
+| `DesktopIconUI`         | `DesktopIconUI`                                                             | `IconButtonUI` primitive + 세로 라벨(26px). 크기는 그리드 `data-view`가 결정                                                                                        |
+| `ContextMenuSubPanelUI` | `ContextMenuSubPanelUI`                                                     | 원본 `LeftSubPanel`. 부모 row hover 표시 + 화면 경계 플립                                                                                                           |
+| 커서 위치 컨트롤러      | `useContextMenuController` (`components/controllers/contextMenuController`) | 원본 `useContextMenu` + `LeftClickPanel`. 커서 기준 경계 플립(200×300), 전역 단일 열림, 외부 클릭 닫힘. provider 불필요한 headless 컨트롤러라 `controllers/`에 둔다 |
 
 관계된 기존 구현:
 
-| 관계 | 구현 이름 | 비고 |
-| --- | --- | --- |
-| 창 레이어의 창 | `WindowFrame` 계열 | [[window.md]] — Desktop은 형제 레이어로 창들을 배치한다. 드래그/리사이즈는 `useWindowBounds` 내장(기본) |
-| taskbar | `TaskbarRoot` 계열 | [[taskbar.md]] — 바탕화면 아래 50px |
-| 컨텍스트 메뉴 컨테이너 | `ContextMenuPanel`, `ContextMenuButton` | 원본 `LeftClickPanel`(200px) 대응. `trailing` slot으로 서브 메뉴 화살표 표현 |
+| 관계                   | 구현 이름                                   | 비고                                                                                                    |
+| ---------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 창 레이어의 창         | `WindowFrameUI` 계열                        | [[window.md]] — Desktop은 형제 레이어로 창들을 배치한다. 드래그/리사이즈는 `useWindowBounds` 내장(기본) |
+| taskbar                | `TaskbarRootUI` 계열                        | [[taskbar.md]] — 바탕화면 아래 50px                                                                     |
+| 컨텍스트 메뉴 컨테이너 | `ContextMenuPanelUI`, `ContextMenuButtonUI` | 원본 `LeftClickPanel`(200px) 대응. `trailing` slot으로 서브 메뉴 화살표 표현                            |
 
 ## Component Tree
 
 ```tsx
-<Wallpaper>                 {/* 배경 이미지 surface, taskbar 제외 영역 */}
-  <DesktopIconGrid viewMode="middle">   {/* 세로 쌓임 + 열 wrap 아이콘 배치 */}
-    <DesktopIcon />           {/* 카테고리 폴더 / 외부 링크 */}
-  </DesktopIconGrid>
-</Wallpaper>
+<WallpaperUI>                 {/* 배경 이미지 surface, taskbar 제외 영역 */}
+  <DesktopIconGridUI viewMode="middle">   {/* 세로 쌓임 + 열 wrap 아이콘 배치 */}
+    <DesktopIconUI />           {/* 카테고리 폴더 / 외부 링크 */}
+  </DesktopIconGridUI>
+</WallpaperUI>
 
 {/* 형제 레이어 (앱 조립) */}
-<WindowFrame />[]             {/* 열린 창들 — fixed, zIndex로 쌓임 */}
-<TaskbarRoot />               {/* 하단 50px */}
-<ContextMenuPanel />          {/* 커서 위치, 바탕화면/아이콘 우클릭 */}
+<WindowFrameUI />[]             {/* 열린 창들 — fixed, zIndex로 쌓임 */}
+<TaskbarRootUI />               {/* 하단 50px */}
+<ContextMenuPanelUI />          {/* 커서 위치, 바탕화면/아이콘 우클릭 */}
 ```
 
 ## Component Connection Map
 
-### Wallpaper (설계명 DesktopRoot)
+### WallpaperUI (설계명 DesktopRoot)
 
 역할:
 
@@ -110,7 +110,7 @@ UI:
 
 - 아이콘 배치(그리드가 담당), 창/panel 렌더링, 컨텍스트 메뉴 조립
 
-### DesktopIconGrid
+### DesktopIconGridUI
 
 역할:
 
@@ -125,7 +125,7 @@ UI:
 
 - 원본은 mounted 후에만 아이콘을 렌더(hydration 가드) — 앱 책임
 
-### DesktopIcon
+### DesktopIconUI
 
 역할:
 
@@ -147,18 +147,18 @@ UI:
 
 ### 창(session) 레이어
 
-- 열린 창들은 `WindowFrame`이 각자 `position: fixed` + `zIndex`로 쌓이므로 별도 레이어 컴포넌트가 필요 없다.
-- Desktop 구현에서는 `Wallpaper`의 형제로 `WindowFrame[]`을 렌더한다 (원본 `Sessions` 대응, 앱 조립).
+- 열린 창들은 `WindowFrameUI`이 각자 `position: fixed` + `zIndex`로 쌓이므로 별도 레이어 컴포넌트가 필요 없다.
+- Desktop 구현에서는 `WallpaperUI`의 형제로 `WindowFrameUI[]`을 렌더한다 (원본 `Sessions` 대응, 앱 조립).
 - active 창이 최상위, 나머지는 `session.index` — [[window.md]]의 State Model을 따른다.
 
 ### 컨텍스트 메뉴 (커서 위치)
 
 원본 desktop/폴더 그리드의 우클릭 메뉴는 taskbar panel과 다른 체계다:
 
-- 컨테이너: `ContextMenuPanel`(구현됨, 원본 `LeftClickPanel` 200px). `#windows-left` portal에 `position: fixed`로 커서 위치에 표시
+- 컨테이너: `ContextMenuPanelUI`(구현됨, 원본 `LeftClickPanel` 200px). `#windows-left` portal에 `position: fixed`로 커서 위치에 표시
 - 위치 계산(원본 `useContextMenu`): 기준점은 커서(clientX/Y). 메뉴 예상 크기(200×300)가 화면 우측/하단(taskbar 50px 제외)을 넘으면 `right`/`bottom` 기준으로 뒤집는다
 - 한 번에 하나만 열림(전역 openMenuId), 외부 클릭으로 닫힘, **등장/퇴장 애니메이션 없음(즉시 표시/제거)**
-- 서브 메뉴(`ContextMenuSubPanel`, 원본 `LeftSubPanel`): 부모 row hover 시 표시. 부모 오른쪽에 붙이고, 화면을 넘치면 왼쪽/위쪽으로 플립
+- 서브 메뉴(`ContextMenuSubPanelUI`, 원본 `LeftSubPanel`): 부모 row hover 시 표시. 부모 오른쪽에 붙이고, 화면을 넘치면 왼쪽/위쪽으로 플립
 
 메뉴 구성 (앱 조립):
 
@@ -188,29 +188,29 @@ LinkedIn/Github     -> 원본 brand asset (assets에 추가 필요)
 type DesktopViewMode = "big" | "middle" | "small"; // FolderViewMode와 같은 값
 ```
 
-- `viewMode`: 아이콘 버튼 112/96/80px + 이미지 72/56/48px. 정렬 메뉴의 보기 서브에서 변경. 원본은 `windows` 키의 리스트 컨트롤 store — 폴더 그리드(`FolderFileGrid`)의 viewMode와 같은 체계를 공유한다
+- `viewMode`: 아이콘 버튼 112/96/80px + 이미지 72/56/48px. 정렬 메뉴의 보기 서브에서 변경. 원본은 `windows` 키의 리스트 컨트롤 store — 폴더 그리드(`FolderFileGridUI`)의 viewMode와 같은 체계를 공유한다
 - `isMobile`: 클릭/더블클릭 전환 + 아이콘 크기 고정(96px). viewport media 기준 — 창 폭 container query가 아니다
 - 컨텍스트 메뉴 열림은 전역에서 하나 (원본 openContextMenuIdStore)
 
 ## Relationship Summary
 
 ```txt
-Wallpaper (설계명 DesktopRoot)
+WallpaperUI (설계명 DesktopRoot)
   owns 배경 이미지 surface (calc(100vh - 50px), cover, 모바일 77% center)
   delegates 빈 영역 우클릭 to 앱 (정렬/보기 메뉴)
 
-DesktopIconGrid
+DesktopIconGridUI
   owns flex-col wrap 배치와 viewMode 크기 컨텍스트
-  contains DesktopIcon[]
+  contains DesktopIconUI[]
 
-DesktopIcon
+DesktopIconUI
   owns 아이콘+라벨 visual (hover blue-200/30, viewMode 크기)
   delegates 더블클릭/클릭 open, 우클릭 메뉴 to 앱
 
-WindowFrame[] (형제 레이어)
+WindowFrameUI[] (형제 레이어)
   각자 fixed + zIndex — Desktop은 배치에 관여하지 않는다
 
-ContextMenuPanel (+ ContextMenuSubPanel)
+ContextMenuPanelUI (+ ContextMenuSubPanelUI)
   owns 커서 위치 200px 메뉴 surface, 애니메이션 없음
   위치 계산(경계 플립)은 컨트롤러가 담당
 ```
@@ -218,14 +218,14 @@ ContextMenuPanel (+ ContextMenuSubPanel)
 ## Implementation Direction
 
 1. Define desktop primitives:
-   - `Wallpaper` (배경 surface, `components/desktop/wallpaper`)
-   - `DesktopIconGrid` (viewMode 배치)
-   - `DesktopIcon` (아이콘 버튼)
+   - `WallpaperUI` (배경 surface, `components/desktop/wallpaperUI`)
+   - `DesktopIconGridUI` (viewMode 배치)
+   - `DesktopIconUI` (아이콘 버튼)
 2. Extend context menu:
-   - `ContextMenuSubPanel` (hover 서브 메뉴, 경계 플립)
+   - `ContextMenuSubPanelUI` (hover 서브 메뉴, 경계 플립)
    - 커서 위치 컨텍스트 메뉴 컨트롤러 (경계 플립, 단일 열림)
 3. Compose in Storybook:
-   - Wallpaper + DesktopIcon + WindowFrame + TaskbarRoot 통합 데스크톱 스토리 (`components/root/root.stories.tsx`)
+   - WallpaperUI + DesktopIconUI + WindowFrameUI + TaskbarRootUI 통합 데스크톱 스토리 (`components/root/root.stories.tsx`)
 4. Attach app behavior in `apps/web`:
    - 카테고리/외부 링크 데이터, 폴더 세션 생성, viewMode store, taskbar 고정 상태
 

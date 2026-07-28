@@ -6,7 +6,7 @@ import { cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { WindowsItemsContext } from "../../context";
-import { useWindowsItemsContext } from ".";
+import { useWindowsItemsContext } from "./";
 
 const WINDOWS_ITEMS = [{ id: "calculator", title: "계산기" }] satisfies readonly WindowItem[];
 

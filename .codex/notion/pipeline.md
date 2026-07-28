@@ -13,7 +13,7 @@
 - 원본 HTML 변환기: `src/lib/notion/notionToHtml.ts`
 - 원본 파서/에러: `src/lib/notion/parser.ts`, `src/lib/notion/error.ts`
 - 원본 상세 렌더: `src/components/templates/detailPage/index.tsx` (SSR HTML),
-  `src/components/molecules/notionViewer/NotionContent.tsx` (react-notion-x)
+  `src/components/molecules/notionViewer/NotionContentUI.tsx` (react-notion-x)
 
 ## 원본 구조와 문제
 
@@ -68,7 +68,7 @@ Notion API 실질 제한은 평균 3 req/s다. 시간 기반 ISR은 이 규모�
   같은 급의 영역 폴더로, 영역 루트에 `notionContent`(블록 트리 → 본문 전체), kind 폴더
   `block/`(블록별 컴포넌트 — callout, codeBlock, toggle, table, image 등)과 `richText/`
   (annotation·색상 인라인 렌더러)를 둔다. 스토리 title은 폴더 미러링 규칙을 따른다
-  (`"Notion/NotionContent"`, `"Notion/Block/NotionCallout"`).
+  (`"Notion/NotionContentUI"`, `"Notion/Block/NotionCalloutUI"`).
 - 변환 산출물은 HTML 문자열이 아니라 **정규화된 블록 트리(JSON)**다. HTML 문자열이면 ui가
   가질 것이 CSS + `dangerouslySetInnerHTML` wrapper뿐이라 컴포넌트 소유가 불가능하다.
   블록 트리 렌더는 토글 접기·코드 복사·이미지 확대 같은 인터랙션을 컴포넌트가 소유하게
@@ -182,7 +182,7 @@ POST할 수 없다. revalidate는 재배포가 아니다 — 빌드가 다시 �
    타입 검증: `pnpm typecheck:scripts`.
 4. 앱 통합 — **상세 페이지 완료** (`apps/web`). `src/lib/notionContent.ts`(fs 로더 —
    Notion API 무호출), `[category]/[slug]/page.tsx`(manifest 기반 `generateStaticParams`,
-   metadata/OG, 18페이지 전부 SSG), `notionBody.tsx`(NotionContent의 클라이언트 경계 —
+   metadata/OG, 18페이지 전부 SSG), `notionBody.tsx`(NotionContentUI의 클라이언트 경계 —
    코드 복사 버튼 인터랙션). 미지 slug는 404.
    주의: sync 산출물 JSON은 Tailwind v4 클래스 스캔에서 제외해야 한다
    (`globals.css`의 `@source not "../../content"`) — 본문 코드 예제의
@@ -190,7 +190,7 @@ POST할 수 없다. revalidate는 재배포가 아니다 — 빌드가 다시 �
    **데스크톱 셸 조립도 완료** (`apps/web/src/components/shell/`): 홈(`/`)이
    DesktopShell(원본 DesktopUI 대응)로, manifest 데이터 기반 바탕화면 아이콘·
    폴더 창(글 목록/커버/태그 필터/정렬)·파일 창(창 안 본문 — `/api/content`
-   정적 JSON 엔드포인트를 fetch해 NotionContent 렌더)·taskbar(시작/검색/앱 목록/시계)를
+   정적 JSON 엔드포인트를 fetch해 NotionContentUI 렌더)·taskbar(시작/검색/앱 목록/시계)를
    조립한다. 창 세션·z-order는 셸이 useState로 소유(규모 커지면 jotai 승격 검토),
    고정 상태는 localStorage 영속화. SSR은 배경만 그리고 셸은 mount 후 렌더
    (원본 hydration 가드) — SEO 본문은 상세 정적 페이지가 담당. 빌드 산출:
@@ -198,7 +198,7 @@ POST할 수 없다. revalidate는 재배포가 아니다 — 빌드가 다시 �
    셸 개선 완료: **URL↔창 동기화** — 최상단 파일 창을 `history.replaceState`로 URL에
    반영(새로고침/공유 = 정적 글 페이지), 셸 재진입은 `/?open={category}[/{slug}]` 딥링크
    (상세 페이지의 "바탕화면에서 열기" 링크). 원본의 숨은 SSR article 오버레이(중복 HTML)는
-   재도입하지 않는다. **hover preview 실화면** — ScaledPreview + WindowFrame(overrideFullscreen)
+   재도입하지 않는다. **hover preview 실화면** — ScaledPreviewUI + WindowFrameUI(overrideFullscreen)
    으로 폴더는 파일 카드 그리드, 파일은 FileWindow 캐시 본문을 축소 렌더(미리보기 위한
    fetch는 하지 않음). **모바일 클릭 열기** — matchMedia(≤768px) 기반 useIsMobile로
    아이콘/파일 카드가 클릭 열기로 전환.

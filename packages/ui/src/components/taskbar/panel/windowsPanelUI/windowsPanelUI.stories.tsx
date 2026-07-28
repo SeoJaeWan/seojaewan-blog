@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import { FolderIcon } from "../../../storyIcons";
+import { TaskSearchResultViewUI } from "../../view/taskSearchResultViewUI";
+import { WindowsPanelViewUI } from "../../view/windowsPanelViewUI";
 import { WindowsPanelUI } from "./index";
 
 const PINNED_ITEMS: WindowItem[] = [
@@ -33,8 +35,8 @@ const meta = {
     docs: {
       description: {
         component:
-          "시작 패널의 compound root와 SearchInput/SearchResults/View namespaced visual을 제공한다. " +
-          "각 Story는 children 조합으로 기본, 검색, 상세 상태를 보여 준다.",
+          "시작 패널의 compound root와 공통 SearchInput을 제공한다. " +
+          "각 Story는 독립적인 WindowsPanelViewUI와 TaskSearchResultViewUI를 children으로 조합한다.",
       },
     },
   },
@@ -52,7 +54,7 @@ export const Default: Story = {
   render: (args) => (
     <WindowsPanelUI {...args}>
       <WindowsPanelUI.SearchInput readOnly />
-      <WindowsPanelUI.View pinnedItems={PINNED_ITEMS} />
+      <WindowsPanelViewUI pinnedItems={PINNED_ITEMS} />
     </WindowsPanelUI>
   ),
 };
@@ -61,7 +63,10 @@ export const SearchView: Story = {
   render: (args) => (
     <WindowsPanelUI {...args}>
       <WindowsPanelUI.SearchInput readOnly value="정리" />
-      <WindowsPanelUI.SearchResults results={SEARCH_RESULTS} />
+      <TaskSearchResultViewUI
+        className="wb-windows-panel__search-results"
+        results={SEARCH_RESULTS}
+      />
     </WindowsPanelUI>
   ),
 };
@@ -70,7 +75,8 @@ export const SearchDetail: Story = {
   render: (args) => (
     <WindowsPanelUI {...args}>
       <WindowsPanelUI.SearchInput readOnly value="정리" />
-      <WindowsPanelUI.SearchResults
+      <TaskSearchResultViewUI
+        className="wb-windows-panel__search-results"
         detailActions={DETAIL_ACTIONS}
         detailItemId="rsc"
         onDetailAction={() => undefined}

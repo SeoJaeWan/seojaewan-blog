@@ -11,7 +11,7 @@ import type {
   DispatchWindowEvent,
   SubscribeWindowEvent,
 } from "../../../windowsEventsProvider/types";
-import { useWindowsItemsValue } from ".";
+import { useWindowsItemsValue } from "./";
 
 const INITIAL_ITEMS = [{ id: "calculator", title: "계산기" }] satisfies readonly WindowItem[];
 const NEXT_ITEMS = [

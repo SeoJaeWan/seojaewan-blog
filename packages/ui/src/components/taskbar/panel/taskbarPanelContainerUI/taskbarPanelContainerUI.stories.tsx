@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { TaskPanel } from "../../../base/panel/taskPanel";
+import { TaskPanelUI } from "../../../base/panel/taskPanelUI";
 import type { TaskbarPanelContainerState } from "./index";
 import { TaskbarPanelContainerUI } from "./index";
 
@@ -30,7 +30,7 @@ type Story = StoryObj<typeof meta>;
 
 const renderContainer = (state: TaskbarPanelContainerState) => (
   <TaskbarPanelContainerUI state={state} style={containerStyle}>
-    <TaskPanel style={panelStyle}>{state} panel visual</TaskPanel>
+    <TaskPanelUI style={panelStyle}>{state} panel visual</TaskPanelUI>
   </TaskbarPanelContainerUI>
 );
 

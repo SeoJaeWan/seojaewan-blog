@@ -24,6 +24,7 @@ export type {
   WindowPinEvent,
   WindowPinsReorderedEvent,
   WindowsItemsUpdatedEvent,
+  WindowsPanelItemSource,
   WindowsState,
   WindowStateEventMap,
 } from "./windows/types";

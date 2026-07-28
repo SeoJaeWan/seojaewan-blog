@@ -3,10 +3,10 @@ import type { ComponentProps, ReactNode } from "react";
 import { clsx } from "clsx";
 
 import windowsLogoSrc from "../../../../assets/windows.svg";
-import { IconButton } from "../../../base/button/iconButton";
+import { IconButtonUI } from "../../../base/button/iconButtonUI";
 
 export interface TaskbarStartButtonUIProps extends Omit<
-  ComponentProps<typeof IconButton>,
+  ComponentProps<typeof IconButtonUI>,
   "aria-label" | "icon" | "size"
 > {
   /** Windows logo visual. 기본값은 windows.svg asset이다. */
@@ -32,7 +32,7 @@ export const TaskbarStartButtonUI = ({
   icon = <DefaultWindowsLogoIcon />,
   ...props
 }: TaskbarStartButtonUIProps) => (
-  <IconButton
+  <IconButtonUI
     {...props}
     aria-label={TASKBAR_START_BUTTON_ARIA_LABEL}
     className={clsx("wb-taskbar-start-button", className)}

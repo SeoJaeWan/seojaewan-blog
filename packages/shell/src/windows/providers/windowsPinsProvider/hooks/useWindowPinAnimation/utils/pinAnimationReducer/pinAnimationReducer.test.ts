@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { WindowsPinsMutation } from "../../../../types";
-import { createPinAnimationState, pinAnimationReducer } from ".";
+import { createPinAnimationState, pinAnimationReducer } from "./";
 
 type MutationWithoutRevision<T> = T extends unknown ? Omit<T, "revision"> : never;
 

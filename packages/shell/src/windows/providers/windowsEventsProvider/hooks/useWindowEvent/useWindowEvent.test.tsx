@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { WindowItemEvent } from "../../../../types";
 import { useWindowDispatch, WindowsEventsProvider } from "../..";
-import { useWindowEvent } from ".";
+import { useWindowEvent } from "./";
 
 const WINDOW_ITEM_EVENT: WindowItemEvent = {
   item: { id: "calculator", title: "계산기" },

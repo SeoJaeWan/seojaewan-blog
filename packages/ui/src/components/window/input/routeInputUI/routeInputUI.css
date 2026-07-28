@@ -1,0 +1,146 @@
+.wb-route-input {
+  /* 원본 RouteInputUI 톤: bg-gray-200/40 · hover:bg-gray-400/20 · 편집 시 bg-white border-gray-200
+     (Tailwind v4 실측값) */
+  --wb-route-input-surface: rgb(229 231 235 / 0.4);
+  --wb-route-input-surface-hover: rgb(153 161 175 / 0.2);
+  --wb-route-input-border: rgb(229 231 235);
+  --wb-route-input-row-hover: rgb(243 244 246);
+
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+/* 좌측 세션 아이콘 20px (absolute left-3) */
+.wb-route-input__icon {
+  align-items: center;
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  left: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+}
+
+.wb-route-input__icon > svg,
+.wb-route-input__icon > img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* 원본 input: pl-9 pr-2 h-full w-full border text-xs transition-colors */
+.wb-route-input__field {
+  background: var(--wb-route-input-surface);
+  border: 1px solid var(--wb-route-input-surface);
+  box-sizing: border-box;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 8px 0 36px;
+  transition:
+    background-color var(--wb-transition-fast),
+    border-color var(--wb-transition-fast);
+  width: 100%;
+}
+
+.wb-route-input[data-variant="folder"] .wb-route-input__field {
+  border-radius: var(--wb-radius-md);
+}
+
+.wb-route-input[data-variant="file"] .wb-route-input__field {
+  border-radius: 9999px;
+}
+
+.wb-route-input__field:hover {
+  background: var(--wb-route-input-surface-hover);
+}
+
+.wb-route-input__field:focus {
+  outline: none;
+}
+
+/* 편집 모드: 흰 배경 + 아래 드롭다운과 이어지도록 바닥 radius 제거.
+   원본은 variant와 무관하게 rounded-md rounded-b-none — file pill도 편집 중에는 각진 위 radius */
+.wb-route-input[data-editing="true"] .wb-route-input__field {
+  background: rgb(255 255 255);
+  border-color: var(--wb-route-input-border);
+  border-bottom-color: rgb(255 255 255);
+  border-radius: var(--wb-radius-md) var(--wb-radius-md) 0 0;
+}
+
+/* 원본 드롭다운: absolute bottom-px translate-y-full bg-white rounded-b-md
+   border border-t-0 border-gray-200 w-full text-xs py-1 */
+.wb-route-input__suggestions {
+  background: rgb(255 255 255);
+  border: 1px solid var(--wb-route-input-border);
+  border-radius: 0 0 var(--wb-radius-md) var(--wb-radius-md);
+  border-top: 0;
+  bottom: 1px;
+  box-sizing: border-box;
+  font-size: 12px;
+  left: 0;
+  padding: 4px 0;
+  position: absolute;
+  transform: translateY(100%);
+  width: 100%;
+  z-index: 1;
+}
+
+.wb-route-input__empty,
+.wb-route-input__suggestion {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  height: 32px;
+  padding: 0 12px;
+  width: 100%;
+}
+
+.wb-route-input__suggestion {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  gap: 4px;
+  text-align: left;
+}
+
+.wb-route-input__empty:hover,
+.wb-route-input__suggestion:hover {
+  background: var(--wb-route-input-row-hover);
+}
+
+.wb-route-input__suggestion-icon {
+  align-items: center;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.wb-route-input__suggestion-icon > svg,
+.wb-route-input__suggestion-icon > img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wb-route-input__suggestion-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}

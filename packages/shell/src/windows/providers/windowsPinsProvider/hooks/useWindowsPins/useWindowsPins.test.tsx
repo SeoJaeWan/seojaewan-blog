@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { WindowsPinsContext } from "../../context";
 import type { WindowsPinsContextValue } from "../../types";
-import { useWindowsPins } from ".";
+import { useWindowsPins } from "./";
 
 describe("useWindowsPins", () => {
   it("Windows 밖에서 호출하면 사용 위치 오류를 발생시킨다", () => {

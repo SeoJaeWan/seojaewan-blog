@@ -5,7 +5,7 @@ import { afterEach, describe, expect, expectTypeOf, it } from "vitest";
 
 import type { WindowDispatch, WindowDispatchEventMap } from "../../../../types";
 import { WindowsEventsProvider } from "../..";
-import { useWindowDispatch } from ".";
+import { useWindowDispatch } from "./";
 
 const Wrapper = ({ children }: PropsWithChildren) => (
   <WindowsEventsProvider>{children}</WindowsEventsProvider>

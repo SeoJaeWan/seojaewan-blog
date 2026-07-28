@@ -22,15 +22,15 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
   return <Windows windowsItems={windowsItems}>{children}</Windows>;
 };
 
-const renderCategories = (allViewSelected = true) =>
+const renderCategories = (allViewActive = true) =>
   renderHook(
     ({ selected }) =>
       useWindowPanelCategories({
-        allViewSelected: selected,
+        allViewActive: selected,
       }),
     {
       initialProps: {
-        selected: allViewSelected,
+        selected: allViewActive,
       },
       wrapper: Wrapper,
     },
