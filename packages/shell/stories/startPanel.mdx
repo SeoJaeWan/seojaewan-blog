@@ -5,8 +5,8 @@ import * as StartPanelStories from "./startPanel.stories";
 
 # Start panel
 
-실제 `Windows`, `TaskbarPanel`, `TaskbarRoot`, `TaskbarStartButton`을 runtime 순서로 조립한
-기능 카탈로그다. 이 문서는 Start panel이 제공하는 기능과 상태 도구의 역할을 설명하며,
+실제 `ContextMenuProvider`, `Windows`, `TaskbarPanel`, `TaskbarRoot`, `TaskbarStartButton`을 runtime
+순서로 조립한 기능 카탈로그다. 이 문서는 Start panel이 제공하는 기능과 상태 도구의 역할을 설명하며,
 `동작 확인` Story에서는 같은 구성을 직접 실행할 수 있다.
 
 실제 window 실행과 route 이동은 미래 소비 앱의 책임이다. 이 Storybook에서는 connector가
@@ -65,7 +65,7 @@ import * as StartPanelStories from "./startPanel.stories";
     <tr>
       <td>Context Menu</td>
       <td>
-        검색·고정된 항목·모든 항목의 우클릭 메뉴를 기존 panel 위에 표시하고
+        검색·고정된 항목·모든 항목은 각각의 설정으로 전역 Context Menu Host를 열고
         <code>windowContextMenuRequested</code> event를 전달한다. 메뉴가 열려 있는 동안 아래 panel의
         scroll과 interaction을 잠근다.
       </td>

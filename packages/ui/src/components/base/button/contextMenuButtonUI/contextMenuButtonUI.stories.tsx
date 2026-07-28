@@ -49,3 +49,10 @@ export const Disabled: Story = {
     disabled: true,
   },
 };
+
+export const Submenu: Story = {
+  args: {
+    label: "정렬 기준",
+    submenuIndicator: true,
+  },
+};

@@ -5,7 +5,7 @@ import type { WindowItem } from "@window/ui";
 import { TaskbarRootUI } from "@window/ui";
 
 import type { WindowEventName } from "../src";
-import { TaskbarPanel, useWindowEvent, Windows } from "../src";
+import { ContextMenuProvider, TaskbarPanel, useWindowEvent, Windows } from "../src";
 import type { ShellStorageSeed } from "./shellFixtures";
 import { resetShellStoryStorage, seedShellStoryStorage } from "./shellFixtures";
 
@@ -131,56 +131,58 @@ export const ShellHarness = ({
   return (
     <div ref={setPortalContainer} className="wb-shell-story" data-testid="shell-story-surface">
       {portalContainer ? (
-        <Windows key={storyVersion} windowsItems={windowsItems}>
-          <ShellEventProbe onResetStory={resetStory} />
-          {statePresets.length >= 1 || itemStates.length >= 1 ? (
-            <aside
-              aria-label="동작 상태"
-              className="wb-shell-story__fixtures"
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              <header className="wb-shell-story__tool-header">
-                <strong>동작 상태</strong>
-              </header>
-              {statePresets.length >= 1 ? (
-                <section className="wb-shell-story__fixture-group">
-                  <strong>초기 상태 프리셋</strong>
-                  <div className="wb-shell-story__fixture-actions">
-                    {statePresets.map((statePreset) => (
-                      <button
-                        key={statePreset.label}
-                        aria-pressed={activeStatePreset === statePreset.label}
-                        onClick={() => applyStatePreset(statePreset)}
-                        type="button"
-                      >
-                        {statePreset.label}
-                      </button>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-              {itemStates.length >= 1 ? (
-                <section className="wb-shell-story__fixture-group">
-                  <strong>현재 항목 변경</strong>
-                  <div className="wb-shell-story__fixture-actions">
-                    {itemStates.map((itemState) => (
-                      <button
-                        key={itemState.label}
-                        onClick={() => setWindowsItems(itemState.windowsItems)}
-                        type="button"
-                      >
-                        {itemState.label}
-                      </button>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-            </aside>
-          ) : null}
-          <TaskbarPanel portalContainer={portalContainer}>
-            <TaskbarRootUI>{taskbarItems}</TaskbarRootUI>
-          </TaskbarPanel>
-        </Windows>
+        <ContextMenuProvider key={storyVersion} portalContainer={portalContainer}>
+          <Windows windowsItems={windowsItems}>
+            <ShellEventProbe onResetStory={resetStory} />
+            {statePresets.length >= 1 || itemStates.length >= 1 ? (
+              <aside
+                aria-label="동작 상태"
+                className="wb-shell-story__fixtures"
+                onPointerDown={(event) => event.stopPropagation()}
+              >
+                <header className="wb-shell-story__tool-header">
+                  <strong>동작 상태</strong>
+                </header>
+                {statePresets.length >= 1 ? (
+                  <section className="wb-shell-story__fixture-group">
+                    <strong>초기 상태 프리셋</strong>
+                    <div className="wb-shell-story__fixture-actions">
+                      {statePresets.map((statePreset) => (
+                        <button
+                          key={statePreset.label}
+                          aria-pressed={activeStatePreset === statePreset.label}
+                          onClick={() => applyStatePreset(statePreset)}
+                          type="button"
+                        >
+                          {statePreset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+                {itemStates.length >= 1 ? (
+                  <section className="wb-shell-story__fixture-group">
+                    <strong>현재 항목 변경</strong>
+                    <div className="wb-shell-story__fixture-actions">
+                      {itemStates.map((itemState) => (
+                        <button
+                          key={itemState.label}
+                          onClick={() => setWindowsItems(itemState.windowsItems)}
+                          type="button"
+                        >
+                          {itemState.label}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+              </aside>
+            ) : null}
+            <TaskbarPanel portalContainer={portalContainer}>
+              <TaskbarRootUI>{taskbarItems}</TaskbarRootUI>
+            </TaskbarPanel>
+          </Windows>
+        </ContextMenuProvider>
       ) : null}
     </div>
   );

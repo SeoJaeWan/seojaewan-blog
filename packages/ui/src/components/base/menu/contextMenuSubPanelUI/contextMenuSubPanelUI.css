@@ -10,6 +10,9 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  max-height: calc(100vh - 16px);
+  max-width: calc(100vw - 16px);
+  overflow: auto;
   padding: 4px;
   position: absolute;
   visibility: hidden;
@@ -47,6 +50,10 @@
 .wb-context-menu-sub-panel .wb-context-menu-button__label {
   flex: none;
   font-size: 14px;
+}
+
+.wb-context-menu-sub-panel .wb-context-menu-separator {
+  width: calc(100% - 12px);
 }
 
 /* 현재 값 표시 슬롯: 원본 w-2.5 span + 선택 시 6px ● 텍스트 (아이콘 아님) */

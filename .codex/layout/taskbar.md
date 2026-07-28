@@ -52,18 +52,20 @@ Windows item, pin, 검색과 observer의 canonical 계약은
 ## Current Composition
 
 ```tsx
-import { TaskbarPanel, TaskbarStartButton, Windows } from "@window/shell";
+import { ContextMenuProvider, TaskbarPanel, TaskbarStartButton, Windows } from "@window/shell";
 import { TaskbarRootUI } from "@window/ui";
 import "@window/ui/styles.css";
 
-<Windows windowsItems={items}>
-  <TaskbarPanel>
-    <TaskbarRootUI>
-      <TaskbarStartButton />
-      {/* TaskbarSearchUI, TaskbarAppListUI, TaskbarClockUI 등 visual 조립 */}
-    </TaskbarRootUI>
-  </TaskbarPanel>
-</Windows>;
+<ContextMenuProvider>
+  <Windows windowsItems={items}>
+    <TaskbarPanel>
+      <TaskbarRootUI>
+        <TaskbarStartButton />
+        {/* TaskbarSearchUI, TaskbarAppListUI, TaskbarClockUI 등 visual 조립 */}
+      </TaskbarRootUI>
+    </TaskbarPanel>
+  </Windows>
+</ContextMenuProvider>;
 ```
 
 `TaskbarStartButton`은 외부 props 없이 시작 button과 panel을 조립한다. 시작 panel item, 검색 결과,
@@ -72,29 +74,30 @@ pin 상태와 callback을 app이 button props로 전달하지 않는다.
 ## Component Tree
 
 ```text
-Windows
-└─ TaskbarPanel
-   └─ app composition
-      └─ TaskbarRootUI (@window/ui)
-         └─ TaskbarStartButton (@window/shell)
-            └─ TaskbarPanel.Root
-               ├─ TaskbarPanel.Trigger
-               │  └─ TaskbarStartButtonUI (@window/ui)
-               └─ TaskbarPanel.Content
-                  └─ TaskbarPanelLayerUI portal (@window/ui)
-                     └─ TaskbarPanelContainerUI (@window/ui)
-                        └─ TaskbarWindowPanel (@window/shell)
-                           └─ WindowsPanelUI (@window/ui)
-                              ├─ WindowsPanelUI.SearchInput
-                              └─ active view
-                                 ├─ WindowPanelBrowseView (@window/shell)
-                                 │  └─ WindowsPanelViewUI (@window/ui)
-                                 │     ├─ pinned view
-                                 │     └─ all view + category jump overlay
-                                 └─ TaskSearchResultView (@window/shell)
-                                    └─ TaskSearchResultViewUI (@window/ui)
-                                       ├─ result list
-                                       └─ selected item detail/actions
+ContextMenuProvider
+└─ Windows
+   └─ TaskbarPanel
+      └─ app composition
+         └─ TaskbarRootUI (@window/ui)
+            └─ TaskbarStartButton (@window/shell)
+               └─ TaskbarPanel.Root
+                  ├─ TaskbarPanel.Trigger
+                  │  └─ TaskbarStartButtonUI (@window/ui)
+                  └─ TaskbarPanel.Content
+                     └─ TaskbarPanelLayerUI portal (@window/ui)
+                        └─ TaskbarPanelContainerUI (@window/ui)
+                           └─ TaskbarWindowPanel (@window/shell)
+                              └─ WindowsPanelUI (@window/ui)
+                                 ├─ WindowsPanelUI.SearchInput
+                                 └─ active view
+                                    ├─ WindowPanelBrowseView (@window/shell)
+                                    │  └─ WindowsPanelViewUI (@window/ui)
+                                    │     ├─ pinned view
+                                    │     └─ all view + category jump overlay
+                                    └─ TaskSearchResultView (@window/shell)
+                                       └─ TaskSearchResultViewUI (@window/ui)
+                                          ├─ result list
+                                          └─ selected item detail/actions
 ```
 
 ## Implemented Component Map
@@ -103,6 +106,8 @@ Windows
 
 | Component/hook             | Current responsibility                                                                       |
 | -------------------------- | -------------------------------------------------------------------------------------------- |
+| `ContextMenuProvider`      | Shell 전체의 단일 Context Menu request, Portal, 위치, focus와 dismiss lifecycle              |
+| `useContextMenuTrigger`    | Surface별 entry·callback을 target만 받는 contextmenu handler로 변환                          |
 | `TaskbarPanel`             | active panel ID, panel별 visual phase, portal layer, Escape close와 1초 transition watchdog  |
 | `TaskbarPanel.Root`        | 선택 ID 또는 자동 ID로 한 panel의 Trigger와 Content scope를 제공                             |
 | `TaskbarPanel.Trigger`     | 자식 button에 toggle, ref, selected visual과 accessible 연결을 합성                          |
@@ -148,12 +153,13 @@ catalog다.
 
 ```text
 ShellHarness
-└─ Windows
-   ├─ event probe와 story fixture controls
-   └─ TaskbarPanel
-      └─ TaskbarRootUI
-         └─ taskbarItems slot
-            └─ TaskbarStartButton (현재)
+└─ ContextMenuProvider
+   └─ Windows
+      ├─ event probe와 story fixture controls
+      └─ TaskbarPanel
+         └─ TaskbarRootUI
+            └─ taskbarItems slot
+               └─ TaskbarStartButton (현재)
 ```
 
 - Start panel은 `Shell/Taskbar/Start panel` 아래에 전용 `Docs`와 하나의 `동작 확인` Story만
@@ -280,19 +286,23 @@ BrowseView 밖에 있으므로 검색 중에도 기존 pinned/all 선택은 보�
 
 기본 item 선택 자체가 open 동작이므로 detail action list에 별도 `open` row를 추가하지 않는다.
 
-Window item Context Menu는 기존 `TaskbarPanelLayerUI`에 portal로 연결된
-`WindowItemContextMenuLayer`가 조립한다. 메뉴가 열려 있는 동안 아래 WindowPanel의 scroll과
-pointer interaction을 막고, 바깥 pointer와 Escape는 Context Menu만 즉시 닫는다.
+Window item Context Menu는 앱 root의 전역 `ContextMenuProvider`가 단일 Portal Host로 렌더링한다.
+Pinned, All과 Search는 같은 `useContextMenuTrigger`를 각각 다른 entry·callback 설정으로 호출하고
+target에는 `WindowItem`만 전달한다. 메뉴가 열려 있는 동안 아래 WindowPanel의 scroll과 pointer
+interaction을 막고, 바깥 pointer와 Escape는 Context Menu만 즉시 닫는다.
 
 - pinned/all: 실제 배치가 커서 아래면 위에서 아래로, 커서 위면 아래에서 위로 opening Motion을
   실행한다.
 - search: opening Motion 없이 즉시 표시한다.
-- 모든 source: closing Motion 없이 즉시 제거한다.
+- 모든 surface: closing Motion 없이 즉시 제거한다.
 - `openLocation`: Context Menu와 WindowPanel을 모두 닫은 뒤 `windowOpenLocation`을 dispatch한다.
 - pin/unpin/reorder: Context Menu만 닫고 WindowPanel은 유지한다.
 - pinned reorder: 위치에 따라 `moveToFront`, `moveLeft`, `moveRight`를 노출하고
   `useWindowsPins.reorder`에 연결한다. 두 번째 항목은 `moveLeft`가 곧 맨 앞 이동이므로
   `moveToFront`를 중복 표시하지 않는다.
+
+전역 Host의 entry, focus, submenu, separator와 dismiss 계약은
+[`context-menu.md`](../architecture/context-menu.md)를 따른다.
 
 ## Pinned Item Lifecycle
 

@@ -12,7 +12,7 @@ const baseOptions = {
 };
 
 describe("resolveContextMenuPosition", () => {
-  it("아래와 오른쪽 공간이 충분하면 커서의 left와 top에 메뉴를 배치한다", () => {
+  it("아래와 오른쪽 공간이 충분하면 기준점의 left와 top에 메뉴를 배치한다", () => {
     expect(resolveContextMenuPosition(baseOptions)).toEqual({
       left: 100,
       placement: "bottom",
@@ -20,7 +20,7 @@ describe("resolveContextMenuPosition", () => {
     });
   });
 
-  it("아래 공간이 부족하면 커서 위에 메뉴를 배치한다", () => {
+  it("아래 공간이 부족하면 기준점 위에 메뉴를 배치한다", () => {
     expect(
       resolveContextMenuPosition({
         ...baseOptions,
@@ -33,7 +33,7 @@ describe("resolveContextMenuPosition", () => {
     });
   });
 
-  it("오른쪽 공간이 부족하면 커서의 right 기준으로 메뉴를 배치한다", () => {
+  it("오른쪽 공간이 부족하면 기준점의 right를 기준으로 메뉴를 배치한다", () => {
     expect(
       resolveContextMenuPosition({
         ...baseOptions,
@@ -46,7 +46,7 @@ describe("resolveContextMenuPosition", () => {
     });
   });
 
-  it("커서가 viewport 경계에 있어도 지정된 최소 여백 안으로 좌표를 보정한다", () => {
+  it("기준점이 viewport 경계에 있어도 지정된 최소 여백 안으로 좌표를 보정한다", () => {
     expect(
       resolveContextMenuPosition({
         ...baseOptions,

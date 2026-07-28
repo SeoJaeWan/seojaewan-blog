@@ -25,10 +25,17 @@ surface가 공유하는 다음 상태와 observer registry를 제공한다.
 ## Root Composition
 
 `Windows`는 Windows domain을 사용하는 앱·shell 컴포넌트 전체를 감싼다.
-`TaskbarPanel`은 taskbar panel registry와 portal layer만 소유하므로 그 안에 둔다.
+`ContextMenuProvider`는 Windows domain에 의존하지 않는 앱 전역 Portal Host이므로 `Windows`
+바깥에 두고, `TaskbarPanel`은 taskbar panel registry와 portal layer만 소유하므로 그 안에 둔다.
 
 ```tsx
-import { TaskbarPanel, TaskbarStartButton, Windows, useWindowEvent } from "@window/shell";
+import {
+  ContextMenuProvider,
+  TaskbarPanel,
+  TaskbarStartButton,
+  Windows,
+  useWindowEvent,
+} from "@window/shell";
 import type { WindowItem } from "@window/ui";
 
 const WindowObservers = () => {
@@ -44,12 +51,14 @@ const WindowObservers = () => {
 };
 
 export const AppShell = ({ items }: { items: readonly WindowItem[] }) => (
-  <Windows windowsItems={items}>
-    <WindowObservers />
-    <TaskbarPanel>
-      <TaskbarStartButton />
-    </TaskbarPanel>
-  </Windows>
+  <ContextMenuProvider>
+    <Windows windowsItems={items}>
+      <WindowObservers />
+      <TaskbarPanel>
+        <TaskbarStartButton />
+      </TaskbarPanel>
+    </Windows>
+  </ContextMenuProvider>
 );
 ```
 
@@ -315,11 +324,15 @@ Taskbar 시작 panel은 Windows domain event를 직접 해석하지 않고 hook�
 - item 선택과 `open`/`openLocation` action: 현재 `TaskbarPanel.Root`의 `close()` 호출 후 해당
   event dispatch
 - pin/unpin action: surface별 `useWindowsPins` 또는 `useTaskbarPins` 호출, panel은 열린 상태 유지
-- context menu: native 기본 메뉴를 막고 `windowContextMenuRequested` dispatch 뒤 Context Menu를
-  기존 panel 위에 표시한다. 위치 열기는 panel을 닫고, pin/unpin/reorder는 panel을 유지한다.
+- context menu: 각 pinned/all/search surface가 자신의 `useContextMenuTrigger` 설정에서 native
+  기본 메뉴를 막고 `windowContextMenuRequested`에 고정 source를 전달한 뒤 전역 Context Menu
+  Host에 `WindowItem` target을 연다. 위치 열기는 panel을 닫고, pin/unpin/reorder는 panel을 유지한다.
 
 즉, Provider는 panel close 정책을 알지 못한다. Event를 일으키는 taskbar adapter가 현재 UI
 interaction 순서를 결정하고, 앱 observer는 이미 발생한 semantic event만 처리한다.
+
+Context Menu 자체의 target, entry와 browser lifecycle 계약은
+[`context-menu.md`](./context-menu.md)를 따른다.
 
 ## Superseded Contracts
 

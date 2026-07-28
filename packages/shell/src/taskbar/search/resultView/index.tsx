@@ -2,14 +2,21 @@
 
 import type { MouseEvent } from "react";
 
-import type { WindowItem, WindowItemActionId, WindowItemActionState } from "@window/ui";
+import type {
+  WindowItem,
+  WindowItemActionId,
+  WindowItemActionState,
+  WindowItemContextActionId,
+} from "@window/ui";
 import { TaskSearchResultViewUI } from "@window/ui";
 
+import { useContextMenuTrigger } from "../../../contextMenu";
 import { useTaskbarPins } from "../../../windows/providers/taskbarPinsProvider";
 import { useWindowDispatch } from "../../../windows/providers/windowsEventsProvider";
 import { useWindowsPins } from "../../../windows/providers/windowsPinsProvider";
 import { useTaskbarPanelRootContext } from "../../panel/hooks/useTaskbarPanelRootContext";
-import { useItemContextMenu, WindowItemContextMenuLayer } from "../../windowItemContextMenu";
+import { createWindowItemContextActions } from "../../windowItemContextMenu/utils/createWindowItemContextActions";
+import { resolveWindowItemContextEntries } from "../../windowItemContextMenu/utils/resolveWindowItemContextEntries";
 import type { UseTaskSearchResult } from "../hooks/useTaskSearch";
 
 interface TaskSearchResultViewProps {
@@ -31,7 +38,6 @@ export const TaskSearchResultView = ({ className, search }: TaskSearchResultView
   const dispatch = useWindowDispatch();
   const taskbarPins = useTaskbarPins();
   const windowsPins = useWindowsPins();
-  const itemContextMenu = useItemContextMenu();
   const detailActions: readonly WindowItemActionState[] =
     search.detailItem === null
       ? []
@@ -72,32 +78,55 @@ export const TaskSearchResultView = ({ className, search }: TaskSearchResultView
         break;
     }
   };
+  const handleSearchContextAction = (actionId: WindowItemContextActionId, item: WindowItem) => {
+    switch (actionId) {
+      case "open":
+        dispatchOpen("windowOpen", item);
+        return;
+      case "openLocation":
+        dispatchOpen("windowOpenLocation", item);
+        return;
+      case "pinToStart":
+        windowsPins.pin(item.id);
+        return;
+      case "unpinFromStart":
+        windowsPins.unpin(item.id);
+        return;
+      case "pinToTaskbar":
+        taskbarPins.pin(item.id);
+        return;
+      case "unpinFromTaskbar":
+        taskbarPins.unpin(item.id);
+    }
+  };
+  const handleSearchItemContextMenu = useContextMenuTrigger<WindowItem, WindowItemContextActionId>({
+    animated: false,
+    getEntries: (item) =>
+      resolveWindowItemContextEntries(
+        createWindowItemContextActions({
+          itemId: item.id,
+          taskbarPinnedIds: taskbarPins.pinnedIds,
+          windowsPinnedIds: windowsPins.pinnedIds,
+        }),
+      ),
+    onAction: handleSearchContextAction,
+    onOpen: (item) => dispatch("windowContextMenuRequested", { item, source: "search" }),
+  });
 
   const handleItemContextMenu = (event: MouseEvent<HTMLButtonElement>, item: WindowItem) => {
-    event.preventDefault();
-    dispatch("windowContextMenuRequested", { item, source: "search" });
-    itemContextMenu.open({
-      anchorX: event.clientX,
-      anchorY: event.clientY,
-      item,
-      source: "search",
-      triggerElement: event.currentTarget,
-    });
+    handleSearchItemContextMenu(event, item);
   };
 
   return (
-    <>
-      <TaskSearchResultViewUI
-        className={className}
-        detailActions={detailActions}
-        detailItemId={search.detailItemId}
-        onDetailAction={handleDetailAction}
-        onDetailItemChange={search.onDetailItemChange}
-        onItemContextMenu={handleItemContextMenu}
-        onSelectItem={(item) => dispatchOpen("windowOpen", item)}
-        results={search.results}
-      />
-      <WindowItemContextMenuLayer contextMenu={itemContextMenu} />
-    </>
+    <TaskSearchResultViewUI
+      className={className}
+      detailActions={detailActions}
+      detailItemId={search.detailItemId}
+      onDetailAction={handleDetailAction}
+      onDetailItemChange={search.onDetailItemChange}
+      onItemContextMenu={handleItemContextMenu}
+      onSelectItem={(item) => dispatchOpen("windowOpen", item)}
+      results={search.results}
+    />
   );
 };

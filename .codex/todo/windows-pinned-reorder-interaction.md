@@ -47,6 +47,7 @@ context menu 요청으로 같은 action button에 접근하며 `useWindowsPins()
 
 ## 구현 결과
 
-`WindowItemContextMenuLayer`가 source와 현재 pinned index에서 가능한 action을 계산하고 기존
-canonical reorder action에 연결한다. Provider state, localStorage와 semantic event가 먼저 갱신되고
+Pinned surface의 `useContextMenuTrigger` 설정이 현재 pinned index에서 가능한 action을 계산해 전역
+Context Menu Host에 전달하고 기존 canonical reorder action에 연결한다. All과 Search 설정에는
+reorder action이 없다. Provider state, localStorage와 semantic event가 먼저 갱신되고
 `useWindowPinAnimation`이 기존 latest-wins 규칙으로 변경된 순서를 시각화한다.

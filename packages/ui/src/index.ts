@@ -4,6 +4,8 @@ export type { ContextMenuButtonUIProps } from "./components/base/button/contextM
 export { ContextMenuButtonUI } from "./components/base/button/contextMenuButtonUI";
 export type { IconButtonUIProps } from "./components/base/button/iconButtonUI";
 export { IconButtonUI } from "./components/base/button/iconButtonUI";
+export type { ContextMenuSeparatorUIProps } from "./components/base/menu/contextMenuSeparatorUI";
+export { ContextMenuSeparatorUI } from "./components/base/menu/contextMenuSeparatorUI";
 export type {
   ContextMenuSubPanelPlacement,
   ContextMenuSubPanelUIProps,

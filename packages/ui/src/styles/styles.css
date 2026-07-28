@@ -3,6 +3,7 @@
 @import "../components/base/button/contextMenuButtonUI/contextMenuButtonUI.css";
 @import "../components/base/panel/taskPanelUI/taskPanelUI.css";
 @import "../components/base/menu/contextMenuUI/contextMenuUI.css";
+@import "../components/base/menu/contextMenuSeparatorUI/contextMenuSeparatorUI.css";
 @import "../components/base/menu/contextMenuSubPanelUI/contextMenuSubPanelUI.css";
 @import "../components/taskbar/button/panelIconButtonUI/panelIconButtonUI.css";
 @import "../components/taskbar/input/taskSearchInputUI/taskSearchInputUI.css";

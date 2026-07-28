@@ -1,10 +1,11 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
+import { ChevronRight16Regular } from "@fluentui/react-icons";
 import { Slot, Slottable } from "@radix-ui/react-slot";
 import { clsx } from "clsx";
 
 export interface ContextMenuButtonUIProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
+  ComponentPropsWithRef<"button">,
   "aria-label"
 > {
   asChild?: boolean;
@@ -12,6 +13,8 @@ export interface ContextMenuButtonUIProps extends Omit<
   icon: ReactNode;
   label: string;
   selected?: boolean;
+  /** true이면 하위 메뉴가 있음을 나타내는 chevron을 trailing slot에 표시한다. */
+  submenuIndicator?: boolean;
   /** 라벨 오른쪽 끝 slot — 서브 메뉴 화살표 등 (원본 justify-between chevron) */
   trailing?: ReactNode;
 }
@@ -24,6 +27,7 @@ export interface ContextMenuButtonUIProps extends Omit<
  * @param props.icon 왼쪽 icon slot. null이면 icon 칸을 렌더링하지 않는다
  * @param props.label row label이자 aria-label로 쓰는 action 이름
  * @param props.trailing 오른쪽 끝에 표시할 chevron, shortcut 등 보조 slot
+ * @param props.submenuIndicator true이면 trailing slot에 하위 메뉴 chevron을 표시
  * @param props.selected true이면 aria-pressed와 selected visual을 켠다
  * @param props.asChild true이면 Radix Slot으로 자식 요소에 row 스타일을 합성한다
  */
@@ -34,23 +38,29 @@ export const ContextMenuButtonUI = ({
   disabled = false,
   icon,
   label,
+  role,
   selected = false,
+  submenuIndicator = false,
   trailing,
   type = "button",
   ...props
 }: ContextMenuButtonUIProps) => {
   const Component = asChild ? Slot : "button";
+  const selectedAsMenuChoice = role === "menuitemcheckbox" || role === "menuitemradio";
+  const resolvedTrailing = trailing ?? (submenuIndicator ? <ChevronRight16Regular /> : undefined);
   const componentProps = asChild
     ? { "aria-disabled": disabled || undefined, ...props }
     : { disabled, type, ...props };
 
   return (
     <Component
+      aria-checked={selectedAsMenuChoice ? selected : undefined}
       aria-label={label}
-      aria-pressed={selected || undefined}
+      aria-pressed={!selectedAsMenuChoice && selected ? true : undefined}
       className={clsx("wb-context-menu-button", className)}
       data-disabled={disabled ? "true" : undefined}
       data-selected={selected ? "true" : undefined}
+      role={role}
       {...componentProps}
     >
       {icon !== null && (
@@ -60,9 +70,9 @@ export const ContextMenuButtonUI = ({
       )}
       {asChild ? <Slottable>{children}</Slottable> : children}
       <span className="wb-context-menu-button__label">{label}</span>
-      {trailing !== undefined && (
+      {resolvedTrailing !== undefined && (
         <span aria-hidden="true" className="wb-context-menu-button__trailing">
-          {trailing}
+          {resolvedTrailing}
         </span>
       )}
     </Component>

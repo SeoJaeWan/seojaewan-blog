@@ -1,6 +1,17 @@
 "use client";
 
 export type {
+  ContextMenuActionEntry,
+  ContextMenuCloseReason,
+  ContextMenuEntry,
+  ContextMenuProviderProps,
+  ContextMenuSeparatorEntry,
+  ContextMenuSubmenuEntry,
+  ContextMenuTriggerHandler,
+  UseContextMenuTriggerOptions,
+} from "./contextMenu";
+export { ContextMenuProvider, useContextMenuTrigger } from "./contextMenu";
+export type {
   TaskbarPanelContentProps,
   TaskbarPanelPlacement,
   TaskbarPanelProps,

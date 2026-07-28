@@ -1,6 +1,6 @@
 import type { ContextMenuPosition } from "@window/ui";
 
-const DEFAULT_VIEWPORT_PADDING = 8;
+export const CONTEXT_MENU_VIEWPORT_PADDING = 8;
 
 export interface ResolveContextMenuPositionOptions {
   /** 메뉴를 연 pointer 또는 keyboard 기준점의 viewport x 좌표. */
@@ -23,9 +23,9 @@ const clamp = (value: number, minimum: number, maximum: number) =>
   Math.min(Math.max(value, minimum), Math.max(minimum, maximum));
 
 /**
- * 커서 기준 Context Menu 좌표를 viewport 안으로 보정하고 실제 세로 배치 방향을 반환한다.
+ * 기준점의 Context Menu 좌표를 viewport 안으로 보정하고 실제 세로 배치 방향을 반환한다.
  *
- * @param options 커서 좌표, 측정한 메뉴 크기와 viewport 크기
+ * @param options 기준점 좌표, 측정한 메뉴 크기와 viewport 크기
  * @returns ContextMenuUI에 전달할 좌표와 top/bottom 배치
  */
 export const resolveContextMenuPosition = ({
@@ -34,7 +34,7 @@ export const resolveContextMenuPosition = ({
   menuHeight,
   menuWidth,
   viewportHeight,
-  viewportPadding = DEFAULT_VIEWPORT_PADDING,
+  viewportPadding = CONTEXT_MENU_VIEWPORT_PADDING,
   viewportWidth,
 }: ResolveContextMenuPositionOptions): ContextMenuPosition => {
   const spaceAbove = anchorY - viewportPadding;
