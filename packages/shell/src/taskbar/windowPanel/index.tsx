@@ -13,9 +13,8 @@ import { useWindowPanelNavigation } from "./hooks/useWindowPanelNavigation";
  */
 export const TaskbarWindowPanel = () => {
   const search = useTaskSearch();
-  const navigation = useWindowPanelNavigation({
-    searchActive: search.isActive,
-  });
+  const navigation = useWindowPanelNavigation();
+  const activeView = search.isActive ? "search" : navigation.browseView;
 
   return (
     <WindowsPanelUI>
@@ -23,7 +22,7 @@ export const TaskbarWindowPanel = () => {
         onChange={(event) => search.onQueryChange(event.currentTarget.value)}
         value={search.query}
       />
-      {navigation.activeView === "search" ? (
+      {activeView === "search" ? (
         <TaskSearchResultView className="wb-windows-panel__search-results" search={search} />
       ) : (
         <WindowPanelBrowseView

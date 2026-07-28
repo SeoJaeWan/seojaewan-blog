@@ -46,77 +46,104 @@ afterEach(() => {
 });
 
 describe("useWindowPanelCategories", () => {
-  it("전체 Windows item을 category section으로 제공하고 item 변경을 반영한다", () => {
-    const { result } = renderCategories();
+  describe("category section", () => {
+    it("전체 Windows item을 category section으로 제공한다", () => {
+      const { result } = renderCategories();
 
-    expect(result.current.sections).toEqual([
-      { category: "R", items: [REACT, REDUX] },
-      { category: "ㅁ", items: [MEDIA] },
-    ]);
-
-    act(() => {
-      updateWindowsItems([MEDIA]);
+      expect(result.current.sections).toEqual([
+        { category: "R", items: [REACT, REDUX] },
+        { category: "ㅁ", items: [MEDIA] },
+      ]);
     });
 
-    expect(result.current.sections).toEqual([{ category: "ㅁ", items: [MEDIA] }]);
+    it("Windows item이 변경되면 category section을 갱신한다", () => {
+      const { result } = renderCategories();
+
+      act(() => {
+        updateWindowsItems([MEDIA]);
+      });
+
+      expect(result.current.sections).toEqual([{ category: "ㅁ", items: [MEDIA] }]);
+    });
   });
 
-  it("category overlay 상태를 변경하고 pinned 화면으로 전환하면 닫는다", () => {
-    const { result, rerender } = renderCategories();
+  describe("category overlay", () => {
+    it("category overlay 열린 상태를 변경한다", () => {
+      const { result } = renderCategories();
 
-    act(() => {
-      result.current.onCategoryOverlayOpenChange(true);
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(true);
+      });
+      expect(result.current.categoryOverlayOpen).toBe(true);
+
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(false);
+      });
+      expect(result.current.categoryOverlayOpen).toBe(false);
     });
-    expect(result.current.categoryOverlayOpen).toBe(true);
 
-    rerender({ selected: false });
+    it("pinned 화면으로 전환하면 열린 category overlay를 닫는다", () => {
+      const { result, rerender } = renderCategories();
 
-    expect(result.current.categoryOverlayOpen).toBe(false);
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(true);
+      });
+
+      rerender({ selected: false });
+
+      expect(result.current.categoryOverlayOpen).toBe(false);
+    });
   });
 
-  it("선택한 category 위치로 이동하고 overlay를 닫는다", () => {
-    const { result } = renderCategories();
-    const list = document.createElement("div");
-    const category = document.createElement("button");
-    const scrollTo = vi.fn();
+  describe("category 선택", () => {
+    it("선택한 category 위치로 이동하고 overlay를 닫는다", () => {
+      const { result } = renderCategories();
+      const list = document.createElement("div");
+      const category = document.createElement("button");
+      const scrollTo = vi.fn();
 
-    category.dataset.category = "ㅁ";
-    list.append(category);
-    Object.defineProperty(list, "offsetTop", { configurable: true, value: 20 });
-    Object.defineProperty(category, "offsetTop", { configurable: true, value: 140 });
-    list.scrollTo = scrollTo;
-    result.current.allListRef.current = list;
+      category.dataset.category = "ㅁ";
+      list.append(category);
+      Object.defineProperty(list, "offsetTop", { configurable: true, value: 20 });
+      Object.defineProperty(category, "offsetTop", { configurable: true, value: 140 });
+      list.scrollTo = scrollTo;
+      result.current.allListRef.current = list;
 
-    act(() => {
-      result.current.onCategoryOverlayOpenChange(true);
-      result.current.onCategorySelect("ㅁ");
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(true);
+        result.current.onCategorySelect("ㅁ");
+      });
+
+      expect(result.current.categoryOverlayOpen).toBe(false);
+      expect(scrollTo).toHaveBeenCalledOnce();
+      expect(scrollTo).toHaveBeenCalledWith({ top: 120 });
     });
 
-    expect(result.current.categoryOverlayOpen).toBe(false);
-    expect(scrollTo).toHaveBeenCalledOnce();
-    expect(scrollTo).toHaveBeenCalledWith({ top: 120 });
-  });
+    it("목록 ref가 없으면 overlay를 닫는다", () => {
+      const { result } = renderCategories();
 
-  it("목록 ref나 선택한 category가 없어도 overlay를 닫고 이동을 요청하지 않는다", () => {
-    const { result } = renderCategories();
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(true);
+        result.current.onCategorySelect("R");
+      });
 
-    act(() => {
-      result.current.onCategoryOverlayOpenChange(true);
-      result.current.onCategorySelect("R");
-    });
-    expect(result.current.categoryOverlayOpen).toBe(false);
-
-    const list = document.createElement("div");
-    const scrollTo = vi.fn();
-    list.scrollTo = scrollTo;
-    result.current.allListRef.current = list;
-
-    act(() => {
-      result.current.onCategoryOverlayOpenChange(true);
-      result.current.onCategorySelect("R");
+      expect(result.current.categoryOverlayOpen).toBe(false);
     });
 
-    expect(result.current.categoryOverlayOpen).toBe(false);
-    expect(scrollTo).not.toHaveBeenCalled();
+    it("선택한 category 요소가 없으면 overlay를 닫고 scroll을 요청하지 않는다", () => {
+      const { result } = renderCategories();
+      const list = document.createElement("div");
+      const scrollTo = vi.fn();
+      list.scrollTo = scrollTo;
+      result.current.allListRef.current = list;
+
+      act(() => {
+        result.current.onCategoryOverlayOpenChange(true);
+        result.current.onCategorySelect("R");
+      });
+
+      expect(result.current.categoryOverlayOpen).toBe(false);
+      expect(scrollTo).not.toHaveBeenCalled();
+    });
   });
 });

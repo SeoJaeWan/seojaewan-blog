@@ -35,87 +35,117 @@ afterEach(() => {
 });
 
 describe("useTaskSearch", () => {
-  it("빈 검색어와 상세 선택이 없는 비활성 상태로 시작한다", () => {
-    const { result } = renderSearch();
+  describe("검색어와 결과", () => {
+    it("빈 검색어는 검색을 비활성화하고 전체 Windows item을 제공한다", () => {
+      const { result } = renderSearch();
 
-    expect(result.current.query).toBe("");
-    expect(result.current.isActive).toBe(false);
-    expect(result.current.results).toBe(INITIAL_ITEMS);
-    expect(result.current.detailItemId).toBeNull();
-    expect(result.current.detailItem).toBeNull();
+      expect(result.current.isActive).toBe(false);
+      expect(result.current.results).toBe(INITIAL_ITEMS);
+    });
+
+    it("공백 검색어는 검색을 활성화하지 않고 전체 Windows item을 유지한다", () => {
+      const { result } = renderSearch();
+
+      act(() => {
+        result.current.onQueryChange("   ");
+      });
+
+      expect(result.current.isActive).toBe(false);
+      expect(result.current.results).toBe(INITIAL_ITEMS);
+    });
+
+    it("유효한 검색어는 검색을 활성화하고 일치하는 item을 제공한다", () => {
+      const { result } = renderSearch();
+
+      act(() => {
+        result.current.onQueryChange("redux");
+      });
+
+      expect(result.current.query).toBe("redux");
+      expect(result.current.isActive).toBe(true);
+      expect(result.current.results).toEqual([REDUX]);
+    });
+
+    it("Windows item이 변경되면 검색 결과를 갱신한다", () => {
+      const { result } = renderSearch();
+      const updatedReact = { id: "react", title: "React 업데이트" } satisfies WindowItem;
+
+      act(() => {
+        result.current.onQueryChange("react");
+      });
+      act(() => {
+        updateWindowsItems([updatedReact, REDUX, MEDIA]);
+      });
+
+      expect(result.current.results).toEqual([updatedReact]);
+    });
   });
 
-  it("공백 검색어는 비활성 상태를 유지하고 유효한 검색어는 검색을 활성화한다", () => {
-    const { result } = renderSearch();
+  describe("상세 선택", () => {
+    it("검색 결과 item을 상세 item으로 선택한다", () => {
+      const { result } = renderSearch();
 
-    act(() => {
-      result.current.onQueryChange("   ");
-    });
-    expect(result.current.isActive).toBe(false);
-    expect(result.current.results).toBe(INITIAL_ITEMS);
+      act(() => {
+        result.current.onQueryChange("re");
+      });
+      act(() => {
+        result.current.onDetailItemChange(REACT);
+      });
 
-    act(() => {
-      result.current.onQueryChange("redux");
-    });
-    expect(result.current.query).toBe("redux");
-    expect(result.current.isActive).toBe(true);
-    expect(result.current.results).toEqual([REDUX]);
-  });
-
-  it("검색어가 바뀌면 기존 상세 선택을 해제한다", () => {
-    const { result } = renderSearch();
-
-    act(() => {
-      result.current.onQueryChange("re");
-    });
-    act(() => {
-      result.current.onDetailItemChange(REACT);
-    });
-    expect(result.current.detailItemId).toBe("react");
-    expect(result.current.detailItem).toBe(REACT);
-
-    act(() => {
-      result.current.onQueryChange("red");
+      expect(result.current.detailItemId).toBe("react");
+      expect(result.current.detailItem).toBe(REACT);
     });
 
-    expect(result.current.detailItemId).toBeNull();
-    expect(result.current.detailItem).toBeNull();
-  });
+    it("검색어가 변경되면 기존 상세 선택을 해제한다", () => {
+      const { result } = renderSearch();
 
-  it("선택한 item이 검색 결과에서 사라지면 상세 선택을 해제한다", () => {
-    const { result } = renderSearch();
+      act(() => {
+        result.current.onQueryChange("re");
+      });
+      act(() => {
+        result.current.onDetailItemChange(REACT);
+      });
+      act(() => {
+        result.current.onQueryChange("red");
+      });
 
-    act(() => {
-      result.current.onQueryChange("re");
-    });
-    act(() => {
-      result.current.onDetailItemChange(REACT);
-    });
-    act(() => {
-      updateWindowsItems([REDUX, MEDIA]);
-    });
-
-    expect(result.current.detailItemId).toBeNull();
-    expect(result.current.detailItem).toBeNull();
-  });
-
-  it("Windows item이 갱신되면 검색 결과와 상세 item에 같은 ID의 최신 객체를 제공한다", () => {
-    const { result } = renderSearch();
-
-    act(() => {
-      result.current.onQueryChange("react");
-    });
-    act(() => {
-      result.current.onDetailItemChange(REACT);
-    });
-    const updatedReact = { id: "react", title: "React 업데이트" } satisfies WindowItem;
-
-    act(() => {
-      updateWindowsItems([updatedReact, REDUX, MEDIA]);
+      expect(result.current.detailItemId).toBeNull();
+      expect(result.current.detailItem).toBeNull();
     });
 
-    expect(result.current.results).toEqual([updatedReact]);
-    expect(result.current.detailItemId).toBe("react");
-    expect(result.current.detailItem).toBe(updatedReact);
+    it("선택한 item이 검색 결과에서 사라지면 상세 선택을 해제한다", () => {
+      const { result } = renderSearch();
+
+      act(() => {
+        result.current.onQueryChange("re");
+      });
+      act(() => {
+        result.current.onDetailItemChange(REACT);
+      });
+      act(() => {
+        updateWindowsItems([REDUX, MEDIA]);
+      });
+
+      expect(result.current.detailItemId).toBeNull();
+      expect(result.current.detailItem).toBeNull();
+    });
+
+    it("선택한 item이 같은 ID로 갱신되면 최신 객체를 제공한다", () => {
+      const { result } = renderSearch();
+      const updatedReact = { id: "react", title: "React 업데이트" } satisfies WindowItem;
+
+      act(() => {
+        result.current.onQueryChange("react");
+      });
+      act(() => {
+        result.current.onDetailItemChange(REACT);
+      });
+      act(() => {
+        updateWindowsItems([updatedReact, REDUX, MEDIA]);
+      });
+
+      expect(result.current.detailItemId).toBe("react");
+      expect(result.current.detailItem).toBe(updatedReact);
+    });
   });
 });
