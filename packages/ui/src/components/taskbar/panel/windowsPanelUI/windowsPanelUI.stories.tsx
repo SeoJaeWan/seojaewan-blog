@@ -4,7 +4,8 @@ import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionState } from "../../../../types/windowItemAction";
 import { FolderIcon } from "../../../storyIcons";
 import { TaskSearchResultViewUI } from "../../view/taskSearchResultViewUI";
-import { WindowsPanelViewUI } from "../../view/windowsPanelViewUI";
+import { WindowsPanelAllViewUI } from "../../view/windowsPanelAllViewUI";
+import { WindowsPanelPinnedViewUI } from "../../view/windowsPanelPinnedViewUI";
 import { WindowsPanelUI } from "./index";
 
 const PINNED_ITEMS: WindowItem[] = [
@@ -36,7 +37,7 @@ const meta = {
       description: {
         component:
           "시작 패널의 compound root와 공통 SearchInput을 제공한다. " +
-          "각 Story는 독립적인 WindowsPanelViewUI와 TaskSearchResultViewUI를 children으로 조합한다.",
+          "각 Story는 분리된 Pinned/All UI 또는 TaskSearchResultViewUI를 children으로 조합한다.",
       },
     },
   },
@@ -54,7 +55,10 @@ export const Default: Story = {
   render: (args) => (
     <WindowsPanelUI {...args}>
       <WindowsPanelUI.SearchInput readOnly />
-      <WindowsPanelViewUI pinnedItems={PINNED_ITEMS} />
+      <div className="wb-windows-panel__views" data-view="pinned">
+        <WindowsPanelPinnedViewUI items={PINNED_ITEMS} />
+        <WindowsPanelAllViewUI active={false} />
+      </div>
     </WindowsPanelUI>
   ),
 };

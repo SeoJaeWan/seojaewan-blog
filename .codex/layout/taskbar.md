@@ -89,15 +89,17 @@ ContextMenuProvider
                            └─ TaskbarWindowPanel (@window/shell)
                               └─ WindowsPanelUI (@window/ui)
                                  ├─ WindowsPanelUI.SearchInput
-                                 └─ active view
-                                    ├─ WindowPanelBrowseView (@window/shell)
-                                    │  └─ WindowsPanelViewUI (@window/ui)
-                                    │     ├─ pinned view
-                                    │     └─ all view + category jump overlay
-                                    └─ TaskSearchResultView (@window/shell)
-                                       └─ TaskSearchResultViewUI (@window/ui)
-                                          ├─ result list
-                                          └─ selected item detail/actions
+                                 └─ WindowPanelView.Root (@window/shell, no DOM)
+                                    └─ active route
+                                       ├─ WindowPanelBrowseView (@window/shell)
+                                       │  ├─ WindowPanelPinnedView (@window/shell)
+                                       │  │  └─ WindowsPanelPinnedViewUI (@window/ui)
+                                       │  └─ WindowPanelAllView (@window/shell)
+                                       │     └─ WindowsPanelAllViewUI (@window/ui)
+                                       └─ TaskSearchResultView (@window/shell)
+                                          └─ TaskSearchResultViewUI (@window/ui)
+                                             ├─ result list
+                                             └─ selected item detail/actions
 ```
 
 ## Implemented Component Map
@@ -115,26 +117,30 @@ ContextMenuProvider
 | `useTaskbarPanelValue`     | 전역 reducer, layer, Escape와 transition watchdog을 관리하는 private hook                    |
 | `useTaskbarPanelRootValue` | 한 panel의 ref, viewport placement, outside pointer와 animation 완료를 관리하는 private hook |
 | `TaskbarStartButton`       | 시작 button UI와 `TaskbarWindowPanel`을 하나의 Root로 조립                                   |
-| `TaskbarWindowPanel`       | 공통 검색 input과 pinned/all/search 화면 routing을 조립                                      |
+| `TaskbarWindowPanel`       | 공통 검색 input과 browse/search route를 조립                                                 |
+| `WindowPanelView.Root`     | 검색 전환과 무관하게 pinned/all 선택을 보존하는 private Context scope                        |
+| `WindowPanelBrowseView`    | 고정된 Pinned/All Shell view를 함께 mount하고 clipping/slide wrapper만 조립                  |
+| `WindowPanelPinnedView`    | pinned item, pin animation, pinned Context Menu/reorder와 Windows event를 연결               |
+| `WindowPanelAllView`       | category section/overlay/scroll, All Context Menu와 Windows event를 연결                     |
 | `TaskSearchResultView`     | taskbar 검색 결과·상세 action과 Windows domain event를 연결하는 공용 connector               |
-| `WindowPanelBrowseView`    | pinned/all visual에 category, pin animation과 Windows domain event를 연결                    |
 | `useTaskSearch`            | taskbar 검색어, 검색 결과와 현재 detail item 선택                                            |
-| `useWindowPanelNavigation` | pinned/all browse 상태와 화면 변경 callback을 관리                                           |
-| `useWindowPanelCategories` | 전체 item category section, category overlay와 all-list scroll                               |
+| `useWindowPanelViewValue`  | private pinned/all 상태와 `showPinned`/`showAll` callback을 관리                             |
+| `useWindowPanelCategories` | All view의 category section, category overlay와 all-list scroll                              |
 
 ### Presentational UI
 
-| Component                 | Current visual responsibility                                               |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `TaskbarRootUI`           | fixed bottom glass surface와 가운데 정렬                                    |
-| `TaskbarStartButtonUI`    | Windows logo와 selected visual, 고정 accessible name `시작`                 |
-| `TaskbarPanelLayerUI`     | taskbar 아래 stacking의 viewport-fixed pointer-transparent layer            |
-| `TaskbarPanelContainerUI` | fixed position과 `opening/open/closing` visual, inactive phase의 inert 처리 |
-| `TaskPanelUI`             | 600px 높이의 공통 glass panel surface                                       |
-| `WindowsPanelUI`          | 시작 dialog root와 panel 전용 SearchInput layout                            |
-| `WindowsPanelViewUI`      | pinned/all 화면, category jump와 pinned tile animation class                |
-| `TaskSearchResultViewUI`  | 검색 결과 list와 선택 item detail/action pane                               |
-| `TaskSearchInputUI`       | 30px pill input과 focus search-icon visual                                  |
+| Component                  | Current visual responsibility                                               |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `TaskbarRootUI`            | fixed bottom glass surface와 가운데 정렬                                    |
+| `TaskbarStartButtonUI`     | Windows logo와 selected visual, 고정 accessible name `시작`                 |
+| `TaskbarPanelLayerUI`      | taskbar 아래 stacking의 viewport-fixed pointer-transparent layer            |
+| `TaskbarPanelContainerUI`  | fixed position과 `opening/open/closing` visual, inactive phase의 inert 처리 |
+| `TaskPanelUI`              | 600px 높이의 공통 glass panel surface                                       |
+| `WindowsPanelUI`           | 시작 dialog root와 panel 전용 SearchInput layout                            |
+| `WindowsPanelPinnedViewUI` | pinned header/grid, 비활성 view의 inert와 pinned tile animation class       |
+| `WindowsPanelAllViewUI`    | all header/section list, category jump overlay와 비활성 view의 inert        |
+| `TaskSearchResultViewUI`   | 검색 결과 list와 선택 item detail/action pane                               |
+| `TaskSearchInputUI`        | 30px pill input과 focus search-icon visual                                  |
 
 `@window/ui`에는 `TaskbarSearchUI`, `TaskbarAppListUI`, `TaskbarTaskButtonUI`, `TaskbarClockUI`,
 `SearchPanelUI`, `TaskHoverPanelUI`, `TaskbarContextMenuUI` 등의 visual도 공개되어 있다. 현재
@@ -239,25 +245,30 @@ button click
 
 ## Start Panel State
 
-`TaskbarWindowPanel`이 호출하는 `useTaskSearch`와 `useWindowPanelNavigation`은 다음 지역 상태를
-각각 소유한다.
+`TaskbarWindowPanel`이 호출하는 `useTaskSearch`와 내부 `WindowPanelView.Root`의
+`useWindowPanelViewValue`는 다음 지역 상태를 각각 소유한다.
 
 - search input value
 - 검색 detail item
 - pinned/all view
 
-`TaskbarWindowPanel`은 `useTaskSearch.isActive`와 `useWindowPanelNavigation.browseView`를 조합해
-실제로 표시할 pinned/all/search 화면을 결정한다. Search 화면 routing은 두 hook 중 하나에
-포함하지 않는다.
+`TaskbarWindowPanel`은 `useTaskSearch.isActive`로 browse/search route만 결정한다.
+`WindowPanelView.Root`는 route 조건 바깥에서 두 route를 감싸므로 검색 중에도 pinned/all 선택을
+보존한다. Root는 DOM이나 `Trigger`/`Content` 합성 API를 만들지 않고 private Context만 제공한다.
 
-`WindowPanelBrowseView`가 호출하는 `useWindowPanelCategories`는 다음 화면 지역 상태를 소유한다.
+`WindowPanelBrowseView`는 `WindowPanelPinnedView`와 `WindowPanelAllView`를 고정된 순서로 직접
+렌더링한다. 두 화면을 slot props로 받지 않으며 별도 public Viewport도 두지 않는다. Browse가
+active인 동안 두 view를 함께 mount하고 `data-view`와 공용 clipping/slide wrapper로 500ms 전환을
+표현한다. 비활성 view는 UI에서 `inert` 처리한다.
+
+`WindowPanelAllView`가 호출하는 `useWindowPanelCategories`는 다음 화면 지역 상태를 소유한다.
 
 - category overlay open state
 - all-list ref
 
-BrowseView는 search 화면에서 unmount된다. 따라서 검색을 시작하면 category overlay 상태를
-초기화하고 검색 종료 뒤에는 닫힌 overlay로 browse 화면을 다시 연다. `useWindowPanelNavigation`은
-BrowseView 밖에 있으므로 검색 중에도 기존 pinned/all 선택은 보존한다.
+BrowseView와 그 두 child view는 search 화면에서 unmount된다. 따라서 검색을 시작하면 category
+overlay 상태를 초기화하고 검색 종료 뒤에는 닫힌 overlay로 browse 화면을 다시 연다.
+`WindowPanelView.Root`는 BrowseView 밖에 있으므로 검색 중에도 기존 pinned/all 선택은 보존한다.
 
 `Windows`가 전역으로 소유하는 것은 `windowsItems`, `windowsPinnedIds`,
 `taskbarPinnedIds`와 observer registry다. Panel query나 detail selection은 Provider에 저장하지
@@ -307,7 +318,7 @@ interaction을 막고, 바깥 pointer와 Escape는 Context Menu만 즉시 닫는
 ## Pinned Item Lifecycle
 
 `useWindowsPins()`가 canonical pin state, localStorage와 semantic event를 즉시 갱신한다.
-`WindowPanelBrowseView`의 `useWindowPinAnimation()`은 이 결과를 panel의 일시적인 visual 목록으로만
+`WindowPanelPinnedView`의 `useWindowPinAnimation()`은 이 결과를 panel의 일시적인 visual 목록으로만
 투영하며 canonical action을 호출하지 않는다.
 
 ```text

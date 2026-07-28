@@ -1,7 +1,7 @@
-import type { WindowItem, WindowsPanelViewMode } from "@window/ui";
+import type { WindowItem } from "@window/ui";
 
 /** Window item interaction이 발생한 시작 panel 화면. */
-export type WindowsPanelItemSource = WindowsPanelViewMode | "search";
+export type WindowsPanelItemSource = "all" | "pinned" | "search";
 
 /** Windows가 공유하는 전체 item과 surface별 pin ID 상태. */
 export interface WindowsState {

@@ -1,131 +1,10 @@
-/* 고정됨 <-> 모두 전환: 두 레이어를 겹쳐 두고 500ms transform 슬라이드 */
-.wb-windows-panel__views {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.wb-windows-panel__view {
-  box-sizing: border-box;
-  left: 0;
-  padding: 28px 0;
-  position: absolute;
-  top: 0;
-  transition: transform 500ms;
-  width: 100%;
-}
-
-.wb-windows-panel__view--all {
-  height: 100%;
-  left: 100%;
-}
-
-.wb-windows-panel__views[data-view="all"] .wb-windows-panel__view {
-  transform: translateX(-100%);
-}
-
-.wb-windows-panel__section {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.wb-windows-panel__header {
-  display: flex;
-  font-weight: 700;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  padding: 0 24px;
-}
-
-.wb-windows-panel__title {
-  font-size: inherit;
-  font-weight: inherit;
-  margin: 0;
-}
-
-.wb-windows-panel__view-toggle {
-  align-items: center;
-  appearance: none;
-  background: var(--wb-windows-panel-hover-surface);
-  border: 1px solid var(--wb-windows-panel-toggle-border);
-  border-radius: var(--wb-radius-sm);
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  gap: 4px;
-  line-height: 1.333;
-  padding: 2px 4px;
-  transition: background-color var(--wb-transition-fast);
-}
-
-.wb-windows-panel__view-toggle:hover {
-  background: var(--wb-windows-panel-toggle-hover);
-}
-
-.wb-windows-panel__pinned-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-/* 원본 고정됨 타일: 가변 폭, 아이콘 34px, 제목 text-xs 2줄 고정, hover:bg-white */
-.wb-windows-panel__pinned-grid .wb-panel-icon-button {
-  --wb-icon-button-icon-size: 34px;
-
-  gap: 2px;
-  padding: 8px 12px;
-  width: 100%;
-}
-
-.wb-windows-panel__pinned-grid .wb-panel-icon-button:hover {
-  background: var(--wb-windows-panel-hover-surface);
-}
-
-/* reorder 애니메이션 (원본 transition-all + windows-fadeIn 150ms ease-in-out):
-   이동 타일을 축소(out)했다가 순서 반영 후 새 위치에서 fade-in(in)한다 */
-.wb-windows-panel__pinned-item {
-  transition:
-    background-color var(--wb-transition-fast),
-    opacity 150ms ease-in-out,
-    transform 150ms ease-in-out;
-}
-
-.wb-windows-panel__pinned-item--out {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.wb-windows-panel__pinned-item--in {
-  animation: wb-windows-fade-in 150ms ease-in-out forwards;
-}
-
-@keyframes wb-windows-fade-in {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.wb-windows-panel__pinned-grid .wb-panel-icon-button__title {
-  line-height: 1.333;
-}
-
 .wb-windows-panel__all-body {
   flex: 1;
   min-height: 0;
   position: relative;
 }
 
-/* 카테고리 점프 오버레이: 닫힘 상태에서 scale(1.5)로 확대되어 있다가 줌 인 */
+/* 카테고리 점프 오버레이: 닫힘 상태에서 확대되어 있다가 줌 인한다. */
 .wb-windows-panel__category-overlay {
   align-items: center;
   display: flex;
@@ -251,7 +130,6 @@
   background: var(--wb-windows-panel-hover-surface);
 }
 
-.wb-windows-panel__view-toggle:focus-visible,
 .wb-windows-panel__category-jump:focus-visible,
 .wb-windows-panel__category:focus-visible,
 .wb-windows-panel__item:focus-visible {

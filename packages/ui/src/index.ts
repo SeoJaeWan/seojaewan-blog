@@ -90,13 +90,16 @@ export type { TaskSearchRecommendationSection } from "./components/taskbar/view/
 export type { TaskSearchResultViewUIProps } from "./components/taskbar/view/taskSearchResultViewUI";
 export { TaskSearchResultViewUI } from "./components/taskbar/view/taskSearchResultViewUI";
 export type {
+  WindowsPanelAllSection,
+  WindowsPanelAllViewUIProps,
+} from "./components/taskbar/view/windowsPanelAllViewUI";
+export { WindowsPanelAllViewUI } from "./components/taskbar/view/windowsPanelAllViewUI";
+export type {
   WindowsPanelPinnedItemAnimation,
   WindowsPanelPinnedItemAnimationPhase,
-  WindowsPanelSection,
-  WindowsPanelViewMode,
-  WindowsPanelViewUIProps,
-} from "./components/taskbar/view/windowsPanelViewUI";
-export { WindowsPanelViewUI } from "./components/taskbar/view/windowsPanelViewUI";
+  WindowsPanelPinnedViewUIProps,
+} from "./components/taskbar/view/windowsPanelPinnedViewUI";
+export { WindowsPanelPinnedViewUI } from "./components/taskbar/view/windowsPanelPinnedViewUI";
 export type { WindowControlsUIProps } from "./components/window/chrome/windowControlsUI";
 export { WindowControlsUI } from "./components/window/chrome/windowControlsUI";
 export type {

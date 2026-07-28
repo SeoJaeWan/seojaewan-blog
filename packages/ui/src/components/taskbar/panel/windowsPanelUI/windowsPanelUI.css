@@ -12,6 +12,82 @@
   width: 100vw;
 }
 
+/* 고정됨 <-> 모두 전환: 두 화면을 겹쳐 두고 500ms transform으로 이동한다. */
+.wb-windows-panel__views {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wb-windows-panel__view {
+  box-sizing: border-box;
+  left: 0;
+  padding: 28px 0;
+  position: absolute;
+  top: 0;
+  transition: transform 500ms;
+  width: 100%;
+}
+
+.wb-windows-panel__view--all {
+  height: 100%;
+  left: 100%;
+}
+
+.wb-windows-panel__views[data-view="all"] .wb-windows-panel__view {
+  transform: translateX(-100%);
+}
+
+.wb-windows-panel__section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wb-windows-panel__header {
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 24px;
+}
+
+.wb-windows-panel__title {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+.wb-windows-panel__view-toggle {
+  align-items: center;
+  appearance: none;
+  background: var(--wb-windows-panel-hover-surface);
+  border: 1px solid var(--wb-windows-panel-toggle-border);
+  border-radius: var(--wb-radius-sm);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+  line-height: 1.333;
+  padding: 2px 4px;
+  transition: background-color var(--wb-transition-fast);
+}
+
+.wb-windows-panel__view-toggle:hover {
+  background: var(--wb-windows-panel-toggle-hover);
+}
+
+.wb-windows-panel__view-toggle:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--wb-color-surface),
+    0 0 0 4px rgb(0 103 192 / 0.42);
+  outline: none;
+}
+
 @media (min-width: 768px) {
   .wb-windows-panel {
     width: 50vw;

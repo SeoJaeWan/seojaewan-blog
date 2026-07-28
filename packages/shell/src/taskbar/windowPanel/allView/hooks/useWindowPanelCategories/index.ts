@@ -3,7 +3,7 @@
 import type { RefObject } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import type { WindowsPanelSection } from "@window/ui";
+import type { WindowsPanelAllSection } from "@window/ui";
 
 import { useWindowsItemsContext } from "../../../../../windows/providers/windowsItemsProvider";
 import { createWindowsPanelSections } from "../../utils/createWindowsPanelSections";
@@ -23,16 +23,10 @@ export interface UseWindowPanelCategoriesResult {
   /** 선택한 category 위치로 이동하고 overlay를 닫는다. */
   onCategorySelect: (category: string) => void;
   /** 전체 Windows item을 category별로 묶은 모두 보기 section. */
-  sections: WindowsPanelSection[];
+  sections: WindowsPanelAllSection[];
 }
 
-/**
- * Window panel 모두 보기의 category section, overlay와 scroll을 관리한다.
- * pinned 화면으로 전환하면 overlay를 닫고 화면이 unmount되면 지역 상태를 초기화한다.
- *
- * @param options.allViewActive 현재 활성 browse 화면이 all인지 여부
- * @returns WindowsPanelViewUI에 연결할 category data, state와 callback
- */
+/** Window panel 모두 보기의 category section, overlay와 scroll을 관리한다. */
 export const useWindowPanelCategories = ({
   allViewActive,
 }: UseWindowPanelCategoriesOptions): UseWindowPanelCategoriesResult => {
@@ -50,7 +44,6 @@ export const useWindowPanelCategories = ({
   const onCategoryOverlayOpenChange = (open: boolean) => {
     setCategoryOverlayOpen(open);
   };
-
   const onCategorySelect = (category: string) => {
     setCategoryOverlayOpen(false);
 
