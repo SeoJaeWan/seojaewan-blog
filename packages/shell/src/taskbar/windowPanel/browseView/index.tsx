@@ -9,6 +9,7 @@ import { useWindowDispatch } from "../../../windows/providers/windowsEventsProvi
 import { useWindowPinAnimation } from "../../../windows/providers/windowsPinsProvider";
 import type { WindowsPanelItemSource } from "../../../windows/types";
 import { useTaskbarPanelRootContext } from "../../panel/hooks/useTaskbarPanelRootContext";
+import { useItemContextMenu, WindowItemContextMenuLayer } from "../../windowItemContextMenu";
 import { useWindowPanelCategories } from "./hooks/useWindowPanelCategories";
 
 interface WindowPanelBrowseViewProps {
@@ -29,6 +30,7 @@ export const WindowPanelBrowseView = ({ onViewChange, view }: WindowPanelBrowseV
   const panel = useTaskbarPanelRootContext();
   const dispatch = useWindowDispatch();
   const pinAnimation = useWindowPinAnimation();
+  const itemContextMenu = useItemContextMenu();
   const categories = useWindowPanelCategories({
     allViewActive: view === "all",
   });
@@ -45,23 +47,33 @@ export const WindowPanelBrowseView = ({ onViewChange, view }: WindowPanelBrowseV
   ) => {
     event.preventDefault();
     dispatch("windowContextMenuRequested", { item, source });
+    itemContextMenu.open({
+      anchorX: event.clientX,
+      anchorY: event.clientY,
+      item,
+      source,
+      triggerElement: event.currentTarget,
+    });
   };
 
   return (
-    <WindowsPanelViewUI
-      allListRef={categories.allListRef}
-      categoryOverlayOpen={categories.categoryOverlayOpen}
-      onCategoryOverlayOpenChange={categories.onCategoryOverlayOpenChange}
-      onCategorySelect={categories.onCategorySelect}
-      onItemContextMenu={handleItemContextMenu}
-      onPinnedItemAnimationEnd={pinAnimation.onPinnedItemAnimationEnd}
-      onPinnedItemTransitionEnd={pinAnimation.onPinnedItemTransitionEnd}
-      onSelectItem={handleOpenItem}
-      onViewChange={onViewChange}
-      pinnedItemAnimation={pinAnimation.pinnedItemAnimation}
-      pinnedItems={pinAnimation.pinnedItems}
-      sections={categories.sections}
-      view={view}
-    />
+    <>
+      <WindowsPanelViewUI
+        allListRef={categories.allListRef}
+        categoryOverlayOpen={categories.categoryOverlayOpen}
+        onCategoryOverlayOpenChange={categories.onCategoryOverlayOpenChange}
+        onCategorySelect={categories.onCategorySelect}
+        onItemContextMenu={handleItemContextMenu}
+        onPinnedItemAnimationEnd={pinAnimation.onPinnedItemAnimationEnd}
+        onPinnedItemTransitionEnd={pinAnimation.onPinnedItemTransitionEnd}
+        onSelectItem={handleOpenItem}
+        onViewChange={onViewChange}
+        pinnedItemAnimation={pinAnimation.pinnedItemAnimation}
+        pinnedItems={pinAnimation.pinnedItems}
+        sections={categories.sections}
+        view={view}
+      />
+      <WindowItemContextMenuLayer contextMenu={itemContextMenu} />
+    </>
   );
 };

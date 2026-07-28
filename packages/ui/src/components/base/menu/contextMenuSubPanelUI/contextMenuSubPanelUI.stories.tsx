@@ -10,7 +10,8 @@ import {
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { ContextMenuButtonUI } from "../../button/contextMenuButtonUI";
-import { ContextMenuPanelUI } from "../contextMenuPanelUI";
+import type { ContextMenuPosition } from "../contextMenuUI";
+import { ContextMenuUI } from "../contextMenuUI";
 import type { ContextMenuSubPanelPlacement } from "./index";
 import { ContextMenuSubPanelUI } from "./index";
 
@@ -33,12 +34,13 @@ const leftBottomPlacement: ContextMenuSubPanelPlacement = {
 };
 
 interface SortMenuPreviewProps {
+  position: ContextMenuPosition;
   placement: ContextMenuSubPanelPlacement;
 }
 
 /** open과 placement가 고정된 정적 서브 메뉴 조합을 보여준다. */
-const SortMenuPreview = ({ placement }: SortMenuPreviewProps) => (
-  <ContextMenuPanelUI>
+const SortMenuPreview = ({ placement, position }: SortMenuPreviewProps) => (
+  <ContextMenuUI animated={false} position={position}>
     <ContextMenuButtonUI
       asChild
       icon={<ArrowSort20Regular />}
@@ -56,7 +58,7 @@ const SortMenuPreview = ({ placement }: SortMenuPreviewProps) => (
         </ContextMenuSubPanelUI>
       </div>
     </ContextMenuButtonUI>
-  </ContextMenuPanelUI>
+  </ContextMenuUI>
 );
 
 const meta = {
@@ -82,25 +84,19 @@ type Story = StoryObj<typeof meta>;
 /** 열린 panel이 부모 오른쪽/top을 기준으로 배치된 visual 상태 */
 export const OpenRightTop: Story = {
   render: () => (
-    <div style={{ minHeight: 280, padding: 16 }}>
-      <SortMenuPreview placement={rightTopPlacement} />
-    </div>
+    <SortMenuPreview
+      placement={rightTopPlacement}
+      position={{ left: 16, placement: "bottom", top: 16 }}
+    />
   ),
 };
 
 /** 열린 panel이 부모 왼쪽/bottom을 기준으로 배치된 visual 상태 */
 export const OpenLeftBottom: Story = {
   render: () => (
-    <div
-      style={{
-        alignItems: "flex-end",
-        display: "flex",
-        justifyContent: "flex-end",
-        minHeight: 280,
-        padding: 16,
-      }}
-    >
-      <SortMenuPreview placement={leftBottomPlacement} />
-    </div>
+    <SortMenuPreview
+      placement={leftBottomPlacement}
+      position={{ bottom: 16, placement: "top", right: 16 }}
+    />
   ),
 };

@@ -1,17 +1,12 @@
-import type { ComponentPropsWithoutRef, MouseEvent, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, MouseEvent } from "react";
 
-import {
-  ChevronRight16Regular,
-  FolderOpen16Regular,
-  Open16Regular,
-  Pin16Regular,
-  PinOff16Regular,
-} from "@fluentui/react-icons";
+import { ChevronRight16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import fileIconSrc from "../../../../assets/file.png";
 import type { WindowItem } from "../../../../types/windowItem";
 import type { WindowItemActionId, WindowItemActionState } from "../../../../types/windowItemAction";
+import { resolveWindowItemActionVisuals } from "../../../../utils/resolveWindowItemActionVisuals";
 
 export interface TaskSearchResultViewUIProps extends Omit<
   ComponentPropsWithoutRef<"div">,
@@ -35,24 +30,6 @@ export interface TaskSearchResultViewUIProps extends Omit<
 
 // 원본 findFileIcon()은 항상 file 아이콘을 반환 — icon 미지정 항목의 기본값
 const defaultFileIcon = <img alt="" draggable={false} src={fileIconSrc} />;
-
-const DETAIL_ACTION_ORDER = [
-  "open",
-  "openLocation",
-  "pinToStart",
-  "unpinFromStart",
-  "pinToTaskbar",
-  "unpinFromTaskbar",
-] as const satisfies readonly WindowItemActionId[];
-
-const DETAIL_ACTION_DEFINITIONS: Record<WindowItemActionId, { icon: ReactNode; label: string }> = {
-  open: { icon: <Open16Regular />, label: "열기" },
-  openLocation: { icon: <FolderOpen16Regular />, label: "파일 위치 열기" },
-  pinToStart: { icon: <Pin16Regular />, label: "시작 화면에 고정" },
-  unpinFromStart: { icon: <PinOff16Regular />, label: "시작 화면에서 제거" },
-  pinToTaskbar: { icon: <Pin16Regular />, label: "작업 표시줄에 고정" },
-  unpinFromTaskbar: { icon: <PinOff16Regular />, label: "작업 표시줄에서 제거" },
-};
 
 /**
  * 검색 결과 뷰 (원본 TaskSearchResult) — 최적의 일치 목록 + 선택 항목 상세 pane.
@@ -80,12 +57,7 @@ export const TaskSearchResultViewUI = ({
   ...props
 }: TaskSearchResultViewUIProps) => {
   const detailItem = results.find((item) => item.id === detailItemId) ?? null;
-  const detailActionStates = new Map(detailActions.map((action) => [action.id, action]));
-  const visibleDetailActions = DETAIL_ACTION_ORDER.flatMap((id) => {
-    const state = detailActionStates.get(id);
-
-    return state ? [{ ...DETAIL_ACTION_DEFINITIONS[id], ...state }] : [];
-  });
+  const visibleDetailActions = resolveWindowItemActionVisuals<WindowItemActionId>(detailActions);
 
   return (
     <div className={clsx("wb-task-search-result", className)} {...props}>

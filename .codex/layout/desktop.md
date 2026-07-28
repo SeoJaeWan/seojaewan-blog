@@ -66,11 +66,11 @@ main (w-full h-full overflow-hidden relative)
 
 관계된 기존 구현:
 
-| 관계                   | 구현 이름                                   | 비고                                                                                                    |
-| ---------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| 창 레이어의 창         | `WindowFrameUI` 계열                        | [[window.md]] — Desktop은 형제 레이어로 창들을 배치한다. 드래그/리사이즈는 `useWindowBounds` 내장(기본) |
-| taskbar                | `TaskbarRootUI` 계열                        | [[taskbar.md]] — 바탕화면 아래 50px                                                                     |
-| 컨텍스트 메뉴 컨테이너 | `ContextMenuPanelUI`, `ContextMenuButtonUI` | 원본 `LeftClickPanel`(200px) 대응. `trailing` slot으로 서브 메뉴 화살표 표현                            |
+| 관계                   | 구현 이름                              | 비고                                                                                                                |
+| ---------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 창 레이어의 창         | `WindowFrameUI` 계열                   | [[window.md]] — Desktop은 형제 레이어로 창들을 배치한다. 드래그/리사이즈는 `useWindowBounds` 내장(기본)             |
+| taskbar                | `TaskbarRootUI` 계열                   | [[taskbar.md]] — 바탕화면 아래 50px                                                                                 |
+| 컨텍스트 메뉴 컨테이너 | `ContextMenuUI`, `ContextMenuButtonUI` | 원본 `LeftClickPanel`(200px) 대응. viewport layer·위치·surface를 통합하고 `trailing` slot으로 서브 메뉴 화살표 표현 |
 
 ## Component Tree
 
@@ -84,7 +84,7 @@ main (w-full h-full overflow-hidden relative)
 {/* 형제 레이어 (앱 조립) */}
 <WindowFrameUI />[]             {/* 열린 창들 — fixed, zIndex로 쌓임 */}
 <TaskbarRootUI />               {/* 하단 50px */}
-<ContextMenuPanelUI />          {/* 커서 위치, 바탕화면/아이콘 우클릭 */}
+<ContextMenuUI />               {/* 커서 위치, 바탕화면/아이콘 우클릭 */}
 ```
 
 ## Component Connection Map
@@ -155,7 +155,7 @@ UI:
 
 원본 desktop/폴더 그리드의 우클릭 메뉴는 taskbar panel과 다른 체계다:
 
-- 컨테이너: `ContextMenuPanelUI`(구현됨, 원본 `LeftClickPanel` 200px). `#windows-left` portal에 `position: fixed`로 커서 위치에 표시
+- 컨테이너: `ContextMenuUI`(구현됨, 원본 `LeftClickPanel` 200px). viewport layer, 위치 surface와 menu panel visual을 하나의 API로 제공하고 `#windows-left` portal에서 커서 위치에 표시
 - 위치 계산(원본 `useContextMenu`): 기준점은 커서(clientX/Y). 메뉴 예상 크기(200×300)가 화면 우측/하단(taskbar 50px 제외)을 넘으면 `right`/`bottom` 기준으로 뒤집는다
 - 한 번에 하나만 열림(전역 openMenuId), 외부 클릭으로 닫힘, **등장/퇴장 애니메이션 없음(즉시 표시/제거)**
 - 서브 메뉴(`ContextMenuSubPanelUI`, 원본 `LeftSubPanel`): 부모 row hover 시 표시. 부모 오른쪽에 붙이고, 화면을 넘치면 왼쪽/위쪽으로 플립
@@ -210,7 +210,7 @@ DesktopIconUI
 WindowFrameUI[] (형제 레이어)
   각자 fixed + zIndex — Desktop은 배치에 관여하지 않는다
 
-ContextMenuPanelUI (+ ContextMenuSubPanelUI)
+ContextMenuUI (+ ContextMenuSubPanelUI)
   owns 커서 위치 200px 메뉴 surface, 애니메이션 없음
   위치 계산(경계 플립)은 컨트롤러가 담당
 ```

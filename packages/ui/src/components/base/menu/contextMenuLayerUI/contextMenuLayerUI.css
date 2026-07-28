@@ -1,7 +1,0 @@
-/* viewport 전체를 덮는 context menu visual layer */
-.wb-context-menu-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  pointer-events: none;
-}

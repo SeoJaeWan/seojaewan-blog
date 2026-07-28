@@ -315,7 +315,8 @@ Taskbar 시작 panel은 Windows domain event를 직접 해석하지 않고 hook�
 - item 선택과 `open`/`openLocation` action: 현재 `TaskbarPanel.Root`의 `close()` 호출 후 해당
   event dispatch
 - pin/unpin action: surface별 `useWindowsPins` 또는 `useTaskbarPins` 호출, panel은 열린 상태 유지
-- context menu: native 기본 메뉴를 막고 `windowContextMenuRequested` dispatch, panel은 열린 상태 유지
+- context menu: native 기본 메뉴를 막고 `windowContextMenuRequested` dispatch 뒤 Context Menu를
+  기존 panel 위에 표시한다. 위치 열기는 panel을 닫고, pin/unpin/reorder는 panel을 유지한다.
 
 즉, Provider는 panel close 정책을 알지 못한다. Event를 일으키는 taskbar adapter가 현재 UI
 interaction 순서를 결정하고, 앱 observer는 이미 발생한 semantic event만 처리한다.

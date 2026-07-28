@@ -263,14 +263,14 @@ BrowseView 밖에 있으므로 검색 중에도 기존 pinned/all 선택은 보�
 
 ## Item Interaction
 
-| Interaction                 | Panel     | Windows domain effect                                    |
-| --------------------------- | --------- | -------------------------------------------------------- |
-| pinned/all/search item 선택 | 먼저 닫음 | `windowOpen` dispatch                                    |
-| detail `open`               | 먼저 닫음 | `windowOpen` dispatch                                    |
-| detail `openLocation`       | 먼저 닫음 | `windowOpenLocation` dispatch                            |
-| detail start pin/unpin      | 유지      | `useWindowsPins()` update                                |
-| detail taskbar pin/unpin    | 유지      | `useTaskbarPins()` update                                |
-| item context menu           | 유지      | native menu를 막고 `windowContextMenuRequested` dispatch |
+| Interaction                 | Panel     | Windows domain effect                                                        |
+| --------------------------- | --------- | ---------------------------------------------------------------------------- |
+| pinned/all/search item 선택 | 먼저 닫음 | `windowOpen` dispatch                                                        |
+| detail `open`               | 먼저 닫음 | `windowOpen` dispatch                                                        |
+| detail `openLocation`       | 먼저 닫음 | `windowOpenLocation` dispatch                                                |
+| detail start pin/unpin      | 유지      | `useWindowsPins()` update                                                    |
+| detail taskbar pin/unpin    | 유지      | `useTaskbarPins()` update                                                    |
+| item context menu           | 유지      | native menu를 막고 Context Menu 표시 + `windowContextMenuRequested` dispatch |
 
 검색 상세 action은 모든 item에 다음 순서로 고정한다.
 
@@ -279,6 +279,20 @@ BrowseView 밖에 있으므로 검색 중에도 기존 pinned/all 선택은 보�
 3. 현재 상태에 따른 `pinToTaskbar` 또는 `unpinFromTaskbar`
 
 기본 item 선택 자체가 open 동작이므로 detail action list에 별도 `open` row를 추가하지 않는다.
+
+Window item Context Menu는 기존 `TaskbarPanelLayerUI`에 portal로 연결된
+`WindowItemContextMenuLayer`가 조립한다. 메뉴가 열려 있는 동안 아래 WindowPanel의 scroll과
+pointer interaction을 막고, 바깥 pointer와 Escape는 Context Menu만 즉시 닫는다.
+
+- pinned/all: 실제 배치가 커서 아래면 위에서 아래로, 커서 위면 아래에서 위로 opening Motion을
+  실행한다.
+- search: opening Motion 없이 즉시 표시한다.
+- 모든 source: closing Motion 없이 즉시 제거한다.
+- `openLocation`: Context Menu와 WindowPanel을 모두 닫은 뒤 `windowOpenLocation`을 dispatch한다.
+- pin/unpin/reorder: Context Menu만 닫고 WindowPanel은 유지한다.
+- pinned reorder: 위치에 따라 `moveToFront`, `moveLeft`, `moveRight`를 노출하고
+  `useWindowsPins.reorder`에 연결한다. 두 번째 항목은 `moveLeft`가 곧 맨 앞 이동이므로
+  `moveToFront`를 중복 표시하지 않는다.
 
 ## Pinned Item Lifecycle
 

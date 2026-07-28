@@ -12,7 +12,7 @@ const meta = {
       description: {
         component:
           "컨텍스트 메뉴의 액션 row 하나 — 아이콘 + 라벨(+ trailing 슬롯) 구성. " +
-          "ContextMenuPanelUI/ContextMenuSubPanelUI 안에 나열되어 우클릭 메뉴의 각 항목이 되고, " +
+          "ContextMenuUI/ContextMenuSubPanelUI 안에 나열되어 우클릭 메뉴의 각 항목이 되고, " +
           "asChild로 서브 메뉴를 여는 trigger row로도 쓴다.",
       },
     },

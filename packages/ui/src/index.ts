@@ -4,17 +4,17 @@ export type { ContextMenuButtonUIProps } from "./components/base/button/contextM
 export { ContextMenuButtonUI } from "./components/base/button/contextMenuButtonUI";
 export type { IconButtonUIProps } from "./components/base/button/iconButtonUI";
 export { IconButtonUI } from "./components/base/button/iconButtonUI";
-export type { ContextMenuLayerUIProps } from "./components/base/menu/contextMenuLayerUI";
-export { ContextMenuLayerUI } from "./components/base/menu/contextMenuLayerUI";
-export type { ContextMenuPanelUIProps } from "./components/base/menu/contextMenuPanelUI";
-export { ContextMenuPanelUI } from "./components/base/menu/contextMenuPanelUI";
-export type { ContextMenuPositionerUIProps } from "./components/base/menu/contextMenuPositionerUI";
-export { ContextMenuPositionerUI } from "./components/base/menu/contextMenuPositionerUI";
 export type {
   ContextMenuSubPanelPlacement,
   ContextMenuSubPanelUIProps,
 } from "./components/base/menu/contextMenuSubPanelUI";
 export { ContextMenuSubPanelUI } from "./components/base/menu/contextMenuSubPanelUI";
+export type {
+  ContextMenuPlacement,
+  ContextMenuPosition,
+  ContextMenuUIProps,
+} from "./components/base/menu/contextMenuUI";
+export { ContextMenuUI } from "./components/base/menu/contextMenuUI";
 export type { ScaledPreviewUIProps } from "./components/base/panel/scaledPreviewUI";
 export {
   SCALED_PREVIEW_DEFAULT_BASE_HEIGHT,
@@ -140,4 +140,12 @@ export type {
 } from "./components/window/windowFrameUI";
 export { WindowFrameUI } from "./components/window/windowFrameUI";
 export type { WindowItem } from "./types/windowItem";
-export type { WindowItemActionId, WindowItemActionState } from "./types/windowItemAction";
+export type {
+  WindowItemActionId,
+  WindowItemActionState,
+  WindowItemContextActionId,
+  WindowItemContextActionState,
+  WindowItemReorderActionId,
+} from "./types/windowItemAction";
+export type { WindowItemActionVisual } from "./utils/resolveWindowItemActionVisuals";
+export { resolveWindowItemActionVisuals } from "./utils/resolveWindowItemActionVisuals";

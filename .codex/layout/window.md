@@ -65,10 +65,10 @@
 
 관계된 기존 구현:
 
-| 관계                    | 구현 이름                                   | 비고                                                                                |
-| ----------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
-| hover preview thumbnail | `TaskHoverPanelUI`                          | `preview` slot에 `ScaledPreviewUI` + `WindowFrameUI(overrideFullscreen)`을 주입한다 |
-| context menu 계열       | `ContextMenuPanelUI`, `ContextMenuButtonUI` | 폴더 본문의 카테고리/파일/정렬 우클릭 메뉴가 재사용 (조립은 앱 레이어)              |
+| 관계                    | 구현 이름                              | 비고                                                                                |
+| ----------------------- | -------------------------------------- | ----------------------------------------------------------------------------------- |
+| hover preview thumbnail | `TaskHoverPanelUI`                     | `preview` slot에 `ScaledPreviewUI` + `WindowFrameUI(overrideFullscreen)`을 주입한다 |
+| context menu 계열       | `ContextMenuUI`, `ContextMenuButtonUI` | 폴더 본문의 카테고리/파일/정렬 우클릭 메뉴가 재사용 (조립은 앱 레이어)              |
 
 파일 본문 뷰어는 계획대로 앱 영역으로 남겨두었다 (스토리에서는 스크롤 컨테이너 목업). 드래그/리사이즈는 `useWindowBounds`로 `WindowFrameUI`에 기본 내장했다(`bounds` 지정 시 controlled로 전환). 세션 store 연동 등 `apps/web` 단계는 미착수.
 
@@ -268,7 +268,7 @@ UI:
 구성:
 
 - `FolderSidebarUI` (@md 이상) + `FolderFileGridUI`
-- 카테고리/파일/정렬 context menu는 `ContextMenuPanelUI` 계열로 앱 레이어에서 조립
+- 카테고리/파일/정렬 context menu는 `ContextMenuUI` 계열로 앱 레이어에서 조립
 
 ### FolderSidebarUI / FolderCategoryItemUI
 
@@ -394,7 +394,7 @@ WindowRouteBarUI
 FolderViewerUI
   owns 흰 배경 탐색기 레이아웃
   contains FolderSidebarUI(@md), FolderFileGridUI
-  opens 카테고리/파일/정렬 context menu (ContextMenuPanelUI 계열, 앱 조립)
+  opens 카테고리/파일/정렬 context menu (ContextMenuUI 계열, 앱 조립)
 
 FolderFileCardUI
   owns 카드 visual (viewMode 폭, cover 3:2, hover)

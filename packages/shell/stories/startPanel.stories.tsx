@@ -27,6 +27,13 @@ const START_PANEL_STATE_PRESETS = [
     storageSeed: { windowsPinnedIds: ["react"] },
     windowsItems: START_PANEL_ITEMS,
   },
+  {
+    label: "여러 항목 고정",
+    storageSeed: {
+      windowsPinnedIds: ["react", "redux", "storybook", "media"],
+    },
+    windowsItems: START_PANEL_ITEMS,
+  },
 ] satisfies NonNullable<ShellHarnessProps["statePresets"]>;
 
 const START_PANEL_ITEM_STATES = [

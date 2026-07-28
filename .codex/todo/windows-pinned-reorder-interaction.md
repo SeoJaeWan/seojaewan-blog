@@ -2,7 +2,7 @@
 
 ## 상태
 
-TODO
+완료
 
 ## 배경
 
@@ -17,14 +17,16 @@ out/in visual로 투영하는 lifecycle과 500ms watchdog을 제공한다. 하�
 - 선택한 입력 방식이 `useWindowsPins().reorder(itemId, toIndex)`를 호출하도록 연결한다.
 - Reorder 완료 뒤 `windowsPinsReordered` payload, Provider state와 localStorage 순서가 일치하게 한다.
 
-## interaction 후보
+## 선택한 interaction
 
-- pointer drag & drop
-- keyboard reorder command
-- context menu 또는 편집 mode의 왼쪽/오른쪽 이동 action
+Window item Context Menu의 맨 앞·왼쪽·오른쪽 이동 action을 사용한다. Pointer 우클릭과 keyboard
+context menu 요청으로 같은 action button에 접근하며 `useWindowsPins().reorder(itemId, toIndex)`를
+호출한다.
 
-입력 방식은 접근성, touch 지원과 기존 pinned tile의 open/context menu 동작 충돌을 함께 검토한
-뒤 결정한다. 이 TODO는 특정 방식을 미리 확정하지 않는다.
+- 첫 번째 항목: 오른쪽 이동
+- 두 번째 항목: 왼쪽·오른쪽 이동
+- 세 번째 이후 중간 항목: 맨 앞·왼쪽·오른쪽 이동
+- 마지막 항목: 맨 앞·왼쪽 이동
 
 ## 구현 검토 사항
 
@@ -43,7 +45,8 @@ out/in visual로 투영하는 lifecycle과 500ms watchdog을 제공한다. 하�
 - `windowsPinsReordered`가 완료된 순서와 이전 순서를 한 번만 전달한다.
 - pointer와 keyboard 사용 경로, no-op과 lifecycle 충돌을 테스트한다.
 
-## 현재 작업과의 경계
+## 구현 결과
 
-Windows pin updater와 animation hook의 책임 분리는 완료됐지만 새로운 reorder interaction은 포함하지
-않는다. 후속 작업은 기존 `useWindowsPins.reorder` action을 선택한 입력 방식에 연결하는 데서 시작한다.
+`WindowItemContextMenuLayer`가 source와 현재 pinned index에서 가능한 action을 계산하고 기존
+canonical reorder action에 연결한다. Provider state, localStorage와 semantic event가 먼저 갱신되고
+`useWindowPinAnimation`이 기존 latest-wins 규칙으로 변경된 순서를 시각화한다.

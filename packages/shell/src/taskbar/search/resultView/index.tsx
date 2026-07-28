@@ -9,6 +9,7 @@ import { useTaskbarPins } from "../../../windows/providers/taskbarPinsProvider";
 import { useWindowDispatch } from "../../../windows/providers/windowsEventsProvider";
 import { useWindowsPins } from "../../../windows/providers/windowsPinsProvider";
 import { useTaskbarPanelRootContext } from "../../panel/hooks/useTaskbarPanelRootContext";
+import { useItemContextMenu, WindowItemContextMenuLayer } from "../../windowItemContextMenu";
 import type { UseTaskSearchResult } from "../hooks/useTaskSearch";
 
 interface TaskSearchResultViewProps {
@@ -30,6 +31,7 @@ export const TaskSearchResultView = ({ className, search }: TaskSearchResultView
   const dispatch = useWindowDispatch();
   const taskbarPins = useTaskbarPins();
   const windowsPins = useWindowsPins();
+  const itemContextMenu = useItemContextMenu();
   const detailActions: readonly WindowItemActionState[] =
     search.detailItem === null
       ? []
@@ -74,18 +76,28 @@ export const TaskSearchResultView = ({ className, search }: TaskSearchResultView
   const handleItemContextMenu = (event: MouseEvent<HTMLButtonElement>, item: WindowItem) => {
     event.preventDefault();
     dispatch("windowContextMenuRequested", { item, source: "search" });
+    itemContextMenu.open({
+      anchorX: event.clientX,
+      anchorY: event.clientY,
+      item,
+      source: "search",
+      triggerElement: event.currentTarget,
+    });
   };
 
   return (
-    <TaskSearchResultViewUI
-      className={className}
-      detailActions={detailActions}
-      detailItemId={search.detailItemId}
-      onDetailAction={handleDetailAction}
-      onDetailItemChange={search.onDetailItemChange}
-      onItemContextMenu={handleItemContextMenu}
-      onSelectItem={(item) => dispatchOpen("windowOpen", item)}
-      results={search.results}
-    />
+    <>
+      <TaskSearchResultViewUI
+        className={className}
+        detailActions={detailActions}
+        detailItemId={search.detailItemId}
+        onDetailAction={handleDetailAction}
+        onDetailItemChange={search.onDetailItemChange}
+        onItemContextMenu={handleItemContextMenu}
+        onSelectItem={(item) => dispatchOpen("windowOpen", item)}
+        results={search.results}
+      />
+      <WindowItemContextMenuLayer contextMenu={itemContextMenu} />
+    </>
   );
 };
