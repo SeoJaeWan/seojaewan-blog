@@ -98,19 +98,19 @@ Windows
 
 ### Functional shell
 
-| Component/hook                      | Current responsibility                                                                        |
-| ----------------------------------- | --------------------------------------------------------------------------------------------- |
-| `TaskbarPanel`                      | active panel ID, panel별 visual phase, portal layer, Escape close와 1초 transition watchdog   |
-| `TaskbarPanel.Root`                 | 선택 ID 또는 자동 ID로 한 panel의 Trigger와 Content scope를 제공                              |
-| `TaskbarPanel.Trigger`              | 자식 button에 toggle, ref, selected visual과 accessible 연결을 합성                           |
-| `TaskbarPanel.Content`              | visual phase 동안 Container와 공용 layer portal을 조립                                       |
-| `useTaskbarPanelValue`              | 전역 reducer, layer, Escape와 transition watchdog을 관리하는 private hook                    |
-| `useTaskbarPanelRootValue`          | 한 panel의 ref, viewport placement, outside pointer와 animation 완료를 관리하는 private hook |
-| `TaskbarStartButton`                | 시작 button UI와 `TaskbarWindowPanel`을 하나의 Root로 조립                                   |
-| `TaskbarWindowPanel`                | query/detail/navigation 지역 상태와 Windows hooks를 `WindowsPanelUI`에 연결                   |
-| `useWindowsPanelNavigation`         | pinned/all 전환, category overlay와 all-list scroll                                           |
-| `useSearchResultDetail`             | 검색 결과의 현재 detail item 선택                                                             |
-| `useTaskbarWindowPanelInteractions` | open/context/pin action을 현재 panel Root와 Windows domain에 연결                            |
+| Component/hook             | Current responsibility                                                                       |
+| -------------------------- | -------------------------------------------------------------------------------------------- |
+| `TaskbarPanel`             | active panel ID, panel별 visual phase, portal layer, Escape close와 1초 transition watchdog  |
+| `TaskbarPanel.Root`        | 선택 ID 또는 자동 ID로 한 panel의 Trigger와 Content scope를 제공                             |
+| `TaskbarPanel.Trigger`     | 자식 button에 toggle, ref, selected visual과 accessible 연결을 합성                          |
+| `TaskbarPanel.Content`     | visual phase 동안 Container와 공용 layer portal을 조립                                       |
+| `useTaskbarPanelValue`     | 전역 reducer, layer, Escape와 transition watchdog을 관리하는 private hook                    |
+| `useTaskbarPanelRootValue` | 한 panel의 ref, viewport placement, outside pointer와 animation 완료를 관리하는 private hook |
+| `TaskbarStartButton`       | 시작 button UI와 `TaskbarWindowPanel`을 하나의 Root로 조립                                   |
+| `TaskbarWindowPanel`       | 기능 hook과 Windows domain action을 `WindowsPanelUI`에 직접 연결                             |
+| `useWindowPanelNavigation` | pinned/all browse 상태를 보존하며 pinned/all/search 최종 화면을 결정                         |
+| `useWindowPanelSearch`     | 검색어, 검색 결과와 현재 detail item 선택                                                    |
+| `useWindowPanelCategories` | 전체 item category section, category overlay와 all-list scroll                               |
 
 ### Presentational UI
 

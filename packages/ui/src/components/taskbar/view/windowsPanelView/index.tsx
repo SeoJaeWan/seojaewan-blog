@@ -101,16 +101,6 @@ export const WindowsPanelView = ({
   sections = [],
   view = "pinned",
 }: WindowsPanelViewProps) => {
-  const requestPinnedView = () => {
-    onCategoryOverlayOpenChange?.(false);
-    onViewChange?.("pinned");
-  };
-
-  const requestCategory = (category: string) => {
-    onCategorySelect?.(category);
-    onCategoryOverlayOpenChange?.(false);
-  };
-
   return (
     <div className="wb-windows-panel__views" data-view={view}>
       <div
@@ -170,7 +160,7 @@ export const WindowsPanelView = ({
             <h2 className="wb-windows-panel__title">모두</h2>
             <button
               className="wb-windows-panel__view-toggle"
-              onClick={requestPinnedView}
+              onClick={() => onViewChange?.("pinned")}
               type="button"
             >
               뒤로 <ChevronLeft12Regular aria-hidden="true" />
@@ -187,7 +177,7 @@ export const WindowsPanelView = ({
                   <button
                     key={section.category}
                     className="wb-windows-panel__category-jump"
-                    onClick={() => requestCategory(section.category)}
+                    onClick={() => onCategorySelect?.(section.category)}
                     type="button"
                   >
                     {section.category}
