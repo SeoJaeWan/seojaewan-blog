@@ -91,7 +91,7 @@ Windows
                                  │  └─ WindowsPanelViewUI (@window/ui)
                                  │     ├─ pinned view
                                  │     └─ all view + category jump overlay
-                                 └─ WindowPanelSearchView (@window/shell)
+                                 └─ TaskSearchResultView (@window/shell)
                                     └─ TaskSearchResultViewUI (@window/ui)
                                        ├─ result list
                                        └─ selected item detail/actions
@@ -111,10 +111,10 @@ Windows
 | `useTaskbarPanelRootValue` | 한 panel의 ref, viewport placement, outside pointer와 animation 완료를 관리하는 private hook |
 | `TaskbarStartButton`       | 시작 button UI와 `TaskbarWindowPanel`을 하나의 Root로 조립                                   |
 | `TaskbarWindowPanel`       | 공통 검색 input과 pinned/all/search 화면 routing을 조립                                      |
-| `WindowPanelSearchView`    | 검색 결과·상세 action과 검색 화면의 Windows domain event를 연결                              |
+| `TaskSearchResultView`     | taskbar 검색 결과·상세 action과 Windows domain event를 연결하는 공용 connector               |
 | `WindowPanelBrowseView`    | pinned/all visual에 category, pin animation과 Windows domain event를 연결                    |
+| `useTaskSearch`            | taskbar 검색어, 검색 결과와 현재 detail item 선택                                            |
 | `useWindowPanelNavigation` | pinned/all browse 상태를 보존하며 pinned/all/search 최종 화면을 결정                         |
-| `useWindowPanelSearch`     | 검색어, 검색 결과와 현재 detail item 선택                                                    |
 | `useWindowPanelCategories` | 전체 item category section, category overlay와 all-list scroll                               |
 
 ### Presentational UI
@@ -134,6 +134,11 @@ Windows
 `@window/ui`에는 `TaskbarSearchUI`, `TaskbarAppListUI`, `TaskbarTaskButtonUI`, `TaskbarClockUI`,
 `SearchPanelUI`, `TaskHoverPanelUI`, `TaskbarContextMenuUI` 등의 visual도 공개되어 있다. 현재
 `@window/shell` public API가 이들의 app behavior를 조립한다고 간주하지 않는다.
+
+`SearchPanelUI`는 현재 추천/결과 분기와 `TaskSearchResultViewUI` 생성을 직접 소유해 shell의
+`TaskSearchResultView`를 content로 주입할 수 없다. 향후 taskbar Search panel connector를 만들 때
+필요한 composition 경계는
+[`search-panel-composition-boundary.md`](../todo/search-panel-composition-boundary.md)에서 추적한다.
 
 ## Functional Storybook Harness
 
@@ -228,7 +233,8 @@ button click
 
 ## Start Panel State
 
-`TaskbarWindowPanel`이 호출하는 전용 hook은 다음 지역 상태를 소유한다.
+`TaskbarWindowPanel`이 호출하는 `useTaskSearch`와 `useWindowPanelNavigation`은 다음 지역 상태를
+소유한다.
 
 - search input value
 - 검색 detail item

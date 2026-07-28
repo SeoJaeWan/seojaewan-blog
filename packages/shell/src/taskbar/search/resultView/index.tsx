@@ -9,20 +9,23 @@ import { useTaskbarPins } from "../../../windows/providers/taskbarPinsProvider";
 import { useWindowDispatch } from "../../../windows/providers/windowsEventsProvider";
 import { useWindowsPins } from "../../../windows/providers/windowsPinsProvider";
 import { useTaskbarPanelRootContext } from "../../panel/hooks/useTaskbarPanelRootContext";
-import type { UseWindowPanelSearchResult } from "../hooks/useWindowPanelSearch";
+import type { UseTaskSearchResult } from "../hooks/useTaskSearch";
 
-interface WindowPanelSearchViewProps {
-  /** Window panel root가 소유하는 검색어, 결과와 상세 선택 controller. */
-  search: UseWindowPanelSearchResult;
+interface TaskSearchResultViewProps {
+  /** 이 검색 결과 surface에 추가할 layout class. */
+  className?: string;
+  /** Taskbar search feature가 소유하는 검색어, 결과와 상세 선택 controller. */
+  search: UseTaskSearchResult;
 }
 
 /**
- * Window panel 검색 결과와 상세 action을 Windows domain에 연결한다.
- * 검색 input과 search 화면 전환 상태는 소유하지 않는다.
+ * Taskbar 검색 결과와 상세 action을 Windows domain에 연결한다.
+ * Panel visual, 검색 input과 화면 전환 상태는 소유하지 않는다.
  *
- * @param props.search Window panel root가 소유하는 검색 controller
+ * @param props.search Taskbar search feature가 소유하는 검색 controller
+ * @param props.className 호출 surface가 소유하는 layout class
  */
-export const WindowPanelSearchView = ({ search }: WindowPanelSearchViewProps) => {
+export const TaskSearchResultView = ({ className, search }: TaskSearchResultViewProps) => {
   const panel = useTaskbarPanelRootContext();
   const dispatch = useWindowDispatch();
   const taskbarPins = useTaskbarPins();
@@ -75,7 +78,7 @@ export const WindowPanelSearchView = ({ search }: WindowPanelSearchViewProps) =>
 
   return (
     <TaskSearchResultViewUI
-      className="wb-windows-panel__search-results"
+      className={className}
       detailActions={detailActions}
       detailItemId={search.detailItemId}
       onDetailAction={handleDetailAction}

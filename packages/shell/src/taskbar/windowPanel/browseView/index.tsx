@@ -9,7 +9,7 @@ import { useWindowDispatch } from "../../../windows/providers/windowsEventsProvi
 import { useWindowPinAnimation } from "../../../windows/providers/windowsPinsProvider";
 import type { WindowsPanelItemSource } from "../../../windows/types";
 import { useTaskbarPanelRootContext } from "../../panel/hooks/useTaskbarPanelRootContext";
-import { useWindowPanelCategories } from "../hooks/useWindowPanelCategories";
+import { useWindowPanelCategories } from "./hooks/useWindowPanelCategories";
 
 interface WindowPanelBrowseViewProps {
   /** pinned/all browse 화면 변경을 navigation에 전달한다. */

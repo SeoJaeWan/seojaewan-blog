@@ -2,17 +2,17 @@
 
 import { WindowsPanelUI } from "@window/ui";
 
+import { useTaskSearch } from "../search/hooks/useTaskSearch";
+import { TaskSearchResultView } from "../search/resultView";
 import { WindowPanelBrowseView } from "./browseView";
 import { useWindowPanelNavigation } from "./hooks/useWindowPanelNavigation";
-import { useWindowPanelSearch } from "./hooks/useWindowPanelSearch";
-import { WindowPanelSearchView } from "./searchView";
 
 /**
  * Taskbar 시작 panel의 공통 검색 input과 pinned/all/search 화면 routing을 조립한다.
- * 화면별 Windows domain action과 visual lifecycle은 SearchView와 BrowseView에 위임한다.
+ * 검색 결과 action은 공용 TaskSearchResultView에, browse lifecycle은 WindowPanelBrowseView에 위임한다.
  */
 export const TaskbarWindowPanel = () => {
-  const search = useWindowPanelSearch();
+  const search = useTaskSearch();
   const navigation = useWindowPanelNavigation({
     searchActive: search.isActive,
   });
@@ -24,7 +24,7 @@ export const TaskbarWindowPanel = () => {
         value={search.query}
       />
       {navigation.activeView === "search" ? (
-        <WindowPanelSearchView search={search} />
+        <TaskSearchResultView className="wb-windows-panel__search-results" search={search} />
       ) : (
         <WindowPanelBrowseView
           onViewChange={navigation.onBrowseViewChange}

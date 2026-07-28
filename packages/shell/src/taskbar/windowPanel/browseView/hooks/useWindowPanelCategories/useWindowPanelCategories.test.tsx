@@ -6,7 +6,7 @@ import type { WindowItem } from "@window/ui";
 import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Windows } from "../../../../windows";
+import { Windows } from "../../../../../windows";
 import { useWindowPanelCategories } from "./index";
 
 const REACT = { id: "react", title: "React" } satisfies WindowItem;

@@ -7,7 +7,7 @@ import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { Windows } from "../../../../windows";
-import { useWindowPanelSearch } from "./index";
+import { useTaskSearch } from "./index";
 
 const REACT = { id: "react", title: "React" } satisfies WindowItem;
 const REDUX = { id: "redux", title: "Redux" } satisfies WindowItem;
@@ -23,7 +23,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
   return <Windows windowsItems={windowsItems}>{children}</Windows>;
 };
 
-const renderSearch = () => renderHook(() => useWindowPanelSearch(), { wrapper: Wrapper });
+const renderSearch = () => renderHook(() => useTaskSearch(), { wrapper: Wrapper });
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -34,7 +34,7 @@ afterEach(() => {
   window.localStorage.clear();
 });
 
-describe("useWindowPanelSearch", () => {
+describe("useTaskSearch", () => {
   it("빈 검색어와 상세 선택이 없는 비활성 상태로 시작한다", () => {
     const { result } = renderSearch();
 

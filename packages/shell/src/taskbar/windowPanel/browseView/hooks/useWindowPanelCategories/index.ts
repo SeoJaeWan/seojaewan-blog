@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { WindowsPanelSection } from "@window/ui";
 
-import { useWindowsItemsContext } from "../../../../windows/providers/windowsItemsProvider";
+import { useWindowsItemsContext } from "../../../../../windows/providers/windowsItemsProvider";
 import { createWindowsPanelSections } from "../../utils/createWindowsPanelSections";
 
 export interface UseWindowPanelCategoriesOptions {

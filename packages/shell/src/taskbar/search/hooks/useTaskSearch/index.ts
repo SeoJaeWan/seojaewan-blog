@@ -6,7 +6,7 @@ import type { WindowItem } from "@window/ui";
 
 import { useWindowSearch } from "../../../../windows/hooks/useWindowSearch";
 
-export interface UseWindowPanelSearchResult {
+export interface UseTaskSearchResult {
   /** 검색 결과의 현재 상세 item. */
   detailItem: WindowItem | null;
   /** 상세 pane에 표시할 현재 검색 결과 item ID. */
@@ -24,12 +24,12 @@ export interface UseWindowPanelSearchResult {
 }
 
 /**
- * Window panel의 검색어, 결과와 상세 선택을 관리한다.
- * 화면 navigation과 전체 item category section은 소유하지 않는다.
+ * Taskbar 검색 기능의 검색어, 결과와 상세 선택을 관리한다.
+ * Panel visual, 화면 navigation과 추천 section은 소유하지 않는다.
  *
  * @returns 검색 input과 결과 화면에 연결할 검색 상태와 callback
  */
-export const useWindowPanelSearch = (): UseWindowPanelSearchResult => {
+export const useTaskSearch = (): UseTaskSearchResult => {
   const [query, setQuery] = useState("");
   const [detailItemId, setDetailItemId] = useState<string | null>(null);
   const isActive = query.trim().length > 0;

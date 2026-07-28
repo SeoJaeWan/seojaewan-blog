@@ -1,6 +1,6 @@
 import type { WindowItem, WindowsPanelSection } from "@window/ui";
 
-import { getHangulInitialConsonant } from "../../../../windows/utils/hangul";
+import { getHangulInitialConsonant } from "../../../../../windows/utils/hangul";
 
 const createWindowsPanelInitialKey = (title: string) => {
   const trimmedTitle = title.trim();
@@ -31,9 +31,7 @@ const createWindowsPanelInitialKey = (title: string) => {
  * @param items 시작 panel의 모두 보기에 표시할 전체 항목
  * @returns category와 해당 category의 항목을 묶은 section 목록
  */
-export const createWindowsPanelSections = (
-  items: readonly WindowItem[],
-): WindowsPanelSection[] => {
+export const createWindowsPanelSections = (items: readonly WindowItem[]): WindowsPanelSection[] => {
   const groupedItems = new Map<string, WindowItem[]>();
 
   for (const item of items) {
