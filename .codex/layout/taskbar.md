@@ -114,7 +114,7 @@ Windows
 | `TaskSearchResultView`     | taskbar 검색 결과·상세 action과 Windows domain event를 연결하는 공용 connector               |
 | `WindowPanelBrowseView`    | pinned/all visual에 category, pin animation과 Windows domain event를 연결                    |
 | `useTaskSearch`            | taskbar 검색어, 검색 결과와 현재 detail item 선택                                            |
-| `useWindowPanelNavigation` | pinned/all browse 상태를 보존하며 pinned/all/search 최종 화면을 결정                         |
+| `useWindowPanelNavigation` | pinned/all browse 상태와 화면 변경 callback을 관리                                           |
 | `useWindowPanelCategories` | 전체 item category section, category overlay와 all-list scroll                               |
 
 ### Presentational UI
@@ -234,11 +234,15 @@ button click
 ## Start Panel State
 
 `TaskbarWindowPanel`이 호출하는 `useTaskSearch`와 `useWindowPanelNavigation`은 다음 지역 상태를
-소유한다.
+각각 소유한다.
 
 - search input value
 - 검색 detail item
 - pinned/all view
+
+`TaskbarWindowPanel`은 `useTaskSearch.isActive`와 `useWindowPanelNavigation.browseView`를 조합해
+실제로 표시할 pinned/all/search 화면을 결정한다. Search 화면 routing은 두 hook 중 하나에
+포함하지 않는다.
 
 `WindowPanelBrowseView`가 호출하는 `useWindowPanelCategories`는 다음 화면 지역 상태를 소유한다.
 
