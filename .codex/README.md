@@ -20,6 +20,9 @@
 - `notion/pipeline.md`: legacy pipeline design과 migration evidence
 - `todo/`: 이전 구현의 backlog/completion snapshots; 현재 roadmap이 아님
 - `fable5/`: 과거 작업의 retrospective와 operating history
+- [`evidence/hdjg-22/`](evidence/hdjg-22/README.md): HDJG-22 revision-bound evidence
+  bundle; canonical architecture/work state가 아니며 candidate token 검토와 승격은 HDJG-23이
+  소유한다.
 
 새로운 지속 가능한 계약을 이 디렉터리에 복제하지 않는다. 구현 중 발견한 재사용 가능한 지식은
 Local Work Memory에, 실행 가능한 후속 작업은 Work Item에 갱신한다.
