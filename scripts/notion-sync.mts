@@ -1,5 +1,5 @@
 /**
- * Notion sync (.codex/notion/pipeline.md Implementation Direction 3번).
+ * Notion sync. Canonical pipeline decisions are maintained in Workbench Local Work Memory.
  *
  * Notion을 읽어 앱이 빌드에 쓰는 정적 산출물로 변환한다:
  *   수집(페이지네이션+재귀, <3rps) → 변경 감지(manifest의 last_edited_time)

@@ -1,7 +1,8 @@
 /**
  * notion 영역의 콘텐츠 계약 — ui가 "그리는 데 필요한 데이터 모양"을 선언한다.
  * sync 레이어 매퍼가 공식 API 응답(@notionhq/client)을 이 타입으로 변환하므로
- * ui는 Notion API 와이어 포맷에 의존하지 않는다 (.codex/notion/pipeline.md 결정 2).
+ * ui는 Notion API 와이어 포맷에 의존하지 않는다. Canonical 경계는 Workbench Local Work
+ * Memory의 Notion Content Pipeline Model을 따른다.
  * union에 없는 블록은 매퍼가 경고 후 건너뛴다 — 지원 목록은 블록 인벤토리로 확정한다.
  */
 

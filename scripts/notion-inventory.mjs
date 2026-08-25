@@ -1,15 +1,15 @@
 /**
- * Notion 블록 타입 인벤토리 (.codex/notion/pipeline.md Implementation Direction 1번).
+ * Notion 블록 타입 인벤토리.
  *
  * 3개 DB(blog/project/about)의 전체 페이지를 순회하며 블록을 재귀 수집해
- * "실제로 쓰는 Notion 기능"을 집계한다. 결과는 .codex/notion/inventory.md로 저장 —
- * 이 목록이 ui 블록 union(v1 13종)의 검증 근거이자 sync 매퍼의 지원 스펙이 된다.
+ * "실제로 쓰는 Notion 기능"을 집계한다. Markdown 결과는 stdout으로 출력하며,
+ * Local Work Memory의 revision-pinned Notion 블록 인벤토리를 갱신하는 근거로 사용한다.
  *
  * 실행: node scripts/notion-inventory.mjs
  * 필요 env(.env): NOTION_API_KEY, NOTION_{BLOG,PROJECT,ABOUT}_DATABASE_ID
  */
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -223,11 +223,11 @@ const collectDatabase = async (category, dataSourceId) => {
   } while (cursor);
 
   stats.databases[category] = { pageCount: pages.length, titles: pages.map(pageTitleOf) };
-  console.log(`${category}: ${pages.length}페이지`);
+  console.error(`${category}: ${pages.length}페이지`);
 
   for (const page of pages) {
     const title = pageTitleOf(page);
-    console.log(`  · ${title}`);
+    console.error(`  · ${title}`);
     await walkBlocks(page.id, `${category}/${title}`, 1);
   }
 };
@@ -247,13 +247,18 @@ const buildReport = () => {
 
   const blockRows = [...stats.blocks.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([type, count]) => `| \`${type}\` | ${count} | ${V1_SUPPORTED.has(type) ? "✅" : "❌ 미지원"} |`)
+    .map(
+      ([type, count]) =>
+        `| \`${type}\` | ${count} | ${V1_SUPPORTED.has(type) ? "✅" : "❌ 미지원"} |`,
+    )
     .join("\n");
 
   const unsupportedSection =
     stats.unsupported.length === 0
       ? "없음 — v1 union이 실사용 블록을 전부 커버한다."
-      : [...new Set(stats.unsupported.map((entry) => `- \`${entry.type}\` — ${entry.page}`))].join("\n");
+      : [...new Set(stats.unsupported.map((entry) => `- \`${entry.type}\` — ${entry.page}`))].join(
+          "\n",
+        );
 
   const tableSummary =
     stats.tables.length === 0
@@ -330,6 +335,5 @@ for (const [category, id] of Object.entries(DATABASES)) {
 }
 
 const report = buildReport();
-const outPath = path.join(ROOT, ".codex", "notion", "inventory.md");
-writeFileSync(outPath, report, "utf8");
-console.log(`\n리포트 저장: ${path.relative(ROOT, outPath)} (API 호출 ${requestCount}회)`);
+process.stdout.write(report);
+console.error(`\n리포트 생성 완료 (API 호출 ${requestCount}회)`);
