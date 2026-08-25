@@ -1,5 +1,11 @@
 # Window Layout Model (Folder/File)
 
+## 문서 역할
+
+Legacy visual and implementation reference. 아래 `packages/ui` 컴포넌트와 `apps/web` 계획은
+migration 근거이며 현재 canonical 계약이 아니다. 현재 Window의 Design UI/Core/Shell과 Application
+Content 소유권은 Workbench Local Work Memory의 Window Layout을 따른다.
+
 ## Purpose
 
 `window`는 원본 `blog` 프로젝트의 폴더 창(`SessionFolder`)과 파일 창(`SessionFile`)을 새 `window-blog` 구조에 맞게 다시 설계하기 위한 UI 모델이다.
@@ -42,7 +48,7 @@
 - 폴더/파일/정렬 context menu의 항목 구성 (taskbar.md의 context menu 계열 재사용)
 - desktop wallpaper, 아이콘 배치
 
-## Implemented UI (packages/ui)
+## Legacy implemented UI reference (packages/ui)
 
 `components/window`와 `components/base/panel/scaledPreviewUI`에 구현 완료. 설계 이름과 구현의 차이:
 

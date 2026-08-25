@@ -1,5 +1,11 @@
 # Desktop Layout Model (바탕화면)
 
+## 문서 역할
+
+Legacy visual and implementation reference. 아래 `packages/ui` 컴포넌트와 조립 설명은 migration
+근거이며 현재 canonical 계약이 아니다. 현재 Desktop의 Design UI/Core/Shell 소유권은 Workbench
+Local Work Memory의 Desktop Layout을 따른다.
+
 ## Purpose
 
 `desktop`은 원본 `blog` 프로젝트의 Windows 11 바탕화면 — 배경 이미지, 바탕화면 아이콘, 열린 창 레이어, 바탕화면 컨텍스트 메뉴 — 을 새 `window-blog` 구조에 맞게 다시 설계하기 위한 UI 모델이다.
@@ -52,7 +58,7 @@ main (w-full h-full overflow-hidden relative)
 
 원본 `WallPaper`가 배경과 아이콘, 컨텍스트 메뉴를 한 컴포넌트에서 담당한다. 새 구조에서는 배경/아이콘 그리드/아이콘을 분리한다.
 
-## Implemented UI (packages/ui)
+## Legacy implemented UI reference (packages/ui)
 
 `components/desktop`(wallpaperUI/desktopIconGridUI/desktopIconUI — wallpaper는 설계명 DesktopRoot)과 컨텍스트 메뉴 확장(`components/base/menu`) 구현 완료:
 

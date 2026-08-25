@@ -2,9 +2,12 @@
 
 ## Status
 
-이 문서는 `@window/shell`의 전역 Context Menu Provider, trigger hook과 entry 계약에 대한 canonical
-문서다. Context Menu의 Portal, browser lifecycle, action/submenu/separator 모델 또는 public API를
-변경할 때 함께 갱신한다.
+Legacy reference snapshot. 이 문서는 `@window/ui`와 `@window/shell` 구현의 Context Menu Provider,
+trigger hook과 entry 계약을 기록한다. 현재 canonical 계약과 `packages/design/src/ui`·`shell`의
+소유권은 Workbench Local Work Memory의 Context Menu Architecture를 따른다.
+
+아래 내용은 migration 근거로만 사용하며 새 product architecture 또는 public API의 기준으로
+사용하지 않는다.
 
 ## Purpose
 

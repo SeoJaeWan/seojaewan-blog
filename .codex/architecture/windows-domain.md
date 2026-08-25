@@ -2,8 +2,12 @@
 
 ## Status
 
-이 문서는 `@window/shell`의 Windows domain에 대한 canonical 계약이다. Windows item, 검색,
-surface별 pin 상태와 observer event를 변경할 때는 이 문서와 public API를 함께 갱신한다.
+Legacy reference snapshot. 이 문서는 `@window/ui`와 `@window/shell` 구현의 Windows domain 계약을
+기록한다. 현재 canonical 계약과 `packages/design/src/core`·`shell`의 소유권은 Workbench Local Work
+Memory의 Windows Domain Architecture를 따른다.
+
+아래 Provider, pin과 observer 모델은 migration 근거로만 사용하며 새 product architecture 또는
+public API의 기준으로 사용하지 않는다.
 
 Taskbar의 시각 구조와 panel transition은 각각
 [`taskbar.md`](../layout/taskbar.md),
