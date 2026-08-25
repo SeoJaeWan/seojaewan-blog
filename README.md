@@ -59,7 +59,7 @@ For legacy comparison only, run `pnpm --filter @window/ui dev` or
 ## Project Knowledge
 
 Durable architecture, conventions, commands, and development guides are maintained in Workbench
-Local Work Memory. Current delivery status and follow-up work are maintained as Gateway Work Items.
+Local Work Memory. Revision-pinned project evidence is curated there as well. Current delivery
+status and follow-up work are maintained as Gateway Work Items.
 
-- [Agent bootstrap and knowledge precedence](./.codex/agent.md)
-- [Local evidence and history index](./.codex/README.md)
+- [Agent bootstrap and knowledge precedence](./AGENTS.md)
