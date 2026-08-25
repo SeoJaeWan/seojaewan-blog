@@ -19,4 +19,11 @@ Windows 11 데스크톱 UI를 테마로 한 개인 기술 블로그를 현재 �
 
 ## Knowledge Location
 
-기술 스택, 폴더 구조, lint/test 규칙, 디자인 시스템 경계, 로컬 개발 명령은 프로젝트 로컬 문서가 아니라 Workbench dev-wiki에 기록한다.
+기술 스택, 폴더 구조, lint/test 규칙, 디자인 시스템 경계, 로컬 개발 명령과 같은 지속 가능한
+프로젝트 지식의 canonical source는 Workbench Local Work Memory다. 현재 작업 상태와 후속 TODO는
+Gateway Work Item catalog에서 관리한다.
+
+저장소의 source와 실행 가능한 config는 실제 checkout 상태의 근거다. `.codex`의 나머지 문서는
+참고 근거, migration snapshot 또는 작업 이력이며 현재 계약의 source of truth가 아니다. 로컬 문서와
+Local Work Memory가 충돌하면 Memory를 우선하고, source/config와 Memory가 다르면 문서 drift로 보고
+함께 정리한다. 자세한 분류는 [`.codex/README.md`](./README.md)를 따른다.

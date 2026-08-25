@@ -2,12 +2,13 @@
 
 ## Status
 
-이 문서는 현재 `@window/ui` taskbar visual과 `@window/shell`의 시작 panel 조립 계약을 설명한다.
-Windows item, pin, 검색과 observer의 canonical 계약은
-[`windows-domain.md`](../architecture/windows-domain.md)를 따른다.
+Legacy visual and implementation reference. 이 문서는 `@window/ui` taskbar visual과
+`@window/shell` 시작 panel 조립의 과거 구현을 기록한다. 현재 Taskbar의 Design UI/Core/Shell
+소유권과 transition 계약은 Workbench Local Work Memory의 Taskbar Layout과 Taskbar Panel
+Transition을 따른다.
 
-이전 문서의 미래 설계와 현재 구현을 혼합한 내용은 폐기했다. 아래에 명시한 컴포넌트와 연결만
-현재 계약으로 간주한다.
+아래 컴포넌트와 연결은 migration 근거이며 새 product architecture 또는 public API의 기준으로
+사용하지 않는다.
 
 ## Purpose And Scope
 
@@ -29,8 +30,8 @@ Windows item, pin, 검색과 observer의 canonical 계약은
 
 ## Source Evidence
 
-현재 코드와 Storybook이 구현 상태의 source of truth다. 다음 원본 파일은 visual 의도와 metric을
-추적하기 위한 역사적 근거이며 runtime API 근거로 사용하지 않는다.
+아래 legacy 코드와 Storybook은 이전 구현 상태의 evidence다. 다음 원본 파일은 visual 의도와
+metric을 추적하기 위한 역사적 근거이며 현재 runtime API 근거로 사용하지 않는다.
 
 - `/Users/seojaewan/Desktop/dev/blog/src/components/templates/bottomBar/index.tsx`
 - `/Users/seojaewan/Desktop/dev/blog/src/components/atoms/taskIconButton/index.tsx`

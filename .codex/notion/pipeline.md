@@ -1,5 +1,11 @@
 # Notion Content Pipeline Model
 
+## Status
+
+Legacy pipeline design and migration evidence. 아래 `packages/ui` 중심의 renderer 소유권은 현재
+canonical 계약이 아니다. 현재 정규화 schema와 content renderer 소유권, Design UI/Core/Shell과의
+경계는 Workbench Local Work Memory의 Notion Content Pipeline을 따른다.
+
 ## Purpose
 
 `window-blog`에서 Notion을 CMS로 쓰는 콘텐츠 파이프라인의 설계 모델이다.

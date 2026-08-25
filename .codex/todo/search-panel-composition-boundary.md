@@ -1,5 +1,11 @@
 # SearchPanelUI composition boundary
 
+## 문서 역할
+
+Legacy backlog snapshot. 아래 상태와 완료 조건은 이전 `packages/ui`·`packages/shell` 구현의 기록이며
+현재 roadmap 또는 canonical TODO가 아니다. 실행 가능한 현재 작업은 Gateway Work Item catalog에서
+관리한다.
+
 ## 상태
 
 TODO

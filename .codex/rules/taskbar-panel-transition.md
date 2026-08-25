@@ -1,5 +1,12 @@
 # Taskbar panel transition 규칙
 
+## 문서 역할
+
+Legacy reference snapshot. 아래 규칙은 `packages/ui`와 `packages/shell` 기반 구현을 기록한다.
+현재 canonical transition 계약은 Workbench Local Work Memory의 Taskbar Panel Transition을 따른다.
+특히 transition 중 요청을 무시하는 아래 정책은 latest-valid request 처리와 superseded/cancelled
+lifecycle 정책으로 대체되었으며 새 구현의 기준으로 사용하지 않는다.
+
 ## 적용 범위
 
 `TaskbarPanel`, `TaskbarPanel.Root`와 이를 구현하는 private panel hook에 적용한다.
