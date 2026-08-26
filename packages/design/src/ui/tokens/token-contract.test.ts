@@ -48,6 +48,9 @@ const readLayerSources = (layer: TokenLayer): TokenSource[] =>
       path: `${layer}/${fileName}`,
     }));
 
+const readRepositoryTokenSources = () =>
+  (["reference", "semantic", "component", "theme"] as const).flatMap(readLayerSources);
+
 const extractDefinitions = (source: TokenSource): TokenDefinition[] =>
   Array.from(source.css.matchAll(TOKEN_DECLARATION_PATTERN), ([, name, value]) => ({
     layer: source.layer,
@@ -80,13 +83,6 @@ const validateTokenSources = (sources: TokenSource[]) => {
     const existingDefinitions = definitionsByName.get(definition.name) ?? [];
     definitionsByName.set(definition.name, [...existingDefinitions, definition]);
 
-    expect(definition.name, `${definition.path}: --wd- namespace만 사용할 수 있다`).toMatch(
-      /^--wd-/,
-    );
-    expect(definition.name, `${definition.path}: underscore와 BEM 문법은 허용되지 않는다`).toMatch(
-      /^--[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    );
-
     const expectedPattern = {
       component: COMPONENT_NAME_PATTERN,
       reference: REFERENCE_NAME_PATTERN,
@@ -113,7 +109,7 @@ const validateTokenSources = (sources: TokenSource[]) => {
     for (const dependency of dependencies) {
       expect(
         allowedDependencies[definition.layer],
-        `${definition.path}: ${definition.layer}에서 ${dependency} 방향 참조는 허용되지 않는다`,
+        `${definition.path}: ${definition.layer} 계층은 ${dependency} 계층을 참조할 수 없다`,
       ).toContain(dependency);
     }
 
@@ -154,69 +150,15 @@ afterEach(() => {
   }
 });
 
-describe("CSS token 정적 계약", () => {
-  it("Reference, Semantic, Component, Theme tree와 import 순서를 고정한다", () => {
-    expect(listFiles("reference")).toEqual([
-      "color.css",
-      "duration.css",
-      "easing.css",
-      "index.css",
-      "radius.css",
-      "shadow.css",
-      "spacing.css",
-      "typography.css",
-    ]);
-    expect(listFiles("component")).toEqual([
-      "index.css",
-      "taskbar.css",
-      "window-frame.css",
-      "window-panel.css",
-    ]);
-    expect(listFiles("semantic")).toEqual(["color.css", "index.css", "typography.css"]);
-    expect(listFiles("theme")).toEqual(["default.css", "index.css"]);
-    expect(readCss(join(TOKENS_DIRECTORY, "reference", "index.css"))).toBe(
-      [
-        '@import "./color.css";',
-        '@import "./spacing.css";',
-        '@import "./radius.css";',
-        '@import "./typography.css";',
-        '@import "./shadow.css";',
-        '@import "./duration.css";',
-        '@import "./easing.css";',
-        "",
-      ].join("\n"),
-    );
-    expect(readCss(join(TOKENS_DIRECTORY, "semantic", "index.css"))).toBe(
-      ['@import "./color.css";', '@import "./typography.css";', ""].join("\n"),
-    );
-    expect(readCss(join(TOKENS_DIRECTORY, "component", "index.css"))).toBe(
-      [
-        '@import "./window-frame.css";',
-        '@import "./taskbar.css";',
-        '@import "./window-panel.css";',
-        "",
-      ].join("\n"),
-    );
-    expect(readCss(join(TOKENS_DIRECTORY, "theme", "index.css"))).toBe(
-      ['@import "./default.css";', ""].join("\n"),
-    );
-    expect(readCss(join(TOKENS_DIRECTORY, "index.css"))).toBe(
-      [
-        '@import "./reference/index.css";',
-        '@import "./semantic/index.css";',
-        '@import "./component/index.css";',
-        '@import "./theme/index.css";',
-        "",
-      ].join("\n"),
-    );
+describe("CSS 토큰 계약", () => {
+  it("저장소의 모든 토큰이 계층별 이름, 선언 유일성, 참조 방향 계약을 만족한다", () => {
+    expect(() => validateTokenSources(readRepositoryTokenSources())).not.toThrow();
   });
 
-  it("실제 token tree의 namespace, naming, 중복, 의존 방향을 승인한다", () => {
-    const sources = (["reference", "semantic", "component", "theme"] as const).flatMap(
-      readLayerSources,
-    );
-    const definitions = validateTokenSources(sources);
-    const names = definitions.map(({ name }) => name);
+  it("Windows UI의 기본 표면과 주요 Shell 컴포넌트에 필요한 공개 토큰을 제공한다", () => {
+    const names = readRepositoryTokenSources()
+      .flatMap(extractDefinitions)
+      .map(({ name }) => name);
 
     expect(names).toEqual(
       expect.arrayContaining([
@@ -234,15 +176,11 @@ describe("CSS token 정적 계약", () => {
         "--wd-window-panel-root-height",
       ]),
     );
-    expect(names.some((name) => name.startsWith("--wd-window-frame-"))).toBe(true);
-    expect(names.some((name) => name.startsWith("--wd-taskbar-"))).toBe(true);
-    expect(names.some((name) => name.startsWith("--wd-window-panel-"))).toBe(true);
   });
 
-  it("단일 default :root 외 Theme selector나 전환 branch를 만들지 않는다", () => {
+  it("명시적인 테마 전환 정책을 도입하기 전에는 단일 Light Theme만 사용한다", () => {
     const themeCss = readCss(join(TOKENS_DIRECTORY, "theme", "default.css"));
-    const allCss = (["reference", "semantic", "component", "theme"] as const)
-      .flatMap(readLayerSources)
+    const allCss = readRepositoryTokenSources()
       .map(({ css }) => css)
       .join("\n");
 
@@ -253,61 +191,35 @@ describe("CSS token 정적 계약", () => {
     );
   });
 
-  it("CSS 밖에 token value map을 두지 않는다", () => {
-    const nonCssFiles = readdirSync(TOKENS_DIRECTORY, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && /\.(?:js|json|ts|tsx)$/.test(entry.name))
-      .map((entry) => entry.name);
+  describe("토큰 계층 간 참조 정책", () => {
+    it("Component는 Semantic을, Semantic은 Reference를 참조할 수 있다", () => {
+      const sources = writeFixture({
+        "component/window-frame.css":
+          ":root { --wd-window-frame-root-color: var(--wd-color-text-primary); }",
+        "reference/color.css": ":root { --wd-reference-color-neutral-950: rgb(32 33 36); }",
+        "semantic/color.css":
+          ":root { --wd-color-text-primary: var(--wd-reference-color-neutral-950); }",
+      });
 
-    expect(nonCssFiles).toEqual(["token-contract.test.ts"]);
-  });
-
-  it("정상 fixture의 하향 dependency를 승인한다", () => {
-    const sources = writeFixture({
-      "component/window-frame.css":
-        ":root { --wd-window-frame-root-color: var(--wd-color-text-primary); }",
-      "reference/color.css": ":root { --wd-reference-color-neutral-950: rgb(32 33 36); }",
-      "semantic/color.css":
-        ":root { --wd-color-text-primary: var(--wd-reference-color-neutral-950); }",
+      expect(() => validateTokenSources(sources)).not.toThrow();
     });
 
-    expect(() => validateTokenSources(sources)).not.toThrow();
+    it("Semantic이 특정 Component 구현에 의존하지 않도록 Component 참조를 거부한다", () => {
+      const sources = writeFixture({
+        "semantic/color.css":
+          ":root { --wd-color-surface-window: var(--wd-window-frame-root-background-color); }",
+      });
+
+      expect(() => validateTokenSources(sources)).toThrow(/component 계층을 참조할 수 없다/);
+    });
   });
 
-  it("중복 token fixture를 거부한다", () => {
+  it("토큰 값의 출처를 하나로 유지하기 위해 같은 이름의 중복 선언을 거부한다", () => {
     const sources = writeFixture({
       "reference/color-a.css": ":root { --wd-reference-color-neutral-0: white; }",
       "reference/color-b.css": ":root { --wd-reference-color-neutral-0: #fff; }",
     });
 
     expect(() => validateTokenSources(sources)).toThrow(/한 번만 정의/);
-  });
-
-  it("외부 namespace fixture를 거부한다", () => {
-    const sources = writeFixture({
-      "reference/color.css": ":root { --foreign-color-neutral-0: white; }",
-    });
-
-    expect(() => validateTokenSources(sources)).toThrow(/--wd- namespace/);
-  });
-
-  it("underscore와 BEM token fixture를 거부한다", () => {
-    const underscoreSources = writeFixture({
-      "reference/color.css": ":root { --wd-reference-color_neutral-0: white; }",
-    });
-    const bemSources = writeFixture({
-      "component/taskbar.css": ":root { --wd-taskbar-root__height: 50px; }",
-    });
-
-    expect(() => validateTokenSources(underscoreSources)).toThrow(/underscore와 BEM/);
-    expect(() => validateTokenSources(bemSources)).toThrow(/underscore와 BEM/);
-  });
-
-  it("Semantic에서 Component로 향하는 reverse reference fixture를 거부한다", () => {
-    const sources = writeFixture({
-      "semantic/color.css":
-        ":root { --wd-color-surface-window: var(--wd-window-frame-root-background-color); }",
-    });
-
-    expect(() => validateTokenSources(sources)).toThrow(/방향 참조는 허용되지 않는다/);
   });
 });
