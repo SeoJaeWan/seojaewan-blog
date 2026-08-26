@@ -1,9 +1,10 @@
-import { Button as BaseButton } from "@base-ui/react/button";
+import { Button as ProviderButton } from "@base-ui/react/button";
 
-import type { ButtonProps } from "../../contracts";
+import type { ButtonProps } from "./types";
 
 export const Button = ({ children, disabled, onPress, ref, render }: ButtonProps) => (
-  <BaseButton
+  <ProviderButton
+    className="wd-button"
     disabled={disabled}
     nativeButton={!render || render.type === "button"}
     onClick={onPress}
@@ -12,5 +13,5 @@ export const Button = ({ children, disabled, onPress, ref, render }: ButtonProps
     type={render ? undefined : "button"}
   >
     {children}
-  </BaseButton>
+  </ProviderButton>
 );

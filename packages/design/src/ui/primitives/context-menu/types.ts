@@ -1,4 +1,4 @@
-import type { ComponentType, ReactElement, ReactNode, Ref } from "react";
+import type { Ref } from "react";
 
 export type PresenceState = "unmounted" | "entering" | "present" | "exiting";
 
@@ -9,22 +9,14 @@ export type ScreenCoordinate = Readonly<{
   y: number;
 }>;
 
-export type ControlledOpenState = Readonly<{
+type ControlledOpenState = Readonly<{
   defaultOpen?: never;
   open: boolean;
 }>;
 
-export type UncontrolledOpenState = Readonly<{
+type UncontrolledOpenState = Readonly<{
   defaultOpen?: boolean;
   open?: never;
-}>;
-
-export type ButtonProps = Readonly<{
-  children?: ReactNode;
-  disabled?: boolean;
-  onPress?: () => void;
-  ref?: Ref<HTMLButtonElement>;
-  render?: ReactElement;
 }>;
 
 export type ContextMenuCloseReason =
@@ -103,39 +95,3 @@ type ContextMenuCommonProps = Readonly<{
 
 export type ContextMenuProps = ContextMenuCommonProps &
   (ControlledOpenState | UncontrolledOpenState);
-
-export type DrawerCloseReason = "escape-key" | "outside-press" | "action" | "programmatic";
-
-export type DrawerOpenChange = Readonly<
-  | {
-      open: true;
-      reason: "trigger" | "programmatic";
-    }
-  | {
-      open: false;
-      reason: DrawerCloseReason;
-    }
->;
-
-export type DrawerPlacement = "left" | "right" | "bottom";
-
-type DrawerCommonProps = Readonly<{
-  children?: ReactNode;
-  description: string;
-  focusRestoration?: FocusRestoration;
-  onOpenChange?: (change: DrawerOpenChange) => void;
-  onPresenceChange?: (state: PresenceState) => void;
-  onRestoreFocus?: () => void;
-  placement: DrawerPlacement;
-  title: string;
-  triggerLabel: string;
-}>;
-
-export type DrawerProps = DrawerCommonProps & (ControlledOpenState | UncontrolledOpenState);
-
-export type PrimitiveCandidate = Readonly<{
-  Button: ComponentType<ButtonProps>;
-  ContextMenu: ComponentType<ContextMenuProps>;
-  Drawer: ComponentType<DrawerProps>;
-  name: string;
-}>;

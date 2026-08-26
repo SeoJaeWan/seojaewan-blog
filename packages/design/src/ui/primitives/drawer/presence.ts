@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 
-import type { PresenceState } from "../../contracts";
+import type { PresenceState } from "../context-menu/types";
 
 type PresenceCallback = ((state: PresenceState) => void) | undefined;
 

@@ -1,14 +1,10 @@
 import { useId, useRef, useState } from "react";
 
-import { Drawer as BaseDrawer } from "@base-ui/react/drawer";
+import { Drawer as ProviderDrawer } from "@base-ui/react/drawer";
 
-import type {
-  DrawerCloseReason,
-  DrawerPlacement,
-  DrawerProps,
-  FocusRestoration,
-} from "../../contracts";
+import type { FocusRestoration } from "../context-menu/types";
 import { usePresenceNotifications } from "./presence";
+import type { DrawerCloseReason, DrawerPlacement, DrawerProps } from "./types";
 
 const translateCloseReason = (reason: string): DrawerCloseReason => {
   switch (reason) {
@@ -75,7 +71,7 @@ export const Drawer = (props: DrawerProps) => {
   );
 
   return (
-    <BaseDrawer.Root
+    <ProviderDrawer.Root
       onOpenChange={(nextOpen, details) => {
         if (!controlled) {
           setUncontrolledOpen(nextOpen);
@@ -94,24 +90,33 @@ export const Drawer = (props: DrawerProps) => {
       swipeDirection={swipeDirectionByPlacement[placement]}
       triggerId={triggerId}
     >
-      <BaseDrawer.Trigger id={triggerId} ref={triggerRef} type="button">
+      <ProviderDrawer.Trigger
+        className="wd-drawer__trigger"
+        id={triggerId}
+        ref={triggerRef}
+        type="button"
+      >
         {triggerLabel}
-      </BaseDrawer.Trigger>
-      <BaseDrawer.Portal>
-        <BaseDrawer.Backdrop className="base-ui-candidate__drawer-backdrop" />
-        <BaseDrawer.Viewport className="base-ui-candidate__drawer-viewport">
-          <BaseDrawer.Popup
-            className={`base-ui-candidate__drawer base-ui-candidate__drawer--${placement}`}
+      </ProviderDrawer.Trigger>
+      <ProviderDrawer.Portal>
+        <ProviderDrawer.Backdrop className="wd-drawer__backdrop" />
+        <ProviderDrawer.Viewport className="wd-drawer__viewport">
+          <ProviderDrawer.Popup
+            className={`wd-drawer wd-drawer--${placement}`}
             finalFocus={finalFocus}
             initialFocus
           >
-            <BaseDrawer.Title>{title}</BaseDrawer.Title>
-            <BaseDrawer.Description>{description}</BaseDrawer.Description>
-            {children}
-            <BaseDrawer.Close type="button">닫기</BaseDrawer.Close>
-          </BaseDrawer.Popup>
-        </BaseDrawer.Viewport>
-      </BaseDrawer.Portal>
-    </BaseDrawer.Root>
+            <ProviderDrawer.Title className="wd-drawer__title">{title}</ProviderDrawer.Title>
+            <ProviderDrawer.Description className="wd-drawer__description">
+              {description}
+            </ProviderDrawer.Description>
+            <div className="wd-drawer__content">{children}</div>
+            <ProviderDrawer.Close className="wd-drawer__close" type="button">
+              닫기
+            </ProviderDrawer.Close>
+          </ProviderDrawer.Popup>
+        </ProviderDrawer.Viewport>
+      </ProviderDrawer.Portal>
+    </ProviderDrawer.Root>
   );
 };

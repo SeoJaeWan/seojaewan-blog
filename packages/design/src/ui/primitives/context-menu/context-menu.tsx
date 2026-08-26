@@ -9,16 +9,16 @@ import {
   useState,
 } from "react";
 
-import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
+import { ContextMenu as ProviderContextMenu } from "@base-ui/react/context-menu";
 
+import { usePresenceNotifications } from "./presence";
 import type {
   ContextMenuCloseReason,
   ContextMenuItem,
   ContextMenuProps,
   FocusRestoration,
   ScreenCoordinate,
-} from "../../contracts";
-import { usePresenceNotifications } from "./presence";
+} from "./types";
 
 type ActiveContextMenu = Readonly<{
   closeForReplacement: () => void;
@@ -70,9 +70,10 @@ const renderRadioGroup = (
   const selectedItem = items.find(({ checked }) => checked);
 
   return (
-    <BaseContextMenu.RadioGroup key={items[0]?.groupId} value={selectedItem?.id ?? null}>
+    <ProviderContextMenu.RadioGroup key={items[0]?.groupId} value={selectedItem?.id ?? null}>
       {items.map((item) => (
-        <BaseContextMenu.RadioItem
+        <ProviderContextMenu.RadioItem
+          className="wd-context-menu__item wd-context-menu__item--radio"
           closeOnClick
           disabled={item.disabled}
           key={item.id}
@@ -80,11 +81,13 @@ const renderRadioGroup = (
           onClick={() => onAction?.(item.id)}
           value={item.id}
         >
-          <BaseContextMenu.RadioItemIndicator>✓</BaseContextMenu.RadioItemIndicator>
+          <ProviderContextMenu.RadioItemIndicator className="wd-context-menu__indicator">
+            ✓
+          </ProviderContextMenu.RadioItemIndicator>
           {item.label}
-        </BaseContextMenu.RadioItem>
+        </ProviderContextMenu.RadioItem>
       ))}
-    </BaseContextMenu.RadioGroup>
+    </ProviderContextMenu.RadioGroup>
   );
 };
 
@@ -99,28 +102,32 @@ const ItemRenderer = ({ items, onAction }: ItemRendererProps) => {
     }
 
     if (item.kind === "separator") {
-      renderedItems.push(<BaseContextMenu.Separator key={item.id} />);
+      renderedItems.push(
+        <ProviderContextMenu.Separator className="wd-context-menu__separator" key={item.id} />,
+      );
       continue;
     }
 
     if (item.kind === "action") {
       renderedItems.push(
-        <BaseContextMenu.Item
+        <ProviderContextMenu.Item
+          className="wd-context-menu__item"
           disabled={item.disabled}
           key={item.id}
           label={item.label}
           onClick={() => onAction?.(item.id)}
         >
           {item.label}
-        </BaseContextMenu.Item>,
+        </ProviderContextMenu.Item>,
       );
       continue;
     }
 
     if (item.kind === "checkbox") {
       renderedItems.push(
-        <BaseContextMenu.CheckboxItem
+        <ProviderContextMenu.CheckboxItem
           checked={item.checked}
+          className="wd-context-menu__item wd-context-menu__item--checkbox"
           closeOnClick
           disabled={item.disabled}
           key={item.id}
@@ -128,33 +135,39 @@ const ItemRenderer = ({ items, onAction }: ItemRendererProps) => {
           onCheckedChange={(checked) => item.onCheckedChange?.(checked)}
           onClick={() => onAction?.(item.id)}
         >
-          <BaseContextMenu.CheckboxItemIndicator>✓</BaseContextMenu.CheckboxItemIndicator>
+          <ProviderContextMenu.CheckboxItemIndicator className="wd-context-menu__indicator">
+            ✓
+          </ProviderContextMenu.CheckboxItemIndicator>
           {item.label}
-        </BaseContextMenu.CheckboxItem>,
+        </ProviderContextMenu.CheckboxItem>,
       );
       continue;
     }
 
     if (item.kind === "submenu") {
       renderedItems.push(
-        <BaseContextMenu.SubmenuRoot key={item.id}>
-          <BaseContextMenu.SubmenuTrigger disabled={item.disabled} label={item.label} openOnHover>
+        <ProviderContextMenu.SubmenuRoot key={item.id}>
+          <ProviderContextMenu.SubmenuTrigger
+            className="wd-context-menu__item wd-context-menu__item--submenu"
+            disabled={item.disabled}
+            label={item.label}
+            openOnHover
+          >
             {item.label}
-          </BaseContextMenu.SubmenuTrigger>
-          <BaseContextMenu.Portal>
-            <BaseContextMenu.Positioner side="right" align="start">
-              <BaseContextMenu.Popup className="base-ui-candidate__menu">
+          </ProviderContextMenu.SubmenuTrigger>
+          <ProviderContextMenu.Portal>
+            <ProviderContextMenu.Positioner side="right" align="start">
+              <ProviderContextMenu.Popup className="wd-context-menu">
                 <ItemRenderer items={item.items} onAction={onAction} />
-              </BaseContextMenu.Popup>
-            </BaseContextMenu.Positioner>
-          </BaseContextMenu.Portal>
-        </BaseContextMenu.SubmenuRoot>,
+              </ProviderContextMenu.Popup>
+            </ProviderContextMenu.Positioner>
+          </ProviderContextMenu.Portal>
+        </ProviderContextMenu.SubmenuRoot>,
       );
       continue;
     }
 
     const groupItems = [item];
-
     let nextItem = items[index + 1];
 
     while (nextItem?.kind === "radio" && nextItem.groupId === item.groupId) {
@@ -207,10 +220,11 @@ export const ContextMenu = (props: ContextMenuProps) => {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(props.defaultOpen ?? false);
   const [requestedAnchor, setRequestedAnchor] = useState<ScreenCoordinate>();
   const open = controlled ? props.open : uncontrolledOpen;
-  const instanceKeyRef = useRef(Symbol("base-ui-context-menu"));
+  const instanceKeyRef = useRef(Symbol("wd-context-menu"));
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const suppressFocusRestorationRef = useRef(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
+  const vendorCloseReasonRef = useRef<ContextMenuCloseReason | undefined>(undefined);
   const notifyPresenceComplete = usePresenceNotifications(open, onPresenceChange);
 
   const requestClose = useCallback(
@@ -310,33 +324,50 @@ export const ContextMenu = (props: ContextMenuProps) => {
   );
 
   return (
-    <BaseContextMenu.Root
+    <ProviderContextMenu.Root
       onOpenChange={(nextOpen, details) => {
         if (nextOpen) {
           setRequestedAnchor(undefined);
           requestOpen("trigger");
-        } else {
-          requestClose(translateCloseReason(details.reason));
+          return;
         }
+
+        const closeReason = translateCloseReason(details.reason);
+
+        if (vendorCloseReasonRef.current === closeReason) {
+          return;
+        }
+
+        vendorCloseReasonRef.current = closeReason;
+        queueMicrotask(() => {
+          if (vendorCloseReasonRef.current === closeReason) {
+            vendorCloseReasonRef.current = undefined;
+          }
+        });
+        requestClose(closeReason);
       }}
       onOpenChangeComplete={notifyPresenceComplete}
       open={open}
     >
-      <BaseContextMenu.Trigger ref={triggerRef} aria-label={triggerLabel}>
+      <ProviderContextMenu.Trigger
+        aria-label={triggerLabel}
+        className="wd-context-menu__trigger"
+        ref={triggerRef}
+      >
         {triggerLabel}
-      </BaseContextMenu.Trigger>
-      <BaseContextMenu.Portal>
-        <BaseContextMenu.Positioner
+      </ProviderContextMenu.Trigger>
+      <ProviderContextMenu.Portal>
+        <ProviderContextMenu.Positioner
           align="start"
           anchor={virtualAnchor}
           positionMethod="fixed"
           side="bottom"
         >
-          <BaseContextMenu.Popup className="base-ui-candidate__menu" finalFocus={finalFocus}>
+          <ProviderContextMenu.Popup className="wd-context-menu" finalFocus={finalFocus}>
             <ItemRenderer items={items} onAction={onAction} />
-          </BaseContextMenu.Popup>
-        </BaseContextMenu.Positioner>
-      </BaseContextMenu.Portal>
-    </BaseContextMenu.Root>
+          </ProviderContextMenu.Popup>
+        </ProviderContextMenu.Positioner>
+      </ProviderContextMenu.Portal>
+    </ProviderContextMenu.Root>
   );
 };

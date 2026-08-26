@@ -3,50 +3,12 @@ import { createRef, useState } from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type {
-  ContextMenuController,
-  ContextMenuOpenChange,
-  DrawerOpenChange,
-  PresenceState,
-} from "../../contracts";
-import { Button } from "./button";
 import { ContextMenu } from "./context-menu";
-import { Drawer } from "./drawer";
+import type { ContextMenuController, ContextMenuOpenChange } from "./types";
 
-import "./styles.css";
+afterEach(cleanup);
 
-afterEach(() => {
-  cleanup();
-});
-
-describe("Base UI primitive candidate", () => {
-  it("keeps native button semantics, blocks disabled actions, and supports composition", () => {
-    const onPress = vi.fn();
-    const disabledPress = vi.fn();
-
-    render(
-      <>
-        <Button onPress={onPress}>Run</Button>
-        <Button disabled onPress={disabledPress}>
-          Disabled
-        </Button>
-        <Button render={<a href="/details" />}>Details</Button>
-      </>,
-    );
-
-    const runButton = screen.getByRole("button", { name: "Run" });
-    const disabledButton = screen.getByRole("button", { name: "Disabled" });
-
-    expect(runButton).toHaveProperty("type", "button");
-    expect(disabledButton).toHaveProperty("disabled", true);
-    fireEvent.click(runButton);
-    fireEvent.click(disabledButton);
-
-    expect(onPress).toHaveBeenCalledOnce();
-    expect(disabledPress).not.toHaveBeenCalled();
-    expect(screen.getByRole("button", { name: "Details" }).getAttribute("href")).toBe("/details");
-  });
-
+describe("ContextMenu", () => {
   it("opens at coordinates, replaces the active menu globally, and restores focus", async () => {
     const firstController = createRef<ContextMenuController>();
     const secondController = createRef<ContextMenuController>();
@@ -136,75 +98,39 @@ describe("Base UI primitive candidate", () => {
     expect(onAction).toHaveBeenCalledWith("pinned");
   });
 
-  it("keeps a controlled drawer mounted through exit, traps focus, and restores the trigger", async () => {
-    const originalGetAnimations = Object.getOwnPropertyDescriptor(
-      Element.prototype,
-      "getAnimations",
-    );
-    let finishExit: (() => void) | undefined;
-    const exitFinished = new Promise<void>((resolve) => {
-      finishExit = resolve;
-    });
-
-    Object.defineProperty(Element.prototype, "getAnimations", {
-      configurable: true,
-      value: () => [{ finished: exitFinished }] as unknown as Animation[],
-    });
-
-    const changes: DrawerOpenChange[] = [];
-    const presence: PresenceState[] = [];
-    const restored = vi.fn();
+  it("emits one close notification for one outside dismissal", async () => {
+    const changes: ContextMenuOpenChange[] = [];
 
     const Harness = () => {
-      const [open, setOpen] = useState(false);
+      const [open, setOpen] = useState(true);
 
       return (
-        <Drawer
-          description="Drawer description"
-          focusRestoration="trigger"
+        <ContextMenu
+          items={[{ id: "open", kind: "action", label: "Open" }]}
           onOpenChange={(change) => {
             changes.push(change);
             setOpen(change.open);
           }}
-          onPresenceChange={(state) => presence.push(state)}
-          onRestoreFocus={restored}
           open={open}
-          placement="right"
-          title="Drawer title"
-          triggerLabel="Open drawer"
-        >
-          <button type="button">Drawer action</button>
-        </Drawer>
+          triggerLabel="Surface"
+        />
       );
     };
 
-    render(<Harness />);
-    const trigger = screen.getByRole("button", { name: "Open drawer" });
-    fireEvent.click(trigger);
-
-    const dialog = await screen.findByRole("dialog", { name: "Drawer title" });
-    await waitFor(() =>
-      expect(dialog === document.activeElement || dialog.contains(document.activeElement)).toBe(
-        true,
-      ),
+    render(
+      <div>
+        <Harness />
+        <button type="button">Outside</button>
+      </div>,
     );
-    expect(changes).toContainEqual({ open: true, reason: "trigger" });
 
-    fireEvent.click(screen.getByRole("button", { name: "닫기" }));
-    expect(document.body.contains(dialog)).toBe(true);
-    expect(presence).toContain("exiting");
+    await screen.findByRole("menu");
+    await new Promise((resolve) => setTimeout(resolve, 550));
+    fireEvent.mouseDown(screen.getAllByRole("presentation", { hidden: true })[0], { button: 0 });
 
-    finishExit?.();
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Drawer title" })).toBeNull());
-    expect(changes).toContainEqual({ open: false, reason: "action" });
-    expect(presence).toContain("unmounted");
-    expect(restored).toHaveBeenCalled();
-    expect(document.activeElement).toBe(trigger);
-
-    if (originalGetAnimations) {
-      Object.defineProperty(Element.prototype, "getAnimations", originalGetAnimations);
-    } else {
-      Reflect.deleteProperty(Element.prototype, "getAnimations");
-    }
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(
+      changes.filter((change) => !change.open && change.reason === "outside-press"),
+    ).toHaveLength(1);
   });
 });
