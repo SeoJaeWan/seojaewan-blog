@@ -1,0 +1,92 @@
+.base-ui-candidate__menu {
+  min-width: 12rem;
+  padding: 0.25rem;
+  border: 1px solid rgb(0 0 0 / 14%);
+  border-radius: 0.5rem;
+  background: white;
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 18%);
+  color: #1b1b1b;
+  opacity: 1;
+  transform: scale(1);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.base-ui-candidate__menu[data-starting-style],
+.base-ui-candidate__menu[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.base-ui-candidate__drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 32%);
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+
+.base-ui-candidate__drawer-backdrop[data-starting-style],
+.base-ui-candidate__drawer-backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+.base-ui-candidate__drawer-viewport {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.base-ui-candidate__drawer {
+  position: absolute;
+  max-width: min(28rem, 90vw);
+  max-height: 90vh;
+  padding: 1.25rem;
+  background: white;
+  box-shadow: 0 0 2rem rgb(0 0 0 / 22%);
+  color: #1b1b1b;
+  pointer-events: auto;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.base-ui-candidate__drawer--left {
+  inset: 0 auto 0 0;
+  width: min(28rem, 90vw);
+}
+
+.base-ui-candidate__drawer--right {
+  inset: 0 0 0 auto;
+  width: min(28rem, 90vw);
+}
+
+.base-ui-candidate__drawer--bottom {
+  inset: auto 0 0;
+  max-width: none;
+}
+
+.base-ui-candidate__drawer--left[data-starting-style],
+.base-ui-candidate__drawer--left[data-ending-style] {
+  transform: translateX(-100%);
+}
+
+.base-ui-candidate__drawer--right[data-starting-style],
+.base-ui-candidate__drawer--right[data-ending-style] {
+  transform: translateX(100%);
+}
+
+.base-ui-candidate__drawer--bottom[data-starting-style],
+.base-ui-candidate__drawer--bottom[data-ending-style] {
+  transform: translateY(100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base-ui-candidate__menu,
+  .base-ui-candidate__drawer,
+  .base-ui-candidate__drawer-backdrop {
+    transition-duration: 0.01ms;
+  }
+}
