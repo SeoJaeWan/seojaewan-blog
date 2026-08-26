@@ -16,6 +16,11 @@ const legacyPackageImports = {
   message: "Use the local design layer indexes instead of legacy packages.",
 };
 
+const primitiveVendorImports = {
+  regex: "^(?:@base-ui|@radix-ui)/[^/]+(?:/|$)",
+  message: "Primitive vendors may only be imported from src/ui/primitives.",
+};
+
 const coreGlobals = [
   "window",
   "document",
@@ -99,6 +104,18 @@ export default [
               message: "Shell must import UI and Core through their exact layer indexes.",
             },
           ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}"],
+    ignores: ["src/ui/primitives/**/*"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [primitiveVendorImports],
         },
       ],
     },

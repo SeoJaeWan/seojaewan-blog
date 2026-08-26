@@ -16,11 +16,12 @@
   "scripts": {
     "build": "vite build",
     "build:storybook": "storybook build",
+    "compare:primitives": "node scripts/primitive-comparison/measure.mjs",
     "dev": "storybook dev -p 6008",
     "lint": "pnpm lint:eslint && pnpm lint:css",
     "lint:css": "stylelint \"src/ui/tokens/**/*.css\"",
     "lint:eslint": "eslint . --max-warnings=0",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --passWithNoTests && node --test scripts/primitive-comparison/*.test.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
@@ -47,5 +48,11 @@
     "vite": "^8.1.2",
     "vite-plugin-dts": "^5.0.3",
     "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.7.0",
+    "@radix-ui/react-context-menu": "2.3.7",
+    "@radix-ui/react-dialog": "1.1.23",
+    "@radix-ui/react-slot": "1.3.3"
   }
 }
