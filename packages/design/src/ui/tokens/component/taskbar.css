@@ -1,0 +1,8 @@
+:root {
+  --wd-taskbar-root-background-color: var(--wd-color-surface-taskbar);
+  --wd-taskbar-root-gap: var(--wd-reference-spacing-3);
+  --wd-taskbar-root-height: 50px;
+  --wd-taskbar-root-backdrop-blur: 18px;
+  --wd-taskbar-root-backdrop-saturation: 1.15;
+  --wd-taskbar-root-font-family: var(--wd-font-family-sans);
+}
