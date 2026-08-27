@@ -15,9 +15,9 @@ import type {
   DialogUIProps,
   DialogUITitleProps,
   DialogUITriggerProps,
-} from "./dialog-ui.types";
+} from "./dialogUI.types";
 
-import "./dialog-ui.css";
+import "./dialogUI.css";
 
 const DialogTriggerIdContext = createContext<string | undefined>(undefined);
 
@@ -52,6 +52,10 @@ const DialogUIRoot = ({
   );
 };
 
+/**
+ * Renders the visible control that opens DialogUI.
+ * It does not own the application action represented by the dialog.
+ */
 export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
   { className, id, type = "button", ...props }: DialogUITriggerProps,
   ref: Ref<HTMLButtonElement>,
@@ -69,6 +73,10 @@ export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
   );
 });
 
+/**
+ * Portals the modal DialogUI layers above application content.
+ * It does not choose product-level stacking or routing policy.
+ */
 export const DialogPortalUI = forwardRef(function DialogPortalUI(
   { className, ...props }: DialogUIPortalProps,
   ref: Ref<HTMLDivElement>,
@@ -76,6 +84,7 @@ export const DialogPortalUI = forwardRef(function DialogPortalUI(
   return <Dialog.Portal {...props} className={clsx("wd-dialog-ui__portal", className)} ref={ref} />;
 });
 
+/** Renders the visual layer behind DialogUI.Content without owning dismiss policy. */
 export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
   { className, ...props }: DialogUIBackdropProps,
   ref: Ref<HTMLDivElement>,
@@ -85,6 +94,10 @@ export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
   );
 });
 
+/**
+ * Renders the modal surface and isolates focus while it is open.
+ * It does not decide whether business data may be committed or discarded.
+ */
 export const DialogContentUI = forwardRef(function DialogContentUI(
   { className, finalFocus, initialFocus, ...props }: DialogUIContentProps,
   ref: Ref<HTMLDivElement>,
@@ -93,6 +106,7 @@ export const DialogContentUI = forwardRef(function DialogContentUI(
     <Dialog.Viewport className="wd-dialog-ui__viewport">
       <Dialog.Popup
         {...props}
+        aria-modal="true"
         className={clsx("wd-dialog-ui__content", className)}
         finalFocus={finalFocus}
         initialFocus={initialFocus}
@@ -102,6 +116,7 @@ export const DialogContentUI = forwardRef(function DialogContentUI(
   );
 });
 
+/** Supplies the accessible heading for its owning DialogUI.Content. */
 export const DialogTitleUI = forwardRef(function DialogTitleUI(
   { className, ...props }: DialogUITitleProps,
   ref: Ref<HTMLHeadingElement>,
@@ -109,6 +124,7 @@ export const DialogTitleUI = forwardRef(function DialogTitleUI(
   return <Dialog.Title {...props} className={clsx("wd-dialog-ui__title", className)} ref={ref} />;
 });
 
+/** Supplies accessible supporting text for its owning DialogUI.Content. */
 export const DialogDescriptionUI = forwardRef(function DialogDescriptionUI(
   { className, ...props }: DialogUIDescriptionProps,
   ref: Ref<HTMLParagraphElement>,
@@ -122,6 +138,7 @@ export const DialogDescriptionUI = forwardRef(function DialogDescriptionUI(
   );
 });
 
+/** Dismisses its owning DialogUI without deciding any business outcome. */
 export const DialogCloseUI = forwardRef(function DialogCloseUI(
   { className, type = "button", ...props }: DialogUICloseProps,
   ref: Ref<HTMLButtonElement>,
@@ -136,6 +153,11 @@ export const DialogCloseUI = forwardRef(function DialogCloseUI(
   );
 });
 
+/**
+ * Groups a modal dialog and the parts that label, portal, and dismiss it.
+ * Use PopoverUI for anchored non-modal content; DialogUI does not own business
+ * confirmation, persistence, or application navigation.
+ */
 export const DialogUI = Object.assign(DialogUIRoot, {
   Backdrop: DialogBackdropUI,
   Close: DialogCloseUI,

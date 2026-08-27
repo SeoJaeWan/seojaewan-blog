@@ -13,19 +13,13 @@ import type {
   PopoverUIProps,
   PopoverUITitleProps,
   PopoverUITriggerProps,
-} from "./popover-ui.types";
+} from "./popoverUI.types";
 
-import "./popover-ui.css";
+import "./popoverUI.css";
 
 const PopoverTriggerIdContext = createContext<string | undefined>(undefined);
 
-const PopoverUIRoot = ({
-  defaultOpen,
-  modal = false,
-  onOpenChange,
-  open,
-  ...props
-}: PopoverUIProps) => {
+const PopoverUIRoot = ({ defaultOpen, onOpenChange, open, ...props }: PopoverUIProps) => {
   const triggerId = useId();
 
   return (
@@ -34,15 +28,11 @@ const PopoverUIRoot = ({
         {...props}
         defaultOpen={defaultOpen}
         defaultTriggerId={defaultOpen ? triggerId : undefined}
-        modal={modal}
+        modal={false}
         onOpenChange={
           onOpenChange
             ? (nextOpen, details) => {
-                onOpenChange(nextOpen, {
-                  event: details.event,
-                  reason: details.reason,
-                  trigger: details.trigger,
-                });
+                onOpenChange(nextOpen, { reason: details.reason });
               }
             : undefined
         }
@@ -53,6 +43,10 @@ const PopoverUIRoot = ({
   );
 };
 
+/**
+ * Renders the visible control that toggles and anchors PopoverUI.Content.
+ * It does not own the meaning of the action represented by the trigger.
+ */
 export const PopoverTriggerUI = forwardRef(function PopoverTriggerUI(
   { className, id, type = "button", ...props }: PopoverUITriggerProps,
   ref: Ref<HTMLButtonElement>,
@@ -70,6 +64,10 @@ export const PopoverTriggerUI = forwardRef(function PopoverTriggerUI(
   );
 });
 
+/**
+ * Portals an anchored, non-modal supplementary surface.
+ * It restores focus after dismissal but does not trap focus or block the page.
+ */
 export const PopoverContentUI = forwardRef(function PopoverContentUI(
   {
     align = "center",
@@ -111,6 +109,7 @@ export const PopoverContentUI = forwardRef(function PopoverContentUI(
   );
 });
 
+/** Supplies the accessible heading for its owning PopoverUI.Content. */
 export const PopoverTitleUI = forwardRef(function PopoverTitleUI(
   { className, ...props }: PopoverUITitleProps,
   ref: Ref<HTMLHeadingElement>,
@@ -118,6 +117,7 @@ export const PopoverTitleUI = forwardRef(function PopoverTitleUI(
   return <Popover.Title {...props} className={clsx("wd-popover-ui__title", className)} ref={ref} />;
 });
 
+/** Supplies accessible supporting text for its owning PopoverUI.Content. */
 export const PopoverDescriptionUI = forwardRef(function PopoverDescriptionUI(
   { className, ...props }: PopoverUIDescriptionProps,
   ref: Ref<HTMLParagraphElement>,
@@ -131,6 +131,7 @@ export const PopoverDescriptionUI = forwardRef(function PopoverDescriptionUI(
   );
 });
 
+/** Dismisses its owning PopoverUI without deciding any business outcome. */
 export const PopoverCloseUI = forwardRef(function PopoverCloseUI(
   { className, type = "button", ...props }: PopoverUICloseProps,
   ref: Ref<HTMLButtonElement>,
@@ -145,6 +146,11 @@ export const PopoverCloseUI = forwardRef(function PopoverCloseUI(
   );
 });
 
+/**
+ * Groups an anchored, non-modal popover and its compound parts.
+ * Use DialogUI instead when focus must be isolated from the rest of the page;
+ * PopoverUI does not own application state, persistence, or navigation.
+ */
 export const PopoverUI = Object.assign(PopoverUIRoot, {
   Close: PopoverCloseUI,
   Content: PopoverContentUI,
