@@ -1,2 +1,2 @@
-export { ButtonUI } from "./button-ui";
-export type { ButtonUIProps } from "./button-ui.types";
+export { ButtonUI } from "./buttonUI";
+export type { ButtonUIProps } from "./buttonUI.types";

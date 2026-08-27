@@ -1,9 +1,11 @@
+import { createRef } from "react";
+
 import { userEvent } from "storybook/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import typesSource from "./button-ui.types.ts?raw";
-import { ButtonUI } from "./index";
+import { ButtonUI } from "./buttonUI";
+import typesSource from "./buttonUI.types.ts?raw";
 import indexSource from "./index.ts?raw";
 
 afterEach(() => {
@@ -11,14 +13,39 @@ afterEach(() => {
 });
 
 describe("ButtonUI", () => {
-  it("이름 있는 native button을 렌더링하고 기본 type을 설정한다", () => {
-    const ref = { current: null as HTMLButtonElement | null };
-    const view = renderUITest(<ButtonUI ref={ref}>Save changes</ButtonUI>);
+  it("기본 type과 className, ref, native props를 button에 전달한다", () => {
+    const ref = createRef<HTMLButtonElement>();
+    const view = renderUITest(
+      <ButtonUI className="save-button" data-action="save" name="intent" ref={ref} value="save">
+        Save changes
+      </ButtonUI>,
+    );
     const button = view.getByRole("button", { name: "Save changes" });
 
     expect(button.tagName).toBe("BUTTON");
     expect(button.getAttribute("type")).toBe("button");
     expect(ref.current).toBe(button);
+    expect(button.className).toContain("wd-button-ui");
+    expect(button.className).toContain("save-button");
+    expect(button.getAttribute("data-action")).toBe("save");
+    expect(button.getAttribute("name")).toBe("intent");
+    expect(button.getAttribute("value")).toBe("save");
+  });
+
+  it("명시한 type을 유지하고 click handler를 실행한다", async () => {
+    const onClick = vi.fn();
+    const user = userEvent.setup();
+    const view = renderUITest(
+      <ButtonUI onClick={onClick} type="submit">
+        Submit form
+      </ButtonUI>,
+    );
+    const button = view.getByRole("button", { name: "Submit form" });
+
+    await user.click(button);
+
+    expect(button.getAttribute("type")).toBe("submit");
+    expect(onClick).toHaveBeenCalledOnce();
   });
 
   it("Enter와 Space에 native keyboard activation을 사용한다", async () => {

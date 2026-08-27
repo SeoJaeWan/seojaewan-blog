@@ -1,2 +1,2 @@
-export { IconButtonUI } from "./icon-button-ui";
-export type { IconButtonUIProps } from "./icon-button-ui.types";
+export { IconButtonUI } from "./iconButtonUI";
+export type { IconButtonUIProps } from "./iconButtonUI.types";

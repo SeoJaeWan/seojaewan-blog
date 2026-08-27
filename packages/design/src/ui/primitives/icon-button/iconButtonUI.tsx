@@ -1,11 +1,14 @@
 import { clsx } from "clsx";
 
 import { ButtonUI } from "../button";
-import type { IconButtonUIProps } from "./icon-button-ui.types";
+import type { IconButtonUIProps } from "./iconButtonUI.types";
 
-import "./icon-button-ui.css";
+import "./iconButtonUI.css";
 
-/** An icon-only native button with a required project-owned accessible label. */
+/**
+ * Renders an icon-only native button with a required project-owned accessible label.
+ * IconButtonUI does not infer the label or decide which application action runs.
+ */
 export const IconButtonUI = ({ className, icon, label, ...props }: IconButtonUIProps) => (
   <ButtonUI {...props} aria-label={label} className={clsx("wd-icon-button-ui", className)}>
     <span aria-hidden="true" className="wd-icon-button-ui__icon">
