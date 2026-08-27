@@ -1,3 +1,11 @@
+export {
+  PopoverCloseUI,
+  PopoverContentUI,
+  PopoverDescriptionUI,
+  PopoverTitleUI,
+  PopoverTriggerUI,
+  PopoverUI,
+} from "./popover-ui";
 export type {
   PopoverUICloseProps,
   PopoverUIContentProps,
@@ -9,12 +17,4 @@ export type {
   PopoverUIProps,
   PopoverUITitleProps,
   PopoverUITriggerProps,
-} from "./popover-ui";
-export {
-  PopoverCloseUI,
-  PopoverContentUI,
-  PopoverDescriptionUI,
-  PopoverTitleUI,
-  PopoverTriggerUI,
-  PopoverUI,
-} from "./popover-ui";
+} from "./popover-ui.types";

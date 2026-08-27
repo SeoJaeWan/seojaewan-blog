@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { MenuUI } from "./menu";
+import { MenuUI } from "./menu-ui";
 
 const StoryFrame = ({ children }: { children: React.ReactNode }) => (
   <div style={{ minHeight: 280, padding: 24 }}>{children}</div>

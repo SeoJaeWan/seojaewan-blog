@@ -2,7 +2,8 @@ import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { DrawerUI, type DrawerUIProps } from "./drawer-ui";
+import { DrawerUI } from "./drawer-ui";
+import type { DrawerUIProps } from "./drawer-ui.types";
 
 afterEach(cleanupUITest);
 
@@ -23,7 +24,7 @@ const ExampleDrawer = ({ onOpenChange }: { onOpenChange?: DrawerUIProps["onOpenC
 );
 
 describe("DrawerUI", () => {
-  it("associates title and description and translates close details", async () => {
+  it("title과 description을 연결하고 close details를 변환한다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(<ExampleDrawer onOpenChange={onOpenChange} />);
     fireEvent.click(screen.getByRole("button", { name: "Open drawer" }));

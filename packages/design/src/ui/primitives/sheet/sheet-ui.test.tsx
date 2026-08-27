@@ -2,12 +2,13 @@ import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { SheetUI, type SheetUIProps } from "./sheet-ui";
+import { SheetUI } from "./sheet-ui";
+import type { SheetUIProps } from "./sheet-ui.types";
 
 afterEach(cleanupUITest);
 
 describe("SheetUI", () => {
-  it("provides an accessible bottom sheet without a snapPoints contract", async () => {
+  it("snapPoints 계약 없이 접근 가능한 bottom sheet를 제공한다", async () => {
     type HasSnapPoints = "snapPoints" extends keyof SheetUIProps ? true : false;
     expectTypeOf<HasSnapPoints>().toEqualTypeOf<false>();
 
@@ -33,7 +34,7 @@ describe("SheetUI", () => {
     expect(screen.getByTestId("sheet-viewport").className).toContain("wd-sheet-ui__viewport");
   });
 
-  it("reports only project-owned change details", async () => {
+  it("프로젝트가 소유한 change details만 보고한다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(
       <SheetUI onOpenChange={onOpenChange}>

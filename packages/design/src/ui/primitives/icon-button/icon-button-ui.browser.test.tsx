@@ -11,8 +11,8 @@ afterEach(() => {
 
 const isJSDOM = navigator.userAgent.includes("jsdom");
 
-describe.skipIf(isJSDOM)("IconButtonUI in Chromium", () => {
-  it("exposes its project label and supports visible keyboard activation", async () => {
+describe.skipIf(isJSDOM)("IconButtonUI (Chromium)", () => {
+  it("프로젝트 label을 노출하고 가시적인 keyboard activation을 지원한다", async () => {
     const { page, userEvent } = await import("vitest/browser");
     const onClick = vi.fn();
     renderUITest(<IconButtonUI icon="+" label="Add item" onClick={onClick} />);
@@ -29,7 +29,7 @@ describe.skipIf(isJSDOM)("IconButtonUI in Chromium", () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
-  it("does not invoke a disabled icon action", () => {
+  it("disabled 상태에서는 icon action을 실행하지 않는다", () => {
     const onClick = vi.fn();
     const view = renderUITest(
       <IconButtonUI disabled icon="-" label="Remove item" onClick={onClick} />,

@@ -21,8 +21,8 @@ const BrowserPopover = () => (
   </div>
 );
 
-describe("PopoverUI in Chromium", () => {
-  it("opens as an anchored non-modal surface and outside pointer dismisses it", async () => {
+describe("PopoverUI (Chromium)", () => {
+  it("anchor에 연결된 non-modal surface로 열리고 외부 pointer로 닫힌다", async () => {
     renderUITest(<BrowserPopover />);
 
     const trigger = screen.getByRole("button", { name: "Account" });
@@ -39,7 +39,7 @@ describe("PopoverUI in Chromium", () => {
     expect(getActiveHTMLElement()).toBe(outside);
   });
 
-  it("Escape dismisses and restores focus to the trigger", async () => {
+  it("Escape로 닫고 trigger focus를 복원한다", async () => {
     renderUITest(<BrowserPopover />);
 
     const trigger = screen.getByRole("button", { name: "Account" });
@@ -52,7 +52,7 @@ describe("PopoverUI in Chromium", () => {
     expect(getActiveHTMLElement()).toBe(trigger);
   });
 
-  it("reaches the same closed final state with reduced motion", async () => {
+  it("reduced motion에서도 동일한 닫힘 상태에 도달한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }

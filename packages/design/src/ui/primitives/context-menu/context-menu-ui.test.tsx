@@ -2,12 +2,12 @@ import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { ContextMenuUI } from "./context-menu";
+import { ContextMenuUI } from "./context-menu-ui";
 
 afterEach(cleanupUITest);
 
 describe("ContextMenuUI", () => {
-  it("opens from a context-menu pointer action with menu semantics", async () => {
+  it("context-menu pointer action으로 menu 의미 구조를 연다", async () => {
     renderUITest(
       <ContextMenuUI.Root>
         <ContextMenuUI.Trigger>Document surface</ContextMenuUI.Trigger>
@@ -32,7 +32,7 @@ describe("ContextMenuUI", () => {
     expect(screen.getByRole("separator")).toBeTruthy();
   });
 
-  it("keeps disabled actions inert", async () => {
+  it("disabled action은 동작하지 않는다", async () => {
     const onClick = vi.fn();
 
     renderUITest(

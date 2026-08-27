@@ -1,3 +1,13 @@
+export {
+  DialogBackdropUI,
+  DialogCloseUI,
+  DialogContentUI,
+  DialogDescriptionUI,
+  DialogPortalUI,
+  DialogTitleUI,
+  DialogTriggerUI,
+  DialogUI,
+} from "./dialog-ui";
 export type {
   DialogUIBackdropProps,
   DialogUICloseProps,
@@ -9,14 +19,4 @@ export type {
   DialogUIProps,
   DialogUITitleProps,
   DialogUITriggerProps,
-} from "./dialog-ui";
-export {
-  DialogBackdropUI,
-  DialogCloseUI,
-  DialogContentUI,
-  DialogDescriptionUI,
-  DialogPortalUI,
-  DialogTitleUI,
-  DialogTriggerUI,
-  DialogUI,
-} from "./dialog-ui";
+} from "./dialog-ui.types";

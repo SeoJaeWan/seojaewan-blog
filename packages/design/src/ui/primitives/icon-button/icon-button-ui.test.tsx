@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe("IconButtonUI", () => {
-  it("uses its required project label as the native button name", () => {
+  it("필수 label을 native button의 이름으로 사용한다", () => {
     const view = renderUITest(<IconButtonUI icon={<span>decorative</span>} label="Add item" />);
     const button = view.getByRole("button", { name: "Add item" });
 
@@ -22,7 +22,7 @@ describe("IconButtonUI", () => {
     expect(button.querySelector("[aria-hidden='true']")).not.toBeNull();
   });
 
-  it("uses intrinsic keyboard activation and remains inert when disabled", async () => {
+  it("native keyboard activation을 사용하고 disabled 상태에서는 동작하지 않는다", async () => {
     const enabledAction = vi.fn();
     const disabledAction = vi.fn();
     const user = userEvent.setup();
@@ -41,7 +41,7 @@ describe("IconButtonUI", () => {
     expect(disabledAction).not.toHaveBeenCalled();
   });
 
-  it("keeps Base UI types out of its project-owned public boundary", () => {
+  it("프로젝트 공개 경계에서 Base UI 타입을 노출하지 않는다", () => {
     expect(indexSource).not.toContain("@base-ui/react");
     expect(typesSource).not.toContain("@base-ui/react");
   });

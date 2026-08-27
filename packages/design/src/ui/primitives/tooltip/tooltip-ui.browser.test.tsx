@@ -13,8 +13,8 @@ const BrowserTooltip = () => (
   </TooltipUI>
 );
 
-describe("TooltipUI in Chromium", () => {
-  it("opens on hover and closes when hover leaves", async () => {
+describe("TooltipUI (Chromium)", () => {
+  it("hover하면 열리고 hover가 벗어나면 닫힌다", async () => {
     renderUITest(<BrowserTooltip />);
     const trigger = screen.getByRole("button", { name: "Settings" });
 
@@ -25,7 +25,7 @@ describe("TooltipUI in Chromium", () => {
     await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
   });
 
-  it("opens on focus, preserves the accessible name, and closes on blur", async () => {
+  it("focus하면 열리고 접근 가능한 이름을 유지하며 blur 시 닫힌다", async () => {
     renderUITest(
       <div>
         <BrowserTooltip />
@@ -44,7 +44,7 @@ describe("TooltipUI in Chromium", () => {
     await waitFor(() => expect(screen.queryByRole("tooltip")).toBeNull());
   });
 
-  it("closes on Escape without changing focus", async () => {
+  it("focus를 바꾸지 않고 Escape로 닫힌다", async () => {
     renderUITest(<BrowserTooltip />);
     const trigger = screen.getByRole("button", { name: "Settings" });
 
@@ -56,7 +56,7 @@ describe("TooltipUI in Chromium", () => {
     expect(document.activeElement).toBe(trigger);
   });
 
-  it("reaches the same closed final state with reduced motion", async () => {
+  it("reduced motion에서도 동일한 닫힘 상태에 도달한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }

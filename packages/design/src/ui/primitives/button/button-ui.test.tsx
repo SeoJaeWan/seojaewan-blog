@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe("ButtonUI", () => {
-  it("renders a named native button and defaults its type", () => {
+  it("이름 있는 native button을 렌더링하고 기본 type을 설정한다", () => {
     const ref = { current: null as HTMLButtonElement | null };
     const view = renderUITest(<ButtonUI ref={ref}>Save changes</ButtonUI>);
     const button = view.getByRole("button", { name: "Save changes" });
@@ -21,7 +21,7 @@ describe("ButtonUI", () => {
     expect(ref.current).toBe(button);
   });
 
-  it("uses intrinsic keyboard activation for Enter and Space", async () => {
+  it("Enter와 Space에 native keyboard activation을 사용한다", async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();
     const view = renderUITest(<ButtonUI onClick={onClick}>Run action</ButtonUI>);
@@ -35,7 +35,7 @@ describe("ButtonUI", () => {
     expect(onClick).toHaveBeenCalledTimes(2);
   });
 
-  it("does not invoke actions while disabled", async () => {
+  it("disabled 상태에서는 action을 실행하지 않는다", async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();
     const view = renderUITest(
@@ -51,7 +51,7 @@ describe("ButtonUI", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
-  it("keeps Base UI types out of its project-owned public boundary", () => {
+  it("프로젝트 공개 경계에서 Base UI 타입을 노출하지 않는다", () => {
     expect(indexSource).not.toContain("@base-ui/react");
     expect(typesSource).not.toContain("@base-ui/react");
   });

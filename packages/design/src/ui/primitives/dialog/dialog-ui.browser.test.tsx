@@ -2,7 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, getActiveHTMLElement, renderUITest } from "../testing";
-import { DialogUI, type DialogUIProps } from "./dialog-ui";
+import { DialogUI } from "./dialog-ui";
+import type { DialogUIProps } from "./dialog-ui.types";
 
 import "../../tokens/index.css";
 
@@ -27,8 +28,8 @@ const BrowserDialog = ({ onOpenChange }: { onOpenChange?: DialogUIProps["onOpenC
   </div>
 );
 
-describe("DialogUI in Chromium", () => {
-  it("traps focus, dismisses with Escape, and restores the trigger", async () => {
+describe("DialogUI (Chromium)", () => {
+  it("focus를 가두고 Escape로 닫은 뒤 trigger focus를 복원한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }
@@ -54,7 +55,7 @@ describe("DialogUI in Chromium", () => {
     expect(getActiveHTMLElement()).toBe(trigger);
   });
 
-  it("dismisses on an outside pointer press", async () => {
+  it("외부 pointer press로 닫힌다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }

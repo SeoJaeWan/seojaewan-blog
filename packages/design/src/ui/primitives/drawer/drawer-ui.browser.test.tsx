@@ -55,8 +55,8 @@ const exerciseControlledExit = async (durationZero = false) => {
   expect(onComplete.mock.calls.filter(([open]) => open === false)).toHaveLength(1);
 };
 
-describe("DrawerUI in Chromium", () => {
-  it("preserves a controlled exit, completes once, and restores focus", async () => {
+describe("DrawerUI (Chromium)", () => {
+  it("제어된 exit를 유지하고 한 번만 완료한 뒤 focus를 복원한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }
@@ -64,7 +64,7 @@ describe("DrawerUI in Chromium", () => {
     await exerciseControlledExit();
   });
 
-  it("reaches the same final state when duration is zero", async () => {
+  it("duration이 0이어도 동일한 최종 상태에 도달한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }
@@ -72,7 +72,7 @@ describe("DrawerUI in Chromium", () => {
     await exerciseControlledExit(true);
   });
 
-  it("reaches the same final state with reduced motion", async () => {
+  it("reduced motion에서도 동일한 최종 상태에 도달한다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }

@@ -81,13 +81,13 @@ const PUBLIC_PRIMITIVE_EXPORTS = [
   "TooltipUI",
 ] as const;
 
-describe("Design primitive public API", () => {
-  it("exposes every primitive through the package root with project-owned UI names", () => {
+describe("Design primitive 공개 API 계약", () => {
+  it("모든 primitive를 프로젝트가 소유한 UI 이름으로 package root에서 노출한다", () => {
     expect(Object.keys(design).sort()).toEqual([...PUBLIC_PRIMITIVE_EXPORTS].sort());
     expect(PUBLIC_PRIMITIVE_EXPORTS.every((name) => name.includes("UI"))).toBe(true);
   });
 
-  it("provides project-owned prop contracts without consumer deep imports", () => {
+  it("consumer deep import 없이 프로젝트가 소유한 props 계약을 제공한다", () => {
     expectTypeOf<ButtonUIProps>().toBeObject();
     expectTypeOf<IconButtonUIProps>().toBeObject();
     expectTypeOf<MenuUIProps>().toBeObject();
@@ -99,7 +99,7 @@ describe("Design primitive public API", () => {
     expectTypeOf<SheetUIProps>().toBeObject();
   });
 
-  it("keeps snapPoints outside the SheetUI public contract", () => {
+  it("SheetUI 공개 계약에서 snapPoints를 제외한다", () => {
     type SheetUIHasSnapPoints = "snapPoints" extends keyof SheetUIProps ? true : false;
 
     expectTypeOf<SheetUIHasSnapPoints>().toEqualTypeOf<false>();

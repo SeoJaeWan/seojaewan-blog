@@ -18,7 +18,7 @@ const ExamplePopover = ({ onOpenChange }: { onOpenChange?: () => void }) => (
 );
 
 describe("PopoverUI", () => {
-  it("is closed and non-modal by default, then reports a project-owned open reason", async () => {
+  it("기본적으로 닫힌 non-modal 상태이며 프로젝트 open reason을 보고한다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(<ExamplePopover onOpenChange={onOpenChange} />);
 
@@ -34,7 +34,7 @@ describe("PopoverUI", () => {
     expect(document.body.style.overflow).toBe("");
   });
 
-  it("associates title and description with the content and closes through its owned close", async () => {
+  it("content에 title과 description을 연결하고 소유한 close를 통해 닫힌다", async () => {
     renderUITest(<ExamplePopover />);
     fireEvent.click(screen.getByRole("button", { name: "Account" }));
 

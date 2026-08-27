@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MenuUI } from "../menu";
-import { ContextMenuUI } from "./context-menu";
+import { ContextMenuUI } from "./context-menu-ui";
 
 type ActionParts = Pick<typeof MenuUI, "Item" | "Separator">;
 

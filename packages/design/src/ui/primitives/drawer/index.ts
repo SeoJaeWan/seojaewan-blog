@@ -1,3 +1,14 @@
+export {
+  DrawerBackdropUI,
+  DrawerCloseUI,
+  DrawerContentUI,
+  DrawerDescriptionUI,
+  DrawerPortalUI,
+  DrawerTitleUI,
+  DrawerTriggerUI,
+  DrawerUI,
+  DrawerViewportUI,
+} from "./drawer-ui";
 export type {
   DrawerUIBackdropProps,
   DrawerUICloseProps,
@@ -11,15 +22,4 @@ export type {
   DrawerUITitleProps,
   DrawerUITriggerProps,
   DrawerUIViewportProps,
-} from "./drawer-ui";
-export {
-  DrawerBackdropUI,
-  DrawerCloseUI,
-  DrawerContentUI,
-  DrawerDescriptionUI,
-  DrawerPortalUI,
-  DrawerTitleUI,
-  DrawerTriggerUI,
-  DrawerUI,
-  DrawerViewportUI,
-} from "./drawer-ui";
+} from "./drawer-ui.types";

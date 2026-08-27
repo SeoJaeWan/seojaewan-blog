@@ -14,13 +14,13 @@ const ExampleTooltip = ({ onOpenChange }: { onOpenChange?: () => void }) => (
 );
 
 describe("TooltipUI", () => {
-  it("renders standalone without an external provider", () => {
+  it("외부 provider 없이 독립적으로 렌더링된다", () => {
     expect(() => renderUITest(<ExampleTooltip />)).not.toThrow();
     expect(screen.getByRole("button", { name: "Settings" })).not.toBeNull();
     expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
-  it("supplements the trigger accessible name with a described-by hint", async () => {
+  it("described-by hint로 trigger의 접근 가능한 이름을 보충한다", async () => {
     renderUITest(<ExampleTooltip />);
     const trigger = screen.getByRole("button", { name: "Settings" });
 
@@ -32,7 +32,7 @@ describe("TooltipUI", () => {
     expect(tooltip.textContent).toBe("Open settings");
   });
 
-  it("reports project-owned focus and escape reasons", async () => {
+  it("프로젝트가 소유한 focus와 escape reason을 보고한다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(<ExampleTooltip onOpenChange={onOpenChange} />);
     const trigger = screen.getByRole("button", { name: "Settings" });

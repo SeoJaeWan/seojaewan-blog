@@ -2,7 +2,8 @@ import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { DialogUI, type DialogUIProps } from "./dialog-ui";
+import { DialogUI } from "./dialog-ui";
+import type { DialogUIProps } from "./dialog-ui.types";
 
 afterEach(cleanupUITest);
 
@@ -22,7 +23,7 @@ const ExampleDialog = ({ onOpenChange }: { onOpenChange?: DialogUIProps["onOpenC
 );
 
 describe("DialogUI", () => {
-  it("owns an accessible modal dialog structure and change details", async () => {
+  it("접근 가능한 modal dialog 구조와 change details를 소유한다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(<ExampleDialog onOpenChange={onOpenChange} />);
 
@@ -37,7 +38,7 @@ describe("DialogUI", () => {
     expect(onOpenChange).toHaveBeenLastCalledWith(true, { reason: "trigger-press" });
   });
 
-  it("closes through its owned close part", async () => {
+  it("프로젝트가 소유한 close part를 통해 닫힌다", async () => {
     const onOpenChange = vi.fn();
     renderUITest(<ExampleDialog onOpenChange={onOpenChange} />);
     fireEvent.click(screen.getByRole("button", { name: "Open settings" }));

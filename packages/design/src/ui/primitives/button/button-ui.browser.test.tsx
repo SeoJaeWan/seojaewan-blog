@@ -11,8 +11,8 @@ afterEach(() => {
 
 const isJSDOM = navigator.userAgent.includes("jsdom");
 
-describe.skipIf(isJSDOM)("ButtonUI in Chromium", () => {
-  it("is keyboard-focusable, visibly focused, and intrinsically activated", async () => {
+describe.skipIf(isJSDOM)("ButtonUI (Chromium)", () => {
+  it("keyboard focus와 focus-visible을 지원하고 native 방식으로 활성화된다", async () => {
     const { page, userEvent } = await import("vitest/browser");
     const onClick = vi.fn();
     renderUITest(<ButtonUI onClick={onClick}>Open settings</ButtonUI>);
@@ -30,7 +30,7 @@ describe.skipIf(isJSDOM)("ButtonUI in Chromium", () => {
     expect(onClick).toHaveBeenCalledTimes(2);
   });
 
-  it("keeps a disabled button inert", () => {
+  it("disabled button은 동작하지 않는다", () => {
     const onClick = vi.fn();
     const view = renderUITest(
       <ButtonUI disabled onClick={onClick}>

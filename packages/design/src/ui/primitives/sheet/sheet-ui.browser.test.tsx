@@ -32,8 +32,8 @@ const SwipeSheet = ({ onComplete }: { onComplete: (open: boolean) => void }) => 
   );
 };
 
-describe("SheetUI in Chromium", () => {
-  it("is bottom-placed and dismisses with a downward swipe", async () => {
+describe("SheetUI (Chromium)", () => {
+  it("하단에 배치되고 아래 방향 swipe로 닫힌다", async () => {
     if (!("__vitest_browser__" in window)) {
       return;
     }

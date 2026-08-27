@@ -1,74 +1,25 @@
 "use client";
 
-import type {
-  ButtonHTMLAttributes,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefObject,
-} from "react";
+import type { Ref } from "react";
 import { createContext, forwardRef, useContext, useId } from "react";
 
 import { Drawer } from "@base-ui/react/drawer";
+import { clsx } from "clsx";
+
+import type {
+  DrawerUIBackdropProps,
+  DrawerUICloseProps,
+  DrawerUIContentProps,
+  DrawerUIDescriptionProps,
+  DrawerUIPlacement,
+  DrawerUIPortalProps,
+  DrawerUIProps,
+  DrawerUITitleProps,
+  DrawerUITriggerProps,
+  DrawerUIViewportProps,
+} from "./drawer-ui.types";
 
 import "./drawer-ui.css";
-
-export type DrawerUIPlacement = "left" | "right";
-
-export type DrawerUIOpenChangeReason =
-  | "trigger-press"
-  | "outside-press"
-  | "escape-key"
-  | "close-watcher"
-  | "close-press"
-  | "focus-out"
-  | "imperative-action"
-  | "swipe"
-  | "none";
-
-export interface DrawerUIOpenChangeDetails {
-  reason: DrawerUIOpenChangeReason;
-}
-
-export interface DrawerUIProps {
-  children?: ReactNode;
-  defaultOpen?: boolean;
-  disablePointerDismissal?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean, details: DrawerUIOpenChangeDetails) => void;
-  onOpenChangeComplete?: (open: boolean) => void;
-  placement?: DrawerUIPlacement;
-}
-
-export interface DrawerUITriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining trigger behavior. */
-  render?: ReactElement;
-}
-
-export interface DrawerUIPortalProps extends HTMLAttributes<HTMLDivElement> {
-  container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null;
-  keepMounted?: boolean;
-}
-
-export type DrawerUIBackdropProps = HTMLAttributes<HTMLDivElement>;
-export type DrawerUIViewportProps = HTMLAttributes<HTMLDivElement>;
-
-export interface DrawerUIContentProps extends HTMLAttributes<HTMLDivElement> {
-  finalFocus?: boolean | RefObject<HTMLElement | null>;
-  initialFocus?: boolean | RefObject<HTMLElement | null>;
-}
-
-export type DrawerUITitleProps = HTMLAttributes<HTMLHeadingElement>;
-export type DrawerUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
-
-export interface DrawerUICloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining close behavior. */
-  render?: ReactElement;
-}
-
-const joinClassNames = (defaultClassName: string, className: string | undefined) =>
-  className ? `${defaultClassName} ${className}` : defaultClassName;
 
 interface DrawerUIContextValue {
   placement: DrawerUIPlacement;
@@ -129,7 +80,7 @@ export const DrawerTriggerUI = forwardRef(function DrawerTriggerUI(
   return (
     <Drawer.Trigger
       {...props}
-      className={joinClassNames("wd-drawer-ui__trigger", className)}
+      className={clsx("wd-drawer-ui__trigger", className)}
       id={triggerId ?? id}
       ref={ref}
       type={type}
@@ -141,13 +92,7 @@ export const DrawerPortalUI = forwardRef(function DrawerPortalUI(
   { className, ...props }: DrawerUIPortalProps,
   ref: Ref<HTMLDivElement>,
 ) {
-  return (
-    <Drawer.Portal
-      {...props}
-      className={joinClassNames("wd-drawer-ui__portal", className)}
-      ref={ref}
-    />
-  );
+  return <Drawer.Portal {...props} className={clsx("wd-drawer-ui__portal", className)} ref={ref} />;
 });
 
 export const DrawerBackdropUI = forwardRef(function DrawerBackdropUI(
@@ -155,11 +100,7 @@ export const DrawerBackdropUI = forwardRef(function DrawerBackdropUI(
   ref: Ref<HTMLDivElement>,
 ) {
   return (
-    <Drawer.Backdrop
-      {...props}
-      className={joinClassNames("wd-drawer-ui__backdrop", className)}
-      ref={ref}
-    />
+    <Drawer.Backdrop {...props} className={clsx("wd-drawer-ui__backdrop", className)} ref={ref} />
   );
 });
 
@@ -172,10 +113,7 @@ export const DrawerViewportUI = forwardRef(function DrawerViewportUI(
   return (
     <Drawer.Viewport
       {...props}
-      className={joinClassNames(
-        `wd-drawer-ui__viewport wd-drawer-ui__viewport--${placement}`,
-        className,
-      )}
+      className={clsx(`wd-drawer-ui__viewport wd-drawer-ui__viewport--${placement}`, className)}
       ref={ref}
     />
   );
@@ -190,10 +128,7 @@ export const DrawerContentUI = forwardRef(function DrawerContentUI(
   return (
     <Drawer.Popup
       {...props}
-      className={joinClassNames(
-        `wd-drawer-ui__content wd-drawer-ui__content--${placement}`,
-        className,
-      )}
+      className={clsx(`wd-drawer-ui__content wd-drawer-ui__content--${placement}`, className)}
       finalFocus={finalFocus}
       initialFocus={initialFocus}
       ref={ref}
@@ -205,13 +140,7 @@ export const DrawerTitleUI = forwardRef(function DrawerTitleUI(
   { className, ...props }: DrawerUITitleProps,
   ref: Ref<HTMLHeadingElement>,
 ) {
-  return (
-    <Drawer.Title
-      {...props}
-      className={joinClassNames("wd-drawer-ui__title", className)}
-      ref={ref}
-    />
-  );
+  return <Drawer.Title {...props} className={clsx("wd-drawer-ui__title", className)} ref={ref} />;
 });
 
 export const DrawerDescriptionUI = forwardRef(function DrawerDescriptionUI(
@@ -221,7 +150,7 @@ export const DrawerDescriptionUI = forwardRef(function DrawerDescriptionUI(
   return (
     <Drawer.Description
       {...props}
-      className={joinClassNames("wd-drawer-ui__description", className)}
+      className={clsx("wd-drawer-ui__description", className)}
       ref={ref}
     />
   );
@@ -234,7 +163,7 @@ export const DrawerCloseUI = forwardRef(function DrawerCloseUI(
   return (
     <Drawer.Close
       {...props}
-      className={joinClassNames("wd-drawer-ui__close", className)}
+      className={clsx("wd-drawer-ui__close", className)}
       ref={ref}
       type={type}
     />

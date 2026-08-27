@@ -1,13 +1,13 @@
-.wd-menu-trigger {
+.wd-menu-ui__trigger {
   font: inherit;
 }
 
-.wd-menu-positioner {
+.wd-menu-ui__positioner {
   outline: none;
   z-index: 1000;
 }
 
-.wd-menu-content {
+.wd-menu-ui__content {
   background: var(--wd-menu-content-background-color);
   border: 1px solid var(--wd-menu-content-border-color);
   border-radius: var(--wd-menu-content-border-radius);
@@ -25,17 +25,17 @@
       var(--wd-menu-content-transition-easing);
 }
 
-.wd-menu-content[data-starting-style],
-.wd-menu-content[data-ending-style] {
+.wd-menu-ui__content[data-starting-style],
+.wd-menu-ui__content[data-ending-style] {
   opacity: 0;
   transform: scale(0.98);
 }
 
-.wd-menu-content[data-ending-style] {
+.wd-menu-ui__content[data-ending-style] {
   transition-duration: var(--wd-menu-content-transition-duration-exit);
 }
 
-.wd-menu-item {
+.wd-menu-ui__item {
   align-items: center;
   border-radius: var(--wd-menu-item-border-radius);
   box-sizing: border-box;
@@ -49,19 +49,19 @@
   user-select: none;
 }
 
-.wd-menu-item[data-highlighted] {
+.wd-menu-ui__item[data-highlighted] {
   background: var(--wd-menu-item-background-color-active);
 }
 
-.wd-menu-item[data-disabled] {
+.wd-menu-ui__item[data-disabled] {
   opacity: var(--wd-menu-item-opacity-disabled);
 }
 
-.wd-menu-item[data-variant="danger"] {
+.wd-menu-ui__item[data-variant="danger"] {
   color: var(--wd-color-danger-surface);
 }
 
-.wd-menu-item__indicator {
+.wd-menu-ui__item-indicator {
   align-items: center;
   display: inline-flex;
   flex: 0 0 1rem;
@@ -70,25 +70,25 @@
   opacity: 0;
 }
 
-.wd-menu-item__indicator[data-checked] {
+.wd-menu-ui__item-indicator[data-checked] {
   opacity: 1;
 }
 
-.wd-menu-item__label {
+.wd-menu-ui__item-label {
   flex: 1;
 }
 
-.wd-menu-submenu-trigger__arrow {
+.wd-menu-ui__submenu-trigger-arrow {
   margin-inline-start: auto;
 }
 
-.wd-menu-separator {
+.wd-menu-ui__separator {
   background: var(--wd-menu-separator-background-color);
   height: 1px;
   margin-block: var(--wd-menu-separator-margin-block);
 }
 
-.wd-menu-separator[data-orientation="vertical"] {
+.wd-menu-ui__separator[data-orientation="vertical"] {
   height: auto;
   margin-block: 0;
   margin-inline: var(--wd-menu-separator-margin-block);
@@ -96,7 +96,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wd-menu-content {
+  .wd-menu-ui__content {
     transition-duration: 0.01ms;
   }
 }

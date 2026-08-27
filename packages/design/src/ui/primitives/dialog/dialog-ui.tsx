@@ -1,68 +1,23 @@
 "use client";
 
-import type {
-  ButtonHTMLAttributes,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefObject,
-} from "react";
+import type { Ref } from "react";
 import { createContext, forwardRef, useContext, useId } from "react";
 
 import { Dialog } from "@base-ui/react/dialog";
+import { clsx } from "clsx";
+
+import type {
+  DialogUIBackdropProps,
+  DialogUICloseProps,
+  DialogUIContentProps,
+  DialogUIDescriptionProps,
+  DialogUIPortalProps,
+  DialogUIProps,
+  DialogUITitleProps,
+  DialogUITriggerProps,
+} from "./dialog-ui.types";
 
 import "./dialog-ui.css";
-
-export type DialogUIOpenChangeReason =
-  | "trigger-press"
-  | "outside-press"
-  | "escape-key"
-  | "close-press"
-  | "focus-out"
-  | "imperative-action"
-  | "none";
-
-export interface DialogUIOpenChangeDetails {
-  reason: DialogUIOpenChangeReason;
-}
-
-export interface DialogUIProps {
-  children?: ReactNode;
-  defaultOpen?: boolean;
-  disablePointerDismissal?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean, details: DialogUIOpenChangeDetails) => void;
-  onOpenChangeComplete?: (open: boolean) => void;
-}
-
-export interface DialogUITriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining trigger behavior. */
-  render?: ReactElement;
-}
-
-export interface DialogUIPortalProps extends HTMLAttributes<HTMLDivElement> {
-  container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null;
-  keepMounted?: boolean;
-}
-
-export type DialogUIBackdropProps = HTMLAttributes<HTMLDivElement>;
-
-export interface DialogUIContentProps extends HTMLAttributes<HTMLDivElement> {
-  finalFocus?: boolean | RefObject<HTMLElement | null>;
-  initialFocus?: boolean | RefObject<HTMLElement | null>;
-}
-
-export type DialogUITitleProps = HTMLAttributes<HTMLHeadingElement>;
-export type DialogUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
-
-export interface DialogUICloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining close behavior. */
-  render?: ReactElement;
-}
-
-const joinClassNames = (defaultClassName: string, className: string | undefined) =>
-  className ? `${defaultClassName} ${className}` : defaultClassName;
 
 const DialogTriggerIdContext = createContext<string | undefined>(undefined);
 
@@ -106,7 +61,7 @@ export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
   return (
     <Dialog.Trigger
       {...props}
-      className={joinClassNames("wd-dialog-ui__trigger", className)}
+      className={clsx("wd-dialog-ui__trigger", className)}
       id={triggerId ?? id}
       ref={ref}
       type={type}
@@ -118,13 +73,7 @@ export const DialogPortalUI = forwardRef(function DialogPortalUI(
   { className, ...props }: DialogUIPortalProps,
   ref: Ref<HTMLDivElement>,
 ) {
-  return (
-    <Dialog.Portal
-      {...props}
-      className={joinClassNames("wd-dialog-ui__portal", className)}
-      ref={ref}
-    />
-  );
+  return <Dialog.Portal {...props} className={clsx("wd-dialog-ui__portal", className)} ref={ref} />;
 });
 
 export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
@@ -132,11 +81,7 @@ export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
   ref: Ref<HTMLDivElement>,
 ) {
   return (
-    <Dialog.Backdrop
-      {...props}
-      className={joinClassNames("wd-dialog-ui__backdrop", className)}
-      ref={ref}
-    />
+    <Dialog.Backdrop {...props} className={clsx("wd-dialog-ui__backdrop", className)} ref={ref} />
   );
 });
 
@@ -148,7 +93,7 @@ export const DialogContentUI = forwardRef(function DialogContentUI(
     <Dialog.Viewport className="wd-dialog-ui__viewport">
       <Dialog.Popup
         {...props}
-        className={joinClassNames("wd-dialog-ui__content", className)}
+        className={clsx("wd-dialog-ui__content", className)}
         finalFocus={finalFocus}
         initialFocus={initialFocus}
         ref={ref}
@@ -161,13 +106,7 @@ export const DialogTitleUI = forwardRef(function DialogTitleUI(
   { className, ...props }: DialogUITitleProps,
   ref: Ref<HTMLHeadingElement>,
 ) {
-  return (
-    <Dialog.Title
-      {...props}
-      className={joinClassNames("wd-dialog-ui__title", className)}
-      ref={ref}
-    />
-  );
+  return <Dialog.Title {...props} className={clsx("wd-dialog-ui__title", className)} ref={ref} />;
 });
 
 export const DialogDescriptionUI = forwardRef(function DialogDescriptionUI(
@@ -177,7 +116,7 @@ export const DialogDescriptionUI = forwardRef(function DialogDescriptionUI(
   return (
     <Dialog.Description
       {...props}
-      className={joinClassNames("wd-dialog-ui__description", className)}
+      className={clsx("wd-dialog-ui__description", className)}
       ref={ref}
     />
   );
@@ -190,7 +129,7 @@ export const DialogCloseUI = forwardRef(function DialogCloseUI(
   return (
     <Dialog.Close
       {...props}
-      className={joinClassNames("wd-dialog-ui__close", className)}
+      className={clsx("wd-dialog-ui__close", className)}
       ref={ref}
       type={type}
     />

@@ -1,76 +1,25 @@
 "use client";
 
-import type {
-  ButtonHTMLAttributes,
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefObject,
-} from "react";
+import type { Ref } from "react";
 import { createContext, forwardRef, useContext, useId } from "react";
 
 import { Drawer } from "@base-ui/react/drawer";
+import { clsx } from "clsx";
+
+import type {
+  SheetUIBackdropProps,
+  SheetUICloseProps,
+  SheetUIContentProps,
+  SheetUIDescriptionProps,
+  SheetUIHandleProps,
+  SheetUIPortalProps,
+  SheetUIProps,
+  SheetUITitleProps,
+  SheetUITriggerProps,
+  SheetUIViewportProps,
+} from "./sheet-ui.types";
 
 import "./sheet-ui.css";
-
-export type SheetUIOpenChangeReason =
-  | "trigger-press"
-  | "outside-press"
-  | "escape-key"
-  | "close-watcher"
-  | "close-press"
-  | "focus-out"
-  | "imperative-action"
-  | "swipe"
-  | "none";
-
-export interface SheetUIOpenChangeDetails {
-  reason: SheetUIOpenChangeReason;
-}
-
-/**
- * A modal bottom sheet. Snap-point props are intentionally absent while the project uses
- * Base UI 1.7.0; the public contract supports open/closed placement only.
- */
-export interface SheetUIProps {
-  children?: ReactNode;
-  defaultOpen?: boolean;
-  disablePointerDismissal?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean, details: SheetUIOpenChangeDetails) => void;
-  onOpenChangeComplete?: (open: boolean) => void;
-}
-
-export interface SheetUITriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining trigger behavior. */
-  render?: ReactElement;
-}
-
-export interface SheetUIPortalProps extends HTMLAttributes<HTMLDivElement> {
-  container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null;
-  keepMounted?: boolean;
-}
-
-export type SheetUIBackdropProps = HTMLAttributes<HTMLDivElement>;
-export type SheetUIViewportProps = HTMLAttributes<HTMLDivElement>;
-
-export interface SheetUIContentProps extends HTMLAttributes<HTMLDivElement> {
-  finalFocus?: boolean | RefObject<HTMLElement | null>;
-  initialFocus?: boolean | RefObject<HTMLElement | null>;
-}
-
-export type SheetUIHandleProps = HTMLAttributes<HTMLDivElement>;
-export type SheetUITitleProps = HTMLAttributes<HTMLHeadingElement>;
-export type SheetUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
-
-export interface SheetUICloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Replaces the native button while retaining close behavior. */
-  render?: ReactElement;
-}
-
-const joinClassNames = (defaultClassName: string, className: string | undefined) =>
-  className ? `${defaultClassName} ${className}` : defaultClassName;
 
 const SheetTriggerIdContext = createContext<string | undefined>(undefined);
 
@@ -115,7 +64,7 @@ export const SheetTriggerUI = forwardRef(function SheetTriggerUI(
   return (
     <Drawer.Trigger
       {...props}
-      className={joinClassNames("wd-sheet-ui__trigger", className)}
+      className={clsx("wd-sheet-ui__trigger", className)}
       id={triggerId ?? id}
       ref={ref}
       type={type}
@@ -127,13 +76,7 @@ export const SheetPortalUI = forwardRef(function SheetPortalUI(
   { className, ...props }: SheetUIPortalProps,
   ref: Ref<HTMLDivElement>,
 ) {
-  return (
-    <Drawer.Portal
-      {...props}
-      className={joinClassNames("wd-sheet-ui__portal", className)}
-      ref={ref}
-    />
-  );
+  return <Drawer.Portal {...props} className={clsx("wd-sheet-ui__portal", className)} ref={ref} />;
 });
 
 export const SheetBackdropUI = forwardRef(function SheetBackdropUI(
@@ -141,11 +84,7 @@ export const SheetBackdropUI = forwardRef(function SheetBackdropUI(
   ref: Ref<HTMLDivElement>,
 ) {
   return (
-    <Drawer.Backdrop
-      {...props}
-      className={joinClassNames("wd-sheet-ui__backdrop", className)}
-      ref={ref}
-    />
+    <Drawer.Backdrop {...props} className={clsx("wd-sheet-ui__backdrop", className)} ref={ref} />
   );
 });
 
@@ -154,11 +93,7 @@ export const SheetViewportUI = forwardRef(function SheetViewportUI(
   ref: Ref<HTMLDivElement>,
 ) {
   return (
-    <Drawer.Viewport
-      {...props}
-      className={joinClassNames("wd-sheet-ui__viewport", className)}
-      ref={ref}
-    />
+    <Drawer.Viewport {...props} className={clsx("wd-sheet-ui__viewport", className)} ref={ref} />
   );
 });
 
@@ -169,7 +104,7 @@ export const SheetContentUI = forwardRef(function SheetContentUI(
   return (
     <Drawer.Popup
       {...props}
-      className={joinClassNames("wd-sheet-ui__content", className)}
+      className={clsx("wd-sheet-ui__content", className)}
       finalFocus={finalFocus}
       initialFocus={initialFocus}
       ref={ref}
@@ -185,7 +120,7 @@ export const SheetHandleUI = forwardRef(function SheetHandleUI(
     <div
       {...props}
       aria-hidden="true"
-      className={joinClassNames("wd-sheet-ui__handle", className)}
+      className={clsx("wd-sheet-ui__handle", className)}
       ref={ref}
     />
   );
@@ -195,13 +130,7 @@ export const SheetTitleUI = forwardRef(function SheetTitleUI(
   { className, ...props }: SheetUITitleProps,
   ref: Ref<HTMLHeadingElement>,
 ) {
-  return (
-    <Drawer.Title
-      {...props}
-      className={joinClassNames("wd-sheet-ui__title", className)}
-      ref={ref}
-    />
-  );
+  return <Drawer.Title {...props} className={clsx("wd-sheet-ui__title", className)} ref={ref} />;
 });
 
 export const SheetDescriptionUI = forwardRef(function SheetDescriptionUI(
@@ -211,7 +140,7 @@ export const SheetDescriptionUI = forwardRef(function SheetDescriptionUI(
   return (
     <Drawer.Description
       {...props}
-      className={joinClassNames("wd-sheet-ui__description", className)}
+      className={clsx("wd-sheet-ui__description", className)}
       ref={ref}
     />
   );
@@ -224,7 +153,7 @@ export const SheetCloseUI = forwardRef(function SheetCloseUI(
   return (
     <Drawer.Close
       {...props}
-      className={joinClassNames("wd-sheet-ui__close", className)}
+      className={clsx("wd-sheet-ui__close", className)}
       ref={ref}
       type={type}
     />

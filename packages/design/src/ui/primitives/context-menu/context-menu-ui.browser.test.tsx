@@ -4,7 +4,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { cleanupUITest, getActiveHTMLElement, renderUITest } from "../testing";
-import { ContextMenuUI } from "./context-menu";
+import { ContextMenuUI } from "./context-menu-ui";
 
 afterEach(cleanupUITest);
 
@@ -45,30 +45,27 @@ function ControlledReplacementFixture() {
   );
 }
 
-describe("ContextMenuUI in Chromium", () => {
-  browserTest(
-    "supports a controlled F1-to-F2 replacement and restores pre-replacement focus",
-    async () => {
-      renderUITest(<ControlledReplacementFixture />);
+describe("ContextMenuUI (Chromium)", () => {
+  browserTest("제어된 F1에서 F2로의 교체를 지원하고 교체 전 focus를 복원한다", async () => {
+    renderUITest(<ControlledReplacementFixture />);
 
-      const restoreFocus = screen.getByRole("button", { name: "Pre-replacement focus" });
-      restoreFocus.focus();
+    const restoreFocus = screen.getByRole("button", { name: "Pre-replacement focus" });
+    restoreFocus.focus();
 
-      fireEvent.contextMenu(screen.getByTestId("f1"), { clientX: 20, clientY: 30 });
-      expect(await screen.findByRole("menu", { name: "F1 actions" })).toBeTruthy();
+    fireEvent.contextMenu(screen.getByTestId("f1"), { clientX: 20, clientY: 30 });
+    expect(await screen.findByRole("menu", { name: "F1 actions" })).toBeTruthy();
 
-      fireEvent.contextMenu(screen.getByTestId("f2"), { clientX: 80, clientY: 90 });
-      expect(await screen.findByRole("menu", { name: "F2 actions" })).toBeTruthy();
-      await waitFor(() => expect(screen.queryByRole("menu", { name: "F1 actions" })).toBeNull());
+    fireEvent.contextMenu(screen.getByTestId("f2"), { clientX: 80, clientY: 90 });
+    expect(await screen.findByRole("menu", { name: "F2 actions" })).toBeTruthy();
+    await waitFor(() => expect(screen.queryByRole("menu", { name: "F1 actions" })).toBeNull());
 
-      fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.keyDown(document, { key: "Escape" });
 
-      await waitFor(() => expect(screen.queryByRole("menu", { name: "F2 actions" })).toBeNull());
-      await waitFor(() => expect(getActiveHTMLElement()).toBe(restoreFocus));
-    },
-  );
+    await waitFor(() => expect(screen.queryByRole("menu", { name: "F2 actions" })).toBeNull());
+    await waitFor(() => expect(getActiveHTMLElement()).toBe(restoreFocus));
+  });
 
-  browserTest("opens from a touch long press", async () => {
+  browserTest("touch long press로 열린다", async () => {
     renderUITest(
       <ContextMenuUI.Root>
         <ContextMenuUI.Trigger>Touch surface</ContextMenuUI.Trigger>

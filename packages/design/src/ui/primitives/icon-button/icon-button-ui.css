@@ -1,4 +1,4 @@
-.icon-button-ui {
+.wd-icon-button-ui {
   aspect-ratio: 1;
   flex-shrink: 0;
   inline-size: var(--wd-button-root-min-height);
@@ -6,15 +6,15 @@
   padding: var(--wd-reference-spacing-0);
 }
 
-.icon-button-ui__icon {
+.wd-icon-button-ui__icon {
   align-items: center;
   display: inline-flex;
   justify-content: center;
   pointer-events: none;
 }
 
-.icon-button-ui__icon > svg,
-.icon-button-ui__icon > img {
+.wd-icon-button-ui__icon > svg,
+.wd-icon-button-ui__icon > img {
   block-size: 1em;
   display: block;
   inline-size: 1em;

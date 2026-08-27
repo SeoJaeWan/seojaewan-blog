@@ -2,14 +2,14 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { cleanupUITest, getActiveHTMLElement, renderUITest } from "../testing";
-import { MenuUI } from "./menu";
+import { MenuUI } from "./menu-ui";
 
 afterEach(cleanupUITest);
 
 const browserTest = /Chrome/u.test(navigator.userAgent) ? it : it.skip;
 
-describe("MenuUI in Chromium", () => {
-  browserTest("uses arrow navigation, disabled behavior, submenus, and Escape", async () => {
+describe("MenuUI (Chromium)", () => {
+  browserTest("방향키 탐색, disabled 동작, submenu, Escape를 지원한다", async () => {
     renderUITest(
       <MenuUI.Root>
         <MenuUI.Trigger>Actions</MenuUI.Trigger>

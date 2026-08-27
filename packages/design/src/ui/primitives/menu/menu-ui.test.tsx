@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { MenuUI } from "./menu";
+import { MenuUI } from "./menu-ui";
 
 afterEach(cleanupUITest);
 
@@ -29,7 +29,7 @@ const MenuFixture = ({ onOpenChange = vi.fn() }) => (
 );
 
 describe("MenuUI", () => {
-  it("keeps a focusable project trigger available for coordinator composition", async () => {
+  it("coordinator 조합을 위한 focus 가능한 프로젝트 trigger를 제공한다", async () => {
     renderUITest(
       <MenuUI.Root>
         <MenuUI.Trigger render={<button data-testid="composed-trigger" type="button" />}>
@@ -47,7 +47,7 @@ describe("MenuUI", () => {
     expect(await screen.findByRole("menuitem", { name: "Open" })).toBeTruthy();
   });
 
-  it("exposes menu, item, selection, submenu, and separator semantics", async () => {
+  it("menu, item, selection, submenu, separator 의미 구조를 제공한다", async () => {
     renderUITest(<MenuFixture />);
 
     fireEvent.click(screen.getByRole("button", { name: "Actions" }));
@@ -69,7 +69,7 @@ describe("MenuUI", () => {
     expect(submenuTrigger.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("keeps disabled items inert and reports project-owned change reasons", async () => {
+  it("disabled item은 동작하지 않고 프로젝트 change reason을 보고한다", async () => {
     const onDisabledClick = vi.fn();
     const onOpenChange = vi.fn();
 
@@ -93,7 +93,7 @@ describe("MenuUI", () => {
     expect(onOpenChange.mock.calls[0]?.[1]).toEqual({ reason: "trigger-press" });
   });
 
-  it("reports checkbox and radio changes without exposing vendor event details", async () => {
+  it("vendor event 세부 정보를 노출하지 않고 checkbox와 radio 변경을 보고한다", async () => {
     const onCheckedChange = vi.fn();
     const onValueChange = vi.fn();
 

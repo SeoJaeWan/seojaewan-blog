@@ -1,3 +1,15 @@
+export {
+  SheetBackdropUI,
+  SheetCloseUI,
+  SheetContentUI,
+  SheetDescriptionUI,
+  SheetHandleUI,
+  SheetPortalUI,
+  SheetTitleUI,
+  SheetTriggerUI,
+  SheetUI,
+  SheetViewportUI,
+} from "./sheet-ui";
 export type {
   SheetUIBackdropProps,
   SheetUICloseProps,
@@ -11,16 +23,4 @@ export type {
   SheetUITitleProps,
   SheetUITriggerProps,
   SheetUIViewportProps,
-} from "./sheet-ui";
-export {
-  SheetBackdropUI,
-  SheetCloseUI,
-  SheetContentUI,
-  SheetDescriptionUI,
-  SheetHandleUI,
-  SheetPortalUI,
-  SheetTitleUI,
-  SheetTriggerUI,
-  SheetUI,
-  SheetViewportUI,
-} from "./sheet-ui";
+} from "./sheet-ui.types";
