@@ -28,8 +28,9 @@ const REFERENCE_NAME_PATTERN =
 const SEMANTIC_NAME_PATTERN =
   /^--wd-(?:color-(?:surface|text|border|accent|danger|focus)-[a-z0-9]+(?:-[a-z0-9]+)*|font-family-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const COMPONENT_NAME_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const COMPONENT_PREFIX_PATTERN = /^--wd-(?:window-frame|taskbar|window-panel)-/;
+  /^--wd-(?:window-frame|taskbar|window-panel|button|menu|popover|tooltip|dialog|drawer|sheet)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const COMPONENT_PREFIX_PATTERN =
+  /^--wd-(?:window-frame|taskbar|window-panel|button|menu|popover|tooltip|dialog|drawer|sheet)-/;
 
 const readCss = (path: string) => readFileSync(path, "utf8");
 
@@ -178,6 +179,22 @@ describe("CSS 토큰 계약", () => {
     );
   });
 
+  it("primitive family는 component-element-property-state 정책으로 확장할 수 있다", () => {
+    const sources = writeFixture({
+      "component/primitives.css": `:root {
+        --wd-button-root-min-height: var(--wd-reference-spacing-6);
+        --wd-menu-item-background-color-active: var(--wd-color-accent-default);
+        --wd-popover-content-border-radius: var(--wd-reference-radius-2);
+        --wd-tooltip-popup-transition-duration: var(--wd-reference-duration-120);
+        --wd-dialog-backdrop-background-color: var(--wd-color-surface-muted);
+        --wd-drawer-popup-transition-easing: var(--wd-reference-easing-3);
+        --wd-sheet-popup-border-radius: var(--wd-reference-radius-3);
+      }`,
+    });
+
+    expect(() => validateTokenSources(sources)).not.toThrow();
+  });
+
   it("명시적인 테마 전환 정책을 도입하기 전에는 단일 Light Theme만 사용한다", () => {
     const themeCss = readCss(join(TOKENS_DIRECTORY, "theme", "default.css"));
     const allCss = readRepositoryTokenSources()
@@ -221,5 +238,13 @@ describe("CSS 토큰 계약", () => {
     });
 
     expect(() => validateTokenSources(sources)).toThrow(/한 번만 정의/);
+  });
+
+  it("Component token도 소문자 component-element-property-state 이름만 허용한다", () => {
+    const sources = writeFixture({
+      "component/button.css": ":root { --wd-button-MinHeight: var(--wd-reference-spacing-6); }",
+    });
+
+    expect(() => validateTokenSources(sources)).toThrow(/component token naming/);
   });
 });

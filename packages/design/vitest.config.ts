@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -19,6 +20,19 @@ export default defineConfig({
           environment: "jsdom",
           include: ["src/ui/**/*.test.{ts,tsx}"],
           name: "ui",
+        },
+      },
+      {
+        extends: true,
+        test: {
+          browser: {
+            enabled: true,
+            headless: true,
+            instances: [{ browser: "chromium" }],
+            provider: playwright(),
+          },
+          include: ["src/ui/**/*.browser.test.{ts,tsx}"],
+          name: "ui-browser",
         },
       },
       {
