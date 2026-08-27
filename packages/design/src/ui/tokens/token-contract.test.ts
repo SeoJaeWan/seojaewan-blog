@@ -28,9 +28,9 @@ const REFERENCE_NAME_PATTERN =
 const SEMANTIC_NAME_PATTERN =
   /^--wd-(?:color-(?:surface|text|border|accent|danger|focus)-[a-z0-9]+(?:-[a-z0-9]+)*|font-family-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const COMPONENT_NAME_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel|button|menu|popover|tooltip|dialog|drawer|sheet)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  /^--wd-(?:window-frame|taskbar|window-panel|button|collapsible|combobox|dialog|input|menu|popover|select)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const COMPONENT_PREFIX_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel|button|menu|popover|tooltip|dialog|drawer|sheet)-/;
+  /^--wd-(?:window-frame|taskbar|window-panel|button|collapsible|combobox|dialog|input|menu|popover|select)-/;
 
 const readCss = (path: string) => readFileSync(path, "utf8");
 
@@ -183,12 +183,13 @@ describe("CSS 토큰 계약", () => {
     const sources = writeFixture({
       "component/primitives.css": `:root {
         --wd-button-root-min-height: var(--wd-reference-spacing-6);
+        --wd-collapsible-trigger-min-height: var(--wd-reference-spacing-6);
+        --wd-combobox-item-background-color-active: var(--wd-color-accent-default);
+        --wd-dialog-backdrop-background-color: var(--wd-color-surface-muted);
+        --wd-input-root-border-radius: var(--wd-reference-radius-2);
         --wd-menu-item-background-color-active: var(--wd-color-accent-default);
         --wd-popover-content-border-radius: var(--wd-reference-radius-2);
-        --wd-tooltip-popup-transition-duration: var(--wd-reference-duration-120);
-        --wd-dialog-backdrop-background-color: var(--wd-color-surface-muted);
-        --wd-drawer-popup-transition-easing: var(--wd-reference-easing-3);
-        --wd-sheet-popup-border-radius: var(--wd-reference-radius-3);
+        --wd-select-content-transition-duration: var(--wd-reference-duration-120);
       }`,
     });
 

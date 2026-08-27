@@ -2,19 +2,35 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 
 import type {
   ButtonUIProps,
+  CollapsibleUIProps,
+  ComboboxUIProps,
   ContextMenuUIProps,
   DialogUIProps,
-  DrawerUIProps,
   IconButtonUIProps,
+  InputUIProps,
   MenuUIProps,
   PopoverUIProps,
-  SheetUIProps,
-  TooltipUIProps,
+  SelectUIProps,
 } from "../../index";
 import * as design from "../../index";
 
 const PUBLIC_PRIMITIVE_EXPORTS = [
   "ButtonUI",
+  "CollapsiblePanelUI",
+  "CollapsibleRootUI",
+  "CollapsibleTriggerUI",
+  "CollapsibleUI",
+  "ComboboxClearUI",
+  "ComboboxContentUI",
+  "ComboboxEmptyUI",
+  "ComboboxInputGroupUI",
+  "ComboboxInputUI",
+  "ComboboxItemUI",
+  "ComboboxLabelUI",
+  "ComboboxListUI",
+  "ComboboxRootUI",
+  "ComboboxTriggerUI",
+  "ComboboxUI",
   "ContextMenuCheckboxItemUI",
   "ContextMenuContentUI",
   "ContextMenuItemUI",
@@ -36,16 +52,8 @@ const PUBLIC_PRIMITIVE_EXPORTS = [
   "DialogTitleUI",
   "DialogTriggerUI",
   "DialogUI",
-  "DrawerBackdropUI",
-  "DrawerCloseUI",
-  "DrawerContentUI",
-  "DrawerDescriptionUI",
-  "DrawerPortalUI",
-  "DrawerTitleUI",
-  "DrawerTriggerUI",
-  "DrawerUI",
-  "DrawerViewportUI",
   "IconButtonUI",
+  "InputUI",
   "MenuCheckboxItemUI",
   "MenuContentUI",
   "MenuItemUI",
@@ -65,20 +73,15 @@ const PUBLIC_PRIMITIVE_EXPORTS = [
   "PopoverTitleUI",
   "PopoverTriggerUI",
   "PopoverUI",
-  "SheetBackdropUI",
-  "SheetCloseUI",
-  "SheetContentUI",
-  "SheetDescriptionUI",
-  "SheetHandleUI",
-  "SheetPortalUI",
-  "SheetTitleUI",
-  "SheetTriggerUI",
-  "SheetUI",
-  "SheetViewportUI",
-  "TooltipContentUI",
-  "TooltipGroupUI",
-  "TooltipTriggerUI",
-  "TooltipUI",
+  "SelectClearUI",
+  "SelectContentUI",
+  "SelectItemUI",
+  "SelectLabelUI",
+  "SelectListUI",
+  "SelectRootUI",
+  "SelectTriggerUI",
+  "SelectUI",
+  "SelectValueUI",
 ] as const;
 
 describe("Design primitive 공개 API 계약", () => {
@@ -89,19 +92,14 @@ describe("Design primitive 공개 API 계약", () => {
 
   it("consumer deep import 없이 프로젝트가 소유한 props 계약을 제공한다", () => {
     expectTypeOf<ButtonUIProps>().toBeObject();
+    expectTypeOf<CollapsibleUIProps>().toBeObject();
+    expectTypeOf<ComboboxUIProps>().toBeObject();
     expectTypeOf<IconButtonUIProps>().toBeObject();
+    expectTypeOf<InputUIProps>().toBeObject();
     expectTypeOf<MenuUIProps>().toBeObject();
     expectTypeOf<ContextMenuUIProps>().toBeObject();
     expectTypeOf<PopoverUIProps>().toBeObject();
-    expectTypeOf<TooltipUIProps>().toBeObject();
     expectTypeOf<DialogUIProps>().toBeObject();
-    expectTypeOf<DrawerUIProps>().toBeObject();
-    expectTypeOf<SheetUIProps>().toBeObject();
-  });
-
-  it("SheetUI 공개 계약에서 snapPoints를 제외한다", () => {
-    type SheetUIHasSnapPoints = "snapPoints" extends keyof SheetUIProps ? true : false;
-
-    expectTypeOf<SheetUIHasSnapPoints>().toEqualTypeOf<false>();
+    expectTypeOf<SelectUIProps>().toBeObject();
   });
 });
