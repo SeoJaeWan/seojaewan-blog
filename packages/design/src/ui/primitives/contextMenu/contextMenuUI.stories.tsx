@@ -1,5 +1,7 @@
+import { useRef, useState } from "react";
+
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { MenuUI } from "../menu";
 import { ContextMenuUI } from "./contextMenuUI";
@@ -64,6 +66,41 @@ const SubmenuFixture = () => (
   </ContextMenuUI.Root>
 );
 
+const ControlledReplacementFixture = () => {
+  const [activeMenu, setActiveMenu] = useState<"first" | "second" | null>(null);
+  const restoreFocusRef = useRef<HTMLButtonElement>(null);
+
+  const setMenuOpen = (menu: "first" | "second", open: boolean) => {
+    setActiveMenu((current) => (open ? menu : current === menu ? null : current));
+  };
+
+  return (
+    <div style={{ display: "grid", gap: 16, minHeight: 280, padding: 24 }}>
+      <button ref={restoreFocusRef} type="button">
+        Pre-replacement focus
+      </button>
+      <ContextMenuUI.Root
+        onOpenChange={(open) => setMenuOpen("first", open)}
+        open={activeMenu === "first"}
+      >
+        <ContextMenuUI.Trigger>First surface</ContextMenuUI.Trigger>
+        <ContextMenuUI.Content aria-label="First actions" finalFocus={restoreFocusRef}>
+          <ContextMenuUI.Item>First action</ContextMenuUI.Item>
+        </ContextMenuUI.Content>
+      </ContextMenuUI.Root>
+      <ContextMenuUI.Root
+        onOpenChange={(open) => setMenuOpen("second", open)}
+        open={activeMenu === "second"}
+      >
+        <ContextMenuUI.Trigger>Second surface</ContextMenuUI.Trigger>
+        <ContextMenuUI.Content aria-label="Second actions" finalFocus={restoreFocusRef}>
+          <ContextMenuUI.Item>Second action</ContextMenuUI.Item>
+        </ContextMenuUI.Content>
+      </ContextMenuUI.Root>
+    </div>
+  );
+};
+
 const meta = {
   title: "UI/Primitives/ContextMenuUI",
   component: VisibleEntryPointsFixture,
@@ -82,15 +119,69 @@ export const PointerAndKeyboardInvocation: Story = {
     const body = within(document.body);
 
     await userEvent.pointer({ keys: "[MouseRight]", target: surface });
-    await expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible();
+    await waitFor(() =>
+      expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
+    );
     await userEvent.keyboard("{Escape}");
 
     surface.focus();
     await userEvent.keyboard("{Shift>}{F10}{/Shift}");
-    await expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible();
+    await waitFor(() =>
+      expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
+    );
   },
 };
 export const Submenu: Story = { render: () => <SubmenuFixture /> };
+export const ControlledReplacement: Story = {
+  render: () => <ControlledReplacementFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const restoreFocus = canvas.getByRole("button", { name: "Pre-replacement focus" });
+
+    restoreFocus.focus();
+    await userEvent.pointer({
+      keys: "[MouseRight]",
+      target: canvas.getByText("First surface"),
+    });
+    await waitFor(() => expect(page.getByRole("menu", { name: "First actions" })).toBeVisible());
+
+    await userEvent.pointer({
+      keys: "[MouseRight]",
+      target: canvas.getByText("Second surface"),
+    });
+    await waitFor(() => expect(page.getByRole("menu", { name: "Second actions" })).toBeVisible());
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "First actions" })).not.toBeInTheDocument(),
+    );
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "Second actions" })).not.toBeInTheDocument(),
+    );
+    await expect(restoreFocus).toHaveFocus();
+  },
+};
+export const TouchLongPress: Story = {
+  render: () => <SubmenuFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const surface = canvas.getByText("Right-click for sharing actions");
+
+    const touchStart = new Event("touchstart", { bubbles: true, cancelable: true });
+    Object.defineProperty(touchStart, "touches", {
+      value: [{ clientX: 32, clientY: 32, identifier: 1, target: surface }],
+    });
+    surface.dispatchEvent(touchStart);
+
+    await waitFor(
+      () => expect(page.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
+      { timeout: 1200 },
+    );
+    surface.dispatchEvent(new Event("touchend", { bubbles: true, cancelable: true }));
+  },
+};
 export const NarrowViewport: Story = {
   parameters: { viewport: { defaultViewport: "mobile1" } },
 };

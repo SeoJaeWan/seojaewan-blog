@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import { MenuUI } from "./menuUI";
 
 afterEach(cleanupUITest);

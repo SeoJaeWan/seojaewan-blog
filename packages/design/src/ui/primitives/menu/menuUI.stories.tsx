@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { MenuUI } from "./menuUI";
 
@@ -63,6 +63,7 @@ const SubmenuFixture = () => (
       <MenuUI.Trigger>Share</MenuUI.Trigger>
       <MenuUI.Content aria-label="Share menu">
         <MenuUI.Item>Copy link</MenuUI.Item>
+        <MenuUI.Item disabled>Unavailable</MenuUI.Item>
         <MenuUI.Submenu.Root>
           <MenuUI.Submenu.Trigger>Send to</MenuUI.Submenu.Trigger>
           <MenuUI.Submenu.Content aria-label="Send to submenu">
@@ -114,7 +115,9 @@ export const PointerAndKeyboard: Story = {
     const trigger = canvas.getByRole("button", { name: "Single action" });
 
     await userEvent.click(trigger);
-    await expect(within(document.body).getByRole("menuitem", { name: "Open" })).toBeVisible();
+    await waitFor(() =>
+      expect(within(document.body).getByRole("menuitem", { name: "Open" })).toBeVisible(),
+    );
     await userEvent.keyboard("{Escape}");
 
     trigger.focus();
@@ -122,7 +125,44 @@ export const PointerAndKeyboard: Story = {
     await expect(within(document.body).getByRole("menuitem", { name: "Open" })).toHaveFocus();
   },
 };
-export const Submenu: Story = { render: () => <SubmenuFixture /> };
+export const Submenu: Story = {
+  render: () => <SubmenuFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const trigger = canvas.getByRole("button", { name: "Share" });
+
+    trigger.focus();
+    await userEvent.keyboard("{ArrowDown}");
+    await expect(page.getByRole("menuitem", { name: "Copy link" })).toHaveFocus();
+
+    await userEvent.keyboard("{ArrowDown}");
+    const disabled = page.getByRole("menuitem", { name: "Unavailable" });
+    await expect(disabled).toHaveFocus();
+    await expect(disabled).toHaveAttribute("aria-disabled", "true");
+
+    await userEvent.keyboard("{ArrowDown}");
+    const submenuTrigger = page.getByRole("menuitem", { name: "Send to" });
+    await expect(submenuTrigger).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+
+    const nested = await page.findByRole("menuitem", { name: "Email" });
+    await expect(nested).toHaveFocus();
+    await waitFor(() => expect(page.getByRole("menu", { name: "Send to submenu" })).toBeVisible());
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "Send to submenu" })).not.toBeInTheDocument(),
+    );
+    await expect(submenuTrigger).toHaveFocus();
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "Share menu" })).not.toBeInTheDocument(),
+    );
+    await expect(trigger).toHaveFocus();
+  },
+};
 export const OpeningAndExiting: Story = { render: () => <LifecycleFixture /> };
 export const NarrowViewport: Story = {
   parameters: { viewport: { defaultViewport: "mobile1" } },

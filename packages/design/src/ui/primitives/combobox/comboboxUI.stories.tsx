@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { ComboboxUI } from "./index";
 
@@ -49,7 +49,7 @@ export const FilteringNavigationSelectionEmptyClearAndEscape: Story = {
     const input = body.getByRole("combobox", { name: "Route" });
 
     await userEvent.type(input, "desk");
-    await expect(body.getByRole("option", { name: "Desktop" })).toBeVisible();
+    await waitFor(() => expect(body.getByRole("option", { name: "Desktop" })).toBeVisible());
     await expect(body.queryByRole("option", { name: "Documents" })).not.toBeInTheDocument();
 
     await userEvent.keyboard("{ArrowDown}{Enter}");

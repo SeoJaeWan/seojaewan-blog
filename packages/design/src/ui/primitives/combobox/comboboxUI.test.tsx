@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { userEvent } from "storybook/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import implementationSource from "./comboboxUI.tsx?raw";
 import typesSource from "./comboboxUI.types.ts?raw";
 import { ComboboxUI } from "./index";

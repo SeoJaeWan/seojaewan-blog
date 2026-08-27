@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "storybook/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import { SelectUI, type SelectUIOption } from "./index";
 import indexSource from "./index.ts?raw";
 import implementationSource from "./selectUI.tsx?raw";

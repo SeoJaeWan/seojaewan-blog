@@ -74,12 +74,22 @@ export const PortalAndDismissal: Story = {
 
 export const ReducedMotion: Story = {
   args: { defaultOpen: true },
-  decorators: [
-    (Story) => (
-      <div className="wd-popover-ui-story--reduced-motion">
-        <style>{`.wd-popover-ui-story--reduced-motion .wd-popover-ui__content { transition-duration: 0ms; }`}</style>
-        <Story />
-      </div>
-    ),
-  ],
+  play: async ({ canvasElement }) => {
+    const { cdp } = await import("vitest/browser");
+    const session = cdp();
+    const page = within(canvasElement.ownerDocument.body);
+
+    await session.send("Emulation.setEmulatedMedia", {
+      features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+    });
+
+    try {
+      const dialog = await page.findByRole("dialog", { name: "Account details" });
+      await expect(getComputedStyle(dialog).transitionDuration).toBe("0s");
+    } finally {
+      await session.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
+      });
+    }
+  },
 };

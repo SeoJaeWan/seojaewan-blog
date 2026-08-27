@@ -51,7 +51,12 @@ export const Interaction: Story = {
 };
 
 export const FocusVisible: Story = {
-  play: async () => {
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole("button", { name: "Add item" });
+
     await userEvent.tab();
+    await expect(button).toHaveFocus();
+    await expect(button.matches(":focus-visible")).toBe(true);
+    await expect(getComputedStyle(button).outlineStyle).toBe("solid");
   },
 };

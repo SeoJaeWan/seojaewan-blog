@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import { InputUI } from "./index";
 import indexSource from "./index.ts?raw";
 import typesSource from "./inputUI.types.ts?raw";

@@ -3,7 +3,7 @@ import { createRef } from "react";
 import { userEvent } from "storybook/test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import { IconButtonUI } from "./iconButtonUI";
 import typesSource from "./iconButtonUI.types.ts?raw";
 import indexSource from "./index.ts?raw";

@@ -1,6 +1,11 @@
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import react from "@vitejs/plugin-react";
 import { playwright } from "@vitest/browser-playwright";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
+
+const configDirectory = join(dirname(fileURLToPath(import.meta.url)), ".storybook");
 
 export default defineConfig({
   plugins: [react()],
@@ -24,6 +29,11 @@ export default defineConfig({
       },
       {
         extends: true,
+        plugins: [
+          storybookTest({
+            configDir: configDirectory,
+          }),
+        ],
         test: {
           browser: {
             enabled: true,
@@ -31,8 +41,7 @@ export default defineConfig({
             instances: [{ browser: "chromium" }],
             provider: playwright(),
           },
-          include: ["src/ui/**/*.browser.test.{ts,tsx}"],
-          name: "ui-browser",
+          name: "storybook",
         },
       },
       {

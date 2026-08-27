@@ -3,7 +3,7 @@ import { createRef } from "react";
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cleanupUITest, renderUITest } from "../testing";
+import { cleanupUITest, renderUITest } from "../../testing";
 import { DialogUI } from "./dialogUI";
 import type { DialogUIProps } from "./dialogUI.types";
 
