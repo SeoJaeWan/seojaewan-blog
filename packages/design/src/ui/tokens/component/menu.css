@@ -1,0 +1,20 @@
+:root {
+  --wd-menu-content-background-color: var(--wd-color-surface-window);
+  --wd-menu-content-border-color: var(--wd-color-border-default);
+  --wd-menu-content-border-radius: var(--wd-reference-radius-2);
+  --wd-menu-content-box-shadow: var(--wd-reference-shadow-2);
+  --wd-menu-content-min-width: 192px;
+  --wd-menu-content-padding: var(--wd-reference-spacing-1);
+  --wd-menu-content-transition-duration-enter: var(--wd-reference-duration-150);
+  --wd-menu-content-transition-duration-exit: var(--wd-reference-duration-120);
+  --wd-menu-content-transition-easing: var(--wd-reference-easing-2);
+  --wd-menu-item-border-radius: var(--wd-reference-radius-1);
+  --wd-menu-item-color: var(--wd-color-text-primary);
+  --wd-menu-item-gap: var(--wd-reference-spacing-2);
+  --wd-menu-item-min-height: 32px;
+  --wd-menu-item-padding-inline: var(--wd-reference-spacing-2);
+  --wd-menu-item-background-color-active: var(--wd-color-surface-muted);
+  --wd-menu-item-opacity-disabled: 0.5;
+  --wd-menu-separator-background-color: var(--wd-color-border-default);
+  --wd-menu-separator-margin-block: var(--wd-reference-spacing-1);
+}

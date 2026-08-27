@@ -1,0 +1,44 @@
+.button-ui {
+  align-items: center;
+  appearance: none;
+  background-color: var(--wd-button-root-background-color);
+  border: 1px solid var(--wd-button-root-border-color);
+  border-radius: var(--wd-button-root-border-radius);
+  color: var(--wd-button-root-color);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--wd-button-root-font-family);
+  gap: var(--wd-button-root-gap);
+  justify-content: center;
+  min-block-size: var(--wd-button-root-min-height);
+  padding-block: var(--wd-button-root-padding-block);
+  padding-inline: var(--wd-button-root-padding-inline);
+  transition:
+    background-color var(--wd-button-root-transition-duration)
+      var(--wd-button-root-transition-easing),
+    border-color var(--wd-button-root-transition-duration) var(--wd-button-root-transition-easing),
+    opacity var(--wd-button-root-transition-duration) var(--wd-button-root-transition-easing);
+}
+
+.button-ui:hover:not(:disabled) {
+  background-color: var(--wd-color-surface-muted);
+}
+
+.button-ui:active:not(:disabled) {
+  border-color: var(--wd-color-accent-default);
+}
+
+.button-ui:focus {
+  outline: none;
+}
+
+.button-ui:focus-visible {
+  outline: 2px solid var(--wd-button-root-outline-color-focus-visible);
+  outline-offset: 2px;
+}
+
+.button-ui:disabled,
+.button-ui[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--wd-button-root-opacity-disabled);
+}
