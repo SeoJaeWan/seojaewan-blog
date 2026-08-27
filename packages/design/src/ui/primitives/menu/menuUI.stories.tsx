@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 
-import { MenuUI } from "./menu-ui";
+import { MenuUI } from "./menuUI";
 
 const StoryFrame = ({ children }: { children: React.ReactNode }) => (
   <div style={{ minHeight: 280, padding: 24 }}>{children}</div>
@@ -106,6 +107,21 @@ type Story = StoryObj<typeof meta>;
 export const Empty: Story = { render: () => <EmptyFixture /> };
 export const Single: Story = { render: () => <SingleFixture /> };
 export const MultipleSelectedDisabledDanger: Story = { render: () => <MultipleStatesFixture /> };
+export const PointerAndKeyboard: Story = {
+  render: () => <SingleFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Single action" });
+
+    await userEvent.click(trigger);
+    await expect(within(document.body).getByRole("menuitem", { name: "Open" })).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+
+    trigger.focus();
+    await userEvent.keyboard("{ArrowDown}");
+    await expect(within(document.body).getByRole("menuitem", { name: "Open" })).toHaveFocus();
+  },
+};
 export const Submenu: Story = { render: () => <SubmenuFixture /> };
 export const OpeningAndExiting: Story = { render: () => <LifecycleFixture /> };
 export const NarrowViewport: Story = {

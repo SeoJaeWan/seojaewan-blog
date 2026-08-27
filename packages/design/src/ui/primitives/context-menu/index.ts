@@ -12,13 +12,19 @@ export {
   ContextMenuSubmenuUI,
   ContextMenuTriggerUI,
   ContextMenuUI,
-} from "./context-menu-ui";
+} from "./contextMenuUI";
 export type {
   ContextMenuUIChangeDetails,
   ContextMenuUICheckboxItemProps,
+  ContextMenuUICloseInteraction,
   ContextMenuUIContentProps,
+  ContextMenuUIFinalFocus,
   ContextMenuUIItemProps,
+  ContextMenuUIItemVariant,
   ContextMenuUIOpenChangeHandler,
+  ContextMenuUIOpenChangeReason,
+  ContextMenuUIPlacementAlign,
+  ContextMenuUIPlacementSide,
   ContextMenuUIProps,
   ContextMenuUIRadioGroupProps,
   ContextMenuUIRadioItemProps,
@@ -26,4 +32,4 @@ export type {
   ContextMenuUISubmenuProps,
   ContextMenuUISubmenuTriggerProps,
   ContextMenuUITriggerProps,
-} from "./context-menu-ui.types";
+} from "./contextMenuUI.types";

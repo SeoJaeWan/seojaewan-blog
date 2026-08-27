@@ -12,7 +12,7 @@ export {
   MenuSubmenuUI,
   MenuTriggerUI,
   MenuUI,
-} from "./menu-ui";
+} from "./menuUI";
 export type {
   MenuUIChangeDetails,
   MenuUICheckboxItemProps,
@@ -32,4 +32,4 @@ export type {
   MenuUISubmenuProps,
   MenuUISubmenuTriggerProps,
   MenuUITriggerProps,
-} from "./menu-ui.types";
+} from "./menuUI.types";

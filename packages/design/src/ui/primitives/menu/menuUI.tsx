@@ -16,14 +16,18 @@ import type {
   MenuUISubmenuProps,
   MenuUISubmenuTriggerProps,
   MenuUITriggerProps,
-} from "./menu-ui.types";
+} from "./menuUI.types";
 
-import "./menu-ui.css";
+import "./menuUI.css";
 
 const toChangeDetails = (reason: string): MenuUIChangeDetails => ({
   reason: reason as MenuUIOpenChangeReason,
 });
 
+/**
+ * 보이는 trigger로 여는 menu의 상태와 focus 범위를 구성한다.
+ * 제품 action의 의미나 실행 결과는 소유하지 않는다.
+ */
 export function MenuRootUI({ closeParentOnEscape, onOpenChange, ...props }: MenuUIProps) {
   return (
     <BaseMenu.Root
@@ -34,6 +38,10 @@ export function MenuRootUI({ closeParentOnEscape, onOpenChange, ...props }: Menu
   );
 }
 
+/**
+ * 사용자가 menu를 열 수 있는 보이는 button entry point를 제공한다.
+ * button의 제품 문구나 action 권한은 결정하지 않는다.
+ */
 export const MenuTriggerUI = forwardRef<HTMLButtonElement, MenuUITriggerProps>(
   function MenuTriggerUI({ className, openDelay, ...props }, ref) {
     return (
@@ -47,6 +55,10 @@ export const MenuTriggerUI = forwardRef<HTMLButtonElement, MenuUITriggerProps>(
   },
 );
 
+/**
+ * menu role과 배치·portal 경계를 제공한다.
+ * item의 제품 순서나 action 의미는 결정하지 않는다.
+ */
 export const MenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(function MenuContentUI(
   {
     align = "start",
@@ -91,6 +103,10 @@ export const MenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(func
   );
 });
 
+/**
+ * 일반 menu action의 role, disabled state, 선택 event를 제공한다.
+ * 실제 제품 action의 부작용은 실행하지 않는다.
+ */
 export const MenuItemUI = forwardRef<HTMLDivElement, MenuUIItemProps>(function MenuItemUI(
   { className, closeOnSelect, variant = "default", ...props },
   ref,
@@ -106,6 +122,10 @@ export const MenuItemUI = forwardRef<HTMLDivElement, MenuUIItemProps>(function M
   );
 });
 
+/**
+ * boolean 선택 action의 checked state와 변경 event를 제공한다.
+ * 선택값을 제품 상태에 저장하지 않는다.
+ */
 export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemProps>(
   function MenuCheckboxItemUI(
     { children, className, closeOnSelect, onCheckedChange, variant = "default", ...props },
@@ -131,6 +151,10 @@ export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemP
   },
 );
 
+/**
+ * 상호 배타적인 radio item의 값·변경 event 범위를 구성한다.
+ * 제품 설정값의 영속화는 소유하지 않는다.
+ */
 export const MenuRadioGroupUI = forwardRef<HTMLDivElement, MenuUIRadioGroupProps>(
   function MenuRadioGroupUI({ className, onValueChange, ...props }, ref) {
     return (
@@ -146,6 +170,10 @@ export const MenuRadioGroupUI = forwardRef<HTMLDivElement, MenuUIRadioGroupProps
   },
 );
 
+/**
+ * radio action의 checked state와 선택 가능한 값을 제공한다.
+ * 제품 설정의 의미는 해석하지 않는다.
+ */
 export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
   function MenuRadioItemUI(
     { children, className, closeOnSelect, variant = "default", ...props },
@@ -168,6 +196,10 @@ export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
   },
 );
 
+/**
+ * action 묶음 사이의 의미상 separator를 제공한다.
+ * 제품 action을 그룹화하는 규칙은 결정하지 않는다.
+ */
 export const MenuSeparatorUI = forwardRef<HTMLDivElement, MenuUISeparatorProps>(
   function MenuSeparatorUI({ className, ...props }, ref) {
     return (
@@ -180,6 +212,10 @@ export const MenuSeparatorUI = forwardRef<HTMLDivElement, MenuUISeparatorProps>(
   },
 );
 
+/**
+ * 중첩 menu의 open state와 focus 범위를 구성한다.
+ * 하위 action의 제품 의미는 소유하지 않는다.
+ */
 export function MenuSubmenuRootUI({
   closeParentOnEscape,
   onOpenChange,
@@ -194,6 +230,10 @@ export function MenuSubmenuRootUI({
   );
 }
 
+/**
+ * 중첩 menu를 여는 menuitem role과 open state를 제공한다.
+ * 중첩 action의 권한이나 가용성은 판단하지 않는다.
+ */
 export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTriggerProps>(
   function MenuSubmenuTriggerUI(
     { children, className, openDelay, variant = "default", ...props },
@@ -216,6 +256,10 @@ export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTrig
   },
 );
 
+/**
+ * 중첩 menu의 role과 기본 배치를 제공한다.
+ * 하위 item의 제품 구성은 결정하지 않는다.
+ */
 export const MenuSubmenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(
   function MenuSubmenuContentUI(
     { align = "start", side = "inline-end", sideOffset = 2, ...props },
@@ -225,12 +269,14 @@ export const MenuSubmenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProp
   },
 );
 
+/** MenuUI가 소유하는 중첩 menu part 집합이다. 제품 action 모델은 포함하지 않는다. */
 export const MenuSubmenuUI = {
   Root: MenuSubmenuRootUI,
   Trigger: MenuSubmenuTriggerUI,
   Content: MenuSubmenuContentUI,
 } as const;
 
+/** Menu compound family의 public part 집합이다. 제품 action catalog는 포함하지 않는다. */
 export const MenuUI = {
   Root: MenuRootUI,
   Trigger: MenuTriggerUI,

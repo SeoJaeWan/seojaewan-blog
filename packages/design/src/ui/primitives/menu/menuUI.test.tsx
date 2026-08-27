@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../testing";
-import { MenuUI } from "./menu-ui";
+import { MenuUI } from "./menuUI";
 
 afterEach(cleanupUITest);
 
@@ -116,5 +116,35 @@ describe("MenuUI", () => {
 
     expect(onCheckedChange).toHaveBeenCalledWith(true, { reason: "item-press" });
     expect(onValueChange).toHaveBeenCalledWith("two", { reason: "item-press" });
+  });
+
+  it("Submenu Root·Trigger·Content가 고유 open state와 menu role을 제공한다", async () => {
+    const onSubmenuOpenChange = vi.fn();
+
+    renderUITest(
+      <MenuUI.Root>
+        <MenuUI.Trigger>Actions</MenuUI.Trigger>
+        <MenuUI.Content>
+          <MenuUI.Submenu.Root onOpenChange={onSubmenuOpenChange}>
+            <MenuUI.Submenu.Trigger>Share</MenuUI.Submenu.Trigger>
+            <MenuUI.Submenu.Content aria-label="Share submenu">
+              <MenuUI.Item>Email</MenuUI.Item>
+            </MenuUI.Submenu.Content>
+          </MenuUI.Submenu.Root>
+        </MenuUI.Content>
+      </MenuUI.Root>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Actions" }));
+    const trigger = await screen.findByRole("menuitem", { name: "Share" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.keyDown(trigger, { key: "ArrowRight" });
+
+    expect(await screen.findByRole("menu", { name: "Share submenu" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Share" }).getAttribute("aria-expanded")).toBe(
+      "true",
+    );
+    expect(onSubmenuOpenChange).toHaveBeenCalledWith(true, { reason: "list-navigation" });
   });
 });

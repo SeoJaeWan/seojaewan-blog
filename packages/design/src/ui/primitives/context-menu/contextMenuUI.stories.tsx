@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 
 import { MenuUI } from "../menu";
-import { ContextMenuUI } from "./context-menu-ui";
+import { ContextMenuUI } from "./contextMenuUI";
 
 type ActionParts = Pick<typeof MenuUI, "Item" | "Separator">;
 
@@ -74,6 +75,21 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const VisibleMenuAndContextEntryPoints: Story = {};
+export const PointerAndKeyboardInvocation: Story = {
+  render: () => <SubmenuFixture />,
+  play: async ({ canvasElement }) => {
+    const surface = within(canvasElement).getByText("Right-click for sharing actions");
+    const body = within(document.body);
+
+    await userEvent.pointer({ keys: "[MouseRight]", target: surface });
+    await expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+
+    surface.focus();
+    await userEvent.keyboard("{Shift>}{F10}{/Shift}");
+    await expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible();
+  },
+};
 export const Submenu: Story = { render: () => <SubmenuFixture /> };
 export const NarrowViewport: Story = {
   parameters: { viewport: { defaultViewport: "mobile1" } },
