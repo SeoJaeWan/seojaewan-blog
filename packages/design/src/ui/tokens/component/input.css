@@ -1,0 +1,18 @@
+:root {
+  --wd-input-root-background-color: var(--wd-color-surface-window);
+  --wd-input-root-background-color-hover: var(--wd-color-surface-muted);
+  --wd-input-root-background-color-read-only: var(--wd-color-surface-muted);
+  --wd-input-root-border-color: var(--wd-color-border-default);
+  --wd-input-root-border-color-focus-visible: var(--wd-color-accent-default);
+  --wd-input-root-border-radius: var(--wd-reference-radius-2);
+  --wd-input-root-color: var(--wd-color-text-primary);
+  --wd-input-root-font-family: var(--wd-font-family-sans);
+  --wd-input-root-min-height: 32px;
+  --wd-input-root-opacity-disabled: 0.5;
+  --wd-input-root-outline-color-focus-visible: var(--wd-color-focus-ring);
+  --wd-input-root-padding-block: var(--wd-reference-spacing-2);
+  --wd-input-root-padding-inline: var(--wd-reference-spacing-3);
+  --wd-input-root-placeholder-color: var(--wd-color-text-secondary);
+  --wd-input-root-transition-duration: var(--wd-reference-duration-120);
+  --wd-input-root-transition-easing: var(--wd-reference-easing-2);
+}

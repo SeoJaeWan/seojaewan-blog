@@ -1,0 +1,45 @@
+.wd-input-ui {
+  appearance: none;
+  background-color: var(--wd-input-root-background-color);
+  border: 1px solid var(--wd-input-root-border-color);
+  border-radius: var(--wd-input-root-border-radius);
+  box-sizing: border-box;
+  color: var(--wd-input-root-color);
+  font-family: var(--wd-input-root-font-family);
+  min-block-size: var(--wd-input-root-min-height);
+  min-inline-size: 0;
+  padding-block: var(--wd-input-root-padding-block);
+  padding-inline: var(--wd-input-root-padding-inline);
+  transition:
+    background-color var(--wd-input-root-transition-duration)
+      var(--wd-input-root-transition-easing),
+    border-color var(--wd-input-root-transition-duration) var(--wd-input-root-transition-easing),
+    opacity var(--wd-input-root-transition-duration) var(--wd-input-root-transition-easing);
+}
+
+.wd-input-ui::placeholder {
+  color: var(--wd-input-root-placeholder-color);
+}
+
+.wd-input-ui:hover:not(:disabled, :read-only) {
+  background-color: var(--wd-input-root-background-color-hover);
+}
+
+.wd-input-ui:focus {
+  outline: none;
+}
+
+.wd-input-ui:focus-visible {
+  border-color: var(--wd-input-root-border-color-focus-visible);
+  outline: 2px solid var(--wd-input-root-outline-color-focus-visible);
+  outline-offset: 1px;
+}
+
+.wd-input-ui:disabled {
+  cursor: not-allowed;
+  opacity: var(--wd-input-root-opacity-disabled);
+}
+
+.wd-input-ui:read-only {
+  background-color: var(--wd-input-root-background-color-read-only);
+}
