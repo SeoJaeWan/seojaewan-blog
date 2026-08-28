@@ -1,10 +1,4 @@
-import type {
-  HTMLAttributes,
-  ReactElement,
-  ReactNode,
-  Ref,
-  RefObject,
-} from "react";
+import type { HTMLAttributes, ReactElement, ReactNode, Ref, RefObject } from "react";
 
 export type ContextMenuUIOpenChangeReason =
   | "trigger-press"
@@ -48,12 +42,7 @@ export interface ContextMenuUITriggerProps extends HTMLAttributes<HTMLDivElement
 }
 
 export type ContextMenuUIPlacementSide =
-  | "top"
-  | "bottom"
-  | "left"
-  | "right"
-  | "inline-start"
-  | "inline-end";
+  "top" | "bottom" | "left" | "right" | "inline-start" | "inline-end";
 
 export type ContextMenuUIPlacementAlign = "start" | "center" | "end";
 
@@ -92,8 +81,10 @@ export interface ContextMenuUICheckboxItemProps extends Omit<ContextMenuUIItemPr
   onCheckedChange?: (checked: boolean, details: ContextMenuUIChangeDetails) => void;
 }
 
-export interface ContextMenuUIRadioGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface ContextMenuUIRadioGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   ref?: Ref<HTMLDivElement>;
   value?: string;
   defaultValue?: string;
@@ -112,8 +103,10 @@ export interface ContextMenuUISeparatorProps extends HTMLAttributes<HTMLDivEleme
 
 export type ContextMenuUISubmenuProps = ContextMenuUIProps;
 
-export interface ContextMenuUISubmenuTriggerProps
-  extends Omit<ContextMenuUIItemProps, "closeOnSelect"> {
+export interface ContextMenuUISubmenuTriggerProps extends Omit<
+  ContextMenuUIItemProps,
+  "closeOnSelect"
+> {
   openOnHover?: boolean;
   openDelay?: number;
   closeDelay?: number;

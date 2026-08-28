@@ -11,8 +11,7 @@
   padding-block: var(--wd-input-root-padding-block);
   padding-inline: var(--wd-input-root-padding-inline);
   transition:
-    background-color var(--wd-input-root-transition-duration)
-      var(--wd-input-root-transition-easing),
+    background-color var(--wd-input-root-transition-duration) var(--wd-input-root-transition-easing),
     border-color var(--wd-input-root-transition-duration) var(--wd-input-root-transition-easing),
     opacity var(--wd-input-root-transition-duration) var(--wd-input-root-transition-easing);
 }
