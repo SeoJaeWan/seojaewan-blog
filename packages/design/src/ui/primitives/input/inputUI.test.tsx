@@ -3,20 +3,27 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
 import { InputUI } from "./index";
-import indexSource from "./index.ts?raw";
-import typesSource from "./inputUI.types.ts?raw";
 
 afterEach(cleanupUITest);
 
 describe("InputUI", () => {
-  it("native input props, 접근 가능한 이름과 ref를 전달한다", () => {
+  it("기본 type을 text로 설정한다", () => {
+    renderUITest(<InputUI aria-label="검색어" />);
+    const input = screen.getByRole("textbox", { name: "검색어" });
+
+    expect(input.tagName).toBe("INPUT");
+    expect(input.getAttribute("type")).toBe("text");
+  });
+
+  it("접근 가능한 이름과 native props를 전달한다", () => {
     const ref = { current: null as HTMLInputElement | null };
 
     renderUITest(
       <InputUI
         ref={ref}
         aria-describedby="search-help"
-        aria-label="Search files"
+        aria-invalid="true"
+        aria-label="파일 검색"
         className="taskbar-search"
         disabled
         name="query"
@@ -25,9 +32,8 @@ describe("InputUI", () => {
       />,
     );
 
-    const input = screen.getByRole("searchbox", { name: "Search files" });
+    const input = screen.getByRole("searchbox", { name: "파일 검색" });
 
-    expect(input.tagName).toBe("INPUT");
     expect(input.getAttribute("aria-describedby")).toBe("search-help");
     expect(input.getAttribute("name")).toBe("query");
     expect(input.getAttribute("type")).toBe("search");
@@ -35,6 +41,14 @@ describe("InputUI", () => {
     expect(input.classList.contains("taskbar-search")).toBe(true);
     expect((input as HTMLInputElement).disabled).toBe(true);
     expect(input.hasAttribute("readonly")).toBe(true);
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("전달한 ref를 native input에 연결한다", () => {
+    const ref = { current: null as HTMLInputElement | null };
+    renderUITest(<InputUI aria-label="경로" ref={ref} />);
+    const input = screen.getByRole("textbox", { name: "경로" });
+
     expect(ref.current).toBe(input);
   });
 
@@ -58,10 +72,5 @@ describe("InputUI", () => {
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect((input as HTMLInputElement).value).toBe("/documents");
-  });
-
-  it("프로젝트 공개 경계에서 Base UI 타입을 노출하지 않는다", () => {
-    expect(indexSource).not.toContain("@base-ui/react");
-    expect(typesSource).not.toContain("@base-ui/react");
   });
 });

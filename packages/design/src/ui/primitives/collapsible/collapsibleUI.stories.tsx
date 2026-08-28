@@ -23,7 +23,8 @@ export const Toggle: Story = {
     const trigger = canvas.getByRole("button", { name: "Documents" });
 
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
-    await userEvent.click(trigger);
+    trigger.focus();
+    await userEvent.keyboard("{Enter}");
 
     const panel = await canvas.findByText("Project files");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");

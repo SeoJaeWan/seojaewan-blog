@@ -1,164 +1,20 @@
-"use client";
-
-import type { Ref } from "react";
-import { createContext, forwardRef, useContext, useId } from "react";
-
-import { Dialog } from "@base-ui/react/dialog";
-import { clsx } from "clsx";
-
-import type {
-  DialogUIBackdropProps,
-  DialogUICloseProps,
-  DialogUIContentProps,
-  DialogUIDescriptionProps,
-  DialogUIPortalProps,
-  DialogUIProps,
-  DialogUITitleProps,
-  DialogUITriggerProps,
-} from "./dialogUI.types";
+import { DialogBackdropUI } from "./parts/dialogBackdropUI";
+import { DialogCloseUI } from "./parts/dialogCloseUI";
+import { DialogContentUI } from "./parts/dialogContentUI";
+import { DialogDescriptionUI } from "./parts/dialogDescriptionUI";
+import { DialogPortalUI } from "./parts/dialogPortalUI";
+import { DialogRootUI } from "./parts/dialogRootUI";
+import { DialogTitleUI } from "./parts/dialogTitleUI";
+import { DialogTriggerUI } from "./parts/dialogTriggerUI";
 
 import "./dialogUI.css";
 
-const DialogTriggerIdContext = createContext<string | undefined>(undefined);
-
-const DialogUIRoot = ({
-  defaultOpen,
-  disablePointerDismissal,
-  onOpenChange,
-  open,
-  ...props
-}: DialogUIProps) => {
-  const triggerId = useId();
-
-  return (
-    <DialogTriggerIdContext.Provider value={triggerId}>
-      <Dialog.Root
-        {...props}
-        defaultOpen={defaultOpen}
-        defaultTriggerId={defaultOpen ? triggerId : undefined}
-        disablePointerDismissal={disablePointerDismissal}
-        modal
-        onOpenChange={
-          onOpenChange
-            ? (nextOpen, details) => {
-                onOpenChange(nextOpen, { reason: details.reason });
-              }
-            : undefined
-        }
-        open={open}
-        triggerId={open === undefined ? undefined : triggerId}
-      />
-    </DialogTriggerIdContext.Provider>
-  );
-};
-
 /**
- * Renders the visible control that opens DialogUI.
- * It does not own the application action represented by the dialog.
+ * modal dialog와 이를 열고 설명하고 닫는 part를 하나의 compound API로 묶는다.
+ *
+ * anchored non-modal content에는 PopoverUI를 사용하며 DialogUI는 비즈니스 확인이나 탐색을 소유하지 않는다.
  */
-export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
-  { className, id, type = "button", ...props }: DialogUITriggerProps,
-  ref: Ref<HTMLButtonElement>,
-) {
-  const triggerId = useContext(DialogTriggerIdContext);
-
-  return (
-    <Dialog.Trigger
-      {...props}
-      className={clsx("wd-dialog-ui__trigger", className)}
-      id={triggerId ?? id}
-      ref={ref}
-      type={type}
-    />
-  );
-});
-
-/**
- * Portals the modal DialogUI layers above application content.
- * It does not choose product-level stacking or routing policy.
- */
-export const DialogPortalUI = forwardRef(function DialogPortalUI(
-  { className, ...props }: DialogUIPortalProps,
-  ref: Ref<HTMLDivElement>,
-) {
-  return <Dialog.Portal {...props} className={clsx("wd-dialog-ui__portal", className)} ref={ref} />;
-});
-
-/** Renders the visual layer behind DialogUI.Content without owning dismiss policy. */
-export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
-  { className, ...props }: DialogUIBackdropProps,
-  ref: Ref<HTMLDivElement>,
-) {
-  return (
-    <Dialog.Backdrop {...props} className={clsx("wd-dialog-ui__backdrop", className)} ref={ref} />
-  );
-});
-
-/**
- * Renders the modal surface and isolates focus while it is open.
- * It does not decide whether business data may be committed or discarded.
- */
-export const DialogContentUI = forwardRef(function DialogContentUI(
-  { className, finalFocus, initialFocus, ...props }: DialogUIContentProps,
-  ref: Ref<HTMLDivElement>,
-) {
-  return (
-    <Dialog.Viewport className="wd-dialog-ui__viewport">
-      <Dialog.Popup
-        {...props}
-        aria-modal="true"
-        className={clsx("wd-dialog-ui__content", className)}
-        finalFocus={finalFocus}
-        initialFocus={initialFocus}
-        ref={ref}
-      />
-    </Dialog.Viewport>
-  );
-});
-
-/** Supplies the accessible heading for its owning DialogUI.Content. */
-export const DialogTitleUI = forwardRef(function DialogTitleUI(
-  { className, ...props }: DialogUITitleProps,
-  ref: Ref<HTMLHeadingElement>,
-) {
-  return <Dialog.Title {...props} className={clsx("wd-dialog-ui__title", className)} ref={ref} />;
-});
-
-/** Supplies accessible supporting text for its owning DialogUI.Content. */
-export const DialogDescriptionUI = forwardRef(function DialogDescriptionUI(
-  { className, ...props }: DialogUIDescriptionProps,
-  ref: Ref<HTMLParagraphElement>,
-) {
-  return (
-    <Dialog.Description
-      {...props}
-      className={clsx("wd-dialog-ui__description", className)}
-      ref={ref}
-    />
-  );
-});
-
-/** Dismisses its owning DialogUI without deciding any business outcome. */
-export const DialogCloseUI = forwardRef(function DialogCloseUI(
-  { className, type = "button", ...props }: DialogUICloseProps,
-  ref: Ref<HTMLButtonElement>,
-) {
-  return (
-    <Dialog.Close
-      {...props}
-      className={clsx("wd-dialog-ui__close", className)}
-      ref={ref}
-      type={type}
-    />
-  );
-});
-
-/**
- * Groups a modal dialog and the parts that label, portal, and dismiss it.
- * Use PopoverUI for anchored non-modal content; DialogUI does not own business
- * confirmation, persistence, or application navigation.
- */
-export const DialogUI = Object.assign(DialogUIRoot, {
+export const DialogUI = Object.assign(DialogRootUI, {
   Backdrop: DialogBackdropUI,
   Close: DialogCloseUI,
   Content: DialogContentUI,
@@ -167,3 +23,13 @@ export const DialogUI = Object.assign(DialogUIRoot, {
   Title: DialogTitleUI,
   Trigger: DialogTriggerUI,
 });
+
+export {
+  DialogBackdropUI,
+  DialogCloseUI,
+  DialogContentUI,
+  DialogDescriptionUI,
+  DialogPortalUI,
+  DialogTitleUI,
+  DialogTriggerUI,
+};

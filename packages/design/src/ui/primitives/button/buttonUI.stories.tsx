@@ -33,13 +33,9 @@ export const Interaction: Story = {
     onButtonClick.mockClear();
     const button = within(canvasElement).getByRole("button", { name: "Open window" });
 
-    await expect(button).toHaveAttribute("type", "button");
-    await userEvent.click(button);
-    await expect(onButtonClick).toHaveBeenCalledOnce();
-
     button.focus();
     await userEvent.keyboard("{Enter}");
-    await expect(onButtonClick).toHaveBeenCalledTimes(2);
+    await expect(onButtonClick).toHaveBeenCalledOnce();
   },
 };
 

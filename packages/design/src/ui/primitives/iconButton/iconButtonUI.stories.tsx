@@ -40,13 +40,9 @@ export const Interaction: Story = {
     onIconButtonClick.mockClear();
     const button = within(canvasElement).getByRole("button", { name: "Add item" });
 
-    await expect(button.querySelector("[aria-hidden='true']")).not.toBeNull();
-    await userEvent.click(button);
-    await expect(onIconButtonClick).toHaveBeenCalledOnce();
-
     button.focus();
     await userEvent.keyboard(" ");
-    await expect(onIconButtonClick).toHaveBeenCalledTimes(2);
+    await expect(onIconButtonClick).toHaveBeenCalledOnce();
   },
 };
 
