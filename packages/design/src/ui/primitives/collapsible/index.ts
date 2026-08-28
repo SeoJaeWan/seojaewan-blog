@@ -1,9 +1,4 @@
-export {
-  CollapsiblePanelUI,
-  CollapsibleRootUI,
-  CollapsibleTriggerUI,
-  CollapsibleUI,
-} from "./collapsibleUI";
+export { CollapsibleUI } from "./collapsibleUI";
 export type {
   CollapsibleUIPanelProps,
   CollapsibleUIProps,

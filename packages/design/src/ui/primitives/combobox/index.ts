@@ -1,16 +1,4 @@
-export {
-  ComboboxClearUI,
-  ComboboxContentUI,
-  ComboboxEmptyUI,
-  ComboboxInputGroupUI,
-  ComboboxInputUI,
-  ComboboxItemUI,
-  ComboboxLabelUI,
-  ComboboxListUI,
-  ComboboxRootUI,
-  ComboboxTriggerUI,
-  ComboboxUI,
-} from "./comboboxUI";
+export { ComboboxUI } from "./comboboxUI";
 export type {
   ComboboxUIChangeDetails,
   ComboboxUIChangeReason,

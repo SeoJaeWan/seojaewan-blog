@@ -1,18 +1,4 @@
-export {
-  ContextMenuCheckboxItemUI,
-  ContextMenuContentUI,
-  ContextMenuItemUI,
-  ContextMenuRadioGroupUI,
-  ContextMenuRadioItemUI,
-  ContextMenuRootUI,
-  ContextMenuSeparatorUI,
-  ContextMenuSubmenuContentUI,
-  ContextMenuSubmenuRootUI,
-  ContextMenuSubmenuTriggerUI,
-  ContextMenuSubmenuUI,
-  ContextMenuTriggerUI,
-  ContextMenuUI,
-} from "./contextMenuUI";
+export { ContextMenuUI } from "./contextMenuUI";
 export type {
   ContextMenuUIChangeDetails,
   ContextMenuUICheckboxItemProps,

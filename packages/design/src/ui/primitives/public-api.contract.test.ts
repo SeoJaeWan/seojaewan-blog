@@ -3,85 +3,34 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import type {
   ButtonUIProps,
   CollapsibleUIProps,
+  ComboboxUIChangeDetails,
   ComboboxUIProps,
+  ContextMenuUIChangeDetails,
   ContextMenuUIProps,
+  DialogUIOpenChangeDetails,
   DialogUIProps,
   IconButtonUIProps,
   InputUIProps,
+  MenuUIChangeDetails,
   MenuUIProps,
+  PopoverUIOpenChangeDetails,
   PopoverUIProps,
+  SelectUIChangeDetails,
   SelectUIProps,
 } from "../../index";
 import * as design from "../../index";
 
 const PUBLIC_PRIMITIVE_EXPORTS = [
   "ButtonUI",
-  "CollapsiblePanelUI",
-  "CollapsibleRootUI",
-  "CollapsibleTriggerUI",
   "CollapsibleUI",
-  "ComboboxClearUI",
-  "ComboboxContentUI",
-  "ComboboxEmptyUI",
-  "ComboboxInputGroupUI",
-  "ComboboxInputUI",
-  "ComboboxItemUI",
-  "ComboboxLabelUI",
-  "ComboboxListUI",
-  "ComboboxRootUI",
-  "ComboboxTriggerUI",
   "ComboboxUI",
-  "ContextMenuCheckboxItemUI",
-  "ContextMenuContentUI",
-  "ContextMenuItemUI",
-  "ContextMenuRadioGroupUI",
-  "ContextMenuRadioItemUI",
-  "ContextMenuRootUI",
-  "ContextMenuSeparatorUI",
-  "ContextMenuSubmenuContentUI",
-  "ContextMenuSubmenuRootUI",
-  "ContextMenuSubmenuTriggerUI",
-  "ContextMenuSubmenuUI",
-  "ContextMenuTriggerUI",
   "ContextMenuUI",
-  "DialogBackdropUI",
-  "DialogCloseUI",
-  "DialogContentUI",
-  "DialogDescriptionUI",
-  "DialogPortalUI",
-  "DialogTitleUI",
-  "DialogTriggerUI",
   "DialogUI",
   "IconButtonUI",
   "InputUI",
-  "MenuCheckboxItemUI",
-  "MenuContentUI",
-  "MenuItemUI",
-  "MenuRadioGroupUI",
-  "MenuRadioItemUI",
-  "MenuRootUI",
-  "MenuSeparatorUI",
-  "MenuSubmenuContentUI",
-  "MenuSubmenuRootUI",
-  "MenuSubmenuTriggerUI",
-  "MenuSubmenuUI",
-  "MenuTriggerUI",
   "MenuUI",
-  "PopoverCloseUI",
-  "PopoverContentUI",
-  "PopoverDescriptionUI",
-  "PopoverTitleUI",
-  "PopoverTriggerUI",
   "PopoverUI",
-  "SelectClearUI",
-  "SelectContentUI",
-  "SelectItemUI",
-  "SelectLabelUI",
-  "SelectListUI",
-  "SelectRootUI",
-  "SelectTriggerUI",
   "SelectUI",
-  "SelectValueUI",
 ] as const;
 
 describe("Design primitive 공개 API 계약", () => {
@@ -101,5 +50,12 @@ describe("Design primitive 공개 API 계약", () => {
     expectTypeOf<PopoverUIProps>().toBeObject();
     expectTypeOf<DialogUIProps>().toBeObject();
     expectTypeOf<SelectUIProps>().toBeObject();
+
+    expectTypeOf<ComboboxUIChangeDetails>().toHaveProperty("reason");
+    expectTypeOf<ContextMenuUIChangeDetails>().toHaveProperty("reason");
+    expectTypeOf<DialogUIOpenChangeDetails>().toHaveProperty("reason");
+    expectTypeOf<MenuUIChangeDetails>().toHaveProperty("reason");
+    expectTypeOf<PopoverUIOpenChangeDetails>().toHaveProperty("reason");
+    expectTypeOf<SelectUIChangeDetails>().toHaveProperty("reason");
   });
 });

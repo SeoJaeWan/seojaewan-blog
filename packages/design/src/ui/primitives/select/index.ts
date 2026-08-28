@@ -1,14 +1,4 @@
-export {
-  SelectClearUI,
-  SelectContentUI,
-  SelectItemUI,
-  SelectLabelUI,
-  SelectListUI,
-  SelectRootUI,
-  SelectTriggerUI,
-  SelectUI,
-  SelectValueUI,
-} from "./selectUI";
+export { SelectUI } from "./selectUI";
 export type {
   SelectUIChangeDetails,
   SelectUIChangeReason,

@@ -1,18 +1,4 @@
-export {
-  MenuCheckboxItemUI,
-  MenuContentUI,
-  MenuItemUI,
-  MenuRadioGroupUI,
-  MenuRadioItemUI,
-  MenuRootUI,
-  MenuSeparatorUI,
-  MenuSubmenuContentUI,
-  MenuSubmenuRootUI,
-  MenuSubmenuTriggerUI,
-  MenuSubmenuUI,
-  MenuTriggerUI,
-  MenuUI,
-} from "./menuUI";
+export { MenuUI } from "./menuUI";
 export type {
   MenuUIChangeDetails,
   MenuUICheckboxItemProps,
