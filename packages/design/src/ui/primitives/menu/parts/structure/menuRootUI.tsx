@@ -1,12 +1,12 @@
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 
 import type { MenuUIProps } from "../../menuUI.types";
-import { toMenuUIChangeDetails } from "../../utils/menuUIChangeDetails";
+import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
 
 /**
- * 보이는 trigger로 여는 menu의 상태와 focus 범위를 구성한다.
+ * 버튼으로 여는 메뉴 전체의 열림 상태와 포커스 범위를 구성할 때 사용한다.
  *
- * 제품 action의 의미나 실행 결과는 소유하지 않는다.
+ * 최상위에서 MenuTriggerUI와 MenuContentUI를 함께 감싸는 위치에 조합한다.
  */
 export function MenuRootUI({ closeParentOnEscape, onOpenChange, ...props }: MenuUIProps) {
   return (

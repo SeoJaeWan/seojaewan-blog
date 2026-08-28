@@ -4,12 +4,12 @@ import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
 import type { MenuUIRadioGroupProps } from "../../menuUI.types";
-import { toMenuUIChangeDetails } from "../../utils/menuUIChangeDetails";
+import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
 
 /**
- * 상호 배타적인 radio item의 값·변경 event 범위를 구성한다.
+ * 여러 메뉴 값 가운데 하나만 선택해야 할 때 선택 범위를 구성한다.
  *
- * 제품 설정값의 영속화는 소유하지 않는다.
+ * MenuContentUI 안에서 하나 이상의 MenuRadioItemUI를 감싸는 위치에 조합한다.
  */
 export const MenuRadioGroupUI = forwardRef<HTMLDivElement, MenuUIRadioGroupProps>(
   function MenuRadioGroupUI({ className, onValueChange, ...props }, ref) {

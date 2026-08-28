@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { ContextMenuUITriggerProps } from "../../contextMenuUI.types";
 
 /**
- * 보조 pointer와 keyboard invocation을 수신하는 surface를 제공한다.
+ * 문맥 메뉴 호출을 받을 화면 영역이 필요할 때 사용한다.
  *
- * surface의 제품 선택 상태나 action 목록은 결정하지 않는다.
+ * ContextMenuRootUI 안에서 ContextMenuContentUI와 같은 단계에 조합한다.
  */
 export const ContextMenuTriggerUI = forwardRef<HTMLDivElement, ContextMenuUITriggerProps>(
   function ContextMenuTriggerUI({ className, ...props }, ref) {

@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { ContextMenuUIRadioItemProps } from "../../contextMenuUI.types";
 
 /**
- * context radio action의 checked state와 선택 가능한 값을 제공한다.
+ * 문맥 메뉴에서 상호 배타적인 선택지 하나를 나타낼 때 사용한다.
  *
- * 제품 설정의 의미는 해석하지 않는다.
+ * ContextMenuRadioGroupUI 안에서 같은 그룹의 다른 RadioItem과 나란히 조합한다.
  */
 export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRadioItemProps>(
   function ContextMenuRadioItemUI(

@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { MenuUITriggerProps } from "../../menuUI.types";
 
 /**
- * 사용자가 menu를 열 수 있는 보이는 button entry point를 제공한다.
+ * 사용자가 메뉴를 열고 닫는 보이는 버튼이 필요할 때 사용한다.
  *
- * button의 제품 문구나 action 권한은 결정하지 않는다.
+ * MenuRootUI 안에서 MenuContentUI와 같은 단계에 조합한다.
  */
 export const MenuTriggerUI = forwardRef<HTMLButtonElement, MenuUITriggerProps>(
   function MenuTriggerUI({ className, openDelay, ...props }, ref) {

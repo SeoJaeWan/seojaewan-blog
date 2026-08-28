@@ -4,12 +4,12 @@ import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
 import type { MenuUICheckboxItemProps } from "../../menuUI.types";
-import { toMenuUIChangeDetails } from "../../utils/menuUIChangeDetails";
+import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
 
 /**
- * boolean 선택 action의 checked state와 변경 event를 제공한다.
+ * 켜짐과 꺼짐을 독립적으로 선택하는 메뉴 항목이 필요할 때 사용한다.
  *
- * 선택값을 제품 상태에 저장하지 않는다.
+ * MenuContentUI 또는 MenuSubmenuContentUI 안에서 다른 항목과 나란히 조합한다.
  */
 export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemProps>(
   function MenuCheckboxItemUI(

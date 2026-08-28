@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { MenuUIContentProps } from "../../menuUI.types";
 
 /**
- * menu role과 배치·portal 경계를 제공한다.
+ * 메뉴 항목을 popup으로 표시하고 배치·portal 경계가 필요할 때 사용한다.
  *
- * item의 제품 순서나 action 의미는 결정하지 않는다.
+ * MenuRootUI 안에서 MenuTriggerUI의 짝으로 두고 항목 part를 자식으로 조합한다.
  */
 export const MenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(function MenuContentUI(
   {

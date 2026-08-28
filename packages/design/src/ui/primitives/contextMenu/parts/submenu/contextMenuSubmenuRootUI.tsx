@@ -1,12 +1,12 @@
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 
 import type { ContextMenuUISubmenuProps } from "../../contextMenuUI.types";
-import { toContextMenuUIChangeDetails } from "../../utils/contextMenuUIChangeDetails";
+import { toContextMenuUIChangeDetails } from "../../utils/toContextMenuUIChangeDetails";
 
 /**
- * 중첩 context menu의 open state와 focus 범위를 구성한다.
+ * 부모 문맥 메뉴 아래에 열리는 중첩 메뉴의 상태와 포커스 범위를 구성할 때 사용한다.
  *
- * 하위 action의 제품 의미는 소유하지 않는다.
+ * ContextMenuContentUI 안에서 SubmenuTrigger와 SubmenuContent를 함께 감싸 조합한다.
  */
 export function ContextMenuSubmenuRootUI({
   closeParentOnEscape,

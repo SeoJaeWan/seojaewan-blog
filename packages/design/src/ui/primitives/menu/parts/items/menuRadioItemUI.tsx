@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { MenuUIRadioItemProps } from "../../menuUI.types";
 
 /**
- * radio action의 checked state와 선택 가능한 값을 제공한다.
+ * 상호 배타적인 선택지 하나를 메뉴 항목으로 나타낼 때 사용한다.
  *
- * 제품 설정의 의미는 해석하지 않는다.
+ * MenuRadioGroupUI 안에서 같은 그룹의 다른 RadioItem과 나란히 조합한다.
  */
 export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
   function MenuRadioItemUI(

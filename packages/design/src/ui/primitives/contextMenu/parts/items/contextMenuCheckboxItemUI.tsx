@@ -4,12 +4,12 @@ import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
 import type { ContextMenuUICheckboxItemProps } from "../../contextMenuUI.types";
-import { toContextMenuUIChangeDetails } from "../../utils/contextMenuUIChangeDetails";
+import { toContextMenuUIChangeDetails } from "../../utils/toContextMenuUIChangeDetails";
 
 /**
- * boolean context action의 checked state와 변경 event를 제공한다.
+ * 문맥 메뉴에서 켜짐과 꺼짐을 독립적으로 선택하는 항목이 필요할 때 사용한다.
  *
- * 선택값을 제품 상태에 저장하지 않는다.
+ * ContextMenuContentUI 또는 중첩 Content 안에서 다른 항목과 나란히 조합한다.
  */
 export const ContextMenuCheckboxItemUI = forwardRef<HTMLDivElement, ContextMenuUICheckboxItemProps>(
   function ContextMenuCheckboxItemUI(

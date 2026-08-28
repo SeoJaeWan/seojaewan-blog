@@ -28,9 +28,9 @@ export {
 };
 
 /**
- * ContextMenuUI 안에서 중첩 메뉴를 구성하는 Root·Trigger·Content 묶음이다.
+ * 하나의 문맥 메뉴 항목 아래에 단계가 더 있는 중첩 메뉴를 구성할 때 사용한다.
  *
- * 제품 action 모델이나 하위 항목의 순서·권한은 포함하지 않는다.
+ * ContextMenuUI.Content 안에서 Root가 Trigger와 Content를 감싸는 위치에 조합한다.
  */
 export const ContextMenuSubmenuUI = {
   Root: ContextMenuSubmenuRootUI,
@@ -39,9 +39,9 @@ export const ContextMenuSubmenuUI = {
 } as const;
 
 /**
- * 보조 포인터나 키보드 호출로 여는 메뉴의 구조·항목·중첩 part를 한 경로로 제공한다.
+ * 특정 화면 영역에서 보조 포인터나 키보드로 여는 문맥 메뉴가 필요할 때 사용한다.
  *
- * 제품 action catalog와 실행 정책은 정의하거나 저장하지 않는다.
+ * Root 안에 호출 영역인 Trigger와 Content를 두고 Content 안에 항목 part를 조합한다.
  */
 export const ContextMenuUI = {
   Root: ContextMenuRootUI,

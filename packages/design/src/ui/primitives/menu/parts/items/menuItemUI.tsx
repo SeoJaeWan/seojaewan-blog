@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { MenuUIItemProps } from "../../menuUI.types";
 
 /**
- * 일반 menu action의 role, disabled state, 선택 event를 제공한다.
+ * 한 번 선택하는 일반 메뉴 항목을 표현할 때 사용한다.
  *
- * 실제 제품 action의 부작용은 실행하지 않는다.
+ * MenuContentUI 또는 MenuSubmenuContentUI 안에서 항목 단위로 조합한다.
  */
 export const MenuItemUI = forwardRef<HTMLDivElement, MenuUIItemProps>(function MenuItemUI(
   { className, closeOnSelect, variant = "default", ...props },

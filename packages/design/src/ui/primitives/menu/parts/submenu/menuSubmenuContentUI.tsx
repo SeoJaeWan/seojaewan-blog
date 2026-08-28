@@ -4,9 +4,9 @@ import type { MenuUIContentProps } from "../../menuUI.types";
 import { MenuContentUI } from "../structure/menuContentUI";
 
 /**
- * 중첩 menu의 role과 기본 배치를 제공한다.
+ * 중첩 메뉴의 항목을 별도 popup으로 표시할 때 사용한다.
  *
- * 하위 item의 제품 구성은 결정하지 않는다.
+ * MenuSubmenuRootUI 안에서 MenuSubmenuTriggerUI의 짝으로 조합한다.
  */
 export const MenuSubmenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(
   function MenuSubmenuContentUI(

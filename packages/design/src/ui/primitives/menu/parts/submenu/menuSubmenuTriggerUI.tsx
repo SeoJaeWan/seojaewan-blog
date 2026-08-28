@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { MenuUISubmenuTriggerProps } from "../../menuUI.types";
 
 /**
- * 중첩 menu를 여는 menuitem role과 open state를 제공한다.
+ * 하위 메뉴가 있음을 나타내고 그 메뉴를 여는 항목이 필요할 때 사용한다.
  *
- * 중첩 action의 권한이나 가용성은 판단하지 않는다.
+ * MenuSubmenuRootUI 안에서 MenuSubmenuContentUI 앞에 조합한다.
  */
 export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTriggerProps>(
   function MenuSubmenuTriggerUI(

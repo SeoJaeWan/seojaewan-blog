@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { ContextMenuUISubmenuTriggerProps } from "../../contextMenuUI.types";
 
 /**
- * 중첩 context menu를 여는 menuitem role과 open state를 제공한다.
+ * 하위 문맥 메뉴가 있음을 나타내고 그 메뉴를 여는 항목이 필요할 때 사용한다.
  *
- * 중첩 action의 권한이나 가용성은 판단하지 않는다.
+ * ContextMenuSubmenuRootUI 안에서 ContextMenuSubmenuContentUI 앞에 조합한다.
  */
 export const ContextMenuSubmenuTriggerUI = forwardRef<
   HTMLDivElement,

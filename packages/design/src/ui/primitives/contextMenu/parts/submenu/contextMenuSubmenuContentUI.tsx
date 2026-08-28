@@ -4,9 +4,9 @@ import type { ContextMenuUIContentProps } from "../../contextMenuUI.types";
 import { ContextMenuContentUI } from "../structure/contextMenuContentUI";
 
 /**
- * 중첩 context menu의 role과 기본 배치를 제공한다.
+ * 중첩 문맥 메뉴의 항목을 별도 popup으로 표시할 때 사용한다.
  *
- * 하위 item의 제품 구성은 결정하지 않는다.
+ * ContextMenuSubmenuRootUI 안에서 ContextMenuSubmenuTriggerUI의 짝으로 조합한다.
  */
 export const ContextMenuSubmenuContentUI = forwardRef<HTMLDivElement, ContextMenuUIContentProps>(
   function ContextMenuSubmenuContentUI(

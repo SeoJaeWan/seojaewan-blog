@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { ContextMenuUIContentProps } from "../../contextMenuUI.types";
 
 /**
- * context menu role과 pointer 기준 배치·portal 경계를 제공한다.
+ * 문맥 메뉴 항목을 popup으로 표시하고 호출 지점 기준 배치가 필요할 때 사용한다.
  *
- * action의 제품 순서나 실행 의미는 결정하지 않는다.
+ * ContextMenuRootUI 안에서 ContextMenuTriggerUI의 짝으로 두고 항목을 자식으로 조합한다.
  */
 export const ContextMenuContentUI = forwardRef<HTMLDivElement, ContextMenuUIContentProps>(
   function ContextMenuContentUI(

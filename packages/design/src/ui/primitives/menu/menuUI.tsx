@@ -27,9 +27,9 @@ export {
 };
 
 /**
- * MenuUI 안에서 중첩 메뉴를 구성하는 Root·Trigger·Content 묶음이다.
+ * 하나의 메뉴 항목 아래에 단계가 더 있는 중첩 메뉴를 구성할 때 사용한다.
  *
- * 제품 action 모델이나 하위 항목의 순서·권한은 포함하지 않는다.
+ * MenuUI.Content 안에서 Root가 Trigger와 Content를 감싸는 위치에 조합한다.
  */
 export const MenuSubmenuUI = {
   Root: MenuSubmenuRootUI,
@@ -38,9 +38,9 @@ export const MenuSubmenuUI = {
 } as const;
 
 /**
- * 버튼으로 여는 메뉴의 구조·항목·중첩 메뉴 part를 한 소비 경로로 제공한다.
+ * 버튼을 기준으로 열리는 메뉴가 필요할 때 구조·항목·중첩 part를 제공한다.
  *
- * 제품 action catalog와 실행 정책은 정의하거나 저장하지 않는다.
+ * Root 안에 Trigger와 Content를 두고 Content 안에 항목 part를 조합한다.
  */
 export const MenuUI = {
   Root: MenuRootUI,
