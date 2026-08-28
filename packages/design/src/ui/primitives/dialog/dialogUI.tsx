@@ -10,9 +10,9 @@ import { DialogTriggerUI } from "./parts/dialogTriggerUI";
 import "./dialogUI.css";
 
 /**
- * modal dialog와 이를 열고 설명하고 닫는 part를 하나의 compound API로 묶는다.
+ * 페이지 나머지와 초점 및 상호작용을 격리해야 하는 흐름에는 모달 Root와 관련 part를 묶은 DialogUI를 사용한다.
  *
- * anchored non-modal content에는 PopoverUI를 사용하며 DialogUI는 비즈니스 확인이나 탐색을 소유하지 않는다.
+ * 기준 요소에 연결된 비모달 보조 콘텐츠에는 PopoverUI를 사용하며, DialogUI는 비즈니스 확인 결과나 애플리케이션 탐색을 소유하지 않는다.
  */
 export const DialogUI = Object.assign(DialogRootUI, {
   Backdrop: DialogBackdropUI,

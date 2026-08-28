@@ -6,13 +6,13 @@ import { forwardRef, useContext } from "react";
 import { Dialog } from "@base-ui/react/dialog";
 import { clsx } from "clsx";
 
+import { DialogTriggerIdContext } from "../dialogTriggerIdContext";
 import type { DialogUITriggerProps } from "../dialogUI.types";
-import { DialogTriggerIdContext } from "./dialogTriggerIdContext";
 
 /**
- * 자신이 속한 DialogRootUI의 modal content를 여는 visible button을 렌더링한다.
+ * DialogRootUI 안에서 Portal 밖에 놓여 모달 Content를 여는 화면에 보이는 button을 렌더링한다.
  *
- * DialogTriggerUI는 button이 나타내는 애플리케이션 동작의 의미를 결정하지 않는다.
+ * DialogTriggerUI는 button의 접근 가능한 이름이나 열린 뒤 수행할 비즈니스 동작을 결정하지 않는다.
  */
 export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
   { className, id, type = "button", ...props }: DialogUITriggerProps,

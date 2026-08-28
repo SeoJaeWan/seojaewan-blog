@@ -7,9 +7,9 @@ import { clsx } from "clsx";
 import type { DialogUIBackdropProps } from "../dialogUI.types";
 
 /**
- * modal DialogContentUI 뒤의 visual layer를 렌더링한다.
+ * DialogPortalUI 안에서 Content 뒤에 놓이는 모달 시각 계층을 렌더링한다.
  *
- * DialogBackdropUI는 outside dismissal 허용 여부나 product dimming 정책을 결정하지 않는다.
+ * DialogBackdropUI는 바깥 영역 상호작용으로 닫을지 여부나 제품 수준의 흐림 정책을 결정하지 않는다.
  */
 export const DialogBackdropUI = forwardRef(function DialogBackdropUI(
   { className, ...props }: DialogUIBackdropProps,

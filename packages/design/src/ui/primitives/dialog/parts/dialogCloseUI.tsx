@@ -7,9 +7,9 @@ import { clsx } from "clsx";
 import type { DialogUICloseProps } from "../dialogUI.types";
 
 /**
- * 자신이 속한 DialogRootUI의 열림 상태를 닫는 button을 렌더링한다.
+ * DialogRootUI의 Content 안에서 해당 모달의 열림 상태를 닫는 button을 렌더링한다.
  *
- * DialogCloseUI는 닫기 뒤 실행할 비즈니스 결과나 탐색을 결정하지 않는다.
+ * DialogCloseUI는 button의 접근 가능한 이름이나 닫은 뒤 실행할 비즈니스 결과와 탐색을 결정하지 않는다.
  */
 export const DialogCloseUI = forwardRef(function DialogCloseUI(
   { className, type = "button", ...props }: DialogUICloseProps,

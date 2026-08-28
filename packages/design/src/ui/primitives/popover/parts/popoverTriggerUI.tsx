@@ -6,13 +6,13 @@ import { forwardRef, useContext } from "react";
 import { Popover } from "@base-ui/react/popover";
 import { clsx } from "clsx";
 
+import { PopoverTriggerIdContext } from "../popoverTriggerIdContext";
 import type { PopoverUITriggerProps } from "../popoverUI.types";
-import { PopoverTriggerIdContext } from "./popoverTriggerIdContext";
 
 /**
- * PopoverRootUI의 상태를 바꾸고 PopoverContentUI의 anchor가 되는 visible button을 렌더링한다.
+ * PopoverRootUI 안에서 Content의 기준 요소가 되고 열림 상태를 바꾸는 화면에 보이는 button을 렌더링한다.
  *
- * PopoverTriggerUI는 button이 나타내는 애플리케이션 동작의 의미를 결정하지 않는다.
+ * PopoverTriggerUI는 button의 접근 가능한 이름이나 열린 뒤 수행할 비즈니스 동작을 결정하지 않는다.
  */
 export const PopoverTriggerUI = forwardRef(function PopoverTriggerUI(
   { className, id, type = "button", ...props }: PopoverUITriggerProps,

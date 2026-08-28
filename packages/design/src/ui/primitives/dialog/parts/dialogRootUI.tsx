@@ -4,13 +4,13 @@ import { useId } from "react";
 
 import { Dialog } from "@base-ui/react/dialog";
 
+import { DialogTriggerIdContext } from "../dialogTriggerIdContext";
 import type { DialogUIProps } from "../dialogUI.types";
-import { DialogTriggerIdContext } from "./dialogTriggerIdContext";
 
 /**
- * modal surface의 controlled 또는 uncontrolled 열림 상태와 dismissal 정책을 하위 part에 제공한다.
+ * DialogUI 조합의 최상위에서 Trigger, Portal과 Content에 제어 또는 비제어 방식의 모달 열림 상태와 닫힘 정책을 제공한다.
  *
- * DialogRootUI는 비즈니스 확인, 저장이나 애플리케이션 탐색을 소유하지 않는다.
+ * DialogRootUI는 모달 상태와 초점 격리만 조정하며 비즈니스 확인, 저장 또는 애플리케이션 탐색을 소유하지 않는다.
  */
 export const DialogRootUI = ({
   defaultOpen,

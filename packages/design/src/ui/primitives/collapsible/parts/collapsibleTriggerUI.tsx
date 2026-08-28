@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { CollapsibleUITriggerProps } from "../collapsibleUI.types";
 
 /**
- * CollapsibleRootUI의 펼침 상태를 바꾸고 CollapsiblePanelUI와 ARIA 관계를 맺는 button이다.
+ * CollapsibleRootUI 안에서 Panel의 펼침 상태를 바꾸고 해당 Panel과 ARIA 관계를 맺는 button을 렌더링한다.
  *
- * CollapsibleTriggerUI는 folder 선택 또는 tree 탐색 동작을 수행하지 않는다.
+ * CollapsibleTriggerUI는 항목 선택, tree 탐색 또는 Panel 콘텐츠의 의미를 소유하지 않는다.
  */
 export const CollapsibleTriggerUI = forwardRef<HTMLButtonElement, CollapsibleUITriggerProps>(
   function CollapsibleTriggerUI({ className, type = "button", ...props }, ref) {

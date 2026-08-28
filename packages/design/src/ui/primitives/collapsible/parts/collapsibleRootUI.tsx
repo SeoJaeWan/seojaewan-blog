@@ -6,9 +6,9 @@ import { clsx } from "clsx";
 import type { CollapsibleUIProps } from "../collapsibleUI.types";
 
 /**
- * controlled 또는 uncontrolled 펼침 상태를 조정하고 하위 part에 공유한다.
+ * CollapsibleUI 조합의 최상위에서 Trigger와 Panel에 제어 또는 비제어 방식의 펼침 상태를 공유한다.
  *
- * CollapsibleRootUI는 folder 구성, tree 선택 또는 애플리케이션 상태를 소유하지 않는다.
+ * CollapsibleRootUI는 펼침 상태만 조정하며 콘텐츠 구성, tree 선택 또는 애플리케이션 상태를 소유하지 않는다.
  */
 export const CollapsibleRootUI = forwardRef<HTMLDivElement, CollapsibleUIProps>(
   function CollapsibleRootUI({ className, onOpenChange, ...props }, ref) {

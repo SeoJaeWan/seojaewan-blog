@@ -7,9 +7,9 @@ import { clsx } from "clsx";
 import type { DialogUITitleProps } from "../dialogUI.types";
 
 /**
- * 자신이 속한 DialogContentUI의 접근 가능한 이름을 제공하는 heading을 렌더링한다.
+ * DialogContentUI 안에서 해당 모달의 접근 가능한 이름을 제공하는 heading을 렌더링한다.
  *
- * DialogTitleUI는 제목 문구나 애플리케이션 정보 구조를 결정하지 않는다.
+ * DialogTitleUI는 제목 문구, heading 단계 또는 애플리케이션 정보 구조를 결정하지 않는다.
  */
 export const DialogTitleUI = forwardRef(function DialogTitleUI(
   { className, ...props }: DialogUITitleProps,

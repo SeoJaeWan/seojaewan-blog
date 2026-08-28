@@ -7,9 +7,9 @@ import { clsx } from "clsx";
 import type { DialogUIPortalProps } from "../dialogUI.types";
 
 /**
- * DialogBackdropUI와 DialogContentUI를 애플리케이션 content 위의 portal에 렌더링한다.
+ * DialogRootUI 안에서 Backdrop과 Content를 애플리케이션 콘텐츠 위의 portal에 함께 렌더링한다.
  *
- * DialogPortalUI는 product 수준 stacking이나 routing 정책을 결정하지 않는다.
+ * DialogPortalUI는 제품 수준의 쌓임 순서, 화면 전환 또는 모달 콘텐츠 구성을 결정하지 않는다.
  */
 export const DialogPortalUI = forwardRef(function DialogPortalUI(
   { className, ...props }: DialogUIPortalProps,
