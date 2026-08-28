@@ -37,6 +37,10 @@ const MultipleStatesFixture = () => {
 
   return (
     <StoryFrame>
+      <p role="status">
+        현재 선택: 옵션 {selected ? "켬" : "끔"} · 밀도{" "}
+        {density === "compact" ? "좁게" : "편안하게"}
+      </p>
       <MenuUI.Root>
         <MenuUI.Trigger>Multiple actions</MenuUI.Trigger>
         <MenuUI.Content aria-label="Multiple action states">
@@ -81,9 +85,9 @@ const LifecycleFixture = () => {
 
   return (
     <StoryFrame>
-      <p>Use the controls to inspect opening and exiting lifecycle styles.</p>
+      <p>버튼으로 열림과 닫힘을 전환하며 opening·exiting lifecycle 스타일을 확인하세요.</p>
       <button onClick={() => setOpen((value) => !value)} type="button">
-        {open ? "Start exit" : "Start opening"}
+        {open ? "닫힘 시작" : "열림 시작"}
       </button>
       <MenuUI.Root onOpenChange={setOpen} open={open}>
         <MenuUI.Trigger>Lifecycle menu</MenuUI.Trigger>
@@ -98,17 +102,64 @@ const LifecycleFixture = () => {
 const meta = {
   title: "UI/Primitives/MenuUI",
   component: MultipleStatesFixture,
-  parameters: { controls: { disable: true } },
+  tags: ["autodocs"],
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        component:
+          "MenuUI는 항상 보이는 Trigger에서 호출하는 action 목록입니다. 사용자가 먼저 action 위치를 발견해야 하면 MenuUI를, 특정 대상 위의 보조 contextual action이면 ContextMenuUI를 선택합니다. Root가 open 상태와 범위를 소유하고 Trigger가 목록을 열며 Content 안에 Item, 선택 상태를 가진 CheckboxItem·RadioGroup/RadioItem, 묶음을 나누는 Separator를 조합합니다. 계층 action은 같은 family symbol의 Submenu.Root·Trigger·Content로 구성합니다. ContextMenuUI와 action 의미 및 compound 형태가 닮은 semantic sibling이지만, 어느 한 family가 다른 family를 production 구현으로 직접 사용하는 관계는 아닙니다.",
+      },
+    },
+  },
 } satisfies Meta<typeof MultipleStatesFixture>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Empty: Story = { render: () => <EmptyFixture /> };
-export const Single: Story = { render: () => <SingleFixture /> };
-export const MultipleSelectedDisabledDanger: Story = { render: () => <MultipleStatesFixture /> };
+export const Empty: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "사용 가능한 action이 없는 상태입니다. Trigger를 열면 선택할 수 없는 안내 Item만 보이며 실행 결과는 발생하지 않습니다.",
+      },
+    },
+  },
+  render: () => <EmptyFixture />,
+};
+export const Single: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "하나의 action을 가진 기본 Menu입니다. 항상 보이는 Trigger를 누르면 Open Item이 나타나고, 목록 밖으로 이동하거나 action을 선택하면 닫힙니다.",
+      },
+    },
+  },
+  render: () => <SingleFixture />,
+};
+export const MultipleSelectedDisabledDanger: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "일반·비활성·선택·위험 action을 한 목록에서 비교합니다. Checkbox와 Radio 선택을 바꾸면 현재 선택 상태가 Canvas 상단 status와 각 Item에 함께 반영됩니다.",
+      },
+    },
+  },
+  render: () => <MultipleStatesFixture />,
+};
 export const PointerAndKeyboard: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "같은 visible Trigger를 pointer 클릭과 keyboard ArrowDown으로 호출합니다. 클릭으로 연 목록은 Escape로 닫히고, keyboard로 다시 열면 첫 Item에 focus가 이동한 결과가 Canvas에 남습니다.",
+      },
+    },
+  },
   render: () => <SingleFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -126,6 +177,14 @@ export const PointerAndKeyboard: Story = {
   },
 };
 export const Submenu: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "부모 목록의 Submenu.Trigger에서 ArrowRight로 중첩 Content를 엽니다. 비활성 Item도 탐색 순서와 aria-disabled 상태를 유지하며, Escape는 중첩 목록과 부모 목록을 차례로 닫고 focus를 각 Trigger로 복원합니다.",
+      },
+    },
+  },
   render: () => <SubmenuFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -163,8 +222,26 @@ export const Submenu: Story = {
     await expect(trigger).toHaveFocus();
   },
 };
-export const OpeningAndExiting: Story = { render: () => <LifecycleFixture /> };
+export const OpeningAndExiting: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "controlled open 상태와 keepMounted Content로 opening·exiting lifecycle을 관찰합니다. Canvas 버튼의 문구가 다음 조작을 안내하고, 전환 중에도 동일한 Menu action 구조를 유지합니다.",
+      },
+    },
+  },
+  render: () => <LifecycleFixture />,
+};
 export const NarrowViewport: Story = {
-  parameters: { viewport: { defaultViewport: "mobile1" } },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "좁은 mobile viewport에서 여러 상태의 Menu를 엽니다. 선택·비활성·위험 Item의 의미와 popup 배치가 작은 화면에서도 유지되는지 확인합니다.",
+      },
+    },
+    viewport: { defaultViewport: "mobile1" },
+  },
   render: () => <MultipleStatesFixture />,
 };

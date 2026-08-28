@@ -20,7 +20,8 @@ const SharedVisibleActionPath = ({ parts }: { parts: ActionParts }) => (
 const VisibleEntryPointsFixture = () => (
   <main style={{ display: "grid", gap: 24, minHeight: 320, padding: 24 }}>
     <section>
-      <h2>Visible Menu button</h2>
+      <h2>항상 보이는 Menu 버튼</h2>
+      <p>미리 발견할 수 있는 Actions 버튼을 눌러 action 목록을 여세요.</p>
       <MenuUI.Root>
         <MenuUI.Trigger>Actions</MenuUI.Trigger>
         <MenuUI.Content aria-label="Visible menu actions">
@@ -38,8 +39,10 @@ const VisibleEntryPointsFixture = () => (
           padding: 16,
         }}
       >
-        Right-click or long-press this Context Menu surface. It uses the same visible action-path
-        fixture as the Menu button.
+        이 대상의 보조 action은 마우스 오른쪽 클릭 또는 길게 누르기로 여세요. 위 Menu와 Open,
+        Unavailable, Delete라는 같은 action 의미를 제공하지만 호출 방식은 다릅니다. 이 Story는
+        비교를 위해 action fixture만 공유하며 ContextMenuUI의 production 구현이 MenuUI를 직접
+        사용하는 것은 아닙니다.
       </ContextMenuUI.Trigger>
       <ContextMenuUI.Content aria-label="Context actions">
         <SharedVisibleActionPath parts={ContextMenuUI} />
@@ -76,6 +79,10 @@ const ControlledReplacementFixture = () => {
 
   return (
     <div style={{ display: "grid", gap: 16, minHeight: 280, padding: 24 }}>
+      <p aria-live="polite" role="status">
+        현재 메뉴:{" "}
+        {activeMenu === "first" ? "첫 번째" : activeMenu === "second" ? "두 번째" : "닫힘"}
+      </p>
       <button ref={restoreFocusRef} type="button">
         Pre-replacement focus
       </button>
@@ -104,15 +111,41 @@ const ControlledReplacementFixture = () => {
 const meta = {
   title: "UI/Primitives/ContextMenuUI",
   component: VisibleEntryPointsFixture,
-  parameters: { controls: { disable: true } },
+  tags: ["autodocs"],
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        component:
+          "ContextMenuUI는 특정 대상에서 오른쪽 클릭·keyboard 호출·길게 누르기로 여는 보조 contextual action 목록입니다. 항상 보이는 entry가 필요하면 MenuUI를 선택하고, 대상의 문맥을 보존한 채 보조 action을 제공할 때 ContextMenuUI를 선택합니다. Root가 open 상태와 대상 범위를 소유하고 Trigger가 호출 영역을 지정하며 Content 안에 Item, 선택 상태를 가진 CheckboxItem·RadioGroup/RadioItem, Separator를 조합합니다. 계층 action은 같은 family symbol의 Submenu.Root·Trigger·Content로 구성합니다. MenuUI와 action 의미 및 compound 형태가 닮은 semantic sibling이지만 production 구현을 직접 공유하지 않습니다.",
+      },
+    },
+  },
 } satisfies Meta<typeof VisibleEntryPointsFixture>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const VisibleMenuAndContextEntryPoints: Story = {};
+export const VisibleMenuAndContextEntryPoints: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "같은 Open·Unavailable·Delete action 의미를 두 entry point로 비교합니다. Menu는 항상 보이는 Actions 버튼으로 열고, ContextMenu는 대상 위에서 오른쪽 클릭 또는 길게 누르므로 action은 같아도 발견·호출 방식이 다릅니다.",
+      },
+    },
+  },
+};
 export const PointerAndKeyboardInvocation: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. 첫 목록은 Escape로 닫히고, 두 번째 호출 뒤에는 동일한 contextual action 목록이 열린 결과가 Canvas에 남습니다.",
+      },
+    },
+  },
   render: () => <SubmenuFixture />,
   play: async ({ canvasElement }) => {
     const surface = within(canvasElement).getByText("Right-click for sharing actions");
@@ -131,13 +164,32 @@ export const PointerAndKeyboardInvocation: Story = {
     );
   },
 };
-export const Submenu: Story = { render: () => <SubmenuFixture /> };
+export const Submenu: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "ContextMenu Content 안에서 Send to Submenu를 조합한 기본 상태입니다. 대상의 contextual 목록을 연 뒤 계층 action으로 이동하면 Email과 Messages가 중첩 목록에 나타납니다.",
+      },
+    },
+  },
+  render: () => <SubmenuFixture />,
+};
 export const ControlledReplacement: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "두 controlled ContextMenu 중 새 대상을 호출하면 기존 목록을 닫고 새 목록으로 교체합니다. Canvas status가 첫 번째→두 번째→닫힘 이력을 보여 주며, 마지막 Escape 뒤 focus는 교체 전 버튼으로 복원됩니다.",
+      },
+    },
+  },
   render: () => <ControlledReplacementFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
     const restoreFocus = canvas.getByRole("button", { name: "Pre-replacement focus" });
+    const status = canvas.getByRole("status");
 
     restoreFocus.focus();
     await userEvent.pointer({
@@ -145,12 +197,14 @@ export const ControlledReplacement: Story = {
       target: canvas.getByText("First surface"),
     });
     await waitFor(() => expect(page.getByRole("menu", { name: "First actions" })).toBeVisible());
+    await expect(status).toHaveTextContent("현재 메뉴: 첫 번째");
 
     await userEvent.pointer({
       keys: "[MouseRight]",
       target: canvas.getByText("Second surface"),
     });
     await waitFor(() => expect(page.getByRole("menu", { name: "Second actions" })).toBeVisible());
+    await expect(status).toHaveTextContent("현재 메뉴: 두 번째");
     await waitFor(() =>
       expect(page.queryByRole("menu", { name: "First actions" })).not.toBeInTheDocument(),
     );
@@ -160,9 +214,18 @@ export const ControlledReplacement: Story = {
       expect(page.queryByRole("menu", { name: "Second actions" })).not.toBeInTheDocument(),
     );
     await expect(restoreFocus).toHaveFocus();
+    await expect(status).toHaveTextContent("현재 메뉴: 닫힘");
   },
 };
 export const TouchLongPress: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "touchstart를 유지해 길게 누르기 임계값을 넘기면 대상 위치에 contextual action 목록이 열립니다. touchend 뒤에도 열린 목록이 Canvas에 남아 long-press 결과를 확인할 수 있습니다.",
+      },
+    },
+  },
   render: () => <SubmenuFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -183,5 +246,13 @@ export const TouchLongPress: Story = {
   },
 };
 export const NarrowViewport: Story = {
-  parameters: { viewport: { defaultViewport: "mobile1" } },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "좁은 mobile viewport에서 Menu 버튼과 ContextMenu 대상의 두 entry point를 비교합니다. 같은 action 의미와 서로 다른 호출 방식이 작은 화면에서도 유지되는지 확인합니다.",
+      },
+    },
+    viewport: { defaultViewport: "mobile1" },
+  },
 };
