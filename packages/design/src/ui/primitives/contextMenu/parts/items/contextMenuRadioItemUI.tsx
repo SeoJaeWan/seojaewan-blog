@@ -3,10 +3,11 @@ import { forwardRef } from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
-import type { ContextMenuUIRadioItemProps } from "../contextMenuUI.types";
+import type { ContextMenuUIRadioItemProps } from "../../contextMenuUI.types";
 
 /**
  * context radio action의 checked state와 선택 가능한 값을 제공한다.
+ *
  * 제품 설정의 의미는 해석하지 않는다.
  */
 export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRadioItemProps>(

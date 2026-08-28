@@ -3,11 +3,12 @@ import { forwardRef } from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
-import type { MenuUICheckboxItemProps } from "../menuUI.types";
-import { toMenuUIChangeDetails } from "../menuUIChangeDetails";
+import type { MenuUICheckboxItemProps } from "../../menuUI.types";
+import { toMenuUIChangeDetails } from "../../utils/menuUIChangeDetails";
 
 /**
  * boolean 선택 action의 checked state와 변경 event를 제공한다.
+ *
  * 선택값을 제품 상태에 저장하지 않는다.
  */
 export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemProps>(

@@ -3,10 +3,11 @@ import { forwardRef } from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
-import type { MenuUISubmenuTriggerProps } from "../menuUI.types";
+import type { MenuUISubmenuTriggerProps } from "../../menuUI.types";
 
 /**
  * 중첩 menu를 여는 menuitem role과 open state를 제공한다.
+ *
  * 중첩 action의 권한이나 가용성은 판단하지 않는다.
  */
 export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTriggerProps>(
