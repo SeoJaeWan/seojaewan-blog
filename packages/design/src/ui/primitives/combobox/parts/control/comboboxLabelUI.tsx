@@ -5,7 +5,7 @@ import { forwardRef, useContext } from "react";
 import { clsx } from "clsx";
 
 import type { ComboboxUILabelProps } from "../../comboboxUI.types";
-import { ComboboxUIContext } from "../comboboxUIContext";
+import { ComboboxUIContext } from "../../comboboxUIContext";
 
 /**
  * combobox 입력의 접근 가능한 이름을 제공하는 label part다. `Root`가 만든 입력 식별자를 기본 `htmlFor`로 연결한다.

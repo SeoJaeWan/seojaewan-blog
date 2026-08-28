@@ -5,7 +5,7 @@ import { useId } from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 
 import type { ComboboxUIChangeDetails, ComboboxUIProps } from "../comboboxUI.types";
-import { ComboboxUIContext } from "./comboboxUIContext";
+import { ComboboxUIContext } from "../comboboxUIContext";
 
 const toChangeDetails = (reason: string): ComboboxUIChangeDetails => ({
   reason: reason as ComboboxUIChangeDetails["reason"],

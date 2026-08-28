@@ -6,7 +6,7 @@ import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { clsx } from "clsx";
 
 import type { ComboboxUIListProps } from "../../comboboxUI.types";
-import { ComboboxUIContext } from "../comboboxUIContext";
+import { ComboboxUIContext } from "../../comboboxUIContext";
 import { ComboboxItemUI } from "./comboboxItemUI";
 
 /**

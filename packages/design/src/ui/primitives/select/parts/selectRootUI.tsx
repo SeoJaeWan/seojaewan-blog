@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 
 import type { SelectUIChangeDetails, SelectUIProps } from "../selectUI.types";
-import { SelectUIContext } from "./selectUIContext";
+import { SelectUIContext } from "../selectUIContext";
 
 const toChangeDetails = (reason: string): SelectUIChangeDetails => ({
   reason: reason as SelectUIChangeDetails["reason"],

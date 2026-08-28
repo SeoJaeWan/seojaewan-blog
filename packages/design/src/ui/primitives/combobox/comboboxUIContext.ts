@@ -2,7 +2,7 @@
 
 import { createContext } from "react";
 
-import type { ComboboxUIProps } from "../comboboxUI.types";
+import type { ComboboxUIProps } from "./comboboxUI.types";
 
 interface ComboboxUIContextValue {
   inputId: string | undefined;

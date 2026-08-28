@@ -5,7 +5,7 @@ import { forwardRef, useContext } from "react";
 import { clsx } from "clsx";
 
 import type { SelectUIClearProps } from "../../selectUI.types";
-import { SelectUIContext } from "../selectUIContext";
+import { SelectUIContext } from "../../selectUIContext";
 
 /**
  * 현재 단일 선택을 `null`로 지우는 button part다. 값이 없거나 루트와 버튼이 비활성일 때 native disabled 상태를 제공한다.
