@@ -16,7 +16,7 @@ export const ContextMenuRadioGroupUI = forwardRef<HTMLDivElement, ContextMenuUIR
     return (
       <BaseContextMenu.RadioGroup
         {...props}
-        className={clsx("wd-menu-ui__radio-group", className)}
+        className={clsx("wd-menu-ui__radio-group", "wd-context-menu-ui__radio-group", className)}
         onValueChange={(value, details) =>
           onValueChange?.(String(value), toContextMenuUIChangeDetails(details.reason))
         }

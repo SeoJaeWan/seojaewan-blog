@@ -1,3 +1,24 @@
 .wd-context-menu-ui__trigger {
   -webkit-touch-callout: none;
 }
+
+.wd-context-menu-ui__content {
+  min-width: var(--wd-context-menu-content-min-width);
+  padding: var(--wd-context-menu-content-padding);
+}
+
+.wd-context-menu-ui__item {
+  height: var(--wd-context-menu-item-height);
+  padding-block: var(--wd-context-menu-item-padding-block);
+  padding-inline: var(--wd-context-menu-item-padding-inline);
+}
+
+.wd-context-menu-ui__item-indicator {
+  block-size: var(--wd-context-menu-item-indicator-size);
+  flex-basis: var(--wd-context-menu-item-indicator-size);
+}
+
+.wd-context-menu-ui__submenu-trigger-arrow {
+  block-size: var(--wd-context-menu-submenu-indicator-size);
+  flex-basis: var(--wd-context-menu-submenu-indicator-size);
+}

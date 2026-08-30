@@ -15,7 +15,7 @@ export const ContextMenuSeparatorUI = forwardRef<HTMLDivElement, ContextMenuUISe
     return (
       <BaseContextMenu.Separator
         {...props}
-        className={clsx("wd-menu-ui__separator", className)}
+        className={clsx("wd-menu-ui__separator", "wd-context-menu-ui__separator", className)}
         ref={ref}
       />
     );

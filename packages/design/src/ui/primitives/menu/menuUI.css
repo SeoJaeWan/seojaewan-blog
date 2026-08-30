@@ -63,11 +63,15 @@
 
 .wd-menu-ui__item-indicator {
   align-items: center;
+  block-size: var(--wd-menu-item-indicator-size);
   display: inline-flex;
-  flex: 0 0 1rem;
-  font-size: 0.75em;
+  flex: 0 0 var(--wd-menu-item-indicator-size);
   justify-content: center;
   opacity: 0;
+}
+
+.wd-menu-ui__item-indicator > svg {
+  display: block;
 }
 
 .wd-menu-ui__item-indicator[data-checked] {
@@ -79,7 +83,16 @@
 }
 
 .wd-menu-ui__submenu-trigger-arrow {
+  align-items: center;
+  block-size: var(--wd-menu-submenu-indicator-size);
+  display: inline-flex;
+  flex: 0 0 var(--wd-menu-submenu-indicator-size);
+  justify-content: center;
   margin-inline-start: auto;
+}
+
+.wd-menu-ui__submenu-trigger-arrow > svg {
+  display: block;
 }
 
 .wd-menu-ui__separator {

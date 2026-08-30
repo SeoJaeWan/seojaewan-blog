@@ -33,7 +33,7 @@ export const ContextMenuContentUI = forwardRef<HTMLDivElement, ContextMenuUICont
         <BaseContextMenu.Positioner
           align={align}
           alignOffset={alignOffset}
-          className="wd-menu-ui__positioner"
+          className="wd-menu-ui__positioner wd-context-menu-ui__positioner"
           collisionPadding={collisionPadding}
           side={side}
           sideOffset={sideOffset}
@@ -42,7 +42,7 @@ export const ContextMenuContentUI = forwardRef<HTMLDivElement, ContextMenuUICont
             {...props}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabel && !ariaLabelledBy ? "" : ariaLabelledBy}
-            className={clsx("wd-menu-ui__content", className)}
+            className={clsx("wd-menu-ui__content", "wd-context-menu-ui__content", className)}
             finalFocus={
               typeof finalFocus === "function"
                 ? (interaction) => finalFocus(interaction || "unknown")

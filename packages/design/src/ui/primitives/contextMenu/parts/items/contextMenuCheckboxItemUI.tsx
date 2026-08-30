@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
+import { Checkmark12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ContextMenuUICheckboxItemProps } from "../../contextMenuUI.types";
@@ -19,7 +20,7 @@ export const ContextMenuCheckboxItemUI = forwardRef<HTMLDivElement, ContextMenuU
     return (
       <BaseContextMenu.CheckboxItem
         {...props}
-        className={clsx("wd-menu-ui__item", className)}
+        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
         closeOnClick={closeOnSelect}
         data-variant={variant}
         onCheckedChange={(checked, details) =>
@@ -27,10 +28,13 @@ export const ContextMenuCheckboxItemUI = forwardRef<HTMLDivElement, ContextMenuU
         }
         ref={ref}
       >
-        <BaseContextMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          ✓
+        <BaseContextMenu.CheckboxItemIndicator
+          className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
+          keepMounted
+        >
+          <Checkmark12Regular />
         </BaseContextMenu.CheckboxItemIndicator>
-        <span className="wd-menu-ui__item-label">{children}</span>
+        <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
       </BaseContextMenu.CheckboxItem>
     );
   },

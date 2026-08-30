@@ -15,7 +15,7 @@ export const ContextMenuItemUI = forwardRef<HTMLDivElement, ContextMenuUIItemPro
     return (
       <BaseContextMenu.Item
         {...props}
-        className={clsx("wd-menu-ui__item", className)}
+        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
         closeOnClick={closeOnSelect}
         data-variant={variant}
         ref={ref}

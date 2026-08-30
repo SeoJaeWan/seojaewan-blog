@@ -11,10 +11,12 @@
   --wd-menu-item-border-radius: var(--wd-reference-radius-1);
   --wd-menu-item-color: var(--wd-color-text-primary);
   --wd-menu-item-gap: var(--wd-reference-spacing-2);
+  --wd-menu-item-indicator-size: 16px;
   --wd-menu-item-min-height: 32px;
   --wd-menu-item-padding-inline: var(--wd-reference-spacing-2);
   --wd-menu-item-background-color-active: var(--wd-color-surface-muted);
   --wd-menu-item-opacity-disabled: 0.5;
   --wd-menu-separator-background-color: var(--wd-color-border-default);
   --wd-menu-separator-margin-block: var(--wd-reference-spacing-1);
+  --wd-menu-submenu-indicator-size: 16px;
 }

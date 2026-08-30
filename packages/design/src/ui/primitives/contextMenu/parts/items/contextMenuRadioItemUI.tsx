@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
+import { RadioButton16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ContextMenuUIRadioItemProps } from "../../contextMenuUI.types";
@@ -18,15 +19,18 @@ export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRa
     return (
       <BaseContextMenu.RadioItem
         {...props}
-        className={clsx("wd-menu-ui__item", className)}
+        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
         closeOnClick={closeOnSelect}
         data-variant={variant}
         ref={ref}
       >
-        <BaseContextMenu.RadioItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          ●
+        <BaseContextMenu.RadioItemIndicator
+          className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
+          keepMounted
+        >
+          <RadioButton16Regular />
         </BaseContextMenu.RadioItemIndicator>
-        <span className="wd-menu-ui__item-label">{children}</span>
+        <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
       </BaseContextMenu.RadioItem>
     );
   },

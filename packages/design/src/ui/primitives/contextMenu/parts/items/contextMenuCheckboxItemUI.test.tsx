@@ -32,6 +32,8 @@ describe("ContextMenuCheckboxItemUI", () => {
 
     const item = screen.getByRole("menuitemcheckbox", { name: "고정" });
     expect(item.getAttribute("aria-checked")).toBe("true");
+    expect(item.classList.contains("wd-context-menu-ui__item")).toBe(true);
+    expect(item.querySelector('svg[width="12"]')).not.toBeNull();
     expect(ref.current).toBe(item);
     fireEvent.click(item);
     expect(onCheckedChange).toHaveBeenCalledWith(false, { reason: "item-press" });

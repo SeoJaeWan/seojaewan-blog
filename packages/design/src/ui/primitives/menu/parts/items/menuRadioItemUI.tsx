@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { Menu as BaseMenu } from "@base-ui/react/menu";
+import { RadioButton16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { MenuUIRadioItemProps } from "../../menuUI.types";
@@ -24,7 +25,7 @@ export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
         ref={ref}
       >
         <BaseMenu.RadioItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          ●
+          <RadioButton16Regular />
         </BaseMenu.RadioItemIndicator>
         <span className="wd-menu-ui__item-label">{children}</span>
       </BaseMenu.RadioItem>

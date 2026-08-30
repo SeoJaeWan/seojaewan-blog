@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
+import { ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ContextMenuUISubmenuTriggerProps } from "../../contextMenuUI.types";
@@ -20,14 +21,23 @@ export const ContextMenuSubmenuTriggerUI = forwardRef<
   return (
     <BaseContextMenu.SubmenuTrigger
       {...props}
-      className={clsx("wd-menu-ui__item", "wd-menu-ui__submenu-trigger", className)}
+      className={clsx(
+        "wd-menu-ui__item",
+        "wd-menu-ui__submenu-trigger",
+        "wd-context-menu-ui__item",
+        "wd-context-menu-ui__submenu-trigger",
+        className,
+      )}
       data-variant={variant}
       delay={openDelay}
       ref={ref}
     >
-      <span className="wd-menu-ui__item-label">{children}</span>
-      <span aria-hidden="true" className="wd-menu-ui__submenu-trigger-arrow">
-        ›
+      <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
+      <span
+        aria-hidden="true"
+        className="wd-menu-ui__submenu-trigger-arrow wd-context-menu-ui__submenu-trigger-arrow"
+      >
+        <ChevronRight12Regular />
       </span>
     </BaseContextMenu.SubmenuTrigger>
   );

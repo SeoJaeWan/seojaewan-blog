@@ -29,6 +29,7 @@ describe("MenuCheckboxItemUI", () => {
 
     const item = screen.getByRole("menuitemcheckbox", { name: "세부 정보" });
     expect(item.getAttribute("aria-checked")).toBe("true");
+    expect(item.querySelector('svg[width="12"]')).not.toBeNull();
     expect(ref.current).toBe(item);
     fireEvent.click(item);
     expect(onCheckedChange).toHaveBeenCalledWith(false, { reason: "item-press" });

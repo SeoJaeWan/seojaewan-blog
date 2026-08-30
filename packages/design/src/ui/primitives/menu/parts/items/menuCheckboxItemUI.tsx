@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { Menu as BaseMenu } from "@base-ui/react/menu";
+import { Checkmark12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { MenuUICheckboxItemProps } from "../../menuUI.types";
@@ -28,7 +29,7 @@ export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemP
         ref={ref}
       >
         <BaseMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          ✓
+          <Checkmark12Regular />
         </BaseMenu.CheckboxItemIndicator>
         <span className="wd-menu-ui__item-label">{children}</span>
       </BaseMenu.CheckboxItem>

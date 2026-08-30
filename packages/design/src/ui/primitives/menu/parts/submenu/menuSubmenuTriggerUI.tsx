@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { Menu as BaseMenu } from "@base-ui/react/menu";
+import { ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { MenuUISubmenuTriggerProps } from "../../menuUI.types";
@@ -25,7 +26,7 @@ export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTrig
       >
         <span className="wd-menu-ui__item-label">{children}</span>
         <span aria-hidden="true" className="wd-menu-ui__submenu-trigger-arrow">
-          ›
+          <ChevronRight12Regular />
         </span>
       </BaseMenu.SubmenuTrigger>
     );

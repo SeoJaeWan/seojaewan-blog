@@ -31,6 +31,8 @@ describe("ContextMenuContentUI", () => {
     fireEvent.contextMenu(screen.getByText("문서"));
     const content = await screen.findByRole("menu", { name: "명명된 문서 메뉴" });
     expect(content).toBe(screen.getByTestId("content"));
+    expect(content.classList.contains("wd-menu-ui__content")).toBe(true);
+    expect(content.classList.contains("wd-context-menu-ui__content")).toBe(true);
     expect(content.classList.contains("custom-content")).toBe(true);
     expect(ref.current).toBe(content);
   });

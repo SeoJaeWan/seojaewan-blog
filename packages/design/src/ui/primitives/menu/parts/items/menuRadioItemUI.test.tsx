@@ -31,6 +31,7 @@ describe("MenuRadioItemUI", () => {
     const item = screen.getByRole("menuitemradio", { name: "위험" });
     expect(item.getAttribute("aria-checked")).toBe("true");
     expect(item.getAttribute("data-variant")).toBe("danger");
+    expect(item.querySelector('svg[width="16"]')).not.toBeNull();
     expect(ref.current).toBe(item);
   });
 });

@@ -32,6 +32,8 @@ describe("ContextMenuRadioItemUI", () => {
     const item = await screen.findByRole("menuitemradio", { name: "위험" });
     expect(item.getAttribute("aria-checked")).toBe("true");
     expect(item.getAttribute("data-variant")).toBe("danger");
+    expect(item.classList.contains("wd-context-menu-ui__item")).toBe(true);
+    expect(item.querySelector('svg[width="16"]')).not.toBeNull();
     expect(ref.current).toBe(item);
   });
 });

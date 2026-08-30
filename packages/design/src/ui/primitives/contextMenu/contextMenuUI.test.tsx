@@ -29,8 +29,12 @@ describe("ContextMenuUI compound 조합", () => {
     );
 
     fireEvent.contextMenu(screen.getByText("문서 surface"));
-    expect(await screen.findByRole("menu", { name: "문서 메뉴" })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: "열기" })).toBeTruthy();
+    const content = await screen.findByRole("menu", { name: "문서 메뉴" });
+    expect(content.classList.contains("wd-menu-ui__content")).toBe(true);
+    expect(content.classList.contains("wd-context-menu-ui__content")).toBe(true);
+    expect(
+      screen.getByRole("menuitem", { name: "열기" }).classList.contains("wd-context-menu-ui__item"),
+    ).toBe(true);
     expect(screen.getByRole("menuitemcheckbox", { name: "고정" })).toBeTruthy();
     expect(screen.getByRole("menuitemradio", { name: "보통" })).toBeTruthy();
     expect(screen.getByRole("separator")).toBeTruthy();
