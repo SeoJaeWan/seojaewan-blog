@@ -23,7 +23,7 @@ const renderItem = async (item: ReactNode) => {
 };
 
 describe("ContextMenuItemUI", () => {
-  it("menuitem 역할·이름·variant·prop·className·ref·선택 callback을 제공한다", async () => {
+  it("항목을 누르면 선택을 알린다", async () => {
     const ref = createRef<HTMLDivElement>();
     const onClick = vi.fn();
     await renderItem(

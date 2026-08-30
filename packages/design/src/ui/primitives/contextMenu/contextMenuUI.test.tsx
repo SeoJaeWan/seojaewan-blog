@@ -7,7 +7,7 @@ import { ContextMenuUI } from "./contextMenuUI";
 afterEach(cleanupUITest);
 
 describe("ContextMenuUI compound 조합", () => {
-  it("구조·항목·중첩 part를 하나의 ContextMenuUI 경로로 조합한다", async () => {
+  it("오른쪽 클릭으로 모든 메뉴 항목을 표시한다", async () => {
     renderUITest(
       <ContextMenuUI.Root>
         <ContextMenuUI.Trigger>문서 surface</ContextMenuUI.Trigger>

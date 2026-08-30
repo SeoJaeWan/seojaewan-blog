@@ -13,7 +13,7 @@ import { MenuRadioItemUI } from "./menuRadioItemUI";
 afterEach(cleanupUITest);
 
 describe("MenuRadioItemUI", () => {
-  it("radio 역할·이름·선택 상태·variant·ref를 제공한다", () => {
+  it("선택된 항목으로 표시한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <MenuRootUI defaultOpen>

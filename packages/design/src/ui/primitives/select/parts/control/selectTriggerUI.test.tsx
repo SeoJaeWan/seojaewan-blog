@@ -12,7 +12,7 @@ afterEach(cleanupUITest);
 const options = [{ label: "문서", value: "documents" }] as const;
 
 describe("SelectTriggerUI", () => {
-  it("기본 button, combobox role, 장식 icon, prop, className과 ref를 제공한다", () => {
+  it("선택 목록을 여는 버튼으로 동작한다", () => {
     const ref = createRef<HTMLButtonElement>();
     renderUITest(
       <SelectRootUI items={options}>

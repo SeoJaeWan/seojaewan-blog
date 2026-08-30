@@ -24,7 +24,7 @@ const renderGroup = async (group: ReactNode) => {
 };
 
 describe("ContextMenuRadioGroupUI", () => {
-  it("기본값·className·ref와 프로젝트 변경 callback을 제공한다", async () => {
+  it("선택한 값을 바꾸면 변경을 알린다", async () => {
     const ref = createRef<HTMLDivElement>();
     const onValueChange = vi.fn();
     await renderGroup(

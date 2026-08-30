@@ -15,7 +15,7 @@ import { MenuSubmenuTriggerUI } from "./menuSubmenuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("MenuSubmenuContentUI", () => {
-  it("중첩 menu 역할·이름·className·ref를 제공한다", () => {
+  it("이름 있는 하위 메뉴로 표시한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <MenuRootUI defaultOpen>

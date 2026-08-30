@@ -12,7 +12,7 @@ import { ContextMenuTriggerUI } from "./contextMenuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("ContextMenuContentUI", () => {
-  it("menu 역할·이름·className·DOM prop·ref를 제공한다", async () => {
+  it("오른쪽 클릭하면 이름 있는 메뉴를 표시한다", async () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <ContextMenuRootUI>

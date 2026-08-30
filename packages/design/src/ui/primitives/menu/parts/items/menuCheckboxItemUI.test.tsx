@@ -22,7 +22,7 @@ const renderCheckbox = (props: Parameters<typeof MenuCheckboxItemUI>[0]) =>
   );
 
 describe("MenuCheckboxItemUI", () => {
-  it("기본 checked 상태·이름·ref와 프로젝트 변경 callback을 제공한다", () => {
+  it("선택 상태를 바꾸면 변경을 알린다", () => {
     const ref = createRef<HTMLDivElement>();
     const onCheckedChange = vi.fn();
     renderCheckbox({

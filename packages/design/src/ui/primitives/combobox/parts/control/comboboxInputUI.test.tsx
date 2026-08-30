@@ -12,7 +12,7 @@ afterEach(cleanupUITest);
 const options = [{ label: "바탕 화면", value: "desktop" }] as const;
 
 describe("ComboboxInputUI", () => {
-  it("combobox role, 명시 prop, className, ref와 검색 callback을 제공한다", async () => {
+  it("검색어 변경을 알린다", async () => {
     const ref = createRef<HTMLInputElement>();
     const onInputValueChange = vi.fn();
     renderUITest(

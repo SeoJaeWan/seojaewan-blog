@@ -12,7 +12,7 @@ import { MenuTriggerUI } from "./menuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("MenuTriggerUI", () => {
-  it("기본 button 역할·이름·className·prop·ref를 제공한다", () => {
+  it("메뉴를 여는 버튼으로 동작한다", () => {
     const ref = createRef<HTMLButtonElement>();
     renderUITest(
       <MenuRootUI>

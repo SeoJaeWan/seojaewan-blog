@@ -12,7 +12,7 @@ import { ContextMenuSeparatorUI } from "./contextMenuSeparatorUI";
 afterEach(cleanupUITest);
 
 describe("ContextMenuSeparatorUI", () => {
-  it("기본 horizontal 의미·className·ref를 제공한다", async () => {
+  it("항목 사이를 가로로 구분한다", async () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <ContextMenuRootUI>

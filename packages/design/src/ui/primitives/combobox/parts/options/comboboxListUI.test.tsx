@@ -20,7 +20,7 @@ const options = [
 ] as const;
 
 describe("ComboboxListUI", () => {
-  it("안정적인 값 key로 listbox와 option을 렌더링하고 표시 함수, prop과 ref를 적용한다", async () => {
+  it("선택 목록을 안정적으로 표시한다", async () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const ref = createRef<HTMLDivElement>();
     renderUITest(

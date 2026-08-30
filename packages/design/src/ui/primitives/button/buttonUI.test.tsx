@@ -75,7 +75,7 @@ describe("ButtonUI", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
-  it("anchor 구성을 단일 native link로 렌더링하고 props, ref와 callback을 보존한다", () => {
+  it("링크 버튼으로 동작한다", () => {
     const onClick = vi.fn();
     const ref = createRef<HTMLAnchorElement>();
     const view = renderUITest(

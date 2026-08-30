@@ -14,7 +14,7 @@ afterEach(cleanupUITest);
 const options = [{ label: "바탕 화면", value: "desktop" }] as const;
 
 describe("ComboboxContentUI", () => {
-  it("기본 위치의 popup을 지정 portal에 렌더링하고 prop, className과 ref를 전달한다", () => {
+  it("팝업을 지정한 영역에 표시한다", () => {
     const portal = document.createElement("section");
     document.body.append(portal);
     const ref = createRef<HTMLDivElement>();

@@ -12,7 +12,7 @@ import { MenuSeparatorUI } from "./menuSeparatorUI";
 afterEach(cleanupUITest);
 
 describe("MenuSeparatorUI", () => {
-  it("기본 horizontal 의미·className·ref를 제공한다", () => {
+  it("항목 사이를 가로로 구분한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <MenuRootUI defaultOpen>

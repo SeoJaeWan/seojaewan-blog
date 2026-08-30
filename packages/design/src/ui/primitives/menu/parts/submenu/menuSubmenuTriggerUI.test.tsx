@@ -15,7 +15,7 @@ import { MenuSubmenuTriggerUI } from "./menuSubmenuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("MenuSubmenuTriggerUI", () => {
-  it("menuitem 역할·이름·닫힌 상태·className·ref를 제공한다", () => {
+  it("닫힌 하위 메뉴를 여는 항목으로 표시한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <MenuRootUI defaultOpen>

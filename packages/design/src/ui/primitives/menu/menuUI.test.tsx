@@ -7,7 +7,7 @@ import { MenuUI } from "./menuUI";
 afterEach(cleanupUITest);
 
 describe("MenuUI compound 조합", () => {
-  it("구조·항목·중첩 part를 하나의 MenuUI 경로로 조합한다", () => {
+  it("모든 메뉴 항목을 함께 표시한다", () => {
     renderUITest(
       <MenuUI.Root defaultOpen>
         <MenuUI.Trigger>작업</MenuUI.Trigger>

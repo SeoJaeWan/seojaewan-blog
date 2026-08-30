@@ -12,7 +12,7 @@ import { MenuTriggerUI } from "./menuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("MenuContentUI", () => {
-  it("menu 역할·이름·className·DOM prop·ref를 제공한다", () => {
+  it("이름 있는 메뉴로 표시한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <MenuRootUI defaultOpen>

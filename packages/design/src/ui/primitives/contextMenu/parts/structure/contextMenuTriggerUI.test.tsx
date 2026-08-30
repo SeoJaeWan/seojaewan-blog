@@ -12,7 +12,7 @@ import { ContextMenuTriggerUI } from "./contextMenuTriggerUI";
 afterEach(cleanupUITest);
 
 describe("ContextMenuTriggerUI", () => {
-  it("호출 영역의 DOM·이름·className·prop·ref를 제공한다", () => {
+  it("오른쪽 클릭할 영역을 표시한다", () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <ContextMenuRootUI>

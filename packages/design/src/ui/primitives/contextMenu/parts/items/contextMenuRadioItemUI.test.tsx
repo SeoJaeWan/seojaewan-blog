@@ -13,7 +13,7 @@ import { ContextMenuRadioItemUI } from "./contextMenuRadioItemUI";
 afterEach(cleanupUITest);
 
 describe("ContextMenuRadioItemUI", () => {
-  it("radio 역할·이름·선택 상태·variant·ref를 제공한다", async () => {
+  it("선택된 항목으로 표시한다", async () => {
     const ref = createRef<HTMLDivElement>();
     renderUITest(
       <ContextMenuRootUI>
