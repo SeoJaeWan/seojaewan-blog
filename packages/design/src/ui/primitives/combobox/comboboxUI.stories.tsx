@@ -11,6 +11,12 @@ const options = [
   { disabled: true, label: "Archive", value: "archive" },
 ] as const;
 
+const windowRouteSuggestions = [
+  { label: "Settings", value: "/settings" },
+  { label: "Documents", value: "/documents" },
+  { disabled: true, label: "Archive", value: "/archive" },
+] as const;
+
 interface ComboboxFixtureProps {
   initialInputValue: string;
   initialOpen: boolean;
@@ -72,7 +78,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "ComboboxUI는 text input으로 미리 정의된 선택지를 필터링하고 하나를 고르는 selection에 사용합니다. 자유 입력을 저장하면 InputUI를, 필터 입력 없이 목록에서 고르면 SelectUI를 선택합니다. public Root에 Label과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합하며 Root가 input/open/value 상태를 연결합니다. keyboard 탐색, disabled option, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 family가 제공합니다. consumer는 items, controlled value와 결과 callback을 제공해야 하고, ComboboxUI는 원격 조회, 경로 이동, validation이나 선택값 영속화를 소유하지 않습니다.",
+          "### What is it?\nComboboxUI는 text input으로 미리 정의된 선택지를 필터링하고 하나를 고르는 단일-selection Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Window의 route suggestion**입니다. `Product Reference — Existing Window Route Suggestions` Story가 작은 local-data fixture와 **Existing state**를 보여 줍니다.\n\n### When should I use it?\nWindow 안에서 이름 일부를 입력해 알려진 route 후보를 줄이고 하나를 선택할 때 사용합니다.\n\n### When should I choose something else?\n필터 입력 없이 목록에서 하나를 고르면 SelectUI를, 자유 입력을 저장하면 InputUI를 사용합니다. 고정된 짧은 command 목록은 MenuUI가 더 적합합니다.\n\n### What states and interaction contract matter?\nRoot에 Label과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합합니다. input/open/value, keyboard 탐색, disabled option, empty 결과, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 보존합니다.\n\n### Who owns what?\nPrimitive는 local items의 filtering, open state와 단일 selection 계약을 소유합니다. Consumer는 route suggestion 조회와 변환, 선택 결과의 실제 routing, validation과 영속화를 소유합니다. ComboboxUI는 route 이동을 실행하지 않습니다.",
       },
     },
   },
@@ -83,6 +89,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const FilteringAndKeyboardSelection: Story = {
+  name: "Contract — Filtering and Keyboard Selection",
   parameters: {
     docs: {
       description: {
@@ -106,6 +113,7 @@ export const FilteringAndKeyboardSelection: Story = {
 };
 
 export const EmptyAndDismissal: Story = {
+  name: "Contract — Empty and Dismissal",
   parameters: {
     docs: {
       description: {
@@ -131,6 +139,7 @@ export const EmptyAndDismissal: Story = {
 };
 
 export const ClearSelection: Story = {
+  name: "Contract — Clear Selection",
   parameters: {
     docs: {
       description: {
@@ -156,5 +165,99 @@ export const ClearSelection: Story = {
     await userEvent.click(body.getByRole("button", { name: "Clear route" }));
     await expect(body.getByRole("status", { name: "Selected route" })).toHaveTextContent("none");
     await expect(input).toHaveValue("");
+  },
+};
+
+const ExistingWindowRouteSuggestionReference = () => {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  return (
+    <div
+      className="wd-story-stage"
+      data-product-state="existing"
+      data-product-surface="existing-window-route-suggestion"
+      data-testid="window-route-suggestion-stage"
+    >
+      <ComboboxUI.Root
+        items={windowRouteSuggestions}
+        onOpenChange={setOpen}
+        onValueChange={setSelected}
+        open={open}
+        value={selected}
+      >
+        <ComboboxUI.Label>Open Window route</ComboboxUI.Label>
+        <ComboboxUI.InputGroup data-testid="window-route-suggestion-control">
+          <ComboboxUI.Input placeholder="Find a Window route" />
+          <ComboboxUI.Clear aria-label="Clear Window route" keepMounted />
+          <ComboboxUI.Trigger aria-label="Show Window routes" />
+        </ComboboxUI.InputGroup>
+        <ComboboxUI.Content>
+          <ComboboxUI.List />
+          <ComboboxUI.Empty>No Window routes found</ComboboxUI.Empty>
+        </ComboboxUI.Content>
+      </ComboboxUI.Root>
+      <dl className="wd-story-probe">
+        <dt>Reference</dt>
+        <dd>Existing Window · Existing state</dd>
+        <dt>Open</dt>
+        <dd>
+          <output aria-label="Window route suggestion open state">
+            {open ? "open" : "closed"}
+          </output>
+        </dd>
+        <dt>Value</dt>
+        <dd>
+          <output aria-label="Window route suggestion value">{selected ?? "none"}</output>
+        </dd>
+      </dl>
+    </div>
+  );
+};
+
+export const ProductReference: Story = {
+  name: "Product Reference — Existing Window Route Suggestions",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Surface: Existing Window route suggestion. Reference state: Existing. Local fixture는 filtering, open state와 선택 value만 재현합니다. suggestion lookup과 label 변환, 선택된 route로의 실제 이동은 Window의 higher layer가 소유합니다.",
+      },
+    },
+  },
+  render: () => <ExistingWindowRouteSuggestionReference />,
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const canvas = within(canvasElement);
+    const input = body.getByRole("combobox", { name: "Open Window route" });
+    const stage = canvas.getByTestId("window-route-suggestion-stage");
+    const control = canvas.getByTestId("window-route-suggestion-control");
+    const openProbe = canvas.getByRole("status", {
+      name: "Window route suggestion open state",
+    });
+    const valueProbe = canvas.getByRole("status", { name: "Window route suggestion value" });
+
+    const controlStyle = getComputedStyle(control);
+    const contractualControlSize = Number.parseFloat(
+      controlStyle.getPropertyValue("--wd-combobox-control-size"),
+    );
+    const contractualBoxHeight =
+      contractualControlSize +
+      Number.parseFloat(controlStyle.borderTopWidth) +
+      Number.parseFloat(controlStyle.borderBottomWidth);
+    await expect(control.getBoundingClientRect().height).toBeCloseTo(contractualBoxHeight);
+    await expect(control.getBoundingClientRect().width).toBeLessThan(
+      stage.getBoundingClientRect().width,
+    );
+
+    await expect(openProbe).toHaveTextContent("closed");
+    await expect(valueProbe).toHaveTextContent("none");
+    await userEvent.type(input, "set");
+    await waitFor(() => expect(body.getByRole("option", { name: "Settings" })).toBeVisible());
+    await expect(openProbe).toHaveTextContent("open");
+
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+    await expect(valueProbe).toHaveTextContent("/settings");
+    await expect(openProbe).toHaveTextContent("closed");
   },
 };
