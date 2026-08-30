@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { Search20Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 
@@ -17,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### What is it?\nInputUI는 사용자가 자유로운 텍스트를 입력하고 편집하는 native text-entry Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Taskbar의 free-text search**입니다. `Product Reference — Existing Taskbar Search` Story가 Existing state와 consumer가 소유한 local query를 보여 주며 검색 결과는 만들지 않습니다.\n\n### When should I use it?\nTaskbar 검색어처럼 사용자가 정해지지 않은 문자열을 직접 입력하고 수정해야 할 때 사용합니다.\n\n### When should I choose something else?\n미리 정의된 선택지를 입력으로 필터링해 고르면 ComboboxUI를, 텍스트 입력 없이 선택지만 고르면 SelectUI를 사용합니다. 검색 icon, submit action, suggestion/result panel과 전체 Taskbar layout은 higher layer가 조합합니다.\n\n### What states and interaction contract matter?\nDefault, value, placeholder, focus-visible, disabled와 native text editing을 보존하며 controlled와 uncontrolled value 정책을 모두 consumer에게 전달합니다. visible label 또는 다른 accessible naming 관계를 consumer가 제공해야 합니다.\n\n### Who owns what?\nPrimitive는 단일 text input의 semantic element, visual/focus/disabled 상태와 native props/ref 전달을 소유합니다. Consumer는 label, validation, controlled value와 query 변경 정책을 제공합니다. 검색 실행, 값 저장, suggestion 조회, 결과 선택과 결과 panel은 higher layer가 소유합니다.",
+          "### 무엇이며 어디에 쓰나요?\nInputUI는 사용자가 글자를 직접 입력하고 고칠 수 있는 native text input입니다. 작업 표시줄에서 찾을 말을 입력하는 것처럼 정해지지 않은 문자열을 받을 때 씁니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 작업 표시줄의 검색 칸**입니다. `제품 예시 — 기존 작업 표시줄 검색` Story에서 검색 아이콘, 입력 칸과 현재 검색어를 작은 작업 표시줄 프레임 안에서 확인할 수 있습니다. 미리 정한 후보를 입력으로 줄여 고를 때는 ComboboxUI를, 글자 입력 없이 목록에서 고를 때는 SelectUI를 사용합니다.\n\n### 어떤 상태와 동작을 확인하나요?\n기본값, 입력값, 안내 문구, 키보드 포커스와 비활성 상태를 확인합니다. native 글자 입력과 수정, controlled·uncontrolled 값 규칙, native props와 ref를 사용하는 쪽에 그대로 전달합니다. 사용하는 쪽은 화면에 보이는 label이나 그와 같은 읽을 수 있는 이름을 제공합니다.\n\n### 누가 무엇을 맡나요?\nInputUI는 글자 입력 한 칸의 의미, 보이는 상태, 포커스와 비활성 규칙을 맡습니다. 사용하는 쪽은 label, 값 검사, 현재 검색어와 변경 규칙을 제공합니다. Taskbar 담당은 검색 아이콘과 전체 배치를 맡고, search 담당은 검색 실행, 추천·결과 조회와 결과 화면을 맡습니다.",
       },
     },
   },
@@ -28,17 +29,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  name: "기본 입력",
   parameters: {
     docs: {
       description: {
         story:
-          "아직 텍스트를 입력하지 않은 기본 상태입니다. 사용자는 검색 placeholder가 보이는 활성 입력에 자유로운 텍스트를 입력할 수 있습니다.",
+          "아직 글자를 입력하지 않은 기본 상태입니다. 검색 안내 문구가 보이는 입력 칸에 자유롭게 글자를 입력할 수 있습니다.",
       },
     },
   },
 };
 
 export const Disabled: Story = {
+  name: "비활성 입력",
   args: {
     defaultValue: "검색할 수 없음",
     disabled: true,
@@ -47,7 +50,7 @@ export const Disabled: Story = {
     docs: {
       description: {
         story:
-          "기존 텍스트를 표시하지만 편집할 수 없는 비활성 상태입니다. 사용자의 입력 행동은 값을 바꾸지 않으며 Canvas에는 ‘검색할 수 없음’이 유지됩니다.",
+          "기존 글자를 보여 주지만 고칠 수 없는 상태입니다. 입력해도 값은 바뀌지 않고 ‘검색할 수 없음’이 유지됩니다.",
       },
     },
   },
@@ -58,62 +61,110 @@ const ExistingTaskbarSearchProductReference = () => {
 
   return (
     <div className="wd-story-stage">
-      <section
-        className="wd-story-stack"
+      <article
+        className="wd-story-reference"
         data-product-state="existing"
         data-product-surface="existing-taskbar-search"
       >
-        <span>Existing Taskbar search · Existing state</span>
-        <label htmlFor="existing-taskbar-search-query">Windows 검색</label>
-        <InputUI
-          aria-describedby="existing-taskbar-search-query-status"
-          id="existing-taskbar-search-query"
-          onChange={(event) => setQuery(event.currentTarget.value)}
-          placeholder="검색"
-          value={query}
-        />
-        <output aria-label="Existing Taskbar 검색 query" id="existing-taskbar-search-query-status">
-          현재 query: {query || "비어 있음"}
-        </output>
-      </section>
+        <p className="wd-story-reference__badge">제품 예시 · 기존 작업 표시줄 검색</p>
+        <div className="wd-story-reference__layout">
+          <section
+            aria-labelledby="existing-taskbar-search-title"
+            className="wd-story-reference__frame"
+          >
+            <h2 className="wd-story-reference__heading" id="existing-taskbar-search-title">
+              작업 표시줄 검색
+            </h2>
+            <label htmlFor="existing-taskbar-search-query">찾을 내용</label>
+            <div
+              aria-label="작업 표시줄 검색 칸"
+              className="wd-story-cluster"
+              style={{
+                background: "var(--wd-color-surface-muted)",
+                border: "1px solid var(--wd-color-border-default)",
+                borderRadius: "999px",
+                flexWrap: "nowrap",
+                padding: "0.375rem 0.625rem",
+                width: "min(100%, 24rem)",
+              }}
+            >
+              <span aria-hidden="true" style={{ display: "inline-flex", flex: "0 0 auto" }}>
+                <Search20Regular />
+              </span>
+              <InputUI
+                aria-describedby="existing-taskbar-search-query-status"
+                data-testid="taskbar-search-query"
+                id="existing-taskbar-search-query"
+                onChange={(event) => setQuery(event.currentTarget.value)}
+                placeholder="앱, 설정, 문서 검색"
+                style={{ flex: "1 1 auto", minWidth: 0 }}
+                value={query}
+              />
+            </div>
+            <dl className="wd-story-reference__probe">
+              <dt>제품 상태</dt>
+              <dd>기존</dd>
+              <dt>입력 자리</dt>
+              <dd>Taskbar 담당 검색 칸</dd>
+              <dt>현재 검색어</dt>
+              <dd>
+                <output
+                  aria-label="작업 표시줄 현재 검색어"
+                  data-query={query}
+                  data-testid="taskbar-search-query-probe"
+                  id="existing-taskbar-search-query-status"
+                >
+                  {query || "비어 있음"}
+                </output>
+              </dd>
+            </dl>
+          </section>
+          <p className="wd-story-reference__note">
+            InputUI는 글자를 입력하고 고치는 한 칸만 맡습니다. Taskbar 담당은 검색 칸 배치를, search
+            담당은 검색 실행과 추천·결과 화면을 맡습니다.
+          </p>
+        </div>
+      </article>
     </div>
   );
 };
 
 export const ProductReference: Story = {
-  name: "Product Reference — Existing Taskbar Search",
+  name: "제품 예시 — 기존 작업 표시줄 검색",
   parameters: {
     docs: {
       description: {
         story:
-          "Surface: Existing Taskbar free-text search. Reference state: Existing. Consumer-owned local query와 visible probe만 두며 Primitive는 입력·편집과 accessible naming 관계를 보존합니다. 검색 실행, suggestion/result 조회와 결과 panel은 higher layer가 소유합니다.",
+          "기존 작업 표시줄의 검색 칸입니다. InputUI는 글자 입력·수정과 읽을 수 있는 이름의 연결을 맡고, 사용하는 쪽은 현재 검색어를 관리합니다. Taskbar와 search 담당은 검색 아이콘, 검색 실행, 추천·결과 조회와 결과 화면을 맡습니다.",
       },
     },
   },
   render: () => <ExistingTaskbarSearchProductReference />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox", { name: "Windows 검색" });
-    const status = canvas.getByRole("status", { name: "Existing Taskbar 검색 query" });
+    const input = canvas.getByTestId("taskbar-search-query");
+    const queryProbe = canvas.getByTestId("taskbar-search-query-probe");
 
-    await expect(status).toHaveTextContent("현재 query: 비어 있음");
-    await userEvent.type(input, "window");
-    await expect(input).toHaveValue("window");
-    await expect(status).toHaveTextContent("현재 query: window");
+    await expect(queryProbe).toHaveAttribute("data-query", "");
+    await userEvent.type(input, "design");
+    await expect(input).toHaveValue("design");
+    await expect(queryProbe).toHaveAttribute("data-query", "design");
   },
 };
 
 export const TextEntry: Story = {
+  name: "동작 — 글자 입력",
   parameters: {
     docs: {
       description: {
         story:
-          "빈 text entry에 ‘documents’를 입력하는 사용자 흐름입니다. 입력 후 Canvas의 native 값이 ‘documents’로 바뀌며 play가 그 결과를 검증합니다.",
+          "빈 입력 칸에 ‘documents’를 입력하는 사용자 흐름입니다. 입력 뒤 native 값이 바뀌는지 확인합니다.",
       },
     },
   },
+  render: (args) => <InputUI {...args} data-testid="input-text-entry" />,
   play: async ({ canvas }) => {
-    const input = canvas.getByRole("textbox", { name: "파일 검색" });
+    const input = canvas.getByTestId("input-text-entry");
 
     await userEvent.type(input, "documents");
 

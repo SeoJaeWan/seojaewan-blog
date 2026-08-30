@@ -12,13 +12,13 @@ const meta = {
   tags: ["autodocs"],
   args: {
     icon: <Add20Regular />,
-    label: "Add item",
+    label: "항목 추가",
   },
   parameters: {
     docs: {
       description: {
         component:
-          "### What is it?\nIconButtonUI는 제한된 공간에서 제품 아이콘만 보이는 action Primitive이며 필수 `label`을 native button의 accessible name으로 제공합니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Window의 닫기 control**과 **Existing Taskbar의 app control**입니다. `Product Reference — Existing Window and Taskbar` Story가 두 surface의 Existing state를 consumer icon과 작은 local-state probe로 보여 줍니다.\n\n### When should I use it?\n창 닫기나 taskbar app 실행처럼 compact chrome에서 아이콘만으로 표현하는 단일 action에 사용합니다.\n\n### When should I choose something else?\n텍스트나 콘텐츠로 목적을 직접 보여 줄 수 있으면 ButtonUI를 사용합니다. app indicator, window chrome layout, drag 방지와 panel 연결처럼 surface 고유 조합은 더 높은 Window·Taskbar layer가 맡습니다.\n\n### What states and interaction contract matter?\nsm·md·lg size와 default, hover, active, focus-visible, disabled, selected 상태를 제공하며 selected는 `aria-pressed`와 시각 상태를 함께 표현합니다. consumer가 주입한 icon은 장식으로 숨기고 label, native pointer/keyboard activation, ref와 callback 전달을 보존합니다.\n\n### Who owns what?\nPrimitive는 icon-only semantic button, size와 visual/disabled/selected 계약을 소유합니다. Consumer는 제품 icon, 읽을 수 있는 label과 callback을 제공합니다. 창 session 종료, taskbar 실행·선택 상태, 권한 확인과 panel workflow는 higher layer가 소유합니다.",
+          "### 무엇이며 어디에 쓰나요?\nIconButtonUI는 좁은 공간에서 아이콘 하나로 할 일을 보여 주는 버튼입니다. 화면에는 아이콘만 보이지만 `label`로 읽을 수 있는 이름을 꼭 제공합니다. 창 닫기나 작업 표시줄 앱처럼 작은 버튼에 씁니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 창의 닫기 버튼**과 **기존 작업 표시줄의 앱 버튼**입니다. `제품 예시 — 기존 창과 작업 표시줄` Story에서 제목 표시줄의 닫기 자리와 작업 표시줄의 앱 자리를 한눈에 비교할 수 있습니다. 글자로 할 일을 보여 줄 수 있으면 ButtonUI를 사용합니다.\n\n### 어떤 상태와 동작을 확인하나요?\n작게·보통·크게 크기와 기본, 마우스 올림, 누름, 키보드 포커스, 비활성, 선택 상태를 확인합니다. 선택 상태는 `aria-pressed`와 화면 모습에 함께 드러납니다. 사용하는 쪽이 넣은 아이콘은 장식으로 처리되고, label과 마우스·키보드 실행, ref, callback은 그대로 전달됩니다.\n\n### 누가 무엇을 맡나요?\nIconButtonUI는 아이콘만 보이는 버튼의 의미, 크기, 보이는 상태와 비활성·선택 규칙을 맡습니다. 사용하는 쪽은 제품 아이콘, 읽을 수 있는 이름과 callback을 제공합니다. Window 담당은 제목 표시줄과 실제 창 닫기를, Taskbar 담당은 앱 실행·선택 표시와 전체 작업 표시줄 배치를 맡습니다.",
       },
     },
   },
@@ -29,44 +29,41 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  name: "기본 크기와 상태",
   parameters: {
     docs: {
       description: {
         story:
-          "consumer가 public API에 Fluent product icon을 주입한 deterministic size/state 표입니다. sm·md·lg와 default·hover-ready·pressed-testable·disabled·selected를 각각 읽을 수 있고, selected button은 aria-pressed=true로 노출됩니다.",
+          "사용하는 쪽이 Fluent 아이콘을 넣은 크기와 상태 표입니다. 작게·보통·크게 크기와 기본·마우스 올림 준비·누름 확인·비활성·선택 상태를 비교할 수 있습니다.",
       },
     },
   },
   render: (args) => (
     <div className="wd-story-stack wd-story-stack--loose">
       <section className="wd-story-stack">
-        <h3>Sizes</h3>
+        <h3>크기</h3>
         <div className="wd-story-cluster">
-          <span>sm</span>
-          <IconButtonUI {...args} label="Add item small" size="sm" />
-          <span>md</span>
-          <IconButtonUI {...args} label="Add item medium" size="md" />
-          <span>lg</span>
-          <IconButtonUI {...args} label="Add item large" size="lg" />
+          <span>작게</span>
+          <IconButtonUI {...args} label="작게 항목 추가" size="sm" />
+          <span>보통</span>
+          <IconButtonUI {...args} label="보통 크기로 항목 추가" size="md" />
+          <span>크게</span>
+          <IconButtonUI {...args} label="크게 항목 추가" size="lg" />
         </div>
       </section>
       <section className="wd-story-stack">
-        <h3>States</h3>
+        <h3>상태</h3>
         <div className="wd-story-cluster">
-          <span>default</span>
-          <IconButtonUI {...args} label="Add item default" />
-          <span>hover-ready</span>
-          <IconButtonUI {...args} data-testid="icon-button-hover-ready" label="Add item hover" />
-          <span>pressed-testable</span>
-          <IconButtonUI
-            {...args}
-            data-testid="icon-button-pressed-testable"
-            label="Add item press target"
-          />
-          <span>disabled</span>
-          <IconButtonUI {...args} disabled label="Add item disabled" />
-          <span>selected</span>
-          <IconButtonUI {...args} label="Add item selected" selected />
+          <span>기본</span>
+          <IconButtonUI {...args} label="항목 추가" />
+          <span>마우스 올림 준비</span>
+          <IconButtonUI {...args} data-testid="icon-button-hover-ready" label="항목 추가" />
+          <span>누름 확인</span>
+          <IconButtonUI {...args} data-testid="icon-button-pressed-testable" label="항목 추가" />
+          <span>비활성</span>
+          <IconButtonUI {...args} disabled label="항목 추가" />
+          <span>선택됨</span>
+          <IconButtonUI {...args} label="항목 추가" selected />
         </div>
       </section>
     </div>
@@ -74,6 +71,7 @@ export const Default: Story = {
 };
 
 export const Disabled: Story = {
+  name: "비활성 버튼",
   args: {
     disabled: true,
   },
@@ -81,80 +79,148 @@ export const Disabled: Story = {
     docs: {
       description: {
         story:
-          "비활성 icon-only action 상태입니다. Canvas에서 accessible name을 유지한 native disabled button과 실행할 수 없음을 확인합니다.",
+          "지금은 실행할 수 없는 아이콘 버튼입니다. 화면에 아이콘만 보여도 읽을 수 있는 이름은 유지됩니다.",
       },
     },
   },
 };
 
 const ExistingWindowTaskbarProductReference = () => {
-  const [lastAction, setLastAction] = useState("실행 전");
+  const [lastAction, setLastAction] = useState<"idle" | "taskbar-app" | "window-close">("idle");
   const [taskbarSelected, setTaskbarSelected] = useState(false);
 
+  const actionLabel = {
+    idle: "아직 실행한 작업이 없습니다.",
+    "taskbar-app": "작업 표시줄 앱 버튼을 눌렀습니다.",
+    "window-close": "창 닫기 버튼을 눌렀습니다.",
+  }[lastAction];
+
   return (
-    <div className="wd-story-stage wd-story-stack">
-      <section
-        className="wd-story-cluster"
-        data-product-state="existing"
-        data-product-surface="existing-window-control"
-      >
-        <span>Existing Window · Existing state</span>
-        <IconButtonUI
-          icon={<Dismiss16Regular />}
-          label="창 닫기"
-          onClick={() => setLastAction("창 닫기 요청")}
-          size="sm"
-        />
-      </section>
-      <section
-        className="wd-story-cluster"
-        data-product-state="existing"
-        data-product-surface="existing-taskbar-control"
-      >
-        <span>Existing Taskbar · Existing state</span>
-        <IconButtonUI
-          icon={<Folder20Regular />}
-          label="블로그 창 열기"
-          onClick={() => {
-            setTaskbarSelected((selected) => !selected);
-            setLastAction("taskbar app 요청");
-          }}
-          selected={taskbarSelected}
-          size="lg"
-        />
-      </section>
-      <output aria-label="Existing Window와 Taskbar icon-only action 상태">
-        마지막 action: {lastAction}
-      </output>
+    <div className="wd-story-stage">
+      <article className="wd-story-reference">
+        <p className="wd-story-reference__badge">제품 예시 · 기존 창과 작업 표시줄</p>
+        <div className="wd-story-reference__layout">
+          <section
+            aria-labelledby="existing-window-control-title"
+            className="wd-story-reference__frame"
+            data-product-state="existing"
+            data-product-surface="existing-window-control"
+          >
+            <h2 className="wd-story-reference__heading" id="existing-window-control-title">
+              창 제목 표시줄
+            </h2>
+            <div
+              aria-label="블로그 창 제목 표시줄"
+              className="wd-story-cluster"
+              style={{
+                background: "var(--wd-color-surface-muted)",
+                border: "1px solid var(--wd-color-border-default)",
+                justifyContent: "space-between",
+                padding: "0.5rem 0.625rem",
+                width: "100%",
+              }}
+            >
+              <strong>블로그</strong>
+              <IconButtonUI
+                data-testid="window-close-action"
+                icon={<Dismiss16Regular />}
+                label="창 닫기"
+                onClick={() => setLastAction("window-close")}
+                size="sm"
+              />
+            </div>
+            <dl className="wd-story-reference__probe">
+              <dt>제품 상태</dt>
+              <dd>기존</dd>
+              <dt>버튼 자리</dt>
+              <dd>Window 담당 제목 표시줄의 닫기 자리</dd>
+            </dl>
+          </section>
+
+          <section
+            aria-labelledby="existing-taskbar-control-title"
+            className="wd-story-reference__frame"
+            data-product-state="existing"
+            data-product-surface="existing-taskbar-control"
+          >
+            <h2 className="wd-story-reference__heading" id="existing-taskbar-control-title">
+              작업 표시줄 앱
+            </h2>
+            <nav
+              aria-label="작업 표시줄"
+              className="wd-story-cluster"
+              style={{
+                background: "var(--wd-color-surface-muted)",
+                border: "1px solid var(--wd-color-border-default)",
+                justifyContent: "center",
+                minHeight: "4rem",
+                padding: "0.5rem",
+                width: "100%",
+              }}
+            >
+              <IconButtonUI
+                data-testid="taskbar-app-action"
+                icon={<Folder20Regular />}
+                label="블로그 앱 열기"
+                onClick={() => {
+                  setTaskbarSelected((selected) => !selected);
+                  setLastAction("taskbar-app");
+                }}
+                selected={taskbarSelected}
+                size="lg"
+              />
+            </nav>
+            <dl className="wd-story-reference__probe">
+              <dt>제품 상태</dt>
+              <dd>기존</dd>
+              <dt>버튼 자리</dt>
+              <dd>Taskbar 담당 앱 자리</dd>
+              <dt>선택 상태</dt>
+              <dd>{taskbarSelected ? "선택됨" : "선택 안 됨"}</dd>
+            </dl>
+          </section>
+
+          <output
+            aria-label="창과 작업 표시줄 버튼 실행 상태"
+            className="wd-story-reference__note"
+            data-last-action={lastAction}
+            data-testid="icon-button-action-probe"
+          >
+            {actionLabel}
+          </output>
+          <p className="wd-story-reference__note">
+            IconButtonUI는 아이콘 버튼만 맡습니다. Window와 Taskbar 담당이 버튼 자리, 실제 창 닫기,
+            앱 실행과 선택 표시를 맡습니다.
+          </p>
+        </div>
+      </article>
     </div>
   );
 };
 
 export const ProductReference: Story = {
-  name: "Product Reference — Existing Window and Taskbar",
+  name: "제품 예시 — 기존 창과 작업 표시줄",
   parameters: {
     docs: {
       description: {
         story:
-          "Surfaces: Existing Window close control과 Existing Taskbar app control. Reference state: Existing. Primitive 범위는 consumer가 주입한 icon, accessible label과 native activation까지이며 실제 창 종료, app session 실행, taskbar indicator와 surface layout은 higher layer가 소유합니다.",
+          "기존 창 제목 표시줄의 닫기 자리와 기존 작업 표시줄의 앱 자리를 비교합니다. IconButtonUI는 사용하는 쪽이 넣은 아이콘, 읽을 수 있는 이름과 버튼 실행을 맡습니다. Window와 Taskbar 담당은 실제 창 닫기, 앱 실행·선택 표시와 전체 배치를 맡습니다.",
       },
     },
   },
   render: () => <ExistingWindowTaskbarProductReference />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const closeButton = canvas.getByRole("button", { name: "창 닫기" });
-    const taskbarButton = canvas.getByRole("button", { name: "블로그 창 열기" });
-    const status = canvas.getByRole("status", {
-      name: "Existing Window와 Taskbar icon-only action 상태",
-    });
+    const closeButton = canvas.getByTestId("window-close-action");
+    const taskbarButton = canvas.getByTestId("taskbar-app-action");
+    const actionProbe = canvas.getByTestId("icon-button-action-probe");
 
-    await expect(status).toHaveTextContent("마지막 action: 실행 전");
+    await expect(actionProbe).toHaveAttribute("data-last-action", "idle");
     await userEvent.click(closeButton);
-    await expect(status).toHaveTextContent("마지막 action: 창 닫기 요청");
+    await expect(actionProbe).toHaveAttribute("data-last-action", "window-close");
     await userEvent.click(taskbarButton);
     await expect(taskbarButton).toHaveAttribute("aria-pressed", "true");
-    await expect(status).toHaveTextContent("마지막 action: taskbar app 요청");
+    await expect(actionProbe).toHaveAttribute("data-last-action", "taskbar-app");
   },
 };
 
@@ -167,17 +233,25 @@ const IconButtonInteractionFixture = (args: React.ComponentProps<typeof IconButt
     <div>
       <IconButtonUI
         {...args}
+        data-testid="icon-button-interaction-action"
         onClick={(event) => {
           args.onClick?.(event);
           setActivationCount((count) => count + 1);
         }}
       />
-      <output aria-label="IconButton 실행 횟수">활성화 횟수: {activationCount}</output>
+      <output
+        aria-label="아이콘 버튼 실행 횟수"
+        data-activation-count={activationCount}
+        data-testid="icon-button-interaction-probe"
+      >
+        실행 횟수: {activationCount}
+      </output>
     </div>
   );
 };
 
 export const Interaction: Story = {
+  name: "동작 — 키보드 실행",
   args: {
     onClick: onIconButtonClick,
   },
@@ -185,7 +259,7 @@ export const Interaction: Story = {
     docs: {
       description: {
         story:
-          "키보드로 icon-only action을 실행하는 상태입니다. Space를 한 번 누르면 callback이 한 번 호출되고 Canvas의 활성화 횟수가 1로 바뀝니다.",
+          "키보드로 아이콘 버튼을 실행하는 예시입니다. Space를 한 번 누르면 callback이 한 번 호출되고 실행 횟수가 1로 바뀝니다.",
       },
     },
   },
@@ -193,60 +267,78 @@ export const Interaction: Story = {
   play: async ({ canvasElement }) => {
     onIconButtonClick.mockClear();
     const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: "Add item" });
-    const status = canvas.getByRole("status", { name: "IconButton 실행 횟수" });
+    const button = canvas.getByTestId("icon-button-interaction-action");
+    const actionProbe = canvas.getByTestId("icon-button-interaction-probe");
 
     button.focus();
     await userEvent.keyboard(" ");
     await expect(onIconButtonClick).toHaveBeenCalledOnce();
-    await expect(status).toHaveTextContent("활성화 횟수: 1");
+    await expect(actionProbe).toHaveAttribute("data-activation-count", "1");
   },
 };
 
 const IconButtonFocusFixture = (args: React.ComponentProps<typeof IconButtonUI>) => {
-  const [focusedTarget, setFocusedTarget] = useState("없음");
+  const [focusedTarget, setFocusedTarget] = useState<"action" | "none" | "start">("none");
+
+  const focusedTargetLabel = {
+    action: "항목 추가 버튼",
+    none: "없음",
+    start: "키보드 탐색 시작점",
+  }[focusedTarget];
 
   return (
     <div>
-      <a href="#icon-button-focus-target" onFocus={() => setFocusedTarget("키보드 탐색 시작점")}>
-        IconButton 포커스 확인 시작
+      <a
+        data-testid="icon-button-focus-start"
+        href="#icon-button-focus-target"
+        onFocus={() => setFocusedTarget("start")}
+      >
+        아이콘 버튼 포커스 확인 시작
       </a>
       <IconButtonUI
         {...args}
+        data-testid="icon-button-focus-action"
         id="icon-button-focus-target"
         onFocus={(event) => {
           args.onFocus?.(event);
-          setFocusedTarget("Add item");
+          setFocusedTarget("action");
         }}
       />
-      <output aria-label="IconButton 현재 포커스">현재 포커스: {focusedTarget}</output>
+      <output
+        aria-label="아이콘 버튼 현재 포커스"
+        data-focus-target={focusedTarget}
+        data-testid="icon-button-focus-probe"
+      >
+        현재 포커스: {focusedTargetLabel}
+      </output>
     </div>
   );
 };
 
 export const FocusVisible: Story = {
+  name: "상태 — 키보드 포커스",
   parameters: {
     docs: {
       description: {
         story:
-          "fixture가 소유한 키보드 탐색 시작점에서 실제 Tab 이동을 수행합니다. Canvas에서 IconButton focus, focus-visible outline과 현재 포커스 표시를 함께 확인합니다.",
+          "키보드 탐색 시작점에서 Tab으로 실제 이동합니다. Canvas에서 아이콘 버튼의 focus-visible 테두리와 현재 포커스 표시를 함께 확인합니다.",
       },
     },
   },
   render: (args) => <IconButtonFocusFixture {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const start = canvas.getByRole("link", { name: "IconButton 포커스 확인 시작" });
-    const button = canvas.getByRole("button", { name: "Add item" });
-    const status = canvas.getByRole("status", { name: "IconButton 현재 포커스" });
+    const start = canvas.getByTestId("icon-button-focus-start");
+    const button = canvas.getByTestId("icon-button-focus-action");
+    const focusProbe = canvas.getByTestId("icon-button-focus-probe");
 
     start.focus();
     await expect(start).toHaveFocus();
-    await expect(status).toHaveTextContent("현재 포커스: 키보드 탐색 시작점");
+    await expect(focusProbe).toHaveAttribute("data-focus-target", "start");
     await userEvent.tab();
     await expect(button).toHaveFocus();
     await expect(button.matches(":focus-visible")).toBe(true);
     await expect(getComputedStyle(button).outlineStyle).toBe("solid");
-    await expect(status).toHaveTextContent("현재 포커스: Add item");
+    await expect(focusProbe).toHaveAttribute("data-focus-target", "action");
   },
 };
