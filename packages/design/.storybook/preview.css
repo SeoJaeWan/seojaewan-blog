@@ -154,33 +154,74 @@
   margin: 0;
 }
 
-.wd-button-product-reference {
+.wd-story-reference {
   display: grid;
   gap: 1rem;
-  width: min(100%, 32rem);
-  padding: 1rem;
-  border: 1px solid var(--wd-color-border-default);
-  border-radius: var(--wd-reference-radius-2);
-  background: var(--wd-color-surface-default);
+  width: min(100%, 40rem);
   color: var(--wd-color-text-primary);
   font-family: var(--wd-font-family-sans);
 }
 
-.wd-button-product-reference__heading,
-.wd-button-product-reference__state,
-.wd-button-product-reference__status {
+.wd-story-reference__badge {
+  justify-self: start;
+  margin: 0;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  background: var(--wd-color-surface-muted);
+  color: var(--wd-color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.wd-story-reference__layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.wd-story-reference__frame {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--wd-color-border-default);
+  border-radius: var(--wd-reference-radius-2);
+  background: var(--wd-color-surface-default);
+}
+
+.wd-story-reference__heading,
+.wd-story-reference__note {
   margin: 0;
 }
 
-.wd-button-product-reference__state {
-  color: var(--wd-color-text-secondary);
-  font-size: 0.875rem;
+.wd-story-reference__heading {
+  font-size: 1.125rem;
+  line-height: 1.4;
 }
 
-.wd-button-product-reference__path {
+.wd-story-reference__note {
   padding: 0.75rem;
-  border-radius: var(--wd-reference-radius-1);
+  border-inline-start: 0.1875rem solid var(--wd-color-border-default);
   background: var(--wd-color-surface-muted);
-  font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  color: var(--wd-color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.wd-story-reference__probe {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.wd-story-reference__probe > dt {
+  color: var(--wd-color-text-secondary);
+  font-weight: 650;
+}
+
+.wd-story-reference__probe > dd {
+  min-width: 0;
+  margin: 0;
   overflow-wrap: anywhere;
 }
