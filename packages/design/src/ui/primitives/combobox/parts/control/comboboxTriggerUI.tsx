@@ -3,6 +3,7 @@
 import { forwardRef } from "react";
 
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
+import { ChevronDown16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ComboboxUITriggerProps } from "../../comboboxUI.types";
@@ -13,7 +14,15 @@ import type { ComboboxUITriggerProps } from "../../comboboxUI.types";
  * 애플리케이션 경로를 이동하거나 선택 값을 직접 확정하지 않는다.
  */
 export const ComboboxTriggerUI = forwardRef<HTMLButtonElement, ComboboxUITriggerProps>(
-  function ComboboxTriggerUI({ children = "▾", className, type = "button", ...props }, ref) {
+  function ComboboxTriggerUI(
+    {
+      children = <ChevronDown16Regular aria-hidden="true" />,
+      className,
+      type = "button",
+      ...props
+    },
+    ref,
+  ) {
     return (
       <BaseCombobox.Trigger
         {...props}

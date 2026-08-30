@@ -3,6 +3,7 @@
 import { forwardRef } from "react";
 
 import { Select as BaseSelect } from "@base-ui/react/select";
+import { Checkmark16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { SelectUIItemProps } from "../../selectUI.types";
@@ -19,7 +20,7 @@ export const SelectItemUI = forwardRef<HTMLElement, SelectUIItemProps>(function 
   return (
     <BaseSelect.Item {...props} className={clsx("wd-select-ui__item", className)} ref={ref}>
       <BaseSelect.ItemIndicator className="wd-select-ui__item-indicator" keepMounted>
-        ✓
+        <Checkmark16Regular aria-hidden="true" />
       </BaseSelect.ItemIndicator>
       <BaseSelect.ItemText className="wd-select-ui__item-label">{children}</BaseSelect.ItemText>
     </BaseSelect.Item>

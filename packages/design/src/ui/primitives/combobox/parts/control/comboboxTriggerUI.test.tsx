@@ -25,7 +25,9 @@ describe("ComboboxTriggerUI", () => {
 
     const trigger = screen.getByRole("button", { name: "경로 보기" });
     expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.textContent).toBe("▾");
+    const icon = trigger.querySelector("svg");
+    expect(icon).not.toBeNull();
+    expect(icon?.getAttribute("aria-hidden")).toBe("true");
     expect(trigger.className).toContain("wd-combobox-ui__trigger");
     expect(trigger.className).toContain("custom");
     expect(ref.current).toBe(trigger);

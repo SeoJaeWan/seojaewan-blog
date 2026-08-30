@@ -4,12 +4,16 @@
   background-color: var(--wd-button-root-background-color);
   border: 1px solid var(--wd-button-root-border-color);
   border-radius: var(--wd-button-root-border-radius);
+  box-sizing: border-box;
   color: var(--wd-button-root-color);
   cursor: pointer;
   display: inline-flex;
   font-family: var(--wd-button-root-font-family);
+  font-size: var(--wd-button-root-font-size);
+  font-weight: var(--wd-button-root-font-weight);
   gap: var(--wd-button-root-gap);
   justify-content: center;
+  line-height: var(--wd-button-root-line-height);
   min-block-size: var(--wd-button-root-min-height);
   padding-block: var(--wd-button-root-padding-block);
   padding-inline: var(--wd-button-root-padding-inline);
@@ -21,11 +25,12 @@
 }
 
 .wd-button-ui:hover:not(:disabled) {
-  background-color: var(--wd-color-surface-muted);
+  background-color: var(--wd-button-root-background-color-hover);
 }
 
 .wd-button-ui:active:not(:disabled) {
-  border-color: var(--wd-color-accent-default);
+  background-color: var(--wd-button-root-background-color-pressed);
+  border-color: var(--wd-button-root-border-color-pressed);
 }
 
 .wd-button-ui:focus {

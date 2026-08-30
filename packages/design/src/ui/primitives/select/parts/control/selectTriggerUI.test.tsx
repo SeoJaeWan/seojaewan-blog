@@ -27,7 +27,9 @@ describe("SelectTriggerUI", () => {
     expect(trigger.getAttribute("type")).toBe("button");
     expect(trigger.className).toContain("wd-select-ui__trigger");
     expect(trigger.className).toContain("custom");
-    expect(trigger.querySelector('[aria-hidden="true"]')?.textContent).toBe("▾");
+    const icon = trigger.querySelector("svg");
+    expect(icon).not.toBeNull();
+    expect(icon?.getAttribute("aria-hidden")).toBe("true");
     expect(ref.current).toBe(trigger);
   });
 });

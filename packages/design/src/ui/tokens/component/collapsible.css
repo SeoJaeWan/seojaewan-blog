@@ -1,13 +1,17 @@
 :root {
   --wd-collapsible-root-color: var(--wd-color-text-primary);
   --wd-collapsible-root-font-family: var(--wd-font-family-sans);
+  --wd-collapsible-root-font-size: 0.875rem;
+  --wd-collapsible-root-font-weight: 400;
+  --wd-collapsible-root-line-height: 1.25rem;
   --wd-collapsible-trigger-background-color-hover: var(--wd-color-surface-muted);
+  --wd-collapsible-trigger-background-color-pressed: var(--wd-color-surface-muted);
   --wd-collapsible-trigger-border-radius: var(--wd-reference-radius-2);
   --wd-collapsible-trigger-gap: var(--wd-reference-spacing-2);
   --wd-collapsible-trigger-min-height: 32px;
   --wd-collapsible-trigger-opacity-disabled: 0.5;
   --wd-collapsible-trigger-outline-color-focus-visible: var(--wd-color-focus-ring);
-  --wd-collapsible-trigger-padding-block: var(--wd-reference-spacing-2);
+  --wd-collapsible-trigger-padding-block: var(--wd-reference-spacing-1);
   --wd-collapsible-trigger-padding-inline: var(--wd-reference-spacing-3);
   --wd-collapsible-trigger-transition-duration: var(--wd-reference-duration-120);
   --wd-collapsible-trigger-transition-easing: var(--wd-reference-easing-2);

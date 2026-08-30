@@ -3,6 +3,7 @@
 import { forwardRef } from "react";
 
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
+import { Checkmark16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ComboboxUIItemProps } from "../../comboboxUI.types";
@@ -17,7 +18,7 @@ export const ComboboxItemUI = forwardRef<HTMLDivElement, ComboboxUIItemProps>(
     return (
       <BaseCombobox.Item {...props} className={clsx("wd-combobox-ui__item", className)} ref={ref}>
         <BaseCombobox.ItemIndicator className="wd-combobox-ui__item-indicator" keepMounted>
-          ✓
+          <Checkmark16Regular aria-hidden="true" />
         </BaseCombobox.ItemIndicator>
         <span className="wd-combobox-ui__item-label">{children}</span>
       </BaseCombobox.Item>

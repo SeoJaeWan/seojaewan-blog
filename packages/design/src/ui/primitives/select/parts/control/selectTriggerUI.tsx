@@ -3,6 +3,7 @@
 import { forwardRef } from "react";
 
 import { Select as BaseSelect } from "@base-ui/react/select";
+import { ChevronDown16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { SelectUITriggerProps } from "../../selectUI.types";
@@ -23,7 +24,7 @@ export const SelectTriggerUI = forwardRef<HTMLButtonElement, SelectUITriggerProp
       >
         {children}
         <span aria-hidden="true" className="wd-select-ui__trigger-icon">
-          ▾
+          <ChevronDown16Regular aria-hidden="true" />
         </span>
       </BaseSelect.Trigger>
     );

@@ -1,6 +1,9 @@
 .wd-collapsible-ui {
   color: var(--wd-collapsible-root-color);
   font-family: var(--wd-collapsible-root-font-family);
+  font-size: var(--wd-collapsible-root-font-size);
+  font-weight: var(--wd-collapsible-root-font-weight);
+  line-height: var(--wd-collapsible-root-line-height);
 }
 
 .wd-collapsible-ui__trigger {
@@ -9,6 +12,7 @@
   background-color: transparent;
   border: 0;
   border-radius: var(--wd-collapsible-trigger-border-radius);
+  box-sizing: border-box;
   color: inherit;
   cursor: pointer;
   display: inline-flex;
@@ -26,6 +30,10 @@
 
 .wd-collapsible-ui__trigger:hover:not(:disabled, [data-disabled]) {
   background-color: var(--wd-collapsible-trigger-background-color-hover);
+}
+
+.wd-collapsible-ui__trigger:active:not(:disabled, [data-disabled]) {
+  background-color: var(--wd-collapsible-trigger-background-color-pressed);
 }
 
 .wd-collapsible-ui__trigger:focus {

@@ -6,6 +6,9 @@
   box-sizing: border-box;
   color: var(--wd-input-root-color);
   font-family: var(--wd-input-root-font-family);
+  font-size: var(--wd-input-root-font-size);
+  font-weight: var(--wd-input-root-font-weight);
+  line-height: var(--wd-input-root-line-height);
   min-block-size: var(--wd-input-root-min-height);
   min-inline-size: 0;
   padding-block: var(--wd-input-root-padding-block);

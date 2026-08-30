@@ -1,8 +1,11 @@
 :root {
   --wd-combobox-label-color: var(--wd-color-text-secondary);
+  --wd-combobox-font-family: var(--wd-font-family-sans);
   --wd-combobox-label-font-size: 0.875rem;
+  --wd-combobox-line-height: 1.25rem;
   --wd-combobox-label-margin-block-end: var(--wd-reference-spacing-1);
   --wd-combobox-input-background-color: var(--wd-color-surface-window);
+  --wd-combobox-input-background-color-hover: var(--wd-color-surface-muted);
   --wd-combobox-input-border-color: var(--wd-color-border-default);
   --wd-combobox-input-border-color-focus: var(--wd-color-accent-default);
   --wd-combobox-input-border-radius: var(--wd-reference-radius-1);
@@ -10,6 +13,12 @@
   --wd-combobox-input-min-height: 32px;
   --wd-combobox-input-padding-inline: var(--wd-reference-spacing-2);
   --wd-combobox-control-size: 32px;
+  --wd-combobox-control-background-color-hover: var(--wd-color-surface-muted);
+  --wd-combobox-control-background-color-pressed: var(--wd-color-surface-muted);
+  --wd-combobox-control-border-radius: var(--wd-reference-radius-1);
+  --wd-combobox-control-icon-size: 16px;
+  --wd-combobox-control-opacity-disabled: 0.5;
+  --wd-combobox-control-transition-duration: var(--wd-reference-duration-120);
   --wd-combobox-content-background-color: var(--wd-color-surface-window);
   --wd-combobox-content-border-color: var(--wd-color-border-default);
   --wd-combobox-content-border-radius: var(--wd-reference-radius-2);
@@ -23,6 +32,7 @@
   --wd-combobox-item-color: var(--wd-color-text-primary);
   --wd-combobox-item-gap: var(--wd-reference-spacing-2);
   --wd-combobox-item-min-height: 32px;
+  --wd-combobox-item-indicator-size: 16px;
   --wd-combobox-item-opacity-disabled: 0.5;
   --wd-combobox-item-padding-inline: var(--wd-reference-spacing-2);
   --wd-combobox-empty-color: var(--wd-color-text-secondary);

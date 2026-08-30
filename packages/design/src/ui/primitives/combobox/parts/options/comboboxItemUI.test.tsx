@@ -35,6 +35,7 @@ describe("ComboboxItemUI", () => {
     expect(item).toBe(screen.getByTestId("item"));
     expect(item.className).toContain("wd-combobox-ui__item");
     expect(item.className).toContain("custom");
+    expect(item.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
     expect(ref.current).toBe(item);
 
     fireEvent.click(item);

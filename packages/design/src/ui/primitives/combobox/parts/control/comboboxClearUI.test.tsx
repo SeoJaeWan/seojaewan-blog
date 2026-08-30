@@ -25,7 +25,9 @@ describe("ComboboxClearUI", () => {
 
     const clear = screen.getByRole("button", { hidden: true, name: "경로 지우기" });
     expect(clear.getAttribute("type")).toBe("button");
-    expect(clear.textContent).toBe("×");
+    const icon = clear.querySelector("svg");
+    expect(icon).not.toBeNull();
+    expect(icon?.getAttribute("aria-hidden")).toBe("true");
     expect(clear.className).toContain("wd-combobox-ui__clear");
     expect(clear.className).toContain("custom");
     expect(ref.current).toBe(clear);

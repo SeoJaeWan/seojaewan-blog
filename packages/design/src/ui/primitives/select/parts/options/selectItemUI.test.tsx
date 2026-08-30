@@ -40,6 +40,7 @@ describe("SelectItemUI", () => {
     expect(item).toBe(screen.getByTestId("item"));
     expect(item.className).toContain("wd-select-ui__item");
     expect(item.className).toContain("custom");
+    expect(item.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
     expect(ref.current).toBe(item);
 
     await user.click(item);

@@ -43,6 +43,36 @@ describe("IconButtonUI", () => {
     expect(button.getAttribute("type")).toBe("submit");
   });
 
+  it("sm, md, lg size 계약과 md 기본값을 data state로 제공한다", () => {
+    const view = renderUITest(
+      <>
+        <IconButtonUI icon="S" label="작게" size="sm" />
+        <IconButtonUI icon="M" label="기본" />
+        <IconButtonUI icon="L" label="크게" size="lg" />
+      </>,
+    );
+
+    expect(view.getByRole("button", { name: "작게" }).getAttribute("data-size")).toBe("sm");
+    expect(view.getByRole("button", { name: "기본" }).getAttribute("data-size")).toBe("md");
+    expect(view.getByRole("button", { name: "크게" }).getAttribute("data-size")).toBe("lg");
+  });
+
+  it("selected에서 aria-pressed와 data-selected를 함께 파생한다", () => {
+    const view = renderUITest(
+      <>
+        <IconButtonUI icon="A" label="선택 안 됨" />
+        <IconButtonUI icon="B" label="선택됨" selected />
+      </>,
+    );
+    const unselected = view.getByRole("button", { name: "선택 안 됨" });
+    const selected = view.getByRole("button", { name: "선택됨" });
+
+    expect(unselected.hasAttribute("aria-pressed")).toBe(false);
+    expect(unselected.hasAttribute("data-selected")).toBe(false);
+    expect(selected.getAttribute("aria-pressed")).toBe("true");
+    expect(selected.getAttribute("data-selected")).toBe("true");
+  });
+
   it("전달한 ref를 native button에 연결한다", () => {
     const ref = createRef<HTMLButtonElement>();
     const view = renderUITest(<IconButtonUI icon="+" label="항목 추가" ref={ref} />);
