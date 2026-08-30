@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Add20Regular } from "@fluentui/react-icons";
+import { Add20Regular, Dismiss16Regular, Folder20Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 
@@ -18,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "IconButtonUI는 제한된 공간에서 product icon만 보이는 action에 사용하며 필수 label로 accessible name을 제공합니다. 텍스트나 콘텐츠로 목적을 직접 보여 줄 수 있으면 ButtonUI를 선택합니다. 단일 public component에 consumer가 icon을 주입하고 sm·md·lg size, disabled와 selected 상태를 조합하며 selected는 aria-pressed와 시각 상태를 함께 표현합니다. focus-visible, hover와 active feedback은 ButtonUI 기반 native button 계약을 유지합니다. consumer는 제품 icon, label과 callback을 제공해야 하고, IconButtonUI는 icon 선택, 권한 확인이나 실행할 business action을 소유하지 않습니다.",
+          "### What is it?\nIconButtonUI는 제한된 공간에서 제품 아이콘만 보이는 action Primitive이며 필수 `label`을 native button의 accessible name으로 제공합니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Window의 닫기 control**과 **Existing Taskbar의 app control**입니다. `Product Reference — Existing Window and Taskbar` Story가 두 surface의 Existing state를 consumer icon과 작은 local-state probe로 보여 줍니다.\n\n### When should I use it?\n창 닫기나 taskbar app 실행처럼 compact chrome에서 아이콘만으로 표현하는 단일 action에 사용합니다.\n\n### When should I choose something else?\n텍스트나 콘텐츠로 목적을 직접 보여 줄 수 있으면 ButtonUI를 사용합니다. app indicator, window chrome layout, drag 방지와 panel 연결처럼 surface 고유 조합은 더 높은 Window·Taskbar layer가 맡습니다.\n\n### What states and interaction contract matter?\nsm·md·lg size와 default, hover, active, focus-visible, disabled, selected 상태를 제공하며 selected는 `aria-pressed`와 시각 상태를 함께 표현합니다. consumer가 주입한 icon은 장식으로 숨기고 label, native pointer/keyboard activation, ref와 callback 전달을 보존합니다.\n\n### Who owns what?\nPrimitive는 icon-only semantic button, size와 visual/disabled/selected 계약을 소유합니다. Consumer는 제품 icon, 읽을 수 있는 label과 callback을 제공합니다. 창 session 종료, taskbar 실행·선택 상태, 권한 확인과 panel workflow는 higher layer가 소유합니다.",
       },
     },
   },
@@ -84,6 +84,77 @@ export const Disabled: Story = {
           "비활성 icon-only action 상태입니다. Canvas에서 accessible name을 유지한 native disabled button과 실행할 수 없음을 확인합니다.",
       },
     },
+  },
+};
+
+const ExistingWindowTaskbarProductReference = () => {
+  const [lastAction, setLastAction] = useState("실행 전");
+  const [taskbarSelected, setTaskbarSelected] = useState(false);
+
+  return (
+    <div className="wd-story-stage wd-story-stack">
+      <section
+        className="wd-story-cluster"
+        data-product-state="existing"
+        data-product-surface="existing-window-control"
+      >
+        <span>Existing Window · Existing state</span>
+        <IconButtonUI
+          icon={<Dismiss16Regular />}
+          label="창 닫기"
+          onClick={() => setLastAction("창 닫기 요청")}
+          size="sm"
+        />
+      </section>
+      <section
+        className="wd-story-cluster"
+        data-product-state="existing"
+        data-product-surface="existing-taskbar-control"
+      >
+        <span>Existing Taskbar · Existing state</span>
+        <IconButtonUI
+          icon={<Folder20Regular />}
+          label="블로그 창 열기"
+          onClick={() => {
+            setTaskbarSelected((selected) => !selected);
+            setLastAction("taskbar app 요청");
+          }}
+          selected={taskbarSelected}
+          size="lg"
+        />
+      </section>
+      <output aria-label="Existing Window와 Taskbar icon-only action 상태">
+        마지막 action: {lastAction}
+      </output>
+    </div>
+  );
+};
+
+export const ProductReference: Story = {
+  name: "Product Reference — Existing Window and Taskbar",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Surfaces: Existing Window close control과 Existing Taskbar app control. Reference state: Existing. Primitive 범위는 consumer가 주입한 icon, accessible label과 native activation까지이며 실제 창 종료, app session 실행, taskbar indicator와 surface layout은 higher layer가 소유합니다.",
+      },
+    },
+  },
+  render: () => <ExistingWindowTaskbarProductReference />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const closeButton = canvas.getByRole("button", { name: "창 닫기" });
+    const taskbarButton = canvas.getByRole("button", { name: "블로그 창 열기" });
+    const status = canvas.getByRole("status", {
+      name: "Existing Window와 Taskbar icon-only action 상태",
+    });
+
+    await expect(status).toHaveTextContent("마지막 action: 실행 전");
+    await userEvent.click(closeButton);
+    await expect(status).toHaveTextContent("마지막 action: 창 닫기 요청");
+    await userEvent.click(taskbarButton);
+    await expect(taskbarButton).toHaveAttribute("aria-pressed", "true");
+    await expect(status).toHaveTextContent("마지막 action: taskbar app 요청");
   },
 };
 
