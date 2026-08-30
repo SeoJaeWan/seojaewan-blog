@@ -1,6 +1,6 @@
 .sbdocs-content {
   max-width: 72rem;
-  margin-inline: auto;
+  margin-inline: 0 auto;
 }
 
 .sbdocs-content :where(h1, h2, h3, h4):not(.docs-story *) {
@@ -92,12 +92,16 @@
 
 .wd-story-stage {
   display: grid;
+  align-content: start;
+  align-items: start;
+  justify-items: start;
   gap: 0.75rem;
   min-height: 17.5rem;
   padding: 1.5rem;
 }
 
 .wd-story-stage--centered {
+  place-content: center;
   place-items: center;
 }
 
@@ -148,4 +152,35 @@
 .wd-story-probe > dd {
   min-width: 0;
   margin: 0;
+}
+
+.wd-button-product-reference {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 32rem);
+  padding: 1rem;
+  border: 1px solid var(--wd-color-border-default);
+  border-radius: var(--wd-reference-radius-2);
+  background: var(--wd-color-surface-default);
+  color: var(--wd-color-text-primary);
+  font-family: var(--wd-font-family-sans);
+}
+
+.wd-button-product-reference__heading,
+.wd-button-product-reference__state,
+.wd-button-product-reference__status {
+  margin: 0;
+}
+
+.wd-button-product-reference__state {
+  color: var(--wd-color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.wd-button-product-reference__path {
+  padding: 0.75rem;
+  border-radius: var(--wd-reference-radius-1);
+  background: var(--wd-color-surface-muted);
+  font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
 }
