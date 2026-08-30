@@ -67,7 +67,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### What is it?\nPopoverUI는 trigger에 anchor된 보조 surface를 portal에 렌더링하면서 주변 action을 계속 허용하는 non-modal Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Taskbar의 Start panel, Search panel과 hover preview panel**입니다. `Product Reference — Existing Taskbar Panels` Story가 세 panel의 Existing state를 작은 local fixture로 식별합니다.\n\n### When should I use it?\nTaskbar trigger와 공간적으로 연결된 panel처럼 사용자가 주변 desktop·taskbar action을 계속 사용할 수 있어야 하는 일시적 보조 콘텐츠에 사용합니다.\n\n### When should I choose something else?\n페이지 나머지와 focus·pointer를 격리해야 하는 흐름에는 DialogUI를, 문서 흐름 안의 콘텐츠를 펼치고 접는 데에는 CollapsibleUI를 사용합니다.\n\n### What states and interaction contract matter?\nClosed/Open과 anchor placement 상태, accessible dialog naming, portal rendering, initial focus, Escape·outside-interaction dismissal, trigger focus 복원과 reduced-motion이 중요합니다. outside pointer action은 surface를 닫은 뒤에도 실행됩니다.\n\n### Who owns what?\nPrimitive는 anchor·portal·focus·dismissal mechanics를 소유합니다. Consumer는 읽을 수 있는 panel 이름, 콘텐츠와 controlled open policy를 제공합니다. Taskbar panel dimensions, Start items, Search query/results, hover timing·preview 데이터와 route는 higher layer가 소유합니다.",
+          "### 무엇인가요?\nPopoverUI는 누른 대상 가까이에 작은 보조 화면을 띄우는 non-modal Primitive입니다. 주변 화면을 막지 않습니다.\n\n### 제품에서는 어디에 쓰나요?\n주요 기준은 **Existing Taskbar의 클릭 panel**입니다. `Product Reference — Existing Taskbar Click Panel` Story에서 Start 버튼과 panel의 관계를 확인합니다. hover로 여는 미리보기는 정책이 다르므로 `Product Reference — Existing Taskbar Hover Preview` Story에 따로 둡니다.\n\n### 언제 쓰나요?\nTaskbar 버튼처럼 panel이 기준 대상에 붙어 있어야 하고, 열린 동안에도 주변 화면을 막지 않아야 할 때 씁니다.\n\n### 다른 surface는 언제 고르나요?\n배경의 focus와 pointer를 막아야 하면 DialogUI를, 같은 문서 흐름 안의 내용을 펼치고 접으면 CollapsibleUI를 씁니다.\n\n### 꼭 지켜야 할 동작은 무엇인가요?\n열림 상태, 기준 대상과의 배치, 접근 가능한 이름, portal, focus, Escape·바깥 누르기 닫힘, trigger로 돌아오는 focus가 중요합니다. click·hover·outside 정책은 소비자가 한 시나리오씩 분리해 정합니다.\n\n### 누가 무엇을 소유하나요?\nPrimitive는 anchor·portal·focus·dismissal mechanics를 소유합니다. Taskbar panel 크기, Start 항목, hover 지연 시간, 미리보기 데이터와 route는 Taskbar owner가 소유합니다.",
       },
     },
     layout: "centered",
@@ -161,113 +161,134 @@ export const PortalAndDismissal: Story = {
   },
 };
 
-const ExistingTaskbarPanelsProductReference = () => {
-  const [openPanel, setOpenPanel] = useState<"start" | "search" | "hover" | null>(null);
-  const [outsideActionResult, setOutsideActionResult] = useState("아직 실행되지 않음");
+const ExistingTaskbarClickPanelReference = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [lastResult, setLastResult] = useState("Start panel 닫힘");
 
   return (
     <section
-      aria-label="Existing Taskbar panel reference"
+      aria-label="Existing Taskbar click panel reference"
       className="wd-story-stage wd-story-stack"
       data-product-state="existing"
-      data-product-surface="existing-taskbar-panels"
+      data-product-surface="existing-taskbar-click-panel"
     >
-      <p>Existing Taskbar · Existing state</p>
-      <dl className="wd-story-probe">
-        <dt>Start panel</dt>
-        <dd>Existing · non-modal</dd>
-        <dt>Search panel</dt>
-        <dd>Existing · non-modal</dd>
-        <dt>Hover preview panel</dt>
-        <dd>Existing · non-modal; hover timing is higher-layer</dd>
-      </dl>
-      <div className="wd-story-cluster">
-        <PopoverUI
-          open={openPanel === "start"}
-          onOpenChange={(isOpen) => setOpenPanel(isOpen ? "start" : null)}
-        >
-          <PopoverUI.Trigger>Start</PopoverUI.Trigger>
-          <PopoverUI.Content>
-            <PopoverUI.Title>Taskbar Start panel</PopoverUI.Title>
-            <PopoverUI.Description>Minimal local Start panel reference.</PopoverUI.Description>
-            <PopoverUI.Close>Close Start</PopoverUI.Close>
-          </PopoverUI.Content>
-        </PopoverUI>
-
-        <PopoverUI
-          open={openPanel === "search"}
-          onOpenChange={(isOpen) => setOpenPanel(isOpen ? "search" : null)}
-        >
-          <PopoverUI.Trigger>Search</PopoverUI.Trigger>
-          <PopoverUI.Content>
-            <PopoverUI.Title>Taskbar Search panel</PopoverUI.Title>
-            <PopoverUI.Description>Minimal local Search panel reference.</PopoverUI.Description>
-            <InputUI aria-label="Search Taskbar reference" placeholder="Search" />
-            <PopoverUI.Close>Close Search</PopoverUI.Close>
-          </PopoverUI.Content>
-        </PopoverUI>
-
-        <PopoverUI
-          open={openPanel === "hover"}
-          onOpenChange={(isOpen) => setOpenPanel(isOpen ? "hover" : null)}
-        >
-          <PopoverUI.Trigger>Folder preview</PopoverUI.Trigger>
-          <PopoverUI.Content>
-            <PopoverUI.Title>Taskbar hover preview panel</PopoverUI.Title>
-            <PopoverUI.Description>
-              Minimal local preview; product hover timing stays outside the Primitive.
-            </PopoverUI.Description>
-            <PopoverUI.Close>Close preview</PopoverUI.Close>
-          </PopoverUI.Content>
-        </PopoverUI>
-
-        <ButtonUI onClick={() => setOutsideActionResult("Desktop action 실행됨")}>
-          Open desktop item
-        </ButtonUI>
-      </div>
-      <output aria-label="Taskbar outside action 상태">{outsideActionResult}</output>
+      <p>Existing Taskbar · 클릭으로 여는 Start panel</p>
+      <output aria-label="Taskbar Start panel 상태">{lastResult}</output>
+      <PopoverUI
+        open={isOpen}
+        onOpenChange={(nextOpen) => {
+          setIsOpen(nextOpen);
+          setLastResult(nextOpen ? "Start panel 열림" : "Start panel 닫힘");
+        }}
+      >
+        <PopoverUI.Trigger>Start</PopoverUI.Trigger>
+        <PopoverUI.Content>
+          <PopoverUI.Title>Taskbar Start panel</PopoverUI.Title>
+          <PopoverUI.Description>
+            고정된 앱과 최근 문서를 확인하는 보조 panel입니다.
+          </PopoverUI.Description>
+          <ul>
+            <li>계산기</li>
+            <li>메모장</li>
+          </ul>
+          <PopoverUI.Close>Start panel 닫기</PopoverUI.Close>
+        </PopoverUI.Content>
+      </PopoverUI>
     </section>
   );
 };
 
 export const ProductReference: Story = {
-  name: "Product Reference — Existing Taskbar Panels",
+  name: "Product Reference — Existing Taskbar Click Panel",
   parameters: {
     docs: {
       description: {
         story:
-          "Surface: Existing Taskbar Start/Search/hover preview panels. Reference state: Existing. 세 panel은 anchor된 non-modal 선택의 parity를 보여 줍니다. Primitive 범위는 portal, focus와 dismissal까지이며 panel dimensions, Start/Search content, hover timing, selection과 route는 higher layer가 소유합니다.",
+          "Surface: Existing Taskbar Start click panel. Reference state: Existing. 클릭한 Start 버튼에 붙는 non-modal panel의 열기와 닫기만 보여 줍니다. panel 크기, 앱 데이터와 route는 Taskbar owner가 소유합니다.",
       },
     },
   },
-  render: () => <ExistingTaskbarPanelsProductReference />,
+  render: () => <ExistingTaskbarClickPanelReference />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const searchTrigger = canvas.getByRole("button", { name: "Search" });
-    const startTrigger = canvas.getByRole("button", { name: "Start" });
-    const outsideAction = canvas.getByRole("button", { name: "Open desktop item" });
-    const outsideStatus = canvas.getByRole("status", {
-      name: "Taskbar outside action 상태",
-    });
+    const trigger = canvas.getByRole("button", { name: "Start" });
+    const status = canvas.getByRole("status", { name: "Taskbar Start panel 상태" });
 
-    await userEvent.click(searchTrigger);
-    const searchPanel = await page.findByRole("dialog", { name: "Taskbar Search panel" });
-    await expect(canvasElement.contains(searchPanel)).toBe(false);
-    await expect(page.getByRole("textbox", { name: "Search Taskbar reference" })).toHaveFocus();
+    await expect(status).toHaveTextContent("Start panel 닫힘");
+    await userEvent.click(trigger);
+    const panel = await page.findByRole("dialog", { name: "Taskbar Start panel" });
+    const close = page.getByRole("button", { name: "Start panel 닫기" });
+    await expect(canvasElement.contains(panel)).toBe(false);
+    await expect(panel).not.toHaveAttribute("aria-modal", "true");
+    await expect(close).toHaveFocus();
+    await expect(status).toHaveTextContent("Start panel 열림");
 
-    await userEvent.click(outsideAction);
-    await waitFor(() => expect(searchPanel).not.toBeInTheDocument());
-    await expect(outsideAction).toHaveFocus();
-    await expect(outsideStatus).toHaveTextContent("Desktop action 실행됨");
+    await userEvent.click(close);
+    await waitFor(() => expect(panel).not.toBeInTheDocument());
+    await expect(trigger).toHaveFocus();
+    await expect(status).toHaveTextContent("Start panel 닫힘");
+  },
+};
 
-    await userEvent.click(startTrigger);
-    await page.findByRole("dialog", { name: "Taskbar Start panel" });
-    await userEvent.keyboard("{Escape}");
-    await waitFor(() =>
-      expect(page.queryByRole("dialog", { name: "Taskbar Start panel" })).not.toBeInTheDocument(),
-    );
-    await expect(startTrigger).toHaveFocus();
+const ExistingTaskbarHoverPreviewReference = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <section
+      aria-label="Existing Taskbar hover preview reference"
+      className="wd-story-stage wd-story-stack"
+      data-product-state="existing"
+      data-product-surface="existing-taskbar-hover-preview"
+    >
+      <p>Existing Taskbar · hover로 보는 창 미리보기</p>
+      <output aria-label="Taskbar hover preview 상태">
+        {isOpen ? "창 미리보기 열림" : "창 미리보기 닫힘"}
+      </output>
+      <PopoverUI open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverUI.Trigger
+          onPointerEnter={() => setIsOpen(true)}
+          onPointerLeave={() => setIsOpen(false)}
+        >
+          Folder
+        </PopoverUI.Trigger>
+        <PopoverUI.Content initialFocus={false}>
+          <PopoverUI.Title>Folder 창 미리보기</PopoverUI.Title>
+          <PopoverUI.Description>
+            열려 있는 Folder 창 한 개를 작게 확인합니다.
+          </PopoverUI.Description>
+        </PopoverUI.Content>
+      </PopoverUI>
+    </section>
+  );
+};
+
+export const HoverPreviewProductReference: Story = {
+  name: "Product Reference — Existing Taskbar Hover Preview",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Surface: Existing Taskbar hover preview. Reference state: Existing. hover 진입과 이탈만 다루는 별도 시나리오입니다. 지연 시간과 창 미리보기 데이터는 Taskbar owner가 소유합니다.",
+      },
+    },
+  },
+  render: () => <ExistingTaskbarHoverPreviewReference />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const trigger = canvas.getByRole("button", { name: "Folder" });
+    const status = canvas.getByRole("status", { name: "Taskbar hover preview 상태" });
+
+    await expect(status).toHaveTextContent("창 미리보기 닫힘");
+    await userEvent.hover(trigger);
+    const preview = await page.findByRole("dialog", { name: "Folder 창 미리보기" });
+    await expect(preview).not.toHaveAttribute("aria-modal", "true");
+    await expect(status).toHaveTextContent("창 미리보기 열림");
+
+    await userEvent.unhover(trigger);
+    await waitFor(() => expect(preview).not.toBeInTheDocument());
+    await expect(status).toHaveTextContent("창 미리보기 닫힘");
   },
 };
 

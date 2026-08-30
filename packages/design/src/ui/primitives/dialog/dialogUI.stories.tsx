@@ -77,7 +77,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### What is it?\nDialogUI는 Backdrop과 Content를 portal에 렌더링하고 페이지 나머지의 focus·pointer 상호작용을 격리하는 modal Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Planned Notion image lightbox**이며 아직 제품에 구현되지 않았습니다. `Product Reference — Planned Notion Lightbox` Story는 Planned state를 명시한 local planning fixture입니다.\n\n### When should I use it?\n큰 이미지를 집중해 살펴보는 동안 배경 문서와 상호작용하면 안 되는 lightbox처럼 하나의 modal context에 사용자를 머물게 해야 할 때 사용합니다.\n\n### When should I choose something else?\ntrigger에 anchor된 보조 panel에서 주변 action을 계속 허용하려면 PopoverUI를, 문서 흐름 안의 영역을 펼치거나 접으려면 CollapsibleUI를 사용합니다.\n\n### What states and interaction contract matter?\nClosed/Open, accessible modal naming, portal·backdrop, initial/final focus, focus loop, Escape·backdrop dismissal과 선택적 pointer-dismissal 보호가 중요합니다. 닫히면 focus가 trigger로 복원됩니다.\n\n### Who owns what?\nPrimitive는 modal isolation, portal, focus loop와 dismissal mechanics를 소유합니다. Consumer는 Title·Description, controls와 open policy를 제공합니다. Notion image loading, lightbox dimensions, zoom·navigation·download workflow와 route는 higher layer가 소유합니다.",
+          "### 무엇인가요?\nDialogUI는 페이지 위에 modal을 띄우고, 닫을 때까지 배경의 focus와 pointer를 막는 Primitive입니다.\n\n### 제품에서는 어디에 쓰나요?\n제품 기준은 아직 구현 전인 **Planned Notion image lightbox**입니다. `Product Reference — Planned Notion Lightbox` Story에서 문서 이미지 썸네일을 누르면 같은 이미지를 큰 modal로 보는 이유를 확인할 수 있습니다.\n\n### 언제 쓰나요?\n큰 이미지를 살펴보는 동안 배경 문서를 실수로 조작하면 안 되는 lightbox처럼, 사용자를 한 modal 문맥에 머물게 해야 할 때 씁니다.\n\n### 다른 surface는 언제 고르나요?\n기준 대상에 붙고 주변 화면을 계속 쓸 수 있어야 하면 PopoverUI를, 같은 문서 흐름 안의 내용을 펼치고 접으면 CollapsibleUI를 씁니다.\n\n### 꼭 지켜야 할 동작은 무엇인가요?\n열림 상태, 접근 가능한 modal 이름, `aria-modal`, portal·backdrop, focus loop, Escape·backdrop 닫힘과 trigger로 돌아오는 focus가 중요합니다.\n\n### 누가 무엇을 소유하나요?\nPrimitive는 modal isolation, portal, focus loop와 dismissal mechanics를 소유합니다. 이미지 로딩, lightbox 크기, zoom·이전/다음·download와 route는 Notion owner가 소유합니다.",
       },
     },
     layout: "centered",
@@ -165,8 +165,31 @@ export const FocusTrapAndDismissal: Story = {
   },
 };
 
+const NotionDocumentImage = ({ expanded = false }: { expanded?: boolean }) => (
+  <svg
+    aria-label={expanded ? "확대된 산과 호수 문서 이미지" : "산과 호수 문서 이미지 썸네일"}
+    role="img"
+    style={{
+      borderRadius: "0.5rem",
+      display: "block",
+      height: expanded ? "18.75rem" : "7.5rem",
+      maxWidth: "100%",
+      width: expanded ? "30rem" : "12rem",
+    }}
+    viewBox="0 0 480 300"
+  >
+    <rect fill="#dbeafe" height="300" width="480" />
+    <circle cx="382" cy="70" fill="#fbbf24" r="34" />
+    <path d="M0 214 112 104l88 92 76-72 128 110 76-46v112H0Z" fill="#64748b" />
+    <path d="m72 214 40-110 88 92 76-72 55 48-83 78Z" fill="#f8fafc" opacity="0.9" />
+    <path d="M0 226c104-20 181 28 274 9 86-18 142-15 206 4v61H0Z" fill="#38bdf8" />
+    <path d="M0 262c114-20 210 18 312 1 68-11 120-9 168 3v34H0Z" fill="#0ea5e9" />
+  </svg>
+);
+
 const PlannedNotionLightboxProductReference = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [lastResult, setLastResult] = useState("라이트박스 닫힘");
 
   return (
     <section
@@ -175,28 +198,35 @@ const PlannedNotionLightboxProductReference = () => {
       data-product-state="planned"
       data-product-surface="planned-notion-image-lightbox"
     >
-      <p>Planned Notion · Planned state — not implemented</p>
-      <p>This local fixture documents a modal choice; it is not a product implementation.</p>
+      <p>Planned Notion · 구현 예정</p>
       <output aria-label="Planned Notion lightbox 상태">
-        {isOpen ? "Planned modal reference 열림" : "Planned modal reference 닫힘"}
+        {isOpen ? "라이트박스 열림" : lastResult}
       </output>
-      <DialogUI open={isOpen} onOpenChange={setIsOpen}>
-        <DialogUI.Trigger>Open planned image lightbox</DialogUI.Trigger>
+      <DialogUI
+        open={isOpen}
+        onOpenChange={(nextOpen) => {
+          setIsOpen(nextOpen);
+          setLastResult(nextOpen ? "라이트박스 열림" : "라이트박스 닫힘");
+        }}
+      >
+        <DialogUI.Trigger aria-label="Notion 문서 이미지 크게 보기">
+          <span>
+            <NotionDocumentImage />
+            <span>이미지 크게 보기</span>
+          </span>
+        </DialogUI.Trigger>
         <DialogUI.Portal>
           <DialogUI.Backdrop data-testid="planned-lightbox-backdrop" />
           <DialogUI.Content>
-            <DialogUI.Title>Planned Notion image lightbox</DialogUI.Title>
+            <DialogUI.Title>Notion 문서 이미지</DialogUI.Title>
             <DialogUI.Description>
-              Planning reference only; image workflow and route are not implemented here.
+              문서 본문을 벗어나지 않고 이미지를 크게 살펴봅니다. 이 lightbox는 구현 예정입니다.
             </DialogUI.Description>
             <figure>
-              <div aria-label="Local placeholder image preview" role="img">
-                Local image placeholder
-              </div>
-              <figcaption>Docs-only media fixture</figcaption>
+              <NotionDocumentImage expanded />
+              <figcaption>산과 호수</figcaption>
             </figure>
-            <ButtonUI>Inspect image details</ButtonUI>
-            <DialogUI.Close>Close lightbox</DialogUI.Close>
+            <DialogUI.Close>라이트박스 닫기</DialogUI.Close>
           </DialogUI.Content>
         </DialogUI.Portal>
       </DialogUI>
@@ -210,7 +240,7 @@ export const ProductReference: Story = {
     docs: {
       description: {
         story:
-          "Surface: Planned Notion image lightbox. Reference state: Planned — not implemented. 이 local fixture는 배경을 격리하는 modal 선택과 focus·dismissal parity만 보여 줍니다. 이미지 로딩, lightbox dimensions, zoom, 이전/다음 탐색, download와 route는 higher layer의 계획 책임입니다.",
+          "Surface: Planned Notion image lightbox. Reference state: Planned — 아직 구현 전. 문서 이미지 썸네일을 크게 보려면 배경 문서 조작을 잠시 막아야 하므로 Dialog를 선택합니다. 이미지 로딩, lightbox 크기, zoom, 이전/다음, download와 route는 Notion owner가 소유합니다.",
       },
     },
   },
@@ -218,25 +248,31 @@ export const ProductReference: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const trigger = canvas.getByRole("button", { name: "Open planned image lightbox" });
+    const reference = canvas.getByRole("region", {
+      name: "Planned Notion lightbox reference",
+    });
+    const trigger = canvas.getByRole("button", { name: "Notion 문서 이미지 크게 보기" });
     const status = canvas.getByRole("status", { name: "Planned Notion lightbox 상태" });
 
-    await expect(
-      canvas.getByText("Planned Notion · Planned state — not implemented"),
-    ).toBeVisible();
-    await expect(status).toHaveTextContent("Planned modal reference 닫힘");
+    await expect(reference).toHaveAttribute("data-product-state", "planned");
+    await expect(canvas.getByRole("img", { name: "산과 호수 문서 이미지 썸네일" })).toBeVisible();
+    await expect(status).toHaveTextContent("라이트박스 닫힘");
 
     await userEvent.click(trigger);
-    const dialog = await page.findByRole("dialog", { name: "Planned Notion image lightbox" });
+    const dialog = await page.findByRole("dialog", { name: "Notion 문서 이미지" });
+    const close = page.getByRole("button", { name: "라이트박스 닫기" });
     await expect(canvasElement.contains(dialog)).toBe(false);
     await expect(dialog).toHaveAttribute("aria-modal", "true");
-    await expect(page.getByRole("button", { name: "Inspect image details" })).toHaveFocus();
-    await expect(status).toHaveTextContent("Planned modal reference 열림");
+    await waitFor(() =>
+      expect(page.getByRole("img", { name: "확대된 산과 호수 문서 이미지" })).toBeVisible(),
+    );
+    await expect(close).toHaveFocus();
+    await expect(status).toHaveTextContent("라이트박스 열림");
 
-    await userEvent.keyboard("{Escape}");
+    await userEvent.click(close);
     await waitFor(() => expect(dialog).not.toBeInTheDocument());
     await expect(trigger).toHaveFocus();
-    await expect(status).toHaveTextContent("Planned modal reference 닫힘");
+    await expect(status).toHaveTextContent("라이트박스 닫힘");
   },
 };
 
