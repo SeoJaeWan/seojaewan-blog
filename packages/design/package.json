@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
+    "@fluentui/react-icons": "2.0.331",
     "clsx": "^2.1.1"
   }
 }
