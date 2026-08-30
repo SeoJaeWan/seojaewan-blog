@@ -78,7 +78,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### What is it?\nComboboxUI는 text input으로 미리 정의된 선택지를 필터링하고 하나를 고르는 단일-selection Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Window의 route suggestion**입니다. `Product Reference — Existing Window Route Suggestions` Story가 작은 local-data fixture와 **Existing state**를 보여 줍니다.\n\n### When should I use it?\nWindow 안에서 이름 일부를 입력해 알려진 route 후보를 줄이고 하나를 선택할 때 사용합니다.\n\n### When should I choose something else?\n필터 입력 없이 목록에서 하나를 고르면 SelectUI를, 자유 입력을 저장하면 InputUI를 사용합니다. 고정된 짧은 command 목록은 MenuUI가 더 적합합니다.\n\n### What states and interaction contract matter?\nRoot에 Label과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합합니다. input/open/value, keyboard 탐색, disabled option, empty 결과, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 보존합니다.\n\n### Who owns what?\nPrimitive는 local items의 filtering, open state와 단일 selection 계약을 소유합니다. Consumer는 route suggestion 조회와 변환, 선택 결과의 실제 routing, validation과 영속화를 소유합니다. ComboboxUI는 route 이동을 실행하지 않습니다.",
+          "### 무엇이며 어디에 쓰나요?\nComboboxUI는 글자를 입력해 미리 정한 후보를 줄이고 값 하나를 고르는 선택 도구입니다. Existing Window의 경로 제안처럼, 경로 이름 일부를 입력해서 찾을 때 사용합니다. 입력 없이 정해진 목록에서만 고르면 SelectUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 경로 제안` Story는 제한된 경로 행 안에 검색 입력을 놓습니다. 원본의 480×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합합니다. 입력에 따른 후보 줄이기, 열림, 값 하나 선택, 키보드 이동, 비활성 후보, 빈 결과, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nComboboxUI는 전달받은 local 후보의 입력 필터, 열림과 단일 선택 동작을 맡습니다. Window 담당은 경로 후보 조회와 이름 변환, 선택 결과의 실제 이동, 검증과 저장을 맡습니다. ComboboxUI는 routing을 실행하지 않습니다.",
       },
     },
   },
@@ -173,55 +173,86 @@ const ExistingWindowRouteSuggestionReference = () => {
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
-    <div
-      className="wd-story-stage"
-      data-product-state="existing"
-      data-product-surface="existing-window-route-suggestion"
-      data-testid="window-route-suggestion-stage"
-    >
-      <ComboboxUI.Root
-        items={windowRouteSuggestions}
-        onOpenChange={setOpen}
-        onValueChange={setSelected}
-        open={open}
-        value={selected}
+    <div className="wd-story-stage">
+      <article
+        className="wd-story-reference"
+        data-product-state="existing"
+        data-product-surface="existing-window-route-suggestion"
       >
-        <ComboboxUI.Label>Open Window route</ComboboxUI.Label>
-        <ComboboxUI.InputGroup data-testid="window-route-suggestion-control">
-          <ComboboxUI.Input placeholder="Find a Window route" />
-          <ComboboxUI.Clear aria-label="Clear Window route" keepMounted />
-          <ComboboxUI.Trigger aria-label="Show Window routes" />
-        </ComboboxUI.InputGroup>
-        <ComboboxUI.Content>
-          <ComboboxUI.List />
-          <ComboboxUI.Empty>No Window routes found</ComboboxUI.Empty>
-        </ComboboxUI.Content>
-      </ComboboxUI.Root>
-      <dl className="wd-story-probe">
-        <dt>Reference</dt>
-        <dd>Existing Window · Existing state</dd>
-        <dt>Open</dt>
-        <dd>
-          <output aria-label="Window route suggestion open state">
-            {open ? "open" : "closed"}
-          </output>
-        </dd>
-        <dt>Value</dt>
-        <dd>
-          <output aria-label="Window route suggestion value">{selected ?? "none"}</output>
-        </dd>
-      </dl>
+        <p className="wd-story-reference__badge">제품 예시 · 기존 Window</p>
+        <div className="wd-story-reference__layout">
+          <section
+            aria-labelledby="existing-window-route-title"
+            className="wd-story-reference__frame"
+          >
+            <h2 className="wd-story-reference__heading" id="existing-window-route-title">
+              경로 제안 행
+            </h2>
+            <ComboboxUI.Root
+              items={windowRouteSuggestions}
+              onOpenChange={setOpen}
+              onValueChange={setSelected}
+              open={open}
+              value={selected}
+            >
+              <div
+                data-testid="window-route-suggestion-row"
+                style={{
+                  alignItems: "center",
+                  blockSize: "2.25rem",
+                  display: "grid",
+                  gap: "0.75rem",
+                  gridTemplateColumns: "max-content minmax(0, 1fr)",
+                  inlineSize: "min(100%, 30rem)",
+                }}
+              >
+                <ComboboxUI.Label style={{ marginBlockEnd: 0 }}>경로</ComboboxUI.Label>
+                <ComboboxUI.InputGroup
+                  data-testid="window-route-suggestion-control"
+                  style={{ inlineSize: "min(100%, 18rem)", justifySelf: "start" }}
+                >
+                  <ComboboxUI.Input placeholder="Window 경로 찾기" />
+                  <ComboboxUI.Clear aria-label="Window 경로 지우기" keepMounted />
+                  <ComboboxUI.Trigger aria-label="Window 경로 보기" />
+                </ComboboxUI.InputGroup>
+              </div>
+              <ComboboxUI.Content>
+                <ComboboxUI.List />
+                <ComboboxUI.Empty>일치하는 Window 경로가 없습니다</ComboboxUI.Empty>
+              </ComboboxUI.Content>
+            </ComboboxUI.Root>
+            <dl className="wd-story-reference__probe">
+              <dt>제품 상태</dt>
+              <dd>기존</dd>
+              <dt>선택 방식</dt>
+              <dd>입력으로 후보를 줄인 뒤 하나 선택</dd>
+              <dt>열림</dt>
+              <dd>
+                <output aria-label="Window 경로 제안 열림 상태">{open ? "열림" : "닫힘"}</output>
+              </dd>
+              <dt>값</dt>
+              <dd>
+                <output aria-label="Window 경로 제안 값">{selected ?? "없음"}</output>
+              </dd>
+            </dl>
+          </section>
+          <p className="wd-story-reference__note">
+            원본 Window의 480×36px 경로 행은 이 배치를 이해하기 위한 문서 근거입니다. Window 담당이
+            후보 조회와 실제 이동을 맡고, ComboboxUI는 입력 필터와 값 하나 선택만 맡습니다.
+          </p>
+        </div>
+      </article>
     </div>
   );
 };
 
 export const ProductReference: Story = {
-  name: "Product Reference — Existing Window Route Suggestions",
+  name: "제품 예시 — 기존 Window 경로 제안",
   parameters: {
     docs: {
       description: {
         story:
-          "Surface: Existing Window route suggestion. Reference state: Existing. Local fixture는 filtering, open state와 선택 value만 재현합니다. suggestion lookup과 label 변환, 선택된 route로의 실제 이동은 Window의 higher layer가 소유합니다.",
+          "기존 Window의 제한된 경로 행에서 입력으로 후보를 줄이고 값 하나를 고르는 상태입니다. 480×36px 기록은 문서 근거일 뿐 공개 token이나 screenshot 계약이 아닙니다. Window 담당은 후보 조회·이름 변환·routing을, ComboboxUI는 local 입력 필터·열림·단일 선택을 맡습니다.",
       },
     },
   },
@@ -229,13 +260,13 @@ export const ProductReference: Story = {
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const canvas = within(canvasElement);
-    const input = body.getByRole("combobox", { name: "Open Window route" });
-    const stage = canvas.getByTestId("window-route-suggestion-stage");
+    const input = body.getByRole("combobox", { name: "경로" });
+    const row = canvas.getByTestId("window-route-suggestion-row");
     const control = canvas.getByTestId("window-route-suggestion-control");
     const openProbe = canvas.getByRole("status", {
-      name: "Window route suggestion open state",
+      name: "Window 경로 제안 열림 상태",
     });
-    const valueProbe = canvas.getByRole("status", { name: "Window route suggestion value" });
+    const valueProbe = canvas.getByRole("status", { name: "Window 경로 제안 값" });
 
     const controlStyle = getComputedStyle(control);
     const contractualControlSize = Number.parseFloat(
@@ -247,17 +278,20 @@ export const ProductReference: Story = {
       Number.parseFloat(controlStyle.borderBottomWidth);
     await expect(control.getBoundingClientRect().height).toBeCloseTo(contractualBoxHeight);
     await expect(control.getBoundingClientRect().width).toBeLessThan(
-      stage.getBoundingClientRect().width,
+      row.getBoundingClientRect().width,
     );
 
-    await expect(openProbe).toHaveTextContent("closed");
-    await expect(valueProbe).toHaveTextContent("none");
+    await expect(openProbe).toHaveTextContent("닫힘");
+    await expect(valueProbe).toHaveTextContent("없음");
     await userEvent.type(input, "set");
     await waitFor(() => expect(body.getByRole("option", { name: "Settings" })).toBeVisible());
-    await expect(openProbe).toHaveTextContent("open");
+    await expect(openProbe).toHaveTextContent("열림");
 
     await userEvent.keyboard("{ArrowDown}{Enter}");
     await expect(valueProbe).toHaveTextContent("/settings");
-    await expect(openProbe).toHaveTextContent("closed");
+    await expect(openProbe).toHaveTextContent("닫힘");
+    await userEvent.click(body.getByRole("button", { name: "Window 경로 지우기" }));
+    await expect(valueProbe).toHaveTextContent("없음");
+    await expect(input).toHaveValue("");
   },
 };

@@ -74,7 +74,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### What is it?\nSelectUI는 text input 없이 미리 정의된 선택지에서 값 하나를 고르는 단일-selection Primitive입니다.\n\n### Where is the product reference?\n제품 기준은 **Existing Window의 tag filter**입니다. `Product Reference — Existing Window Tag Filter` Story가 작은 local-data fixture와 **Existing state**를 보여 줍니다.\n\n### When should I use it?\nWindow의 결과 목록에 적용할 알려진 tag filter 하나를 고를 때 사용합니다.\n\n### When should I choose something else?\n선택지를 입력으로 필터링하면 ComboboxUI를, 자유 텍스트를 입력하면 InputUI를 사용합니다. 여러 tag를 동시에 편집하는 정책은 별도 multi-select product pattern이 맡아야 합니다.\n\n### What states and interaction contract matter?\nRoot에 Label, Trigger(Value), Clear와 Content(List·Item)를 조합합니다. open/value, keyboard 탐색, disabled option, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 보존합니다.\n\n### Who owns what?\nPrimitive는 local items의 open state와 단일 choice 계약을 소유합니다. Consumer는 tag option 조회, 선택 value를 실제 결과 filter로 적용하는 정책, 복수 선택, validation과 영속화를 소유합니다.",
+          "### 무엇이며 어디에 쓰나요?\nSelectUI는 글자를 입력하지 않고 미리 정한 목록에서 값 하나를 고르는 선택 도구입니다. Existing Window의 태그 필터처럼, 선택할 값이 짧고 이미 정해져 있을 때 사용합니다. 입력해서 후보를 줄여야 하면 ComboboxUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 태그 필터` Story는 제한된 태그 행 안에 고정 선택 control을 놓습니다. 원본의 320×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel, Trigger(Value), Clear와 Content(List·Item)를 조합합니다. 열림, 값 하나 선택, 키보드 이동, 비활성 후보, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nSelectUI는 전달받은 local 목록의 열림과 단일 선택 동작을 맡습니다. Window 담당은 태그 후보 조회, 선택값을 결과에 적용하는 filter 정책, 여러 태그 선택, 검증과 저장을 맡습니다. SelectUI는 filter 정책을 결정하지 않습니다.",
       },
     },
   },
@@ -157,57 +157,104 @@ const ExistingWindowTagFilterReference = () => {
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
-    <div
-      className="wd-story-stage"
-      data-product-state="existing"
-      data-product-surface="existing-window-tag-filter"
-      data-testid="window-tag-filter-stage"
-    >
-      <SelectUI.Root
-        items={windowTagFilters}
-        onOpenChange={setOpen}
-        onValueChange={setSelected}
-        open={open}
-        value={selected}
+    <div className="wd-story-stage">
+      <article
+        className="wd-story-reference"
+        data-product-state="existing"
+        data-product-surface="existing-window-tag-filter"
       >
-        <SelectUI.Label>Filter Window by tag</SelectUI.Label>
-        <SelectUI.Trigger data-testid="window-tag-filter-control">
-          <SelectUI.Value placeholder="Choose a Window tag" />
-        </SelectUI.Trigger>
-        <SelectUI.Clear aria-label="Clear Window tag" />
-        <SelectUI.Content>
-          <SelectUI.List>
-            {windowTagFilters.map((option) => (
-              <SelectUI.Item disabled={option.disabled} key={option.value} value={option.value}>
-                {option.label}
-              </SelectUI.Item>
-            ))}
-          </SelectUI.List>
-        </SelectUI.Content>
-      </SelectUI.Root>
-      <dl className="wd-story-probe">
-        <dt>Reference</dt>
-        <dd>Existing Window · Existing state</dd>
-        <dt>Open</dt>
-        <dd>
-          <output aria-label="Window tag filter open state">{open ? "open" : "closed"}</output>
-        </dd>
-        <dt>Value</dt>
-        <dd>
-          <output aria-label="Window tag filter value">{selected ?? "none"}</output>
-        </dd>
-      </dl>
+        <p className="wd-story-reference__badge">제품 예시 · 기존 Window</p>
+        <div className="wd-story-reference__layout">
+          <section
+            aria-labelledby="existing-window-tag-title"
+            className="wd-story-reference__frame"
+          >
+            <h2 className="wd-story-reference__heading" id="existing-window-tag-title">
+              태그 필터 행
+            </h2>
+            <SelectUI.Root
+              items={windowTagFilters}
+              onOpenChange={setOpen}
+              onValueChange={setSelected}
+              open={open}
+              value={selected}
+            >
+              <div
+                data-testid="window-tag-filter-row"
+                style={{
+                  alignItems: "center",
+                  blockSize: "2.25rem",
+                  display: "grid",
+                  gap: "0.75rem",
+                  gridTemplateColumns: "max-content minmax(0, 1fr)",
+                  inlineSize: "min(100%, 20rem)",
+                }}
+              >
+                <SelectUI.Label style={{ marginBlockEnd: 0 }}>태그</SelectUI.Label>
+                <div
+                  style={{
+                    alignItems: "center",
+                    display: "flex",
+                    gap: "0.5rem",
+                    minInlineSize: 0,
+                  }}
+                >
+                  <SelectUI.Trigger
+                    data-testid="window-tag-filter-control"
+                    style={{ inlineSize: "min(100%, 11rem)" }}
+                  >
+                    <SelectUI.Value placeholder="Window 태그 선택" />
+                  </SelectUI.Trigger>
+                  <SelectUI.Clear aria-label="Window 태그 지우기">지우기</SelectUI.Clear>
+                </div>
+              </div>
+              <SelectUI.Content>
+                <SelectUI.List>
+                  {windowTagFilters.map((option) => (
+                    <SelectUI.Item
+                      disabled={option.disabled}
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </SelectUI.Item>
+                  ))}
+                </SelectUI.List>
+              </SelectUI.Content>
+            </SelectUI.Root>
+            <dl className="wd-story-reference__probe">
+              <dt>제품 상태</dt>
+              <dd>기존</dd>
+              <dt>선택 방식</dt>
+              <dd>정해진 목록에서 값 하나 선택</dd>
+              <dt>열림</dt>
+              <dd>
+                <output aria-label="Window 태그 필터 열림 상태">{open ? "열림" : "닫힘"}</output>
+              </dd>
+              <dt>값</dt>
+              <dd>
+                <output aria-label="Window 태그 필터 값">{selected ?? "없음"}</output>
+              </dd>
+            </dl>
+          </section>
+          <p className="wd-story-reference__note">
+            원본 Window의 320×36px 태그 행은 이 배치를 이해하기 위한 문서 근거입니다. Window 담당이
+            후보 조회·filter 정책·여러 태그 선택을 맡고, SelectUI는 고정 목록의 값 하나 선택만
+            맡습니다.
+          </p>
+        </div>
+      </article>
     </div>
   );
 };
 
 export const ProductReference: Story = {
-  name: "Product Reference — Existing Window Tag Filter",
+  name: "제품 예시 — 기존 Window 태그 필터",
   parameters: {
     docs: {
       description: {
         story:
-          "Surface: Existing Window tag filter. Reference state: Existing. Local fixture는 open state와 single choice value만 재현합니다. tag option lookup, 선택 value를 실제 결과 filter로 적용하는 정책과 multi-select 편집은 Window의 higher layer가 소유합니다.",
+          "기존 Window의 제한된 태그 행에서 정해진 목록의 값 하나를 고르는 상태입니다. 320×36px 기록은 문서 근거일 뿐 공개 token이나 screenshot 계약이 아닙니다. Window 담당은 후보 조회·filter 적용·multi-select 정책을, SelectUI는 local 목록의 열림·단일 선택을 맡습니다.",
       },
     },
   },
@@ -215,26 +262,28 @@ export const ProductReference: Story = {
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const canvas = within(canvasElement);
-    const trigger = body.getByRole("combobox", { name: "Filter Window by tag" });
-    const stage = canvas.getByTestId("window-tag-filter-stage");
+    const trigger = body.getByRole("combobox", { name: "태그" });
+    const row = canvas.getByTestId("window-tag-filter-row");
     const control = canvas.getByTestId("window-tag-filter-control");
-    const openProbe = canvas.getByRole("status", { name: "Window tag filter open state" });
-    const valueProbe = canvas.getByRole("status", { name: "Window tag filter value" });
+    const openProbe = canvas.getByRole("status", { name: "Window 태그 필터 열림 상태" });
+    const valueProbe = canvas.getByRole("status", { name: "Window 태그 필터 값" });
 
     const controlStyle = getComputedStyle(control);
     const contractualMinHeight = Number.parseFloat(controlStyle.minHeight);
     await expect(control.getBoundingClientRect().height).toBeCloseTo(contractualMinHeight);
     await expect(control.getBoundingClientRect().width).toBeLessThan(
-      stage.getBoundingClientRect().width,
+      row.getBoundingClientRect().width,
     );
 
-    await expect(openProbe).toHaveTextContent("closed");
-    await expect(valueProbe).toHaveTextContent("none");
+    await expect(openProbe).toHaveTextContent("닫힘");
+    await expect(valueProbe).toHaveTextContent("없음");
     trigger.focus();
     await userEvent.keyboard("{ArrowDown}");
-    await expect(openProbe).toHaveTextContent("open");
+    await expect(openProbe).toHaveTextContent("열림");
     await userEvent.keyboard("{Enter}");
     await expect(valueProbe).toHaveTextContent("design-system");
-    await expect(openProbe).toHaveTextContent("closed");
+    await expect(openProbe).toHaveTextContent("닫힘");
+    await userEvent.click(body.getByRole("button", { name: "Window 태그 지우기" }));
+    await expect(valueProbe).toHaveTextContent("없음");
   },
 };
