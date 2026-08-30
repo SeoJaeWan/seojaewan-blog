@@ -27,8 +27,10 @@ describe("MenuItemUI", () => {
       <MenuItemUI
         className="custom-item"
         data-testid="item"
+        icon={<span data-testid="item-icon">장식 아이콘</span>}
         onClick={onClick}
         ref={ref}
+        trailing={<kbd data-testid="item-trailing">Del</kbd>}
         variant="danger"
       >
         삭제
@@ -39,6 +41,16 @@ describe("MenuItemUI", () => {
     expect(item).toBe(screen.getByTestId("item"));
     expect(item.getAttribute("data-variant")).toBe("danger");
     expect(item.classList.contains("custom-item")).toBe(true);
+    expect(screen.getByTestId("item-icon").parentElement?.getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByTestId("item-icon").parentElement?.classList).toContain(
+      "wd-menu-ui__item-icon",
+    );
+    expect(screen.getByTestId("item-trailing").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
+    expect(screen.getByTestId("item-trailing").parentElement?.classList).toContain(
+      "wd-menu-ui__item-trailing",
+    );
     expect(ref.current).toBe(item);
     fireEvent.click(item);
     expect(onClick).toHaveBeenCalledOnce();

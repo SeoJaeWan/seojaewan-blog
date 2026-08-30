@@ -5,6 +5,7 @@ import { ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { MenuUISubmenuTriggerProps } from "../../menuUI.types";
+import { MenuItemPresentation } from "../items/menuItemPresentation";
 
 /**
  * 하위 메뉴가 있음을 나타내고 그 메뉴를 여는 항목이 필요할 때 사용한다.
@@ -13,7 +14,7 @@ import type { MenuUISubmenuTriggerProps } from "../../menuUI.types";
  */
 export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTriggerProps>(
   function MenuSubmenuTriggerUI(
-    { children, className, openDelay, variant = "default", ...props },
+    { children, className, icon, openDelay, trailing, variant = "default", ...props },
     ref,
   ) {
     return (
@@ -24,10 +25,17 @@ export const MenuSubmenuTriggerUI = forwardRef<HTMLDivElement, MenuUISubmenuTrig
         delay={openDelay}
         ref={ref}
       >
-        <span className="wd-menu-ui__item-label">{children}</span>
-        <span aria-hidden="true" className="wd-menu-ui__submenu-trigger-arrow">
-          <ChevronRight12Regular />
-        </span>
+        <MenuItemPresentation
+          arrow={
+            <span aria-hidden="true" className="wd-menu-ui__submenu-trigger-arrow">
+              <ChevronRight12Regular />
+            </span>
+          }
+          icon={icon}
+          trailing={trailing}
+        >
+          {children}
+        </MenuItemPresentation>
       </BaseMenu.SubmenuTrigger>
     );
   },

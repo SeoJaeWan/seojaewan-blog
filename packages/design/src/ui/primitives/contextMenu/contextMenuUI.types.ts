@@ -133,6 +133,10 @@ export interface ContextMenuUIItemProps extends HTMLAttributes<HTMLDivElement> {
   label?: string;
   closeOnSelect?: boolean;
   variant?: ContextMenuUIItemVariant;
+  /** label 앞의 장식 visual. 접근성 이름에는 포함되지 않는다. */
+  icon?: ReactNode;
+  /** label 뒤의 shortcut·상태 visual. 접근성 이름에는 포함되지 않는다. */
+  trailing?: ReactNode;
 }
 
 /**

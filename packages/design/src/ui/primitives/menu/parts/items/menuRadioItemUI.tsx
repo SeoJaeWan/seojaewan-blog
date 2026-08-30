@@ -5,6 +5,7 @@ import { RadioButton16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { MenuUIRadioItemProps } from "../../menuUI.types";
+import { MenuItemPresentation } from "./menuItemPresentation";
 
 /**
  * 상호 배타적인 선택지 하나를 메뉴 항목으로 나타낼 때 사용한다.
@@ -13,7 +14,7 @@ import type { MenuUIRadioItemProps } from "../../menuUI.types";
  */
 export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
   function MenuRadioItemUI(
-    { children, className, closeOnSelect, variant = "default", ...props },
+    { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
     ref,
   ) {
     return (
@@ -24,10 +25,17 @@ export const MenuRadioItemUI = forwardRef<HTMLDivElement, MenuUIRadioItemProps>(
         data-variant={variant}
         ref={ref}
       >
-        <BaseMenu.RadioItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          <RadioButton16Regular />
-        </BaseMenu.RadioItemIndicator>
-        <span className="wd-menu-ui__item-label">{children}</span>
+        <MenuItemPresentation
+          icon={icon}
+          indicator={
+            <BaseMenu.RadioItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
+              <RadioButton16Regular />
+            </BaseMenu.RadioItemIndicator>
+          }
+          trailing={trailing}
+        >
+          {children}
+        </MenuItemPresentation>
       </BaseMenu.RadioItem>
     );
   },

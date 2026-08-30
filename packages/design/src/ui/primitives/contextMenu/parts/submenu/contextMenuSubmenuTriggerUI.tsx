@@ -5,6 +5,7 @@ import { ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ContextMenuUISubmenuTriggerProps } from "../../contextMenuUI.types";
+import { ContextMenuItemPresentation } from "../items/contextMenuItemPresentation";
 
 /**
  * 하위 문맥 메뉴가 있음을 나타내고 그 메뉴를 여는 항목이 필요할 때 사용한다.
@@ -15,7 +16,7 @@ export const ContextMenuSubmenuTriggerUI = forwardRef<
   HTMLDivElement,
   ContextMenuUISubmenuTriggerProps
 >(function ContextMenuSubmenuTriggerUI(
-  { children, className, openDelay, variant = "default", ...props },
+  { children, className, icon, openDelay, trailing, variant = "default", ...props },
   ref,
 ) {
   return (
@@ -32,13 +33,20 @@ export const ContextMenuSubmenuTriggerUI = forwardRef<
       delay={openDelay}
       ref={ref}
     >
-      <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
-      <span
-        aria-hidden="true"
-        className="wd-menu-ui__submenu-trigger-arrow wd-context-menu-ui__submenu-trigger-arrow"
+      <ContextMenuItemPresentation
+        arrow={
+          <span
+            aria-hidden="true"
+            className="wd-menu-ui__submenu-trigger-arrow wd-context-menu-ui__submenu-trigger-arrow"
+          >
+            <ChevronRight12Regular />
+          </span>
+        }
+        icon={icon}
+        trailing={trailing}
       >
-        <ChevronRight12Regular />
-      </span>
+        {children}
+      </ContextMenuItemPresentation>
     </BaseContextMenu.SubmenuTrigger>
   );
 });

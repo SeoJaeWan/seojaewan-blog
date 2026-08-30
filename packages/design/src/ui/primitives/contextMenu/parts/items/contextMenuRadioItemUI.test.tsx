@@ -20,7 +20,13 @@ describe("ContextMenuRadioItemUI", () => {
         <ContextMenuTriggerUI>설정 surface</ContextMenuTriggerUI>
         <ContextMenuContentUI>
           <ContextMenuRadioGroupUI defaultValue="위험">
-            <ContextMenuRadioItemUI ref={ref} value="위험" variant="danger">
+            <ContextMenuRadioItemUI
+              icon={<span data-testid="radio-icon">장식 아이콘</span>}
+              ref={ref}
+              trailing={<kbd data-testid="radio-trailing">R</kbd>}
+              value="위험"
+              variant="danger"
+            >
               위험
             </ContextMenuRadioItemUI>
           </ContextMenuRadioGroupUI>
@@ -34,6 +40,13 @@ describe("ContextMenuRadioItemUI", () => {
     expect(item.getAttribute("data-variant")).toBe("danger");
     expect(item.classList.contains("wd-context-menu-ui__item")).toBe(true);
     expect(item.querySelector('svg[width="16"]')).not.toBeNull();
+    expect(item.querySelector(".wd-context-menu-ui__item-indicator")).not.toBeNull();
+    expect(screen.getByTestId("radio-icon").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
+    expect(screen.getByTestId("radio-trailing").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
     expect(ref.current).toBe(item);
   });
 });

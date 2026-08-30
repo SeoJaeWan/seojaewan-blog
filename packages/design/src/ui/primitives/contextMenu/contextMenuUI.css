@@ -19,6 +19,11 @@
   flex-basis: var(--wd-context-menu-item-indicator-size);
 }
 
+.wd-context-menu-ui__item-icon {
+  block-size: var(--wd-context-menu-item-indicator-size);
+  flex-basis: var(--wd-context-menu-item-indicator-size);
+}
+
 .wd-context-menu-ui__submenu-trigger-arrow {
   block-size: var(--wd-context-menu-submenu-indicator-size);
   flex-basis: var(--wd-context-menu-submenu-indicator-size);

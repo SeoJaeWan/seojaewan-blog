@@ -22,7 +22,12 @@ describe("MenuSubmenuTriggerUI", () => {
         <MenuTriggerUI>작업</MenuTriggerUI>
         <MenuContentUI>
           <MenuSubmenuRootUI>
-            <MenuSubmenuTriggerUI className="custom-submenu" ref={ref}>
+            <MenuSubmenuTriggerUI
+              className="custom-submenu"
+              icon={<span data-testid="submenu-icon">장식 아이콘</span>}
+              ref={ref}
+              trailing={<kbd data-testid="submenu-trailing">S</kbd>}
+            >
               공유
             </MenuSubmenuTriggerUI>
             <MenuSubmenuContentUI>
@@ -37,6 +42,15 @@ describe("MenuSubmenuTriggerUI", () => {
     expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
     expect(trigger.querySelector('svg[width="12"]')).not.toBeNull();
+    expect(
+      trigger.querySelector(".wd-menu-ui__submenu-trigger-arrow")?.getAttribute("aria-hidden"),
+    ).toBe("true");
+    expect(screen.getByTestId("submenu-icon").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
+    expect(screen.getByTestId("submenu-trailing").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
     expect(trigger.classList.contains("custom-submenu")).toBe(true);
     expect(ref.current).toBe(trigger);
   });

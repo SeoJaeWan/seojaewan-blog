@@ -5,6 +5,7 @@ import { RadioButton16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ContextMenuUIRadioItemProps } from "../../contextMenuUI.types";
+import { ContextMenuItemPresentation } from "./contextMenuItemPresentation";
 
 /**
  * 문맥 메뉴에서 상호 배타적인 선택지 하나를 나타낼 때 사용한다.
@@ -13,7 +14,7 @@ import type { ContextMenuUIRadioItemProps } from "../../contextMenuUI.types";
  */
 export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRadioItemProps>(
   function ContextMenuRadioItemUI(
-    { children, className, closeOnSelect, variant = "default", ...props },
+    { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
     ref,
   ) {
     return (
@@ -24,13 +25,20 @@ export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRa
         data-variant={variant}
         ref={ref}
       >
-        <BaseContextMenu.RadioItemIndicator
-          className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
-          keepMounted
+        <ContextMenuItemPresentation
+          icon={icon}
+          indicator={
+            <BaseContextMenu.RadioItemIndicator
+              className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
+              keepMounted
+            >
+              <RadioButton16Regular />
+            </BaseContextMenu.RadioItemIndicator>
+          }
+          trailing={trailing}
         >
-          <RadioButton16Regular />
-        </BaseContextMenu.RadioItemIndicator>
-        <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
+          {children}
+        </ContextMenuItemPresentation>
       </BaseContextMenu.RadioItem>
     );
   },

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { Delete16Regular, Open16Regular, Rename16Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
@@ -99,6 +100,26 @@ const ControlledReplacementFixture = () => {
   );
 };
 
+const ExistingDesktopTargetActionsFixture = () => (
+  <ContextMenuUI.Root>
+    <ContextMenuUI.Trigger className="wd-story-stage wd-story-target" tabIndex={0}>
+      Existing Desktop target: Portfolio
+    </ContextMenuUI.Trigger>
+    <ContextMenuUI.Content aria-label="Portfolio target-specific context actions">
+      <ContextMenuUI.Item icon={<Open16Regular />} trailing="Enter">
+        Open
+      </ContextMenuUI.Item>
+      <ContextMenuUI.Item icon={<Rename16Regular />} trailing="F2">
+        Rename
+      </ContextMenuUI.Item>
+      <ContextMenuUI.Separator />
+      <ContextMenuUI.Item icon={<Delete16Regular />} trailing="Del" variant="danger">
+        Delete
+      </ContextMenuUI.Item>
+    </ContextMenuUI.Content>
+  </ContextMenuUI.Root>
+);
+
 const meta = {
   title: "UI/Primitives/ContextMenuUI",
   component: ContextMenuUI.Root,
@@ -120,7 +141,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "ContextMenuUI는 특정 대상의 보조 action을 오른쪽 클릭·keyboard·long press로 호출할 때 사용합니다. 사용자가 action 위치를 미리 발견해야 하면 항상 보이는 Trigger를 가진 MenuUI를 선택합니다. public Root에 호출 영역인 Trigger와 Content를 두고 Content 안에 Item, CheckboxItem, RadioGroup·RadioItem과 Separator를 조합하며 계층 action은 Submenu.Root·Trigger·Content로 구성합니다. open/dismiss, roving focus, disabled/selected 상태, focus 복원과 호출 좌표 배치는 family가 제공합니다. consumer는 대상, action 이름, 선택 상태와 callbacks을 제공해야 하고, ContextMenuUI는 권한 확인, 명령 실행, 라우팅이나 제품별 목록 구성을 소유하지 않습니다.",
+          "상태: Existing. 무엇: ContextMenuUI는 특정 target에서만 제공하는 보조 action 목록입니다. 언제: 오른쪽 클릭·keyboard·long press로 target-specific action을 호출할 때 사용하고, Desktop View·Sort처럼 미리 발견해야 하는 action은 visible Trigger의 MenuUI를 선택합니다. 구조: Root 안에 호출 영역 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합하며 각 Item은 consumer가 주입하는 icon·label·trailing을 분리해 표시합니다. 동작: family가 28px row density, open/dismiss, roving focus, disabled/selected 상태, focus 복원과 호출 좌표 배치를 제공합니다. consumer 입력: target, action 이름, icon, shortcut·상태 trailing, 선택 상태와 callbacks입니다. 비소유: 권한, 명령 실행, 라우팅과 제품별 목록 조립은 소유하지 않습니다. 제품 reference: Existing target-specific context action 경로이며 Shell이 target context, section 구성, 전역 single-active 교체와 Action Gateway 실행을 소유합니다.",
       },
     },
   },
@@ -222,6 +243,41 @@ export const ControlledReplacement: Story = {
     );
     await expect(restoreFocus).toHaveFocus();
     await expect(status).toHaveTextContent("현재 메뉴: 닫힘");
+  },
+};
+export const ExistingDesktopTargetSpecificContextActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Existing Desktop target의 Open·Rename·Delete context action 경로를 최소 구성으로 보여 줍니다. icon과 shortcut fixture는 consumer가 ReactNode로 주입하며 ContextMenu family가 28px row 안의 label과 분리해 표시합니다. 실제 target 해석, section 결정, single-active 교체와 Action Gateway 실행은 Shell 책임입니다.",
+      },
+    },
+  },
+  render: () => <ExistingDesktopTargetActionsFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+
+    await userEvent.pointer({
+      keys: "[MouseRight]",
+      target: canvas.getByText("Existing Desktop target: Portfolio"),
+    });
+    const openItem = await page.findByRole("menuitem", { name: "Open" });
+    const icon = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-icon");
+    const label = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-label");
+    const trailing = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-trailing");
+
+    await expect(getComputedStyle(openItem).height).toBe("28px");
+    await expect(getComputedStyle(openItem).minHeight).toBe("28px");
+    await expect(icon?.getAttribute("aria-hidden")).toBe("true");
+    await expect(trailing?.getAttribute("aria-hidden")).toBe("true");
+    await expect(
+      (icon?.getBoundingClientRect().right ?? 0) <= (label?.getBoundingClientRect().left ?? 0),
+    ).toBe(true);
+    await expect(
+      (label?.getBoundingClientRect().right ?? 0) <= (trailing?.getBoundingClientRect().left ?? 0),
+    ).toBe(true);
   },
 };
 export const TouchLongPress: Story = {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { ArrowSort16Regular, Grid16Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
@@ -101,6 +102,39 @@ const LifecycleFixture = () => {
   );
 };
 
+const ExistingDesktopViewAndSortFixture = () => (
+  <StoryFrame>
+    <MenuUI.Root>
+      <MenuUI.Trigger>Desktop view and sort</MenuUI.Trigger>
+      <MenuUI.Content aria-label="Existing Desktop visible view and sort actions">
+        <MenuUI.Submenu.Root>
+          <MenuUI.Submenu.Trigger icon={<Grid16Regular />} trailing="3 sizes">
+            View
+          </MenuUI.Submenu.Trigger>
+          <MenuUI.Submenu.Content aria-label="Desktop view actions">
+            <MenuUI.RadioGroup defaultValue="medium">
+              <MenuUI.RadioItem value="large">Large icons</MenuUI.RadioItem>
+              <MenuUI.RadioItem value="medium">Medium icons</MenuUI.RadioItem>
+              <MenuUI.RadioItem value="small">Small icons</MenuUI.RadioItem>
+            </MenuUI.RadioGroup>
+          </MenuUI.Submenu.Content>
+        </MenuUI.Submenu.Root>
+        <MenuUI.Submenu.Root>
+          <MenuUI.Submenu.Trigger icon={<ArrowSort16Regular />} trailing="Name">
+            Sort by
+          </MenuUI.Submenu.Trigger>
+          <MenuUI.Submenu.Content aria-label="Desktop sort actions">
+            <MenuUI.RadioGroup defaultValue="name">
+              <MenuUI.RadioItem value="name">Name</MenuUI.RadioItem>
+              <MenuUI.RadioItem value="updated">Date modified</MenuUI.RadioItem>
+            </MenuUI.RadioGroup>
+          </MenuUI.Submenu.Content>
+        </MenuUI.Submenu.Root>
+      </MenuUI.Content>
+    </MenuUI.Root>
+  </StoryFrame>
+);
+
 const meta = {
   title: "UI/Primitives/MenuUI",
   component: MenuUI.Root,
@@ -122,7 +156,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "MenuUI는 사용자가 미리 발견할 수 있는 Trigger에서 action 목록을 호출할 때 사용합니다. 특정 대상의 보조 action을 오른쪽 클릭·keyboard·long press로 호출하면 ContextMenuUI를 선택합니다. public Root에 Trigger와 Content를 두고 Content 안에 Item, CheckboxItem, RadioGroup·RadioItem과 Separator를 조합하며 계층 action은 Submenu.Root·Trigger·Content로 구성합니다. open/dismiss, roving focus, disabled/selected 상태와 keyboard 이동·focus 복원은 family가 제공합니다. consumer는 action 이름, 선택 상태와 callbacks을 제공해야 하고, MenuUI는 권한 확인, 명령 실행, 라우팅이나 제품별 목록 구성을 소유하지 않습니다.",
+          "상태: Existing. 무엇: MenuUI는 사용자가 미리 발견할 수 있는 visible Trigger의 action 목록입니다. 언제: Desktop의 항상 보이는 View·Sort처럼 먼저 발견해야 하는 action에 사용하고, 특정 대상에서만 나타나는 보조 action은 ContextMenuUI를 선택합니다. 구조: Root 안에 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합하며 각 Item은 consumer가 주입하는 icon·label·trailing을 분리해 표시합니다. 동작: family가 32px row density, open/dismiss, roving focus, disabled/selected 상태, keyboard 이동과 focus 복원을 제공합니다. consumer 입력: action 이름, icon, shortcut·상태 trailing, 선택 상태와 callbacks입니다. 비소유: 권한, 제품별 section·순서, 명령 실행과 라우팅은 소유하지 않습니다. 제품 reference: Existing Desktop visible View·Sort 경로를 나타내며 Shell이 현재 context, section 구성, single-active 조정과 Action Gateway 연결을 소유합니다.",
       },
     },
   },
@@ -249,6 +283,42 @@ export const OpeningAndExiting: Story = {
     },
   },
   render: () => <LifecycleFixture />,
+};
+export const ExistingDesktopVisibleViewAndSortActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Existing Desktop의 항상 보이는 View·Sort action 경로를 최소 구성으로 보여 줍니다. icon과 trailing fixture는 consumer가 ReactNode로 주입하며 Menu family가 label·submenu arrow와 겹치지 않게 배치합니다. 실제 현재 값, section 결정, single-active 조정과 Action Gateway 실행은 Shell 책임입니다.",
+      },
+    },
+  },
+  render: () => <ExistingDesktopViewAndSortFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Desktop view and sort" }));
+    const viewItem = await page.findByRole("menuitem", { name: "View" });
+    const icon = viewItem.querySelector<HTMLElement>(".wd-menu-ui__item-icon");
+    const label = viewItem.querySelector<HTMLElement>(".wd-menu-ui__item-label");
+    const trailing = viewItem.querySelector<HTMLElement>(".wd-menu-ui__item-trailing");
+    const arrow = viewItem.querySelector<HTMLElement>(".wd-menu-ui__submenu-trigger-arrow");
+
+    await expect(getComputedStyle(viewItem).minHeight).toBe("32px");
+    await expect(icon?.getAttribute("aria-hidden")).toBe("true");
+    await expect(trailing?.getAttribute("aria-hidden")).toBe("true");
+    await expect(arrow?.getAttribute("aria-hidden")).toBe("true");
+    await expect(
+      (icon?.getBoundingClientRect().right ?? 0) <= (label?.getBoundingClientRect().left ?? 0),
+    ).toBe(true);
+    await expect(
+      (label?.getBoundingClientRect().right ?? 0) <= (trailing?.getBoundingClientRect().left ?? 0),
+    ).toBe(true);
+    await expect(
+      (trailing?.getBoundingClientRect().right ?? 0) <= (arrow?.getBoundingClientRect().left ?? 0),
+    ).toBe(true);
+  },
 };
 export const NarrowViewport: Story = {
   parameters: {

@@ -4,6 +4,7 @@ import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
 import type { ContextMenuUIItemProps } from "../../contextMenuUI.types";
+import { ContextMenuItemPresentation } from "./contextMenuItemPresentation";
 
 /**
  * 한 번 선택하는 일반 문맥 메뉴 항목을 표현할 때 사용한다.
@@ -11,7 +12,10 @@ import type { ContextMenuUIItemProps } from "../../contextMenuUI.types";
  * ContextMenuContentUI 또는 중첩 Content 안에서 항목 단위로 조합한다.
  */
 export const ContextMenuItemUI = forwardRef<HTMLDivElement, ContextMenuUIItemProps>(
-  function ContextMenuItemUI({ className, closeOnSelect, variant = "default", ...props }, ref) {
+  function ContextMenuItemUI(
+    { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
+    ref,
+  ) {
     return (
       <BaseContextMenu.Item
         {...props}
@@ -19,7 +23,11 @@ export const ContextMenuItemUI = forwardRef<HTMLDivElement, ContextMenuUIItemPro
         closeOnClick={closeOnSelect}
         data-variant={variant}
         ref={ref}
-      />
+      >
+        <ContextMenuItemPresentation icon={icon} trailing={trailing}>
+          {children}
+        </ContextMenuItemPresentation>
+      </BaseContextMenu.Item>
     );
   },
 );

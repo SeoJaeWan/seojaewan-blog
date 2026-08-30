@@ -25,11 +25,25 @@ describe("MenuCheckboxItemUI", () => {
   it("기본 checked 상태·이름·ref와 프로젝트 변경 callback을 제공한다", () => {
     const ref = createRef<HTMLDivElement>();
     const onCheckedChange = vi.fn();
-    renderCheckbox({ children: "세부 정보", defaultChecked: true, onCheckedChange, ref });
+    renderCheckbox({
+      children: "세부 정보",
+      defaultChecked: true,
+      icon: <span data-testid="checkbox-icon">장식 아이콘</span>,
+      onCheckedChange,
+      ref,
+      trailing: <kbd data-testid="checkbox-trailing">Ctrl+D</kbd>,
+    });
 
     const item = screen.getByRole("menuitemcheckbox", { name: "세부 정보" });
     expect(item.getAttribute("aria-checked")).toBe("true");
     expect(item.querySelector('svg[width="12"]')).not.toBeNull();
+    expect(item.querySelector(".wd-menu-ui__item-indicator")).not.toBeNull();
+    expect(screen.getByTestId("checkbox-icon").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
+    expect(screen.getByTestId("checkbox-trailing").parentElement?.getAttribute("aria-hidden")).toBe(
+      "true",
+    );
     expect(ref.current).toBe(item);
     fireEvent.click(item);
     expect(onCheckedChange).toHaveBeenCalledWith(false, { reason: "item-press" });

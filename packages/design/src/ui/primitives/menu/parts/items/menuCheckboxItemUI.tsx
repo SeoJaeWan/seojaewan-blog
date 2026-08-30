@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 
 import type { MenuUICheckboxItemProps } from "../../menuUI.types";
 import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
+import { MenuItemPresentation } from "./menuItemPresentation";
 
 /**
  * 켜짐과 꺼짐을 독립적으로 선택하는 메뉴 항목이 필요할 때 사용한다.
@@ -14,7 +15,16 @@ import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
  */
 export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemProps>(
   function MenuCheckboxItemUI(
-    { children, className, closeOnSelect, onCheckedChange, variant = "default", ...props },
+    {
+      children,
+      className,
+      closeOnSelect,
+      icon,
+      onCheckedChange,
+      trailing,
+      variant = "default",
+      ...props
+    },
     ref,
   ) {
     return (
@@ -28,10 +38,17 @@ export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemP
         }
         ref={ref}
       >
-        <BaseMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-          <Checkmark12Regular />
-        </BaseMenu.CheckboxItemIndicator>
-        <span className="wd-menu-ui__item-label">{children}</span>
+        <MenuItemPresentation
+          icon={icon}
+          indicator={
+            <BaseMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
+              <Checkmark12Regular />
+            </BaseMenu.CheckboxItemIndicator>
+          }
+          trailing={trailing}
+        >
+          {children}
+        </MenuItemPresentation>
       </BaseMenu.CheckboxItem>
     );
   },
