@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 
 import { Delete16Regular, Open16Regular, Rename16Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, fireEvent, fn, userEvent, waitFor, within } from "storybook/test";
 
 import { ButtonUI } from "../button";
 import { MenuUI } from "../menu";
@@ -10,40 +10,60 @@ import { ContextMenuUI } from "./index";
 
 type ActionParts = Pick<typeof MenuUI, "Item" | "Separator">;
 
-const SharedVisibleActionPath = ({ parts }: { parts: ActionParts }) => (
+const SharedVisibleActionPath = ({
+  onAction,
+  parts,
+}: {
+  onAction: (action: string) => void;
+  parts: ActionParts;
+}) => (
   <>
-    <parts.Item>Open</parts.Item>
+    <parts.Item onClick={() => onAction("Open")}>Open</parts.Item>
     <parts.Item disabled>Unavailable</parts.Item>
     <parts.Separator />
-    <parts.Item variant="danger">Delete</parts.Item>
+    <parts.Item onClick={() => onAction("Delete")} variant="danger">
+      Delete
+    </parts.Item>
   </>
 );
 
-const VisibleEntryPointsFixture = () => (
-  <main className="wd-story-stage wd-story-stack--loose">
-    <section>
-      <h2>항상 보이는 Menu 버튼</h2>
-      <p>미리 발견할 수 있는 Actions 버튼을 눌러 action 목록을 여세요.</p>
-      <MenuUI.Root>
-        <MenuUI.Trigger>Actions</MenuUI.Trigger>
-        <MenuUI.Content aria-label="Visible menu actions">
-          <SharedVisibleActionPath parts={MenuUI} />
-        </MenuUI.Content>
-      </MenuUI.Root>
-    </section>
-    <ContextMenuUI.Root>
-      <ContextMenuUI.Trigger className="wd-story-target">
-        이 대상의 보조 action은 마우스 오른쪽 클릭 또는 길게 누르기로 여세요. 위 Menu와 Open,
-        Unavailable, Delete라는 같은 action 의미를 제공하지만 호출 방식은 다릅니다. 이 Story는
-        비교를 위해 action fixture만 공유하며 ContextMenuUI의 production 구현이 MenuUI를 직접
-        사용하는 것은 아닙니다.
-      </ContextMenuUI.Trigger>
-      <ContextMenuUI.Content aria-label="Context actions">
-        <SharedVisibleActionPath parts={ContextMenuUI} />
-      </ContextMenuUI.Content>
-    </ContextMenuUI.Root>
-  </main>
-);
+const VisibleEntryPointsFixture = () => {
+  const [menuResult, setMenuResult] = useState("선택 전");
+  const [contextResult, setContextResult] = useState("선택 전");
+
+  return (
+    <main className="wd-story-stage wd-story-stack--loose">
+      <section>
+        <h2>항상 보이는 Menu control</h2>
+        <p>자주 쓰는 작업은 화면에 보이는 Actions 버튼에서 시작합니다.</p>
+        <output aria-label="Visible Menu 실행 결과">실행 결과: {menuResult}</output>
+        <MenuUI.Root>
+          <MenuUI.Trigger>Actions</MenuUI.Trigger>
+          <MenuUI.Content aria-label="Visible menu actions">
+            <SharedVisibleActionPath onAction={setMenuResult} parts={MenuUI} />
+          </MenuUI.Content>
+        </MenuUI.Root>
+      </section>
+      <section>
+        <h2>대상에서 여는 ContextMenu</h2>
+        <p>Portfolio 바로가기 위에서 오른쪽 클릭하거나 길게 눌러 보조 작업을 엽니다.</p>
+        <output aria-label="ContextMenu 실행 결과">실행 결과: {contextResult}</output>
+        <ContextMenuUI.Root>
+          <ContextMenuUI.Trigger
+            aria-label="Portfolio 바로가기"
+            className="wd-story-target"
+            tabIndex={0}
+          >
+            Portfolio 바로가기
+          </ContextMenuUI.Trigger>
+          <ContextMenuUI.Content aria-label="Context actions">
+            <SharedVisibleActionPath onAction={setContextResult} parts={ContextMenuUI} />
+          </ContextMenuUI.Content>
+        </ContextMenuUI.Root>
+      </section>
+    </main>
+  );
+};
 
 const SubmenuFixture = () => (
   <ContextMenuUI.Root>
@@ -100,25 +120,87 @@ const ControlledReplacementFixture = () => {
   );
 };
 
-const ExistingDesktopTargetActionsFixture = () => (
-  <ContextMenuUI.Root>
-    <ContextMenuUI.Trigger className="wd-story-stage wd-story-target" tabIndex={0}>
-      Existing Desktop target: Portfolio
-    </ContextMenuUI.Trigger>
-    <ContextMenuUI.Content aria-label="Portfolio target-specific context actions">
-      <ContextMenuUI.Item icon={<Open16Regular />} trailing="Enter">
-        Open
-      </ContextMenuUI.Item>
-      <ContextMenuUI.Item icon={<Rename16Regular />} trailing="F2">
-        Rename
-      </ContextMenuUI.Item>
-      <ContextMenuUI.Separator />
-      <ContextMenuUI.Item icon={<Delete16Regular />} trailing="Del" variant="danger">
-        Delete
-      </ContextMenuUI.Item>
-    </ContextMenuUI.Content>
-  </ContextMenuUI.Root>
-);
+const onDesktopTargetAction = fn();
+
+type ExistingDesktopTargetActionsFixtureProps = {
+  headingId?: string;
+  menuLabel?: string;
+  resultLabel?: string;
+  targetLabel?: string;
+};
+
+const ExistingDesktopTargetActionsFixture = ({
+  headingId = "portfolio-target-title",
+  menuLabel = "Portfolio target-specific context actions",
+  resultLabel = "Desktop Portfolio 작업 실행 결과",
+  targetLabel = "Portfolio Desktop 대상",
+}: ExistingDesktopTargetActionsFixtureProps = {}) => {
+  const [result, setResult] = useState("선택 전");
+
+  const runAction = (action: string) => {
+    setResult(action);
+    onDesktopTargetAction(action);
+  };
+
+  return (
+    <main className="wd-story-stage">
+      <article
+        className="wd-story-reference"
+        data-product-state="existing"
+        data-product-surface="existing-desktop-target-actions"
+      >
+        <p className="wd-story-reference__badge">제품 예시 · 기존 Desktop 대상</p>
+        <div className="wd-story-reference__layout">
+          <section aria-labelledby={headingId} className="wd-story-reference__frame">
+            <h2 className="wd-story-reference__heading" id={headingId}>
+              Portfolio 바로가기
+            </h2>
+            <p>오른쪽 클릭, Shift+F10 또는 길게 누르기로 이 대상의 보조 작업을 엽니다.</p>
+            <ContextMenuUI.Root>
+              <ContextMenuUI.Trigger
+                aria-label={targetLabel}
+                className="wd-story-target"
+                tabIndex={0}
+              >
+                Portfolio
+              </ContextMenuUI.Trigger>
+              <ContextMenuUI.Content aria-label={menuLabel}>
+                <ContextMenuUI.Item
+                  icon={<Open16Regular />}
+                  onClick={() => runAction("Portfolio 열기")}
+                  trailing="Enter"
+                >
+                  Open
+                </ContextMenuUI.Item>
+                <ContextMenuUI.Item
+                  icon={<Rename16Regular />}
+                  onClick={() => runAction("Portfolio 이름 바꾸기")}
+                  trailing="F2"
+                >
+                  Rename
+                </ContextMenuUI.Item>
+                <ContextMenuUI.Separator />
+                <ContextMenuUI.Item
+                  icon={<Delete16Regular />}
+                  onClick={() => runAction("Portfolio 삭제")}
+                  trailing="Del"
+                  variant="danger"
+                >
+                  Delete
+                </ContextMenuUI.Item>
+              </ContextMenuUI.Content>
+            </ContextMenuUI.Root>
+            <output aria-label={resultLabel}>{result}</output>
+          </section>
+          <p className="wd-story-reference__note">
+            ContextMenu는 선택한 Desktop 대상에만 필요한 보조 작업을 보여 줍니다. 실행 결과는 이
+            fixture 안에만 남으며 실제 파일이나 route는 바꾸지 않습니다.
+          </p>
+        </div>
+      </article>
+    </main>
+  );
+};
 
 const meta = {
   title: "UI/Primitives/ContextMenuUI",
@@ -141,7 +223,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "상태: Existing. 무엇: ContextMenuUI는 특정 target에서만 제공하는 보조 action 목록입니다. 언제: 오른쪽 클릭·keyboard·long press로 target-specific action을 호출할 때 사용하고, Desktop View·Sort처럼 미리 발견해야 하는 action은 visible Trigger의 MenuUI를 선택합니다. 구조: Root 안에 호출 영역 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합하며 각 Item은 consumer가 주입하는 icon·label·trailing을 분리해 표시합니다. 동작: family가 28px row density, open/dismiss, roving focus, disabled/selected 상태, focus 복원과 호출 좌표 배치를 제공합니다. consumer 입력: target, action 이름, icon, shortcut·상태 trailing, 선택 상태와 callbacks입니다. 비소유: 권한, 명령 실행, 라우팅과 제품별 목록 조립은 소유하지 않습니다. 제품 reference: Existing target-specific context action 경로이며 Shell이 target context, section 구성, 전역 single-active 교체와 Action Gateway 실행을 소유합니다.",
+          "### 무엇이며 어디에 쓰나요?\nContextMenuUI는 특정 대상에서만 필요한 보조 작업 목록입니다. Desktop 바로가기처럼 먼저 대상을 고른 뒤 오른쪽 클릭, Shift+F10 또는 길게 누르는 맥락에 사용합니다. 화면에서 먼저 발견해야 하는 보기·정렬 작업에는 visible trigger의 MenuUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 Desktop의 Portfolio 바로가기**입니다. `제품 예시 — 기존 Desktop 대상 작업`, pointer·keyboard와 long-press Story에서 알아볼 수 있는 대상, 세 가지 호출 방식과 local 실행 결과를 확인할 수 있습니다. 작업 icon과 shortcut trailing은 사용하는 쪽이 기존 slot에 넣습니다.\n\n### 어떤 상태와 구성을 확인하나요?\nRoot에 호출 대상 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합합니다. 28px row density, 열림과 닫힘, roving focus, 비활성·선택 상태, pointer·keyboard·long-press 호출, submenu, dismiss와 focus 복원을 확인합니다. 사용하는 쪽은 target, 작업 이름, icon, shortcut·현재 값 trailing, 선택 상태와 callback을 제공합니다.\n\n### 누가 무엇을 맡나요?\nContextMenuUI는 대상 호출, 작업 목록의 semantic parts, open·dismiss, focus와 keyboard mechanics를 맡습니다. Shell은 현재 MenuContext와 target을 해석하고 제품별 section과 순서를 정하며 Menu를 포함한 여러 surface의 single-active 상태를 조정합니다. 권한 확인, 실제 작업 실행과 routing은 Action Gateway를 통해 더 높은 owner가 맡습니다.",
       },
     },
   },
@@ -156,7 +238,7 @@ export const VisibleMenuAndContextEntryPoints: Story = {
     docs: {
       description: {
         story:
-          "같은 Open·Unavailable·Delete action 의미를 두 entry point로 비교합니다. Menu는 항상 보이는 Actions 버튼으로 열고, ContextMenu는 대상 위에서 오른쪽 클릭 또는 길게 누르므로 action은 같아도 발견·호출 방식이 다릅니다.",
+          "같은 Open·Unavailable·Delete 작업을 서로 다른 제품 맥락에서 비교합니다. Menu는 항상 보이는 Actions 버튼에서 시작하고, ContextMenu는 Portfolio 바로가기를 오른쪽 클릭하거나 길게 눌러 시작합니다. 선택한 결과는 각 entry point 아래에 따로 남습니다.",
       },
     },
   },
@@ -167,29 +249,63 @@ export const PointerAndKeyboardInvocation: Story = {
     docs: {
       description: {
         story:
-          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. browser play가 ContextMenu item의 실제 28px 높이와 200px Content 폭을 computed style로 확인하고, 첫 목록은 Escape로 닫은 뒤 keyboard로 다시 열어 동일한 contextual action 목록을 Canvas에 남깁니다.",
+          "첫 Portfolio Desktop 대상은 오른쪽 클릭으로 열고 Escape로 닫습니다. 이어 독립된 Portfolio 대상에서 Shift+F10으로 목록을 열고 keyboard로 Open을 실행하면 callback이 한 번 호출되며 local 결과가 ‘Portfolio 열기’로 바뀝니다.",
       },
     },
   },
-  render: () => <SubmenuFixture />,
+  render: () => (
+    <div className="wd-story-stack--loose">
+      <ExistingDesktopTargetActionsFixture
+        headingId="portfolio-pointer-target-title"
+        menuLabel="Portfolio pointer context actions"
+        resultLabel="Portfolio pointer 작업 실행 결과"
+        targetLabel="Portfolio pointer 대상"
+      />
+      <ExistingDesktopTargetActionsFixture
+        headingId="portfolio-keyboard-target-title"
+        menuLabel="Portfolio keyboard context actions"
+        resultLabel="Portfolio keyboard 작업 실행 결과"
+        targetLabel="Portfolio keyboard 대상"
+      />
+    </div>
+  ),
   play: async ({ canvasElement }) => {
-    const surface = within(canvasElement).getByText("Right-click for sharing actions");
-    const body = within(document.body);
+    onDesktopTargetAction.mockClear();
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const pointerSurface = canvas.getByLabelText("Portfolio pointer 대상");
+    const keyboardSurface = canvas.getByLabelText("Portfolio keyboard 대상");
+    const result = canvas.getByRole("status", { name: "Portfolio keyboard 작업 실행 결과" });
 
-    await userEvent.pointer({ keys: "[MouseRight]", target: surface });
-    const menu = await body.findByRole("menu", { name: "Context sharing actions" });
-    const item = body.getByRole("menuitem", { name: "Copy link" });
+    await userEvent.pointer({ keys: "[MouseRight]", target: pointerSurface });
+    const menu = await page.findByRole("menu", {
+      name: "Portfolio pointer context actions",
+    });
+    const item = page.getByRole("menuitem", { name: "Open" });
     await waitFor(() => expect(menu).toBeVisible());
     await expect(getComputedStyle(item).height).toBe("28px");
     await expect(getComputedStyle(item).minHeight).toBe("28px");
     await expect(getComputedStyle(menu).minWidth).toBe("200px");
     await userEvent.keyboard("{Escape}");
-
-    surface.focus();
-    await userEvent.keyboard("{Shift>}{F10}{/Shift}");
     await waitFor(() =>
-      expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
+      expect(
+        page.queryByRole("menu", { name: "Portfolio pointer context actions" }),
+      ).not.toBeInTheDocument(),
     );
+
+    keyboardSurface.focus();
+    await userEvent.keyboard("{Shift>}{F10}{/Shift}");
+    await fireEvent.contextMenu(keyboardSurface);
+    const reopenedMenu = await page.findByRole("menu", {
+      name: "Portfolio keyboard context actions",
+    });
+    await waitFor(() => expect(reopenedMenu).toBeVisible());
+    const openAction = within(reopenedMenu).getByRole("menuitem", { name: "Open" });
+    openAction.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(onDesktopTargetAction).toHaveBeenCalledOnce();
+    await expect(onDesktopTargetAction).toHaveBeenCalledWith("Portfolio 열기");
+    await expect(result).toHaveTextContent("Portfolio 열기");
   },
 };
 export const Submenu: Story = {
@@ -246,38 +362,31 @@ export const ControlledReplacement: Story = {
   },
 };
 export const ExistingDesktopTargetSpecificContextActions: Story = {
+  name: "제품 예시 — 기존 Desktop 대상 작업",
   parameters: {
     docs: {
       description: {
         story:
-          "Existing Desktop target의 Open·Rename·Delete context action 경로를 최소 구성으로 보여 줍니다. icon과 shortcut fixture는 consumer가 ReactNode로 주입하며 ContextMenu family가 28px row 안의 label과 분리해 표시합니다. 실제 target 해석, section 결정, single-active 교체와 Action Gateway 실행은 Shell 책임입니다.",
+          "기존 Desktop의 Portfolio 바로가기에서 Open·Rename·Delete 보조 작업을 호출합니다. ContextMenuUI는 target invocation과 목록의 open·focus·dismiss mechanics를 맡고, fixture는 선택 결과를 local 상태로 남깁니다. 실제 MenuContext·target 해석, section·순서, single-active 조정과 Action Gateway 연결은 Shell 책임입니다.",
       },
     },
   },
   render: () => <ExistingDesktopTargetActionsFixture />,
   play: async ({ canvasElement }) => {
+    onDesktopTargetAction.mockClear();
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
+    const result = canvas.getByRole("status", { name: "Desktop Portfolio 작업 실행 결과" });
 
     await userEvent.pointer({
       keys: "[MouseRight]",
-      target: canvas.getByText("Existing Desktop target: Portfolio"),
+      target: canvas.getByLabelText("Portfolio Desktop 대상"),
     });
-    const openItem = await page.findByRole("menuitem", { name: "Open" });
-    const icon = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-icon");
-    const label = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-label");
-    const trailing = openItem.querySelector<HTMLElement>(".wd-context-menu-ui__item-trailing");
+    await userEvent.click(await page.findByRole("menuitem", { name: "Rename" }));
 
-    await expect(getComputedStyle(openItem).height).toBe("28px");
-    await expect(getComputedStyle(openItem).minHeight).toBe("28px");
-    await expect(icon?.getAttribute("aria-hidden")).toBe("true");
-    await expect(trailing?.getAttribute("aria-hidden")).toBe("true");
-    await expect(
-      (icon?.getBoundingClientRect().right ?? 0) <= (label?.getBoundingClientRect().left ?? 0),
-    ).toBe(true);
-    await expect(
-      (label?.getBoundingClientRect().right ?? 0) <= (trailing?.getBoundingClientRect().left ?? 0),
-    ).toBe(true);
+    await expect(onDesktopTargetAction).toHaveBeenCalledOnce();
+    await expect(onDesktopTargetAction).toHaveBeenCalledWith("Portfolio 이름 바꾸기");
+    await expect(result).toHaveTextContent("Portfolio 이름 바꾸기");
   },
 };
 export const TouchLongPress: Story = {
@@ -285,15 +394,15 @@ export const TouchLongPress: Story = {
     docs: {
       description: {
         story:
-          "touchstart를 유지해 길게 누르기 임계값을 넘기면 대상 위치에 contextual action 목록이 열립니다. touchend 뒤에도 열린 목록이 Canvas에 남아 long-press 결과를 확인할 수 있습니다.",
+          "Portfolio Desktop 대상의 touchstart를 유지해 길게 누르기 임계값을 넘기면 같은 보조 작업 목록이 열립니다. touchend 뒤에도 목록이 열린 상태로 남아 pointer·keyboard와 구별되는 호출 결과를 확인할 수 있습니다.",
       },
     },
   },
-  render: () => <SubmenuFixture />,
+  render: () => <ExistingDesktopTargetActionsFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const surface = canvas.getByText("Right-click for sharing actions");
+    const surface = canvas.getByLabelText("Portfolio Desktop 대상");
 
     const touchStart = new Event("touchstart", { bubbles: true, cancelable: true });
     Object.defineProperty(touchStart, "touches", {
@@ -302,7 +411,10 @@ export const TouchLongPress: Story = {
     surface.dispatchEvent(touchStart);
 
     await waitFor(
-      () => expect(page.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
+      () =>
+        expect(
+          page.getByRole("menu", { name: "Portfolio target-specific context actions" }),
+        ).toBeVisible(),
       { timeout: 1200 },
     );
     surface.dispatchEvent(new Event("touchend", { bubbles: true, cancelable: true }));
