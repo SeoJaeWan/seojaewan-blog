@@ -20,7 +20,7 @@ const SelectFixture = ({ initialOpen, initialSelected }: SelectFixtureProps) => 
   const [selected, setSelected] = useState<string | null>(initialSelected);
 
   return (
-    <div style={{ minHeight: 280, padding: 24 }}>
+    <div className="wd-story-stage">
       <SelectUI.Root
         defaultOpen={initialOpen}
         items={options}
@@ -49,22 +49,30 @@ const SelectFixture = ({ initialOpen, initialSelected }: SelectFixtureProps) => 
 
 const meta = {
   title: "UI/Primitives/SelectUI",
-  component: SelectFixture,
+  component: SelectUI.Root,
+  subcomponents: {
+    Label: SelectUI.Label,
+    Trigger: SelectUI.Trigger,
+    Value: SelectUI.Value,
+    Clear: SelectUI.Clear,
+    Content: SelectUI.Content,
+    List: SelectUI.List,
+    Item: SelectUI.Item,
+  },
   tags: ["autodocs"],
   args: {
-    initialOpen: false,
-    initialSelected: null,
+    items: options,
   },
   parameters: {
     controls: { disable: true },
     docs: {
       description: {
         component:
-          "SelectUI는 text input 없이 미리 정의된 선택지에서 값 하나를 고르는 selection primitive입니다. 선택지를 입력으로 필터링해야 하면 ComboboxUI를, 자유로운 텍스트를 입력해야 하면 InputUI를 사용합니다.",
+          "SelectUI는 text input 없이 미리 정의된 선택지에서 값 하나를 고르는 selection에 사용합니다. 선택지를 입력으로 필터링하면 ComboboxUI를, 자유로운 텍스트를 입력하면 InputUI를 선택합니다. public Root에 Label, Trigger(Value), Clear와 Content(List·Item)를 조합하며 Root가 open/value 상태를 연결합니다. keyboard 탐색, disabled option, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 family가 제공합니다. consumer는 items, controlled value와 결과 callback을 제공해야 하고, SelectUI는 옵션 조회, 복수 태그 편집, validation이나 선택값 영속화를 소유하지 않습니다.",
       },
     },
   },
-} satisfies Meta<typeof SelectFixture>;
+} satisfies Meta<typeof SelectUI.Root>;
 
 export default meta;
 
@@ -79,6 +87,7 @@ export const KeyboardSelection: Story = {
       },
     },
   },
+  render: () => <SelectFixture initialOpen={false} initialSelected={null} />,
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const trigger = body.getByRole("combobox", { name: "Tag" });
@@ -91,10 +100,6 @@ export const KeyboardSelection: Story = {
 };
 
 export const DisabledOption: Story = {
-  args: {
-    initialOpen: true,
-    initialSelected: "desktop",
-  },
   parameters: {
     docs: {
       description: {
@@ -103,6 +108,7 @@ export const DisabledOption: Story = {
       },
     },
   },
+  render: () => <SelectFixture initialOpen initialSelected="desktop" />,
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const trigger = body.getByRole("combobox", { name: "Tag" });
@@ -118,9 +124,6 @@ export const DisabledOption: Story = {
 };
 
 export const ClearSelection: Story = {
-  args: {
-    initialSelected: "documents",
-  },
   parameters: {
     docs: {
       description: {
@@ -129,6 +132,7 @@ export const ClearSelection: Story = {
       },
     },
   },
+  render: () => <SelectFixture initialOpen={false} initialSelected="documents" />,
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const status = body.getByRole("status", { name: "Selected tag" });

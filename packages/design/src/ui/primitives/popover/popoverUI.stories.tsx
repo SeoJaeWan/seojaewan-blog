@@ -3,7 +3,9 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { PopoverUI } from "./popoverUI";
+import { ButtonUI } from "../button";
+import { InputUI } from "../input";
+import { PopoverUI } from "./index";
 
 const PopoverExample = ({
   defaultOpen = false,
@@ -17,38 +19,33 @@ const PopoverExample = ({
   const [outsideActionResult, setOutsideActionResult] = useState("아직 실행되지 않음");
 
   return (
-    <div style={{ display: "grid", gap: 12, minHeight: 240, placeItems: "center" }}>
-      <button
-        type="button"
+    <div className="wd-story-stage wd-story-stage--centered wd-story-stack">
+      <ButtonUI
         onClick={() => {
           setOutsideActionCount((count) => count + 1);
           setOutsideActionResult("외부 action이 실행되며 Popover가 dismiss되고 focus가 남음");
         }}
       >
         Outside action
-      </button>
-      <dl style={{ margin: 0 }}>
+      </ButtonUI>
+      <dl className="wd-story-probe">
         <dt>Outside action 실행 횟수</dt>
-        <dd data-testid="popover-outside-count" style={{ marginInlineStart: 0 }}>
-          {outsideActionCount}
-        </dd>
+        <dd data-testid="popover-outside-count">{outsideActionCount}</dd>
         <dt>현재 상태</dt>
-        <dd data-testid="popover-surface-status" style={{ marginInlineStart: 0 }}>
+        <dd data-testid="popover-surface-status">
           {isOpen ? "Popover 열림 — 외부 action 사용 가능" : "Popover 닫힘 — 외부 action 사용 가능"}
         </dd>
         <dt>마지막 결과</dt>
-        <dd data-testid="popover-outside-result" style={{ marginInlineStart: 0 }}>
-          {outsideActionResult}
-        </dd>
+        <dd data-testid="popover-outside-result">{outsideActionResult}</dd>
       </dl>
       <PopoverUI open={isOpen} onOpenChange={setIsOpen}>
         <PopoverUI.Trigger>Account</PopoverUI.Trigger>
         <PopoverUI.Content side={side}>
           <PopoverUI.Title>Account details</PopoverUI.Title>
           <PopoverUI.Description>Manage the signed-in account.</PopoverUI.Description>
-          <label>
+          <label className="wd-story-field">
             Display name
-            <input aria-label="Display name" />
+            <InputUI aria-label="Display name" />
           </label>
           <PopoverUI.Close>Done</PopoverUI.Close>
         </PopoverUI.Content>
@@ -58,19 +55,26 @@ const PopoverExample = ({
 };
 
 const meta = {
-  component: PopoverExample,
+  component: PopoverUI,
+  subcomponents: {
+    Trigger: PopoverUI.Trigger,
+    Content: PopoverUI.Content,
+    Title: PopoverUI.Title,
+    Description: PopoverUI.Description,
+    Close: PopoverUI.Close,
+  },
   parameters: {
     docs: {
       description: {
         component:
-          "PopoverUI는 trigger anchor에 종속되어 주변 action을 막지 않는 non-modal 보조 surface를 위한 compound family입니다. Root 역할의 PopoverUI에 Trigger, Content, Title, Description, Close part를 조합하며 Content는 portal로 렌더링됩니다. 페이지 나머지와 focus를 격리해야 하는 modal 흐름에는 semantic sibling인 DialogUI를 선택하며, 두 family가 서로를 구현에 사용하지는 않습니다.",
+          "PopoverUI는 trigger anchor에 연결된 보조 콘텐츠를 보여 주면서 주변 action을 계속 허용하는 non-modal 흐름에 사용합니다. 페이지 나머지와 focus·pointer 상호작용을 격리해야 하면 DialogUI를 선택합니다. public Root인 PopoverUI에 Trigger와 portal Content를 두고 Content 안에 Title, Description, controls와 Close를 조합합니다. accessible dialog naming, anchor placement, initial/final focus, Escape·outside-interaction dismissal과 reduced-motion 상태를 family가 제공합니다. consumer는 보조 콘텐츠, 결과 callback과 open policy를 제공해야 하고, PopoverUI는 저장, 계정 변경, 라우팅이나 제품 workflow를 소유하지 않습니다.",
       },
     },
     layout: "centered",
   },
   tags: ["autodocs"],
   title: "UI/Primitives/PopoverUI",
-} satisfies Meta<typeof PopoverExample>;
+} satisfies Meta<typeof PopoverUI>;
 
 export default meta;
 
@@ -85,10 +89,10 @@ export const Closed: Story = {
       },
     },
   },
+  render: () => <PopoverExample />,
 };
 
 export const Open: Story = {
-  args: { defaultOpen: true },
   parameters: {
     docs: {
       description: {
@@ -97,10 +101,10 @@ export const Open: Story = {
       },
     },
   },
+  render: () => <PopoverExample defaultOpen />,
 };
 
 export const Placement: Story = {
-  args: { defaultOpen: true, side: "right" },
   parameters: {
     docs: {
       description: {
@@ -109,6 +113,7 @@ export const Placement: Story = {
       },
     },
   },
+  render: () => <PopoverExample defaultOpen side="right" />,
 };
 
 export const PortalAndDismissal: Story = {
@@ -120,6 +125,7 @@ export const PortalAndDismissal: Story = {
       },
     },
   },
+  render: () => <PopoverExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
@@ -156,7 +162,6 @@ export const PortalAndDismissal: Story = {
 };
 
 export const ReducedMotion: Story = {
-  args: { defaultOpen: true },
   parameters: {
     docs: {
       description: {
@@ -165,6 +170,7 @@ export const ReducedMotion: Story = {
       },
     },
   },
+  render: () => <PopoverExample defaultOpen />,
   play: async ({ canvasElement }) => {
     const { cdp } = await import("vitest/browser");
     const session = cdp();

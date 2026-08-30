@@ -25,7 +25,7 @@ const ComboboxFixture = ({
   const [selected, setSelected] = useState<string | null>(initialSelected);
 
   return (
-    <div style={{ minHeight: 280, padding: 24, width: 320 }}>
+    <div className="wd-story-stage">
       <ComboboxUI.Root
         defaultInputValue={initialInputValue}
         defaultOpen={initialOpen}
@@ -51,23 +51,32 @@ const ComboboxFixture = ({
 
 const meta = {
   title: "UI/Primitives/ComboboxUI",
-  component: ComboboxFixture,
+  component: ComboboxUI.Root,
+  subcomponents: {
+    Label: ComboboxUI.Label,
+    InputGroup: ComboboxUI.InputGroup,
+    Input: ComboboxUI.Input,
+    Trigger: ComboboxUI.Trigger,
+    Clear: ComboboxUI.Clear,
+    Content: ComboboxUI.Content,
+    List: ComboboxUI.List,
+    Item: ComboboxUI.Item,
+    Empty: ComboboxUI.Empty,
+  },
   tags: ["autodocs"],
   args: {
-    initialInputValue: "",
-    initialOpen: false,
-    initialSelected: null,
+    items: options,
   },
   parameters: {
     controls: { disable: true },
     docs: {
       description: {
         component:
-          "ComboboxUI는 text input으로 미리 정의된 선택지를 필터링하고 하나를 고르는 selection primitive입니다. 자유로운 text entry를 저장하는 InputUI와 다르며, 필터 입력이 필요 없는 선택에는 SelectUI를 사용합니다.",
+          "ComboboxUI는 text input으로 미리 정의된 선택지를 필터링하고 하나를 고르는 selection에 사용합니다. 자유 입력을 저장하면 InputUI를, 필터 입력 없이 목록에서 고르면 SelectUI를 선택합니다. public Root에 Label과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합하며 Root가 input/open/value 상태를 연결합니다. keyboard 탐색, disabled option, Escape dismissal, clear와 label/combobox/listbox 접근성 관계를 family가 제공합니다. consumer는 items, controlled value와 결과 callback을 제공해야 하고, ComboboxUI는 원격 조회, 경로 이동, validation이나 선택값 영속화를 소유하지 않습니다.",
       },
     },
   },
-} satisfies Meta<typeof ComboboxFixture>;
+} satisfies Meta<typeof ComboboxUI.Root>;
 
 export default meta;
 
@@ -82,6 +91,7 @@ export const FilteringAndKeyboardSelection: Story = {
       },
     },
   },
+  render: () => <ComboboxFixture initialInputValue="" initialOpen={false} initialSelected={null} />,
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const input = body.getByRole("combobox", { name: "Route" });
@@ -104,6 +114,7 @@ export const EmptyAndDismissal: Story = {
       },
     },
   },
+  render: () => <ComboboxFixture initialInputValue="" initialOpen={false} initialSelected={null} />,
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const input = body.getByRole("combobox", { name: "Route" });
@@ -120,10 +131,6 @@ export const EmptyAndDismissal: Story = {
 };
 
 export const ClearSelection: Story = {
-  args: {
-    initialInputValue: "Documents",
-    initialSelected: "documents",
-  },
   parameters: {
     docs: {
       description: {
@@ -132,6 +139,13 @@ export const ClearSelection: Story = {
       },
     },
   },
+  render: () => (
+    <ComboboxFixture
+      initialInputValue="Documents"
+      initialOpen={false}
+      initialSelected="documents"
+    />
+  ),
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     const input = body.getByRole("combobox", { name: "Route" });

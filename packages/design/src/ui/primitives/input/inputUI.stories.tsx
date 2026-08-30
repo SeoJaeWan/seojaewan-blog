@@ -15,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "InputUI는 사용자가 자유로운 텍스트를 입력하는 native text-entry primitive입니다. 미리 정의된 선택지를 입력으로 필터링해 고르는 경우에는 ComboboxUI를, 텍스트 입력 없이 선택지만 고르는 경우에는 SelectUI를 사용합니다.",
+          "InputUI는 사용자가 자유로운 텍스트를 입력하고 편집하는 native text-entry primitive입니다. 미리 정의된 선택지를 입력으로 필터링해 고르면 ComboboxUI를, 텍스트 입력 없이 선택지만 고르면 SelectUI를 사용합니다. 단일 public component가 native input의 value·disabled·focus와 accessible naming 계약을 그대로 노출하며 별도 namespace part는 조합하지 않습니다. consumer는 label, validation과 controlled value 정책을 제공해야 하고, InputUI는 검색 실행, 값 저장, suggestion 조회 같은 business 책임을 소유하지 않습니다.",
       },
     },
   },

@@ -3,8 +3,9 @@ import { useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
+import { ButtonUI } from "../button";
 import { MenuUI } from "../menu";
-import { ContextMenuUI } from "./contextMenuUI";
+import { ContextMenuUI } from "./index";
 
 type ActionParts = Pick<typeof MenuUI, "Item" | "Separator">;
 
@@ -18,7 +19,7 @@ const SharedVisibleActionPath = ({ parts }: { parts: ActionParts }) => (
 );
 
 const VisibleEntryPointsFixture = () => (
-  <main style={{ display: "grid", gap: 24, minHeight: 320, padding: 24 }}>
+  <main className="wd-story-stage wd-story-stack--loose">
     <section>
       <h2>항상 보이는 Menu 버튼</h2>
       <p>미리 발견할 수 있는 Actions 버튼을 눌러 action 목록을 여세요.</p>
@@ -30,15 +31,7 @@ const VisibleEntryPointsFixture = () => (
       </MenuUI.Root>
     </section>
     <ContextMenuUI.Root>
-      <ContextMenuUI.Trigger
-        style={{
-          alignItems: "center",
-          border: "1px dashed currentcolor",
-          display: "flex",
-          minHeight: 120,
-          padding: 16,
-        }}
-      >
+      <ContextMenuUI.Trigger className="wd-story-target">
         이 대상의 보조 action은 마우스 오른쪽 클릭 또는 길게 누르기로 여세요. 위 Menu와 Open,
         Unavailable, Delete라는 같은 action 의미를 제공하지만 호출 방식은 다릅니다. 이 Story는
         비교를 위해 action fixture만 공유하며 ContextMenuUI의 production 구현이 MenuUI를 직접
@@ -53,7 +46,7 @@ const VisibleEntryPointsFixture = () => (
 
 const SubmenuFixture = () => (
   <ContextMenuUI.Root>
-    <ContextMenuUI.Trigger style={{ minHeight: 240, padding: 24 }}>
+    <ContextMenuUI.Trigger className="wd-story-stage wd-story-target">
       Right-click for sharing actions
     </ContextMenuUI.Trigger>
     <ContextMenuUI.Content aria-label="Context sharing actions">
@@ -78,14 +71,12 @@ const ControlledReplacementFixture = () => {
   };
 
   return (
-    <div style={{ display: "grid", gap: 16, minHeight: 280, padding: 24 }}>
+    <div className="wd-story-stage wd-story-stack">
       <p aria-live="polite" role="status">
         현재 메뉴:{" "}
         {activeMenu === "first" ? "첫 번째" : activeMenu === "second" ? "두 번째" : "닫힘"}
       </p>
-      <button ref={restoreFocusRef} type="button">
-        Pre-replacement focus
-      </button>
+      <ButtonUI ref={restoreFocusRef}>Pre-replacement focus</ButtonUI>
       <ContextMenuUI.Root
         onOpenChange={(open) => setMenuOpen("first", open)}
         open={activeMenu === "first"}
@@ -110,18 +101,30 @@ const ControlledReplacementFixture = () => {
 
 const meta = {
   title: "UI/Primitives/ContextMenuUI",
-  component: VisibleEntryPointsFixture,
+  component: ContextMenuUI.Root,
+  subcomponents: {
+    Trigger: ContextMenuUI.Trigger,
+    Content: ContextMenuUI.Content,
+    Item: ContextMenuUI.Item,
+    CheckboxItem: ContextMenuUI.CheckboxItem,
+    RadioGroup: ContextMenuUI.RadioGroup,
+    RadioItem: ContextMenuUI.RadioItem,
+    Separator: ContextMenuUI.Separator,
+    "Submenu.Root": ContextMenuUI.Submenu.Root,
+    "Submenu.Trigger": ContextMenuUI.Submenu.Trigger,
+    "Submenu.Content": ContextMenuUI.Submenu.Content,
+  },
   tags: ["autodocs"],
   parameters: {
     controls: { disable: true },
     docs: {
       description: {
         component:
-          "ContextMenuUI는 특정 대상에서 오른쪽 클릭·keyboard 호출·길게 누르기로 여는 보조 contextual action 목록입니다. 항상 보이는 entry가 필요하면 MenuUI를 선택하고, 대상의 문맥을 보존한 채 보조 action을 제공할 때 ContextMenuUI를 선택합니다. Root가 open 상태와 대상 범위를 소유하고 Trigger가 호출 영역을 지정하며 Content 안에 Item, 선택 상태를 가진 CheckboxItem·RadioGroup/RadioItem, Separator를 조합합니다. 계층 action은 같은 family symbol의 Submenu.Root·Trigger·Content로 구성합니다. MenuUI와 action 의미 및 compound 형태가 닮은 semantic sibling이지만 production 구현을 직접 공유하지 않습니다.",
+          "ContextMenuUI는 특정 대상의 보조 action을 오른쪽 클릭·keyboard·long press로 호출할 때 사용합니다. 사용자가 action 위치를 미리 발견해야 하면 항상 보이는 Trigger를 가진 MenuUI를 선택합니다. public Root에 호출 영역인 Trigger와 Content를 두고 Content 안에 Item, CheckboxItem, RadioGroup·RadioItem과 Separator를 조합하며 계층 action은 Submenu.Root·Trigger·Content로 구성합니다. open/dismiss, roving focus, disabled/selected 상태, focus 복원과 호출 좌표 배치는 family가 제공합니다. consumer는 대상, action 이름, 선택 상태와 callbacks을 제공해야 하고, ContextMenuUI는 권한 확인, 명령 실행, 라우팅이나 제품별 목록 구성을 소유하지 않습니다.",
       },
     },
   },
-} satisfies Meta<typeof VisibleEntryPointsFixture>;
+} satisfies Meta<typeof ContextMenuUI.Root>;
 
 export default meta;
 
@@ -136,13 +139,14 @@ export const VisibleMenuAndContextEntryPoints: Story = {
       },
     },
   },
+  render: () => <VisibleEntryPointsFixture />,
 };
 export const PointerAndKeyboardInvocation: Story = {
   parameters: {
     docs: {
       description: {
         story:
-          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. 첫 목록은 Escape로 닫히고, 두 번째 호출 뒤에는 동일한 contextual action 목록이 열린 결과가 Canvas에 남습니다.",
+          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. browser play가 ContextMenu의 28px item density token과 200px Content 폭을 computed style로 확인하고, 첫 목록은 Escape로 닫은 뒤 keyboard로 다시 열어 동일한 contextual action 목록을 Canvas에 남깁니다.",
       },
     },
   },
@@ -152,9 +156,13 @@ export const PointerAndKeyboardInvocation: Story = {
     const body = within(document.body);
 
     await userEvent.pointer({ keys: "[MouseRight]", target: surface });
-    await waitFor(() =>
-      expect(body.getByRole("menu", { name: "Context sharing actions" })).toBeVisible(),
-    );
+    const menu = await body.findByRole("menu", { name: "Context sharing actions" });
+    const item = body.getByRole("menuitem", { name: "Copy link" });
+    await waitFor(() => expect(menu).toBeVisible());
+    await expect(
+      getComputedStyle(item).getPropertyValue("--wd-context-menu-item-height").trim(),
+    ).toBe("28px");
+    await expect(getComputedStyle(menu).minWidth).toBe("200px");
     await userEvent.keyboard("{Escape}");
 
     surface.focus();
@@ -255,4 +263,5 @@ export const NarrowViewport: Story = {
     },
     viewport: { defaultViewport: "mobile1" },
   },
+  render: () => <VisibleEntryPointsFixture />,
 };

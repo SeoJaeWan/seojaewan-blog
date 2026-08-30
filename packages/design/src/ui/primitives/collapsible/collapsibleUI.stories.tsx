@@ -6,12 +6,16 @@ import { CollapsibleUI } from "./index";
 const meta = {
   title: "UI/Primitives/CollapsibleUI",
   component: CollapsibleUI.Root,
+  subcomponents: {
+    Trigger: CollapsibleUI.Trigger,
+    Panel: CollapsibleUI.Panel,
+  },
   tags: ["autodocs"],
   parameters: {
     docs: {
       description: {
         component:
-          "CollapsibleUI는 trigger로 연결된 panel을 펼치거나 접는 disclosure primitive입니다. 텍스트 값을 입력하는 InputUI나 미리 정의된 값을 고르는 ComboboxUI·SelectUI와 달리, 관련 콘텐츠의 표시 여부만 다룹니다.",
+          "CollapsibleUI는 한 영역의 관련 콘텐츠를 펼치거나 접는 disclosure에 사용합니다. action 목록을 호출하면 MenuUI를, 값을 입력하거나 고르면 InputUI·ComboboxUI·SelectUI를 선택합니다. public Root 안에 Trigger와 Panel을 조합하며 Root가 open/disabled 상태를, Trigger가 aria-expanded·aria-controls와 keyboard activation을, Panel이 연결된 콘텐츠를 표현합니다. consumer는 Trigger의 읽을 수 있는 이름과 Panel 콘텐츠를 제공해야 하고, CollapsibleUI는 tree selection, 데이터 로딩이나 공개할 business 콘텐츠를 소유하지 않습니다.",
       },
     },
   },

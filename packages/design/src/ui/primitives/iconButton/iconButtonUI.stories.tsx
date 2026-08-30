@@ -1,29 +1,24 @@
 import { useState } from "react";
 
+import { Add20Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 
-import { IconButtonUI } from "./iconButtonUI";
-
-const PlusIcon = () => (
-  <svg aria-hidden="true" viewBox="0 0 16 16">
-    <path d="M7 3h2v4h4v2H9v4H7V9H3V7h4z" fill="currentColor" />
-  </svg>
-);
+import { IconButtonUI } from "./index";
 
 const meta = {
   title: "UI/Primitives/IconButtonUI",
   component: IconButtonUI,
   tags: ["autodocs"],
   args: {
-    icon: <PlusIcon />,
+    icon: <Add20Regular />,
     label: "Add item",
   },
   parameters: {
     docs: {
       description: {
         component:
-          "IconButtonUI는 ButtonUI를 직접 재사용해 icon-only action을 표현하고, 필수 label로 accessible name을 추가합니다. IconButtonUI는 label을 추론하거나 Application Provider와 실행할 business action을 결정하지 않습니다.",
+          "IconButtonUI는 제한된 공간에서 product icon만 보이는 action에 사용하며 필수 label로 accessible name을 제공합니다. 텍스트나 콘텐츠로 목적을 직접 보여 줄 수 있으면 ButtonUI를 선택합니다. 단일 public component에 consumer가 icon을 주입하고 sm·md·lg size, disabled와 selected 상태를 조합하며 selected는 aria-pressed와 시각 상태를 함께 표현합니다. focus-visible, hover와 active feedback은 ButtonUI 기반 native button 계약을 유지합니다. consumer는 제품 icon, label과 callback을 제공해야 하고, IconButtonUI는 icon 선택, 권한 확인이나 실행할 business action을 소유하지 않습니다.",
       },
     },
   },
@@ -38,10 +33,44 @@ export const Default: Story = {
     docs: {
       description: {
         story:
-          "기본 icon-only action 상태입니다. Canvas에서 아이콘만 보여도 필수 label로 이름을 가진 활성 native button을 확인합니다.",
+          "consumer가 public API에 Fluent product icon을 주입한 deterministic size/state 표입니다. sm·md·lg와 default·hover-ready·pressed-testable·disabled·selected를 각각 읽을 수 있고, selected button은 aria-pressed=true로 노출됩니다.",
       },
     },
   },
+  render: (args) => (
+    <div className="wd-story-stack wd-story-stack--loose">
+      <section className="wd-story-stack">
+        <h3>Sizes</h3>
+        <div className="wd-story-cluster">
+          <span>sm</span>
+          <IconButtonUI {...args} label="Add item small" size="sm" />
+          <span>md</span>
+          <IconButtonUI {...args} label="Add item medium" size="md" />
+          <span>lg</span>
+          <IconButtonUI {...args} label="Add item large" size="lg" />
+        </div>
+      </section>
+      <section className="wd-story-stack">
+        <h3>States</h3>
+        <div className="wd-story-cluster">
+          <span>default</span>
+          <IconButtonUI {...args} label="Add item default" />
+          <span>hover-ready</span>
+          <IconButtonUI {...args} data-testid="icon-button-hover-ready" label="Add item hover" />
+          <span>pressed-testable</span>
+          <IconButtonUI
+            {...args}
+            data-testid="icon-button-pressed-testable"
+            label="Add item press target"
+          />
+          <span>disabled</span>
+          <IconButtonUI {...args} disabled label="Add item disabled" />
+          <span>selected</span>
+          <IconButtonUI {...args} label="Add item selected" selected />
+        </div>
+      </section>
+    </div>
+  ),
 };
 
 export const Disabled: Story = {

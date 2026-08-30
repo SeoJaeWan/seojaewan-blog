@@ -3,7 +3,9 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { DialogUI } from "./dialogUI";
+import { ButtonUI } from "../button";
+import { InputUI } from "../input";
+import { DialogUI } from "./index";
 
 const DialogExample = ({
   disablePointerDismissal = false,
@@ -15,31 +17,26 @@ const DialogExample = ({
   const [outsideActionResult, setOutsideActionResult] = useState("아직 실행되지 않음");
 
   return (
-    <div style={{ display: "grid", gap: 12, minHeight: 240 }}>
-      <button
-        type="button"
+    <div className="wd-story-stage wd-story-stack">
+      <ButtonUI
         onClick={() => {
           setOutsideActionCount((count) => count + 1);
           setOutsideActionResult("Dialog가 닫힌 뒤 외부 action이 실행되고 focus가 남음");
         }}
       >
         Outside action
-      </button>
-      <dl style={{ margin: 0 }}>
+      </ButtonUI>
+      <dl className="wd-story-probe">
         <dt>Outside action 실행 횟수</dt>
-        <dd data-testid="dialog-outside-count" style={{ marginInlineStart: 0 }}>
-          {outsideActionCount}
-        </dd>
+        <dd data-testid="dialog-outside-count">{outsideActionCount}</dd>
         <dt>현재 상태</dt>
-        <dd data-testid="dialog-isolation-status" style={{ marginInlineStart: 0 }}>
+        <dd data-testid="dialog-isolation-status">
           {isOpen
             ? "Dialog 열림 — 외부 영역과 focus가 격리됨"
             : "Dialog 닫힘 — 외부 action 사용 가능"}
         </dd>
         <dt>마지막 결과</dt>
-        <dd data-testid="dialog-outside-result" style={{ marginInlineStart: 0 }}>
-          {outsideActionResult}
-        </dd>
+        <dd data-testid="dialog-outside-result">{outsideActionResult}</dd>
       </dl>
       <DialogUI
         disablePointerDismissal={disablePointerDismissal}
@@ -52,11 +49,11 @@ const DialogExample = ({
           <DialogUI.Content>
             <DialogUI.Title>Settings</DialogUI.Title>
             <DialogUI.Description>Change your preferences.</DialogUI.Description>
-            <label>
+            <label className="wd-story-field">
               Display name
-              <input aria-label="Display name" defaultValue="Seo Jae-wan" />
+              <InputUI aria-label="Display name" defaultValue="Seo Jae-wan" />
             </label>
-            <button type="button">Save preview</button>
+            <ButtonUI>Save preview</ButtonUI>
             <DialogUI.Close>Done</DialogUI.Close>
           </DialogUI.Content>
         </DialogUI.Portal>
@@ -66,19 +63,28 @@ const DialogExample = ({
 };
 
 const meta = {
-  component: DialogExample,
+  component: DialogUI,
+  subcomponents: {
+    Trigger: DialogUI.Trigger,
+    Portal: DialogUI.Portal,
+    Backdrop: DialogUI.Backdrop,
+    Content: DialogUI.Content,
+    Title: DialogUI.Title,
+    Description: DialogUI.Description,
+    Close: DialogUI.Close,
+  },
   parameters: {
     docs: {
       description: {
         component:
-          "DialogUI는 페이지 나머지와 focus를 격리해야 하는 modal 흐름을 위한 compound family입니다. Root 역할의 DialogUI에 Trigger, Portal, Backdrop, Content, Title, Description, Close part를 조합합니다. 기준 요소에 종속되어 주변 action을 계속 허용해야 하는 non-modal 보조 surface에는 semantic sibling인 PopoverUI를 선택하며, 두 family가 서로를 구현에 사용하지는 않습니다.",
+          "DialogUI는 페이지 나머지와 focus·pointer 상호작용을 격리해야 하는 modal 흐름에 사용합니다. trigger에 연결된 보조 surface에서 주변 action을 계속 허용해야 하면 PopoverUI를 선택합니다. public Root인 DialogUI에 Trigger와 Portal(Backdrop·Content)을 두고 Content 안에 Title, Description, controls와 Close를 조합합니다. accessible dialog naming, initial/final focus, focus loop, Escape·backdrop dismissal과 선택적 pointer-dismissal 보호를 family가 제공합니다. consumer는 form controls, submit 결과와 open policy를 제공해야 하고, DialogUI는 저장, 확인 결과, 라우팅이나 제품 workflow를 소유하지 않습니다.",
       },
     },
     layout: "centered",
   },
   tags: ["autodocs"],
   title: "UI/Primitives/DialogUI",
-} satisfies Meta<typeof DialogExample>;
+} satisfies Meta<typeof DialogUI>;
 
 export default meta;
 
@@ -93,6 +99,7 @@ export const Default: Story = {
       },
     },
   },
+  render: () => <DialogExample />,
 };
 
 export const FocusTrapAndDismissal: Story = {
@@ -104,6 +111,7 @@ export const FocusTrapAndDismissal: Story = {
       },
     },
   },
+  render: () => <DialogExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
@@ -126,7 +134,7 @@ export const FocusTrapAndDismissal: Story = {
 
     close.focus();
     await userEvent.tab();
-    await expect(firstField).toHaveFocus();
+    await waitFor(() => expect(firstField).toHaveFocus());
     await expect(dialog.contains(canvasElement.ownerDocument.activeElement)).toBe(true);
 
     await userEvent.keyboard("{Escape}");
@@ -158,7 +166,6 @@ export const FocusTrapAndDismissal: Story = {
 };
 
 export const ProtectedPointerDismissal: Story = {
-  args: { disablePointerDismissal: true },
   parameters: {
     docs: {
       description: {
@@ -167,6 +174,7 @@ export const ProtectedPointerDismissal: Story = {
       },
     },
   },
+  render: () => <DialogExample disablePointerDismissal />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);

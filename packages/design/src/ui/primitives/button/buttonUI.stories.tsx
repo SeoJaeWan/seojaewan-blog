@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 
-import { ButtonUI } from "./buttonUI";
+import { ButtonUI } from "./index";
 
 const meta = {
   title: "UI/Primitives/ButtonUI",
@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "ButtonUI는 텍스트나 콘텐츠로 목적을 드러내는 content action을 표현합니다. 아이콘만 보이는 작업의 accessible name은 IconButtonUI가 맡으며, ButtonUI는 Application Provider나 실행할 business action을 결정하지 않습니다.",
+          "ButtonUI는 텍스트나 콘텐츠로 목적을 드러내는 일반 content action에 사용합니다. 공간 때문에 아이콘만 보여야 하면 필수 accessible label을 제공하는 IconButtonUI를 선택합니다. 단일 public component가 native button 의미와 disabled·focus-visible·pointer/keyboard activation 상태를 보존하며 별도 namespace part는 조합하지 않습니다. consumer는 읽을 수 있는 action 이름과 callback을 제공해야 하고, ButtonUI는 권한 확인, 비동기 처리, 탐색이나 다른 business action을 소유하지 않습니다.",
       },
     },
   },

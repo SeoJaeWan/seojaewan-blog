@@ -3,10 +3,11 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { MenuUI } from "./menuUI";
+import { ButtonUI } from "../button";
+import { MenuUI } from "./index";
 
 const StoryFrame = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ minHeight: 280, padding: 24 }}>{children}</div>
+  <div className="wd-story-stage">{children}</div>
 );
 
 const EmptyFixture = () => (
@@ -86,9 +87,10 @@ const LifecycleFixture = () => {
   return (
     <StoryFrame>
       <p>버튼으로 열림과 닫힘을 전환하며 opening·exiting lifecycle 스타일을 확인하세요.</p>
-      <button onClick={() => setOpen((value) => !value)} type="button">
+      <ButtonUI onClick={() => setOpen((value) => !value)}>
         {open ? "닫힘 시작" : "열림 시작"}
-      </button>
+      </ButtonUI>
+      <output aria-label="Menu lifecycle 결과">현재 lifecycle: {open ? "열림" : "닫힘"}</output>
       <MenuUI.Root onOpenChange={setOpen} open={open}>
         <MenuUI.Trigger>Lifecycle menu</MenuUI.Trigger>
         <MenuUI.Content aria-label="Lifecycle menu" keepMounted>
@@ -101,18 +103,30 @@ const LifecycleFixture = () => {
 
 const meta = {
   title: "UI/Primitives/MenuUI",
-  component: MultipleStatesFixture,
+  component: MenuUI.Root,
+  subcomponents: {
+    Trigger: MenuUI.Trigger,
+    Content: MenuUI.Content,
+    Item: MenuUI.Item,
+    CheckboxItem: MenuUI.CheckboxItem,
+    RadioGroup: MenuUI.RadioGroup,
+    RadioItem: MenuUI.RadioItem,
+    Separator: MenuUI.Separator,
+    "Submenu.Root": MenuUI.Submenu.Root,
+    "Submenu.Trigger": MenuUI.Submenu.Trigger,
+    "Submenu.Content": MenuUI.Submenu.Content,
+  },
   tags: ["autodocs"],
   parameters: {
     controls: { disable: true },
     docs: {
       description: {
         component:
-          "MenuUI는 항상 보이는 Trigger에서 호출하는 action 목록입니다. 사용자가 먼저 action 위치를 발견해야 하면 MenuUI를, 특정 대상 위의 보조 contextual action이면 ContextMenuUI를 선택합니다. Root가 open 상태와 범위를 소유하고 Trigger가 목록을 열며 Content 안에 Item, 선택 상태를 가진 CheckboxItem·RadioGroup/RadioItem, 묶음을 나누는 Separator를 조합합니다. 계층 action은 같은 family symbol의 Submenu.Root·Trigger·Content로 구성합니다. ContextMenuUI와 action 의미 및 compound 형태가 닮은 semantic sibling이지만, 어느 한 family가 다른 family를 production 구현으로 직접 사용하는 관계는 아닙니다.",
+          "MenuUI는 사용자가 미리 발견할 수 있는 Trigger에서 action 목록을 호출할 때 사용합니다. 특정 대상의 보조 action을 오른쪽 클릭·keyboard·long press로 호출하면 ContextMenuUI를 선택합니다. public Root에 Trigger와 Content를 두고 Content 안에 Item, CheckboxItem, RadioGroup·RadioItem과 Separator를 조합하며 계층 action은 Submenu.Root·Trigger·Content로 구성합니다. open/dismiss, roving focus, disabled/selected 상태와 keyboard 이동·focus 복원은 family가 제공합니다. consumer는 action 이름, 선택 상태와 callbacks을 제공해야 하고, MenuUI는 권한 확인, 명령 실행, 라우팅이나 제품별 목록 구성을 소유하지 않습니다.",
       },
     },
   },
-} satisfies Meta<typeof MultipleStatesFixture>;
+} satisfies Meta<typeof MenuUI.Root>;
 
 export default meta;
 
@@ -156,24 +170,27 @@ export const PointerAndKeyboard: Story = {
     docs: {
       description: {
         story:
-          "같은 visible Trigger를 pointer 클릭과 keyboard ArrowDown으로 호출합니다. 클릭으로 연 목록은 Escape로 닫히고, keyboard로 다시 열면 첫 Item에 focus가 이동한 결과가 Canvas에 남습니다.",
+          "같은 visible Trigger를 pointer 클릭과 keyboard ArrowDown으로 호출합니다. browser play가 Content 192px, Item 32px density를 computed style로 확인하고, 클릭으로 연 목록은 Escape로 닫은 뒤 keyboard로 다시 열어 첫 Item focus를 Canvas에 남깁니다.",
       },
     },
   },
   render: () => <SingleFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
     const trigger = canvas.getByRole("button", { name: "Single action" });
 
     await userEvent.click(trigger);
-    await waitFor(() =>
-      expect(within(document.body).getByRole("menuitem", { name: "Open" })).toBeVisible(),
-    );
+    const item = await page.findByRole("menuitem", { name: "Open" });
+    const menu = page.getByRole("menu", { name: "Single action menu" });
+    await waitFor(() => expect(item).toBeVisible());
+    await expect(getComputedStyle(item).minHeight).toBe("32px");
+    await expect(getComputedStyle(menu).minWidth).toBe("192px");
     await userEvent.keyboard("{Escape}");
 
     trigger.focus();
     await userEvent.keyboard("{ArrowDown}");
-    await expect(within(document.body).getByRole("menuitem", { name: "Open" })).toHaveFocus();
+    await waitFor(() => expect(page.getByRole("menuitem", { name: "Open" })).toHaveFocus());
   },
 };
 export const Submenu: Story = {
