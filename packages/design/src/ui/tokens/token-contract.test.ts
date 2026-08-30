@@ -1,6 +1,6 @@
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
@@ -27,10 +27,12 @@ const REFERENCE_NAME_PATTERN =
   /^--wd-reference-(color|spacing|radius|typography|shadow|duration|easing)-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEMANTIC_NAME_PATTERN =
   /^--wd-(?:color-(?:surface|text|border|accent|danger|focus)-[a-z0-9]+(?:-[a-z0-9]+)*|font-family-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
-const COMPONENT_NAME_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel|button|collapsible|combobox|dialog|input|menu|popover|select)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const COMPONENT_PREFIX_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel|button|collapsible|combobox|dialog|input|menu|popover|select)-/;
+
+const componentNamePattern = (path: string) => {
+  const family = basename(path, ".css").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return new RegExp(`^--wd-${family}-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$`);
+};
 
 const readCss = (path: string) => readFileSync(path, "utf8");
 
@@ -65,12 +67,12 @@ const classifyToken = (name: string): Exclude<TokenLayer, "theme"> | "unknown" =
     return "reference";
   }
 
-  if (COMPONENT_PREFIX_PATTERN.test(name)) {
-    return "component";
+  if (SEMANTIC_NAME_PATTERN.test(name)) {
+    return "semantic";
   }
 
   if (name.startsWith("--wd-")) {
-    return "semantic";
+    return "component";
   }
 
   return "unknown";
@@ -85,7 +87,7 @@ const validateTokenSources = (sources: TokenSource[]) => {
     definitionsByName.set(definition.name, [...existingDefinitions, definition]);
 
     const expectedPattern = {
-      component: COMPONENT_NAME_PATTERN,
+      component: componentNamePattern(definition.path),
       reference: REFERENCE_NAME_PATTERN,
       semantic: SEMANTIC_NAME_PATTERN,
       theme: /^$/,
@@ -179,18 +181,10 @@ describe("CSS 토큰 계약", () => {
     );
   });
 
-  it("primitive family는 component-element-property-state 정책으로 확장할 수 있다", () => {
+  it("새 Component family는 allowlist 변경 없이 파일 namespace로 확장할 수 있다", () => {
     const sources = writeFixture({
-      "component/primitives.css": `:root {
-        --wd-button-root-min-height: var(--wd-reference-spacing-6);
-        --wd-collapsible-trigger-min-height: var(--wd-reference-spacing-6);
-        --wd-combobox-item-background-color-active: var(--wd-color-accent-default);
-        --wd-dialog-backdrop-background-color: var(--wd-color-surface-muted);
-        --wd-input-root-border-radius: var(--wd-reference-radius-2);
-        --wd-menu-item-background-color-active: var(--wd-color-accent-default);
-        --wd-popover-content-border-radius: var(--wd-reference-radius-2);
-        --wd-select-content-transition-duration: var(--wd-reference-duration-120);
-      }`,
+      "component/future-widget.css":
+        ":root { --wd-future-widget-root-min-height: var(--wd-reference-spacing-6); }",
     });
 
     expect(() => validateTokenSources(sources)).not.toThrow();

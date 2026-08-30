@@ -146,7 +146,7 @@ export const PointerAndKeyboardInvocation: Story = {
     docs: {
       description: {
         story:
-          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. browser play가 ContextMenu의 28px item density token과 200px Content 폭을 computed style로 확인하고, 첫 목록은 Escape로 닫은 뒤 keyboard로 다시 열어 동일한 contextual action 목록을 Canvas에 남깁니다.",
+          "대상 위의 오른쪽 클릭과 Shift+F10 keyboard 호출을 차례로 검증합니다. browser play가 ContextMenu item의 실제 28px 높이와 200px Content 폭을 computed style로 확인하고, 첫 목록은 Escape로 닫은 뒤 keyboard로 다시 열어 동일한 contextual action 목록을 Canvas에 남깁니다.",
       },
     },
   },
@@ -159,9 +159,8 @@ export const PointerAndKeyboardInvocation: Story = {
     const menu = await body.findByRole("menu", { name: "Context sharing actions" });
     const item = body.getByRole("menuitem", { name: "Copy link" });
     await waitFor(() => expect(menu).toBeVisible());
-    await expect(
-      getComputedStyle(item).getPropertyValue("--wd-context-menu-item-height").trim(),
-    ).toBe("28px");
+    await expect(getComputedStyle(item).height).toBe("28px");
+    await expect(getComputedStyle(item).minHeight).toBe("28px");
     await expect(getComputedStyle(menu).minWidth).toBe("200px");
     await userEvent.keyboard("{Escape}");
 

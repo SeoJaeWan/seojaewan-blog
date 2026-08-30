@@ -9,6 +9,7 @@
 
 .wd-context-menu-ui__item {
   height: var(--wd-context-menu-item-height);
+  min-height: var(--wd-context-menu-item-height);
   padding-block: var(--wd-context-menu-item-padding-block);
   padding-inline: var(--wd-context-menu-item-padding-inline);
 }

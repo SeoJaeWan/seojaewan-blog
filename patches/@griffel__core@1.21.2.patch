@@ -1,0 +1,11 @@
+diff --git a/src/index.js b/src/index.js
+index 134b564..c5bf164 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -49,5 +49,6 @@
+ export { resolveStyleRules } from './runtime/resolveStyleRules.js';
+ export { resolveResetStyleRules } from './runtime/resolveResetStyleRules.js';
+ export { resolveStaticStyleRules } from './runtime/resolveStaticStyleRules.js';
+ export * from './constants.js';
++export { RESET } from './constants.js';
+ //# sourceMappingURL=index.js.map
