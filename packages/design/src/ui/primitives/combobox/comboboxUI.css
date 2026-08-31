@@ -16,6 +16,7 @@
   display: flex;
   font-family: var(--wd-combobox-font-family);
   font-size: var(--wd-combobox-label-font-size);
+  inline-size: 100%;
   line-height: var(--wd-combobox-line-height);
   min-height: var(--wd-combobox-input-min-height);
   transition:
@@ -39,7 +40,7 @@
   color: var(--wd-combobox-input-color);
   flex: 1;
   font: inherit;
-  min-width: 0;
+  min-inline-size: 0;
   outline: none;
   padding-inline: var(--wd-combobox-input-padding-inline);
 }

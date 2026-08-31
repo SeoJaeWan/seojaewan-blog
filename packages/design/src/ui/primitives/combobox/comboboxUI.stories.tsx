@@ -18,12 +18,14 @@ const windowRouteSuggestions = [
 ] as const;
 
 interface ComboboxFixtureProps {
+  fieldInlineSize?: string;
   initialInputValue: string;
   initialOpen: boolean;
   initialSelected: string | null;
 }
 
 const ComboboxFixture = ({
+  fieldInlineSize = "18rem",
   initialInputValue,
   initialOpen,
   initialSelected,
@@ -40,11 +42,13 @@ const ComboboxFixture = ({
         value={selected}
       >
         <ComboboxUI.Label>Route</ComboboxUI.Label>
-        <ComboboxUI.InputGroup>
-          <ComboboxUI.Input placeholder="Find a route" />
-          <ComboboxUI.Clear aria-label="Clear route" keepMounted />
-          <ComboboxUI.Trigger aria-label="Show routes" />
-        </ComboboxUI.InputGroup>
+        <div data-testid="combobox-field-boundary" style={{ inlineSize: fieldInlineSize }}>
+          <ComboboxUI.InputGroup data-testid="combobox-input-group">
+            <ComboboxUI.Input placeholder="Find a route" />
+            <ComboboxUI.Clear aria-label="Clear route" keepMounted />
+            <ComboboxUI.Trigger aria-label="Show routes" />
+          </ComboboxUI.InputGroup>
+        </div>
         <ComboboxUI.Content>
           <ComboboxUI.List />
           <ComboboxUI.Empty>No routes found</ComboboxUI.Empty>
@@ -168,6 +172,74 @@ export const ClearSelection: Story = {
   },
 };
 
+const expectStableRectangle = async (actual: DOMRect, expected: DOMRect) => {
+  await expect(actual.width).toBeCloseTo(expected.width);
+  await expect(actual.height).toBeCloseTo(expected.height);
+  await expect(actual.x).toBeCloseTo(expected.x);
+  await expect(actual.y).toBeCloseTo(expected.y);
+};
+
+export const StableInputGroupGeometry: Story = {
+  name: "Contract — Stable InputGroup Geometry",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "좁고 결정적인 field 경계에서 빈 입력, 검색어, 선택, 지우기 상태를 오가도 InputGroup 외곽과 trailing Trigger 위치가 유지되고 input만 Clear 공간을 양보하는지 실제 Chromium geometry로 확인합니다.",
+      },
+    },
+  },
+  render: () => (
+    <ComboboxFixture
+      fieldInlineSize="11rem"
+      initialInputValue=""
+      initialOpen={false}
+      initialSelected={null}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const canvas = within(canvasElement);
+    const boundary = canvas.getByTestId("combobox-field-boundary");
+    const control = canvas.getByTestId("combobox-input-group");
+    const input = body.getByRole("combobox", { name: "Route" });
+    const clear = body.getByLabelText("Clear route");
+    const trigger = body.getByRole("button", { name: "Show routes" });
+    const valueProbe = canvas.getByRole("status", { name: "Selected route" });
+
+    const emptyControlRectangle = control.getBoundingClientRect();
+    const emptyInputRectangle = input.getBoundingClientRect();
+    const emptyTriggerRectangle = trigger.getBoundingClientRect();
+
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+    await expect(emptyControlRectangle.width).toBeCloseTo(boundary.getBoundingClientRect().width);
+    await expect(clear).toHaveAttribute("data-clearable", "false");
+
+    await userEvent.type(input, "desk");
+    await waitFor(() => expect(body.getByRole("option", { name: "Desktop" })).toBeVisible());
+    await expect(clear).toHaveAttribute("data-clearable", "true");
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+    await expect(input.getBoundingClientRect().width).toBeLessThan(emptyInputRectangle.width);
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+    await expect(valueProbe).toHaveTextContent("desktop");
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+
+    await userEvent.click(clear);
+    await expect(valueProbe).toHaveTextContent("none");
+    await expect(input).toHaveValue("");
+    await expect(clear).toHaveAttribute("data-clearable", "false");
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+    await expect(input.getBoundingClientRect().width).toBeCloseTo(emptyInputRectangle.width);
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+  },
+};
+
 const ExistingWindowRouteSuggestionReference = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -207,14 +279,13 @@ const ExistingWindowRouteSuggestionReference = () => {
                 }}
               >
                 <ComboboxUI.Label style={{ marginBlockEnd: 0 }}>경로</ComboboxUI.Label>
-                <ComboboxUI.InputGroup
-                  data-testid="window-route-suggestion-control"
-                  style={{ inlineSize: "min(100%, 18rem)", justifySelf: "start" }}
-                >
-                  <ComboboxUI.Input placeholder="Window 경로 찾기" />
-                  <ComboboxUI.Clear aria-label="Window 경로 지우기" keepMounted />
-                  <ComboboxUI.Trigger aria-label="Window 경로 보기" />
-                </ComboboxUI.InputGroup>
+                <div style={{ inlineSize: "min(100%, 18rem)", justifySelf: "start" }}>
+                  <ComboboxUI.InputGroup data-testid="window-route-suggestion-control">
+                    <ComboboxUI.Input placeholder="Window 경로 찾기" />
+                    <ComboboxUI.Clear aria-label="Window 경로 지우기" keepMounted />
+                    <ComboboxUI.Trigger aria-label="Window 경로 보기" />
+                  </ComboboxUI.InputGroup>
+                </div>
               </div>
               <ComboboxUI.Content>
                 <ComboboxUI.List />
