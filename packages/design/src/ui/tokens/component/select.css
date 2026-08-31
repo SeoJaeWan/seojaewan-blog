@@ -18,6 +18,7 @@
   --wd-select-trigger-padding-inline: var(--wd-reference-spacing-2);
   --wd-select-trigger-transition-duration: var(--wd-reference-duration-120);
   --wd-select-clear-color: var(--wd-color-text-secondary);
+  --wd-select-clear-icon-size: 16px;
   --wd-select-content-background-color: var(--wd-color-surface-window);
   --wd-select-content-border-color: var(--wd-color-border-default);
   --wd-select-content-border-radius: var(--wd-reference-radius-2);

@@ -47,6 +47,7 @@ describe("SelectRootUI", () => {
 
     await user.click(screen.getByRole("option", { name: "문서" }));
     await waitFor(() => expect(trigger.textContent).toContain("문서"));
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("controlled 값은 직접 바꾸지 않고 프로젝트 변경 이유로 callback을 보고한다", async () => {

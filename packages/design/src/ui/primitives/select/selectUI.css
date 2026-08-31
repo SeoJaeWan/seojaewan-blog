@@ -68,11 +68,21 @@
 }
 
 .wd-select-ui__clear {
+  align-items: center;
   background: transparent;
   border: 0;
   color: var(--wd-select-clear-color);
+  cursor: pointer;
+  display: inline-flex;
   font: inherit;
+  justify-content: center;
   margin-inline-start: var(--wd-reference-spacing-1);
+  padding: 0;
+}
+
+.wd-select-ui__clear > svg {
+  block-size: var(--wd-select-clear-icon-size);
+  inline-size: var(--wd-select-clear-icon-size);
 }
 
 .wd-select-ui__positioner {

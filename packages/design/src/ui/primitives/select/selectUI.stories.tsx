@@ -174,7 +174,10 @@ const ExistingWindowTagFilterReference = () => {
             </h2>
             <SelectUI.Root
               items={windowTagFilters}
-              onOpenChange={setOpen}
+              onOpenChange={(nextOpen, details) => {
+                if (!nextOpen && details.reason === "item-press") return;
+                setOpen(nextOpen);
+              }}
               onValueChange={setSelected}
               open={open}
               value={selected}
@@ -205,7 +208,7 @@ const ExistingWindowTagFilterReference = () => {
                   >
                     <SelectUI.Value placeholder="Window 태그 선택" />
                   </SelectUI.Trigger>
-                  <SelectUI.Clear aria-label="Window 태그 지우기">지우기</SelectUI.Clear>
+                  <SelectUI.Clear aria-label="Window 태그 지우기" />
                 </div>
               </div>
               <SelectUI.Content>
@@ -240,7 +243,7 @@ const ExistingWindowTagFilterReference = () => {
           <p className="wd-story-reference__note">
             원본 Window의 320×36px 태그 행은 이 배치를 이해하기 위한 문서 근거입니다. Window 담당이
             후보 조회·filter 정책·여러 태그 선택을 맡고, SelectUI는 고정 목록의 값 하나 선택만
-            맡습니다.
+            맡습니다. 이 제품 조합은 원본처럼 option 선택 뒤에도 목록을 열어 둡니다.
           </p>
         </div>
       </article>
@@ -254,7 +257,7 @@ export const ProductReference: Story = {
     docs: {
       description: {
         story:
-          "기존 Window의 제한된 태그 행에서 정해진 목록의 값 하나를 고르는 상태입니다. 320×36px 기록은 문서 근거일 뿐 공개 token이나 screenshot 계약이 아닙니다. Window 담당은 후보 조회·filter 적용·multi-select 정책을, SelectUI는 local 목록의 열림·단일 선택을 맡습니다.",
+          "기존 Window의 제한된 태그 행에서 정해진 목록의 값 하나를 고르는 상태입니다. 원본 조합처럼 option 선택 뒤에도 목록을 열어 두는 정책은 이 제품 예시가 locally 소유하며 generic SelectUI의 기본 close semantics는 바꾸지 않습니다. 320×36px 기록은 문서 근거일 뿐 공개 token이나 screenshot 계약이 아닙니다.",
       },
     },
   },
@@ -277,13 +280,29 @@ export const ProductReference: Story = {
 
     await expect(openProbe).toHaveTextContent("닫힘");
     await expect(valueProbe).toHaveTextContent("없음");
+    await expect(
+      canvas.queryByRole("button", { name: "Window 태그 지우기" }),
+    ).not.toBeInTheDocument();
     trigger.focus();
     await userEvent.keyboard("{ArrowDown}");
     await expect(openProbe).toHaveTextContent("열림");
     await userEvent.keyboard("{Enter}");
     await expect(valueProbe).toHaveTextContent("design-system");
+    await expect(openProbe).toHaveTextContent("열림");
+
+    const clear = canvas.getByRole("button", { name: "Window 태그 지우기" });
+    await expect(clear.querySelector("svg")).not.toBeNull();
+    await expect(clear.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+
+    await userEvent.keyboard("{Escape}");
     await expect(openProbe).toHaveTextContent("닫힘");
-    await userEvent.click(body.getByRole("button", { name: "Window 태그 지우기" }));
+    await expect(trigger).toHaveFocus();
+    await userEvent.tab();
+    await expect(clear).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
     await expect(valueProbe).toHaveTextContent("없음");
+    await expect(
+      canvas.queryByRole("button", { name: "Window 태그 지우기" }),
+    ).not.toBeInTheDocument();
   },
 };
