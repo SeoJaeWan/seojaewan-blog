@@ -18,13 +18,13 @@ export const ContextMenuItemPresentation = ({
 }: ContextMenuItemPresentationProps) => (
   <>
     {indicator}
-    {icon === undefined ? null : (
+    {icon === null || icon === undefined ? null : (
       <span aria-hidden="true" className="wd-menu-ui__item-icon wd-context-menu-ui__item-icon">
         {icon}
       </span>
     )}
     <span className="wd-menu-ui__item-label wd-context-menu-ui__item-label">{children}</span>
-    {trailing === undefined ? null : (
+    {trailing === null || trailing === undefined ? null : (
       <span
         aria-hidden="true"
         className="wd-menu-ui__item-trailing wd-context-menu-ui__item-trailing"

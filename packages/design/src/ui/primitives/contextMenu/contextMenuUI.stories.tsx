@@ -83,6 +83,30 @@ const SubmenuFixture = () => (
   </ContextMenuUI.Root>
 );
 
+const PlacementMotionFixture = () => (
+  <div
+    className="wd-story-stage"
+    style={{ display: "grid", gap: "240px", minHeight: "560px", padding: "80px" }}
+  >
+    <ContextMenuUI.Root>
+      <ContextMenuUI.Trigger aria-label="Bottom placement target" tabIndex={0}>
+        Bottom placement target
+      </ContextMenuUI.Trigger>
+      <ContextMenuUI.Content aria-label="Bottom reveal actions" side="bottom">
+        <ContextMenuUI.Item>Bottom action</ContextMenuUI.Item>
+      </ContextMenuUI.Content>
+    </ContextMenuUI.Root>
+    <ContextMenuUI.Root>
+      <ContextMenuUI.Trigger aria-label="Top placement target" tabIndex={0}>
+        Top placement target
+      </ContextMenuUI.Trigger>
+      <ContextMenuUI.Content aria-label="Top reveal actions" side="top">
+        <ContextMenuUI.Item>Top action</ContextMenuUI.Item>
+      </ContextMenuUI.Content>
+    </ContextMenuUI.Root>
+  </div>
+);
+
 const ControlledReplacementFixture = () => {
   const [activeMenu, setActiveMenu] = useState<"first" | "second" | null>(null);
   const restoreFocusRef = useRef<HTMLButtonElement>(null);
@@ -318,6 +342,84 @@ export const Submenu: Story = {
     },
   },
   render: () => <SubmenuFixture />,
+};
+export const PlacementAwareOpeningReveal: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Base UI가 충돌 회피까지 반영해 Content에 기록한 실제 top/bottom side로 160ms opening reveal 방향을 정합니다. 같은 browser play가 legacy easing, reduced motion, 200px surface, 28px row와 Escape dismiss를 함께 확인합니다.",
+      },
+    },
+  },
+  render: () => <PlacementMotionFixture />,
+  play: async ({ canvasElement }) => {
+    const { cdp } = await import("vitest/browser");
+    const session = cdp();
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+
+    const inspectStartingDirection = async (
+      targetName: string,
+      menuName: string,
+      expectedSide: "bottom" | "top",
+    ) => {
+      await userEvent.pointer({
+        keys: "[MouseRight]",
+        target: canvas.getByLabelText(targetName),
+      });
+      const menu = await page.findByRole("menu", { name: menuName });
+      await expect(menu).toHaveAttribute("data-side", expectedSide);
+      await waitFor(() =>
+        expect(getComputedStyle(menu).transitionProperty).toBe("clip-path, opacity"),
+      );
+
+      menu.setAttribute("data-starting-style", "");
+      const style = getComputedStyle(menu);
+      await expect(style.transitionProperty).toBe("clip-path, opacity");
+      await expect(style.transitionDuration).toBe("0.16s, 0.16s");
+      await expect(style.transitionTimingFunction).toBe(
+        "cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.22, 1, 0.36, 1)",
+      );
+      await expect(style.clipPath).toBe(
+        expectedSide === "bottom" ? "inset(0px 0px 100%)" : "inset(100% 0px 0px)",
+      );
+      await expect(style.minWidth).toBe("200px");
+      await expect(getComputedStyle(within(menu).getByRole("menuitem")).height).toBe("28px");
+      menu.removeAttribute("data-starting-style");
+
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() =>
+        expect(page.queryByRole("menu", { name: menuName })).not.toBeInTheDocument(),
+      );
+    };
+
+    await inspectStartingDirection("Bottom placement target", "Bottom reveal actions", "bottom");
+    await inspectStartingDirection("Top placement target", "Top reveal actions", "top");
+
+    await session.send("Emulation.setEmulatedMedia", {
+      features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+    });
+
+    try {
+      await userEvent.pointer({
+        keys: "[MouseRight]",
+        target: canvas.getByLabelText("Bottom placement target"),
+      });
+      const reducedMenu = await page.findByRole("menu", { name: "Bottom reveal actions" });
+      reducedMenu.setAttribute("data-starting-style", "");
+      await expect(getComputedStyle(reducedMenu).transitionDuration).toBe("0s");
+      reducedMenu.removeAttribute("data-starting-style");
+      reducedMenu.setAttribute("data-ending-style", "");
+      await expect(getComputedStyle(reducedMenu).transitionDuration).toBe("0s");
+      reducedMenu.removeAttribute("data-ending-style");
+      await userEvent.keyboard("{Escape}");
+    } finally {
+      await session.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
+      });
+    }
+  },
 };
 export const ControlledReplacement: Story = {
   parameters: {

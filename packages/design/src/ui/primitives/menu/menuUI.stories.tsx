@@ -102,10 +102,10 @@ const LifecycleFixture = () => {
   );
 };
 
-const onDesktopViewChange = fn();
-const onDesktopSortChange = fn();
+const onViewChange = fn();
+const onSortChange = fn();
 
-const ExistingDesktopViewAndSortFixture = () => {
+const ViewAndSortCompositionFixture = () => {
   const [view, setView] = useState("medium");
   const [sort, setSort] = useState("name");
   const [lastAction, setLastAction] = useState("선택 전");
@@ -113,30 +113,26 @@ const ExistingDesktopViewAndSortFixture = () => {
   const changeView = (value: string) => {
     setView(value);
     setLastAction(`보기: ${value}`);
-    onDesktopViewChange(value);
+    onViewChange(value);
   };
 
   const changeSort = (value: string) => {
     setSort(value);
     setLastAction(`정렬: ${value}`);
-    onDesktopSortChange(value);
+    onSortChange(value);
   };
 
   return (
     <StoryFrame>
-      <article
-        className="wd-story-reference"
-        data-product-state="existing"
-        data-product-surface="existing-desktop-view-sort"
-      >
-        <p className="wd-story-reference__badge">제품 예시 · 기존 Desktop</p>
+      <article className="wd-story-reference">
+        <p className="wd-story-reference__badge">Menu 조합 예시</p>
         <div className="wd-story-reference__layout">
           <section
-            aria-labelledby="existing-desktop-controls"
+            aria-labelledby="view-sort-menu-composition"
             className="wd-story-reference__frame"
           >
-            <h2 className="wd-story-reference__heading" id="existing-desktop-controls">
-              Desktop 보기 설정
+            <h2 className="wd-story-reference__heading" id="view-sort-menu-composition">
+              보기 및 정렬 Menu
             </h2>
             <dl className="wd-story-reference__probe">
               <dt>보기</dt>
@@ -145,7 +141,7 @@ const ExistingDesktopViewAndSortFixture = () => {
               <dd>{sort}</dd>
               <dt>마지막 실행</dt>
               <dd>
-                <output aria-label="Desktop 보기 및 정렬 실행 결과">{lastAction}</output>
+                <output aria-label="보기 및 정렬 실행 결과">{lastAction}</output>
               </dd>
             </dl>
             <MenuUI.Root>
@@ -178,8 +174,8 @@ const ExistingDesktopViewAndSortFixture = () => {
             </MenuUI.Root>
           </section>
           <p className="wd-story-reference__note">
-            보기 및 정렬은 Desktop에 항상 보이는 control입니다. 선택 결과는 이 fixture 안에만 남으며
-            실제 항목 재배치나 저장은 실행하지 않습니다.
+            이 fixture는 visible trigger, submenu와 선택 결과의 generic Menu 계약만 보여 줍니다.
+            현재 repository에 근거가 없는 Desktop consumer의 existing 상태는 주장하지 않습니다.
           </p>
         </div>
       </article>
@@ -208,7 +204,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇이며 어디에 쓰나요?\nMenuUI는 사용자가 화면에서 먼저 발견할 수 있는 trigger에 연결된 작업 목록입니다. Desktop의 보기·정렬처럼 자주 찾는 작업을 항상 보이는 control에서 열 때 사용합니다. 특정 대상에서만 필요한 보조 작업에는 ContextMenuUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 Desktop의 보기 및 정렬 control**입니다. `제품 예시 — 기존 Desktop 보기 및 정렬` Story에서 항상 보이는 trigger, 보기·정렬 submenu와 선택 결과를 한 프레임에서 확인할 수 있습니다. icon과 현재 값 trailing은 사용하는 쪽이 기존 slot에 넣습니다.\n\n### 어떤 상태와 구성을 확인하나요?\nRoot에 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합합니다. 32px row density, 열림과 닫힘, roving focus, 비활성·선택 상태, keyboard 이동, submenu와 focus 복원을 확인합니다. 사용하는 쪽은 작업 이름, icon, shortcut·현재 값 trailing, 선택 상태와 callback을 제공합니다.\n\n### 누가 무엇을 맡나요?\nMenuUI는 작업 목록의 semantic parts, open·dismiss, focus와 keyboard mechanics를 맡습니다. Shell은 현재 MenuContext를 해석하고 제품별 section과 순서를 정하며 여러 surface의 single-active 상태를 조정합니다. 권한 확인, 실제 작업 실행과 routing은 Action Gateway를 통해 더 높은 owner가 맡습니다.",
+          "### 무엇이며 어디에 쓰나요?\nMenuUI는 사용자가 화면에서 먼저 발견할 수 있는 trigger에 연결된 작업 목록입니다. 자주 찾는 작업을 visible control에서 열 때 사용하며, 특정 대상에서만 필요한 보조 작업에는 ContextMenuUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n현재 repository에서는 visible Desktop Menu consumer의 구체적인 legacy source를 확인할 수 없습니다. 따라서 existing 제품 상태를 주장하지 않고, `조합 예시 — 보기 및 정렬 Menu` Story에서 visible trigger, submenu와 선택 결과라는 generic 계약만 확인합니다. icon과 현재 값 trailing은 사용하는 쪽이 slot에 넣습니다.\n\n### 어떤 상태와 구성을 확인하나요?\nRoot에 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합합니다. 32px row density, 열림과 닫힘, roving focus, 비활성·선택 상태, keyboard 이동, submenu와 focus 복원을 확인합니다. 사용하는 쪽은 작업 이름, icon, shortcut·현재 값 trailing, 선택 상태와 callback을 제공합니다.\n\n### 누가 무엇을 맡나요?\nMenuUI는 작업 목록의 semantic parts, open·dismiss, focus와 keyboard mechanics를 맡습니다. Shell은 현재 MenuContext를 해석하고 제품별 section과 순서를 정하며 여러 surface의 single-active 상태를 조정합니다. 권한 확인, 실제 작업 실행과 routing은 Action Gateway를 통해 더 높은 owner가 맡습니다.",
       },
     },
   },
@@ -336,23 +332,23 @@ export const OpeningAndExiting: Story = {
   },
   render: () => <LifecycleFixture />,
 };
-export const ExistingDesktopVisibleViewAndSortActions: Story = {
-  name: "제품 예시 — 기존 Desktop 보기 및 정렬",
+export const ViewAndSortComposition: Story = {
+  name: "조합 예시 — 보기 및 정렬 Menu",
   parameters: {
     docs: {
       description: {
         story:
-          "기존 Desktop에서 항상 보이는 ‘보기 및 정렬’ control입니다. MenuUI는 trigger와 작업 목록의 open·focus·selection mechanics를 맡고, fixture는 선택한 보기와 정렬 값을 local 결과로 남깁니다. 실제 MenuContext 해석, section·순서, single-active 조정과 Action Gateway 연결은 Shell 책임입니다.",
+          "구체적인 기존 제품 consumer를 주장하지 않는 generic 조합 예시입니다. MenuUI는 visible trigger와 작업 목록의 open·focus·selection mechanics를 맡고, fixture는 선택한 보기와 정렬 값을 local 결과로 남깁니다.",
       },
     },
   },
-  render: () => <ExistingDesktopViewAndSortFixture />,
+  render: () => <ViewAndSortCompositionFixture />,
   play: async ({ canvasElement }) => {
-    onDesktopViewChange.mockClear();
-    onDesktopSortChange.mockClear();
+    onViewChange.mockClear();
+    onSortChange.mockClear();
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const result = canvas.getByRole("status", { name: "Desktop 보기 및 정렬 실행 결과" });
+    const result = canvas.getByRole("status", { name: "보기 및 정렬 실행 결과" });
 
     await expect(result).toHaveTextContent("선택 전");
     await userEvent.click(canvas.getByRole("button", { name: "보기 및 정렬" }));
@@ -361,10 +357,10 @@ export const ExistingDesktopVisibleViewAndSortActions: Story = {
     await userEvent.keyboard("{ArrowRight}");
     await userEvent.click(await page.findByRole("menuitemradio", { name: "큰 아이콘" }));
 
-    await expect(onDesktopViewChange).toHaveBeenCalledOnce();
-    await expect(onDesktopViewChange).toHaveBeenCalledWith("large");
+    await expect(onViewChange).toHaveBeenCalledOnce();
+    await expect(onViewChange).toHaveBeenCalledWith("large");
     await expect(result).toHaveTextContent("보기: large");
-    await expect(onDesktopSortChange).not.toHaveBeenCalled();
+    await expect(onSortChange).not.toHaveBeenCalled();
   },
 };
 export const NarrowViewport: Story = {
