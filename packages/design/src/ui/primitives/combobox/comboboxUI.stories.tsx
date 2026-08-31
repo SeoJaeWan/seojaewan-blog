@@ -11,6 +11,21 @@ const options = [
   { disabled: true, label: "Archive", value: "archive" },
 ] as const;
 
+const longOptions = [
+  {
+    label: "한글로아주길게작성된바탕화면문서보관함경로이름",
+    value: "long-korean",
+  },
+  {
+    label: "UnbrokenEnglishRouteNameThatMustShrinkWithoutMovingTrailingControls",
+    value: "long-english",
+  },
+  {
+    label: "https://example.com/workspaces/design-system/routes/very-long-window-location",
+    value: "long-url",
+  },
+] as const;
+
 const windowRouteSuggestions = [
   { label: "Settings", value: "/settings" },
   { label: "Documents", value: "/documents" },
@@ -237,6 +252,205 @@ export const StableInputGroupGeometry: Story = {
     await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
     await expect(input.getBoundingClientRect().width).toBeCloseTo(emptyInputRectangle.width);
     await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+  },
+};
+
+interface ComboboxWidthCaseProps {
+  id: string;
+  initialInputValue: string;
+  initialSelected: string | null;
+  label: string;
+  layout: "fixed-large" | "fixed-small" | "flex" | "grid";
+}
+
+const ComboboxWidthCase = ({
+  id,
+  initialInputValue,
+  initialSelected,
+  label,
+  layout,
+}: ComboboxWidthCaseProps) => {
+  const [selected, setSelected] = useState<string | null>(initialSelected);
+  const field = (
+    <div
+      data-testid={`${id}-allocation`}
+      style={
+        layout === "fixed-small"
+          ? { inlineSize: "11rem" }
+          : layout === "fixed-large"
+            ? { inlineSize: "24rem", maxInlineSize: "100%" }
+            : { minInlineSize: 0 }
+      }
+    >
+      <ComboboxUI.InputGroup data-testid={`${id}-control`}>
+        <ComboboxUI.Input placeholder="Find a long route" />
+        <ComboboxUI.Clear aria-label={`Clear ${label}`} keepMounted />
+        <ComboboxUI.Trigger aria-label={`Show ${label}`} />
+      </ComboboxUI.InputGroup>
+    </div>
+  );
+
+  return (
+    <ComboboxUI.Root
+      defaultInputValue={initialInputValue}
+      items={longOptions}
+      onValueChange={setSelected}
+      value={selected}
+    >
+      <ComboboxUI.Label>{label}</ComboboxUI.Label>
+      {layout === "flex" ? (
+        <div
+          data-testid={`${id}-container`}
+          style={{ display: "flex", inlineSize: "min(100%, 32rem)" }}
+        >
+          <span aria-hidden="true" style={{ flex: "0 0 6rem" }} />
+          <div style={{ flex: "1 1 0", minInlineSize: 0 }}>{field}</div>
+        </div>
+      ) : layout === "grid" ? (
+        <div
+          data-testid={`${id}-container`}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "6rem minmax(0, 1fr)",
+            inlineSize: "min(100%, 32rem)",
+          }}
+        >
+          <span aria-hidden="true" />
+          {field}
+        </div>
+      ) : (
+        field
+      )}
+      <ComboboxUI.Content>
+        <ComboboxUI.List />
+        <ComboboxUI.Empty>No long routes found</ComboboxUI.Empty>
+      </ComboboxUI.Content>
+      <output aria-label={`${label} selected`}>{selected ?? "none"}</output>
+    </ComboboxUI.Root>
+  );
+};
+
+export const WidthAllocationAndPopupBoundary: Story = {
+  name: "Contract — Width Allocation and Popup Boundary",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "11rem, 24rem, flex, grid fixture에서 긴 입력의 외곽 폭과 trailing slot을 비교합니다. 선택 popup은 anchor 폭을 따르면서 viewport available width 안에 머물고 긴 한국어·공백 없는 영문·URL label만 줄어듭니다. 숫자는 Story 전용 fixture입니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage" style={{ display: "grid", gap: "1rem", minInlineSize: 0 }}>
+      <ComboboxWidthCase
+        id="combobox-small"
+        initialInputValue=""
+        initialSelected={null}
+        label="Small route"
+        layout="fixed-small"
+      />
+      <ComboboxWidthCase
+        id="combobox-large"
+        initialInputValue={longOptions[1].label}
+        initialSelected={longOptions[1].value}
+        label="Large route"
+        layout="fixed-large"
+      />
+      <ComboboxWidthCase
+        id="combobox-flex"
+        initialInputValue={longOptions[2].label}
+        initialSelected={longOptions[2].value}
+        label="Flex route"
+        layout="flex"
+      />
+      <ComboboxWidthCase
+        id="combobox-grid"
+        initialInputValue={longOptions[0].label}
+        initialSelected={longOptions[0].value}
+        label="Grid route"
+        layout="grid"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const document = canvasElement.ownerDocument;
+    const body = within(document.body);
+    const canvas = within(canvasElement);
+
+    for (const id of ["combobox-small", "combobox-large", "combobox-flex", "combobox-grid"]) {
+      const allocation = canvas.getByTestId(`${id}-allocation`);
+      const control = canvas.getByTestId(`${id}-control`);
+      await expect(control.getBoundingClientRect().width).toBeCloseTo(
+        allocation.getBoundingClientRect().width,
+      );
+      await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+    }
+
+    const flexAllocation = canvas.getByTestId("combobox-flex-allocation");
+    const gridAllocation = canvas.getByTestId("combobox-grid-allocation");
+    await expect(flexAllocation.getBoundingClientRect().width).toBeCloseTo(
+      gridAllocation.getBoundingClientRect().width,
+    );
+
+    const control = canvas.getByTestId("combobox-small-control");
+    const input = body.getByRole("combobox", { name: "Small route" });
+    const clear = body.getByLabelText("Clear Small route");
+    const trigger = body.getByRole("button", { name: "Show Small route" });
+    const emptyControlRectangle = control.getBoundingClientRect();
+    const emptyTriggerRectangle = trigger.getBoundingClientRect();
+
+    await userEvent.type(input, "한글");
+    await waitFor(() =>
+      expect(body.getByRole("option", { name: longOptions[0].label })).toBeVisible(),
+    );
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+
+    const popup = document.querySelector<HTMLElement>(".wd-combobox-ui__content");
+    if (!popup) throw new Error("Combobox popup content is required");
+    await waitFor(() =>
+      expect(
+        Math.abs(popup.getBoundingClientRect().width - emptyControlRectangle.width),
+      ).toBeLessThanOrEqual(1),
+    );
+    const popupRectangle = popup.getBoundingClientRect();
+    await expect(popupRectangle.left).toBeGreaterThanOrEqual(0);
+    await expect(popupRectangle.right).toBeLessThanOrEqual(
+      document.documentElement.clientWidth + 1,
+    );
+
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+    await expect(canvas.getByRole("status", { name: "Small route selected" })).toHaveTextContent(
+      "long-korean",
+    );
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+
+    await userEvent.click(clear);
+    await expect(input).toHaveValue("");
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(trigger.getBoundingClientRect(), emptyTriggerRectangle);
+
+    await userEvent.type(input, "x");
+    await userEvent.clear(input);
+    await waitFor(() => expect(body.getAllByRole("option")).toHaveLength(longOptions.length));
+    const openedPopup = document.querySelector<HTMLElement>(".wd-combobox-ui__content");
+    if (!openedPopup) throw new Error("Opened Combobox popup content is required");
+    for (const option of longOptions) {
+      const item = body.getByRole("option", { name: option.label });
+      const label = item.querySelector<HTMLElement>(".wd-combobox-ui__item-label");
+      const indicator = item.querySelector<HTMLElement>(".wd-combobox-ui__item-indicator");
+      if (!label || !indicator) throw new Error("Combobox item slots are required");
+      await expect(item.scrollWidth).toBeLessThanOrEqual(item.clientWidth);
+      await expect(label.getBoundingClientRect().right).toBeLessThanOrEqual(
+        openedPopup.getBoundingClientRect().right,
+      );
+      await expect(indicator.getBoundingClientRect().width).toBeGreaterThan(0);
+    }
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(
+      document.documentElement.clientWidth,
+    );
+    await expect(document.body.scrollWidth).toBeLessThanOrEqual(document.body.clientWidth);
   },
 };
 

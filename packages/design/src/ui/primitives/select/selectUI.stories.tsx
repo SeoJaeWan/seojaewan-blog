@@ -11,6 +11,21 @@ const options: readonly SelectUIOption[] = [
   { disabled: true, label: "Archive", value: "archive" },
 ];
 
+const longOptions: readonly SelectUIOption[] = [
+  {
+    label: "한글로아주길게작성된바탕화면문서보관함태그이름",
+    value: "long-korean",
+  },
+  {
+    label: "UnbrokenEnglishTagNameThatMustShrinkWithoutMovingTrailingControls",
+    value: "long-english",
+  },
+  {
+    label: "https://example.com/workspaces/design-system/tags/very-long-window-filter",
+    value: "long-url",
+  },
+];
+
 const windowTagFilters: readonly SelectUIOption[] = [
   { label: "Design system", value: "design-system" },
   { label: "Storybook", value: "storybook" },
@@ -152,6 +167,196 @@ export const ClearSelection: Story = {
     await expect(status).toHaveTextContent("documents");
     await userEvent.click(body.getByRole("button", { name: "Clear tag" }));
     await expect(status).toHaveTextContent("none");
+  },
+};
+
+const expectStableRectangle = async (actual: DOMRect, expected: DOMRect) => {
+  await expect(actual.width).toBeCloseTo(expected.width);
+  await expect(actual.height).toBeCloseTo(expected.height);
+  await expect(actual.x).toBeCloseTo(expected.x);
+  await expect(actual.y).toBeCloseTo(expected.y);
+};
+
+interface SelectWidthCaseProps {
+  id: string;
+  initialSelected: string | null;
+  label: string;
+  layout: "fixed-large" | "fixed-small" | "flex" | "grid";
+}
+
+const SelectWidthCase = ({ id, initialSelected, label, layout }: SelectWidthCaseProps) => {
+  const [selected, setSelected] = useState<string | null>(initialSelected);
+  const field = (
+    <div
+      data-testid={`${id}-allocation`}
+      style={
+        layout === "fixed-small"
+          ? { inlineSize: "11rem" }
+          : layout === "fixed-large"
+            ? { inlineSize: "24rem", maxInlineSize: "100%" }
+            : { minInlineSize: 0 }
+      }
+    >
+      <SelectUI.Control data-testid={`${id}-control`} style={{ inlineSize: "100%" }}>
+        <SelectUI.Trigger>
+          <SelectUI.Value placeholder="Choose a long tag" />
+        </SelectUI.Trigger>
+        <SelectUI.Clear aria-label={`Clear ${label}`} />
+      </SelectUI.Control>
+    </div>
+  );
+
+  return (
+    <SelectUI.Root items={longOptions} onValueChange={setSelected} value={selected}>
+      <SelectUI.Label>{label}</SelectUI.Label>
+      {layout === "flex" ? (
+        <div
+          data-testid={`${id}-container`}
+          style={{ display: "flex", inlineSize: "min(100%, 32rem)" }}
+        >
+          <span aria-hidden="true" style={{ flex: "0 0 6rem" }} />
+          <div style={{ flex: "1 1 0", minInlineSize: 0 }}>{field}</div>
+        </div>
+      ) : layout === "grid" ? (
+        <div
+          data-testid={`${id}-container`}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "6rem minmax(0, 1fr)",
+            inlineSize: "min(100%, 32rem)",
+          }}
+        >
+          <span aria-hidden="true" />
+          {field}
+        </div>
+      ) : (
+        field
+      )}
+      <SelectUI.Content>
+        <SelectUI.List>
+          {longOptions.map((option) => (
+            <SelectUI.Item key={option.value} value={option.value}>
+              {option.label}
+            </SelectUI.Item>
+          ))}
+        </SelectUI.List>
+      </SelectUI.Content>
+      <output aria-label={`${label} selected`}>{selected ?? "none"}</output>
+    </SelectUI.Root>
+  );
+};
+
+export const WidthAllocationAndPopupBoundary: Story = {
+  name: "Contract — Width Allocation and Popup Boundary",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "11rem, 24rem, flex, grid fixture에서 긴 선택값의 말줄임과 고정 clear·indicator slot을 비교합니다. 선택 popup은 anchor 폭을 따르면서 viewport available width 안에 머뭅니다. 숫자는 Story 전용 fixture입니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage" style={{ display: "grid", gap: "1rem", minInlineSize: 0 }}>
+      <SelectWidthCase
+        id="select-small"
+        initialSelected={null}
+        label="Small tag"
+        layout="fixed-small"
+      />
+      <SelectWidthCase
+        id="select-large"
+        initialSelected="long-english"
+        label="Large tag"
+        layout="fixed-large"
+      />
+      <SelectWidthCase id="select-flex" initialSelected="long-url" label="Flex tag" layout="flex" />
+      <SelectWidthCase
+        id="select-grid"
+        initialSelected="long-korean"
+        label="Grid tag"
+        layout="grid"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const document = canvasElement.ownerDocument;
+    const body = within(document.body);
+    const canvas = within(canvasElement);
+
+    for (const id of ["select-small", "select-large", "select-flex", "select-grid"]) {
+      const allocation = canvas.getByTestId(`${id}-allocation`);
+      const control = canvas.getByTestId(`${id}-control`);
+      await expect(control.getBoundingClientRect().width).toBeCloseTo(
+        allocation.getBoundingClientRect().width,
+      );
+      await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
+    }
+
+    const flexAllocation = canvas.getByTestId("select-flex-allocation");
+    const gridAllocation = canvas.getByTestId("select-grid-allocation");
+    await expect(flexAllocation.getBoundingClientRect().width).toBeCloseTo(
+      gridAllocation.getBoundingClientRect().width,
+    );
+
+    const control = canvas.getByTestId("select-small-control");
+    const trigger = body.getByRole("combobox", { name: "Small tag" });
+    const chevron = trigger.querySelector<HTMLElement>(".wd-select-ui__trigger-icon");
+    if (!chevron) throw new Error("Select trigger chevron is required");
+    const emptyControlRectangle = control.getBoundingClientRect();
+    const emptyChevronRectangle = chevron.getBoundingClientRect();
+
+    await userEvent.click(trigger);
+    await waitFor(() => expect(body.getAllByRole("option")).toHaveLength(longOptions.length));
+    const popup = document.querySelector<HTMLElement>(".wd-select-ui__content");
+    if (!popup) throw new Error("Select popup content is required");
+    await waitFor(() =>
+      expect(
+        Math.abs(popup.getBoundingClientRect().width - trigger.getBoundingClientRect().width),
+      ).toBeLessThanOrEqual(1),
+    );
+    const popupRectangle = popup.getBoundingClientRect();
+    await expect(popupRectangle.left).toBeGreaterThanOrEqual(0);
+    await expect(popupRectangle.right).toBeLessThanOrEqual(
+      document.documentElement.clientWidth + 1,
+    );
+
+    for (const option of longOptions) {
+      const item = body.getByRole("option", { name: option.label });
+      const label = item.querySelector<HTMLElement>(".wd-select-ui__item-label");
+      const indicator = item.querySelector<HTMLElement>(".wd-select-ui__item-indicator");
+      if (!label || !indicator) throw new Error("Select item slots are required");
+      await expect(item.scrollWidth).toBeLessThanOrEqual(item.clientWidth);
+      await expect(label.getBoundingClientRect().right).toBeLessThanOrEqual(popupRectangle.right);
+      await expect(indicator.getBoundingClientRect().width).toBeGreaterThan(0);
+    }
+
+    await userEvent.click(body.getByRole("option", { name: longOptions[0].label }));
+    const clear = body.getByRole("button", { name: "Clear Small tag" });
+    const value = trigger.querySelector<HTMLElement>(".wd-select-ui__value");
+    if (!value) throw new Error("Select value is required");
+    await expect(canvas.getByRole("status", { name: "Small tag selected" })).toHaveTextContent(
+      "long-korean",
+    );
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(chevron.getBoundingClientRect(), emptyChevronRectangle);
+    await expect(getComputedStyle(value).textOverflow).toBe("ellipsis");
+    await expect(value.scrollWidth).toBeGreaterThan(value.clientWidth);
+    await expect(clear.getBoundingClientRect().right).toBeLessThanOrEqual(
+      chevron.getBoundingClientRect().left,
+    );
+
+    await userEvent.click(clear);
+    await expect(canvas.getByRole("status", { name: "Small tag selected" })).toHaveTextContent(
+      "none",
+    );
+    await expectStableRectangle(control.getBoundingClientRect(), emptyControlRectangle);
+    await expectStableRectangle(chevron.getBoundingClientRect(), emptyChevronRectangle);
+    await expect(canvas.queryByRole("button", { name: "Clear Small tag" })).not.toBeInTheDocument();
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(
+      document.documentElement.clientWidth,
+    );
+    await expect(document.body.scrollWidth).toBeLessThanOrEqual(document.body.clientWidth);
   },
 };
 
