@@ -1,6 +1,3 @@
-import type { Ref } from "react";
-import { forwardRef } from "react";
-
 import { Popover } from "@base-ui/react/popover";
 import { clsx } from "clsx";
 
@@ -11,23 +8,21 @@ import type { PopoverUIContentProps } from "../popoverUI.types";
  *
  * PopoverContentUI는 모달 초점 격리, 내부 콘텐츠 구성 또는 애플리케이션 쌓임 정책을 소유하지 않는다.
  */
-export const PopoverContentUI = forwardRef(function PopoverContentUI(
-  {
-    align = "center",
-    alignOffset,
-    children,
-    className,
-    collisionPadding = 8,
-    container,
-    finalFocus,
-    initialFocus,
-    keepMounted,
-    side = "bottom",
-    sideOffset = 8,
-    ...props
-  }: PopoverUIContentProps,
-  ref: Ref<HTMLDivElement>,
-) {
+export function PopoverContentUI({
+  align = "center",
+  alignOffset,
+  children,
+  className,
+  collisionPadding = 8,
+  container,
+  finalFocus,
+  initialFocus,
+  keepMounted,
+  side = "bottom",
+  sideOffset = 8,
+  ref,
+  ...props
+}: PopoverUIContentProps) {
   return (
     <Popover.Portal container={container} keepMounted={keepMounted}>
       <Popover.Positioner
@@ -50,4 +45,4 @@ export const PopoverContentUI = forwardRef(function PopoverContentUI(
       </Popover.Positioner>
     </Popover.Portal>
   );
-});
+}

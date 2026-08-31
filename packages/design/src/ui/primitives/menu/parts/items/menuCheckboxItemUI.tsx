@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { Checkmark12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -13,43 +11,39 @@ import { MenuItemPresentation } from "./menuItemPresentation";
  *
  * MenuContentUI 또는 MenuSubmenuContentUI 안에서 다른 항목과 나란히 조합한다.
  */
-export const MenuCheckboxItemUI = forwardRef<HTMLDivElement, MenuUICheckboxItemProps>(
-  function MenuCheckboxItemUI(
-    {
-      children,
-      className,
-      closeOnSelect,
-      icon,
-      onCheckedChange,
-      trailing,
-      variant = "default",
-      ...props
-    },
-    ref,
-  ) {
-    return (
-      <BaseMenu.CheckboxItem
-        {...props}
-        className={clsx("wd-menu-ui__item", className)}
-        closeOnClick={closeOnSelect}
-        data-variant={variant}
-        onCheckedChange={(checked, details) =>
-          onCheckedChange?.(checked, toMenuUIChangeDetails(details.reason))
+export function MenuCheckboxItemUI({
+  children,
+  className,
+  closeOnSelect,
+  icon,
+  onCheckedChange,
+  trailing,
+  variant = "default",
+  ref,
+  ...props
+}: MenuUICheckboxItemProps) {
+  return (
+    <BaseMenu.CheckboxItem
+      {...props}
+      className={clsx("wd-menu-ui__item", className)}
+      closeOnClick={closeOnSelect}
+      data-variant={variant}
+      onCheckedChange={(checked, details) =>
+        onCheckedChange?.(checked, toMenuUIChangeDetails(details.reason))
+      }
+      ref={ref}
+    >
+      <MenuItemPresentation
+        icon={icon}
+        indicator={
+          <BaseMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
+            <Checkmark12Regular />
+          </BaseMenu.CheckboxItemIndicator>
         }
-        ref={ref}
+        trailing={trailing}
       >
-        <MenuItemPresentation
-          icon={icon}
-          indicator={
-            <BaseMenu.CheckboxItemIndicator className="wd-menu-ui__item-indicator" keepMounted>
-              <Checkmark12Regular />
-            </BaseMenu.CheckboxItemIndicator>
-          }
-          trailing={trailing}
-        >
-          {children}
-        </MenuItemPresentation>
-      </BaseMenu.CheckboxItem>
-    );
-  },
-);
+        {children}
+      </MenuItemPresentation>
+    </BaseMenu.CheckboxItem>
+  );
+}

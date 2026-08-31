@@ -1,6 +1,3 @@
-import type { Ref } from "react";
-import { forwardRef } from "react";
-
 import { Dialog } from "@base-ui/react/dialog";
 import { clsx } from "clsx";
 
@@ -11,10 +8,13 @@ import type { DialogUIContentProps } from "../dialogUI.types";
  *
  * DialogContentUI는 내부 콘텐츠의 구성이나 비즈니스 작업을 완료 또는 취소할 수 있는지 결정하지 않는다.
  */
-export const DialogContentUI = forwardRef(function DialogContentUI(
-  { className, finalFocus, initialFocus, ...props }: DialogUIContentProps,
-  ref: Ref<HTMLDivElement>,
-) {
+export function DialogContentUI({
+  className,
+  finalFocus,
+  initialFocus,
+  ref,
+  ...props
+}: DialogUIContentProps) {
   return (
     <Dialog.Viewport className="wd-dialog-ui__viewport">
       <Dialog.Popup
@@ -27,4 +27,4 @@ export const DialogContentUI = forwardRef(function DialogContentUI(
       />
     </Dialog.Viewport>
   );
-});
+}

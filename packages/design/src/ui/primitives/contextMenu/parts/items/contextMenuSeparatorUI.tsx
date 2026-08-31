@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
@@ -10,14 +8,12 @@ import type { ContextMenuUISeparatorProps } from "../../contextMenuUI.types";
  *
  * ContextMenuContentUI 안에서 나누려는 두 항목 묶음 사이에 조합한다.
  */
-export const ContextMenuSeparatorUI = forwardRef<HTMLDivElement, ContextMenuUISeparatorProps>(
-  function ContextMenuSeparatorUI({ className, ...props }, ref) {
-    return (
-      <BaseContextMenu.Separator
-        {...props}
-        className={clsx("wd-menu-ui__separator", "wd-context-menu-ui__separator", className)}
-        ref={ref}
-      />
-    );
-  },
-);
+export function ContextMenuSeparatorUI({ className, ref, ...props }: ContextMenuUISeparatorProps) {
+  return (
+    <BaseContextMenu.Separator
+      {...props}
+      className={clsx("wd-menu-ui__separator", "wd-context-menu-ui__separator", className)}
+      ref={ref}
+    />
+  );
+}

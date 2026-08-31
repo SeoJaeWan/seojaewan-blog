@@ -1,7 +1,6 @@
 "use client";
 
-import type { Ref } from "react";
-import { forwardRef, useContext } from "react";
+import { useContext } from "react";
 
 import { Dialog } from "@base-ui/react/dialog";
 import { clsx } from "clsx";
@@ -14,10 +13,13 @@ import type { DialogUITriggerProps } from "../dialogUI.types";
  *
  * DialogTriggerUI는 button의 접근 가능한 이름이나 열린 뒤 수행할 비즈니스 동작을 결정하지 않는다.
  */
-export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
-  { className, id, type = "button", ...props }: DialogUITriggerProps,
-  ref: Ref<HTMLButtonElement>,
-) {
+export function DialogTriggerUI({
+  className,
+  id,
+  type = "button",
+  ref,
+  ...props
+}: DialogUITriggerProps) {
   const triggerId = useContext(DialogTriggerIdContext);
 
   return (
@@ -29,4 +31,4 @@ export const DialogTriggerUI = forwardRef(function DialogTriggerUI(
       type={type}
     />
   );
-});
+}

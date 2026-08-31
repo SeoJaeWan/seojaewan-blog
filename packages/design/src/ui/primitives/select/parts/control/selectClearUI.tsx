@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useContext } from "react";
+import { useContext } from "react";
 
 import { Dismiss16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -13,39 +13,35 @@ import { SelectUIContext } from "../../selectUIContext";
  *
  * 미리 정의된 선택지를 제거하거나 여러 태그 및 애플리케이션 데이터를 삭제하지 않는다.
  */
-export const SelectClearUI = forwardRef<HTMLButtonElement, SelectUIClearProps>(
-  function SelectClearUI(
-    {
-      children = <Dismiss16Regular aria-hidden="true" />,
-      className,
-      disabled,
-      onClick,
-      type = "button",
-      ...props
-    },
-    ref,
-  ) {
-    const context = useContext(SelectUIContext);
-    const actionDisabled = context.disabled || disabled;
+export function SelectClearUI({
+  children = <Dismiss16Regular aria-hidden="true" />,
+  className,
+  disabled,
+  onClick,
+  type = "button",
+  ref,
+  ...props
+}: SelectUIClearProps) {
+  const context = useContext(SelectUIContext);
+  const actionDisabled = context.disabled || disabled;
 
-    if (!context.hasValue) return null;
+  if (!context.hasValue) return null;
 
-    return (
-      <button
-        {...props}
-        className={clsx("wd-select-ui__clear", className)}
-        disabled={actionDisabled}
-        onClick={(event) => {
-          if (actionDisabled) return;
-          event.stopPropagation();
-          context.clear();
-          onClick?.(event);
-        }}
-        ref={ref}
-        type={type}
-      >
-        {children}
-      </button>
-    );
-  },
-);
+  return (
+    <button
+      {...props}
+      className={clsx("wd-select-ui__clear", className)}
+      disabled={actionDisabled}
+      onClick={(event) => {
+        if (actionDisabled) return;
+        event.stopPropagation();
+        context.clear();
+        onClick?.(event);
+      }}
+      ref={ref}
+      type={type}
+    >
+      {children}
+    </button>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useContext } from "react";
+import { useContext } from "react";
 
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { clsx } from "clsx";
@@ -14,23 +14,21 @@ import { ComboboxItemUI } from "./comboboxItemUI";
  *
  * 검색 알고리즘, 선택지의 식별 값이나 현재 선택 상태를 독자적으로 변경하지 않는다.
  */
-export const ComboboxListUI = forwardRef<HTMLDivElement, ComboboxUIListProps>(
-  function ComboboxListUI({ className, renderItem, ...props }, ref) {
-    const { items } = useContext(ComboboxUIContext);
+export function ComboboxListUI({ className, renderItem, ref, ...props }: ComboboxUIListProps) {
+  const { items } = useContext(ComboboxUIContext);
 
-    return (
-      <BaseCombobox.List {...props} className={clsx("wd-combobox-ui__list", className)} ref={ref}>
-        {(value: string) => {
-          const option = items.find((item) => item.value === value);
-          if (!option) return null;
+  return (
+    <BaseCombobox.List {...props} className={clsx("wd-combobox-ui__list", className)} ref={ref}>
+      {(value: string) => {
+        const option = items.find((item) => item.value === value);
+        if (!option) return null;
 
-          return (
-            <ComboboxItemUI disabled={option.disabled} key={option.value} value={option.value}>
-              {renderItem?.(option) ?? option.label}
-            </ComboboxItemUI>
-          );
-        }}
-      </BaseCombobox.List>
-    );
-  },
-);
+        return (
+          <ComboboxItemUI disabled={option.disabled} key={option.value} value={option.value}>
+            {renderItem?.(option) ?? option.label}
+          </ComboboxItemUI>
+        );
+      }}
+    </BaseCombobox.List>
+  );
+}

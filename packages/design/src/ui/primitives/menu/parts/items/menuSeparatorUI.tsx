@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
@@ -10,14 +8,8 @@ import type { MenuUISeparatorProps } from "../../menuUI.types";
  *
  * MenuContentUI 안에서 나누려는 두 항목 묶음 사이에 조합한다.
  */
-export const MenuSeparatorUI = forwardRef<HTMLDivElement, MenuUISeparatorProps>(
-  function MenuSeparatorUI({ className, ...props }, ref) {
-    return (
-      <BaseMenu.Separator
-        {...props}
-        className={clsx("wd-menu-ui__separator", className)}
-        ref={ref}
-      />
-    );
-  },
-);
+export function MenuSeparatorUI({ className, ref, ...props }: MenuUISeparatorProps) {
+  return (
+    <BaseMenu.Separator {...props} className={clsx("wd-menu-ui__separator", className)} ref={ref} />
+  );
+}

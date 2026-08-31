@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import type { ContextMenuUIContentProps } from "../../contextMenuUI.types";
 import { ContextMenuContentUI } from "../structure/contextMenuContentUI";
 
@@ -8,19 +6,14 @@ import { ContextMenuContentUI } from "../structure/contextMenuContentUI";
  *
  * ContextMenuSubmenuRootUI 안에서 ContextMenuSubmenuTriggerUI의 짝으로 조합한다.
  */
-export const ContextMenuSubmenuContentUI = forwardRef<HTMLDivElement, ContextMenuUIContentProps>(
-  function ContextMenuSubmenuContentUI(
-    { align = "start", side = "inline-end", sideOffset = 2, ...props },
-    ref,
-  ) {
-    return (
-      <ContextMenuContentUI
-        {...props}
-        align={align}
-        ref={ref}
-        side={side}
-        sideOffset={sideOffset}
-      />
-    );
-  },
-);
+export function ContextMenuSubmenuContentUI({
+  align = "start",
+  side = "inline-end",
+  sideOffset = 2,
+  ref,
+  ...props
+}: ContextMenuUIContentProps) {
+  return (
+    <ContextMenuContentUI {...props} align={align} ref={ref} side={side} sideOffset={sideOffset} />
+  );
+}

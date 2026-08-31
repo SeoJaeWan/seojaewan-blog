@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { ChevronRight12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -12,13 +10,16 @@ import { ContextMenuItemPresentation } from "../items/contextMenuItemPresentatio
  *
  * ContextMenuSubmenuRootUI 안에서 ContextMenuSubmenuContentUI 앞에 조합한다.
  */
-export const ContextMenuSubmenuTriggerUI = forwardRef<
-  HTMLDivElement,
-  ContextMenuUISubmenuTriggerProps
->(function ContextMenuSubmenuTriggerUI(
-  { children, className, icon, openDelay, trailing, variant = "default", ...props },
+export function ContextMenuSubmenuTriggerUI({
+  children,
+  className,
+  icon,
+  openDelay,
+  trailing,
+  variant = "default",
   ref,
-) {
+  ...props
+}: ContextMenuUISubmenuTriggerProps) {
   return (
     <BaseContextMenu.SubmenuTrigger
       {...props}
@@ -49,4 +50,4 @@ export const ContextMenuSubmenuTriggerUI = forwardRef<
       </ContextMenuItemPresentation>
     </BaseContextMenu.SubmenuTrigger>
   );
-});
+}

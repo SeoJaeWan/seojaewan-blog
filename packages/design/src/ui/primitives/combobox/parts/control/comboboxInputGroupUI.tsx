@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { clsx } from "clsx";
 
@@ -12,14 +10,12 @@ import type { ComboboxUIInputGroupProps } from "../../comboboxUI.types";
  *
  * 검색어, 선택 값이나 열림 상태를 직접 소유하거나 변경하지 않는다.
  */
-export const ComboboxInputGroupUI = forwardRef<HTMLDivElement, ComboboxUIInputGroupProps>(
-  function ComboboxInputGroupUI({ className, ...props }, ref) {
-    return (
-      <BaseCombobox.InputGroup
-        {...props}
-        className={clsx("wd-combobox-ui__input-group", className)}
-        ref={ref}
-      />
-    );
-  },
-);
+export function ComboboxInputGroupUI({ className, ref, ...props }: ComboboxUIInputGroupProps) {
+  return (
+    <BaseCombobox.InputGroup
+      {...props}
+      className={clsx("wd-combobox-ui__input-group", className)}
+      ref={ref}
+    />
+  );
+}

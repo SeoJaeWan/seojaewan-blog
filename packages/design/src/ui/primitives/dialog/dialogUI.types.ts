@@ -3,6 +3,7 @@ import type {
   HTMLAttributes,
   ReactElement,
   ReactNode,
+  Ref,
   RefObject,
 } from "react";
 
@@ -55,6 +56,7 @@ export interface DialogUIProps {
  * trigger가 나타내는 애플리케이션 동작의 의미는 소비자가 소유한다.
  */
 export interface DialogUITriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: Ref<HTMLButtonElement>;
   /** trigger 동작을 유지하면서 native button을 교체한다. */
   render?: ReactElement;
 }
@@ -67,6 +69,7 @@ export interface DialogUITriggerProps extends ButtonHTMLAttributes<HTMLButtonEle
 export interface DialogUIPortalProps extends HTMLAttributes<HTMLDivElement> {
   container?: HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null> | null;
   keepMounted?: boolean;
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**
@@ -74,7 +77,9 @@ export interface DialogUIPortalProps extends HTMLAttributes<HTMLDivElement> {
  *
  * outside dismissal 허용 여부는 DialogUI가 결정한다.
  */
-export type DialogUIBackdropProps = HTMLAttributes<HTMLDivElement>;
+export type DialogUIBackdropProps = HTMLAttributes<HTMLDivElement> & {
+  ref?: Ref<HTMLDivElement>;
+};
 
 /**
  * focus를 격리하는 modal surface의 native div prop을 정의한다.
@@ -84,6 +89,7 @@ export type DialogUIBackdropProps = HTMLAttributes<HTMLDivElement>;
 export interface DialogUIContentProps extends HTMLAttributes<HTMLDivElement> {
   finalFocus?: boolean | RefObject<HTMLElement | null>;
   initialFocus?: boolean | RefObject<HTMLElement | null>;
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**
@@ -91,13 +97,17 @@ export interface DialogUIContentProps extends HTMLAttributes<HTMLDivElement> {
  *
  * 제목 문구나 애플리케이션 정보 구조는 소비자가 소유한다.
  */
-export type DialogUITitleProps = HTMLAttributes<HTMLHeadingElement>;
+export type DialogUITitleProps = HTMLAttributes<HTMLHeadingElement> & {
+  ref?: Ref<HTMLHeadingElement>;
+};
 /**
  * DialogUI.Content를 설명하는 supporting text prop을 정의한다.
  *
  * 설명 문구나 도메인 도움말 정책은 소비자가 소유한다.
  */
-export type DialogUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
+export type DialogUIDescriptionProps = HTMLAttributes<HTMLParagraphElement> & {
+  ref?: Ref<HTMLParagraphElement>;
+};
 
 /**
  * 자신이 속한 DialogUI를 닫는 button prop을 정의한다.
@@ -105,6 +115,7 @@ export type DialogUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
  * 닫기 뒤 실행할 비즈니스 결과나 탐색은 소비자가 결정한다.
  */
 export interface DialogUICloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: Ref<HTMLButtonElement>;
   /** close 동작을 유지하면서 native button을 교체한다. */
   render?: ReactElement;
 }

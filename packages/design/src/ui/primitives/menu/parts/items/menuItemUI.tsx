@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
@@ -11,10 +9,16 @@ import { MenuItemPresentation } from "./menuItemPresentation";
  *
  * MenuContentUI 또는 MenuSubmenuContentUI 안에서 항목 단위로 조합한다.
  */
-export const MenuItemUI = forwardRef<HTMLDivElement, MenuUIItemProps>(function MenuItemUI(
-  { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
+export function MenuItemUI({
+  children,
+  className,
+  closeOnSelect,
+  icon,
+  trailing,
+  variant = "default",
   ref,
-) {
+  ...props
+}: MenuUIItemProps) {
   return (
     <BaseMenu.Item
       {...props}
@@ -28,4 +32,4 @@ export const MenuItemUI = forwardRef<HTMLDivElement, MenuUIItemProps>(function M
       </MenuItemPresentation>
     </BaseMenu.Item>
   );
-});
+}

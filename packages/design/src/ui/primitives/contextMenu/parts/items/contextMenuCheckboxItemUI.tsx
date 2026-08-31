@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { Checkmark12Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -13,46 +11,42 @@ import { ContextMenuItemPresentation } from "./contextMenuItemPresentation";
  *
  * ContextMenuContentUI 또는 중첩 Content 안에서 다른 항목과 나란히 조합한다.
  */
-export const ContextMenuCheckboxItemUI = forwardRef<HTMLDivElement, ContextMenuUICheckboxItemProps>(
-  function ContextMenuCheckboxItemUI(
-    {
-      children,
-      className,
-      closeOnSelect,
-      icon,
-      onCheckedChange,
-      trailing,
-      variant = "default",
-      ...props
-    },
-    ref,
-  ) {
-    return (
-      <BaseContextMenu.CheckboxItem
-        {...props}
-        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
-        closeOnClick={closeOnSelect}
-        data-variant={variant}
-        onCheckedChange={(checked, details) =>
-          onCheckedChange?.(checked, toContextMenuUIChangeDetails(details.reason))
+export function ContextMenuCheckboxItemUI({
+  children,
+  className,
+  closeOnSelect,
+  icon,
+  onCheckedChange,
+  trailing,
+  variant = "default",
+  ref,
+  ...props
+}: ContextMenuUICheckboxItemProps) {
+  return (
+    <BaseContextMenu.CheckboxItem
+      {...props}
+      className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
+      closeOnClick={closeOnSelect}
+      data-variant={variant}
+      onCheckedChange={(checked, details) =>
+        onCheckedChange?.(checked, toContextMenuUIChangeDetails(details.reason))
+      }
+      ref={ref}
+    >
+      <ContextMenuItemPresentation
+        icon={icon}
+        indicator={
+          <BaseContextMenu.CheckboxItemIndicator
+            className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
+            keepMounted
+          >
+            <Checkmark12Regular />
+          </BaseContextMenu.CheckboxItemIndicator>
         }
-        ref={ref}
+        trailing={trailing}
       >
-        <ContextMenuItemPresentation
-          icon={icon}
-          indicator={
-            <BaseContextMenu.CheckboxItemIndicator
-              className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
-              keepMounted
-            >
-              <Checkmark12Regular />
-            </BaseContextMenu.CheckboxItemIndicator>
-          }
-          trailing={trailing}
-        >
-          {children}
-        </ContextMenuItemPresentation>
-      </BaseContextMenu.CheckboxItem>
-    );
-  },
-);
+        {children}
+      </ContextMenuItemPresentation>
+    </BaseContextMenu.CheckboxItem>
+  );
+}

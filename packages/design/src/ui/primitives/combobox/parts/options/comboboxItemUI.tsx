@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { Checkmark16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -13,15 +11,13 @@ import type { ComboboxUIItemProps } from "../../comboboxUI.types";
  *
  * 루트에 없는 값을 생성하거나 선택 결과를 애플리케이션 저장소에 영속화하지 않는다.
  */
-export const ComboboxItemUI = forwardRef<HTMLDivElement, ComboboxUIItemProps>(
-  function ComboboxItemUI({ children, className, ...props }, ref) {
-    return (
-      <BaseCombobox.Item {...props} className={clsx("wd-combobox-ui__item", className)} ref={ref}>
-        <BaseCombobox.ItemIndicator className="wd-combobox-ui__item-indicator" keepMounted>
-          <Checkmark16Regular aria-hidden="true" />
-        </BaseCombobox.ItemIndicator>
-        <span className="wd-combobox-ui__item-label">{children}</span>
-      </BaseCombobox.Item>
-    );
-  },
-);
+export function ComboboxItemUI({ children, className, ref, ...props }: ComboboxUIItemProps) {
+  return (
+    <BaseCombobox.Item {...props} className={clsx("wd-combobox-ui__item", className)} ref={ref}>
+      <BaseCombobox.ItemIndicator className="wd-combobox-ui__item-indicator" keepMounted>
+        <Checkmark16Regular aria-hidden="true" />
+      </BaseCombobox.ItemIndicator>
+      <span className="wd-combobox-ui__item-label">{children}</span>
+    </BaseCombobox.Item>
+  );
+}

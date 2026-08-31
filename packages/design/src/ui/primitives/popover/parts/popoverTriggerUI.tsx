@@ -1,7 +1,6 @@
 "use client";
 
-import type { Ref } from "react";
-import { forwardRef, useContext } from "react";
+import { useContext } from "react";
 
 import { Popover } from "@base-ui/react/popover";
 import { clsx } from "clsx";
@@ -14,10 +13,13 @@ import type { PopoverUITriggerProps } from "../popoverUI.types";
  *
  * PopoverTriggerUI는 button의 접근 가능한 이름이나 열린 뒤 수행할 비즈니스 동작을 결정하지 않는다.
  */
-export const PopoverTriggerUI = forwardRef(function PopoverTriggerUI(
-  { className, id, type = "button", ...props }: PopoverUITriggerProps,
-  ref: Ref<HTMLButtonElement>,
-) {
+export function PopoverTriggerUI({
+  className,
+  id,
+  type = "button",
+  ref,
+  ...props
+}: PopoverUITriggerProps) {
   const triggerId = useContext(PopoverTriggerIdContext);
 
   return (
@@ -29,4 +31,4 @@ export const PopoverTriggerUI = forwardRef(function PopoverTriggerUI(
       type={type}
     />
   );
-});
+}

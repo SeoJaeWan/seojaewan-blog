@@ -1,6 +1,3 @@
-import type { Ref } from "react";
-import { forwardRef } from "react";
-
 import { Popover } from "@base-ui/react/popover";
 import { clsx } from "clsx";
 
@@ -11,10 +8,7 @@ import type { PopoverUICloseProps } from "../popoverUI.types";
  *
  * PopoverCloseUI는 button의 접근 가능한 이름이나 닫은 뒤 실행할 비즈니스 결과와 탐색을 결정하지 않는다.
  */
-export const PopoverCloseUI = forwardRef(function PopoverCloseUI(
-  { className, type = "button", ...props }: PopoverUICloseProps,
-  ref: Ref<HTMLButtonElement>,
-) {
+export function PopoverCloseUI({ className, type = "button", ref, ...props }: PopoverUICloseProps) {
   return (
     <Popover.Close
       {...props}
@@ -23,4 +17,4 @@ export const PopoverCloseUI = forwardRef(function PopoverCloseUI(
       type={type}
     />
   );
-});
+}

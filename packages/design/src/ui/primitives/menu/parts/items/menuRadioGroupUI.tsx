@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
@@ -11,17 +9,20 @@ import { toMenuUIChangeDetails } from "../../utils/toMenuUIChangeDetails";
  *
  * MenuContentUI 안에서 하나 이상의 MenuRadioItemUI를 감싸는 위치에 조합한다.
  */
-export const MenuRadioGroupUI = forwardRef<HTMLDivElement, MenuUIRadioGroupProps>(
-  function MenuRadioGroupUI({ className, onValueChange, ...props }, ref) {
-    return (
-      <BaseMenu.RadioGroup
-        {...props}
-        className={clsx("wd-menu-ui__radio-group", className)}
-        onValueChange={(value, details) =>
-          onValueChange?.(String(value), toMenuUIChangeDetails(details.reason))
-        }
-        ref={ref}
-      />
-    );
-  },
-);
+export function MenuRadioGroupUI({
+  className,
+  onValueChange,
+  ref,
+  ...props
+}: MenuUIRadioGroupProps) {
+  return (
+    <BaseMenu.RadioGroup
+      {...props}
+      className={clsx("wd-menu-ui__radio-group", className)}
+      onValueChange={(value, details) =>
+        onValueChange?.(String(value), toMenuUIChangeDetails(details.reason))
+      }
+      ref={ref}
+    />
+  );
+}

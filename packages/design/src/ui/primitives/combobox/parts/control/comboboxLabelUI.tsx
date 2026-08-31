@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useContext } from "react";
+import { useContext } from "react";
 
 import { clsx } from "clsx";
 
@@ -12,17 +12,15 @@ import { ComboboxUIContext } from "../../comboboxUIContext";
  *
  * 오류 문구를 생성하거나 필드 유효성 및 애플리케이션 검증 상태를 관리하지 않는다.
  */
-export const ComboboxLabelUI = forwardRef<HTMLLabelElement, ComboboxUILabelProps>(
-  function ComboboxLabelUI({ className, htmlFor, ...props }, ref) {
-    const { inputId } = useContext(ComboboxUIContext);
+export function ComboboxLabelUI({ className, htmlFor, ref, ...props }: ComboboxUILabelProps) {
+  const { inputId } = useContext(ComboboxUIContext);
 
-    return (
-      <label
-        {...props}
-        className={clsx("wd-combobox-ui__label", className)}
-        htmlFor={htmlFor ?? inputId}
-        ref={ref}
-      />
-    );
-  },
-);
+  return (
+    <label
+      {...props}
+      className={clsx("wd-combobox-ui__label", className)}
+      htmlFor={htmlFor ?? inputId}
+      ref={ref}
+    />
+  );
+}

@@ -1,6 +1,3 @@
-import type { Ref } from "react";
-import { forwardRef } from "react";
-
 import { Dialog } from "@base-ui/react/dialog";
 import { clsx } from "clsx";
 
@@ -11,9 +8,6 @@ import type { DialogUITitleProps } from "../dialogUI.types";
  *
  * DialogTitleUI는 제목 문구, heading 단계 또는 애플리케이션 정보 구조를 결정하지 않는다.
  */
-export const DialogTitleUI = forwardRef(function DialogTitleUI(
-  { className, ...props }: DialogUITitleProps,
-  ref: Ref<HTMLHeadingElement>,
-) {
+export function DialogTitleUI({ className, ref, ...props }: DialogUITitleProps) {
   return <Dialog.Title {...props} className={clsx("wd-dialog-ui__title", className)} ref={ref} />;
-});
+}

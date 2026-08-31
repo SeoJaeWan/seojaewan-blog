@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { clsx } from "clsx";
 
@@ -12,38 +10,34 @@ import type { ComboboxUIContentProps } from "../../comboboxUI.types";
  *
  * 선택지를 조회, 정렬 또는 변환하지 않으며 검색과 선택 상태도 소유하지 않는다.
  */
-export const ComboboxContentUI = forwardRef<HTMLDivElement, ComboboxUIContentProps>(
-  function ComboboxContentUI(
-    {
-      align = "start",
-      alignOffset,
-      className,
-      collisionPadding = 8,
-      keepMounted,
-      portalContainer,
-      side = "bottom",
-      sideOffset = 4,
-      ...props
-    },
-    ref,
-  ) {
-    return (
-      <BaseCombobox.Portal container={portalContainer} keepMounted={keepMounted}>
-        <BaseCombobox.Positioner
-          align={align}
-          alignOffset={alignOffset}
-          className="wd-combobox-ui__positioner"
-          collisionPadding={collisionPadding}
-          side={side}
-          sideOffset={sideOffset}
-        >
-          <BaseCombobox.Popup
-            {...props}
-            className={clsx("wd-combobox-ui__content", className)}
-            ref={ref}
-          />
-        </BaseCombobox.Positioner>
-      </BaseCombobox.Portal>
-    );
-  },
-);
+export function ComboboxContentUI({
+  align = "start",
+  alignOffset,
+  className,
+  collisionPadding = 8,
+  keepMounted,
+  portalContainer,
+  side = "bottom",
+  sideOffset = 4,
+  ref,
+  ...props
+}: ComboboxUIContentProps) {
+  return (
+    <BaseCombobox.Portal container={portalContainer} keepMounted={keepMounted}>
+      <BaseCombobox.Positioner
+        align={align}
+        alignOffset={alignOffset}
+        className="wd-combobox-ui__positioner"
+        collisionPadding={collisionPadding}
+        side={side}
+        sideOffset={sideOffset}
+      >
+        <BaseCombobox.Popup
+          {...props}
+          className={clsx("wd-combobox-ui__content", className)}
+          ref={ref}
+        />
+      </BaseCombobox.Positioner>
+    </BaseCombobox.Portal>
+  );
+}

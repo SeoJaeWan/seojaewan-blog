@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
@@ -11,23 +9,27 @@ import { ContextMenuItemPresentation } from "./contextMenuItemPresentation";
  *
  * ContextMenuContentUI 또는 중첩 Content 안에서 항목 단위로 조합한다.
  */
-export const ContextMenuItemUI = forwardRef<HTMLDivElement, ContextMenuUIItemProps>(
-  function ContextMenuItemUI(
-    { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
-    ref,
-  ) {
-    return (
-      <BaseContextMenu.Item
-        {...props}
-        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
-        closeOnClick={closeOnSelect}
-        data-variant={variant}
-        ref={ref}
-      >
-        <ContextMenuItemPresentation icon={icon} trailing={trailing}>
-          {children}
-        </ContextMenuItemPresentation>
-      </BaseContextMenu.Item>
-    );
-  },
-);
+export function ContextMenuItemUI({
+  children,
+  className,
+  closeOnSelect,
+  icon,
+  trailing,
+  variant = "default",
+  ref,
+  ...props
+}: ContextMenuUIItemProps) {
+  return (
+    <BaseContextMenu.Item
+      {...props}
+      className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
+      closeOnClick={closeOnSelect}
+      data-variant={variant}
+      ref={ref}
+    >
+      <ContextMenuItemPresentation icon={icon} trailing={trailing}>
+        {children}
+      </ContextMenuItemPresentation>
+    </BaseContextMenu.Item>
+  );
+}

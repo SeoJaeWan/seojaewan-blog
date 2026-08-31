@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { clsx } from "clsx";
 
@@ -11,17 +9,20 @@ import { toContextMenuUIChangeDetails } from "../../utils/toContextMenuUIChangeD
  *
  * ContextMenuContentUI 안에서 하나 이상의 ContextMenuRadioItemUI를 감싸 조합한다.
  */
-export const ContextMenuRadioGroupUI = forwardRef<HTMLDivElement, ContextMenuUIRadioGroupProps>(
-  function ContextMenuRadioGroupUI({ className, onValueChange, ...props }, ref) {
-    return (
-      <BaseContextMenu.RadioGroup
-        {...props}
-        className={clsx("wd-menu-ui__radio-group", "wd-context-menu-ui__radio-group", className)}
-        onValueChange={(value, details) =>
-          onValueChange?.(String(value), toContextMenuUIChangeDetails(details.reason))
-        }
-        ref={ref}
-      />
-    );
-  },
-);
+export function ContextMenuRadioGroupUI({
+  className,
+  onValueChange,
+  ref,
+  ...props
+}: ContextMenuUIRadioGroupProps) {
+  return (
+    <BaseContextMenu.RadioGroup
+      {...props}
+      className={clsx("wd-menu-ui__radio-group", "wd-context-menu-ui__radio-group", className)}
+      onValueChange={(value, details) =>
+        onValueChange?.(String(value), toContextMenuUIChangeDetails(details.reason))
+      }
+      ref={ref}
+    />
+  );
+}

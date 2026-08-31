@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import type { MenuUIContentProps } from "../../menuUI.types";
 import { MenuContentUI } from "../structure/menuContentUI";
 
@@ -8,11 +6,12 @@ import { MenuContentUI } from "../structure/menuContentUI";
  *
  * MenuSubmenuRootUI 안에서 MenuSubmenuTriggerUI의 짝으로 조합한다.
  */
-export const MenuSubmenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(
-  function MenuSubmenuContentUI(
-    { align = "start", side = "inline-end", sideOffset = 2, ...props },
-    ref,
-  ) {
-    return <MenuContentUI {...props} align={align} ref={ref} side={side} sideOffset={sideOffset} />;
-  },
-);
+export function MenuSubmenuContentUI({
+  align = "start",
+  side = "inline-end",
+  sideOffset = 2,
+  ref,
+  ...props
+}: MenuUIContentProps) {
+  return <MenuContentUI {...props} align={align} ref={ref} side={side} sideOffset={sideOffset} />;
+}

@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { clsx } from "clsx";
 
@@ -12,14 +10,8 @@ import type { ComboboxUIEmptyProps } from "../../comboboxUI.types";
  *
  * 검색어를 지우거나 선택지 목록을 추가, 조회 또는 변경하지 않는다.
  */
-export const ComboboxEmptyUI = forwardRef<HTMLDivElement, ComboboxUIEmptyProps>(
-  function ComboboxEmptyUI({ className, ...props }, ref) {
-    return (
-      <BaseCombobox.Empty
-        {...props}
-        className={clsx("wd-combobox-ui__empty", className)}
-        ref={ref}
-      />
-    );
-  },
-);
+export function ComboboxEmptyUI({ className, ref, ...props }: ComboboxUIEmptyProps) {
+  return (
+    <BaseCombobox.Empty {...props} className={clsx("wd-combobox-ui__empty", className)} ref={ref} />
+  );
+}

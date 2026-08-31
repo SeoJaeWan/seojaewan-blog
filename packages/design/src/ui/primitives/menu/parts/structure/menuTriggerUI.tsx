@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
@@ -10,15 +8,13 @@ import type { MenuUITriggerProps } from "../../menuUI.types";
  *
  * MenuRootUI 안에서 MenuContentUI와 같은 단계에 조합한다.
  */
-export const MenuTriggerUI = forwardRef<HTMLButtonElement, MenuUITriggerProps>(
-  function MenuTriggerUI({ className, openDelay, ...props }, ref) {
-    return (
-      <BaseMenu.Trigger
-        {...props}
-        className={clsx("wd-menu-ui__trigger", className)}
-        delay={openDelay}
-        ref={ref}
-      />
-    );
-  },
-);
+export function MenuTriggerUI({ className, openDelay, ref, ...props }: MenuUITriggerProps) {
+  return (
+    <BaseMenu.Trigger
+      {...props}
+      className={clsx("wd-menu-ui__trigger", className)}
+      delay={openDelay}
+      ref={ref}
+    />
+  );
+}

@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { clsx } from "clsx";
 
@@ -12,11 +10,8 @@ import type { SelectUILabelProps } from "../../selectUI.types";
  *
  * 오류 문구를 생성하거나 필드 유효성 및 애플리케이션 검증 상태를 관리하지 않는다.
  */
-export const SelectLabelUI = forwardRef<HTMLDivElement, SelectUILabelProps>(function SelectLabelUI(
-  { className, ...props },
-  ref,
-) {
+export function SelectLabelUI({ className, ref, ...props }: SelectUILabelProps) {
   return (
     <BaseSelect.Label {...props} className={clsx("wd-select-ui__label", className)} ref={ref} />
   );
-});
+}

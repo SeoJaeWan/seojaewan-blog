@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
 import { clsx } from "clsx";
 
@@ -10,14 +8,12 @@ import type { CollapsibleUIPanelProps } from "../collapsibleUI.types";
  *
  * CollapsiblePanelUI는 콘텐츠의 데이터 구성, 선택 상태 또는 비즈니스 상태를 소유하지 않는다.
  */
-export const CollapsiblePanelUI = forwardRef<HTMLDivElement, CollapsibleUIPanelProps>(
-  function CollapsiblePanelUI({ className, ...props }, ref) {
-    return (
-      <BaseCollapsible.Panel
-        {...props}
-        className={clsx("wd-collapsible-ui__panel", className)}
-        ref={ref}
-      />
-    );
-  },
-);
+export function CollapsiblePanelUI({ className, ref, ...props }: CollapsibleUIPanelProps) {
+  return (
+    <BaseCollapsible.Panel
+      {...props}
+      className={clsx("wd-collapsible-ui__panel", className)}
+      ref={ref}
+    />
+  );
+}

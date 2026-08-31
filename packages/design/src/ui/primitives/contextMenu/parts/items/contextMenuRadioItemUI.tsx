@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { RadioButton16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -12,34 +10,38 @@ import { ContextMenuItemPresentation } from "./contextMenuItemPresentation";
  *
  * ContextMenuRadioGroupUI 안에서 같은 그룹의 다른 RadioItem과 나란히 조합한다.
  */
-export const ContextMenuRadioItemUI = forwardRef<HTMLDivElement, ContextMenuUIRadioItemProps>(
-  function ContextMenuRadioItemUI(
-    { children, className, closeOnSelect, icon, trailing, variant = "default", ...props },
-    ref,
-  ) {
-    return (
-      <BaseContextMenu.RadioItem
-        {...props}
-        className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
-        closeOnClick={closeOnSelect}
-        data-variant={variant}
-        ref={ref}
+export function ContextMenuRadioItemUI({
+  children,
+  className,
+  closeOnSelect,
+  icon,
+  trailing,
+  variant = "default",
+  ref,
+  ...props
+}: ContextMenuUIRadioItemProps) {
+  return (
+    <BaseContextMenu.RadioItem
+      {...props}
+      className={clsx("wd-menu-ui__item", "wd-context-menu-ui__item", className)}
+      closeOnClick={closeOnSelect}
+      data-variant={variant}
+      ref={ref}
+    >
+      <ContextMenuItemPresentation
+        icon={icon}
+        indicator={
+          <BaseContextMenu.RadioItemIndicator
+            className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
+            keepMounted
+          >
+            <RadioButton16Regular />
+          </BaseContextMenu.RadioItemIndicator>
+        }
+        trailing={trailing}
       >
-        <ContextMenuItemPresentation
-          icon={icon}
-          indicator={
-            <BaseContextMenu.RadioItemIndicator
-              className="wd-menu-ui__item-indicator wd-context-menu-ui__item-indicator"
-              keepMounted
-            >
-              <RadioButton16Regular />
-            </BaseContextMenu.RadioItemIndicator>
-          }
-          trailing={trailing}
-        >
-          {children}
-        </ContextMenuItemPresentation>
-      </BaseContextMenu.RadioItem>
-    );
-  },
-);
+        {children}
+      </ContextMenuItemPresentation>
+    </BaseContextMenu.RadioItem>
+  );
+}

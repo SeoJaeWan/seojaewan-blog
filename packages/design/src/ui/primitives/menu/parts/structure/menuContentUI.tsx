@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 
@@ -10,23 +8,21 @@ import type { MenuUIContentProps } from "../../menuUI.types";
  *
  * MenuRootUI 안에서 MenuTriggerUI의 짝으로 두고 항목 part를 자식으로 조합한다.
  */
-export const MenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(function MenuContentUI(
-  {
-    align = "start",
-    alignOffset,
-    "aria-label": ariaLabel,
-    "aria-labelledby": ariaLabelledBy,
-    className,
-    collisionPadding = 8,
-    finalFocus,
-    keepMounted,
-    portalContainer,
-    side = "bottom",
-    sideOffset = 4,
-    ...props
-  },
+export function MenuContentUI({
+  align = "start",
+  alignOffset,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  className,
+  collisionPadding = 8,
+  finalFocus,
+  keepMounted,
+  portalContainer,
+  side = "bottom",
+  sideOffset = 4,
   ref,
-) {
+  ...props
+}: MenuUIContentProps) {
   return (
     <BaseMenu.Portal container={portalContainer} keepMounted={keepMounted}>
       <BaseMenu.Positioner
@@ -52,4 +48,4 @@ export const MenuContentUI = forwardRef<HTMLDivElement, MenuUIContentProps>(func
       </BaseMenu.Positioner>
     </BaseMenu.Portal>
   );
-});
+}

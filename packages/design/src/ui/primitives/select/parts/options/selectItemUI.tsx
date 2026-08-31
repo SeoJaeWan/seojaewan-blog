@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Checkmark16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -13,10 +11,7 @@ import type { SelectUIItemProps } from "../../selectUI.types";
  *
  * 루트에 없는 값을 생성하거나 선택 결과를 애플리케이션 저장소에 영속화하지 않는다.
  */
-export const SelectItemUI = forwardRef<HTMLElement, SelectUIItemProps>(function SelectItemUI(
-  { children, className, ...props },
-  ref,
-) {
+export function SelectItemUI({ children, className, ref, ...props }: SelectUIItemProps) {
   return (
     <BaseSelect.Item {...props} className={clsx("wd-select-ui__item", className)} ref={ref}>
       <BaseSelect.ItemIndicator className="wd-select-ui__item-indicator" keepMounted>
@@ -25,4 +20,4 @@ export const SelectItemUI = forwardRef<HTMLElement, SelectUIItemProps>(function 
       <BaseSelect.ItemText className="wd-select-ui__item-label">{children}</BaseSelect.ItemText>
     </BaseSelect.Item>
   );
-});
+}

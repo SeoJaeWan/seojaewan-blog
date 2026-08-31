@@ -1,7 +1,5 @@
 "use client";
 
-import { forwardRef } from "react";
-
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { clsx } from "clsx";
 
@@ -12,11 +10,8 @@ import type { SelectUIValueProps } from "../../selectUI.types";
  *
  * 표시 문자열을 선택 값으로 역변환하거나 선택 상태와 애플리케이션 데이터를 변경하지 않는다.
  */
-export const SelectValueUI = forwardRef<HTMLSpanElement, SelectUIValueProps>(function SelectValueUI(
-  { className, ...props },
-  ref,
-) {
+export function SelectValueUI({ className, ref, ...props }: SelectUIValueProps) {
   return (
     <BaseSelect.Value {...props} className={clsx("wd-select-ui__value", className)} ref={ref} />
   );
-});
+}

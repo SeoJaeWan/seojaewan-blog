@@ -3,6 +3,7 @@ import type {
   HTMLAttributes,
   ReactElement,
   ReactNode,
+  Ref,
   RefObject,
 } from "react";
 
@@ -70,6 +71,7 @@ export interface PopoverUIProps {
  * trigger가 나타내는 애플리케이션 동작의 의미는 소비자가 소유한다.
  */
 export interface PopoverUITriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: Ref<HTMLButtonElement>;
   /** trigger 동작을 유지하면서 native button을 교체한다. */
   render?: ReactElement;
 }
@@ -87,6 +89,7 @@ export interface PopoverUIContentProps extends HTMLAttributes<HTMLDivElement> {
   finalFocus?: boolean | RefObject<HTMLElement | null>;
   initialFocus?: boolean | RefObject<HTMLElement | null>;
   keepMounted?: boolean;
+  ref?: Ref<HTMLDivElement>;
   side?: PopoverUIPlacementSide;
   sideOffset?: number;
 }
@@ -96,13 +99,17 @@ export interface PopoverUIContentProps extends HTMLAttributes<HTMLDivElement> {
  *
  * 제목 문구나 애플리케이션 정보 구조는 소비자가 소유한다.
  */
-export type PopoverUITitleProps = HTMLAttributes<HTMLHeadingElement>;
+export type PopoverUITitleProps = HTMLAttributes<HTMLHeadingElement> & {
+  ref?: Ref<HTMLHeadingElement>;
+};
 /**
  * PopoverUI.Content를 설명하는 supporting text prop을 정의한다.
  *
  * 설명 문구나 도메인 도움말 정책은 소비자가 소유한다.
  */
-export type PopoverUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
+export type PopoverUIDescriptionProps = HTMLAttributes<HTMLParagraphElement> & {
+  ref?: Ref<HTMLParagraphElement>;
+};
 
 /**
  * 자신이 속한 PopoverUI를 닫는 button prop을 정의한다.
@@ -110,6 +117,7 @@ export type PopoverUIDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
  * 닫기 뒤 실행할 비즈니스 결과나 탐색은 소비자가 결정한다.
  */
 export interface PopoverUICloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: Ref<HTMLButtonElement>;
   /** close 동작을 유지하면서 native button을 교체한다. */
   render?: ReactElement;
 }

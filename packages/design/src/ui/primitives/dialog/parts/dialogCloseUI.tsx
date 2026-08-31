@@ -1,6 +1,3 @@
-import type { Ref } from "react";
-import { forwardRef } from "react";
-
 import { Dialog } from "@base-ui/react/dialog";
 import { clsx } from "clsx";
 
@@ -11,10 +8,7 @@ import type { DialogUICloseProps } from "../dialogUI.types";
  *
  * DialogCloseUI는 button의 접근 가능한 이름이나 닫은 뒤 실행할 비즈니스 결과와 탐색을 결정하지 않는다.
  */
-export const DialogCloseUI = forwardRef(function DialogCloseUI(
-  { className, type = "button", ...props }: DialogUICloseProps,
-  ref: Ref<HTMLButtonElement>,
-) {
+export function DialogCloseUI({ className, type = "button", ref, ...props }: DialogUICloseProps) {
   return (
     <Dialog.Close
       {...props}
@@ -23,4 +17,4 @@ export const DialogCloseUI = forwardRef(function DialogCloseUI(
       type={type}
     />
   );
-});
+}

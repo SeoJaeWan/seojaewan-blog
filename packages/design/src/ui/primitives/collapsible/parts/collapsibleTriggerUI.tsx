@@ -1,5 +1,3 @@
-import { forwardRef } from "react";
-
 import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
 import { ChevronRight16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
@@ -11,18 +9,22 @@ import type { CollapsibleUITriggerProps } from "../collapsibleUI.types";
  *
  * CollapsibleTriggerUI는 항목 선택, tree 탐색 또는 Panel 콘텐츠의 의미를 소유하지 않는다.
  */
-export const CollapsibleTriggerUI = forwardRef<HTMLButtonElement, CollapsibleUITriggerProps>(
-  function CollapsibleTriggerUI({ children, className, type = "button", ...props }, ref) {
-    return (
-      <BaseCollapsible.Trigger
-        {...props}
-        className={clsx("wd-collapsible-ui__trigger", className)}
-        ref={ref}
-        type={type}
-      >
-        <ChevronRight16Regular aria-hidden="true" className="wd-collapsible-ui__trigger-icon" />
-        {children}
-      </BaseCollapsible.Trigger>
-    );
-  },
-);
+export function CollapsibleTriggerUI({
+  children,
+  className,
+  type = "button",
+  ref,
+  ...props
+}: CollapsibleUITriggerProps) {
+  return (
+    <BaseCollapsible.Trigger
+      {...props}
+      className={clsx("wd-collapsible-ui__trigger", className)}
+      ref={ref}
+      type={type}
+    >
+      <ChevronRight16Regular aria-hidden="true" className="wd-collapsible-ui__trigger-icon" />
+      {children}
+    </BaseCollapsible.Trigger>
+  );
+}
