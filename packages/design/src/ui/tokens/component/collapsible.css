@@ -8,6 +8,7 @@
   --wd-collapsible-trigger-background-color-pressed: var(--wd-color-surface-muted);
   --wd-collapsible-trigger-border-radius: var(--wd-reference-radius-2);
   --wd-collapsible-trigger-gap: var(--wd-reference-spacing-2);
+  --wd-collapsible-trigger-icon-size: 16px;
   --wd-collapsible-trigger-min-height: 32px;
   --wd-collapsible-trigger-opacity-disabled: 0.5;
   --wd-collapsible-trigger-outline-color-focus-visible: var(--wd-color-focus-ring);

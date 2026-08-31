@@ -51,8 +51,27 @@
   opacity: var(--wd-collapsible-trigger-opacity-disabled);
 }
 
+.wd-collapsible-ui__trigger-icon {
+  block-size: var(--wd-collapsible-trigger-icon-size);
+  flex-shrink: 0;
+  inline-size: var(--wd-collapsible-trigger-icon-size);
+  transform: rotate(0deg);
+  transition: transform var(--wd-collapsible-trigger-transition-duration)
+    var(--wd-collapsible-trigger-transition-easing);
+}
+
+.wd-collapsible-ui__trigger[data-panel-open] > .wd-collapsible-ui__trigger-icon {
+  transform: rotate(90deg);
+}
+
 .wd-collapsible-ui__panel {
   overflow: hidden;
   padding-block: var(--wd-collapsible-panel-padding-block);
   padding-inline: var(--wd-collapsible-panel-padding-inline);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-collapsible-ui__trigger-icon {
+    transition-duration: 0ms;
+  }
 }

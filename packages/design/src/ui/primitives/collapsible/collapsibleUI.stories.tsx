@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 
 import { CollapsibleUI } from "./index";
 
@@ -27,6 +27,22 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const getChevron = (trigger: HTMLElement) => {
+  const chevron = trigger.querySelector<SVGElement>(".wd-collapsible-ui__trigger-icon");
+
+  if (!chevron) {
+    throw new Error("Collapsible trigger chevron not found");
+  }
+
+  return chevron;
+};
+
+const getRotation = (element: Element) => {
+  const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+
+  return Math.round((Math.atan2(matrix.b, matrix.a) * 180) / Math.PI);
+};
+
 export const Toggle: Story = {
   parameters: {
     docs: {
@@ -46,12 +62,14 @@ export const Toggle: Story = {
     const trigger = canvas.getByRole("button", { name: "Documents" });
 
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(getRotation(getChevron(trigger))).toBe(0);
     trigger.focus();
     await userEvent.keyboard("{Enter}");
 
     const panel = await canvas.findByText("Project files");
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(trigger).toHaveAttribute("aria-controls", panel.id);
+    await waitFor(() => expect(getRotation(getChevron(trigger))).toBe(90));
   },
 };
 
@@ -120,6 +138,8 @@ export const ProductReference: Story = {
 
     await expect(reference).toHaveAttribute("data-product-state", "existing");
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(getChevron(trigger)).toHaveAttribute("aria-hidden", "true");
+    await expect(getRotation(getChevron(trigger))).toBe(0);
     await expect(
       canvas.queryByRole("region", { name: "프로젝트 category 내용" }),
     ).not.toBeInTheDocument();
@@ -132,6 +152,7 @@ export const ProductReference: Story = {
     await expect(trigger).toHaveFocus();
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(trigger).toHaveAttribute("aria-controls", panel.id);
+    await waitFor(() => expect(getRotation(getChevron(trigger))).toBe(90));
     await expect(status).toHaveTextContent("프로젝트 category 펼쳐짐");
     await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
 
@@ -139,6 +160,50 @@ export const ProductReference: Story = {
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await expect(trigger).toHaveFocus();
     await expect(status).toHaveTextContent("프로젝트 category 접힘");
+    await waitFor(() => expect(getRotation(getChevron(trigger))).toBe(0));
+  },
+};
+
+export const ReducedMotion: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "reduced-motion 환경에서도 disclosure의 chevron 방향은 open 상태를 즉시 나타냅니다. transform transition만 제거하며 keyboard toggle과 trigger focus는 유지됩니다.",
+      },
+    },
+  },
+  render: () => (
+    <CollapsibleUI.Root>
+      <CollapsibleUI.Trigger>Reduced motion folder</CollapsibleUI.Trigger>
+      <CollapsibleUI.Panel>Reduced motion files</CollapsibleUI.Panel>
+    </CollapsibleUI.Root>
+  ),
+  play: async ({ canvas }) => {
+    const { cdp } = await import("vitest/browser");
+    const session = cdp();
+    const trigger = canvas.getByRole("button", { name: "Reduced motion folder" });
+    const chevron = getChevron(trigger);
+
+    await session.send("Emulation.setEmulatedMedia", {
+      features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+    });
+
+    try {
+      await expect(getComputedStyle(chevron).transitionDuration).toBe("0s");
+      await expect(getRotation(chevron)).toBe(0);
+
+      trigger.focus();
+      await userEvent.keyboard("{Enter}");
+
+      await expect(trigger).toHaveFocus();
+      await expect(trigger).toHaveAttribute("aria-expanded", "true");
+      await expect(getRotation(chevron)).toBe(90);
+    } finally {
+      await session.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
+      });
+    }
   },
 };
 
