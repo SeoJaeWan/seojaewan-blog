@@ -83,6 +83,80 @@ const SubmenuFixture = () => (
   </ContextMenuUI.Root>
 );
 
+const longKoreanContextLabel =
+  "선택한 바로가기를 새 창에서 열고 모든 공동 작업자에게 바로 공유하는 매우 긴 작업";
+const longUnbrokenContextLabel =
+  "OpenTheSelectedShortcutInANewWindowAndShareItWithEveryCollaboratorImmediately";
+const longUrlContextLabel =
+  "https://example.com/desktop/shortcuts/portfolio/very-long-resource-name-without-breaks";
+
+const ViewportBoundContextFixture = () => (
+  <div
+    className="wd-story-stage"
+    style={{
+      boxSizing: "border-box",
+      display: "flex",
+      inlineSize: "100%",
+      justifyContent: "flex-end",
+    }}
+  >
+    <ContextMenuUI.Root>
+      <ContextMenuUI.Trigger
+        aria-label="Viewport context target"
+        className="wd-story-target"
+        style={{ inlineSize: "10rem" }}
+        tabIndex={0}
+      >
+        Right-click near the edge
+      </ContextMenuUI.Trigger>
+      <ContextMenuUI.Content aria-label="Viewport-bound context menu">
+        <ContextMenuUI.Item icon={<Open16Regular />} trailing="Ctrl+Shift+K">
+          {longKoreanContextLabel}
+        </ContextMenuUI.Item>
+        <ContextMenuUI.Submenu.Root>
+          <ContextMenuUI.Submenu.Trigger trailing="Shift+F10">
+            {longUnbrokenContextLabel}
+          </ContextMenuUI.Submenu.Trigger>
+          <ContextMenuUI.Submenu.Content aria-label="Viewport-bound context submenu">
+            <ContextMenuUI.Item icon={<Open16Regular />} trailing="Alt+Enter">
+              {longUrlContextLabel}
+            </ContextMenuUI.Item>
+          </ContextMenuUI.Submenu.Content>
+        </ContextMenuUI.Submenu.Root>
+      </ContextMenuUI.Content>
+    </ContextMenuUI.Root>
+  </div>
+);
+
+const expectContextSurfaceInsideViewport = async (surface: HTMLElement) => {
+  const documentElement = surface.ownerDocument.documentElement;
+  const viewportWidth = documentElement.clientWidth;
+  const rect = surface.getBoundingClientRect();
+
+  await expect(rect.left).toBeGreaterThanOrEqual(7);
+  await expect(rect.right).toBeLessThanOrEqual(viewportWidth - 7);
+  await expect(rect.width).toBeLessThanOrEqual(viewportWidth - 16);
+  await expect(documentElement.scrollWidth).toBeLessThanOrEqual(viewportWidth);
+};
+
+const expectContextEllipsisAndSlots = async (item: HTMLElement) => {
+  const label = item.querySelector<HTMLElement>(".wd-menu-ui__item-label");
+  const trailing = item.querySelector<HTMLElement>(".wd-menu-ui__item-trailing");
+
+  if (!label || !trailing) {
+    throw new Error("Expected the context menu item label and trailing slots");
+  }
+
+  const itemRect = item.getBoundingClientRect();
+  const trailingRect = trailing.getBoundingClientRect();
+
+  await expect(label.scrollWidth).toBeGreaterThan(label.clientWidth);
+  await expect(getComputedStyle(label).textOverflow).toBe("ellipsis");
+  await expect(getComputedStyle(trailing).flexShrink).toBe("0");
+  await expect(trailingRect.width).toBeGreaterThan(0);
+  await expect(trailingRect.right).toBeLessThanOrEqual(itemRect.right);
+};
+
 const PlacementMotionFixture = () => (
   <div
     className="wd-story-stage"
@@ -520,6 +594,69 @@ export const TouchLongPress: Story = {
       { timeout: 1200 },
     );
     surface.dispatchEvent(new Event("touchend", { bubbles: true, cancelable: true }));
+  },
+};
+export const IntrinsicViewportBoundary: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "긴 한국어·공백 없는 영문·URL action과 shortcut·submenu indicator를 좁은 viewport 오른쪽 가장자리에서 검증합니다. ContextMenu surface는 호출 target 폭을 따르지 않고 intrinsic 폭을 유지하되 available viewport 안에서 label만 ellipsis 됩니다.",
+      },
+    },
+    viewport: { defaultViewport: "mobile1" },
+  },
+  render: () => <ViewportBoundContextFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const target = canvas.getByLabelText("Viewport context target");
+
+    await userEvent.pointer({ keys: "[MouseRight]", target });
+    const menu = await page.findByRole("menu", { name: "Viewport-bound context menu" });
+    await waitFor(() => expect(menu).toBeVisible());
+    await expectContextSurfaceInsideViewport(menu);
+    await expect(
+      Math.abs(menu.getBoundingClientRect().width - target.getBoundingClientRect().width),
+    ).toBeGreaterThan(1);
+
+    const koreanItem = page.getByRole("menuitem", { name: longKoreanContextLabel });
+    await expectContextEllipsisAndSlots(koreanItem);
+
+    const submenuTrigger = page.getByRole("menuitem", { name: longUnbrokenContextLabel });
+    await expectContextEllipsisAndSlots(submenuTrigger);
+    const submenuArrow = submenuTrigger.querySelector<HTMLElement>(
+      ".wd-context-menu-ui__submenu-trigger-arrow",
+    );
+    if (!submenuArrow) {
+      throw new Error("Expected the context submenu indicator slot");
+    }
+    await expect(getComputedStyle(submenuArrow).flexShrink).toBe("0");
+
+    koreanItem.focus();
+    await userEvent.keyboard("{ArrowDown}");
+    await expect(submenuTrigger).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+    const submenu = await page.findByRole("menu", {
+      name: "Viewport-bound context submenu",
+    });
+    const urlItem = await page.findByRole("menuitem", { name: longUrlContextLabel });
+    await expect(urlItem).toHaveFocus();
+    await expectContextSurfaceInsideViewport(submenu);
+    await expectContextEllipsisAndSlots(urlItem);
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(
+        page.queryByRole("menu", { name: "Viewport-bound context submenu" }),
+      ).not.toBeInTheDocument(),
+    );
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(
+        page.queryByRole("menu", { name: "Viewport-bound context menu" }),
+      ).not.toBeInTheDocument(),
+    );
   },
 };
 export const NarrowViewport: Story = {

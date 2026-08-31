@@ -4,6 +4,8 @@
 
 .wd-context-menu-ui__content {
   clip-path: inset(0);
+  /* stylelint-disable-next-line custom-property-pattern -- Base UI positioning output. */
+  max-inline-size: var(--available-width);
   min-width: var(--wd-context-menu-content-min-width);
   padding: var(--wd-context-menu-content-padding);
   transition:

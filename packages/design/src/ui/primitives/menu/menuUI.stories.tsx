@@ -102,6 +102,73 @@ const LifecycleFixture = () => {
   );
 };
 
+const longKoreanMenuLabel =
+  "선택한 프로젝트를 새 창에서 열고 공동 작업자에게 바로 공유하는 매우 긴 메뉴 작업";
+const longUnbrokenMenuLabel =
+  "OpenTheSelectedProjectInANewWindowAndShareItWithEveryCollaboratorImmediately";
+const longUrlMenuLabel =
+  "https://example.com/projects/portfolio/archive/2026/very-long-resource-name-without-breaks";
+
+const ViewportBoundFixture = () => (
+  <div
+    className="wd-story-stage"
+    style={{
+      boxSizing: "border-box",
+      display: "flex",
+      inlineSize: "100%",
+      justifyContent: "flex-end",
+    }}
+  >
+    <MenuUI.Root>
+      <MenuUI.Trigger style={{ inlineSize: "10rem" }}>Viewport actions</MenuUI.Trigger>
+      <MenuUI.Content aria-label="Viewport-bound menu">
+        <MenuUI.Item icon={<Grid16Regular />} trailing="Ctrl+Shift+K">
+          {longKoreanMenuLabel}
+        </MenuUI.Item>
+        <MenuUI.Submenu.Root>
+          <MenuUI.Submenu.Trigger trailing="Shift+F10">
+            {longUnbrokenMenuLabel}
+          </MenuUI.Submenu.Trigger>
+          <MenuUI.Submenu.Content aria-label="Viewport-bound submenu">
+            <MenuUI.Item icon={<Grid16Regular />} trailing="Alt+Enter">
+              {longUrlMenuLabel}
+            </MenuUI.Item>
+          </MenuUI.Submenu.Content>
+        </MenuUI.Submenu.Root>
+      </MenuUI.Content>
+    </MenuUI.Root>
+  </div>
+);
+
+const expectSurfaceInsideViewport = async (surface: HTMLElement) => {
+  const documentElement = surface.ownerDocument.documentElement;
+  const viewportWidth = documentElement.clientWidth;
+  const rect = surface.getBoundingClientRect();
+
+  await expect(rect.left).toBeGreaterThanOrEqual(7);
+  await expect(rect.right).toBeLessThanOrEqual(viewportWidth - 7);
+  await expect(rect.width).toBeLessThanOrEqual(viewportWidth - 16);
+  await expect(documentElement.scrollWidth).toBeLessThanOrEqual(viewportWidth);
+};
+
+const expectEllipsizedLabelWithFixedTrailing = async (item: HTMLElement) => {
+  const label = item.querySelector<HTMLElement>(".wd-menu-ui__item-label");
+  const trailing = item.querySelector<HTMLElement>(".wd-menu-ui__item-trailing");
+
+  if (!label || !trailing) {
+    throw new Error("Expected the menu item label and trailing slots");
+  }
+
+  const itemRect = item.getBoundingClientRect();
+  const trailingRect = trailing.getBoundingClientRect();
+
+  await expect(label.scrollWidth).toBeGreaterThan(label.clientWidth);
+  await expect(getComputedStyle(label).textOverflow).toBe("ellipsis");
+  await expect(getComputedStyle(trailing).flexShrink).toBe("0");
+  await expect(trailingRect.width).toBeGreaterThan(0);
+  await expect(trailingRect.right).toBeLessThanOrEqual(itemRect.right);
+};
+
 const onViewChange = fn();
 const onSortChange = fn();
 
@@ -361,6 +428,66 @@ export const ViewAndSortComposition: Story = {
     await expect(onViewChange).toHaveBeenCalledWith("large");
     await expect(result).toHaveTextContent("보기: large");
     await expect(onSortChange).not.toHaveBeenCalled();
+  },
+};
+export const IntrinsicViewportBoundary: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "긴 한국어·공백 없는 영문·URL action과 shortcut·submenu indicator를 좁은 viewport 오른쪽 가장자리에서 검증합니다. Menu surface는 trigger 폭을 따르지 않고 intrinsic 폭을 유지하되 available viewport 안에서 label만 ellipsis 됩니다.",
+      },
+    },
+    viewport: { defaultViewport: "mobile1" },
+  },
+  render: () => <ViewportBoundFixture />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
+    const trigger = canvas.getByRole("button", { name: "Viewport actions" });
+
+    trigger.focus();
+    await userEvent.keyboard("{ArrowDown}");
+    const menu = await page.findByRole("menu", { name: "Viewport-bound menu" });
+    await waitFor(() => expect(menu).toBeVisible());
+    await expectSurfaceInsideViewport(menu);
+    await expect(
+      Math.abs(menu.getBoundingClientRect().width - trigger.getBoundingClientRect().width),
+    ).toBeGreaterThan(1);
+
+    const koreanItem = page.getByRole("menuitem", { name: longKoreanMenuLabel });
+    await expectEllipsizedLabelWithFixedTrailing(koreanItem);
+
+    const submenuTrigger = page.getByRole("menuitem", { name: longUnbrokenMenuLabel });
+    await expectEllipsizedLabelWithFixedTrailing(submenuTrigger);
+    const submenuArrow = submenuTrigger.querySelector<HTMLElement>(
+      ".wd-menu-ui__submenu-trigger-arrow",
+    );
+    if (!submenuArrow) {
+      throw new Error("Expected the submenu indicator slot");
+    }
+    await expect(getComputedStyle(submenuArrow).flexShrink).toBe("0");
+
+    await expect(koreanItem).toHaveFocus();
+    await userEvent.keyboard("{ArrowDown}");
+    await expect(submenuTrigger).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+    const submenu = await page.findByRole("menu", { name: "Viewport-bound submenu" });
+    const urlItem = await page.findByRole("menuitem", { name: longUrlMenuLabel });
+    await expect(urlItem).toHaveFocus();
+    await expectSurfaceInsideViewport(submenu);
+    await expectEllipsizedLabelWithFixedTrailing(urlItem);
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "Viewport-bound submenu" })).not.toBeInTheDocument(),
+    );
+    await waitFor(() => expect(submenuTrigger).toHaveFocus());
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(page.queryByRole("menu", { name: "Viewport-bound menu" })).not.toBeInTheDocument(),
+    );
+    await expect(trigger).toHaveFocus();
   },
 };
 export const NarrowViewport: Story = {

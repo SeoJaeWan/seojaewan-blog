@@ -14,6 +14,8 @@
   box-shadow: var(--wd-menu-content-box-shadow);
   box-sizing: border-box;
   color: var(--wd-menu-item-color);
+  /* stylelint-disable-next-line custom-property-pattern -- Base UI positioning output. */
+  max-inline-size: var(--available-width);
   min-width: var(--wd-menu-content-min-width);
   outline: none;
   padding: var(--wd-menu-content-padding);
