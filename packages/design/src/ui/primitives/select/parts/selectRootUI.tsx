@@ -7,8 +7,14 @@ import { Select as BaseSelect } from "@base-ui/react/select";
 import type { SelectUIChangeDetails, SelectUIProps } from "../selectUI.types";
 import { SelectUIContext } from "../selectUIContext";
 
-const toChangeDetails = (reason: string): SelectUIChangeDetails => ({
-  reason: reason as SelectUIChangeDetails["reason"],
+type BaseSelectChangeDetails = {
+  reason: Exclude<SelectUIChangeDetails["reason"], "clear-press">;
+};
+
+export const toSelectUIChangeDetails = (
+  details: BaseSelectChangeDetails,
+): SelectUIChangeDetails => ({
+  reason: details.reason,
 });
 
 /**
@@ -51,9 +57,9 @@ export function SelectRootUI({
         }
         itemToStringValue={(itemValue) => itemValue}
         items={Object.fromEntries(items.map((item) => [item.value, item.label]))}
-        onOpenChange={(open, details) => onOpenChange?.(open, toChangeDetails(details.reason))}
+        onOpenChange={(open, details) => onOpenChange?.(open, toSelectUIChangeDetails(details))}
         onValueChange={(nextValue, details) =>
-          changeValue(nextValue, toChangeDetails(details.reason))
+          changeValue(nextValue, toSelectUIChangeDetails(details))
         }
         readOnly={readOnly}
         value={selectedValue}

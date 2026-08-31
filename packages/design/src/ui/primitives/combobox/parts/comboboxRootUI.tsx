@@ -7,9 +7,19 @@ import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import type { ComboboxUIChangeDetails, ComboboxUIProps } from "../comboboxUI.types";
 import { ComboboxUIContext } from "../comboboxUIContext";
 
-const toChangeDetails = (reason: string): ComboboxUIChangeDetails => ({
-  reason: reason as ComboboxUIChangeDetails["reason"],
-});
+type BaseComboboxChangeDetails = {
+  reason: ComboboxUIChangeDetails["reason"] | "chip-remove-press";
+};
+
+export const toComboboxUIChangeDetails = (
+  details: BaseComboboxChangeDetails,
+): ComboboxUIChangeDetails => {
+  if (details.reason === "chip-remove-press") {
+    throw new Error("ComboboxRootUI single-select invariant: chip-remove-press is unreachable");
+  }
+
+  return { reason: details.reason };
+};
 
 /**
  * 미리 정의된 값의 검색어, 열림 상태와 단일 선택 상태를 조정하는 combobox 루트다. 하위 control과 options part에 입력 식별자와 선택지 목록을 제공한다.
@@ -48,12 +58,12 @@ export function ComboboxRootUI({
         items={itemValues}
         onInputValueChange={(nextInputValue, details) => {
           setUncontrolledInputValue(nextInputValue);
-          onInputValueChange?.(nextInputValue, toChangeDetails(details.reason));
+          onInputValueChange?.(nextInputValue, toComboboxUIChangeDetails(details));
         }}
-        onOpenChange={(open, details) => onOpenChange?.(open, toChangeDetails(details.reason))}
+        onOpenChange={(open, details) => onOpenChange?.(open, toComboboxUIChangeDetails(details))}
         onValueChange={(nextValue, details) => {
           setUncontrolledValue(nextValue);
-          onValueChange?.(nextValue, toChangeDetails(details.reason));
+          onValueChange?.(nextValue, toComboboxUIChangeDetails(details));
         }}
         value={value}
       />

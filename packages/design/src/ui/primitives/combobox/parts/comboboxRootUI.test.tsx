@@ -1,9 +1,10 @@
 import { screen, waitFor } from "@testing-library/react";
 import { userEvent } from "storybook/test";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../../testing";
-import { ComboboxRootUI } from "./comboboxRootUI";
+import type { ComboboxUIChangeDetails } from "../comboboxUI.types";
+import { ComboboxRootUI, toComboboxUIChangeDetails } from "./comboboxRootUI";
 import { ComboboxInputUI } from "./control/comboboxInputUI";
 import { ComboboxLabelUI } from "./control/comboboxLabelUI";
 import { ComboboxContentUI } from "./options/comboboxContentUI";
@@ -27,6 +28,19 @@ const RootFixture = (props: Partial<Parameters<typeof ComboboxRootUI>[0]>) => (
 );
 
 describe("ComboboxRootUI", () => {
+  it("vendor 세부 정보에서 새 프로젝트 snapshot을 만들고 chip remove invariant를 강제한다", () => {
+    const details = { reason: "item-press" } as const;
+    const result = toComboboxUIChangeDetails(details);
+
+    expect(result).toEqual({ reason: "item-press" });
+    expect(result).not.toBe(details);
+    expect(() => toComboboxUIChangeDetails({ reason: "chip-remove-press" })).toThrowError(
+      "ComboboxRootUI single-select invariant: chip-remove-press is unreachable",
+    );
+    expectTypeOf<string>().not.toMatchTypeOf<Parameters<typeof toComboboxUIChangeDetails>[0]>();
+    expectTypeOf<"chip-remove-press">().not.toMatchTypeOf<ComboboxUIChangeDetails["reason"]>();
+  });
+
   it("기본값과 입력 식별자를 하위 part에 제공하고 uncontrolled 값을 갱신한다", async () => {
     const user = userEvent.setup();
     renderUITest(<RootFixture defaultOpen defaultValue="desktop" name="route" />);

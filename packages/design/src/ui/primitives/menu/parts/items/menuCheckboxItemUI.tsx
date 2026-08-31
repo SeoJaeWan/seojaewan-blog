@@ -29,7 +29,7 @@ export function MenuCheckboxItemUI({
       closeOnClick={closeOnSelect}
       data-variant={variant}
       onCheckedChange={(checked, details) =>
-        onCheckedChange?.(checked, toMenuUIChangeDetails(details.reason))
+        onCheckedChange?.(checked, toMenuUIChangeDetails(details))
       }
       ref={ref}
     >

@@ -17,7 +17,7 @@ export function MenuSubmenuRootUI({
     <BaseMenu.SubmenuRoot
       {...props}
       closeParentOnEsc={closeParentOnEscape}
-      onOpenChange={(open, details) => onOpenChange?.(open, toMenuUIChangeDetails(details.reason))}
+      onOpenChange={(open, details) => onOpenChange?.(open, toMenuUIChangeDetails(details))}
     />
   );
 }

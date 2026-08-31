@@ -20,7 +20,7 @@ export function MenuRadioGroupUI({
       {...props}
       className={clsx("wd-menu-ui__radio-group", className)}
       onValueChange={(value, details) =>
-        onValueChange?.(String(value), toMenuUIChangeDetails(details.reason))
+        onValueChange?.(String(value), toMenuUIChangeDetails(details))
       }
       ref={ref}
     />

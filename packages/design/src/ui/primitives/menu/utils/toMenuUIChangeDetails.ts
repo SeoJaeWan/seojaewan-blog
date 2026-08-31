@@ -1,10 +1,12 @@
-import type { MenuUIChangeDetails, MenuUIOpenChangeReason } from "../menuUI.types";
+import type { MenuUIChangeDetails } from "../menuUI.types";
+
+type MenuUIChangeDetailsInput = Pick<MenuUIChangeDetails, "reason">;
 
 /**
- * Base UI가 전달한 변경 이유를 프로젝트가 공개하는 안정적인 변경 세부 정보로 변환한다.
+ * Base UI가 전달한 변경 세부 정보에서 프로젝트가 공개하는 변경 이유만 복사한다.
  *
- * 값의 업무적 의미나 후속 동작은 해석하지 않고 vendor 계약과 UI 계약의 경계만 소유한다.
+ * vendor event와 제어 필드는 경계 안에 남기고 매 호출마다 새로운 프로젝트 소유 snapshot을 만든다.
  */
-export const toMenuUIChangeDetails = (reason: string): MenuUIChangeDetails => ({
-  reason: reason as MenuUIOpenChangeReason,
+export const toMenuUIChangeDetails = (details: MenuUIChangeDetailsInput): MenuUIChangeDetails => ({
+  reason: details.reason,
 });

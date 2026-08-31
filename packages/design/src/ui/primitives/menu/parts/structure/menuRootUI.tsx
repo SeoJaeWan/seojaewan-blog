@@ -13,7 +13,7 @@ export function MenuRootUI({ closeParentOnEscape, onOpenChange, ...props }: Menu
     <BaseMenu.Root
       {...props}
       closeParentOnEsc={closeParentOnEscape}
-      onOpenChange={(open, details) => onOpenChange?.(open, toMenuUIChangeDetails(details.reason))}
+      onOpenChange={(open, details) => onOpenChange?.(open, toMenuUIChangeDetails(details))}
     />
   );
 }

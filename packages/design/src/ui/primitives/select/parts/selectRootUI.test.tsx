@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/react";
 import { userEvent } from "storybook/test";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../../testing";
 import { SelectLabelUI } from "./control/selectLabelUI";
@@ -9,7 +9,7 @@ import { SelectValueUI } from "./control/selectValueUI";
 import { SelectContentUI } from "./options/selectContentUI";
 import { SelectItemUI } from "./options/selectItemUI";
 import { SelectListUI } from "./options/selectListUI";
-import { SelectRootUI } from "./selectRootUI";
+import { SelectRootUI, toSelectUIChangeDetails } from "./selectRootUI";
 
 afterEach(cleanupUITest);
 
@@ -37,6 +37,18 @@ const RootFixture = (props: Partial<Parameters<typeof SelectRootUI>[0]>) => (
 );
 
 describe("SelectRootUI", () => {
+  it("vendor 세부 정보에서 clear action과 분리된 새 프로젝트 snapshot을 만든다", () => {
+    const details = { reason: "item-press" } as const;
+    const result = toSelectUIChangeDetails(details);
+
+    expect(result).toEqual({ reason: "item-press" });
+    expect(result).not.toBe(details);
+    expectTypeOf<string>().not.toMatchTypeOf<Parameters<typeof toSelectUIChangeDetails>[0]>();
+    expectTypeOf<{ reason: "clear-press" }>().not.toMatchTypeOf<
+      Parameters<typeof toSelectUIChangeDetails>[0]
+    >();
+  });
+
   it("기본값과 이름을 하위 part에 제공하고 uncontrolled 값을 갱신한다", async () => {
     const user = userEvent.setup();
     renderUITest(<RootFixture defaultOpen defaultValue="desktop" name="tag" />);
