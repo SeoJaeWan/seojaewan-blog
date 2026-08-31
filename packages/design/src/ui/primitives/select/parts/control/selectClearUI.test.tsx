@@ -6,6 +6,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanupUITest, renderUITest } from "../../../../testing";
 import { SelectRootUI } from "../selectRootUI";
 import { SelectClearUI } from "./selectClearUI";
+import { SelectControlUI } from "./selectControlUI";
+import { SelectTriggerUI } from "./selectTriggerUI";
 
 afterEach(cleanupUITest);
 
@@ -43,6 +45,35 @@ describe("SelectClearUI", () => {
 
     fireEvent.click(clear);
     expect(onClick).toHaveBeenCalledOnce();
+    expect(onValueChange).toHaveBeenCalledWith(null, { reason: "clear-press" });
+  });
+
+  it("sibling trigger를 활성화하지 않고 clear-press를 한 번만 전달한다", () => {
+    const onOpenChange = vi.fn();
+    const onValueChange = vi.fn();
+    renderUITest(
+      <SelectRootUI
+        defaultValue="documents"
+        items={options}
+        onOpenChange={onOpenChange}
+        onValueChange={onValueChange}
+      >
+        <SelectControlUI data-testid="control">
+          <SelectTriggerUI aria-label="태그">문서</SelectTriggerUI>
+          <SelectClearUI aria-label="태그 지우기" />
+        </SelectControlUI>
+      </SelectRootUI>,
+    );
+
+    const control = screen.getByTestId("control");
+    const trigger = screen.getByRole("combobox", { name: "태그" });
+    const clear = screen.getByRole("button", { name: "태그 지우기" });
+    expect(trigger.parentElement).toBe(control);
+    expect(clear.parentElement).toBe(control);
+
+    fireEvent.click(clear);
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(onValueChange).toHaveBeenCalledOnce();
     expect(onValueChange).toHaveBeenCalledWith(null, { reason: "clear-press" });
   });
 

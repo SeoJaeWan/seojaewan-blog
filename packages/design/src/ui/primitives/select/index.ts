@@ -4,6 +4,7 @@ export type {
   SelectUIChangeReason,
   SelectUIClearProps,
   SelectUIContentProps,
+  SelectUIControlProps,
   SelectUIItemProps,
   SelectUILabelProps,
   SelectUIListProps,

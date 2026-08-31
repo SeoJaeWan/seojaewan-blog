@@ -78,6 +78,15 @@ export interface SelectUILabelProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /**
+ * trigger와 clear를 같은 surface 안에서 sibling으로 배치하는 div 속성과 ref를 구성하는 props다.
+ *
+ * 선택 값, 열림 상태나 자식 button의 native 상호작용을 소유하지 않는다.
+ */
+export interface SelectUIControlProps extends HTMLAttributes<HTMLDivElement> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+/**
  * options surface를 여는 button의 native 속성, 사용자 render와 ref를 구성하는 props다.
  *
  * 선택 값을 직접 저장하거나 애플리케이션 동작을 실행하지 않는다.

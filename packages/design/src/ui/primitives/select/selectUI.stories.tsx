@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { SelectUI, type SelectUIOption } from "./index";
 
@@ -34,10 +34,12 @@ const SelectFixture = ({ initialOpen, initialSelected }: SelectFixtureProps) => 
         value={selected}
       >
         <SelectUI.Label>Tag</SelectUI.Label>
-        <SelectUI.Trigger>
-          <SelectUI.Value placeholder="Choose a tag" />
-        </SelectUI.Trigger>
-        <SelectUI.Clear aria-label="Clear tag" />
+        <SelectUI.Control data-testid="select-control" style={{ inlineSize: "10rem" }}>
+          <SelectUI.Trigger>
+            <SelectUI.Value placeholder="Choose a tag" />
+          </SelectUI.Trigger>
+          <SelectUI.Clear aria-label="Clear tag" />
+        </SelectUI.Control>
         <SelectUI.Content>
           <SelectUI.List>
             {options.map((option) => (
@@ -58,6 +60,7 @@ const meta = {
   component: SelectUI.Root,
   subcomponents: {
     Label: SelectUI.Label,
+    Control: SelectUI.Control,
     Trigger: SelectUI.Trigger,
     Value: SelectUI.Value,
     Clear: SelectUI.Clear,
@@ -74,7 +77,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇이며 어디에 쓰나요?\nSelectUI는 글자를 입력하지 않고 미리 정한 목록에서 값 하나를 고르는 선택 도구입니다. Existing Window의 태그 필터처럼, 선택할 값이 짧고 이미 정해져 있을 때 사용합니다. 입력해서 후보를 줄여야 하면 ComboboxUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 태그 필터` Story는 제한된 태그 행 안에 고정 선택 control을 놓습니다. 원본의 320×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel, Trigger(Value), Clear와 Content(List·Item)를 조합합니다. 열림, 값 하나 선택, 키보드 이동, 비활성 후보, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nSelectUI는 전달받은 local 목록의 열림과 단일 선택 동작을 맡습니다. Window 담당은 태그 후보 조회, 선택값을 결과에 적용하는 filter 정책, 여러 태그 선택, 검증과 저장을 맡습니다. SelectUI는 filter 정책을 결정하지 않습니다.",
+          "### 무엇이며 어디에 쓰나요?\nSelectUI는 글자를 입력하지 않고 미리 정한 목록에서 값 하나를 고르는 선택 도구입니다. Existing Window의 태그 필터처럼, 선택할 값이 짧고 이미 정해져 있을 때 사용합니다. 입력해서 후보를 줄여야 하면 ComboboxUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 태그 필터` Story는 제한된 태그 행 안에 고정 선택 control을 놓습니다. 원본의 320×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel, Control(Trigger·Clear)과 Content(List·Item)를 조합합니다. 열림, 값 하나 선택, 키보드 이동, 비활성 후보, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nSelectUI는 전달받은 local 목록의 열림과 단일 선택 동작을 맡습니다. Window 담당은 태그 후보 조회, 선택값을 결과에 적용하는 filter 정책, 여러 태그 선택, 검증과 저장을 맡습니다. SelectUI는 filter 정책을 결정하지 않습니다.",
       },
     },
   },
@@ -155,6 +158,8 @@ export const ClearSelection: Story = {
 const ExistingWindowTagFilterReference = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [valueChangeCount, setValueChangeCount] = useState(0);
+  const [valueChangeReason, setValueChangeReason] = useState("none");
 
   return (
     <div className="wd-story-stage">
@@ -178,7 +183,11 @@ const ExistingWindowTagFilterReference = () => {
                 if (!nextOpen && details.reason === "item-press") return;
                 setOpen(nextOpen);
               }}
-              onValueChange={setSelected}
+              onValueChange={(nextValue, details) => {
+                setSelected(nextValue);
+                setValueChangeCount((count) => count + 1);
+                setValueChangeReason(details.reason);
+              }}
               open={open}
               value={selected}
             >
@@ -194,22 +203,15 @@ const ExistingWindowTagFilterReference = () => {
                 }}
               >
                 <SelectUI.Label style={{ marginBlockEnd: 0 }}>태그</SelectUI.Label>
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                    gap: "0.5rem",
-                    minInlineSize: 0,
-                  }}
+                <SelectUI.Control
+                  data-testid="window-tag-filter-control"
+                  style={{ inlineSize: "min(100%, 11rem)" }}
                 >
-                  <SelectUI.Trigger
-                    data-testid="window-tag-filter-control"
-                    style={{ inlineSize: "min(100%, 11rem)" }}
-                  >
+                  <SelectUI.Trigger>
                     <SelectUI.Value placeholder="Window 태그 선택" />
                   </SelectUI.Trigger>
                   <SelectUI.Clear aria-label="Window 태그 지우기" />
-                </div>
+                </SelectUI.Control>
               </div>
               <SelectUI.Content>
                 <SelectUI.List>
@@ -237,6 +239,16 @@ const ExistingWindowTagFilterReference = () => {
               <dt>값</dt>
               <dd>
                 <output aria-label="Window 태그 필터 값">{selected ?? "없음"}</output>
+              </dd>
+              <dt>값 변경 횟수</dt>
+              <dd>
+                <output aria-label="Window 태그 필터 값 변경 횟수">{valueChangeCount}</output>
+              </dd>
+              <dt>마지막 값 변경 이유</dt>
+              <dd>
+                <output aria-label="Window 태그 필터 마지막 값 변경 이유">
+                  {valueChangeReason}
+                </output>
               </dd>
             </dl>
           </section>
@@ -270,9 +282,16 @@ export const ProductReference: Story = {
     const control = canvas.getByTestId("window-tag-filter-control");
     const openProbe = canvas.getByRole("status", { name: "Window 태그 필터 열림 상태" });
     const valueProbe = canvas.getByRole("status", { name: "Window 태그 필터 값" });
+    const valueChangeCount = canvas.getByRole("status", {
+      name: "Window 태그 필터 값 변경 횟수",
+    });
+    const valueChangeReason = canvas.getByRole("status", {
+      name: "Window 태그 필터 마지막 값 변경 이유",
+    });
 
     const controlStyle = getComputedStyle(control);
     const contractualMinHeight = Number.parseFloat(controlStyle.minHeight);
+    const emptyRect = control.getBoundingClientRect();
     await expect(control.getBoundingClientRect().height).toBeCloseTo(contractualMinHeight);
     await expect(control.getBoundingClientRect().width).toBeLessThan(
       row.getBoundingClientRect().width,
@@ -280,6 +299,7 @@ export const ProductReference: Story = {
 
     await expect(openProbe).toHaveTextContent("닫힘");
     await expect(valueProbe).toHaveTextContent("없음");
+    await expect(valueChangeCount).toHaveTextContent("0");
     await expect(
       canvas.queryByRole("button", { name: "Window 태그 지우기" }),
     ).not.toBeInTheDocument();
@@ -289,18 +309,41 @@ export const ProductReference: Story = {
     await userEvent.keyboard("{Enter}");
     await expect(valueProbe).toHaveTextContent("design-system");
     await expect(openProbe).toHaveTextContent("열림");
+    await expect(valueChangeCount).toHaveTextContent("1");
+
+    const selectedRect = control.getBoundingClientRect();
+    await expect(selectedRect.width).toBeCloseTo(emptyRect.width);
+    await expect(selectedRect.height).toBeCloseTo(emptyRect.height);
 
     const clear = canvas.getByRole("button", { name: "Window 태그 지우기" });
+    const chevron = trigger.querySelector<HTMLElement>(".wd-select-ui__trigger-icon");
+    if (!chevron) throw new Error("Select trigger chevron is required");
+    const clearRect = clear.getBoundingClientRect();
+    const chevronRect = chevron.getBoundingClientRect();
+    await expect(clearRect.left).toBeGreaterThanOrEqual(selectedRect.left);
+    await expect(clearRect.right).toBeLessThanOrEqual(selectedRect.right);
+    await expect(
+      Math.abs(clearRect.top + clearRect.height / 2 - (selectedRect.top + selectedRect.height / 2)),
+    ).toBeLessThanOrEqual(1);
+    await expect(clearRect.right).toBeLessThanOrEqual(chevronRect.left);
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
     await expect(clear.querySelector("svg")).not.toBeNull();
     await expect(clear.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
 
     await userEvent.keyboard("{Escape}");
     await expect(openProbe).toHaveTextContent("닫힘");
-    await expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
     await userEvent.tab();
     await expect(clear).toHaveFocus();
     await userEvent.keyboard("{Enter}");
     await expect(valueProbe).toHaveTextContent("없음");
+    await expect(openProbe).toHaveTextContent("닫힘");
+    await expect(valueChangeCount).toHaveTextContent("2");
+    await expect(valueChangeReason).toHaveTextContent("clear-press");
+    const clearedRect = control.getBoundingClientRect();
+    await expect(clearedRect.width).toBeCloseTo(emptyRect.width);
+    await expect(clearedRect.height).toBeCloseTo(emptyRect.height);
+    await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth);
     await expect(
       canvas.queryByRole("button", { name: "Window 태그 지우기" }),
     ).not.toBeInTheDocument();

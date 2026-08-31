@@ -1,6 +1,7 @@
 "use client";
 
 import { SelectClearUI } from "./parts/control/selectClearUI";
+import { SelectControlUI } from "./parts/control/selectControlUI";
 import { SelectLabelUI } from "./parts/control/selectLabelUI";
 import { SelectTriggerUI } from "./parts/control/selectTriggerUI";
 import { SelectValueUI } from "./parts/control/selectValueUI";
@@ -14,6 +15,7 @@ import "./selectUI.css";
 export {
   SelectClearUI,
   SelectContentUI,
+  SelectControlUI,
   SelectItemUI,
   SelectLabelUI,
   SelectListUI,
@@ -30,6 +32,7 @@ export {
 export const SelectUI = {
   Root: SelectRootUI,
   Label: SelectLabelUI,
+  Control: SelectControlUI,
   Trigger: SelectTriggerUI,
   Value: SelectValueUI,
   Clear: SelectClearUI,

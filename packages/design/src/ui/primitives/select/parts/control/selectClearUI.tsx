@@ -37,6 +37,7 @@ export const SelectClearUI = forwardRef<HTMLButtonElement, SelectUIClearProps>(
         disabled={actionDisabled}
         onClick={(event) => {
           if (actionDisabled) return;
+          event.stopPropagation();
           context.clear();
           onClick?.(event);
         }}
