@@ -17,10 +17,12 @@
     "build": "vite build",
     "build:storybook": "storybook build",
     "dev": "storybook dev -p 6008",
-    "lint": "pnpm lint:eslint && pnpm lint:css",
-    "lint:css": "stylelint \"src/ui/tokens/**/*.css\"",
+    "lint": "pnpm lint:eslint && pnpm lint:css && pnpm lint:architecture",
+    "lint:architecture": "node scripts/checkPrimitivePublicApi.mjs --verify-fixtures",
+    "lint:css": "stylelint \"src/ui/**/*.css\"",
     "lint:eslint": "eslint . --max-warnings=0",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run --project core --project ui --project shell --passWithNoTests",
+    "test:storybook": "vitest run --project storybook",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
@@ -29,16 +31,19 @@
   },
   "devDependencies": {
     "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-vitest": "10.4.6",
     "@storybook/react-vite": "^10.4.6",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/browser-playwright": "4.1.9",
     "@window/eslint-config": "workspace:*",
     "@window/tsconfig": "workspace:*",
     "eslint": "^9.39.4",
     "jsdom": "^29.1.1",
+    "playwright": "1.61.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "storybook": "^10.4.6",
@@ -49,6 +54,8 @@
     "vitest": "^4.1.9"
   },
   "dependencies": {
-    "@base-ui/react": "1.7.0"
+    "@base-ui/react": "1.7.0",
+    "@fluentui/react-icons": "2.0.331",
+    "clsx": "^2.1.1"
   }
 }

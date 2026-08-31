@@ -1,6 +1,6 @@
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
@@ -27,9 +27,12 @@ const REFERENCE_NAME_PATTERN =
   /^--wd-reference-(color|spacing|radius|typography|shadow|duration|easing)-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEMANTIC_NAME_PATTERN =
   /^--wd-(?:color-(?:surface|text|border|accent|danger|focus)-[a-z0-9]+(?:-[a-z0-9]+)*|font-family-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
-const COMPONENT_NAME_PATTERN =
-  /^--wd-(?:window-frame|taskbar|window-panel)-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const COMPONENT_PREFIX_PATTERN = /^--wd-(?:window-frame|taskbar|window-panel)-/;
+
+const componentNamePattern = (path: string) => {
+  const family = basename(path, ".css").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  return new RegExp(`^--wd-${family}-[a-z0-9]+-[a-z0-9]+(?:-[a-z0-9]+)*$`);
+};
 
 const readCss = (path: string) => readFileSync(path, "utf8");
 
@@ -64,12 +67,12 @@ const classifyToken = (name: string): Exclude<TokenLayer, "theme"> | "unknown" =
     return "reference";
   }
 
-  if (COMPONENT_PREFIX_PATTERN.test(name)) {
-    return "component";
+  if (SEMANTIC_NAME_PATTERN.test(name)) {
+    return "semantic";
   }
 
   if (name.startsWith("--wd-")) {
-    return "semantic";
+    return "component";
   }
 
   return "unknown";
@@ -84,7 +87,7 @@ const validateTokenSources = (sources: TokenSource[]) => {
     definitionsByName.set(definition.name, [...existingDefinitions, definition]);
 
     const expectedPattern = {
-      component: COMPONENT_NAME_PATTERN,
+      component: componentNamePattern(definition.path),
       reference: REFERENCE_NAME_PATTERN,
       semantic: SEMANTIC_NAME_PATTERN,
       theme: /^$/,
@@ -178,6 +181,15 @@ describe("CSS 토큰 계약", () => {
     );
   });
 
+  it("새 Component family는 allowlist 변경 없이 파일 namespace로 확장할 수 있다", () => {
+    const sources = writeFixture({
+      "component/future-widget.css":
+        ":root { --wd-future-widget-root-min-height: var(--wd-reference-spacing-6); }",
+    });
+
+    expect(() => validateTokenSources(sources)).not.toThrow();
+  });
+
   it("명시적인 테마 전환 정책을 도입하기 전에는 단일 Light Theme만 사용한다", () => {
     const themeCss = readCss(join(TOKENS_DIRECTORY, "theme", "default.css"));
     const allCss = readRepositoryTokenSources()
@@ -221,5 +233,13 @@ describe("CSS 토큰 계약", () => {
     });
 
     expect(() => validateTokenSources(sources)).toThrow(/한 번만 정의/);
+  });
+
+  it("Component token도 소문자 component-element-property-state 이름만 허용한다", () => {
+    const sources = writeFixture({
+      "component/button.css": ":root { --wd-button-MinHeight: var(--wd-reference-spacing-6); }",
+    });
+
+    expect(() => validateTokenSources(sources)).toThrow(/component token naming/);
   });
 });

@@ -1,3 +1,6 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+patchedDependencies:
+  "@griffel/core@1.21.2": "patches/@griffel__core@1.21.2.patch"

@@ -1,0 +1,204 @@
+.wd-combobox-ui__label {
+  color: var(--wd-combobox-label-color);
+  display: block;
+  font-family: var(--wd-combobox-font-family);
+  font-size: var(--wd-combobox-label-font-size);
+  line-height: var(--wd-combobox-line-height);
+  margin-block-end: var(--wd-combobox-label-margin-block-end);
+}
+
+.wd-combobox-ui__input-group {
+  align-items: center;
+  background: var(--wd-combobox-input-background-color);
+  border: 1px solid var(--wd-combobox-input-border-color);
+  border-radius: var(--wd-combobox-input-border-radius);
+  box-sizing: border-box;
+  display: flex;
+  font-family: var(--wd-combobox-font-family);
+  font-size: var(--wd-combobox-label-font-size);
+  inline-size: 100%;
+  line-height: var(--wd-combobox-line-height);
+  min-height: var(--wd-combobox-input-min-height);
+  min-inline-size: 0;
+  transition:
+    background-color var(--wd-combobox-control-transition-duration) var(--wd-reference-easing-2),
+    border-color var(--wd-combobox-control-transition-duration) var(--wd-reference-easing-2),
+    box-shadow var(--wd-combobox-control-transition-duration) var(--wd-reference-easing-2);
+}
+
+.wd-combobox-ui__input-group:hover:not(:focus-within) {
+  background: var(--wd-combobox-input-background-color-hover);
+}
+
+.wd-combobox-ui__input-group:focus-within {
+  border-color: var(--wd-combobox-input-border-color-focus);
+  box-shadow: 0 0 0 1px var(--wd-combobox-input-border-color-focus);
+}
+
+.wd-combobox-ui__input {
+  background: transparent;
+  border: 0;
+  color: var(--wd-combobox-input-color);
+  flex: 1;
+  font: inherit;
+  min-inline-size: 0;
+  outline: none;
+  padding-inline: var(--wd-combobox-input-padding-inline);
+}
+
+.wd-combobox-ui__trigger,
+.wd-combobox-ui__clear {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--wd-combobox-control-border-radius);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  min-height: var(--wd-combobox-control-size);
+  min-width: var(--wd-combobox-control-size);
+  outline: none;
+  padding: var(--wd-reference-spacing-0);
+  transition: background-color var(--wd-combobox-control-transition-duration)
+    var(--wd-reference-easing-2);
+}
+
+.wd-combobox-ui__trigger:hover:not(:disabled, [data-disabled]),
+.wd-combobox-ui__clear:hover:not(:disabled, [data-disabled]) {
+  background: var(--wd-combobox-control-background-color-hover);
+}
+
+.wd-combobox-ui__trigger:active:not(:disabled, [data-disabled]),
+.wd-combobox-ui__clear:active:not(:disabled, [data-disabled]) {
+  background: var(--wd-combobox-control-background-color-pressed);
+}
+
+.wd-combobox-ui__trigger:disabled,
+.wd-combobox-ui__trigger[data-disabled],
+.wd-combobox-ui__clear:disabled,
+.wd-combobox-ui__clear[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--wd-combobox-control-opacity-disabled);
+}
+
+.wd-combobox-ui__trigger > svg,
+.wd-combobox-ui__clear > svg {
+  block-size: var(--wd-combobox-control-icon-size);
+  flex-shrink: 0;
+  inline-size: var(--wd-combobox-control-icon-size);
+}
+
+.wd-combobox-ui__clear[data-clearable="false"] {
+  display: none;
+}
+
+.wd-combobox-ui__positioner {
+  outline: none;
+  z-index: 1000;
+}
+
+.wd-combobox-ui__content {
+  background: var(--wd-combobox-content-background-color);
+  border: 1px solid var(--wd-combobox-content-border-color);
+  border-radius: var(--wd-combobox-content-border-radius);
+  box-shadow: var(--wd-combobox-content-box-shadow);
+  box-sizing: border-box;
+  /* stylelint-disable-next-line custom-property-pattern -- Base UI positioning output. */
+  inline-size: var(--anchor-width);
+  /* stylelint-disable-next-line custom-property-pattern -- Base UI positioning output. */
+  max-inline-size: var(--available-width);
+  min-inline-size: 0;
+  outline: none;
+  overflow: hidden;
+  padding: var(--wd-combobox-content-padding);
+  transform-origin: center;
+  transition:
+    opacity var(--wd-combobox-content-transition-duration) var(--wd-reference-easing-2),
+    transform var(--wd-combobox-content-transition-duration) var(--wd-reference-easing-2);
+}
+
+.wd-combobox-ui__content[data-starting-style],
+.wd-combobox-ui__content[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.wd-combobox-ui__list {
+  max-height: var(--wd-combobox-list-max-height);
+  overflow-y: auto;
+}
+
+.wd-combobox-ui__item {
+  align-items: center;
+  border-radius: var(--wd-combobox-item-border-radius);
+  color: var(--wd-combobox-item-color);
+  cursor: default;
+  display: flex;
+  font-family: var(--wd-combobox-font-family);
+  font-size: var(--wd-combobox-label-font-size);
+  gap: var(--wd-combobox-item-gap);
+  min-height: var(--wd-combobox-item-min-height);
+  min-inline-size: 0;
+  line-height: var(--wd-combobox-line-height);
+  outline: none;
+  padding-inline: var(--wd-combobox-item-padding-inline);
+  user-select: none;
+}
+
+.wd-combobox-ui__item[data-highlighted] {
+  background: var(--wd-combobox-item-background-color-active);
+}
+
+.wd-combobox-ui__item[data-disabled] {
+  opacity: var(--wd-combobox-item-opacity-disabled);
+}
+
+.wd-combobox-ui__item-indicator {
+  align-items: center;
+  block-size: var(--wd-combobox-item-indicator-size);
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: var(--wd-combobox-item-indicator-size);
+  justify-content: center;
+  opacity: 0;
+}
+
+.wd-combobox-ui__item-indicator[data-selected] {
+  opacity: 1;
+}
+
+.wd-combobox-ui__item-indicator > svg {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.wd-combobox-ui__item-label {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-combobox-ui__empty {
+  color: var(--wd-combobox-empty-color);
+  min-height: var(--wd-combobox-item-min-height);
+  padding-inline: var(--wd-combobox-item-padding-inline);
+}
+
+.wd-combobox-ui__empty:empty {
+  block-size: 0;
+  inline-size: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-combobox-ui__content {
+    transition-duration: 0.01ms;
+  }
+}
