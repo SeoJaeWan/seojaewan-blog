@@ -5,6 +5,7 @@ import { createContext } from "react";
 import type { ComboboxUIProps } from "./comboboxUI.types";
 
 interface ComboboxUIContextValue {
+  clearable: boolean;
   inputId: string | undefined;
   items: readonly ComboboxUIProps["items"][number][];
 }
@@ -15,6 +16,7 @@ interface ComboboxUIContextValue {
  * family 공개 API나 애플리케이션 전역 상태 저장소로 사용하지 않는다.
  */
 export const ComboboxUIContext = createContext<ComboboxUIContextValue>({
+  clearable: false,
   inputId: undefined,
   items: [],
 });

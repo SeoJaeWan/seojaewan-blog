@@ -1,12 +1,13 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useContext } from "react";
 
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { Dismiss16Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { ComboboxUIClearProps } from "../../comboboxUI.types";
+import { ComboboxUIContext } from "../../comboboxUIContext";
 
 /**
  * 현재 검색어와 선택 값을 지우는 button part다. 자식이 없으면 기본 지우기 기호를 표시하고 기본 type은 `button`이다.
@@ -18,10 +19,13 @@ export const ComboboxClearUI = forwardRef<HTMLButtonElement, ComboboxUIClearProp
     { children = <Dismiss16Regular aria-hidden="true" />, className, type = "button", ...props },
     ref,
   ) {
+    const { clearable } = useContext(ComboboxUIContext);
+
     return (
       <BaseCombobox.Clear
         {...props}
         className={clsx("wd-combobox-ui__clear", className)}
+        data-clearable={clearable ? "true" : "false"}
         ref={ref}
         type={type}
       >

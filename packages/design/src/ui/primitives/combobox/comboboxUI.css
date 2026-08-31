@@ -89,6 +89,10 @@
   inline-size: var(--wd-combobox-control-icon-size);
 }
 
+.wd-combobox-ui__clear[data-clearable="false"] {
+  display: none;
+}
+
 .wd-combobox-ui__positioner {
   outline: none;
   z-index: 1000;
@@ -171,6 +175,14 @@
   color: var(--wd-combobox-empty-color);
   min-height: var(--wd-combobox-item-min-height);
   padding-inline: var(--wd-combobox-item-padding-inline);
+}
+
+.wd-combobox-ui__empty:empty {
+  block-size: 0;
+  inline-size: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

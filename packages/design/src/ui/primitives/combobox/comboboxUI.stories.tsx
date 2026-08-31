@@ -78,7 +78,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇이며 어디에 쓰나요?\nComboboxUI는 글자를 입력해 미리 정한 후보를 줄이고 값 하나를 고르는 선택 도구입니다. Existing Window의 경로 제안처럼, 경로 이름 일부를 입력해서 찾을 때 사용합니다. 입력 없이 정해진 목록에서만 고르면 SelectUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 경로 제안` Story는 제한된 경로 행 안에 검색 입력을 놓습니다. 원본의 480×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합합니다. 입력에 따른 후보 줄이기, 열림, 값 하나 선택, 키보드 이동, 비활성 후보, 빈 결과, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nComboboxUI는 전달받은 local 후보의 입력 필터, 열림과 단일 선택 동작을 맡습니다. Window 담당은 경로 후보 조회와 이름 변환, 선택 결과의 실제 이동, 검증과 저장을 맡습니다. ComboboxUI는 routing을 실행하지 않습니다.",
+          "### 무엇이며 어디에 쓰나요?\nComboboxUI는 글자를 입력해 미리 정한 후보를 줄이고 값 하나를 고르는 선택 도구입니다. Existing Window의 경로 제안처럼, 경로 이름 일부를 입력해서 찾을 때 사용합니다. 입력 없이 정해진 목록에서만 고르면 SelectUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n`제품 예시 — 기존 Window 경로 제안` Story는 제한된 경로 행 안에 검색 입력을 놓습니다. 원본의 480×36px 행 기록은 배치 맥락을 설명하는 문서 근거이며 공개 크기 token이나 screenshot 계약이 아닙니다. Clear 표시 조건은 입력 또는 선택을 지울 수 있을 때만 지우기 control을 두는 accepted cross-family 계약이며, 기존 TagInputUI의 선택 지우기 동작도 함께 근거로 삼습니다.\n\n### 어떤 상태와 동작을 확인하나요?\nLabel과 InputGroup(Input·Clear·Trigger), Content(List·Item·Empty)를 조합합니다. 입력에 따른 후보 줄이기, 열림, 값 하나 선택, 키보드 이동, 비활성 후보, 빈 결과, Escape 닫기와 지우기를 확인합니다.\n\n### 누가 무엇을 맡나요?\nComboboxUI는 전달받은 local 후보의 입력 필터, 열림과 단일 선택 동작을 맡습니다. Window 담당은 경로 후보 조회와 이름 변환, 선택 결과의 실제 이동, 검증과 저장을 맡습니다. ComboboxUI는 routing을 실행하지 않습니다.",
       },
     },
   },
@@ -261,6 +261,7 @@ export const ProductReference: Story = {
     const body = within(canvasElement.ownerDocument.body);
     const canvas = within(canvasElement);
     const input = body.getByRole("combobox", { name: "경로" });
+    const clear = body.getByLabelText("Window 경로 지우기");
     const row = canvas.getByTestId("window-route-suggestion-row");
     const control = canvas.getByTestId("window-route-suggestion-control");
     const openProbe = canvas.getByRole("status", {
@@ -283,15 +284,32 @@ export const ProductReference: Story = {
 
     await expect(openProbe).toHaveTextContent("닫힘");
     await expect(valueProbe).toHaveTextContent("없음");
+    await expect(clear).toHaveAttribute("data-clearable", "false");
+    await expect(clear.getBoundingClientRect().width).toBe(0);
+    await expect(clear.getBoundingClientRect().height).toBe(0);
+    await expect(body.queryByRole("button", { name: "Window 경로 지우기" })).toBeNull();
     await userEvent.type(input, "set");
     await waitFor(() => expect(body.getByRole("option", { name: "Settings" })).toBeVisible());
     await expect(openProbe).toHaveTextContent("열림");
+    await expect(clear).toHaveAttribute("data-clearable", "true");
+    await expect(clear.getBoundingClientRect().width).toBeGreaterThan(0);
+    await expect(clear.getBoundingClientRect().height).toBeGreaterThan(0);
+
+    const empty = body.getByText("", { selector: ".wd-combobox-ui__empty" });
+    await expect(empty).toHaveAttribute("role", "status");
+    await expect(empty).toHaveAttribute("aria-live", "polite");
+    await expect(empty.getBoundingClientRect().width).toBe(0);
+    await expect(empty.getBoundingClientRect().height).toBe(0);
 
     await userEvent.keyboard("{ArrowDown}{Enter}");
     await expect(valueProbe).toHaveTextContent("/settings");
     await expect(openProbe).toHaveTextContent("닫힘");
-    await userEvent.click(body.getByRole("button", { name: "Window 경로 지우기" }));
+    await expect(clear).toHaveAttribute("data-clearable", "true");
+    await userEvent.click(clear);
     await expect(valueProbe).toHaveTextContent("없음");
     await expect(input).toHaveValue("");
+    await expect(clear).toHaveAttribute("data-clearable", "false");
+    await expect(clear.getBoundingClientRect().width).toBe(0);
+    await expect(clear.getBoundingClientRect().height).toBe(0);
   },
 };
