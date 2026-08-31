@@ -102,6 +102,53 @@ export const Default: Story = {
   render: () => <DialogExample />,
 };
 
+export const WidthAndViewportContract: Story = {
+  name: "폭 계약 — override와 viewport 경계",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Dialog surface가 소비자가 명시한 폭 override를 받아들이고, 긴 내용과 함께도 padded viewport 안에 머무는지 확인합니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage">
+      <DialogUI defaultOpen>
+        <DialogUI.Trigger>폭 경계 dialog 열기</DialogUI.Trigger>
+        <DialogUI.Portal>
+          <DialogUI.Backdrop />
+          <DialogUI.Content
+            data-testid="dialog-width-content"
+            initialFocus={false}
+            style={{ width: "18rem" }}
+          >
+            <DialogUI.Title>Dialog width contract</DialogUI.Title>
+            <DialogUI.Description data-testid="dialog-width-long-content">
+              https://example.com/a-deliberately-long-unbroken-dialog-value-that-must-not-grow-the-surface
+            </DialogUI.Description>
+            <DialogUI.Close>닫기</DialogUI.Close>
+          </DialogUI.Content>
+        </DialogUI.Portal>
+      </DialogUI>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const page = within(canvasElement.ownerDocument.body);
+    const content = await page.findByTestId("dialog-width-content");
+    const rectangle = content.getBoundingClientRect();
+    const viewportWidth = canvasElement.ownerDocument.documentElement.clientWidth;
+
+    await expect(rectangle.width).toBeCloseTo(288, 0);
+    await expect(rectangle.left).toBeGreaterThan(0);
+    await expect(rectangle.right).toBeLessThan(viewportWidth);
+    await expect(content.scrollWidth).toBeLessThanOrEqual(content.clientWidth);
+    await expect(canvasElement.ownerDocument.documentElement.scrollWidth).toBeLessThanOrEqual(
+      viewportWidth,
+    );
+  },
+};
+
 export const FocusTrapAndDismissal: Story = {
   parameters: {
     docs: {

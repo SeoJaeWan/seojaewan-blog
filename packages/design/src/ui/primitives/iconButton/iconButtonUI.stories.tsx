@@ -85,6 +85,66 @@ export const Disabled: Story = {
   },
 };
 
+export const FixedGeometryContract: Story = {
+  name: "폭 계약 — 고정 정사각형",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "IconButtonUI의 sm·md·lg 크기가 좁은 flex parent에서도 줄어들지 않고 각자 고정된 정사각형을 유지하는지 확인합니다.",
+      },
+    },
+  },
+  render: () => (
+    <div
+      className="wd-story-stage"
+      data-testid="icon-button-fixed-parent"
+      style={{ display: "flex", width: "6rem" }}
+    >
+      <IconButtonUI
+        data-testid="icon-button-fixed-sm"
+        icon={<Add20Regular />}
+        label="작은 고정 버튼"
+        size="sm"
+      />
+      <IconButtonUI
+        data-testid="icon-button-fixed-md"
+        icon={<Add20Regular />}
+        label="중간 고정 버튼"
+      />
+      <IconButtonUI
+        data-testid="icon-button-fixed-lg"
+        icon={<Add20Regular />}
+        label="큰 고정 버튼"
+        size="lg"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = [
+      canvas.getByTestId("icon-button-fixed-sm"),
+      canvas.getByTestId("icon-button-fixed-md"),
+      canvas.getByTestId("icon-button-fixed-lg"),
+    ];
+
+    for (const button of buttons) {
+      const rectangle = button.getBoundingClientRect();
+
+      await expect(rectangle.width).toBeCloseTo(rectangle.height, 0);
+      await expect(getComputedStyle(button).flexShrink).toBe("0");
+      await expect(getComputedStyle(button).minWidth).toBe(`${rectangle.width}px`);
+    }
+
+    await expect(buttons[0].getBoundingClientRect().width).toBeLessThan(
+      buttons[1].getBoundingClientRect().width,
+    );
+    await expect(buttons[1].getBoundingClientRect().width).toBeLessThan(
+      buttons[2].getBoundingClientRect().width,
+    );
+  },
+};
+
 const ExistingWindowTaskbarProductReference = () => {
   const [lastAction, setLastAction] = useState<"idle" | "taskbar-app" | "window-close">("idle");
   const [taskbarSelected, setTaskbarSelected] = useState(false);

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Search20Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { InputUI } from "./index";
 
@@ -53,6 +53,89 @@ export const Disabled: Story = {
           "기존 글자를 보여 주지만 고칠 수 없는 상태입니다. 입력해도 값은 바뀌지 않고 ‘검색할 수 없음’이 유지됩니다.",
       },
     },
+  },
+};
+
+const longInputValue =
+  "https://example.com/this-is-a-deliberately-long-unbroken-input-value-for-width-contracts";
+
+export const WidthAllocationContract: Story = {
+  name: "폭 계약 — 명시 폭과 parent allocation",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "InputUI가 작은 폭과 큰 폭, flex·grid parent allocation을 따르면서 긴 native 값은 입력 안에서 스크롤하고 바깥 rectangle이나 문서 폭을 늘리지 않는지 확인합니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage wd-story-stack" data-testid="input-width-stage">
+      <InputUI
+        aria-label="작은 폭 입력"
+        data-testid="input-width-small"
+        defaultValue={longInputValue}
+        style={{ width: "11rem" }}
+      />
+      <InputUI
+        aria-label="큰 폭 입력"
+        data-testid="input-width-large"
+        defaultValue={longInputValue}
+        style={{ width: "24rem" }}
+      />
+      <div
+        data-testid="input-width-flex-parent"
+        style={{ display: "flex", gap: "1rem", width: "22rem" }}
+      >
+        <InputUI
+          aria-label="flex allocation 입력"
+          data-testid="input-width-flex"
+          defaultValue={longInputValue}
+          style={{ flex: "1 1 auto", minWidth: 0 }}
+        />
+        <span aria-hidden="true" style={{ flex: "0 0 2rem" }} />
+      </div>
+      <div
+        data-testid="input-width-grid-parent"
+        style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 2rem", width: "20rem" }}
+      >
+        <InputUI
+          aria-label="grid allocation 입력"
+          data-testid="input-width-grid"
+          defaultValue={longInputValue}
+          style={{ maxWidth: "100%", width: "100%" }}
+        />
+        <span aria-hidden="true" />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const small = canvas.getByTestId("input-width-small");
+    const large = canvas.getByTestId("input-width-large");
+    const flex = canvas.getByTestId("input-width-flex");
+    const flexParent = canvas.getByTestId("input-width-flex-parent");
+    const grid = canvas.getByTestId("input-width-grid");
+    const gridParent = canvas.getByTestId("input-width-grid-parent");
+
+    await expect(small.getBoundingClientRect().width).toBeCloseTo(176, 0);
+    await expect(large.getBoundingClientRect().width).toBeCloseTo(384, 0);
+    await expect(flex.getBoundingClientRect().width).toBeCloseTo(
+      flexParent.getBoundingClientRect().width - 48,
+      0,
+    );
+    await expect(grid.getBoundingClientRect().width).toBeCloseTo(
+      gridParent.getBoundingClientRect().width - 32,
+      0,
+    );
+
+    await userEvent.click(small);
+    await userEvent.keyboard("{End}");
+    await waitFor(() => expect(small.scrollLeft).toBeGreaterThan(0));
+    await expect(small.getBoundingClientRect().width).toBeCloseTo(176, 0);
+    await expect(canvasElement.ownerDocument.documentElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.ownerDocument.documentElement.clientWidth,
+    );
   },
 };
 

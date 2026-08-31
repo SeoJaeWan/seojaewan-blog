@@ -93,6 +93,50 @@ export const InitiallyOpen: Story = {
   ),
 };
 
+export const WidthCompositionContract: Story = {
+  name: "폭 계약 — intrinsic과 composition",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "기본 Collapsible trigger는 내용만큼만 차지하고, Folder 같은 상위 계층이 width를 명시하면 그 allocation을 채우는지 확인합니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage wd-story-stack" style={{ width: "22rem" }}>
+      <CollapsibleUI.Root data-testid="collapsible-intrinsic-root" style={{ width: "100%" }}>
+        <CollapsibleUI.Trigger data-testid="collapsible-intrinsic-trigger">
+          Intrinsic category
+        </CollapsibleUI.Trigger>
+        <CollapsibleUI.Panel>Intrinsic files</CollapsibleUI.Panel>
+      </CollapsibleUI.Root>
+      <CollapsibleUI.Root data-testid="collapsible-composed-root" style={{ width: "100%" }}>
+        <CollapsibleUI.Trigger data-testid="collapsible-composed-trigger" style={{ width: "100%" }}>
+          상위 Folder가 전체 폭을 소유하는 category
+        </CollapsibleUI.Trigger>
+        <CollapsibleUI.Panel>Composed files</CollapsibleUI.Panel>
+      </CollapsibleUI.Root>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const intrinsicRoot = canvas.getByTestId("collapsible-intrinsic-root");
+    const intrinsicTrigger = canvas.getByTestId("collapsible-intrinsic-trigger");
+    const composedRoot = canvas.getByTestId("collapsible-composed-root");
+    const composedTrigger = canvas.getByTestId("collapsible-composed-trigger");
+
+    await expect(intrinsicTrigger.getBoundingClientRect().width).toBeLessThan(
+      intrinsicRoot.getBoundingClientRect().width,
+    );
+    await expect(composedTrigger.getBoundingClientRect().width).toBeCloseTo(
+      composedRoot.getBoundingClientRect().width,
+      0,
+    );
+    await expect(getComputedStyle(intrinsicTrigger).display).toBe("inline-flex");
+    await expect(getComputedStyle(intrinsicTrigger).flexGrow).toBe("0");
+  },
+};
+
 const ExistingFolderCategoryProductReference = () => {
   const [isOpen, setIsOpen] = useState(false);
 

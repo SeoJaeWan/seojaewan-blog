@@ -53,6 +53,47 @@ export const Disabled: Story = {
   },
 };
 
+export const WidthCompositionContract: Story = {
+  name: "폭 계약 — intrinsic과 composition",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "ButtonUI는 기본적으로 label만큼의 intrinsic 폭을 유지하며, 사용하는 쪽이 명시적으로 전체 폭을 조합할 때만 parent allocation을 채웁니다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="wd-story-stage wd-story-stack" style={{ width: "22rem" }}>
+      <div data-testid="button-intrinsic-parent" style={{ width: "100%" }}>
+        <ButtonUI data-testid="button-intrinsic">Intrinsic action</ButtonUI>
+      </div>
+      <div data-testid="button-composed-parent" style={{ width: "100%" }}>
+        <ButtonUI data-testid="button-composed" style={{ width: "100%" }}>
+          상위 화면이 전체 폭을 소유하는 action
+        </ButtonUI>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const intrinsic = canvas.getByTestId("button-intrinsic");
+    const intrinsicParent = canvas.getByTestId("button-intrinsic-parent");
+    const composed = canvas.getByTestId("button-composed");
+    const composedParent = canvas.getByTestId("button-composed-parent");
+
+    await expect(intrinsic.getBoundingClientRect().width).toBeLessThan(
+      intrinsicParent.getBoundingClientRect().width,
+    );
+    await expect(composed.getBoundingClientRect().width).toBeCloseTo(
+      composedParent.getBoundingClientRect().width,
+      0,
+    );
+    await expect(getComputedStyle(intrinsic).display).toBe("inline-flex");
+    await expect(getComputedStyle(intrinsic).flexGrow).toBe("0");
+  },
+};
+
 const onContractButtonActivation = fn();
 const onContractAnchorActivation = fn();
 
