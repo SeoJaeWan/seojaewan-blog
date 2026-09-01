@@ -1,14 +1,20 @@
 import { createRef } from "react";
 
+import { screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
 import {
+  RouteInputUI,
+  TagInputUI,
   WindowControlsUI,
   type WindowControlUIEvent,
   WindowFrameUI,
+  WindowRouteBarUI,
+  WindowTabUI,
   WindowTitleBarUI,
 } from "./index";
+import { WindowResizeHandlesUI } from "./windowResizeHandlesUI";
 
 afterEach(() => {
   cleanupUITest();
@@ -62,6 +68,21 @@ describe("WindowFrameUI", () => {
     expect(frame.getAttribute("data-dragging")).toBe("false");
     expect(frame.getAttribute("data-fullscreen")).toBe("false");
     expect(frame.getAttribute("data-motion")).toBe("idle");
+    expect(frame.getAttribute("data-resizable")).toBe("false");
+  });
+
+  it("family-local resize handles가 ID 없이 시작 방향을 보고한다", () => {
+    const onResizeStart = vi.fn();
+    const view = renderUITest(
+      <WindowFrameUI aria-label="크기 조절 창" onResizeStart={onResizeStart} resizable />,
+    );
+    const frame = view.getByRole("region", { name: "크기 조절 창" });
+    const southeastHandle = frame.querySelector('[data-direction="se"]');
+
+    expect(frame.getAttribute("data-resizable")).toBe("true");
+    expect(frame.querySelectorAll(".wd-window-resize-handles-ui__handle")).toHaveLength(8);
+    southeastHandle?.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    expect(onResizeStart).toHaveBeenCalledWith({ direction: "se" });
   });
 });
 
@@ -104,6 +125,8 @@ describe("WindowControlsUI", () => {
     const events: WindowControlUIEvent[] = [];
     const onControl = vi.fn((event: WindowControlUIEvent) => events.push(event));
     const view = renderUITest(<WindowControlsUI onControl={onControl} />);
+
+    expect(view.getByRole("button", { name: "최소화" }).className).toContain("wd-icon-button-ui");
 
     view.getByRole("button", { name: "최소화" }).click();
     view.getByRole("button", { name: "최대화" }).click();
@@ -171,5 +194,108 @@ describe("WindowControlsUI", () => {
     expect(controls.getAttribute("data-layout")).toBe("compact");
     expect(onPointerDown).toHaveBeenCalledOnce();
     expect(onParentPointerDown).not.toHaveBeenCalled();
+  });
+});
+
+describe("WindowTabUI", () => {
+  it("icon, 긴 title, ref와 native div props를 실제 tab role에 전달한다", () => {
+    const ref = createRef<HTMLDivElement>();
+    const view = renderUITest(
+      <WindowTabUI data-kind="folder" icon="폴더" ref={ref} titleContent="디자인 문서" />,
+    );
+    const tab = view.getByText("디자인 문서").closest("div");
+
+    expect(ref.current).toBe(tab);
+    expect(tab?.className).toContain("wd-window-tab-ui");
+    expect(tab?.getAttribute("data-kind")).toBe("folder");
+    expect(view.getByText("폴더").getAttribute("aria-hidden")).toBe("true");
+  });
+});
+
+describe("WindowRouteBarUI", () => {
+  it("IconButtonUI history actions와 field slots를 조합해 방향만 보고한다", () => {
+    const onNavigate = vi.fn();
+    const view = renderUITest(
+      <WindowRouteBarUI
+        aria-label="경로 도구"
+        forwardDisabled
+        onNavigate={onNavigate}
+        tagInput={<span>태그 필드</span>}
+      >
+        <span>경로 필드</span>
+      </WindowRouteBarUI>,
+    );
+    const back = view.getByRole("button", { name: "뒤로" });
+    const forward = view.getByRole("button", { name: "앞으로" });
+
+    expect(back.className).toContain("wd-icon-button-ui");
+    expect(forward.hasAttribute("disabled")).toBe(true);
+    expect(view.getByText("경로 필드")).toBeTruthy();
+    expect(view.getByText("태그 필드")).toBeTruthy();
+    back.click();
+    forward.click();
+    expect(onNavigate).toHaveBeenCalledOnce();
+    expect(onNavigate).toHaveBeenCalledWith({ direction: "back" });
+  });
+});
+
+describe("RouteInputUI", () => {
+  it("ComboboxUI를 route suggestion field로 조합하고 native div props를 보존한다", () => {
+    const ref = createRef<HTMLDivElement>();
+    renderUITest(
+      <RouteInputUI
+        data-surface="route"
+        defaultOpen
+        label="현재 경로"
+        options={[{ label: "프로젝트", value: "projects" }]}
+        ref={ref}
+      />,
+    );
+
+    expect(ref.current?.className).toContain("wd-route-input-ui");
+    expect(ref.current?.getAttribute("data-surface")).toBe("route");
+    expect(screen.getByRole("combobox", { name: "현재 경로" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "프로젝트" })).toBeTruthy();
+    expect(document.querySelector('[aria-label="경로 후보 보기"]')).toBeTruthy();
+  });
+});
+
+describe("TagInputUI", () => {
+  it("SelectUI를 tag selection field로 조합하고 project-owned option을 표시한다", () => {
+    const ref = createRef<HTMLDivElement>();
+    renderUITest(
+      <TagInputUI
+        data-surface="tag"
+        defaultOpen
+        defaultValue="design"
+        label="태그 필터"
+        options={[{ label: "디자인", value: "design" }]}
+        ref={ref}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "태그 필터" });
+
+    expect(ref.current?.className).toContain("wd-tag-input-ui");
+    expect(ref.current?.getAttribute("data-surface")).toBe("tag");
+    expect(trigger.className).toContain("wd-select-ui__trigger");
+    expect(screen.getByRole("option", { name: "디자인" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "태그 선택 지우기" })).toBeTruthy();
+  });
+});
+
+describe("WindowResizeHandlesUI", () => {
+  it("disabled 상태에서도 여덟 방향 geometry를 유지하고 pointer event를 막는다", () => {
+    const onResizeStart = vi.fn();
+    const view = renderUITest(
+      <WindowResizeHandlesUI data-testid="resize-handles" disabled onResizeStart={onResizeStart} />,
+    );
+    const handles = view.getByTestId("resize-handles");
+
+    expect(handles.getAttribute("data-disabled")).toBe("true");
+    expect(handles.querySelectorAll("[data-direction]")).toHaveLength(8);
+    handles
+      .querySelector('[data-direction="n"]')
+      ?.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    expect(onResizeStart).not.toHaveBeenCalled();
   });
 });

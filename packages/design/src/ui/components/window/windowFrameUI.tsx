@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 
 import { clsx } from "clsx";
 
+import { WindowResizeHandlesUI } from "./windowResizeHandlesUI";
 import type { WindowFrameUIProps } from "./windowUI.types";
 
 import "./windowUI.css";
@@ -22,6 +23,10 @@ export const WindowFrameUI = ({
   dragging = false,
   fullscreen = false,
   motion = "idle",
+  onResizeStart,
+  resizable = false,
+  resizeDisabled = false,
+  routeBar,
   style,
   titleBar,
   ...props
@@ -33,6 +38,7 @@ export const WindowFrameUI = ({
     data-dragging={dragging ? "true" : "false"}
     data-fullscreen={fullscreen ? "true" : "false"}
     data-motion={motion}
+    data-resizable={resizable ? "true" : "false"}
     style={
       {
         "--wd-window-frame-block-size": toPixelValue(bounds?.blockSize),
@@ -44,6 +50,10 @@ export const WindowFrameUI = ({
     }
   >
     {titleBar}
+    {routeBar}
     <div className="wd-window-frame-ui__body">{children}</div>
+    {resizable ? (
+      <WindowResizeHandlesUI disabled={resizeDisabled} onResizeStart={onResizeStart} />
+    ) : null}
   </section>
 );

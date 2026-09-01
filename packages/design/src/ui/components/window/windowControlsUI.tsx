@@ -8,6 +8,7 @@ import {
 } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
+import { IconButtonUI } from "../../primitives/iconButton";
 import type {
   WindowControlsUIProps,
   WindowControlUIAction,
@@ -22,7 +23,7 @@ const defaultLabels: WindowControlUILabels = {
 };
 
 /**
- * minimize, maximize/restore와 close를 icon-only native buttons로 표현한다.
+ * minimize, maximize/restore와 close를 IconButtonUI로 표현한다.
  *
  * 모든 activation은 ID-free `{ control }` payload 하나로 보고하며 실제 창 동작은 수행하지 않는다.
  */
@@ -57,44 +58,40 @@ export const WindowControlsUI = ({
       onPointerDown={handlePointerDown}
     >
       {showMinimize ? (
-        <button
-          aria-label={resolvedLabels.minimize}
+        <IconButtonUI
           className="wd-window-controls-ui__control"
           data-control="minimize"
           disabled={isDisabled("minimize")}
+          icon={<Subtract16Regular aria-hidden="true" />}
+          label={resolvedLabels.minimize}
           onClick={() => emitControl("minimize")}
-          type="button"
-        >
-          <Subtract16Regular aria-hidden="true" />
-        </button>
+        />
       ) : null}
       {showMaximize ? (
-        <button
-          aria-label={resolvedLabels[sizeControl]}
+        <IconButtonUI
           className="wd-window-controls-ui__control"
           data-control={sizeControl}
           disabled={isDisabled(sizeControl)}
+          icon={
+            fullscreen ? (
+              <SquareMultiple16Regular aria-hidden="true" />
+            ) : (
+              <Maximize16Regular aria-hidden="true" />
+            )
+          }
+          label={resolvedLabels[sizeControl]}
           onClick={() => emitControl(sizeControl)}
-          type="button"
-        >
-          {fullscreen ? (
-            <SquareMultiple16Regular aria-hidden="true" />
-          ) : (
-            <Maximize16Regular aria-hidden="true" />
-          )}
-        </button>
+        />
       ) : null}
       {showClose ? (
-        <button
-          aria-label={resolvedLabels.close}
+        <IconButtonUI
           className="wd-window-controls-ui__control wd-window-controls-ui__control--close"
           data-control="close"
           disabled={isDisabled("close")}
+          icon={<Dismiss16Regular aria-hidden="true" />}
+          label={resolvedLabels.close}
           onClick={() => emitControl("close")}
-          type="button"
-        >
-          <Dismiss16Regular aria-hidden="true" />
-        </button>
+        />
       ) : null}
     </div>
   );

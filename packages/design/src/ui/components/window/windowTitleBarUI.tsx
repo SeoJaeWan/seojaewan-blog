@@ -16,12 +16,18 @@ export const WindowTitleBarUI = ({
   ...props
 }: WindowTitleBarUIProps) => (
   <header {...props} className={clsx("wd-window-title-bar-ui", className)}>
-    {leading === undefined ? null : (
-      <span aria-hidden="true" className="wd-window-title-bar-ui__leading">
-        {leading}
-      </span>
+    {leading !== undefined || titleContent !== undefined ? (
+      <>
+        {leading === undefined ? null : (
+          <span aria-hidden="true" className="wd-window-title-bar-ui__leading">
+            {leading}
+          </span>
+        )}
+        <div className="wd-window-title-bar-ui__title">{titleContent ?? children}</div>
+      </>
+    ) : (
+      children
     )}
-    <div className="wd-window-title-bar-ui__title">{titleContent ?? children}</div>
     {controls}
   </header>
 );
