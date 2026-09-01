@@ -1,5 +1,14 @@
 :root {
-  --wd-taskbar-root-background-color: var(--wd-color-surface-taskbar);
+  --wd-taskbar-root-background:
+    linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.25),
+      rgb(35 181 230 / 0.1),
+      rgb(173 216 230 / 0.2),
+      rgb(35 181 230 / 0.15),
+      rgb(0 0 0 / 0.05)
+    ),
+    var(--wd-color-surface-taskbar);
   --wd-taskbar-root-border-color: var(--wd-color-border-default);
   --wd-taskbar-root-border-width: 1px;
   --wd-taskbar-root-box-shadow: var(--wd-reference-shadow-1);
@@ -9,22 +18,30 @@
   --wd-taskbar-root-backdrop-saturation: 1.15;
   --wd-taskbar-root-font-family: var(--wd-font-family-sans);
   --wd-taskbar-root-padding-block: var(--wd-reference-spacing-1);
+  --wd-taskbar-start-icon-size: 30px;
+  --wd-taskbar-search-background-color: rgb(255 255 255 / 0.7);
+  --wd-taskbar-search-background-color-hover: rgb(255 255 255 / 0.9);
+  --wd-taskbar-search-control-height: 36px;
+  --wd-taskbar-search-control-width: 220px;
+  --wd-taskbar-search-padding-inline-start: 40px;
+  --wd-taskbar-app-list-gap: var(--wd-reference-spacing-1);
+  --wd-taskbar-clock-font-size: 12px;
+  --wd-taskbar-clock-inset-inline-end: var(--wd-reference-spacing-6);
+  --wd-taskbar-clock-line-height: 1.25;
+  --wd-taskbar-clock-skeleton-color: rgb(0 0 0 / 0.1);
+  --wd-taskbar-clock-skeleton-height: 14px;
+  --wd-taskbar-clock-skeleton-width: 64px;
+  --wd-taskbar-clock-skeleton-duration: 2s;
   --wd-taskbar-item-background-color-active: var(--wd-color-surface-muted);
   --wd-taskbar-item-background-color-hover: var(--wd-color-surface-muted);
   --wd-taskbar-item-border-radius: var(--wd-reference-radius-2);
   --wd-taskbar-item-color: var(--wd-color-text-primary);
   --wd-taskbar-item-color-active: var(--wd-color-accent-default);
-  --wd-taskbar-item-control-size: 40px;
-  --wd-taskbar-item-icon-size: 24px;
   --wd-taskbar-item-indicator-background-color: var(--wd-color-accent-default);
   --wd-taskbar-item-indicator-border-radius: var(--wd-reference-radius-3);
   --wd-taskbar-item-indicator-height: 3px;
   --wd-taskbar-item-indicator-width-active: 12px;
   --wd-taskbar-item-indicator-width-running: 6px;
-  --wd-taskbar-item-opacity-disabled: 0.54;
-  --wd-taskbar-item-outline-color-focus-visible: var(--wd-color-focus-ring);
-  --wd-taskbar-item-ring-width-focus-visible: 4px;
-  --wd-taskbar-item-scale-pressed: 0.8;
   --wd-taskbar-item-transition-duration: var(--wd-reference-duration-120);
   --wd-taskbar-item-transition-easing: var(--wd-reference-easing-2);
   --wd-taskbar-preview-aspect-ratio: 4 / 3;

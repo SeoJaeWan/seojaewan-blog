@@ -3,10 +3,89 @@ import { createRef } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
-import { TaskbarItemUI, TaskbarPreviewUI, TaskbarRootUI, WindowPanelUI } from "./index";
+import {
+  TaskbarAppListUI,
+  TaskbarClockUI,
+  TaskbarItemUI,
+  TaskbarPreviewUI,
+  TaskbarRootUI,
+  TaskbarSearchUI,
+  TaskbarStartButtonUI,
+  WindowPanelUI,
+} from "./index";
 
 afterEach(() => {
   cleanupUITest();
+});
+
+describe("TaskbarStartButtonUI", () => {
+  it("IconButtonUI control과 30px Windows logo 역할을 함께 제공한다", () => {
+    const ref = createRef<HTMLButtonElement>();
+    const view = renderUITest(<TaskbarStartButtonUI ref={ref} selected />);
+    const button = view.getByRole("button", { name: "시작" });
+
+    expect(button.className).toContain("wd-icon-button-ui");
+    expect(button.className).toContain("wd-taskbar-start-button-ui");
+    expect(button.getAttribute("data-size")).toBe("lg");
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+    expect(button.querySelector(".wd-taskbar-start-button-ui__logo")).not.toBeNull();
+    expect(ref.current).toBe(button);
+  });
+
+  it("caller가 제공한 장식 icon과 native button props를 전달한다", () => {
+    const onClick = vi.fn();
+    const view = renderUITest(
+      <TaskbarStartButtonUI data-kind="custom" icon={<span>W</span>} onClick={onClick} />,
+    );
+    const button = view.getByRole("button", { name: "시작" });
+
+    button.click();
+
+    expect(button.getAttribute("data-kind")).toBe("custom");
+    expect(button.textContent).toBe("W");
+    expect(onClick).toHaveBeenCalledOnce();
+  });
+});
+
+describe("TaskbarSearchUI", () => {
+  it("InputUI의 free-text search semantic, native props와 ref를 유지한다", () => {
+    const ref = createRef<HTMLInputElement>();
+    const view = renderUITest(
+      <TaskbarSearchUI
+        aria-label="앱 검색"
+        className="custom-search"
+        data-query-source="taskbar"
+        defaultValue="문서"
+        ref={ref}
+      />,
+    );
+    const input = view.getByRole("searchbox", { name: "앱 검색" });
+
+    expect(input.className).toContain("wd-input-ui");
+    expect(input.className).toContain("wd-taskbar-search-ui");
+    expect(input.className).toContain("custom-search");
+    expect(input.getAttribute("data-query-source")).toBe("taskbar");
+    expect(input.getAttribute("type")).toBe("search");
+    expect(input).toHaveProperty("value", "문서");
+    expect(ref.current).toBe(input);
+  });
+});
+
+describe("TaskbarAppListUI", () => {
+  it("app item slot과 native layout props를 전달한다", () => {
+    const ref = createRef<HTMLDivElement>();
+    const view = renderUITest(
+      <TaskbarAppListUI className="custom-list" data-layout="apps" ref={ref}>
+        <span>app slot</span>
+      </TaskbarAppListUI>,
+    );
+    const list = view.getByText("app slot").parentElement;
+
+    expect(list?.className).toContain("wd-taskbar-app-list-ui");
+    expect(list?.className).toContain("custom-list");
+    expect(list?.getAttribute("data-layout")).toBe("apps");
+    expect(ref.current).toBe(list);
+  });
 });
 
 describe("TaskbarRootUI", () => {
@@ -34,11 +113,12 @@ describe("TaskbarRootUI", () => {
 });
 
 describe("TaskbarItemUI", () => {
-  it("icon을 장식으로 유지하고 필수 label을 native button 이름으로 사용한다", () => {
+  it("IconButtonUI 안에서 icon을 장식으로 유지하고 필수 label을 이름으로 사용한다", () => {
     const view = renderUITest(<TaskbarItemUI icon={<span>앱</span>} label="블로그 열기" />);
     const button = view.getByRole("button", { name: "블로그 열기" });
 
     expect(button.tagName).toBe("BUTTON");
+    expect(button.className).toContain("wd-icon-button-ui");
     expect(button.getAttribute("type")).toBe("button");
     expect(button.getAttribute("data-state")).toBe("idle");
     expect(button.querySelector("[aria-hidden='true']")?.textContent).toBe("앱");
@@ -139,6 +219,40 @@ describe("TaskbarItemUI", () => {
     expect(button.getAttribute("name")).toBe("intent");
     expect(button.getAttribute("type")).toBe("submit");
     expect(ref.current).toBe(button);
+  });
+});
+
+describe("TaskbarClockUI", () => {
+  it("고정 Date를 caller가 선택한 time zone의 시간과 날짜로 표시한다", () => {
+    const value = new Date("2026-09-01T06:24:00.000Z");
+    const view = renderUITest(<TaskbarClockUI timeZone="Asia/Seoul" value={value} />);
+    const clock = view.getByLabelText("날짜 및 시간");
+    const expectedTime = new Intl.DateTimeFormat("ko-KR", {
+      hour: "numeric",
+      hour12: true,
+      minute: "2-digit",
+      timeZone: "Asia/Seoul",
+    }).format(value);
+    const expectedDate = new Intl.DateTimeFormat("en-CA", {
+      day: "2-digit",
+      month: "2-digit",
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+    }).format(value);
+
+    expect(clock.getAttribute("data-ready")).toBe("true");
+    expect(clock.textContent).toContain(expectedTime);
+    expect(clock.textContent).toContain(expectedDate);
+    expect(clock.querySelector("time")?.getAttribute("datetime")).toBe(value.toISOString());
+  });
+
+  it("시각이 없으면 tick을 만들지 않고 장식 skeleton만 표시한다", () => {
+    const view = renderUITest(<TaskbarClockUI data-testid="clock-skeleton" />);
+    const clock = view.getByTestId("clock-skeleton");
+
+    expect(clock.getAttribute("data-ready")).toBe("false");
+    expect(clock.querySelector("time")).toBeNull();
+    expect(clock.querySelector("[aria-hidden='true']")).not.toBeNull();
   });
 });
 

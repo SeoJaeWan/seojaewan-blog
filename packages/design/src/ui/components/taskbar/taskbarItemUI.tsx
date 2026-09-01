@@ -2,6 +2,7 @@ import type { MouseEventHandler } from "react";
 
 import { clsx } from "clsx";
 
+import { IconButtonUI } from "../../primitives";
 import type { TaskbarItemUIProps } from "./taskbarUI.types";
 
 import "./taskbarUI.css";
@@ -30,21 +31,23 @@ export const TaskbarItemUI = ({
   };
 
   return (
-    <button
+    <IconButtonUI
       {...props}
-      aria-label={label}
-      aria-pressed={state === "active" || undefined}
       className={clsx("wd-taskbar-item-ui", className)}
       data-state={state}
+      icon={
+        <>
+          <span className="wd-taskbar-item-ui__icon">{icon}</span>
+          {state === "running" || state === "active" ? (
+            <span className="wd-taskbar-item-ui__indicator" />
+          ) : null}
+        </>
+      }
+      label={label}
       onClick={handleClick}
+      selected={state === "active"}
+      size="lg"
       type={type}
-    >
-      <span aria-hidden="true" className="wd-taskbar-item-ui__icon">
-        {icon}
-      </span>
-      {state === "running" || state === "active" ? (
-        <span aria-hidden="true" className="wd-taskbar-item-ui__indicator" />
-      ) : null}
-    </button>
+    />
   );
 };
