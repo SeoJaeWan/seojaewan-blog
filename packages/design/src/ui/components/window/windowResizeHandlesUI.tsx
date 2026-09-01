@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 
+import { useWindowFrameUIInteraction } from "./windowFrameUIContext";
 import type { WindowResizeHandlesUIProps, WindowResizeUIDirection } from "./windowUI.types";
 
 const directions: readonly WindowResizeUIDirection[] = ["n", "e", "s", "w", "ne", "se", "sw", "nw"];
@@ -14,20 +15,35 @@ export const WindowResizeHandlesUI = ({
   disabled = false,
   onResizeStart,
   ...props
-}: WindowResizeHandlesUIProps) => (
-  <div
-    {...props}
-    aria-hidden="true"
-    className={clsx("wd-window-resize-handles-ui", className)}
-    data-disabled={disabled ? "true" : "false"}
-  >
-    {directions.map((direction) => (
-      <div
-        className="wd-window-resize-handles-ui__handle"
-        data-direction={direction}
-        key={direction}
-        onPointerDown={disabled ? undefined : () => onResizeStart?.({ direction })}
-      />
-    ))}
-  </div>
-);
+}: WindowResizeHandlesUIProps) => {
+  const interaction = useWindowFrameUIInteraction();
+
+  return (
+    <div
+      {...props}
+      aria-hidden="true"
+      className={clsx("wd-window-resize-handles-ui", className)}
+      data-disabled={disabled ? "true" : "false"}
+    >
+      {directions.map((direction) => (
+        <div
+          className="wd-window-resize-handles-ui__handle"
+          data-direction={direction}
+          key={direction}
+          onLostPointerCapture={interaction?.onLostPointerCapture}
+          onPointerCancel={interaction?.onPointerCancel}
+          onPointerDown={
+            disabled
+              ? undefined
+              : (event) => {
+                  onResizeStart?.({ direction });
+                  interaction?.onResizePointerDown(event, direction);
+                }
+          }
+          onPointerMove={interaction?.onPointerMove}
+          onPointerUp={interaction?.onPointerUp}
+        />
+      ))}
+    </div>
+  );
+};

@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 
+import { useWindowFrameUIInteraction } from "./windowFrameUIContext";
 import type { WindowTitleBarUIProps } from "./windowUI.types";
 
 /**
@@ -12,22 +13,54 @@ export const WindowTitleBarUI = ({
   className,
   controls,
   leading,
+  onLostPointerCapture,
+  onPointerCancel,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
   titleContent,
   ...props
-}: WindowTitleBarUIProps) => (
-  <header {...props} className={clsx("wd-window-title-bar-ui", className)}>
-    {leading !== undefined || titleContent !== undefined ? (
-      <>
-        {leading === undefined ? null : (
-          <span aria-hidden="true" className="wd-window-title-bar-ui__leading">
-            {leading}
-          </span>
-        )}
-        <div className="wd-window-title-bar-ui__title">{titleContent ?? children}</div>
-      </>
-    ) : (
-      children
-    )}
-    {controls}
-  </header>
-);
+}: WindowTitleBarUIProps) => {
+  const interaction = useWindowFrameUIInteraction();
+
+  return (
+    <header
+      {...props}
+      className={clsx("wd-window-title-bar-ui", className)}
+      onLostPointerCapture={(event) => {
+        onLostPointerCapture?.(event);
+        interaction?.onLostPointerCapture(event);
+      }}
+      onPointerCancel={(event) => {
+        onPointerCancel?.(event);
+        interaction?.onPointerCancel(event);
+      }}
+      onPointerDown={(event) => {
+        onPointerDown?.(event);
+        if (!event.defaultPrevented) interaction?.onMovePointerDown(event);
+      }}
+      onPointerMove={(event) => {
+        onPointerMove?.(event);
+        interaction?.onPointerMove(event);
+      }}
+      onPointerUp={(event) => {
+        onPointerUp?.(event);
+        interaction?.onPointerUp(event);
+      }}
+    >
+      {leading !== undefined || titleContent !== undefined ? (
+        <>
+          {leading === undefined ? null : (
+            <span aria-hidden="true" className="wd-window-title-bar-ui__leading">
+              {leading}
+            </span>
+          )}
+          <div className="wd-window-title-bar-ui__title">{titleContent ?? children}</div>
+        </>
+      ) : (
+        children
+      )}
+      {controls}
+    </header>
+  );
+};

@@ -12,6 +12,7 @@ import {
   FolderViewerUI,
 } from "../folder";
 import {
+  FileWindowUI,
   RouteInputUI,
   TagInputUI,
   WindowControlsUI,
@@ -21,6 +22,8 @@ import {
   WindowTabUI,
   WindowTitleBarUI,
 } from "./index";
+
+import "./windowFrameUI.stories.css";
 
 const routeOptions = [
   { label: "Projects", value: "projects" },
@@ -53,6 +56,7 @@ interface WindowProductFixtureProps extends WindowFrameUIProps {
 }
 
 const WindowProductFixture = ({ wide = false, ...props }: WindowProductFixtureProps) => {
+  const [lastGesture, setLastGesture] = useState("none");
   const [lastControl, setLastControl] = useState("none");
   const [lastHistory, setLastHistory] = useState("none");
   const [route, setRoute] = useState<string | null>("projects");
@@ -67,6 +71,15 @@ const WindowProductFixture = ({ wide = false, ...props }: WindowProductFixturePr
       <WindowFrameUI
         aria-label="프로젝트 탐색기 창"
         bounds={wide ? wideBounds : standardBounds}
+        draggable
+        onMoveCommit={(event) =>
+          setLastGesture(`move:${event.bounds.insetInlineStart},${event.bounds.insetBlockStart}`)
+        }
+        onResizeCommit={(event) =>
+          setLastGesture(
+            `resize:${event.direction}:${event.bounds.inlineSize}x${event.bounds.blockSize}`,
+          )
+        }
         resizable
         routeBar={
           <WindowRouteBarUI
@@ -139,8 +152,60 @@ const WindowProductFixture = ({ wide = false, ...props }: WindowProductFixturePr
         <div className="wd-window-story-probes">
           <output aria-label="마지막 창 제어">{lastControl}</output>
           <output aria-label="마지막 경로 동작">{lastHistory}</output>
+          <output aria-label="마지막 창 gesture">{lastGesture}</output>
         </div>
       </WindowFrameUI>
+    </div>
+  );
+};
+
+const FileWindowFixture = ({
+  compact = false,
+  loading = false,
+}: {
+  compact?: boolean;
+  loading?: boolean;
+}) => {
+  const [lastGesture, setLastGesture] = useState("none");
+
+  return (
+    <div className="wd-window-story-file-stage">
+      <div className="wd-window-story-stage" data-testid="file-window-containing-block">
+        <FileWindowUI
+          aria-label="React 문서 창"
+          bounds={compact ? { ...standardBounds, inlineSize: 480 } : standardBounds}
+          draggable
+          onMoveCommit={(event) =>
+            setLastGesture(`move:${event.bounds.insetInlineStart},${event.bounds.insetBlockStart}`)
+          }
+          onResizeCommit={(event) =>
+            setLastGesture(
+              `resize:${event.direction}:${event.bounds.inlineSize}x${event.bounds.blockSize}`,
+            )
+          }
+          resizable
+          routeBarProps={{ "aria-label": "문서 경로", backDisabled: false, forwardDisabled: true }}
+          routeInputProps={{
+            defaultInputValue: "React Server Components 정리",
+            label: "현재 문서 경로",
+            options: routeOptions,
+          }}
+          title="React Server Components 정리"
+          viewportProps={{ "aria-label": "파일 본문", loading }}
+        >
+          <article className="wd-window-story-file-content">
+            <h1>React Server Components 정리</h1>
+            {Array.from({ length: 12 }, (_, index) => (
+              <p key={index}>
+                서버에서 렌더링한 컴포넌트 결과와 브라우저 상호작용 경계를 분리하면 전송량과 초기
+                실행 비용을 함께 줄일 수 있습니다. 이 문장은 FileViewport의 스크롤과 텍스트 선택
+                계약을 검증하기 위한 결정적 fixture입니다.
+              </p>
+            ))}
+          </article>
+        </FileWindowUI>
+      </div>
+      <output aria-label="마지막 File Window gesture">{lastGesture}</output>
     </div>
   );
 };
@@ -150,6 +215,7 @@ const meta = {
   component: WindowFrameUI,
   subcomponents: {
     Controls: WindowControlsUI,
+    FileWindow: FileWindowUI,
     RouteBar: WindowRouteBarUI,
     RouteInput: RouteInputUI,
     Tab: WindowTabUI,
@@ -161,7 +227,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇을 제공하나요?\nWindow family는 Frame, TitleBar, Tab, Controls, RouteBar, RouteInput과 TagInput을 실제 Component로 조합합니다. family-local resize handles도 Frame 안에서 pointer hit area를 제공합니다.\n\n### 제품에서는 어디에 쓰나요?\n`Product Reference — Folder Window`는 현재 제품에 있는 (`Existing reference`) Windows 탐색기형 Folder Window를 작은 결정적 fixture로 재현합니다. IconButtonUI는 창·history icon action을, ComboboxUI는 경로 후보 검색을, SelectUI는 태그 단일 선택을 담당합니다.\n\n### 책임 범위\n이 family는 chrome, geometry, visual state와 ID-free presentation event만 소유합니다. Session identity, route 실행, tag filtering, drag/resize lifecycle, stacking, persistence와 transition commit은 Shell 또는 사용하는 제품 기능이 소유합니다.",
+          "### 무엇을 제공하나요?\nWindow family는 Folder/File 공용 Frame, TitleBar, Tab, Controls, RouteBar와 UI-local pointer move/resize를 제공합니다. FileWindow는 warm chrome과 FileViewport loading·scroll·selection을 완성합니다.\n\n### 제품에서는 어디에 쓰나요?\n`Product Reference — Folder Window`와 `Product Reference — File Window`는 현재 제품의 두 결과를 구분해 보여 줍니다. IconButtonUI는 창·history action을, ComboboxUI는 route 후보 검색을, SelectUI는 Folder tag 선택을 담당합니다.\n\n### 책임 범위\n이 family는 pointer capture 중 transient bounds를 계산하고 완료 geometry를 presentation callback으로 보고합니다. Session identity, stacking, persistence, route policy와 실제 Content/Notion renderer는 headless 또는 Application이 소유합니다.",
       },
     },
     layout: "centered",
@@ -174,6 +240,22 @@ type Story = StoryObj<typeof meta>;
 
 const getFrame = (canvasElement: HTMLElement) =>
   within(canvasElement).getByRole("region", { name: "프로젝트 탐색기 창" });
+
+const toBrowserPoint = (element: HTMLElement, point: { x: number; y: number }) => {
+  let currentDocument = element.ownerDocument;
+  let frameElement = currentDocument.defaultView?.frameElement;
+  let { x, y } = point;
+
+  while (frameElement !== null && frameElement !== undefined) {
+    const frameRect = frameElement.getBoundingClientRect();
+    x += frameRect.left;
+    y += frameRect.top;
+    currentDocument = frameElement.ownerDocument;
+    frameElement = currentDocument.defaultView?.frameElement;
+  }
+
+  return { x, y };
+};
 
 const expectBaseGeometry = async (canvasElement: HTMLElement) => {
   const frame = getFrame(canvasElement);
@@ -243,6 +325,122 @@ export const Dragging: Story = {
     await expect(frame).toHaveAttribute("data-dragging", "true");
     await expect(getComputedStyle(frame).transitionDuration).toBe("0s");
     await expectBaseGeometry(canvasElement);
+  },
+};
+
+export const PointerMove: Story = {
+  name: "Contract — pointer capture move commit",
+  render: () => <WindowProductFixture />,
+  play: async ({ canvasElement }) => {
+    const { cdp } = await import("vitest/browser");
+    const session = cdp();
+    const frame = getFrame(canvasElement);
+    const canvas = within(frame);
+    const titlebar = canvas.getByText("Projects — Window design system").closest("header")!;
+    let capturedDuringMove = false;
+    let pointerId = -1;
+    titlebar.addEventListener(
+      "pointerdown",
+      (event) => {
+        pointerId = event.pointerId;
+      },
+      { once: true },
+    );
+    titlebar.addEventListener("pointermove", (event) => {
+      capturedDuringMove = titlebar.hasPointerCapture(event.pointerId);
+    });
+    const titleRect = titlebar.getBoundingClientRect();
+    const titleStart = toBrowserPoint(titlebar, {
+      x: titleRect.left + 80,
+      y: titleRect.top + 15,
+    });
+    await session.send("Input.dispatchMouseEvent", {
+      type: "mouseMoved",
+      ...titleStart,
+    });
+    await session.send("Input.dispatchMouseEvent", {
+      button: "left",
+      clickCount: 1,
+      type: "mousePressed",
+      ...titleStart,
+    });
+    await waitFor(() => expect(titlebar.hasPointerCapture(pointerId)).toBe(true));
+    await session.send("Input.dispatchMouseEvent", {
+      button: "left",
+      buttons: 1,
+      type: "mouseMoved",
+      x: titleStart.x + 32,
+      y: titleStart.y + 24,
+    });
+    await session.send("Input.dispatchMouseEvent", {
+      button: "left",
+      clickCount: 1,
+      type: "mouseReleased",
+      x: titleStart.x + 32,
+      y: titleStart.y + 24,
+    });
+    await expect(pointerId).toBeGreaterThanOrEqual(0);
+    await expect(capturedDuringMove).toBe(true);
+    await expect(titlebar.hasPointerCapture(pointerId)).toBe(false);
+    await expect(frame).toHaveAttribute("data-gesture", "none");
+    await expect(canvas.getByRole("status", { name: "마지막 창 gesture" })).toHaveTextContent(
+      /^move:/,
+    );
+    await expect(
+      Number.parseFloat(frame.style.getPropertyValue("--wd-window-frame-inset-inline-start")),
+    ).toBeGreaterThan(32);
+    await expect(
+      Number.parseFloat(frame.style.getPropertyValue("--wd-window-frame-inset-block-start")),
+    ).toBeGreaterThan(32);
+  },
+};
+
+export const PointerResize: Story = {
+  name: "Contract — pointer capture resize direction and commit",
+  render: () => (
+    <WindowProductFixture
+      bounds={{
+        ...standardBounds,
+        blockSize: 200,
+        insetBlockStart: 72,
+      }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const { userEvent: browserUserEvent } = await import("vitest/browser");
+    const frame = getFrame(canvasElement);
+    const stage = within(canvasElement).getByTestId("window-containing-block");
+    const south = frame.querySelector<HTMLElement>('[data-direction="s"]')!;
+    await expect(getComputedStyle(south.parentElement!).display).toBe("block");
+    await waitFor(() => expect(frame.getBoundingClientRect().height).toBe(200));
+    let pointerId = -1;
+    let capturedDuringMove = false;
+    south.addEventListener(
+      "pointerdown",
+      (event) => {
+        pointerId = event.pointerId;
+      },
+      { once: true },
+    );
+    south.addEventListener("pointermove", (event) => {
+      capturedDuringMove = south.hasPointerCapture(event.pointerId);
+    });
+    await browserUserEvent.dragAndDrop(south, stage, {
+      sourcePosition: { x: 80, y: 2 },
+      targetPosition: { x: 112, y: 300 },
+    });
+    await expect(pointerId).toBeGreaterThanOrEqual(0);
+    await expect(capturedDuringMove).toBe(true);
+    await expect(south.hasPointerCapture(pointerId)).toBe(false);
+    await expect(
+      within(frame).getByRole("status", { name: "마지막 창 gesture" }),
+    ).toHaveTextContent(/^resize:s:/);
+    await expect(
+      Number.parseFloat(frame.style.getPropertyValue("--wd-window-frame-inline-size")),
+    ).toBe(640);
+    await expect(
+      Number.parseFloat(frame.style.getPropertyValue("--wd-window-frame-block-size")),
+    ).toBeGreaterThan(200);
   },
 };
 
@@ -373,5 +571,79 @@ export const FolderWindowProductReference: Story = {
     await expect(canvas.getByRole("status", { name: "마지막 경로 동작" })).toHaveTextContent(
       "tag:writing",
     );
+  },
+};
+
+export const FileWindowLoading: Story = {
+  name: "Contract — File Window loading",
+  render: () => <FileWindowFixture loading />,
+  play: async ({ canvasElement }) => {
+    const frame = within(canvasElement).getByRole("region", { name: "React 문서 창" });
+    const viewport = within(frame).getByLabelText("파일 본문");
+    const loading = within(viewport).getByRole("status", { name: "파일 불러오는 중" });
+
+    await expect(frame).toHaveAttribute("data-variant", "file");
+    await expect(viewport).toHaveAttribute("aria-busy", "true");
+    await expect(loading).toBeVisible();
+    await expect(getComputedStyle(loading.querySelector("svg")!).width).toBe("32px");
+    await expect(within(viewport).queryByRole("article")).toBeNull();
+  },
+};
+
+export const FileWindowProductReference: Story = {
+  name: "Product Reference — File Window",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Existing File Window의 warm chrome, pill route field와 Application content slot을 보여 줍니다. FileViewport가 loading 대체 visual, full-height vertical scroll과 text selection을 소유하고 실제 Content/Notion renderer는 주입하지 않습니다.",
+      },
+    },
+  },
+  render: () => <FileWindowFixture />,
+  play: async ({ canvasElement }) => {
+    const frame = within(canvasElement).getByRole("region", { name: "React 문서 창" });
+    const viewport = within(frame).getByLabelText("파일 본문");
+    const titlebar = frame.querySelector<HTMLElement>(".wd-window-title-bar-ui")!;
+    const route = within(frame).getByRole("combobox", { name: "현재 문서 경로" });
+    const firstParagraph = within(viewport).getAllByText(/서버에서 렌더링한 컴포넌트/)[0];
+
+    await expect(frame).toHaveAttribute("data-variant", "file");
+    await expect(getComputedStyle(titlebar).backgroundColor).toBe("rgba(247, 221, 208, 0.9)");
+    await expect(route.closest(".wd-route-input-ui")).toHaveAttribute("data-shape", "pill");
+    await expect(viewport).toHaveAttribute("aria-busy", "false");
+    await expect(getComputedStyle(viewport).userSelect).toBe("text");
+    await expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
+    viewport.scrollTop = 160;
+    viewport.dispatchEvent(new Event("scroll"));
+    await expect(viewport.scrollTop).toBe(160);
+
+    const selection = canvasElement.ownerDocument.defaultView!.getSelection()!;
+    const range = canvasElement.ownerDocument.createRange();
+    range.selectNodeContents(firstParagraph);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    await expect(selection.toString()).toContain("서버에서 렌더링한 컴포넌트");
+    selection.removeAllRanges();
+  },
+};
+
+export const MobileWindowControls: Story = {
+  name: "Contract — mobile chrome reduction",
+  render: () => <FileWindowFixture compact />,
+  play: async ({ canvasElement }) => {
+    const frame = within(canvasElement).getByRole("region", { name: "React 문서 창" });
+    await waitFor(() =>
+      expect(getComputedStyle(frame.querySelector(".wd-window-resize-handles-ui")!).display).toBe(
+        "none",
+      ),
+    );
+    await expect(
+      getComputedStyle(frame.querySelector<HTMLElement>('[data-control="minimize"]')!).display,
+    ).toBe("none");
+    await expect(
+      getComputedStyle(frame.querySelector<HTMLElement>('[data-control="maximize"]')!).display,
+    ).toBe("none");
+    await expect(within(frame).getByRole("button", { name: "닫기" })).toBeVisible();
   },
 };

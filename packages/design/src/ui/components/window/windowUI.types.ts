@@ -14,12 +14,35 @@ export interface WindowFrameUIBounds {
   insetInlineStart?: number;
 }
 
+/** pointer interaction이 완료될 때 보고하는 완전한 pixel geometry다. */
+export interface WindowFrameUICommittedBounds {
+  blockSize: number;
+  inlineSize: number;
+  insetBlockStart: number;
+  insetInlineStart: number;
+}
+
+/** Folder와 File이 공유 chrome 안에서 구분하는 presentation variant다. */
+export type WindowFrameUIVariant = "file" | "folder";
+
+/** titlebar move가 끝났을 때 보고하는 presentation commit payload다. */
+export interface WindowMoveUICommitEvent {
+  bounds: WindowFrameUICommittedBounds;
+}
+
+/** edge/corner resize가 끝났을 때 보고하는 presentation commit payload다. */
+export interface WindowResizeUICommitEvent extends WindowMoveUICommitEvent {
+  direction: WindowResizeUIDirection;
+}
+
 /** 창 surface의 display state, slot과 native section props를 정의한다. */
 export interface WindowFrameUIProps extends ComponentPropsWithRef<"section"> {
   /** foreground/background 표현이며 기본값은 active다. */
   activity?: WindowFrameUIActivity;
   /** 계산이 끝난 pixel geometry만 CSS custom property로 전달한다. */
   bounds?: WindowFrameUIBounds;
+  /** titlebar primary pointer drag로 transient 위치를 계산한다. */
+  draggable?: boolean;
   /** 창 본문 위에 배치할 titlebar slot이다. */
   titleBar?: ReactNode;
   /** titlebar와 본문 사이에 배치할 routebar slot이다. */
@@ -36,6 +59,16 @@ export interface WindowFrameUIProps extends ComponentPropsWithRef<"section"> {
   resizeDisabled?: boolean;
   /** ID나 좌표 없이 시작한 resize 방향만 보고한다. */
   onResizeStart?: (event: WindowResizeUIEvent) => void;
+  /** move pointer capture가 자연스럽게 끝났을 때 최종 geometry만 보고한다. */
+  onMoveCommit?: (event: WindowMoveUICommitEvent) => void;
+  /** resize pointer capture가 자연스럽게 끝났을 때 방향과 최종 geometry만 보고한다. */
+  onResizeCommit?: (event: WindowResizeUICommitEvent) => void;
+  /** resize 중 유지할 최소 block size이며 기본값은 200px이다. */
+  minimumBlockSize?: number;
+  /** resize 중 유지할 최소 inline size이며 기본값은 320px이다. */
+  minimumInlineSize?: number;
+  /** Folder/File chrome 색과 route field shape을 구분하며 기본값은 folder다. */
+  variant?: WindowFrameUIVariant;
 }
 
 /** 30px titlebar의 project-owned slots와 native header props를 정의한다. */
@@ -281,4 +314,33 @@ export interface WindowResizeHandlesUIProps extends ComponentPropsWithRef<"div">
   disabled?: boolean;
   /** pointer로 시작한 resize 방향을 ID나 좌표 없이 보고한다. */
   onResizeStart?: (event: WindowResizeUIEvent) => void;
+}
+
+/** Application이 제공하는 File content slot과 loading presentation을 정의한다. */
+export interface FileViewportUIProps extends ComponentPropsWithRef<"div"> {
+  /** content 대신 중앙 32px progress indicator를 표시한다. */
+  loading?: boolean;
+  /** progress indicator의 접근 가능한 이름이다. */
+  loadingLabel?: string;
+}
+
+/** 완성된 File Window chrome과 유일한 generic File content slot을 정의한다. */
+export interface FileWindowUIProps extends Omit<
+  WindowFrameUIProps,
+  "children" | "routeBar" | "title" | "titleBar" | "variant"
+> {
+  /** 실제 Content renderer처럼 Application이 제공하는 유일한 generic slot이다. */
+  children?: ReactNode;
+  /** WindowControlsUI에 전달할 presentation props다. */
+  controlsProps?: WindowControlsUIProps;
+  /** title 왼쪽에 표시할 장식 icon이다. */
+  icon?: ReactNode;
+  /** WindowRouteBarUI에 전달할 history presentation props다. */
+  routeBarProps?: Omit<WindowRouteBarUIProps, "children" | "tagInput">;
+  /** File pill route field에 전달할 presentation props다. */
+  routeInputProps: Omit<RouteInputUIProps, "shape">;
+  /** File titlebar에 표시할 renderable title이다. */
+  title: ReactNode;
+  /** FileViewportUI에 전달할 loading, scroll과 native div props다. */
+  viewportProps?: Omit<FileViewportUIProps, "children">;
 }

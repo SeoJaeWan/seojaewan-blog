@@ -1,0 +1,45 @@
+.wd-window-story-stage {
+  block-size: 424px;
+  inline-size: 704px;
+  position: relative;
+}
+
+.wd-window-story-stage[data-wide="true"] {
+  block-size: 544px;
+  inline-size: 904px;
+}
+
+.wd-window-story-probes {
+  background-color: var(--wd-color-surface-window);
+  border-block-start: 1px solid var(--wd-color-border-default);
+  display: flex;
+  font-size: 11px;
+  gap: var(--wd-reference-spacing-5);
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: var(--wd-reference-spacing-1) var(--wd-reference-spacing-3);
+  position: absolute;
+}
+
+.wd-window-story-file-stage {
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-3);
+}
+
+.wd-window-story-file-content {
+  box-sizing: border-box;
+  min-block-size: 760px;
+  padding: var(--wd-reference-spacing-6);
+}
+
+.wd-window-story-file-content > h1 {
+  font-size: 24px;
+  margin-block: 0 var(--wd-reference-spacing-4);
+}
+
+.wd-window-story-file-content > p {
+  line-height: 1.7;
+  margin-block: 0 var(--wd-reference-spacing-5);
+}

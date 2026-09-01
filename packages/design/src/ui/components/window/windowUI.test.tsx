@@ -5,6 +5,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
 import {
+  FileViewportUI,
+  FileWindowUI,
   RouteInputUI,
   TagInputUI,
   WindowControlsUI,
@@ -67,8 +69,10 @@ describe("WindowFrameUI", () => {
     expect(frame.getAttribute("data-activity")).toBe("active");
     expect(frame.getAttribute("data-dragging")).toBe("false");
     expect(frame.getAttribute("data-fullscreen")).toBe("false");
+    expect(frame.getAttribute("data-gesture")).toBe("none");
     expect(frame.getAttribute("data-motion")).toBe("idle");
     expect(frame.getAttribute("data-resizable")).toBe("false");
+    expect(frame.getAttribute("data-variant")).toBe("folder");
   });
 
   it("family-local resize handles가 ID 없이 시작 방향을 보고한다", () => {
@@ -83,6 +87,68 @@ describe("WindowFrameUI", () => {
     expect(frame.querySelectorAll(".wd-window-resize-handles-ui__handle")).toHaveLength(8);
     southeastHandle?.dispatchEvent(new Event("pointerdown", { bubbles: true }));
     expect(onResizeStart).toHaveBeenCalledWith({ direction: "se" });
+  });
+});
+
+describe("FileViewportUI", () => {
+  it("Application content를 selectable scroll viewport에 그대로 렌더한다", () => {
+    const ref = createRef<HTMLDivElement>();
+    const view = renderUITest(
+      <FileViewportUI aria-label="파일 본문" className="document-body" ref={ref}>
+        <article>Application 문서</article>
+      </FileViewportUI>,
+    );
+    const viewport = view.getByLabelText("파일 본문");
+
+    expect(ref.current).toBe(viewport);
+    expect(viewport.className).toContain("wd-file-viewport-ui");
+    expect(viewport.className).toContain("document-body");
+    expect(viewport.getAttribute("data-loading")).toBe("false");
+    expect(viewport.getAttribute("aria-busy")).toBe("false");
+    expect(view.getByRole("article").textContent).toBe("Application 문서");
+  });
+
+  it("loading 중에는 content 대신 접근 가능한 progress visual을 표시한다", () => {
+    const view = renderUITest(
+      <FileViewportUI loading loadingLabel="문서 준비 중">
+        <article>아직 표시하지 않음</article>
+      </FileViewportUI>,
+    );
+
+    expect(view.getByRole("status", { name: "문서 준비 중" })).toBeTruthy();
+    expect(view.queryByRole("article")).toBeNull();
+  });
+});
+
+describe("FileWindowUI", () => {
+  it("Folder와 다른 File chrome과 유일한 content slot을 완성해 제공한다", () => {
+    const view = renderUITest(
+      <FileWindowUI
+        aria-label="문서 창"
+        routeBarProps={{ "aria-label": "문서 경로" }}
+        routeInputProps={{
+          label: "현재 문서",
+          options: [{ label: "소개", value: "intro" }],
+        }}
+        title="소개"
+        viewportProps={{ "aria-label": "문서 내용" }}
+      >
+        <article>Application renderer</article>
+      </FileWindowUI>,
+    );
+    const frame = view.getByRole("region", { name: "문서 창" });
+
+    expect(frame.getAttribute("data-variant")).toBe("file");
+    expect(view.getByText("소개")).toBeTruthy();
+    expect(view.getByRole("navigation", { name: "문서 경로" })).toBeTruthy();
+    expect(
+      view
+        .getByRole("combobox", { name: "현재 문서" })
+        .closest(".wd-route-input-ui")
+        ?.getAttribute("data-shape"),
+    ).toBe("pill");
+    expect(view.getByLabelText("문서 내용").contains(view.getByRole("article"))).toBe(true);
+    expect(frame.querySelector(".wd-tag-input-ui")).toBeNull();
   });
 });
 
