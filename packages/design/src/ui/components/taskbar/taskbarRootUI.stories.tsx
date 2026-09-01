@@ -9,13 +9,14 @@ import {
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
-import { ButtonUI, PopoverUI } from "../../primitives";
+import { ButtonUI } from "../../primitives";
 import { FolderFileCardUI, FolderFileGridUI } from "../folder";
 import { WindowFrameUI, WindowTabUI, WindowTitleBarUI } from "../window";
 import {
   TaskbarAppListUI,
   TaskbarClockUI,
   TaskbarItemUI,
+  TaskbarPanelUI,
   TaskbarPreviewUI,
   TaskbarRootUI,
   TaskbarSearchUI,
@@ -38,7 +39,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "TaskbarRootUI, StartButtonUI, SearchUI, AppListUI, ItemUI와 ClockUI는 Windows taskbar의 실제 visual roles를 제공합니다. Start와 Item은 IconButtonUI, Search는 InputUI를 사용합니다. Product Reference의 Start, Search와 hover preview anchor는 PopoverUI가 맡고 WindowPanelUI와 TaskbarPreviewUI는 caller content를 표시하는 surface에 머뭅니다. 검색 실행, app/session 계산, hover 지연과 window activation은 Taskbar 기능 또는 Shell이 맡습니다.",
+          "TaskbarRootUI는 private single-active scope와 portal layer를 만들고 TaskbarPanelUI가 production PopoverUI를 소비해 Start, Search와 hover preview의 focus·dismiss·placement·presence를 완성합니다. WindowPanelUI와 TaskbarPreviewUI는 controlled presentation surface이며 검색 실행, app/session 계산과 window activation은 제품 binding이 맡습니다.",
       },
     },
   },
@@ -65,131 +66,117 @@ const ProductTaskbar = () => {
       </section>
 
       <TaskbarRootUI aria-label="작업 표시줄" data-testid="product-taskbar-root">
-        <PopoverUI open={startOpen} onOpenChange={setStartOpen}>
-          <PopoverUI.Trigger render={<TaskbarStartButtonUI selected={startOpen} />} />
-          <PopoverUI.Content
-            align="start"
-            className="wd-taskbar-product-reference__surface-anchor"
-            side="top"
-            sideOffset={8}
-          >
-            <PopoverUI.Title className="wd-taskbar-product-reference__sr-only">
-              시작 메뉴
-            </PopoverUI.Title>
-            <WindowPanelUI aria-label="시작 panel visual" data-testid="product-window-panel">
-              <TaskbarSearchUI aria-label="시작 메뉴 검색" placeholder="앱 및 문서 검색" />
-              <div className="wd-taskbar-product-reference__panel-header">
-                <strong>고정됨</strong>
-                <ButtonUI>모두</ButtonUI>
-              </div>
-              <div className="wd-taskbar-product-reference__pinned-grid">
-                <ButtonUI>
-                  <Folder20Regular aria-hidden="true" />
-                  파일 탐색기
-                </ButtonUI>
-                <ButtonUI>
-                  <Code20Regular aria-hidden="true" />
-                  개발 노트
-                </ButtonUI>
-                <ButtonUI>
-                  <Settings20Regular aria-hidden="true" />
-                  설정
-                </ButtonUI>
-              </div>
-              <p className="wd-taskbar-product-reference__panel-note">
-                panel data와 app 실행은 이 표시 component 밖에서 연결됩니다.
-              </p>
-            </WindowPanelUI>
-          </PopoverUI.Content>
-        </PopoverUI>
-
-        <PopoverUI open={searchOpen} onOpenChange={setSearchOpen}>
-          <PopoverUI.Trigger
-            render={
-              <ButtonUI className="wd-taskbar-search-trigger-ui">
-                <span>{searchValue || "검색"}</span>
-              </ButtonUI>
-            }
-          />
-          <PopoverUI.Content
-            align="start"
-            aria-label="검색 추천"
-            className="wd-taskbar-product-reference__search-results"
-            side="top"
-          >
-            <PopoverUI.Title>검색 추천</PopoverUI.Title>
-            <PopoverUI.Description>
-              {searchValue ? `“${searchValue}”의 표시 예시` : "앱, 문서 및 설정을 찾아보세요."}
-            </PopoverUI.Description>
-            <TaskbarSearchUI
-              aria-label="작업 표시줄 검색"
-              onChange={(event) => setSearchValue(event.currentTarget.value)}
-              placeholder="앱, 문서 및 설정 검색"
-              value={searchValue}
-            />
-            <div className="wd-taskbar-product-reference__search-row">
-              <Document20Regular aria-hidden="true" />
-              <span>{searchValue || "최근 문서"}</span>
+        <TaskbarPanelUI
+          align="start"
+          className="wd-taskbar-product-reference__surface-anchor"
+          label="시작 메뉴"
+          onOpenChange={setStartOpen}
+          open={startOpen}
+          side="top"
+          sideOffset={8}
+          trigger={<TaskbarStartButtonUI selected={startOpen} />}
+        >
+          <WindowPanelUI aria-label="시작 panel visual" data-testid="product-window-panel">
+            <TaskbarSearchUI aria-label="시작 메뉴 검색" placeholder="앱 및 문서 검색" />
+            <div className="wd-taskbar-product-reference__panel-header">
+              <strong>고정됨</strong>
+              <ButtonUI>모두</ButtonUI>
             </div>
-          </PopoverUI.Content>
-        </PopoverUI>
+            <div className="wd-taskbar-product-reference__pinned-grid">
+              <ButtonUI>
+                <Folder20Regular aria-hidden="true" />
+                파일 탐색기
+              </ButtonUI>
+              <ButtonUI>
+                <Code20Regular aria-hidden="true" />
+                개발 노트
+              </ButtonUI>
+              <ButtonUI>
+                <Settings20Regular aria-hidden="true" />
+                설정
+              </ButtonUI>
+            </div>
+            <p className="wd-taskbar-product-reference__panel-note">
+              panel data와 app 실행은 이 표시 component 밖에서 연결됩니다.
+            </p>
+          </WindowPanelUI>
+        </TaskbarPanelUI>
+
+        <TaskbarPanelUI
+          align="start"
+          className="wd-taskbar-product-reference__search-results"
+          label="검색 추천"
+          onOpenChange={setSearchOpen}
+          open={searchOpen}
+          side="top"
+          trigger={
+            <ButtonUI className="wd-taskbar-search-trigger-ui">
+              <span>{searchValue || "검색"}</span>
+            </ButtonUI>
+          }
+        >
+          <p>{searchValue ? `“${searchValue}”의 표시 예시` : "앱, 문서 및 설정을 찾아보세요."}</p>
+          <TaskbarSearchUI
+            aria-label="작업 표시줄 검색"
+            onChange={(event) => setSearchValue(event.currentTarget.value)}
+            placeholder="앱, 문서 및 설정 검색"
+            value={searchValue}
+          />
+          <div className="wd-taskbar-product-reference__search-row">
+            <Document20Regular aria-hidden="true" />
+            <span>{searchValue || "최근 문서"}</span>
+          </div>
+        </TaskbarPanelUI>
 
         <TaskbarAppListUI aria-label="앱 목록" role="group">
           <TaskbarItemUI icon={<Settings20Regular />} label="대기 앱" />
-          <PopoverUI open={previewOpen} onOpenChange={setPreviewOpen}>
-            <PopoverUI.Trigger
-              onPointerEnter={() => setPreviewOpen(true)}
-              onPointerLeave={() => setPreviewOpen(false)}
-              render={
-                <TaskbarItemUI
-                  data-testid="product-running-item"
-                  icon={<Folder20Regular />}
-                  label="실행 중인 파일 탐색기"
-                  onAction={onTaskbarAction}
-                  state="running"
-                />
+          <TaskbarPanelUI
+            className="wd-taskbar-product-reference__surface-anchor"
+            initialFocus={false}
+            label="파일 탐색기 미리 보기"
+            onOpenChange={setPreviewOpen}
+            open={previewOpen}
+            side="top"
+            sideOffset={8}
+            trigger={
+              <TaskbarItemUI
+                data-testid="product-running-item"
+                icon={<Folder20Regular />}
+                label="실행 중인 파일 탐색기"
+                onAction={onTaskbarAction}
+                onPointerEnter={() => setPreviewOpen(true)}
+                onPointerLeave={() => setPreviewOpen(false)}
+                state="running"
+              />
+            }
+          >
+            <TaskbarPreviewUI
+              aria-label="파일 탐색기 preview visual"
+              preview={
+                <WindowFrameUI
+                  aria-label="파일 탐색기 preview 창"
+                  bounds={{ blockSize: 126, inlineSize: 224 }}
+                  className="wd-taskbar-product-reference__preview-window"
+                  titleBar={
+                    <WindowTitleBarUI>
+                      <WindowTabUI
+                        icon={<Folder20Regular aria-hidden="true" />}
+                        titleContent="파일 탐색기"
+                      />
+                    </WindowTitleBarUI>
+                  }
+                >
+                  <FolderFileGridUI aria-label="미리 보기 파일" cardSize="small">
+                    <FolderFileCardUI
+                      cover={<Document20Regular aria-hidden="true" />}
+                      title="문서"
+                    />
+                    <FolderFileCardUI cover={<Folder20Regular aria-hidden="true" />} title="사진" />
+                  </FolderFileGridUI>
+                </WindowFrameUI>
               }
             />
-            <PopoverUI.Content
-              className="wd-taskbar-product-reference__surface-anchor"
-              initialFocus={false}
-              side="top"
-              sideOffset={8}
-            >
-              <PopoverUI.Title className="wd-taskbar-product-reference__sr-only">
-                파일 탐색기 미리 보기
-              </PopoverUI.Title>
-              <TaskbarPreviewUI
-                aria-label="파일 탐색기 preview visual"
-                preview={
-                  <WindowFrameUI
-                    aria-label="파일 탐색기 preview 창"
-                    bounds={{ blockSize: 126, inlineSize: 224 }}
-                    className="wd-taskbar-product-reference__preview-window"
-                    titleBar={
-                      <WindowTitleBarUI>
-                        <WindowTabUI
-                          icon={<Folder20Regular aria-hidden="true" />}
-                          titleContent="파일 탐색기"
-                        />
-                      </WindowTitleBarUI>
-                    }
-                  >
-                    <FolderFileGridUI aria-label="미리 보기 파일" cardSize="small">
-                      <FolderFileCardUI
-                        cover={<Document20Regular aria-hidden="true" />}
-                        title="문서"
-                      />
-                      <FolderFileCardUI
-                        cover={<Folder20Regular aria-hidden="true" />}
-                        title="사진"
-                      />
-                    </FolderFileGridUI>
-                  </WindowFrameUI>
-                }
-              />
-            </PopoverUI.Content>
-          </PopoverUI>
+          </TaskbarPanelUI>
           <TaskbarItemUI
             data-testid="product-active-item"
             icon={<Code20Regular />}
@@ -228,6 +215,7 @@ export const ProductReference: Story = {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
     const root = canvas.getByRole("navigation", { name: "작업 표시줄" });
+    const desktop = canvas.getByLabelText("Windows desktop");
     const start = canvas.getByRole("button", { name: "시작" });
     const logo = start.querySelector<SVGElement>(".wd-taskbar-start-button-ui__logo");
     const searchTrigger = canvas.getByRole("button", { name: "검색" });
@@ -271,6 +259,12 @@ export const ProductReference: Story = {
           : window.innerWidth;
 
     await expect(startDialog).not.toHaveAttribute("aria-modal", "true");
+    await expect(document.querySelector("[data-taskbar-panel-layer]")?.contains(startDialog)).toBe(
+      true,
+    );
+    await expect(startDialog.closest(".wd-popover-ui__positioner")?.getAttribute("data-side")).toBe(
+      "top",
+    );
     await waitFor(() => expect(panel.getBoundingClientRect().height).toBeCloseTo(600, 0));
     await expect(panel.getBoundingClientRect().width).toBeCloseTo(expectedWidth, 0);
     await expect(page.getByRole("searchbox", { name: "시작 메뉴 검색" })).toHaveFocus();
@@ -279,17 +273,20 @@ export const ProductReference: Story = {
     await waitFor(() => expect(page.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
     await expect(start).toHaveFocus();
 
+    await userEvent.click(start);
+    await page.findByRole("dialog", { name: "시작 메뉴" });
     await userEvent.click(searchTrigger);
     const searchDialog = await page.findByRole("dialog", { name: "검색 추천" });
     const search = page.getByRole("searchbox", { name: "작업 표시줄 검색" });
+    await waitFor(() => expect(page.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
+    await expect(page.getAllByRole("dialog")).toHaveLength(1);
     await expect(searchDialog).not.toHaveAttribute("aria-modal", "true");
     await expect(search).toHaveFocus();
     await userEvent.type(search, "문서");
     await expect(search).toHaveValue("문서");
     await expect(searchDialog).toHaveTextContent("“문서”의 표시 예시");
-    await userEvent.keyboard("{Escape}");
+    await userEvent.click(desktop);
     await waitFor(() => expect(page.queryByRole("dialog", { name: "검색 추천" })).toBeNull());
-    await expect(searchTrigger).toHaveFocus();
 
     await userEvent.hover(running);
     const previewDialog = await page.findByRole("dialog", { name: "파일 탐색기 미리 보기" });

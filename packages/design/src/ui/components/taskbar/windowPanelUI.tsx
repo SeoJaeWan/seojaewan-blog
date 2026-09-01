@@ -7,7 +7,7 @@ import "./taskbarUI.css";
 /**
  * taskbar에서 열리는 600px Windows panel의 surface와 transition 상태를 표현한다.
  *
- * 검색, view, product action, 위치, portal과 lifecycle 전환은 caller가 slot으로 조합한다.
+ * TaskbarPanelUI가 위치, portal과 lifecycle을 소유하고 검색·view presentation은 Taskbar 제품 조합이 전달한다.
  */
 export const WindowPanelUI = ({
   className,

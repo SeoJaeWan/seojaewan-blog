@@ -23,7 +23,7 @@ const formatDate = (value: Date, timeZone: string) =>
 /**
  * caller가 주입한 Date를 taskbar의 시간과 날짜 visual로 표현한다.
  *
- * 현재 시각의 생성과 tick 주기는 Application 또는 Shell이 소유한다.
+ * 현재 시각의 생성과 tick 주기는 Application composition이 소유한다.
  */
 export const TaskbarClockUI = ({
   "aria-label": ariaLabel = "날짜 및 시간",

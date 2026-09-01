@@ -18,6 +18,8 @@
   --wd-taskbar-root-backdrop-saturation: 1.15;
   --wd-taskbar-root-font-family: var(--wd-font-family-sans);
   --wd-taskbar-root-padding-block: var(--wd-reference-spacing-1);
+  --wd-taskbar-root-z-index: 2147483647;
+  --wd-taskbar-panel-layer-z-index: 2147483646;
   --wd-taskbar-start-icon-size: 30px;
   --wd-taskbar-search-background-color: rgb(255 255 255 / 0.7);
   --wd-taskbar-search-background-color-hover: rgb(255 255 255 / 0.9);

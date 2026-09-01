@@ -1,12 +1,16 @@
 import { createRef } from "react";
 
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
+import * as taskbarApi from "./index";
 import {
   TaskbarAppListUI,
   TaskbarClockUI,
   TaskbarItemUI,
+  TaskbarPanelContainerUI,
+  TaskbarPanelUI,
   TaskbarPreviewUI,
   TaskbarRootUI,
   TaskbarSearchUI,
@@ -109,6 +113,187 @@ describe("TaskbarRootUI", () => {
     expect(root.getAttribute("data-layout")).toBe("center");
     expect(root.textContent).toBe("항목 slot");
     expect(ref.current).toBe(root);
+  });
+
+  it("private scope의 floating layer를 document portal에 한 번만 만든다", async () => {
+    const view = renderUITest(
+      <TaskbarRootUI aria-label="작업 표시줄">
+        <TaskbarPanelUI label="시작 메뉴" trigger={<TaskbarStartButtonUI />}>
+          <WindowPanelUI>시작 내용</WindowPanelUI>
+        </TaskbarPanelUI>
+      </TaskbarRootUI>,
+    );
+
+    await waitFor(() =>
+      expect(document.querySelectorAll("[data-taskbar-panel-layer]")).toHaveLength(1),
+    );
+    const layer = document.querySelector("[data-taskbar-panel-layer]");
+
+    expect(layer).not.toBeNull();
+    expect(view.container.contains(layer)).toBe(false);
+  });
+});
+
+describe("TaskbarPanelUI lifecycle", () => {
+  it("private widget Context와 hook을 family public API에 노출하지 않는다", () => {
+    expect(taskbarApi).not.toHaveProperty("TaskbarWidgetContext");
+    expect(taskbarApi).not.toHaveProperty("useTaskbarWidgetContext");
+  });
+
+  it("trigger와 panel을 연결하고 body layer portal, top placement와 initial focus를 제공한다", async () => {
+    const onOpenChange = vi.fn();
+    const view = renderUITest(
+      <TaskbarRootUI aria-label="작업 표시줄">
+        <TaskbarPanelUI
+          align="start"
+          label="시작 메뉴"
+          onOpenChange={onOpenChange}
+          side="top"
+          trigger={<TaskbarStartButtonUI />}
+        >
+          <WindowPanelUI>
+            <TaskbarSearchUI aria-label="시작 메뉴 검색" />
+          </WindowPanelUI>
+        </TaskbarPanelUI>
+      </TaskbarRootUI>,
+    );
+    const trigger = view.getByRole("button", { name: "시작" });
+
+    fireEvent.click(trigger);
+
+    const panel = await screen.findByRole("dialog", { name: "시작 메뉴" });
+    const layer = document.querySelector("[data-taskbar-panel-layer]");
+    const positioner = panel.closest(".wd-popover-ui__positioner");
+
+    expect(layer?.contains(panel)).toBe(true);
+    expect(view.container.contains(panel)).toBe(false);
+    expect(panel.className).toContain("wd-taskbar-panel-ui");
+    expect(panel.querySelector(".wd-taskbar-panel-container-ui")).not.toBeNull();
+    expect(positioner?.getAttribute("data-side")).toBe("top");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("aria-controls")).toBe(panel.id);
+    expect(document.activeElement).toBe(screen.getByRole("searchbox", { name: "시작 메뉴 검색" }));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true, { reason: "trigger-press" });
+  });
+
+  it("Escape와 outside press로 닫고 trigger focus를 복원한다", async () => {
+    const onOpenChange = vi.fn();
+    const view = renderUITest(
+      <>
+        <button type="button">바깥 control</button>
+        <TaskbarRootUI aria-label="작업 표시줄">
+          <TaskbarPanelUI
+            label="시작 메뉴"
+            onOpenChange={onOpenChange}
+            trigger={<TaskbarStartButtonUI />}
+          >
+            <WindowPanelUI>
+              <button type="button">panel action</button>
+            </WindowPanelUI>
+          </TaskbarPanelUI>
+        </TaskbarRootUI>
+      </>,
+    );
+    const trigger = view.getByRole("button", { name: "시작" });
+    const outside = view.getByRole("button", { name: "바깥 control" });
+
+    fireEvent.click(trigger);
+    expect(await screen.findByRole("dialog", { name: "시작 메뉴" })).not.toBeNull();
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
+    expect(document.activeElement).toBe(trigger);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: "escape-key" });
+
+    fireEvent.click(trigger);
+    expect(await screen.findByRole("dialog", { name: "시작 메뉴" })).not.toBeNull();
+    fireEvent.pointerDown(outside);
+    fireEvent.click(outside);
+
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
+    expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: "outside-press" });
+  });
+
+  it("한 root에서 다음 panel을 열면 이전 panel을 제거해 surface 하나만 유지한다", async () => {
+    const onFirstOpenChange = vi.fn();
+    const view = renderUITest(
+      <TaskbarRootUI aria-label="작업 표시줄">
+        <TaskbarPanelUI
+          label="첫 panel"
+          onOpenChange={onFirstOpenChange}
+          trigger={<TaskbarStartButtonUI icon="1" />}
+        >
+          <WindowPanelUI>첫 내용</WindowPanelUI>
+        </TaskbarPanelUI>
+        <TaskbarPanelUI label="두 번째 panel" trigger={<TaskbarStartButtonUI icon="2" />}>
+          <WindowPanelUI>두 번째 내용</WindowPanelUI>
+        </TaskbarPanelUI>
+      </TaskbarRootUI>,
+    );
+    const [firstTrigger, secondTrigger] = view.getAllByRole("button", { name: "시작" });
+
+    fireEvent.click(firstTrigger);
+    expect(await screen.findByRole("dialog", { name: "첫 panel" })).not.toBeNull();
+    fireEvent.click(secondTrigger);
+
+    expect(await screen.findByRole("dialog", { name: "두 번째 panel" })).not.toBeNull();
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "첫 panel" })).toBeNull());
+    expect(onFirstOpenChange).toHaveBeenLastCalledWith(false, { reason: "outside-press" });
+  });
+
+  it("동시에 요청된 controlled panel은 마지막 widget만 활성화하고 이전 callback에 알린다", async () => {
+    const onFirstOpenChange = vi.fn();
+    renderUITest(
+      <TaskbarRootUI aria-label="작업 표시줄">
+        <TaskbarPanelUI
+          label="첫 controlled panel"
+          onOpenChange={onFirstOpenChange}
+          open
+          trigger={<TaskbarStartButtonUI icon="1" />}
+        >
+          <WindowPanelUI>첫 내용</WindowPanelUI>
+        </TaskbarPanelUI>
+        <TaskbarPanelUI
+          label="두 번째 controlled panel"
+          open
+          trigger={<TaskbarStartButtonUI icon="2" />}
+        >
+          <WindowPanelUI>두 번째 내용</WindowPanelUI>
+        </TaskbarPanelUI>
+      </TaskbarRootUI>,
+    );
+
+    expect(await screen.findByRole("dialog", { name: "두 번째 controlled panel" })).not.toBeNull();
+    expect(screen.queryByRole("dialog", { name: "첫 controlled panel" })).toBeNull();
+    expect(onFirstOpenChange).toHaveBeenLastCalledWith(false, { reason: "single-active" });
+  });
+
+  it("controlled open callback과 deterministic container presentation state를 유지한다", async () => {
+    const onOpenChange = vi.fn();
+    const view = renderUITest(
+      <TaskbarRootUI aria-label="작업 표시줄">
+        <TaskbarPanelUI
+          label="controlled panel"
+          onOpenChange={onOpenChange}
+          open
+          trigger={<TaskbarStartButtonUI />}
+        >
+          <TaskbarPanelContainerUI data-testid="presentation" motion="reduced" state="entering">
+            presentation
+          </TaskbarPanelContainerUI>
+        </TaskbarPanelUI>
+      </TaskbarRootUI>,
+    );
+
+    expect(await screen.findByRole("dialog", { name: "controlled panel" })).not.toBeNull();
+    const presentation = screen.getByTestId("presentation");
+    expect(presentation.getAttribute("data-state")).toBe("entering");
+    expect(presentation.getAttribute("data-motion")).toBe("reduced");
+
+    fireEvent.click(view.getByRole("button", { name: "시작" }));
+
+    expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: "trigger-press" });
+    expect(screen.getByRole("dialog", { name: "controlled panel" })).not.toBeNull();
   });
 });
 

@@ -7,7 +7,7 @@ import "./taskbarUI.css";
 /**
  * taskbar item 위에 표시할 generic preview slot과 transition 상태만 표현한다.
  *
- * 위치, portal, hover timer와 preview content 생산은 caller가 소유한다.
+ * TaskbarPanelUI가 위치와 portal lifecycle을 제공하며 preview content와 hover intent는 상위 Taskbar 조합이 전달한다.
  */
 export const TaskbarPreviewUI = ({
   className,

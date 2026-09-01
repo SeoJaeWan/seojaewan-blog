@@ -19,7 +19,7 @@ const WindowsLogo = () => (
 /**
  * Windows logo가 있는 40px Start action을 IconButtonUI 위에 표현한다.
  *
- * panel의 open policy, anchor와 lifecycle은 caller가 PopoverUI 또는 Shell에서 조합한다.
+ * TaskbarPanelUI의 trigger로 사용하면 open state와 ARIA는 private Taskbar lifecycle이 합성한다.
  */
 export const TaskbarStartButtonUI = ({
   className,
