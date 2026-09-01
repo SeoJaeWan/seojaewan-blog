@@ -16,7 +16,7 @@ const legacyPackageImports = {
   message: "Use the local design layer indexes instead of legacy packages.",
 };
 
-const coreGlobals = [
+const headlessGlobals = [
   "window",
   "document",
   "navigator",
@@ -33,7 +33,7 @@ const coreGlobals = [
   "requestAnimationFrame",
   "cancelAnimationFrame",
 ].map((name) => ({
-  message: `Core must remain independent of the ${name} runtime global.`,
+  message: `Headless must remain independent of the ${name} runtime global.`,
   name,
 }));
 
@@ -49,8 +49,8 @@ export default [
             applicationImports,
             legacyPackageImports,
             {
-              regex: "^(?:\\.\\./)+(?:core|shell)(?:/|$)",
-              message: "UI must not depend on Core or Shell.",
+              regex: "^(?:\\.\\./)+(?:headless|core|shell)(?:/|$)",
+              message: "UI must not depend on headless or retired layers.",
             },
           ],
         },
@@ -58,9 +58,9 @@ export default [
     },
   },
   {
-    files: ["src/core/**/*.{ts,tsx}"],
+    files: ["src/headless/**/*.{ts,tsx}"],
     rules: {
-      "no-restricted-globals": ["error", ...coreGlobals],
+      "no-restricted-globals": ["error", ...headlessGlobals],
       "no-restricted-imports": [
         "error",
         {
@@ -68,35 +68,17 @@ export default [
             applicationImports,
             legacyPackageImports,
             {
-              regex: "^(?:\\.\\./)+(?:ui|shell)(?:/|$)",
-              message: "Core must not depend on UI or Shell.",
+              regex: "^(?:\\.\\./)+(?:ui|core|shell)(?:/|$)",
+              message: "Headless must not depend on UI or retired layers.",
             },
             {
               regex: "^react(?:-dom)?(?:/|$)",
-              message: "Core must not depend on React or ReactDOM.",
+              message: "Headless must not depend on React or ReactDOM.",
             },
             {
               regex:
                 "^(?:@notionhq/client|axios|idb|ky|localforage|node:(?:dns|fs|http|https|net|tls))(?:/|$)",
-              message: "Core must not depend on persistence or network infrastructure.",
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ["src/shell/**/*.{ts,tsx}"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            applicationImports,
-            legacyPackageImports,
-            {
-              regex: "^(?!\\.\\./(?:ui|core)$)(?:\\.\\./)+(?:ui|core)(?:/|$)",
-              message: "Shell must import UI and Core through their exact layer indexes.",
+              message: "Headless must not depend on persistence or network infrastructure.",
             },
           ],
         },

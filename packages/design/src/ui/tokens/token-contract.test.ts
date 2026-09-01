@@ -158,7 +158,7 @@ describe("CSS 토큰 계약", () => {
     expect(() => validateTokenSources(readRepositoryTokenSources())).not.toThrow();
   });
 
-  it("Windows UI의 기본 표면과 주요 Shell 컴포넌트에 필요한 공개 토큰을 제공한다", () => {
+  it("Windows UI의 기본 표면과 주요 UI Component에 필요한 공개 토큰을 제공한다", () => {
     const names = readRepositoryTokenSources()
       .flatMap(extractDefinitions)
       .map(({ name }) => name);

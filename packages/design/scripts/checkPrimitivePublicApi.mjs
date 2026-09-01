@@ -9,6 +9,16 @@ import ts from "typescript";
 const scriptPath = fileURLToPath(import.meta.url);
 const defaultPrimitivesRoot = resolve(dirname(scriptPath), "../src/ui/primitives");
 const pascalCaseUISymbolPattern = /^[A-Z][A-Za-z0-9]*UI$/;
+const requiredActiveFamilies = new Set([
+  "button",
+  "collapsible",
+  "combobox",
+  "contextMenu",
+  "iconButton",
+  "input",
+  "popover",
+  "select",
+]);
 
 const formatError = (error) => (error instanceof Error ? error.message : String(error));
 
@@ -233,18 +243,26 @@ const checkAggregateIndex = async (primitivesRoot, familyNames) => {
   return errors;
 };
 
-const checkPrimitivePublicApi = async (primitivesRoot) => {
+const checkPrimitivePublicApi = async (primitivesRoot, { requireActiveFamilies = false } = {}) => {
   const familyNames = await discoverFamilies(primitivesRoot);
   const errors = [
     ...(await checkFamilyIndexes(primitivesRoot, familyNames)),
     ...(await checkAggregateIndex(primitivesRoot, familyNames)),
   ];
 
+  if (requireActiveFamilies) {
+    for (const familyName of requiredActiveFamilies) {
+      if (!familyNames.includes(familyName)) {
+        errors.push(`${primitivesRoot}: active Primitive family ${familyName}이 없습니다`);
+      }
+    }
+  }
+
   if (errors.length > 0) {
     throw new Error(errors.join("\n"));
   }
 
-  return familyNames.length;
+  return familyNames;
 };
 
 const makeSyntheticFamilyName = (purpose) => `fixture${purpose}${randomUUID().replaceAll("-", "")}`;
@@ -362,14 +380,16 @@ const parseArguments = (arguments_) => {
 
 try {
   const { primitivesRoot, verifyFixtures } = parseArguments(process.argv.slice(2));
-  const familyCount = await checkPrimitivePublicApi(primitivesRoot);
+  const familyNames = await checkPrimitivePublicApi(primitivesRoot, {
+    requireActiveFamilies: primitivesRoot === defaultPrimitivesRoot,
+  });
 
   if (verifyFixtures) {
     await verifyGeneratedFixtures();
   }
 
   process.stdout.write(
-    `Primitive public API architecture가 유효합니다 (${familyCount} family${
+    `Primitive public API architecture가 유효합니다 (discovered: ${familyNames.join(", ")}${
       verifyFixtures ? ", generated fixtures 포함" : ""
     }).\n`,
   );

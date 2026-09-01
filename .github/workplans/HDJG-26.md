@@ -1,141 +1,142 @@
-# HDJG-26 — [Design 06] Window·Taskbar·Folder UI Component 재구축 (Shape r3)
+# HDJG-26 — UI/headless 기반 Window·Folder·Taskbar 결과 재구성 (Shape r4)
 
-h2. 목적
+## 목적과 경계
 
-현재 CSS Token과 project-owned Primitive를 바탕으로 Window, Taskbar, Folder의 22개
-표현 role을 business data와 실행 상태에 독립적인 Component로 제공한다. 이 중 21개는
-family 및 global UI entry의 public API이고 resize hit area 한 개는 Window family 내부
-구현이다.
+`packages/ui`의 구조를 runtime으로 옮기지 않고, 관찰 가능한 props·JSX·CSS·asset·variant·
+responsive 결과를 증거로 삼아 `packages/design`을 재구성한다. `ui`와 `headless`는 서로
+import하지 않는 형제 경계이며 Application이 둘을 조합한다. UI는 렌더링, DOM lifecycle,
+focus, portal, placement, presence와 widget-local pointer 상태를 소유한다. headless는 제품
+상태와 규칙을 소유한다.
 
-h2. Shape r3 범위와 제외
+완성형 제품 조합은 소유 family의 Component다. `components/common`은 같은 계약의 두 번째
+소비자가 확인되기 전에는 만들지 않는다. legacy package는 아래 inventory를 위한 read-only
+evidence이며 runtime dependency가 아니다.
 
-- Window, Taskbar, Folder의 21개 public role과 1개 family-local role을 완성한다.
-- Window, Taskbar, Folder Product Reference는 실제 Component와 Primitive를 조합한다.
-- WindowTitleBarUI, TaskbarItemUI, FolderFileCardUI의 Context Menu recipe는 기존
-  ContextMenuUI를 직접 사용하며 별도 runtime alias를 만들지 않는다.
-- active, background, fullscreen, dragging, entering, exiting, minimizing, restoring 표현
-  상태와 keyboard, focus, dismissal, reduced-motion, container query를 검증한다.
-- Bottom Sheet는 HDJG-26 범위에서 제외하며 public role, recipe 또는 완료 계약을 만들지
-  않는다.
+## Evidence inventory 규칙
 
-h2. Role inventory와 Primitive mapping
+- 분류값은 `match`, `intentional divergence`, `higher-layer`, `docs-only` 중 하나다.
+- `match`는 현재 production Component가 결과를 소유함을 뜻한다.
+- `higher-layer`는 지정된 후속 task가 production Component로 결과를 소유함을 뜻한다.
+- `intentional divergence`는 legacy 구조 대신 현재 UI/headless 결정으로 대체함을 뜻한다.
+- `docs-only`는 시각/동작 근거로만 남고 runtime API가 되지 않음을 뜻한다.
+- architecture check는 아래 evidence 경로를 source tree에서 발견한다. 새 production
+  Component family와 export는 이름 allowlist 수정 없이 자동 발견한다.
 
-| Family  | Role                  | 공개 범위    | 직접 Primitive 또는 Component 조합 |
-| ------- | --------------------- | ------------ | ---------------------------------- |
-| Window  | WindowFrameUI         | public       | family-local resize handles 조합   |
-| Window  | WindowTitleBarUI      | public       | slot composition                   |
-| Window  | WindowTabUI           | public       | native presentation                |
-| Window  | WindowControlsUI      | public       | IconButtonUI                       |
-| Window  | WindowRouteBarUI      | public       | IconButtonUI                       |
-| Window  | RouteInputUI          | public       | ComboboxUI                         |
-| Window  | TagInputUI            | public       | SelectUI                           |
-| Window  | WindowResizeHandlesUI | family-local | native pointer hit area            |
-| Taskbar | TaskbarRootUI         | public       | native presentation                |
-| Taskbar | TaskbarStartButtonUI  | public       | IconButtonUI                       |
-| Taskbar | TaskbarSearchUI       | public       | InputUI                            |
-| Taskbar | TaskbarAppListUI      | public       | native layout                      |
-| Taskbar | TaskbarItemUI         | public       | IconButtonUI                       |
-| Taskbar | TaskbarClockUI        | public       | native presentation                |
-| Taskbar | TaskbarPreviewUI      | public       | caller Component slot              |
-| Taskbar | WindowPanelUI         | public       | caller Component/Primitive slots   |
-| Folder  | FolderFrameUI         | public       | WindowFrameUI + WindowTitleBarUI   |
-| Folder  | FolderViewerUI        | public       | sidebar/content slots              |
-| Folder  | FolderSidebarUI       | public       | native navigation/list             |
-| Folder  | FolderCategoryItemUI  | public       | CollapsibleUI                      |
-| Folder  | FolderFileGridUI      | public       | native layout                      |
-| Folder  | FolderFileCardUI      | public       | ButtonUI                           |
+## Legacy owner matrix
 
-21개 public role은 `components/{window,taskbar,folder}`, `components`, `ui`, package entry에서
-같은 project-owned symbol로 import할 수 있어야 한다. WindowResizeHandlesUI는
-WindowFrameUI가 사용하는 family-local implementation이며 aggregate 또는 global entry에서
-export하지 않는다. Public prop/event는 React native/project-owned type만 노출하고 Base UI 등
-vendor type을 전달하지 않는다.
+각 행의 evidence는 `index.tsx`의 props/JSX와 같은 디렉터리 CSS/Story를 함께 포함한다.
 
-h2. Selective parity matrix
+| Evidence source                                                                    | 관찰 role·상태                                                  | 분류                   | `packages/design` owner                                    |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------- |
+| `packages/ui/src/components/window/windowFrameUI/index.tsx`                        | frame, folder/file, active/background, fullscreen, drag, motion | match                  | window / TASK-002 확장                                     |
+| `packages/ui/src/components/window/chrome/windowTitleBarUI/index.tsx`              | title row, pointer drag, fullscreen toggle                      | match                  | window / TASK-002 확장                                     |
+| `packages/ui/src/components/window/chrome/windowTabUI/index.tsx`                   | icon/title tab chrome                                           | match                  | window                                                     |
+| `packages/ui/src/components/window/chrome/windowControlsUI/index.tsx`              | minimize, maximize/restore, close                               | match                  | window / TASK-002 확장                                     |
+| `packages/ui/src/components/window/chrome/windowResizeHandlesUI/index.tsx`         | edge/corner directions and pointer start                        | match                  | window family-local / TASK-002                             |
+| `packages/ui/src/components/window/chrome/windowRouteBarUI/index.tsx`              | history, route, tag row                                         | match                  | window                                                     |
+| `packages/ui/src/components/window/input/routeInputUI/index.tsx`                   | edit/open/value and folder/file visual                          | match                  | window                                                     |
+| `packages/ui/src/components/window/input/tagInputUI/index.tsx`                     | open, selected tag, clear/select                                | match                  | window                                                     |
+| `packages/ui/src/components/window/folder/folderViewerUI/index.tsx`                | sidebar/content split                                           | match                  | folder / TASK-004 aggregate                                |
+| `packages/ui/src/components/window/folder/folderSidebarUI/index.tsx`               | category navigation surface                                     | match                  | folder / TASK-004 extension                                |
+| `packages/ui/src/components/window/folder/folderCategoryItemUI/index.tsx`          | disclosure, selection, nested item                              | higher-layer           | folder / TASK-004 separates actions                        |
+| `packages/ui/src/components/window/folder/folderFileGridUI/index.tsx`              | big/middle/small responsive grid                                | match                  | folder / TASK-004 aggregate                                |
+| `packages/ui/src/components/window/folder/folderFileCardUI/index.tsx`              | cover/title/selected action                                     | match                  | folder / TASK-004 extension                                |
+| `packages/ui/src/components/taskbar/taskbarRootUI/index.tsx`                       | fixed root and centered controls                                | match                  | taskbar / TASK-003 aggregate                               |
+| `packages/ui/src/components/taskbar/taskbarAppListUI/index.tsx`                    | running app layout                                              | match                  | taskbar / TASK-003                                         |
+| `packages/ui/src/components/taskbar/taskbarClockUI/index.tsx`                      | caller-provided date/time                                       | match                  | taskbar / TASK-003                                         |
+| `packages/ui/src/components/taskbar/taskbarSearchUI/index.tsx`                     | search trigger/input/open visual                                | match                  | taskbar / TASK-003                                         |
+| `packages/ui/src/components/taskbar/button/taskbarStartButtonUI/index.tsx`         | Windows mark trigger                                            | match                  | taskbar / TASK-003                                         |
+| `packages/ui/src/components/taskbar/button/taskbarIconButtonUI/index.tsx`          | open/active/running/dragging visual                             | higher-layer           | taskbar item / TASK-003                                    |
+| `packages/ui/src/components/taskbar/button/taskbarTaskButtonUI/index.tsx`          | product task item adapter                                       | intentional divergence | presentation DTO in taskbar; product action stays headless |
+| `packages/ui/src/components/taskbar/button/panelIconButtonUI/index.tsx`            | panel tile, line clamp, selection                               | higher-layer           | taskbar family-local / TASK-005                            |
+| `packages/ui/src/components/taskbar/input/taskSearchInputUI/index.tsx`             | query input and disabled state                                  | higher-layer           | taskbar search view / TASK-005                             |
+| `packages/ui/src/components/taskbar/panel/taskbarPanelLayerUI/index.tsx`           | floating portal layer                                           | higher-layer           | private taskbar UI lifecycle / TASK-003                    |
+| `packages/ui/src/components/taskbar/panel/taskbarPanelContainerUI/index.tsx`       | opening/closing presence container                              | higher-layer           | private taskbar UI lifecycle / TASK-003                    |
+| `packages/ui/src/components/taskbar/panel/windowsPanelUI/index.tsx`                | Start surface and search header                                 | higher-layer           | taskbar / TASK-003 then TASK-005                           |
+| `packages/ui/src/components/taskbar/panel/searchPanelUI/index.tsx`                 | recommendation/result/detail surface                            | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/panel/taskHoverPanelUI/index.tsx`              | hover preview surface                                           | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/panel/taskbarContextMenuUI/index.tsx`          | task context actions and placement                              | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/view/windowsPanelPinnedViewUI/index.tsx`       | pinned grid                                                     | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/view/windowsPanelAllViewUI/index.tsx`          | all apps and category overlay                                   | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/view/taskSearchRecommendationViewUI/index.tsx` | deterministic recommendations                                   | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/taskbar/view/taskSearchResultViewUI/index.tsx`         | result list and selected detail                                 | higher-layer           | taskbar / TASK-005                                         |
+| `packages/ui/src/components/base/panel/scaledPreviewUI/index.tsx`                  | scaled window preview geometry                                  | higher-layer           | taskbar family-local / TASK-005                            |
+| `packages/ui/src/components/base/panel/taskPanelUI/index.tsx`                      | generic translucent panel shell                                 | intentional divergence | owner-specific taskbar surfaces / TASK-003                 |
 
-`packages/ui`와 `packages/shell`은 read-only 시각·asset·interaction·timing evidence다. Shape
-r3는 legacy 구조를 복제하지 않고 인식 가능한 치수와 동작만 선택적으로 보존한다.
+Source discovery 결과 위 범위의 미분류 role은 없다. legacy의 product identifier, action chain,
+store/provider 연결은 시각 role이 아니며 headless/Application 소유로 분리한다.
 
-| Role                  | 분류             | 보존하거나 새로 정의하는 기준                                 | 수동 visual review     |
-| --------------------- | ---------------- | ------------------------------------------------------------- | ---------------------- |
-| WindowFrameUI         | selective parity | 창 surface, geometry, foreground/background, transition state | Product Reference 필수 |
-| WindowTitleBarUI      | selective parity | 30px chrome와 title/control 배치                              | Product Reference 필수 |
-| WindowTabUI           | selective parity | 18px icon, 한 줄 title, 폭 제한                               | Product Reference 필수 |
-| WindowControlsUI      | selective parity | minimize/maximize/restore/close icon action geometry          | Product Reference 필수 |
-| WindowRouteBarUI      | selective parity | 36px history/route/tag row                                    | Product Reference 필수 |
-| RouteInputUI          | new contract     | predefined route 검색과 ID-free event                         | Product Reference 필수 |
-| TagInputUI            | new contract     | predefined tag 단일 선택과 ID-free event                      | Product Reference 필수 |
-| WindowResizeHandlesUI | selective parity | edge/corner pointer hit area, fullscreen 제외                 | Product Reference 필수 |
-| TaskbarRootUI         | selective parity | 50px fixed taskbar, blur, 중앙 control 배치                   | Product Reference 필수 |
-| TaskbarStartButtonUI  | selective parity | Windows mark와 40px action                                    | Product Reference 필수 |
-| TaskbarSearchUI       | selective parity | search field visual과 native input                            | Product Reference 필수 |
-| TaskbarAppListUI      | new contract     | app item layout만 소유                                        | Product Reference 필수 |
-| TaskbarItemUI         | selective parity | idle/running/active/disabled와 indicator                      | Product Reference 필수 |
-| TaskbarClockUI        | selective parity | caller time, locale date/time 표시                            | Product Reference 필수 |
-| TaskbarPreviewUI      | selective parity | hover preview surface와 deterministic motion state            | Product Reference 필수 |
-| WindowPanelUI         | selective parity | Start panel surface와 responsive width                        | Product Reference 필수 |
-| FolderFrameUI         | new composition  | 검증된 Window chrome 위 Folder slots                          | Product Reference 필수 |
-| FolderViewerUI        | selective parity | container 기반 sidebar/content layout                         | Product Reference 필수 |
-| FolderSidebarUI       | selective parity | category navigation/list surface                              | Product Reference 필수 |
-| FolderCategoryItemUI  | selective parity | disclosure, selected, nested category                         | Product Reference 필수 |
-| FolderFileGridUI      | selective parity | card size와 container-based wrapping                          | Product Reference 필수 |
-| FolderFileCardUI      | selective parity | 3:2 cover, 한 줄 title, selected action                       | Product Reference 필수 |
+## CSS, variants, responsive evidence
 
-수동 visual review는 Window, Taskbar, Folder, 세 Context Menu Product Reference를 Chromium에서
-열어 role 식별 가능성, 겹침, focus ring, menu placement를 확인하고 통합 기록에 결과를 남기는
-완료 gate다. 이 work item에는 screenshot baseline이 없으며 pixel-diff 승인을 주장하지 않는다.
-향후 baseline을 추가하기 전까지 computed geometry/browser interaction과 수동 review를 함께
-사용한다.
+| Evidence                                                                                       | 관찰 결과                                                                                                  | owner/disposition              |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `packages/ui/src/components/window/windowFrameUI/windowFrameUI.css`                            | folder/file header, active/background, fullscreen, dragging, open/close/minimize/restore, desktop geometry | window; 결과 보존              |
+| `packages/ui/src/components/window/chrome/windowControlsUI/windowControlsUI.css`               | mobile control reduction                                                                                   | window; TASK-002 browser check |
+| `packages/ui/src/components/window/chrome/windowResizeHandlesUI/windowResizeHandlesUI.css`     | desktop edge/corner hit areas                                                                              | window family-local            |
+| `packages/ui/src/components/window/input/routeInputUI/routeInputUI.css`                        | folder/file and editing state                                                                              | window                         |
+| `packages/ui/src/components/window/input/tagInputUI/tagInputUI.css`                            | active/open selection surface                                                                              | window                         |
+| `packages/ui/src/components/window/folder/folderSidebarUI/folderSidebarUI.css`                 | container-width sidebar behavior                                                                           | folder; TASK-004               |
+| `packages/ui/src/components/window/folder/folderFileGridUI/folderFileGridUI.css`               | mobile wrapping                                                                                            | folder; TASK-004               |
+| `packages/ui/src/components/window/folder/folderFileCardUI/folderFileCardUI.css`               | view-size card metrics and mobile                                                                          | folder; TASK-004               |
+| `packages/ui/src/components/taskbar/taskbarClockUI/taskbarClockUI.css`                         | desktop-only expanded clock                                                                                | taskbar; TASK-003              |
+| `packages/ui/src/components/taskbar/panel/taskbarPanelContainerUI/taskbarPanelContainerUI.css` | opening/closing presence timing                                                                            | private taskbar UI; TASK-003   |
+| `packages/ui/src/components/taskbar/view/windowsPanelAllViewUI/windowsPanelAllViewUI.css`      | category overlay open state                                                                                | taskbar; TASK-005              |
 
-- 2026-09-01 Shape r3 local Chromium review: Window·Taskbar·Folder와 Context Menu target/menu가
-  각각 식별 가능하고 주요 surface 겹침 없이 표시됨을 확인했다. 검토용 capture는 일시적 QA
-  자료이며 repository screenshot baseline으로 추가하지 않았다.
+Reduced motion은 각 family의 production Story browser check에서 검증한다. 고정 screenshot
+baseline은 없으므로 동일 viewport/state의 computed geometry, public DOM interaction, 수동
+side-by-side 결과를 기록하되 pixel approval을 주장하지 않는다.
 
-h2. 완료 조건
+## Asset ownership
 
-- 21개 public role이 family/global project-owned entry에서 compile/import되고
-  WindowResizeHandlesUI는 global export에 없다.
-- Component는 작은 표시 props, slot, native DOM props와 ID 없는 UI event만 노출하며
-  ResourceId, SessionId, Store, Runtime 또는 product business type을 노출하지 않는다.
-- Product Reference는 Provider 없이 결정적으로 렌더링되고 재사용 가능한 role의 inline
-  surrogate를 만들지 않는다.
-- Context Menu recipe는 WindowTitleBarUI, TaskbarItemUI, FolderFileCardUI를 trigger로 사용하고
-  Chromium에서 keyboard navigation, outside/Escape dismissal, focus restoration을 통과한다.
-- component architecture check는 legacy/Core/Shell/Application 및 vendor implementation import를
-  거부하고 21-role public contract와 9개 직접 Primitive consumer mapping을 검증한다.
-- unit test와 Chromium Storybook test가 상태, 접근성, focus 복원, motion semantic equivalence를
-  검증한다.
-- CSS class는 BEM을 따르고 Reference → Semantic → Component Token 계층을 사용한다.
+| Evidence asset                               | 분류                            | owner                                              |
+| -------------------------------------------- | ------------------------------- | -------------------------------------------------- |
+| `packages/ui/src/assets/windows.svg`         | fixed project mark              | taskbar asset / TASK-003                           |
+| `packages/ui/src/assets/windows.webp`        | fixed legacy rendering evidence | docs-only; SVG 우선                                |
+| `packages/ui/src/assets/task-input-mask.svg` | fixed taskbar field mask        | taskbar asset candidate / TASK-003                 |
+| `packages/ui/src/assets/file.png`            | fixed file glyph                | window/folder asset / TASK-002·004                 |
+| `packages/ui/src/assets/folder.png`          | fixed folder glyph              | folder asset / TASK-004                            |
+| `packages/ui/src/assets/github.png`          | product app identity            | Application-injected asset / TASK-005 fixture only |
+| `packages/ui/src/assets/linkedIn.png`        | product app identity            | Application-injected asset / TASK-005 fixture only |
 
-h2. 아키텍처 경계
+## Active Primitive requirements
 
-- 구현과 public export는 `packages/design/src/ui`에만 둔다.
-- `packages/design` UI Component는 Core, Shell, Application, legacy packages를 import하지 않고
-  상태 저장, business action dispatch, global portal lifecycle을 소유하지 않는다.
-- Shell은 business entry, section, identifier, action dispatch와 window lifecycle을 계속
-  소유한다.
-- Product-specific 시각은 Component token과 composition으로 만들며 Primitive 구현을 바꾸지
-  않는다.
-- architecture check는 role/consumer contract만 검사하고 무관한 repository snapshot 또는
-  vendor 내부 구조를 고정하지 않는다.
+HDJG-26 production parity는 ButtonUI, IconButtonUI, InputUI, ComboboxUI, SelectUI,
+ContextMenuUI, PopoverUI, CollapsibleUI를 조합한다. Primitive checker는 디렉터리를 자동
+발견하고 각 family의 단일 public widget과 aggregate export를 검증한다. MenuUI와 DialogUI는
+삭제하지 않지만 이 작업의 required set이나 완료 근거로 사용하지 않는다. 새 Primitive는
+추가하지 않는다.
 
-h2. 구현 순서
+## Discovery gates
 
-1. Window 8-role inventory와 4개 직접 Primitive consumer를 검증한다.
-2. Taskbar 8-role inventory와 3개 직접 Primitive consumer를 검증한다.
-3. Folder 6-role inventory와 2개 직접 Primitive consumer를 검증한다.
-4. 21개 public export 및 private resize role 경계를 family/global entry에서 검증한다.
-5. 실제 Component를 조합한 Product Reference와 ContextMenuUI recipe browser interaction을
-   검증한다.
-6. selective parity matrix의 수동 visual review를 기록한다.
+- production Component family 디렉터리와 family index를 자동 발견한다.
+- public export가 concrete production source에 연결되는지 검증한다.
+- public이 아닌 production Component가 family-local consumer 없이 orphan인지 검증한다.
+- family Story 부재와 Story-only `*UI` 구현을 검출한다.
+- UI에서 legacy package, Application, headless, retired layer, vendor implementation import를
+  검출한다.
+- generated fixture로 additive Component export가 allowlist 변경 없이 통과하고 illegal import가
+  실패하는지 검증한다.
+- legacy source-only composition이 이 owner matrix에 모두 분류됐는지 검증한다.
+- token family는 파일 namespace로 자동 확장되며 이름 개수를 완료 계약으로 사용하지 않는다.
 
-h2. 공통 아키텍처 기준
+## Delivery sequence
 
-- 신규 구현 위치: `packages/design/src/ui`
-- 선행 단계: Design 05
-- 기준 문서: Local Work Memory의 「Window Experience 디자인 시스템 아키텍처 컨벤션」,
-  「UI 구현·리뷰 규칙」, 「Context Menu Architecture」, 「Primitive Catalog」와
-  「HDJG-2 디자인 시스템 리뉴얼 논의 및 결정 기록」
+1. TASK-001: 이 inventory, UI/headless root와 discovery gates를 확립한다.
+2. TASK-002: Window chrome, FileWindow/FileViewport와 UI-local gestures를 완성한다.
+3. TASK-003: Taskbar foundation과 private lifecycle을 완성한다.
+4. INT-001: Window/File과 Taskbar foundation을 통합한다.
+5. TASK-004: FolderWindow와 disclosure/selection/child-file 결과를 완성한다.
+6. TASK-005: Taskbar views, preview, context menu와 aggregate를 완성한다.
+7. INT-002: global exports, Product References, provider descriptions와 전체 gate를 봉인한다.
+
+## 완료 조건
+
+- legacy source discovery에서 unowned observed role이 없다.
+- package root와 test/lint project는 UI/headless 경계만 사용한다.
+- additive valid Component는 checker allowlist 변경 없이 통과한다.
+- production UI에서 legacy runtime import와 headless import가 없다.
+- 현재 required Primitive가 존재하고 candidate Primitive가 required로 오인되지 않는다.
+- design lint, typecheck, unit tests가 통과한다.
 
 ## Jira
 

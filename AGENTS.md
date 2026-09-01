@@ -1,7 +1,7 @@
 # Agent Guide
 
 This repository rebuilds a Windows 11-style personal blog around the canonical
-`packages/design` UI/Core/Shell boundaries. `packages/ui` and `packages/shell` are
+`packages/design` UI/headless sibling boundaries. `packages/ui` and `packages/shell` are
 legacy visual, asset, interaction, and timing references only.
 
 ## Knowledge precedence

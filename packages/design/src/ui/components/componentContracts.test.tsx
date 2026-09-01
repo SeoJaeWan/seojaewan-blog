@@ -4,38 +4,23 @@ import * as packageApi from "../../index";
 import * as uiApi from "../index";
 import * as componentApi from "./index";
 
-const publicRoles = [
-  "FolderCategoryItemUI",
-  "FolderFileCardUI",
-  "FolderFileGridUI",
-  "FolderFrameUI",
-  "FolderSidebarUI",
-  "FolderViewerUI",
-  "RouteInputUI",
-  "TagInputUI",
-  "TaskbarAppListUI",
-  "TaskbarClockUI",
-  "TaskbarItemUI",
-  "TaskbarPreviewUI",
-  "TaskbarRootUI",
-  "TaskbarSearchUI",
-  "TaskbarStartButtonUI",
-  "WindowControlsUI",
-  "WindowFrameUI",
-  "WindowPanelUI",
-  "WindowRouteBarUI",
-  "WindowTabUI",
-  "WindowTitleBarUI",
-] as const;
+const componentRecord = componentApi as Readonly<Record<string, unknown>>;
+const discoveredPublicComponents = Object.keys(componentRecord).filter((name) =>
+  name.endsWith("UI"),
+);
 
-describe("HDJG-26 component public contract", () => {
+describe("Component discovery public contract", () => {
+  it("discovers at least one production Component", () => {
+    expect(discoveredPublicComponents.length).toBeGreaterThan(0);
+  });
+
   it.each([
-    ["component family aggregate", componentApi],
     ["global UI entry", uiApi],
     ["package entry", packageApi],
-  ])("makes all 21 roles available from the %s", (_, api) => {
-    for (const role of publicRoles) {
-      expect(api[role]).toBeTypeOf("function");
+  ])("re-exports every discovered Component from the %s", (_, api) => {
+    const apiRecord = api as Readonly<Record<string, unknown>>;
+    for (const component of discoveredPublicComponents) {
+      expect(apiRecord[component]).toBe(componentRecord[component]);
     }
   });
 
