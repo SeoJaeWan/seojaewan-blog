@@ -1,0 +1,12 @@
+:root {
+  --wd-folder-viewer-background-color: var(--wd-color-surface-window);
+  --wd-folder-viewer-content-padding: var(--wd-reference-spacing-3);
+  --wd-folder-viewer-grid-column-min-inline-size: 12rem;
+  --wd-folder-viewer-grid-gap: var(--wd-reference-spacing-3);
+  --wd-folder-viewer-sidebar-border-color: var(--wd-color-border-default);
+  --wd-folder-viewer-sidebar-border-width: 1px;
+  --wd-folder-viewer-sidebar-gap: var(--wd-reference-spacing-2);
+  --wd-folder-viewer-sidebar-inline-size: 16.6667%;
+  --wd-folder-viewer-sidebar-padding-block: var(--wd-reference-spacing-1);
+  --wd-folder-viewer-sidebar-padding-inline: var(--wd-reference-spacing-2);
+}
