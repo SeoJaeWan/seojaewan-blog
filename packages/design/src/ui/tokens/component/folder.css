@@ -1,12 +1,34 @@
 :root {
   --wd-folder-viewer-background-color: var(--wd-color-surface-window);
-  --wd-folder-viewer-content-padding: var(--wd-reference-spacing-3);
-  --wd-folder-viewer-grid-column-min-inline-size: 12rem;
-  --wd-folder-viewer-grid-gap: var(--wd-reference-spacing-3);
   --wd-folder-viewer-sidebar-border-color: var(--wd-color-border-default);
   --wd-folder-viewer-sidebar-border-width: 1px;
   --wd-folder-viewer-sidebar-gap: var(--wd-reference-spacing-2);
   --wd-folder-viewer-sidebar-inline-size: 16.6667%;
   --wd-folder-viewer-sidebar-padding-block: var(--wd-reference-spacing-1);
   --wd-folder-viewer-sidebar-padding-inline: var(--wd-reference-spacing-2);
+  --wd-folder-category-background-color-hover: rgb(190 219 255 / 0.3);
+  --wd-folder-category-background-color-selected: var(--wd-color-border-default);
+  --wd-folder-category-border-color-selected-hover: var(--wd-color-text-primary);
+  --wd-folder-category-border-radius: var(--wd-reference-radius-1);
+  --wd-folder-category-border-width: 1px;
+  --wd-folder-category-font-size: 12px;
+  --wd-folder-category-gap: var(--wd-reference-spacing-1);
+  --wd-folder-category-icon-size: 15px;
+  --wd-folder-category-nested-padding-inline-start: var(--wd-reference-spacing-4);
+  --wd-folder-category-padding-block: var(--wd-reference-spacing-2);
+  --wd-folder-category-padding-inline: var(--wd-reference-spacing-1);
+  --wd-folder-file-grid-column-gap: var(--wd-reference-spacing-4);
+  --wd-folder-file-grid-padding-block: var(--wd-reference-spacing-2);
+  --wd-folder-file-grid-padding-inline: var(--wd-reference-spacing-3);
+  --wd-folder-file-grid-row-gap: var(--wd-reference-spacing-2);
+  --wd-folder-file-card-background-color-highlight: rgb(190 219 255 / 0.3);
+  --wd-folder-file-card-border-radius: var(--wd-reference-radius-2);
+  --wd-folder-file-card-cover-aspect-ratio: 3 / 2;
+  --wd-folder-file-card-cover-background: var(--wd-color-surface-muted);
+  --wd-folder-file-card-cover-border-radius: var(--wd-reference-radius-1);
+  --wd-folder-file-card-gap: var(--wd-reference-spacing-2);
+  --wd-folder-file-card-padding: var(--wd-reference-spacing-3);
+  --wd-folder-file-card-width-large: 320px;
+  --wd-folder-file-card-width-medium: 240px;
+  --wd-folder-file-card-width-small: 160px;
 }

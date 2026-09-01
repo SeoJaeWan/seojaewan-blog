@@ -31,21 +31,11 @@
 }
 
 .wd-folder-viewer-ui__content {
-  align-content: start;
-  display: grid;
+  display: flex;
   flex: 1;
-  gap: var(--wd-folder-viewer-grid-gap);
-  grid-template-columns: minmax(0, 1fr);
   min-block-size: 0;
   min-inline-size: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: var(--wd-folder-viewer-content-padding);
-}
-
-.wd-folder-viewer-ui__content > * {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
+  overflow: hidden;
 }
 
 @container wd-folder-viewer (min-width: 48rem) {
@@ -53,11 +43,218 @@
     display: block;
     inline-size: var(--wd-folder-viewer-sidebar-inline-size);
   }
+}
 
-  .wd-folder-viewer-ui__content {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(min(var(--wd-folder-viewer-grid-column-min-inline-size), 100%), 1fr)
-    );
+.wd-folder-sidebar-ui {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.wd-folder-sidebar-ui__list,
+.wd-folder-category-item-ui__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wd-folder-category-item-ui {
+  font-size: var(--wd-folder-category-font-size);
+  inline-size: 100%;
+}
+
+.wd-folder-category-item-ui__trigger {
+  border: var(--wd-folder-category-border-width) solid transparent;
+  border-radius: var(--wd-folder-category-border-radius);
+  box-sizing: border-box;
+  display: flex;
+  font-size: var(--wd-folder-category-font-size);
+  gap: var(--wd-folder-category-gap);
+  inline-size: 100%;
+  justify-content: flex-start;
+  min-inline-size: 0;
+  padding-block: var(--wd-folder-category-padding-block);
+  padding-inline: var(--wd-folder-category-padding-inline);
+}
+
+.wd-folder-category-item-ui__trigger:hover:not(:disabled, [data-disabled]) {
+  background-color: var(--wd-folder-category-background-color-hover);
+}
+
+.wd-folder-category-item-ui__trigger[data-selected="true"] {
+  background-color: var(--wd-folder-category-background-color-selected);
+}
+
+.wd-folder-category-item-ui__trigger[data-selected="true"]:hover:not(:disabled, [data-disabled]) {
+  border-color: var(--wd-folder-category-border-color-selected-hover);
+}
+
+.wd-folder-category-item-ui__trigger > .wd-collapsible-ui__trigger-icon,
+.wd-folder-category-item-ui__icon {
+  block-size: var(--wd-folder-category-icon-size);
+  flex: 0 0 var(--wd-folder-category-icon-size);
+  inline-size: var(--wd-folder-category-icon-size);
+}
+
+.wd-folder-category-item-ui__icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.wd-folder-category-item-ui__icon > img,
+.wd-folder-category-item-ui__icon > svg {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: contain;
+}
+
+.wd-folder-category-item-ui__label {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-folder-category-item-ui__panel {
+  padding-block: 0;
+  padding-inline: var(--wd-folder-category-nested-padding-inline-start) 0;
+}
+
+.wd-folder-file-grid-ui {
+  align-content: flex-start;
+  box-sizing: border-box;
+  column-gap: 0;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  inline-size: 100%;
+  justify-content: flex-start;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: var(--wd-folder-file-grid-padding-block);
+  padding-inline: var(--wd-folder-file-grid-padding-inline);
+  row-gap: var(--wd-folder-file-grid-row-gap);
+}
+
+.wd-folder-file-card-ui {
+  align-items: flex-start;
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: var(--wd-folder-file-card-border-radius);
+  color: inherit;
+  flex: 0 0 50%;
+  flex-direction: column;
+  gap: var(--wd-folder-file-card-gap);
+  inline-size: 50%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  padding: var(--wd-folder-file-card-padding);
+  text-align: start;
+}
+
+.wd-folder-file-card-ui:hover:not(:disabled, [data-disabled]),
+.wd-folder-file-card-ui[data-selected="true"] {
+  background-color: var(--wd-folder-file-card-background-color-highlight);
+}
+
+.wd-folder-file-card-ui__cover {
+  aspect-ratio: var(--wd-folder-file-card-cover-aspect-ratio);
+  background: var(--wd-folder-file-card-cover-background);
+  border-radius: var(--wd-folder-file-card-cover-border-radius);
+  display: block;
+  inline-size: 100%;
+  overflow: hidden;
+}
+
+.wd-folder-file-card-ui__cover > img,
+.wd-folder-file-card-ui__cover > svg {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.wd-folder-file-card-ui__title {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@container wd-folder-viewer (min-width: 48rem) {
+  .wd-folder-file-grid-ui {
+    column-gap: var(--wd-folder-file-grid-column-gap);
   }
+
+  .wd-folder-file-card-ui {
+    flex-basis: var(--wd-folder-file-card-width-medium);
+    inline-size: var(--wd-folder-file-card-width-medium);
+  }
+
+  .wd-folder-file-grid-ui[data-card-size="large"] .wd-folder-file-card-ui {
+    flex-basis: var(--wd-folder-file-card-width-large);
+    inline-size: var(--wd-folder-file-card-width-large);
+  }
+
+  .wd-folder-file-grid-ui[data-card-size="small"] .wd-folder-file-card-ui {
+    flex-basis: var(--wd-folder-file-card-width-small);
+    inline-size: var(--wd-folder-file-card-width-small);
+  }
+}
+
+.wd-folder-story-container {
+  block-size: 420px;
+  border: 1px solid var(--wd-color-border-default);
+  box-sizing: border-box;
+}
+
+.wd-folder-story-window-stage {
+  block-size: 532px;
+  inline-size: 872px;
+  position: relative;
+}
+
+.wd-folder-story-cover {
+  align-items: center;
+  block-size: 100%;
+  color: var(--wd-color-text-primary);
+  display: flex;
+  inline-size: 100%;
+  justify-content: center;
+}
+
+.wd-folder-story-cover > svg {
+  block-size: 32px;
+  inline-size: 32px;
+}
+
+.wd-folder-story-cover[data-tone="blue"] {
+  background: rgb(219 234 254);
+}
+
+.wd-folder-story-cover[data-tone="violet"] {
+  background: rgb(237 233 254);
+}
+
+.wd-folder-story-cover[data-tone="green"] {
+  background: rgb(220 252 231);
+}
+
+.wd-folder-story-cover[data-tone="amber"] {
+  background: rgb(254 243 199);
+}
+
+.wd-folder-story-probe {
+  block-size: 1px;
+  inline-size: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
 }
