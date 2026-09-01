@@ -10,8 +10,10 @@ import {
   FolderFileCardUI,
   FolderFileGridUI,
   FolderFrameUI,
+  FolderSidebarFileItemUI,
   FolderSidebarUI,
   FolderViewerUI,
+  FolderWindowUI,
 } from "./index";
 
 afterEach(() => {
@@ -35,8 +37,9 @@ describe("FolderSidebarUI", () => {
 });
 
 describe("FolderCategoryItemUI", () => {
-  it("CollapsibleUI disclosure, 선택 표현과 중첩 category를 조합한다", () => {
+  it("CollapsibleUI chevron disclosure와 ButtonUI label 선택을 독립 action으로 조합한다", () => {
     const onOpenChange = vi.fn();
+    const onSelect = vi.fn();
     const ref = createRef<HTMLLIElement>();
     const view = renderUITest(
       <FolderSidebarUI aria-label="카테고리">
@@ -45,25 +48,34 @@ describe("FolderCategoryItemUI", () => {
           icon={<span>F</span>}
           label="블로그"
           onOpenChange={onOpenChange}
+          onSelect={onSelect}
           ref={ref}
           selected
         >
-          <FolderCategoryItemUI label="React" />
+          <FolderSidebarFileItemUI title="React" />
         </FolderCategoryItemUI>
       </FolderSidebarUI>,
     );
-    const trigger = view.getByRole("button", { name: "블로그" });
+    const disclosure = view.getByRole("button", { name: "블로그 하위 항목 표시 전환" });
+    const selection = view.getByRole("button", { name: "블로그" });
 
     expect(ref.current?.tagName).toBe("LI");
-    expect(trigger.className).toContain("wd-collapsible-ui__trigger");
-    expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    expect(trigger.getAttribute("aria-current")).toBe("page");
+    expect(disclosure.className).toContain("wd-collapsible-ui__trigger");
+    expect(disclosure.getAttribute("aria-expanded")).toBe("true");
+    expect(selection.className).toContain("wd-button-ui");
+    expect(selection.getAttribute("aria-current")).toBe("page");
     expect(view.getByRole("button", { name: "React" })).toBeTruthy();
     expect(view.getByText("F").parentElement?.getAttribute("aria-hidden")).toBe("true");
 
-    fireEvent.click(trigger);
+    fireEvent.click(selection);
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(disclosure.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(disclosure);
     expect(onOpenChange).toHaveBeenCalledWith(false);
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(disclosure.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("controlled disclosure와 native trigger props를 그대로 전달한다", () => {
@@ -73,13 +85,42 @@ describe("FolderCategoryItemUI", () => {
         label="프로젝트"
         open={false}
         triggerProps={{ "aria-label": "프로젝트 폴더 열기", onContextMenu }}
-      />,
+      >
+        <FolderSidebarFileItemUI title="문서" />
+      </FolderCategoryItemUI>,
     );
     const trigger = view.getByRole("button", { name: "프로젝트 폴더 열기" });
 
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
     trigger.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }));
     expect(onContextMenu).toHaveBeenCalledOnce();
+  });
+});
+
+describe("FolderSidebarFileItemUI", () => {
+  it("child file row의 selected 표현, native props와 activation을 전달한다", () => {
+    const onSelect = vi.fn();
+    const ref = createRef<HTMLLIElement>();
+    const view = renderUITest(
+      <FolderSidebarFileItemUI
+        buttonProps={{ id: "article-action" }}
+        icon={<span>file</span>}
+        onSelect={onSelect}
+        ref={ref}
+        selected
+        title="React 정리"
+      />,
+    );
+    const action = view.getByRole("button", { name: "React 정리" });
+
+    expect(ref.current?.className).toContain("wd-folder-sidebar-file-item-ui");
+    expect(action.className).toContain("wd-button-ui");
+    expect(action.getAttribute("aria-current")).toBe("page");
+    expect(action.id).toBe("article-action");
+    expect(view.getByText("file").parentElement?.getAttribute("aria-hidden")).toBe("true");
+
+    fireEvent.click(action);
+    expect(onSelect).toHaveBeenCalledOnce();
   });
 });
 
@@ -210,5 +251,78 @@ describe("FolderFrameUI", () => {
 
     fireEvent.click(view.getByRole("button", { name: "닫기" }));
     expect(onControl).toHaveBeenCalledWith({ control: "close" });
+  });
+});
+
+describe("FolderWindowUI", () => {
+  it("Window API 위에 complete Folder roles와 presentation callbacks를 조합한다", () => {
+    const onCategoryOpenChange = vi.fn();
+    const onCategorySelect = vi.fn();
+    const onFileOpen = vi.fn();
+    const onFileSelect = vi.fn();
+    const onSidebarFileSelect = vi.fn();
+    const view = renderUITest(
+      <FolderWindowUI
+        aria-label="프로젝트 폴더 창"
+        categories={[
+          {
+            defaultOpen: true,
+            files: [{ title: "중첩 문서", value: "nested" }],
+            label: "프로젝트",
+            selected: true,
+            value: "projects",
+          },
+        ]}
+        files={[{ selected: true, title: "카드 문서", value: "card" }]}
+        onCategoryOpenChange={onCategoryOpenChange}
+        onCategorySelect={onCategorySelect}
+        onFileOpen={onFileOpen}
+        onFileSelect={onFileSelect}
+        onSidebarFileSelect={onSidebarFileSelect}
+        routeBarProps={{ "aria-label": "프로젝트 경로" }}
+        routeInputProps={{
+          defaultValue: "projects",
+          label: "현재 경로",
+          options: [{ label: "프로젝트", value: "projects" }],
+        }}
+        sidebarLabel="프로젝트 분류"
+        tagInputProps={{
+          label: "태그 필터",
+          options: [{ label: "Design", value: "design" }],
+        }}
+        title="프로젝트"
+        viewerLabel="프로젝트 보기"
+      />,
+    );
+    const frame = view.getByRole("region", { name: "프로젝트 폴더 창" });
+    const disclosure = view.getByRole("button", { name: "프로젝트 하위 항목 표시 전환" });
+    const category = view.getByRole("button", { name: "프로젝트" });
+    const card = view.getByRole("button", { name: "카드 문서" });
+
+    expect(frame.getAttribute("data-variant")).toBe("folder");
+    expect(view.getByRole("navigation", { name: "프로젝트 경로" })).toBeTruthy();
+    expect(view.getByRole("navigation", { name: "프로젝트 분류" })).toBeTruthy();
+    expect(view.getByRole("group", { name: "프로젝트 보기 파일" })).toBeTruthy();
+    expect(view.getByRole("combobox", { name: "태그 필터" })).toBeTruthy();
+
+    fireEvent.click(category);
+    expect(onCategorySelect).toHaveBeenCalledWith({ value: "projects" });
+    expect(disclosure.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(disclosure);
+    expect(onCategoryOpenChange).toHaveBeenCalledWith({ open: false, value: "projects" });
+    expect(onCategorySelect).toHaveBeenCalledOnce();
+
+    fireEvent.click(disclosure);
+    fireEvent.click(view.getByRole("button", { name: "중첩 문서" }));
+    expect(onSidebarFileSelect).toHaveBeenCalledWith({
+      categoryValue: "projects",
+      value: "nested",
+    });
+
+    fireEvent.click(card);
+    fireEvent.doubleClick(card);
+    expect(onFileSelect).toHaveBeenCalledWith({ value: "card" });
+    expect(onFileOpen).toHaveBeenCalledWith({ value: "card" });
   });
 });

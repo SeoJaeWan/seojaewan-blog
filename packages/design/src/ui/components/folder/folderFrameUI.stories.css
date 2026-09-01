@@ -1,0 +1,49 @@
+.wd-folder-story-container {
+  block-size: 420px;
+  border: 1px solid var(--wd-color-border-default);
+  box-sizing: border-box;
+}
+
+.wd-folder-story-window-stage {
+  block-size: 532px;
+  inline-size: 872px;
+  position: relative;
+}
+
+.wd-folder-story-cover {
+  align-items: center;
+  block-size: 100%;
+  color: var(--wd-color-text-primary);
+  display: flex;
+  inline-size: 100%;
+  justify-content: center;
+}
+
+.wd-folder-story-cover > svg {
+  block-size: 32px;
+  inline-size: 32px;
+}
+
+.wd-folder-story-cover[data-tone="blue"] {
+  background: rgb(219 234 254);
+}
+
+.wd-folder-story-cover[data-tone="violet"] {
+  background: rgb(237 233 254);
+}
+
+.wd-folder-story-cover[data-tone="green"] {
+  background: rgb(220 252 231);
+}
+
+.wd-folder-story-cover[data-tone="amber"] {
+  background: rgb(254 243 199);
+}
+
+.wd-folder-story-probe {
+  block-size: 1px;
+  inline-size: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+}

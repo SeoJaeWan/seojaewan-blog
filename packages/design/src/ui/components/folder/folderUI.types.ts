@@ -5,7 +5,14 @@ import type {
   CollapsibleUIPanelProps,
   CollapsibleUITriggerProps,
 } from "../../primitives";
-import type { WindowFrameUIProps, WindowTitleBarUIProps } from "../window";
+import type {
+  RouteInputUIProps,
+  TagInputUIProps,
+  WindowControlsUIProps,
+  WindowFrameUIProps,
+  WindowRouteBarUIProps,
+  WindowTitleBarUIProps,
+} from "../window";
 
 /** Window chrome 위에 folder title slots와 renderable body를 조합하는 props다. */
 export interface FolderFrameUIProps extends Omit<WindowFrameUIProps, "children" | "titleBar"> {
@@ -47,18 +54,41 @@ export interface FolderCategoryItemUIProps extends Omit<ComponentPropsWithRef<"l
   disabled?: boolean;
   /** category label 앞에 배치할 장식 icon slot이다. */
   icon?: ReactNode;
-  /** category disclosure trigger에 표시할 접근 가능한 label이다. */
+  /** category 선택 action에 표시할 접근 가능한 label이다. */
   label: ReactNode;
+  /** chevron disclosure action의 접근 가능한 이름이다. */
+  disclosureLabel?: string;
   /** disclosure 표시 상태 변경만 보고한다. */
   onOpenChange?: (open: boolean) => void;
+  /** category label 선택만 보고한다. */
+  onSelect?: () => void;
   /** 제어된 disclosure 표시 상태다. */
   open?: boolean;
   /** 중첩 panel에 전달할 native div props다. */
   panelProps?: Omit<CollapsibleUIPanelProps, "children">;
   /** 현재 category의 선택 표현이며 선택 저장은 소유하지 않는다. */
   selected?: boolean;
-  /** disclosure trigger에 전달할 native button props다. */
+  /** category label ButtonUI에 전달할 native button props다. */
+  selectionProps?: Omit<ButtonUIProps, "children">;
+  /** chevron disclosure trigger에 전달할 native button props다. */
   triggerProps?: Omit<CollapsibleUITriggerProps, "children">;
+}
+
+/** FolderSidebarFileItemUI의 child file row와 native list item props를 정의한다. */
+export interface FolderSidebarFileItemUIProps extends Omit<
+  ComponentPropsWithRef<"li">,
+  "children" | "title"
+> {
+  /** child file action ButtonUI에 전달할 native button props다. */
+  buttonProps?: Omit<ButtonUIProps, "children">;
+  /** file title 앞에 배치할 장식 icon slot이다. */
+  icon?: ReactNode;
+  /** child file 선택만 보고한다. */
+  onSelect?: () => void;
+  /** 현재 child file의 선택 표현이며 선택 저장은 소유하지 않는다. */
+  selected?: boolean;
+  /** child file action의 accessible name이 되는 한 줄 title이다. */
+  title: ReactNode;
 }
 
 /** FolderFileGridUI의 card size와 native group props를 정의한다. */
@@ -75,4 +105,91 @@ export interface FolderFileCardUIProps extends Omit<ButtonUIProps, "children" | 
   selected?: boolean;
   /** card action의 accessible name이 되는 한 줄 title이다. */
   title: ReactNode;
+}
+
+/** 완성형 FolderWindowUI sidebar에 전달하는 child file presentation DTO다. */
+export interface FolderWindowSidebarFileUIItem {
+  disabled?: boolean;
+  icon?: ReactNode;
+  selected?: boolean;
+  title: ReactNode;
+  value: string;
+}
+
+/** 완성형 FolderWindowUI sidebar에 전달하는 category presentation DTO다. */
+export interface FolderWindowCategoryUIItem {
+  defaultOpen?: boolean;
+  disabled?: boolean;
+  disclosureLabel?: string;
+  files?: readonly FolderWindowSidebarFileUIItem[];
+  icon?: ReactNode;
+  label: ReactNode;
+  open?: boolean;
+  selected?: boolean;
+  value: string;
+}
+
+/** 완성형 FolderWindowUI grid에 전달하는 file card presentation DTO다. */
+export interface FolderWindowFileUIItem {
+  cover?: ReactNode;
+  disabled?: boolean;
+  selected?: boolean;
+  title: ReactNode;
+  value: string;
+}
+
+export interface FolderWindowCategorySelectUIEvent {
+  value: string;
+}
+
+export interface FolderWindowCategoryOpenUIEvent extends FolderWindowCategorySelectUIEvent {
+  open: boolean;
+}
+
+export interface FolderWindowSidebarFileSelectUIEvent {
+  categoryValue: string;
+  value: string;
+}
+
+export interface FolderWindowFileUIEvent {
+  value: string;
+}
+
+/** 완성된 Folder Window chrome, sidebar tree와 file grid의 presentation contract다. */
+export interface FolderWindowUIProps extends Omit<
+  WindowFrameUIProps,
+  "children" | "routeBar" | "title" | "titleBar" | "variant"
+> {
+  /** Folder sidebar에 표시할 category presentation DTO다. */
+  categories: readonly FolderWindowCategoryUIItem[];
+  /** 넓은 container에서 적용할 file card 폭이다. */
+  cardSize?: FolderFileCardUISize;
+  /** WindowControlsUI에 전달할 presentation props다. */
+  controlsProps?: WindowControlsUIProps;
+  /** Folder grid에 표시할 file card presentation DTO다. */
+  files: readonly FolderWindowFileUIItem[];
+  /** title 왼쪽에 표시할 장식 icon이다. */
+  icon?: ReactNode;
+  /** category disclosure 변경을 category value와 함께 보고한다. */
+  onCategoryOpenChange?: (event: FolderWindowCategoryOpenUIEvent) => void;
+  /** category label 선택을 category value와 함께 보고한다. */
+  onCategorySelect?: (event: FolderWindowCategorySelectUIEvent) => void;
+  /** file card double click 열기를 file value와 함께 보고한다. */
+  onFileOpen?: (event: FolderWindowFileUIEvent) => void;
+  /** file card click 또는 keyboard activation을 file value와 함께 보고한다. */
+  onFileSelect?: (event: FolderWindowFileUIEvent) => void;
+  /** child file row 선택을 category/file value와 함께 보고한다. */
+  onSidebarFileSelect?: (event: FolderWindowSidebarFileSelectUIEvent) => void;
+  /** WindowRouteBarUI에 전달할 history presentation props다. */
+  routeBarProps?: Omit<WindowRouteBarUIProps, "children" | "tagInput">;
+  /** Folder rounded route field에 전달할 presentation props다. */
+  routeInputProps: Omit<RouteInputUIProps, "shape">;
+  /** sidebar navigation landmark의 접근 가능한 이름이다. */
+  sidebarLabel: string;
+  /** optional Folder tag field에 전달할 presentation props다. */
+  tagInputProps?: TagInputUIProps;
+  /** Folder titlebar에 표시할 renderable title이다. */
+  title: ReactNode;
+  /** Folder viewer region의 접근 가능한 이름이다. */
+  viewerLabel: string;
 }
