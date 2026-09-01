@@ -1,0 +1,26 @@
+:root {
+  --wd-window-panel-root-backdrop-blur: 40px;
+  --wd-window-panel-root-background-color: var(--wd-color-surface-panel);
+  --wd-window-panel-root-border-color: var(--wd-color-border-default);
+  --wd-window-panel-root-border-radius: var(--wd-reference-radius-3);
+  --wd-window-panel-root-border-width: 1px;
+  --wd-window-panel-root-box-shadow: var(--wd-reference-shadow-1);
+  --wd-window-panel-root-color: var(--wd-color-text-primary);
+  --wd-window-panel-root-font-family: var(--wd-font-family-sans);
+  --wd-window-panel-root-font-size: 14px;
+  --wd-window-panel-root-height: 600px;
+  --wd-window-panel-root-motion-offset: var(--wd-reference-spacing-2);
+  --wd-window-panel-root-padding-inline: var(--wd-reference-spacing-5);
+  --wd-window-panel-root-padding-block-start: var(--wd-reference-spacing-5);
+  --wd-window-panel-root-motion-duration-open: var(--wd-reference-duration-220);
+  --wd-window-panel-root-motion-easing-open: var(--wd-reference-easing-3);
+  --wd-window-panel-root-motion-duration-close: var(--wd-reference-duration-200);
+  --wd-window-panel-root-motion-easing-close: var(--wd-reference-easing-4);
+  --wd-window-panel-root-width: 100vw;
+  --wd-window-panel-root-width-large: 30vw;
+  --wd-window-panel-root-width-medium: 50vw;
+  --wd-window-panel-view-transition-duration: var(--wd-reference-duration-500);
+  --wd-window-panel-control-outline-offset-focus: 2px;
+  --wd-window-panel-control-ring-width-focus: 4px;
+  --wd-window-panel-control-ring-color-focus: var(--wd-color-focus-ring);
+}

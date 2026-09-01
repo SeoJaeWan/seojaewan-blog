@@ -1,0 +1,77 @@
+.wd-collapsible-ui {
+  color: var(--wd-collapsible-root-color);
+  font-family: var(--wd-collapsible-root-font-family);
+  font-size: var(--wd-collapsible-root-font-size);
+  font-weight: var(--wd-collapsible-root-font-weight);
+  line-height: var(--wd-collapsible-root-line-height);
+}
+
+.wd-collapsible-ui__trigger {
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--wd-collapsible-trigger-border-radius);
+  box-sizing: border-box;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  gap: var(--wd-collapsible-trigger-gap);
+  min-block-size: var(--wd-collapsible-trigger-min-height);
+  padding-block: var(--wd-collapsible-trigger-padding-block);
+  padding-inline: var(--wd-collapsible-trigger-padding-inline);
+  text-align: start;
+  transition:
+    background-color var(--wd-collapsible-trigger-transition-duration)
+      var(--wd-collapsible-trigger-transition-easing),
+    opacity var(--wd-collapsible-trigger-transition-duration)
+      var(--wd-collapsible-trigger-transition-easing);
+}
+
+.wd-collapsible-ui__trigger:hover:not(:disabled, [data-disabled]) {
+  background-color: var(--wd-collapsible-trigger-background-color-hover);
+}
+
+.wd-collapsible-ui__trigger:active:not(:disabled, [data-disabled]) {
+  background-color: var(--wd-collapsible-trigger-background-color-pressed);
+}
+
+.wd-collapsible-ui__trigger:focus {
+  outline: none;
+}
+
+.wd-collapsible-ui__trigger:focus-visible {
+  outline: 2px solid var(--wd-collapsible-trigger-outline-color-focus-visible);
+  outline-offset: 2px;
+}
+
+.wd-collapsible-ui__trigger:disabled,
+.wd-collapsible-ui__trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--wd-collapsible-trigger-opacity-disabled);
+}
+
+.wd-collapsible-ui__trigger-icon {
+  block-size: var(--wd-collapsible-trigger-icon-size);
+  flex-shrink: 0;
+  inline-size: var(--wd-collapsible-trigger-icon-size);
+  transform: rotate(0deg);
+  transition: transform var(--wd-collapsible-trigger-transition-duration)
+    var(--wd-collapsible-trigger-transition-easing);
+}
+
+.wd-collapsible-ui__trigger[data-panel-open] > .wd-collapsible-ui__trigger-icon {
+  transform: rotate(90deg);
+}
+
+.wd-collapsible-ui__panel {
+  overflow: hidden;
+  padding-block: var(--wd-collapsible-panel-padding-block);
+  padding-inline: var(--wd-collapsible-panel-padding-inline);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-collapsible-ui__trigger-icon {
+    transition-duration: 0ms;
+  }
+}

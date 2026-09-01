@@ -1,0 +1,63 @@
+.wd-folder-frame-ui > .wd-window-frame-ui__body {
+  overflow: hidden;
+}
+
+.wd-folder-viewer-ui {
+  background-color: var(--wd-folder-viewer-background-color);
+  block-size: 100%;
+  box-sizing: border-box;
+  container-name: wd-folder-viewer;
+  container-type: inline-size;
+  display: flex;
+  inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.wd-folder-viewer-ui__sidebar {
+  border-inline-end: var(--wd-folder-viewer-sidebar-border-width) solid
+    var(--wd-folder-viewer-sidebar-border-color);
+  box-sizing: border-box;
+  display: none;
+  flex: none;
+  margin-inline-end: var(--wd-folder-viewer-sidebar-gap);
+  min-block-size: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: var(--wd-folder-viewer-sidebar-padding-block);
+  padding-inline: var(--wd-folder-viewer-sidebar-padding-inline);
+}
+
+.wd-folder-viewer-ui__content {
+  align-content: start;
+  display: grid;
+  flex: 1;
+  gap: var(--wd-folder-viewer-grid-gap);
+  grid-template-columns: minmax(0, 1fr);
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--wd-folder-viewer-content-padding);
+}
+
+.wd-folder-viewer-ui__content > * {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+@container wd-folder-viewer (min-width: 48rem) {
+  .wd-folder-viewer-ui__sidebar {
+    display: block;
+    inline-size: var(--wd-folder-viewer-sidebar-inline-size);
+  }
+
+  .wd-folder-viewer-ui__content {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(var(--wd-folder-viewer-grid-column-min-inline-size), 100%), 1fr)
+    );
+  }
+}

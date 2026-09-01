@@ -5,48 +5,39 @@ Windows 11 UI를 기반으로 한 블로그를 새 모노레포 구조로 재구
 ## Workspace
 
 ```txt
-apps/
-  web/          # Next.js app
 packages/
-  shell/        # Functional UI assembly package
-  ui/           # Render-only design system package
+  design/          # Canonical UI/Core/Shell design package
+  shell/           # Legacy interaction reference
+  ui/              # Legacy visual reference
 ```
+
+`apps/web` is the planned application target and is not present in the current workspace yet.
 
 ## Package Boundary
 
-The runtime dependency direction is `@window/ui ← @window/shell ← apps/web`.
+The canonical dependency direction is `Application → Design Shell → Design UI/Core` inside
+`@window/design`.
 
-- `@window/ui` owns render-only React components, CSS, visual assets, and static Storybook
-  stories. Components receive state, computed styles, refs, and callbacks through props.
-- `@window/shell` owns hooks, providers, contexts, browser APIs, measurement, animation
-  controllers, functional component assembly, and a functional Storybook. It consumes the public
-  `@window/ui` API and does not ship runtime CSS or story-only harness code.
-- UI Storybook is a visual catalog for fixed modes, variants, and states. It does not import
-  `@window/shell` or demonstrate state transitions through clicks, timers, or browser APIs.
-- Shell Storybook assembles the real shell connectors in one shared harness so developers can
-  explore user-visible state transitions manually. Each connector pairs focused MDX Docs with one
-  behavior story, and deterministic state presets keep every supported flow in that canvas.
-  Diagnostics live in the canvas instead of Storybook's addon panel. Automated behavior
-  verification remains in colocated test files. Future Start, Search, Hover, and Context panel
-  connectors reuse the same taskbar slot and provider boundary.
+- `@window/design` is the canonical destination for new UI, Core, and Shell work.
+- `packages/ui` and `packages/shell` are retained only as visual, asset, interaction, and timing
+  references during migration. Do not add new product architecture or dependencies on them.
+- Legacy packages remain directly runnable for comparison until regression verification permits
+  their removal, but they are not exposed as root Storybook entry points.
 
 ## Tooling
 
 - Package manager: pnpm
 - Monorepo runner: Turborepo
-- App target: Next.js 16
-- UI package target: Vite library + Storybook
-- Shell package target: Vite library + functional Storybook
+- Planned app target: Next.js 16
+- Design package target: Vite library + Storybook
 
 ## Scripts
 
 ```bash
-pnpm dev
-pnpm storybook:ui
-pnpm storybook:shell
+pnpm dev:all
+pnpm storybook:dev:design
+pnpm storybook:build:design
 pnpm build
-pnpm build:storybook:ui
-pnpm build:storybook:shell
 pnpm lint
 pnpm typecheck
 pnpm test
@@ -55,10 +46,20 @@ pnpm format
 pnpm format:check
 ```
 
-When validating package changes directly, build `@window/ui` before `@window/shell` because
-the shell consumes the UI package's public `dist` exports.
+Root Storybook commands follow `storybook:{dev|build}:<workspace>`. The workspace suffix is
+required because application-specific Storybooks may be added later. Unscoped `storybook:dev` and
+`storybook:build` remain reserved for a future composed Storybook.
 
-## Architecture
+`pnpm dev:all` runs every workspace `dev` task. The unscoped `pnpm dev` command remains reserved for
+the future primary application runtime.
 
-- [Windows domain architecture](./.codex/architecture/windows-domain.md)
-- [Taskbar layout](./.codex/layout/taskbar.md)
+For legacy comparison only, run `pnpm --filter @window/ui dev` or
+`pnpm --filter @window/shell dev` directly.
+
+## Project Knowledge
+
+Durable architecture, conventions, commands, and development guides are maintained in Workbench
+Local Work Memory. Revision-pinned project evidence is curated there as well. Current delivery
+status and follow-up work are maintained as Gateway Work Items.
+
+- [Agent bootstrap and knowledge precedence](./AGENTS.md)
