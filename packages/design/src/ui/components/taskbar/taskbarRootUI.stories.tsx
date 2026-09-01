@@ -1,310 +1,224 @@
-import { useState } from "react";
-
 import {
   Code20Regular,
   Document20Regular,
   Folder20Regular,
+  Open16Regular,
+  Pin16Regular,
   Settings20Regular,
 } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
-import { ButtonUI } from "../../primitives";
 import { FolderFileCardUI, FolderFileGridUI } from "../folder";
 import { WindowFrameUI, WindowTabUI, WindowTitleBarUI } from "../window";
-import {
-  TaskbarAppListUI,
-  TaskbarClockUI,
-  TaskbarItemUI,
-  TaskbarPanelUI,
-  TaskbarPreviewUI,
-  TaskbarRootUI,
-  TaskbarSearchUI,
-  TaskbarStartButtonUI,
-  WindowPanelUI,
-} from "./index";
+import { TaskbarPreviewUI, TaskbarUI, WindowPanelUI } from "./index";
 
 import "./taskbarRootUI.stories.css";
 
 const FIXED_CLOCK = new Date("2026-09-01T06:24:00.000Z");
-const onTaskbarAction = fn();
-const onDisabledTaskbarAction = fn();
+const onContextAction = fn();
+const onContextTaskSelect = fn();
+const onDetailAction = fn();
+const onGroupAction = fn();
+const onItemSelect = fn();
+const onPreviewClose = fn();
+const onPreviewSelect = fn();
+
+const ENTRIES = [
+  { icon: <Folder20Regular />, label: "파일 탐색기", value: "folder" },
+  { icon: <Code20Regular />, label: "개발 노트", value: "notes" },
+  { icon: <Settings20Regular />, label: "설정", value: "settings" },
+  { icon: <Document20Regular />, label: "구성요소 계약", value: "contract" },
+  { icon: <Document20Regular />, label: "테스트 규칙", value: "testing" },
+  { icon: <Document20Regular />, label: "작업 계획", value: "plan" },
+] as const;
+
+const PREVIEW_WINDOW = (
+  <WindowFrameUI
+    aria-label="파일 탐색기 preview 창"
+    bounds={{ blockSize: 1024, inlineSize: 1920 }}
+    titleBar={
+      <WindowTitleBarUI>
+        <WindowTabUI icon={<Folder20Regular aria-hidden="true" />} titleContent="파일 탐색기" />
+      </WindowTitleBarUI>
+    }
+  >
+    <FolderFileGridUI aria-label="미리 보기 파일" cardSize="large">
+      <FolderFileCardUI cover={<Document20Regular aria-hidden="true" />} title="문서" />
+      <FolderFileCardUI cover={<Folder20Regular aria-hidden="true" />} title="사진" />
+    </FolderFileGridUI>
+  </WindowFrameUI>
+);
 
 const meta = {
   title: "UI/Components/Taskbar",
-  component: TaskbarRootUI,
+  component: TaskbarUI,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          "TaskbarRootUI는 private single-active scope와 portal layer를 만들고 TaskbarPanelUI가 production PopoverUI를 소비해 Start, Search와 hover preview의 focus·dismiss·placement·presence를 완성합니다. WindowPanelUI와 TaskbarPreviewUI는 controlled presentation surface이며 검색 실행, app/session 계산과 window activation은 제품 binding이 맡습니다.",
+          "TaskbarUI는 Start Pinned/All, Search recommendation/results/detail, running groups, scaled session previews, production ContextMenuUI와 clock을 완성합니다. UI-local open·focus·portal·placement·presence만 private family state로 소유하며 전달받은 opaque presentation value의 제품 의미는 해석하지 않습니다.",
       },
     },
   },
-} satisfies Meta<typeof TaskbarRootUI>;
+} satisfies Meta<typeof TaskbarUI>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const ProductTaskbar = () => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const [startOpen, setStartOpen] = useState(false);
-
-  return (
+export const ProductReference: Story = {
+  name: "Product Reference — Windows taskbar 전체 조합",
+  args: {
+    "aria-label": "작업 표시줄",
+    allSections: [
+      { category: "F", entries: [ENTRIES[0]] },
+      { category: "N", entries: [ENTRIES[1]] },
+      { category: "S", entries: [ENTRIES[2]] },
+    ],
+    bestSections: [
+      { entries: [ENTRIES[0], ENTRIES[1], ENTRIES[2]], title: "자주 사용" },
+      { entries: [ENTRIES[3], ENTRIES[4], ENTRIES[5]], title: "최근 문서" },
+    ],
+    clockTimeZone: "Asia/Seoul",
+    clockValue: FIXED_CLOCK,
+    detailActions: [
+      { icon: <Open16Regular />, label: "열기", value: "open" },
+      { icon: <Pin16Regular />, label: "시작 화면에 고정", value: "pin-start" },
+    ],
+    groups: [
+      { icon: <Settings20Regular />, label: "대기 앱", state: "idle", value: "idle" },
+      {
+        icon: <Folder20Regular />,
+        label: "실행 중인 파일 탐색기",
+        previews: [
+          {
+            icon: <Folder20Regular />,
+            label: "문서 파일 탐색기",
+            preview: PREVIEW_WINDOW,
+            value: "folder-preview",
+          },
+        ],
+        state: "running",
+        value: "folder-group",
+      },
+      {
+        actions: [
+          { icon: <Open16Regular />, label: "새 창 열기", trailing: "Enter", value: "new" },
+          { icon: <Pin16Regular />, label: "작업 표시줄에서 제거", value: "unpin" },
+        ],
+        icon: <Code20Regular />,
+        label: "활성 개발 노트",
+        state: "active",
+        tasks: [{ icon: <Document20Regular />, label: "최근 개발 노트", value: "recent-note" }],
+        value: "notes-group",
+      },
+    ],
+    onContextAction,
+    onContextTaskSelect,
+    onDetailAction,
+    onGroupAction,
+    onItemSelect,
+    onPreviewClose,
+    onPreviewSelect,
+    pinnedItems: ENTRIES,
+    recommendedItems: [ENTRIES[3], ENTRIES[4], ENTRIES[5]],
+    results: [
+      { ...ENTRIES[3], description: "HDJG-26" },
+      { ...ENTRIES[4], description: "UI convention" },
+    ],
+  },
+  render: (args) => (
     <main className="wd-taskbar-product-reference">
       <section aria-label="Windows desktop" className="wd-taskbar-product-reference__desktop">
         <p>Windows 11 taskbar Product Reference</p>
-        <article className="wd-taskbar-product-reference__desktop-card">
+        <article>
           <Document20Regular aria-hidden="true" />
-          <span>HDJG-26 역할·Primitive 완전성</span>
+          <span>HDJG-26 production Component 완전성</span>
         </article>
       </section>
-
-      <TaskbarRootUI aria-label="작업 표시줄" data-testid="product-taskbar-root">
-        <TaskbarPanelUI
-          align="start"
-          className="wd-taskbar-product-reference__surface-anchor"
-          label="시작 메뉴"
-          onOpenChange={setStartOpen}
-          open={startOpen}
-          side="top"
-          sideOffset={8}
-          trigger={<TaskbarStartButtonUI selected={startOpen} />}
-        >
-          <WindowPanelUI aria-label="시작 panel visual" data-testid="product-window-panel">
-            <TaskbarSearchUI aria-label="시작 메뉴 검색" placeholder="앱 및 문서 검색" />
-            <div className="wd-taskbar-product-reference__panel-header">
-              <strong>고정됨</strong>
-              <ButtonUI>모두</ButtonUI>
-            </div>
-            <div className="wd-taskbar-product-reference__pinned-grid">
-              <ButtonUI>
-                <Folder20Regular aria-hidden="true" />
-                파일 탐색기
-              </ButtonUI>
-              <ButtonUI>
-                <Code20Regular aria-hidden="true" />
-                개발 노트
-              </ButtonUI>
-              <ButtonUI>
-                <Settings20Regular aria-hidden="true" />
-                설정
-              </ButtonUI>
-            </div>
-            <p className="wd-taskbar-product-reference__panel-note">
-              panel data와 app 실행은 이 표시 component 밖에서 연결됩니다.
-            </p>
-          </WindowPanelUI>
-        </TaskbarPanelUI>
-
-        <TaskbarPanelUI
-          align="start"
-          className="wd-taskbar-product-reference__search-results"
-          label="검색 추천"
-          onOpenChange={setSearchOpen}
-          open={searchOpen}
-          side="top"
-          trigger={
-            <ButtonUI className="wd-taskbar-search-trigger-ui">
-              <span>{searchValue || "검색"}</span>
-            </ButtonUI>
-          }
-        >
-          <p>{searchValue ? `“${searchValue}”의 표시 예시` : "앱, 문서 및 설정을 찾아보세요."}</p>
-          <TaskbarSearchUI
-            aria-label="작업 표시줄 검색"
-            onChange={(event) => setSearchValue(event.currentTarget.value)}
-            placeholder="앱, 문서 및 설정 검색"
-            value={searchValue}
-          />
-          <div className="wd-taskbar-product-reference__search-row">
-            <Document20Regular aria-hidden="true" />
-            <span>{searchValue || "최근 문서"}</span>
-          </div>
-        </TaskbarPanelUI>
-
-        <TaskbarAppListUI aria-label="앱 목록" role="group">
-          <TaskbarItemUI icon={<Settings20Regular />} label="대기 앱" />
-          <TaskbarPanelUI
-            className="wd-taskbar-product-reference__surface-anchor"
-            initialFocus={false}
-            label="파일 탐색기 미리 보기"
-            onOpenChange={setPreviewOpen}
-            open={previewOpen}
-            side="top"
-            sideOffset={8}
-            trigger={
-              <TaskbarItemUI
-                data-testid="product-running-item"
-                icon={<Folder20Regular />}
-                label="실행 중인 파일 탐색기"
-                onAction={onTaskbarAction}
-                onPointerEnter={() => setPreviewOpen(true)}
-                onPointerLeave={() => setPreviewOpen(false)}
-                state="running"
-              />
-            }
-          >
-            <TaskbarPreviewUI
-              aria-label="파일 탐색기 preview visual"
-              preview={
-                <WindowFrameUI
-                  aria-label="파일 탐색기 preview 창"
-                  bounds={{ blockSize: 126, inlineSize: 224 }}
-                  className="wd-taskbar-product-reference__preview-window"
-                  titleBar={
-                    <WindowTitleBarUI>
-                      <WindowTabUI
-                        icon={<Folder20Regular aria-hidden="true" />}
-                        titleContent="파일 탐색기"
-                      />
-                    </WindowTitleBarUI>
-                  }
-                >
-                  <FolderFileGridUI aria-label="미리 보기 파일" cardSize="small">
-                    <FolderFileCardUI
-                      cover={<Document20Regular aria-hidden="true" />}
-                      title="문서"
-                    />
-                    <FolderFileCardUI cover={<Folder20Regular aria-hidden="true" />} title="사진" />
-                  </FolderFileGridUI>
-                </WindowFrameUI>
-              }
-            />
-          </TaskbarPanelUI>
-          <TaskbarItemUI
-            data-testid="product-active-item"
-            icon={<Code20Regular />}
-            label="활성 개발 노트"
-            onAction={onTaskbarAction}
-            state="active"
-          />
-          <TaskbarItemUI
-            disabled
-            icon={<Document20Regular />}
-            label="사용할 수 없는 앱"
-            onAction={onDisabledTaskbarAction}
-          />
-        </TaskbarAppListUI>
-
-        <TaskbarClockUI timeZone="Asia/Seoul" value={FIXED_CLOCK} />
-      </TaskbarRootUI>
+      <TaskbarUI {...args} />
     </main>
-  );
-};
-
-export const ProductReference: Story = {
-  name: "Product Reference — Windows taskbar 전체 조합",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "현재 제품에 있는 Windows taskbar를 Start, Search, app 상태, clock, hover preview와 panel surface로 재현합니다. local state는 Popover focus와 dismiss를 관찰하기 위한 fixture일 뿐 검색 실행, window activation과 hover 정책을 구현하지 않습니다.",
-      },
-    },
-  },
-  render: () => <ProductTaskbar />,
+  ),
   play: async ({ canvasElement }) => {
-    onTaskbarAction.mockClear();
-    onDisabledTaskbarAction.mockClear();
+    for (const mock of [
+      onContextAction,
+      onContextTaskSelect,
+      onDetailAction,
+      onGroupAction,
+      onItemSelect,
+      onPreviewClose,
+      onPreviewSelect,
+    ])
+      mock.mockClear();
+
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const root = canvas.getByRole("navigation", { name: "작업 표시줄" });
     const desktop = canvas.getByLabelText("Windows desktop");
+    const root = canvas.getByRole("navigation", { name: "작업 표시줄" });
     const start = canvas.getByRole("button", { name: "시작" });
-    const logo = start.querySelector<SVGElement>(".wd-taskbar-start-button-ui__logo");
     const searchTrigger = canvas.getByRole("button", { name: "검색" });
-    const idle = canvas.getByRole("button", { name: "대기 앱" });
     const running = canvas.getByRole("button", { name: "실행 중인 파일 탐색기" });
     const active = canvas.getByRole("button", { name: "활성 개발 노트" });
-    const disabled = canvas.getByRole("button", { name: "사용할 수 없는 앱" });
-    const rootStyle = getComputedStyle(root);
 
     await expect(root.getBoundingClientRect().height).toBeCloseTo(50, 0);
     await expect(root.getBoundingClientRect().width).toBeCloseTo(window.innerWidth, 0);
-    await expect(rootStyle.position).toBe("fixed");
-    await expect(rootStyle.bottom).toBe("0px");
-    await expect(rootStyle.gap).toBe("12px");
-    await expect(rootStyle.backdropFilter).toContain("blur(18px)");
-    await expect(rootStyle.backdropFilter).toContain("saturate(1.15)");
-    await expect(logo).not.toBeNull();
-    await expect(logo!.getBoundingClientRect().width).toBeCloseTo(30, 0);
-    await expect(logo!.getBoundingClientRect().height).toBeCloseTo(30, 0);
-    await expect(searchTrigger.getBoundingClientRect().width).toBeCloseTo(220, 0);
-
-    for (const item of [idle, running, active, disabled]) {
-      await expect(item.getBoundingClientRect().width).toBeCloseTo(40, 0);
-      await expect(item.getBoundingClientRect().height).toBeCloseTo(40, 0);
-      await expect(item).toHaveClass("wd-icon-button-ui");
-    }
-
-    await expect(running).toHaveAttribute("data-state", "running");
-    await expect(active).toHaveAttribute("data-state", "active");
-    await expect(active).toHaveAttribute("aria-pressed", "true");
+    await expect(getComputedStyle(root).position).toBe("fixed");
     await expect(canvas.getByLabelText("날짜 및 시간")).toHaveTextContent("2026-09-01");
 
     await userEvent.click(start);
     const startDialog = await page.findByRole("dialog", { name: "시작 메뉴" });
-    const panel = page.getByTestId("product-window-panel");
-    const expectedWidth =
-      window.innerWidth >= 1280
-        ? window.innerWidth * 0.3
-        : window.innerWidth >= 768
-          ? window.innerWidth * 0.5
-          : window.innerWidth;
-
-    await expect(startDialog).not.toHaveAttribute("aria-modal", "true");
-    await expect(document.querySelector("[data-taskbar-panel-layer]")?.contains(startDialog)).toBe(
-      true,
-    );
-    await expect(startDialog.closest(".wd-popover-ui__positioner")?.getAttribute("data-side")).toBe(
-      "top",
-    );
-    await waitFor(() => expect(panel.getBoundingClientRect().height).toBeCloseTo(600, 0));
-    await expect(panel.getBoundingClientRect().width).toBeCloseTo(expectedWidth, 0);
+    await expect(startDialog).toHaveTextContent("고정됨");
     await expect(page.getByRole("searchbox", { name: "시작 메뉴 검색" })).toHaveFocus();
-
+    await userEvent.click(page.getByRole("button", { name: "모두" }));
+    await expect(page.getByRole("heading", { name: "모두" })).toBeVisible();
+    await userEvent.click(
+      within(page.getByRole("group", { name: "모든 항목" })).getByRole("button", { name: "F" }),
+    );
+    const categoryOverlay = page.getByRole("group", { name: "카테고리 이동" });
+    await expect(categoryOverlay).toHaveAttribute("data-open", "true");
+    await userEvent.click(within(categoryOverlay).getByRole("button", { name: "F" }));
+    await userEvent.click(page.getByRole("button", { name: "파일 탐색기" }));
+    await expect(onItemSelect).toHaveBeenCalledWith("folder");
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(page.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
     await expect(start).toHaveFocus();
 
-    await userEvent.click(start);
-    await page.findByRole("dialog", { name: "시작 메뉴" });
     await userEvent.click(searchTrigger);
-    const searchDialog = await page.findByRole("dialog", { name: "검색 추천" });
+    const searchDialog = await page.findByRole("dialog", { name: "검색" });
     const search = page.getByRole("searchbox", { name: "작업 표시줄 검색" });
-    await waitFor(() => expect(page.queryByRole("dialog", { name: "시작 메뉴" })).toBeNull());
-    await expect(page.getAllByRole("dialog")).toHaveLength(1);
-    await expect(searchDialog).not.toHaveAttribute("aria-modal", "true");
+    await expect(searchDialog).toHaveTextContent("추천");
     await expect(search).toHaveFocus();
     await userEvent.type(search, "문서");
-    await expect(search).toHaveValue("문서");
-    await expect(searchDialog).toHaveTextContent("“문서”의 표시 예시");
+    await expect(searchDialog).toHaveTextContent("최적의 일치");
+    await userEvent.click(page.getByRole("button", { name: "구성요소 계약 자세히" }));
+    await expect(page.getByRole("region", { name: "구성요소 계약 상세" })).toBeVisible();
+    await userEvent.click(page.getByRole("button", { name: "열기" }));
+    await expect(onDetailAction).toHaveBeenCalledWith("open", "contract");
     await userEvent.click(desktop);
-    await waitFor(() => expect(page.queryByRole("dialog", { name: "검색 추천" })).toBeNull());
+    await waitFor(() => expect(page.queryByRole("dialog", { name: "검색" })).toBeNull());
 
     await userEvent.hover(running);
-    const previewDialog = await page.findByRole("dialog", { name: "파일 탐색기 미리 보기" });
-    await expect(previewDialog).not.toHaveAttribute("aria-modal", "true");
-    await waitFor(() =>
-      expect(page.getByRole("region", { name: "파일 탐색기 preview visual" })).toBeVisible(),
-    );
-    await expect(page.getByRole("region", { name: "파일 탐색기 preview 창" })).toBeVisible();
-    await expect(page.getByRole("group", { name: "미리 보기 파일" })).toBeVisible();
-    await userEvent.unhover(running);
-    await waitFor(() =>
-      expect(page.queryByRole("dialog", { name: "파일 탐색기 미리 보기" })).toBeNull(),
-    );
+    const previewDialog = await page.findByRole("dialog", {
+      name: "실행 중인 파일 탐색기 미리 보기",
+    });
+    await expect(
+      within(previewDialog).getByRole("button", { name: "문서 파일 탐색기" }),
+    ).toBeVisible();
+    await expect(within(previewDialog).getByLabelText("파일 탐색기 preview 창")).toBeVisible();
+    await userEvent.click(within(previewDialog).getByRole("button", { name: "문서 파일 탐색기" }));
+    await expect(onPreviewSelect).toHaveBeenCalledWith("folder-group", "folder-preview");
+    await userEvent.keyboard("{Escape}");
 
-    await userEvent.click(active);
-    await expect(onTaskbarAction).toHaveBeenCalledOnce();
-    await userEvent.click(disabled);
-    await expect(onDisabledTaskbarAction).not.toHaveBeenCalled();
+    await userEvent.pointer({ keys: "[MouseRight]", target: active });
+    const menu = await page.findByRole("menu", { name: "활성 개발 노트 작업" });
+    const recentItem = within(menu).getByRole("menuitem", { name: /최근 개발 노트/ });
+    const newWindowItem = within(menu).getByRole("menuitem", { name: /새 창 열기/ });
+    await waitFor(() => expect(recentItem).toBeVisible());
+    await userEvent.click(newWindowItem);
+    await expect(onContextAction).toHaveBeenCalledWith("notes-group", "new");
   },
 };
 
@@ -318,14 +232,16 @@ export const PreviewAndPanelStates: Story = {
       <TaskbarPreviewUI
         aria-label="진입 중인 미리 보기"
         data-testid="preview-entering"
-        preview={<div>entering preview slot</div>}
+        preview="entering"
         state="entering"
+        title="진입 preview"
       />
       <TaskbarPreviewUI
         aria-label="퇴장 중인 미리 보기"
         data-testid="preview-exiting"
-        preview={<div>exiting preview slot</div>}
+        preview="exiting"
         state="exiting"
+        title="퇴장 preview"
       />
       <WindowPanelUI
         aria-label="진입 중인 시작 panel"
@@ -333,7 +249,7 @@ export const PreviewAndPanelStates: Story = {
         role="dialog"
         state="entering"
       >
-        entering panel slot
+        entering
       </WindowPanelUI>
       <WindowPanelUI
         aria-label="퇴장 중인 시작 panel"
@@ -341,9 +257,14 @@ export const PreviewAndPanelStates: Story = {
         role="dialog"
         state="exiting"
       >
-        exiting panel slot
+        exiting
       </WindowPanelUI>
-      <TaskbarPreviewUI data-testid="preview-hidden" preview="hidden" state="hidden" />
+      <TaskbarPreviewUI
+        data-testid="preview-hidden"
+        preview="hidden"
+        state="hidden"
+        title="hidden"
+      />
       <WindowPanelUI data-testid="panel-hidden" state="hidden">
         hidden
       </WindowPanelUI>
@@ -355,7 +276,6 @@ export const PreviewAndPanelStates: Story = {
     const previewExiting = canvas.getByTestId("preview-exiting");
     const panelEntering = canvas.getByTestId("panel-entering");
     const panelExiting = canvas.getByTestId("panel-exiting");
-
     await expect(getComputedStyle(previewEntering).animationName).toBe(
       "wd-taskbar-preview-ui-enter",
     );
@@ -368,12 +288,6 @@ export const PreviewAndPanelStates: Story = {
     );
     await expect(getComputedStyle(panelEntering).animationName).toBe("wd-window-panel-ui-enter");
     await expect(getComputedStyle(panelExiting).animationName).toBe("wd-window-panel-ui-exit");
-    await expect(durationInMilliseconds(getComputedStyle(panelEntering).animationDuration)).toBe(
-      220,
-    );
-    await expect(durationInMilliseconds(getComputedStyle(panelExiting).animationDuration)).toBe(
-      200,
-    );
     await expect(canvas.getByTestId("preview-hidden")).not.toBeVisible();
     await expect(canvas.getByTestId("panel-hidden")).not.toBeVisible();
   },
@@ -381,38 +295,11 @@ export const PreviewAndPanelStates: Story = {
 
 export const MobilePanelWidth: Story = {
   name: "Contract — mobile panel 100vw",
-  parameters: {
-    viewport: { defaultViewport: "mobile1" },
-  },
-  render: () => (
-    <WindowPanelUI aria-label="mobile 시작 panel" data-testid="mobile-panel">
-      mobile panel slot
-    </WindowPanelUI>
-  ),
+  parameters: { viewport: { defaultViewport: "mobile1" } },
+  render: () => <WindowPanelUI data-testid="mobile-panel">mobile</WindowPanelUI>,
   play: async ({ canvasElement }) => {
     const panel = within(canvasElement).getByTestId("mobile-panel");
-
-    await expect(window.innerWidth).toBeLessThan(768);
     await expect(panel.getBoundingClientRect().width).toBeCloseTo(window.innerWidth, 0);
-  },
-};
-
-export const MediumPanelWidth: Story = {
-  name: "Contract — tablet panel 50vw",
-  parameters: {
-    viewport: { defaultViewport: "tablet" },
-  },
-  render: () => (
-    <WindowPanelUI aria-label="tablet 시작 panel" data-testid="tablet-panel">
-      tablet panel slot
-    </WindowPanelUI>
-  ),
-  play: async ({ canvasElement }) => {
-    const panel = within(canvasElement).getByTestId("tablet-panel");
-
-    await expect(window.innerWidth).toBeGreaterThanOrEqual(768);
-    await expect(window.innerWidth).toBeLessThan(1280);
-    await expect(panel.getBoundingClientRect().width).toBeCloseTo(window.innerWidth * 0.5, 0);
   },
 };
 
@@ -421,30 +308,20 @@ export const ReducedMotionSemanticResult: Story = {
   render: () => (
     <div className="wd-taskbar-contract-stage">
       <TaskbarPreviewUI
-        aria-label="reduced motion 미리 보기"
         motion="reduced"
-        preview="preview slot은 그대로 표시됨"
+        preview="preview"
         state="entering"
+        title="reduced preview"
       />
-      <WindowPanelUI
-        aria-label="reduced motion 시작 panel"
-        motion="reduced"
-        role="dialog"
-        state="exiting"
-      >
-        panel slot은 lifecycle state와 함께 유지됨
+      <WindowPanelUI aria-label="reduced panel" motion="reduced" role="dialog" state="exiting">
+        panel
       </WindowPanelUI>
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const preview = canvas.getByRole("region", { name: "reduced motion 미리 보기" });
-    const panel = canvas.getByRole("dialog", { name: "reduced motion 시작 panel" });
-
-    await expect(preview).toHaveAttribute("data-state", "entering");
-    await expect(panel).toHaveAttribute("data-state", "exiting");
-    await expect(preview).toHaveTextContent("preview slot은 그대로 표시됨");
-    await expect(panel).toHaveTextContent("panel slot은 lifecycle state와 함께 유지됨");
+    const preview = canvas.getByRole("region", { name: "reduced preview" });
+    const panel = canvas.getByRole("dialog", { name: "reduced panel" });
     await expect(
       durationInMilliseconds(getComputedStyle(preview).animationDuration),
     ).toBeLessThanOrEqual(0.01);

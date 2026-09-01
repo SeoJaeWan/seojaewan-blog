@@ -1,13 +1,15 @@
 import { createRef } from "react";
 
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cleanupUITest, renderUITest } from "../../testing";
 import * as taskbarApi from "./index";
 import {
+  SearchPanelUI,
   TaskbarAppListUI,
   TaskbarClockUI,
+  TaskbarContextMenuUI,
   TaskbarItemUI,
   TaskbarPanelContainerUI,
   TaskbarPanelUI,
@@ -15,7 +17,12 @@ import {
   TaskbarRootUI,
   TaskbarSearchUI,
   TaskbarStartButtonUI,
+  TaskbarUI,
+  TaskHoverPanelUI,
   WindowPanelUI,
+  WindowsPanelAllViewUI,
+  WindowsPanelPinnedViewUI,
+  WindowsPanelUI,
 } from "./index";
 
 afterEach(() => {
@@ -451,6 +458,7 @@ describe("TaskbarPreviewUI", () => {
         data-kind="generic"
         preview={<article>generic preview</article>}
         ref={ref}
+        title="블로그"
       />,
     );
     const preview = view.getByRole("region", { name: "블로그 미리 보기" });
@@ -458,18 +466,159 @@ describe("TaskbarPreviewUI", () => {
     expect(preview.getAttribute("data-state")).toBe("visible");
     expect(preview.getAttribute("data-motion")).toBe("full");
     expect(preview.getAttribute("data-kind")).toBe("generic");
-    expect(preview.textContent).toBe("generic preview");
+    expect(preview.textContent).toContain("generic preview");
     expect(ref.current).toBe(preview);
   });
 
   it("hidden 표시 상태는 native hidden semantic을 파생한다", () => {
     const view = renderUITest(
-      <TaskbarPreviewUI data-testid="hidden-preview" preview="미리 보기" state="hidden" />,
+      <TaskbarPreviewUI
+        data-testid="hidden-preview"
+        preview="미리 보기"
+        state="hidden"
+        title="숨은 preview"
+      />,
     );
     const preview = view.getByTestId("hidden-preview");
 
     expect(preview.getAttribute("data-state")).toBe("hidden");
     expect(preview.hasAttribute("hidden")).toBe(true);
+  });
+});
+
+describe("Taskbar product views", () => {
+  const entries = [
+    { icon: <span>F</span>, label: "파일", value: "file" },
+    { icon: <span>N</span>, label: "노트", value: "note" },
+  ];
+
+  it("Pinned/All view가 opaque value만 callback으로 되돌린다", async () => {
+    const onItemSelect = vi.fn();
+    const onShowAll = vi.fn();
+    const pinned = renderUITest(
+      <WindowsPanelPinnedViewUI
+        items={entries}
+        onItemSelect={onItemSelect}
+        onShowAll={onShowAll}
+      />,
+    );
+
+    pinned.getByRole("button", { name: "파일" }).click();
+    pinned.getByRole("button", { name: "모두" }).click();
+    expect(onItemSelect).toHaveBeenCalledExactlyOnceWith("file");
+    expect(onShowAll).toHaveBeenCalledOnce();
+    cleanupUITest();
+
+    const all = renderUITest(
+      <WindowsPanelAllViewUI onItemSelect={onItemSelect} sections={[{ category: "F", entries }]} />,
+    );
+    fireEvent.click(
+      within(all.getByRole("group", { name: "모든 항목" })).getByRole("button", { name: "F" }),
+    );
+    await waitFor(() =>
+      expect(all.getByRole("group", { name: "카테고리 이동" }).getAttribute("data-open")).toBe(
+        "true",
+      ),
+    );
+    within(all.getByRole("group", { name: "카테고리 이동" }))
+      .getByRole("button", { name: "F" })
+      .click();
+    all.getByRole("button", { name: "노트" }).click();
+    expect(onItemSelect).toHaveBeenLastCalledWith("note");
+  });
+
+  it("WindowsPanelUI가 browse/search와 pinned/all을 production view로 전환한다", async () => {
+    const view = renderUITest(
+      <WindowsPanelUI
+        allSections={[{ category: "F", entries }]}
+        pinnedItems={entries}
+        results={entries}
+      />,
+    );
+    const search = view.getByRole("searchbox", { name: "시작 메뉴 검색" });
+
+    expect(view.getByRole("heading", { name: "고정됨" })).not.toBeNull();
+    fireEvent.click(view.getByRole("button", { name: "모두" }));
+    await waitFor(() => expect(view.getByRole("heading", { name: "모두" })).not.toBeNull());
+    fireEvent.change(search, { target: { value: "파" } });
+    expect(view.getByRole("heading", { name: "최적의 일치" })).not.toBeNull();
+  });
+
+  it("Search recommendation/results/detail과 action callback을 제공한다", () => {
+    const onDetailAction = vi.fn();
+    const onDetailValueChange = vi.fn();
+    const onSearchValueChange = vi.fn();
+    const view = renderUITest(
+      <SearchPanelUI
+        detailActions={[{ label: "열기", value: "open" }]}
+        detailValue="file"
+        onDetailAction={onDetailAction}
+        onDetailValueChange={onDetailValueChange}
+        onSearchValueChange={onSearchValueChange}
+        results={entries}
+        searchValue="파"
+      />,
+    );
+
+    fireEvent.change(view.getByRole("searchbox", { name: "작업 표시줄 검색" }), {
+      target: { value: "파일" },
+    });
+    view.getByRole("button", { name: "노트 자세히" }).click();
+    view.getByRole("button", { name: "열기" }).click();
+    expect(onSearchValueChange).toHaveBeenCalledWith("파일");
+    expect(onDetailValueChange).toHaveBeenCalledWith("note");
+    expect(onDetailAction).toHaveBeenCalledWith("open", "file");
+  });
+
+  it("hover preview가 scaled content와 select/close controls를 생산한다", () => {
+    const onCloseItem = vi.fn();
+    const onSelectItem = vi.fn();
+    const view = renderUITest(
+      <TaskHoverPanelUI
+        items={[{ ...entries[0], preview: <article>window preview</article> }]}
+        onCloseItem={onCloseItem}
+        onSelectItem={onSelectItem}
+      />,
+    );
+
+    view.getByRole("button", { name: "파일" }).click();
+    view.getByRole("button", { name: "파일 닫기" }).click();
+    expect(view.getByText("window preview").closest(".wd-scaled-preview-ui")).not.toBeNull();
+    expect(onSelectItem).toHaveBeenCalledWith("file");
+    expect(onCloseItem).toHaveBeenCalledWith("file");
+  });
+
+  it("Taskbar context menu가 production Primitive와 action entries를 조합한다", async () => {
+    const onAction = vi.fn();
+    const view = renderUITest(
+      <TaskbarContextMenuUI
+        actions={[{ label: "새 창", value: "new" }]}
+        label="파일 작업"
+        onAction={onAction}
+        trigger={<button type="button">파일 target</button>}
+      />,
+    );
+
+    fireEvent.contextMenu(view.getByRole("button", { name: "파일 target" }));
+    const menu = await screen.findByRole("menu", { name: "파일 작업" });
+    within(menu).getByRole("menuitem", { name: "새 창" }).click();
+    expect(onAction).toHaveBeenCalledExactlyOnceWith("new");
+  });
+
+  it("TaskbarUI complete aggregate가 Start/Search/group/clock controls를 직접 생산한다", () => {
+    const view = renderUITest(
+      <TaskbarUI
+        clockValue={new Date("2026-09-01T06:24:00.000Z")}
+        groups={[{ icon: "A", label: "앱", value: "app" }]}
+        pinnedItems={entries}
+      />,
+    );
+
+    expect(view.getByRole("navigation", { name: "작업 표시줄" })).not.toBeNull();
+    expect(view.getByRole("button", { name: "시작" })).not.toBeNull();
+    expect(view.getByRole("button", { name: "검색" })).not.toBeNull();
+    expect(view.getByRole("button", { name: "앱" })).not.toBeNull();
+    expect(view.getByLabelText("날짜 및 시간")).not.toBeNull();
   });
 });
 

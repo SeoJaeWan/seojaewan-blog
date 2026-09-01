@@ -138,6 +138,29 @@
   gap: var(--wd-taskbar-app-list-gap);
 }
 
+.wd-taskbar-ui__group-target {
+  display: contents;
+}
+
+.wd-taskbar-search-trigger-ui {
+  background-color: var(--wd-taskbar-search-background-color);
+  border-color: var(--wd-color-border-default);
+  block-size: var(--wd-taskbar-search-control-height);
+  color: var(--wd-color-text-secondary);
+  font-weight: 400;
+  gap: var(--wd-reference-spacing-2);
+  inline-size: var(--wd-taskbar-search-control-width);
+  justify-content: start;
+  overflow: hidden;
+  padding-inline: var(--wd-reference-spacing-3);
+}
+
+.wd-taskbar-search-trigger-ui > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .wd-taskbar-item-ui__icon,
 .wd-taskbar-item-ui__icon > img,
 .wd-taskbar-item-ui__icon > svg {
@@ -211,6 +234,473 @@
   inline-size: var(--wd-taskbar-preview-width);
   overflow: hidden;
   padding: var(--wd-taskbar-preview-padding);
+  position: relative;
+}
+
+.wd-taskbar-preview-ui:hover {
+  background: color-mix(in srgb, var(--wd-taskbar-preview-background-color) 75%, white);
+}
+
+.wd-taskbar-preview-ui__select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.wd-taskbar-preview-ui__titlebar {
+  align-items: center;
+  block-size: 30px;
+  display: flex;
+  gap: var(--wd-reference-spacing-2);
+  min-inline-size: 0;
+}
+
+.wd-taskbar-preview-ui__icon {
+  align-items: center;
+  block-size: 18px;
+  display: inline-flex;
+  flex: 0 0 18px;
+  inline-size: 18px;
+}
+
+.wd-taskbar-preview-ui__icon > :is(img, svg) {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: contain;
+}
+
+.wd-taskbar-preview-ui__title {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-taskbar-preview-ui__close {
+  display: none;
+  flex: 0 0 28px;
+  position: relative;
+  z-index: 2;
+}
+
+.wd-taskbar-preview-ui:hover .wd-taskbar-preview-ui__close,
+.wd-taskbar-preview-ui:focus-within .wd-taskbar-preview-ui__close {
+  display: inline-flex;
+}
+
+.wd-taskbar-preview-ui__close:hover:not(:disabled) {
+  background: var(--wd-color-status-danger, #c10007);
+  color: white;
+}
+
+.wd-taskbar-preview-ui__content {
+  block-size: calc(100% - 30px);
+  inline-size: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wd-scaled-preview-ui {
+  --wd-scaled-preview-base-height: 1024px;
+  --wd-scaled-preview-base-width: 1920px;
+
+  block-size: 100%;
+  container-type: size;
+  inline-size: 100%;
+  overflow: hidden;
+}
+
+.wd-scaled-preview-ui__canvas {
+  block-size: var(--wd-scaled-preview-base-height);
+  inline-size: var(--wd-scaled-preview-base-width);
+  transform: scale(
+    calc(100cqi / var(--wd-scaled-preview-base-width)),
+    calc(100cqb / var(--wd-scaled-preview-base-height))
+  );
+  transform-origin: top left;
+}
+
+.wd-task-hover-panel-ui {
+  --wd-task-hover-panel-columns: 1;
+
+  background: var(--wd-window-panel-root-background-color);
+  border: var(--wd-window-panel-root-border-width) solid var(--wd-window-panel-root-border-color);
+  border-radius: var(--wd-window-panel-root-border-radius);
+  box-shadow: var(--wd-window-panel-root-box-shadow);
+  display: grid;
+  gap: var(--wd-reference-spacing-2);
+  grid-template-columns: repeat(var(--wd-task-hover-panel-columns), 200px);
+  inline-size: min(80vw, calc(var(--wd-task-hover-panel-columns) * 200px));
+  overflow: auto;
+  padding: var(--wd-reference-spacing-2);
+}
+
+.wd-panel-icon-button-ui {
+  align-items: center;
+  block-size: auto;
+  border-color: transparent;
+  border-radius: var(--wd-reference-radius-2);
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-1);
+  inline-size: 100%;
+  min-block-size: 76px;
+  min-inline-size: 0;
+  padding: var(--wd-reference-spacing-2);
+}
+
+.wd-panel-icon-button-ui:hover:not(:disabled),
+.wd-panel-icon-button-ui[data-selected="true"] {
+  background: color-mix(in srgb, var(--wd-color-surface-panel) 76%, white);
+}
+
+.wd-panel-icon-button-ui__icon {
+  align-items: center;
+  block-size: 34px;
+  display: inline-flex;
+  flex: 0 0 34px;
+  inline-size: 34px;
+  justify-content: center;
+}
+
+.wd-panel-icon-button-ui__icon > :is(img, svg) {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: contain;
+}
+
+.wd-panel-icon-button-ui__title {
+  display: -webkit-box;
+  font-size: 12px;
+  line-height: 1.333;
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-align: center;
+  word-break: keep-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.wd-panel-icon-button-ui[data-lines="1"] .wd-panel-icon-button-ui__title {
+  -webkit-line-clamp: 1;
+}
+
+.wd-windows-panel-ui {
+  padding-block-end: 0;
+}
+
+.wd-windows-panel-ui__views {
+  flex: 1;
+  min-block-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.wd-windows-panel-view-ui {
+  block-size: 100%;
+  box-sizing: border-box;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding-block: var(--wd-reference-spacing-6);
+  position: absolute;
+  transition: transform var(--wd-window-panel-view-transition-duration);
+  inline-size: 100%;
+}
+
+.wd-windows-panel-all-view-ui {
+  inset-inline-start: 100%;
+}
+
+.wd-windows-panel-ui__views[data-view="all"] .wd-windows-panel-view-ui {
+  transform: translateX(-100%);
+}
+
+.wd-windows-panel-view-ui__header {
+  align-items: center;
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-block-end: var(--wd-reference-spacing-4);
+  padding-inline: var(--wd-reference-spacing-6);
+}
+
+.wd-windows-panel-view-ui__header h2,
+.wd-task-search-recommendation-view-ui h2,
+.wd-task-search-result-view-ui h2 {
+  font-size: inherit;
+  margin: 0;
+}
+
+.wd-windows-panel-view-ui__toggle {
+  min-block-size: 28px;
+  padding: var(--wd-reference-spacing-1) var(--wd-reference-spacing-2);
+}
+
+.wd-windows-panel-pinned-view-ui__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.wd-windows-panel-pinned-view-ui__item {
+  transition:
+    background-color var(--wd-reference-duration-120),
+    opacity var(--wd-reference-duration-150),
+    transform var(--wd-reference-duration-150);
+}
+
+.wd-windows-panel-pinned-view-ui__item--out {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.wd-windows-panel-pinned-view-ui__item--in {
+  animation: wd-taskbar-pinned-item-ui-in var(--wd-reference-duration-150) ease-in-out both;
+}
+
+.wd-windows-panel-all-view-ui__body {
+  block-size: calc(100% - 44px);
+  min-block-size: 0;
+  position: relative;
+}
+
+.wd-windows-panel-all-view-ui__category-overlay {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: scale(1.5);
+  transition:
+    opacity var(--wd-window-panel-view-transition-duration),
+    transform var(--wd-window-panel-view-transition-duration);
+  z-index: 1;
+}
+
+.wd-windows-panel-all-view-ui__category-overlay[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.wd-windows-panel-all-view-ui__category-grid {
+  display: grid;
+  gap: var(--wd-reference-spacing-2);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  inline-size: 40%;
+}
+
+.wd-windows-panel-all-view-ui__category-grid .wd-button-ui {
+  aspect-ratio: 1;
+  font-size: 20px;
+  min-inline-size: 0;
+}
+
+.wd-windows-panel-all-view-ui__list {
+  block-size: 100%;
+  inset: 0;
+  overflow: auto;
+  padding-inline: var(--wd-reference-spacing-4);
+  position: absolute;
+  transition:
+    opacity var(--wd-window-panel-view-transition-duration),
+    transform var(--wd-window-panel-view-transition-duration);
+}
+
+.wd-windows-panel-all-view-ui__category-overlay[data-open="true"]
+  ~ .wd-windows-panel-all-view-ui__list {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.wd-windows-panel-all-view-ui__category,
+.wd-windows-panel-all-view-ui__item {
+  border-color: transparent;
+  inline-size: 100%;
+  justify-content: start;
+}
+
+.wd-windows-panel-all-view-ui__category {
+  padding: 10px 18px;
+}
+
+.wd-windows-panel-all-view-ui__item {
+  gap: var(--wd-reference-spacing-4);
+  padding: 10px;
+}
+
+.wd-windows-panel-all-view-ui__item-icon {
+  block-size: 25px;
+  flex: 0 0 25px;
+  inline-size: 25px;
+}
+
+.wd-search-panel-ui {
+  inline-size: 100vw;
+}
+
+.wd-search-panel-ui__body,
+.wd-windows-panel-ui__search-results {
+  display: flex;
+  flex: 1;
+  min-block-size: 0;
+  padding-block-start: var(--wd-reference-spacing-6);
+}
+
+.wd-task-search-recommendation-view-ui,
+.wd-task-search-result-view-ui {
+  display: flex;
+  flex: 1;
+  gap: var(--wd-reference-spacing-2);
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.wd-task-search-recommendation-view-ui__recommended {
+  inline-size: 40%;
+  overflow: auto;
+}
+
+.wd-task-search-recommendation-view-ui__recommended-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-1);
+  margin-block-start: var(--wd-reference-spacing-2);
+}
+
+.wd-task-search-recommendation-view-ui__recommended-list .wd-button-ui {
+  border-color: transparent;
+  gap: var(--wd-reference-spacing-2);
+  inline-size: 100%;
+  justify-content: start;
+}
+
+.wd-task-search-recommendation-view-ui__recommended-list .wd-button-ui > span:first-child {
+  block-size: 25px;
+  flex: 0 0 25px;
+  inline-size: 25px;
+}
+
+.wd-task-search-recommendation-view-ui__best {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-2);
+  inline-size: 60%;
+}
+
+.wd-task-search-recommendation-view-ui__best > section {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-2);
+  min-block-size: 0;
+}
+
+.wd-task-search-recommendation-view-ui__best-grid {
+  display: grid;
+  flex: 1;
+  gap: var(--wd-reference-spacing-2);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.wd-task-search-result-view-ui__list-pane {
+  display: flex;
+  flex-direction: column;
+  inline-size: 50%;
+}
+
+.wd-task-search-result-view-ui__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-2);
+  margin-block-start: var(--wd-reference-spacing-2);
+  overflow: auto;
+}
+
+.wd-task-search-result-view-ui__row {
+  display: flex;
+  gap: 2px;
+}
+
+.wd-task-search-result-view-ui__row .wd-button-ui {
+  background: color-mix(in srgb, var(--wd-color-surface-muted) 30%, transparent);
+  border-color: transparent;
+}
+
+.wd-task-search-result-view-ui__row .wd-button-ui:first-child {
+  flex: 1;
+  gap: var(--wd-reference-spacing-2);
+  justify-content: start;
+  min-inline-size: 0;
+}
+
+.wd-task-search-result-view-ui__row .wd-button-ui:first-child > span:first-child {
+  block-size: 30px;
+  flex: 0 0 30px;
+  inline-size: 30px;
+}
+
+.wd-task-search-result-view-ui__detail {
+  background: color-mix(in srgb, var(--wd-color-surface-panel) 80%, white);
+  border: 1px solid var(--wd-color-border-default);
+  border-block-end-color: transparent;
+  border-radius: 16px 16px 0 0;
+  flex: 1;
+  overflow: auto;
+  padding: var(--wd-reference-spacing-6);
+}
+
+.wd-task-search-result-view-ui__detail-summary {
+  border: 0;
+  border-block-end: 1px solid var(--wd-color-border-default);
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-2);
+  inline-size: 100%;
+  padding-block-end: 40px;
+}
+
+.wd-task-search-result-view-ui__detail-summary > span {
+  block-size: 80px;
+  inline-size: 80px;
+}
+
+.wd-task-search-result-view-ui__detail-summary strong {
+  font-size: 20px;
+}
+
+.wd-task-search-result-view-ui__detail-summary small {
+  color: var(--wd-color-text-secondary);
+}
+
+.wd-task-search-result-view-ui__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wd-reference-spacing-3);
+  padding-block-start: var(--wd-reference-spacing-6);
+}
+
+.wd-task-search-result-view-ui__detail-actions .wd-button-ui {
+  border-color: transparent;
+  gap: var(--wd-reference-spacing-3);
+  justify-content: start;
+}
+
+.wd-taskbar-context-menu-ui {
+  inline-size: 300px;
+}
+
+.wd-taskbar-context-menu-ui__label {
+  color: var(--wd-color-text-secondary);
+  font-size: 12px;
+  margin: 0;
+  padding: var(--wd-reference-spacing-2) var(--wd-reference-spacing-3);
 }
 
 .wd-taskbar-preview-ui[data-state="entering"] {
@@ -269,11 +759,19 @@
   .wd-window-panel-ui {
     inline-size: var(--wd-window-panel-root-width-medium);
   }
+
+  .wd-search-panel-ui {
+    inline-size: var(--wd-window-panel-root-width-medium);
+  }
 }
 
 @media (min-width: 1280px) {
   .wd-window-panel-ui {
     inline-size: var(--wd-window-panel-root-width-large);
+  }
+
+  .wd-search-panel-ui {
+    inline-size: 40vw;
   }
 }
 
@@ -361,5 +859,17 @@
   to {
     opacity: 0;
     transform: translateY(var(--wd-window-panel-root-motion-offset));
+  }
+}
+
+@keyframes wd-taskbar-pinned-item-ui-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

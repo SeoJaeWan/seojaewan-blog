@@ -321,7 +321,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇이며 어디에 쓰나요?\nContextMenuUI는 특정 대상에서만 필요한 보조 작업 목록입니다. Desktop 바로가기처럼 먼저 대상을 고른 뒤 오른쪽 클릭, Shift+F10 또는 길게 누르는 맥락에 사용합니다. 화면에서 먼저 발견해야 하는 보기·정렬 작업에는 visible trigger의 MenuUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 Desktop의 Portfolio 바로가기**입니다. `제품 예시 — 기존 Desktop 대상 작업`, pointer·keyboard와 long-press Story에서 알아볼 수 있는 대상, 세 가지 호출 방식과 local 실행 결과를 확인할 수 있습니다. 작업 icon과 shortcut trailing은 사용하는 쪽이 기존 slot에 넣습니다.\n\n### 어떤 상태와 구성을 확인하나요?\nRoot에 호출 대상 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합합니다. 28px row density, 열림과 닫힘, roving focus, 비활성·선택 상태, pointer·keyboard·long-press 호출, submenu, dismiss와 focus 복원을 확인합니다. 사용하는 쪽은 target, 작업 이름, icon, shortcut·현재 값 trailing, 선택 상태와 callback을 제공합니다.\n\n### 누가 무엇을 맡나요?\nContextMenuUI는 대상 호출, 작업 목록의 semantic parts, open·dismiss, focus와 keyboard mechanics를 맡습니다. Shell은 현재 MenuContext와 target을 해석하고 제품별 section과 순서를 정하며 Menu를 포함한 여러 surface의 single-active 상태를 조정합니다. 권한 확인, 실제 작업 실행과 routing은 Action Gateway를 통해 더 높은 owner가 맡습니다.",
+          "### 무엇이며 어디에 쓰나요?\nContextMenuUI는 특정 대상에서만 필요한 보조 작업 목록입니다. Desktop 바로가기처럼 먼저 대상을 고른 뒤 오른쪽 클릭, Shift+F10 또는 길게 누르는 맥락에 사용합니다. 화면에서 먼저 발견해야 하는 보기·정렬 작업에는 visible trigger의 MenuUI를 사용합니다.\n\n### 제품에서는 어떻게 보이나요?\n기준 제품은 **기존 Desktop의 Portfolio 바로가기**이며 production Taskbar에서는 TaskbarContextMenuUI가 이 Primitive를 조합합니다. pointer·keyboard와 long-press Story에서 호출 방식과 local 실행 결과를 확인할 수 있습니다.\n\n### 어떤 상태와 구성을 확인하나요?\nRoot에 호출 대상 Trigger와 Content를 두고 Item, CheckboxItem, RadioGroup·RadioItem, Separator와 Submenu를 조합합니다. 열림과 닫힘, roving focus, 비활성·선택 상태, submenu, dismiss와 focus 복원을 확인합니다.\n\n### 누가 무엇을 맡나요?\nContextMenuUI는 target invocation, open·dismiss, focus와 keyboard mechanics를 맡습니다. Taskbar family는 widget-local lifecycle을, headless는 target·section·entry와 제품 action을 소유하며 Application이 selection callback을 연결합니다.",
       },
     },
   },
@@ -543,7 +543,7 @@ export const ExistingDesktopTargetSpecificContextActions: Story = {
     docs: {
       description: {
         story:
-          "기존 Desktop의 Portfolio 바로가기에서 Open·Rename·Delete 보조 작업을 호출합니다. ContextMenuUI는 target invocation과 목록의 open·focus·dismiss mechanics를 맡고, fixture는 선택 결과를 local 상태로 남깁니다. 실제 MenuContext·target 해석, section·순서, single-active 조정과 Action Gateway 연결은 Shell 책임입니다.",
+          "기존 Desktop의 Portfolio 바로가기에서 Open·Rename·Delete 보조 작업을 호출합니다. ContextMenuUI는 target invocation과 목록의 open·focus·dismiss mechanics를 맡고, fixture는 선택 결과를 local 상태로 남깁니다. 실제 target·section·entry는 headless가 계산하고 Application이 action 실행을 연결합니다.",
       },
     },
   },
