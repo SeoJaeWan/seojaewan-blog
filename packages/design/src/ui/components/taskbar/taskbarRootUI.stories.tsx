@@ -10,6 +10,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 import { ButtonUI, PopoverUI } from "../../primitives";
+import { FolderFileCardUI, FolderFileGridUI } from "../folder";
+import { WindowFrameUI, WindowTabUI, WindowTitleBarUI } from "../window";
 import {
   TaskbarAppListUI,
   TaskbarClockUI,
@@ -160,16 +162,30 @@ const ProductTaskbar = () => {
               <TaskbarPreviewUI
                 aria-label="파일 탐색기 preview visual"
                 preview={
-                  <article className="wd-taskbar-product-reference__preview-window">
-                    <header>
-                      <Folder20Regular aria-hidden="true" />
-                      <span>파일 탐색기</span>
-                    </header>
-                    <div>
-                      <span>문서</span>
-                      <span>사진</span>
-                    </div>
-                  </article>
+                  <WindowFrameUI
+                    aria-label="파일 탐색기 preview 창"
+                    bounds={{ blockSize: 126, inlineSize: 224 }}
+                    className="wd-taskbar-product-reference__preview-window"
+                    titleBar={
+                      <WindowTitleBarUI>
+                        <WindowTabUI
+                          icon={<Folder20Regular aria-hidden="true" />}
+                          titleContent="파일 탐색기"
+                        />
+                      </WindowTitleBarUI>
+                    }
+                  >
+                    <FolderFileGridUI aria-label="미리 보기 파일" cardSize="small">
+                      <FolderFileCardUI
+                        cover={<Document20Regular aria-hidden="true" />}
+                        title="문서"
+                      />
+                      <FolderFileCardUI
+                        cover={<Folder20Regular aria-hidden="true" />}
+                        title="사진"
+                      />
+                    </FolderFileGridUI>
+                  </WindowFrameUI>
                 }
               />
             </PopoverUI.Content>
@@ -281,6 +297,8 @@ export const ProductReference: Story = {
     await waitFor(() =>
       expect(page.getByRole("region", { name: "파일 탐색기 preview visual" })).toBeVisible(),
     );
+    await expect(page.getByRole("region", { name: "파일 탐색기 preview 창" })).toBeVisible();
+    await expect(page.getByRole("group", { name: "미리 보기 파일" })).toBeVisible();
     await userEvent.unhover(running);
     await waitFor(() =>
       expect(page.queryByRole("dialog", { name: "파일 탐색기 미리 보기" })).toBeNull(),

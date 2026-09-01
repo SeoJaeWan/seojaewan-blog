@@ -5,6 +5,13 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import {
+  FolderCategoryItemUI,
+  FolderFileCardUI,
+  FolderFileGridUI,
+  FolderSidebarUI,
+  FolderViewerUI,
+} from "../folder";
+import {
   RouteInputUI,
   TagInputUI,
   WindowControlsUI,
@@ -107,28 +114,28 @@ const WindowProductFixture = ({ wide = false, ...props }: WindowProductFixturePr
         }
         {...props}
       >
-        <div className="wd-window-story-explorer">
-          <aside aria-label="프로젝트 분류" className="wd-window-story-sidebar">
-            <strong>빠른 접근</strong>
-            <span>Desktop</span>
-            <span>Documents</span>
-            <span>Projects</span>
-          </aside>
-          <main className="wd-window-story-files">
-            <div className="wd-window-story-file">
-              <Document20Regular aria-hidden="true" />
-              <span>Window roles.md</span>
-            </div>
-            <div className="wd-window-story-file">
-              <Document20Regular aria-hidden="true" />
-              <span>Primitive map.md</span>
-            </div>
-            <div className="wd-window-story-file">
-              <Document20Regular aria-hidden="true" />
-              <span>Visual parity.md</span>
-            </div>
-          </main>
-        </div>
+        <FolderViewerUI
+          aria-label="프로젝트 폴더 보기"
+          sidebar={
+            <FolderSidebarUI aria-label="프로젝트 분류">
+              <FolderCategoryItemUI icon={<Folder20Regular />} label="Desktop" />
+              <FolderCategoryItemUI icon={<Folder20Regular />} label="Documents" />
+              <FolderCategoryItemUI icon={<Folder20Regular />} label="Projects" selected />
+            </FolderSidebarUI>
+          }
+          sidebarLabel="프로젝트 사이드바"
+        >
+          <FolderFileGridUI aria-label="프로젝트 파일" cardSize="small">
+            {["Window roles.md", "Primitive map.md", "Visual parity.md"].map((title) => (
+              <FolderFileCardUI
+                cover={<Document20Regular aria-hidden="true" />}
+                key={title}
+                onClick={() => setLastHistory(`file:${title}`)}
+                title={title}
+              />
+            ))}
+          </FolderFileGridUI>
+        </FolderViewerUI>
         <div className="wd-window-story-probes">
           <output aria-label="마지막 창 제어">{lastControl}</output>
           <output aria-label="마지막 경로 동작">{lastHistory}</output>
@@ -314,7 +321,7 @@ export const FolderWindowProductReference: Story = {
     docs: {
       description: {
         story:
-          "Windows 탐색기형 Folder Window 안에서 모든 Window role과 지정된 Primitive 소비를 함께 보여 줍니다. wide container에서 TagInputUI가 320px로 넓어지고, 경로와 tag 선택 결과는 아래 probe에 남습니다.",
+          "Windows 탐색기형 Folder Window 안에서 모든 Window role, FolderViewer·Sidebar·Category·FileGrid·FileCard와 지정된 Primitive 소비를 함께 보여 줍니다. wide container에서 TagInputUI가 320px로 넓어지고, 경로·tag·file 선택 결과는 아래 probe에 남습니다.",
       },
     },
   },
@@ -349,6 +356,9 @@ export const FolderWindowProductReference: Story = {
     await expect(getComputedStyle(northEdge).height).toBe("4px");
     await expect(getComputedStyle(southeastCorner).width).toBe("8px");
     await expect(getComputedStyle(southeastCorner).height).toBe("8px");
+    await expect(canvas.getByRole("navigation", { name: "프로젝트 분류" })).toBeVisible();
+    await expect(canvas.getByRole("group", { name: "프로젝트 파일" })).toBeVisible();
+    await expect(canvas.getAllByRole("button", { name: /\.md$/ })).toHaveLength(3);
 
     await userEvent.clear(routeInput);
     await userEvent.type(routeInput, "Doc");

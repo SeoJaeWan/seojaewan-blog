@@ -1,0 +1,39 @@
+.wd-context-menu-recipe {
+  font-family: var(--wd-font-family-sans);
+  position: relative;
+}
+
+.wd-context-menu-recipe--window {
+  block-size: 380px;
+  inline-size: 680px;
+}
+
+.wd-context-menu-recipe--stack {
+  display: grid;
+  gap: var(--wd-reference-spacing-4);
+}
+
+.wd-context-menu-recipe--folder {
+  block-size: 420px;
+  display: grid;
+  gap: var(--wd-reference-spacing-4);
+  inline-size: 760px;
+}
+
+.wd-context-menu-recipe--folder > button {
+  justify-self: start;
+}
+
+.wd-context-menu-recipe__window-copy {
+  color: var(--wd-color-text-secondary);
+  margin: 0;
+  padding: var(--wd-reference-spacing-5);
+}
+
+.wd-context-menu-recipe output {
+  block-size: 1px;
+  inline-size: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+}

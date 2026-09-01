@@ -1,56 +1,67 @@
 import { useRef, useState } from "react";
 
+import { Document20Regular, Folder20Regular } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fireEvent, userEvent, waitFor, within } from "storybook/test";
 
 import {
   ContextMenuUI,
+  FolderCategoryItemUI,
+  FolderFileCardUI,
+  FolderFileGridUI,
   FolderFrameUI,
+  FolderSidebarUI,
   FolderViewerUI,
   TaskbarItemUI,
   TaskbarRootUI,
   WindowControlsUI,
   WindowFrameUI,
+  WindowTabUI,
   WindowTitleBarUI,
 } from "../../index";
 
+import "./contextMenuRecipes.stories.css";
+
 const WindowRecipeFixture = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLElement>(null);
   const [result, setResult] = useState("none");
 
   return (
-    <div style={{ height: 380, position: "relative", width: 680 }}>
-      <WindowFrameUI
-        aria-label="Window context menu recipe"
-        bounds={{ blockSize: 320, inlineSize: 600, insetBlockStart: 24, insetInlineStart: 24 }}
-        titleBar={
-          <WindowTitleBarUI
-            controls={<WindowControlsUI />}
-            leading="□"
-            titleContent="Window recipe"
-          />
-        }
-      >
-        <ContextMenuUI.Root>
-          <ContextMenuUI.Trigger
-            aria-label="Window recipe target"
-            className="wd-story-target"
-            ref={targetRef}
-            tabIndex={0}
-          >
-            Window content target
-          </ContextMenuUI.Trigger>
-          <ContextMenuUI.Content aria-label="Window recipe actions" finalFocus={targetRef}>
-            <ContextMenuUI.Item onClick={() => setResult("first")}>First action</ContextMenuUI.Item>
-            <ContextMenuUI.Item onClick={() => setResult("second")}>
-              Second action
-            </ContextMenuUI.Item>
-            <ContextMenuUI.Separator />
-            <ContextMenuUI.Item disabled>Unavailable action</ContextMenuUI.Item>
-          </ContextMenuUI.Content>
-        </ContextMenuUI.Root>
-        <output aria-label="Window recipe result">{result}</output>
-      </WindowFrameUI>
+    <div className="wd-context-menu-recipe wd-context-menu-recipe--window">
+      <ContextMenuUI.Root>
+        <WindowFrameUI
+          aria-label="Window context menu recipe"
+          bounds={{ blockSize: 320, inlineSize: 600, insetBlockStart: 24, insetInlineStart: 24 }}
+          titleBar={
+            <ContextMenuUI.Trigger
+              render={
+                <WindowTitleBarUI
+                  aria-label="Window recipe title bar"
+                  controls={<WindowControlsUI />}
+                  ref={targetRef}
+                  tabIndex={0}
+                >
+                  <WindowTabUI
+                    icon={<Folder20Regular aria-hidden="true" />}
+                    titleContent="Window recipe"
+                  />
+                </WindowTitleBarUI>
+              }
+            />
+          }
+        >
+          <p className="wd-context-menu-recipe__window-copy">
+            Title bar에서 키보드나 보조 포인터로 창 작업 메뉴를 엽니다.
+          </p>
+          <output aria-label="Window recipe result">{result}</output>
+        </WindowFrameUI>
+        <ContextMenuUI.Content aria-label="Window recipe actions" finalFocus={targetRef}>
+          <ContextMenuUI.Item onClick={() => setResult("restore")}>복원</ContextMenuUI.Item>
+          <ContextMenuUI.Item onClick={() => setResult("minimize")}>최소화</ContextMenuUI.Item>
+          <ContextMenuUI.Separator />
+          <ContextMenuUI.Item disabled>이동</ContextMenuUI.Item>
+        </ContextMenuUI.Content>
+      </ContextMenuUI.Root>
     </div>
   );
 };
@@ -60,14 +71,14 @@ const TaskbarRecipeFixture = () => {
   const [result, setResult] = useState("none");
 
   return (
-    <div className="wd-story-stack">
+    <div className="wd-context-menu-recipe wd-context-menu-recipe--stack">
       <TaskbarRootUI aria-label="Taskbar context menu recipe">
         <ContextMenuUI.Root>
           <ContextMenuUI.Trigger
             render={
               <TaskbarItemUI
-                icon="▣"
-                label="Taskbar recipe target"
+                icon={<Folder20Regular aria-hidden="true" />}
+                label="파일 탐색기"
                 ref={targetRef}
                 state="running"
               />
@@ -78,11 +89,9 @@ const TaskbarRecipeFixture = () => {
             finalFocus={targetRef}
             side="top"
           >
-            <ContextMenuUI.Item onClick={() => setResult("primary")}>
-              Primary action
-            </ContextMenuUI.Item>
-            <ContextMenuUI.Item onClick={() => setResult("secondary")}>
-              Secondary action
+            <ContextMenuUI.Item onClick={() => setResult("open")}>창 열기</ContextMenuUI.Item>
+            <ContextMenuUI.Item onClick={() => setResult("unpin")}>
+              작업 표시줄에서 제거
             </ContextMenuUI.Item>
           </ContextMenuUI.Content>
         </ContextMenuUI.Root>
@@ -93,41 +102,53 @@ const TaskbarRecipeFixture = () => {
 };
 
 const FolderRecipeFixture = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <div className="wd-story-stack" style={{ width: 760 }}>
+    <div className="wd-context-menu-recipe wd-context-menu-recipe--folder">
       <FolderFrameUI
         aria-label="Folder context menu recipe"
         bounds={{ blockSize: 360, inlineSize: 720 }}
         controls={<WindowControlsUI />}
-        leading="▤"
-        titleContent="Folder recipe"
+        leading={<Folder20Regular aria-hidden="true" />}
+        titleContent="문서"
       >
         <FolderViewerUI
           aria-label="Folder recipe viewer"
-          contentSlot={
-            <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(2, 1fr)" }}>
-              <ContextMenuUI.Root>
-                <ContextMenuUI.Trigger
-                  aria-label="Folder recipe target"
-                  className="wd-story-target"
-                  ref={targetRef}
-                  tabIndex={0}
-                >
-                  Folder content target
-                </ContextMenuUI.Trigger>
-                <ContextMenuUI.Content aria-label="Folder recipe actions" finalFocus={targetRef}>
-                  <ContextMenuUI.Item>First folder action</ContextMenuUI.Item>
-                  <ContextMenuUI.Item>Second folder action</ContextMenuUI.Item>
-                </ContextMenuUI.Content>
-              </ContextMenuUI.Root>
-              <div className="wd-story-target">Deterministic companion tile</div>
-            </div>
+          sidebar={
+            <FolderSidebarUI aria-label="Recipe sections">
+              <FolderCategoryItemUI
+                icon={<Folder20Regular aria-hidden="true" />}
+                label="문서"
+                selected
+              />
+            </FolderSidebarUI>
           }
-          sidebar={<nav aria-label="Recipe sections">Section fixture</nav>}
           sidebarLabel="Folder recipe sidebar"
-        />
+        >
+          <FolderFileGridUI aria-label="Recipe files" cardSize="medium">
+            <ContextMenuUI.Root>
+              <ContextMenuUI.Trigger
+                render={
+                  <FolderFileCardUI
+                    cover={<Document20Regular aria-hidden="true" />}
+                    ref={targetRef}
+                    selected
+                    title="Component contract.md"
+                  />
+                }
+              />
+              <ContextMenuUI.Content aria-label="Folder recipe actions" finalFocus={targetRef}>
+                <ContextMenuUI.Item>열기</ContextMenuUI.Item>
+                <ContextMenuUI.Item>이름 바꾸기</ContextMenuUI.Item>
+              </ContextMenuUI.Content>
+            </ContextMenuUI.Root>
+            <FolderFileCardUI
+              cover={<Document20Regular aria-hidden="true" />}
+              title="Product reference.md"
+            />
+          </FolderFileGridUI>
+        </FolderViewerUI>
       </FolderFrameUI>
       <button type="button">Outside dismissal target</button>
     </div>
@@ -141,7 +162,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Window, Taskbar, Folder public components가 기존 ContextMenuUI parts를 직접 조합하는 Story-only recipe입니다. 항목·section·action dispatch·single-active·focus lifecycle의 실제 제품 구성은 Shell이 소유하며, 이 fixture는 결정적 UI 예시만 제공합니다.",
+          "WindowTitleBarUI, TaskbarItemUI, FolderFileCardUI가 기존 ContextMenuUI parts를 직접 조합하는 Story-only product recipe입니다. 항목·section·action dispatch·single-active·focus lifecycle의 실제 제품 구성은 Shell이 소유하며, 이 fixture는 결정적 UI 예시만 제공합니다.",
       },
     },
   },
@@ -152,20 +173,20 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const WindowComposition: Story = {
-  name: "recipe — Window",
+  name: "Product Reference — Window title bar Context Menu",
   render: () => <WindowRecipeFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const target = canvas.getByLabelText("Window recipe target");
+    const target = canvas.getByRole("banner", { name: "Window recipe title bar" });
 
     target.focus();
     await userEvent.keyboard("{Shift>}{F10}{/Shift}");
     await fireEvent.contextMenu(target);
 
     const menu = await page.findByRole("menu", { name: "Window recipe actions" });
-    const first = within(menu).getByRole("menuitem", { name: "First action" });
-    const second = within(menu).getByRole("menuitem", { name: "Second action" });
+    const first = within(menu).getByRole("menuitem", { name: "복원" });
+    const second = within(menu).getByRole("menuitem", { name: "최소화" });
 
     first.focus();
     await userEvent.keyboard("{ArrowDown}");
@@ -179,23 +200,23 @@ export const WindowComposition: Story = {
 };
 
 export const TaskbarComposition: Story = {
-  name: "recipe — Taskbar",
+  name: "Product Reference — Taskbar item Context Menu",
   render: () => <TaskbarRecipeFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const target = canvas.getByRole("button", { name: "Taskbar recipe target" });
+    const target = canvas.getByRole("button", { name: "파일 탐색기" });
     const result = canvas.getByRole("status", { name: "Taskbar recipe result" });
 
     target.focus();
     await userEvent.pointer({ keys: "[MouseRight]", target });
 
     const menu = await page.findByRole("menu", { name: "Taskbar recipe actions" });
-    const primary = within(menu).getByRole("menuitem", { name: "Primary action" });
+    const primary = within(menu).getByRole("menuitem", { name: "창 열기" });
 
     primary.focus();
     await userEvent.keyboard("{Enter}");
-    await expect(result).toHaveTextContent("primary");
+    await expect(result).toHaveTextContent("open");
     await waitFor(() =>
       expect(page.queryByRole("menu", { name: "Taskbar recipe actions" })).not.toBeInTheDocument(),
     );
@@ -204,12 +225,12 @@ export const TaskbarComposition: Story = {
 };
 
 export const FolderComposition: Story = {
-  name: "recipe — Folder",
+  name: "Product Reference — Folder file Context Menu",
   render: () => <FolderRecipeFixture />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
-    const target = canvas.getByLabelText("Folder recipe target");
+    const target = canvas.getByRole("button", { name: "Component contract.md" });
     const outside = canvas.getByRole("button", { name: "Outside dismissal target" });
 
     await userEvent.pointer({ keys: "[MouseRight]", target });
