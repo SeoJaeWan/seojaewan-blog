@@ -1,0 +1,225 @@
+.wd-window-frame-ui {
+  --wd-window-frame-block-size: 100%;
+  --wd-window-frame-inline-size: 100%;
+  --wd-window-frame-inset-block-start: 0px;
+  --wd-window-frame-inset-inline-start: 0px;
+
+  background-color: var(--wd-window-frame-root-background-color);
+  block-size: var(--wd-window-frame-block-size);
+  border-radius: var(--wd-window-frame-root-border-radius);
+  box-shadow: var(--wd-window-frame-root-box-shadow);
+  box-sizing: border-box;
+  color: var(--wd-window-frame-root-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--wd-window-frame-root-font-family);
+  inline-size: var(--wd-window-frame-inline-size);
+  inset-block-start: var(--wd-window-frame-inset-block-start);
+  inset-inline-start: var(--wd-window-frame-inset-inline-start);
+  overflow: hidden;
+  overflow: clip;
+  position: absolute;
+  transform-origin: center;
+  transition:
+    background-color var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    block-size var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    border-radius var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    inline-size var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    inset var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing);
+}
+
+.wd-window-frame-ui[data-activity="background"] {
+  background-color: var(--wd-window-frame-root-background-color-background);
+  box-shadow: var(--wd-window-frame-root-box-shadow-background);
+}
+
+.wd-window-frame-ui[data-fullscreen="true"] {
+  block-size: 100%;
+  border-radius: 0;
+  inline-size: 100%;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.wd-window-frame-ui[data-dragging="true"] {
+  transition: none;
+}
+
+.wd-window-frame-ui[data-motion="entering"] {
+  animation: wd-window-frame-enter var(--wd-window-frame-root-motion-duration-enter)
+    var(--wd-window-frame-root-motion-easing-enter) both;
+}
+
+.wd-window-frame-ui[data-motion="exiting"] {
+  animation: wd-window-frame-exit var(--wd-window-frame-root-motion-duration-exit)
+    var(--wd-window-frame-root-motion-easing-exit) both;
+}
+
+.wd-window-frame-ui[data-motion="minimizing"] {
+  animation: wd-window-frame-minimize var(--wd-window-frame-root-motion-duration-exit)
+    var(--wd-window-frame-root-motion-easing-exit) both;
+}
+
+.wd-window-frame-ui[data-motion="restoring"] {
+  animation: wd-window-frame-restore var(--wd-window-frame-root-motion-duration-enter)
+    var(--wd-window-frame-root-motion-easing-enter) both;
+}
+
+.wd-window-frame-ui__body {
+  flex: 1;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.wd-window-title-bar-ui {
+  align-items: stretch;
+  background-color: var(--wd-window-frame-titlebar-background-color-active);
+  block-size: var(--wd-window-frame-titlebar-height);
+  border-block-end: 1px solid var(--wd-window-frame-titlebar-border-color);
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  min-inline-size: 0;
+  padding-inline-start: var(--wd-window-frame-titlebar-padding-inline-start);
+  touch-action: none;
+  user-select: none;
+}
+
+.wd-window-frame-ui[data-activity="background"] > .wd-window-title-bar-ui {
+  background-color: var(--wd-window-frame-titlebar-background-color-background);
+}
+
+.wd-window-title-bar-ui__leading {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  margin-inline-end: var(--wd-reference-spacing-2);
+}
+
+.wd-window-title-bar-ui__title {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-window-controls-ui {
+  align-self: stretch;
+  display: flex;
+  flex: none;
+  margin-inline-start: auto;
+}
+
+.wd-window-controls-ui__control {
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  block-size: 100%;
+  color: var(--wd-window-frame-control-color);
+  cursor: pointer;
+  display: inline-flex;
+  inline-size: var(--wd-window-frame-control-size);
+  justify-content: center;
+  line-height: 0;
+  padding: 0;
+  transition:
+    background-color var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    color var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    opacity var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing);
+}
+
+.wd-window-controls-ui__control:hover:not(:disabled) {
+  background-color: var(--wd-window-frame-control-background-color-hover);
+}
+
+.wd-window-controls-ui__control--close:hover:not(:disabled) {
+  background-color: var(--wd-window-frame-control-background-color-close-hover);
+  color: var(--wd-window-frame-control-color-close-hover);
+}
+
+.wd-window-controls-ui__control:focus {
+  outline: none;
+}
+
+.wd-window-controls-ui__control:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--wd-window-frame-control-outline-color-focus-visible);
+}
+
+.wd-window-controls-ui__control:disabled {
+  cursor: not-allowed;
+  opacity: var(--wd-window-frame-control-opacity-disabled);
+}
+
+.wd-window-controls-ui__control > svg {
+  block-size: var(--wd-window-frame-control-icon-size);
+  inline-size: var(--wd-window-frame-control-icon-size);
+}
+
+@keyframes wd-window-frame-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wd-window-frame-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes wd-window-frame-minimize {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+}
+
+@keyframes wd-window-frame-restore {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-window-frame-ui[data-motion],
+  .wd-window-controls-ui__control {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
