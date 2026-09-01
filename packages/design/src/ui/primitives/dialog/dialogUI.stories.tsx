@@ -77,7 +77,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "### 무엇인가요?\nDialogUI는 페이지 위에 modal을 띄우고, 닫을 때까지 배경의 focus와 pointer를 막는 Primitive입니다.\n\n### 제품에서는 어디에 쓰나요?\n제품 기준은 아직 구현 전인 **Planned Notion image lightbox**입니다. `Product Reference — Planned Notion Lightbox` Story에서 문서 이미지 썸네일을 누르면 같은 이미지를 큰 modal로 보는 이유를 확인할 수 있습니다.\n\n### 언제 쓰나요?\n큰 이미지를 살펴보는 동안 배경 문서를 실수로 조작하면 안 되는 lightbox처럼, 사용자를 한 modal 문맥에 머물게 해야 할 때 씁니다.\n\n### 다른 surface는 언제 고르나요?\n기준 대상에 붙고 주변 화면을 계속 쓸 수 있어야 하면 PopoverUI를, 같은 문서 흐름 안의 내용을 펼치고 접으면 CollapsibleUI를 씁니다.\n\n### 꼭 지켜야 할 동작은 무엇인가요?\n열림 상태, 접근 가능한 modal 이름, `aria-modal`, portal·backdrop, focus loop, Escape·backdrop 닫힘과 trigger로 돌아오는 focus가 중요합니다.\n\n### 누가 무엇을 소유하나요?\nPrimitive는 modal isolation, portal, focus loop와 dismissal mechanics를 소유합니다. 이미지 로딩, lightbox 크기, zoom·이전/다음·download와 route는 Notion owner가 소유합니다.",
+          "### 무엇인가요?\nDialogUI는 페이지 위에 modal을 띄우고, 닫을 때까지 배경의 focus와 pointer를 막는 Primitive입니다.\n\n### 제품에서는 어디에 쓰나요?\n현재 repository에는 DialogUI를 소비하는 production Component 근거가 없습니다. 따라서 제품 기준을 주장하지 않고 `조합 예시 — image lightbox`에서 modal interaction 계약만 확인합니다.\n\n### 언제 쓰나요?\n큰 이미지를 살펴보는 동안 배경을 실수로 조작하면 안 되는 lightbox처럼, 사용자를 한 modal 문맥에 머물게 해야 할 때 씁니다.\n\n### 다른 surface는 언제 고르나요?\n기준 대상에 붙고 주변 화면을 계속 쓸 수 있어야 하면 PopoverUI를, 같은 문서 흐름 안의 내용을 펼치고 접으면 CollapsibleUI를 씁니다.\n\n### 꼭 지켜야 할 동작은 무엇인가요?\n열림 상태, 접근 가능한 modal 이름, `aria-modal`, portal·backdrop, focus loop, Escape·backdrop 닫힘과 trigger로 돌아오는 focus가 중요합니다.\n\n### 누가 무엇을 소유하나요?\nPrimitive는 modal isolation, portal, focus loop와 dismissal mechanics를 소유합니다. 제품 content, 이미지 로딩, lightbox 크기, zoom·이전/다음·download와 route는 소비자가 소유합니다.",
       },
     },
     layout: "centered",
@@ -212,7 +212,7 @@ export const FocusTrapAndDismissal: Story = {
   },
 };
 
-const NotionDocumentImage = ({ expanded = false }: { expanded?: boolean }) => (
+const ExampleDocumentImage = ({ expanded = false }: { expanded?: boolean }) => (
   <svg
     aria-label={expanded ? "확대된 산과 호수 문서 이미지" : "산과 호수 문서 이미지 썸네일"}
     role="img"
@@ -234,19 +234,17 @@ const NotionDocumentImage = ({ expanded = false }: { expanded?: boolean }) => (
   </svg>
 );
 
-const PlannedNotionLightboxProductReference = () => {
+const ImageLightboxCompositionExample = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [lastResult, setLastResult] = useState("라이트박스 닫힘");
 
   return (
     <section
-      aria-label="Planned Notion lightbox reference"
+      aria-label="Image lightbox composition example"
       className="wd-story-stage wd-story-stack"
-      data-product-state="planned"
-      data-product-surface="planned-notion-image-lightbox"
     >
-      <p>Planned Notion · 구현 예정</p>
-      <output aria-label="Planned Notion lightbox 상태">
+      <p>Generic image lightbox composition</p>
+      <output aria-label="Image lightbox 상태">
         {isOpen ? "라이트박스 열림" : lastResult}
       </output>
       <DialogUI
@@ -256,21 +254,21 @@ const PlannedNotionLightboxProductReference = () => {
           setLastResult(nextOpen ? "라이트박스 열림" : "라이트박스 닫힘");
         }}
       >
-        <DialogUI.Trigger aria-label="Notion 문서 이미지 크게 보기">
+        <DialogUI.Trigger aria-label="문서 이미지 크게 보기">
           <span>
-            <NotionDocumentImage />
+            <ExampleDocumentImage />
             <span>이미지 크게 보기</span>
           </span>
         </DialogUI.Trigger>
         <DialogUI.Portal>
-          <DialogUI.Backdrop data-testid="planned-lightbox-backdrop" />
+          <DialogUI.Backdrop data-testid="example-lightbox-backdrop" />
           <DialogUI.Content>
-            <DialogUI.Title>Notion 문서 이미지</DialogUI.Title>
+            <DialogUI.Title>문서 이미지</DialogUI.Title>
             <DialogUI.Description>
-              문서 본문을 벗어나지 않고 이미지를 크게 살펴봅니다. 이 lightbox는 구현 예정입니다.
+              배경을 격리한 modal에서 이미지를 크게 살펴보는 generic composition입니다.
             </DialogUI.Description>
             <figure>
-              <NotionDocumentImage expanded />
+              <ExampleDocumentImage expanded />
               <figcaption>산과 호수</figcaption>
             </figure>
             <DialogUI.Close>라이트박스 닫기</DialogUI.Close>
@@ -281,32 +279,32 @@ const PlannedNotionLightboxProductReference = () => {
   );
 };
 
-export const ProductReference: Story = {
-  name: "Product Reference — Planned Notion Lightbox",
+export const CompositionExample: Story = {
+  name: "조합 예시 — image lightbox",
   parameters: {
     docs: {
       description: {
         story:
-          "Surface: Planned Notion image lightbox. Reference state: Planned — 아직 구현 전. 문서 이미지 썸네일을 크게 보려면 배경 문서 조작을 잠시 막아야 하므로 Dialog를 선택합니다. 이미지 로딩, lightbox 크기, zoom, 이전/다음, download와 route는 Notion owner가 소유합니다.",
+          "production 제품 상태를 주장하지 않는 generic composition입니다. 문서 이미지 썸네일을 크게 볼 때 배경 조작을 막는 Dialog mechanics만 확인하며 실제 content와 action은 소비자가 소유합니다.",
       },
     },
   },
-  render: () => <PlannedNotionLightboxProductReference />,
+  render: () => <ImageLightboxCompositionExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const page = within(canvasElement.ownerDocument.body);
     const reference = canvas.getByRole("region", {
-      name: "Planned Notion lightbox reference",
+      name: "Image lightbox composition example",
     });
-    const trigger = canvas.getByRole("button", { name: "Notion 문서 이미지 크게 보기" });
-    const status = canvas.getByRole("status", { name: "Planned Notion lightbox 상태" });
+    const trigger = canvas.getByRole("button", { name: "문서 이미지 크게 보기" });
+    const status = canvas.getByRole("status", { name: "Image lightbox 상태" });
 
-    await expect(reference).toHaveAttribute("data-product-state", "planned");
+    await expect(reference).toBeVisible();
     await expect(canvas.getByRole("img", { name: "산과 호수 문서 이미지 썸네일" })).toBeVisible();
     await expect(status).toHaveTextContent("라이트박스 닫힘");
 
     await userEvent.click(trigger);
-    const dialog = await page.findByRole("dialog", { name: "Notion 문서 이미지" });
+    const dialog = await page.findByRole("dialog", { name: "문서 이미지" });
     const close = page.getByRole("button", { name: "라이트박스 닫기" });
     await expect(canvasElement.contains(dialog)).toBe(false);
     await expect(dialog).toHaveAttribute("aria-modal", "true");

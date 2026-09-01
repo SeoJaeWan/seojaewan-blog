@@ -38,7 +38,7 @@ evidence이며 runtime dependency가 아니다.
 | `packages/ui/src/components/window/input/tagInputUI/index.tsx`                     | open, selected tag, clear/select                                | match                  | window                                                     |
 | `packages/ui/src/components/window/folder/folderViewerUI/index.tsx`                | sidebar/content split                                           | match                  | folder / TASK-004 aggregate                                |
 | `packages/ui/src/components/window/folder/folderSidebarUI/index.tsx`               | category navigation surface                                     | match                  | folder / TASK-004 extension                                |
-| `packages/ui/src/components/window/folder/folderCategoryItemUI/index.tsx`          | disclosure, selection, nested item                              | higher-layer           | folder / TASK-004 separates actions                        |
+| `packages/ui/src/components/window/folder/folderCategoryItemUI/index.tsx`          | disclosure, selection, nested item                              | match                  | folder / FolderCategoryItemUI                              |
 | `packages/ui/src/components/window/folder/folderFileGridUI/index.tsx`              | big/middle/small responsive grid                                | match                  | folder / TASK-004 aggregate                                |
 | `packages/ui/src/components/window/folder/folderFileCardUI/index.tsx`              | cover/title/selected action                                     | match                  | folder / TASK-004 extension                                |
 | `packages/ui/src/components/taskbar/taskbarRootUI/index.tsx`                       | fixed root and centered controls                                | match                  | taskbar / TASK-003 aggregate                               |
@@ -46,24 +46,25 @@ evidence이며 runtime dependency가 아니다.
 | `packages/ui/src/components/taskbar/taskbarClockUI/index.tsx`                      | caller-provided date/time                                       | match                  | taskbar / TASK-003                                         |
 | `packages/ui/src/components/taskbar/taskbarSearchUI/index.tsx`                     | search trigger/input/open visual                                | match                  | taskbar / TASK-003                                         |
 | `packages/ui/src/components/taskbar/button/taskbarStartButtonUI/index.tsx`         | Windows mark trigger                                            | match                  | taskbar / TASK-003                                         |
-| `packages/ui/src/components/taskbar/button/taskbarIconButtonUI/index.tsx`          | open/active/running/dragging visual                             | higher-layer           | taskbar item / TASK-003                                    |
+| `packages/ui/src/components/taskbar/button/taskbarIconButtonUI/index.tsx`          | open/active/running/dragging visual                             | match                  | taskbar / TaskbarItemUI                                    |
 | `packages/ui/src/components/taskbar/button/taskbarTaskButtonUI/index.tsx`          | product task item adapter                                       | intentional divergence | presentation DTO in taskbar; product action stays headless |
-| `packages/ui/src/components/taskbar/button/panelIconButtonUI/index.tsx`            | panel tile, line clamp, selection                               | higher-layer           | taskbar family-local / TASK-005                            |
-| `packages/ui/src/components/taskbar/input/taskSearchInputUI/index.tsx`             | query input and disabled state                                  | higher-layer           | taskbar search view / TASK-005                             |
-| `packages/ui/src/components/taskbar/panel/taskbarPanelLayerUI/index.tsx`           | floating portal layer                                           | higher-layer           | private taskbar UI lifecycle / TASK-003                    |
-| `packages/ui/src/components/taskbar/panel/taskbarPanelContainerUI/index.tsx`       | opening/closing presence container                              | higher-layer           | private taskbar UI lifecycle / TASK-003                    |
-| `packages/ui/src/components/taskbar/panel/windowsPanelUI/index.tsx`                | Start surface and search header                                 | higher-layer           | taskbar / TASK-003 then TASK-005                           |
-| `packages/ui/src/components/taskbar/panel/searchPanelUI/index.tsx`                 | recommendation/result/detail surface                            | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/panel/taskHoverPanelUI/index.tsx`              | hover preview surface                                           | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/panel/taskbarContextMenuUI/index.tsx`          | task context actions and placement                              | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/view/windowsPanelPinnedViewUI/index.tsx`       | pinned grid                                                     | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/view/windowsPanelAllViewUI/index.tsx`          | all apps and category overlay                                   | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/view/taskSearchRecommendationViewUI/index.tsx` | deterministic recommendations                                   | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/taskbar/view/taskSearchResultViewUI/index.tsx`         | result list and selected detail                                 | higher-layer           | taskbar / TASK-005                                         |
-| `packages/ui/src/components/base/panel/scaledPreviewUI/index.tsx`                  | scaled window preview geometry                                  | higher-layer           | taskbar family-local / TASK-005                            |
+| `packages/ui/src/components/taskbar/button/panelIconButtonUI/index.tsx`            | panel tile, line clamp, selection                               | match                  | taskbar / PanelIconButtonUI                                |
+| `packages/ui/src/components/taskbar/input/taskSearchInputUI/index.tsx`             | query input and disabled state                                  | match                  | taskbar / TaskbarSearchUI                                  |
+| `packages/ui/src/components/taskbar/panel/taskbarPanelLayerUI/index.tsx`           | floating portal layer                                           | match                  | private taskbar UI lifecycle                               |
+| `packages/ui/src/components/taskbar/panel/taskbarPanelContainerUI/index.tsx`       | opening/closing presence container                              | match                  | private taskbar UI lifecycle                               |
+| `packages/ui/src/components/taskbar/panel/windowsPanelUI/index.tsx`                | Start surface and search header                                 | match                  | taskbar / WindowsPanelUI                                   |
+| `packages/ui/src/components/taskbar/panel/searchPanelUI/index.tsx`                 | recommendation/result/detail surface                            | match                  | taskbar / SearchPanelUI                                    |
+| `packages/ui/src/components/taskbar/panel/taskHoverPanelUI/index.tsx`              | hover preview surface                                           | match                  | taskbar / TaskHoverPanelUI                                 |
+| `packages/ui/src/components/taskbar/panel/taskbarContextMenuUI/index.tsx`          | task context actions and placement                              | match                  | taskbar / TaskbarContextMenuUI                             |
+| `packages/ui/src/components/taskbar/view/windowsPanelPinnedViewUI/index.tsx`       | pinned grid                                                     | match                  | taskbar / WindowsPanelPinnedViewUI                         |
+| `packages/ui/src/components/taskbar/view/windowsPanelAllViewUI/index.tsx`          | all apps and category overlay                                   | match                  | taskbar / WindowsPanelAllViewUI                            |
+| `packages/ui/src/components/taskbar/view/taskSearchRecommendationViewUI/index.tsx` | deterministic recommendations                                   | match                  | taskbar / TaskSearchRecommendationViewUI                   |
+| `packages/ui/src/components/taskbar/view/taskSearchResultViewUI/index.tsx`         | result list and selected detail                                 | match                  | taskbar / TaskSearchResultViewUI                           |
+| `packages/ui/src/components/base/panel/scaledPreviewUI/index.tsx`                  | scaled window preview geometry                                  | match                  | taskbar / ScaledPreviewUI                                  |
 | `packages/ui/src/components/base/panel/taskPanelUI/index.tsx`                      | generic translucent panel shell                                 | intentional divergence | owner-specific taskbar surfaces / TASK-003                 |
 
-Source discovery 결과 위 범위의 미분류 role은 없다. legacy의 product identifier, action chain,
+Source discovery 결과 위 범위의 미분류 role은 없다. `higher-layer`로 계획했던 Folder와 Taskbar
+역할은 production Component로 모두 귀속됐다. legacy의 product identifier, action chain,
 store/provider 연결은 시각 role이 아니며 headless/Application 소유로 분리한다.
 
 ## CSS, variants, responsive evidence
@@ -136,8 +137,27 @@ ContextMenuUI, PopoverUI, CollapsibleUI를 조합한다. Primitive checker는 �
 - additive valid Component는 checker allowlist 변경 없이 통과한다.
 - production UI에서 legacy runtime import와 headless import가 없다.
 - 현재 required Primitive가 존재하고 candidate Primitive가 required로 오인되지 않는다.
-- design lint, typecheck, unit tests가 통과한다.
+- design lint, typecheck, unit, Chromium Storybook, build가 모두 통과한다.
+- terminal seal은 폐기 namespace/계약, 구현 전 Product Reference, production Component 없이
+  만든 raw product surrogate를 거부한다.
+- desktop, mobile, reduced-motion에서 production Folder/File/Taskbar 결과를 수동 검토하고
+  public DOM·responsive·motion parity를 기록한다. 승인 baseline이 없어 screenshot 승인은
+  주장하지 않는다.
+
+## INT-002 integration seal
+
+- exact base에서 TASK-004와 TASK-005 결과를 선언 순서대로 무충돌 통합했다.
+- family aggregate, UI entry와 package entry는 발견된 production Component를 재노출한다.
+- Folder category Product Reference는 production Folder Component가 CollapsibleUI를 소비하는
+  경로를 사용하고, Taskbar click/hover reference는 production TaskbarUI를 사용한다.
+- DialogUI처럼 production consumer 근거가 없는 candidate는 generic composition example로만
+  남기며 제품 상태나 완료 근거를 주장하지 않는다.
+- source publication, branch merge, PR ready 변경과 Jira workflow 전환은 별도 수동 전달이다.
 
 ## Jira
 
 - https://seojaewan.atlassian.net/browse/HDJG-26
+
+## Pull request
+
+- https://github.com/SeoJaeWan/seojaewan-blog/pull/7

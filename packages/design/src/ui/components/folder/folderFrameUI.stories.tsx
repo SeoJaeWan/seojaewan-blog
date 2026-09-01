@@ -135,7 +135,11 @@ const FolderWindowProductFixture = ({ compact = false }: { compact?: boolean }) 
   return (
     <div
       className="wd-folder-story-window-stage"
-      style={compact ? { blockSize: 512, inlineSize: 420 } : undefined}
+      style={
+        compact
+          ? { blockSize: 512, inlineSize: "calc(100vw - 32px)", maxInlineSize: 420 }
+          : undefined
+      }
     >
       <FolderWindowUI
         aria-label="블로그 폴더 창"
@@ -352,6 +356,12 @@ export const Mobile: Story = {
     await expect(firstCard.getBoundingClientRect().width).toBeCloseTo(contentWidth / 2, 0);
     await expect(getComputedStyle(frame.querySelector('[data-control="minimize"]')!).display).toBe(
       "none",
+    );
+    await expect(frame.getBoundingClientRect().right).toBeLessThanOrEqual(
+      canvasElement.ownerDocument.documentElement.clientWidth,
+    );
+    await expect(canvasElement.ownerDocument.documentElement.scrollWidth).toBeLessThanOrEqual(
+      canvasElement.ownerDocument.documentElement.clientWidth,
     );
     await userEvent.click(firstCard);
     await expect(

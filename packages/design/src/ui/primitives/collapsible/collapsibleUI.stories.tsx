@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor } from "storybook/test";
 
+import { FolderCategoryItemUI, FolderSidebarFileItemUI } from "../../components/folder";
 import { CollapsibleUI } from "./index";
 
 const meta = {
@@ -151,15 +152,18 @@ const ExistingFolderCategoryProductReference = () => {
       <output aria-label="Folder category 상태">
         {isOpen ? "프로젝트 category 펼쳐짐" : "프로젝트 category 접힘"}
       </output>
-      <CollapsibleUI.Root open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleUI.Trigger>프로젝트 (2)</CollapsibleUI.Trigger>
-        <CollapsibleUI.Panel aria-label="프로젝트 category 내용" role="region">
-          <ul>
-            <li>블로그 개편.md</li>
-            <li>디자인 시스템.md</li>
-          </ul>
-        </CollapsibleUI.Panel>
-      </CollapsibleUI.Root>
+      <ul>
+        <FolderCategoryItemUI
+          disclosureLabel="프로젝트 category 표시 전환"
+          label="프로젝트 (2)"
+          onOpenChange={setIsOpen}
+          open={isOpen}
+          panelProps={{ "aria-label": "프로젝트 category 내용", role: "region" }}
+        >
+          <FolderSidebarFileItemUI title="블로그 개편.md" />
+          <FolderSidebarFileItemUI title="디자인 시스템.md" />
+        </FolderCategoryItemUI>
+      </ul>
     </section>
   );
 };
@@ -170,14 +174,14 @@ export const ProductReference: Story = {
     docs: {
       description: {
         story:
-          "Surface: Existing Folder category disclosure. Reference state: Existing. 이 Story는 category 계층을 제자리에서 펼치고 접는 동작만 보여 줍니다. category 데이터, 선택, loading, item action과 route는 Folder owner가 소유합니다.",
+          "Surface: Existing Folder category disclosure. Reference state: Existing. production FolderCategoryItemUI와 FolderSidebarFileItemUI가 CollapsibleUI를 소비하는 실제 DOM 경로에서 disclosure와 child row를 확인합니다. category 데이터, 선택, loading, item action과 route는 Folder owner가 소유합니다.",
       },
     },
   },
   render: () => <ExistingFolderCategoryProductReference />,
   play: async ({ canvas }) => {
     const reference = canvas.getByRole("region", { name: "Existing Folder category reference" });
-    const trigger = canvas.getByRole("button", { name: "프로젝트 (2)" });
+    const trigger = canvas.getByRole("button", { name: "프로젝트 category 표시 전환" });
     const status = canvas.getByRole("status", { name: "Folder category 상태" });
 
     await expect(reference).toHaveAttribute("data-product-state", "existing");

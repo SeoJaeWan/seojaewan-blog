@@ -18,7 +18,7 @@
     "build:storybook": "storybook build",
     "dev": "storybook dev -p 6008",
     "lint": "pnpm lint:eslint && pnpm lint:css && pnpm lint:architecture",
-    "lint:architecture": "node scripts/checkPrimitivePublicApi.mjs --verify-fixtures && node scripts/checkComponentContracts.mjs --verify-fixtures",
+    "lint:architecture": "node scripts/checkPrimitivePublicApi.mjs --verify-fixtures && node scripts/checkComponentContracts.mjs --verify-fixtures && node scripts/checkIntegrationSeal.mjs",
     "lint:css": "stylelint \"src/ui/**/*.css\"",
     "lint:eslint": "eslint . --max-warnings=0",
     "test": "vitest run --project headless --project ui --passWithNoTests",
