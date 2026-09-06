@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
-import { createResourceRef, type Folder, type ResourceRef } from "../resources/index.js";
-import type { WorkspaceState } from "./model.js";
-import type { WorkspaceStorage } from "./workspaceStorage.js";
+import {
+  createResourceRef,
+  createStaticCatalog,
+  type Folder,
+  type ResourceRef,
+} from "../../resources/index.js";
+import type { WorkspaceState } from "../model/index.js";
+import type { WorkspaceStorage } from "../workspaceStore/workspaceStorage/index.js";
 
 const ref = <Kind extends ResourceRef["kind"]>(kind: Kind, suffix: string) =>
   createResourceRef(kind, `00000000-0000-4000-8000-${suffix}`);
@@ -19,12 +24,17 @@ const initialState: WorkspaceState = {
 };
 
 beforeEach(() => {
+  vi.restoreAllMocks();
   vi.resetModules();
+  vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+    created.id as `${string}-${string}-${string}-${string}-${string}`,
+  );
 });
 
 describe("FolderCatalog", () => {
   it("현재 Workspace snapshot의 Folder를 복사 없이 typed has/get/list로 읽는다", async () => {
-    const { FolderCatalog, WorkspaceStore } = await import("./index.js");
+    const { FolderCatalog } = await import("./index.js");
+    const { WorkspaceStore } = await import("../workspaceStore/index.js");
     const fakeStorage: WorkspaceStorage = {
       load: vi.fn(() => Promise.resolve(initialState)),
       save: vi.fn(() => Promise.resolve()),
@@ -32,9 +42,8 @@ describe("FolderCatalog", () => {
     await WorkspaceStore.initialize({
       storage: fakeStorage,
       seed: initialState,
-      currentContent: [],
-      resourceLookup: { hasResource: () => false },
-      idGenerator: { generateId: vi.fn(() => created.id) },
+      contentCatalog: createStaticCatalog([]),
+      externalShortcutCatalog: createStaticCatalog([]),
     });
 
     expect(FolderCatalog.has(inbox.id)).toBe(true);
@@ -46,7 +55,8 @@ describe("FolderCatalog", () => {
   });
 
   it("create와 rename commit을 즉시 반영하고 Desktop Folder를 합성하지 않는다", async () => {
-    const { FolderCatalog, WorkspaceStore } = await import("./index.js");
+    const { FolderCatalog } = await import("./index.js");
+    const { WorkspaceStore } = await import("../workspaceStore/index.js");
     const fakeStorage: WorkspaceStorage = {
       load: vi.fn(() => Promise.resolve(initialState)),
       save: vi.fn(() => Promise.resolve()),
@@ -54,9 +64,8 @@ describe("FolderCatalog", () => {
     await WorkspaceStore.initialize({
       storage: fakeStorage,
       seed: initialState,
-      currentContent: [],
-      resourceLookup: { hasResource: () => false },
-      idGenerator: { generateId: vi.fn(() => created.id) },
+      contentCatalog: createStaticCatalog([]),
+      externalShortcutCatalog: createStaticCatalog([]),
     });
 
     await WorkspaceStore.createFolder("Projects", null);

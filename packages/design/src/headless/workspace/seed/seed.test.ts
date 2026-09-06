@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { createResourceRef } from "../resources/index.js";
-import { createWorkspaceSeed } from "./seed.js";
+import { createResourceRef } from "../../resources/index.js";
+import { createWorkspaceSeed } from "./index.js";
 
 describe("createWorkspaceSeed", () => {
   it("Desktop의 Blog inbox와 그 아래의 초기 Content placement를 만든다", () => {

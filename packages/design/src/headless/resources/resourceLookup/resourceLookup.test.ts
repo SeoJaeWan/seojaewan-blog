@@ -8,7 +8,7 @@ import {
   type ExternalShortcut,
   type Folder,
   type ResourceLookup,
-} from "./index.js";
+} from "../index.js";
 
 const content: Content = {
   ref: createResourceRef("content", "01927d65-2354-7a55-95c1-8c1a77a43b42"),

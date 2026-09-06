@@ -8,7 +8,7 @@ import {
   DuplicateResourceIdError,
   type ExternalShortcut,
   type Folder,
-} from "./index.js";
+} from "../index.js";
 
 const CONTENT_ID = "01927d65-2354-7a55-95c1-8c1a77a43b42";
 const FOLDER_ID = "57dd8487-031a-4f60-bc14-4f77f92be32f";
@@ -83,6 +83,9 @@ describe("static Catalog common implementation", () => {
 
   it("한 Catalog 안에서 중복 UUID를 거부한다", () => {
     expect(() => createStaticCatalog([content, { ...content }])).toThrow(DuplicateResourceIdError);
+    expect(() => createStaticCatalog([content, { ...content }])).toThrow(
+      `전역 Resource namespace에서 이미 사용 중인 ResourceId입니다: ${CONTENT_ID}`,
+    );
   });
 
   it("kind가 달라도 전체 Resource namespace에서 중복 UUID를 거부한다", () => {

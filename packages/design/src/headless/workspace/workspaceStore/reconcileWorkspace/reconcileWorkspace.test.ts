@@ -1,15 +1,13 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   type ContentResourceRef,
   createResourceRef,
-  parseResourceId,
   type ResourceLookup,
   type ResourceRef,
-} from "../resources/index.js";
-import type { IdGenerator } from "./idGenerator.js";
-import type { WorkspaceState } from "./model.js";
-import { reconcileWorkspace } from "./reconcileWorkspace.js";
+} from "../../../resources/index.js";
+import type { WorkspaceState } from "../../model/index.js";
+import { reconcileWorkspace } from "./index.js";
 
 const ref = <Kind extends ResourceRef["kind"]>(kind: Kind, suffix: string) =>
   createResourceRef(kind, `00000000-0000-4000-8000-${suffix}`);
@@ -27,11 +25,12 @@ const lookupFor = (
   };
 };
 
-const failingIdGenerator: IdGenerator = {
-  generateId() {
-    throw new Error("IdGenerator must not be called");
-  },
-};
+beforeEach(() => {
+  vi.restoreAllMocks();
+  vi.spyOn(globalThis.crypto, "randomUUID").mockImplementation(() => {
+    throw new Error("이 테스트에서는 ID를 발급하면 안 됩니다");
+  });
+});
 
 describe("reconcileWorkspace", () => {
   it("저장된 Folder 이름, hierarchy와 사용자가 이동한 Content를 보존한다", () => {
@@ -57,7 +56,6 @@ describe("reconcileWorkspace", () => {
       state,
       currentContent: [content],
       resourceLookup: lookupFor([content]),
-      idGenerator: failingIdGenerator,
     });
 
     expect(reconciled).toEqual(state);
@@ -106,7 +104,6 @@ describe("reconcileWorkspace", () => {
       state,
       currentContent: [keptContent, newContent],
       resourceLookup: lookup,
-      idGenerator: failingIdGenerator,
     });
 
     expect(reconciled.placements).toEqual([
@@ -127,7 +124,6 @@ describe("reconcileWorkspace", () => {
       state: reconciled,
       currentContent: [keptContent, newContent],
       resourceLookup: lookup,
-      idGenerator: failingIdGenerator,
     });
     expect(secondPass).toEqual(reconciled);
   });
@@ -147,13 +143,14 @@ describe("reconcileWorkspace", () => {
         { resource: movedContent, parent: existing },
       ],
     };
-    const generateId = vi.fn(() => parseResourceId(recoveredInbox.id));
+    const generateId = vi
+      .spyOn(globalThis.crypto, "randomUUID")
+      .mockReturnValue(recoveredInbox.id as `${string}-${string}-${string}-${string}-${string}`);
 
     const reconciled = reconcileWorkspace({
       state,
       currentContent: [movedContent, newContent, newContent] as readonly ContentResourceRef[],
       resourceLookup: lookupFor([movedContent, newContent]),
-      idGenerator: { generateId },
     });
 
     expect(generateId).toHaveBeenCalledOnce();
@@ -173,7 +170,6 @@ describe("reconcileWorkspace", () => {
       state: reconciled,
       currentContent: [movedContent, newContent],
       resourceLookup: lookupFor([movedContent, newContent]),
-      idGenerator: failingIdGenerator,
     });
     expect(secondPass).toEqual(reconciled);
   });
@@ -188,13 +184,15 @@ describe("reconcileWorkspace", () => {
       placements: [{ resource: existing, parent: null }],
     };
 
+    vi.spyOn(globalThis.crypto, "randomUUID").mockReturnValue(
+      existing.id as `${string}-${string}-${string}-${string}-${string}`,
+    );
     expect(() =>
       reconcileWorkspace({
         state,
         currentContent: [],
         resourceLookup: lookupFor([]),
-        idGenerator: { generateId: () => existing.id },
       }),
-    ).toThrow(`IdGenerator returned an existing ResourceId: ${existing.id}`);
+    ).toThrow(`IdGenerator가 이미 사용 중인 ResourceId를 반환했습니다: ${existing.id}`);
   });
 });
