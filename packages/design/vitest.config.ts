@@ -22,6 +22,14 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          environment: "node",
+          include: ["src/headless/**/*.test.ts"],
+          name: "headless",
+        },
+      },
+      {
+        extends: true,
+        test: {
           environment: "jsdom",
           include: ["src/ui/**/*.test.{ts,tsx}"],
           name: "ui",
