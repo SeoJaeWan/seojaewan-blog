@@ -46,4 +46,4 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 
 정적 Catalog의 실제 데이터와 저장 adapter는 Application 소유이며 실행 중 교체하지 않는다. 초기화 알림은 저장 완료 알림이 아니다. 초기화 작업이나 storage adapter가 뒤에 대기하는 Store 명령을 await하면 안 된다.
 
-이번 변경은 위 세 미해결 사항을 보완했다. Memory의 기존 lifecycle 설명보다 초기화 중 명령 대기 정책과 Catalog 연결 계약이 구체화되었으며, Wiki 정본의 해당 상세 갱신은 별도로 필요하다.
+초기화 중 명령 대기 정책과 Catalog 연결·실패 처리의 정본은 Local Work Memory의 `workspace-resource-placement`다. 이 안내는 해당 계약을 현재 코드의 사용 순서로 설명한다.
