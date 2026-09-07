@@ -22,6 +22,8 @@ export type WindowStoreChangeKind =
   | "window-resized"
   | "work-area-changed"
   | "mode-changed"
+  /** mobile launcher가 빈 Desktop 또는 다른 앱을 기본 창으로 교체했다. */
+  | "mobile-application-launched"
   | "mobile-returned-to-file-explorer"
   | "tab-added"
   | "tab-activated"
@@ -74,6 +76,10 @@ export type WindowStoreFailureReason =
   | "invalid-resource-ref"
   | "invalid-location"
   | "invalid-mode"
+  /** 지원하지 않는 application identity가 mobile launcher에 전달됐다. */
+  | "invalid-application"
+  /** mobile 전용 launcher가 desktop mode에서 호출됐다. */
+  | "mobile-mode-required"
   | "invalid-scroll-top"
   | "invalid-geometry"
   | "duplicate-runtime-id"

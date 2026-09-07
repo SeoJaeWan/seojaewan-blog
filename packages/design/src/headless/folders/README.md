@@ -15,3 +15,5 @@ await WindowStore.navigateFileExplorer(sessionId, tabId, childFolderRef);
 ```
 
 위 예제의 ref는 현재 Workspace의 Folder ref이고 ID는 Store snapshot에서 얻는다. 초기화와 결과의 거부·no-op 처리는 [Window 사용 안내](../windows/README.md)를 따른다.
+
+mobile에서는 Explorer Window와 tab이 각각 최대 하나다. `addFileExplorerTab`과 `minimize`는 snapshot·알림·ID 발급이 없는 no-op이며, 고정 Taskbar 버튼은 `launchMobileApplication("file-explorer")`을 사용한다. Explorer를 명시적으로 닫으면 창 없는 Desktop으로 돌아간다.

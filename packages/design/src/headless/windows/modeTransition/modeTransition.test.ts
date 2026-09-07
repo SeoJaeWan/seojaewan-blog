@@ -72,6 +72,31 @@ describe("transitionWindowMode", () => {
     expect(state.mode).toBe("desktop");
   });
 
+  it("유지한 Session의 active tab과 navigation만 남기고 다른 tab은 복원하지 않는다", () => {
+    const session = chromeSession(1);
+    const activeTab = {
+      ...session.tabs[0],
+      id: parseChromeTabId(uuid(102)),
+      navigation: {
+        current: { location: { kind: "new-tab" as const }, scrollTop: 37 },
+        backStack: session.tabs[0]?.navigation.backStack ?? [],
+        forwardStack: session.tabs[0]?.navigation.forwardStack ?? [],
+      },
+    };
+    const state = stateWith(
+      [{ ...session, tabs: [...session.tabs, activeTab], activeTabId: activeTab.id }],
+      session.id,
+    );
+
+    const result = transitionWindowMode(state, "mobile");
+
+    expect(result?.sessions[0]).toMatchObject({
+      activeTabId: activeTab.id,
+      tabs: [{ id: activeTab.id, navigation: { current: { scrollTop: 37 } } }],
+    });
+    expect(state.sessions[0]?.tabs).toHaveLength(2);
+  });
+
   it("visible Session이 없으면 빈 mobile Desktop이 되고 desktop 복귀로 복원하지 않는다", () => {
     const state = stateWith([chromeSession(1, true), chromeSession(2, true)], null);
 

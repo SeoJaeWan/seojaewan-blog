@@ -153,6 +153,22 @@ describe("recoverWindowBounds", () => {
 });
 
 describe("getWindowBounds", () => {
+  it("mobile bounds를 placement와 무관하게 workArea에서 파생하고 desktop frame을 보존한다", () => {
+    const frame: WindowFrameState = {
+      normalBounds: { x: 40, y: 60, width: 500, height: 400 },
+      placement: "normal",
+      minimized: false,
+    };
+    const workArea = { x: 0, y: 0, width: 390, height: 720 };
+
+    expect(getWindowBounds(frame, workArea, "mobile")).toEqual(workArea);
+    expect(frame).toEqual({
+      normalBounds: { x: 40, y: 60, width: 500, height: 400 },
+      placement: "normal",
+      minimized: false,
+    });
+  });
+
   it("maximized bounds를 workArea에서 파생하고 normalBounds와 입력을 바꾸지 않는다", () => {
     const normalBounds = Object.freeze({ x: 40, y: 60, width: 500, height: 400 });
     const frame: WindowFrameState = Object.freeze({

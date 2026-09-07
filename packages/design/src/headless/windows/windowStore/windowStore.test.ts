@@ -51,7 +51,8 @@ const setup = async (
 ) => {
   vi.resetModules();
   const generated = [...ids];
-  vi.stubGlobal("crypto", { randomUUID: vi.fn(() => generated.shift() ?? uuid(999)) });
+  const randomUUID = vi.fn(() => generated.shift() ?? uuid(999));
+  vi.stubGlobal("crypto", { randomUUID });
   let workspaceState = initialWorkspace;
   const workspace = {
     getSnapshot: vi.fn(() => workspaceState),
@@ -88,6 +89,10 @@ const setup = async (
     initialization,
     workspace,
     contentCatalog,
+    /**
+     * 현재까지 Store가 runtime ID 후보를 요청한 횟수를 반환한다.
+     */
+    getRandomUUIDCallCount: () => randomUUID.mock.calls.length,
     /**
      * 후속 명령이 읽을 fake Workspace snapshot을 교체한다. WindowStore 상태는 직접 변경하지 않는다.
      */
@@ -891,23 +896,41 @@ describe("WindowStore", () => {
       ).toHaveLength(2);
     });
 
-    it("mobile 일반 tab 종료는 Chrome을 유지하고 마지막 Content 종료는 최신 parent로 복귀한다", async () => {
+    it("mobile tab 추가와 minimize는 ID·snapshot·알림 없이 no-op이다", async () => {
+      const { WindowStore, initialization, getRandomUUIDCallCount } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.setMode("mobile");
+      await WindowStore.createChromeWindow({ kind: "content", ref: contentA });
+      const chrome = WindowStore.getSnapshot().sessions[0];
+      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
+      const before = WindowStore.getSnapshot();
+      const listener = vi.fn();
+      WindowStore.subscribe(listener);
+      const issueCount = getRandomUUIDCallCount();
+
+      expect(await WindowStore.addChromeTab(chrome.id)).toMatchObject({ changed: false });
+      expect(await WindowStore.minimize(chrome.id)).toMatchObject({ changed: false });
+      expect(WindowStore.getSnapshot()).toBe(before);
+      expect(listener).not.toHaveBeenCalled();
+      expect(getRandomUUIDCallCount()).toBe(issueCount);
+
+      await WindowStore.createFileExplorerWindow(null);
+      const explorer = WindowStore.getSnapshot().sessions[0];
+      if (explorer?.kind !== "file-explorer") throw new Error("expected explorer");
+      const explorerBefore = WindowStore.getSnapshot();
+      const explorerIssueCount = getRandomUUIDCallCount();
+      expect(await WindowStore.addFileExplorerTab(explorer.id)).toMatchObject({ changed: false });
+      expect(WindowStore.getSnapshot()).toBe(explorerBefore);
+      expect(getRandomUUIDCallCount()).toBe(explorerIssueCount);
+    });
+
+    it("mobile Content 종료는 종료 시점의 최신 parent로 fresh Explorer를 연다", async () => {
       const { WindowStore, initialization, setWorkspaceState, workspace } = await setup();
       await WindowStore.initialize(initialization);
       await WindowStore.setMode("mobile");
       await WindowStore.createChromeWindow({ kind: "content", ref: contentA });
-      let chrome = WindowStore.getSnapshot().sessions[0];
+      const chrome = WindowStore.getSnapshot().sessions[0];
       if (chrome?.kind !== "chrome") throw new Error("expected chrome");
-      const contentTabId = chrome.activeTabId;
-      await WindowStore.addChromeTab(chrome.id);
-      chrome = WindowStore.getSnapshot().sessions[0];
-      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
-
-      await WindowStore.closeChromeTab(chrome.id, chrome.activeTabId);
-      expect(WindowStore.getSnapshot().sessions[0]).toMatchObject({
-        kind: "chrome",
-        activeTabId: contentTabId,
-      });
 
       setWorkspaceState({
         ...initialWorkspace,
@@ -915,7 +938,7 @@ describe("WindowStore", () => {
           placement.resource.id === contentA.id ? { ...placement, parent: folderB } : placement,
         ),
       });
-      await WindowStore.closeChromeTab(chrome.id, contentTabId);
+      await WindowStore.closeChromeTab(chrome.id, chrome.activeTabId);
 
       const explorer = WindowStore.getSnapshot().sessions[0];
       expect(explorer?.kind).toBe("file-explorer");
@@ -1003,6 +1026,79 @@ describe("WindowStore", () => {
       });
       expect(WindowStore.getSnapshot()).toBe(before);
     });
+
+    it("mobile application launcher는 same-app no-op과 other-app 단일 commit을 구분한다", async () => {
+      const { WindowStore, initialization, getRandomUUIDCallCount } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.setMode("mobile");
+      const observed: WindowState[] = [];
+      WindowStore.subscribe(() => observed.push(WindowStore.getSnapshot()));
+
+      expect(await WindowStore.launchMobileApplication("file-explorer")).toMatchObject({
+        changed: true,
+        change: { kind: "mobile-application-launched" },
+      });
+      const explorer = WindowStore.getSnapshot();
+      expect(explorer.sessions[0]).toMatchObject({
+        kind: "file-explorer",
+        tabs: [{ navigation: { current: { location: null } } }],
+      });
+      const issueCount = getRandomUUIDCallCount();
+      expect(await WindowStore.launchMobileApplication("file-explorer")).toMatchObject({
+        changed: false,
+        value: explorer,
+      });
+      expect(getRandomUUIDCallCount()).toBe(issueCount);
+
+      expect(await WindowStore.launchMobileApplication("chrome")).toMatchObject({
+        changed: true,
+        change: { kind: "mobile-application-launched" },
+      });
+      expect(WindowStore.getSnapshot().sessions).toHaveLength(1);
+      expect(WindowStore.getSnapshot().sessions[0]).toMatchObject({
+        kind: "chrome",
+        tabs: [{ navigation: { current: { location: { kind: "new-tab" } } } }],
+      });
+      expect(observed).toHaveLength(2);
+      expect(observed.every(({ sessions }) => sessions.length === 1)).toBe(true);
+    });
+
+    it("mobile Chrome의 Content open은 ID를 만들지 않고 유일한 tab history에서 navigate한다", async () => {
+      const { WindowStore, initialization, getRandomUUIDCallCount } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.setMode("mobile");
+      await WindowStore.createChromeWindow({ kind: "content", ref: contentA });
+      const before = WindowStore.getSnapshot();
+      const chrome = before.sessions[0];
+      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
+      const issueCount = getRandomUUIDCallCount();
+
+      await WindowStore.openContent(contentB);
+
+      const after = WindowStore.getSnapshot().sessions[0];
+      if (after?.kind !== "chrome") throw new Error("expected chrome");
+      expect(after.id).toBe(chrome.id);
+      expect(after.activeTabId).toBe(chrome.activeTabId);
+      expect(after.tabs).toHaveLength(1);
+      expect(after.tabs[0]?.navigation).toMatchObject({
+        current: { location: { kind: "content", ref: contentB } },
+        backStack: [{ location: { kind: "content", ref: contentA } }],
+      });
+      expect(getRandomUUIDCallCount()).toBe(issueCount);
+    });
+
+    it("mobile launcher는 desktop에서 거부하고 snapshot을 유지한다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      const before = WindowStore.getSnapshot();
+
+      expect(await WindowStore.launchMobileApplication("chrome")).toMatchObject({
+        ok: false,
+        changed: false,
+        reason: "mobile-mode-required",
+      });
+      expect(WindowStore.getSnapshot()).toBe(before);
+    });
   });
 
   describe("openFolder", () => {
@@ -1084,16 +1180,11 @@ describe("WindowStore", () => {
       await WindowStore.createChromeWindow({ kind: "content", ref: contentA });
       let chrome = WindowStore.getSnapshot().sessions[0];
       if (chrome?.kind !== "chrome") throw new Error("expected chrome");
-      await WindowStore.addChromeTab(chrome.id);
-      chrome = WindowStore.getSnapshot().sessions[0];
-      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
+      await WindowStore.navigateChrome(chrome.id, chrome.activeTabId, { kind: "new-tab" });
       await WindowStore.close(chrome.id);
       expect(WindowStore.getSnapshot().sessions).toEqual([]);
 
       await WindowStore.createChromeWindow({ kind: "content", ref: contentA });
-      chrome = WindowStore.getSnapshot().sessions[0];
-      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
-      await WindowStore.addChromeTab(chrome.id);
       chrome = WindowStore.getSnapshot().sessions[0];
       if (chrome?.kind !== "chrome") throw new Error("expected chrome");
       await WindowStore.navigateChrome(chrome.id, chrome.activeTabId, {
@@ -1173,6 +1264,103 @@ describe("WindowStore", () => {
       await WindowStore.setMode("desktop");
       expect(WindowStore.getSnapshot().sessions).toEqual([]);
     });
+
+    it("mode 다음 workArea 순서에서 desktop frame을 보존하고 새 desktop 영역에 복구한다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const id = WindowStore.getSnapshot().sessions[0].id;
+      await WindowStore.move(id, { x: 350, y: 300 });
+      await WindowStore.toggleMaximize(id);
+      const frame = WindowStore.getSnapshot().sessions[0].frame;
+
+      await WindowStore.setMode("mobile");
+      expect(await WindowStore.setWorkArea(initialization.workArea)).toMatchObject({
+        changed: false,
+      });
+      await WindowStore.setWorkArea({ x: 0, y: 0, width: 390, height: 700 });
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(frame);
+
+      await WindowStore.setMode("desktop");
+      await WindowStore.setWorkArea({ x: 0, y: 0, width: 800, height: 600 });
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(frame);
+    });
+
+    it("workArea 다음 mode 순서에서도 mobile 진입 전 desktop frame으로 복원한다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createFileExplorerWindow(null);
+      const id = WindowStore.getSnapshot().sessions[0].id;
+      await WindowStore.move(id, { x: 350, y: 300 });
+      await WindowStore.toggleMaximize(id);
+      const frame = WindowStore.getSnapshot().sessions[0].frame;
+
+      await WindowStore.setWorkArea({ x: 0, y: 0, width: 390, height: 700 });
+      expect(WindowStore.getSnapshot().sessions[0].frame.normalBounds.x).not.toBe(
+        frame.normalBounds.x,
+      );
+      expect(await WindowStore.activate(id)).toMatchObject({ changed: false });
+      expect(await WindowStore.launchMobileApplication("chrome")).toMatchObject({
+        ok: false,
+        changed: false,
+        reason: "mobile-mode-required",
+      });
+      await WindowStore.setMode("mobile");
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(frame);
+
+      await WindowStore.setWorkArea({ x: 0, y: 0, width: 800, height: 600 });
+      await WindowStore.setMode("desktop");
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(frame);
+    });
+
+    it("workArea와 mode 사이의 committed product 명령은 responsive pair를 끝낸다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const chrome = WindowStore.getSnapshot().sessions[0];
+      if (chrome?.kind !== "chrome") throw new Error("expected chrome");
+      await WindowStore.move(chrome.id, { x: 350, y: 300 });
+      const desktopFrame = WindowStore.getSnapshot().sessions[0].frame;
+
+      await WindowStore.setWorkArea({ x: 0, y: 0, width: 390, height: 700 });
+      const recoveredFrame = WindowStore.getSnapshot().sessions[0].frame;
+      expect(recoveredFrame).not.toEqual(desktopFrame);
+      await WindowStore.navigateChrome(chrome.id, chrome.activeTabId, {
+        kind: "not-found",
+        address: "/after-resize" as InternalAddress,
+      });
+      await WindowStore.setMode("mobile");
+
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(recoveredFrame);
+    });
+
+    it.each(["mode-first", "work-area-first"] as const)(
+      "mobile-created 창은 %s desktop 복귀에서 기본 배치를 한 번 적용한다",
+      async (order) => {
+        const { WindowStore, initialization } = await setup();
+        await WindowStore.initialize(initialization);
+        await WindowStore.setMode("mobile");
+        await WindowStore.setWorkArea({ x: 0, y: 0, width: 390, height: 700 });
+        await WindowStore.launchMobileApplication("chrome");
+
+        if (order === "mode-first") {
+          await WindowStore.setMode("desktop");
+          await WindowStore.setWorkArea({ x: 0, y: 0, width: 800, height: 600 });
+        } else {
+          await WindowStore.setWorkArea({ x: 0, y: 0, width: 800, height: 600 });
+          await WindowStore.setMode("desktop");
+        }
+
+        expect(WindowStore.getSnapshot().sessions[0]).toMatchObject({
+          frame: {
+            normalBounds: { x: 100, y: 100, width: 600, height: 400 },
+            placement: "normal",
+            minimized: false,
+          },
+        });
+        expect(WindowStore.getSnapshot().sessions[0]).not.toHaveProperty("desktopPlacementPending");
+      },
+    );
   });
   describe.each(["openFolder", "openContent", "openContentInNewWindow"] as const)(
     "%s 입력 검증",
