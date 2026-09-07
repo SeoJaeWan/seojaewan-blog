@@ -1,6 +1,6 @@
 # Headless 사용 안내
 
-UI 없이 성립하는 Resource 모델과 Start·Workspace·Window 상태 및 명령을 제공한다. React, DOM, Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
+UI 없이 성립하는 Resource 모델과 Start·Taskbar·Workspace·Window 상태 및 명령을 제공한다. React, DOM, Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
 
 이 README는 현재 checkout의 코드 탐색과 사용 안내다. 지속적인 아키텍처·계약·컨벤션의 정본은 Workbench Local Work Memory의 `seojaewan/seojaewan-blog` 프로젝트에 있는 `resource-model`, `start-screen-pin-model`, `pin-store-persistence`, `workspace-resource-placement`, `window-session`, `taskbar-mobile`, `chrome-tab-navigation-history`, `application-resource-routing-404`, `module-boundaries`, `coding`, `folder-structure`다.
 
@@ -25,6 +25,7 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 | [index.ts](./index.ts)              | 각 feature의 public API를 모으는 진입점. 자체 제품 로직은 없다.     |
 | [resources/](./resources/README.md) | identity, 참조, 원본 및 조회 계약. 파일별 역할과 Catalog 사용 예제. |
 | [start/](./start/README.md)         | Start Resource Pin, 순서, storage port, 복원과 조용한 저장 실패.    |
+| [taskbar/](./taskbar/README.md)     | Taskbar Pin, visible order, Window Group과 desktop/mobile intent.   |
 | [workspace/](./workspace/README.md) | 배치, 초기화, 저장, 구독과 명령. lifecycle과 command queue 설명.    |
 | [windows/](./windows/README.md)     | Window model, static Store, geometry와 route 읽기 selector.         |
 | [folders/](./folders/README.md)     | File Explorer tab과 Folder 또는 Desktop location model.             |
