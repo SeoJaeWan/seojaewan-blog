@@ -15,8 +15,8 @@ export default defineConfig({
         extends: true,
         test: {
           environment: "node",
-          include: ["src/core/**/*.test.{ts,tsx}"],
-          name: "core",
+          include: ["src/headless/**/*.test.ts"],
+          name: "headless",
         },
       },
       {
@@ -42,14 +42,6 @@ export default defineConfig({
             provider: playwright(),
           },
           name: "storybook",
-        },
-      },
-      {
-        extends: true,
-        test: {
-          environment: "jsdom",
-          include: ["src/shell/**/*.test.{ts,tsx}"],
-          name: "shell",
         },
       },
     ],
