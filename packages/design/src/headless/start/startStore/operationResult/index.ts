@@ -31,7 +31,18 @@ export type StartStoreNoOpResult = Readonly<{
  * no-op과 저장 실패는 각각 별도 결과로 구분한다.
  */
 export type StartStoreRejectionReason =
-  "invalid-resource-ref" | "resource-not-found" | "invalid-reorder-action";
+  /**
+   * 명령에 전달된 ResourceRef의 구조나 kind를 해석할 수 없어 요청을 거절했다.
+   */
+  | "invalid-resource-ref"
+  /**
+   * Pin하려는 ResourceRef가 현재 Workspace 또는 Catalog에 없어 요청을 거절했다.
+   */
+  | "resource-not-found"
+  /**
+   * reorder intent가 지원되지 않거나 지정한 index가 현재 목록 범위를 벗어나 요청을 거절했다.
+   */
+  | "invalid-reorder-action";
 
 /**
  * Start 명령을 적용하지 않아 현재 snapshot과 모든 부수 효과를 유지한 결과다.
@@ -61,7 +72,19 @@ export type StartStorePersistenceFailure = Readonly<{
  * lifecycle 오류나 예상하지 못한 adapter 오류의 Promise rejection과는 구분된다.
  */
 export type StartStoreResult =
+  /**
+   * 명령이 snapshot을 변경했고 필요한 전체 Pin 저장까지 성공한 결과다.
+   */
   | StartStoreCommittedResult
+  /**
+   * 유효한 명령이 현재 상태와 같아 commit, 알림과 저장을 모두 생략한 결과다.
+   */
   | StartStoreNoOpResult
+  /**
+   * 입력이나 현재 Resource 전제가 맞지 않아 상태를 변경하지 않은 실패 결과다.
+   */
   | StartStoreRejectedResult
+  /**
+   * 메모리 commit과 알림은 유지됐지만 뒤이은 전체 Pin 저장만 실패한 결과다.
+   */
   | StartStorePersistenceFailure;
