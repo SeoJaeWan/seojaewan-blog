@@ -12,7 +12,9 @@ import { WorkspaceStore } from "../workspaceStore/index.js";
  * Folder의 lifecycle과 placement 변경은 소유하지 않으며, mutation은 `WorkspaceStore`를 사용한다.
  */
 export class FolderCatalog {
-  /** 별도 instance 없이 현재 WorkspaceStore의 Folder 원본만 조회하게 한다. */
+  /**
+   * 별도 instance 없이 현재 WorkspaceStore의 Folder 원본만 조회하게 한다.
+   */
   private constructor() {}
 
   /**

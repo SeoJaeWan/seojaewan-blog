@@ -7,7 +7,6 @@ export { getWindowBounds, type WindowPlacementConfig } from "./geometry/index.js
 export {
   type ChromeWindowSession,
   type FileExplorerWindowSession,
-  type WindowBounds,
   type WindowFrameState,
   type WindowMode,
   type WindowPoint,

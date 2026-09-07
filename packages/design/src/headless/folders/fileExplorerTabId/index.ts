@@ -23,7 +23,9 @@ const FILE_EXPLORER_TAB_ID_PATTERN =
  * tab의 실제 존재 여부는 확인하지 않는다.
  */
 export class InvalidFileExplorerTabIdError extends TypeError {
-  /** 잘못된 입력을 포함하는 UUID 형식 오류를 만든다. */
+  /**
+   * 잘못된 입력을 포함하는 UUID 형식 오류를 만든다.
+   */
   constructor(value: unknown) {
     super(`FileExplorerTabId는 유효한 UUID 형식이어야 합니다: ${String(value)}`);
     this.name = "InvalidFileExplorerTabIdError";

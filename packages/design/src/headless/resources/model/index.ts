@@ -131,7 +131,9 @@ export type ExternalShortcut = Readonly<{
 
 const RESOURCE_KINDS: readonly ResourceKind[] = ["content", "folder", "external-shortcut"];
 
-/** 외부 입력이 현재 지원하는 Resource kind인지 판별한다. */
+/**
+ * 외부 입력이 현재 지원하는 Resource kind인지 판별한다.
+ */
 const isResourceKind = (value: unknown): value is ResourceKind =>
   RESOURCE_KINDS.some((kind) => kind === value);
 

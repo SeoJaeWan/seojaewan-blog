@@ -22,7 +22,6 @@ export {
   type NavigationEntry,
   type NavigationState,
   selectWindowRoute,
-  type WindowBounds,
   type WindowFrameState,
   type WindowMode,
   type WindowPlacementConfig,

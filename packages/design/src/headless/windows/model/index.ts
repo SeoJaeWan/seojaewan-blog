@@ -7,25 +7,30 @@ import type { ChromeTab, ChromeTabId } from "../../chrome/index.js";
 import type { FileExplorerTab, FileExplorerTabId } from "../../folders/index.js";
 import type { WindowSessionId } from "../windowSessionId/index.js";
 
-/** 숫자 좌표로 표현한 Window의 기준점이다. */
+/**
+ * 숫자 좌표로 표현한 Window의 기준점이다.
+ */
 export type WindowPoint = Readonly<{
   x: number;
   y: number;
 }>;
 
-/** 숫자 너비와 높이로 표현한 Window 크기다. */
+/**
+ * 숫자 너비와 높이로 표현한 Window 크기다.
+ */
 export type WindowSize = Readonly<{
   width: number;
   height: number;
 }>;
 
-/** 숫자 좌표와 크기로 표현한 사각형이다. */
+/**
+ * 숫자 좌표와 크기로 표현한 사각형이다.
+ */
 export type WindowRect = Readonly<WindowPoint & WindowSize>;
 
-/** normal placement에서 보존하는 Window 위치와 크기다. */
-export type WindowBounds = WindowRect;
-
-/** WindowStore가 명시적 responsive 명령으로 관리하는 실행 모드다. */
+/**
+ * WindowStore가 명시적 responsive 명령으로 관리하는 실행 모드다.
+ */
 export type WindowMode = "desktop" | "mobile";
 
 /**
@@ -34,12 +39,14 @@ export type WindowMode = "desktop" | "mobile";
  * maximized 상태의 실제 bounds는 현재 `workArea`에서 파생한다.
  */
 export type WindowFrameState = Readonly<{
-  normalBounds: WindowBounds;
+  normalBounds: WindowRect;
   placement: "normal" | "maximized";
   minimized: boolean;
 }>;
 
-/** 모든 앱 WindowSession이 공유하는 runtime identity와 frame 상태다. */
+/**
+ * 모든 앱 WindowSession이 공유하는 runtime identity와 frame 상태다.
+ */
 export type WindowSessionBase = Readonly<{
   id: WindowSessionId;
   frame: WindowFrameState;

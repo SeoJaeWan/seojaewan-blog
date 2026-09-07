@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
   type Content,
@@ -7,7 +7,6 @@ import {
   createStaticCatalog,
   type ExternalShortcut,
   type Folder,
-  type ResourceLookup,
 } from "../index.js";
 
 const content: Content = {
@@ -38,7 +37,7 @@ const lookup = createResourceLookup({
   externalShortcut: createStaticCatalog([shortcut]),
 });
 
-describe("ResourceLookup", () => {
+describe("ResourceLookup.hasResource", () => {
   it.each([content.ref, folder.ref, shortcut.ref])(
     "$kind Resource의 존재를 true로 반환한다",
     (ref) => {
@@ -55,18 +54,15 @@ describe("ResourceLookup", () => {
     },
   );
 
-  it("조회 계약과 반환값에 Resource 또는 ref를 노출하지 않는다", () => {
-    expect(Object.keys(lookup)).toEqual(["hasResource"]);
-    expectTypeOf<keyof ResourceLookup>().toEqualTypeOf<"hasResource">();
-    expectTypeOf(lookup.hasResource(content.ref)).toEqualTypeOf<boolean>();
+  it("같은 ID라도 요청 kind가 다르면 존재하지 않는 것으로 반환한다", () => {
+    expect(lookup.hasResource(createResourceRef("folder", content.ref.id))).toBe(false);
   });
 
-  it("ExternalShortcut public 원본은 ref, name, url만 가진다", () => {
-    expect(Object.keys(shortcut)).toEqual(["ref", "name", "url"]);
-    expectTypeOf<keyof ExternalShortcut>().toEqualTypeOf<"ref" | "name" | "url">();
-  });
-
-  it("Notion pageId와 ResourceId를 별도 identity로 유지한다", () => {
-    expect(content.source.pageId).not.toBe(content.ref.id);
+  it("조회 전후 ref와 Catalog 원본을 변경하지 않는다", () => {
+    const original = structuredClone(content);
+    const ref = { ...content.ref };
+    lookup.hasResource(ref);
+    expect(ref).toEqual(content.ref);
+    expect(content).toEqual(original);
   });
 });

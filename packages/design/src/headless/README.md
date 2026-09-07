@@ -21,12 +21,12 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 
 | 경로                                | 역할                                                                |
 | ----------------------------------- | ------------------------------------------------------------------- |
-| [index.ts](./index.ts)              | 두 feature의 public API를 모으는 진입점. 자체 제품 로직은 없다.     |
+| [index.ts](./index.ts)              | 각 feature의 public API를 모으는 진입점. 자체 제품 로직은 없다.     |
 | [resources/](./resources/README.md) | identity, 참조, 원본 및 조회 계약. 파일별 역할과 Catalog 사용 예제. |
 | [workspace/](./workspace/README.md) | 배치, 초기화, 저장, 구독과 명령. lifecycle과 command queue 설명.    |
-| [windows/](./windows/)              | Window model, static Store, geometry와 route 읽기 selector.         |
-| [folders/](./folders/)              | File Explorer tab과 Folder 또는 Desktop location model.             |
-| [chrome/](./chrome/)                | Chrome tab, Content/new-tab/404 location과 검증된 내부 주소 model.  |
+| [windows/](./windows/README.md)     | Window model, static Store, geometry와 route 읽기 selector.         |
+| [folders/](./folders/README.md)     | File Explorer tab과 Folder 또는 Desktop location model.             |
+| [chrome/](./chrome/README.md)       | Chrome tab, Content/new-tab/404 location과 검증된 내부 주소 model.  |
 
 공유 요소는 `resources/model/index.ts`처럼 feature 아래의 동급 **요소 폴더**에 둔다. 단일 owner 전용 요소는 `workspace/workspaceStore/workspaceStorage/index.ts`처럼 owner 아래에 둔다. 각 `*.test.ts`는 같은 폴더의 구현을 검증한다. 폴더 깊이가 내부 소유권을 나타내지만, storage처럼 외부 구현에 필요한 type은 feature 진입점에서 공개할 수 있다.
 

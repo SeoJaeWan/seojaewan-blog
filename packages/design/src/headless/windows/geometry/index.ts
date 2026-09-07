@@ -3,13 +3,7 @@
  *
  * workArea 측정, pointer sampling과 제품별 크기 선택은 Application과 UI가 소유한다.
  */
-import type {
-  WindowBounds,
-  WindowFrameState,
-  WindowPoint,
-  WindowRect,
-  WindowSize,
-} from "../model/index.js";
+import type { WindowFrameState, WindowPoint, WindowRect, WindowSize } from "../model/index.js";
 
 /**
  * 모든 앱 Window가 함께 사용하는 배치와 복구 숫자 설정이다.
@@ -30,19 +24,27 @@ export type WindowPlacementConfig = Readonly<{
  * 입력을 보정하거나 현재 WindowState를 변경하지 않는다.
  */
 export class InvalidWindowGeometryError extends TypeError {
-  /** 검증에 실패한 geometry 항목을 나타내는 오류를 만든다. */
+  /**
+   * 검증에 실패한 geometry 항목을 나타내는 오류를 만든다.
+   */
   constructor(message: string) {
     super(`Window geometry가 유효하지 않습니다: ${message}`);
     this.name = "InvalidWindowGeometryError";
   }
 }
 
+/**
+ * 숫자가 유한한지 검사하고 NaN·무한대이면 해당 필드의 geometry 오류를 던진다.
+ */
 const assertFiniteNumber = (value: number, name: string): void => {
   if (!Number.isFinite(value)) {
     throw new InvalidWindowGeometryError(`${name}은 유한한 숫자여야 합니다`);
   }
 };
 
+/**
+ * 너비와 높이가 유한한 0 이상인지 검사한다. workArea의 0 크기는 허용한다.
+ */
 const assertNonNegativeSize = (size: WindowSize, name: string): void => {
   assertFiniteNumber(size.width, `${name}.width`);
   assertFiniteNumber(size.height, `${name}.height`);
@@ -52,6 +54,9 @@ const assertNonNegativeSize = (size: WindowSize, name: string): void => {
   }
 };
 
+/**
+ * normal size와 배치 설정에 필요한 양수 크기를 검사하며 0·음수·비유한 값을 거부한다.
+ */
 const assertPositiveSize = (size: WindowSize, name: string): void => {
   assertNonNegativeSize(size, name);
 
@@ -60,6 +65,9 @@ const assertPositiveSize = (size: WindowSize, name: string): void => {
   }
 };
 
+/**
+ * 사각형의 좌표와 크기를 검사한다. positiveSize에 따라 0 크기의 허용 여부를 구분한다.
+ */
 const assertRect = (rect: WindowRect, name: string, positiveSize: boolean): void => {
   assertFiniteNumber(rect.x, `${name}.x`);
   assertFiniteNumber(rect.y, `${name}.y`);
@@ -71,6 +79,9 @@ const assertRect = (rect: WindowRect, name: string, positiveSize: boolean): void
   }
 };
 
+/**
+ * 배치와 titlebar 복구 설정을 검증하고 유효하지 않은 숫자를 geometry 오류로 거부한다.
+ */
 const assertConfig = (config: WindowPlacementConfig): void => {
   assertPositiveSize(config.defaultSize, "defaultSize");
   assertPositiveSize(config.minSize, "minSize");
@@ -84,9 +95,15 @@ const assertConfig = (config: WindowPlacementConfig): void => {
   }
 };
 
+/**
+ * 숫자를 주어진 최소·최대 구간으로 제한해 반환하며 입력을 변경하지 않는다.
+ */
 const clamp = (value: number, minimum: number, maximum: number): number =>
   Math.min(Math.max(value, minimum), maximum);
 
+/**
+ * 최소 크기가 확보되는 축에만 margin을 적용한 배치 영역을 반환한다. 작은 workArea는 가용 공간 전체를 사용한다.
+ */
 const getPlacementArea = (
   workArea: WindowRect,
   edgeMargin: number,
@@ -103,9 +120,17 @@ const getPlacementArea = (
   };
 };
 
+/**
+ * 가용 크기가 양수이면 요청 크기를 그 안으로 제한한다.
+ *
+ * 가용 크기가 0이면 양수 요청 크기를 유지해 normal size가 0이 되는 것을 막는다. 입력의 유한성·양수 검증은 호출자가 담당한다.
+ */
 const fitPositiveDimension = (requested: number, available: number): number =>
   available > 0 ? Math.min(requested, available) : requested;
 
+/**
+ * 창이 영역에 들어가도록 시작 좌표를 제한한다. 영역이 없거나 창보다 작으면 영역 원점을 반환한다.
+ */
 const clampOrigin = (
   origin: number,
   size: number,
@@ -119,7 +144,10 @@ const clampOrigin = (
   return clamp(origin, areaOrigin, areaOrigin + areaSize - size);
 };
 
-const validateCalculatedNormalBounds = (bounds: WindowBounds): WindowBounds => {
+/**
+ * 계산된 normal 사각형의 유한성과 양수 크기를 재검증해 반환한다. 산술 overflow 결과도 거부한다.
+ */
+const validateCalculatedNormalBounds = (bounds: WindowRect): WindowRect => {
   assertRect(bounds, "계산 결과", true);
   return bounds;
 };
@@ -132,9 +160,9 @@ const validateCalculatedNormalBounds = (bounds: WindowBounds): WindowBounds => {
  */
 export const createWindowBounds = (
   workArea: WindowRect,
-  previousBounds: WindowBounds | null,
+  previousBounds: WindowRect | null,
   config: WindowPlacementConfig,
-): WindowBounds => {
+): WindowRect => {
   assertRect(workArea, "workArea", false);
   assertConfig(config);
 
@@ -170,10 +198,10 @@ export const createWindowBounds = (
  * 크기가 0인 workArea에서는 양수 normal size를 유지하며 입력 객체를 변경하지 않는다.
  */
 export const constrainWindowBounds = (
-  bounds: WindowBounds,
+  bounds: WindowRect,
   workArea: WindowRect,
   config: WindowPlacementConfig,
-): WindowBounds => {
+): WindowRect => {
   assertRect(bounds, "bounds", true);
   assertRect(workArea, "workArea", false);
   assertConfig(config);
@@ -196,10 +224,10 @@ export const constrainWindowBounds = (
  * 기존 normal size와 placement를 변경하지 않으며 workArea가 0이어도 유한한 원점을 반환한다.
  */
 export const recoverWindowBounds = (
-  bounds: WindowBounds,
+  bounds: WindowRect,
   workArea: WindowRect,
   config: WindowPlacementConfig,
-): WindowBounds => {
+): WindowRect => {
   assertRect(bounds, "bounds", true);
   assertRect(workArea, "workArea", false);
   assertConfig(config);
@@ -227,7 +255,7 @@ export const recoverWindowBounds = (
  *
  * maximized 계산은 저장된 `normalBounds`를 덮어쓰지 않으며 입력 객체를 변경하지 않는다.
  */
-export const getWindowBounds = (frame: WindowFrameState, workArea: WindowRect): WindowBounds => {
+export const getWindowBounds = (frame: WindowFrameState, workArea: WindowRect): WindowRect => {
   assertRect(frame.normalBounds, "normalBounds", true);
   assertRect(workArea, "workArea", false);
 

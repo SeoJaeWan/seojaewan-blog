@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { type InternalAddress,parseChromeTabId } from "../../chrome/index.js";
+import { type InternalAddress, parseChromeTabId } from "../../chrome/index.js";
 import { parseFileExplorerTabId } from "../../folders/index.js";
-import { type Content, createResourceRef } from "../../resources/index.js";
+import { type Content, createResourceRef, createStaticCatalog } from "../../resources/index.js";
 import type {
   ChromeWindowSession,
   FileExplorerWindowSession,
@@ -28,6 +28,9 @@ const catalog = {
   list: vi.fn(() => [content]),
 };
 
+/**
+ * 지정 identity와 위치를 가진 Chrome Session fixture를 만든다.
+ */
 const chromeSession = (
   sessionValue: number,
   location: ChromeWindowSession["tabs"][number]["navigation"]["current"]["location"],
@@ -58,6 +61,9 @@ const chromeSession = (
   };
 };
 
+/**
+ * 주어진 Session과 active ID로 독립된 WindowState fixture를 만든다.
+ */
 const stateWith = (
   sessions: readonly ChromeWindowSession[],
   activeSessionId: ChromeWindowSession["id"] | null,
@@ -79,51 +85,68 @@ describe("selectWindowRoute", () => {
     expect(catalog.get).toHaveBeenCalledWith(contentRef.id);
   });
 
-  it("new-tab·Explorer와 active 부재는 root이고 404는 attempted address를 유지한다", () => {
-    const newTab = chromeSession(1, { kind: "new-tab" });
-    const notFound = chromeSession(2, {
-      kind: "not-found",
-      address: "/missing?from=test" as InternalAddress,
-    });
-    const explorerTabId = parseFileExplorerTabId("40000000-0000-4000-8000-000000000001");
-    const explorer: FileExplorerWindowSession = {
-      id: parseWindowSessionId("50000000-0000-4000-8000-000000000001"),
-      kind: "file-explorer",
-      applicationId: "file-explorer",
-      frame: {
-        normalBounds: { x: 0, y: 0, width: 600, height: 400 },
-        placement: "normal",
-        minimized: false,
-      },
-      tabs: [
-        {
-          id: explorerTabId,
-          navigation: {
-            current: { location: null, scrollTop: 0 },
-            backStack: [],
-            forwardStack: [],
+  it.each(["new-tab", "explorer", "no-active", "not-found"] as const)(
+    "%s 위치를 대응하는 주소로 반환하며 Content를 조회하지 않는다",
+    (variant) => {
+      const tab = chromeSession(
+        1,
+        variant === "not-found"
+          ? { kind: "not-found", address: "/missing?from=test" as InternalAddress }
+          : { kind: "new-tab" },
+      );
+      let state = stateWith([tab], variant === "no-active" ? null : tab.id);
+      if (variant === "explorer") {
+        const explorerTabId = parseFileExplorerTabId("40000000-0000-4000-8000-000000000001");
+        const explorer: FileExplorerWindowSession = {
+          id: parseWindowSessionId("50000000-0000-4000-8000-000000000001"),
+          kind: "file-explorer",
+          applicationId: "file-explorer",
+          frame: {
+            normalBounds: { x: 0, y: 0, width: 600, height: 400 },
+            placement: "normal",
+            minimized: false,
           },
-        },
-      ],
-      activeTabId: explorerTabId,
-    };
+          tabs: [
+            {
+              id: explorerTabId,
+              navigation: {
+                current: { location: null, scrollTop: 0 },
+                backStack: [],
+                forwardStack: [],
+              },
+            },
+          ],
+          activeTabId: explorerTabId,
+        };
 
-    expect(selectWindowRoute(stateWith([newTab], newTab.id), catalog)).toBe("/");
-    expect(selectWindowRoute(stateWith([notFound], notFound.id), catalog)).toBe(
-      "/missing?from=test",
-    );
-    expect(selectWindowRoute(stateWith([newTab], null), catalog)).toBe("/");
-    expect(
-      selectWindowRoute(
-        {
+        state = {
           ...stateWith([], null),
           sessions: [explorer],
           stackingOrder: [explorer.id],
           activeSessionId: explorer.id,
-        },
-        catalog,
-      ),
+        };
+      }
+      catalog.get.mockClear();
+      expect(selectWindowRoute(state, catalog)).toBe(
+        variant === "not-found" ? "/missing?from=test" : "/",
+      );
+      expect(catalog.get).not.toHaveBeenCalled();
+    },
+  );
+
+  it("현재 Catalog에서 사라진 Content는 root로 복구한다", () => {
+    const active = chromeSession(1, { kind: "content", ref: contentRef });
+    expect(
+      selectWindowRoute(stateWith([active], active.id), createStaticCatalog<Content>([])),
     ).toBe("/");
+  });
+
+  it("주소 파생은 입력 snapshot과 Catalog 원본을 변경하지 않는다", () => {
+    const active = chromeSession(1, { kind: "content", ref: contentRef });
+    const state = stateWith([active], active.id);
+    const before = structuredClone({ state, content });
+    selectWindowRoute(state, catalog);
+    expect({ state, content }).toEqual(before);
   });
 
   it("inactive Chrome location 변화는 active projection과 Catalog 조회를 바꾸지 않는다", () => {

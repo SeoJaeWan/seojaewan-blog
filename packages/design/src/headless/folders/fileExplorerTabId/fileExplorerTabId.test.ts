@@ -12,12 +12,11 @@ import {
 
 const UUID = "550494b7-ce24-4dca-b59c-77da9be2da16";
 
-describe("FileExplorerTabId", () => {
+describe("parseFileExplorerTabId", () => {
   it("유효한 UUID를 다른 identity와 구분되는 FileExplorerTabId로 해석한다", () => {
     const tabId = parseFileExplorerTabId(UUID);
 
     expect(tabId).toBe(UUID);
-    expect(isFileExplorerTabId(tabId)).toBe(true);
     expectTypeOf<FileExplorerTabId>().not.toEqualTypeOf<ResourceId>();
     expectTypeOf<FileExplorerTabId>().not.toEqualTypeOf<WindowSessionId>();
     expectTypeOf<FileExplorerTabId>().not.toEqualTypeOf<ChromeTabId>();
@@ -27,6 +26,17 @@ describe("FileExplorerTabId", () => {
     "지원하지 않는 UUID %s를 거부한다",
     (value) => {
       expect(() => parseFileExplorerTabId(value)).toThrow(InvalidFileExplorerTabIdError);
+    },
+  );
+});
+
+describe("isFileExplorerTabId", () => {
+  it("유효한 UUID이면 true를 반환한다", () => {
+    expect(isFileExplorerTabId(UUID)).toBe(true);
+  });
+  it.each(["", "invalid-id", "00000000-0000-0000-0000-000000000000"])(
+    "잘못된 UUID %s이면 예외 없이 false를 반환한다",
+    (value) => {
       expect(isFileExplorerTabId(value)).toBe(false);
     },
   );

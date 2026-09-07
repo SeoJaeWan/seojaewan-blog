@@ -78,7 +78,9 @@ export const assertUniqueResourceIds = (resources: Iterable<CatalogResource>): v
   }
 };
 
-/** 입력 Resource의 top-level 값과 ref를 복제하고 동결해 Catalog snapshot으로 만든다. */
+/**
+ * 입력 Resource의 top-level 값과 ref를 복제하고 동결해 Catalog snapshot으로 만든다.
+ */
 const snapshotResource = <Resource extends CatalogResource>(resource: Resource): Resource =>
   Object.freeze({
     ...resource,
@@ -99,7 +101,9 @@ export const createStaticCatalog = <Resource extends CatalogResource>(
   const resourcesById = new Map(entries.map((resource) => [resource.ref.id, resource]));
 
   class Catalog {
-    /** instance 생성을 막고 고정 entries를 정적 메서드로만 노출한다. */
+    /**
+     * instance 생성을 막고 고정 entries를 정적 메서드로만 노출한다.
+     */
     private constructor() {}
 
     /**

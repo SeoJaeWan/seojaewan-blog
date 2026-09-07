@@ -5,8 +5,14 @@ import type { ChromeWindowSession, WindowState } from "../model/index.js";
 import { parseWindowSessionId } from "../windowSessionId/index.js";
 import { transitionWindowMode } from "./index.js";
 
+/**
+ * 테스트별 충돌 여부를 제어할 수 있는 유효한 UUID 문자열을 만든다.
+ */
 const uuid = (value: number) => `10000000-0000-4000-8000-${String(value).padStart(12, "0")}`;
 
+/**
+ * 지정 identity와 위치를 가진 Chrome Session fixture를 만든다.
+ */
 const chromeSession = (value: number, minimized = false): ChromeWindowSession => {
   const tabId = parseChromeTabId(uuid(value + 100));
   return {
@@ -33,6 +39,9 @@ const chromeSession = (value: number, minimized = false): ChromeWindowSession =>
   };
 };
 
+/**
+ * 주어진 Session과 active ID로 독립된 WindowState fixture를 만든다.
+ */
 const stateWith = (
   sessions: readonly ChromeWindowSession[],
   activeSessionId: ChromeWindowSession["id"] | null,

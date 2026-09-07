@@ -6,7 +6,9 @@
 import type { WindowMode, WindowSession, WindowState } from "../model/index.js";
 import type { WindowSessionId } from "../windowSessionId/index.js";
 
-/** stackingOrder에서 가장 위에 있는 visible Session을 찾는다. */
+/**
+ * stackingOrder에서 가장 위에 있는 visible Session을 찾는다.
+ */
 export const findTopVisibleSessionId = (
   sessions: readonly WindowSession[],
   stackingOrder: readonly WindowSessionId[],

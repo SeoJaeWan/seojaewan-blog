@@ -8,7 +8,9 @@ import type { FileExplorerTabId } from "../../../folders/index.js";
 import type { WindowState } from "../../model/index.js";
 import type { WindowSessionId } from "../../windowSessionId/index.js";
 
-/** WindowStore가 한 번의 commit으로 반영한 제품 상태 변경 종류다. */
+/**
+ * WindowStore가 한 번의 commit으로 반영한 제품 상태 변경 종류다.
+ */
 export type WindowStoreChangeKind =
   | "window-created"
   | "window-activated"
@@ -30,14 +32,18 @@ export type WindowStoreChangeKind =
   | "tab-scrolled"
   | "tab-refreshed";
 
-/** commit을 식별하는 종류와 영향을 받은 runtime identity다. */
+/**
+ * commit을 식별하는 종류와 영향을 받은 runtime identity다.
+ */
 export type WindowStoreChange = Readonly<{
   kind: WindowStoreChangeKind;
   sessionId?: WindowSessionId;
   tabId?: FileExplorerTabId | ChromeTabId;
 }>;
 
-/** 명령이 snapshot을 교체하고 subscriber 알림까지 마친 결과다. */
+/**
+ * 명령이 snapshot을 교체하고 subscriber 알림까지 마친 결과다.
+ */
 export type WindowStoreCommittedResult = Readonly<{
   ok: true;
   changed: true;
@@ -45,7 +51,9 @@ export type WindowStoreCommittedResult = Readonly<{
   value: WindowState;
 }>;
 
-/** 요청이 이미 만족되어 commit과 subscriber 알림을 생략한 결과다. */
+/**
+ * 요청이 이미 만족되어 commit과 subscriber 알림을 생략한 결과다.
+ */
 export type WindowStoreNoOpResult = Readonly<{
   ok: true;
   changed: false;
@@ -53,7 +61,9 @@ export type WindowStoreNoOpResult = Readonly<{
   value: WindowState;
 }>;
 
-/** 입력이나 현재 상태가 명령의 전제와 맞지 않아 변경하지 않은 이유다. */
+/**
+ * 입력이나 현재 상태가 명령의 전제와 맞지 않아 변경하지 않은 이유다.
+ */
 export type WindowStoreFailureReason =
   | "session-not-found"
   | "session-kind-mismatch"
@@ -69,13 +79,17 @@ export type WindowStoreFailureReason =
   | "duplicate-runtime-id"
   | "runtime-id-unavailable";
 
-/** 명령 전제 검증에 실패해 기존 snapshot과 알림 수를 유지한 결과다. */
+/**
+ * 명령 전제 검증에 실패해 기존 snapshot과 알림 수를 유지한 결과다.
+ */
 export type WindowStoreRejectedResult = Readonly<{
   ok: false;
   changed: false;
   reason: WindowStoreFailureReason;
 }>;
 
-/** WindowStore 명령의 commit, no-op 또는 변경 없는 거절 결과다. */
+/**
+ * WindowStore 명령의 commit, no-op 또는 변경 없는 거절 결과다.
+ */
 export type WindowStoreResult =
   WindowStoreCommittedResult | WindowStoreNoOpResult | WindowStoreRejectedResult;

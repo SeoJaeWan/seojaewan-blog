@@ -9,15 +9,24 @@ import {
 import type { WorkspaceState } from "../../model/index.js";
 import { reconcileWorkspace } from "./index.js";
 
+/**
+ * 고정 UUID suffix와 Resource kind로 테스트용 ref를 만든다.
+ */
 const ref = <Kind extends ResourceRef["kind"]>(kind: Kind, suffix: string) =>
   createResourceRef(kind, `00000000-0000-4000-8000-${suffix}`);
 
+/**
+ * 지정한 Resource들만 존재하는 읽기 lookup fake를 만든다.
+ */
 const lookupFor = (
   resources: readonly ResourceRef[],
   observedKinds: ResourceRef["kind"][] = [],
 ): ResourceLookup => {
   const keys = new Set(resources.map((resource) => `${resource.kind}:${resource.id}`));
   return {
+    /**
+     * fixture에 주어진 Resource의 존재 여부를 반환한다.
+     */
     hasResource(resource) {
       observedKinds.push(resource.kind);
       return keys.has(`${resource.kind}:${resource.id}`);

@@ -35,7 +35,6 @@ import {
 import type {
   ChromeWindowSession,
   FileExplorerWindowSession,
-  WindowBounds,
   WindowMode,
   WindowRect,
   WindowSession,
@@ -54,34 +53,50 @@ import type {
   WindowStoreResult,
 } from "./operationResult/index.js";
 
-/** WindowStore가 Folder 존재와 현재 placement를 읽는 최소 Workspace port다. */
+/**
+ * WindowStore가 Folder 존재와 현재 placement를 읽는 최소 Workspace port다.
+ */
 export type WindowWorkspaceReader = Readonly<{
-  /** 현재 immutable Workspace snapshot을 반환한다. */
+  /**
+   * 현재 immutable Workspace snapshot을 반환한다.
+   */
   getSnapshot(): WorkspaceState;
 }>;
 
-/** 브라우저 runtime에서 WindowStore를 한 번 연결하는 dependency와 초기 숫자 상태다. */
+/**
+ * 브라우저 runtime에서 WindowStore를 한 번 연결하는 dependency와 초기 숫자 상태다.
+ */
 export type WindowStoreInitialization = Readonly<{
   workspace: WindowWorkspaceReader;
   contentCatalog: ContentCatalogReader;
   placementConfig: WindowPlacementConfig;
-  /** 생략하면 desktop에서 시작하며 이후 `setMode`로만 전환한다. */
+  /**
+   * 생략하면 desktop에서 시작하며 이후 `setMode`로만 전환한다.
+   */
   mode?: WindowMode;
   workArea: WindowRect;
 }>;
 
-/** 초기화 전에 snapshot이나 명령에 접근했을 때 발생하는 lifecycle 오류다. */
+/**
+ * 초기화 전에 snapshot이나 명령에 접근했을 때 발생하는 lifecycle 오류다.
+ */
 export class WindowStoreNotInitializedError extends Error {
-  /** 초기화가 필요하다는 오류를 만들며 초기화를 대신 수행하지 않는다. */
+  /**
+   * 초기화가 필요하다는 오류를 만들며 초기화를 대신 수행하지 않는다.
+   */
   constructor() {
     super("WindowStore를 읽거나 변경하기 전에 초기화해야 합니다");
     this.name = "WindowStoreNotInitializedError";
   }
 }
 
-/** 이미 연결된 runtime에 다른 dependency를 다시 연결하려 할 때 발생한다. */
+/**
+ * 이미 연결된 runtime에 다른 dependency를 다시 연결하려 할 때 발생한다.
+ */
 export class WindowStoreAlreadyInitializedError extends Error {
-  /** 현재 snapshot과 기존 dependency를 유지하는 재결합 오류를 만든다. */
+  /**
+   * 현재 snapshot과 기존 dependency를 유지하는 재결합 오류를 만든다.
+   */
   constructor() {
     super("현재 runtime에는 WindowStore dependency가 이미 연결되어 있습니다");
     this.name = "WindowStoreAlreadyInitializedError";
@@ -100,9 +115,15 @@ type IdIssue =
       reason: "duplicate-runtime-id" | "runtime-id-unavailable";
     }>;
 
+/**
+ * Desktop의 null은 유지하고 Folder ref는 복사·동결해 외부 변경으로부터 분리한다.
+ */
 const cloneFolderLocation = (location: FileExplorerLocation): FileExplorerLocation =>
   location === null ? null : Object.freeze({ ...location });
 
+/**
+ * Chrome 위치를 종류에 맞게 복사·동결한다. Content ref까지 복사하며 원본 객체를 변경하지 않는다.
+ */
 const cloneChromeLocation = (location: ChromeLocation): ChromeLocation => {
   switch (location.kind) {
     case "new-tab":
@@ -114,10 +135,16 @@ const cloneChromeLocation = (location: ChromeLocation): ChromeLocation => {
   }
 };
 
+/**
+ * 현재 위치와 양방향 history를 복사·동결한다. 위치별 복사 정책은 cloneLocation으로 적용한다.
+ */
 const freezeNavigation = <Location>(
   navigation: NavigationState<Location>,
   cloneLocation: (location: Location) => Location,
 ): NavigationState<Location> => {
+  /**
+   * 위치를 복사하고 scrollTop과 함께 동결한 탐색 항목을 반환한다.
+   */
   const freezeEntry = (entry: NavigationEntry<Location>) =>
     Object.freeze({ location: cloneLocation(entry.location), scrollTop: entry.scrollTop });
 
@@ -128,6 +155,9 @@ const freezeNavigation = <Location>(
   });
 };
 
+/**
+ * Session·tab·history·frame을 중첩 객체까지 복사·동결한 snapshot을 반환한다. 입력 state는 변경하지 않는다.
+ */
 const freezeWindowState = (state: WindowState): WindowState => {
   const sessions = state.sessions.map((session): WindowSession => {
     const frame = Object.freeze({
@@ -175,9 +205,15 @@ const freezeWindowState = (state: WindowState): WindowState => {
   });
 };
 
+/**
+ * Desktop은 null끼리, Folder는 Resource ID끼리 비교해 같은 탐색 위치인지 판정한다.
+ */
 const sameFolderLocation = (left: FileExplorerLocation, right: FileExplorerLocation): boolean =>
   left === null ? right === null : right !== null && left.id === right.id;
 
+/**
+ * Chrome 위치의 kind와 Content ID 또는 404 주소를 비교한다. 새 탭끼리는 같은 위치로 취급한다.
+ */
 const sameChromeLocation = (left: ChromeLocation, right: ChromeLocation): boolean => {
   if (left.kind !== right.kind) return false;
   if (left.kind === "new-tab") return true;
@@ -185,12 +221,18 @@ const sameChromeLocation = (left: ChromeLocation, right: ChromeLocation): boolea
   return left.kind === "not-found" && right.kind === "not-found" && left.address === right.address;
 };
 
+/**
+ * 주어진 위치와 scrollTop 0, 빈 양방향 history로 새 tab의 탐색 상태를 만든다.
+ */
 const createNavigation = <Location>(location: Location): NavigationState<Location> => ({
   current: { location, scrollTop: 0 },
   backStack: [],
   forwardStack: [],
 });
 
+/**
+ * 다른 위치로 이동하는 후보를 계산하며 현재 항목을 back에 넣고 forward를 비운다. 같은 위치이면 변경 없이 null을 반환한다.
+ */
 const navigate = <Location>(
   navigation: NavigationState<Location>,
   location: Location,
@@ -204,6 +246,9 @@ const navigate = <Location>(
         forwardStack: [],
       };
 
+/**
+ * back의 마지막 위치와 scroll을 복원하고 현재 항목을 forward에 넣는다. back이 비어 있으면 null을 반환한다.
+ */
 const goBack = <Location>(
   navigation: NavigationState<Location>,
 ): NavigationState<Location> | null => {
@@ -217,6 +262,9 @@ const goBack = <Location>(
       };
 };
 
+/**
+ * forward의 마지막 위치와 scroll을 복원하고 현재 항목을 back에 넣는다. forward가 비어 있으면 null을 반환한다.
+ */
 const goForward = <Location>(
   navigation: NavigationState<Location>,
 ): NavigationState<Location> | null => {
@@ -230,6 +278,9 @@ const goForward = <Location>(
       };
 };
 
+/**
+ * 현재 탐색 항목의 scroll만 바꾼 후보를 만든다. 값이 같으면 null을 반환하며 숫자 검증은 호출자가 담당한다.
+ */
 const withScrollTop = <Location>(
   navigation: NavigationState<Location>,
   scrollTop: number,
@@ -238,6 +289,9 @@ const withScrollTop = <Location>(
     ? null
     : { ...navigation, current: { ...navigation.current, scrollTop } };
 
+/**
+ * 활성 tab 종료 시 오른쪽, 없으면 왼쪽 ID를 선택한다. 비활성 종료는 기존 active ID를 유지하며 마지막 tab의 Session 제거는 호출자가 담당한다.
+ */
 const selectedAfterClose = <Tab extends { id: string }>(
   tabs: readonly Tab[],
   activeTabId: string,
@@ -247,6 +301,9 @@ const selectedAfterClose = <Tab extends { id: string }>(
   return tabs[closedIndex + 1]?.id ?? tabs[closedIndex - 1]?.id ?? activeTabId;
 };
 
+/**
+ * 배치 설정의 중첩 숫자 객체를 복사·동결해 초기화 이후 외부 변경을 차단한다.
+ */
 const freezePlacementConfig = (config: WindowPlacementConfig): WindowPlacementConfig =>
   Object.freeze({
     defaultSize: Object.freeze({ ...config.defaultSize }),
@@ -270,9 +327,14 @@ export class WindowStore {
   private static readonly listeners = new Set<Listener>();
   private static readonly issuedIds = new Set<string>();
 
-  /** instance 생성을 막고 브라우저 runtime의 정적 상태만 사용한다. */
+  /**
+   * instance 생성을 막고 브라우저 runtime의 정적 상태만 사용한다.
+   */
   private constructor() {}
 
+  /**
+   * 연결한 reader·설정 참조와 초기 mode·workArea 값을 비교해 같은 초기화 요청인지 판단한다.
+   */
   private static sameInitialization = (
     left: WindowStoreInitialization,
     right: WindowStoreInitialization,
@@ -286,21 +348,33 @@ export class WindowStore {
     left.workArea.width === right.workArea.width &&
     left.workArea.height === right.workArea.height;
 
+  /**
+   * 현재 snapshot을 반환한다. 초기화되지 않았으면 lifecycle 오류를 던진다.
+   */
   private static requireSnapshot = (): WindowState => {
     if (WindowStore.snapshot === null) throw new WindowStoreNotInitializedError();
     return WindowStore.snapshot;
   };
 
+  /**
+   * 연결된 읽기 dependency를 반환한다. 초기화되지 않았으면 lifecycle 오류를 던진다.
+   */
   private static requireInitialization = (): WindowStoreInitialization => {
     if (WindowStore.initialization === null) throw new WindowStoreNotInitializedError();
     return WindowStore.initialization;
   };
 
+  /**
+   * 복사·동결된 배치 설정을 반환한다. 초기화되지 않았으면 lifecycle 오류를 던진다.
+   */
   private static requirePlacementConfig = (): WindowPlacementConfig => {
     if (WindowStore.placementConfig === null) throw new WindowStoreNotInitializedError();
     return WindowStore.placementConfig;
   };
 
+  /**
+   * 현재 listener 목록에 commit을 알린다. 한 listener의 오류가 다른 listener나 완료된 commit에 영향을 주지 않도록 격리한다.
+   */
   private static notify = (): void => {
     for (const listener of [...WindowStore.listeners]) {
       try {
@@ -311,11 +385,17 @@ export class WindowStore {
     }
   };
 
+  /**
+   * 실패 사유를 가진 계산 결과를 만든다. snapshot 변경과 구독 알림은 발생시키지 않는다.
+   */
   private static reject = (reason: WindowStoreFailureReason): Calculation => ({
     kind: "rejected",
     reason,
   });
 
+  /**
+   * commit 후보의 mode·identity·active tab·geometry·scroll 불변식을 검사한다. 위반 시 snapshot 반영 전에 오류를 던진다.
+   */
   private static assertCandidate = (state: WindowState): void => {
     if (state.mode !== "desktop" && state.mode !== "mobile") {
       throw new Error("WindowState의 mode가 유효하지 않습니다");
@@ -375,6 +455,9 @@ export class WindowStore {
     }
   };
 
+  /**
+   * 후보 검증 뒤 ID를 예약하고 동결 snapshot을 반영한 후 구독자에게 알린다. 검증 실패 시 기존 snapshot을 보존한다.
+   */
   private static commit = (state: WindowState, change: WindowStoreChange): WindowStoreResult => {
     WindowStore.assertCandidate(state);
     const committedIds: string[] = [];
@@ -387,8 +470,14 @@ export class WindowStore {
     return { ok: true, changed: true, change: Object.freeze({ ...change }), value };
   };
 
+  /**
+   * 계산을 직렬 queue에 넣어 실행 시점의 최신 상태를 사용하게 한다. no-op·거부는 commit하지 않으며 한 명령 실패 뒤에도 queue를 이어 간다.
+   */
   private static enqueue = (calculate: () => Calculation): Promise<WindowStoreResult> => {
     WindowStore.requireInitialization();
+    /**
+     * 대기한 명령을 실행해 거부·no-op·commit으로 구분한다. geometry 오류는 tagged 실패로 변환하고 다른 예외는 호출자에게 전달한다.
+     */
     const execute = (): WindowStoreResult => {
       WindowStore.requireSnapshot();
       try {
@@ -418,6 +507,9 @@ export class WindowStore {
     return result;
   };
 
+  /**
+   * 최신 Workspace의 Folder·placement와 Content Catalog에서 ID 사용 여부를 조회한다. Workspace를 변경하거나 결과를 캐시하지 않는다.
+   */
   private static workspaceHasId = (id: ResourceId): boolean => {
     const workspace = WindowStore.requireInitialization().workspace.getSnapshot();
     return (
@@ -427,6 +519,9 @@ export class WindowStore {
     );
   };
 
+  /**
+   * runtime UUID 후보를 발급해 기존 ID·현재 후보·Resource와의 충돌을 검사한다. 발급기 부재나 충돌은 실패로 반환하고 전역 예약은 commit까지 미룬다.
+   */
   private static issueId = (reserved: ReadonlySet<string>): IdIssue => {
     const value = globalThis.crypto?.randomUUID?.();
     if (value === undefined) return { ok: false, reason: "runtime-id-unavailable" };
@@ -441,13 +536,22 @@ export class WindowStore {
     return { ok: true, value };
   };
 
+  /**
+   * 검증된 commit이 사용한 ID를 기록해 이후 발급에서 재사용되지 않도록 한다.
+   */
   private static reserveIds = (ids: readonly string[]): void => {
     for (const id of ids) WindowStore.issuedIds.add(id);
   };
 
+  /**
+   * 현재 snapshot에서 Session ID가 일치하는 창을 찾는다. 없으면 undefined를 반환한다.
+   */
   private static findSession = (id: WindowSessionId): WindowSession | undefined =>
     WindowStore.requireSnapshot().sessions.find((session) => session.id === id);
 
+  /**
+   * Desktop 또는 실제로 존재하는 Folder ref를 검증해 반환한다. 잘못된 ref와 최신 Workspace의 누락 Folder를 구분해 거부한다.
+   */
   private static validateFolderLocation = (
     input: FileExplorerLocation,
   ): FileExplorerLocation | WindowStoreFailureReason => {
@@ -468,6 +572,9 @@ export class WindowStore {
     }
   };
 
+  /**
+   * Content ref의 kind와 현재 Catalog 존재를 검사한다. 유효한 ref 또는 구분 가능한 실패 사유를 반환한다.
+   */
   private static validateContentRef = (
     input: ContentResourceRef,
   ): ContentResourceRef | WindowStoreFailureReason => {
@@ -483,6 +590,9 @@ export class WindowStore {
     }
   };
 
+  /**
+   * 새 탭·Content·404 위치를 검증해 복사한다. raw 주소 파싱은 수행하지 않으며 잘못된 위치는 실패 사유로 반환한다.
+   */
   private static validateChromeLocation = (
     input: ChromeLocation,
   ): ChromeLocation | WindowStoreFailureReason => {
@@ -506,7 +616,10 @@ export class WindowStore {
     }
   };
 
-  private static previousNormalBounds = (): WindowBounds | null => {
+  /**
+   * stacking 최상위 Session의 normal bounds를 찾아 cascade 기준으로 반환한다. 열린 창이 없으면 null을 반환한다.
+   */
+  private static previousNormalBounds = (): WindowRect | null => {
     const state = WindowStore.requireSnapshot();
     for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
       const session = state.sessions.find(({ id }) => id === state.stackingOrder[index]);
@@ -515,6 +628,9 @@ export class WindowStore {
     return null;
   };
 
+  /**
+   * 대상 창을 복원하고 stacking 최상위·active로 옮긴 후보를 반환한다. 입력 state와 실제 snapshot은 변경하지 않는다.
+   */
   private static activateInState = (state: WindowState, id: WindowSessionId): WindowState => ({
     ...state,
     sessions: state.sessions.map((session) =>
@@ -524,6 +640,9 @@ export class WindowStore {
     activeSessionId: id,
   });
 
+  /**
+   * 대상 Session과 stacking 항목을 제거한 후보를 만든다. 활성 창을 제거할 때만 다음 visible 창을 선택하며 모바일 폴더 복귀는 수행하지 않는다.
+   */
   private static removeSession = (state: WindowState, id: WindowSessionId): WindowState => {
     const sessions = state.sessions.filter((session) => session.id !== id);
     const stackingOrder = state.stackingOrder.filter((current) => current !== id);
@@ -538,6 +657,9 @@ export class WindowStore {
     };
   };
 
+  /**
+   * desktop에서는 새 창을 추가하고 mobile에서는 기존 창을 대체하는 후보를 만든다. 명시적 종료의 폴더 복귀 경로는 실행하지 않는다.
+   */
   private static withCreatedSession = (state: WindowState, session: WindowSession): WindowState =>
     state.mode === "mobile"
       ? {
@@ -553,6 +675,9 @@ export class WindowStore {
           activeSessionId: session.id,
         };
 
+  /**
+   * 새 Explorer Session과 첫 tab의 ID·배치를 계산한다. 후보 생성 실패는 기존 창을 보존하고 실제 반영은 commit에 맡긴다.
+   */
   private static createFileExplorer = (
     location: FileExplorerLocation,
     changeKind: WindowStoreChange["kind"] = "window-created",
@@ -591,6 +716,9 @@ export class WindowStore {
     };
   };
 
+  /**
+   * 새 Chrome Session과 첫 tab의 ID·배치를 계산한다. 후보 생성 실패는 기존 창을 보존하고 실제 반영은 commit에 맡긴다.
+   */
   private static createChrome = (location: ChromeLocation): Calculation => {
     const state = WindowStore.requireSnapshot();
     const reserved = new Set<string>();
@@ -626,7 +754,9 @@ export class WindowStore {
     };
   };
 
-  /** 명시적으로 닫는 mobile Chrome의 current Content에서 최신 Explorer 복귀 위치를 찾는다. */
+  /**
+   * 명시적으로 닫는 mobile Chrome의 current Content에서 최신 Explorer 복귀 위치를 찾는다.
+   */
   private static mobileReturnLocation = (
     session: ChromeWindowSession,
   ): FileExplorerLocation | undefined => {
@@ -649,7 +779,9 @@ export class WindowStore {
       : null;
   };
 
-  /** explicit close와 replacement/responsive removal을 분리해 mobile 복귀를 한 commit으로 만든다. */
+  /**
+   * explicit close와 replacement/responsive removal을 분리해 mobile 복귀를 한 commit으로 만든다.
+   */
   private static explicitlyCloseSession = (
     state: WindowState,
     session: WindowSession,
@@ -665,7 +797,9 @@ export class WindowStore {
     return { kind: "commit", state: WindowStore.removeSession(state, session.id), change };
   };
 
-  /** dependency를 연결하고 알림 없이 빈 immutable Window snapshot을 만든다. */
+  /**
+   * dependency를 연결하고 알림 없이 빈 immutable Window snapshot을 만든다.
+   */
   static initialize(initialization: WindowStoreInitialization): Promise<WindowStoreResult> {
     if (WindowStore.initialization !== null) {
       if (!WindowStore.sameInitialization(WindowStore.initialization, initialization)) {
@@ -710,12 +844,16 @@ export class WindowStore {
     }
   }
 
-  /** 현재 commit된 immutable Window snapshot을 반환한다. */
+  /**
+   * 현재 commit된 immutable Window snapshot을 반환한다.
+   */
   static getSnapshot(): WindowState {
     return WindowStore.requireSnapshot();
   }
 
-  /** semantic commit 이후 listener를 호출하며 반환 함수로 구독을 해제한다. */
+  /**
+   * semantic commit 이후 listener를 호출하며 반환 함수로 구독을 해제한다.
+   */
   static subscribe(listener: Listener): () => void {
     WindowStore.listeners.add(listener);
     return () => WindowStore.listeners.delete(listener);
@@ -737,7 +875,9 @@ export class WindowStore {
     });
   }
 
-  /** Folder 또는 Desktop을 first tab으로 가진 새 File Explorer Window를 만든다. */
+  /**
+   * Folder 또는 Desktop을 first tab으로 가진 새 File Explorer Window를 만든다.
+   */
   static createFileExplorerWindow(location: FileExplorerLocation): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const validated = WindowStore.validateFolderLocation(location);
@@ -747,7 +887,9 @@ export class WindowStore {
     });
   }
 
-  /** new-tab 또는 검증된 location을 first tab으로 가진 새 Chrome Window를 만든다. */
+  /**
+   * new-tab 또는 검증된 location을 first tab으로 가진 새 Chrome Window를 만든다.
+   */
   static createChromeWindow(
     location: ChromeLocation = { kind: "new-tab" },
   ): Promise<WindowStoreResult> {
@@ -759,7 +901,9 @@ export class WindowStore {
     });
   }
 
-  /** 외부 Folder open 규칙으로 active-tab exact match의 최상위 Explorer를 재사용한다. */
+  /**
+   * 외부 Folder open 규칙으로 active-tab exact match의 최상위 Explorer를 재사용한다.
+   */
   static openFolder(folder: FolderResourceRef): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const location = WindowStore.validateFolderLocation(folder);
@@ -790,7 +934,9 @@ export class WindowStore {
     });
   }
 
-  /** Content를 active Chrome 또는 최상위 MRU Chrome의 새 tab으로 연다. */
+  /**
+   * Content를 active Chrome 또는 최상위 MRU Chrome의 새 tab으로 연다.
+   */
   static openContent(content: ContentResourceRef): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const ref = WindowStore.validateContentRef(content);
@@ -813,7 +959,9 @@ export class WindowStore {
     });
   }
 
-  /** Content를 first tab으로 가진 별도 Chrome Window를 항상 만든다. */
+  /**
+   * Content를 first tab으로 가진 별도 Chrome Window를 항상 만든다.
+   */
   static openContentInNewWindow(content: ContentResourceRef): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const ref = WindowStore.validateContentRef(content);
@@ -823,7 +971,9 @@ export class WindowStore {
     });
   }
 
-  /** Session을 복원하고 active·topmost로 만든다. */
+  /**
+   * Session을 복원하고 active·topmost로 만든다.
+   */
   static activate(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       if (!isWindowSessionId(sessionId)) return WindowStore.reject("session-not-found");
@@ -845,7 +995,9 @@ export class WindowStore {
     });
   }
 
-  /** Session을 최소화하고 active였다면 다음 최상위 visible Session을 선택한다. */
+  /**
+   * Session을 최소화하고 active였다면 다음 최상위 visible Session을 선택한다.
+   */
   static minimize(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
@@ -872,7 +1024,9 @@ export class WindowStore {
     });
   }
 
-  /** Session을 제거하며 active였다면 다음 최상위 visible Session을 선택한다. */
+  /**
+   * Session을 제거하며 active였다면 다음 최상위 visible Session을 선택한다.
+   */
   static close(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
@@ -887,7 +1041,9 @@ export class WindowStore {
     });
   }
 
-  /** maximize와 normal placement를 전환하며 normalBounds를 보존한다. */
+  /**
+   * maximize와 normal placement를 전환하며 normalBounds를 보존한다.
+   */
   static toggleMaximize(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
@@ -918,7 +1074,9 @@ export class WindowStore {
     });
   }
 
-  /** normalBounds의 위치만 숫자 좌표로 바꾸고 workArea에 제한한다. */
+  /**
+   * normalBounds의 위치만 숫자 좌표로 바꾸고 workArea에 제한한다.
+   */
   static move(
     sessionId: WindowSessionId,
     point: Readonly<{ x: number; y: number }>,
@@ -930,7 +1088,9 @@ export class WindowStore {
     );
   }
 
-  /** normalBounds의 크기만 숫자 값으로 바꾸고 최소 크기와 workArea에 제한한다. */
+  /**
+   * normalBounds의 크기만 숫자 값으로 바꾸고 최소 크기와 workArea에 제한한다.
+   */
   static resize(
     sessionId: WindowSessionId,
     size: Readonly<{ width: number; height: number }>,
@@ -942,9 +1102,12 @@ export class WindowStore {
     );
   }
 
+  /**
+   * Session의 normal bounds 변경을 검증해 queue에서 반영한다. mobile과 동일 결과는 no-op이며 잘못된 Session·geometry는 거부한다.
+   */
   private static changeBounds = (
     sessionId: WindowSessionId,
-    update: (bounds: WindowBounds) => WindowBounds,
+    update: (bounds: WindowRect) => WindowRect,
     kind: "window-moved" | "window-resized",
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(() => {
@@ -979,7 +1142,9 @@ export class WindowStore {
       };
     });
 
-  /** workArea를 바꾸고 모든 normalBounds의 titlebar 접근 가능 위치를 복구한다. */
+  /**
+   * workArea를 바꾸고 모든 normalBounds의 titlebar 접근 가능 위치를 복구한다.
+   */
   static setWorkArea(workArea: WindowRect): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
@@ -1007,7 +1172,9 @@ export class WindowStore {
     });
   }
 
-  /** Explorer Window 끝에 Desktop tab을 추가하고 해당 Window를 복원·활성화한다. */
+  /**
+   * Explorer Window 끝에 Desktop tab을 추가하고 해당 Window를 복원·활성화한다.
+   */
   static addFileExplorerTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const session = WindowStore.findSession(sessionId);
@@ -1035,6 +1202,9 @@ export class WindowStore {
     });
   }
 
+  /**
+   * Chrome에 주어진 위치의 새 tab을 추가하고 창·tab을 활성화하는 후보를 만든다. ID 충돌 시 기존 상태를 유지한다.
+   */
   private static addChromeTabCalculation = (
     session: ChromeWindowSession,
     location: ChromeLocation,
@@ -1064,7 +1234,9 @@ export class WindowStore {
     };
   };
 
-  /** Chrome Window 끝에 new-tab을 추가하고 해당 Window를 복원·활성화한다. */
+  /**
+   * Chrome Window 끝에 new-tab을 추가하고 해당 Window를 복원·활성화한다.
+   */
   static addChromeTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const session = WindowStore.findSession(sessionId);
@@ -1074,7 +1246,9 @@ export class WindowStore {
     });
   }
 
-  /** Explorer Window의 지정 tab을 active로 선택한다. */
+  /**
+   * Explorer Window의 지정 tab을 active로 선택한다.
+   */
   static activateFileExplorerTab(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1082,7 +1256,9 @@ export class WindowStore {
     return WindowStore.activateTab(sessionId, tabId, "file-explorer");
   }
 
-  /** Chrome Window의 지정 tab을 active로 선택한다. */
+  /**
+   * Chrome Window의 지정 tab을 active로 선택한다.
+   */
   static activateChromeTab(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1090,6 +1266,9 @@ export class WindowStore {
     return WindowStore.activateTab(sessionId, tabId, "chrome");
   }
 
+  /**
+   * 앱 종류·Session·tab ID를 검증해 활성 tab을 변경한다. 이미 활성화된 tab이면 commit과 알림을 생략한다.
+   */
   private static activateTab = (
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId | ChromeTabId,
@@ -1114,7 +1293,9 @@ export class WindowStore {
       };
     });
 
-  /** Explorer tab을 닫고 마지막 tab이면 Window도 제거한다. */
+  /**
+   * Explorer tab을 닫고 마지막 tab이면 Window도 제거한다.
+   */
   static closeFileExplorerTab(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1122,7 +1303,9 @@ export class WindowStore {
     return WindowStore.closeTab(sessionId, tabId, "file-explorer");
   }
 
-  /** Chrome tab을 닫고 마지막 tab이면 Window도 제거한다. */
+  /**
+   * Chrome tab을 닫고 마지막 tab이면 Window도 제거한다.
+   */
   static closeChromeTab(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1130,6 +1313,9 @@ export class WindowStore {
     return WindowStore.closeTab(sessionId, tabId, "chrome");
   }
 
+  /**
+   * 앱 종류와 tab ID를 검증해 tab을 닫는 후보를 만든다. 마지막 tab은 명시적 Session 종료 정책을 적용한다.
+   */
   private static closeTab = (
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId | ChromeTabId,
@@ -1179,6 +1365,9 @@ export class WindowStore {
       };
     });
 
+  /**
+   * 유효한 Explorer tab에 탐색 변환을 적용한 후보를 만든다. 변환이 null이면 no-op이며 다른 tab과 Session은 보존한다.
+   */
   private static updateExplorerTab = (
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1209,6 +1398,9 @@ export class WindowStore {
       };
     });
 
+  /**
+   * 유효한 Chrome tab에 변환을 적용한 후보를 만든다. 변환이 null이면 no-op이며 다른 tab과 Session은 보존한다.
+   */
   private static updateChromeTab = (
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1239,7 +1431,9 @@ export class WindowStore {
       };
     });
 
-  /** Explorer tab의 current location으로 이동하고 forward history를 비운다. */
+  /**
+   * Explorer tab의 current location으로 이동하고 forward history를 비운다.
+   */
   static navigateFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1276,7 +1470,9 @@ export class WindowStore {
     });
   }
 
-  /** Chrome tab의 current location으로 이동하고 forward history를 비운다. */
+  /**
+   * Chrome tab의 current location으로 이동하고 forward history를 비운다.
+   */
   static navigateChrome(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1313,7 +1509,9 @@ export class WindowStore {
     });
   }
 
-  /** Explorer tab에서 이전 entry의 location과 scrollTop을 함께 복원한다. */
+  /**
+   * Explorer tab에서 이전 entry의 location과 scrollTop을 함께 복원한다.
+   */
   static goBackFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1329,7 +1527,9 @@ export class WindowStore {
     );
   }
 
-  /** Explorer tab에서 다음 entry의 location과 scrollTop을 함께 복원한다. */
+  /**
+   * Explorer tab에서 다음 entry의 location과 scrollTop을 함께 복원한다.
+   */
   static goForwardFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1345,7 +1545,9 @@ export class WindowStore {
     );
   }
 
-  /** Chrome tab에서 이전 entry의 location과 scrollTop을 함께 복원한다. */
+  /**
+   * Chrome tab에서 이전 entry의 location과 scrollTop을 함께 복원한다.
+   */
   static goBackChrome(sessionId: WindowSessionId, tabId: ChromeTabId): Promise<WindowStoreResult> {
     return WindowStore.updateChromeTab(
       sessionId,
@@ -1358,7 +1560,9 @@ export class WindowStore {
     );
   }
 
-  /** Chrome tab에서 다음 entry의 location과 scrollTop을 함께 복원한다. */
+  /**
+   * Chrome tab에서 다음 entry의 location과 scrollTop을 함께 복원한다.
+   */
   static goForwardChrome(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1374,7 +1578,9 @@ export class WindowStore {
     );
   }
 
-  /** Explorer tab의 current entry에 finite 0 이상 scrollTop을 저장한다. */
+  /**
+   * Explorer tab의 current entry에 finite 0 이상 scrollTop을 저장한다.
+   */
   static setFileExplorerScrollTop(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
@@ -1394,7 +1600,9 @@ export class WindowStore {
     );
   }
 
-  /** Chrome tab의 current entry에 finite 0 이상 scrollTop을 저장한다. */
+  /**
+   * Chrome tab의 current entry에 finite 0 이상 scrollTop을 저장한다.
+   */
   static setChromeScrollTop(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
@@ -1414,7 +1622,9 @@ export class WindowStore {
     );
   }
 
-  /** Chrome tab의 location·history·scroll을 유지하고 reloadRevision만 증가시킨다. */
+  /**
+   * Chrome tab의 location·history·scroll을 유지하고 reloadRevision만 증가시킨다.
+   */
   static refreshChrome(sessionId: WindowSessionId, tabId: ChromeTabId): Promise<WindowStoreResult> {
     return WindowStore.updateChromeTab(
       sessionId,
