@@ -1,7 +1,7 @@
 /**
- * @file Window headless feature의 model, identity와 순수 geometry 계약을 조합한다.
+ * @file Window headless feature의 Store, model, identity와 읽기 계약을 조합한다.
  *
- * WindowStore mutation과 제품 UI는 이 진입점에서 제공하지 않는다.
+ * 내부 상태 계산과 ID 발급기, 제품 UI는 이 진입점에서 제공하지 않는다.
  */
 export {
   constrainWindowBounds,
@@ -30,3 +30,17 @@ export {
   parseWindowSessionId,
   type WindowSessionId,
 } from "./windowSessionId/index.js";
+export {
+  WindowStore,
+  WindowStoreAlreadyInitializedError,
+  type WindowStoreChange,
+  type WindowStoreChangeKind,
+  type WindowStoreCommittedResult,
+  type WindowStoreFailureReason,
+  type WindowStoreInitialization,
+  type WindowStoreNoOpResult,
+  WindowStoreNotInitializedError,
+  type WindowStoreRejectedResult,
+  type WindowStoreResult,
+  type WindowWorkspaceReader,
+} from "./windowStore/index.js";
