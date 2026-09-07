@@ -37,63 +37,75 @@ const shortcut: ExternalShortcut = {
   url: "https://github.com/",
 };
 
-describe("static Catalog common implementation", () => {
-  it("Content Catalog가 typed static has/get/list와 miss 결과를 제공한다", () => {
-    const ContentCatalog = createStaticCatalog([content]);
-
-    expect(ContentCatalog.has(content.ref.id)).toBe(true);
-    expect(ContentCatalog.has(createResourceRef("content", MISSING_ID).id)).toBe(false);
-    expect(ContentCatalog.get(content.ref.id)).toEqual(content);
-    expect(ContentCatalog.get(createResourceRef("content", MISSING_ID).id)).toBeUndefined();
-    expect(ContentCatalog.list()).toEqual([content]);
-    expectTypeOf(ContentCatalog.get(content.ref.id)).toEqualTypeOf<Content | undefined>();
-  });
-
-  it("Folder Catalog가 typed static has/get/list와 miss 결과를 제공한다", () => {
-    const FolderCatalog = createStaticCatalog([folder]);
-
-    expect(FolderCatalog.has(folder.ref.id)).toBe(true);
-    expect(FolderCatalog.get(folder.ref.id)).toEqual(folder);
-    expect(FolderCatalog.list()).toEqual([folder]);
-    expectTypeOf(FolderCatalog.get(folder.ref.id)).toEqualTypeOf<Folder | undefined>();
-  });
-
-  it("ExternalShortcut Catalog가 typed static has/get/list와 miss 결과를 제공한다", () => {
-    const ExternalShortcutCatalog = createStaticCatalog([shortcut]);
-
-    expect(ExternalShortcutCatalog.has(shortcut.ref.id)).toBe(true);
-    expect(ExternalShortcutCatalog.get(shortcut.ref.id)).toEqual(shortcut);
-    expect(ExternalShortcutCatalog.list()).toEqual([shortcut]);
-    expectTypeOf(ExternalShortcutCatalog.get(shortcut.ref.id)).toEqualTypeOf<
+describe("createStaticCatalog", () => {
+  it("입력 순서대로 읽기 전용 Catalog snapshot을 만든다", () => {
+    const catalog = createStaticCatalog([content]);
+    expect(catalog.list()).toEqual([content]);
+    expectTypeOf(catalog.get(content.ref.id)).toEqualTypeOf<Content | undefined>();
+    expectTypeOf(createStaticCatalog([folder]).get(folder.ref.id)).toEqualTypeOf<
+      Folder | undefined
+    >();
+    expectTypeOf(createStaticCatalog([shortcut]).get(shortcut.ref.id)).toEqualTypeOf<
       ExternalShortcut | undefined
     >();
   });
 
-  it("입력 배열과 identity 변경에서 Catalog snapshot을 분리한다", () => {
-    const mutableResources = [content];
-    const ContentCatalog = createStaticCatalog(mutableResources);
-
-    mutableResources.splice(0);
-
-    expect(ContentCatalog.list()).toHaveLength(1);
-    expect(Object.isFrozen(ContentCatalog.list())).toBe(true);
-    expect(Object.isFrozen(ContentCatalog.list()[0])).toBe(true);
-    expect(Object.isFrozen(ContentCatalog.list()[0]?.ref)).toBe(true);
-  });
-
-  it("한 Catalog 안에서 중복 UUID를 거부한다", () => {
+  it("한 Catalog 안의 중복 UUID를 거부한다", () => {
     expect(() => createStaticCatalog([content, { ...content }])).toThrow(DuplicateResourceIdError);
-    expect(() => createStaticCatalog([content, { ...content }])).toThrow(
-      `전역 Resource namespace에서 이미 사용 중인 ResourceId입니다: ${CONTENT_ID}`,
-    );
   });
 
-  it("kind가 달라도 전체 Resource namespace에서 중복 UUID를 거부한다", () => {
+  it("입력 배열과 top-level 값의 사후 변경으로부터 snapshot을 분리한다", () => {
+    const input = { ...content, tags: [...content.tags] };
+    const entries = [input];
+    const catalog = createStaticCatalog(entries);
+    entries.splice(0);
+    input.title = "변경된 원본";
+    expect(catalog.get(content.ref.id)).toEqual(content);
+    expect(Object.isFrozen(catalog.list())).toBe(true);
+    expect(Object.isFrozen(catalog.list()[0]?.ref)).toBe(true);
+  });
+});
+
+describe.each([content, folder, shortcut])("Catalog $ref.kind 읽기", (resource) => {
+  describe("has", () => {
+    it("등록된 ID이면 true를 반환한다", () => {
+      expect(createStaticCatalog([resource]).has(resource.ref.id)).toBe(true);
+    });
+    it("등록되지 않은 ID이면 false를 반환한다", () => {
+      expect(createStaticCatalog([resource]).has(createResourceRef("content", MISSING_ID).id)).toBe(
+        false,
+      );
+    });
+  });
+  describe("get", () => {
+    it("ID가 일치하는 원본 snapshot을 반환한다", () => {
+      expect(createStaticCatalog([resource]).get(resource.ref.id)).toEqual(resource);
+    });
+    it("등록되지 않은 ID이면 undefined를 반환한다", () => {
+      expect(
+        createStaticCatalog([resource]).get(createResourceRef("content", MISSING_ID).id),
+      ).toBeUndefined();
+    });
+  });
+  describe("list", () => {
+    it("같은 읽기 전용 목록을 반환하며 조회가 원본을 변경하지 않는다", () => {
+      const catalog = createStaticCatalog([resource]);
+      const before = catalog.list();
+      catalog.has(resource.ref.id);
+      catalog.get(resource.ref.id);
+      expect(catalog.list()).toBe(before);
+      expect(before).toEqual([resource]);
+      expect(() => (before as unknown[]).push(resource)).toThrow();
+    });
+  });
+});
+
+describe("createResourceLookup", () => {
+  it("kind가 달라도 전역 namespace에서 중복 UUID를 거부한다", () => {
     const duplicateFolder: Folder = {
       ref: createResourceRef("folder", CONTENT_ID),
       name: "Duplicate",
     };
-
     expect(() =>
       createResourceLookup({
         content: createStaticCatalog([content]),

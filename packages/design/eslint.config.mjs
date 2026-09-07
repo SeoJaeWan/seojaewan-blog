@@ -16,6 +16,19 @@ const legacyPackageImports = {
   message: "Use the local design layer indexes instead of legacy packages.",
 };
 
+const headlessLayerImports = [
+  applicationImports,
+  legacyPackageImports,
+  {
+    regex: "^@base-ui/react(?:/|$)",
+    message: "Headless must not depend on Base UI.",
+  },
+  {
+    regex: "^(?:\\.\\./)+(?:ui)(?:/|$)",
+    message: "Headless must not depend on product UI.",
+  },
+];
+
 const coreGlobals = [
   "window",
   "document",
@@ -39,6 +52,17 @@ const coreGlobals = [
 
 export default [
   ...reactConfig({ tsconfigRootDir }),
+  {
+    files: ["src/headless/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: headlessLayerImports,
+        },
+      ],
+    },
+  },
   {
     files: ["src/ui/**/*.{ts,tsx}"],
     rules: {

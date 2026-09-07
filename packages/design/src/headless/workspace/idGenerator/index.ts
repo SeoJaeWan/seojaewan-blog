@@ -11,7 +11,9 @@ import { parseResourceId, type ResourceId } from "../../resources/index.js";
  * Resource의 등록과 중복 검사는 호출한 Workspace 명령 또는 복구 과정이 소유한다.
  */
 export class IdGenerator {
-  /** 발급기 instance나 외부 설정 없이 내부 공통 정적 구현을 사용하게 한다. */
+  /**
+   * 발급기 instance나 외부 설정 없이 내부 공통 정적 구현을 사용하게 한다.
+   */
   private constructor() {}
 
   /**

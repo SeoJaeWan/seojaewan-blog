@@ -223,7 +223,9 @@ export class WorkspaceStore {
   private static commandQueue: Promise<void> = Promise.resolve();
   private static readonly listeners = new Set<Listener>();
 
-  /** instance 생성을 막고 브라우저 runtime의 단일 정적 상태를 사용하게 한다. */
+  /**
+   * instance 생성을 막고 브라우저 runtime의 단일 정적 상태를 사용하게 한다.
+   */
   private constructor() {}
 
   /**
@@ -276,7 +278,9 @@ export class WorkspaceStore {
     }
   };
 
-  /** 검증된 후보를 동결한 뒤 현재 상태에 반영하고 구독 알림과 저장을 수행한다. */
+  /**
+   * 검증된 후보를 동결한 뒤 현재 상태에 반영하고 구독 알림과 저장을 수행한다.
+   */
   private static commit = async (nextState: WorkspaceState): Promise<WorkspaceStoreResult> => {
     const nextSnapshot = freezeWorkspaceState(nextState);
     WorkspaceStore.snapshot = nextSnapshot;
@@ -315,7 +319,9 @@ export class WorkspaceStore {
     return result;
   };
 
-  /** 초기화 시작 후 명령을 대기시키고, 실행 시 snapshot을 확인해 성공한 후보만 commit한다. */
+  /**
+   * 초기화 시작 후 명령을 대기시키고, 실행 시 snapshot을 확인해 성공한 후보만 commit한다.
+   */
   private static runOperation = (
     operation: () => WorkspaceOperationResult,
   ): Promise<WorkspaceStoreResult> => {
@@ -373,7 +379,9 @@ export class WorkspaceStore {
         state: restored,
         currentContent: contentCatalog.list().map(({ ref }) => ref),
         resourceLookup: {
-          /** 복원 중인 Folder는 reconcile이 직접 확인하며 정적 원본만 Catalog에서 조회한다. */
+          /**
+           * 복원 중인 Folder는 reconcile이 직접 확인하며 정적 원본만 Catalog에서 조회한다.
+           */
           hasResource(ref) {
             switch (ref.kind) {
               case "content":
@@ -483,7 +491,9 @@ export class WorkspaceStore {
     WorkspaceStore.requireInitialization().contentCatalog.has(id) ||
     WorkspaceStore.requireInitialization().externalShortcutCatalog.has(id);
 
-  /** 현재 상태에서 Folder와 placement를 함께 추가할 후보 상태를 계산한다. */
+  /**
+   * 현재 상태에서 Folder와 placement를 함께 추가할 후보 상태를 계산한다.
+   */
   private static calculateCreateFolder = (
     name: string,
     parent: FolderResourceRef | null,
@@ -510,7 +520,9 @@ export class WorkspaceStore {
     };
   };
 
-  /** 현재 Folder의 identity를 보존한 이름 변경 후보를 계산한다. */
+  /**
+   * 현재 Folder의 identity를 보존한 이름 변경 후보를 계산한다.
+   */
   private static calculateRenameFolder = (
     folder: FolderResourceRef,
     name: string,
@@ -536,7 +548,9 @@ export class WorkspaceStore {
     };
   };
 
-  /** 이동 후 parent 경로가 자신 또는 이미 방문한 Folder로 돌아오는지 판별한다. */
+  /**
+   * 이동 후 parent 경로가 자신 또는 이미 방문한 Folder로 돌아오는지 판별한다.
+   */
   private static wouldCreateFolderCycle = (
     resource: FolderResourceRef,
     parent: FolderResourceRef,
@@ -570,7 +584,9 @@ export class WorkspaceStore {
     return false;
   };
 
-  /** 현재 배치를 검증하고 Resource 이동 후보를 계산한다. */
+  /**
+   * 현재 배치를 검증하고 Resource 이동 후보를 계산한다.
+   */
   private static calculateMoveResource = (
     resource: ResourceRef,
     parent: FolderResourceRef | null,
