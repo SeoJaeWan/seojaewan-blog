@@ -1,14 +1,15 @@
 # Headless 사용 안내
 
-UI 없이 성립하는 Resource 모델과 Workspace·Window 상태 및 명령을 제공한다. React, DOM, Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
+UI 없이 성립하는 Resource 모델과 Start·Workspace·Window 상태 및 명령을 제공한다. React, DOM, Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
 
-이 README는 현재 checkout의 코드 탐색과 사용 안내다. 지속적인 아키텍처·계약·컨벤션의 정본은 Workbench Local Work Memory의 `seojaewan/seojaewan-blog` 프로젝트에 있는 `resource-model`, `workspace-resource-placement`, `window-session`, `taskbar-mobile`, `chrome-tab-navigation-history`, `application-resource-routing-404`, `module-boundaries`, `coding`, `folder-structure`다.
+이 README는 현재 checkout의 코드 탐색과 사용 안내다. 지속적인 아키텍처·계약·컨벤션의 정본은 Workbench Local Work Memory의 `seojaewan/seojaewan-blog` 프로젝트에 있는 `resource-model`, `start-screen-pin-model`, `pin-store-persistence`, `workspace-resource-placement`, `window-session`, `taskbar-mobile`, `chrome-tab-navigation-history`, `application-resource-routing-404`, `module-boundaries`, `coding`, `folder-structure`다.
 
 ## Resources와 Workspace의 연결
 
 | 구분        | 답하는 질문                              | 소유 데이터/API                                                             |
 | ----------- | ---------------------------------------- | --------------------------------------------------------------------------- |
 | Resources   | 이것은 무엇이며 존재하는가?              | UUID, ResourceRef, 종류별 원본 모델, Catalog 계약, ResourceLookup           |
+| Start       | Start에 무엇을 어떤 순서로 고정하는가?   | ResourceRef Pin, immutable snapshot, label·reorder, 저장·복원·reconcile     |
 | Workspace   | 어디에 놓여 있으며 어떻게 변경하는가?    | Folder 원본, ResourcePlacement, 현재 snapshot, 생성·이름 변경·이동          |
 | Window      | 어떤 앱 창과 tab이 현재 열려 있는가?     | runtime Session, frame, tab navigation, mode, snapshot과 route selector     |
 | Application | 실제 데이터와 저장 매체는 어디서 오는가? | Content·ExternalShortcut entries, 본문 reader, storage adapter, 최초 초기화 |
@@ -23,6 +24,7 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 | ----------------------------------- | ------------------------------------------------------------------- |
 | [index.ts](./index.ts)              | 각 feature의 public API를 모으는 진입점. 자체 제품 로직은 없다.     |
 | [resources/](./resources/README.md) | identity, 참조, 원본 및 조회 계약. 파일별 역할과 Catalog 사용 예제. |
+| [start/](./start/README.md)         | Start Resource Pin, 순서, storage port, 복원과 조용한 저장 실패.    |
 | [workspace/](./workspace/README.md) | 배치, 초기화, 저장, 구독과 명령. lifecycle과 command queue 설명.    |
 | [windows/](./windows/README.md)     | Window model, static Store, geometry와 route 읽기 selector.         |
 | [folders/](./folders/README.md)     | File Explorer tab과 Folder 또는 Desktop location model.             |
@@ -34,10 +36,11 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 
 ## 사용 순서
 
-1. Application이 정적 Catalog, 고정 ID의 seed와 storage를 준비한다.
+1. Application이 정적 Catalog, 고정 ID의 Workspace seed와 Store별 storage를 준비한다.
 2. 브라우저에서 `WorkspaceStore.initialize(...)`의 완료를 기다린다.
-3. 초기화된 `FolderCatalog`와 정적 Catalog로 `ResourceLookup`을 구성한다. 현재 상태는 `getSnapshot()`, 변경 알림은 `subscribe()`로 읽는다. 원본 조회는 종류별 Catalog를 사용한다.
-4. 변경은 Store의 `createFolder`, `renameFolder`, `moveResource`로 요청하고 결과를 확인한다. Store가 알림과 저장을 담당한다.
+3. 초기화된 `FolderCatalog`와 정적 Catalog로 `ResourceLookup`을 구성한 뒤 `StartStore.initialize(...)`를 호출한다.
+4. 현재 상태는 각 Store의 `getSnapshot()`, 변경 알림은 `subscribe()`로 읽는다. 원본 조회는 종류별 Catalog를 사용한다.
+5. Workspace 변경은 `createFolder`, `renameFolder`, `moveResource`로, Start 변경은 `pin`, `unpin`, `reorder`로 요청한다. 각 Store가 알림과 저장을 담당한다.
 
 서버 요청 사이에 이 정적 Store로 사용자 상태를 공유하면 안 된다.
 
