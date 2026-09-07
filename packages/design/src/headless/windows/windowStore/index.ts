@@ -36,10 +36,12 @@ import type {
   ChromeWindowSession,
   FileExplorerWindowSession,
   WindowBounds,
+  WindowMode,
   WindowRect,
   WindowSession,
   WindowState,
 } from "../model/index.js";
+import { findTopVisibleSessionId, transitionWindowMode } from "../modeTransition/index.js";
 import type { NavigationEntry, NavigationState } from "../navigation/index.js";
 import {
   isWindowSessionId,
@@ -63,6 +65,8 @@ export type WindowStoreInitialization = Readonly<{
   workspace: WindowWorkspaceReader;
   contentCatalog: ContentCatalogReader;
   placementConfig: WindowPlacementConfig;
+  /** 생략하면 desktop에서 시작하며 이후 `setMode`로만 전환한다. */
+  mode?: WindowMode;
   workArea: WindowRect;
 }>;
 
@@ -163,6 +167,7 @@ const freezeWindowState = (state: WindowState): WindowState => {
   });
 
   return Object.freeze({
+    mode: state.mode,
     workArea: Object.freeze({ ...state.workArea }),
     sessions: Object.freeze(sessions),
     stackingOrder: Object.freeze([...state.stackingOrder]),
@@ -199,7 +204,9 @@ const navigate = <Location>(
         forwardStack: [],
       };
 
-const goBack = <Location>(navigation: NavigationState<Location>): NavigationState<Location> | null => {
+const goBack = <Location>(
+  navigation: NavigationState<Location>,
+): NavigationState<Location> | null => {
   const current = navigation.backStack.at(-1);
   return current === undefined
     ? null
@@ -240,18 +247,6 @@ const selectedAfterClose = <Tab extends { id: string }>(
   return tabs[closedIndex + 1]?.id ?? tabs[closedIndex - 1]?.id ?? activeTabId;
 };
 
-const topVisibleSessionId = (
-  sessions: readonly WindowSession[],
-  stackingOrder: readonly WindowSessionId[],
-): WindowSessionId | null => {
-  const byId = new Map(sessions.map((session) => [session.id, session]));
-  for (let index = stackingOrder.length - 1; index >= 0; index -= 1) {
-    const id = stackingOrder[index];
-    if (id !== undefined && byId.get(id)?.frame.minimized === false) return id;
-  }
-  return null;
-};
-
 const freezePlacementConfig = (config: WindowPlacementConfig): WindowPlacementConfig =>
   Object.freeze({
     defaultSize: Object.freeze({ ...config.defaultSize }),
@@ -285,6 +280,7 @@ export class WindowStore {
     left.workspace === right.workspace &&
     left.contentCatalog === right.contentCatalog &&
     left.placementConfig === right.placementConfig &&
+    (left.mode ?? "desktop") === (right.mode ?? "desktop") &&
     left.workArea.x === right.workArea.x &&
     left.workArea.y === right.workArea.y &&
     left.workArea.width === right.workArea.width &&
@@ -321,6 +317,12 @@ export class WindowStore {
   });
 
   private static assertCandidate = (state: WindowState): void => {
+    if (state.mode !== "desktop" && state.mode !== "mobile") {
+      throw new Error("WindowState의 mode가 유효하지 않습니다");
+    }
+    if (state.mode === "mobile" && state.sessions.length > 1) {
+      throw new Error("mobile WindowState에는 Session을 하나만 둘 수 있습니다");
+    }
     if (
       ![state.workArea.x, state.workArea.y, state.workArea.width, state.workArea.height].every(
         Number.isFinite,
@@ -373,10 +375,7 @@ export class WindowStore {
     }
   };
 
-  private static commit = (
-    state: WindowState,
-    change: WindowStoreChange,
-  ): WindowStoreResult => {
+  private static commit = (state: WindowState, change: WindowStoreChange): WindowStoreResult => {
     WindowStore.assertCandidate(state);
     const committedIds: string[] = [];
     if (change.sessionId !== undefined) committedIds.push(change.sessionId);
@@ -396,7 +395,12 @@ export class WindowStore {
         const result = calculate();
         if (result.kind === "rejected") return { ok: false, changed: false, reason: result.reason };
         if (result.kind === "no-op") {
-          return { ok: true, changed: false, reason: "no-op", value: WindowStore.requireSnapshot() };
+          return {
+            ok: true,
+            changed: false,
+            reason: "no-op",
+            value: WindowStore.requireSnapshot(),
+          };
         }
         return WindowStore.commit(result.state, result.change);
       } catch (error) {
@@ -529,13 +533,29 @@ export class WindowStore {
       stackingOrder,
       activeSessionId:
         state.activeSessionId === id
-          ? topVisibleSessionId(sessions, stackingOrder)
+          ? findTopVisibleSessionId(sessions, stackingOrder)
           : state.activeSessionId,
     };
   };
 
+  private static withCreatedSession = (state: WindowState, session: WindowSession): WindowState =>
+    state.mode === "mobile"
+      ? {
+          ...state,
+          sessions: [session],
+          stackingOrder: [session.id],
+          activeSessionId: session.id,
+        }
+      : {
+          ...state,
+          sessions: [...state.sessions, session],
+          stackingOrder: [...state.stackingOrder, session.id],
+          activeSessionId: session.id,
+        };
+
   private static createFileExplorer = (
     location: FileExplorerLocation,
+    changeKind: WindowStoreChange["kind"] = "window-created",
   ): Calculation => {
     const state = WindowStore.requireSnapshot();
     const reserved = new Set<string>();
@@ -566,13 +586,8 @@ export class WindowStore {
     };
     return {
       kind: "commit",
-      state: {
-        ...state,
-        sessions: [...state.sessions, session],
-        stackingOrder: [...state.stackingOrder, sessionId],
-        activeSessionId: sessionId,
-      },
-      change: { kind: "window-created", sessionId, tabId },
+      state: WindowStore.withCreatedSession(state, session),
+      change: { kind: changeKind, sessionId, tabId },
     };
   };
 
@@ -606,14 +621,48 @@ export class WindowStore {
     };
     return {
       kind: "commit",
-      state: {
-        ...state,
-        sessions: [...state.sessions, session],
-        stackingOrder: [...state.stackingOrder, sessionId],
-        activeSessionId: sessionId,
-      },
+      state: WindowStore.withCreatedSession(state, session),
       change: { kind: "window-created", sessionId, tabId },
     };
+  };
+
+  /** 명시적으로 닫는 mobile Chrome의 current Content에서 최신 Explorer 복귀 위치를 찾는다. */
+  private static mobileReturnLocation = (
+    session: ChromeWindowSession,
+  ): FileExplorerLocation | undefined => {
+    const activeTab = session.tabs.find(({ id }) => id === session.activeTabId);
+    const location = activeTab?.navigation.current.location;
+    if (location?.kind !== "content") return undefined;
+
+    const initialization = WindowStore.requireInitialization();
+    const workspace = initialization.workspace.getSnapshot();
+    if (initialization.contentCatalog.get(location.ref.id) === undefined) return null;
+
+    const placement = workspace.placements.find(
+      ({ resource }) => resource.kind === "content" && resource.id === location.ref.id,
+    );
+    if (placement?.parent === null) return null;
+    if (placement === undefined) return null;
+
+    return workspace.folders.some(({ ref }) => ref.id === placement.parent?.id)
+      ? placement.parent
+      : null;
+  };
+
+  /** explicit close와 replacement/responsive removal을 분리해 mobile 복귀를 한 commit으로 만든다. */
+  private static explicitlyCloseSession = (
+    state: WindowState,
+    session: WindowSession,
+    change: WindowStoreChange,
+  ): Calculation => {
+    if (state.mode === "mobile" && session.kind === "chrome") {
+      const returnLocation = WindowStore.mobileReturnLocation(session);
+      if (returnLocation !== undefined) {
+        return WindowStore.createFileExplorer(returnLocation, "mobile-returned-to-file-explorer");
+      }
+    }
+
+    return { kind: "commit", state: WindowStore.removeSession(state, session.id), change };
   };
 
   /** dependency를 연결하고 알림 없이 빈 immutable Window snapshot을 만든다. */
@@ -638,6 +687,7 @@ export class WindowStore {
     try {
       createWindowBounds(initialization.workArea, null, WindowStore.requirePlacementConfig());
       const initial: WindowState = {
+        mode: initialization.mode ?? "desktop",
         workArea: { ...initialization.workArea },
         sessions: [],
         stackingOrder: [],
@@ -671,6 +721,22 @@ export class WindowStore {
     return () => WindowStore.listeners.delete(listener);
   }
 
+  /**
+   * responsive adapter가 전달한 명시적 mode로 전환한다.
+   *
+   * desktop→mobile 정리는 Chrome explicit close 복귀를 실행하지 않고 한 snapshot으로 반영한다.
+   */
+  static setMode(mode: WindowMode): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(() => {
+      if (mode !== "desktop" && mode !== "mobile") return WindowStore.reject("invalid-mode");
+      const state = WindowStore.requireSnapshot();
+      const next = transitionWindowMode(state, mode);
+      return next === null
+        ? { kind: "no-op" }
+        : { kind: "commit", state: next, change: { kind: "mode-changed" } };
+    });
+  }
+
   /** Folder 또는 Desktop을 first tab으로 가진 새 File Explorer Window를 만든다. */
   static createFileExplorerWindow(location: FileExplorerLocation): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
@@ -698,9 +764,7 @@ export class WindowStore {
     return WindowStore.enqueue(() => {
       const location = WindowStore.validateFolderLocation(folder);
       if (typeof location === "string" || location === null) {
-        return WindowStore.reject(
-          typeof location === "string" ? location : "invalid-resource-ref",
-        );
+        return WindowStore.reject(typeof location === "string" ? location : "invalid-resource-ref");
       }
       const state = WindowStore.requireSnapshot();
       for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
@@ -800,7 +864,7 @@ export class WindowStore {
           sessions,
           activeSessionId:
             state.activeSessionId === sessionId
-              ? topVisibleSessionId(sessions, state.stackingOrder)
+              ? findTopVisibleSessionId(sessions, state.stackingOrder)
               : state.activeSessionId,
         },
         change: { kind: "window-minimized", sessionId },
@@ -812,14 +876,14 @@ export class WindowStore {
   static close(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
-      if (WindowStore.findSession(sessionId) === undefined) {
+      const session = WindowStore.findSession(sessionId);
+      if (session === undefined) {
         return WindowStore.reject("session-not-found");
       }
-      return {
-        kind: "commit",
-        state: WindowStore.removeSession(state, sessionId),
-        change: { kind: "window-closed", sessionId },
-      };
+      return WindowStore.explicitlyCloseSession(state, session, {
+        kind: "window-closed",
+        sessionId,
+      });
     });
   }
 
@@ -829,6 +893,7 @@ export class WindowStore {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
+      if (state.mode === "mobile") return { kind: "no-op" };
       const placement = session.frame.placement === "normal" ? "maximized" : "normal";
       return {
         kind: "commit",
@@ -886,6 +951,7 @@ export class WindowStore {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
+      if (state.mode === "mobile") return { kind: "no-op" };
       const bounds = constrainWindowBounds(
         update(session.frame.normalBounds),
         state.workArea,
@@ -1077,11 +1143,11 @@ export class WindowStore {
       const index = session.tabs.findIndex(({ id }) => id === tabId);
       if (index === -1) return WindowStore.reject("tab-not-found");
       if (session.tabs.length === 1) {
-        return {
-          kind: "commit",
-          state: WindowStore.removeSession(state, sessionId),
-          change: { kind: "tab-closed", sessionId, tabId },
-        };
+        return WindowStore.explicitlyCloseSession(state, session, {
+          kind: "tab-closed",
+          sessionId,
+          tabId,
+        });
       }
       const activeTabId = selectedAfterClose(
         session.tabs as readonly Readonly<{ id: string }>[],

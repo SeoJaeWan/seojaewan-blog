@@ -25,6 +25,9 @@ export type WindowRect = Readonly<WindowPoint & WindowSize>;
 /** normal placement에서 보존하는 Window 위치와 크기다. */
 export type WindowBounds = WindowRect;
 
+/** WindowStore가 명시적 responsive 명령으로 관리하는 실행 모드다. */
+export type WindowMode = "desktop" | "mobile";
+
 /**
  * normal bounds와 maximize·minimize 상태를 분리해 보존한다.
  *
@@ -83,6 +86,7 @@ export type WindowSession = FileExplorerWindowSession | ChromeWindowSession;
  * browser reload 뒤 복원하지 않으며 Resource·Workspace 영속 상태를 포함하지 않는다.
  */
 export type WindowState = Readonly<{
+  mode: WindowMode;
   workArea: WindowRect;
   sessions: readonly WindowSession[];
   stackingOrder: readonly WindowSessionId[];

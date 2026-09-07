@@ -19,6 +19,8 @@ export type WindowStoreChangeKind =
   | "window-moved"
   | "window-resized"
   | "work-area-changed"
+  | "mode-changed"
+  | "mobile-returned-to-file-explorer"
   | "tab-added"
   | "tab-activated"
   | "tab-closed"
@@ -61,6 +63,7 @@ export type WindowStoreFailureReason =
   | "content-not-found"
   | "invalid-resource-ref"
   | "invalid-location"
+  | "invalid-mode"
   | "invalid-scroll-top"
   | "invalid-geometry"
   | "duplicate-runtime-id"
@@ -75,6 +78,4 @@ export type WindowStoreRejectedResult = Readonly<{
 
 /** WindowStore 명령의 commit, no-op 또는 변경 없는 거절 결과다. */
 export type WindowStoreResult =
-  | WindowStoreCommittedResult
-  | WindowStoreNoOpResult
-  | WindowStoreRejectedResult;
+  WindowStoreCommittedResult | WindowStoreNoOpResult | WindowStoreRejectedResult;
