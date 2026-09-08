@@ -4,6 +4,12 @@
  * 새로운 제품 동작을 구현하지 않고 하위 element의 public surface만 다시 내보낸다.
  */
 export {
+  type StartController,
+  type StartControllerActions,
+  type StartControllerViewModel,
+  useStartController,
+} from "./controller/index.js";
+export {
   type StartPinnedItem,
   type StartReorderAction,
   type StartReorderDestination,
@@ -11,8 +17,20 @@ export {
   type StartSnapshot,
 } from "./model/index.js";
 export {
+  START_OPERATION_TARGET,
+  type StartAction,
+  type StartCommittedResult,
+  type StartOperationHandle,
+  StartOperations,
+  type StartOperationsOptions,
+  type StartOperationStore,
+  type StartPresentedResult,
+  type StartSettledResult,
+} from "./operations/index.js";
+export {
   StartStore,
   StartStoreAlreadyInitializedError,
+  type StartStoreCommandContext,
   type StartStoreInitialization,
   StartStoreNotInitializedError,
 } from "./startStore/index.js";

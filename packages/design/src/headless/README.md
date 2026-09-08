@@ -1,6 +1,6 @@
 # Headless 사용 안내
 
-UI 없이 성립하는 Resource 모델과 Start·Taskbar·Workspace·Window 상태 및 명령을 제공한다. React, DOM, Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
+UI 없이 성립하는 Resource 모델과 Start·Taskbar·Workspace·Window 상태 및 명령을 제공한다. pure model·operation·selector는 React에 의존하지 않고 controller hook과 Runtime Provider는 React 연결을 제공한다. headless 전체는 DOM과 Base UI에 의존하지 않으며 화면 렌더링, 실제 라우팅과 저장 매체는 구현하지 않는다.
 
 이 README는 현재 checkout의 코드 탐색과 사용 안내다. 지속적인 아키텍처·계약·컨벤션의 정본은 Workbench Local Work Memory의 `seojaewan/seojaewan-blog` 프로젝트에 있는 `resource-model`, `start-screen-pin-model`, `pin-store-persistence`, `workspace-resource-placement`, `window-session`, `taskbar-mobile`, `chrome-tab-navigation-history`, `application-resource-routing-404`, `module-boundaries`, `coding`, `folder-structure`다.
 
@@ -27,7 +27,7 @@ Resources는 Workspace를 import하지 않는다. Workspace가 Resource 계약�
 | [start/](./start/README.md)         | Start Resource Pin, 순서, storage port, 복원과 조용한 저장 실패.    |
 | [taskbar/](./taskbar/README.md)     | Taskbar Pin, visible order, Window Group과 desktop/mobile intent.   |
 | [workspace/](./workspace/README.md) | 배치, 초기화, 저장, 구독과 명령. lifecycle과 command queue 설명.    |
-| [windows/](./windows/README.md)     | Window model, static Store, geometry와 route 읽기 selector.         |
+| [windows/](./windows/README.md)     | Window model, static Store, Operation, controller와 route selector. |
 | [folders/](./folders/README.md)     | File Explorer tab과 Folder 또는 Desktop location model.             |
 | [chrome/](./chrome/README.md)       | Chrome tab, Content/new-tab/404 location과 검증된 내부 주소 model.  |
 
@@ -80,3 +80,5 @@ await WindowStore.setMode("mobile");
 정적 Catalog의 실제 데이터와 저장 adapter는 Application 소유이며 실행 중 교체하지 않는다. 초기화 알림은 저장 완료 알림이 아니다. 초기화 작업이나 storage adapter가 뒤에 대기하는 Store 명령을 await하면 안 된다.
 
 초기화 중 명령 대기 정책과 Catalog 연결·실패 처리의 정본은 Local Work Memory의 `workspace-resource-placement`다. 이 안내는 해당 계약을 현재 코드의 사용 순서로 설명한다.
+
+React 제품 root는 브라우저 Store 초기화 뒤 `createHeadlessRuntime()`으로 Foundation Operation과 Store 구독을 한 번 조합하고 `HeadlessRuntimeProvider`로 전달한다. Window·Workspace·Start·Taskbar controller hook은 Store snapshot을 복제하지 않는 `viewModel`과 serializable Action 진입점인 `actions`를 분리해 반환한다. SSR과 초기화 전에는 안정적인 `not-ready` 결과를 사용한다. 자세한 연결 예는 [Operation runtime 안내](./runtime/README.md)에 있다.

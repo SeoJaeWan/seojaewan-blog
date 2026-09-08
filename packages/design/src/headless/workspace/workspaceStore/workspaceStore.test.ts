@@ -754,4 +754,32 @@ describe("WorkspaceStore queue·ID 통합 시나리오", () => {
     expect(WorkspaceStore.getSnapshot().contentInbox).toEqual(recovered);
     expect(WorkspaceStore.getSnapshot().folders.at(-1)?.ref).toEqual(created);
   });
+
+  it("명령 context는 commit을 저장보다 먼저 알리고 기존 Promise는 저장 완료를 반환한다", async () => {
+    mockUuid();
+    const gate = deferred<void>();
+    const events: string[] = [];
+    const fakeStorage = storage(null);
+    const { WorkspaceStore } = await loadStore();
+    await WorkspaceStore.initialize({
+      storage: fakeStorage,
+      seed: seed(),
+      contentCatalog: catalogFor([firstContent]),
+      externalShortcutCatalog: createStaticCatalog([]),
+    });
+    fakeStorage.save.mockImplementationOnce(() => {
+      events.push("save");
+      return gate.promise;
+    });
+    WorkspaceStore.subscribe(() => events.push("subscriber"));
+
+    const command = WorkspaceStore.createFolder("자료", null, {
+      onCommit: () => events.push("context"),
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(events).toEqual(["context", "subscriber", "save"]);
+    gate.resolve();
+    await expect(command).resolves.toMatchObject({ ok: true });
+  });
 });

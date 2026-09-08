@@ -20,7 +20,7 @@
     "lint": "pnpm lint:eslint && pnpm lint:css",
     "lint:css": "stylelint \"src/ui/**/*.css\"",
     "lint:eslint": "eslint . --max-warnings=0",
-    "test": "vitest run --project headless --project ui --passWithNoTests",
+    "test": "vitest run --project headless --project headless-react --project ui --passWithNoTests",
     "test:storybook": "vitest run --project storybook",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

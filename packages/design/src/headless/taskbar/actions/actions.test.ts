@@ -13,6 +13,7 @@ import {
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
   executeTaskbarWindowIntent,
+  executeTaskbarWindowOperationIntent,
   type TaskbarWindowCommandPort,
 } from "./index.js";
 
@@ -111,6 +112,25 @@ describe("Taskbar intents", () => {
     expect(port.close).toHaveBeenNthCalledWith(1, sessionId(21));
     expect(port.close).toHaveBeenNthCalledWith(2, sessionId(22));
     expect(port.close).toHaveBeenCalledTimes(2);
+  });
+
+  it("close-all Operation은 캡처한 각 Session을 자기 queue로 즉시 전달한다", () => {
+    const intent = createTaskbarCloseAllIntent(
+      group([target(sessionId(31), false), target(sessionId(32), true)]),
+    );
+    const operations = { execute: vi.fn(() => ({}) as never) };
+
+    const handles = executeTaskbarWindowOperationIntent(intent, operations);
+
+    expect(handles).toHaveLength(2);
+    expect(operations.execute).toHaveBeenNthCalledWith(1, {
+      type: "close",
+      sessionId: sessionId(31),
+    });
+    expect(operations.execute).toHaveBeenNthCalledWith(2, {
+      type: "close",
+      sessionId: sessionId(32),
+    });
   });
 
   it("mobile intent는 explicit close 없이 WindowStore launchMobileApplication에 직접 연결한다", async () => {

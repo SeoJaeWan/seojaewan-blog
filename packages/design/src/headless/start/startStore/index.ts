@@ -29,6 +29,15 @@ export type StartStoreInitialization = Readonly<{
 }>;
 
 /**
+ * 한 Start 명령이 semantic Pin snapshot을 반영한 정확한 시점을 실행 계층에 알린다.
+ *
+ * 저장 결과는 기존 명령 Promise가 반환하며 callback은 serializable Action에 포함하지 않는다.
+ */
+export type StartStoreCommandContext = Readonly<{
+  onCommit(value: StartSnapshot): void;
+}>;
+
+/**
  * 초기화 시작 전 Start snapshot을 읽거나 명령을 요청했을 때 발생한다.
  *
  * import나 서버 render만으로 초기화를 실행하지 않으며, Application이 브라우저에서 명시적으로 연결한다.
@@ -322,9 +331,17 @@ export class StartStore {
    *
    * 저장 실패가 발생해도 이미 반영한 snapshot을 rollback하지 않는다.
    */
-  private static commit = async (candidate: StartSnapshot): Promise<StartStoreResult> => {
+  private static commit = async (
+    candidate: StartSnapshot,
+    context?: StartStoreCommandContext,
+  ): Promise<StartStoreResult> => {
     const snapshot = freezeSnapshot(candidate);
     StartStore.snapshot = snapshot;
+    try {
+      context?.onCommit(snapshot);
+    } catch (error) {
+      void error;
+    }
     StartStore.notify();
     return StartStore.persistCommittedSnapshot(snapshot);
   };
@@ -520,7 +537,7 @@ export class StartStore {
    *
    * 잘못되거나 missing인 ref는 거절하고 중복은 부수 효과 없는 no-op으로 반환한다.
    */
-  static pin(resource: ResourceRef): Promise<StartStoreResult> {
+  static pin(resource: ResourceRef, context?: StartStoreCommandContext): Promise<StartStoreResult> {
     StartStore.requireInitialization();
     return StartStore.enqueueCommand(async () => {
       const parsed = StartStore.parseCommandResource(resource);
@@ -538,9 +555,10 @@ export class StartStore {
         return StartStore.rejected("resource-not-found");
       }
 
-      return StartStore.commit({
-        pinnedItems: [...current.pinnedItems, { resource: parsed }],
-      });
+      return StartStore.commit(
+        { pinnedItems: [...current.pinnedItems, { resource: parsed }] },
+        context,
+      );
     });
   }
 
@@ -549,7 +567,10 @@ export class StartStore {
    *
    * Workspace, Window, Taskbar와 다른 Resource 원본은 변경하지 않으며 미고정 Resource는 no-op이다.
    */
-  static unpin(resource: ResourceRef): Promise<StartStoreResult> {
+  static unpin(
+    resource: ResourceRef,
+    context?: StartStoreCommandContext,
+  ): Promise<StartStoreResult> {
     StartStore.requireInitialization();
     return StartStore.enqueueCommand(async () => {
       const parsed = StartStore.parseCommandResource(resource);
@@ -565,7 +586,7 @@ export class StartStore {
         return StartStore.noOp();
       }
 
-      return StartStore.commit({ pinnedItems });
+      return StartStore.commit({ pinnedItems }, context);
     });
   }
 
@@ -575,7 +596,11 @@ export class StartStore {
    * 한 intent를 하나의 commit과 save로 처리한다. 현재 위치에서 불가능한 이동과 미고정 Resource는
    * no-op이고 지원하지 않거나 범위를 벗어난 intent는 거절한다.
    */
-  static reorder(resource: ResourceRef, intent: StartReorderIntent): Promise<StartStoreResult> {
+  static reorder(
+    resource: ResourceRef,
+    intent: StartReorderIntent,
+    context?: StartStoreCommandContext,
+  ): Promise<StartStoreResult> {
     StartStore.requireInitialization();
     return StartStore.enqueueCommand(async () => {
       const parsed = StartStore.parseCommandResource(resource);
@@ -620,7 +645,7 @@ export class StartStore {
       }
       pinnedItems.splice(targetIndex, 0, moved);
 
-      return StartStore.commit({ pinnedItems });
+      return StartStore.commit({ pinnedItems }, context);
     });
   }
 }

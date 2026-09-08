@@ -10,6 +10,7 @@ export {
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
   executeTaskbarWindowIntent,
+  executeTaskbarWindowOperationIntent,
   type MobileTaskbarApplicationIntent,
   type TaskbarApplicationClickIntent,
   type TaskbarCloseAllIntent,
@@ -17,7 +18,15 @@ export {
   type TaskbarWindowCommandPort,
   type TaskbarWindowIntent,
   type TaskbarWindowIntentResult,
+  type TaskbarWindowOperationIntentResult,
+  type TaskbarWindowOperationPort,
 } from "./actions/index.js";
+export {
+  type TaskbarController,
+  type TaskbarControllerActions,
+  type TaskbarControllerViewModel,
+  useTaskbarController,
+} from "./controller/index.js";
 export {
   createTaskbarApplicationItem,
   createTaskbarExternalShortcutItem,
@@ -30,6 +39,18 @@ export {
   type TaskbarReorderIntent,
   type TaskbarSnapshot,
 } from "./model/index.js";
+export {
+  TASKBAR_OPERATION_TARGET,
+  type TaskbarCommittedResult,
+  type TaskbarOperationHandle,
+  TaskbarOperations,
+  type TaskbarOperationsOptions,
+  type TaskbarOperationStore,
+  type TaskbarOperationWindowReader,
+  type TaskbarPinAction,
+  type TaskbarPresentedResult,
+  type TaskbarSettledResult,
+} from "./operations/index.js";
 export {
   type MobileTaskbarApplicationView,
   type MobileTaskbarTimestampView,
@@ -45,6 +66,7 @@ export {
 export {
   TaskbarStore,
   TaskbarStoreAlreadyInitializedError,
+  type TaskbarStoreCommandContext,
   type TaskbarStoreInitialization,
   TaskbarStoreNotInitializedError,
   type TaskbarWindowReader,

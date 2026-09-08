@@ -54,6 +54,15 @@ export type WorkspaceStorePersistenceFailure = Readonly<{
 export type WorkspaceStoreResult = WorkspaceOperationResult | WorkspaceStorePersistenceFailure;
 
 /**
+ * 한 Workspace 명령이 semantic snapshot을 반영한 정확한 시점을 실행 계층에 알린다.
+ *
+ * 저장 완료는 기존 명령 Promise로 관찰하며 callback 오류는 이미 끝난 commit과 저장을 방해하지 않는다.
+ */
+export type WorkspaceStoreCommandContext = Readonly<{
+  onCommit(value: WorkspaceState): void;
+}>;
+
+/**
  * 초기화 시작 전 명령을 요청하거나 아직 생성되지 않은 snapshot에 접근했을 때 발생한다.
  *
  * 초기화 중 명령은 대기하지만 snapshot 생성에 실패하면 실행 시 이 오류로 거부한다.
@@ -281,9 +290,17 @@ export class WorkspaceStore {
   /**
    * 검증된 후보를 동결한 뒤 현재 상태에 반영하고 구독 알림과 저장을 수행한다.
    */
-  private static commit = async (nextState: WorkspaceState): Promise<WorkspaceStoreResult> => {
+  private static commit = async (
+    nextState: WorkspaceState,
+    context?: WorkspaceStoreCommandContext,
+  ): Promise<WorkspaceStoreResult> => {
     const nextSnapshot = freezeWorkspaceState(nextState);
     WorkspaceStore.snapshot = nextSnapshot;
+    try {
+      context?.onCommit(nextSnapshot);
+    } catch (error) {
+      void error;
+    }
     WorkspaceStore.notify();
     return WorkspaceStore.persistCommittedSnapshot(nextSnapshot);
   };
@@ -324,6 +341,7 @@ export class WorkspaceStore {
    */
   private static runOperation = (
     operation: () => WorkspaceOperationResult,
+    context?: WorkspaceStoreCommandContext,
   ): Promise<WorkspaceStoreResult> => {
     WorkspaceStore.requireInitialization();
 
@@ -334,7 +352,7 @@ export class WorkspaceStore {
         return result;
       }
 
-      return WorkspaceStore.commit(result.value);
+      return WorkspaceStore.commit(result.value, context);
     });
   };
 
@@ -431,8 +449,12 @@ export class WorkspaceStore {
   static createFolder(
     name: string,
     parent: FolderResourceRef | null,
+    context?: WorkspaceStoreCommandContext,
   ): Promise<WorkspaceStoreResult> {
-    return WorkspaceStore.runOperation(() => WorkspaceStore.calculateCreateFolder(name, parent));
+    return WorkspaceStore.runOperation(
+      () => WorkspaceStore.calculateCreateFolder(name, parent),
+      context,
+    );
   }
 
   /**
@@ -440,8 +462,15 @@ export class WorkspaceStore {
    *
    * Folder가 없거나 이름이 같으면 commit과 subscriber 알림을 수행하지 않는다.
    */
-  static renameFolder(folder: FolderResourceRef, name: string): Promise<WorkspaceStoreResult> {
-    return WorkspaceStore.runOperation(() => WorkspaceStore.calculateRenameFolder(folder, name));
+  static renameFolder(
+    folder: FolderResourceRef,
+    name: string,
+    context?: WorkspaceStoreCommandContext,
+  ): Promise<WorkspaceStoreResult> {
+    return WorkspaceStore.runOperation(
+      () => WorkspaceStore.calculateRenameFolder(folder, name),
+      context,
+    );
   }
 
   /**
@@ -452,9 +481,11 @@ export class WorkspaceStore {
   static moveResource(
     resource: ResourceRef,
     parent: FolderResourceRef | null,
+    context?: WorkspaceStoreCommandContext,
   ): Promise<WorkspaceStoreResult> {
-    return WorkspaceStore.runOperation(() =>
-      WorkspaceStore.calculateMoveResource(resource, parent),
+    return WorkspaceStore.runOperation(
+      () => WorkspaceStore.calculateMoveResource(resource, parent),
+      context,
     );
   }
 

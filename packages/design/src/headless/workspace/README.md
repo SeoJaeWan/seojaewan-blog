@@ -13,6 +13,7 @@
 | [idGenerator/index.ts](./idGenerator/index.ts)                                             | 생성·복구가 공유하는 내부 Web Crypto UUID 발급기          | [idGenerator.test.ts](./idGenerator/idGenerator.test.ts)                                     |
 | [workspaceStore/index.ts](./workspaceStore/index.ts)                                       | 초기화, 검증·동결, 상태, 구독, 명령 계산·직렬화와 저장    | [workspaceStore.test.ts](./workspaceStore/workspaceStore.test.ts)                            |
 | [workspaceStore/operationResult/index.ts](./workspaceStore/operationResult/index.ts)       | domain 결과와 사유별 발생 조건                            | type-only; 결과는 Store 테스트에서 검증                                                      |
+| [operations/index.ts](./operations/index.ts)                                               | create·rename·move Action과 완료 시점 연결                | [operations.test.ts](./operations/operations.test.ts)                                        |
 | [workspaceStore/reconcileWorkspace/index.ts](./workspaceStore/reconcileWorkspace/index.ts) | 중복·stale 참조·잘못된 parent·순환 복구와 새 Content 반영 | [reconcileWorkspace.test.ts](./workspaceStore/reconcileWorkspace/reconcileWorkspace.test.ts) |
 | [workspaceStore/workspaceStorage/index.ts](./workspaceStore/workspaceStorage/index.ts)     | Store가 사용하는 비동기 전체 snapshot 저장 port           | type-only; 저장 조율은 Store 테스트에서 검증                                                 |
 
@@ -92,6 +93,8 @@ unsubscribe(); // 소비자 정리 시 구독 해제
 
 실제 호출부는 생성·이동 결과도 이름 변경처럼 처리한다. 예상하지 못한 예외나 초기화 오류는 domain 결과와 별개로 처리해야 한다. `subscribe`는 등록 즉시 호출하지 않으며 알림에서 저장 완료를 의미하지도 않는다. 현재 snapshot은 직접 읽고, 변경은 명령으로만 요청한다.
 
+제품 Action 경계에서는 `WorkspaceOperations.execute`를 사용한다. 목록 queue는 create·rename·move를 순서대로 실행하고 `committed`는 메모리 반영 직후, `settled`는 Store의 저장 성공 또는 rollback 없는 저장 실패까지 끝난 뒤 완료된다. Workspace 변경은 이 단계에서 별도 UI transition을 소유하지 않으므로 `presented`는 `not-required`다.
+
 ## Command queue 원리
 
 ```ts
@@ -120,3 +123,9 @@ return result;
 `load()`는 저장값 또는 `null`을, `save(snapshot)`은 전체 snapshot의 저장 완료를 전달한다. 저장 key, JSON 처리, migration과 localStorage 접근은 Application adapter가 구현한다. 명령마다 Application이 수동으로 저장하지 않는다.
 
 이 분리는 React 여부가 아니라 서버·브라우저 경계 때문이다. Next.js 등의 서버 렌더링에서는 브라우저에서 접근 가능한 시점에 초기화하고, 서버 요청 사이에 이 singleton으로 사용자 상태를 공유하지 않는다. headless import만으로 localStorage 접근이나 ID 발급은 일어나지 않는다. 새 Folder 생성과 inbox 복구 시에는 `crypto.randomUUID()`를 지원하는 runtime이 필요하다.
+
+## React controller
+
+`useWorkspaceController()`는 `viewModel`과 `actions`를 분리한다. ready snapshot은 WorkspaceStore가 소유한 immutable 상태이고 `actions.execute`는 create·rename·move Action을 기존 Store 명령과 저장 결과에 연결한다. Context에 Workspace snapshot을 복사하지 않는다.
+
+서버에서는 항상 안정적인 `not-ready` 값을 사용한다. Application은 브라우저 storage와 Catalog로 WorkspaceStore 초기화를 끝낸 뒤 `createHeadlessRuntime()`을 한 번 호출한다. Workspace Operation은 별도 표현 전환이 없으므로 `presented`는 `not-required`이고, 저장까지 포함한 결과는 `settled`에서 확인한다.

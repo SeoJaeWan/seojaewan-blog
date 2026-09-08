@@ -3,12 +3,30 @@
  *
  * 새로운 domain 동작을 구현하지 않고 하위 module의 public surface만 조합한다.
  */
+export {
+  useWorkspaceController,
+  type WorkspaceController,
+  type WorkspaceControllerActions,
+  type WorkspaceControllerViewModel,
+} from "./controller/index.js";
 export { FolderCatalog } from "./folderCatalog/index.js";
 export { type ResourcePlacement, type WorkspaceState } from "./model/index.js";
+export {
+  WORKSPACE_OPERATION_TARGET,
+  type WorkspaceAction,
+  type WorkspaceCommittedResult,
+  type WorkspaceOperationHandle,
+  WorkspaceOperations,
+  type WorkspaceOperationsOptions,
+  type WorkspaceOperationStore,
+  type WorkspacePresentedResult,
+  type WorkspaceSettledResult,
+} from "./operations/index.js";
 export { createWorkspaceSeed, type WorkspaceSeed } from "./seed/index.js";
 export {
   WorkspaceStore,
   WorkspaceStoreAlreadyInitializedError,
+  type WorkspaceStoreCommandContext,
   type WorkspaceStoreInitialization,
   WorkspaceStoreNotInitializedError,
   type WorkspaceStorePersistenceFailure,

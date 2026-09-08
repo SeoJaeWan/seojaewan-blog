@@ -15,8 +15,16 @@ export default defineConfig({
         extends: true,
         test: {
           environment: "node",
-          include: ["src/headless/**/*.test.ts"],
+          include: ["src/headless/**/*.test.ts", "src/testing/**/*.test.ts"],
           name: "headless",
+        },
+      },
+      {
+        extends: true,
+        test: {
+          environment: "jsdom",
+          include: ["src/headless/**/*.test.tsx"],
+          name: "headless-react",
         },
       },
       {

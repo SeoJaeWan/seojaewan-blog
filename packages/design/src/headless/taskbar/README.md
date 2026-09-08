@@ -12,6 +12,7 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `taskbarStore/operationResult/index.ts` | commit, no-op, 거절과 조용한 저장 실패                                 |
 | `selectors/index.ts`                    | current Catalog·WindowState 기반 Group, Preview와 mobile read model    |
 | `actions/index.ts`                      | desktop/mobile click, shortcut, close-all intent와 Window command 연결 |
+| `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                       |
 
 ## 초기화와 Window 연결
 
@@ -58,4 +59,12 @@ await TaskbarStore.reload();
 
 ExternalShortcut은 현재 Catalog URL의 `{ target: "_blank" }` intent만 만든다. 실제 browser window와 Preview DOM은 Application/UI가 소유한다. mobile selector는 desktop Pin과 독립된 파일 탐색기→Chrome→Timestamp 구성을 반환하고 mobile intent는 `WindowStore.launchMobileApplication`의 same-app no-op 및 other-app 교체 계약을 그대로 사용한다.
 
+`TaskbarOperations.execute`는 Pin 목록 변경을 직렬화한다. 새 visible 항목 Pin은 commit 뒤 enter, 실제로 사라질 Unpin은 exit 뒤 commit, reorder는 이전 측정 → commit → 새 측정 → 이동 순서다. 실행 중 application은 Pin·Unpin 뒤에도 visible 항목이 남으므로 항목 transition을 만들지 않는다. `executeTaskbarWindowOperationIntent`는 기존 Taskbar intent를 Window Operation으로 연결하며 close-all은 시작 시 복사한 Session ID마다 Handle을 즉시 만들어 각 Session queue가 독립적으로 진행하게 한다.
+
 정본 계약은 Workbench Local Work Memory의 `taskbar-pin-model`, `taskbar-group`, `pin-store-persistence`, `taskbar-mobile`이다.
+
+## React controller
+
+`useTaskbarController()`는 persistent·visible snapshot의 준비 상태를 `viewModel`로, Pin Action과 transition 완료 신호를 `actions`로 제공한다. snapshot은 TaskbarStore가 소유하며 Provider는 복제하거나 재마운트 때 running-only 위치를 초기화하지 않는다.
+
+Application은 WindowStore와 Catalog·storage를 연결해 TaskbarStore 초기화를 마친 뒤 같은 runtime을 Provider에 전달한다. 실행 중 application의 Pin 변경처럼 표현이 필요 없는 결과는 `presented: not-required`이며, 저장까지 포함한 최종 결과는 `settled`에서 확인한다. SSR에서는 Window singleton과 storage를 읽지 않고 `not-ready`를 사용한다.

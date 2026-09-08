@@ -10,6 +10,7 @@
 | [model/index.ts](./model/index.ts)                                             | WindowRect, frame, 앱별 Session과 WindowState를 정의한다.    |
 | [windowStore/index.ts](./windowStore/index.ts)                                 | 초기화, 창·탭 명령과 구독을 제공한다.                        |
 | [windowStore/operationResult/index.ts](./windowStore/operationResult/index.ts) | commit, no-op과 거부 결과를 설명한다.                        |
+| [operations/index.ts](./operations/index.ts)                                   | Action을 Session queue와 transition에 연결한다.              |
 | [geometry/index.ts](./geometry/index.ts)                                       | 숫자 배치를 계산하고 `getWindowBounds`로 표시 영역을 읽는다. |
 | [routeSelector/index.ts](./routeSelector/index.ts)                             | active tab에서 현재 주소를 파생한다.                         |
 | [../folders/README.md](../folders/README.md)                                   | File Explorer tab의 위치와 탐색 모델을 안내한다.             |
@@ -66,6 +67,10 @@ mobile Taskbar의 고정 앱 버튼은 `launchMobileApplication("file-explorer" 
 
 명령은 queue에서 순차 실행되며 반환 Promise는 semantic 상태 반영과 동기 구독 알림 이후 완료된다. animation이나 router 완료를 기다리는 Promise는 아니다. 알림 안에서 요청한 다음 명령은 현재 commit 뒤에 실행된다.
 
+제품 Action은 `WindowOperations.execute(action)`으로 실행한다. 같은 Session은 앞 Handle의 `settled` 뒤에 실행되고 다른 Session은 독립적이다. `close`·`minimize`는 transition 뒤 Store commit, 생성·최소화 복원·maximize·최대화 해제는 Store commit 뒤 transition을 기다린다. 생성 commit은 새 ID를 일반 subscriber에 알리기 전에 해당 Session queue에 연결하므로 재진입 요청도 생성 Operation을 추월하지 않는다. 이동·resize와 tab·navigation 명령은 별도 animation 없이 numeric intent를 Store에 전달한다.
+
+Handle의 `committed`는 snapshot 반영, `presented`는 이 Operation이 소유한 transition, `settled`는 둘과 정리를 모두 기다린다. UI는 Handle의 `operationId`와 phase를 `TransitionRegistry`에 완료·중단·실패로 전달한다. no-op과 `session-not-found` 같은 거절은 transition을 새로 만들지 않고 모든 Handle 대기를 끝낸다.
+
 ## 구독과 읽기
 
 ```ts
@@ -89,3 +94,9 @@ snapshot은 중첩 객체까지 읽기 전용이다. 직접 수정하지 않고 
 - `pnpm --filter @window/design build`
 
 함수의 정상·오류·부수 효과는 소유 요소의 인접 테스트에서 검증한다. queue와 모바일 교체 같은 여러 명령의 조합은 Store 통합 시나리오에서 검증한다. package export 이름 목록을 고정하는 테스트는 두지 않는다.
+
+## React controller
+
+제품 root는 `HeadlessRuntimeProvider` 아래에서 `useWindowController()`를 호출한다. `viewModel.status === "ready"`일 때의 `snapshot`은 WindowStore가 반환한 같은 immutable 객체이며, `actions.execute`는 `WindowAction`을 `WindowOperations`로 보낸다. `completeTransition`·`abortTransition`·`failTransition`은 Handle의 `operationId`와 현재 phase만 전달한다.
+
+SSR 또는 브라우저 초기화 전에는 `not-ready`이며 hook이 WindowStore를 대신 초기화하지 않는다. Application은 Workspace와 Catalog를 준비해 WindowStore를 먼저 초기화하고 runtime을 한 번 만든다. 일반 caller는 semantic commit, 표현과 정리가 모두 필요한 경우 `handle.settled`를 기다린다.

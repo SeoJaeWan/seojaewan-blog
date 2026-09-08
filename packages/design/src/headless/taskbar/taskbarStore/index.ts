@@ -50,6 +50,15 @@ export type TaskbarStoreInitialization = Readonly<{
 }>;
 
 /**
+ * 한 Taskbar 명령이 semantic Pin·visible snapshot을 반영한 정확한 시점을 실행 계층에 알린다.
+ *
+ * persistence 완료는 기존 명령 Promise로 관찰하며 callback은 Action 데이터와 분리한다.
+ */
+export type TaskbarStoreCommandContext = Readonly<{
+  onCommit(value: TaskbarSnapshot): void;
+}>;
+
+/**
  * 초기화 전에 Taskbar snapshot이나 명령에 접근했을 때 발생한다.
  */
 export class TaskbarStoreNotInitializedError extends Error {
@@ -385,9 +394,15 @@ export class TaskbarStore {
   private static commit = async (
     snapshot: TaskbarSnapshot,
     persist: boolean,
+    context?: TaskbarStoreCommandContext,
   ): Promise<TaskbarStoreResult> => {
     const value = freezeSnapshot(snapshot);
     TaskbarStore.snapshot = value;
+    try {
+      context?.onCommit(value);
+    } catch (error) {
+      void error;
+    }
     TaskbarStore.notify();
     return persist ? TaskbarStore.save(value) : { ok: true, value };
   };
@@ -605,7 +620,10 @@ export class TaskbarStore {
   /**
    * application 또는 존재하는 ExternalShortcut을 고정하고 이미 visible이면 현재 위치를 유지한다.
    */
-  static pin(item: TaskbarItem | ResourceRef): Promise<TaskbarStoreResult> {
+  static pin(
+    item: TaskbarItem | ResourceRef,
+    context?: TaskbarStoreCommandContext,
+  ): Promise<TaskbarStoreResult> {
     TaskbarStore.requireInitialization();
     return TaskbarStore.enqueue(async () => {
       const parsed = TaskbarStore.parseCommandItem(item);
@@ -622,6 +640,7 @@ export class TaskbarStore {
             : [...current.visibleItems, parsed],
         },
         true,
+        context,
       );
     });
   }
@@ -629,7 +648,10 @@ export class TaskbarStore {
   /**
    * Pin을 제거하며 실행 중인 application만 현재 visible 위치에 남긴다.
    */
-  static unpin(item: TaskbarItem | ResourceRef): Promise<TaskbarStoreResult> {
+  static unpin(
+    item: TaskbarItem | ResourceRef,
+    context?: TaskbarStoreCommandContext,
+  ): Promise<TaskbarStoreResult> {
     TaskbarStore.requireInitialization();
     return TaskbarStore.enqueue(async () => {
       const parsed = TaskbarStore.parseCommandItem(item);
@@ -649,6 +671,7 @@ export class TaskbarStore {
             : current.visibleItems.filter((candidate) => !sameItem(candidate, parsed)),
         },
         true,
+        context,
       );
     });
   }
@@ -659,6 +682,7 @@ export class TaskbarStore {
   static reorder(
     item: TaskbarItem | ResourceRef,
     intent: TaskbarReorderIntent,
+    context?: TaskbarStoreCommandContext,
   ): Promise<TaskbarStoreResult> {
     TaskbarStore.requireInitialization();
     return TaskbarStore.enqueue(async () => {
@@ -696,6 +720,7 @@ export class TaskbarStore {
       return TaskbarStore.commit(
         { pinnedItems, visibleItems },
         !sameItems(current.pinnedItems, pinnedItems),
+        context,
       );
     });
   }
