@@ -35,5 +35,7 @@ export const useTaskbarRootController = (): TaskbarRootController => {
     [windows],
   );
 
-  return useMemo(() => Object.freeze({ viewModel }), [viewModel]);
+  const actions = useMemo(() => Object.freeze({ execute: runtime.taskbarRoot.execute }), [runtime]);
+
+  return useMemo(() => Object.freeze({ actions, viewModel }), [actions, viewModel]);
 };

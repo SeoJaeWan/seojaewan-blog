@@ -4,6 +4,7 @@
  * viewport 판정, Taskbar Pin 상태와 실제 DOM 배치는 이 요소가 소유하지 않는다.
  */
 import type { WindowMode, WindowState } from "../../../windows/index.js";
+import type { TaskbarRootActionGateway } from "../../actions/rootAction/index.js";
 
 /** Taskbar Root가 desktop/mobile 구성을 고르는 데 필요한 최소 읽기 모델이다. */
 export type TaskbarRootSnapshot = Readonly<{
@@ -20,6 +21,8 @@ export type TaskbarRootViewModel =
 export type TaskbarRootController = Readonly<{
   /** 공통 WindowState 준비 여부와 현재 mode를 구분한다. */
   viewModel: TaskbarRootViewModel;
+  /** Windows trigger의 제품 Action을 panel 소유자에게 전달한다. */
+  actions: TaskbarRootActionGateway;
 }>;
 
 /**

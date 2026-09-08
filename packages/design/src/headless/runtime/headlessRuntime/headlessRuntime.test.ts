@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { createTaskbarWindowsAction } from "../../taskbar/actions/index.js";
 import type { WindowState } from "../../windows/model/index.js";
 import { createHeadlessRuntime, type HeadlessRuntimeAdapters } from "./index.js";
 
@@ -12,6 +13,24 @@ const firstWindowSnapshot = Object.freeze({
 }) satisfies WindowState;
 
 describe("createHeadlessRuntime", () => {
+  it("Taskbar Root Action을 주입된 단일 gateway에 정확히 한 번 전달한다", () => {
+    const execute = vi.fn();
+    const runtime = createHeadlessRuntime({ taskbarRootActionGateway: { execute } });
+    const action = createTaskbarWindowsAction();
+
+    runtime.taskbarRoot.execute(action);
+
+    expect(execute).toHaveBeenCalledExactlyOnceWith(action);
+  });
+
+  it("Taskbar Root Action gateway가 없으면 조용히 무시하지 않는다", () => {
+    const runtime = createHeadlessRuntime();
+
+    expect(() => runtime.taskbarRoot.execute(createTaskbarWindowsAction())).toThrow(
+      "Taskbar Root Action Gateway가 연결되지 않았습니다",
+    );
+  });
+
   it("서버 snapshot은 Store를 읽지 않고 같은 준비 전 객체를 반환한다", () => {
     const getSnapshot = vi.fn(() => firstWindowSnapshot);
     const windows = {

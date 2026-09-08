@@ -1,10 +1,13 @@
+import { useMemo, useState } from "react";
+
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 import type {
   ControllerViewModel,
   HeadlessFeatureRuntime,
   HeadlessRuntime,
+  TaskbarRootAction,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
@@ -12,7 +15,10 @@ import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
 import { TaskbarRootUI } from "./taskbarRootUI.js";
 
 /** Story가 지정한 공통 mode 또는 준비 전 상태를 제공하는 최소 Window runtime을 만든다. */
-const createStoryRuntime = (mode?: WindowMode): HeadlessRuntime => {
+const createStoryRuntime = (
+  mode?: WindowMode,
+  executeRootAction: (action: TaskbarRootAction) => void = () => undefined,
+): HeadlessRuntime => {
   const viewModel: ControllerViewModel<WindowState> =
     mode === undefined
       ? Object.freeze({ status: "not-ready", snapshot: null })
@@ -35,15 +41,38 @@ const createStoryRuntime = (mode?: WindowMode): HeadlessRuntime => {
     },
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
 
-  return Object.freeze({ windows }) as unknown as HeadlessRuntime;
+  return Object.freeze({
+    taskbarRoot: Object.freeze({ execute: executeRootAction }),
+    windows,
+  }) as unknown as HeadlessRuntime;
 };
 
 /** production Root를 실제 provider 안에서 렌더링한다. */
-const RootStory = ({ mode }: { mode?: WindowMode }) => (
-  <HeadlessRuntimeProvider runtime={createStoryRuntime(mode)}>
-    <TaskbarRootUI />
-  </HeadlessRuntimeProvider>
-);
+const RootStory = ({
+  mode,
+  windowsDisabled = false,
+  windowsSelected = false,
+}: {
+  mode?: WindowMode;
+  windowsDisabled?: boolean;
+  windowsSelected?: boolean;
+}) => {
+  const [requestCount, setRequestCount] = useState(0);
+  const runtime = useMemo(
+    () => createStoryRuntime(mode, () => setRequestCount((current) => current + 1)),
+    [mode],
+  );
+
+  return (
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <TaskbarRootUI
+        windowsDisabled={windowsDisabled}
+        windowsSelected={windowsSelected}
+      />
+      <output aria-label="Windows Action 횟수">{requestCount}</output>
+    </HeadlessRuntimeProvider>
+  );
+};
 
 /** 실제 browser에서 Root 높이·viewport 폭·좁은 폭 overflow를 확인한다. */
 const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) => {
@@ -67,8 +96,8 @@ const meta = {
       description: {
         component:
           "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "현재 단계는 glass surface와 desktop 실행 항목 배치 영역을 제공한다. " +
-          "Windows, Search, 실제 실행 항목과 Timestamp는 후속 요소에서 연결한다.",
+          "glass surface와 desktop Windows Action 연결을 제공한다. " +
+          "Search, 실제 실행 항목과 Timestamp는 후속 요소에서 연결한다.",
       },
       story: { iframeHeight: 180, inline: false },
     },
@@ -82,7 +111,33 @@ type Story = StoryObj<typeof meta>;
 
 export const Desktop: Story = {
   render: () => <RootStory mode="desktop" />,
-  play: async ({ canvasElement }) => verifyRootGeometry(canvasElement, "desktop"),
+  play: async ({ canvasElement }) => {
+    await verifyRootGeometry(canvasElement, "desktop");
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "시작" }));
+    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
+      "1",
+    );
+  },
+};
+
+export const WindowsSelected: Story = {
+  render: () => <RootStory mode="desktop" windowsSelected />,
+  play: async ({ canvasElement }) => {
+    const windows = within(canvasElement).getByRole("button", { name: "시작" });
+    await expect(windows).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+export const WindowsDisabled: Story = {
+  render: () => <RootStory mode="desktop" windowsDisabled />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "시작" }));
+    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
+      "0",
+    );
+  },
 };
 
 export const Mobile: Story = {

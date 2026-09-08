@@ -12,9 +12,10 @@ import type {
 import { HeadlessRuntimeProvider } from "../../runtime/index.js";
 import type { WindowMode, WindowState } from "../../windows/index.js";
 import {
+  createTaskbarWindowsAction,
   selectTaskbarRootSnapshot,
   useTaskbarRootController,
-} from "./index.js";
+} from "../index.js";
 
 /** mode 외 상태가 비어 있는 immutable WindowState fixture를 만든다. */
 const createWindowState = (mode: WindowMode): WindowState =>
@@ -48,11 +49,16 @@ const createRuntimeFixture = (mode: WindowMode) => {
     },
     execute: vi.fn(),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
-  const runtime = Object.freeze({ windows }) as unknown as HeadlessRuntime;
+  const executeRootAction = vi.fn();
+  const runtime = Object.freeze({
+    taskbarRoot: Object.freeze({ execute: executeRootAction }),
+    windows,
+  }) as unknown as HeadlessRuntime;
 
   return {
     getSnapshot,
     getServerSnapshot,
+    executeRootAction,
     listenerCount: () => listeners.size,
     runtime,
     /** 새 공통 mode를 반영하고 현재 Window 구독자에게 알린다. */
@@ -77,6 +83,31 @@ describe("selectTaskbarRootSnapshot", () => {
 });
 
 describe("useTaskbarRootController", () => {
+  it("Windows Action을 runtime public 실행 진입점에 그대로 전달한다", () => {
+    const fixture = createRuntimeFixture("desktop");
+    let execute: ReturnType<typeof useTaskbarRootController>["actions"]["execute"] = () =>
+      undefined;
+
+    /** Root controller의 public Action 실행 함수를 test 경계에 노출한다. */
+    const Probe = () => {
+      execute = useTaskbarRootController().actions.execute;
+      return null;
+    };
+
+    render(
+      createElement(
+        HeadlessRuntimeProvider,
+        { runtime: fixture.runtime },
+        createElement(Probe),
+      ),
+    );
+    const action = createTaskbarWindowsAction();
+
+    act(() => execute(action));
+
+    expect(fixture.executeRootAction).toHaveBeenCalledExactlyOnceWith(action);
+  });
+
   it("SSR은 브라우저 Window snapshot을 읽지 않고 준비 전 표현을 사용한다", () => {
     const fixture = createRuntimeFixture("desktop");
     const statuses: string[] = [];

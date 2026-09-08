@@ -1,5 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type {
   ControllerViewModel,
@@ -9,10 +9,10 @@ import type {
   WindowState,
 } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
-import { TaskbarRootUI } from "./taskbarRootUI.js";
+import { TaskbarRootUI, type TaskbarRootUIProps } from "./taskbarRootUI.js";
 
 /** UI fixture가 지정한 준비 상태와 공통 mode를 반환하는 최소 runtime을 만든다. */
-const createRuntime = (mode?: WindowMode): HeadlessRuntime => {
+const createRuntime = (mode?: WindowMode) => {
   const viewModel: ControllerViewModel<WindowState> =
     mode === undefined
       ? Object.freeze({ status: "not-ready", snapshot: null })
@@ -35,28 +35,58 @@ const createRuntime = (mode?: WindowMode): HeadlessRuntime => {
     },
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
 
-  return Object.freeze({ windows }) as unknown as HeadlessRuntime;
+  const executeRootAction = vi.fn();
+  const runtime = Object.freeze({
+    taskbarRoot: Object.freeze({ execute: executeRootAction }),
+    windows,
+  }) as unknown as HeadlessRuntime;
+
+  return { executeRootAction, runtime };
 };
 
 /** 실제 provider와 TaskbarRootUI를 지정한 mode로 렌더링한다. */
-const renderRoot = (mode?: WindowMode) =>
-  render(
-    <HeadlessRuntimeProvider runtime={createRuntime(mode)}>
-      <TaskbarRootUI />
+const renderRoot = (mode?: WindowMode, props: TaskbarRootUIProps = {}) => {
+  const fixture = createRuntime(mode);
+  const mounted = render(
+    <HeadlessRuntimeProvider runtime={fixture.runtime}>
+      <TaskbarRootUI {...props} />
     </HeadlessRuntimeProvider>,
   );
+
+  return { ...fixture, ...mounted };
+};
 
 afterEach(() => cleanup());
 
 describe("TaskbarRootUI", () => {
-  it("desktop mode에서 하단 navigation과 빈 실행 항목 배치 영역을 표시한다", () => {
-    const { container } = renderRoot("desktop");
+  it("desktop mode에서 Windows 버튼을 표시하고 Action을 정확히 한 번 전달한다", () => {
+    const { container, executeRootAction } = renderRoot("desktop");
     const taskbar = screen.getByRole("navigation", { name: "작업 표시줄" });
+    const windows = screen.getByRole("button", { name: "시작" });
 
     expect(taskbar.getAttribute("data-status")).toBe("ready");
     expect(taskbar.getAttribute("data-mode")).toBe("desktop");
     expect(container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
-    expect(taskbar.querySelectorAll("button, time, input")).toHaveLength(0);
+    expect(taskbar.querySelectorAll("button")).toHaveLength(1);
+    expect(windows.getAttribute("aria-pressed")).toBe("false");
+
+    fireEvent.click(windows);
+
+    expect(executeRootAction).toHaveBeenCalledExactlyOnceWith({ type: "request-windows" });
+  });
+
+  it("Windows selected 표현을 반영하고 disabled 입력은 Action을 전달하지 않는다", () => {
+    const selected = renderRoot("desktop", { windowsSelected: true });
+    const windows = screen.getByRole("button", { name: "시작" });
+    expect(windows.getAttribute("aria-pressed")).toBe("true");
+    expect(windows.getAttribute("data-selected")).toBe("true");
+    selected.unmount();
+
+    const disabled = renderRoot("desktop", { windowsDisabled: true });
+    const disabledWindows = screen.getByRole("button", { name: "시작" });
+    fireEvent.click(disabledWindows);
+    expect((disabledWindows as HTMLButtonElement).disabled).toBe(true);
+    expect(disabled.executeRootAction).not.toHaveBeenCalled();
   });
 
   it("mobile mode와 준비 전에는 desktop 실행 항목 영역이나 미래 요소를 표시하지 않는다", () => {
@@ -65,6 +95,7 @@ describe("TaskbarRootUI", () => {
       screen.getByRole("navigation", { name: "작업 표시줄" }).getAttribute("data-mode"),
     ).toBe("mobile");
     expect(mobile.container.querySelector('[data-taskbar-region="items"]')).toBeNull();
+    expect(screen.queryByRole("button", { name: "시작" })).toBeNull();
     mobile.unmount();
 
     const notReady = renderRoot();

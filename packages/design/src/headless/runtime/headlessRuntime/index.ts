@@ -11,6 +11,10 @@ import {
   type StartOperationStore,
 } from "../../start/operations/index.js";
 import { StartStore } from "../../start/startStore/index.js";
+import type {
+  TaskbarRootAction,
+  TaskbarRootActionGateway,
+} from "../../taskbar/actions/index.js";
 import type { TaskbarSnapshot } from "../../taskbar/model/index.js";
 import {
   type TaskbarOperationHandle,
@@ -82,6 +86,8 @@ export type HeadlessRuntimeOptions = Readonly<{
   adapters?: HeadlessRuntimeAdapters;
   /** 여러 Foundation Operation과 UI 완료 신호가 공유할 registry다. */
   transitions?: TransitionRegistry;
+  /** Taskbar Root의 Windows 요청을 panel 소유자에게 전달하는 단일 gateway다. */
+  taskbarRootActionGateway?: TaskbarRootActionGateway;
 }>;
 
 /** Provider와 controller가 공유하는 Store 구독, Action gateway와 transition 기반이다. */
@@ -94,9 +100,20 @@ export type HeadlessRuntime = Readonly<{
   start: HeadlessFeatureRuntime<StartSnapshot, StartAction, StartOperationHandle>;
   /** Taskbar snapshot과 TaskbarPinAction 실행 channel이다. */
   taskbar: HeadlessFeatureRuntime<TaskbarSnapshot, TaskbarPinAction, TaskbarOperationHandle>;
+  /** Taskbar Root 입력을 panel 상태 구현과 분리해 전달하는 Action channel이다. */
+  taskbarRoot: TaskbarRootActionGateway;
   /** operation ID와 phase별 UI 완료·중단·실패 신호를 연결한다. */
   transitions: TransitionRegistry;
 }>;
+
+/** 연결되지 않은 Root Action이 조용한 no-op이 되지 않도록 명시적으로 거절한다. */
+const executeMissingTaskbarRootAction = (_action: TaskbarRootAction): never => {
+  throw new Error("Taskbar Root Action Gateway가 연결되지 않았습니다");
+};
+
+const missingTaskbarRootActionGateway: TaskbarRootActionGateway = Object.freeze({
+  execute: executeMissingTaskbarRootAction,
+});
 
 /** 준비 전 controller가 서버와 브라우저 초기화 전까지 공유할 immutable 결과를 만든다. */
 const createNotReadyViewModel = <Snapshot>(): ControllerViewModel<Snapshot> =>
@@ -183,6 +200,7 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       (action) => taskbarOperations.execute(action),
       "TaskbarStoreNotInitializedError",
     ),
+    taskbarRoot: options.taskbarRootActionGateway ?? missingTaskbarRootActionGateway,
     transitions,
   });
 };

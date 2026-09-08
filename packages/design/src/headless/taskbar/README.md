@@ -11,8 +11,8 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `taskbarStore/taskbarStorage/index.ts`  | schema version 1의 독립 Taskbar storage port                           |
 | `taskbarStore/operationResult/index.ts` | commit, no-op, 거절과 조용한 저장 실패                                 |
 | `selectors/index.ts`                    | current Catalog·WindowState 기반 Group, Preview와 mobile read model    |
-| `rootController/index.ts`               | 공통 WindowState.mode를 Root용 최소 read model로 투영하고 구독         |
-| `actions/index.ts`                      | desktop/mobile click, shortcut, close-all intent와 Window command 연결 |
+| `rootController/index.ts`               | 공통 mode와 Root Action gateway를 제품 Root에 연결                     |
+| `actions/index.ts`                      | Windows·desktop/mobile click, shortcut, close-all intent와 실행 경계    |
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                       |
 
 ## 초기화와 Window 연결
@@ -71,14 +71,24 @@ ExternalShortcut은 현재 Catalog URL의 `{ target: "_blank" }` intent만 만�
 Application은 WindowStore와 Catalog·storage를 연결해 TaskbarStore 초기화를 마친 뒤 같은 runtime을 Provider에 전달한다. 실행 중 application의 Pin 변경처럼 표현이 필요 없는 결과는 `presented: not-required`이며, 저장까지 포함한 최종 결과는 `settled`에서 확인한다. SSR에서는 Window singleton과 storage를 읽지 않고 `not-ready`를 사용한다.
 
 `useTaskbarRootController()`는 별도 breakpoint나 browser API를 만들지 않고 Window runtime의
-`WindowState.mode`만 Root 읽기 모델로 투영한다. `TaskbarRootUI`는 같은 Provider 안에서 이 값을
-소비하며, 준비 전에는 안정적인 `not-ready` surface를 렌더링한다.
+`WindowState.mode`만 Root 읽기 모델로 투영한다. Windows trigger는 panel 상태를 만들지 않고
+`{ type: "request-windows" }` Action을 runtime에 주입된 단일 gateway로 전달한다. `TaskbarRootUI`는
+같은 Provider 안에서 이 값을 소비하며, 준비 전에는 안정적인 `not-ready` surface를 렌더링한다.
 
 ```tsx
+const runtime = createHeadlessRuntime({
+  taskbarRootActionGateway: {
+    execute(action) {
+      routeTaskbarRootAction(action);
+    },
+  },
+});
+
 <HeadlessRuntimeProvider runtime={runtime}>
   <TaskbarRootUI />
 </HeadlessRuntimeProvider>
 ```
 
-현재 Root 단계는 desktop 실행 항목의 빈 배치 영역까지만 제공한다. Windows·Search·Timestamp,
-실제 Group·indicator·click·drag는 각 소유 요소와 후속 작업에서 production Component로 연결한다.
+현재 Root 단계는 desktop Windows trigger와 빈 실행 항목 배치 영역을 제공한다. `selected`는 실제
+panel 관계 없이 표현만 제어하며 panel·Search·Timestamp, 실제 Group·indicator·click·drag는 각
+소유 요소와 후속 작업에서 production Component로 연결한다.

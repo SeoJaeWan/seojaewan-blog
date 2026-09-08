@@ -12,6 +12,7 @@ import {
   createTaskbarCloseAllIntent,
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
+  createTaskbarWindowsAction,
   executeTaskbarWindowIntent,
   executeTaskbarWindowOperationIntent,
   type TaskbarWindowCommandPort,
@@ -56,6 +57,10 @@ const commands = () => {
 };
 
 describe("Taskbar intents", () => {
+  it("Windows trigger를 panel 구현과 구분된 Root Action으로 만든다", () => {
+    expect(createTaskbarWindowsAction()).toEqual({ type: "request-windows" });
+  });
+
   it("desktop Group 0/1 active/1 inactive/many click을 명시적 intent로 구분한다", () => {
     const first = target(sessionId(1), true);
     const second = target(sessionId(2), false);
