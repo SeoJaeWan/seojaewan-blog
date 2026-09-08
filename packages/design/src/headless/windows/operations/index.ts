@@ -9,6 +9,7 @@ import type { ContentResourceRef, FolderResourceRef } from "../../resources/inde
 import {
   type OperationExecutionContext,
   type OperationHandle,
+  type OperationTargetLease,
   OperationTargetQueue,
   TransitionRegistry,
   type TransitionResult,
@@ -223,6 +224,9 @@ const resolveExistingTarget = (
   return null;
 };
 
+/** Store가 queue 점유와 다른 최신 Content open target을 선택했음을 나타낸다. */
+class WindowOperationTargetChangedError extends Error {}
+
 /** commit 전에 끝나야 하는 Window exit/minimize transition phase를 계산한다. */
 const beforeCommitPhase = (snapshot: WindowState, action: WindowAction): string | null => {
   if (!("sessionId" in action)) return null;
@@ -288,6 +292,11 @@ export class WindowOperations {
         WindowPresentedResult
       >,
     ) => this.#run(action, context);
+    if (action.type === "open-content") {
+      return target === null
+        ? this.#queue.reserve(executor)
+        : this.#queue.reserveTarget(target, executor);
+    }
     return target === null ? this.#queue.reserve(executor) : this.#queue.enqueue(target, executor);
   }
 
@@ -388,18 +397,49 @@ export class WindowOperations {
 
     let committed = false;
     let attached = true;
+    let leasedTarget: WindowSessionId | null = null;
     const transition = { after: null as Promise<TransitionResult> | null };
-    const storeResult = await this.#executeStore(action, {
+    const commandContext: WindowStoreCommandContext = {
       onCommit: (result) => {
         committed = true;
-        if (result.change.sessionId !== undefined)
+        if (
+          result.change.sessionId !== undefined &&
+          result.change.sessionId !== leasedTarget
+        )
           attached = context.attachTarget(result.change.sessionId);
         const phase = afterCommitPhase(before, result);
         if (phase !== null)
           transition.after = this.#transitions.waitFor(context.operationId, phase);
         context.completeCommitted(Object.freeze({ status: "committed", result }));
       },
-    });
+    };
+    let storeResult: WindowStoreResult;
+    if (action.type !== "open-content") {
+      storeResult = await this.#executeStore(action, commandContext);
+    } else {
+      let lease: OperationTargetLease<WindowSessionId> | null = null;
+      while (true) {
+        const expectedTarget = resolveExistingTarget(this.#store.getSnapshot(), action);
+        if (expectedTarget === null) context.releaseTargets();
+        lease =
+          expectedTarget === null ? null : await context.acquireTarget(expectedTarget);
+        leasedTarget = lease?.target ?? null;
+        try {
+          storeResult = await this.#executeStore(action, {
+            ...commandContext,
+            onOpenContentTarget: (actualTarget) => {
+              if (actualTarget !== expectedTarget) throw new WindowOperationTargetChangedError();
+            },
+          });
+          break;
+        } catch (error) {
+          lease?.release();
+          leasedTarget = null;
+          if (error instanceof WindowOperationTargetChangedError) continue;
+          throw error;
+        }
+      }
+    }
 
     if (!committed) context.completeCommitted(unchangedResult(storeResult));
     if (!attached)

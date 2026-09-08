@@ -86,6 +86,10 @@ export type WindowStoreInitialization = Readonly<{
  */
 export type WindowStoreCommandContext = Readonly<{
   onCommit(result: WindowStoreCommittedResult): void;
+  /**
+   * Content open이 실제 commit 직전에 고른 기존 Session을 알린다. callback 예외 시 상태를 반영하지 않는다.
+   */
+  onOpenContentTarget?(sessionId: WindowSessionId | null): void;
 }>;
 
 /**
@@ -1120,8 +1124,10 @@ export class WindowStore {
       if (state.mode === "mobile") {
         const current = state.sessions[0];
         if (current?.kind !== "chrome") {
+          context?.onOpenContentTarget?.(null);
           return WindowStore.createChrome({ kind: "content", ref });
         }
+        context?.onOpenContentTarget?.(current.id);
         const tab = current.tabs.find(({ id }) => id === current.activeTabId);
         if (tab === undefined) throw new Error("mobile Chrome active tab을 찾을 수 없습니다");
         const location: ChromeLocation = { kind: "content", ref };
@@ -1152,6 +1158,7 @@ export class WindowStore {
           }
         }
       }
+      context?.onOpenContentTarget?.(target?.id ?? null);
       return target === undefined
         ? WindowStore.createChrome({ kind: "content", ref })
         : WindowStore.addChromeTabCalculation(target, { kind: "content", ref });

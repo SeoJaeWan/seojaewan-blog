@@ -169,6 +169,62 @@ describe("OperationTargetQueue", () => {
     await existing.settled;
   });
 
+  it("실행 중 target을 바꿀 때 이전 점유를 놓고 새 tail을 기다린다", async () => {
+    const queue = new OperationTargetQueue<string>();
+    const firstGate = deferred<void>();
+    const secondGate = deferred<void>();
+    const handoffGate = deferred<void>();
+    const acquiredFirst = deferred<void>();
+    const events: string[] = [];
+
+    const first = queue.enqueue("A", async (operation) => {
+      operation.completeCommitted({ status: "committed" } as const);
+      operation.completePresented({ status: "completed" } as const);
+      await firstGate.promise;
+      return { status: "settled" } as const;
+    });
+    const second = queue.enqueue("B", async (operation) => {
+      operation.completeCommitted({ status: "committed" } as const);
+      operation.completePresented({ status: "completed" } as const);
+      await secondGate.promise;
+      return { status: "settled" } as const;
+    });
+    const dynamic = queue.reserveTarget("A", async (operation) => {
+      const firstLease = await operation.acquireTarget("A");
+      events.push("dynamic-A");
+      acquiredFirst.resolve();
+      await handoffGate.promise;
+      firstLease.release();
+      const secondLease = await operation.acquireTarget("B");
+      events.push("dynamic-B");
+      operation.completeCommitted({ status: "committed" } as const);
+      operation.completePresented({ status: "completed" } as const);
+      expect(secondLease.target).toBe("B");
+      return { status: "settled" } as const;
+    });
+
+    firstGate.resolve();
+    await first.settled;
+    await acquiredFirst.promise;
+    const followingFirst = queue.enqueue("A", (operation) => {
+      events.push("following-A");
+      operation.completeCommitted({ status: "committed" } as const);
+      operation.completePresented({ status: "completed" } as const);
+      return Promise.resolve({ status: "settled" } as const);
+    });
+    await Promise.resolve();
+    expect(events).toEqual(["dynamic-A"]);
+
+    handoffGate.resolve();
+    await followingFirst.settled;
+    expect(events).toEqual(["dynamic-A", "following-A"]);
+
+    secondGate.resolve();
+    await second.settled;
+    await dynamic.settled;
+    expect(events).toEqual(["dynamic-A", "following-A", "dynamic-B"]);
+  });
+
   it("executor rejection cleanup에서 남은 transition timer와 대기를 해제한다", async () => {
     vi.useFakeTimers();
     try {

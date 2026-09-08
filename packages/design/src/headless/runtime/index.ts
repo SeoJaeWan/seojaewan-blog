@@ -23,6 +23,7 @@ export {
   type OperationCleanup,
   type OperationExecutionContext,
   type OperationExecutor,
+  type OperationTargetLease,
   OperationTargetQueue,
 } from "./operationTargetQueue/index.js";
 export {

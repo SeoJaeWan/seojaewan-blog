@@ -17,9 +17,20 @@ import {
 export type OperationCleanup = () => void;
 
 /**
+ * 실행 중 선택한 target queue 점유를 나타내며 target이 바뀌면 settled 전에 해제할 수 있다.
+ */
+export type OperationTargetLease<Target> = Readonly<{
+  /** 현재 점유한 target이다. */
+  target: Target;
+  /** 현재 점유만 해제하며 여러 번 호출해도 첫 호출만 적용한다. */
+  release(): void;
+}>;
+
+/**
  * feature executor가 Handle phase와 생성 뒤 target 연결을 완료하는 내부 실행 계약이다.
  *
  * `attachTarget`은 ID가 commit 뒤 생기는 Window 생성 Operation에 사용하며, 연결 성공 뒤 같은 target 요청은 현재 Operation의 settled를 기다린다.
+ * `acquireTarget`은 실행 시점에 target을 고르는 Operation이 기존 tail 뒤에서 점유를 얻도록 하며, 다른 target을 얻기 전에 기존 lease를 해제한다.
  */
 export type OperationExecutionContext<
   Target,
@@ -38,6 +49,12 @@ export type OperationExecutionContext<
    * UI transition 완료·중단·watchdog·실패 또는 전환 없음의 첫 결과를 presented Handle에 전달한다.
    */
   completePresented(result: Presented): boolean;
+  /**
+   * 실행 중 선택한 target의 기존 tail 뒤에서 점유를 얻는다. 유지한 lease는 Operation settled 뒤 자동 해제된다.
+   */
+  acquireTarget(target: Target): Promise<OperationTargetLease<Target>>;
+  /** 실행 중 target이 없어졌을 때 보유한 동적 점유를 해제한다. */
+  releaseTargets(): void;
   /**
    * commit 뒤 만들어진 target을 현재 Operation tail에 연결하며 충돌 시 false를 반환한다.
    */
@@ -124,6 +141,21 @@ export class OperationTargetQueue<Target> {
   }
 
   /**
+   * 실행 시 바뀔 수 있는 target을 요청 순서대로 먼저 점유하고 executor가 필요하면 다른 target으로 이동하게 한다.
+   */
+  reserveTarget<
+    Committed extends TaggedOperationResult,
+    Presented extends TaggedOperationResult,
+    Settled extends TaggedOperationResult,
+  >(
+    target: Target,
+    executor: OperationExecutor<Target, Committed, Presented, Settled>,
+  ): OperationHandle<Committed, Presented, Settled> {
+    const previous = this.#tails.get(target) ?? Promise.resolve();
+    return this.#schedule(previous, [], executor, { target });
+  }
+
+  /**
    * queue 안에서 겹치지 않는 operation ID를 발급한다.
    */
   #createOperationId(): OperationId {
@@ -142,16 +174,40 @@ export class OperationTargetQueue<Target> {
     previous: Promise<void>,
     initialTargets: readonly Target[],
     executor: OperationExecutor<Target, Committed, Presented, Settled>,
+    initialLease?: Readonly<{ target: Target }>,
   ): OperationHandle<Committed, Presented, Settled> {
     const operationId = this.#createOperationId();
     const phases = createOperationHandle<Committed, Presented, Settled>(operationId);
     const attachedTargets = new Set<Target>(initialTargets);
+    const targetLeases = new Map<Target, OperationTargetLease<Target>>();
     const cleanups = new Set<OperationCleanup>();
     let releaseSlot: () => void = () => undefined;
     const slot = new Promise<void>((resolve) => {
       releaseSlot = resolve;
     });
-    const tail = previous.then(() => slot);
+    const tail = (initialLease === undefined ? previous : Promise.resolve()).then(() => slot);
+
+    if (initialLease !== undefined) {
+      let releaseTarget: () => void = () => undefined;
+      const targetSlot = new Promise<void>((resolve) => {
+        releaseTarget = resolve;
+      });
+      const targetTail = previous.then(() => targetSlot);
+      let released = false;
+      const lease: OperationTargetLease<Target> = Object.freeze({
+        target: initialLease.target,
+        release: () => {
+          if (released) return;
+          released = true;
+          targetLeases.delete(initialLease.target);
+          releaseTarget();
+          if (this.#tails.get(initialLease.target) === targetTail)
+            this.#tails.delete(initialLease.target);
+        },
+      });
+      targetLeases.set(initialLease.target, lease);
+      this.#tails.set(initialLease.target, targetTail);
+    }
 
     /**
      * target을 현재 Operation tail에 연결하며 이미 다른 tail이 있으면 연결을 거절한다.
@@ -162,6 +218,36 @@ export class OperationTargetQueue<Target> {
       attachedTargets.add(target);
       this.#tails.set(target, tail);
       return true;
+    };
+
+    /**
+     * 현재 Operation과 별도인 target slot을 tail에 연결하고 앞 slot 종료 뒤 lease를 반환한다.
+     */
+    const acquireTarget = async (target: Target): Promise<OperationTargetLease<Target>> => {
+      const currentLease = targetLeases.get(target);
+      if (currentLease !== undefined) return currentLease;
+      for (const lease of [...targetLeases.values()]) lease.release();
+      const previousTarget = this.#tails.get(target) ?? Promise.resolve();
+      let releaseTarget: () => void = () => undefined;
+      const targetSlot = new Promise<void>((resolve) => {
+        releaseTarget = resolve;
+      });
+      const targetTail = previousTarget.then(() => targetSlot);
+      let released = false;
+      const lease: OperationTargetLease<Target> = Object.freeze({
+        target,
+        release: () => {
+          if (released) return;
+          released = true;
+          targetLeases.delete(target);
+          releaseTarget();
+          if (this.#tails.get(target) === targetTail) this.#tails.delete(target);
+        },
+      });
+      targetLeases.set(target, lease);
+      this.#tails.set(target, targetTail);
+      await previousTarget;
+      return lease;
     };
 
     for (const target of initialTargets) this.#tails.set(target, tail);
@@ -175,7 +261,11 @@ export class OperationTargetQueue<Target> {
             operationId,
             completeCommitted: phases.committed.resolve,
             completePresented: phases.presented.resolve,
+            acquireTarget,
             attachTarget,
+            releaseTargets: () => {
+              for (const lease of [...targetLeases.values()]) lease.release();
+            },
             onCleanup(cleanup: OperationCleanup): () => void {
               cleanups.add(cleanup);
               return () => cleanups.delete(cleanup);
@@ -213,6 +303,7 @@ export class OperationTargetQueue<Target> {
       if (cleanupErrors.length > 0) settledResult = createCleanupFailure(cleanupErrors);
 
       phases.settled.resolve(settledResult);
+      for (const lease of [...targetLeases.values()]) lease.release();
       releaseSlot();
       for (const target of attachedTargets) {
         if (this.#tails.get(target) === tail) this.#tails.delete(target);
