@@ -1,0 +1,61 @@
+.taskbar-mobile-application-button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: var(--wd-taskbar-mobile-button-border-width) solid transparent;
+  border-radius: var(--wd-taskbar-mobile-button-border-radius);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  block-size: var(--wd-taskbar-mobile-button-size);
+  inline-size: var(--wd-taskbar-mobile-button-size);
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  transition:
+    background-color var(--wd-taskbar-mobile-button-transition-duration)
+      var(--wd-taskbar-mobile-button-transition-easing),
+    box-shadow var(--wd-taskbar-mobile-button-transition-duration)
+      var(--wd-taskbar-mobile-button-transition-easing);
+  user-select: none;
+}
+
+.taskbar-mobile-application-button:hover:not([data-disabled]) {
+  background: var(--wd-taskbar-mobile-button-background-hover);
+}
+
+.taskbar-mobile-application-button:active:not([data-disabled])
+  .taskbar-mobile-application-button__icon {
+  transform: scale(var(--wd-taskbar-mobile-button-icon-scale-pressed));
+}
+
+.taskbar-mobile-application-button:focus-visible {
+  box-shadow:
+    0 0 0 var(--wd-taskbar-mobile-button-focus-inner-width)
+      var(--wd-taskbar-mobile-button-focus-inner-color),
+    0 0 0 var(--wd-taskbar-mobile-button-focus-outer-width)
+      var(--wd-taskbar-mobile-button-focus-outer-color);
+}
+
+.taskbar-mobile-application-button[data-active="true"] {
+  background: var(--wd-taskbar-mobile-button-background-active);
+}
+
+.taskbar-mobile-application-button[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--wd-taskbar-mobile-button-opacity-disabled);
+}
+
+.taskbar-mobile-application-button__icon {
+  display: block;
+  block-size: var(--wd-taskbar-mobile-button-icon-size);
+  inline-size: var(--wd-taskbar-mobile-button-icon-size);
+  flex: 0 0 auto;
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform var(--wd-taskbar-mobile-button-icon-transition-duration)
+    var(--wd-taskbar-mobile-button-icon-transition-easing);
+}

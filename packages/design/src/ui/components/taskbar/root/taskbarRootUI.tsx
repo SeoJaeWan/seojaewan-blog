@@ -9,6 +9,7 @@ import {
   useTaskbarRootController,
   useTaskbarTimestampController,
 } from "../../../../headless/taskbar/index.js";
+import { TaskbarMobileApplicationButtonUI } from "../mobile/index.js";
 import { TaskbarSearchUI } from "../search/index.js";
 import { TaskbarStartButtonUI } from "../start/index.js";
 import { TaskbarTimestampUI } from "../timestamp/index.js";
@@ -73,6 +74,27 @@ export const TaskbarRootUI = ({
             onAction={() => actions.execute(createTaskbarSearchAction())}
             selected={searchSelected}
           />
+          <span
+            aria-hidden="true"
+            className="taskbar-root__desktop-applications"
+            data-taskbar-region="desktop-applications"
+          />
+        </div>
+      ) : null}
+      {mode === "mobile" && viewModel.status === "ready" ? (
+        <div
+          className="taskbar-root__items taskbar-root__items--mobile"
+          data-taskbar-region="mobile-applications"
+        >
+          {viewModel.snapshot.mobileView
+            .filter((item) => item.kind === "application")
+            .map((application) => (
+              <TaskbarMobileApplicationButtonUI
+                application={application}
+                key={application.applicationId}
+                onAction={actions.launchMobileApplication}
+              />
+            ))}
         </div>
       ) : null}
       {mode === "desktop" || mode === "mobile" ? (

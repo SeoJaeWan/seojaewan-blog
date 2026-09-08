@@ -80,4 +80,20 @@
   --wd-taskbar-timestamp-skeleton-line-height: 16px;
   --wd-taskbar-timestamp-skeleton-line-width: 64px;
   --wd-taskbar-timestamp-skeleton-gap: 2px;
+  --wd-taskbar-mobile-button-size: 40px;
+  --wd-taskbar-mobile-button-icon-size: 30px;
+  --wd-taskbar-mobile-button-border-width: 1px;
+  --wd-taskbar-mobile-button-border-radius: var(--wd-reference-radius-2);
+  --wd-taskbar-mobile-button-background-hover: rgb(246 247 250);
+  --wd-taskbar-mobile-button-background-active: rgb(255 255 255 / 0.72);
+  --wd-taskbar-mobile-button-focus-inner-width: 2px;
+  --wd-taskbar-mobile-button-focus-inner-color: var(--wd-color-surface-taskbar);
+  --wd-taskbar-mobile-button-focus-outer-width: 4px;
+  --wd-taskbar-mobile-button-focus-outer-color: var(--wd-color-focus-ring);
+  --wd-taskbar-mobile-button-opacity-disabled: 0.54;
+  --wd-taskbar-mobile-button-icon-scale-pressed: 0.8;
+  --wd-taskbar-mobile-button-transition-duration: var(--wd-reference-duration-120);
+  --wd-taskbar-mobile-button-transition-easing: var(--wd-reference-easing-1);
+  --wd-taskbar-mobile-button-icon-transition-duration: var(--wd-reference-duration-200);
+  --wd-taskbar-mobile-button-icon-transition-easing: var(--wd-reference-easing-1);
 }

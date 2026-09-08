@@ -35,3 +35,14 @@
   min-inline-size: 0;
   overflow: hidden;
 }
+
+.taskbar-root__desktop-applications {
+  display: flex;
+  flex: 0 0 auto;
+  block-size: 100%;
+  inline-size: 0;
+}
+
+.taskbar-root__items--mobile {
+  overflow: visible;
+}

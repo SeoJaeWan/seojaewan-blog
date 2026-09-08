@@ -11,7 +11,7 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `taskbarStore/taskbarStorage/index.ts`  | schema version 1의 독립 Taskbar storage port                                |
 | `taskbarStore/operationResult/index.ts` | commit, no-op, 거절과 조용한 저장 실패                                      |
 | `selectors/index.ts`                    | current Catalog·WindowState 기반 Group, Preview와 mobile read model         |
-| `rootController/index.ts`               | 공통 mode와 Windows·Search Root Action gateway를 제품 Root에 연결           |
+| `rootController/index.ts`               | 공통 mode·mobile view와 Root·Window Action gateway를 제품 Root에 연결       |
 | `timestamp/index.ts`                    | local 형식, 분 경계 scheduler·clock port와 React controller                 |
 | `actions/index.ts`                      | Windows·Search·desktop/mobile click, shortcut, close-all intent와 실행 경계 |
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                            |
@@ -72,9 +72,14 @@ ExternalShortcut은 현재 Catalog URL의 `{ target: "_blank" }` intent만 만�
 Application은 WindowStore와 Catalog·storage를 연결해 TaskbarStore 초기화를 마친 뒤 같은 runtime을 Provider에 전달한다. 실행 중 application의 Pin 변경처럼 표현이 필요 없는 결과는 `presented: not-required`이며, 저장까지 포함한 최종 결과는 `settled`에서 확인한다. SSR에서는 Window singleton과 storage를 읽지 않고 `not-ready`를 사용한다.
 
 `useTaskbarRootController()`는 별도 breakpoint나 browser API를 만들지 않고 Window runtime의
-`WindowState.mode`만 Root 읽기 모델로 투영한다. Windows·Search trigger는 panel 상태를 만들지 않고
-각각 `{ type: "request-windows" }`, `{ type: "request-search" }` Action을 runtime에 주입된 단일 gateway로 전달한다. `TaskbarRootUI`는
-같은 Provider 안에서 이 값을 소비하며, 준비 전에는 안정적인 `not-ready` surface를 렌더링한다.
+`WindowState.mode`와 `selectMobileTaskbarView()` 결과를 Root 읽기 모델로 투영한다. Windows·Search
+trigger는 panel 상태를 만들지 않고 각각 `{ type: "request-windows" }`,
+`{ type: "request-search" }` Action을 runtime에 주입된 단일 gateway로 전달한다. Mobile File Explorer와
+Chrome 입력은 `createMobileTaskbarApplicationIntent()`와 `executeTaskbarWindowOperationIntent()`를 거쳐
+기존 Window Operation의 `{ type: "launch-mobile-application", applicationId }` Action으로 전달한다.
+active application을 다시 누른 경우도 같은 Action을 보내며 same-app no-op과 application 교체는 기존
+Window headless 계약이 판정한다. `TaskbarRootUI`는 같은 Provider 안에서 이 값을 소비하며, 준비 전에는
+안정적인 `not-ready` surface를 렌더링한다.
 
 `useTaskbarTimestampController()`는 Application callback 없이 mount 즉시 현재 `Date`를 읽고
 24시간제 `HH:mm`와 `YYYY-MM-DD`를 제공한다. 첫 timeout은 다음 분 경계에 맞추며 각 tick은
@@ -98,7 +103,8 @@ const runtime = createHeadlessRuntime({
 </HeadlessRuntimeProvider>;
 ```
 
-현재 Root 단계는 desktop Windows→Search trigger와 빈 실행 항목 배치 영역, 그리고
-desktop/mobile 공통 Timestamp를 제공한다. 각
-`selected` 입력은 실제 panel 관계 없이 표현만 제어하며 panel·query·recent와 실제
-Group·indicator·click·drag는 각 소유 요소와 후속 작업에서 production Component로 연결한다.
+현재 Root는 desktop에서 Windows→Search→빈 실행 항목 배치 영역→Timestamp, mobile에서
+파일 탐색기→Chrome→Timestamp 순서를 제공한다. Mobile 버튼은 legacy File Explorer·Chrome asset을
+30px로 표시하고 Base UI Button을 직접 조합한다. 각 `selected` 입력은 실제 panel 관계 없이 표현만
+제어하며 panel·query·recent와 desktop Group·indicator·click·drag는 각 소유 요소와 후속 작업에서
+production Component로 연결한다.

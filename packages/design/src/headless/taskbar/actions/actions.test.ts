@@ -147,4 +147,21 @@ describe("Taskbar intents", () => {
     expect(port.launchMobileApplication).toHaveBeenCalledExactlyOnceWith("file-explorer");
     expect(port.close).not.toHaveBeenCalled();
   });
+
+  it.each(["file-explorer", "chrome"] as const)(
+    "mobile %s intent를 같은 applicationId의 Window Operation에 한 번 전달한다",
+    (applicationId) => {
+      const operations = { execute: vi.fn(() => ({}) as never) };
+
+      executeTaskbarWindowOperationIntent(
+        createMobileTaskbarApplicationIntent(applicationId),
+        operations,
+      );
+
+      expect(operations.execute).toHaveBeenCalledExactlyOnceWith({
+        type: "launch-mobile-application",
+        applicationId,
+      });
+    },
+  );
 });

@@ -7,6 +7,7 @@ export { useTaskbarRootController } from "./controller/index.js";
 export {
   selectTaskbarRootSnapshot,
   type TaskbarRootController,
+  type TaskbarRootControllerActions,
   type TaskbarRootSnapshot,
   type TaskbarRootViewModel,
 } from "./model/index.js";

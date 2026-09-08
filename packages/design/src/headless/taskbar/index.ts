@@ -60,6 +60,7 @@ export {
 export {
   selectTaskbarRootSnapshot,
   type TaskbarRootController,
+  type TaskbarRootControllerActions,
   type TaskbarRootSnapshot,
   type TaskbarRootViewModel,
   useTaskbarRootController,

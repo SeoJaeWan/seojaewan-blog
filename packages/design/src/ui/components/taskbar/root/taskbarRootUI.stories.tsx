@@ -7,9 +7,11 @@ import type {
   ControllerViewModel,
   HeadlessFeatureRuntime,
   HeadlessRuntime,
+  TaskbarApplicationId,
   TaskbarRootAction,
   TaskbarTimestampClock,
   TaskbarTimestampTimer,
+  WindowAction,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
@@ -38,7 +40,9 @@ const visuallyHiddenStyle = {
 /** Story가 지정한 공통 mode 또는 준비 전 상태를 제공하는 최소 Window runtime을 만든다. */
 const createStoryRuntime = (
   mode?: WindowMode,
+  activeApplication?: TaskbarApplicationId,
   executeRootAction: (action: TaskbarRootAction) => void = () => undefined,
+  executeWindowAction: (action: WindowAction) => void = () => undefined,
 ): HeadlessRuntime => {
   const viewModel: ControllerViewModel<WindowState> =
     mode === undefined
@@ -48,7 +52,14 @@ const createStoryRuntime = (
           snapshot: Object.freeze({
             mode,
             workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
-            sessions: Object.freeze([]),
+            sessions:
+              activeApplication === undefined
+                ? Object.freeze([])
+                : Object.freeze([
+                    Object.freeze({
+                      applicationId: activeApplication,
+                    }) as WindowState["sessions"][number],
+                  ]),
             stackingOrder: Object.freeze([]),
             activeSessionId: null,
           }),
@@ -57,8 +68,9 @@ const createStoryRuntime = (
     getSnapshot: () => viewModel,
     getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
     subscribe: () => () => undefined,
-    execute: () => {
-      throw new Error("Root Story는 Window Action을 실행하지 않습니다");
+    execute: (action: WindowAction) => {
+      executeWindowAction(action);
+      return {} as never;
     },
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
 
@@ -71,12 +83,14 @@ const createStoryRuntime = (
 /** production Root를 실제 provider 안에서 렌더링한다. */
 const RootStory = ({
   mode,
+  activeApplication,
   searchDisabled = false,
   searchSelected = false,
   windowsDisabled = false,
   windowsSelected = false,
 }: {
   mode?: WindowMode;
+  activeApplication?: TaskbarApplicationId;
   searchDisabled?: boolean;
   searchSelected?: boolean;
   windowsDisabled?: boolean;
@@ -84,16 +98,27 @@ const RootStory = ({
 }) => {
   const [windowsRequestCount, setWindowsRequestCount] = useState(0);
   const [searchRequestCount, setSearchRequestCount] = useState(0);
+  const [mobileActionCount, setMobileActionCount] = useState(0);
+  const [lastMobileApplication, setLastMobileApplication] = useState("없음");
   const runtime = useMemo(
     () =>
-      createStoryRuntime(mode, (action) => {
-        if (action.type === "request-windows") {
-          setWindowsRequestCount((current) => current + 1);
-        } else {
-          setSearchRequestCount((current) => current + 1);
-        }
-      }),
-    [mode],
+      createStoryRuntime(
+        mode,
+        activeApplication,
+        (action) => {
+          if (action.type === "request-windows") {
+            setWindowsRequestCount((current) => current + 1);
+          } else {
+            setSearchRequestCount((current) => current + 1);
+          }
+        },
+        (action) => {
+          if (action.type !== "launch-mobile-application") return;
+          setMobileActionCount((current) => current + 1);
+          setLastMobileApplication(action.applicationId);
+        },
+      ),
+    [activeApplication, mode],
   );
 
   return (
@@ -110,6 +135,12 @@ const RootStory = ({
       </output>
       <output aria-label="Search Action 횟수" style={visuallyHiddenStyle}>
         {searchRequestCount}
+      </output>
+      <output aria-label="Mobile Action 횟수" style={visuallyHiddenStyle}>
+        {mobileActionCount}
+      </output>
+      <output aria-label="마지막 Mobile application" style={visuallyHiddenStyle}>
+        {lastMobileApplication}
       </output>
     </HeadlessRuntimeProvider>
   );
@@ -135,6 +166,23 @@ const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) 
     await expect(searchBounds.width).toBe(220);
     await expect(searchBounds.height).toBe(30);
     await expect(searchBounds.left - windowsBounds.right).toBe(12);
+    await expect(
+      canvasElement.querySelector('[data-taskbar-region="desktop-applications"]'),
+    ).not.toBeNull();
+    await expect(canvas.queryByRole("button", { name: "파일 탐색기" })).toBeNull();
+  } else {
+    const canvas = within(canvasElement);
+    const fileExplorer = canvas.getByRole("button", { name: "파일 탐색기" });
+    const chrome = canvas.getByRole("button", { name: "Chrome" });
+    const fileExplorerBounds = fileExplorer.getBoundingClientRect();
+    const chromeBounds = chrome.getBoundingClientRect();
+    await expect(fileExplorerBounds.width).toBe(40);
+    await expect(fileExplorerBounds.height).toBe(40);
+    await expect(chromeBounds.width).toBe(40);
+    await expect(chromeBounds.height).toBe(40);
+    await expect(chromeBounds.left - fileExplorerBounds.right).toBe(12);
+    await expect(canvas.queryByRole("button", { name: "시작" })).toBeNull();
+    await expect(canvas.queryByRole("button", { name: "검색 열기" })).toBeNull();
   }
 
   const timestamp = within(canvasElement).getByText("15:24").parentElement;
@@ -156,8 +204,8 @@ const meta = {
       description: {
         component:
           "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "glass surface, desktop Windows·Search Action 연결과 desktop/mobile Timestamp를 제공한다. " +
-          "실제 실행 항목은 후속 요소에서 연결한다.",
+          "desktop Windows·Search와 mobile File Explorer·Chrome Action 연결, local Timestamp를 제공한다. " +
+          "desktop Group·indicator·drag와 panel은 각 후속 제품 Component가 연결한다.",
       },
       story: { iframeHeight: 180, inline: false },
     },
@@ -227,7 +275,46 @@ export const SearchDisabled: Story = {
 
 export const Mobile: Story = {
   render: () => <RootStory mode="mobile" />,
-  play: async ({ canvasElement }) => verifyRootGeometry(canvasElement, "mobile"),
+  play: async ({ canvasElement }) => {
+    await verifyRootGeometry(canvasElement, "mobile");
+    const canvas = within(canvasElement);
+    const fileExplorer = canvas.getByRole("button", { name: "파일 탐색기" });
+    const chrome = canvas.getByRole("button", { name: "Chrome" });
+
+    await userEvent.click(fileExplorer);
+    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
+    await expect(
+      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+    ).toHaveTextContent("file-explorer");
+
+    await userEvent.tab();
+    await expect(chrome).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("2");
+    await expect(
+      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+    ).toHaveTextContent("chrome");
+
+    await userEvent.tab({ shift: true });
+    await expect(fileExplorer).toHaveFocus();
+    await expect(getComputedStyle(fileExplorer).boxShadow).not.toBe("none");
+    await userEvent.keyboard(" ");
+    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("3");
+  },
+};
+
+export const MobileChromeActive: Story = {
+  render: () => <RootStory activeApplication="chrome" mode="mobile" />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const chrome = canvas.getByRole("button", { name: "Chrome" });
+    await expect(chrome).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(chrome);
+    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
+    await expect(
+      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+    ).toHaveTextContent("chrome");
+  },
 };
 
 export const NotReady: Story = {

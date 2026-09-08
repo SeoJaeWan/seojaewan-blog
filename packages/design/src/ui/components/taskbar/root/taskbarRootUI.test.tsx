@@ -10,6 +10,7 @@ import type {
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
+import type { TaskbarApplicationId } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
 import { TaskbarRootUI, type TaskbarRootUIProps } from "./taskbarRootUI.js";
 
@@ -23,7 +24,7 @@ const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
 });
 
 /** UI fixture가 지정한 준비 상태와 공통 mode를 반환하는 최소 runtime을 만든다. */
-const createRuntime = (mode?: WindowMode) => {
+const createRuntime = (mode?: WindowMode, activeApplication?: TaskbarApplicationId) => {
   const viewModel: ControllerViewModel<WindowState> =
     mode === undefined
       ? Object.freeze({ status: "not-ready", snapshot: null })
@@ -32,7 +33,14 @@ const createRuntime = (mode?: WindowMode) => {
           snapshot: Object.freeze({
             mode,
             workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
-            sessions: Object.freeze([]),
+            sessions:
+              activeApplication === undefined
+                ? Object.freeze([])
+                : Object.freeze([
+                    Object.freeze({
+                      applicationId: activeApplication,
+                    }) as WindowState["sessions"][number],
+                  ]),
             stackingOrder: Object.freeze([]),
             activeSessionId: null,
           }),
@@ -41,9 +49,7 @@ const createRuntime = (mode?: WindowMode) => {
     getSnapshot: () => viewModel,
     getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
     subscribe: () => () => undefined,
-    execute: () => {
-      throw new Error("Root 표현 fixture는 Window Action을 실행하지 않습니다");
-    },
+    execute: vi.fn(() => ({}) as never),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
 
   const executeRootAction = vi.fn();
@@ -52,12 +58,16 @@ const createRuntime = (mode?: WindowMode) => {
     windows,
   }) as unknown as HeadlessRuntime;
 
-  return { executeRootAction, runtime };
+  return { executeRootAction, executeWindowAction: windows.execute, runtime };
 };
 
 /** 실제 provider와 TaskbarRootUI를 지정한 mode로 렌더링한다. */
-const renderRoot = (mode?: WindowMode, props: TaskbarRootUIProps = {}) => {
-  const fixture = createRuntime(mode);
+const renderRoot = (
+  mode?: WindowMode,
+  props: TaskbarRootUIProps = {},
+  activeApplication?: TaskbarApplicationId,
+) => {
+  const fixture = createRuntime(mode, activeApplication);
   const mounted = render(
     <HeadlessRuntimeProvider runtime={fixture.runtime}>
       <TaskbarRootUI timestampClock={TEST_TIMESTAMP_CLOCK} {...props} />
@@ -79,6 +89,7 @@ describe("TaskbarRootUI", () => {
     expect(taskbar.getAttribute("data-status")).toBe("ready");
     expect(taskbar.getAttribute("data-mode")).toBe("desktop");
     expect(container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
+    expect(container.querySelector('[data-taskbar-region="desktop-applications"]')).not.toBeNull();
     expect(Array.from(taskbar.querySelectorAll("button"))).toEqual([windows, search]);
     expect(screen.getByText("15:42")).not.toBeNull();
     expect(screen.getByText("2026-07-10")).not.toBeNull();
@@ -127,18 +138,41 @@ describe("TaskbarRootUI", () => {
     });
   });
 
-  it("mobile mode에는 Timestamp만 표시하고 준비 전에는 mode별 요소를 표시하지 않는다", () => {
-    const mobile = renderRoot("mobile");
+  it("mobile mode에서 Explorer·Chrome·Timestamp 순서를 표시하고 각 application Action을 전달한다", () => {
+    const mobile = renderRoot("mobile", {}, "chrome");
+    const taskbar = screen.getByRole("navigation", { name: "작업 표시줄" });
+    const fileExplorer = screen.getByRole("button", { name: "파일 탐색기" });
+    const chrome = screen.getByRole("button", { name: "Chrome" });
     expect(screen.getByRole("navigation", { name: "작업 표시줄" }).getAttribute("data-mode")).toBe(
       "mobile",
     );
     expect(mobile.container.querySelector('[data-taskbar-region="items"]')).toBeNull();
+    expect(
+      mobile.container.querySelector('[data-taskbar-region="mobile-applications"]'),
+    ).not.toBeNull();
+    expect(Array.from(taskbar.querySelectorAll("button"))).toEqual([fileExplorer, chrome]);
     expect(screen.queryByRole("button", { name: "시작" })).toBeNull();
     expect(screen.queryByRole("button", { name: "검색 열기" })).toBeNull();
+    expect(fileExplorer.getAttribute("aria-pressed")).toBe("false");
+    expect(chrome.getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByText("15:42")).not.toBeNull();
     expect(screen.getByText("2026-07-10")).not.toBeNull();
-    mobile.unmount();
 
+    fireEvent.click(fileExplorer);
+    fireEvent.click(chrome);
+    expect(mobile.executeWindowAction).toHaveBeenNthCalledWith(1, {
+      type: "launch-mobile-application",
+      applicationId: "file-explorer",
+    });
+    expect(mobile.executeWindowAction).toHaveBeenNthCalledWith(2, {
+      type: "launch-mobile-application",
+      applicationId: "chrome",
+    });
+    expect(mobile.executeWindowAction).toHaveBeenCalledTimes(2);
+    mobile.unmount();
+  });
+
+  it("준비 전에는 mode별 요소와 Timestamp를 표시하지 않는다", () => {
     const notReady = renderRoot();
     const taskbar = screen.getByRole("navigation", { name: "작업 표시줄" });
     expect(taskbar.getAttribute("data-status")).toBe("not-ready");

@@ -17,22 +17,31 @@ import {
   selectTaskbarRootSnapshot,
   useTaskbarRootController,
 } from "../index.js";
+import type { TaskbarApplicationId } from "../model/index.js";
 
 /** mode 외 상태가 비어 있는 immutable WindowState fixture를 만든다. */
-const createWindowState = (mode: WindowMode): WindowState =>
+const createWindowState = (
+  mode: WindowMode,
+  activeApplication?: TaskbarApplicationId,
+): WindowState =>
   Object.freeze({
     mode,
     workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
-    sessions: Object.freeze([]),
+    sessions:
+      activeApplication === undefined
+        ? Object.freeze([])
+        : Object.freeze([
+            Object.freeze({ applicationId: activeApplication }) as WindowState["sessions"][number],
+          ]),
     stackingOrder: Object.freeze([]),
     activeSessionId: null,
   });
 
 /** Root controller test가 Window snapshot과 구독 lifecycle을 제어하게 한다. */
-const createRuntimeFixture = (mode: WindowMode) => {
+const createRuntimeFixture = (mode: WindowMode, activeApplication?: TaskbarApplicationId) => {
   let viewModel: ControllerViewModel<WindowState> = Object.freeze({
     status: "ready",
-    snapshot: createWindowState(mode),
+    snapshot: createWindowState(mode, activeApplication),
   });
   const serverViewModel: ControllerViewModel<WindowState> = Object.freeze({
     status: "not-ready",
@@ -48,7 +57,7 @@ const createRuntimeFixture = (mode: WindowMode) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
-    execute: vi.fn(),
+    execute: vi.fn(() => ({}) as never),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
   const executeRootAction = vi.fn();
   const runtime = Object.freeze({
@@ -60,6 +69,7 @@ const createRuntimeFixture = (mode: WindowMode) => {
     getSnapshot,
     getServerSnapshot,
     executeRootAction,
+    executeWindowAction: windows.execute,
     listenerCount: () => listeners.size,
     runtime,
     /** 새 공통 mode를 반영하고 현재 Window 구독자에게 알린다. */
@@ -76,9 +86,19 @@ const createRuntimeFixture = (mode: WindowMode) => {
 afterEach(() => cleanup());
 
 describe("selectTaskbarRootSnapshot", () => {
-  it("준비된 WindowState의 공통 mode만 Root snapshot으로 투영한다", () => {
-    expect(selectTaskbarRootSnapshot(createWindowState("mobile"))).toEqual({
+  it("공통 mode와 active application을 mobile 고정 순서로 투영한다", () => {
+    expect(selectTaskbarRootSnapshot(createWindowState("mobile", "chrome"))).toEqual({
       mode: "mobile",
+      mobileView: [
+        {
+          kind: "application",
+          applicationId: "file-explorer",
+          label: "파일 탐색기",
+          active: false,
+        },
+        { kind: "application", applicationId: "chrome", label: "Chrome", active: true },
+        { kind: "timestamp" },
+      ],
     });
   });
 });
@@ -107,6 +127,35 @@ describe("useTaskbarRootController", () => {
     expect(fixture.executeRootAction).toHaveBeenNthCalledWith(1, action);
     expect(fixture.executeRootAction).toHaveBeenNthCalledWith(2, searchAction);
     expect(fixture.executeRootAction).toHaveBeenCalledTimes(2);
+  });
+
+  it("active mobile application도 같은 intent를 Window Operation에 한 번 전달한다", () => {
+    const fixture = createRuntimeFixture("mobile", "chrome");
+    let controller: ReturnType<typeof useTaskbarRootController> | undefined;
+
+    /** mobile view와 public Action을 함께 관찰한다. */
+    const Probe = () => {
+      controller = useTaskbarRootController();
+      return null;
+    };
+
+    render(
+      createElement(HeadlessRuntimeProvider, { runtime: fixture.runtime }, createElement(Probe)),
+    );
+    if (controller === undefined || controller.viewModel.status !== "ready") {
+      throw new Error("준비된 mobile Root controller가 필요합니다");
+    }
+
+    expect(controller.viewModel.snapshot.mobileView[1]).toMatchObject({
+      applicationId: "chrome",
+      active: true,
+    });
+    act(() => controller?.actions.launchMobileApplication("chrome"));
+
+    expect(fixture.executeWindowAction).toHaveBeenCalledExactlyOnceWith({
+      type: "launch-mobile-application",
+      applicationId: "chrome",
+    });
   });
 
   it("SSR은 브라우저 Window snapshot을 읽지 않고 준비 전 표현을 사용한다", () => {

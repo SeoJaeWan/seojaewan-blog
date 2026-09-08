@@ -7,8 +7,13 @@ import { useMemo, useSyncExternalStore } from "react";
 
 import { useHeadlessRuntime } from "../../../runtime/index.js";
 import {
+  createMobileTaskbarApplicationIntent,
+  executeTaskbarWindowOperationIntent,
+} from "../../actions/index.js";
+import {
   selectTaskbarRootSnapshot,
   type TaskbarRootController,
+  type TaskbarRootControllerActions,
   type TaskbarRootViewModel,
 } from "../model/index.js";
 
@@ -35,7 +40,19 @@ export const useTaskbarRootController = (): TaskbarRootController => {
     [windows],
   );
 
-  const actions = useMemo(() => Object.freeze({ execute: runtime.taskbarRoot.execute }), [runtime]);
+  const actions = useMemo<TaskbarRootControllerActions>(
+    () =>
+      Object.freeze({
+        execute: runtime.taskbarRoot.execute,
+        launchMobileApplication: (applicationId) => {
+          executeTaskbarWindowOperationIntent(
+            createMobileTaskbarApplicationIntent(applicationId),
+            runtime.windows,
+          );
+        },
+      }),
+    [runtime],
+  );
 
   return useMemo(() => Object.freeze({ actions, viewModel }), [actions, viewModel]);
 };
