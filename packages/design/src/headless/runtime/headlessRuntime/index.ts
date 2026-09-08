@@ -11,10 +11,7 @@ import {
   type StartOperationStore,
 } from "../../start/operations/index.js";
 import { StartStore } from "../../start/startStore/index.js";
-import type {
-  TaskbarRootAction,
-  TaskbarRootActionGateway,
-} from "../../taskbar/actions/index.js";
+import type { TaskbarRootAction, TaskbarRootActionGateway } from "../../taskbar/actions/index.js";
 import type { TaskbarSnapshot } from "../../taskbar/model/index.js";
 import {
   type TaskbarOperationHandle,
@@ -86,7 +83,7 @@ export type HeadlessRuntimeOptions = Readonly<{
   adapters?: HeadlessRuntimeAdapters;
   /** 여러 Foundation Operation과 UI 완료 신호가 공유할 registry다. */
   transitions?: TransitionRegistry;
-  /** Taskbar Root의 Windows 요청을 panel 소유자에게 전달하는 단일 gateway다. */
+  /** Taskbar Root의 Windows·Search 요청을 panel 소유자에게 전달하는 단일 gateway다. */
   taskbarRootActionGateway?: TaskbarRootActionGateway;
 }>;
 

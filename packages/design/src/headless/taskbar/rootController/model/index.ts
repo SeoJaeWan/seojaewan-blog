@@ -21,7 +21,7 @@ export type TaskbarRootViewModel =
 export type TaskbarRootController = Readonly<{
   /** 공통 WindowState 준비 여부와 현재 mode를 구분한다. */
   viewModel: TaskbarRootViewModel;
-  /** Windows trigger의 제품 Action을 panel 소유자에게 전달한다. */
+  /** Windows·Search trigger의 구분된 제품 Action을 panel 소유자에게 전달한다. */
   actions: TaskbarRootActionGateway;
 }>;
 

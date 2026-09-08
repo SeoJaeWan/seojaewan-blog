@@ -12,6 +12,7 @@ import {
   createTaskbarCloseAllIntent,
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
+  createTaskbarSearchAction,
   createTaskbarWindowsAction,
   executeTaskbarWindowIntent,
   executeTaskbarWindowOperationIntent,
@@ -57,8 +58,9 @@ const commands = () => {
 };
 
 describe("Taskbar intents", () => {
-  it("Windows trigger를 panel 구현과 구분된 Root Action으로 만든다", () => {
+  it("Windows와 Search trigger를 대상별 Root Action으로 구분한다", () => {
     expect(createTaskbarWindowsAction()).toEqual({ type: "request-windows" });
+    expect(createTaskbarSearchAction()).toEqual({ type: "request-search" });
   });
 
   it("desktop Group 0/1 active/1 inactive/many click을 명시적 intent로 구분한다", () => {

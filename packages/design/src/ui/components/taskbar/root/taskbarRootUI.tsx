@@ -3,9 +3,11 @@ import type { ComponentPropsWithRef } from "react";
 import { clsx } from "clsx";
 
 import {
+  createTaskbarSearchAction,
   createTaskbarWindowsAction,
   useTaskbarRootController,
 } from "../../../../headless/taskbar/index.js";
+import { TaskbarSearchUI } from "../search/index.js";
 import { TaskbarStartButtonUI } from "../start/index.js";
 
 import "./taskbarRootUI.css";
@@ -20,16 +22,22 @@ export type TaskbarRootUIProps = Omit<
     windowsSelected?: boolean;
     /** 제품 준비 상태에 따라 Windows trigger 입력을 막는다. */
     windowsDisabled?: boolean;
+    /** panel 구현 전에도 Search trigger의 selected 표현을 제어한다. */
+    searchSelected?: boolean;
+    /** 제품 준비 상태에 따라 Search trigger 입력을 막는다. */
+    searchDisabled?: boolean;
   }>;
 
 /**
  * 공통 WindowState.mode를 소비해 화면 하단 Taskbar surface와 현재 단계의 실행 항목 영역을 렌더링한다.
  *
  * `HeadlessRuntimeProvider` 안에서 사용한다. desktop Windows trigger는 Root Action gateway에 연결하고
- * mobile에서는 숨긴다. Search·Timestamp와 실제 실행 항목은 각 요소가 구현될 때 연결한다.
+ * Search trigger와 함께 mobile에서는 숨긴다. Timestamp와 실제 실행 항목은 각 요소가 구현될 때 연결한다.
  */
 export const TaskbarRootUI = ({
   className,
+  searchDisabled = false,
+  searchSelected = false,
   windowsDisabled = false,
   windowsSelected = false,
   ...props
@@ -51,6 +59,11 @@ export const TaskbarRootUI = ({
             disabled={windowsDisabled}
             onAction={() => actions.execute(createTaskbarWindowsAction())}
             selected={windowsSelected}
+          />
+          <TaskbarSearchUI
+            disabled={searchDisabled}
+            onAction={() => actions.execute(createTaskbarSearchAction())}
+            selected={searchSelected}
           />
         </div>
       ) : null}

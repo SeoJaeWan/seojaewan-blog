@@ -36,4 +36,39 @@
   --wd-taskbar-start-button-transition-easing: var(--wd-reference-easing-1);
   --wd-taskbar-start-button-logo-transition-duration: var(--wd-reference-duration-200);
   --wd-taskbar-start-button-logo-transition-easing: var(--wd-reference-easing-1);
+  --wd-taskbar-search-width: 220px;
+  --wd-taskbar-search-height: 30px;
+  --wd-taskbar-search-border-width: 1px;
+  --wd-taskbar-search-border-color: rgb(204 208 217);
+  --wd-taskbar-search-border-radius: 9999px;
+  --wd-taskbar-search-background: rgb(255 255 255 / 0.9);
+  --wd-taskbar-search-background-hover: rgb(255 255 255 / 0.5);
+  --wd-taskbar-search-background-selected: rgb(255 255 255);
+  --wd-taskbar-search-text-color: var(--wd-color-text-primary);
+  --wd-taskbar-search-font-size: 14px;
+  --wd-taskbar-search-padding-block: 6px;
+  --wd-taskbar-search-padding-inline-start: 30px;
+  --wd-taskbar-search-padding-inline-end: 6px;
+  --wd-taskbar-search-icon-size: 18px;
+  --wd-taskbar-search-icon-offset-block: 60%;
+  --wd-taskbar-search-icon-offset-inline: 10px;
+  --wd-taskbar-search-icon-color: rgb(16 16 20);
+  --wd-taskbar-search-icon-mask: url("../../assets/taskbar/task-input-mask.svg");
+  --wd-taskbar-search-icon-background-selected: linear-gradient(
+    60deg,
+    oklch(85.703% 0.14426 198.715) 20%,
+    oklch(50.114% 0.22422 262.084) 40%
+  );
+  --wd-taskbar-search-icon-shadow-selected: rgb(58 121 254 / 0.35);
+  --wd-taskbar-search-focus-inner-width: 2px;
+  --wd-taskbar-search-focus-inner-color: var(--wd-color-surface-taskbar);
+  --wd-taskbar-search-focus-outer-width: 4px;
+  --wd-taskbar-search-focus-outer-color: rgb(0 103 192 / 0.42);
+  --wd-taskbar-search-opacity-disabled: 0.54;
+  --wd-taskbar-search-icon-scale-pressed: 0.8;
+  --wd-taskbar-search-transition-duration: var(--wd-reference-duration-120);
+  --wd-taskbar-search-transition-easing: var(--wd-reference-easing-1);
+  --wd-taskbar-search-icon-transition-duration: var(--wd-reference-duration-200);
+  --wd-taskbar-search-icon-transition-easing: var(--wd-reference-easing-1);
+  --wd-taskbar-search-icon-rotation-duration: 1s;
 }

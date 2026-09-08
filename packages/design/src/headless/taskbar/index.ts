@@ -9,6 +9,7 @@ export {
   createTaskbarCloseAllIntent,
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
+  createTaskbarSearchAction,
   createTaskbarWindowsAction,
   executeTaskbarWindowIntent,
   executeTaskbarWindowOperationIntent,
@@ -18,11 +19,13 @@ export {
   type TaskbarExternalShortcutIntent,
   type TaskbarRootAction,
   type TaskbarRootActionGateway,
+  type TaskbarSearchAction,
   type TaskbarWindowCommandPort,
   type TaskbarWindowIntent,
   type TaskbarWindowIntentResult,
   type TaskbarWindowOperationIntentResult,
   type TaskbarWindowOperationPort,
+  type TaskbarWindowsAction,
 } from "./actions/index.js";
 export {
   type TaskbarController,

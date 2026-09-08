@@ -59,20 +59,24 @@ const renderRoot = (mode?: WindowMode, props: TaskbarRootUIProps = {}) => {
 afterEach(() => cleanup());
 
 describe("TaskbarRootUI", () => {
-  it("desktop mode에서 Windows 버튼을 표시하고 Action을 정확히 한 번 전달한다", () => {
+  it("desktop mode에서 Windows 다음에 Search를 표시하고 각 Action을 한 번 전달한다", () => {
     const { container, executeRootAction } = renderRoot("desktop");
     const taskbar = screen.getByRole("navigation", { name: "작업 표시줄" });
     const windows = screen.getByRole("button", { name: "시작" });
+    const search = screen.getByRole("button", { name: "검색 열기" });
 
     expect(taskbar.getAttribute("data-status")).toBe("ready");
     expect(taskbar.getAttribute("data-mode")).toBe("desktop");
     expect(container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
-    expect(taskbar.querySelectorAll("button")).toHaveLength(1);
+    expect(Array.from(taskbar.querySelectorAll("button"))).toEqual([windows, search]);
     expect(windows.getAttribute("aria-pressed")).toBe("false");
 
     fireEvent.click(windows);
-
     expect(executeRootAction).toHaveBeenCalledExactlyOnceWith({ type: "request-windows" });
+
+    fireEvent.click(search);
+    expect(executeRootAction).toHaveBeenNthCalledWith(2, { type: "request-search" });
+    expect(executeRootAction).toHaveBeenCalledTimes(2);
   });
 
   it("Windows selected 표현을 반영하고 disabled 입력은 Action을 전달하지 않는다", () => {
@@ -89,13 +93,35 @@ describe("TaskbarRootUI", () => {
     expect(disabled.executeRootAction).not.toHaveBeenCalled();
   });
 
+  it("Search selected 표현은 panel 관계를 만들지 않고 disabled 입력은 Windows와 독립적이다", () => {
+    const selected = renderRoot("desktop", { searchSelected: true });
+    const search = screen.getByRole("button", { name: "검색 열기" });
+    expect(search.getAttribute("data-selected")).toBe("true");
+    expect(search.hasAttribute("aria-controls")).toBe(false);
+    expect(search.hasAttribute("aria-expanded")).toBe(false);
+    selected.unmount();
+
+    const disabled = renderRoot("desktop", { searchDisabled: true });
+    const disabledSearch = screen.getByRole("button", { name: "검색 열기" });
+    const windows = screen.getByRole("button", { name: "시작" });
+    fireEvent.click(disabledSearch);
+    expect((disabledSearch as HTMLButtonElement).disabled).toBe(true);
+    expect(disabled.executeRootAction).not.toHaveBeenCalled();
+
+    fireEvent.click(windows);
+    expect(disabled.executeRootAction).toHaveBeenCalledExactlyOnceWith({
+      type: "request-windows",
+    });
+  });
+
   it("mobile mode와 준비 전에는 desktop 실행 항목 영역이나 미래 요소를 표시하지 않는다", () => {
     const mobile = renderRoot("mobile");
-    expect(
-      screen.getByRole("navigation", { name: "작업 표시줄" }).getAttribute("data-mode"),
-    ).toBe("mobile");
+    expect(screen.getByRole("navigation", { name: "작업 표시줄" }).getAttribute("data-mode")).toBe(
+      "mobile",
+    );
     expect(mobile.container.querySelector('[data-taskbar-region="items"]')).toBeNull();
     expect(screen.queryByRole("button", { name: "시작" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "검색 열기" })).toBeNull();
     mobile.unmount();
 
     const notReady = renderRoot();

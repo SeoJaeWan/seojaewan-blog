@@ -12,6 +12,7 @@ import type {
 import { HeadlessRuntimeProvider } from "../../runtime/index.js";
 import type { WindowMode, WindowState } from "../../windows/index.js";
 import {
+  createTaskbarSearchAction,
   createTaskbarWindowsAction,
   selectTaskbarRootSnapshot,
   useTaskbarRootController,
@@ -83,7 +84,7 @@ describe("selectTaskbarRootSnapshot", () => {
 });
 
 describe("useTaskbarRootController", () => {
-  it("Windows Action을 runtime public 실행 진입점에 그대로 전달한다", () => {
+  it("Windows와 Search Action을 runtime public 실행 진입점에 구분해 전달한다", () => {
     const fixture = createRuntimeFixture("desktop");
     let execute: ReturnType<typeof useTaskbarRootController>["actions"]["execute"] = () =>
       undefined;
@@ -95,17 +96,17 @@ describe("useTaskbarRootController", () => {
     };
 
     render(
-      createElement(
-        HeadlessRuntimeProvider,
-        { runtime: fixture.runtime },
-        createElement(Probe),
-      ),
+      createElement(HeadlessRuntimeProvider, { runtime: fixture.runtime }, createElement(Probe)),
     );
     const action = createTaskbarWindowsAction();
 
     act(() => execute(action));
+    const searchAction = createTaskbarSearchAction();
+    act(() => execute(searchAction));
 
-    expect(fixture.executeRootAction).toHaveBeenCalledExactlyOnceWith(action);
+    expect(fixture.executeRootAction).toHaveBeenNthCalledWith(1, action);
+    expect(fixture.executeRootAction).toHaveBeenNthCalledWith(2, searchAction);
+    expect(fixture.executeRootAction).toHaveBeenCalledTimes(2);
   });
 
   it("SSR은 브라우저 Window snapshot을 읽지 않고 준비 전 표현을 사용한다", () => {
@@ -119,11 +120,7 @@ describe("useTaskbarRootController", () => {
     };
 
     renderToString(
-      createElement(
-        HeadlessRuntimeProvider,
-        { runtime: fixture.runtime },
-        createElement(Probe),
-      ),
+      createElement(HeadlessRuntimeProvider, { runtime: fixture.runtime }, createElement(Probe)),
     );
 
     expect(statuses).toEqual(["not-ready"]);
@@ -147,11 +144,7 @@ describe("useTaskbarRootController", () => {
       createElement(
         StrictMode,
         null,
-        createElement(
-          HeadlessRuntimeProvider,
-          { runtime: fixture.runtime },
-          createElement(Probe),
-        ),
+        createElement(HeadlessRuntimeProvider, { runtime: fixture.runtime }, createElement(Probe)),
       ),
     );
 

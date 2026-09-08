@@ -16,9 +16,12 @@ import type {
 } from "../selectors/index.js";
 
 export {
+  createTaskbarSearchAction,
   createTaskbarWindowsAction,
   type TaskbarRootAction,
   type TaskbarRootActionGateway,
+  type TaskbarSearchAction,
+  type TaskbarWindowsAction,
 } from "./rootAction/index.js";
 
 /**

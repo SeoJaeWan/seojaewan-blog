@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createTaskbarWindowsAction } from "../../taskbar/actions/index.js";
+import {
+  createTaskbarSearchAction,
+  createTaskbarWindowsAction,
+} from "../../taskbar/actions/index.js";
 import type { WindowState } from "../../windows/model/index.js";
 import { createHeadlessRuntime, type HeadlessRuntimeAdapters } from "./index.js";
 
@@ -13,14 +16,18 @@ const firstWindowSnapshot = Object.freeze({
 }) satisfies WindowState;
 
 describe("createHeadlessRuntime", () => {
-  it("Taskbar Root Action을 주입된 단일 gateway에 정확히 한 번 전달한다", () => {
+  it("Windows와 Search Root Action을 주입된 단일 gateway에 각각 한 번 전달한다", () => {
     const execute = vi.fn();
     const runtime = createHeadlessRuntime({ taskbarRootActionGateway: { execute } });
     const action = createTaskbarWindowsAction();
 
     runtime.taskbarRoot.execute(action);
+    const searchAction = createTaskbarSearchAction();
+    runtime.taskbarRoot.execute(searchAction);
 
-    expect(execute).toHaveBeenCalledExactlyOnceWith(action);
+    expect(execute).toHaveBeenNthCalledWith(1, action);
+    expect(execute).toHaveBeenNthCalledWith(2, searchAction);
+    expect(execute).toHaveBeenCalledTimes(2);
   });
 
   it("Taskbar Root Action gateway가 없으면 조용히 무시하지 않는다", () => {
