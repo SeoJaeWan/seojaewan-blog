@@ -3,8 +3,7 @@
   backdrop-filter: blur(var(--wd-taskbar-root-backdrop-blur))
     saturate(var(--wd-taskbar-root-backdrop-saturation));
   background: var(--wd-taskbar-root-background);
-  border-block-start: var(--wd-taskbar-root-border-width) solid
-    var(--wd-taskbar-root-border-color);
+  border-block-start: var(--wd-taskbar-root-border-width) solid var(--wd-taskbar-root-border-color);
   box-shadow: var(--wd-taskbar-root-box-shadow);
   box-sizing: border-box;
   display: flex;

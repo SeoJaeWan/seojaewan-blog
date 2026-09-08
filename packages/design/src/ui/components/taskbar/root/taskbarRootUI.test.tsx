@@ -5,11 +5,22 @@ import type {
   ControllerViewModel,
   HeadlessFeatureRuntime,
   HeadlessRuntime,
+  TaskbarTimestampClock,
+  TaskbarTimestampTimer,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
 import { TaskbarRootUI, type TaskbarRootUIProps } from "./taskbarRootUI.js";
+
+const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
+  /** Root fixture의 고정 local Date를 반환한다. */
+  now: () => new Date(2026, 6, 10, 15, 42, 0, 0),
+  /** 실제 timer 없이 fixture의 정지한 clock을 유지한다. */
+  setTimeout: () => 0 as unknown as TaskbarTimestampTimer,
+  /** 정지한 fixture clock에는 취소할 timer가 없다. */
+  clearTimeout: () => undefined,
+});
 
 /** UI fixture가 지정한 준비 상태와 공통 mode를 반환하는 최소 runtime을 만든다. */
 const createRuntime = (mode?: WindowMode) => {
@@ -49,7 +60,7 @@ const renderRoot = (mode?: WindowMode, props: TaskbarRootUIProps = {}) => {
   const fixture = createRuntime(mode);
   const mounted = render(
     <HeadlessRuntimeProvider runtime={fixture.runtime}>
-      <TaskbarRootUI {...props} />
+      <TaskbarRootUI timestampClock={TEST_TIMESTAMP_CLOCK} {...props} />
     </HeadlessRuntimeProvider>,
   );
 
@@ -69,6 +80,8 @@ describe("TaskbarRootUI", () => {
     expect(taskbar.getAttribute("data-mode")).toBe("desktop");
     expect(container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
     expect(Array.from(taskbar.querySelectorAll("button"))).toEqual([windows, search]);
+    expect(screen.getByText("15:42")).not.toBeNull();
+    expect(screen.getByText("2026-07-10")).not.toBeNull();
     expect(windows.getAttribute("aria-pressed")).toBe("false");
 
     fireEvent.click(windows);
@@ -114,7 +127,7 @@ describe("TaskbarRootUI", () => {
     });
   });
 
-  it("mobile mode와 준비 전에는 desktop 실행 항목 영역이나 미래 요소를 표시하지 않는다", () => {
+  it("mobile mode에는 Timestamp만 표시하고 준비 전에는 mode별 요소를 표시하지 않는다", () => {
     const mobile = renderRoot("mobile");
     expect(screen.getByRole("navigation", { name: "작업 표시줄" }).getAttribute("data-mode")).toBe(
       "mobile",
@@ -122,6 +135,8 @@ describe("TaskbarRootUI", () => {
     expect(mobile.container.querySelector('[data-taskbar-region="items"]')).toBeNull();
     expect(screen.queryByRole("button", { name: "시작" })).toBeNull();
     expect(screen.queryByRole("button", { name: "검색 열기" })).toBeNull();
+    expect(screen.getByText("15:42")).not.toBeNull();
+    expect(screen.getByText("2026-07-10")).not.toBeNull();
     mobile.unmount();
 
     const notReady = renderRoot();
@@ -129,5 +144,6 @@ describe("TaskbarRootUI", () => {
     expect(taskbar.getAttribute("data-status")).toBe("not-ready");
     expect(taskbar.hasAttribute("data-mode")).toBe(false);
     expect(notReady.container.querySelector('[data-taskbar-region="items"]')).toBeNull();
+    expect(notReady.container.querySelector(".taskbar-timestamp")).toBeNull();
   });
 });

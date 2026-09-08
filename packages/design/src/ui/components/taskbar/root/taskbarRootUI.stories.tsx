@@ -8,11 +8,22 @@ import type {
   HeadlessFeatureRuntime,
   HeadlessRuntime,
   TaskbarRootAction,
+  TaskbarTimestampClock,
+  TaskbarTimestampTimer,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
 import { TaskbarRootUI } from "./taskbarRootUI.js";
+
+const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
+  /** plan의 Asia/Seoul 고정 wall-clock과 같은 local Date를 반환한다. */
+  now: () => new Date(2026, 6, 10, 15, 24, 0, 0),
+  /** visual fixture의 clock을 진행시키지 않고 timer identity만 충족한다. */
+  setTimeout: () => 0 as unknown as TaskbarTimestampTimer,
+  /** visual fixture에는 취소할 실제 timer가 없다. */
+  clearTimeout: () => undefined,
+});
 
 const visuallyHiddenStyle = {
   clip: "rect(0 0 0 0)",
@@ -90,6 +101,7 @@ const RootStory = ({
       <TaskbarRootUI
         searchDisabled={searchDisabled}
         searchSelected={searchSelected}
+        timestampClock={STORY_TIMESTAMP_CLOCK}
         windowsDisabled={windowsDisabled}
         windowsSelected={windowsSelected}
       />
@@ -124,6 +136,14 @@ const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) 
     await expect(searchBounds.height).toBe(30);
     await expect(searchBounds.left - windowsBounds.right).toBe(12);
   }
+
+  const timestamp = within(canvasElement).getByText("15:24").parentElement;
+  const timestampBounds = timestamp?.getBoundingClientRect();
+  await expect(timestamp).not.toBeNull();
+  await expect(timestampBounds?.height).toBeGreaterThan(0);
+  await expect(timestampBounds?.height).toBeLessThanOrEqual(bounds.height);
+  await expect(timestampBounds?.right).toBe(window.innerWidth - 24);
+  await expect(within(canvasElement).getByText("2026-07-10")).toBeVisible();
 };
 
 const meta = {
@@ -136,8 +156,8 @@ const meta = {
       description: {
         component:
           "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "glass surface와 desktop Windows·Search Action 연결을 제공한다. " +
-          "실제 실행 항목과 Timestamp는 후속 요소에서 연결한다.",
+          "glass surface, desktop Windows·Search Action 연결과 desktop/mobile Timestamp를 제공한다. " +
+          "실제 실행 항목은 후속 요소에서 연결한다.",
       },
       story: { iframeHeight: 180, inline: false },
     },

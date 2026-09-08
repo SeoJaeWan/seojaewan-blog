@@ -96,3 +96,14 @@ export {
   type TaskbarStorage,
   type TaskbarStorageSnapshot,
 } from "./taskbarStore/taskbarStorage/index.js";
+export {
+  formatTaskbarTimestamp,
+  getMillisecondsUntilNextMinute,
+  startTaskbarTimestampScheduler,
+  systemTaskbarTimestampClock,
+  type TaskbarTimestampClock,
+  type TaskbarTimestampTimer,
+  type TaskbarTimestampValue,
+  type TaskbarTimestampViewModel,
+  useTaskbarTimestampController,
+} from "./timestamp/index.js";

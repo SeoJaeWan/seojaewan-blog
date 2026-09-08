@@ -8,3 +8,7 @@ export {
   TaskbarStartButtonUI,
   type TaskbarStartButtonUIProps,
 } from "./components/taskbar/start/index.js";
+export {
+  TaskbarTimestampUI,
+  type TaskbarTimestampUIProps,
+} from "./components/taskbar/timestamp/index.js";

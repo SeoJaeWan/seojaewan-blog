@@ -12,6 +12,7 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `taskbarStore/operationResult/index.ts` | commit, no-op, 거절과 조용한 저장 실패                                      |
 | `selectors/index.ts`                    | current Catalog·WindowState 기반 Group, Preview와 mobile read model         |
 | `rootController/index.ts`               | 공통 mode와 Windows·Search Root Action gateway를 제품 Root에 연결           |
+| `timestamp/index.ts`                    | local 형식, 분 경계 scheduler·clock port와 React controller                 |
 | `actions/index.ts`                      | Windows·Search·desktop/mobile click, shortcut, close-all intent와 실행 경계 |
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                            |
 
@@ -75,6 +76,14 @@ Application은 WindowStore와 Catalog·storage를 연결해 TaskbarStore 초기�
 각각 `{ type: "request-windows" }`, `{ type: "request-search" }` Action을 runtime에 주입된 단일 gateway로 전달한다. `TaskbarRootUI`는
 같은 Provider 안에서 이 값을 소비하며, 준비 전에는 안정적인 `not-ready` surface를 렌더링한다.
 
+`useTaskbarTimestampController()`는 Application callback 없이 mount 즉시 현재 `Date`를 읽고
+24시간제 `HH:mm`와 `YYYY-MM-DD`를 제공한다. 첫 timeout은 다음 분 경계에 맞추며 각 tick은
+이전 값에 1분을 더하지 않고 clock의 현재 `Date`를 다시 읽으므로 지연, 자정과 local timezone
+변경을 다음 tick에서 반영한다. server render와 hydration 첫 render는 같은 `not-ready` 표현을
+사용하고 cleanup은 예약 timer를 취소한다. Story나 headless host가 시각을 결정적으로 고정해야
+할 때는 `TaskbarTimestampClock` port를 사용할 수 있으며 UI 또는 Application 시간 callback은
+필요하지 않다.
+
 ```tsx
 const runtime = createHeadlessRuntime({
   taskbarRootActionGateway: {
@@ -89,6 +98,7 @@ const runtime = createHeadlessRuntime({
 </HeadlessRuntimeProvider>;
 ```
 
-현재 Root 단계는 desktop Windows→Search trigger와 빈 실행 항목 배치 영역을 제공한다. 각
-`selected` 입력은 실제 panel 관계 없이 표현만 제어하며 panel·query·recent·Timestamp와 실제
+현재 Root 단계는 desktop Windows→Search trigger와 빈 실행 항목 배치 영역, 그리고
+desktop/mobile 공통 Timestamp를 제공한다. 각
+`selected` 입력은 실제 panel 관계 없이 표현만 제어하며 panel·query·recent와 실제
 Group·indicator·click·drag는 각 소유 요소와 후속 작업에서 production Component로 연결한다.

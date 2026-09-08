@@ -71,4 +71,13 @@
   --wd-taskbar-search-icon-transition-duration: var(--wd-reference-duration-200);
   --wd-taskbar-search-icon-transition-easing: var(--wd-reference-easing-1);
   --wd-taskbar-search-icon-rotation-duration: 1s;
+  --wd-taskbar-timestamp-font-size: 12px;
+  --wd-taskbar-timestamp-line-height: normal;
+  --wd-taskbar-timestamp-offset-inline-end: 24px;
+  --wd-taskbar-timestamp-min-width: 64px;
+  --wd-taskbar-timestamp-skeleton-background: rgb(0 0 0 / 0.1);
+  --wd-taskbar-timestamp-skeleton-border-radius: var(--wd-reference-radius-1);
+  --wd-taskbar-timestamp-skeleton-line-height: 16px;
+  --wd-taskbar-timestamp-skeleton-line-width: 64px;
+  --wd-taskbar-timestamp-skeleton-gap: 2px;
 }

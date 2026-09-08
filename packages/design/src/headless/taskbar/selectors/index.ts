@@ -75,7 +75,7 @@ export type MobileTaskbarApplicationView = Readonly<{
 }>;
 
 /**
- * mobile Taskbar의 표시 시각을 Application이 채우는 고정 Timestamp 자리다.
+ * mobile Taskbar에서 독립 Timestamp controller가 표시할 고정 자리다.
  */
 export type MobileTaskbarTimestampView = Readonly<{
   kind: "timestamp";
