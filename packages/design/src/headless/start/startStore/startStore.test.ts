@@ -575,4 +575,33 @@ describe("StartStore", () => {
       expect(Object.isFrozen(snapshot.pinnedItems[0]?.resource)).toBe(true);
     });
   });
+
+  describe("command context", () => {
+    it("commit을 subscriber와 저장보다 먼저 알리고 명령 Promise는 저장을 기다린다", async () => {
+      const { StartStore, fakeStorage } = await initialize();
+      const gate = deferred<void>();
+      const events: string[] = [];
+      fakeStorage.save.mockImplementationOnce(() => {
+        events.push("save");
+        return gate.promise;
+      });
+      StartStore.subscribe(() => events.push("subscriber"));
+
+      const command = StartStore.pin(content, {
+        onCommit: () => events.push("context"),
+      });
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(events).toEqual(["context", "subscriber", "save"]);
+
+      let finished = false;
+      void command.then(() => {
+        finished = true;
+      });
+      await Promise.resolve();
+      expect(finished).toBe(false);
+      gate.resolve();
+      await expect(command).resolves.toMatchObject({ ok: true });
+    });
+  });
 });

@@ -10,6 +10,7 @@
 | [model/index.ts](./model/index.ts)                                             | WindowRect, frame, 앱별 Session과 WindowState를 정의한다.    |
 | [windowStore/index.ts](./windowStore/index.ts)                                 | 초기화, 창·탭 명령과 구독을 제공한다.                        |
 | [windowStore/operationResult/index.ts](./windowStore/operationResult/index.ts) | commit, no-op과 거부 결과를 설명한다.                        |
+| [operations/index.ts](./operations/index.ts)                                   | Action을 Session queue와 transition에 연결한다.              |
 | [geometry/index.ts](./geometry/index.ts)                                       | 숫자 배치를 계산하고 `getWindowBounds`로 표시 영역을 읽는다. |
 | [routeSelector/index.ts](./routeSelector/index.ts)                             | active tab에서 현재 주소를 파생한다.                         |
 | [../folders/README.md](../folders/README.md)                                   | File Explorer tab의 위치와 탐색 모델을 안내한다.             |
@@ -65,6 +66,10 @@ Chrome의 `addChromeTab`, `navigateChrome`, `goBackChrome`, `goForwardChrome`, `
 mobile Taskbar의 고정 앱 버튼은 `launchMobileApplication("file-explorer" | "chrome")`을 사용한다. 현재 앱은 Session·tab·history를 그대로 두는 no-op이고 다른 앱은 Explorer의 Desktop 위치(`null`) 또는 Chrome `new-tab` 창으로 한 commit에 교체된다. desktop 호출은 `mobile-mode-required`로 거부된다. mobile의 `minimize`, `addFileExplorerTab`, `addChromeTab`, move·resize·maximize는 ID 발급·snapshot 교체·알림이 없는 no-op이다. `openContent`는 현재 mobile Chrome의 유일한 tab history에서 navigate하고 Explorer가 열려 있으면 Chrome 하나로 교체한다.
 
 명령은 queue에서 순차 실행되며 반환 Promise는 semantic 상태 반영과 동기 구독 알림 이후 완료된다. animation이나 router 완료를 기다리는 Promise는 아니다. 알림 안에서 요청한 다음 명령은 현재 commit 뒤에 실행된다.
+
+제품 Action은 `WindowOperations.execute(action)`으로 실행한다. 같은 Session은 앞 Handle의 `settled` 뒤에 실행되고 다른 Session은 독립적이다. `close`·`minimize`는 transition 뒤 Store commit, 생성·최소화 복원·maximize·최대화 해제는 Store commit 뒤 transition을 기다린다. 생성 commit은 새 ID를 일반 subscriber에 알리기 전에 해당 Session queue에 연결하므로 재진입 요청도 생성 Operation을 추월하지 않는다. 이동·resize와 tab·navigation 명령은 별도 animation 없이 numeric intent를 Store에 전달한다.
+
+Handle의 `committed`는 snapshot 반영, `presented`는 이 Operation이 소유한 transition, `settled`는 둘과 정리를 모두 기다린다. UI는 Handle의 `operationId`와 phase를 `TransitionRegistry`에 완료·중단·실패로 전달한다. no-op과 `session-not-found` 같은 거절은 transition을 새로 만들지 않고 모든 Handle 대기를 끝낸다.
 
 ## 구독과 읽기
 

@@ -3,7 +3,11 @@
  *
  * DOM, actual browser window, panel state와 analytics는 수행하지 않는다.
  */
-import type { WindowStoreResult } from "../../windows/index.js";
+import type {
+  WindowAction,
+  WindowOperationHandle,
+  WindowStoreResult,
+} from "../../windows/index.js";
 import type { TaskbarApplicationId } from "../model/index.js";
 import type {
   TaskbarApplicationGroup,
@@ -100,6 +104,15 @@ export type TaskbarWindowCommandPort = Readonly<{
  */
 export type TaskbarWindowIntentResult = WindowStoreResult | readonly WindowStoreResult[];
 
+/** Taskbar Window intent를 Session Operation으로 실행하는 최소 port다. */
+export type TaskbarWindowOperationPort = Readonly<{
+  execute(action: WindowAction): WindowOperationHandle;
+}>;
+
+/** 단일 Window Handle 또는 close-all이 각 Session queue에 보낸 Handle 목록이다. */
+export type TaskbarWindowOperationIntentResult =
+  WindowOperationHandle | readonly WindowOperationHandle[];
+
 /**
  * desktop application Group의 0/1/many target click을 launch, minimize, activate, preview intent로 만든다.
  */
@@ -187,5 +200,37 @@ export const executeTaskbarWindowIntent = async (
       }
       return Object.freeze(results);
     }
+  }
+};
+
+/**
+ * Taskbar Window intent를 Foundation Window Operation에 전달한다.
+ *
+ * close-all은 시작 시 캡처된 각 Session ID를 자기 queue에 한 번씩 보내며 다른 queue의 완료를 내부에서 기다리지 않는다.
+ */
+export const executeTaskbarWindowOperationIntent = (
+  intent: TaskbarWindowIntent,
+  operations: TaskbarWindowOperationPort,
+): TaskbarWindowOperationIntentResult => {
+  switch (intent.type) {
+    case "launch-default-application":
+      return operations.execute(
+        intent.applicationId === "file-explorer"
+          ? { type: "create-file-explorer-window", location: null }
+          : { type: "create-chrome-window" },
+      );
+    case "minimize-window":
+      return operations.execute({ type: "minimize", sessionId: intent.sessionId });
+    case "activate-window":
+      return operations.execute({ type: "activate", sessionId: intent.sessionId });
+    case "launch-mobile-application":
+      return operations.execute({
+        type: "launch-mobile-application",
+        applicationId: intent.applicationId,
+      });
+    case "close-windows":
+      return Object.freeze(
+        intent.sessionIds.map((sessionId) => operations.execute({ type: "close", sessionId })),
+      );
   }
 };

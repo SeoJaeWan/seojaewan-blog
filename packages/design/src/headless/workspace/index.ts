@@ -5,10 +5,22 @@
  */
 export { FolderCatalog } from "./folderCatalog/index.js";
 export { type ResourcePlacement, type WorkspaceState } from "./model/index.js";
+export {
+  WORKSPACE_OPERATION_TARGET,
+  type WorkspaceAction,
+  type WorkspaceCommittedResult,
+  type WorkspaceOperationHandle,
+  WorkspaceOperations,
+  type WorkspaceOperationsOptions,
+  type WorkspaceOperationStore,
+  type WorkspacePresentedResult,
+  type WorkspaceSettledResult,
+} from "./operations/index.js";
 export { createWorkspaceSeed, type WorkspaceSeed } from "./seed/index.js";
 export {
   WorkspaceStore,
   WorkspaceStoreAlreadyInitializedError,
+  type WorkspaceStoreCommandContext,
   type WorkspaceStoreInitialization,
   WorkspaceStoreNotInitializedError,
   type WorkspaceStorePersistenceFailure,

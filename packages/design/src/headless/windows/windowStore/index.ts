@@ -50,6 +50,7 @@ import {
 } from "../windowSessionId/index.js";
 import type {
   WindowStoreChange,
+  WindowStoreCommittedResult,
   WindowStoreFailureReason,
   WindowStoreResult,
 } from "./operationResult/index.js";
@@ -76,6 +77,15 @@ export type WindowStoreInitialization = Readonly<{
    */
   mode?: WindowMode;
   workArea: WindowRect;
+}>;
+
+/**
+ * 한 Window 명령의 semantic commit 결과를 실행 계층에 정확히 한 번 전달한다.
+ *
+ * 일반 snapshot 구독과 달리 다른 명령의 commit을 현재 요청으로 오인하지 않으며 Action에는 포함하지 않는다.
+ */
+export type WindowStoreCommandContext = Readonly<{
+  onCommit(result: WindowStoreCommittedResult): void;
 }>;
 
 /**
@@ -472,7 +482,11 @@ export class WindowStore {
   /**
    * 후보 검증 뒤 ID를 예약하고 동결 snapshot을 반영한 후 구독자에게 알린다. 검증 실패 시 기존 snapshot을 보존한다.
    */
-  private static commit = (state: WindowState, change: WindowStoreChange): WindowStoreResult => {
+  private static commit = (
+    state: WindowState,
+    change: WindowStoreChange,
+    context?: WindowStoreCommandContext,
+  ): WindowStoreResult => {
     WindowStore.assertCandidate(state);
     const committedIds: string[] = [];
     if (change.sessionId !== undefined) committedIds.push(change.sessionId);
@@ -480,8 +494,19 @@ export class WindowStore {
     WindowStore.reserveIds(committedIds);
     const value = freezeWindowState(state);
     WindowStore.snapshot = value;
+    const result = {
+      ok: true,
+      changed: true,
+      change: Object.freeze({ ...change }),
+      value,
+    } satisfies WindowStoreCommittedResult;
+    try {
+      context?.onCommit(result);
+    } catch (error) {
+      void error;
+    }
     WindowStore.notify();
-    return { ok: true, changed: true, change: Object.freeze({ ...change }), value };
+    return result;
   };
 
   /**
@@ -490,6 +515,7 @@ export class WindowStore {
   private static enqueue = (
     calculate: () => Calculation,
     responsiveCommand = false,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> => {
     WindowStore.requireInitialization();
     /**
@@ -508,7 +534,7 @@ export class WindowStore {
             value: WindowStore.requireSnapshot(),
           };
         }
-        const committed = WindowStore.commit(result.state, result.change);
+        const committed = WindowStore.commit(result.state, result.change, context);
         if (!responsiveCommand) {
           WindowStore.pendingDesktopWorkAreaChange = null;
           WindowStore.awaitingMobileWorkArea = false;
@@ -919,8 +945,12 @@ export class WindowStore {
    * desktop→mobile 정리는 Chrome explicit close 복귀를 실행하지 않고 한 snapshot으로 반영한다.
    * `setWorkArea`와 바로 이어지는 responsive pair는 어느 순서로 와도 desktop frame을 보존한다.
    */
-  static setMode(mode: WindowMode): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static setMode(
+    mode: WindowMode,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       if (mode !== "desktop" && mode !== "mobile") return WindowStore.reject("invalid-mode");
       const state = WindowStore.requireSnapshot();
       if (state.mode === mode) return { kind: "no-op" };
@@ -962,7 +992,10 @@ export class WindowStore {
       WindowStore.mobileWorkAreaReadyForDesktop = false;
       WindowStore.pendingDesktopWorkAreaChange = null;
       return { kind: "commit", state: next, change: { kind: "mode-changed" } };
-    }, true);
+      },
+      true,
+      context,
+    );
   }
 
   /**
@@ -971,8 +1004,12 @@ export class WindowStore {
    * 현재 앱은 Session·tab·history와 snapshot을 유지하는 no-op이다. 다른 앱이나 빈 Desktop은
    * Explorer `null` 또는 Chrome `new-tab` 창으로 한 번에 교체하며 후보 ID 발급 실패 시 기존 창을 보존한다.
    */
-  static launchMobileApplication(applicationId: WindowApplicationId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static launchMobileApplication(
+    applicationId: WindowApplicationId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       if (state.mode !== "mobile") return WindowStore.reject("mobile-mode-required");
       if (applicationId !== "file-explorer" && applicationId !== "chrome") {
@@ -982,19 +1019,29 @@ export class WindowStore {
       return applicationId === "file-explorer"
         ? WindowStore.createFileExplorer(null, "mobile-application-launched")
         : WindowStore.createChrome({ kind: "new-tab" }, "mobile-application-launched");
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * Folder 또는 Desktop을 first tab으로 가진 새 File Explorer Window를 만든다.
    */
-  static createFileExplorerWindow(location: FileExplorerLocation): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static createFileExplorerWindow(
+    location: FileExplorerLocation,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const validated = WindowStore.validateFolderLocation(location);
       return typeof validated === "string"
         ? WindowStore.reject(validated)
         : WindowStore.createFileExplorer(validated);
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1002,23 +1049,34 @@ export class WindowStore {
    */
   static createChromeWindow(
     location: ChromeLocation = { kind: "new-tab" },
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+    return WindowStore.enqueue(
+      () => {
       const validated = WindowStore.validateChromeLocation(location);
       return typeof validated === "string"
         ? WindowStore.reject(validated)
         : WindowStore.createChrome(validated);
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * 외부 Folder open 규칙으로 active-tab exact match의 최상위 Explorer를 재사용한다.
    */
-  static openFolder(folder: FolderResourceRef): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static openFolder(
+    folder: FolderResourceRef,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const location = WindowStore.validateFolderLocation(folder);
       if (typeof location === "string" || location === null) {
-        return WindowStore.reject(typeof location === "string" ? location : "invalid-resource-ref");
+          return WindowStore.reject(
+            typeof location === "string" ? location : "invalid-resource-ref",
+          );
       }
       const state = WindowStore.requireSnapshot();
       for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
@@ -1041,14 +1099,21 @@ export class WindowStore {
         }
       }
       return WindowStore.createFileExplorer(location);
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * Content를 desktop active/MRU Chrome의 새 tab으로 열고, mobile Chrome에서는 유일한 tab에서 navigate한다.
    */
-  static openContent(content: ContentResourceRef): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static openContent(
+    content: ContentResourceRef,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const ref = WindowStore.validateContentRef(content);
       if (typeof ref === "string") return WindowStore.reject(ref);
       const state = WindowStore.requireSnapshot();
@@ -1090,26 +1155,40 @@ export class WindowStore {
       return target === undefined
         ? WindowStore.createChrome({ kind: "content", ref })
         : WindowStore.addChromeTabCalculation(target, { kind: "content", ref });
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * Content를 first tab으로 가진 별도 Chrome Window를 항상 만든다.
    */
-  static openContentInNewWindow(content: ContentResourceRef): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static openContentInNewWindow(
+    content: ContentResourceRef,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const ref = WindowStore.validateContentRef(content);
       return typeof ref === "string"
         ? WindowStore.reject(ref)
         : WindowStore.createChrome({ kind: "content", ref });
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * Session을 복원하고 active·topmost로 만든다.
    */
-  static activate(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static activate(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       if (!isWindowSessionId(sessionId)) return WindowStore.reject("session-not-found");
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
@@ -1126,7 +1205,10 @@ export class WindowStore {
         state: WindowStore.activateInState(state, sessionId),
         change: { kind: "window-activated", sessionId },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1134,8 +1216,12 @@ export class WindowStore {
    *
    * mobile에서는 snapshot·알림을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
-  static minimize(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static minimize(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1158,14 +1244,21 @@ export class WindowStore {
         },
         change: { kind: "window-minimized", sessionId },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * Session을 제거하며 active였다면 다음 최상위 visible Session을 선택한다.
    */
-  static close(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static close(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) {
@@ -1175,14 +1268,21 @@ export class WindowStore {
         kind: "window-closed",
         sessionId,
       });
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
    * maximize와 normal placement를 전환하며 normalBounds를 보존한다.
    */
-  static toggleMaximize(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static toggleMaximize(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1208,7 +1308,10 @@ export class WindowStore {
           sessionId,
         },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1217,11 +1320,13 @@ export class WindowStore {
   static move(
     sessionId: WindowSessionId,
     point: Readonly<{ x: number; y: number }>,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.changeBounds(
       sessionId,
       (bounds) => ({ ...bounds, x: point.x, y: point.y }),
       "window-moved",
+      context,
     );
   }
 
@@ -1231,11 +1336,13 @@ export class WindowStore {
   static resize(
     sessionId: WindowSessionId,
     size: Readonly<{ width: number; height: number }>,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.changeBounds(
       sessionId,
       (bounds) => ({ ...bounds, width: size.width, height: size.height }),
       "window-resized",
+      context,
     );
   }
 
@@ -1246,8 +1353,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     update: (bounds: WindowRect) => WindowRect,
     kind: "window-moved" | "window-resized",
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> =>
-    WindowStore.enqueue(() => {
+    WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1277,7 +1386,10 @@ export class WindowStore {
         },
         change: { kind, sessionId },
       };
-    });
+      },
+      false,
+      context,
+    );
 
   /**
    * workArea를 바꾸고 desktop normalBounds의 titlebar 접근 가능 위치를 복구한다.
@@ -1285,8 +1397,12 @@ export class WindowStore {
    * mobile 표시에서는 desktop frame을 바꾸지 않는다. `setMode`와 바로 이어지는 responsive
    * pair의 입력 순서를 조율하고 mobile-created 창은 첫 desktop workArea에서 기본 배치를 받는다.
    */
-  static setWorkArea(workArea: WindowRect): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static setWorkArea(
+    workArea: WindowRect,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       createWindowBounds(workArea, null, WindowStore.requirePlacementConfig());
       const sameWorkArea =
@@ -1330,7 +1446,10 @@ export class WindowStore {
         state: { ...state, workArea: { ...workArea }, sessions },
         change: { kind: "work-area-changed" },
       };
-    }, true);
+      },
+      true,
+      context,
+    );
   }
 
   /**
@@ -1338,8 +1457,12 @@ export class WindowStore {
    *
    * mobile에서는 단일 tab을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
-  static addFileExplorerTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static addFileExplorerTab(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1363,7 +1486,10 @@ export class WindowStore {
         state: WindowStore.activateInState(changed, sessionId),
         change: { kind: "tab-added", sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1403,15 +1529,22 @@ export class WindowStore {
    *
    * mobile에서는 단일 tab을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
-  static addChromeTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+  static addChromeTab(
+    sessionId: WindowSessionId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
       if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
       if (state.mode === "mobile") return { kind: "no-op" };
       return WindowStore.addChromeTabCalculation(session, { kind: "new-tab" });
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1420,8 +1553,9 @@ export class WindowStore {
   static activateFileExplorerTab(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.activateTab(sessionId, tabId, "file-explorer");
+    return WindowStore.activateTab(sessionId, tabId, "file-explorer", context);
   }
 
   /**
@@ -1430,8 +1564,9 @@ export class WindowStore {
   static activateChromeTab(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.activateTab(sessionId, tabId, "chrome");
+    return WindowStore.activateTab(sessionId, tabId, "chrome", context);
   }
 
   /**
@@ -1441,13 +1576,16 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId | ChromeTabId,
     kind: WindowSession["kind"],
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> =>
-    WindowStore.enqueue(() => {
+    WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
       if (session.kind !== kind) return WindowStore.reject("session-kind-mismatch");
-      if (!session.tabs.some(({ id }) => id === tabId)) return WindowStore.reject("tab-not-found");
+        if (!session.tabs.some(({ id }) => id === tabId))
+          return WindowStore.reject("tab-not-found");
       if (session.activeTabId === tabId) return { kind: "no-op" };
       return {
         kind: "commit",
@@ -1459,7 +1597,10 @@ export class WindowStore {
         },
         change: { kind: "tab-activated", sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
 
   /**
    * Explorer tab을 닫고 마지막 tab이면 Window도 제거한다.
@@ -1467,8 +1608,9 @@ export class WindowStore {
   static closeFileExplorerTab(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.closeTab(sessionId, tabId, "file-explorer");
+    return WindowStore.closeTab(sessionId, tabId, "file-explorer", context);
   }
 
   /**
@@ -1477,8 +1619,9 @@ export class WindowStore {
   static closeChromeTab(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.closeTab(sessionId, tabId, "chrome");
+    return WindowStore.closeTab(sessionId, tabId, "chrome", context);
   }
 
   /**
@@ -1488,8 +1631,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId | ChromeTabId,
     expectedKind: WindowSession["kind"],
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> =>
-    WindowStore.enqueue(() => {
+    WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1531,7 +1676,10 @@ export class WindowStore {
         state: { ...state, sessions },
         change: { kind: "tab-closed", sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
 
   /**
    * 유효한 Explorer tab에 탐색 변환을 적용한 후보를 만든다. 변환이 null이면 no-op이며 다른 tab과 Session은 보존한다.
@@ -1541,8 +1689,10 @@ export class WindowStore {
     tabId: FileExplorerTabId,
     update: (tab: FileExplorerTab) => FileExplorerTab | null,
     changeKind: WindowStoreChange["kind"],
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> =>
-    WindowStore.enqueue(() => {
+    WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1558,13 +1708,19 @@ export class WindowStore {
           ...state,
           sessions: state.sessions.map((current) =>
             current.id === sessionId
-              ? { ...session, tabs: session.tabs.map((item) => (item.id === tabId ? next : item)) }
+                ? {
+                    ...session,
+                    tabs: session.tabs.map((item) => (item.id === tabId ? next : item)),
+                  }
               : current,
           ),
         },
         change: { kind: changeKind, sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
 
   /**
    * 유효한 Chrome tab에 변환을 적용한 후보를 만든다. 변환이 null이면 no-op이며 다른 tab과 Session은 보존한다.
@@ -1574,8 +1730,10 @@ export class WindowStore {
     tabId: ChromeTabId,
     update: (tab: ChromeTab) => ChromeTab | null,
     changeKind: WindowStoreChange["kind"],
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> =>
-    WindowStore.enqueue(() => {
+    WindowStore.enqueue(
+      () => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
@@ -1591,13 +1749,19 @@ export class WindowStore {
           ...state,
           sessions: state.sessions.map((current) =>
             current.id === sessionId
-              ? { ...session, tabs: session.tabs.map((item) => (item.id === tabId ? next : item)) }
+                ? {
+                    ...session,
+                    tabs: session.tabs.map((item) => (item.id === tabId ? next : item)),
+                  }
               : current,
           ),
         },
         change: { kind: changeKind, sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
 
   /**
    * Explorer tab의 current location으로 이동하고 forward history를 비운다.
@@ -1606,8 +1770,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
     location: FileExplorerLocation,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+    return WindowStore.enqueue(
+      () => {
       const validated = WindowStore.validateFolderLocation(location);
       if (typeof validated === "string") return WindowStore.reject(validated);
       const state = WindowStore.requireSnapshot();
@@ -1635,7 +1801,10 @@ export class WindowStore {
         },
         change: { kind: "tab-navigated", sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1645,8 +1814,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
     location: ChromeLocation,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
-    return WindowStore.enqueue(() => {
+    return WindowStore.enqueue(
+      () => {
       const validated = WindowStore.validateChromeLocation(location);
       if (typeof validated === "string") return WindowStore.reject(validated);
       const state = WindowStore.requireSnapshot();
@@ -1674,7 +1845,10 @@ export class WindowStore {
         },
         change: { kind: "tab-navigated", sessionId, tabId },
       };
-    });
+      },
+      false,
+      context,
+    );
   }
 
   /**
@@ -1683,6 +1857,7 @@ export class WindowStore {
   static goBackFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.updateExplorerTab(
       sessionId,
@@ -1692,6 +1867,7 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-went-back",
+      context,
     );
   }
 
@@ -1701,6 +1877,7 @@ export class WindowStore {
   static goForwardFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.updateExplorerTab(
       sessionId,
@@ -1710,13 +1887,18 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-went-forward",
+      context,
     );
   }
 
   /**
    * Chrome tab에서 이전 entry의 location과 scrollTop을 함께 복원한다.
    */
-  static goBackChrome(sessionId: WindowSessionId, tabId: ChromeTabId): Promise<WindowStoreResult> {
+  static goBackChrome(
+    sessionId: WindowSessionId,
+    tabId: ChromeTabId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
     return WindowStore.updateChromeTab(
       sessionId,
       tabId,
@@ -1725,6 +1907,7 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-went-back",
+      context,
     );
   }
 
@@ -1734,6 +1917,7 @@ export class WindowStore {
   static goForwardChrome(
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.updateChromeTab(
       sessionId,
@@ -1743,6 +1927,7 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-went-forward",
+      context,
     );
   }
 
@@ -1753,9 +1938,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
     scrollTop: number,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     if (!Number.isFinite(scrollTop) || scrollTop < 0) {
-      return WindowStore.enqueue(() => WindowStore.reject("invalid-scroll-top"));
+      return WindowStore.enqueue(() => WindowStore.reject("invalid-scroll-top"), false, context);
     }
     return WindowStore.updateExplorerTab(
       sessionId,
@@ -1765,6 +1951,7 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-scrolled",
+      context,
     );
   }
 
@@ -1775,9 +1962,10 @@ export class WindowStore {
     sessionId: WindowSessionId,
     tabId: ChromeTabId,
     scrollTop: number,
+    context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     if (!Number.isFinite(scrollTop) || scrollTop < 0) {
-      return WindowStore.enqueue(() => WindowStore.reject("invalid-scroll-top"));
+      return WindowStore.enqueue(() => WindowStore.reject("invalid-scroll-top"), false, context);
     }
     return WindowStore.updateChromeTab(
       sessionId,
@@ -1787,18 +1975,24 @@ export class WindowStore {
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-scrolled",
+      context,
     );
   }
 
   /**
    * Chrome tab의 location·history·scroll을 유지하고 reloadRevision만 증가시킨다.
    */
-  static refreshChrome(sessionId: WindowSessionId, tabId: ChromeTabId): Promise<WindowStoreResult> {
+  static refreshChrome(
+    sessionId: WindowSessionId,
+    tabId: ChromeTabId,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
     return WindowStore.updateChromeTab(
       sessionId,
       tabId,
       (tab) => ({ ...tab, reloadRevision: tab.reloadRevision + 1 }),
       "tab-refreshed",
+      context,
     );
   }
 }

@@ -190,6 +190,26 @@ beforeEach(() => {
 });
 
 describe("TaskbarStore", () => {
+  it("명령 context는 commit을 subscriber와 저장보다 먼저 알린다", async () => {
+    const { TaskbarStore, fakeStorage } = await initialize(saved([chrome]));
+    const gate = deferred<void>();
+    const events: string[] = [];
+    fakeStorage.save.mockImplementationOnce(() => {
+      events.push("save");
+      return gate.promise;
+    });
+    TaskbarStore.subscribe(() => events.push("subscriber"));
+
+    const command = TaskbarStore.unpin(chrome, {
+      onCommit: () => events.push("context"),
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(events).toEqual(["context", "subscriber", "save"]);
+    gate.resolve();
+    await expect(command).resolves.toMatchObject({ ok: true });
+  });
+
   it("저장값 없음은 Explorer→Chrome seed를 저장하고 정상 빈 배열은 그대로 복원한다", async () => {
     const seeded = await initialize(null, windowState([]), false);
     expect(keys(seeded.TaskbarStore.getSnapshot().pinnedItems)).toEqual([

@@ -13,6 +13,7 @@
 | [idGenerator/index.ts](./idGenerator/index.ts)                                             | 생성·복구가 공유하는 내부 Web Crypto UUID 발급기          | [idGenerator.test.ts](./idGenerator/idGenerator.test.ts)                                     |
 | [workspaceStore/index.ts](./workspaceStore/index.ts)                                       | 초기화, 검증·동결, 상태, 구독, 명령 계산·직렬화와 저장    | [workspaceStore.test.ts](./workspaceStore/workspaceStore.test.ts)                            |
 | [workspaceStore/operationResult/index.ts](./workspaceStore/operationResult/index.ts)       | domain 결과와 사유별 발생 조건                            | type-only; 결과는 Store 테스트에서 검증                                                      |
+| [operations/index.ts](./operations/index.ts)                                               | create·rename·move Action과 완료 시점 연결                | [operations.test.ts](./operations/operations.test.ts)                                        |
 | [workspaceStore/reconcileWorkspace/index.ts](./workspaceStore/reconcileWorkspace/index.ts) | 중복·stale 참조·잘못된 parent·순환 복구와 새 Content 반영 | [reconcileWorkspace.test.ts](./workspaceStore/reconcileWorkspace/reconcileWorkspace.test.ts) |
 | [workspaceStore/workspaceStorage/index.ts](./workspaceStore/workspaceStorage/index.ts)     | Store가 사용하는 비동기 전체 snapshot 저장 port           | type-only; 저장 조율은 Store 테스트에서 검증                                                 |
 
@@ -91,6 +92,8 @@ unsubscribe(); // 소비자 정리 시 구독 해제
 ```
 
 실제 호출부는 생성·이동 결과도 이름 변경처럼 처리한다. 예상하지 못한 예외나 초기화 오류는 domain 결과와 별개로 처리해야 한다. `subscribe`는 등록 즉시 호출하지 않으며 알림에서 저장 완료를 의미하지도 않는다. 현재 snapshot은 직접 읽고, 변경은 명령으로만 요청한다.
+
+제품 Action 경계에서는 `WorkspaceOperations.execute`를 사용한다. 목록 queue는 create·rename·move를 순서대로 실행하고 `committed`는 메모리 반영 직후, `settled`는 Store의 저장 성공 또는 rollback 없는 저장 실패까지 끝난 뒤 완료된다. Workspace 변경은 이 단계에서 별도 UI transition을 소유하지 않으므로 `presented`는 `not-required`다.
 
 ## Command queue 원리
 

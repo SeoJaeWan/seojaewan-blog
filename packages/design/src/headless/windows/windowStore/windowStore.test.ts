@@ -184,6 +184,26 @@ describe("WindowStore", () => {
     });
   });
 
+  describe("command context", () => {
+    it("생성 ID를 일반 subscriber보다 먼저 해당 명령 context에 알린다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      const events: string[] = [];
+      WindowStore.subscribe(() => events.push("subscriber"));
+
+      const result = await WindowStore.createChromeWindow(undefined, {
+        onCommit: (committed) => {
+          events.push(`context:${committed.change.sessionId}`);
+          expect(committed.value).toBe(WindowStore.getSnapshot());
+        },
+      });
+
+      expect(result).toMatchObject({ ok: true, changed: true });
+      expect(events[0]).toMatch(/^context:/);
+      expect(events[1]).toBe("subscriber");
+    });
+  });
+
   describe.each(["createChromeWindow", "createFileExplorerWindow"] as const)("%s", (method) => {
     it("첫 tab을 가진 visible·active 창을 추가하고 한 번 알린다", async () => {
       const { WindowStore, initialization } = await setup();

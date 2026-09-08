@@ -11,8 +11,20 @@ export {
   type StartSnapshot,
 } from "./model/index.js";
 export {
+  START_OPERATION_TARGET,
+  type StartAction,
+  type StartCommittedResult,
+  type StartOperationHandle,
+  StartOperations,
+  type StartOperationsOptions,
+  type StartOperationStore,
+  type StartPresentedResult,
+  type StartSettledResult,
+} from "./operations/index.js";
+export {
   StartStore,
   StartStoreAlreadyInitializedError,
+  type StartStoreCommandContext,
   type StartStoreInitialization,
   StartStoreNotInitializedError,
 } from "./startStore/index.js";

@@ -18,6 +18,16 @@ export {
   type WindowState,
 } from "./model/index.js";
 export { type NavigationEntry, type NavigationState } from "./navigation/index.js";
+export {
+  type WindowAction,
+  type WindowCommittedResult,
+  type WindowOperationHandle,
+  WindowOperations,
+  type WindowOperationsOptions,
+  type WindowOperationStore,
+  type WindowPresentedResult,
+  type WindowSettledResult,
+} from "./operations/index.js";
 export { selectWindowRoute } from "./routeSelector/index.js";
 export { type WindowSessionId } from "./windowSessionId/index.js";
 export {
@@ -25,6 +35,7 @@ export {
   WindowStoreAlreadyInitializedError,
   type WindowStoreChange,
   type WindowStoreChangeKind,
+  type WindowStoreCommandContext,
   type WindowStoreCommittedResult,
   type WindowStoreFailureReason,
   type WindowStoreInitialization,
