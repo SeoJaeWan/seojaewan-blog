@@ -4,10 +4,10 @@ import { clsx } from "clsx";
 
 import type { TaskbarTimestampValue } from "../../../../headless/taskbar/index.js";
 
-import "./taskbarTimestampUI.css";
+import "./taskbarTimestamp.css";
 
 /** Timestamp 고유 표시를 제외한 native div 속성이다. */
-export type TaskbarTimestampUIProps = Omit<
+export type TaskbarTimestampProps = Omit<
   ComponentPropsWithRef<"div">,
   "children" | "dangerouslySetInnerHTML"
 > &
@@ -22,7 +22,7 @@ export type TaskbarTimestampUIProps = Omit<
  * timer와 형식 계산은 Timestamp headless controller가 소유한다. 준비 전에는 hydration과 같은
  * geometry를 유지하는 `aria-hidden` skeleton을 렌더링하며 interaction이나 live announce를 만들지 않는다.
  */
-export const TaskbarTimestampUI = ({ className, value, ...props }: TaskbarTimestampUIProps) => (
+export const TaskbarTimestamp = ({ className, value, ...props }: TaskbarTimestampProps) => (
   <div
     {...props}
     className={clsx("taskbar-timestamp", className)}

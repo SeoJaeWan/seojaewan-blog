@@ -3,7 +3,4 @@
  *
  * panel 상태와 Root Action 연결은 각각 후속 panel과 Taskbar Root가 소유한다.
  */
-export {
-  TaskbarStartButtonUI,
-  type TaskbarStartButtonUIProps,
-} from "./taskbarStartButtonUI.js";
+export { TaskbarStartButton, type TaskbarStartButtonProps } from "./taskbarStartButton.js";

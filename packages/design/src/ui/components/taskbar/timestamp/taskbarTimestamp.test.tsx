@@ -9,7 +9,7 @@ import type {
   TaskbarTimestampTimer,
 } from "../../../../headless/taskbar/index.js";
 import { useTaskbarTimestampController } from "../../../../headless/taskbar/index.js";
-import { TaskbarTimestampUI } from "./taskbarTimestampUI.js";
+import { TaskbarTimestamp } from "./taskbarTimestamp.js";
 
 const HYDRATION_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** hydration fixture의 고정 local Date를 반환한다. */
@@ -23,15 +23,15 @@ const HYDRATION_CLOCK: TaskbarTimestampClock = Object.freeze({
 /** 실제 Timestamp controller와 읽기 전용 Component를 조합한다. */
 const TimestampControllerProbe = () => {
   const timestamp = useTaskbarTimestampController(HYDRATION_CLOCK);
-  return <TaskbarTimestampUI value={timestamp.value} />;
+  return <TaskbarTimestamp value={timestamp.value} />;
 };
 
 afterEach(() => cleanup());
 
-describe("TaskbarTimestampUI", () => {
+describe("TaskbarTimestamp", () => {
   it("현재 시간과 날짜를 interaction 없는 읽기 전용 두 줄 text로 표시한다", () => {
     const { container } = render(
-      <TaskbarTimestampUI value={{ time: "15:42", date: "2026-07-10" }} />,
+      <TaskbarTimestamp value={{ time: "15:42", date: "2026-07-10" }} />,
     );
     const timestamp = container.querySelector(".taskbar-timestamp");
 
@@ -42,7 +42,7 @@ describe("TaskbarTimestampUI", () => {
   });
 
   it("준비 전에는 announce하지 않는 두 줄 skeleton을 같은 root에 표시한다", () => {
-    const { container } = render(<TaskbarTimestampUI value={null} />);
+    const { container } = render(<TaskbarTimestamp value={null} />);
     const timestamp = container.querySelector(".taskbar-timestamp");
     const skeleton = container.querySelector(".taskbar-timestamp__skeleton");
 

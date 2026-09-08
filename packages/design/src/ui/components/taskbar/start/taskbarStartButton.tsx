@@ -5,10 +5,10 @@ import { clsx } from "clsx";
 
 import windowsLogoSrc from "../../../assets/taskbar/windows.svg";
 
-import "./taskbarStartButtonUI.css";
+import "./taskbarStartButton.css";
 
 /** 시작 버튼의 고정 제품 의미를 제외한 native button 입력이다. */
-export type TaskbarStartButtonUIProps = Omit<
+export type TaskbarStartButtonProps = Omit<
   ComponentPropsWithRef<"button">,
   "aria-label" | "aria-pressed" | "children" | "dangerouslySetInnerHTML" | "onClick" | "type"
 > &
@@ -24,12 +24,12 @@ export type TaskbarStartButtonUIProps = Omit<
  *
  * panel 관계와 open 상태 전이는 소유하지 않으며 `selected`는 현재 표현 입력으로만 사용한다.
  */
-export const TaskbarStartButtonUI = ({
+export const TaskbarStartButton = ({
   className,
   onAction,
   selected = false,
   ...props
-}: TaskbarStartButtonUIProps) => (
+}: TaskbarStartButtonProps) => (
   <Button
     {...props}
     aria-label="시작"

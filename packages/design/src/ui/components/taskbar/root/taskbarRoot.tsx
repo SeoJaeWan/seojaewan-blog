@@ -9,15 +9,15 @@ import {
   useTaskbarRootController,
   useTaskbarTimestampController,
 } from "../../../../headless/taskbar/index.js";
-import { TaskbarMobileApplicationButtonUI } from "../mobile/index.js";
-import { TaskbarSearchUI } from "../search/index.js";
-import { TaskbarStartButtonUI } from "../start/index.js";
-import { TaskbarTimestampUI } from "../timestamp/index.js";
+import { TaskbarApplicationButton } from "../items/index.js";
+import { TaskbarSearch } from "../search/index.js";
+import { TaskbarStartButton } from "../start/index.js";
+import { TaskbarTimestamp } from "../timestamp/index.js";
 
-import "./taskbarRootUI.css";
+import "./taskbarRoot.css";
 
 /** Taskbar Root의 고정 제품 의미를 제외한 native nav 속성이다. */
-export type TaskbarRootUIProps = Omit<
+export type TaskbarRootProps = Omit<
   ComponentPropsWithRef<"nav">,
   "aria-label" | "children" | "dangerouslySetInnerHTML"
 > &
@@ -30,6 +30,12 @@ export type TaskbarRootUIProps = Omit<
     searchSelected?: boolean;
     /** 제품 준비 상태에 따라 Search trigger 입력을 막는다. */
     searchDisabled?: boolean;
+    /** 외부 query 소유자가 제어하는 검색어다. */
+    searchValue?: string;
+    /** 독립 입력 모드의 초기 검색어다. */
+    defaultSearchValue?: string;
+    /** 입력한 검색어를 소유자에게 전달한다. */
+    onSearchValueChange?: (value: string) => void;
     /** 기본 system clock 대신 deterministic host가 선택적으로 주입할 Timestamp clock이다. */
     timestampClock?: TaskbarTimestampClock;
   }>;
@@ -41,15 +47,18 @@ export type TaskbarRootUIProps = Omit<
  * Search trigger와 함께 mobile에서는 숨긴다. Timestamp는 별도 controller의 local clock을 소비해
  * desktop/mobile에 모두 표시하며 실제 실행 항목은 해당 요소가 구현될 때 연결한다.
  */
-export const TaskbarRootUI = ({
+export const TaskbarRoot = ({
   className,
   searchDisabled = false,
+  searchValue,
+  defaultSearchValue,
+  onSearchValueChange,
   searchSelected = false,
   timestampClock,
   windowsDisabled = false,
   windowsSelected = false,
   ...props
-}: TaskbarRootUIProps) => {
+}: TaskbarRootProps) => {
   const { actions, viewModel } = useTaskbarRootController();
   const timestamp = useTaskbarTimestampController(timestampClock);
   const mode = viewModel.status === "ready" ? viewModel.snapshot.mode : undefined;
@@ -64,13 +73,16 @@ export const TaskbarRootUI = ({
     >
       {mode === "desktop" ? (
         <div className="taskbar-root__items" data-taskbar-region="items">
-          <TaskbarStartButtonUI
+          <TaskbarStartButton
             disabled={windowsDisabled}
             onAction={() => actions.execute(createTaskbarWindowsAction())}
             selected={windowsSelected}
           />
-          <TaskbarSearchUI
+          <TaskbarSearch
             disabled={searchDisabled}
+            value={searchValue}
+            defaultValue={defaultSearchValue}
+            onValueChange={onSearchValueChange}
             onAction={() => actions.execute(createTaskbarSearchAction())}
             selected={searchSelected}
           />
@@ -89,7 +101,7 @@ export const TaskbarRootUI = ({
           {viewModel.snapshot.mobileView
             .filter((item) => item.kind === "application")
             .map((application) => (
-              <TaskbarMobileApplicationButtonUI
+              <TaskbarApplicationButton
                 application={application}
                 key={application.applicationId}
                 onAction={actions.launchMobileApplication}
@@ -98,7 +110,7 @@ export const TaskbarRootUI = ({
         </div>
       ) : null}
       {mode === "desktop" || mode === "mobile" ? (
-        <TaskbarTimestampUI value={timestamp.value} />
+        <TaskbarTimestamp value={timestamp.value} />
       ) : null}
     </nav>
   );

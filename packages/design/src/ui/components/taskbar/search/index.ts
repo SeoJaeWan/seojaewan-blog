@@ -3,4 +3,4 @@
  *
  * panel, query와 recent 구현은 포함하지 않고 props 기반 trigger만 공개한다.
  */
-export { TaskbarSearchUI, type TaskbarSearchUIProps } from "./taskbarSearchUI.js";
+export { TaskbarSearch, type TaskbarSearchProps } from "./taskbarSearch.js";

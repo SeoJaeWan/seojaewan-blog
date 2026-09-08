@@ -78,7 +78,7 @@ trigger는 panel 상태를 만들지 않고 각각 `{ type: "request-windows" }`
 Chrome 입력은 `createMobileTaskbarApplicationIntent()`와 `executeTaskbarWindowOperationIntent()`를 거쳐
 기존 Window Operation의 `{ type: "launch-mobile-application", applicationId }` Action으로 전달한다.
 active application을 다시 누른 경우도 같은 Action을 보내며 same-app no-op과 application 교체는 기존
-Window headless 계약이 판정한다. `TaskbarRootUI`는 같은 Provider 안에서 이 값을 소비하며, 준비 전에는
+Window headless 계약이 판정한다. `TaskbarRoot`는 같은 Provider 안에서 이 값을 소비하며, 준비 전에는
 안정적인 `not-ready` surface를 렌더링한다.
 
 `useTaskbarTimestampController()`는 Application callback 없이 mount 즉시 현재 `Date`를 읽고
@@ -99,12 +99,25 @@ const runtime = createHeadlessRuntime({
 });
 
 <HeadlessRuntimeProvider runtime={runtime}>
-  <TaskbarRootUI />
+  <TaskbarRoot />
 </HeadlessRuntimeProvider>;
 ```
 
 현재 Root는 desktop에서 Windows→Search→빈 실행 항목 배치 영역→Timestamp, mobile에서
-파일 탐색기→Chrome→Timestamp 순서를 제공한다. Mobile 버튼은 legacy File Explorer·Chrome asset을
-30px로 표시하고 Base UI Button을 직접 조합한다. 각 `selected` 입력은 실제 panel 관계 없이 표현만
-제어하며 panel·query·recent와 desktop Group·indicator·click·drag는 각 소유 요소와 후속 작업에서
-production Component로 연결한다.
+파일 탐색기→Chrome→Timestamp 순서를 제공한다. `TaskbarApplicationButton`은 앱 identity·label·active
+표현과 callback을 받아 두 화면에서 사용할 수 있다. mobile Root는 기존 mobile Action을 연결하며
+향후 desktop Group은 자신의 실행 정책을 연결한다. 버튼 내부에서 mode나 Window 정책을 계산하지 않는다.
+
+`TaskbarSearch`는 Base UI Input을 직접 조합한다. 클릭·Tab focus로 진입하면 `request-search`를 보내며,
+재클릭·문자·공백 입력은 추가 열기 요청을 보내지 않는다. `value`/`onValueChange`로 검색어를 제어하거나
+`defaultValue`로 독립 입력을 제공한다. Root에서는 `searchValue`/`onSearchValueChange` 또는
+`defaultSearchValue`로 연결한다. 한글 조합·공백을 정규화하지 않고 그대로 전달한다.
+
+```tsx
+<TaskbarRoot searchValue={query} onSearchValueChange={setQuery} />
+<TaskbarSearch value={query} onValueChange={setQuery} onAction={requestSearch} />
+```
+
+각 `selected` 입력은 외부 선택 표현이며 실제 panel 관계를 만들지 않는다. 검색 결과·recent·panel과
+desktop Group·indicator·click·drag는 후속 작업에서 연결한다. Storybook은 상태 의미와 조작법,
+관찰 가능한 입력값·Action을 설명하며 실제 Window 완료를 가짜로 처리하지 않는다.

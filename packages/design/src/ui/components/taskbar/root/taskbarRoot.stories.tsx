@@ -1,4 +1,4 @@
-import { type CSSProperties, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
@@ -16,7 +16,7 @@ import type {
   WindowState,
 } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
-import { TaskbarRootUI } from "./taskbarRootUI.js";
+import { TaskbarRoot } from "./taskbarRoot.js";
 
 const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** plan의 Asia/Seoul 고정 wall-clock과 같은 local Date를 반환한다. */
@@ -26,16 +26,6 @@ const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** visual fixture에는 취소할 실제 timer가 없다. */
   clearTimeout: () => undefined,
 });
-
-const visuallyHiddenStyle = {
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  whiteSpace: "nowrap",
-  width: 1,
-} satisfies CSSProperties;
 
 /** Story가 지정한 공통 mode 또는 준비 전 상태를 제공하는 최소 Window runtime을 만든다. */
 const createStoryRuntime = (
@@ -96,6 +86,7 @@ const RootStory = ({
   windowsDisabled?: boolean;
   windowsSelected?: boolean;
 }) => {
+  const [query, setQuery] = useState("");
   const [windowsRequestCount, setWindowsRequestCount] = useState(0);
   const [searchRequestCount, setSearchRequestCount] = useState(0);
   const [mobileActionCount, setMobileActionCount] = useState(0);
@@ -123,25 +114,30 @@ const RootStory = ({
 
   return (
     <HeadlessRuntimeProvider runtime={runtime}>
-      <TaskbarRootUI
+      <TaskbarRoot
+        searchValue={query}
+        onSearchValueChange={setQuery}
         searchDisabled={searchDisabled}
         searchSelected={searchSelected}
         timestampClock={STORY_TIMESTAMP_CLOCK}
         windowsDisabled={windowsDisabled}
         windowsSelected={windowsSelected}
       />
-      <output aria-label="Windows Action 횟수" style={visuallyHiddenStyle}>
-        {windowsRequestCount}
-      </output>
-      <output aria-label="Search Action 횟수" style={visuallyHiddenStyle}>
-        {searchRequestCount}
-      </output>
-      <output aria-label="Mobile Action 횟수" style={visuallyHiddenStyle}>
-        {mobileActionCount}
-      </output>
-      <output aria-label="마지막 Mobile application" style={visuallyHiddenStyle}>
-        {lastMobileApplication}
-      </output>
+      <p>
+        현재 검색어: <output aria-label="현재 검색어">{query || "(비어 있음)"}</output>
+      </p>
+      <p>
+        시작 요청: <output aria-label="Windows Action 횟수">{windowsRequestCount}</output>
+      </p>
+      <p>
+        검색 진입: <output aria-label="Search Action 횟수">{searchRequestCount}</output>
+      </p>
+      <p>
+        앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
+      </p>
+      <p>
+        마지막 앱: <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
+      </p>
     </HeadlessRuntimeProvider>
   );
 };
@@ -160,7 +156,7 @@ const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) 
   if (mode === "desktop") {
     const canvas = within(canvasElement);
     const windowsBounds = canvas.getByRole("button", { name: "시작" }).getBoundingClientRect();
-    const searchBounds = canvas.getByRole("button", { name: "검색 열기" }).getBoundingClientRect();
+    const searchBounds = canvas.getByRole("textbox", { name: "검색" }).getBoundingClientRect();
     await expect(windowsBounds.width).toBe(40);
     await expect(windowsBounds.height).toBe(40);
     await expect(searchBounds.width).toBe(220);
@@ -182,7 +178,7 @@ const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) 
     await expect(chromeBounds.height).toBe(40);
     await expect(chromeBounds.left - fileExplorerBounds.right).toBe(12);
     await expect(canvas.queryByRole("button", { name: "시작" })).toBeNull();
-    await expect(canvas.queryByRole("button", { name: "검색 열기" })).toBeNull();
+    await expect(canvas.queryByRole("textbox", { name: "검색" })).toBeNull();
   }
 
   const timestamp = within(canvasElement).getByText("15:24").parentElement;
@@ -196,8 +192,21 @@ const verifyRootGeometry = async (canvasElement: HTMLElement, mode: WindowMode) 
 
 const meta = {
   title: "Design/Components/Taskbar/Root",
-  component: TaskbarRootUI,
+  component: TaskbarRoot,
   tags: ["autodocs"],
+  decorators: [
+    (Story, context) => (
+      <div>
+        <p>
+          {
+            (context.parameters.docs as { description?: { story?: string } } | undefined)
+              ?.description?.story
+          }
+        </p>
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     controls: { disable: true },
     docs: {
@@ -211,13 +220,21 @@ const meta = {
     },
     layout: "fullscreen",
   },
-} satisfies Meta<typeof TaskbarRootUI>;
+} satisfies Meta<typeof TaskbarRoot>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 export const Desktop: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "데스크톱 구성과 입력 연결을 자동 확인합니다. 검색창에 직접 입력하면 현재 검색어가 갱신됩니다. 패널과 실행 중 앱 목록은 후속 작업입니다.",
+      },
+    },
+  },
   render: () => <RootStory mode="desktop" />,
   play: async ({ canvasElement }) => {
     await verifyRootGeometry(canvasElement, "desktop");
@@ -226,12 +243,19 @@ export const Desktop: Story = {
     await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
       "1",
     );
-    await userEvent.click(canvas.getByRole("button", { name: "검색 열기" }));
+    await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
     await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("1");
   },
 };
 
 export const WindowsSelected: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "시작 버튼의 지속 선택 표현입니다. 실제 시작 패널은 아직 연결하지 않았습니다.",
+      },
+    },
+  },
   render: () => <RootStory mode="desktop" windowsSelected />,
   play: async ({ canvasElement }) => {
     const windows = within(canvasElement).getByRole("button", { name: "시작" });
@@ -240,6 +264,13 @@ export const WindowsSelected: Story = {
 };
 
 export const WindowsDisabled: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "시작 버튼만 사용할 수 없는 상태입니다. 검색창은 독립적으로 입력할 수 있습니다.",
+      },
+    },
+  },
   render: () => <RootStory mode="desktop" windowsDisabled />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -251,9 +282,17 @@ export const WindowsDisabled: Story = {
 };
 
 export const SearchSelected: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "검색창의 외부 선택 표현입니다. 직접 입력할 수 있으며 결과 패널은 아직 연결하지 않았습니다.",
+      },
+    },
+  },
   render: () => <RootStory mode="desktop" searchSelected />,
   play: async ({ canvasElement }) => {
-    const search = within(canvasElement).getByRole("button", { name: "검색 열기" });
+    const search = within(canvasElement).getByRole("textbox", { name: "검색" });
     await expect(search).toHaveAttribute("data-selected", "true");
     await expect(search).not.toHaveAttribute("aria-expanded");
     await expect(search).not.toHaveAttribute("aria-controls");
@@ -261,10 +300,15 @@ export const SearchSelected: Story = {
 };
 
 export const SearchDisabled: Story = {
+  parameters: {
+    docs: {
+      description: { story: "검색창만 입력할 수 없는 상태입니다. 시작 버튼은 사용할 수 있습니다." },
+    },
+  },
   render: () => <RootStory mode="desktop" searchDisabled />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "검색 열기" }));
+    await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
     await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("0");
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
     await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
@@ -274,6 +318,14 @@ export const SearchDisabled: Story = {
 };
 
 export const Mobile: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "파일 탐색기 → Chrome → 시간 순서입니다. 자동 입력 후 요청 횟수·대상과 포커스를 보여 줍니다. 실제 창 완료는 검증하지 않습니다.",
+      },
+    },
+  },
   render: () => <RootStory mode="mobile" />,
   play: async ({ canvasElement }) => {
     await verifyRootGeometry(canvasElement, "mobile");
@@ -304,6 +356,14 @@ export const Mobile: Story = {
 };
 
 export const MobileChromeActive: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Chrome이 활성 상태여도 입력 요청을 전달합니다. 현재 창 유지 여부는 mobile headless 정책이 결정합니다.",
+      },
+    },
+  },
   render: () => <RootStory activeApplication="chrome" mode="mobile" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -318,5 +378,10 @@ export const MobileChromeActive: Story = {
 };
 
 export const NotReady: Story = {
+  parameters: {
+    docs: {
+      description: { story: "공통 Window 상태 준비 전에는 빈 Taskbar surface만 표시합니다." },
+    },
+  },
   render: () => <RootStory />,
 };

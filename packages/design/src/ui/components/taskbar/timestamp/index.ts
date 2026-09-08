@@ -3,4 +3,4 @@
  *
  * local 시간 계산과 timer lifecycle은 headless Timestamp API가 소유한다.
  */
-export { TaskbarTimestampUI, type TaskbarTimestampUIProps } from "./taskbarTimestampUI.js";
+export { TaskbarTimestamp, type TaskbarTimestampProps } from "./taskbarTimestamp.js";
