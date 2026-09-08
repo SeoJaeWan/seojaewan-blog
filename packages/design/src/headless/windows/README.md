@@ -42,7 +42,7 @@ async function initializeWindows(contentCatalog: ContentCatalogReader) {
 }
 ```
 
-정적 Store이므로 서버 요청 사이에서 사용자 상태를 공유하는 용도로 초기화하면 안 된다. 초기화 전 접근과 다른 dependency 재연결은 lifecycle 오류다. 같은 초기화 요청인지 비교할 때 reader와 `placementConfig`의 참조도 사용하므로 연결 객체를 안정적으로 유지한다. 실행 중 변경은 `setMode`와 `setWorkArea`를 사용한다.
+정적 Store이므로 서버 요청 사이에서 사용자 상태를 공유하는 용도로 초기화하면 안 된다. 초기화 전 접근과 다른 dependency 재연결은 lifecycle 오류다. 같은 초기화 요청인지 비교할 때 reader와 `placementConfig`의 참조도 사용하므로 연결 객체를 안정적으로 유지한다. 실행 중 responsive 변경은 `setMode`와 `setWorkArea`를 같은 측정 cycle에서 연속 호출한다. 두 명령은 어느 순서로 와도 desktop frame을 보존하지만, 사이에 무관한 제품 명령을 끼우지 않는다.
 
 ## 명령과 결과
 
@@ -62,6 +62,8 @@ Folder 기본 열기는 `openFolder(folderRef)`, Content 기본 열기는 `openC
 
 Chrome의 `addChromeTab`, `navigateChrome`, `goBackChrome`, `goForwardChrome`, `setChromeScrollTop`, `refreshChrome`은 Session·tab ID를 받는다. Explorer에도 대응하는 tab·history·scroll 명령이 있다. 각 함수의 입력과 오류 조건은 해당 JSDoc을 확인한다.
 
+mobile Taskbar의 고정 앱 버튼은 `launchMobileApplication("file-explorer" | "chrome")`을 사용한다. 현재 앱은 Session·tab·history를 그대로 두는 no-op이고 다른 앱은 Explorer의 Desktop 위치(`null`) 또는 Chrome `new-tab` 창으로 한 commit에 교체된다. desktop 호출은 `mobile-mode-required`로 거부된다. mobile의 `minimize`, `addFileExplorerTab`, `addChromeTab`, move·resize·maximize는 ID 발급·snapshot 교체·알림이 없는 no-op이다. `openContent`는 현재 mobile Chrome의 유일한 tab history에서 navigate하고 Explorer가 열려 있으면 Chrome 하나로 교체한다.
+
 명령은 queue에서 순차 실행되며 반환 Promise는 semantic 상태 반영과 동기 구독 알림 이후 완료된다. animation이나 router 완료를 기다리는 Promise는 아니다. 알림 안에서 요청한 다음 명령은 현재 commit 뒤에 실행된다.
 
 ## 구독과 읽기
@@ -75,7 +77,7 @@ const unsubscribe = WindowStore.subscribe(() => {
 unsubscribe();
 ```
 
-snapshot은 중첩 객체까지 읽기 전용이다. 직접 수정하지 않고 Store 명령을 사용한다. `getWindowBounds(frame, workArea)`는 표시할 사각형을 반환하고, `selectWindowRoute(snapshot, contentCatalog)`는 현재 주소를 반환한다. raw URL 파싱과 실제 router 호출은 Application에서 수행한다.
+snapshot은 중첩 객체까지 읽기 전용이다. 직접 수정하지 않고 Store 명령을 사용한다. `getWindowBounds(frame, workArea, mode)`는 mobile이면 전체 workArea, desktop이면 placement에 맞는 사각형을 반환하고, `selectWindowRoute(snapshot, contentCatalog)`는 현재 주소를 반환한다. raw URL 파싱과 실제 router 호출은 Application에서 수행한다.
 
 모바일 전환과 종료 정책의 정본은 `taskbar-mobile`, 주소 투영의 정본은 `application-resource-routing-404`와 `chrome-tab-navigation-history`다. WindowStore는 Workspace를 저장하거나 수정하지 않는다.
 

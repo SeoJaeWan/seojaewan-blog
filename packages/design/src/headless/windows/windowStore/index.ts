@@ -35,6 +35,7 @@ import {
 import type {
   ChromeWindowSession,
   FileExplorerWindowSession,
+  WindowApplicationId,
   WindowMode,
   WindowRect,
   WindowSession,
@@ -114,6 +115,12 @@ type IdIssue =
       ok: false;
       reason: "duplicate-runtime-id" | "runtime-id-unavailable";
     }>;
+/**
+ * desktop workArea가 mode보다 먼저 바뀌었을 때 mobile 전환까지 보류할 이전 frame 좌표다.
+ */
+type PendingDesktopWorkAreaChange = Readonly<{
+  previousBounds: ReadonlyMap<WindowSessionId, WindowRect>;
+}>;
 
 /**
  * Desktop의 null은 유지하고 Folder ref는 복사·동결해 외부 변경으로부터 분리한다.
@@ -326,6 +333,10 @@ export class WindowStore {
   private static commandQueue: Promise<void> = Promise.resolve();
   private static readonly listeners = new Set<Listener>();
   private static readonly issuedIds = new Set<string>();
+  private static pendingDesktopWorkAreaChange: PendingDesktopWorkAreaChange | null = null;
+  private static awaitingMobileWorkArea = false;
+  private static mobileWorkAreaReadyForDesktop = false;
+  private static awaitingDesktopWorkArea = false;
 
   /**
    * instance 생성을 막고 브라우저 runtime의 정적 상태만 사용한다.
@@ -433,6 +444,9 @@ export class WindowStore {
       if (session.tabs.length === 0 || !session.tabs.some(({ id }) => id === session.activeTabId)) {
         throw new Error("WindowSession에는 유효한 active tab이 필요합니다");
       }
+      if (state.mode === "mobile" && (session.tabs.length !== 1 || session.frame.minimized)) {
+        throw new Error("mobile WindowSession은 visible active tab 하나만 가져야 합니다");
+      }
       for (const tab of session.tabs) {
         if (allTabIds.has(tab.id)) throw new Error("Window tab ID가 중복되었습니다");
         allTabIds.add(tab.id);
@@ -473,7 +487,10 @@ export class WindowStore {
   /**
    * 계산을 직렬 queue에 넣어 실행 시점의 최신 상태를 사용하게 한다. no-op·거부는 commit하지 않으며 한 명령 실패 뒤에도 queue를 이어 간다.
    */
-  private static enqueue = (calculate: () => Calculation): Promise<WindowStoreResult> => {
+  private static enqueue = (
+    calculate: () => Calculation,
+    responsiveCommand = false,
+  ): Promise<WindowStoreResult> => {
     WindowStore.requireInitialization();
     /**
      * 대기한 명령을 실행해 거부·no-op·commit으로 구분한다. geometry 오류는 tagged 실패로 변환하고 다른 예외는 호출자에게 전달한다.
@@ -491,7 +508,14 @@ export class WindowStore {
             value: WindowStore.requireSnapshot(),
           };
         }
-        return WindowStore.commit(result.state, result.change);
+        const committed = WindowStore.commit(result.state, result.change);
+        if (!responsiveCommand) {
+          WindowStore.pendingDesktopWorkAreaChange = null;
+          WindowStore.awaitingMobileWorkArea = false;
+          WindowStore.mobileWorkAreaReadyForDesktop = false;
+          WindowStore.awaitingDesktopWorkArea = false;
+        }
+        return committed;
       } catch (error) {
         if (error instanceof InvalidWindowGeometryError) {
           return { ok: false, changed: false, reason: "invalid-geometry" };
@@ -676,6 +700,27 @@ export class WindowStore {
         };
 
   /**
+   * mobile-created 표식이 있으면 첫 desktop 기본 배치를 만들고, 아니면 기존 frame 위치만 새 workArea에 복구한다.
+   */
+  private static applyDesktopWorkArea = (
+    state: WindowState,
+    workArea: WindowRect,
+  ): WindowSession[] => {
+    const config = WindowStore.requirePlacementConfig();
+    return state.sessions.map((session) => {
+      const { desktopPlacementPending, ...base } = session;
+      const normalBounds =
+        desktopPlacementPending === true
+          ? createWindowBounds(workArea, null, config)
+          : recoverWindowBounds(session.frame.normalBounds, workArea, config);
+      return {
+        ...base,
+        frame: { ...session.frame, normalBounds },
+      };
+    });
+  };
+
+  /**
    * 새 Explorer Session과 첫 tab의 ID·배치를 계산한다. 후보 생성 실패는 기존 창을 보존하고 실제 반영은 commit에 맡긴다.
    */
   private static createFileExplorer = (
@@ -708,6 +753,7 @@ export class WindowStore {
       },
       tabs: [{ id: tabId, navigation: createNavigation(location) }],
       activeTabId: tabId,
+      ...(state.mode === "mobile" ? { desktopPlacementPending: true } : {}),
     };
     return {
       kind: "commit",
@@ -719,7 +765,10 @@ export class WindowStore {
   /**
    * 새 Chrome Session과 첫 tab의 ID·배치를 계산한다. 후보 생성 실패는 기존 창을 보존하고 실제 반영은 commit에 맡긴다.
    */
-  private static createChrome = (location: ChromeLocation): Calculation => {
+  private static createChrome = (
+    location: ChromeLocation,
+    changeKind: WindowStoreChange["kind"] = "window-created",
+  ): Calculation => {
     const state = WindowStore.requireSnapshot();
     const reserved = new Set<string>();
     const sessionIssue = WindowStore.issueId(reserved);
@@ -746,11 +795,12 @@ export class WindowStore {
       },
       tabs: [{ id: tabId, navigation: createNavigation(location), reloadRevision: 0 }],
       activeTabId: tabId,
+      ...(state.mode === "mobile" ? { desktopPlacementPending: true } : {}),
     };
     return {
       kind: "commit",
       state: WindowStore.withCreatedSession(state, session),
-      change: { kind: "window-created", sessionId, tabId },
+      change: { kind: changeKind, sessionId, tabId },
     };
   };
 
@@ -828,6 +878,10 @@ export class WindowStore {
         activeSessionId: null,
       };
       WindowStore.assertCandidate(initial);
+      WindowStore.pendingDesktopWorkAreaChange = null;
+      WindowStore.awaitingMobileWorkArea = false;
+      WindowStore.mobileWorkAreaReadyForDesktop = false;
+      WindowStore.awaitingDesktopWorkArea = false;
       WindowStore.snapshot = freezeWindowState(initial);
       return Promise.resolve({
         ok: true,
@@ -863,15 +917,71 @@ export class WindowStore {
    * responsive adapter가 전달한 명시적 mode로 전환한다.
    *
    * desktop→mobile 정리는 Chrome explicit close 복귀를 실행하지 않고 한 snapshot으로 반영한다.
+   * `setWorkArea`와 바로 이어지는 responsive pair는 어느 순서로 와도 desktop frame을 보존한다.
    */
   static setMode(mode: WindowMode): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       if (mode !== "desktop" && mode !== "mobile") return WindowStore.reject("invalid-mode");
       const state = WindowStore.requireSnapshot();
-      const next = transitionWindowMode(state, mode);
-      return next === null
-        ? { kind: "no-op" }
-        : { kind: "commit", state: next, change: { kind: "mode-changed" } };
+      if (state.mode === mode) return { kind: "no-op" };
+
+      if (mode === "mobile") {
+        const pending = WindowStore.pendingDesktopWorkAreaChange;
+        const source =
+          pending === null
+            ? state
+            : {
+                ...state,
+                sessions: state.sessions.map((session) => {
+                  const normalBounds = pending.previousBounds.get(session.id);
+                  return normalBounds === undefined
+                    ? session
+                    : { ...session, frame: { ...session.frame, normalBounds } };
+                }),
+              };
+        const next = transitionWindowMode(source, mode);
+        if (next === null) return { kind: "no-op" };
+        WindowStore.awaitingMobileWorkArea = pending === null;
+        WindowStore.mobileWorkAreaReadyForDesktop = false;
+        WindowStore.awaitingDesktopWorkArea = false;
+        WindowStore.pendingDesktopWorkAreaChange = null;
+        return { kind: "commit", state: next, change: { kind: "mode-changed" } };
+      }
+
+      const transitioned = transitionWindowMode(state, mode);
+      if (transitioned === null) return { kind: "no-op" };
+      const applyCurrentWorkArea = WindowStore.mobileWorkAreaReadyForDesktop;
+      const next = applyCurrentWorkArea
+        ? {
+            ...transitioned,
+            sessions: WindowStore.applyDesktopWorkArea(transitioned, state.workArea),
+          }
+        : transitioned;
+      WindowStore.awaitingDesktopWorkArea = !applyCurrentWorkArea;
+      WindowStore.awaitingMobileWorkArea = false;
+      WindowStore.mobileWorkAreaReadyForDesktop = false;
+      WindowStore.pendingDesktopWorkAreaChange = null;
+      return { kind: "commit", state: next, change: { kind: "mode-changed" } };
+    }, true);
+  }
+
+  /**
+   * mobile Taskbar의 concrete application 버튼을 실행한다.
+   *
+   * 현재 앱은 Session·tab·history와 snapshot을 유지하는 no-op이다. 다른 앱이나 빈 Desktop은
+   * Explorer `null` 또는 Chrome `new-tab` 창으로 한 번에 교체하며 후보 ID 발급 실패 시 기존 창을 보존한다.
+   */
+  static launchMobileApplication(applicationId: WindowApplicationId): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(() => {
+      const state = WindowStore.requireSnapshot();
+      if (state.mode !== "mobile") return WindowStore.reject("mobile-mode-required");
+      if (applicationId !== "file-explorer" && applicationId !== "chrome") {
+        return WindowStore.reject("invalid-application");
+      }
+      if (state.sessions[0]?.applicationId === applicationId) return { kind: "no-op" };
+      return applicationId === "file-explorer"
+        ? WindowStore.createFileExplorer(null, "mobile-application-launched")
+        : WindowStore.createChrome({ kind: "new-tab" }, "mobile-application-launched");
     });
   }
 
@@ -935,13 +1045,37 @@ export class WindowStore {
   }
 
   /**
-   * Content를 active Chrome 또는 최상위 MRU Chrome의 새 tab으로 연다.
+   * Content를 desktop active/MRU Chrome의 새 tab으로 열고, mobile Chrome에서는 유일한 tab에서 navigate한다.
    */
   static openContent(content: ContentResourceRef): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const ref = WindowStore.validateContentRef(content);
       if (typeof ref === "string") return WindowStore.reject(ref);
       const state = WindowStore.requireSnapshot();
+      if (state.mode === "mobile") {
+        const current = state.sessions[0];
+        if (current?.kind !== "chrome") {
+          return WindowStore.createChrome({ kind: "content", ref });
+        }
+        const tab = current.tabs.find(({ id }) => id === current.activeTabId);
+        if (tab === undefined) throw new Error("mobile Chrome active tab을 찾을 수 없습니다");
+        const location: ChromeLocation = { kind: "content", ref };
+        const navigation = navigate(tab.navigation, location, sameChromeLocation);
+        if (navigation === null) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: [
+              {
+                ...current,
+                tabs: [{ ...tab, navigation }],
+              },
+            ],
+          },
+          change: { kind: "tab-navigated", sessionId: current.id, tabId: tab.id },
+        };
+      }
       const active = state.sessions.find(({ id }) => id === state.activeSessionId);
       let target = active?.kind === "chrome" ? active : undefined;
       if (target === undefined) {
@@ -997,12 +1131,15 @@ export class WindowStore {
 
   /**
    * Session을 최소화하고 active였다면 다음 최상위 visible Session을 선택한다.
+   *
+   * mobile에서는 snapshot·알림을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
   static minimize(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
+      if (state.mode === "mobile") return { kind: "no-op" };
       if (session.frame.minimized) return { kind: "no-op" };
       const sessions = state.sessions.map((current) =>
         current.id === sessionId
@@ -1143,49 +1280,76 @@ export class WindowStore {
     });
 
   /**
-   * workArea를 바꾸고 모든 normalBounds의 titlebar 접근 가능 위치를 복구한다.
+   * workArea를 바꾸고 desktop normalBounds의 titlebar 접근 가능 위치를 복구한다.
+   *
+   * mobile 표시에서는 desktop frame을 바꾸지 않는다. `setMode`와 바로 이어지는 responsive
+   * pair의 입력 순서를 조율하고 mobile-created 창은 첫 desktop workArea에서 기본 배치를 받는다.
    */
   static setWorkArea(workArea: WindowRect): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
       const state = WindowStore.requireSnapshot();
-      if (
+      createWindowBounds(workArea, null, WindowStore.requirePlacementConfig());
+      const sameWorkArea =
         state.workArea.x === workArea.x &&
         state.workArea.y === workArea.y &&
         state.workArea.width === workArea.width &&
-        state.workArea.height === workArea.height
-      ) {
+        state.workArea.height === workArea.height;
+
+      if (state.mode === "mobile") {
+        if (sameWorkArea) return { kind: "no-op" };
+        if (WindowStore.awaitingMobileWorkArea) {
+          WindowStore.awaitingMobileWorkArea = false;
+          WindowStore.mobileWorkAreaReadyForDesktop = false;
+        } else {
+          WindowStore.mobileWorkAreaReadyForDesktop = true;
+        }
+        return {
+          kind: "commit",
+          state: { ...state, workArea: { ...workArea } },
+          change: { kind: "work-area-changed" },
+        };
+      }
+
+      const needsDesktopPlacement =
+        WindowStore.awaitingDesktopWorkArea ||
+        state.sessions.some(({ desktopPlacementPending }) => desktopPlacementPending === true);
+      if (sameWorkArea && !needsDesktopPlacement) {
         return { kind: "no-op" };
       }
-      const config = WindowStore.requirePlacementConfig();
-      const sessions = state.sessions.map((session) => ({
-        ...session,
-        frame: {
-          ...session.frame,
-          normalBounds: recoverWindowBounds(session.frame.normalBounds, workArea, config),
-        },
-      })) as WindowSession[];
+      const sessions = WindowStore.applyDesktopWorkArea(state, workArea);
+      WindowStore.pendingDesktopWorkAreaChange = needsDesktopPlacement
+        ? null
+        : {
+            previousBounds: new Map(
+              state.sessions.map((session) => [session.id, session.frame.normalBounds]),
+            ),
+          };
+      WindowStore.awaitingDesktopWorkArea = false;
       return {
         kind: "commit",
         state: { ...state, workArea: { ...workArea }, sessions },
         change: { kind: "work-area-changed" },
       };
-    });
+    }, true);
   }
 
   /**
    * Explorer Window 끝에 Desktop tab을 추가하고 해당 Window를 복원·활성화한다.
+   *
+   * mobile에서는 단일 tab을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
   static addFileExplorerTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
+      const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
       if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
+      if (state.mode === "mobile") return { kind: "no-op" };
       const issue = WindowStore.issueId(new Set());
       if (!issue.ok) return WindowStore.reject(issue.reason);
       const raw = issue.value;
       const tabId = parseFileExplorerTabId(raw);
       const tab: FileExplorerTab = { id: tabId, navigation: createNavigation(null) };
-      const state = WindowStore.requireSnapshot();
       const changed = {
         ...state,
         sessions: state.sessions.map((current) =>
@@ -1236,12 +1400,16 @@ export class WindowStore {
 
   /**
    * Chrome Window 끝에 new-tab을 추가하고 해당 Window를 복원·활성화한다.
+   *
+   * mobile에서는 단일 tab을 유지하는 no-op이며 ID를 발급하지 않는다.
    */
   static addChromeTab(sessionId: WindowSessionId): Promise<WindowStoreResult> {
     return WindowStore.enqueue(() => {
+      const state = WindowStore.requireSnapshot();
       const session = WindowStore.findSession(sessionId);
       if (session === undefined) return WindowStore.reject("session-not-found");
       if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
+      if (state.mode === "mobile") return { kind: "no-op" };
       return WindowStore.addChromeTabCalculation(session, { kind: "new-tab" });
     });
   }

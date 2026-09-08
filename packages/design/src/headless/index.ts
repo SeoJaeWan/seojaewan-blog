@@ -1,7 +1,7 @@
 /**
  * @file framework에 의존하지 않는 design domain의 public surface를 조합한다.
  *
- * Resource, Workspace와 Window feature의 구현 책임은 각각의 feature에 남겨 둔다.
+ * Resource, Start, Taskbar, Workspace와 Window feature의 구현 책임은 각각의 feature에 남겨 둔다.
  */
 export {
   type ChromeLocation,
@@ -15,6 +15,8 @@ export {
   type FileExplorerTabId,
 } from "./folders/index.js";
 export * from "./resources/index.js";
+export * from "./start/index.js";
+export * from "./taskbar/index.js";
 export {
   type ChromeWindowSession,
   type FileExplorerWindowSession,
@@ -22,6 +24,7 @@ export {
   type NavigationEntry,
   type NavigationState,
   selectWindowRoute,
+  type WindowApplicationId,
   type WindowFrameState,
   type WindowMode,
   type WindowPlacementConfig,

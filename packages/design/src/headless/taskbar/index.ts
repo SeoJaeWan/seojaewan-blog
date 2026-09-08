@@ -1,0 +1,63 @@
+/**
+ * @file Taskbar model, Store, selectors, intents와 storage port의 public surface를 조합한다.
+ *
+ * 새로운 동작을 구현하지 않고 요소별 public API만 다시 내보낸다.
+ */
+export {
+  createMobileTaskbarApplicationIntent,
+  createTaskbarApplicationClickIntent,
+  createTaskbarCloseAllIntent,
+  createTaskbarExternalShortcutIntent,
+  createTaskbarPreviewClickIntent,
+  executeTaskbarWindowIntent,
+  type MobileTaskbarApplicationIntent,
+  type TaskbarApplicationClickIntent,
+  type TaskbarCloseAllIntent,
+  type TaskbarExternalShortcutIntent,
+  type TaskbarWindowCommandPort,
+  type TaskbarWindowIntent,
+  type TaskbarWindowIntentResult,
+} from "./actions/index.js";
+export {
+  createTaskbarApplicationItem,
+  createTaskbarExternalShortcutItem,
+  type TaskbarApplicationId,
+  type TaskbarApplicationItem,
+  type TaskbarExternalShortcutItem,
+  type TaskbarItem,
+  type TaskbarReorderAction,
+  type TaskbarReorderDestination,
+  type TaskbarReorderIntent,
+  type TaskbarSnapshot,
+} from "./model/index.js";
+export {
+  type MobileTaskbarApplicationView,
+  type MobileTaskbarTimestampView,
+  type MobileTaskbarView,
+  selectMobileTaskbarView,
+  selectTaskbarVisibleViews,
+  type TaskbarApplicationGroup,
+  type TaskbarExternalShortcutView,
+  type TaskbarGroupTarget,
+  type TaskbarMetadataReaders,
+  type TaskbarVisibleView,
+} from "./selectors/index.js";
+export {
+  TaskbarStore,
+  TaskbarStoreAlreadyInitializedError,
+  type TaskbarStoreInitialization,
+  TaskbarStoreNotInitializedError,
+  type TaskbarWindowReader,
+} from "./taskbarStore/index.js";
+export {
+  type TaskbarStoreCommittedResult,
+  type TaskbarStoreNoOpResult,
+  type TaskbarStorePersistenceFailure,
+  type TaskbarStoreRejectedResult,
+  type TaskbarStoreRejectionReason,
+  type TaskbarStoreResult,
+} from "./taskbarStore/operationResult/index.js";
+export {
+  type TaskbarStorage,
+  type TaskbarStorageSnapshot,
+} from "./taskbarStore/taskbarStorage/index.js";

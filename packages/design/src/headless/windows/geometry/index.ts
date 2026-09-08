@@ -3,7 +3,13 @@
  *
  * workArea 측정, pointer sampling과 제품별 크기 선택은 Application과 UI가 소유한다.
  */
-import type { WindowFrameState, WindowPoint, WindowRect, WindowSize } from "../model/index.js";
+import type {
+  WindowFrameState,
+  WindowMode,
+  WindowPoint,
+  WindowRect,
+  WindowSize,
+} from "../model/index.js";
 
 /**
  * 모든 앱 Window가 함께 사용하는 배치와 복구 숫자 설정이다.
@@ -251,13 +257,20 @@ export const recoverWindowBounds = (
 };
 
 /**
- * frame이 현재 화면에 표시할 bounds를 normal 상태 또는 workArea에서 파생한다.
+ * frame이 현재 화면에 표시할 bounds를 mode·placement와 workArea에서 파생한다.
  *
- * maximized 계산은 저장된 `normalBounds`를 덮어쓰지 않으며 입력 객체를 변경하지 않는다.
+ * mobile은 placement와 무관하게 전체 workArea를 사용한다. 계산은 저장된 desktop
+ * `normalBounds`를 덮어쓰지 않으며 입력 객체를 변경하지 않는다.
  */
-export const getWindowBounds = (frame: WindowFrameState, workArea: WindowRect): WindowRect => {
+export const getWindowBounds = (
+  frame: WindowFrameState,
+  workArea: WindowRect,
+  mode: WindowMode = "desktop",
+): WindowRect => {
   assertRect(frame.normalBounds, "normalBounds", true);
   assertRect(workArea, "workArea", false);
 
-  return frame.placement === "maximized" ? { ...workArea } : { ...frame.normalBounds };
+  return mode === "mobile" || frame.placement === "maximized"
+    ? { ...workArea }
+    : { ...frame.normalBounds };
 };

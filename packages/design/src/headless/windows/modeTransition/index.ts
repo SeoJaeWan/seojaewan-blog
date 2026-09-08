@@ -24,6 +24,25 @@ export const findTopVisibleSessionId = (
 };
 
 /**
+ * Session의 active tab 하나만 남기고 기존 navigation·scroll과 frame을 보존한다.
+ */
+const keepActiveTab = (session: WindowSession): WindowSession => {
+  if (session.kind === "file-explorer") {
+    const tab = session.tabs.find(({ id }) => id === session.activeTabId);
+    if (tab === undefined) {
+      throw new Error("mobile 전환 대상 Explorer active tab을 찾을 수 없습니다");
+    }
+    return { ...session, tabs: [tab], frame: { ...session.frame, minimized: false } };
+  }
+
+  const tab = session.tabs.find(({ id }) => id === session.activeTabId);
+  if (tab === undefined) {
+    throw new Error("mobile 전환 대상 Chrome active tab을 찾을 수 없습니다");
+  }
+  return { ...session, tabs: [tab], frame: { ...session.frame, minimized: false } };
+};
+
+/**
  * 현재 snapshot을 지정 모드로 전환한다.
  *
  * mobile 전환은 모든 minimized Session을 버리고 active visible Session 또는 최상위 visible
@@ -47,7 +66,7 @@ export const transitionWindowMode = (state: WindowState, mode: WindowMode): Wind
   return {
     ...state,
     mode,
-    sessions: [{ ...kept, frame: { ...kept.frame, minimized: false } }],
+    sessions: [keepActiveTab(kept)],
     stackingOrder: [keptId],
     activeSessionId: keptId,
   };

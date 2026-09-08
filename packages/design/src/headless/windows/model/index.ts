@@ -34,6 +34,11 @@ export type WindowRect = Readonly<WindowPoint & WindowSize>;
 export type WindowMode = "desktop" | "mobile";
 
 /**
+ * WindowStore가 직접 실행할 수 있는 concrete application identity다.
+ */
+export type WindowApplicationId = "file-explorer" | "chrome";
+
+/**
  * normal bounds와 maximize·minimize 상태를 분리해 보존한다.
  *
  * maximized 상태의 실제 bounds는 현재 `workArea`에서 파생한다.
@@ -50,6 +55,10 @@ export type WindowFrameState = Readonly<{
 export type WindowSessionBase = Readonly<{
   id: WindowSessionId;
   frame: WindowFrameState;
+  /**
+   * mobile에서 만든 창이 desktop 기본 배치를 아직 받지 않았음을 나타내는 runtime 표식이다.
+   */
+  desktopPlacementPending?: true;
 }>;
 
 /**
