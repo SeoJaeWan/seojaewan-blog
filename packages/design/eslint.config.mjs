@@ -16,7 +16,20 @@ const legacyPackageImports = {
   message: "Use the local design layer indexes instead of legacy packages.",
 };
 
-const coreGlobals = [
+const headlessLayerImports = [
+  applicationImports,
+  legacyPackageImports,
+  {
+    regex: "^@base-ui/react(?:/|$)",
+    message: "Headless must not depend on Base UI.",
+  },
+  {
+    regex: "^(?:\\.\\./)+(?:ui)(?:/|$)",
+    message: "Headless must not depend on product UI.",
+  },
+];
+
+const headlessDomGlobals = [
   "window",
   "document",
   "navigator",
@@ -26,19 +39,37 @@ const coreGlobals = [
   "fetch",
   "XMLHttpRequest",
   "WebSocket",
+  "requestAnimationFrame",
+  "cancelAnimationFrame",
+].map((name) => ({
+  message: `Headless must remain independent of the ${name} browser global.`,
+  name,
+}));
+
+const pureAsyncGlobals = [
   "setTimeout",
   "clearTimeout",
   "setInterval",
   "clearInterval",
-  "requestAnimationFrame",
-  "cancelAnimationFrame",
 ].map((name) => ({
-  message: `Core must remain independent of the ${name} runtime global.`,
+  message: `Pure headless modules must not schedule work with ${name}.`,
   name,
 }));
 
 export default [
   ...reactConfig({ tsconfigRootDir }),
+  {
+    files: ["src/headless/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-globals": ["error", ...headlessDomGlobals],
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: headlessLayerImports,
+        },
+      ],
+    },
+  },
   {
     files: ["src/ui/**/*.{ts,tsx}"],
     rules: {
@@ -58,45 +89,21 @@ export default [
     },
   },
   {
-    files: ["src/core/**/*.{ts,tsx}"],
+    files: ["src/headless/**/{model,commands,selectors}/**/*.{ts,tsx}"],
     rules: {
-      "no-restricted-globals": ["error", ...coreGlobals],
+      "no-restricted-globals": ["error", ...headlessDomGlobals, ...pureAsyncGlobals],
       "no-restricted-imports": [
         "error",
         {
           patterns: [
-            applicationImports,
-            legacyPackageImports,
-            {
-              regex: "^(?:\\.\\./)+(?:ui|shell)(?:/|$)",
-              message: "Core must not depend on UI or Shell.",
-            },
             {
               regex: "^react(?:-dom)?(?:/|$)",
-              message: "Core must not depend on React or ReactDOM.",
+              message: "Pure headless model, command, and selector modules must not depend on React.",
             },
             {
               regex:
                 "^(?:@notionhq/client|axios|idb|ky|localforage|node:(?:dns|fs|http|https|net|tls))(?:/|$)",
-              message: "Core must not depend on persistence or network infrastructure.",
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ["src/shell/**/*.{ts,tsx}"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            applicationImports,
-            legacyPackageImports,
-            {
-              regex: "^(?!\\.\\./(?:ui|core)$)(?:\\.\\./)+(?:ui|core)(?:/|$)",
-              message: "Shell must import UI and Core through their exact layer indexes.",
+              message: "Pure headless modules must not depend on persistence or network infrastructure.",
             },
           ],
         },
