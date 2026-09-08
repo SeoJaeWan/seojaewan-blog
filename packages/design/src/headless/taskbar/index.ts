@@ -52,6 +52,13 @@ export {
   type TaskbarSettledResult,
 } from "./operations/index.js";
 export {
+  selectTaskbarRootSnapshot,
+  type TaskbarRootController,
+  type TaskbarRootSnapshot,
+  type TaskbarRootViewModel,
+  useTaskbarRootController,
+} from "./rootController/index.js";
+export {
   type MobileTaskbarApplicationView,
   type MobileTaskbarTimestampView,
   type MobileTaskbarView,

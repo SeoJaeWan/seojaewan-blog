@@ -1,0 +1,136 @@
+import { createElement, StrictMode } from "react";
+import { renderToString } from "react-dom/server";
+
+import { act, cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import type {
+  ControllerViewModel,
+  HeadlessFeatureRuntime,
+  HeadlessRuntime,
+} from "../../runtime/index.js";
+import { HeadlessRuntimeProvider } from "../../runtime/index.js";
+import type { WindowMode, WindowState } from "../../windows/index.js";
+import {
+  selectTaskbarRootSnapshot,
+  useTaskbarRootController,
+} from "./index.js";
+
+/** mode 외 상태가 비어 있는 immutable WindowState fixture를 만든다. */
+const createWindowState = (mode: WindowMode): WindowState =>
+  Object.freeze({
+    mode,
+    workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
+    sessions: Object.freeze([]),
+    stackingOrder: Object.freeze([]),
+    activeSessionId: null,
+  });
+
+/** Root controller test가 Window snapshot과 구독 lifecycle을 제어하게 한다. */
+const createRuntimeFixture = (mode: WindowMode) => {
+  let viewModel: ControllerViewModel<WindowState> = Object.freeze({
+    status: "ready",
+    snapshot: createWindowState(mode),
+  });
+  const serverViewModel: ControllerViewModel<WindowState> = Object.freeze({
+    status: "not-ready",
+    snapshot: null,
+  });
+  const listeners = new Set<() => void>();
+  const getSnapshot = vi.fn(() => viewModel);
+  const getServerSnapshot = vi.fn(() => serverViewModel);
+  const windows = Object.freeze({
+    getSnapshot,
+    getServerSnapshot,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    execute: vi.fn(),
+  }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
+  const runtime = Object.freeze({ windows }) as unknown as HeadlessRuntime;
+
+  return {
+    getSnapshot,
+    getServerSnapshot,
+    listenerCount: () => listeners.size,
+    runtime,
+    /** 새 공통 mode를 반영하고 현재 Window 구독자에게 알린다. */
+    setMode(nextMode: WindowMode) {
+      viewModel = Object.freeze({
+        status: "ready",
+        snapshot: createWindowState(nextMode),
+      });
+      for (const listener of listeners) listener();
+    },
+  };
+};
+
+afterEach(() => cleanup());
+
+describe("selectTaskbarRootSnapshot", () => {
+  it("준비된 WindowState의 공통 mode만 Root snapshot으로 투영한다", () => {
+    expect(selectTaskbarRootSnapshot(createWindowState("mobile"))).toEqual({
+      mode: "mobile",
+    });
+  });
+});
+
+describe("useTaskbarRootController", () => {
+  it("SSR은 브라우저 Window snapshot을 읽지 않고 준비 전 표현을 사용한다", () => {
+    const fixture = createRuntimeFixture("desktop");
+    const statuses: string[] = [];
+
+    /** server render가 관찰한 Root controller 준비 상태를 기록한다. */
+    const Probe = () => {
+      statuses.push(useTaskbarRootController().viewModel.status);
+      return null;
+    };
+
+    renderToString(
+      createElement(
+        HeadlessRuntimeProvider,
+        { runtime: fixture.runtime },
+        createElement(Probe),
+      ),
+    );
+
+    expect(statuses).toEqual(["not-ready"]);
+    expect(fixture.getSnapshot).not.toHaveBeenCalled();
+    expect(fixture.getServerSnapshot).toHaveBeenCalledOnce();
+    expect(fixture.listenerCount()).toBe(0);
+  });
+
+  it("공통 mode 변경을 반영하고 StrictMode unmount에서 구독을 정리한다", () => {
+    const fixture = createRuntimeFixture("desktop");
+    const modes: Array<WindowMode | "not-ready"> = [];
+
+    /** Root controller가 공개한 mode 변화를 외부 assertion에 기록한다. */
+    const Probe = () => {
+      const { viewModel } = useTaskbarRootController();
+      modes.push(viewModel.status === "ready" ? viewModel.snapshot.mode : "not-ready");
+      return null;
+    };
+
+    const mounted = render(
+      createElement(
+        StrictMode,
+        null,
+        createElement(
+          HeadlessRuntimeProvider,
+          { runtime: fixture.runtime },
+          createElement(Probe),
+        ),
+      ),
+    );
+
+    expect(fixture.listenerCount()).toBe(1);
+    expect(modes.at(-1)).toBe("desktop");
+
+    act(() => fixture.setMode("mobile"));
+    expect(modes.at(-1)).toBe("mobile");
+
+    mounted.unmount();
+    expect(fixture.listenerCount()).toBe(0);
+  });
+});
