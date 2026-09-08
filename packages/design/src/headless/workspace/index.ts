@@ -3,6 +3,12 @@
  *
  * 새로운 domain 동작을 구현하지 않고 하위 module의 public surface만 조합한다.
  */
+export {
+  useWorkspaceController,
+  type WorkspaceController,
+  type WorkspaceControllerActions,
+  type WorkspaceControllerViewModel,
+} from "./controller/index.js";
 export { FolderCatalog } from "./folderCatalog/index.js";
 export { type ResourcePlacement, type WorkspaceState } from "./model/index.js";
 export {

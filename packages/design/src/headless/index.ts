@@ -15,6 +15,7 @@ export {
   type FileExplorerTabId,
 } from "./folders/index.js";
 export * from "./resources/index.js";
+export * from "./runtime/index.js";
 export * from "./start/index.js";
 export * from "./taskbar/index.js";
 export {
@@ -24,7 +25,11 @@ export {
   type NavigationEntry,
   type NavigationState,
   selectWindowRoute,
+  useWindowController,
   type WindowApplicationId,
+  type WindowController,
+  type WindowControllerActions,
+  type WindowControllerViewModel,
   type WindowFrameState,
   type WindowMode,
   type WindowPlacementConfig,

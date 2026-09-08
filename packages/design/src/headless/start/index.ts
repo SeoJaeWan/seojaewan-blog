@@ -4,6 +4,12 @@
  * 새로운 제품 동작을 구현하지 않고 하위 element의 public surface만 다시 내보낸다.
  */
 export {
+  type StartController,
+  type StartControllerActions,
+  type StartControllerViewModel,
+  useStartController,
+} from "./controller/index.js";
+export {
   type StartPinnedItem,
   type StartReorderAction,
   type StartReorderDestination,

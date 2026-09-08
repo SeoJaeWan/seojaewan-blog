@@ -80,3 +80,5 @@ await WindowStore.setMode("mobile");
 정적 Catalog의 실제 데이터와 저장 adapter는 Application 소유이며 실행 중 교체하지 않는다. 초기화 알림은 저장 완료 알림이 아니다. 초기화 작업이나 storage adapter가 뒤에 대기하는 Store 명령을 await하면 안 된다.
 
 초기화 중 명령 대기 정책과 Catalog 연결·실패 처리의 정본은 Local Work Memory의 `workspace-resource-placement`다. 이 안내는 해당 계약을 현재 코드의 사용 순서로 설명한다.
+
+React 제품 root는 브라우저 Store 초기화 뒤 `createHeadlessRuntime()`으로 Foundation Operation과 Store 구독을 한 번 조합하고 `HeadlessRuntimeProvider`로 전달한다. Window·Workspace·Start·Taskbar controller hook은 Store snapshot을 복제하지 않는 `viewModel`과 serializable Action 진입점인 `actions`를 분리해 반환한다. SSR과 초기화 전에는 안정적인 `not-ready` 결과를 사용한다. 자세한 연결 예는 [Operation runtime 안내](./runtime/README.md)에 있다.

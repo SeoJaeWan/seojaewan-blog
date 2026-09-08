@@ -22,6 +22,12 @@ export {
   type TaskbarWindowOperationPort,
 } from "./actions/index.js";
 export {
+  type TaskbarController,
+  type TaskbarControllerActions,
+  type TaskbarControllerViewModel,
+  useTaskbarController,
+} from "./controller/index.js";
+export {
   createTaskbarApplicationItem,
   createTaskbarExternalShortcutItem,
   type TaskbarApplicationId,

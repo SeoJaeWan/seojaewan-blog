@@ -94,3 +94,9 @@ snapshot은 중첩 객체까지 읽기 전용이다. 직접 수정하지 않고 
 - `pnpm --filter @window/design build`
 
 함수의 정상·오류·부수 효과는 소유 요소의 인접 테스트에서 검증한다. queue와 모바일 교체 같은 여러 명령의 조합은 Store 통합 시나리오에서 검증한다. package export 이름 목록을 고정하는 테스트는 두지 않는다.
+
+## React controller
+
+제품 root는 `HeadlessRuntimeProvider` 아래에서 `useWindowController()`를 호출한다. `viewModel.status === "ready"`일 때의 `snapshot`은 WindowStore가 반환한 같은 immutable 객체이며, `actions.execute`는 `WindowAction`을 `WindowOperations`로 보낸다. `completeTransition`·`abortTransition`·`failTransition`은 Handle의 `operationId`와 현재 phase만 전달한다.
+
+SSR 또는 브라우저 초기화 전에는 `not-ready`이며 hook이 WindowStore를 대신 초기화하지 않는다. Application은 Workspace와 Catalog를 준비해 WindowStore를 먼저 초기화하고 runtime을 한 번 만든다. 일반 caller는 semantic commit, 표현과 정리가 모두 필요한 경우 `handle.settled`를 기다린다.

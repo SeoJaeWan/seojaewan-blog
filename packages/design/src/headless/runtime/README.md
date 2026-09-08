@@ -41,3 +41,41 @@ Window 생성처럼 Session ID가 semantic commit 뒤 생기는 Operation은 `re
 Component는 `complete`, `abort`, `fail` 중 현재 phase에 맞는 신호를 한 번 보낸다. 중복 신호, 다른 phase 신호와 watchdog 뒤의 늦은 신호는 false로 무시된다. 기본 watchdog은 1000ms이며 정상 완료로 바꾸지 않고 `watchdog` 결과를 반환한다.
 
 Operation executor는 `operation.onCleanup(() => transitions.abortOperation(operation.operationId, reason))`처럼 listener, timer 또는 남은 registry 대기를 등록할 수 있다. cleanup은 성공과 실패 경로 모두에서 실행되며 React 구독 정리나 Provider 재마운트를 사용자 Action 취소로 해석하는 용도가 아니다.
+
+## React Provider와 controller 연결
+
+Application은 Workspace → Window → Start → Taskbar 순서로 브라우저 Store를 초기화한 뒤 runtime을 render 바깥에서 한 번 만든다. Provider는 이 객체만 전달하며 Store snapshot을 Context state로 복사하거나 재마운트 때 초기화하지 않는다.
+
+```ts
+import {
+  HeadlessRuntimeProvider,
+  createHeadlessRuntime,
+  useWindowController,
+} from "@window/design";
+import { createElement } from "react";
+
+await initializeBrowserStores();
+const runtime = createHeadlessRuntime();
+
+const ApplicationRoot = () => {
+  const { viewModel, actions } = useWindowController();
+  if (viewModel.status === "not-ready") return null;
+
+  return renderWindows(viewModel.snapshot, {
+    onOpenChrome: async () => {
+      const handle = actions.execute({ type: "create-chrome-window" });
+      await handle.settled;
+    },
+  });
+};
+
+const application = createElement(
+  HeadlessRuntimeProvider,
+  { runtime },
+  createElement(ApplicationRoot),
+);
+```
+
+네 controller는 `useSyncExternalStore`로 기존 immutable Store를 구독한다. `viewModel`은 `{ status: "ready", snapshot }` 또는 `{ status: "not-ready", snapshot: null }`이고 `actions`는 별도 객체다. SSR과 hydration 첫 읽기는 같은 안정적인 `not-ready` 객체를 사용하며 서버에서 사용자 Store를 초기화하지 않는다. 일반 구독 cleanup은 listener만 제거하고 실행 중 Operation을 취소하지 않는다.
+
+Window·Start·Taskbar Component는 Handle의 `operationId`와 현재 phase를 `completeTransition`, `abortTransition`, `failTransition`에 전달한다. 중복되거나 늦은 신호는 `false`이며 기존 결과를 바꾸지 않는다. Workspace는 현재 별도 UI transition을 소유하지 않아 `execute`만 제공한다.

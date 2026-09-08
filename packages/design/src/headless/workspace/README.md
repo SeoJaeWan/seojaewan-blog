@@ -123,3 +123,9 @@ return result;
 `load()`는 저장값 또는 `null`을, `save(snapshot)`은 전체 snapshot의 저장 완료를 전달한다. 저장 key, JSON 처리, migration과 localStorage 접근은 Application adapter가 구현한다. 명령마다 Application이 수동으로 저장하지 않는다.
 
 이 분리는 React 여부가 아니라 서버·브라우저 경계 때문이다. Next.js 등의 서버 렌더링에서는 브라우저에서 접근 가능한 시점에 초기화하고, 서버 요청 사이에 이 singleton으로 사용자 상태를 공유하지 않는다. headless import만으로 localStorage 접근이나 ID 발급은 일어나지 않는다. 새 Folder 생성과 inbox 복구 시에는 `crypto.randomUUID()`를 지원하는 runtime이 필요하다.
+
+## React controller
+
+`useWorkspaceController()`는 `viewModel`과 `actions`를 분리한다. ready snapshot은 WorkspaceStore가 소유한 immutable 상태이고 `actions.execute`는 create·rename·move Action을 기존 Store 명령과 저장 결과에 연결한다. Context에 Workspace snapshot을 복사하지 않는다.
+
+서버에서는 항상 안정적인 `not-ready` 값을 사용한다. Application은 브라우저 storage와 Catalog로 WorkspaceStore 초기화를 끝낸 뒤 `createHeadlessRuntime()`을 한 번 호출한다. Workspace Operation은 별도 표현 전환이 없으므로 `presented`는 `not-required`이고, 저장까지 포함한 결과는 `settled`에서 확인한다.

@@ -3,6 +3,12 @@
  *
  * 내부 상태 계산과 ID 발급기, 제품 UI는 이 진입점에서 제공하지 않는다.
  */
+export {
+  useWindowController,
+  type WindowController,
+  type WindowControllerActions,
+  type WindowControllerViewModel,
+} from "./controller/index.js";
 export { getWindowBounds, type WindowPlacementConfig } from "./geometry/index.js";
 export {
   type ChromeWindowSession,

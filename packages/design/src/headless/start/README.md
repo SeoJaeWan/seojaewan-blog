@@ -68,3 +68,9 @@ save 실패는 `{ ok: false, reason: "storage-write-failed", committed: true, va
 `reload()`는 명시적인 저장소 재읽기 경계다. 최신 값을 초기화와 같은 부분 복구 규칙으로 queue에서 반영하고, identity와 순서가 같으면 no-op이다. `reconcileResources()`는 현재 Catalog에서 삭제된 Resource만 제거한다. 두 명령 모두 실제 변경이 있을 때만 알리고 정리된 전체 목록을 저장한다.
 
 현재 canonical 계약은 Local Work Memory의 `start-screen-pin-model`, `pin-store-persistence`, `resource-model`과 `workspace-resource-placement`다.
+
+## React controller
+
+`useStartController()`의 `viewModel`은 준비 상태와 StartStore의 immutable snapshot을 구분하고, `actions`는 Pin Action과 operation ID별 transition 완료 신호를 제공한다. Provider 재마운트나 StrictMode의 구독 cleanup은 Pin 상태를 초기화하거나 사용자 Action을 취소하지 않는다.
+
+Application은 Workspace 기반 `resourceLookup`과 storage로 StartStore 초기화를 끝낸 뒤 runtime을 만든다. `committed`는 메모리 반영, `presented`는 항목 표현, `settled`는 저장과 정리를 포함하므로 일반 caller는 `settled`를 기다린다. SSR은 storage를 읽지 않고 `not-ready`를 반환한다.
