@@ -30,14 +30,10 @@
 
 .taskbar-application-button[data-active="true"] {
   background: var(--wd-taskbar-application-button-background-active);
-  border-color: var(--wd-taskbar-glass-border-active);
-  box-shadow: var(--wd-taskbar-glass-shadow-active);
 }
 
 .taskbar-application-button:hover:not([data-disabled]) {
   background: var(--wd-taskbar-application-button-background-hover);
-  border-color: var(--wd-taskbar-glass-border-hover);
-  box-shadow: var(--wd-taskbar-glass-shadow-hover);
 }
 
 .taskbar-application-button:focus-visible:not([data-disabled]) {

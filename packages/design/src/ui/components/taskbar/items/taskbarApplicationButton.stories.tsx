@@ -141,7 +141,7 @@ export const StateComparison: Story = {
   parameters: {
     pseudo: { hover: ["#taskbar-compare-hover", "#taskbar-compare-active-hover"] },
     taskbarDescription:
-      "같은 Taskbar 배경 위에서 기본·활성·호버·활성+호버를 비교합니다. 활성은 은은한 유리 표면과 표시선, 호버는 더 밝은 표면과 선명한 경계를 보여 줍니다.",
+      "같은 Taskbar 배경 위에서 기본·활성·호버·활성+호버를 비교합니다. 활성은 기존 packages/ui의 글라스 배경과 표시선을, 호버는 같은 흰색 계열의 더 밝은 배경을 보여 줍니다.",
   },
   render: () => (
     <div className="taskbar-story-comparison">
