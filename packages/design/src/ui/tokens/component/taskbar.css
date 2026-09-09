@@ -65,7 +65,6 @@
   --wd-taskbar-search-focus-outer-width: 4px;
   --wd-taskbar-search-focus-outer-color: rgb(0 103 192 / 0.42);
   --wd-taskbar-search-opacity-disabled: 0.54;
-  --wd-taskbar-search-icon-scale-pressed: 0.8;
   --wd-taskbar-search-transition-duration: var(--wd-reference-duration-120);
   --wd-taskbar-search-transition-easing: var(--wd-reference-easing-1);
   --wd-taskbar-search-icon-transition-duration: var(--wd-reference-duration-200);
@@ -86,6 +85,11 @@
   --wd-taskbar-application-button-border-radius: var(--wd-reference-radius-2);
   --wd-taskbar-application-button-background-hover: rgb(246 247 250);
   --wd-taskbar-application-button-background-active: rgb(255 255 255 / 0.72);
+  --wd-taskbar-application-button-indicator-height: 3px;
+  --wd-taskbar-application-button-indicator-width: 6px;
+  --wd-taskbar-application-button-indicator-width-active: 12px;
+  --wd-taskbar-application-button-indicator-inactive: rgb(96 100 112);
+  --wd-taskbar-application-button-indicator-active: var(--wd-color-accent-default);
   --wd-taskbar-application-button-focus-inner-width: 2px;
   --wd-taskbar-application-button-focus-inner-color: var(--wd-color-surface-taskbar);
   --wd-taskbar-application-button-focus-outer-width: 4px;

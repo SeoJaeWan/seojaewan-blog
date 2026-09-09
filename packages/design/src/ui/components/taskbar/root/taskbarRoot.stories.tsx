@@ -3,6 +3,10 @@ import { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 
+import {
+  TaskbarPreview,
+  withTaskbarDescription,
+} from "../../../../../.storybook/taskbarPreview.js";
 import type {
   ControllerViewModel,
   HeadlessFeatureRuntime,
@@ -114,30 +118,39 @@ const RootStory = ({
 
   return (
     <HeadlessRuntimeProvider runtime={runtime}>
-      <TaskbarRoot
-        searchValue={query}
-        onSearchValueChange={setQuery}
-        searchDisabled={searchDisabled}
-        searchSelected={searchSelected}
-        timestampClock={STORY_TIMESTAMP_CLOCK}
-        windowsDisabled={windowsDisabled}
-        windowsSelected={windowsSelected}
-      />
-      <p>
-        현재 검색어: <output aria-label="현재 검색어">{query || "(비어 있음)"}</output>
-      </p>
-      <p>
-        시작 요청: <output aria-label="Windows Action 횟수">{windowsRequestCount}</output>
-      </p>
-      <p>
-        검색 진입: <output aria-label="Search Action 횟수">{searchRequestCount}</output>
-      </p>
-      <p>
-        앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
-      </p>
-      <p>
-        마지막 앱: <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
-      </p>
+      <TaskbarPreview
+        viewport
+        results={
+          <>
+            <p>
+              현재 검색어: <output aria-label="현재 검색어">{query || "(비어 있음)"}</output>
+            </p>
+            <p>
+              시작 요청: <output aria-label="Windows Action 횟수">{windowsRequestCount}</output>
+            </p>
+            <p>
+              검색 진입: <output aria-label="Search Action 횟수">{searchRequestCount}</output>
+            </p>
+            <p>
+              앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
+            </p>
+            <p>
+              마지막 앱:{" "}
+              <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
+            </p>
+          </>
+        }
+      >
+        <TaskbarRoot
+          searchValue={query}
+          onSearchValueChange={setQuery}
+          searchDisabled={searchDisabled}
+          searchSelected={searchSelected}
+          timestampClock={STORY_TIMESTAMP_CLOCK}
+          windowsDisabled={windowsDisabled}
+          windowsSelected={windowsSelected}
+        />
+      </TaskbarPreview>
     </HeadlessRuntimeProvider>
   );
 };
@@ -194,19 +207,7 @@ const meta = {
   title: "Design/Components/Taskbar/Root",
   component: TaskbarRoot,
   tags: ["autodocs"],
-  decorators: [
-    (Story, context) => (
-      <div>
-        <p>
-          {
-            (context.parameters.docs as { description?: { story?: string } } | undefined)
-              ?.description?.story
-          }
-        </p>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [withTaskbarDescription],
   parameters: {
     controls: { disable: true },
     docs: {
@@ -214,9 +215,9 @@ const meta = {
         component:
           "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
           "desktop Windows·Search와 mobile File Explorer·Chrome Action 연결, local Timestamp를 제공한다. " +
-          "desktop Group·indicator·drag와 panel은 각 후속 제품 Component가 연결한다.",
+          "desktop Group의 실행 상태 파생·drag와 panel은 각 후속 제품 Component가 연결한다.",
       },
-      story: { iframeHeight: 180, inline: false },
+      story: { iframeHeight: 360, inline: false },
     },
     layout: "fullscreen",
   },
@@ -228,12 +229,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Desktop: Story = {
   parameters: {
-    docs: {
-      description: {
-        story:
-          "데스크톱 구성과 입력 연결을 자동 확인합니다. 검색창에 직접 입력하면 현재 검색어가 갱신됩니다. 패널과 실행 중 앱 목록은 후속 작업입니다.",
-      },
-    },
+    taskbarDescription:
+      "데스크톱 구성과 입력 연결을 자동 확인합니다. 검색창에 직접 입력하면 현재 검색어가 갱신됩니다. 패널과 실행 중 앱 목록은 후속 작업입니다.",
   },
   render: () => <RootStory mode="desktop" />,
   play: async ({ canvasElement }) => {
@@ -250,11 +247,8 @@ export const Desktop: Story = {
 
 export const WindowsSelected: Story = {
   parameters: {
-    docs: {
-      description: {
-        story: "시작 버튼의 지속 선택 표현입니다. 실제 시작 패널은 아직 연결하지 않았습니다.",
-      },
-    },
+    taskbarDescription:
+      "시작 버튼의 지속 선택 표현입니다. 실제 시작 패널은 아직 연결하지 않았습니다.",
   },
   render: () => <RootStory mode="desktop" windowsSelected />,
   play: async ({ canvasElement }) => {
@@ -265,11 +259,8 @@ export const WindowsSelected: Story = {
 
 export const WindowsDisabled: Story = {
   parameters: {
-    docs: {
-      description: {
-        story: "시작 버튼만 사용할 수 없는 상태입니다. 검색창은 독립적으로 입력할 수 있습니다.",
-      },
-    },
+    taskbarDescription:
+      "시작 버튼만 사용할 수 없는 상태입니다. 검색창은 독립적으로 입력할 수 있습니다.",
   },
   render: () => <RootStory mode="desktop" windowsDisabled />,
   play: async ({ canvasElement }) => {
@@ -283,12 +274,8 @@ export const WindowsDisabled: Story = {
 
 export const SearchSelected: Story = {
   parameters: {
-    docs: {
-      description: {
-        story:
-          "검색창의 외부 선택 표현입니다. 직접 입력할 수 있으며 결과 패널은 아직 연결하지 않았습니다.",
-      },
-    },
+    taskbarDescription:
+      "검색창의 외부 선택 표현입니다. 직접 입력할 수 있으며 결과 패널은 아직 연결하지 않았습니다.",
   },
   render: () => <RootStory mode="desktop" searchSelected />,
   play: async ({ canvasElement }) => {
@@ -301,9 +288,7 @@ export const SearchSelected: Story = {
 
 export const SearchDisabled: Story = {
   parameters: {
-    docs: {
-      description: { story: "검색창만 입력할 수 없는 상태입니다. 시작 버튼은 사용할 수 있습니다." },
-    },
+    taskbarDescription: "검색창만 입력할 수 없는 상태입니다. 시작 버튼은 사용할 수 있습니다.",
   },
   render: () => <RootStory mode="desktop" searchDisabled />,
   play: async ({ canvasElement }) => {
@@ -319,12 +304,8 @@ export const SearchDisabled: Story = {
 
 export const Mobile: Story = {
   parameters: {
-    docs: {
-      description: {
-        story:
-          "파일 탐색기 → Chrome → 시간 순서입니다. 자동 입력 후 요청 횟수·대상과 포커스를 보여 줍니다. 실제 창 완료는 검증하지 않습니다.",
-      },
-    },
+    taskbarDescription:
+      "파일 탐색기 → Chrome → 시간 순서입니다. 자동 입력 후 요청 횟수·대상과 포커스를 보여 줍니다. 실제 창 완료는 검증하지 않습니다.",
   },
   render: () => <RootStory mode="mobile" />,
   play: async ({ canvasElement }) => {
@@ -357,12 +338,8 @@ export const Mobile: Story = {
 
 export const MobileChromeActive: Story = {
   parameters: {
-    docs: {
-      description: {
-        story:
-          "Chrome이 활성 상태여도 입력 요청을 전달합니다. 현재 창 유지 여부는 mobile headless 정책이 결정합니다.",
-      },
-    },
+    taskbarDescription:
+      "Chrome이 활성 상태여도 입력 요청을 전달합니다. 현재 창 유지 여부는 mobile headless 정책이 결정합니다.",
   },
   render: () => <RootStory activeApplication="chrome" mode="mobile" />,
   play: async ({ canvasElement }) => {
@@ -379,9 +356,7 @@ export const MobileChromeActive: Story = {
 
 export const NotReady: Story = {
   parameters: {
-    docs: {
-      description: { story: "공통 Window 상태 준비 전에는 빈 Taskbar surface만 표시합니다." },
-    },
+    taskbarDescription: "공통 Window 상태 준비 전에는 빈 Taskbar surface만 표시합니다.",
   },
   render: () => <RootStory />,
 };

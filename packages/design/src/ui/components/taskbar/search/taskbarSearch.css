@@ -103,14 +103,12 @@
       var(--wd-taskbar-search-icon-transition-easing);
 }
 
-.taskbar-search-surface:active:not([data-disabled]) .taskbar-search__icon {
-  transform: scale(var(--wd-taskbar-search-icon-scale-pressed));
-}
-
+.taskbar-search:focus ~ .taskbar-search__icon,
 .taskbar-search-surface[data-selected="true"] .taskbar-search__icon {
   box-shadow: 0 0 0 1px var(--wd-taskbar-search-icon-shadow-selected);
 }
 
+.taskbar-search:focus ~ .taskbar-search__icon::after,
 .taskbar-search-surface[data-selected="true"] .taskbar-search__icon::after {
   opacity: 1;
   transform: rotate(160deg);

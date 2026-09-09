@@ -15,11 +15,13 @@ export type TaskbarApplicationButtonProps = Omit<
   "aria-label" | "aria-pressed" | "children" | "dangerouslySetInnerHTML" | "onClick" | "type"
 > &
   Readonly<{
-    /** 화면 모드와 독립적인 application identity, label과 현재 active 표현이다. */
+    /** 화면 모드와 독립적인 application identity, label과 실행 상태 표현이다. */
     application: Readonly<{
       applicationId: TaskbarApplicationId;
       label: string;
       active: boolean;
+      /** 비활성 상태에서도 실행 중 표시선을 보여 준다. 최소화된 Window도 실행 중이다. */
+      running?: boolean;
     }>;
     /** 실제 pointer·keyboard activation을 선택한 application Action으로 변환한다. */
     onAction?: (applicationId: TaskbarApplicationId) => void;
@@ -28,7 +30,7 @@ export type TaskbarApplicationButtonProps = Omit<
 /**
  * Taskbar의 File Explorer 또는 Chrome 공통 앱 버튼을 렌더링한다.
  *
- * active 상태는 읽기 전용 표현이다. mobile Root와 desktop Group은 각자의 실행 callback을 연결하며,
+ * active·running 상태는 읽기 전용 표현이다. mobile Root와 desktop Group은 각자의 실행 callback을 연결하며,
  * 이 버튼은 mode 판정·Window 실행·Preview·Pin 정책을 소유하지 않는다.
  */
 export const TaskbarApplicationButton = ({
@@ -47,6 +49,7 @@ export const TaskbarApplicationButton = ({
       aria-pressed={application.active}
       className={clsx("taskbar-application-button", className)}
       data-active={application.active ? "true" : undefined}
+      data-running={application.active || application.running ? "true" : undefined}
       data-application-id={application.applicationId}
       onClick={() => onAction?.(application.applicationId)}
       type="button"
@@ -58,6 +61,9 @@ export const TaskbarApplicationButton = ({
         draggable={false}
         src={iconSrc}
       />
+      {application.active || application.running ? (
+        <span aria-hidden="true" className="taskbar-application-button__indicator" />
+      ) : null}
     </Button>
   );
 };

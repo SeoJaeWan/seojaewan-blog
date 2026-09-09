@@ -104,14 +104,16 @@ const runtime = createHeadlessRuntime({
 ```
 
 현재 Root는 desktop에서 Windows→Search→빈 실행 항목 배치 영역→Timestamp, mobile에서
-파일 탐색기→Chrome→Timestamp 순서를 제공한다. `TaskbarApplicationButton`은 앱 identity·label·active
+파일 탐색기→Chrome→Timestamp 순서를 제공한다. `TaskbarApplicationButton`은 앱 identity·label·active·running
 표현과 callback을 받아 두 화면에서 사용할 수 있다. mobile Root는 기존 mobile Action을 연결하며
 향후 desktop Group은 자신의 실행 정책을 연결한다. 버튼 내부에서 mode나 Window 정책을 계산하지 않는다.
+`active`는 실행 중임을 포함하며, `running`은 비활성·최소화된 앱의 표시선을 표현한다.
 
 `TaskbarSearch`는 Base UI Input을 직접 조합한다. 클릭·Tab focus로 진입하면 `request-search`를 보내며,
 재클릭·문자·공백 입력은 추가 열기 요청을 보내지 않는다. `value`/`onValueChange`로 검색어를 제어하거나
 `defaultValue`로 독립 입력을 제공한다. Root에서는 `searchValue`/`onSearchValueChange` 또는
 `defaultSearchValue`로 연결한다. 한글 조합·공백을 정규화하지 않고 그대로 전달한다.
+실제 input focus는 푸른 돋보기 표현과 연결되며, 누르는 동안에도 아이콘 크기를 유지한다.
 
 ```tsx
 <TaskbarRoot searchValue={query} onSearchValueChange={setQuery} />
@@ -119,5 +121,6 @@ const runtime = createHeadlessRuntime({
 ```
 
 각 `selected` 입력은 외부 선택 표현이며 실제 panel 관계를 만들지 않는다. 검색 결과·recent·panel과
-desktop Group·indicator·click·drag는 후속 작업에서 연결한다. Storybook은 상태 의미와 조작법,
-관찰 가능한 입력값·Action을 설명하며 실제 Window 완료를 가짜로 처리하지 않는다.
+desktop Group의 상태 파생·click·drag는 후속 작업에서 연결한다. 버튼의 표시선은 현재 전달받은 상태를
+표현한다. Storybook의 설명·상태 미리보기 작성 규칙은 Memory의 `storybook-authoring`을 따른다.
+관찰 가능한 입력값·Action을 표시하며 실제 Window 완료를 가짜로 처리하지 않는다.
