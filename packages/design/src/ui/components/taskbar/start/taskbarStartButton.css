@@ -26,10 +26,6 @@
   user-select: none;
 }
 
-.taskbar-start-button:hover:not([data-disabled]) {
-  background: var(--wd-taskbar-start-button-background-hover);
-}
-
 .taskbar-start-button:active:not([data-disabled]) .taskbar-start-button__logo {
   transform: scale(var(--wd-taskbar-start-button-logo-scale-pressed));
 }
@@ -46,6 +42,10 @@
   background: var(--wd-taskbar-start-button-background-selected);
   border-color: transparent;
   color: var(--wd-color-accent-default);
+}
+
+.taskbar-start-button:hover:not([data-disabled]) {
+  background: var(--wd-taskbar-start-button-background-hover);
 }
 
 .taskbar-start-button[data-disabled] {

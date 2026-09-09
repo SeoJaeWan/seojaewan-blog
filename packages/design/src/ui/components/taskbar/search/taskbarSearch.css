@@ -118,3 +118,7 @@
   color: var(--wd-taskbar-search-text-color);
   opacity: 1;
 }
+
+.taskbar-search:focus::placeholder {
+  opacity: 0;
+}

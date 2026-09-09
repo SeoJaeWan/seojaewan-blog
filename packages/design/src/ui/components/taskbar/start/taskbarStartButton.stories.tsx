@@ -83,6 +83,16 @@ export const Hover: Story = {
   },
 };
 
+export const SelectedHover: Story = {
+  name: "선택 상태 + 호버",
+  args: { selected: true },
+  parameters: {
+    pseudo: { hover: ".taskbar-start-button" },
+    taskbarDescription:
+      "활성 여부와 관계없이 같은 밝은 글라스 호버 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
+  },
+};
+
 export const Pressed: Story = {
   name: "누르고 있는 상태",
   parameters: {

@@ -94,7 +94,7 @@ export const Focus: Story = {
   parameters: {
     pseudo: { focus: ".taskbar-search", focusVisible: ".taskbar-search" },
     taskbarDescription:
-      "키보드 포커스 테두리와 푸른 돋보기를 고정해 보여 줍니다. 실제 입력과 커서는 직접 입력해 보기에서 확인할 수 있습니다.",
+      "포커스 테두리와 중앙에 정렬된 푸른 돋보기를 보여 줍니다. 포커스 중에는 ‘검색’ 안내 문구가 숨겨집니다.",
   },
 };
 
@@ -131,8 +131,10 @@ export const Interaction: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox", { name: "검색" });
     const count = canvas.getByRole("status", { name: "Search Action 횟수" });
+    await expect(getComputedStyle(input, "::placeholder").opacity).toBe("1");
     await userEvent.tab();
     await expect(input).toHaveFocus();
+    await expect(getComputedStyle(input, "::placeholder").opacity).toBe("0");
     const icon = canvasElement.querySelector(".taskbar-search__icon")!;
     await waitFor(() => expect(getComputedStyle(icon, "::after").opacity).toBe("1"));
     await userEvent.type(input, "hello world");
@@ -149,6 +151,7 @@ export const Interaction: Story = {
     await expect(input).toHaveValue("");
     await userEvent.tab();
     await expect(input).not.toHaveFocus();
+    await expect(getComputedStyle(input, "::placeholder").opacity).toBe("1");
     await waitFor(() => expect(getComputedStyle(icon, "::after").opacity).toBe("0"));
     await userEvent.click(input);
     await waitFor(() => expect(getComputedStyle(icon, "::after").opacity).toBe("1"));

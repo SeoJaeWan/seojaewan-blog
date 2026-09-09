@@ -24,7 +24,7 @@
   --wd-taskbar-start-button-logo-size: 30px;
   --wd-taskbar-start-button-border-width: 1px;
   --wd-taskbar-start-button-border-radius: var(--wd-reference-radius-2);
-  --wd-taskbar-start-button-background-hover: rgb(246 247 250);
+  --wd-taskbar-start-button-background-hover: rgb(255 255 255 / 0.9);
   --wd-taskbar-start-button-background-selected: rgb(255 255 255 / 0.72);
   --wd-taskbar-start-button-focus-inner-width: 2px;
   --wd-taskbar-start-button-focus-inner-color: var(--wd-color-surface-taskbar);
@@ -50,7 +50,7 @@
   --wd-taskbar-search-padding-inline-start: 30px;
   --wd-taskbar-search-padding-inline-end: 6px;
   --wd-taskbar-search-icon-size: 18px;
-  --wd-taskbar-search-icon-offset-block: 60%;
+  --wd-taskbar-search-icon-offset-block: 50%;
   --wd-taskbar-search-icon-offset-inline: 10px;
   --wd-taskbar-search-icon-color: rgb(16 16 20);
   --wd-taskbar-search-icon-mask: url("../../assets/taskbar/task-input-mask.svg");
@@ -83,7 +83,7 @@
   --wd-taskbar-application-button-icon-size: 30px;
   --wd-taskbar-application-button-border-width: 1px;
   --wd-taskbar-application-button-border-radius: var(--wd-reference-radius-2);
-  --wd-taskbar-application-button-background-hover: rgb(246 247 250);
+  --wd-taskbar-application-button-background-hover: rgb(255 255 255 / 0.9);
   --wd-taskbar-application-button-background-active: rgb(255 255 255 / 0.72);
   --wd-taskbar-application-button-indicator-height: 3px;
   --wd-taskbar-application-button-indicator-width: 6px;

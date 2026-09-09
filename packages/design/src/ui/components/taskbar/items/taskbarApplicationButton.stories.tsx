@@ -126,6 +126,16 @@ export const Hover: Story = {
     taskbarDescription: "마우스를 올렸을 때의 밝은 배경을 고정해 보여 줍니다.",
   },
 };
+export const ActiveHover: Story = {
+  name: "활성 앱 + 호버",
+  args: { application: { applicationId: "chrome", label: "Chrome", active: true } },
+  parameters: {
+    pseudo: { hover: ".taskbar-application-button" },
+    taskbarDescription:
+      "활성 여부와 관계없이 같은 밝은 글라스 호버 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
+  },
+};
+
 export const Pressed: Story = {
   name: "누르고 있는 상태",
   parameters: {
