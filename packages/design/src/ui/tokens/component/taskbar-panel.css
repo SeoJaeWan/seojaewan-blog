@@ -1,0 +1,36 @@
+:root {
+  --wd-taskbar-panel-height: 600px;
+  --wd-taskbar-panel-background: var(--wd-color-surface-panel);
+  --wd-taskbar-panel-border-color: rgb(214 217 224);
+  --wd-taskbar-panel-border-width: 1px;
+  --wd-taskbar-panel-border-radius: var(--wd-reference-radius-3);
+  --wd-taskbar-panel-box-shadow: var(--wd-reference-shadow-1);
+  --wd-taskbar-panel-backdrop-blur: 40px;
+  --wd-taskbar-panel-color: var(--wd-color-text-primary);
+  --wd-taskbar-panel-font-family: var(--wd-font-family-sans);
+  --wd-taskbar-panel-font-size: 14px;
+  --wd-taskbar-panel-padding-block-start: var(--wd-reference-spacing-5);
+  --wd-taskbar-panel-padding-block-end: var(--wd-reference-spacing-0);
+  --wd-taskbar-panel-padding-inline: var(--wd-reference-spacing-5);
+  --wd-taskbar-panel-start-width: 100vw;
+  --wd-taskbar-panel-search-width: 100vw;
+  --wd-taskbar-panel-motion-offset: 1000px;
+  --wd-taskbar-panel-opening-duration: var(--wd-reference-duration-220);
+  --wd-taskbar-panel-opening-easing: var(--wd-reference-easing-3);
+  --wd-taskbar-panel-closing-duration: var(--wd-reference-duration-200);
+  --wd-taskbar-panel-closing-easing: var(--wd-reference-easing-4);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --wd-taskbar-panel-start-width: 50vw;
+    --wd-taskbar-panel-search-width: 50vw;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --wd-taskbar-panel-start-width: 30vw;
+    --wd-taskbar-panel-search-width: 40vw;
+  }
+}

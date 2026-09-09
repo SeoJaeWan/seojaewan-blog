@@ -1,0 +1,27 @@
+.taskbar-panel-surface {
+  backdrop-filter: blur(var(--wd-taskbar-panel-backdrop-blur));
+  background: var(--wd-taskbar-panel-background);
+  block-size: min(
+    var(--wd-taskbar-panel-height),
+    var(--wd-taskbar-panel-available-height, var(--wd-taskbar-panel-height))
+  );
+  border: var(--wd-taskbar-panel-border-width) solid var(--wd-taskbar-panel-border-color);
+  border-radius: var(--wd-taskbar-panel-border-radius);
+  box-shadow: var(--wd-taskbar-panel-box-shadow);
+  box-sizing: border-box;
+  color: var(--wd-taskbar-panel-color);
+  font-family: var(--wd-taskbar-panel-font-family);
+  font-size: var(--wd-taskbar-panel-font-size);
+  inline-size: var(--wd-taskbar-panel-start-width);
+  max-block-size: 100%;
+  overflow: hidden;
+  padding-block:
+    var(--wd-taskbar-panel-padding-block-start)
+    var(--wd-taskbar-panel-padding-block-end);
+  padding-inline: var(--wd-taskbar-panel-padding-inline);
+  -webkit-backdrop-filter: blur(var(--wd-taskbar-panel-backdrop-blur));
+}
+
+.taskbar-panel-surface[data-variant="search"] {
+  inline-size: var(--wd-taskbar-panel-search-width);
+}
