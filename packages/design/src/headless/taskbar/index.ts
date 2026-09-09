@@ -1,0 +1,110 @@
+/**
+ * @file Taskbar model, Store, selectors, intents와 storage port의 public surface를 조합한다.
+ *
+ * 새로운 동작을 구현하지 않고 요소별 public API만 다시 내보낸다.
+ */
+export {
+  createMobileTaskbarApplicationIntent,
+  createTaskbarApplicationClickIntent,
+  createTaskbarCloseAllIntent,
+  createTaskbarExternalShortcutIntent,
+  createTaskbarPreviewClickIntent,
+  createTaskbarSearchAction,
+  createTaskbarWindowsAction,
+  executeTaskbarWindowIntent,
+  executeTaskbarWindowOperationIntent,
+  type MobileTaskbarApplicationIntent,
+  type TaskbarApplicationClickIntent,
+  type TaskbarCloseAllIntent,
+  type TaskbarExternalShortcutIntent,
+  type TaskbarRootAction,
+  type TaskbarRootActionGateway,
+  type TaskbarSearchAction,
+  type TaskbarWindowCommandPort,
+  type TaskbarWindowIntent,
+  type TaskbarWindowIntentResult,
+  type TaskbarWindowOperationIntentResult,
+  type TaskbarWindowOperationPort,
+  type TaskbarWindowsAction,
+} from "./actions/index.js";
+export {
+  type TaskbarController,
+  type TaskbarControllerActions,
+  type TaskbarControllerViewModel,
+  useTaskbarController,
+} from "./controller/index.js";
+export {
+  createTaskbarApplicationItem,
+  createTaskbarExternalShortcutItem,
+  type TaskbarApplicationId,
+  type TaskbarApplicationItem,
+  type TaskbarExternalShortcutItem,
+  type TaskbarItem,
+  type TaskbarReorderAction,
+  type TaskbarReorderDestination,
+  type TaskbarReorderIntent,
+  type TaskbarSnapshot,
+} from "./model/index.js";
+export {
+  TASKBAR_OPERATION_TARGET,
+  type TaskbarCommittedResult,
+  type TaskbarOperationHandle,
+  TaskbarOperations,
+  type TaskbarOperationsOptions,
+  type TaskbarOperationStore,
+  type TaskbarOperationWindowReader,
+  type TaskbarPinAction,
+  type TaskbarPresentedResult,
+  type TaskbarSettledResult,
+} from "./operations/index.js";
+export {
+  selectTaskbarRootSnapshot,
+  type TaskbarRootController,
+  type TaskbarRootControllerActions,
+  type TaskbarRootSnapshot,
+  type TaskbarRootViewModel,
+  useTaskbarRootController,
+} from "./rootController/index.js";
+export {
+  type MobileTaskbarApplicationView,
+  type MobileTaskbarTimestampView,
+  type MobileTaskbarView,
+  selectMobileTaskbarView,
+  selectTaskbarVisibleViews,
+  type TaskbarApplicationGroup,
+  type TaskbarExternalShortcutView,
+  type TaskbarGroupTarget,
+  type TaskbarMetadataReaders,
+  type TaskbarVisibleView,
+} from "./selectors/index.js";
+export {
+  TaskbarStore,
+  TaskbarStoreAlreadyInitializedError,
+  type TaskbarStoreCommandContext,
+  type TaskbarStoreInitialization,
+  TaskbarStoreNotInitializedError,
+  type TaskbarWindowReader,
+} from "./taskbarStore/index.js";
+export {
+  type TaskbarStoreCommittedResult,
+  type TaskbarStoreNoOpResult,
+  type TaskbarStorePersistenceFailure,
+  type TaskbarStoreRejectedResult,
+  type TaskbarStoreRejectionReason,
+  type TaskbarStoreResult,
+} from "./taskbarStore/operationResult/index.js";
+export {
+  type TaskbarStorage,
+  type TaskbarStorageSnapshot,
+} from "./taskbarStore/taskbarStorage/index.js";
+export {
+  formatTaskbarTimestamp,
+  getMillisecondsUntilNextMinute,
+  startTaskbarTimestampScheduler,
+  systemTaskbarTimestampClock,
+  type TaskbarTimestampClock,
+  type TaskbarTimestampTimer,
+  type TaskbarTimestampValue,
+  type TaskbarTimestampViewModel,
+  useTaskbarTimestampController,
+} from "./timestamp/index.js";

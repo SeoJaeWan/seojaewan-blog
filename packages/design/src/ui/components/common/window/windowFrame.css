@@ -1,0 +1,74 @@
+.window-frame {
+  background: var(--wd-window-frame-root-background-color);
+  border: var(--wd-window-frame-root-border-width) solid transparent;
+  border-radius: var(--wd-window-frame-root-border-radius);
+  box-shadow: var(--wd-window-frame-root-box-shadow);
+  box-sizing: border-box;
+  color: var(--wd-color-text-primary);
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--wd-font-family-sans);
+  inset-block-start: var(--wd-window-frame-runtime-top);
+  inset-inline-start: var(--wd-window-frame-runtime-left);
+  block-size: var(--wd-window-frame-runtime-height);
+  inline-size: var(--wd-window-frame-runtime-width);
+  overflow: hidden;
+  position: absolute;
+  transition:
+    inset-block-start var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    inset-inline-start var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    block-size var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    inline-size var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    box-shadow var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing);
+}
+
+@supports (overflow: clip) {
+  .window-frame {
+    overflow: clip;
+  }
+}
+
+.window-frame[data-active="false"] {
+  box-shadow: var(--wd-window-frame-root-box-shadow-inactive);
+}
+
+.window-frame[data-gesture-active="true"] {
+  transition-property: box-shadow;
+}
+
+.window-frame[data-presentation-operation-id] {
+  transition-property: box-shadow;
+}
+
+.window-frame[data-maximized="true"][data-mode="desktop"] {
+  border-radius: 0;
+  inset: 0;
+  block-size: calc(100% - var(--wd-window-frame-root-mobile-offset-block-end));
+  inline-size: 100%;
+}
+
+.window-frame[data-mode="mobile"] {
+  border-radius: 0;
+  inset: 0;
+  block-size: calc(100% - var(--wd-window-frame-root-mobile-offset-block-end));
+  inline-size: 100%;
+}
+
+.window-frame__content {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-frame {
+    transition-duration: 0ms;
+  }
+}
