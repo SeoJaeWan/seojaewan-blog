@@ -309,8 +309,13 @@ describe("WindowOperations", () => {
     const present = vi.fn((request: { operationId: string; phase: string }) => {
       expect(transitions.complete(request.operationId as never, request.phase)).toBe(true);
     });
+    const release = vi.fn();
     const store = { getSnapshot: () => current, toggleMaximize } as unknown as WindowOperationStore;
-    const operations = new WindowOperations({ store, transitions, presentation: { present } });
+    const operations = new WindowOperations({
+      store,
+      transitions,
+      presentation: { present, release },
+    });
 
     const maximizing = operations.execute({ type: "toggle-maximize", sessionId: id });
 
@@ -320,6 +325,11 @@ describe("WindowOperations", () => {
     });
     await expect(maximizing.settled).resolves.toMatchObject({ status: "settled" });
     expect(present).toHaveBeenCalledWith({
+      operationId: maximizing.operationId,
+      sessionId: id,
+      phase: "window-maximize",
+    });
+    expect(release).toHaveBeenCalledExactlyOnceWith({
       operationId: maximizing.operationId,
       sessionId: id,
       phase: "window-maximize",

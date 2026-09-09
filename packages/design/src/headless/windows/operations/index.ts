@@ -164,6 +164,8 @@ export type WindowPresentationRequest = Readonly<{
 export type WindowPresentationPort = Readonly<{
   /** 등록이 끝난 transition 요청을 시작하며 동기 완료와 Promise 거절을 모두 허용한다. */
   present(request: WindowPresentationRequest): void | Promise<void>;
+  /** transition 대기가 끝난 정확한 요청을 presentation 보관소에서 제거한다. */
+  release?(request: WindowPresentationRequest): void;
 }>;
 
 /** Window Operation이 사용하는 기존 WindowStore public surface다. */
@@ -317,9 +319,10 @@ export class WindowOperations {
     sessionId: WindowSessionId,
     phase: string,
   ): Promise<TransitionResult> {
+    const request = Object.freeze({ operationId, sessionId, phase });
     const result = this.#transitions.waitFor(operationId, phase);
     try {
-      const pending = this.#presentation?.present(Object.freeze({ operationId, sessionId, phase }));
+      const pending = this.#presentation?.present(request);
       if (pending !== undefined) {
         void Promise.resolve(pending).catch((error: unknown) => {
           this.#transitions.fail(operationId, phase, error);
@@ -328,7 +331,10 @@ export class WindowOperations {
     } catch (error) {
       this.#transitions.fail(operationId, phase, error);
     }
-    return result;
+    return result.then((presentation) => {
+      this.#presentation?.release?.(request);
+      return presentation;
+    });
   }
 
   /** Action을 기존 또는 생성 예정 Session queue에 예약하고 즉시 Handle을 반환한다. */
@@ -459,10 +465,7 @@ export class WindowOperations {
     const commandContext: WindowStoreCommandContext = {
       onCommit: (result) => {
         committed = true;
-        if (
-          result.change.sessionId !== undefined &&
-          result.change.sessionId !== leasedTarget
-        )
+        if (result.change.sessionId !== undefined && result.change.sessionId !== leasedTarget)
           attached = context.attachTarget(result.change.sessionId);
         const phase = afterCommitPhase(before, result);
         if (phase !== null && result.change.sessionId !== undefined)
@@ -482,8 +485,7 @@ export class WindowOperations {
       while (true) {
         const expectedTarget = resolveExistingTarget(this.#store.getSnapshot(), action);
         if (expectedTarget === null) context.releaseTargets();
-        lease =
-          expectedTarget === null ? null : await context.acquireTarget(expectedTarget);
+        lease = expectedTarget === null ? null : await context.acquireTarget(expectedTarget);
         leasedTarget = lease?.target ?? null;
         try {
           storeResult = await this.#executeStore(action, {
