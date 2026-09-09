@@ -30,22 +30,25 @@
   transform: scale(var(--wd-taskbar-start-button-logo-scale-pressed));
 }
 
-.taskbar-start-button:focus-visible {
-  box-shadow:
-    0 0 0 var(--wd-taskbar-start-button-focus-inner-width)
-      var(--wd-taskbar-start-button-focus-inner-color),
-    0 0 0 var(--wd-taskbar-start-button-focus-outer-width)
-      var(--wd-taskbar-start-button-focus-outer-color);
-}
-
 .taskbar-start-button[data-selected="true"] {
   background: var(--wd-taskbar-start-button-background-selected);
-  border-color: transparent;
+  border-color: var(--wd-taskbar-glass-border-active);
+  box-shadow: var(--wd-taskbar-glass-shadow-active);
   color: var(--wd-color-accent-default);
 }
 
 .taskbar-start-button:hover:not([data-disabled]) {
   background: var(--wd-taskbar-start-button-background-hover);
+  border-color: var(--wd-taskbar-glass-border-hover);
+  box-shadow: var(--wd-taskbar-glass-shadow-hover);
+}
+
+.taskbar-start-button:focus-visible:not([data-disabled]) {
+  box-shadow:
+    0 0 0 var(--wd-taskbar-start-button-focus-inner-width)
+      var(--wd-taskbar-start-button-focus-inner-color),
+    0 0 0 var(--wd-taskbar-start-button-focus-outer-width)
+      var(--wd-taskbar-start-button-focus-outer-color);
 }
 
 .taskbar-start-button[data-disabled] {

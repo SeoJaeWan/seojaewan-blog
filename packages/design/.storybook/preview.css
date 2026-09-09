@@ -9,6 +9,12 @@
   width: 100%;
 }
 
+.taskbar-story-comparison {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
 .taskbar-story-surface {
   align-items: center;
   background: var(--wd-taskbar-root-background);

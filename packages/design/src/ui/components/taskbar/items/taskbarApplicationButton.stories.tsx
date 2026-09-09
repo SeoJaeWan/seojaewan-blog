@@ -136,6 +136,34 @@ export const ActiveHover: Story = {
   },
 };
 
+export const StateComparison: Story = {
+  name: "배경 위 상태 비교",
+  parameters: {
+    pseudo: { hover: ["#taskbar-compare-hover", "#taskbar-compare-active-hover"] },
+    taskbarDescription:
+      "같은 Taskbar 배경 위에서 기본·활성·호버·활성+호버를 비교합니다. 활성은 은은한 유리 표면과 표시선, 호버는 더 밝은 표면과 선명한 경계를 보여 줍니다.",
+  },
+  render: () => (
+    <div className="taskbar-story-comparison">
+      {[
+        { id: "default", label: "기본", active: false },
+        { id: "active", label: "활성", active: true },
+        { id: "hover", label: "호버", active: false },
+        { id: "active-hover", label: "활성 + 호버", active: true },
+      ].map(({ id, label, active }) => (
+        <div key={id}>
+          <TaskbarPreview results={<span>{label}</span>}>
+            <TaskbarApplicationButton
+              id={`taskbar-compare-${id}`}
+              application={{ applicationId: "chrome", label: "Chrome", active }}
+            />
+          </TaskbarPreview>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
 export const Pressed: Story = {
   name: "누르고 있는 상태",
   parameters: {

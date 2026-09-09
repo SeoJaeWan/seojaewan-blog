@@ -28,20 +28,24 @@
   transform: scale(var(--wd-taskbar-application-button-icon-scale-pressed));
 }
 
-.taskbar-application-button:focus-visible {
+.taskbar-application-button[data-active="true"] {
+  background: var(--wd-taskbar-application-button-background-active);
+  border-color: var(--wd-taskbar-glass-border-active);
+  box-shadow: var(--wd-taskbar-glass-shadow-active);
+}
+
+.taskbar-application-button:hover:not([data-disabled]) {
+  background: var(--wd-taskbar-application-button-background-hover);
+  border-color: var(--wd-taskbar-glass-border-hover);
+  box-shadow: var(--wd-taskbar-glass-shadow-hover);
+}
+
+.taskbar-application-button:focus-visible:not([data-disabled]) {
   box-shadow:
     0 0 0 var(--wd-taskbar-application-button-focus-inner-width)
       var(--wd-taskbar-application-button-focus-inner-color),
     0 0 0 var(--wd-taskbar-application-button-focus-outer-width)
       var(--wd-taskbar-application-button-focus-outer-color);
-}
-
-.taskbar-application-button[data-active="true"] {
-  background: var(--wd-taskbar-application-button-background-active);
-}
-
-.taskbar-application-button:hover:not([data-disabled]) {
-  background: var(--wd-taskbar-application-button-background-hover);
 }
 
 .taskbar-application-button[data-disabled] {
