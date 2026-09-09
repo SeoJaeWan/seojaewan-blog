@@ -3,7 +3,7 @@ import { useCallback, useEffect, useId, useRef } from "react";
 
 import { Popover } from "@base-ui/react/popover";
 
-import { TaskbarPanelSurface } from "../surface/taskbarPanelSurface.js";
+import { TaskbarPanelSurface } from "../surface/index.js";
 
 import "./taskbarPanelWidget.css";
 

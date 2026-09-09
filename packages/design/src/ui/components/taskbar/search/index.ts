@@ -3,5 +3,5 @@
  *
  * 검색 결과, recent, detail과 Resource renderer는 포함하지 않는다.
  */
-export { TaskbarSearch, type TaskbarSearchProps } from "./taskbarSearch.js";
-export { TaskbarSearchPanel, type TaskbarSearchPanelProps } from "./taskbarSearchPanel.js";
+export { TaskbarSearch, type TaskbarSearchProps } from "./input/index.js";
+export { TaskbarSearchPanel, type TaskbarSearchPanelProps } from "./panel/index.js";

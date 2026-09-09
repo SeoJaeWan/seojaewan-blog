@@ -20,7 +20,7 @@ import {
   PrimaryPanelOperations,
   TransitionRegistry,
 } from "../../../../headless/index.js";
-import { TaskbarRoot, type TaskbarRootProps } from "./taskbarRoot.js";
+import { TaskbarRoot, type TaskbarRootProps } from "./index.js";
 
 const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** Root fixture의 고정 local Date를 반환한다. */
@@ -187,7 +187,9 @@ describe("TaskbarRoot", () => {
 
     const search = screen.getByRole("textbox", { name: "검색" });
     fireEvent.focus(search);
-    await waitFor(() => expect(disabled.primaryPanelState.getSnapshot().activePanel).toBe("search"));
+    await waitFor(() =>
+      expect(disabled.primaryPanelState.getSnapshot().activePanel).toBe("search"),
+    );
   });
 
   it("desktop Search가 열린 상태에서 mobile로 바뀌면 query와 대기 panel을 정리한다", async () => {

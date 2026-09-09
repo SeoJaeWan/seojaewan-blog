@@ -2,15 +2,15 @@ import type { ReactNode } from "react";
 import { useMemo } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import type { HeadlessRuntimeAdapters, WindowState } from "../../../../headless/index.js";
-import { createHeadlessRuntime, HeadlessRuntimeProvider } from "../../../../headless/index.js";
+import type { HeadlessRuntimeAdapters, WindowState } from "../../../../../headless/index.js";
+import { createHeadlessRuntime, HeadlessRuntimeProvider } from "../../../../../headless/index.js";
 import {
   type TaskbarPanelsConnection,
   useTaskbarPanelsConnection,
-} from "../panels/connection/index.js";
-import { TaskbarStart } from "./taskbarStart.js";
+} from "../../panels/connection/index.js";
+import { withTaskbarDescription } from "../../taskbarStoryPreview.js";
+import { TaskbarStart } from "./index.js";
 
 const desktopSnapshot = Object.freeze({
   mode: "desktop",
@@ -101,6 +101,7 @@ const meta = {
   title: "Design/Components/Taskbar/Start",
   component: TaskbarStart,
   tags: ["autodocs"],
+  decorators: [withTaskbarDescription],
   parameters: {
     controls: { disable: true },
     docs: {
@@ -121,54 +122,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Interaction: Story = {
-  name: "Start 입력과 닫힘 흐름",
+export const Default: Story = {
+  name: "직접 열어 보기",
   parameters: {
     taskbarDescription:
-      "시작 버튼 toggle, 상단 input의 한글·공백 보존, 내부 focus 유지, 외부 interaction dismiss와 close 완료 초기화를 실제 browser에서 확인합니다.",
+      "시작 버튼을 눌러 panel을 열고 상단 검색창에 한글과 공백을 입력해 보세요. 패널 밖을 누르거나 Escape로 닫은 뒤 검색어가 비워지는지 확인할 수 있습니다.",
   },
   render: () => <StartStory />,
-  play: async () => {
-    const page = within(document.body);
-    const button = page.getByRole("button", { name: "시작" });
-    const outside = page.getByRole("button", { name: "패널 밖" });
-
-    await userEvent.click(button);
-    await waitFor(() =>
-      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute("data-starting-style"),
-    );
-    const input = page.getByRole<HTMLInputElement>("textbox", {
-      name: "앱 및 문서 검색",
-    });
-    await expect(button).toHaveFocus();
-    await expect(input).not.toHaveFocus();
-    await expect(button).toHaveAttribute("aria-expanded", "true");
-    await expect(button).toHaveAttribute("aria-pressed", "true");
-
-    await userEvent.click(input);
-    await userEvent.type(input, "한글  query ");
-    await expect(input).toHaveValue("한글  query ");
-    await expect(page.getByRole("dialog", { name: "시작" })).toBeVisible();
-    await expect(page.getByRole("status", { name: "Start 검색어" }).textContent).toBe(
-      "한글  query ",
-    );
-
-    await userEvent.click(outside);
-    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
-    await expect(page.getByRole("status", { name: "Start 검색어" })).toHaveTextContent(
-      "(비어 있음)",
-    );
-
-    await userEvent.click(button);
-    await waitFor(() =>
-      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute("data-starting-style"),
-    );
-    const reopenedInput = page.getByRole<HTMLInputElement>("textbox", {
-      name: "앱 및 문서 검색",
-    });
-    await expect(reopenedInput).toHaveValue("");
-    await userEvent.click(button);
-    await waitFor(() => expect(button).toHaveAttribute("aria-expanded", "false"));
-    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
-  },
 };

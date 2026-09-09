@@ -6,9 +6,9 @@
 import type { KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef } from "react";
 
-import type { TaskbarPanelsConnection } from "../panels/connection/index.js";
-import { TaskbarPanelWidget } from "../panels/widget/taskbarPanelWidget.js";
-import { TaskbarSearch, type TaskbarSearchProps } from "./taskbarSearch.js";
+import type { TaskbarPanelsConnection } from "../../panels/connection/index.js";
+import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import { TaskbarSearch, type TaskbarSearchProps } from "../input/index.js";
 
 /** Search 제품 연결이 계산하는 controlled input props다. */
 type ConnectedInputProp =

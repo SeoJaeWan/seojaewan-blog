@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 
-import { TaskbarPanelSurface } from "./taskbarPanelSurface.js";
+import { TaskbarPanelSurface } from "./index.js";
 
 /** Taskbar가 차지하는 50px을 뺀 viewport 안에 실제 production surface를 표시한다. */
 const renderSurface = (variant: "search" | "start") => (
@@ -34,9 +34,9 @@ const verifySurface = async (canvasElement: HTMLElement, variant: "search" | "st
 };
 
 const meta = {
-  title: "Design/Components/Taskbar/Panel Surface",
+  title: "Tests/Taskbar/Panel Surface",
   component: TaskbarPanelSurface,
-  tags: ["autodocs"],
+  tags: ["!autodocs", "!dev"],
   parameters: {
     controls: { disable: true },
     docs: {

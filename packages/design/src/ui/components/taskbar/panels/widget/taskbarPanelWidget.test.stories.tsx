@@ -4,11 +4,8 @@ import { Popover } from "@base-ui/react/popover";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import type {
-  TaskbarPanelOpenChangeReason,
-  TaskbarPanelWidgetVariant,
-} from "./taskbarPanelWidget.js";
-import { TaskbarPanelWidget } from "./taskbarPanelWidget.js";
+import type { TaskbarPanelOpenChangeReason, TaskbarPanelWidgetVariant } from "./index.js";
+import { TaskbarPanelWidget } from "./index.js";
 
 /** Panel 안에서 연 portal도 parent panel 내부 interaction으로 판정하는 실제 Base UI 조합이다. */
 const NestedPortal = () => (
@@ -42,14 +39,18 @@ const PanelFixture = ({
   const [open, setOpen] = useState(initialOpen);
   const [reason, setReason] = useState<TaskbarPanelOpenChangeReason | "none">("none");
   const [transition, setTransition] = useState("none");
+  const [transitionHistory, setTransitionHistory] = useState<readonly string[]>([]);
   const transitionStartedAt = useRef(initialOpen ? performance.now() : null);
 
   /** 실제 browser transition callback까지 걸린 시간을 관찰 상태에 함께 남긴다. */
   const recordTransition = (kind: "cancel" | "complete", nextOpen: boolean) => {
     const startedAt = transitionStartedAt.current;
-    const elapsed = startedAt === null ? "initial" : `${Math.round(performance.now() - startedAt)}ms`;
+    const elapsed =
+      startedAt === null ? "initial" : `${Math.round(performance.now() - startedAt)}ms`;
     transitionStartedAt.current = null;
-    setTransition(`${kind}:${String(nextOpen)}:${elapsed}`);
+    const event = `${kind}:${String(nextOpen)}:${elapsed}`;
+    setTransition(event);
+    setTransitionHistory((current) => [...current, event]);
   };
 
   return (
@@ -124,13 +125,15 @@ const PanelFixture = ({
       <div aria-label="widget 상태" role="status" style={{ position: "fixed", right: 16, top: 16 }}>
         {open ? "open" : "closed"};{reason};{transition}
       </div>
+      <output aria-label="transition 이력" hidden>
+        {transitionHistory.join(",") || "none"}
+      </output>
     </div>
   );
 };
 
 /** portal에 렌더링된 panel을 문서 전체에서 찾는다. */
-const getPanel = (name: "검색" | "시작") =>
-  within(document.body).getByRole("dialog", { name });
+const getPanel = (name: "검색" | "시작") => within(document.body).getByRole("dialog", { name });
 
 /** Start 또는 Search의 안정된 open geometry와 motion token을 확인한다. */
 const verifyOpenGeometry = async (
@@ -156,9 +159,9 @@ const verifyOpenGeometry = async (
 };
 
 const meta = {
-  title: "Design/Components/Taskbar/Panel Widget",
+  title: "Tests/Taskbar/Panel Widget",
   component: TaskbarPanelWidget,
-  tags: ["autodocs"],
+  tags: ["!autodocs", "!dev"],
   parameters: {
     controls: { disable: true },
     docs: {
@@ -225,9 +228,7 @@ export const DismissAndPresence: Story = {
     await expect(panel).toHaveAttribute("data-ending-style");
     await expect(getComputedStyle(panel).pointerEvents).toBe("none");
     await expect(getComputedStyle(panel).transitionDuration).toBe("0.2s");
-    await waitFor(() =>
-      expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull(),
-    );
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
     await expect(page.getByRole("status", { name: "widget 상태" })).toHaveTextContent(
       "closed;outside;complete:false",
     );
@@ -268,9 +269,7 @@ export const SearchEscape: Story = {
     );
     await userEvent.keyboard("{Escape}");
     await expect(input).not.toHaveFocus();
-    await waitFor(() =>
-      expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull(),
-    );
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
     await expect(input).not.toHaveFocus();
     await expect(page.getByRole("status", { name: "widget 상태" })).toHaveTextContent(
       "closed;escape;complete:false",
@@ -300,9 +299,7 @@ export const ReducedMotion: Story = {
     await expect(panel).not.toHaveAttribute("data-starting-style");
 
     await userEvent.click(page.getByRole("button", { name: "패널 밖" }));
-    await waitFor(() =>
-      expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull(),
-    );
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
     await expect(page.getByRole("status", { name: "widget 상태" })).toHaveTextContent(
       "closed;outside;complete:false",
     );
@@ -322,12 +319,8 @@ export const InterruptedTransition: Story = {
     await expect(panel).toHaveAttribute("data-ending-style");
     await expect(panel).toHaveAttribute("aria-hidden", "true");
     await expect(panel).toHaveAttribute("inert");
-    await expect(page.getByRole("status", { name: "widget 상태" })).toHaveTextContent(
-      "closed;trigger;cancel:true",
-    );
-    await waitFor(() =>
-      expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull(),
-    );
+    await expect(page.getByLabelText("transition 이력")).toHaveTextContent("cancel:true");
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
     await expect(page.getByRole("status", { name: "widget 상태" })).toHaveTextContent(
       "closed;trigger;complete:false",
     );

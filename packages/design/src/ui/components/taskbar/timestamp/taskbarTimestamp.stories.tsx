@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within } from "storybook/test";
 
-import {
-  TaskbarPreview,
-  withTaskbarDescription,
-} from "../../../../../.storybook/taskbarPreview.js";
+import { TaskbarPreview, withTaskbarDescription } from "../taskbarStoryPreview.js";
 import { TaskbarTimestamp } from "./taskbarTimestamp.js";
 
 const meta = {

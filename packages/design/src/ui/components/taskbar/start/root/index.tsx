@@ -3,9 +3,9 @@ import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Input } from "@base-ui/react/input";
 import { clsx } from "clsx";
 
-import type { TaskbarPanelConnection } from "../panels/connection/index.js";
-import { TaskbarPanelWidget } from "../panels/widget/taskbarPanelWidget.js";
-import { TaskbarStartButton, type TaskbarStartButtonProps } from "./taskbarStartButton.js";
+import type { TaskbarPanelConnection } from "../../panels/connection/index.js";
+import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import { TaskbarStartButton, type TaskbarStartButtonProps } from "../button/index.js";
 
 import "./taskbarStart.css";
 

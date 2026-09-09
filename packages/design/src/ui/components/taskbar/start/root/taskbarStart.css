@@ -8,7 +8,7 @@
   --wd-taskbar-start-search-input-focus-outer-width: 4px;
   --wd-taskbar-start-search-input-height: 30px;
   --wd-taskbar-start-search-input-icon-color: rgb(16 16 20);
-  --wd-taskbar-start-search-input-icon-mask: url("../../../assets/taskbar/task-input-mask.svg");
+  --wd-taskbar-start-search-input-icon-mask: url("../../../../assets/taskbar/task-input-mask.svg");
   --wd-taskbar-start-search-input-icon-size: 18px;
   --wd-taskbar-start-search-input-placeholder-color: rgb(32 33 36 / 0.5);
 

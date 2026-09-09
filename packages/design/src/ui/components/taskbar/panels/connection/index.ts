@@ -16,10 +16,7 @@ import {
   selectPrimaryPanelView,
   usePrimaryPanelController,
 } from "../../../../../headless/taskbar/index.js";
-import type {
-  TaskbarPanelOpenChangeReason,
-  TaskbarPanelWidgetProps,
-} from "../widget/taskbarPanelWidget.js";
+import type { TaskbarPanelOpenChangeReason, TaskbarPanelWidgetProps } from "../widget/index.js";
 
 /** panel widget에 그대로 전달할 controlled 제품 연결 props다. */
 export type TaskbarPanelWidgetConnection = Pick<
