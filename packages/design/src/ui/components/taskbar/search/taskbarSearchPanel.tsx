@@ -3,7 +3,7 @@
  *
  * 검색 결과, recent, detail과 Resource renderer는 children을 제공하는 상위 제품 view가 소유한다.
  */
-import type { ReactNode } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef } from "react";
 
 import type { TaskbarPanelsConnection } from "../panels/connection/index.js";
@@ -26,6 +26,18 @@ export type TaskbarSearchPanelProps = Omit<TaskbarSearchProps, ConnectedInputPro
   }>;
 
 /**
+ * 실제 Search input의 Space는 문자 입력으로 유지하고 Base UI Trigger의 button 동작만 건너뛴다.
+ *
+ * native default와 IME event는 막지 않는다.
+ */
+const preserveSearchInputSpace = (event: KeyboardEvent<HTMLInputElement>): void => {
+  if (event.key !== " ") return;
+  (
+    event as KeyboardEvent<HTMLInputElement> & Readonly<{ preventBaseUIHandler?: () => void }>
+  ).preventBaseUIHandler?.();
+};
+
+/**
  * 작업 표시줄의 실제 input을 Search panel trigger로 유지하고 query와 lifecycle을 연결한다.
  *
  * panel 안에 두 번째 input을 만들지 않으며 Resource open 결과는 connection.resource를 사용하는
@@ -34,6 +46,7 @@ export type TaskbarSearchPanelProps = Omit<TaskbarSearchProps, ConnectedInputPro
 export const TaskbarSearchPanel = ({
   children,
   connection,
+  onKeyDown,
   portalContainer,
   ...inputProps
 }: TaskbarSearchPanelProps) => {
@@ -55,6 +68,10 @@ export const TaskbarSearchPanel = ({
       trigger={
         <TaskbarSearch
           {...inputProps}
+          onKeyDown={(event) => {
+            onKeyDown?.(event);
+            if (!event.defaultPrevented) preserveSearchInputSpace(event);
+          }}
           onValueChange={(value) => connection.actions.updateQuery(value)}
           ref={inputRef}
           selected={connection.widget.open}

@@ -1,27 +1,47 @@
 .taskbar-panel-surface {
   backdrop-filter: blur(var(--wd-taskbar-panel-backdrop-blur));
-  background: var(--wd-taskbar-panel-background);
+  background: var(--wd-taskbar-panel-root-background-color);
   block-size: min(
-    var(--wd-taskbar-panel-height),
-    var(--wd-taskbar-panel-available-height, var(--wd-taskbar-panel-height))
+    var(--wd-taskbar-panel-root-height),
+    var(--wd-taskbar-panel-available-height, var(--wd-taskbar-panel-root-height))
   );
   border: var(--wd-taskbar-panel-border-width) solid var(--wd-taskbar-panel-border-color);
   border-radius: var(--wd-taskbar-panel-border-radius);
   box-shadow: var(--wd-taskbar-panel-box-shadow);
   box-sizing: border-box;
-  color: var(--wd-taskbar-panel-color);
+  color: var(--wd-taskbar-panel-root-color);
   font-family: var(--wd-taskbar-panel-font-family);
   font-size: var(--wd-taskbar-panel-font-size);
-  inline-size: var(--wd-taskbar-panel-start-width);
+  inline-size: var(--wd-taskbar-panel-start-width-compact);
   max-block-size: 100%;
+  max-inline-size: var(--wd-taskbar-panel-available-width, 100vw);
   overflow: hidden;
-  padding-block:
-    var(--wd-taskbar-panel-padding-block-start)
+  padding-block: var(--wd-taskbar-panel-padding-block-start)
     var(--wd-taskbar-panel-padding-block-end);
   padding-inline: var(--wd-taskbar-panel-padding-inline);
   -webkit-backdrop-filter: blur(var(--wd-taskbar-panel-backdrop-blur));
 }
 
 .taskbar-panel-surface[data-variant="search"] {
-  inline-size: var(--wd-taskbar-panel-search-width);
+  inline-size: var(--wd-taskbar-panel-search-width-compact);
+}
+
+@media (min-width: 768px) {
+  .taskbar-panel-surface {
+    inline-size: var(--wd-taskbar-panel-start-width-medium);
+  }
+
+  .taskbar-panel-surface[data-variant="search"] {
+    inline-size: var(--wd-taskbar-panel-search-width-medium);
+  }
+}
+
+@media (min-width: 1280px) {
+  .taskbar-panel-surface {
+    inline-size: var(--wd-taskbar-panel-start-width-wide);
+  }
+
+  .taskbar-panel-surface[data-variant="search"] {
+    inline-size: var(--wd-taskbar-panel-search-width-wide);
+  }
 }

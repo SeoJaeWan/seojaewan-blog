@@ -1,4 +1,4 @@
-import type { ComponentPropsWithRef, KeyboardEvent } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { useEffect, useRef } from "react";
 
 import { clsx } from "clsx";
@@ -15,19 +15,6 @@ import { TaskbarStart } from "../start/index.js";
 import { TaskbarTimestamp } from "../timestamp/index.js";
 
 import "./taskbarRoot.css";
-
-/**
- * 실제 Search input의 Space 입력은 보존하고 Base UI Trigger의 keyboard activation만 건너뛴다.
- *
- * native input 기본 동작과 IME event는 막지 않으며 다른 key의 widget 처리는 Base UI에 맡긴다.
- */
-const preserveTaskbarSearchSpace = (event: KeyboardEvent<HTMLInputElement>): void => {
-  if (event.key !== " ") return;
-  (
-    event as KeyboardEvent<HTMLInputElement> &
-      Readonly<{ preventBaseUIHandler?: () => void }>
-  ).preventBaseUIHandler?.();
-};
 
 /** Taskbar Root의 고정 제품 의미를 제외한 native nav 속성이다. */
 export type TaskbarRootProps = Omit<
@@ -79,15 +66,8 @@ export const TaskbarRoot = ({
     >
       {mode === "desktop" ? (
         <div className="taskbar-root__items" data-taskbar-region="items">
-          <TaskbarStart
-            buttonProps={{ disabled: windowsDisabled }}
-            connection={panels.start}
-          />
-          <TaskbarSearchPanel
-            connection={panels.search}
-            disabled={searchDisabled}
-            onKeyDown={preserveTaskbarSearchSpace}
-          >
+          <TaskbarStart buttonProps={{ disabled: windowsDisabled }} connection={panels.start} />
+          <TaskbarSearchPanel connection={panels.search} disabled={searchDisabled}>
             {null}
           </TaskbarSearchPanel>
           <span

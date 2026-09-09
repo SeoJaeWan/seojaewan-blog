@@ -18,7 +18,6 @@ export {
   type TaskbarCloseAllIntent,
   type TaskbarExternalShortcutIntent,
   type TaskbarRootAction,
-  type TaskbarRootActionGateway,
   type TaskbarSearchAction,
   type TaskbarWindowCommandPort,
   type TaskbarWindowIntent,

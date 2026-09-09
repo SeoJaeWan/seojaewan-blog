@@ -264,7 +264,7 @@ export const ConnectedPanelLifecycle: Story = {
     await waitFor(() => expect(panel).toBeVisible());
     await expect(page.getAllByRole("textbox", { name: "검색" })).toHaveLength(1);
 
-    await userEvent.paste("한글  검색 ");
+    await userEvent.type(input, "한글  검색 ");
     await expect(input).toHaveValue("한글  검색 ");
     const query = canvas.getByRole("status", { name: "연결된 검색어" });
     await expect(query.textContent).toBe("한글  검색 ");

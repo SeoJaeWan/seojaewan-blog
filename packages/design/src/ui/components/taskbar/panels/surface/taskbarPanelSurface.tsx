@@ -17,10 +17,13 @@ export type TaskbarPanelSurfaceProps = Omit<
     variant: TaskbarPanelSurfaceVariant;
     /** placement 계층이 계산한 가용 높이다. 지정하지 않으면 기준 높이 600px을 사용한다. */
     availableHeight?: CSSProperties["height"];
+    /** placement 계층이 collision padding을 제외하고 계산한 가용 너비다. */
+    availableWidth?: CSSProperties["width"];
   }>;
 
 type TaskbarPanelSurfaceStyle = CSSProperties & {
   "--wd-taskbar-panel-available-height"?: CSSProperties["height"];
+  "--wd-taskbar-panel-available-width"?: CSSProperties["width"];
 };
 
 /**
@@ -30,6 +33,7 @@ type TaskbarPanelSurfaceStyle = CSSProperties & {
  */
 export const TaskbarPanelSurface = ({
   availableHeight,
+  availableWidth,
   className,
   style,
   variant,
@@ -42,6 +46,12 @@ export const TaskbarPanelSurface = ({
       : {
           "--wd-taskbar-panel-available-height":
             typeof availableHeight === "number" ? `${availableHeight}px` : availableHeight,
+        }),
+    ...(availableWidth === undefined
+      ? {}
+      : {
+          "--wd-taskbar-panel-available-width":
+            typeof availableWidth === "number" ? `${availableWidth}px` : availableWidth,
         }),
   };
 

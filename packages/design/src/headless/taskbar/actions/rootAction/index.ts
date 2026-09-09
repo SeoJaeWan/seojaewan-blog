@@ -14,12 +14,6 @@ export type TaskbarSearchAction = Readonly<{ type: "request-search" }>;
 /** Taskbar Root의 각 trigger 입력을 대상별로 구분하는 제품 Action이다. */
 export type TaskbarRootAction = TaskbarWindowsAction | TaskbarSearchAction;
 
-/** Taskbar Root Action을 panel 소유자에게 전달하는 단일 제품 gateway다. */
-export type TaskbarRootActionGateway = Readonly<{
-  /** serializable Root Action을 정확히 한 번 전달하며 panel 상태를 대신 계산하지 않는다. */
-  execute(action: TaskbarRootAction): void;
-}>;
-
 /**
  * Windows trigger 입력을 panel 구현과 독립적인 제품 Action으로 만든다.
  *

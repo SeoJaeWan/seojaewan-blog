@@ -12,11 +12,7 @@ export type TaskbarPanelWidgetVariant = "search" | "start";
 
 /** 제품 상태 계층에 전달하는 panel open 변경 원인이다. */
 export type TaskbarPanelOpenChangeReason =
-  | "escape"
-  | "focus-out"
-  | "outside"
-  | "trigger"
-  | "unknown";
+  "escape" | "focus-out" | "outside" | "trigger" | "unknown";
 
 /** Taskbar panel widget의 controlled props다. */
 export type TaskbarPanelWidgetProps = Readonly<{
@@ -124,17 +120,10 @@ export const TaskbarPanelWidget = ({
   const generatedId = useId();
   const triggerId = `taskbar-panel-${variant}-${generatedId.replaceAll(":", "")}`;
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const completeTransition = useTransitionCallbacks(
-    open,
-    onTransitionCancel,
-    onTransitionComplete,
-  );
+  const completeTransition = useTransitionCallbacks(open, onTransitionCancel, onTransitionComplete);
 
   /** Base UI dismiss를 제품 open 요청으로 전달하고 Search Escape focus를 제거한다. */
-  const handleOpenChange = (
-    nextOpen: boolean,
-    details: Popover.Root.ChangeEventDetails,
-  ) => {
+  const handleOpenChange = (nextOpen: boolean, details: Popover.Root.ChangeEventDetails) => {
     const reason = resolveOpenChangeReason(details.reason);
 
     if (!nextOpen && variant === "search" && reason === "escape") {
@@ -217,6 +206,7 @@ export const TaskbarPanelWidget = ({
             render={
               <TaskbarPanelSurface
                 availableHeight="var(--available-height)"
+                availableWidth="var(--available-width)"
                 variant={variant}
               />
             }

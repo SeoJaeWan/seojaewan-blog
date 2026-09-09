@@ -59,11 +59,9 @@ const createRuntimeFixture = (mode: WindowMode, activeApplication?: TaskbarAppli
     },
     execute: vi.fn(() => ({}) as never),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
-  const executeRootAction = vi.fn();
   const executePrimaryPanelAction = vi.fn(() => ({}) as never);
   const runtime = Object.freeze({
     primaryPanel: Object.freeze({ execute: executePrimaryPanelAction }),
-    taskbarRoot: Object.freeze({ execute: executeRootAction }),
     windows,
   }) as unknown as HeadlessRuntime;
 
@@ -71,7 +69,6 @@ const createRuntimeFixture = (mode: WindowMode, activeApplication?: TaskbarAppli
     getSnapshot,
     getServerSnapshot,
     executePrimaryPanelAction,
-    executeRootAction,
     executeWindowAction: windows.execute,
     listenerCount: () => listeners.size,
     runtime,
@@ -136,7 +133,6 @@ describe("useTaskbarRootController", () => {
       panel: "search",
     });
     expect(fixture.executePrimaryPanelAction).toHaveBeenCalledTimes(2);
-    expect(fixture.executeRootAction).not.toHaveBeenCalled();
   });
 
   it("active mobile application도 같은 intent를 Window Operation에 한 번 전달한다", () => {
