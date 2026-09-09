@@ -17,6 +17,7 @@ runtime과 root에 같은 binding을 전달하면 DOM-free 숫자 요청을 Sess
 ```tsx
 import {
   HeadlessRuntimeProvider,
+  type WindowMotionDestination,
   type WindowSessionId,
   WindowRoot,
   createHeadlessRuntime,
@@ -38,7 +39,7 @@ const ApplicationWindow = ({
   taskbarIconBounds,
 }: {
   sessionId: WindowSessionId;
-  taskbarIconBounds: Readonly<{ left: number; top: number; width: number; height: number }>;
+  taskbarIconBounds: WindowMotionDestination;
 }) => (
   <HeadlessRuntimeProvider runtime={runtime}>
     <WindowRoot
@@ -67,8 +68,9 @@ exit·minimize·일반 maximize는 150ms이며 정상 결과는 실제 `Animatio
 
 최소화된 root는 Session content를 unmount하지 않고 `hidden`, `inert`, `aria-hidden`으로 keyboard와 접근성
 탐색에서 제외한다. restore는 최소화 control이 덮어쓰지 않은 이전 focus element를 복원하고, element가
-사라졌으면 focusable root로 돌아간다. active close·minimize는 다음 visible root에 focus하며 남은 창이 없으면
-Taskbar로 옮기지 않고 focus를 잃은 상태로 둔다.
+사라졌거나 hidden·inert·disabled 상태 등으로 focus를 받을 수 없으면 focusable root로 돌아간다. active
+close·minimize는 다음 visible root에 focus하며 남은 창이 없으면 Taskbar로 옮기지 않고 focus를 잃은 상태로
+둔다.
 
 `placementConfig`는 `WindowStore.initialize`에 전달한 같은 객체를 사용한다. `WindowRoot`는 빈 titlebar와
 8방향 handle의 pointer를 capture하고 최신 좌표를 rAF마다 `actions.beginGesture` Handle의 numeric bounds로

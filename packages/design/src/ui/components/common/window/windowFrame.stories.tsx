@@ -1089,6 +1089,7 @@ export const MotionPresenceAndFocus: Story = {
     );
     await waitFor(() => expect(taskbarIcon?.getBoundingClientRect().width).toBeGreaterThan(0));
     const initialIcon = taskbarIcon!.getBoundingClientRect();
+    const initialChrome = chrome.getBoundingClientRect();
     const initialValue = address.value;
     address.focus();
     if (scrollContent !== null) scrollContent.scrollTop = 48;
@@ -1098,12 +1099,18 @@ export const MotionPresenceAndFocus: Story = {
     const minimizeStartedAt = performance.now();
     await userEvent.click(within(chrome).getByRole("button", { name: "최소화" }));
     await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-minimize"));
-    const minimizeAnimation = chrome.getAnimations()[0];
-    await expect(minimizeAnimation).toBeDefined();
+    let minimizeAnimation: Animation | undefined;
+    await waitFor(async () => {
+      minimizeAnimation = chrome.getAnimations()[0];
+      await expect(minimizeAnimation).toBeDefined();
+    });
+    if (minimizeAnimation === undefined) {
+      throw new Error("150ms 최소화 animation을 찾지 못했습니다.");
+    }
     await expect(minimizeAnimation.effect?.getTiming().duration).toBe(150);
     const minimizeFrames = (minimizeAnimation.effect as KeyframeEffect).getKeyframes();
     await expect(String(minimizeFrames.at(-1)?.transform)).toContain(
-      `${Math.round(initialIcon.left - chrome.getBoundingClientRect().left)}`,
+      `${Math.round(initialIcon.left - initialChrome.left)}`,
     );
     await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
     await expect(performance.now() - minimizeStartedAt).toBeGreaterThanOrEqual(100);
@@ -1120,16 +1127,20 @@ export const MotionPresenceAndFocus: Story = {
     await userEvent.click(taskbarButton);
     await waitFor(() => expect(chrome.hidden).toBe(false));
     await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-restore"));
-    const restoreAnimation = chrome
-      .getAnimations()
-      .find((animation) => animation.effect?.getTiming().duration === 200);
+    let restoreAnimation: Animation | undefined;
+    await waitFor(async () => {
+      restoreAnimation = chrome
+        .getAnimations()
+        .find((animation) => animation.effect?.getTiming().duration === 200);
+      await expect(restoreAnimation).toBeDefined();
+    });
     if (restoreAnimation === undefined) {
       throw new Error("200ms 복원 animation을 찾지 못했습니다.");
     }
     await expect(restoreAnimation.effect?.getTiming().duration).toBe(200);
     const restoreFrames = (restoreAnimation.effect as KeyframeEffect).getKeyframes();
     await expect(String(restoreFrames[0]?.transform)).toContain(
-      `${Math.round(shiftedIcon.left - chrome.getBoundingClientRect().left)}`,
+      `${Math.round(shiftedIcon.left - initialChrome.left)}`,
     );
     await waitFor(() => expect(chrome.hasAttribute("data-presentation-phase")).toBe(false), {
       timeout: 900,

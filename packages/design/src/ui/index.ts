@@ -11,6 +11,7 @@ export {
   type WindowFrameMode,
   type WindowFrameProps,
   type WindowFrameVariant,
+  type WindowMotionDestination,
   type WindowMoveStartHandler,
   type WindowPresentationBinding,
   type WindowPresentationConsumer,

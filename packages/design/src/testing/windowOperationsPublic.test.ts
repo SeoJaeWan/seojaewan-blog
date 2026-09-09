@@ -11,6 +11,11 @@ import type {
   WindowResizeDirection,
   WindowSettledResult,
 } from "../headless/index.js";
+import {
+  createWindowPresentationBinding,
+  type WindowMotionDestination,
+  WindowRoot,
+} from "../index.js";
 
 /** 테스트용 UUID를 순서대로 반환하도록 browser crypto port를 준비한다. */
 const stubIds = () => {
@@ -117,6 +122,19 @@ const flush = () => new Promise<void>((resolve) => queueMicrotask(resolve));
 describe("public WindowOperations with WindowStore", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("root entry에서 Common Window lifecycle composition API를 함께 제공한다", () => {
+    const destination: WindowMotionDestination = Object.freeze({
+      left: 12,
+      top: 34,
+      width: 30,
+      height: 30,
+    });
+
+    expect(WindowRoot).toBeTypeOf("function");
+    expect(createWindowPresentationBinding).toBeTypeOf("function");
+    expect(destination).toEqual({ left: 12, top: 34, width: 30, height: 30 });
   });
 
   it("headless entry에서 atomic resize·gesture·presentation port를 함께 소비한다", async () => {
