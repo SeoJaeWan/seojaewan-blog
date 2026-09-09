@@ -23,6 +23,7 @@
   block-size: 50px;
   justify-content: center;
   position: absolute;
+  z-index: 100;
 }
 
 .window-story-taskbar > img {

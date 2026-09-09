@@ -65,6 +65,31 @@ afterEach(() => {
 });
 
 describe("useWindowPresentation", () => {
+  it("닫기는 창 중심으로 축소하며 fade out한다", () => {
+    const actions = createActions();
+    const request: WindowPresentationRequest = {
+      operationId: "operation:window:200" as OperationId,
+      sessionId: "window-session:000000000201" as WindowSessionId,
+      phase: "window-exit",
+    };
+    const animate = vi.fn(
+      (keyframes: Keyframe[] | PropertyIndexedKeyframes) =>
+        ({ cancel: vi.fn(), finished: new Promise<void>(() => undefined), keyframes }) as never,
+    );
+    const view = render(<PresentationHarness actions={actions} />);
+    const frame = screen.getByRole("region", { name: "테스트 창" });
+    Object.defineProperty(frame, "animate", { configurable: true, value: animate });
+
+    view.rerender(<PresentationHarness actions={actions} presentation={request} />);
+
+    const keyframes = animate.mock.calls[0]?.[0];
+    if (!Array.isArray(keyframes)) throw new Error("배열 keyframe을 찾지 못했습니다.");
+    expect(keyframes).toEqual([
+      { opacity: 1, transform: "none", transformOrigin: "center" },
+      { opacity: 0, transform: "scale(0.6)", transformOrigin: "center" },
+    ]);
+  });
+
   it("시작 시 좌표를 한 번 사용하고 이후 destination 갱신으로 animation을 교체하지 않는다", async () => {
     let animationFrame: FrameRequestCallback | null = null;
     vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
@@ -143,6 +168,7 @@ describe("useWindowPresentation", () => {
     const view = render(<PresentationHarness actions={actions} />);
     const frame = screen.getByRole("region", { name: "테스트 창" });
     const input = screen.getByRole("textbox", { name: "주소" });
+    const frameFocus = vi.spyOn(frame, "focus");
     fireEvent.focus(input);
 
     view.rerender(<PresentationHarness actions={actions} active={false} minimized />);
@@ -150,5 +176,20 @@ describe("useWindowPresentation", () => {
     view.rerender(<PresentationHarness actions={actions} active minimized={false} />);
 
     expect(document.activeElement).toBe(frame);
+    expect(frameFocus).toHaveBeenCalledWith({ preventScroll: true });
+  });
+
+  it("기억한 입력 요소로 돌아갈 때 화면을 스크롤하지 않는다", () => {
+    const actions = createActions();
+    const view = render(<PresentationHarness actions={actions} />);
+    const input = screen.getByRole("textbox", { name: "주소" });
+    const inputFocus = vi.spyOn(input, "focus");
+    fireEvent.focus(input);
+
+    view.rerender(<PresentationHarness actions={actions} active={false} />);
+    view.rerender(<PresentationHarness actions={actions} active />);
+
+    expect(document.activeElement).toBe(input);
+    expect(inputFocus).toHaveBeenCalledWith({ preventScroll: true });
   });
 });

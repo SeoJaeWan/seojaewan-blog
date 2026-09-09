@@ -524,7 +524,7 @@ describe("WindowRoot", () => {
     expect(completeTransition).not.toHaveBeenCalled();
   });
 
-  it("bounds WAAPI 중 pointer gesture 시작은 animation wait만 abort하고 rAF bounds를 즉시 전달한다", () => {
+  it("bounds WAAPI 중 실제 drag가 시작되면 animation wait만 abort하고 rAF bounds를 즉시 전달한다", () => {
     const fileExplorerId = sessionId("000000000105");
     const chromeId = sessionId("000000000106");
     const snapshot = createSnapshot(fileExplorerId, chromeId);
@@ -574,6 +574,8 @@ describe("WindowRoot", () => {
       isPrimary: true,
       pointerId: 41,
     });
+    expect(animation.cancel).not.toHaveBeenCalled();
+    fireEvent.pointerMove(dragRegion!, { clientX: 400, clientY: 25, pointerId: 41 });
     expect(animation.cancel).toHaveBeenCalledTimes(1);
     expect(abortTransition).toHaveBeenCalledExactlyOnceWith(
       request.operationId,
@@ -581,7 +583,6 @@ describe("WindowRoot", () => {
       "window-presentation-interrupted-by-gesture",
     );
     expect(completeTransition).not.toHaveBeenCalled();
-    fireEvent.pointerMove(dragRegion!, { clientX: 400, clientY: 25, pointerId: 41 });
     act(() => animationFrame.flush());
     expect(gesture.update).toHaveBeenCalledExactlyOnceWith({
       x: 220,
@@ -1005,13 +1006,27 @@ describe("WindowRoot", () => {
     const dragRegion = screen
       .getByRole("region", { name: "Chrome 창" })
       .querySelector<HTMLElement>("[data-window-drag-region]");
-    fireEvent.pointerDown(dragRegion!, { button: 0, isPrimary: true, pointerId: 11 });
+    fireEvent.pointerDown(dragRegion!, {
+      button: 0,
+      clientX: 200,
+      clientY: 15,
+      isPrimary: true,
+      pointerId: 11,
+    });
+    fireEvent.pointerMove(dragRegion!, { clientX: 204, clientY: 15, pointerId: 11 });
     fireEvent.lostPointerCapture(dragRegion!, { pointerId: 11 });
     await act(async () => Promise.resolve());
     expect(firstGesture.finish).toHaveBeenCalledTimes(1);
     expect(firstGesture.cancel).not.toHaveBeenCalled();
 
-    fireEvent.pointerDown(dragRegion!, { button: 0, isPrimary: true, pointerId: 12 });
+    fireEvent.pointerDown(dragRegion!, {
+      button: 0,
+      clientX: 200,
+      clientY: 15,
+      isPrimary: true,
+      pointerId: 12,
+    });
+    fireEvent.pointerMove(dragRegion!, { clientX: 204, clientY: 15, pointerId: 12 });
     view.unmount();
     await act(async () => Promise.resolve());
     expect(secondGesture.finish).toHaveBeenCalledTimes(1);

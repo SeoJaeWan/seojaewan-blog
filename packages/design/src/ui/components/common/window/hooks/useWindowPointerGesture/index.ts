@@ -28,7 +28,8 @@ type GestureOwner = HTMLElement & {
 };
 
 type WindowPointerGesture = {
-  handle: WindowGestureHandle;
+  handle: WindowGestureHandle | null;
+  kind: "move" | "resize";
   owner: GestureOwner;
   pointerId: number;
   startPointer: Readonly<{ x: number; y: number }>;
@@ -47,12 +48,16 @@ type WindowPointerGesture = {
   }>;
 };
 
+/** 클릭의 미세한 좌표 흔들림을 Window 이동으로 바꾸지 않는 최소 거리다. */
+const MOVE_ACTIVATION_DISTANCE = 4;
+
 /** pointer 위치를 headless가 받을 px bounds로 변환한다. */
 const calculateGestureBounds = (
   gesture: WindowPointerGesture,
   pointer: Readonly<{ x: number; y: number }>,
 ): WindowRect => {
   const { handle, resizeDirection, startPointer } = gesture;
+  if (handle === null) throw new Error("활성화되지 않은 Window gesture의 bounds를 계산할 수 없습니다");
   const deltaX = pointer.x - startPointer.x;
   const deltaY = pointer.y - startPointer.y;
 
@@ -129,6 +134,7 @@ export const useWindowPointerGesture = (
   sessionId: WindowSessionId,
   workArea: WindowRect | null,
   placementConfig: WindowPlacementConfig,
+  onGestureActivated?: () => void,
 ): WindowPointerGestureController => {
   const gestureRef = useRef<WindowPointerGesture | null>(null);
   const mountedRef = useRef(true);
@@ -137,17 +143,40 @@ export const useWindowPointerGesture = (
   /** DOM listener와 capture를 제거하고 현재 gesture ref를 비운다. */
   const detachGesture = useCallback((gesture: WindowPointerGesture) => {
     discardPendingPointer(gesture);
-    gesture.owner.removeEventListener("pointermove", gesture.listeners.pointerMove);
-    gesture.owner.removeEventListener("pointerup", gesture.listeners.pointerUp);
-    gesture.owner.removeEventListener("pointercancel", gesture.listeners.pointerCancel);
+    window.removeEventListener("pointermove", gesture.listeners.pointerMove);
+    window.removeEventListener("pointerup", gesture.listeners.pointerUp);
+    window.removeEventListener("pointercancel", gesture.listeners.pointerCancel);
     gesture.owner.removeEventListener(
       "lostpointercapture",
       gesture.listeners.lostPointerCapture,
     );
-    window.removeEventListener("keydown", gesture.listeners.keyDown);
-    releasePointerCapture(gesture.owner, gesture.pointerId);
+    if (gesture.handle !== null) window.removeEventListener("keydown", gesture.listeners.keyDown);
     if (gestureRef.current === gesture) gestureRef.current = null;
+    releasePointerCapture(gesture.owner, gesture.pointerId);
   }, []);
+
+  /** 이동 임계값을 넘거나 resize가 시작되면 headless Handle과 pointer capture를 연결한다. */
+  const activateGesture = useCallback(
+    (gesture: WindowPointerGesture): boolean => {
+      if (gesture.handle !== null) return true;
+      const started = actions.beginGesture({ kind: gesture.kind, sessionId });
+      if (started.status !== "started") {
+        detachGesture(gesture);
+        return false;
+      }
+      gesture.handle = started.handle;
+      gesture.owner.setPointerCapture?.(gesture.pointerId);
+      gesture.owner.addEventListener(
+        "lostpointercapture",
+        gesture.listeners.lostPointerCapture,
+      );
+      window.addEventListener("keydown", gesture.listeners.keyDown);
+      setActive(true);
+      onGestureActivated?.();
+      return true;
+    },
+    [actions, detachGesture, onGestureActivated, sessionId],
+  );
 
   /** 종료 Promise 뒤 mounted root의 transition 상태를 되돌린다. */
   const finishVisualState = useCallback(async (completion: Promise<unknown>) => {
@@ -163,7 +192,7 @@ export const useWindowPointerGesture = (
     const pointer = gesture.pendingPointer;
     gesture.pendingPointer = null;
     gesture.animationFrame = null;
-    if (pointer === null || gestureRef.current !== gesture) return;
+    if (pointer === null || gestureRef.current !== gesture || gesture.handle === null) return;
     gesture.lastPointer = pointer;
     void gesture.handle.update(calculateGestureBounds(gesture, pointer));
   }, []);
@@ -173,7 +202,15 @@ export const useWindowPointerGesture = (
     const gesture = gestureRef.current;
     if (gesture === null || event.pointerId !== gesture.pointerId) return;
     const pointer = readPointerPosition(event);
-    if (pointer.x === gesture.startPointer.x && pointer.y === gesture.startPointer.y) return;
+    if (gesture.handle === null) {
+      const distance = Math.hypot(
+        pointer.x - gesture.startPointer.x,
+        pointer.y - gesture.startPointer.y,
+      );
+      if (distance < MOVE_ACTIVATION_DISTANCE) return;
+      if (!activateGesture(gesture)) return;
+      event.preventDefault();
+    }
     gesture.pendingPointer = pointer;
     if (gesture.animationFrame !== null) return;
     gesture.animationFrame = requestAnimationFrame(() => flushPointer(gesture));
@@ -183,6 +220,10 @@ export const useWindowPointerGesture = (
   function handlePointerUp(event: PointerEvent): void {
     const gesture = gestureRef.current;
     if (gesture === null || event.pointerId !== gesture.pointerId) return;
+    if (gesture.handle === null) {
+      detachGesture(gesture);
+      return;
+    }
     if (gesture.animationFrame !== null) cancelAnimationFrame(gesture.animationFrame);
     gesture.animationFrame = null;
     const pointer = readPointerPosition(event);
@@ -203,7 +244,7 @@ export const useWindowPointerGesture = (
     const gesture = gestureRef.current;
     if (gesture === null || event.pointerId !== gesture.pointerId) return;
     detachGesture(gesture);
-    void finishVisualState(gesture.handle.finish());
+    if (gesture.handle !== null) void finishVisualState(gesture.handle.finish());
   }
 
   /** 예상하지 못한 capture 상실에서도 listener와 rAF를 제거하고 gesture를 일반 종료한다. */
@@ -211,7 +252,7 @@ export const useWindowPointerGesture = (
     const gesture = gestureRef.current;
     if (gesture === null || event.pointerId !== gesture.pointerId) return;
     detachGesture(gesture);
-    void finishVisualState(gesture.handle.finish());
+    if (gesture.handle !== null) void finishVisualState(gesture.handle.finish());
   }
 
   /** Escape는 남은 sample을 버리고 headless 시작 frame rollback을 정확히 한 번 요청한다. */
@@ -220,10 +261,10 @@ export const useWindowPointerGesture = (
     event.preventDefault();
     const gesture = gestureRef.current;
     detachGesture(gesture);
-    void finishVisualState(gesture.handle.cancel());
+    if (gesture.handle !== null) void finishVisualState(gesture.handle.cancel());
   }
 
-  /** primary pointer를 capture하고 headless move·resize Handle과 DOM listener를 연결한다. */
+  /** primary pointer의 이동 후보를 만들고 resize는 즉시, move는 거리 임계값 뒤 활성화한다. */
   const startGesture = useCallback(
     (
       event: ReactPointerEvent<HTMLElement>,
@@ -237,12 +278,8 @@ export const useWindowPointerGesture = (
         workArea === null
       )
         return false;
-      const started = actions.beginGesture({ kind, sessionId });
-      if (started.status !== "started") return false;
-
       event.preventDefault();
       const owner = event.currentTarget;
-      owner.setPointerCapture?.(event.pointerId);
       const listeners = Object.freeze({
         keyDown: handleKeyDown,
         lostPointerCapture: handleLostPointerCapture,
@@ -251,7 +288,8 @@ export const useWindowPointerGesture = (
         pointerUp: handlePointerUp,
       });
       const gesture: WindowPointerGesture = {
-        handle: started.handle,
+        handle: null,
+        kind,
         owner,
         pointerId: event.pointerId,
         startPointer: Object.freeze({ x: event.clientX, y: event.clientY }),
@@ -264,15 +302,13 @@ export const useWindowPointerGesture = (
         listeners,
       };
       gestureRef.current = gesture;
-      setActive(true);
-      owner.addEventListener("pointermove", listeners.pointerMove);
-      owner.addEventListener("pointerup", listeners.pointerUp);
-      owner.addEventListener("pointercancel", listeners.pointerCancel);
-      owner.addEventListener("lostpointercapture", listeners.lostPointerCapture);
-      window.addEventListener("keydown", listeners.keyDown);
+      window.addEventListener("pointermove", listeners.pointerMove);
+      window.addEventListener("pointerup", listeners.pointerUp);
+      window.addEventListener("pointercancel", listeners.pointerCancel);
+      if (kind === "resize") return activateGesture(gesture);
       return true;
     },
-    [actions, placementConfig, sessionId, workArea],
+    [activateGesture, placementConfig, workArea],
   );
 
   /** 빈 titlebar의 primary pointer로 move gesture를 시작한다. */
@@ -295,7 +331,7 @@ export const useWindowPointerGesture = (
       const gesture = gestureRef.current;
       if (gesture === null) return;
       detachGesture(gesture);
-      void gesture.handle.finish();
+      if (gesture.handle !== null) void gesture.handle.finish();
     };
   }, [detachGesture, sessionId]);
 

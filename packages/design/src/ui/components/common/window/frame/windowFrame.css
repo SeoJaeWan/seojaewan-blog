@@ -38,6 +38,10 @@
   box-shadow: var(--wd-window-frame-root-box-shadow-inactive);
 }
 
+.window-frame[hidden] {
+  visibility: hidden;
+}
+
 .window-frame[data-gesture-active="true"] {
   transition-property: box-shadow;
 }

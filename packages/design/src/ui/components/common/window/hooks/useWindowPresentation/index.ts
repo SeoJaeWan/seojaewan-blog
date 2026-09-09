@@ -120,8 +120,16 @@ const createMotion = (
     };
   }
   if (phase === "window-exit") {
+    const centeredIdentity: Keyframe = {
+      opacity: 1,
+      transform: "none",
+      transformOrigin: "center",
+    };
     return {
-      keyframes: [identity, { opacity: 0, transform: "scale(0.6)", transformOrigin: "top left" }],
+      keyframes: [
+        centeredIdentity,
+        { opacity: 0, transform: "scale(0.6)", transformOrigin: "center" },
+      ],
       options: { duration: EXIT_DURATION, easing: EXIT_EASING, fill: "both" },
     };
   }
@@ -177,10 +185,10 @@ const isRestorableFocusTarget = (element: HTMLElement, frame: HTMLElement): bool
  */
 const restoreFrameFocus = (remembered: HTMLElement | null, frame: HTMLElement): void => {
   if (remembered !== null && isRestorableFocusTarget(remembered, frame)) {
-    remembered.focus();
+    remembered.focus({ preventScroll: true });
     if (frame.ownerDocument.activeElement === remembered) return;
   }
-  frame.focus();
+  frame.focus({ preventScroll: true });
 };
 
 /**

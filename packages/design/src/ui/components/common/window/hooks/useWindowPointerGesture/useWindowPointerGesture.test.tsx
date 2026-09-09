@@ -29,10 +29,94 @@ const createActions = (handle: WindowGestureHandle) =>
 
 afterEach(() => {
   cleanup();
+  document.body.replaceChildren();
   vi.unstubAllGlobals();
 });
 
 describe("useWindowPointerGesture", () => {
+  it("제목 표시줄 클릭과 1px 흔들림은 이동을 시작하지 않고 임계값 뒤에만 활성화한다", async () => {
+    let animationFrame: FrameRequestCallback | null = null;
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      animationFrame = callback;
+      return 1;
+    });
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+    const handle: WindowGestureHandle = {
+      sessionId: "window-session:000000000201" as WindowSessionId,
+      kind: "move",
+      startBounds: { x: 120, y: 0, width: 720, height: 520 },
+      startFrame: {
+        normalBounds: { x: 120, y: 0, width: 720, height: 520 },
+        placement: "normal",
+        minimized: false,
+      },
+      update: vi.fn(() => Promise.resolve({ status: "applied" }) as never),
+      finish: vi.fn(() => Promise.resolve({ status: "finished" } as const)),
+      cancel: vi.fn(() => Promise.resolve({ status: "cancelled" }) as never),
+    };
+    const actions = createActions(handle);
+    const activated = vi.fn();
+    const owner = document.createElement("div");
+    owner.setPointerCapture = vi.fn();
+    owner.hasPointerCapture = vi.fn(() => true);
+    owner.releasePointerCapture = vi.fn();
+    document.body.append(owner);
+    const { result } = renderHook(() =>
+      useWindowPointerGesture(
+        actions,
+        handle.sessionId,
+        { x: 0, y: 0, width: 1_000, height: 800 },
+        placementConfig,
+        activated,
+      ),
+    );
+    const start = {
+      button: 0,
+      clientX: 320,
+      clientY: 15,
+      currentTarget: owner,
+      isPrimary: true,
+      pointerId: 11,
+      preventDefault: vi.fn(),
+    } as never;
+
+    act(() => {
+      result.current.startMove(start);
+    });
+    fireEvent.pointerMove(owner, { clientX: 321, clientY: 15, pointerId: 11 });
+    fireEvent.pointerUp(owner, { clientX: 321, clientY: 15, pointerId: 11 });
+    expect(actions.beginGesture).not.toHaveBeenCalled();
+    expect(activated).not.toHaveBeenCalled();
+    expect(result.current.active).toBe(false);
+
+    const secondStart = {
+      button: 0,
+      clientX: 320,
+      clientY: 15,
+      currentTarget: owner,
+      isPrimary: true,
+      pointerId: 12,
+      preventDefault: vi.fn(),
+    } as never;
+    act(() => {
+      result.current.startMove(secondStart);
+    });
+    fireEvent.pointerMove(owner, { clientX: 324, clientY: 15, pointerId: 12 });
+    act(() => {
+      const callback = animationFrame;
+      animationFrame = null;
+      callback?.(0);
+    });
+    await act(async () => Promise.resolve());
+    expect(actions.beginGesture).toHaveBeenCalledExactlyOnceWith({
+      kind: "move",
+      sessionId: handle.sessionId,
+    });
+    expect(activated).toHaveBeenCalledTimes(1);
+    expect(result.current.active).toBe(true);
+    fireEvent.pointerUp(owner, { clientX: 324, clientY: 15, pointerId: 12 });
+  });
+
   it("화면 밖 창의 아래쪽 resize는 위치를 유지하고 Esc 뒤 pending sample을 버린다", async () => {
     let animationFrame: FrameRequestCallback | null = null;
     const cancelAnimationFrame = vi.fn();
@@ -64,6 +148,7 @@ describe("useWindowPointerGesture", () => {
     owner.setPointerCapture = vi.fn();
     owner.hasPointerCapture = vi.fn(() => true);
     owner.releasePointerCapture = releasePointerCapture;
+    document.body.append(owner);
 
     const { result } = renderHook(() =>
       useWindowPointerGesture(

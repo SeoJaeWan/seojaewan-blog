@@ -68,6 +68,23 @@ export const PointerGesturesTest: Story = {
       await userEvent.pointer({ keys: "[/MouseLeft]", target: handle, coords: start });
     }
 
+    const dragRegion = frame.querySelector<HTMLElement>("[data-window-drag-region]")!;
+    await userEvent.pointer({
+      keys: "[MouseLeft>]",
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 40 },
+    });
+    await userEvent.pointer({
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 12 },
+    });
+    await userEvent.pointer({
+      keys: "[/MouseLeft]",
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 12 },
+    });
+    await waitFor(() => expect(frame.getBoundingClientRect().top).toBe(0));
+
     const address = within(frame).getByRole("textbox", { name: "검색어 또는 URL 입력" });
     await userEvent.dblClick(address);
     await expect(frame.getAttribute("data-maximized")).toBe("false");
@@ -76,7 +93,10 @@ export const PointerGesturesTest: Story = {
     await userEvent.dblClick(activeTab);
     await expect(frame.getAttribute("data-maximized")).toBe("false");
 
-    const dragRegion = frame.querySelector<HTMLElement>("[data-window-drag-region]")!;
+    await userEvent.dblClick(dragRegion);
+    await waitFor(() => expect(frame.getAttribute("data-maximized")).toBe("true"));
+    await userEvent.dblClick(dragRegion);
+    await waitFor(() => expect(frame.getAttribute("data-maximized")).toBe("false"));
     await userEvent.dblClick(dragRegion);
     await waitFor(() => expect(frame.getAttribute("data-maximized")).toBe("true"));
 
@@ -153,6 +173,7 @@ export const MotionPresenceAndFocusTest: Story = {
       String(Math.round(initialIcon.left - initialChrome.left)),
     );
     await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
+    await expect(chrome).not.toBeVisible();
     await expect(performance.now() - minimizeStartedAt).toBeGreaterThanOrEqual(100);
     await expect(chrome.hasAttribute("inert")).toBe(true);
     await expect(chrome.getAttribute("aria-hidden")).toBe("true");
@@ -190,6 +211,42 @@ export const MotionPresenceAndFocusTest: Story = {
     await expect(document.activeElement).toBe(address);
     await expect(address.value).toBe(initialValue);
     await expect(scrollContent?.scrollTop).toBe(preservedScrollTop);
+
+    const stage = canvasElement.querySelector<HTMLElement>(".window-story-stage")!;
+    const dragRegion = chrome.querySelector<HTMLElement>("[data-window-drag-region]")!;
+    await userEvent.pointer({
+      keys: "[MouseLeft>]",
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 40 },
+    });
+    await userEvent.pointer({
+      target: dragRegion,
+      coords: { clientX: -480, clientY: 112 },
+    });
+    await userEvent.pointer({
+      keys: "[/MouseLeft]",
+      target: dragRegion,
+      coords: { clientX: -480, clientY: 112 },
+    });
+    await waitFor(() => expect(chrome.getBoundingClientRect().left).toBe(-600));
+
+    explorer.focus();
+    await waitFor(() => expect(explorer.getAttribute("data-active")).toBe("true"));
+    stage.scrollLeft = 0;
+    stage.scrollTop = 0;
+    await userEvent.pointer({
+      keys: "[MouseLeft>]",
+      target: dragRegion,
+      coords: { clientX: 10, clientY: 112 },
+    });
+    await waitFor(() => expect(chrome.getAttribute("data-active")).toBe("true"));
+    await expect(stage.scrollLeft).toBe(0);
+    await expect(stage.scrollTop).toBe(0);
+    await userEvent.pointer({
+      keys: "[/MouseLeft]",
+      target: dragRegion,
+      coords: { clientX: 10, clientY: 112 },
+    });
   },
 };
 
@@ -261,6 +318,17 @@ export const FocusLifecycleEdgesTest: Story = {
     await waitFor(() => expect(document.activeElement).toBe(chrome));
 
     await userEvent.click(within(chrome).getByRole("button", { name: "닫기" }));
+    let closeAnimation: Animation | undefined;
+    await waitFor(async () => {
+      closeAnimation = chrome
+        .getAnimations()
+        .find((animation) => animation.effect?.getTiming().duration === 150);
+      await expect(closeAnimation).toBeDefined();
+    });
+    const closeFrames = (closeAnimation!.effect as KeyframeEffect).getKeyframes();
+    await expect(closeFrames[0]?.transformOrigin).toBe("center center");
+    await expect(closeFrames.at(-1)?.transformOrigin).toBe("center center");
+    await expect(String(closeFrames.at(-1)?.transform)).toContain("scale(0.6)");
     await waitFor(
       () => expect(document.querySelector('[aria-label="Chrome 동작 확인 창"]')).toBeNull(),
       { timeout: 800 },

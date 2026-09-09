@@ -255,89 +255,6 @@ const createWindowStoryRuntime = ({
   return Object.freeze({ windows }) as unknown as HeadlessRuntime;
 };
 
-/** interaction Story가 실제 headless gesture Handle과 구독 가능한 snapshot을 함께 사용할 runtime을 만든다. */
-const createInteractiveWindowRuntime = (initialSnapshot: WindowState): HeadlessRuntime => {
-  let snapshot = initialSnapshot;
-  let viewModel: ControllerViewModel<WindowState> = Object.freeze({
-    status: "ready",
-    snapshot,
-  });
-  const listeners = new Set<() => void>();
-  const sessionId = snapshot.sessions[0].id;
-
-  /** frame을 immutable snapshot에 반영하고 실제 controller subscriber를 알린다. */
-  const commitFrame = (
-    frame: WindowFrameState,
-    kind:
-      | "window-moved"
-      | "window-resized"
-      | "window-frame-restored"
-      | "window-maximized"
-      | "window-restored" = "window-moved",
-  ): WindowStoreResult => {
-    snapshot = Object.freeze({
-      ...snapshot,
-      sessions: Object.freeze(
-        snapshot.sessions.map((session) =>
-          session.id === sessionId ? Object.freeze({ ...session, frame }) : session,
-        ),
-      ),
-    });
-    viewModel = Object.freeze({ status: "ready", snapshot });
-    listeners.forEach((listener) => listener());
-    return { ok: true, changed: true, value: snapshot, change: { kind, sessionId } };
-  };
-
-  const gestureStore: WindowGestureStore = Object.freeze({
-    getSnapshot: () => snapshot,
-    applyGestureBounds: (_target, bounds, kind) => {
-      const session = snapshot.sessions[0];
-      return Promise.resolve(
-        commitFrame(
-          Object.freeze({
-            ...session.frame,
-            normalBounds: Object.freeze({ ...bounds }),
-            placement: "normal",
-          }),
-          kind === "move" ? "window-moved" : "window-resized",
-        ),
-      );
-    },
-    restoreFrame: (_target, frame) => Promise.resolve(commitFrame(frame, "window-frame-restored")),
-  });
-  const gestures = new WindowGestures(gestureStore);
-
-  /** interaction fixture에서 현재 task가 연결하는 activate·maximize Action만 observable state로 반영한다. */
-  const executeWindowAction = (action: WindowAction) => {
-    if (action.type === "toggle-maximize") {
-      const session = snapshot.sessions[0];
-      commitFrame(
-        Object.freeze({
-          ...session.frame,
-          placement: session.frame.placement === "maximized" ? "normal" : "maximized",
-        }),
-        session.frame.placement === "maximized" ? "window-restored" : "window-maximized",
-      );
-    }
-    return {} as never;
-  };
-
-  const windows = Object.freeze({
-    getSnapshot: () => viewModel,
-    getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
-    subscribe: (listener: () => void) => {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    execute: executeWindowAction,
-  }) as unknown as HeadlessFeatureRuntime<WindowState, WindowAction, never>;
-
-  return Object.freeze({
-    windows,
-    windowGestures: Object.freeze({ begin: gestures.begin.bind(gestures) }),
-  }) as unknown as HeadlessRuntime;
-};
-
 /** lifecycle Story의 상태를 실제 WindowOperations와 구독 가능한 in-memory Store에 연결한다. */
 const createLifecycleWindowRuntime = (
   initialSnapshot: WindowState,
@@ -562,8 +479,11 @@ const measureApplicationIcon = (button: HTMLButtonElement | null): WindowMotionD
 const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: boolean }) => {
   const fileExplorerId = storySessionId("file-explorer");
   const chromeId = storySessionId("chrome");
-  const taskbarButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [destination, setDestination] = useState<WindowMotionDestination | null>(null);
+  const fileExplorerTaskbarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const chromeTaskbarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [fileExplorerDestination, setFileExplorerDestination] =
+    useState<WindowMotionDestination | null>(null);
+  const [chromeDestination, setChromeDestination] = useState<WindowMotionDestination | null>(null);
   const [showChromeNavigation, setShowChromeNavigation] = useState(true);
   const presentationBinding = useMemo(() => createWindowPresentationBinding(), []);
   const initialSnapshot = useMemo<WindowState>(
@@ -609,12 +529,19 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
 
   /** initial layout 뒤 실제 production icon rect를 WindowRoot numeric prop으로 전달한다. */
   useLayoutEffect(() => {
-    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+    setFileExplorerDestination(measureApplicationIcon(fileExplorerTaskbarButtonRef.current));
+    setChromeDestination(measureApplicationIcon(chromeTaskbarButtonRef.current));
   }, []);
 
-  /** 이동될 수 있는 Taskbar icon을 activation 직전에 다시 측정하고 restore Action을 실행한다. */
+  /** 이동될 수 있는 File Explorer icon을 activation 직전에 다시 측정하고 restore Action을 실행한다. */
+  const restoreFileExplorer = () => {
+    setFileExplorerDestination(measureApplicationIcon(fileExplorerTaskbarButtonRef.current));
+    runtime.windows.execute({ type: "activate", sessionId: fileExplorerId });
+  };
+
+  /** 이동될 수 있는 Chrome icon을 activation 직전에 다시 측정하고 restore Action을 실행한다. */
   const restoreChrome = () => {
-    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+    setChromeDestination(measureApplicationIcon(chromeTaskbarButtonRef.current));
     runtime.windows.execute({ type: "activate", sessionId: chromeId });
   };
 
@@ -622,6 +549,7 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
     <HeadlessRuntimeProvider runtime={runtime}>
       <WindowRoot
         aria-label="파일 탐색기 동작 확인 창"
+        minimizeDestination={fileExplorerDestination}
         placementConfig={WINDOW_PLACEMENT_CONFIG}
         presentationBinding={presentationBinding}
         sessionId={fileExplorerId}
@@ -634,7 +562,7 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
       </WindowRoot>
       <WindowRoot
         aria-label="Chrome 동작 확인 창"
-        minimizeDestination={destination}
+        minimizeDestination={chromeDestination}
         placementConfig={WINDOW_PLACEMENT_CONFIG}
         presentationBinding={presentationBinding}
         sessionId={chromeId}
@@ -654,9 +582,19 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
           </button>
         ) : null}
         <TaskbarApplicationButton
+          application={{
+            applicationId: "file-explorer",
+            label: "파일 탐색기 복원",
+            active: false,
+            running: true,
+          }}
+          onAction={restoreFileExplorer}
+          ref={fileExplorerTaskbarButtonRef}
+        />
+        <TaskbarApplicationButton
           application={{ applicationId: "chrome", label: "Chrome 복원", active: false, running: true }}
           onAction={restoreChrome}
-          ref={taskbarButtonRef}
+          ref={chromeTaskbarButtonRef}
         />
       </div>
     </HeadlessRuntimeProvider>
@@ -666,6 +604,9 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
 /** controller 구독으로 bounds가 실제 갱신되는 Common Window interaction fixture를 렌더링한다. */
 const InteractiveProductWindow = () => {
   const id = storySessionId("chrome");
+  const taskbarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [destination, setDestination] = useState<WindowMotionDestination | null>(null);
+  const presentationBinding = useMemo(() => createWindowPresentationBinding(), []);
   const initialSnapshot = useMemo<WindowState>(
     () =>
       Object.freeze({
@@ -690,19 +631,40 @@ const InteractiveProductWindow = () => {
       }),
     [id],
   );
-  const runtime = useMemo(() => createInteractiveWindowRuntime(initialSnapshot), [initialSnapshot]);
+  const runtime = useMemo(
+    () => createLifecycleWindowRuntime(initialSnapshot, presentationBinding),
+    [initialSnapshot, presentationBinding],
+  );
+
+  useLayoutEffect(() => {
+    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+  }, []);
+
+  const restoreChrome = () => {
+    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+    runtime.windows.execute({ type: "activate", sessionId: id });
+  };
 
   return (
     <HeadlessRuntimeProvider runtime={runtime}>
       <WindowRoot
         aria-label="Chrome 이동·크기 조절 창"
+        minimizeDestination={destination}
         placementConfig={WINDOW_PLACEMENT_CONFIG}
+        presentationBinding={presentationBinding}
         sessionId={id}
         titleBarContent={<InteractiveProductTab />}
       >
         <ProductNavigation mode="desktop" variant="chrome" />
         <ChromeContent mode="desktop" />
       </WindowRoot>
+      <div className="window-story-taskbar">
+        <TaskbarApplicationButton
+          application={{ applicationId: "chrome", label: "Chrome 복원", active: false, running: true }}
+          onAction={restoreChrome}
+          ref={taskbarButtonRef}
+        />
+      </div>
     </HeadlessRuntimeProvider>
   );
 };
@@ -984,9 +946,9 @@ export const PointerGestures: Story = {
     },
   },
   render: () => (
-    <WindowStage mode="desktop">
+    <div className="window-story-stage" data-mode="desktop">
       <InteractiveProductWindow />
-    </WindowStage>
+    </div>
   ),
 };
 

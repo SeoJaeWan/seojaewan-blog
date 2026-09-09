@@ -92,12 +92,6 @@ export const WindowRoot = ({
   const [presentation, setPresentation] = useState<WindowPresentationRequest | null>(null);
   const activationRequested = useRef(false);
   const snapshot = viewModel.status === "ready" ? viewModel.snapshot : null;
-  const pointerGesture = useWindowPointerGesture(
-    actions,
-    sessionId,
-    snapshot?.workArea ?? null,
-    placementConfig,
-  );
   const session = snapshot?.sessions.find(({ id }) => id === sessionId);
   const active = snapshot?.activeSessionId === sessionId;
   const presentationLifecycle = useWindowPresentation(ref, {
@@ -107,6 +101,13 @@ export const WindowRoot = ({
     minimized: session?.frame.minimized ?? false,
     presentation,
   });
+  const pointerGesture = useWindowPointerGesture(
+    actions,
+    sessionId,
+    snapshot?.workArea ?? null,
+    placementConfig,
+    presentationLifecycle.interruptForGesture,
+  );
 
   useEffect(() => {
     if (active) activationRequested.current = false;
@@ -146,14 +147,14 @@ export const WindowRoot = ({
     actions.execute(action);
   };
 
-  /** move gesture가 실제로 시작되면 진행 중인 presentation transform만 중단한다. */
+  /** 빈 titlebar pointer 입력을 이동 후보로 전달한다. */
   const startMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (pointerGesture.startMove(event)) presentationLifecycle.interruptForGesture();
+    pointerGesture.startMove(event);
   };
 
-  /** resize gesture가 실제로 시작되면 진행 중인 presentation transform만 중단한다. */
+  /** resize handle의 pointer 입력을 즉시 resize gesture로 전달한다. */
   const startResize: NonNullable<WindowFrameProps["onResizeStart"]> = (event, direction) => {
-    if (pointerGesture.startResize(event, direction)) presentationLifecycle.interruptForGesture();
+    pointerGesture.startResize(event, direction);
   };
 
   if (snapshot === null || session === undefined) return null;
