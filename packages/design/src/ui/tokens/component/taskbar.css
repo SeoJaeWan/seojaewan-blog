@@ -25,7 +25,7 @@
   --wd-taskbar-start-button-border-width: 1px;
   --wd-taskbar-start-button-border-radius: var(--wd-reference-radius-2);
   --wd-taskbar-start-button-background-hover: rgb(255 255 255 / 0.9);
-  --wd-taskbar-start-button-background-selected: rgb(224 228 235 / 0.75);
+  --wd-taskbar-start-button-background-selected: rgb(234 237 242 / 0.75);
   --wd-taskbar-start-button-focus-inner-width: 2px;
   --wd-taskbar-start-button-focus-inner-color: var(--wd-color-surface-taskbar);
   --wd-taskbar-start-button-focus-outer-width: 4px;
@@ -84,7 +84,7 @@
   --wd-taskbar-application-button-border-width: 1px;
   --wd-taskbar-application-button-border-radius: var(--wd-reference-radius-2);
   --wd-taskbar-application-button-background-hover: rgb(255 255 255 / 0.9);
-  --wd-taskbar-application-button-background-active: rgb(224 228 235 / 0.75);
+  --wd-taskbar-application-button-background-active: rgb(234 237 242 / 0.75);
   --wd-taskbar-application-button-indicator-height: 3px;
   --wd-taskbar-application-button-indicator-width: 6px;
   --wd-taskbar-application-button-indicator-width-active: 12px;
