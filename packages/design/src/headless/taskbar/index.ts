@@ -9,17 +9,23 @@ export {
   createTaskbarCloseAllIntent,
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
+  createTaskbarSearchAction,
+  createTaskbarWindowsAction,
   executeTaskbarWindowIntent,
   executeTaskbarWindowOperationIntent,
   type MobileTaskbarApplicationIntent,
   type TaskbarApplicationClickIntent,
   type TaskbarCloseAllIntent,
   type TaskbarExternalShortcutIntent,
+  type TaskbarRootAction,
+  type TaskbarRootActionGateway,
+  type TaskbarSearchAction,
   type TaskbarWindowCommandPort,
   type TaskbarWindowIntent,
   type TaskbarWindowIntentResult,
   type TaskbarWindowOperationIntentResult,
   type TaskbarWindowOperationPort,
+  type TaskbarWindowsAction,
 } from "./actions/index.js";
 export {
   type TaskbarController,
@@ -52,6 +58,14 @@ export {
   type TaskbarSettledResult,
 } from "./operations/index.js";
 export {
+  selectTaskbarRootSnapshot,
+  type TaskbarRootController,
+  type TaskbarRootControllerActions,
+  type TaskbarRootSnapshot,
+  type TaskbarRootViewModel,
+  useTaskbarRootController,
+} from "./rootController/index.js";
+export {
   type MobileTaskbarApplicationView,
   type MobileTaskbarTimestampView,
   type MobileTaskbarView,
@@ -83,3 +97,14 @@ export {
   type TaskbarStorage,
   type TaskbarStorageSnapshot,
 } from "./taskbarStore/taskbarStorage/index.js";
+export {
+  formatTaskbarTimestamp,
+  getMillisecondsUntilNextMinute,
+  startTaskbarTimestampScheduler,
+  systemTaskbarTimestampClock,
+  type TaskbarTimestampClock,
+  type TaskbarTimestampTimer,
+  type TaskbarTimestampValue,
+  type TaskbarTimestampViewModel,
+  useTaskbarTimestampController,
+} from "./timestamp/index.js";

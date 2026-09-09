@@ -15,6 +15,15 @@ import type {
   TaskbarGroupTarget,
 } from "../selectors/index.js";
 
+export {
+  createTaskbarSearchAction,
+  createTaskbarWindowsAction,
+  type TaskbarRootAction,
+  type TaskbarRootActionGateway,
+  type TaskbarSearchAction,
+  type TaskbarWindowsAction,
+} from "./rootAction/index.js";
+
 /**
  * desktop application Group의 target 수와 active 상태에서 파생한 click intent다.
  */

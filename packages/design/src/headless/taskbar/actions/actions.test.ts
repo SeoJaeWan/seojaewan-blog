@@ -12,6 +12,8 @@ import {
   createTaskbarCloseAllIntent,
   createTaskbarExternalShortcutIntent,
   createTaskbarPreviewClickIntent,
+  createTaskbarSearchAction,
+  createTaskbarWindowsAction,
   executeTaskbarWindowIntent,
   executeTaskbarWindowOperationIntent,
   type TaskbarWindowCommandPort,
@@ -56,6 +58,11 @@ const commands = () => {
 };
 
 describe("Taskbar intents", () => {
+  it("Windows와 Search trigger를 대상별 Root Action으로 구분한다", () => {
+    expect(createTaskbarWindowsAction()).toEqual({ type: "request-windows" });
+    expect(createTaskbarSearchAction()).toEqual({ type: "request-search" });
+  });
+
   it("desktop Group 0/1 active/1 inactive/many click을 명시적 intent로 구분한다", () => {
     const first = target(sessionId(1), true);
     const second = target(sessionId(2), false);
@@ -140,4 +147,21 @@ describe("Taskbar intents", () => {
     expect(port.launchMobileApplication).toHaveBeenCalledExactlyOnceWith("file-explorer");
     expect(port.close).not.toHaveBeenCalled();
   });
+
+  it.each(["file-explorer", "chrome"] as const)(
+    "mobile %s intent를 같은 applicationId의 Window Operation에 한 번 전달한다",
+    (applicationId) => {
+      const operations = { execute: vi.fn(() => ({}) as never) };
+
+      executeTaskbarWindowOperationIntent(
+        createMobileTaskbarApplicationIntent(applicationId),
+        operations,
+      );
+
+      expect(operations.execute).toHaveBeenCalledExactlyOnceWith({
+        type: "launch-mobile-application",
+        applicationId,
+      });
+    },
+  );
 });
