@@ -6,9 +6,11 @@ import type {
   WindowOperationHandle,
   WindowOperationsOptions,
   WindowOperationStore,
+  WindowPresentationPort,
   WindowPresentedResult,
+  WindowResizeDirection,
   WindowSettledResult,
-} from "../index.js";
+} from "../headless/index.js";
 
 /** 테스트용 UUID를 순서대로 반환하도록 browser crypto port를 준비한다. */
 const stubIds = () => {
@@ -23,7 +25,7 @@ const stubIds = () => {
 const setup = async () => {
   vi.resetModules();
   stubIds();
-  const design = await import("../index.js");
+  const design = await import("../headless/index.js");
   const content = design.createResourceRef(
     "content",
     "30000000-0000-4000-8000-000000000001",
@@ -78,6 +80,8 @@ const setup = async () => {
   const options: WindowOperationsOptions = { store, transitions };
   return {
     content,
+    design,
+    gestures: new design.WindowGestures(design.WindowStore),
     operations: new design.WindowOperations(options),
     store: design.WindowStore,
     transitions,
@@ -113,6 +117,64 @@ const flush = () => new Promise<void>((resolve) => queueMicrotask(resolve));
 describe("public WindowOperations with WindowStore", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("headless entry에서 atomic resize·gesture·presentation port를 함께 소비한다", async () => {
+    const { design, gestures, store } = await setup();
+    const created = await store.createChromeWindow();
+    if (!created.changed || created.change.sessionId === undefined) {
+      throw new Error("Chrome Window 생성이 필요합니다");
+    }
+    const direction: WindowResizeDirection = "nw";
+    const presentation: WindowPresentationPort = { present: () => undefined };
+    const started = gestures.begin({ sessionId: created.change.sessionId, kind: "resize" });
+    if (started.status !== "started") throw new Error("resize gesture 시작이 필요합니다");
+
+    const bounds = design.resizeWindowBounds(
+      started.handle.startBounds,
+      direction,
+      { x: 40, y: 30 },
+      store.getSnapshot().workArea,
+      {
+        defaultSize: { width: 600, height: 400 },
+        minSize: { width: 320, height: 200 },
+        edgeMargin: 10,
+        cascadeOffset: { x: 30, y: 20 },
+        titlebarRecoverySize: { width: 120, height: 32 },
+      },
+    );
+    await expect(started.handle.update(bounds)).resolves.toMatchObject({ status: "applied" });
+    await expect(started.handle.cancel()).resolves.toMatchObject({ status: "cancelled" });
+
+    expect(store.getSnapshot().sessions[0].frame).toEqual(started.handle.startFrame);
+    expect(presentation.present({
+      operationId: "window-operation-1" as Parameters<WindowPresentationPort["present"]>[0]["operationId"],
+      sessionId: created.change.sessionId,
+      phase: "window-enter",
+    })).toBeUndefined();
+  });
+
+  it("새 Window Component mount 알림 전 presentation 요청을 보존하고 동기 완료한다", async () => {
+    const { design, store } = await setup();
+    const transitions = new design.TransitionRegistry();
+    const order: string[] = [];
+    store.subscribe(() => order.push("subscriber"));
+    const operations = new design.WindowOperations({
+      store,
+      transitions,
+      presentation: {
+        present(request) {
+          order.push("presentation");
+          expect(transitions.complete(request.operationId, request.phase)).toBe(true);
+        },
+      },
+    });
+
+    const opening = operations.execute({ type: "create-chrome-window" });
+
+    await expect(settledResult(opening)).resolves.toMatchObject({ status: "settled" });
+    expect(order).toEqual(["presentation", "subscriber"]);
+    expect(transitions.complete(opening.operationId, "window-enter")).toBe(false);
   });
 
   it("A close 뒤 선택한 B의 기존 Operation settled 전에는 Content를 열지 않는다", async () => {

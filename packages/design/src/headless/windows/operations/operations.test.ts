@@ -151,11 +151,17 @@ describe("WindowOperations", () => {
       return Promise.resolve(commit(current, { kind: "window-closed", sessionId: id }, context));
     });
     const store = { getSnapshot: () => current, close } as unknown as WindowOperationStore;
-    const operations = new WindowOperations({ store, transitions });
+    const present = vi.fn();
+    const operations = new WindowOperations({
+      store,
+      transitions,
+      presentation: { present },
+    });
     const firstHandle = operations.execute({ type: "close", sessionId: first });
     const secondHandle = operations.execute({ type: "close", sessionId: second });
     await flush();
 
+    expect(present).toHaveBeenCalledTimes(2);
     transitions.complete(secondHandle.operationId, "window-exit");
     await expect(secondHandle.committed).resolves.toMatchObject({ status: "committed" });
     expect(close).toHaveBeenCalledTimes(1);
@@ -208,6 +214,45 @@ describe("WindowOperations", () => {
     await expect(restoring.settled).resolves.toMatchObject({ status: "settled" });
   });
 
+  it("같은 Session의 다음 presentation은 앞 Operation settled 뒤에 시작한다", async () => {
+    const id = sessionId("000000000010");
+    const transitions = new TransitionRegistry();
+    let current = snapshot([session(id)]);
+    const toggleMaximize = vi.fn((_id: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const currentSession = current.sessions[0] as ChromeWindowSession;
+      const placement = currentSession.frame.placement === "normal" ? "maximized" : "normal";
+      current = snapshot([{ ...currentSession, frame: { ...currentSession.frame, placement } }]);
+      return Promise.resolve(
+        commit(
+          current,
+          {
+            kind: placement === "maximized" ? "window-maximized" : "window-restored",
+            sessionId: id,
+          },
+          context,
+        ),
+      );
+    });
+    const present = vi.fn();
+    const store = { getSnapshot: () => current, toggleMaximize } as unknown as WindowOperationStore;
+    const operations = new WindowOperations({ store, transitions, presentation: { present } });
+
+    const maximizing = operations.execute({ type: "toggle-maximize", sessionId: id });
+    const restoring = operations.execute({ type: "toggle-maximize", sessionId: id });
+    await maximizing.committed;
+    await flush();
+    expect(present).toHaveBeenCalledTimes(1);
+    expect(toggleMaximize).toHaveBeenCalledTimes(1);
+
+    transitions.complete(maximizing.operationId, "window-maximize");
+    await maximizing.settled;
+    await restoring.committed;
+    expect(present).toHaveBeenCalledTimes(2);
+    expect(toggleMaximize).toHaveBeenCalledTimes(2);
+    transitions.complete(restoring.operationId, "window-restore-normal-bounds");
+    await restoring.settled;
+  });
+
   it("maximize와 해제는 normalBounds를 보존하며 각 commit 뒤 transition한다", async () => {
     const id = sessionId("000000000006");
     const transitions = new TransitionRegistry();
@@ -248,5 +293,93 @@ describe("WindowOperations", () => {
     });
     transitions.complete(restoring.operationId, "window-restore-normal-bounds");
     await expect(restoring.settled).resolves.toMatchObject({ status: "settled" });
+  });
+
+  it("transition 대기를 먼저 등록하고 presentation port의 동기 완료를 보존한다", async () => {
+    const id = sessionId("000000000007");
+    const transitions = new TransitionRegistry();
+    let current = snapshot([session(id)]);
+    const toggleMaximize = vi.fn((_id: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const currentSession = current.sessions[0] as ChromeWindowSession;
+      current = snapshot([
+        { ...currentSession, frame: { ...currentSession.frame, placement: "maximized" } },
+      ]);
+      return Promise.resolve(commit(current, { kind: "window-maximized", sessionId: id }, context));
+    });
+    const present = vi.fn((request: { operationId: string; phase: string }) => {
+      expect(transitions.complete(request.operationId as never, request.phase)).toBe(true);
+    });
+    const store = { getSnapshot: () => current, toggleMaximize } as unknown as WindowOperationStore;
+    const operations = new WindowOperations({ store, transitions, presentation: { present } });
+
+    const maximizing = operations.execute({ type: "toggle-maximize", sessionId: id });
+
+    await expect(maximizing.presented).resolves.toMatchObject({
+      status: "completed",
+      phase: "window-maximize",
+    });
+    await expect(maximizing.settled).resolves.toMatchObject({ status: "settled" });
+    expect(present).toHaveBeenCalledWith({
+      operationId: maximizing.operationId,
+      sessionId: id,
+      phase: "window-maximize",
+    });
+  });
+
+  it("presentation port Promise 거절을 failed로 정리하고 같은 Session의 다음 요청을 실행한다", async () => {
+    const id = sessionId("000000000008");
+    const transitions = new TransitionRegistry();
+    let current = snapshot([session(id)]);
+    const toggleMaximize = vi.fn((_id: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const currentSession = current.sessions[0] as ChromeWindowSession;
+      current = snapshot([
+        { ...currentSession, frame: { ...currentSession.frame, placement: "maximized" } },
+      ]);
+      return Promise.resolve(commit(current, { kind: "window-maximized", sessionId: id }, context));
+    });
+    const activate = vi.fn((): Promise<WindowStoreResult> =>
+      Promise.resolve({ ok: true, changed: false, reason: "no-op", value: current }),
+    );
+    const store = {
+      getSnapshot: () => current,
+      toggleMaximize,
+      activate,
+    } as unknown as WindowOperationStore;
+    const error = new Error("animation start failed");
+    const operations = new WindowOperations({
+      store,
+      transitions,
+      presentation: { present: () => Promise.reject(error) },
+    });
+
+    const maximizing = operations.execute({ type: "toggle-maximize", sessionId: id });
+    const activating = operations.execute({ type: "activate", sessionId: id });
+
+    await expect(maximizing.presented).resolves.toMatchObject({
+      status: "failed",
+      phase: "window-maximize",
+      error,
+    });
+    await expect(maximizing.settled).resolves.toMatchObject({ status: "settled" });
+    await expect(activating.settled).resolves.toMatchObject({ status: "settled" });
+    expect(activate).toHaveBeenCalledTimes(1);
+  });
+
+  it("Store 거절에는 presentation을 요청하지 않는다", async () => {
+    const id = sessionId("000000000009");
+    const transitions = new TransitionRegistry();
+    const current = snapshot([]);
+    const close = vi.fn((): Promise<WindowStoreResult> =>
+      Promise.resolve({ ok: false, changed: false, reason: "session-not-found" }),
+    );
+    const present = vi.fn();
+    const store = { getSnapshot: () => current, close } as unknown as WindowOperationStore;
+    const operations = new WindowOperations({ store, transitions, presentation: { present } });
+
+    const closing = operations.execute({ type: "close", sessionId: id });
+
+    await expect(closing.committed).resolves.toMatchObject({ status: "rejected" });
+    await expect(closing.presented).resolves.toEqual({ status: "not-required" });
+    expect(present).not.toHaveBeenCalled();
   });
 });

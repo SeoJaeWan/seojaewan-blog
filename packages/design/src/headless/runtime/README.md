@@ -42,6 +42,20 @@ Component는 `complete`, `abort`, `fail` 중 현재 phase에 맞는 신호를 �
 
 Operation executor는 `operation.onCleanup(() => transitions.abortOperation(operation.operationId, reason))`처럼 listener, timer 또는 남은 registry 대기를 등록할 수 있다. cleanup은 성공과 실패 경로 모두에서 실행되며 React 구독 정리나 Provider 재마운트를 사용자 Action 취소로 해석하는 용도가 아니다.
 
+Window runtime은 실제 animation 시작을 queue 실행과 연결할 때 `windowPresentation` port를 받는다. 이 port에는 DOM·ref 대신 operation 값만 전달된다.
+
+```ts
+const runtime = createHeadlessRuntime({
+  windowPresentation: {
+    present(request) {
+      presentWindowTransition(request);
+    },
+  },
+});
+```
+
+Window Operation은 `waitFor` 등록 뒤 `present`를 호출한다. 따라서 Component가 이미 준비된 경우 동기 완료를 바로 보고할 수 있고, 새 창 mount가 필요한 경우 제품 root가 요청을 보관해 해당 Session Component에 전달할 수 있다. Component는 `request.operationId`와 `request.phase`를 그대로 `completeTransition`·`abortTransition`·`failTransition`에 사용한다. 별도 전역 구독이나 Store mutation을 presentation port 안에 만들지 않는다.
+
 ## React Provider와 controller 연결
 
 Application은 Workspace → Window → Start → Taskbar 순서로 브라우저 Store를 초기화한 뒤 runtime을 render 바깥에서 한 번 만든다. Provider는 이 객체만 전달하며 Store snapshot을 Context state로 복사하거나 재마운트 때 초기화하지 않는다.

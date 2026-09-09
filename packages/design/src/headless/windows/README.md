@@ -12,6 +12,7 @@
 | [windowStore/operationResult/index.ts](./windowStore/operationResult/index.ts) | commit, no-op과 거부 결과를 설명한다.                        |
 | [operations/index.ts](./operations/index.ts)                                   | Action을 Session queue와 transition에 연결한다.              |
 | [geometry/index.ts](./geometry/index.ts)                                       | 숫자 배치를 계산하고 `getWindowBounds`로 표시 영역을 읽는다. |
+| [gestures/index.ts](./gestures/index.ts)                                       | move·resize 시작 frame과 Esc rollback을 관리한다.             |
 | [routeSelector/index.ts](./routeSelector/index.ts)                             | active tab에서 현재 주소를 파생한다.                         |
 | [../folders/README.md](../folders/README.md)                                   | File Explorer tab의 위치와 탐색 모델을 안내한다.             |
 | [../chrome/README.md](../chrome/README.md)                                     | Chrome tab의 위치와 탐색 모델을 안내한다.                    |
@@ -71,6 +72,31 @@ mobile Taskbar의 고정 앱 버튼은 `launchMobileApplication("file-explorer" 
 
 Handle의 `committed`는 snapshot 반영, `presented`는 이 Operation이 소유한 transition, `settled`는 둘과 정리를 모두 기다린다. UI는 Handle의 `operationId`와 phase를 `TransitionRegistry`에 완료·중단·실패로 전달한다. no-op과 `session-not-found` 같은 거절은 transition을 새로 만들지 않고 모든 Handle 대기를 끝낸다.
 
+`WindowOperations`의 `presentation` port는 실제 queue 실행 시점에 `{ operationId, sessionId, phase }`만 전달받는다. Operation은 registry 대기를 먼저 등록한 뒤 port를 호출하므로 reduced motion 구현이 호출 안에서 동기 완료를 보고해도 신호가 유실되지 않는다. port가 throw하거나 반환 Promise가 거절되면 같은 phase의 `failed` 결과로 정리하고 다음 queue를 계속 실행한다.
+
+## move·resize gesture
+
+```ts
+import { resizeWindowBounds, WindowGestures, WindowStore } from "@window/design";
+
+const gestures = new WindowGestures(WindowStore);
+const started = gestures.begin({ sessionId, kind: "resize" });
+
+if (started.status === "started") {
+  const nextBounds = resizeWindowBounds(
+    started.handle.startFrame.normalBounds,
+    "nw",
+    { x: pointerDeltaX, y: pointerDeltaY },
+    WindowStore.getSnapshot().workArea,
+    placementConfig,
+  );
+  await started.handle.update(nextBounds);
+  await started.handle.finish();
+}
+```
+
+Product Component는 pointer input을 frame 단위로 모은 뒤 계산된 숫자 bounds만 `update`에 전달한다. `update`는 위치·크기를 한 commit으로 반영한다. maximized move의 첫 update는 `normalBounds`와 normal placement를 즉시 반영해 일반 maximize/restore motion을 기다리지 않는다. `cancel()`은 먼저 접수된 update 뒤 시작 시점의 `normalBounds`·placement·minimized 값을 복구하며, 종료 또는 취소 뒤의 늦은 `update`는 `inactive`로 끝나 Store를 호출하지 않는다.
+
 ## 구독과 읽기
 
 ```ts
@@ -97,6 +123,6 @@ snapshot은 중첩 객체까지 읽기 전용이다. 직접 수정하지 않고 
 
 ## React controller
 
-제품 root는 `HeadlessRuntimeProvider` 아래에서 `useWindowController()`를 호출한다. `viewModel.status === "ready"`일 때의 `snapshot`은 WindowStore가 반환한 같은 immutable 객체이며, `actions.execute`는 `WindowAction`을 `WindowOperations`로 보낸다. `completeTransition`·`abortTransition`·`failTransition`은 Handle의 `operationId`와 현재 phase만 전달한다.
+제품 root는 `HeadlessRuntimeProvider` 아래에서 `useWindowController()`를 호출한다. `viewModel.status === "ready"`일 때의 `snapshot`은 WindowStore가 반환한 같은 immutable 객체이며, `actions.execute`는 `WindowAction`을 `WindowOperations`로 보낸다. `actions.beginGesture`는 runtime과 같은 Store를 쓰는 `WindowGestures` Handle을 반환한다. `completeTransition`·`abortTransition`·`failTransition`은 Handle의 `operationId`와 현재 phase만 전달한다.
 
 SSR 또는 브라우저 초기화 전에는 `not-ready`이며 hook이 WindowStore를 대신 초기화하지 않는다. Application은 Workspace와 Catalog를 준비해 WindowStore를 먼저 초기화하고 runtime을 한 번 만든다. 일반 caller는 semantic commit, 표현과 정리가 모두 필요한 경우 `handle.settled`를 기다린다.

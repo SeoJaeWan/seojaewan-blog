@@ -9,6 +9,7 @@ import type { ContentResourceRef, FolderResourceRef } from "../../resources/inde
 import {
   type OperationExecutionContext,
   type OperationHandle,
+  type OperationId,
   type OperationTargetLease,
   OperationTargetQueue,
   TransitionRegistry,
@@ -145,6 +146,26 @@ export type WindowOperationHandle = OperationHandle<
   WindowSettledResult
 >;
 
+/** queue에서 실제 실행할 Window transition을 Product presentation에 요청하는 값 객체다. */
+export type WindowPresentationRequest = Readonly<{
+  /** transition 대기와 UI 완료 보고를 연결하는 현재 Operation identity다. */
+  operationId: OperationId;
+  /** transition이 표현할 정확한 WindowSession identity다. */
+  sessionId: WindowSessionId;
+  /** 현재 Operation이 기다리는 enter·exit·bounds transition phase다. */
+  phase: string;
+}>;
+
+/**
+ * Window Operation의 실제 실행 시점에 DOM-free presentation 요청을 받는 port다.
+ *
+ * 구현은 요청을 Component에 전달하고 `TransitionRegistry` 또는 controller 완료 API로 같은 operation ID·phase를 종료한다.
+ */
+export type WindowPresentationPort = Readonly<{
+  /** 등록이 끝난 transition 요청을 시작하며 동기 완료와 Promise 거절을 모두 허용한다. */
+  present(request: WindowPresentationRequest): void | Promise<void>;
+}>;
+
 /** Window Operation이 사용하는 기존 WindowStore public surface다. */
 export type WindowOperationStore = Pick<
   typeof WindowStore,
@@ -183,6 +204,8 @@ export type WindowOperationsOptions = Readonly<{
   store?: WindowOperationStore;
   queue?: OperationTargetQueue<WindowSessionId>;
   transitions?: TransitionRegistry;
+  /** 실제 queue 실행 순서에 맞춰 transition 시작을 전달하는 DOM-free port다. */
+  presentation?: WindowPresentationPort;
 }>;
 
 /** commit이 없었던 WindowStore 결과를 no-op 또는 거절로 분류한다. */
@@ -274,12 +297,38 @@ export class WindowOperations {
   readonly #store: WindowOperationStore;
   readonly #queue: OperationTargetQueue<WindowSessionId>;
   readonly #transitions: TransitionRegistry;
+  readonly #presentation: WindowPresentationPort | undefined;
 
   /** dependency를 보관하며 생략된 값에는 정적 Store와 독립 runtime 요소를 사용한다. */
   constructor(options: WindowOperationsOptions = {}) {
     this.#store = options.store ?? WindowStore;
     this.#queue = options.queue ?? new OperationTargetQueue();
     this.#transitions = options.transitions ?? new TransitionRegistry();
+    this.#presentation = options.presentation;
+  }
+
+  /**
+   * registry 대기를 먼저 등록한 뒤 presentation port를 호출해 동기 완료도 보존한다.
+   *
+   * port의 동기 throw 또는 Promise 거절은 같은 transition의 failed 결과로 정리한다.
+   */
+  #waitForPresentation(
+    operationId: OperationId,
+    sessionId: WindowSessionId,
+    phase: string,
+  ): Promise<TransitionResult> {
+    const result = this.#transitions.waitFor(operationId, phase);
+    try {
+      const pending = this.#presentation?.present(Object.freeze({ operationId, sessionId, phase }));
+      if (pending !== undefined) {
+        void Promise.resolve(pending).catch((error: unknown) => {
+          this.#transitions.fail(operationId, phase, error);
+        });
+      }
+    } catch (error) {
+      this.#transitions.fail(operationId, phase, error);
+    }
+    return result;
   }
 
   /** Action을 기존 또는 생성 예정 Session queue에 예약하고 즉시 Handle을 반환한다. */
@@ -387,11 +436,19 @@ export class WindowOperations {
       WindowPresentedResult
     >,
   ): Promise<WindowSettledResult> {
+    context.onCleanup(() => {
+      this.#transitions.abortOperation(context.operationId, "window-operation-settled");
+    });
     const before = this.#store.getSnapshot();
     const beforePhase = beforeCommitPhase(before, action);
     let presentation: WindowPresentedResult | null = null;
     if (beforePhase !== null) {
-      presentation = await this.#transitions.waitFor(context.operationId, beforePhase);
+      if (!("sessionId" in action)) throw new Error("Window transition 대상 Session이 없습니다");
+      presentation = await this.#waitForPresentation(
+        context.operationId,
+        action.sessionId,
+        beforePhase,
+      );
       context.completePresented(presentation);
     }
 
@@ -408,8 +465,12 @@ export class WindowOperations {
         )
           attached = context.attachTarget(result.change.sessionId);
         const phase = afterCommitPhase(before, result);
-        if (phase !== null)
-          transition.after = this.#transitions.waitFor(context.operationId, phase);
+        if (phase !== null && result.change.sessionId !== undefined)
+          transition.after = this.#waitForPresentation(
+            context.operationId,
+            result.change.sessionId,
+            phase,
+          );
         context.completeCommitted(Object.freeze({ status: "committed", result }));
       },
     };
