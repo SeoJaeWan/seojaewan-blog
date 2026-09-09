@@ -114,9 +114,9 @@ export type WindowPointerGestureController = Readonly<{
   /** move·resize update 또는 rollback이 끝날 때까지 bounds transition을 끈다. */
   active: boolean;
   /** 빈 titlebar pointer 입력으로 move를 시작한다. */
-  startMove(event: ReactPointerEvent<HTMLDivElement>): void;
+  startMove(event: ReactPointerEvent<HTMLDivElement>): boolean;
   /** 방향 handle pointer 입력으로 resize를 시작한다. */
-  startResize(event: ReactPointerEvent<HTMLButtonElement>, direction: WindowResizeDirection): void;
+  startResize(event: ReactPointerEvent<HTMLButtonElement>, direction: WindowResizeDirection): boolean;
 }>;
 
 /**
@@ -236,9 +236,9 @@ export const useWindowPointerGesture = (
         gestureRef.current !== null ||
         workArea === null
       )
-        return;
+        return false;
       const started = actions.beginGesture({ kind, sessionId });
-      if (started.status !== "started") return;
+      if (started.status !== "started") return false;
 
       event.preventDefault();
       const owner = event.currentTarget;
@@ -270,6 +270,7 @@ export const useWindowPointerGesture = (
       owner.addEventListener("pointercancel", listeners.pointerCancel);
       owner.addEventListener("lostpointercapture", listeners.lostPointerCapture);
       window.addEventListener("keydown", listeners.keyDown);
+      return true;
     },
     [actions, placementConfig, sessionId, workArea],
   );

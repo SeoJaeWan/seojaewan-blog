@@ -42,6 +42,10 @@
   transition-property: box-shadow;
 }
 
+.window-frame[data-presentation-operation-id] {
+  transition-property: box-shadow;
+}
+
 .window-frame[data-maximized="true"][data-mode="desktop"] {
   border-radius: 0;
   inset: 0;

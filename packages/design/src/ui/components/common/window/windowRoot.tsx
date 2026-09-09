@@ -22,6 +22,10 @@ import {
   type WindowSessionId,
 } from "../../../../headless/windows/index.js";
 import { useWindowPointerGesture } from "./useWindowPointerGesture.js";
+import {
+  useWindowPresentation,
+  type WindowMotionDestination,
+} from "./useWindowPresentation.js";
 import { WindowControls } from "./windowControls.js";
 import { WindowFrame, type WindowFrameProps } from "./windowFrame.js";
 import {
@@ -58,6 +62,8 @@ export type WindowRootProps = Omit<
     presentationBinding?: WindowPresentationBinding;
     /** WindowStore 초기화와 동일한 bounds·최소 크기 설정이다. */
     placementConfig: WindowPlacementConfig;
+    /** 제품 root가 실제 Taskbar application icon에서 측정한 viewport px destination이다. */
+    minimizeDestination?: WindowMotionDestination | null;
     /** root capture activation 뒤에도 호출할 caller의 native focus callback이다. */
     onFocusCapture?: WindowFrameProps["onFocusCapture"];
     /** root capture activation 뒤에도 호출할 caller의 native pointer callback이다. */
@@ -74,8 +80,10 @@ export const WindowRoot = ({
   children,
   onFocusCapture,
   onPointerDownCapture,
+  minimizeDestination = null,
   presentationBinding,
   placementConfig,
+  ref,
   sessionId,
   titleBarContent,
   ...props
@@ -92,6 +100,13 @@ export const WindowRoot = ({
   );
   const session = snapshot?.sessions.find(({ id }) => id === sessionId);
   const active = snapshot?.activeSessionId === sessionId;
+  const presentationLifecycle = useWindowPresentation(ref, {
+    actions,
+    active,
+    destination: minimizeDestination,
+    minimized: session?.frame.minimized ?? false,
+    presentation,
+  });
 
   useEffect(() => {
     if (active) activationRequested.current = false;
@@ -121,6 +136,7 @@ export const WindowRoot = ({
 
   /** keyboard 또는 programmatic focus 진입도 같은 activate Action으로 연결한다. */
   const handleFocusCapture = (event: FocusEvent<HTMLElement>) => {
+    presentationLifecycle.rememberFocus(event);
     requestActivation();
     onFocusCapture?.(event);
   };
@@ -128,6 +144,16 @@ export const WindowRoot = ({
   /** 정확한 Session을 기존 Window Action queue로 전달하고 완료를 현재 event에서 가정하지 않는다. */
   const executeSessionAction = (action: WindowAction) => {
     actions.execute(action);
+  };
+
+  /** move gesture가 실제로 시작되면 진행 중인 presentation transform만 중단한다. */
+  const startMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (pointerGesture.startMove(event)) presentationLifecycle.interruptForGesture();
+  };
+
+  /** resize gesture가 실제로 시작되면 진행 중인 presentation transform만 중단한다. */
+  const startResize: NonNullable<WindowFrameProps["onResizeStart"]> = (event, direction) => {
+    if (pointerGesture.startResize(event, direction)) presentationLifecycle.interruptForGesture();
   };
 
   if (snapshot === null || session === undefined) return null;
@@ -146,14 +172,19 @@ export const WindowRoot = ({
     <WindowFrame
       {...props}
       active={active}
+      aria-hidden={session.frame.minimized ? true : undefined}
       bounds={bounds}
       data-gesture-active={pointerGesture.active ? "true" : undefined}
       data-presentation-operation-id={presentation?.operationId}
       data-presentation-phase={presentation?.phase}
+      hidden={session.frame.minimized}
+      inert={session.frame.minimized ? true : undefined}
       maximized={maximized}
       mode={snapshot.mode}
       onFocusCapture={handleFocusCapture}
       onPointerDownCapture={handlePointerDownCapture}
+      ref={presentationLifecycle.frameRef}
+      tabIndex={-1}
       titleBar={
         <WindowTitleBar
           controls={
@@ -165,13 +196,13 @@ export const WindowRoot = ({
               onToggleMaximized={() => executeSessionAction({ type: "toggle-maximize", sessionId })}
             />
           }
-          onMoveStart={pointerGesture.startMove}
+          onMoveStart={startMove}
           onToggleMaximized={() => executeSessionAction({ type: "toggle-maximize", sessionId })}
         >
           {titleBarContent}
         </WindowTitleBar>
       }
-      onResizeStart={pointerGesture.startResize}
+      onResizeStart={startResize}
       variant={session.kind}
       zIndex={stackingIndex + 1}
     >

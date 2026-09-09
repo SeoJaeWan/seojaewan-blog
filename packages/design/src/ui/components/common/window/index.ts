@@ -1,3 +1,4 @@
+export { type WindowMotionDestination } from "./useWindowPresentation.js";
 export { WindowControls, type WindowControlsProps } from "./windowControls.js";
 export {
   WindowFrame,

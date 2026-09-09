@@ -72,22 +72,47 @@ const createRuntime = (
     (): WindowGestureStartResult => ({ status: "rejected", reason: "invalid-kind" }),
   ),
 ) => {
-  const viewModel: ControllerViewModel<WindowState> = Object.freeze({
+  let viewModel: ControllerViewModel<WindowState> = Object.freeze({
     status: "ready",
     snapshot,
   });
+  const listeners = new Set<() => void>();
   const execute = vi.fn((_action: WindowAction) => ({}) as never);
+  const completeTransition = vi.fn(() => true);
+  const abortTransition = vi.fn(() => true);
+  const failTransition = vi.fn(() => true);
   const windows = Object.freeze({
     getSnapshot: () => viewModel,
     getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
-    subscribe: () => () => undefined,
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     execute,
   }) as unknown as HeadlessFeatureRuntime<WindowState, WindowAction, never>;
   const runtime = Object.freeze({
     windows,
     windowGestures: Object.freeze({ begin: beginGesture }),
+    transitions: Object.freeze({
+      abort: abortTransition,
+      complete: completeTransition,
+      fail: failTransition,
+    }),
   }) as unknown as HeadlessRuntime;
-  return { beginGesture, execute, runtime };
+  /** 새 immutable snapshot을 controller subscriber에 전달한다. */
+  const updateSnapshot = (nextSnapshot: WindowState): void => {
+    viewModel = Object.freeze({ status: "ready", snapshot: nextSnapshot });
+    listeners.forEach((listener) => listener());
+  };
+  return {
+    abortTransition,
+    beginGesture,
+    completeTransition,
+    execute,
+    failTransition,
+    runtime,
+    updateSnapshot,
+  };
 };
 
 /** 지정 frame에서 시작하는 DOM-free gesture Handle spy를 만든다. */
@@ -127,6 +152,32 @@ const installAnimationFrame = () => {
       callback = null;
       next?.(0);
     },
+  };
+};
+
+/** 실제 Animation.finished 순서를 test가 직접 제어할 WAAPI handle을 설치한다. */
+const installWindowAnimation = (element: HTMLElement) => {
+  let resolveFinished: (() => void) | undefined;
+  let rejectFinished: ((error: unknown) => void) | undefined;
+  const finished = new Promise<void>((resolve, reject) => {
+    resolveFinished = resolve;
+    rejectFinished = reject;
+  });
+  const cancel = vi.fn();
+  const animate = vi.fn(
+    (_keyframes: Keyframe[] | PropertyIndexedKeyframes, _options?: KeyframeAnimationOptions) =>
+      ({
+        cancel,
+        finished,
+      }) as unknown as Animation,
+  );
+  Object.defineProperty(element, "animate", { configurable: true, value: animate });
+  return {
+    animate,
+    cancel,
+    fail: (error: unknown) => rejectFinished?.(error),
+    finished,
+    finish: () => resolveFinished?.(),
   };
 };
 
@@ -258,6 +309,386 @@ describe("WindowRoot", () => {
     act(() => binding.release(request));
     expect(chrome.hasAttribute("data-presentation-operation-id")).toBe(false);
     expect(chrome.hasAttribute("data-presentation-phase")).toBe(false);
+  });
+
+  it("측정한 Taskbar icon rect로 최소화 150ms·복원 200ms를 실제 Animation.finished에 연결한다", async () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const binding = createWindowPresentationBinding();
+    const { completeTransition, runtime } = createRuntime(
+      createSnapshot(fileExplorerId, chromeId),
+    );
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          minimizeDestination={{ left: 460, top: 620, width: 30, height: 30 }}
+          placementConfig={placementConfig}
+          presentationBinding={binding}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          Chrome body
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const frame = screen.getByRole("region", { name: "Chrome 창" });
+    vi.spyOn(frame, "getBoundingClientRect").mockReturnValue({
+      left: 120,
+      top: 28,
+      width: 720,
+      height: 520,
+    } as DOMRect);
+    const minimizeAnimation = installWindowAnimation(frame);
+    const minimize: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-minimize" as OperationId,
+      sessionId: chromeId,
+      phase: "window-minimize",
+    });
+
+    act(() => void binding.present(minimize));
+    expect(minimizeAnimation.animate).toHaveBeenCalledTimes(1);
+    const [minimizeFrames, minimizeOptions] = minimizeAnimation.animate.mock.calls[0];
+    expect(minimizeOptions).toMatchObject({ duration: 150, fill: "both" });
+    expect(minimizeFrames).toEqual([
+      expect.objectContaining({ opacity: 1, transform: "none" }),
+      expect.objectContaining({
+        opacity: 0,
+        transform: "translate(340px, 592px) scale(0.041666666666666664, 0.057692307692307696)",
+      }),
+    ]);
+    expect(completeTransition).not.toHaveBeenCalled();
+    await act(async () => {
+      minimizeAnimation.finish();
+      await minimizeAnimation.finished;
+    });
+    expect(completeTransition).toHaveBeenCalledExactlyOnceWith(
+      minimize.operationId,
+      minimize.phase,
+    );
+
+    act(() => binding.release(minimize));
+    const restoreAnimation = installWindowAnimation(frame);
+    const restore: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-restore" as OperationId,
+      sessionId: chromeId,
+      phase: "window-restore",
+    });
+    act(() => void binding.present(restore));
+    expect(restoreAnimation.animate.mock.calls[0][1]).toMatchObject({ duration: 200, fill: "both" });
+    const restoreFrames = restoreAnimation.animate.mock.calls[0][0] as Keyframe[];
+    expect(restoreFrames[0]).toMatchObject({ opacity: 0 });
+    expect(restoreFrames[0]?.transform).toContain("translate(340px");
+    expect(restoreFrames[1]).toMatchObject({ opacity: 1, transform: "none" });
+  });
+
+  it("pending animation unmount는 WAAPI handle과 transition wait를 abort로 정리한다", () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const binding = createWindowPresentationBinding();
+    const { abortTransition, completeTransition, runtime } = createRuntime(
+      createSnapshot(fileExplorerId, chromeId),
+    );
+    const view = render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          presentationBinding={binding}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          Chrome body
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const frame = screen.getByRole("region", { name: "Chrome 창" });
+    const animation = installWindowAnimation(frame);
+    const request: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-exit" as OperationId,
+      sessionId: chromeId,
+      phase: "window-exit",
+    });
+    act(() => void binding.present(request));
+
+    view.unmount();
+    expect(animation.cancel).toHaveBeenCalledTimes(1);
+    expect(abortTransition).toHaveBeenCalledExactlyOnceWith(
+      request.operationId,
+      request.phase,
+      "window-component-unmounted-or-presentation-replaced",
+    );
+    expect(completeTransition).not.toHaveBeenCalled();
+  });
+
+  it("WAAPI rejection은 정상 완료로 위장하지 않고 exact transition failure로 정리한다", async () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const binding = createWindowPresentationBinding();
+    const { completeTransition, failTransition, runtime } = createRuntime(
+      createSnapshot(fileExplorerId, chromeId),
+    );
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          presentationBinding={binding}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          Chrome body
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const frame = screen.getByRole("region", { name: "Chrome 창" });
+    const animation = installWindowAnimation(frame);
+    const request: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-failed" as OperationId,
+      sessionId: chromeId,
+      phase: "window-exit",
+    });
+    const error = new Error("animation failed");
+    act(() => void binding.present(request));
+
+    await act(async () => {
+      animation.fail(error);
+      await expect(animation.finished).rejects.toBe(error);
+    });
+    expect(failTransition).toHaveBeenCalledExactlyOnceWith(
+      request.operationId,
+      request.phase,
+      error,
+    );
+    expect(completeTransition).not.toHaveBeenCalled();
+  });
+
+  it("bounds WAAPI 중 pointer gesture 시작은 animation wait만 abort하고 rAF bounds를 즉시 전달한다", () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const snapshot = createSnapshot(fileExplorerId, chromeId);
+    const gesture = createGestureHandle("move", snapshot.sessions[1].frame, {
+      x: 0,
+      y: 0,
+      width: 1_000,
+      height: 700,
+    });
+    const beginGesture = vi.fn(() => ({ status: "started", handle: gesture.handle }) as const);
+    const binding = createWindowPresentationBinding();
+    const { abortTransition, completeTransition, runtime } = createRuntime(snapshot, beginGesture);
+    const animationFrame = installAnimationFrame();
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          presentationBinding={binding}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          Chrome body
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const frame = screen.getByRole("region", { name: "Chrome 창" });
+    vi.spyOn(frame, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      top: 0,
+      width: 1_000,
+      height: 700,
+    } as DOMRect);
+    const animation = installWindowAnimation(frame);
+    const request: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-maximize" as OperationId,
+      sessionId: chromeId,
+      phase: "window-maximize",
+    });
+    act(() => void binding.present(request));
+    const dragRegion = frame.querySelector<HTMLElement>("[data-window-drag-region]");
+
+    fireEvent.pointerDown(dragRegion!, {
+      button: 0,
+      clientX: 250,
+      clientY: 15,
+      isPrimary: true,
+      pointerId: 41,
+    });
+    expect(animation.cancel).toHaveBeenCalledTimes(1);
+    expect(abortTransition).toHaveBeenCalledExactlyOnceWith(
+      request.operationId,
+      request.phase,
+      "window-presentation-interrupted-by-gesture",
+    );
+    expect(completeTransition).not.toHaveBeenCalled();
+    fireEvent.pointerMove(dragRegion!, { clientX: 400, clientY: 25, pointerId: 41 });
+    act(() => animationFrame.flush());
+    expect(gesture.update).toHaveBeenCalledExactlyOnceWith({
+      x: 220,
+      y: 10,
+      width: 720,
+      height: 520,
+    });
+  });
+
+  it("reduced motion은 WAAPI 없이 현재 operation ID·phase를 즉시 완료한다", () => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({ matches: true }) as MediaQueryList),
+    );
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const binding = createWindowPresentationBinding();
+    const { completeTransition, runtime } = createRuntime(
+      createSnapshot(fileExplorerId, chromeId),
+    );
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          presentationBinding={binding}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          Chrome body
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const request: WindowPresentationRequest = Object.freeze({
+      operationId: "window-operation-reduced" as OperationId,
+      sessionId: chromeId,
+      phase: "window-enter",
+    });
+
+    act(() => void binding.present(request));
+    expect(completeTransition).toHaveBeenCalledExactlyOnceWith(
+      request.operationId,
+      request.phase,
+    );
+  });
+
+  it("최소화 content를 mounted 상태로 숨기고 다음 창과 복원 focus를 연결한다", () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const initial = createSnapshot(fileExplorerId, chromeId);
+    const { runtime, updateSnapshot } = createRuntime(initial);
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="파일 탐색기 창"
+          placementConfig={placementConfig}
+          sessionId={fileExplorerId}
+          titleBarContent="파일 탐색기"
+        >
+          Explorer body
+        </WindowRoot>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          <div data-testid="chrome-scroll" style={{ height: 20, overflow: "auto" }}>
+            <input aria-label="주소" defaultValue="보존된 입력" />
+            <div style={{ height: 100 }} />
+          </div>
+        </WindowRoot>
+      </HeadlessRuntimeProvider>,
+    );
+    const chrome = screen.getByRole("region", { name: "Chrome 창" });
+    const address = screen.getByRole<HTMLInputElement>("textbox", { name: "주소" });
+    const scroll = screen.getByTestId("chrome-scroll");
+    address.focus();
+    address.value = "수정한 입력";
+    scroll.scrollTop = 37;
+    within(chrome).getByRole("button", { name: "최소화" }).focus();
+
+    const minimized = Object.freeze({
+      ...initial,
+      sessions: Object.freeze(
+        initial.sessions.map((session) =>
+          session.id === chromeId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({ ...session.frame, minimized: true }),
+              })
+            : session,
+        ),
+      ),
+      activeSessionId: fileExplorerId,
+    });
+    act(() => updateSnapshot(minimized));
+    const mountedChrome = document.querySelector<HTMLElement>('[aria-label="Chrome 창"]');
+    const explorer = screen.getByRole("region", { name: "파일 탐색기 창" });
+    expect(mountedChrome).not.toBeNull();
+    expect(mountedChrome?.hasAttribute("hidden")).toBe(true);
+    expect(mountedChrome?.hasAttribute("inert")).toBe(true);
+    expect(mountedChrome?.getAttribute("aria-hidden")).toBe("true");
+    expect(address.value).toBe("수정한 입력");
+    expect(scroll.scrollTop).toBe(37);
+    expect(document.activeElement).toBe(explorer);
+
+    const restored = Object.freeze({
+      ...minimized,
+      sessions: Object.freeze(
+        minimized.sessions.map((session) =>
+          session.id === chromeId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({ ...session.frame, minimized: false }),
+              })
+            : session,
+        ),
+      ),
+      activeSessionId: chromeId,
+    });
+    act(() => updateSnapshot(restored));
+    expect(document.activeElement).toBe(address);
+    expect(address.value).toBe("수정한 입력");
+    expect(scroll.scrollTop).toBe(37);
+  });
+
+  it("마지막 visible 창 최소화는 focus를 Taskbar로 옮기지 않고 body에 잃은 상태로 둔다", () => {
+    const fileExplorerId = sessionId("000000000105");
+    const chromeId = sessionId("000000000106");
+    const initial = createSnapshot(fileExplorerId, chromeId);
+    const chromeOnly = Object.freeze({
+      ...initial,
+      sessions: Object.freeze([initial.sessions[1]]),
+      stackingOrder: Object.freeze([chromeId]),
+      activeSessionId: chromeId,
+    });
+    const { runtime, updateSnapshot } = createRuntime(chromeOnly);
+    render(
+      <HeadlessRuntimeProvider runtime={runtime}>
+        <WindowRoot
+          aria-label="Chrome 창"
+          placementConfig={placementConfig}
+          sessionId={chromeId}
+          titleBarContent="Chrome"
+        >
+          <input aria-label="주소" />
+        </WindowRoot>
+        <button aria-label="Taskbar fixture" type="button">
+          Taskbar
+        </button>
+      </HeadlessRuntimeProvider>,
+    );
+    screen.getByRole("textbox", { name: "주소" }).focus();
+    const minimized = Object.freeze({
+      ...chromeOnly,
+      sessions: Object.freeze([
+        Object.freeze({
+          ...chromeOnly.sessions[0],
+          frame: Object.freeze({ ...chromeOnly.sessions[0].frame, minimized: true }),
+        }),
+      ]),
+      activeSessionId: null,
+    });
+
+    act(() => updateSnapshot(minimized));
+    expect(document.activeElement).toBe(document.body);
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "Taskbar fixture" }));
   });
 
   it("move pointer를 animation frame마다 최신 numeric bounds로 전달하고 Esc로 시작 frame을 복구한다", async () => {

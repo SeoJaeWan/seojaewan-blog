@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import {
   ArrowLeft16Regular,
@@ -16,22 +16,32 @@ import {
   type HeadlessFeatureRuntime,
   type HeadlessRuntime,
   HeadlessRuntimeProvider,
+  TransitionRegistry,
   type WindowAction,
   type WindowFrameState,
+  type WindowGestureKind,
   WindowGestures,
   type WindowGestureStore,
+  WindowOperations,
+  type WindowOperationStore,
   type WindowPlacementConfig,
+  type WindowRect,
   type WindowSessionId,
   type WindowState,
+  type WindowStoreChange,
   type WindowStoreResult,
 } from "../../../../headless/index.js";
+import type { WindowStoreCommandContext } from "../../../../headless/windows/index.js";
 import chromeIconSrc from "../../../assets/window/chrome.png";
 import fileExplorerIconSrc from "../../../assets/window/file-explorer.png";
+import { TaskbarApplicationButton } from "../../taskbar/items/index.js";
 import {
+  createWindowPresentationBinding,
   WindowFrame,
   type WindowFrameBounds,
   type WindowFrameMode,
   type WindowFrameVariant,
+  type WindowMotionDestination,
   WindowRoot,
 } from "./index.js";
 
@@ -325,6 +335,331 @@ const createInteractiveWindowRuntime = (initialSnapshot: WindowState): HeadlessR
     windows,
     windowGestures: Object.freeze({ begin: gestures.begin.bind(gestures) }),
   }) as unknown as HeadlessRuntime;
+};
+
+/** lifecycle Story의 상태를 실제 WindowOperations와 구독 가능한 in-memory Store에 연결한다. */
+const createLifecycleWindowRuntime = (
+  initialSnapshot: WindowState,
+  presentationBinding: ReturnType<typeof createWindowPresentationBinding>,
+): HeadlessRuntime => {
+  let snapshot = initialSnapshot;
+  let viewModel: ControllerViewModel<WindowState> = Object.freeze({
+    status: "ready",
+    snapshot,
+  });
+  const listeners = new Set<() => void>();
+
+  /** commit callback과 controller subscriber를 production Store 순서로 실행한다. */
+  const commit = (
+    next: WindowState,
+    change: WindowStoreChange,
+    context?: WindowStoreCommandContext,
+  ): WindowStoreResult => {
+    snapshot = Object.freeze(next);
+    viewModel = Object.freeze({ status: "ready", snapshot });
+    const result = Object.freeze({ ok: true, changed: true, value: snapshot, change });
+    context?.onCommit(result);
+    listeners.forEach((listener) => listener());
+    return result;
+  };
+
+  /** 변경이 필요 없는 요청을 실제 Store result 형태로 끝낸다. */
+  const noOp = (): WindowStoreResult => ({
+    ok: true,
+    changed: false,
+    reason: "no-op",
+    value: snapshot,
+  });
+
+  const store = Object.freeze({
+    getSnapshot: () => snapshot,
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    /** active 창을 최소화하고 다음 visible 최상위 창을 고른다. */
+    minimize: (sessionId: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const target = snapshot.sessions.find((session) => session.id === sessionId);
+      if (target === undefined || target.frame.minimized) return Promise.resolve(noOp());
+      const sessions = Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({ ...session.frame, minimized: true }),
+              })
+            : session,
+        ),
+      );
+      const nextActive = [...snapshot.stackingOrder]
+        .reverse()
+        .find((id) => id !== sessionId && !sessions.find((session) => session.id === id)?.frame.minimized);
+      return Promise.resolve(
+        commit(
+          Object.freeze({ ...snapshot, sessions, activeSessionId: nextActive ?? null }),
+          { kind: "window-minimized", sessionId },
+          context,
+        ),
+      );
+    },
+    /** 최소화 Session을 복원해 active·topmost로 반영한다. */
+    activate: (sessionId: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const target = snapshot.sessions.find((session) => session.id === sessionId);
+      if (target === undefined) return Promise.resolve(noOp());
+      const sessions = Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({ ...session.frame, minimized: false }),
+              })
+            : session,
+        ),
+      );
+      return Promise.resolve(
+        commit(
+          Object.freeze({
+            ...snapshot,
+            sessions,
+            stackingOrder: Object.freeze([
+              ...snapshot.stackingOrder.filter((id) => id !== sessionId),
+              sessionId,
+            ]),
+            activeSessionId: sessionId,
+          }),
+          { kind: "window-activated", sessionId },
+          context,
+        ),
+      );
+    },
+    /** lifecycle fixture에서 사용하지 않는 close는 Session을 실제로 제거한다. */
+    close: (sessionId: WindowSessionId, context?: WindowStoreCommandContext) => {
+      if (!snapshot.sessions.some((session) => session.id === sessionId))
+        return Promise.resolve(noOp());
+      const sessions = Object.freeze(snapshot.sessions.filter((session) => session.id !== sessionId));
+      const stackingOrder = Object.freeze(snapshot.stackingOrder.filter((id) => id !== sessionId));
+      const activeSessionId = stackingOrder.at(-1) ?? null;
+      return Promise.resolve(
+        commit(
+          Object.freeze({ ...snapshot, sessions, stackingOrder, activeSessionId }),
+          { kind: "window-closed", sessionId },
+          context,
+        ),
+      );
+    },
+    /** normal/maximized placement를 전환하고 active·topmost를 유지한다. */
+    toggleMaximize: (sessionId: WindowSessionId, context?: WindowStoreCommandContext) => {
+      const target = snapshot.sessions.find((session) => session.id === sessionId);
+      if (target === undefined) return Promise.resolve(noOp());
+      const placement = target.frame.placement === "normal" ? "maximized" : "normal";
+      const sessions = Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({ ...session.frame, placement, minimized: false }),
+              })
+            : session,
+        ),
+      );
+      return Promise.resolve(
+        commit(
+          Object.freeze({ ...snapshot, sessions, activeSessionId: sessionId }),
+          {
+            kind: placement === "maximized" ? "window-maximized" : "window-restored",
+            sessionId,
+          },
+          context,
+        ),
+      );
+    },
+    /** browser pointer가 계산한 bounds를 즉시 normal placement로 반영한다. */
+    applyGestureBounds: (
+      sessionId: WindowSessionId,
+      bounds: WindowRect,
+      kind: WindowGestureKind,
+    ) => {
+      const target = snapshot.sessions.find((session) => session.id === sessionId);
+      if (target === undefined) return Promise.resolve(noOp());
+      const sessions = Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId
+            ? Object.freeze({
+                ...session,
+                frame: Object.freeze({
+                  ...session.frame,
+                  normalBounds: Object.freeze({ ...bounds }),
+                  placement: "normal" as const,
+                }),
+              })
+            : session,
+        ),
+      );
+      return Promise.resolve(
+        commit(Object.freeze({ ...snapshot, sessions }), {
+          kind: kind === "move" ? "window-moved" : "window-resized",
+          sessionId,
+        }),
+      );
+    },
+    /** Esc 취소가 gesture 시작 frame을 한 commit으로 복원한다. */
+    restoreFrame: (sessionId: WindowSessionId, frame: WindowFrameState) => {
+      const target = snapshot.sessions.find((session) => session.id === sessionId);
+      if (target === undefined) return Promise.resolve(noOp());
+      const sessions = Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId ? Object.freeze({ ...session, frame }) : session,
+        ),
+      );
+      return Promise.resolve(
+        commit(Object.freeze({ ...snapshot, sessions }), {
+          kind: "window-frame-restored",
+          sessionId,
+        }),
+      );
+    },
+  }) as unknown as WindowOperationStore & WindowGestureStore & {
+    getSnapshot(): WindowState;
+    subscribe(listener: () => void): () => void;
+  };
+  const transitions = new TransitionRegistry();
+  const operations = new WindowOperations({
+    presentation: presentationBinding,
+    store,
+    transitions,
+  });
+  const gestures = new WindowGestures(store);
+  const windows = Object.freeze({
+    getSnapshot: () => viewModel,
+    getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
+    subscribe: (listener: () => void) => store.subscribe(listener),
+    execute: (action: WindowAction) => operations.execute(action),
+  });
+  return Object.freeze({
+    transitions,
+    windows,
+    windowGestures: Object.freeze({
+      begin: gestures.begin.bind(gestures),
+    }),
+  }) as unknown as HeadlessRuntime;
+};
+
+/** 실제 TaskbarApplicationButton icon box를 viewport 숫자로 측정한다. */
+const measureApplicationIcon = (button: HTMLButtonElement | null): WindowMotionDestination | null => {
+  const icon = button?.querySelector<HTMLElement>(".taskbar-application-button__icon");
+  if (icon === null || icon === undefined) return null;
+  const bounds = icon.getBoundingClientRect();
+  return Object.freeze({
+    left: bounds.left,
+    top: bounds.top,
+    width: bounds.width,
+    height: bounds.height,
+  });
+};
+
+/** 실제 Operation, presentation binding과 Taskbar icon 측정을 함께 검증하는 두 제품 fixture다. */
+const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: boolean }) => {
+  const fileExplorerId = storySessionId("file-explorer");
+  const chromeId = storySessionId("chrome");
+  const taskbarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [destination, setDestination] = useState<WindowMotionDestination | null>(null);
+  const [showChromeNavigation, setShowChromeNavigation] = useState(true);
+  const presentationBinding = useMemo(() => createWindowPresentationBinding(), []);
+  const initialSnapshot = useMemo<WindowState>(
+    () =>
+      Object.freeze({
+        mode: "desktop",
+        workArea: Object.freeze({ x: 0, y: 0, width: 960, height: 590 }),
+        sessions: Object.freeze([
+          Object.freeze({
+            id: fileExplorerId,
+            kind: "file-explorer",
+            applicationId: "file-explorer",
+            frame: Object.freeze({
+              normalBounds: Object.freeze({ x: 48, y: 36, width: 840, height: 500 }),
+              placement: "normal",
+              minimized: false,
+            }),
+            tabs: Object.freeze([]),
+            activeTabId: "file-tab" as never,
+          }),
+          Object.freeze({
+            id: chromeId,
+            kind: "chrome",
+            applicationId: "chrome",
+            frame: Object.freeze({
+              normalBounds: Object.freeze({ x: 120, y: 28, width: 720, height: 520 }),
+              placement: "normal",
+              minimized: false,
+            }),
+            tabs: Object.freeze([]),
+            activeTabId: "chrome-tab" as never,
+          }),
+        ]),
+        stackingOrder: Object.freeze([fileExplorerId, chromeId]),
+        activeSessionId: chromeId,
+      }),
+    [chromeId, fileExplorerId],
+  );
+  const runtime = useMemo(
+    () => createLifecycleWindowRuntime(initialSnapshot, presentationBinding),
+    [initialSnapshot, presentationBinding],
+  );
+
+  /** initial layout 뒤 실제 production icon rect를 WindowRoot numeric prop으로 전달한다. */
+  useLayoutEffect(() => {
+    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+  }, []);
+
+  /** 이동될 수 있는 Taskbar icon을 activation 직전에 다시 측정하고 restore Action을 실행한다. */
+  const restoreChrome = () => {
+    setDestination(measureApplicationIcon(taskbarButtonRef.current));
+    runtime.windows.execute({ type: "activate", sessionId: chromeId });
+  };
+
+  return (
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <WindowRoot
+        aria-label="파일 탐색기 lifecycle 창"
+        placementConfig={WINDOW_PLACEMENT_CONFIG}
+        presentationBinding={presentationBinding}
+        sessionId={fileExplorerId}
+        titleBarContent={
+          <ProductTab icon={fileExplorerIconSrc} title="프로젝트" variant="file-explorer" />
+        }
+      >
+        <ProductNavigation mode="desktop" variant="file-explorer" />
+        <FileExplorerContent mode="desktop" />
+      </WindowRoot>
+      <WindowRoot
+        aria-label="Chrome lifecycle 창"
+        minimizeDestination={destination}
+        placementConfig={WINDOW_PLACEMENT_CONFIG}
+        presentationBinding={presentationBinding}
+        sessionId={chromeId}
+        titleBarContent={<ProductTab icon={chromeIconSrc} title="Motion 검증" variant="chrome" />}
+      >
+        {showChromeNavigation ? <ProductNavigation mode="desktop" variant="chrome" /> : null}
+        <ChromeContent mode="desktop" />
+      </WindowRoot>
+      <div className="window-story-taskbar">
+        {focusControls ? (
+          <button
+            aria-label="Chrome focus 대상 제거"
+            onClick={() => setShowChromeNavigation(false)}
+            type="button"
+          >
+            focus fallback
+          </button>
+        ) : null}
+        <TaskbarApplicationButton
+          application={{ applicationId: "chrome", label: "Chrome 복원", active: false, running: true }}
+          onAction={restoreChrome}
+          ref={taskbarButtonRef}
+        />
+      </div>
+    </HeadlessRuntimeProvider>
+  );
 };
 
 /** controller 구독으로 bounds가 실제 갱신되는 Common Window interaction fixture를 렌더링한다. */
@@ -723,5 +1058,206 @@ export const PointerGestures: Story = {
       target: dragRegion,
       coords: { clientX: 400, clientY: 25 },
     });
+  },
+};
+
+export const MotionPresenceAndFocus: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "실제 WindowOperations queue와 WAAPI completion을 공유 binding으로 연결한다. 최소화 content·focus를 유지하고 production TaskbarApplicationButton icon의 현재 측정값으로 150ms 최소화와 200ms 복원을 검증한다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="window-story-stage" data-mode="desktop">
+      <LifecycleProductWindows />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
+    const explorer = canvas.getByRole("region", { name: "파일 탐색기 lifecycle 창" });
+    const address = within(chrome).getByRole<HTMLInputElement>("textbox", {
+      name: "검색어 또는 URL 입력",
+    });
+    const scrollContent = chrome.querySelector<HTMLElement>(".window-story-chrome-content");
+    const taskbarButton = canvas.getByRole("button", { name: "Chrome 복원" });
+    const taskbarIcon = taskbarButton.querySelector<HTMLElement>(
+      ".taskbar-application-button__icon",
+    );
+    await waitFor(() => expect(taskbarIcon?.getBoundingClientRect().width).toBeGreaterThan(0));
+    const initialIcon = taskbarIcon!.getBoundingClientRect();
+    const initialValue = address.value;
+    address.focus();
+    if (scrollContent !== null) scrollContent.scrollTop = 48;
+    const preservedScrollTop = scrollContent?.scrollTop ?? 0;
+    await expect(preservedScrollTop).toBeGreaterThan(0);
+
+    const minimizeStartedAt = performance.now();
+    await userEvent.click(within(chrome).getByRole("button", { name: "최소화" }));
+    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-minimize"));
+    const minimizeAnimation = chrome.getAnimations()[0];
+    await expect(minimizeAnimation).toBeDefined();
+    await expect(minimizeAnimation.effect?.getTiming().duration).toBe(150);
+    const minimizeFrames = (minimizeAnimation.effect as KeyframeEffect).getKeyframes();
+    await expect(String(minimizeFrames.at(-1)?.transform)).toContain(
+      `${Math.round(initialIcon.left - chrome.getBoundingClientRect().left)}`,
+    );
+    await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
+    await expect(performance.now() - minimizeStartedAt).toBeGreaterThanOrEqual(100);
+    await expect(chrome.hasAttribute("inert")).toBe(true);
+    await expect(chrome.getAttribute("aria-hidden")).toBe("true");
+    await expect(address.value).toBe(initialValue);
+    await expect(scrollContent?.scrollTop).toBe(preservedScrollTop);
+    await expect(document.activeElement).toBe(explorer);
+
+    taskbarButton.style.transform = "translateX(-180px)";
+    const shiftedIcon = taskbarIcon!.getBoundingClientRect();
+    await expect(shiftedIcon.left).not.toBe(initialIcon.left);
+    const restoreStartedAt = performance.now();
+    await userEvent.click(taskbarButton);
+    await waitFor(() => expect(chrome.hidden).toBe(false));
+    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-restore"));
+    const restoreAnimation = chrome
+      .getAnimations()
+      .find((animation) => animation.effect?.getTiming().duration === 200);
+    if (restoreAnimation === undefined) {
+      throw new Error("200ms 복원 animation을 찾지 못했습니다.");
+    }
+    await expect(restoreAnimation.effect?.getTiming().duration).toBe(200);
+    const restoreFrames = (restoreAnimation.effect as KeyframeEffect).getKeyframes();
+    await expect(String(restoreFrames[0]?.transform)).toContain(
+      `${Math.round(shiftedIcon.left - chrome.getBoundingClientRect().left)}`,
+    );
+    await waitFor(() => expect(chrome.hasAttribute("data-presentation-phase")).toBe(false), {
+      timeout: 900,
+    });
+    await expect(performance.now() - restoreStartedAt).toBeGreaterThanOrEqual(150);
+    await expect(document.activeElement).toBe(address);
+    await expect(address.value).toBe(initialValue);
+    await expect(scrollContent?.scrollTop).toBe(preservedScrollTop);
+  },
+};
+
+export const MotionPresenceAndFocusVisual: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "자동 캡처가 실제 minimize·restore 중간 frame을 직접 구동할 수 있는 동일 production fixture다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="window-story-stage" data-mode="desktop">
+      <LifecycleProductWindows />
+    </div>
+  ),
+};
+
+export const MotionGestureOverlap: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "진행 중인 실제 bounds WAAPI에 pointer gesture가 들어오면 animation wait만 중단하고 drag bounds를 즉시 반영하며 Esc는 gesture 시작 frame을 복원한다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="window-story-stage" data-mode="desktop">
+      <LifecycleProductWindows />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
+    await userEvent.click(within(chrome).getByRole("button", { name: "최대화" }));
+    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-maximize"));
+    const boundsAnimation = chrome
+      .getAnimations()
+      .find((animation) => animation.effect?.getTiming().duration === 150);
+    if (boundsAnimation === undefined) {
+      throw new Error("진행 중인 150ms bounds animation을 찾지 못했습니다.");
+    }
+    await expect(boundsAnimation.playState).toBe("running");
+
+    const dragRegion = chrome.querySelector<HTMLElement>("[data-window-drag-region]")!;
+    await userEvent.pointer({
+      keys: "[MouseLeft>]",
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 15 },
+    });
+    await waitFor(() => expect(boundsAnimation.playState).toBe("idle"));
+    await waitFor(() => expect(chrome.hasAttribute("data-presentation-phase")).toBe(false));
+    await userEvent.pointer({
+      target: dragRegion,
+      coords: { clientX: 400, clientY: 25 },
+    });
+    await waitFor(async () => {
+      const dragged = chrome.getBoundingClientRect();
+      await expect(dragged.left).toBe(220);
+      await expect(dragged.top).toBe(10);
+      await expect(dragged.width).toBe(720);
+      await expect(dragged.height).toBe(520);
+    });
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(async () => {
+      await expect(chrome.getAttribute("data-maximized")).toBe("true");
+      await expect(chrome.getBoundingClientRect().width).toBe(960);
+      await expect(chrome.getBoundingClientRect().height).toBe(590);
+    });
+    await userEvent.pointer({
+      keys: "[/MouseLeft]",
+      target: dragRegion,
+      coords: { clientX: 400, clientY: 25 },
+    });
+  },
+};
+
+export const FocusLifecycleEdges: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "숨긴 동안 이전 focus 요소가 사라진 복원 fallback, active close 뒤 다음 visible 창, 마지막 visible close 뒤 focus 상실을 실제 browser에서 검증한다.",
+      },
+    },
+  },
+  render: () => (
+    <div className="window-story-stage" data-mode="desktop">
+      <LifecycleProductWindows focusControls />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
+    const explorer = canvas.getByRole("region", { name: "파일 탐색기 lifecycle 창" });
+    within(chrome).getByRole("textbox", { name: "검색어 또는 URL 입력" }).focus();
+    await userEvent.click(within(chrome).getByRole("button", { name: "최소화" }));
+    await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
+    await userEvent.click(canvas.getByRole("button", { name: "Chrome focus 대상 제거" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Chrome 복원" }));
+    await waitFor(() => expect(chrome.hidden).toBe(false));
+    await waitFor(() => expect(document.activeElement).toBe(chrome));
+
+    await userEvent.click(within(chrome).getByRole("button", { name: "닫기" }));
+    await waitFor(() => expect(document.querySelector('[aria-label="Chrome lifecycle 창"]')).toBeNull(), {
+      timeout: 800,
+    });
+    await expect(document.activeElement).toBe(explorer);
+
+    await userEvent.click(within(explorer).getByRole("button", { name: "닫기" }));
+    await waitFor(
+      () => expect(document.querySelector('[aria-label="파일 탐색기 lifecycle 창"]')).toBeNull(),
+      { timeout: 800 },
+    );
+    await expect(document.activeElement).toBe(document.body);
+    await expect(document.activeElement).not.toBe(
+      canvas.getByRole("button", { name: "Chrome 복원" }),
+    );
   },
 };
