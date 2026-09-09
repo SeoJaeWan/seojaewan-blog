@@ -7,7 +7,7 @@ import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
-import { TaskbarStartButton } from "./taskbarStartButton.js";
+import { TaskbarStartButton } from "./index.js";
 
 /** 실제 product callback 호출 횟수를 Canvas에서 관찰할 수 있게 렌더링한다. */
 const ActionFixture = ({ disabled = false, selected = false }) => {
@@ -18,7 +18,7 @@ const ActionFixture = ({ disabled = false, selected = false }) => {
       results={
         <>
           <p>
-            시작 요청: <output aria-label="Windows Action 횟수">{count}</output>
+            시작 요청: <output aria-label="시작 요청 횟수">{count}</output>
           </p>
         </>
       }
@@ -46,8 +46,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "desktop Taskbar에서 Windows 요청을 보내는 시작 버튼이다. " +
-          "Base UI Button을 직접 조합하며 panel 관계와 open 상태는 소유하지 않는다.",
+          "작업 표시줄에서 시작 메뉴를 여는 데 사용하는 버튼입니다. 선택·누름·사용 불가 상태와 키보드 조작을 확인할 수 있습니다. 이 예제에는 시작 메뉴가 연결되어 있지 않습니다.",
       },
     },
   },
@@ -70,7 +69,7 @@ export const Selected: Story = {
   name: "선택 상태",
   parameters: {
     taskbarDescription:
-      "selected로 유지되는 선택 표현입니다. 배경이 강조됩니다. 누르는 순간인 Pressed와 다르며 Controls에서 selected를 끄면 해제됩니다.",
+      "선택된 버튼의 강조 배경을 보여 줍니다. 버튼을 누르고 있지 않아도 선택 표현이 유지됩니다.",
   },
   args: { selected: true },
 };
@@ -84,12 +83,12 @@ export const Hover: Story = {
 };
 
 export const SelectedHover: Story = {
-  name: "선택 상태 + 호버",
+  name: "선택 상태에서 마우스를 올린 모습",
   args: { selected: true },
   parameters: {
     pseudo: { hover: ".taskbar-start-button" },
     taskbarDescription:
-      "활성 여부와 관계없이 같은 밝은 글라스 호버 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
+      "활성 여부와 관계없이 마우스를 올리면 같은 밝은 반투명 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
   },
 };
 
@@ -115,7 +114,7 @@ export const Disabled: Story = {
   name: "사용 불가",
   parameters: {
     taskbarDescription:
-      "흐리게 표시되며 실행 요청을 보내지 않습니다. Controls에서 disabled를 끄면 사용할 수 있습니다.",
+      "흐리게 표시되며 실행 요청을 보내지 않습니다. 설정 패널에서 disabled를 끄면 사용할 수 있습니다.",
   },
   args: { disabled: true },
 };
@@ -130,7 +129,7 @@ export const Interaction: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button", { name: "시작" });
-    const actionCount = canvas.getByRole("status", { name: "Windows Action 횟수" });
+    const actionCount = canvas.getByRole("status", { name: "시작 요청 횟수" });
 
     await userEvent.tab();
     await expect(button).toHaveFocus();

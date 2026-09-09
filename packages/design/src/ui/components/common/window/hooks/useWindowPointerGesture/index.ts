@@ -18,8 +18,8 @@ import type {
   WindowRect,
   WindowResizeDirection,
   WindowSessionId,
-} from "../../../../headless/windows/index.js";
-import { resizeWindowBounds } from "../../../../headless/windows/index.js";
+} from "../../../../../../headless/windows/index.js";
+import { resizeWindowBounds } from "../../../../../../headless/windows/index.js";
 
 type GestureOwner = HTMLElement & {
   hasPointerCapture?(pointerId: number): boolean;

@@ -5,7 +5,7 @@ import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
-import { TaskbarTimestamp } from "./taskbarTimestamp.js";
+import { TaskbarTimestamp } from "./index.js";
 
 const meta = {
   title: "Design/Components/Taskbar/Timestamp",
@@ -22,8 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Taskbar 오른쪽에서 headless controller가 계산한 local 24시간제 시각과 날짜를 읽기 전용으로 표시한다. " +
-          "click, tooltip, calendar와 live announce를 제공하지 않는다.",
+          "작업 표시줄 오른쪽에 현재 지역의 시각과 날짜를 표시합니다. 시각은 24시간제로 보여 주며, 클릭해 달력을 여는 기능은 없습니다.",
       },
     },
     layout: "fullscreen",

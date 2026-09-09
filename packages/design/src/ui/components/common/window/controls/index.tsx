@@ -9,7 +9,7 @@ import {
 } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
-import type { WindowFrameMode } from "./windowFrame.js";
+import type { WindowFrameMode } from "../frame/index.js";
 
 import "./windowControls.css";
 

@@ -16,8 +16,8 @@ import {
   type WindowPresentationRequest,
   type WindowSessionId,
   type WindowState,
-} from "../../../../headless/index.js";
-import { createWindowPresentationBinding, WindowRoot } from "./index.js";
+} from "../../../../../headless/index.js";
+import { createWindowPresentationBinding, WindowRoot } from "../index.js";
 
 /** 읽을 수 있는 테스트용 WindowSession identity를 branded public type으로 만든다. */
 const sessionId = (suffix: string) => `00000000-0000-4000-8000-${suffix}` as WindowSessionId;

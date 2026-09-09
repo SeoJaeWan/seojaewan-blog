@@ -20,7 +20,7 @@ import type {
   WindowState,
 } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
-import { TaskbarRoot } from "./taskbarRoot.js";
+import { TaskbarRoot } from "./index.js";
 
 const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** plan의 Asia/Seoul 고정 wall-clock과 같은 local Date를 반환한다. */
@@ -126,17 +126,17 @@ const RootStory = ({
               현재 검색어: <output aria-label="현재 검색어">{query || "(비어 있음)"}</output>
             </p>
             <p>
-              시작 요청: <output aria-label="Windows Action 횟수">{windowsRequestCount}</output>
+              시작 요청: <output aria-label="시작 요청 횟수">{windowsRequestCount}</output>
             </p>
             <p>
-              검색 진입: <output aria-label="Search Action 횟수">{searchRequestCount}</output>
+              검색 진입: <output aria-label="검색 진입 횟수">{searchRequestCount}</output>
             </p>
             <p>
-              앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
+              앱 요청: <output aria-label="앱 요청 횟수">{mobileActionCount}</output>
             </p>
             <p>
               마지막 앱:{" "}
-              <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
+              <output aria-label="마지막 선택한 앱">{lastMobileApplication}</output>
             </p>
           </>
         }
@@ -213,9 +213,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "desktop Windows·Search와 mobile File Explorer·Chrome Action 연결, local Timestamp를 제공한다. " +
-          "desktop Group의 실행 상태 파생·drag와 panel은 각 후속 제품 Component가 연결한다.",
+          "화면 아래에 표시되는 작업 표시줄입니다. 데스크톱에서는 시작 버튼과 검색창, 모바일에서는 파일 탐색기와 Chrome 버튼을 보여 주며 오른쪽에는 시간과 날짜가 표시됩니다. 시작·검색 패널과 데스크톱의 실행 중 앱 목록은 아직 연결하지 않았습니다.",
       },
       story: { iframeHeight: 360, inline: false },
     },
@@ -228,6 +226,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Desktop: Story = {
+  name: "데스크톱",
   parameters: {
     taskbarDescription:
       "데스크톱 구성과 입력 연결을 자동 확인합니다. 검색창에 직접 입력하면 현재 검색어가 갱신됩니다. 패널과 실행 중 앱 목록은 후속 작업입니다.",
@@ -237,15 +236,16 @@ export const Desktop: Story = {
     await verifyRootGeometry(canvasElement, "desktop");
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
+    await expect(canvas.getByRole("status", { name: "시작 요청 횟수" })).toHaveTextContent(
       "1",
     );
     await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
-    await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("1");
+    await expect(canvas.getByRole("status", { name: "검색 진입 횟수" })).toHaveTextContent("1");
   },
 };
 
 export const WindowsSelected: Story = {
+  name: "시작 버튼 · 선택 상태",
   parameters: {
     taskbarDescription:
       "시작 버튼의 지속 선택 표현입니다. 실제 시작 패널은 아직 연결하지 않았습니다.",
@@ -258,6 +258,7 @@ export const WindowsSelected: Story = {
 };
 
 export const WindowsDisabled: Story = {
+  name: "시작 버튼 · 사용 불가",
   parameters: {
     taskbarDescription:
       "시작 버튼만 사용할 수 없는 상태입니다. 검색창은 독립적으로 입력할 수 있습니다.",
@@ -266,13 +267,14 @@ export const WindowsDisabled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
+    await expect(canvas.getByRole("status", { name: "시작 요청 횟수" })).toHaveTextContent(
       "0",
     );
   },
 };
 
 export const SearchSelected: Story = {
+  name: "검색창 · 선택 상태",
   parameters: {
     taskbarDescription:
       "검색창의 외부 선택 표현입니다. 직접 입력할 수 있으며 결과 패널은 아직 연결하지 않았습니다.",
@@ -287,6 +289,7 @@ export const SearchSelected: Story = {
 };
 
 export const SearchDisabled: Story = {
+  name: "검색창 · 사용 불가",
   parameters: {
     taskbarDescription: "검색창만 입력할 수 없는 상태입니다. 시작 버튼은 사용할 수 있습니다.",
   },
@@ -294,18 +297,19 @@ export const SearchDisabled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
-    await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("0");
+    await expect(canvas.getByRole("status", { name: "검색 진입 횟수" })).toHaveTextContent("0");
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
+    await expect(canvas.getByRole("status", { name: "시작 요청 횟수" })).toHaveTextContent(
       "1",
     );
   },
 };
 
 export const Mobile: Story = {
+  name: "모바일",
   parameters: {
     taskbarDescription:
-      "파일 탐색기 → Chrome → 시간 순서입니다. 자동 입력 후 요청 횟수·대상과 포커스를 보여 줍니다. 실제 창 완료는 검증하지 않습니다.",
+      "파일 탐색기 → Chrome → 시간 순서입니다. 자동 입력 후 요청 횟수·대상과 포커스를 보여 줍니다. 이 예제에서는 실제 창을 열지 않습니다.",
   },
   render: () => <RootStory mode="mobile" />,
   play: async ({ canvasElement }) => {
@@ -315,31 +319,32 @@ export const Mobile: Story = {
     const chrome = canvas.getByRole("button", { name: "Chrome" });
 
     await userEvent.click(fileExplorer);
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("1");
     await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+      canvas.getByRole("status", { name: "마지막 선택한 앱" }),
     ).toHaveTextContent("file-explorer");
 
     await userEvent.tab();
     await expect(chrome).toHaveFocus();
     await userEvent.keyboard("{Enter}");
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("2");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("2");
     await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+      canvas.getByRole("status", { name: "마지막 선택한 앱" }),
     ).toHaveTextContent("chrome");
 
     await userEvent.tab({ shift: true });
     await expect(fileExplorer).toHaveFocus();
     await expect(getComputedStyle(fileExplorer).boxShadow).not.toBe("none");
     await userEvent.keyboard(" ");
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("3");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("3");
   },
 };
 
 export const MobileChromeActive: Story = {
+  name: "모바일 · Chrome 활성 상태",
   parameters: {
     taskbarDescription:
-      "Chrome이 활성 상태여도 입력 요청을 전달합니다. 현재 창 유지 여부는 mobile headless 정책이 결정합니다.",
+      "Chrome이 활성 상태여도 입력 요청을 전달합니다. 이 예제에서는 요청 횟수와 대상 앱을 확인하며 실제 창은 열지 않습니다.",
   },
   render: () => <RootStory activeApplication="chrome" mode="mobile" />,
   play: async ({ canvasElement }) => {
@@ -347,16 +352,17 @@ export const MobileChromeActive: Story = {
     const chrome = canvas.getByRole("button", { name: "Chrome" });
     await expect(chrome).toHaveAttribute("aria-pressed", "true");
     await userEvent.click(chrome);
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("1");
     await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
+      canvas.getByRole("status", { name: "마지막 선택한 앱" }),
     ).toHaveTextContent("chrome");
   },
 };
 
 export const NotReady: Story = {
+  name: "준비 중",
   parameters: {
-    taskbarDescription: "공통 Window 상태 준비 전에는 빈 Taskbar surface만 표시합니다.",
+    taskbarDescription: "화면 구성이 준비되기 전에는 작업 표시줄의 배경만 표시합니다.",
   },
   render: () => <RootStory />,
 };

@@ -7,7 +7,7 @@ import type {
   WindowPresentationPort,
   WindowPresentationRequest,
   WindowSessionId,
-} from "../../../../headless/windows/index.js";
+} from "../../../../../headless/windows/index.js";
 
 /** Window 제품 root가 현재 표현할 요청 또는 정리 사실을 받는 함수다. */
 export type WindowPresentationConsumer = (request: WindowPresentationRequest | null) => void;

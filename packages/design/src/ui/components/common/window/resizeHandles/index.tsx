@@ -1,7 +1,7 @@
 import type { PointerEvent } from "react";
 
-import type { WindowResizeDirection } from "../../../../headless/windows/index.js";
-import type { WindowFrameMode } from "./windowFrame.js";
+import type { WindowResizeDirection } from "../../../../../headless/windows/index.js";
+import type { WindowFrameMode } from "../frame/index.js";
 
 import "./windowResizeHandles.css";
 

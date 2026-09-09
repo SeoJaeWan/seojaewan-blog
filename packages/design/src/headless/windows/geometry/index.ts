@@ -235,8 +235,6 @@ export const constrainWindowBounds = (
 
 /**
  * 한 축의 resize 후보를 만들며 움직이지 않는 반대쪽 변과 최소 크기를 보존한다.
- *
- * workArea가 최소 크기보다 작은 경우의 최종 가용 영역 우선 처리는 `constrainWindowBounds`에 맡긴다.
  */
 const resizeAxis = (
   origin: number,
@@ -256,8 +254,8 @@ const resizeAxis = (
 /**
  * 시작 bounds와 pointer delta에서 eight-direction resize 후보를 계산한다.
  *
- * 왼쪽·위쪽 변은 반대쪽 변을 고정하고, 모든 결과는 현재 workArea와 `minSize`에 맞춰 제한된다.
- * 0 크기 workArea에서는 기존 양수 normal size 정책을 유지하며 잘못된 입력은 geometry 오류로 거부한다.
+ * 왼쪽·위쪽 변은 반대쪽 변을 고정하고 잡지 않은 변과 축은 시작 위치를 유지한다.
+ * 이미 workArea 밖에 있는 변은 resize 중 보정하지 않으며 최소 크기와 입력 유효성만 보장한다.
  */
 export const resizeWindowBounds = (
   startBounds: WindowRect,
@@ -292,16 +290,13 @@ export const resizeWindowBounds = (
     config.minSize.height,
   );
 
-  return constrainWindowBounds(
-    {
-      x: horizontal.origin,
-      y: vertical.origin,
-      width: horizontal.size,
-      height: vertical.size,
-    },
-    workArea,
-    config,
-  );
+  const resized = {
+    x: horizontal.origin,
+    y: vertical.origin,
+    width: horizontal.size,
+    height: vertical.size,
+  };
+  return validateCalculatedNormalBounds(resized);
 };
 
 /**

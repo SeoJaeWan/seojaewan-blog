@@ -7,10 +7,10 @@ import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
-import { TaskbarApplicationButton } from "./taskbarApplicationButton.js";
+import { TaskbarApplicationButton } from "./index.js";
 
 /**
- * 모드 정책과 독립적인 버튼 입력·앱 identity를 관찰한다.
+ * 모드 정책과 독립적인 버튼 입력·선택한 앱를 관찰한다.
  *
  * Window나 desktop Group 결과를 모사하지 않고 전달한 요청만 표시한다.
  */
@@ -56,7 +56,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "파일 탐색기·Chrome 아이콘과 활성 표현을 제공하는 공통 앱 버튼이다. mobile Root와 desktop Group이 각각 실행 callback을 연결한다. 버튼은 mode·창 생성·최소화·Preview 정책을 결정하지 않는다.",
+          "작업 표시줄에서 파일 탐색기와 Chrome을 선택하는 앱 버튼입니다. 아이콘 아래 표시선으로 실행 중인 앱과 현재 활성 앱을 구분합니다. 이 예제에서는 버튼의 모습과 입력을 확인하며 실제 창이나 미리보기는 열지 않습니다.",
       },
     },
   },
@@ -69,7 +69,7 @@ export const Default: Story = {
   name: "직접 눌러 보기",
   parameters: {
     taskbarDescription:
-      "클릭하거나 Tab → Enter·Space로 실행해 보세요. 아래에서 요청 횟수와 앱 identity를 확인할 수 있습니다. 실제 창은 열지 않습니다.",
+      "클릭하거나 Tab → Enter·Space로 실행해 보세요. 아래에서 요청 횟수와 선택한 앱를 확인할 수 있습니다. 실제 창은 열지 않습니다.",
   },
   render: () => <ApplicationExample />,
 };
@@ -78,7 +78,7 @@ export const Chrome: Story = {
   args: { application: { applicationId: "chrome", label: "Chrome", active: false } },
   parameters: {
     taskbarDescription:
-      "같은 버튼이 Chrome 앱의 아이콘과 접근성 이름을 표시합니다. 화면 모드를 prop으로 요구하지 않습니다.",
+      "같은 버튼이 Chrome 앱의 아이콘과 접근성 이름을 표시합니다. 아이콘의 모습과 버튼 이름을 확인할 수 있습니다.",
   },
 };
 export const Active: Story = {
@@ -127,12 +127,12 @@ export const Hover: Story = {
   },
 };
 export const ActiveHover: Story = {
-  name: "활성 앱 + 호버",
+  name: "활성 앱에 마우스를 올린 모습",
   args: { application: { applicationId: "chrome", label: "Chrome", active: true } },
   parameters: {
     pseudo: { hover: ".taskbar-application-button" },
     taskbarDescription:
-      "활성 여부와 관계없이 같은 밝은 글라스 호버 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
+      "활성 여부와 관계없이 마우스를 올리면 같은 밝은 반투명 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
   },
 };
 
@@ -141,15 +141,15 @@ export const StateComparison: Story = {
   parameters: {
     pseudo: { hover: ["#taskbar-compare-hover", "#taskbar-compare-active-hover"] },
     taskbarDescription:
-      "같은 Taskbar 배경 위에서 기본·활성·호버·활성+호버를 비교합니다. 활성은 기존 packages/ui의 글라스 배경과 표시선을, 호버는 같은 흰색 계열의 더 밝은 배경을 보여 줍니다.",
+      "같은 작업 표시줄 배경 위에서 기본 상태와 활성 상태, 각각에 마우스를 올린 모습을 비교합니다. 활성 앱은 반투명 배경과 표시선으로 구분되며, 마우스를 올리면 배경이 더 밝아집니다.",
   },
   render: () => (
     <div className="taskbar-story-comparison">
       {[
         { id: "default", label: "기본", active: false },
         { id: "active", label: "활성", active: true },
-        { id: "hover", label: "호버", active: false },
-        { id: "active-hover", label: "활성 + 호버", active: true },
+        { id: "hover", label: "마우스를 올린 상태", active: false },
+        { id: "active-hover", label: "활성 앱에 마우스를 올린 상태", active: true },
       ].map(({ id, label, active }) => (
         <div key={id}>
           <TaskbarPreview results={<span>{label}</span>}>
@@ -185,14 +185,14 @@ export const Disabled: Story = {
   args: { disabled: true },
   parameters: {
     taskbarDescription:
-      "흐리게 표시되며 입력 요청을 보내지 않습니다. Controls에서 disabled를 끄면 사용할 수 있습니다.",
+      "흐리게 표시되며 입력 요청을 보내지 않습니다. 설정 패널에서 disabled를 끄면 사용할 수 있습니다.",
   },
 };
 export const Interaction: Story = {
   name: "입력 전달 자동 확인",
   parameters: {
     taskbarDescription:
-      "Tab → Enter → Space → 클릭으로 요청 3회와 파일 탐색기 identity를 자동 확인합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
+      "Tab → Enter → Space → 클릭으로 요청 3회와 선택한 앱이 파일 탐색기인지를 자동 확인합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
   },
   render: () => <ApplicationExample />,
   play: async ({ canvasElement }) => {

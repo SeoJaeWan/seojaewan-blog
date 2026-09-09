@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { WindowControls, WindowFrame, WindowTitleBar } from "./index.js";
+import { WindowControls, WindowFrame, WindowTitleBar } from "../index.js";
 
 afterEach(() => cleanup());
 

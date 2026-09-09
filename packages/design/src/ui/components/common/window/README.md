@@ -9,6 +9,25 @@ File Explorer와 Chrome의 tab, navigation과 body는 각 제품 또는 Applicat
 `children`에 제공한다. Common Window Story의 해당 영역은 frame 비교를 위한 명시적 placeholder이며 완성된
 File Explorer·Chrome 화면이 아니다.
 
+## 구성
+
+```text
+window/
+  controls/            창 조작 버튼
+  frame/               창 테두리와 Story
+  root/                headless 상태와 Common Window 조합
+  titleBar/            제목 표시줄과 drag 영역
+  resizeHandles/       여덟 방향 크기 조절 영역
+  presentationBinding/ 표현 요청을 해당 창에 연결하는 binding
+  hooks/
+    useWindowPointerGesture/
+    useWindowPresentation/
+```
+
+각 폴더의 `index.ts(x)`가 구현 진입점입니다. 두 Hook은 pointer capture·rAF·DOM animation·focus처럼
+브라우저에 연결된 동작을 다루므로 UI에 두며, 순수 bounds 계산과 Operation 순서는 headless가
+담당합니다.
+
 ## Runtime presentation 연결
 
 새 Window는 semantic commit 직후 presentation을 요청하므로 Component mount보다 요청이 먼저 올 수 있다.
@@ -78,6 +97,9 @@ close·minimize는 다음 visible root에 focus하며 남은 창이 없으면 Ta
 
 ## 검증
 
+- 일반 Story는 처음 화면을 유지하므로 사용자가 직접 이동·최소화·복원할 수 있습니다.
+- 자동으로 창을 이동하거나 닫는 browser 시나리오는 일반 목록에서 숨긴 test 전용 Story에서 같은
+  fixture를 검증합니다.
 - `pnpm --filter @window/design exec vitest run --project ui --no-cache`
 - `pnpm --filter @window/design exec vitest run --project storybook --no-cache`
 - `pnpm --filter @window/design exec tsc --noEmit --incremental false -p tsconfig.json`

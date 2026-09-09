@@ -2,7 +2,10 @@ import type { ComponentPropsWithRef, CSSProperties, ReactNode } from "react";
 
 import { clsx } from "clsx";
 
-import { WindowResizeHandles, type WindowResizeStartHandler } from "./windowResizeHandles.js";
+import {
+  WindowResizeHandles,
+  type WindowResizeStartHandler,
+} from "../resizeHandles/index.js";
 
 import "./windowFrame.css";
 

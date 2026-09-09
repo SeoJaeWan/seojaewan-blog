@@ -1378,6 +1378,7 @@ export class WindowStore {
       kind === "move" ? "window-moved" : "window-resized",
       context,
       true,
+      kind === "resize",
     );
   }
 
@@ -1443,46 +1444,55 @@ export class WindowStore {
     kind: "window-moved" | "window-resized",
     context?: WindowStoreCommandContext,
     restoreNormalPlacement = false,
+    preserveRequestedResizeBounds = false,
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      const bounds = constrainWindowBounds(
-        update(session.frame.normalBounds),
-        state.workArea,
-        WindowStore.requirePlacementConfig(),
-      );
-      if (
-        bounds.x === session.frame.normalBounds.x &&
-        bounds.y === session.frame.normalBounds.y &&
-        bounds.width === session.frame.normalBounds.width &&
-        bounds.height === session.frame.normalBounds.height &&
-        (!restoreNormalPlacement || session.frame.placement === "normal")
-      ) {
-        return { kind: "no-op" };
-      }
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
-              ? {
-                  ...current,
-                  frame: {
-                    ...current.frame,
-                    normalBounds: bounds,
-                    placement: restoreNormalPlacement ? "normal" : current.frame.placement,
-                  },
-                }
-              : current,
-          ),
-        },
-        change: { kind, sessionId },
-      };
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        const requestedBounds = update(session.frame.normalBounds);
+        const config = WindowStore.requirePlacementConfig();
+        const constrainedBounds = constrainWindowBounds(requestedBounds, state.workArea, config);
+        if (
+          preserveRequestedResizeBounds &&
+          (requestedBounds.width < config.minSize.width ||
+            requestedBounds.height < config.minSize.height)
+        ) {
+          return WindowStore.reject("invalid-geometry");
+        }
+        const bounds = preserveRequestedResizeBounds
+          ? { ...requestedBounds }
+          : constrainedBounds;
+        if (
+          bounds.x === session.frame.normalBounds.x &&
+          bounds.y === session.frame.normalBounds.y &&
+          bounds.width === session.frame.normalBounds.width &&
+          bounds.height === session.frame.normalBounds.height &&
+          (!restoreNormalPlacement || session.frame.placement === "normal")
+        ) {
+          return { kind: "no-op" };
+        }
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
+                ? {
+                    ...current,
+                    frame: {
+                      ...current.frame,
+                      normalBounds: bounds,
+                      placement: restoreNormalPlacement ? "normal" : current.frame.placement,
+                    },
+                  }
+                : current,
+            ),
+          },
+          change: { kind, sessionId },
+        };
       },
       false,
       context,

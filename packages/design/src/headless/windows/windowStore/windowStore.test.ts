@@ -476,6 +476,30 @@ describe("WindowStore", () => {
       expect(listener).toHaveBeenCalledTimes(1);
     });
 
+    it("화면 밖 resize에서 잡지 않은 왼쪽·위쪽 위치를 보정하지 않는다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const id = WindowStore.getSnapshot().sessions[0].id;
+
+      const result = await WindowStore.applyGestureBounds(
+        id,
+        { x: -80, y: -40, width: 700, height: 620 },
+        "resize",
+      );
+
+      expect(result).toMatchObject({
+        changed: true,
+        change: { kind: "window-resized", sessionId: id },
+      });
+      expect(WindowStore.getSnapshot().sessions[0].frame.normalBounds).toEqual({
+        x: -80,
+        y: -40,
+        width: 700,
+        height: 620,
+      });
+    });
+
     it("invalid·no-op gesture frame은 snapshot과 알림을 유지한다", async () => {
       const { WindowStore, initialization } = await setup();
       await WindowStore.initialize(initialization);

@@ -20,19 +20,19 @@ import {
   type WindowPlacementConfig,
   type WindowPresentationRequest,
   type WindowSessionId,
-} from "../../../../headless/windows/index.js";
-import { useWindowPointerGesture } from "./useWindowPointerGesture.js";
+} from "../../../../../headless/windows/index.js";
+import { WindowControls } from "../controls/index.js";
+import { WindowFrame, type WindowFrameProps } from "../frame/index.js";
+import { useWindowPointerGesture } from "../hooks/useWindowPointerGesture/index.js";
 import {
   useWindowPresentation,
   type WindowMotionDestination,
-} from "./useWindowPresentation.js";
-import { WindowControls } from "./windowControls.js";
-import { WindowFrame, type WindowFrameProps } from "./windowFrame.js";
+} from "../hooks/useWindowPresentation/index.js";
 import {
   type WindowPresentationBinding,
   type WindowPresentationConsumer,
-} from "./windowPresentationBinding.js";
-import { WindowTitleBar } from "./windowTitleBar.js";
+} from "../presentationBinding/index.js";
+import { WindowTitleBar } from "../titleBar/index.js";
 
 /**
  * controller를 사용하는 Common Window 제품 root의 Session과 application slot 입력이다.

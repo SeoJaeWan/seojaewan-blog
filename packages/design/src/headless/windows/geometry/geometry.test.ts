@@ -142,7 +142,7 @@ describe("resizeWindowBounds", () => {
     expect(resized.y + resized.height).toBe(start.y + start.height);
   });
 
-  it("작거나 0인 workArea에서 기존 가용 영역 우선 정책을 유지한다", () => {
+  it("작거나 0인 workArea에서도 잡지 않은 변을 화면 안으로 보정하지 않는다", () => {
     expect(
       resizeWindowBounds(
         start,
@@ -151,7 +151,7 @@ describe("resizeWindowBounds", () => {
         { x: 10, y: 20, width: 120, height: 90 },
         config,
       ),
-    ).toEqual({ x: 10, y: 20, width: 120, height: 90 });
+    ).toEqual({ x: 200, y: 150, width: 500, height: 400 });
     expect(
       resizeWindowBounds(
         start,
@@ -160,7 +160,29 @@ describe("resizeWindowBounds", () => {
         { x: 10, y: 20, width: 0, height: 0 },
         config,
       ),
-    ).toEqual({ x: 10, y: 20, width: 500, height: 400 });
+    ).toEqual({ x: 200, y: 150, width: 500, height: 400 });
+  });
+
+  it("화면 밖에 걸친 창의 아래쪽만 늘리면 왼쪽·위쪽과 너비를 유지한다", () => {
+    const offscreen = { x: -80, y: -40, width: 400, height: 300 };
+
+    expect(resizeWindowBounds(offscreen, "s", { x: 0, y: 120 }, workArea, config)).toEqual({
+      x: -80,
+      y: -40,
+      width: 400,
+      height: 420,
+    });
+  });
+
+  it("화면 밖에 걸친 창도 잡은 변과 같은 축만 변경한다", () => {
+    const offscreen = { x: -80, y: -40, width: 400, height: 300 };
+
+    expect(resizeWindowBounds(offscreen, "se", { x: 90, y: 120 }, workArea, config)).toEqual({
+      x: -80,
+      y: -40,
+      width: 490,
+      height: 420,
+    });
   });
 
   it.each([

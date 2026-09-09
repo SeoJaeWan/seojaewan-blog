@@ -7,7 +7,7 @@ import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
-import { TaskbarSearch } from "./taskbarSearch.js";
+import { TaskbarSearch } from "./index.js";
 
 /**
  * 실제 검색어와 진입 요청을 Canvas에서 보여준다.
@@ -25,7 +25,7 @@ const SearchExample = () => {
             입력값: <output aria-label="현재 검색어">{value || "(비어 있음)"}</output>
           </p>
           <p>
-            검색 진입: <output aria-label="Search Action 횟수">{count}</output>
+            검색 진입: <output aria-label="검색 진입 횟수">{count}</output>
           </p>
         </>
       }
@@ -53,7 +53,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "작업 표시줄에서 직접 검색어를 입력하는 창이다. 클릭하거나 Tab으로 이동해 입력한다. 입력값과 진입 요청을 전달하며 결과 panel·추천·recent는 후속 Search 기능에서 연결한다.",
+          "작업 표시줄의 검색창입니다. 클릭하거나 Tab으로 이동해 검색어를 입력할 수 있습니다. 이 예제에서는 입력값과 검색 진입 횟수를 확인하며, 검색 결과·추천·최근 검색은 아직 연결하지 않았습니다.",
       },
     },
   },
@@ -124,13 +124,13 @@ export const Interaction: Story = {
   name: "입력 흐름 자동 확인",
   parameters: {
     taskbarDescription:
-      "자동으로 Tab 진입 → 입력 → 재클릭 → 내용 교체 → 삭제를 확인합니다. 검색 진입은 focus를 얻을 때 한 번 발생하며, 글자나 공백마다 열기 요청을 보내지 않습니다. 직접 조작은 ‘직접 입력해 보기’에서 시작하세요.",
+      "자동으로 Tab 진입 → 입력 → 재클릭 → 내용 교체 → 삭제를 확인합니다. 검색 진입은 포커스를 얻을 때 한 번 발생하며, 글자나 공백마다 열기 요청을 보내지 않습니다. 직접 조작은 ‘직접 입력해 보기’에서 시작하세요.",
   },
   render: () => <SearchExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox", { name: "검색" });
-    const count = canvas.getByRole("status", { name: "Search Action 횟수" });
+    const count = canvas.getByRole("status", { name: "검색 진입 횟수" });
     await expect(getComputedStyle(input, "::placeholder").opacity).toBe("1");
     await userEvent.tab();
     await expect(input).toHaveFocus();

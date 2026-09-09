@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 const Color = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-color">
     <h2 className="theme-catalog__section-title" id="theme-catalog-color">
-      Color
+      색상
     </h2>
     <div className="theme-catalog__swatch-grid">
       <div
@@ -23,7 +23,7 @@ const Color = () => (
       </div>
     </div>
     <p className="theme-catalog__text-probe" data-token-probe="text">
-      Primary text · <code>var(--wd-color-text-primary)</code>
+      기본 본문 · <code>var(--wd-color-text-primary)</code>
     </p>
   </section>
 );
@@ -31,7 +31,7 @@ const Color = () => (
 const Spacing = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-spacing">
     <h2 className="theme-catalog__section-title" id="theme-catalog-spacing">
-      Spacing
+      간격
     </h2>
     <div className="theme-catalog__spacing-list">
       <span className="theme-catalog__spacing theme-catalog__spacing--1">
@@ -50,7 +50,7 @@ const Spacing = () => (
 const Typography = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-typography">
     <h2 className="theme-catalog__section-title" id="theme-catalog-typography">
-      Typography
+      글꼴
     </h2>
     <p className="theme-catalog__type-sample" data-token-probe="typography">
       The quick brown fox · <code>var(--wd-font-family-sans)</code>
@@ -61,7 +61,7 @@ const Typography = () => (
 const Radius = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-radius">
     <h2 className="theme-catalog__section-title" id="theme-catalog-radius">
-      Radius
+      모서리 둥글기
     </h2>
     <div className="theme-catalog__sample-row">
       <span className="theme-catalog__radius theme-catalog__radius--1" data-token-probe="radius">
@@ -80,7 +80,7 @@ const Radius = () => (
 const Shadow = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-shadow">
     <h2 className="theme-catalog__section-title" id="theme-catalog-shadow">
-      Shadow
+      그림자
     </h2>
     <div className="theme-catalog__sample-row">
       <span className="theme-catalog__shadow theme-catalog__shadow--1" data-token-probe="shadow">
@@ -97,7 +97,7 @@ const Motion = () => (
   <>
     <section className="theme-catalog__section" aria-labelledby="theme-catalog-duration">
       <h2 className="theme-catalog__section-title" id="theme-catalog-duration">
-        Duration
+        애니메이션 시간
       </h2>
       <div className="theme-catalog__sample-row">
         <span className="theme-catalog__motion theme-catalog__motion--quick">
@@ -116,7 +116,7 @@ const Motion = () => (
     </section>
     <section className="theme-catalog__section" aria-labelledby="theme-catalog-easing">
       <h2 className="theme-catalog__section-title" id="theme-catalog-easing">
-        Easing
+        애니메이션 속도 변화
       </h2>
       <div className="theme-catalog__sample-row">
         <span className="theme-catalog__motion theme-catalog__motion--ease">
@@ -136,14 +136,14 @@ const Motion = () => (
 const Components = () => (
   <section className="theme-catalog__section" aria-labelledby="theme-catalog-components">
     <h2 className="theme-catalog__section-title" id="theme-catalog-components">
-      Component namespaces
+      구성 요소별 스타일
     </h2>
     <div className="theme-catalog__component-grid">
       <article
         className="theme-catalog__component theme-catalog__component--window-frame"
         data-token-probe="window-frame"
       >
-        <header className="theme-catalog__window-titlebar">Window Frame</header>
+        <header className="theme-catalog__window-titlebar">창 테두리</header>
         <p className="theme-catalog__component-copy">
           <code>var(--wd-window-frame-root-background-color)</code>
         </p>
@@ -152,14 +152,14 @@ const Components = () => (
         className="theme-catalog__component theme-catalog__component--taskbar"
         data-token-probe="taskbar"
       >
-        <strong>Taskbar</strong>
+        <strong>작업 표시줄</strong>
         <code>var(--wd-taskbar-root-background-color)</code>
       </article>
       <article
         className="theme-catalog__component theme-catalog__component--window-panel"
         data-token-probe="window-panel"
       >
-        <strong>Window Panel</strong>
+        <strong>창 패널</strong>
         <code>var(--wd-window-panel-root-background-color)</code>
       </article>
     </div>
@@ -169,10 +169,10 @@ const Components = () => (
 const ThemeCatalog = () => (
   <main className="theme-catalog">
     <header className="theme-catalog__header">
-      <p className="theme-catalog__eyebrow">Foundations</p>
-      <h1 className="theme-catalog__title">Theme Catalog</h1>
+      <p className="theme-catalog__eyebrow">기본 스타일</p>
+      <h1 className="theme-catalog__title">테마 모음</h1>
       <p className="theme-catalog__intro">
-        The single default theme exposed by the design package.
+        기본 테마의 색상, 간격, 글꼴과 움직임을 한눈에 비교합니다.
       </p>
     </header>
     <div className="theme-catalog__grid">
@@ -200,4 +200,4 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = { name: "기본 테마" };

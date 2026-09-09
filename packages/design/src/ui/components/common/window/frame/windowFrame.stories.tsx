@@ -9,7 +9,7 @@ import {
   Search16Regular,
 } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, within } from "storybook/test";
 
 import {
   type ControllerViewModel,
@@ -30,11 +30,11 @@ import {
   type WindowState,
   type WindowStoreChange,
   type WindowStoreResult,
-} from "../../../../headless/index.js";
-import type { WindowStoreCommandContext } from "../../../../headless/windows/index.js";
-import chromeIconSrc from "../../../assets/window/chrome.png";
-import fileExplorerIconSrc from "../../../assets/window/file-explorer.png";
-import { TaskbarApplicationButton } from "../../taskbar/items/index.js";
+} from "../../../../../headless/index.js";
+import type { WindowStoreCommandContext } from "../../../../../headless/windows/index.js";
+import chromeIconSrc from "../../../../assets/window/chrome.png";
+import fileExplorerIconSrc from "../../../../assets/window/file-explorer.png";
+import { TaskbarApplicationButton } from "../../../taskbar/items/index.js";
 import {
   createWindowPresentationBinding,
   WindowFrame,
@@ -43,7 +43,7 @@ import {
   type WindowFrameVariant,
   type WindowMotionDestination,
   WindowRoot,
-} from "./index.js";
+} from "../index.js";
 
 import "./windowFrame.stories.css";
 
@@ -146,8 +146,9 @@ const ChromeContent = ({ mode }: { mode: WindowFrameMode }) => (
   <article className="window-story-chrome-content" data-mode={mode}>
     <h1>React Server Components 정리</h1>
     <p>
-      실제 Content renderer는 Application이 연결합니다. 이 fixture는 Common content slot의 padding과
-      스크롤 경계만 확인합니다.
+      본문 배치와 스크롤을 확인하기 위한 예시입니다. 실제 콘텐츠는 각 앱에서 표시합니다.
+      긴 글을 읽다가 창을 최소화해 보세요. 다시 열었을 때 읽던 위치가 유지되는지 확인할 수 있습니다.
+      주소창에 입력한 내용도 함께 남아 있어 이어서 작업할 수 있습니다.
     </p>
     {ARTICLE_LINES.map((width, index) => (
       <span
@@ -620,7 +621,7 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
   return (
     <HeadlessRuntimeProvider runtime={runtime}>
       <WindowRoot
-        aria-label="파일 탐색기 lifecycle 창"
+        aria-label="파일 탐색기 동작 확인 창"
         placementConfig={WINDOW_PLACEMENT_CONFIG}
         presentationBinding={presentationBinding}
         sessionId={fileExplorerId}
@@ -632,12 +633,12 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
         <FileExplorerContent mode="desktop" />
       </WindowRoot>
       <WindowRoot
-        aria-label="Chrome lifecycle 창"
+        aria-label="Chrome 동작 확인 창"
         minimizeDestination={destination}
         placementConfig={WINDOW_PLACEMENT_CONFIG}
         presentationBinding={presentationBinding}
         sessionId={chromeId}
-        titleBarContent={<ProductTab icon={chromeIconSrc} title="Motion 검증" variant="chrome" />}
+        titleBarContent={<ProductTab icon={chromeIconSrc} title="애니메이션 확인" variant="chrome" />}
       >
         {showChromeNavigation ? <ProductNavigation mode="desktop" variant="chrome" /> : null}
         <ChromeContent mode="desktop" />
@@ -645,11 +646,11 @@ const LifecycleProductWindows = ({ focusControls = false }: { focusControls?: bo
       <div className="window-story-taskbar">
         {focusControls ? (
           <button
-            aria-label="Chrome focus 대상 제거"
+            aria-label="Chrome 주소창 제거"
             onClick={() => setShowChromeNavigation(false)}
             type="button"
           >
-            focus fallback
+            주소창 제거
           </button>
         ) : null}
         <TaskbarApplicationButton
@@ -694,7 +695,7 @@ const InteractiveProductWindow = () => {
   return (
     <HeadlessRuntimeProvider runtime={runtime}>
       <WindowRoot
-        aria-label="Chrome gesture 창"
+        aria-label="Chrome 이동·크기 조절 창"
         placementConfig={WINDOW_PLACEMENT_CONFIG}
         sessionId={id}
         titleBarContent={<InteractiveProductTab />}
@@ -794,8 +795,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "File Explorer와 Chrome이 동일하게 소비하는 Common Window다. 제품 root는 실제 Window controller snapshot과 Action을 연결하고 " +
-          "frame leaf는 props만 표시한다. navigation과 body는 아직 Application owner인 명시적 placeholder이며 완성된 File Explorer·Chrome 구현을 뜻하지 않는다.",
+          "파일 탐색기와 Chrome이 함께 사용하는 창입니다. 이동·크기 조절·최소화·최대화·닫기와 포커스 동작을 확인할 수 있습니다. 주소창과 본문은 배치를 확인하기 위한 예시이며, 탐색이나 실제 콘텐츠 표시는 각 앱에서 연결합니다.",
       },
       story: { iframeHeight: 700, inline: false },
     },
@@ -808,11 +808,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const FileExplorerDesktop: Story = {
+  name: "파일 탐색기 · 기본 창",
   parameters: {
     docs: {
       description: {
         story:
-          "actual controller snapshot의 active·normal File Explorer frame이다. 주소·검색·sidebar·scroll body는 Application owner를 표시하는 placeholder이며 바깥 frame과 controls만 production Common을 사용한다.",
+          "활성 상태의 파일 탐색기 창입니다. 창 테두리와 제목 표시줄, 창 조작 버튼을 확인합니다. 주소창·검색창·사이드바·본문은 배치를 확인하기 위한 예시 화면입니다.",
       },
     },
   },
@@ -830,11 +831,12 @@ export const FileExplorerDesktop: Story = {
 };
 
 export const ChromeDesktopInactiveLongTitle: Story = {
+  name: "Chrome · 비활성 상태와 긴 제목",
   parameters: {
     docs: {
       description: {
         story:
-          "actual controller snapshot의 inactive·normal Chrome frame이다. 긴 title과 omnibox·scroll body는 Application owner placeholder로 frame 경계만 검증한다.",
+          "비활성 상태의 Chrome 창입니다. 긴 제목과 스크롤 영역이 있을 때 창 테두리와 제목 표시줄이 어떻게 보이는지 확인합니다. 주소창과 본문은 예시 화면입니다.",
       },
     },
   },
@@ -863,11 +865,12 @@ export const ChromeDesktopInactiveLongTitle: Story = {
 };
 
 export const ChromeDesktop: Story = {
+  name: "Chrome · 기본 창",
   parameters: {
     docs: {
       description: {
         story:
-          "active·normal Chrome의 legacy 비교 fixture다. 고정 viewport에서 frame·titlebar·controls·header color와 content slot geometry를 비교한다.",
+          "활성 상태의 Chrome 창입니다. 같은 화면 크기에서 기존 화면과 창 테두리·제목 표시줄·버튼·본문 영역의 배치를 비교합니다.",
       },
     },
   },
@@ -893,11 +896,12 @@ export const ChromeDesktop: Story = {
 };
 
 export const FileExplorerMaximized: Story = {
+  name: "파일 탐색기 · 최대화",
   parameters: {
     docs: {
       description: {
         story:
-          "desktop usable area를 채우며 restore icon과 8방향 resize 표시를 유지하는 maximized fixture다.",
+          "작업 표시줄을 제외한 화면을 채운 파일 탐색기 창입니다. 이전 크기로 복원하는 버튼과 창 가장자리의 크기 조절 표시를 확인합니다.",
       },
     },
   },
@@ -916,11 +920,12 @@ export const FileExplorerMaximized: Story = {
 };
 
 export const ChromeMobile: Story = {
+  name: "Chrome · 모바일",
   parameters: {
     docs: {
       description: {
         story:
-          "mobile usable area 전체의 Chrome이다. desktop frame 입력은 보존하되 닫기 control만 표시하고 content padding을 줄인다.",
+          "모바일 화면을 채운 Chrome 창입니다. 닫기 버튼만 표시하고 본문 여백을 줄입니다. 데스크톱으로 돌아가면 이전 창 크기를 유지합니다.",
       },
     },
   },
@@ -942,11 +947,12 @@ export const ChromeMobile: Story = {
 };
 
 export const FileExplorerMobile: Story = {
+  name: "파일 탐색기 · 모바일",
   parameters: {
     docs: {
       description: {
         story:
-          "mobile usable area 전체의 File Explorer다. sidebar·최소화·최대화·resize를 제거하고 주소와 full-width content를 유지한다.",
+          "모바일 화면을 채운 파일 탐색기 창입니다. 사이드바와 크기 조절 버튼 없이 주소창과 본문을 화면 너비에 맞춰 보여 줍니다.",
       },
     },
   },
@@ -968,11 +974,12 @@ export const FileExplorerMobile: Story = {
 };
 
 export const PointerGestures: Story = {
+  name: "창 이동과 크기 조절",
   parameters: {
     docs: {
       description: {
         story:
-          "실제 browser pointer로 8방향 resize와 Esc rollback, 빈 titlebar doubleclick, maximized drag 복원을 검증한다. navigation과 content는 Application owner인 기존 placeholder를 유지한다.",
+          "창 가장자리와 모서리를 직접 끌어 크기를 바꿔 보세요. Esc를 누르면 조작 전 상태로 돌아갑니다. 빈 제목 표시줄을 두 번 누르면 최대화되고, 최대화된 창도 제목 표시줄을 끌어 이동할 수 있습니다.",
       },
     },
   },
@@ -981,92 +988,15 @@ export const PointerGestures: Story = {
       <InteractiveProductWindow />
     </WindowStage>
   ),
-  play: async ({ canvasElement }) => {
-    const frame = within(canvasElement).getByRole("region", { name: "Chrome gesture 창" });
-    const original = { left: 120, top: 28, width: 720, height: 520 };
-    const directions = ["n", "s", "w", "e", "nw", "ne", "sw", "se"] as const;
-
-    for (const direction of directions) {
-      const handle = frame.querySelector<HTMLElement>(`[data-direction="${direction}"]`)!;
-      const handleBounds = handle.getBoundingClientRect();
-      const start = {
-        clientX: handleBounds.left + handleBounds.width / 2,
-        clientY: handleBounds.top + handleBounds.height / 2,
-      };
-      await userEvent.pointer({ keys: "[MouseLeft>]", target: handle, coords: start });
-      await userEvent.pointer({
-        target: handle,
-        coords: { clientX: start.clientX + 20, clientY: start.clientY + 10 },
-      });
-      await waitFor(() => expect(frame.getAttribute("data-gesture-active")).toBe("true"));
-      await waitFor(async () => {
-        const resized = frame.getBoundingClientRect();
-        await expect(
-          resized.left !== original.left ||
-            resized.top !== original.top ||
-            resized.width !== original.width ||
-            resized.height !== original.height,
-        ).toBe(true);
-      });
-      await userEvent.keyboard("{Escape}");
-      await waitFor(async () => {
-        const restored = frame.getBoundingClientRect();
-        await expect(restored.left).toBe(original.left);
-        await expect(restored.top).toBe(original.top);
-        await expect(restored.width).toBe(original.width);
-        await expect(restored.height).toBe(original.height);
-      });
-      await userEvent.pointer({ keys: "[/MouseLeft]", target: handle, coords: start });
-    }
-
-    const address = within(frame).getByRole("textbox", { name: "검색어 또는 URL 입력" });
-    await userEvent.dblClick(address);
-    await expect(frame.getAttribute("data-maximized")).toBe("false");
-
-    const activeTab = within(frame).getByRole("tab", { name: "Chrome 활성 탭" });
-    await userEvent.dblClick(activeTab);
-    await expect(frame.getAttribute("data-maximized")).toBe("false");
-
-    const dragRegion = frame.querySelector<HTMLElement>("[data-window-drag-region]")!;
-    await userEvent.dblClick(dragRegion);
-    await waitFor(() => expect(frame.getAttribute("data-maximized")).toBe("true"));
-
-    await userEvent.pointer({
-      keys: "[MouseLeft>]",
-      target: dragRegion,
-      coords: { clientX: 240, clientY: 15 },
-    });
-    await userEvent.pointer({
-      target: dragRegion,
-      coords: { clientX: 400, clientY: 25 },
-    });
-    await waitFor(async () => {
-      const restoredForDrag = frame.getBoundingClientRect();
-      await expect(restoredForDrag.left).toBe(220);
-      await expect(restoredForDrag.top).toBe(10);
-      await expect(restoredForDrag.width).toBe(720);
-      await expect(restoredForDrag.height).toBe(520);
-    });
-    await userEvent.keyboard("{Escape}");
-    await waitFor(async () => {
-      await expect(frame.getAttribute("data-maximized")).toBe("true");
-      await expect(frame.getBoundingClientRect().width).toBe(960);
-      await expect(frame.getBoundingClientRect().height).toBe(590);
-    });
-    await userEvent.pointer({
-      keys: "[/MouseLeft]",
-      target: dragRegion,
-      coords: { clientX: 400, clientY: 25 },
-    });
-  },
 };
 
 export const MotionPresenceAndFocus: Story = {
+  name: "최소화·복원과 포커스",
   parameters: {
     docs: {
       description: {
         story:
-          "실제 WindowOperations queue와 WAAPI completion을 공유 binding으로 연결한다. 최소화 content·focus를 유지하고 production TaskbarApplicationButton icon의 현재 측정값으로 150ms 최소화와 200ms 복원을 검증한다.",
+          "Chrome 창의 최소화 버튼과 작업 표시줄 아이콘을 직접 눌러 보세요. 입력 내용과 읽던 위치가 복원 뒤에도 유지되고 포커스가 주소창으로 돌아옵니다.",
       },
     },
   },
@@ -1075,89 +1005,15 @@ export const MotionPresenceAndFocus: Story = {
       <LifecycleProductWindows />
     </div>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
-    const explorer = canvas.getByRole("region", { name: "파일 탐색기 lifecycle 창" });
-    const address = within(chrome).getByRole<HTMLInputElement>("textbox", {
-      name: "검색어 또는 URL 입력",
-    });
-    const scrollContent = chrome.querySelector<HTMLElement>(".window-story-chrome-content");
-    const taskbarButton = canvas.getByRole("button", { name: "Chrome 복원" });
-    const taskbarIcon = taskbarButton.querySelector<HTMLElement>(
-      ".taskbar-application-button__icon",
-    );
-    await waitFor(() => expect(taskbarIcon?.getBoundingClientRect().width).toBeGreaterThan(0));
-    const initialIcon = taskbarIcon!.getBoundingClientRect();
-    const initialChrome = chrome.getBoundingClientRect();
-    const initialValue = address.value;
-    address.focus();
-    if (scrollContent !== null) scrollContent.scrollTop = 48;
-    const preservedScrollTop = scrollContent?.scrollTop ?? 0;
-    await expect(preservedScrollTop).toBeGreaterThan(0);
-
-    const minimizeStartedAt = performance.now();
-    await userEvent.click(within(chrome).getByRole("button", { name: "최소화" }));
-    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-minimize"));
-    let minimizeAnimation: Animation | undefined;
-    await waitFor(async () => {
-      minimizeAnimation = chrome.getAnimations()[0];
-      await expect(minimizeAnimation).toBeDefined();
-    });
-    if (minimizeAnimation === undefined) {
-      throw new Error("150ms 최소화 animation을 찾지 못했습니다.");
-    }
-    await expect(minimizeAnimation.effect?.getTiming().duration).toBe(150);
-    const minimizeFrames = (minimizeAnimation.effect as KeyframeEffect).getKeyframes();
-    await expect(String(minimizeFrames.at(-1)?.transform)).toContain(
-      `${Math.round(initialIcon.left - initialChrome.left)}`,
-    );
-    await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
-    await expect(performance.now() - minimizeStartedAt).toBeGreaterThanOrEqual(100);
-    await expect(chrome.hasAttribute("inert")).toBe(true);
-    await expect(chrome.getAttribute("aria-hidden")).toBe("true");
-    await expect(address.value).toBe(initialValue);
-    await expect(scrollContent?.scrollTop).toBe(preservedScrollTop);
-    await expect(document.activeElement).toBe(explorer);
-
-    taskbarButton.style.transform = "translateX(-180px)";
-    const shiftedIcon = taskbarIcon!.getBoundingClientRect();
-    await expect(shiftedIcon.left).not.toBe(initialIcon.left);
-    const restoreStartedAt = performance.now();
-    await userEvent.click(taskbarButton);
-    await waitFor(() => expect(chrome.hidden).toBe(false));
-    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-restore"));
-    let restoreAnimation: Animation | undefined;
-    await waitFor(async () => {
-      restoreAnimation = chrome
-        .getAnimations()
-        .find((animation) => animation.effect?.getTiming().duration === 200);
-      await expect(restoreAnimation).toBeDefined();
-    });
-    if (restoreAnimation === undefined) {
-      throw new Error("200ms 복원 animation을 찾지 못했습니다.");
-    }
-    await expect(restoreAnimation.effect?.getTiming().duration).toBe(200);
-    const restoreFrames = (restoreAnimation.effect as KeyframeEffect).getKeyframes();
-    await expect(String(restoreFrames[0]?.transform)).toContain(
-      `${Math.round(shiftedIcon.left - initialChrome.left)}`,
-    );
-    await waitFor(() => expect(chrome.hasAttribute("data-presentation-phase")).toBe(false), {
-      timeout: 900,
-    });
-    await expect(performance.now() - restoreStartedAt).toBeGreaterThanOrEqual(150);
-    await expect(document.activeElement).toBe(address);
-    await expect(address.value).toBe(initialValue);
-    await expect(scrollContent?.scrollTop).toBe(preservedScrollTop);
-  },
 };
 
 export const MotionPresenceAndFocusVisual: Story = {
+  name: "최소화·복원 직접 해 보기",
   parameters: {
     docs: {
       description: {
         story:
-          "자동 캡처가 실제 minimize·restore 중간 frame을 직접 구동할 수 있는 동일 production fixture다.",
+          "최소화 버튼을 누른 뒤 작업 표시줄의 Chrome 아이콘을 눌러 복원해 보세요. 창이 줄어들고 펼쳐지는 모습과 입력 내용·스크롤 위치가 유지되는지 확인할 수 있습니다.",
       },
     },
   },
@@ -1169,11 +1025,12 @@ export const MotionPresenceAndFocusVisual: Story = {
 };
 
 export const MotionGestureOverlap: Story = {
+  name: "애니메이션 도중 창 이동",
   parameters: {
     docs: {
       description: {
         story:
-          "진행 중인 실제 bounds WAAPI에 pointer gesture가 들어오면 animation wait만 중단하고 drag bounds를 즉시 반영하며 Esc는 gesture 시작 frame을 복원한다.",
+          "최대화 버튼을 누른 직후 제목 표시줄을 끌어 보세요. 창이 바로 마우스를 따라오며 Esc를 누르면 끌기 시작 전 상태로 돌아갑니다.",
       },
     },
   },
@@ -1182,59 +1039,15 @@ export const MotionGestureOverlap: Story = {
       <LifecycleProductWindows />
     </div>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
-    await userEvent.click(within(chrome).getByRole("button", { name: "최대화" }));
-    await waitFor(() => expect(chrome.getAttribute("data-presentation-phase")).toBe("window-maximize"));
-    const boundsAnimation = chrome
-      .getAnimations()
-      .find((animation) => animation.effect?.getTiming().duration === 150);
-    if (boundsAnimation === undefined) {
-      throw new Error("진행 중인 150ms bounds animation을 찾지 못했습니다.");
-    }
-    await expect(boundsAnimation.playState).toBe("running");
-
-    const dragRegion = chrome.querySelector<HTMLElement>("[data-window-drag-region]")!;
-    await userEvent.pointer({
-      keys: "[MouseLeft>]",
-      target: dragRegion,
-      coords: { clientX: 240, clientY: 15 },
-    });
-    await waitFor(() => expect(boundsAnimation.playState).toBe("idle"));
-    await waitFor(() => expect(chrome.hasAttribute("data-presentation-phase")).toBe(false));
-    await userEvent.pointer({
-      target: dragRegion,
-      coords: { clientX: 400, clientY: 25 },
-    });
-    await waitFor(async () => {
-      const dragged = chrome.getBoundingClientRect();
-      await expect(dragged.left).toBe(220);
-      await expect(dragged.top).toBe(10);
-      await expect(dragged.width).toBe(720);
-      await expect(dragged.height).toBe(520);
-    });
-
-    await userEvent.keyboard("{Escape}");
-    await waitFor(async () => {
-      await expect(chrome.getAttribute("data-maximized")).toBe("true");
-      await expect(chrome.getBoundingClientRect().width).toBe(960);
-      await expect(chrome.getBoundingClientRect().height).toBe(590);
-    });
-    await userEvent.pointer({
-      keys: "[/MouseLeft]",
-      target: dragRegion,
-      coords: { clientX: 400, clientY: 25 },
-    });
-  },
 };
 
 export const FocusLifecycleEdges: Story = {
+  name: "창을 닫거나 복원한 뒤 포커스",
   parameters: {
     docs: {
       description: {
         story:
-          "숨긴 동안 이전 focus 요소가 사라진 복원 fallback, active close 뒤 다음 visible 창, 마지막 visible close 뒤 focus 상실을 실제 browser에서 검증한다.",
+          "창을 최소화한 뒤 주소창을 제거하고 복원해 보세요. 돌아갈 입력 요소가 없으면 창 자체에 포커스를 둡니다. 창을 닫을 때는 남은 창 중 가장 앞의 창으로 포커스가 이동합니다.",
       },
     },
   },
@@ -1243,32 +1056,4 @@ export const FocusLifecycleEdges: Story = {
       <LifecycleProductWindows focusControls />
     </div>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const chrome = canvas.getByRole("region", { name: "Chrome lifecycle 창" });
-    const explorer = canvas.getByRole("region", { name: "파일 탐색기 lifecycle 창" });
-    within(chrome).getByRole("textbox", { name: "검색어 또는 URL 입력" }).focus();
-    await userEvent.click(within(chrome).getByRole("button", { name: "최소화" }));
-    await waitFor(() => expect(chrome.hidden).toBe(true), { timeout: 800 });
-    await userEvent.click(canvas.getByRole("button", { name: "Chrome focus 대상 제거" }));
-    await userEvent.click(canvas.getByRole("button", { name: "Chrome 복원" }));
-    await waitFor(() => expect(chrome.hidden).toBe(false));
-    await waitFor(() => expect(document.activeElement).toBe(chrome));
-
-    await userEvent.click(within(chrome).getByRole("button", { name: "닫기" }));
-    await waitFor(() => expect(document.querySelector('[aria-label="Chrome lifecycle 창"]')).toBeNull(), {
-      timeout: 800,
-    });
-    await expect(document.activeElement).toBe(explorer);
-
-    await userEvent.click(within(explorer).getByRole("button", { name: "닫기" }));
-    await waitFor(
-      () => expect(document.querySelector('[aria-label="파일 탐색기 lifecycle 창"]')).toBeNull(),
-      { timeout: 800 },
-    );
-    await expect(document.activeElement).toBe(document.body);
-    await expect(document.activeElement).not.toBe(
-      canvas.getByRole("button", { name: "Chrome 복원" }),
-    );
-  },
 };

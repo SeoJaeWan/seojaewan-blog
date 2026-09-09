@@ -12,7 +12,7 @@ import type {
 } from "../../../../headless/index.js";
 import type { TaskbarApplicationId } from "../../../../headless/index.js";
 import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
-import { TaskbarRoot, type TaskbarRootProps } from "./taskbarRoot.js";
+import { TaskbarRoot, type TaskbarRootProps } from "./index.js";
 
 const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** Root fixture의 고정 local Date를 반환한다. */

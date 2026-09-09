@@ -16,7 +16,7 @@ import {
 import type {
   WindowControllerActions,
   WindowPresentationRequest,
-} from "../../../../headless/windows/index.js";
+} from "../../../../../../headless/windows/index.js";
 
 /**
  * Taskbar application icon에서 측정한 viewport px destination이다.

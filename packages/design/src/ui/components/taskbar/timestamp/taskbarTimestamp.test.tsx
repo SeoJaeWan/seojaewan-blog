@@ -9,7 +9,7 @@ import type {
   TaskbarTimestampTimer,
 } from "../../../../headless/taskbar/index.js";
 import { useTaskbarTimestampController } from "../../../../headless/taskbar/index.js";
-import { TaskbarTimestamp } from "./taskbarTimestamp.js";
+import { TaskbarTimestamp } from "./index.js";
 
 const HYDRATION_CLOCK: TaskbarTimestampClock = Object.freeze({
   /** hydration fixture의 고정 local Date를 반환한다. */
