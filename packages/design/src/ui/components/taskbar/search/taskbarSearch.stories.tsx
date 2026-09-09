@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
@@ -7,7 +7,32 @@ import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
+import {
+  createHeadlessRuntime,
+  type HeadlessRuntimeAdapters,
+  HeadlessRuntimeProvider,
+  type WindowState,
+} from "../../../../headless/index.js";
+import { useTaskbarPanelsConnection } from "../panels/connection/index.js";
 import { TaskbarSearch } from "./taskbarSearch.js";
+import { TaskbarSearchPanel } from "./taskbarSearchPanel.js";
+
+const desktopSnapshot = Object.freeze({
+  mode: "desktop",
+  workArea: Object.freeze({ x: 0, y: 0, width: 1280, height: 720 }),
+  sessions: Object.freeze([]),
+  stackingOrder: Object.freeze([]),
+  activeSessionId: null,
+}) satisfies WindowState;
+
+/** Story마다 독립된 desktop primary panel runtime을 만든다. */
+const createSearchRuntime = () => {
+  const windows = {
+    getSnapshot: () => desktopSnapshot,
+    subscribe: () => () => undefined,
+  } as unknown as NonNullable<HeadlessRuntimeAdapters["windows"]>;
+  return createHeadlessRuntime({ adapters: { windows } });
+};
 
 /**
  * 실제 검색어와 진입 요청을 Canvas에서 보여준다.
@@ -39,6 +64,66 @@ const SearchExample = () => {
   );
 };
 
+/** 실제 connection과 Search input·panel을 조합해 lifecycle 결과를 보여준다. */
+const ConnectedSearchExample = () => {
+  const connection = useTaskbarPanelsConnection();
+
+  return (
+    <div
+      lang="ko-KR"
+      style={{
+        background: "linear-gradient(135deg, #c9def4, #eef4f8)",
+        minHeight: "100vh",
+      }}
+    >
+      <button style={{ left: 16, position: "fixed", top: 16 }} type="button">
+        패널 밖
+      </button>
+      <div
+        aria-label="Search 연결 상태"
+        role="status"
+        style={{ position: "fixed", right: 16, top: 16 }}
+      >
+        <span>Panel: {connection.search.widget.open ? "열림" : "닫힘"}; </span>
+        <span>
+          입력값:{" "}
+          <output aria-label="연결된 검색어">{connection.search.query || "(비어 있음)"}</output>
+        </span>
+      </div>
+      <nav
+        aria-label="작업 표시줄"
+        style={{
+          alignItems: "center",
+          backdropFilter: "blur(18px)",
+          background: "rgb(255 255 255 / 80%)",
+          bottom: 0,
+          display: "flex",
+          height: 50,
+          justifyContent: "center",
+          left: 0,
+          position: "fixed",
+          right: 0,
+          zIndex: 2147483647,
+        }}
+      >
+        <TaskbarSearchPanel connection={connection.search}>
+          <p>검색 결과·recent·detail은 HDJG-46·47의 제품 view가 제공합니다.</p>
+        </TaskbarSearchPanel>
+      </nav>
+    </div>
+  );
+};
+
+/** 독립 runtime을 Provider에 한 번 고정해 실제 제품 연결 Story를 렌더링한다. */
+const ConnectedSearchStory = () => {
+  const runtime = useMemo(() => createSearchRuntime(), []);
+  return (
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <ConnectedSearchExample />
+    </HeadlessRuntimeProvider>
+  );
+};
+
 const meta = {
   title: "Design/Components/Taskbar/Search",
   component: TaskbarSearch,
@@ -53,7 +138,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "작업 표시줄에서 직접 검색어를 입력하는 창이다. 클릭하거나 Tab으로 이동해 입력한다. 입력값과 진입 요청을 전달하며 결과 panel·추천·recent는 후속 Search 기능에서 연결한다.",
+          "작업 표시줄에서 직접 검색어를 입력하는 창이다. 제품 조합에서는 같은 input이 panel trigger로 유지되고 headless query·open lifecycle에 연결된다. 검색 결과·추천·recent·detail 본문은 후속 Search 제품 view가 제공한다.",
       },
     },
   },
@@ -156,5 +241,56 @@ export const Interaction: Story = {
     await userEvent.click(input);
     await waitFor(() => expect(getComputedStyle(icon, "::after").opacity).toBe("1"));
     await expect(count).toHaveTextContent("2");
+  },
+};
+
+export const ConnectedPanelLifecycle: Story = {
+  name: "Search panel 연결 자동 확인",
+  parameters: {
+    docs: { story: { iframeHeight: 700, inline: false } },
+    layout: "fullscreen",
+    taskbarDescription:
+      "실제 Taskbar input 하나로 panel을 열고 한글·공백 입력과 재클릭 focus 유지, Escape blur·focus 미복원, close 완료 뒤 query 초기화를 확인합니다. 패널 본문은 후속 작업의 소유 경계를 표시합니다.",
+  },
+  render: () => <ConnectedSearchStory />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const page = within(document.body);
+    const input = canvas.getByRole("textbox", { name: "검색" });
+
+    await userEvent.click(input);
+    await expect(input).toHaveFocus();
+    const panel = await page.findByRole("dialog", { name: "검색" });
+    await waitFor(() => expect(panel).toBeVisible());
+    await expect(page.getAllByRole("textbox", { name: "검색" })).toHaveLength(1);
+
+    await userEvent.paste("한글  검색 ");
+    await expect(input).toHaveValue("한글  검색 ");
+    const query = canvas.getByRole("status", { name: "연결된 검색어" });
+    await expect(query.textContent).toBe("한글  검색 ");
+    await userEvent.click(input);
+    await expect(input).toHaveFocus();
+    await waitFor(() => expect(panel).toBeVisible());
+
+    await userEvent.keyboard("{Escape}");
+    await expect(input).not.toHaveFocus();
+    await waitFor(() => expect(panel).toHaveAttribute("aria-hidden", "true"));
+    await expect(panel).toHaveAttribute("inert");
+    await expect(query.textContent).toBe("한글  검색 ");
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
+    await expect(input).not.toHaveFocus();
+    await expect(input).toHaveValue("");
+    await expect(query.textContent).toBe("(비어 있음)");
+
+    await userEvent.click(input);
+    const reopenedPanel = await page.findByRole("dialog", { name: "검색" });
+    await waitFor(() => expect(reopenedPanel).toBeVisible());
+    await userEvent.paste("외부 dismiss");
+    await userEvent.click(reopenedPanel);
+    await expect(input).toHaveAttribute("aria-expanded", "true");
+    await userEvent.click(canvas.getByRole("button", { name: "패널 밖" }));
+    await waitFor(() => expect(reopenedPanel).toHaveAttribute("aria-hidden", "true"));
+    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
+    await expect(input).toHaveValue("");
   },
 };

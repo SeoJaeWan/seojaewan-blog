@@ -4,7 +4,7 @@
  * viewport 판정, Taskbar Pin 상태와 실제 DOM 배치는 이 요소가 소유하지 않는다.
  */
 import type { WindowMode, WindowState } from "../../../windows/index.js";
-import type { TaskbarRootActionGateway } from "../../actions/rootAction/index.js";
+import type { TaskbarRootAction } from "../../actions/rootAction/index.js";
 import type { TaskbarApplicationId } from "../../model/index.js";
 import {
   type MobileTaskbarView,
@@ -26,8 +26,8 @@ export type TaskbarRootViewModel =
 
 /** Taskbar Root 입력을 각 기존 제품 실행 경계로 전달하는 controller Action이다. */
 export type TaskbarRootControllerActions = Readonly<{
-  /** Windows·Search trigger의 구분된 제품 Action을 panel 소유자에게 전달한다. */
-  execute: TaskbarRootActionGateway["execute"];
+  /** Windows·Search Root Action을 같은 identity의 primary panel Operation으로 전달한다. */
+  execute(action: TaskbarRootAction): void;
   /** mobile application intent를 기존 Window Operation에 전달하고 UI에서 결과를 재판정하지 않는다. */
   launchMobileApplication(applicationId: TaskbarApplicationId): void;
 }>;

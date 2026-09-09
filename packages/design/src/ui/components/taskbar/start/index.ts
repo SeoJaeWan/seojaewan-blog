@@ -1,6 +1,11 @@
 /**
- * @file Windows logo를 가진 Taskbar 시작 버튼의 public surface를 제공한다.
+ * @file Windows logo leaf button과 실제 Start panel 제품 조합의 family surface를 제공한다.
  *
- * panel 상태와 Root Action 연결은 각각 후속 panel과 Taskbar Root가 소유한다.
+ * active identity와 query 전이는 외부 primary panel connection이 소유한다.
  */
+export {
+  TaskbarStart,
+  type TaskbarStartProps,
+  type TaskbarStartSearchInputProps,
+} from "./taskbarStart.js";
 export { TaskbarStartButton, type TaskbarStartButtonProps } from "./taskbarStartButton.js";

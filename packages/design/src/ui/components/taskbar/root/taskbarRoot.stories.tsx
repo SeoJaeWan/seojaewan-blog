@@ -1,25 +1,26 @@
 import { useMemo, useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import {
   TaskbarPreview,
   withTaskbarDescription,
 } from "../../../../../.storybook/taskbarPreview.js";
 import type {
-  ControllerViewModel,
-  HeadlessFeatureRuntime,
   HeadlessRuntime,
+  HeadlessRuntimeAdapters,
   TaskbarApplicationId,
-  TaskbarRootAction,
   TaskbarTimestampClock,
   TaskbarTimestampTimer,
-  WindowAction,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
-import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
+import {
+  createHeadlessRuntime,
+  HeadlessRuntimeProvider,
+  usePrimaryPanelController,
+} from "../../../../headless/index.js";
 import { TaskbarRoot } from "./taskbarRoot.js";
 
 const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
@@ -31,47 +32,64 @@ const STORY_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   clearTimeout: () => undefined,
 });
 
-/** Story가 지정한 공통 mode 또는 준비 전 상태를 제공하는 최소 Window runtime을 만든다. */
+/** Story가 지정한 공통 mode와 기존 mobile Window Action을 제공하는 runtime을 만든다. */
 const createStoryRuntime = (
   mode?: WindowMode,
   activeApplication?: TaskbarApplicationId,
-  executeRootAction: (action: TaskbarRootAction) => void = () => undefined,
-  executeWindowAction: (action: WindowAction) => void = () => undefined,
+  onMobileApplication: (applicationId: TaskbarApplicationId) => void = () => undefined,
 ): HeadlessRuntime => {
-  const viewModel: ControllerViewModel<WindowState> =
-    mode === undefined
-      ? Object.freeze({ status: "not-ready", snapshot: null })
-      : Object.freeze({
-          status: "ready",
-          snapshot: Object.freeze({
-            mode,
-            workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
-            sessions:
-              activeApplication === undefined
-                ? Object.freeze([])
-                : Object.freeze([
-                    Object.freeze({
-                      applicationId: activeApplication,
-                    }) as WindowState["sessions"][number],
-                  ]),
-            stackingOrder: Object.freeze([]),
-            activeSessionId: null,
-          }),
-        });
-  const windows = Object.freeze({
-    getSnapshot: () => viewModel,
-    getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
-    subscribe: () => () => undefined,
-    execute: (action: WindowAction) => {
-      executeWindowAction(action);
-      return {} as never;
-    },
-  }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
+  if (mode === undefined) return createHeadlessRuntime();
 
-  return Object.freeze({
-    taskbarRoot: Object.freeze({ execute: executeRootAction }),
-    windows,
-  }) as unknown as HeadlessRuntime;
+  const snapshot = Object.freeze({
+    mode,
+    workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
+    sessions:
+      activeApplication === undefined
+        ? Object.freeze([])
+        : Object.freeze([
+            Object.freeze({
+              applicationId: activeApplication,
+            }) as WindowState["sessions"][number],
+          ]),
+    stackingOrder: Object.freeze([]),
+    activeSessionId: null,
+  }) satisfies WindowState;
+  const windows = {
+    getSnapshot: () => snapshot,
+    subscribe: () => () => undefined,
+    launchMobileApplication: (applicationId: TaskbarApplicationId) => {
+      onMobileApplication(applicationId);
+      return Promise.resolve({
+        ok: true,
+        changed: false,
+        reason: "no-op",
+        value: snapshot,
+      }) as never;
+    },
+  } as unknown as NonNullable<HeadlessRuntimeAdapters["windows"]>;
+
+  return createHeadlessRuntime({ adapters: { windows } });
+};
+
+/** Root와 같은 runtime의 observable primary panel state를 Story 아래에 표시한다. */
+const PrimaryPanelProbe = () => {
+  const { viewModel } = usePrimaryPanelController();
+  const snapshot = viewModel.snapshot;
+
+  return (
+    <>
+      <p>
+        활성 패널: <output aria-label="활성 패널">{snapshot?.activePanel ?? "없음"}</output>
+      </p>
+      <p>
+        Start 검색어: <output aria-label="Start 검색어">{snapshot?.startQuery || "(비어 있음)"}</output>
+      </p>
+      <p>
+        Search 검색어:{" "}
+        <output aria-label="Search 검색어">{snapshot?.searchQuery || "(비어 있음)"}</output>
+      </p>
+    </>
+  );
 };
 
 /** production Root를 실제 provider 안에서 렌더링한다. */
@@ -79,20 +97,13 @@ const RootStory = ({
   mode,
   activeApplication,
   searchDisabled = false,
-  searchSelected = false,
   windowsDisabled = false,
-  windowsSelected = false,
 }: {
   mode?: WindowMode;
   activeApplication?: TaskbarApplicationId;
   searchDisabled?: boolean;
-  searchSelected?: boolean;
   windowsDisabled?: boolean;
-  windowsSelected?: boolean;
 }) => {
-  const [query, setQuery] = useState("");
-  const [windowsRequestCount, setWindowsRequestCount] = useState(0);
-  const [searchRequestCount, setSearchRequestCount] = useState(0);
   const [mobileActionCount, setMobileActionCount] = useState(0);
   const [lastMobileApplication, setLastMobileApplication] = useState("없음");
   const runtime = useMemo(
@@ -100,17 +111,9 @@ const RootStory = ({
       createStoryRuntime(
         mode,
         activeApplication,
-        (action) => {
-          if (action.type === "request-windows") {
-            setWindowsRequestCount((current) => current + 1);
-          } else {
-            setSearchRequestCount((current) => current + 1);
-          }
-        },
-        (action) => {
-          if (action.type !== "launch-mobile-application") return;
+        (applicationId) => {
           setMobileActionCount((current) => current + 1);
-          setLastMobileApplication(action.applicationId);
+          setLastMobileApplication(applicationId);
         },
       ),
     [activeApplication, mode],
@@ -122,15 +125,7 @@ const RootStory = ({
         viewport
         results={
           <>
-            <p>
-              현재 검색어: <output aria-label="현재 검색어">{query || "(비어 있음)"}</output>
-            </p>
-            <p>
-              시작 요청: <output aria-label="Windows Action 횟수">{windowsRequestCount}</output>
-            </p>
-            <p>
-              검색 진입: <output aria-label="Search Action 횟수">{searchRequestCount}</output>
-            </p>
+            <PrimaryPanelProbe />
             <p>
               앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
             </p>
@@ -138,17 +133,14 @@ const RootStory = ({
               마지막 앱:{" "}
               <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
             </p>
+            <button type="button">패널 밖</button>
           </>
         }
       >
         <TaskbarRoot
-          searchValue={query}
-          onSearchValueChange={setQuery}
           searchDisabled={searchDisabled}
-          searchSelected={searchSelected}
           timestampClock={STORY_TIMESTAMP_CLOCK}
           windowsDisabled={windowsDisabled}
-          windowsSelected={windowsSelected}
         />
       </TaskbarPreview>
     </HeadlessRuntimeProvider>
@@ -214,8 +206,8 @@ const meta = {
       description: {
         component:
           "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "desktop Windows·Search와 mobile File Explorer·Chrome Action 연결, local Timestamp를 제공한다. " +
-          "desktop Group의 실행 상태 파생·drag와 panel은 각 후속 제품 Component가 연결한다.",
+          "desktop Start·Search primary panel과 mobile File Explorer·Chrome Action, local Timestamp를 제공한다. " +
+          "고정 목록·검색 결과·recent·detail과 실제 Window 본문은 후속 제품 view가 연결한다.",
       },
       story: { iframeHeight: 360, inline: false },
     },
@@ -230,30 +222,42 @@ type Story = StoryObj<typeof meta>;
 export const Desktop: Story = {
   parameters: {
     taskbarDescription:
-      "데스크톱 구성과 입력 연결을 자동 확인합니다. 검색창에 직접 입력하면 현재 검색어가 갱신됩니다. 패널과 실행 중 앱 목록은 후속 작업입니다.",
+      "실제 Start/Search panel의 toggle·순차 전환, Taskbar input의 한글·공백 유지, Escape blur·초기화와 outside dismiss를 확인합니다. 고정 목록·검색 결과·recent·detail 본문은 후속 작업입니다.",
   },
   render: () => <RootStory mode="desktop" />,
   play: async ({ canvasElement }) => {
     await verifyRootGeometry(canvasElement, "desktop");
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
-      "1",
-    );
-    await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
-    await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("1");
-  },
-};
+    const page = within(document.body);
+    const start = canvas.getByRole("button", { name: "시작" });
+    const search = canvas.getByRole<HTMLInputElement>("textbox", { name: "검색" });
+    const activePanel = canvas.getByRole("status", { name: "활성 패널" });
 
-export const WindowsSelected: Story = {
-  parameters: {
-    taskbarDescription:
-      "시작 버튼의 지속 선택 표현입니다. 실제 시작 패널은 아직 연결하지 않았습니다.",
-  },
-  render: () => <RootStory mode="desktop" windowsSelected />,
-  play: async ({ canvasElement }) => {
-    const windows = within(canvasElement).getByRole("button", { name: "시작" });
-    await expect(windows).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(start);
+    await waitFor(() => expect(activePanel).toHaveTextContent("start"));
+    await waitFor(() => expect(page.getByRole("dialog", { name: "시작" })).toBeVisible());
+    await expect(page.getByRole("textbox", { name: "앱 및 문서 검색" })).toBeVisible();
+
+    await userEvent.click(search);
+    await waitFor(() => expect(activePanel).toHaveTextContent("없음"));
+    await expect(page.queryByRole("dialog", { name: "검색" })).toBeNull();
+    await waitFor(() => expect(activePanel).toHaveTextContent("search"));
+    await waitFor(() => expect(page.getByRole("dialog", { name: "검색" })).toBeVisible());
+    await userEvent.type(search, "한글  검색 ");
+    await expect(search).toHaveValue("한글  검색 ");
+    await expect(canvas.getByRole("status", { name: "Search 검색어" }).textContent).toBe(
+      "한글  검색 ",
+    );
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(activePanel).toHaveTextContent("없음"));
+    await waitFor(() => expect(search).toHaveValue(""));
+    await expect(search).not.toHaveFocus();
+
+    await userEvent.click(search);
+    await waitFor(() => expect(activePanel).toHaveTextContent("search"));
+    await userEvent.click(canvas.getByRole("button", { name: "패널 밖" }));
+    await waitFor(() => expect(activePanel).toHaveTextContent("없음"));
   },
 };
 
@@ -266,23 +270,7 @@ export const WindowsDisabled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
-      "0",
-    );
-  },
-};
-
-export const SearchSelected: Story = {
-  parameters: {
-    taskbarDescription:
-      "검색창의 외부 선택 표현입니다. 직접 입력할 수 있으며 결과 패널은 아직 연결하지 않았습니다.",
-  },
-  render: () => <RootStory mode="desktop" searchSelected />,
-  play: async ({ canvasElement }) => {
-    const search = within(canvasElement).getByRole("textbox", { name: "검색" });
-    await expect(search).toHaveAttribute("data-selected", "true");
-    await expect(search).not.toHaveAttribute("aria-expanded");
-    await expect(search).not.toHaveAttribute("aria-controls");
+    await expect(canvas.getByRole("status", { name: "활성 패널" })).toHaveTextContent("없음");
   },
 };
 
@@ -294,10 +282,10 @@ export const SearchDisabled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("textbox", { name: "검색" }));
-    await expect(canvas.getByRole("status", { name: "Search Action 횟수" })).toHaveTextContent("0");
+    await expect(canvas.getByRole("status", { name: "활성 패널" })).toHaveTextContent("없음");
     await userEvent.click(canvas.getByRole("button", { name: "시작" }));
-    await expect(canvas.getByRole("status", { name: "Windows Action 횟수" })).toHaveTextContent(
-      "1",
+    await waitFor(() =>
+      expect(canvas.getByRole("status", { name: "활성 패널" })).toHaveTextContent("start"),
     );
   },
 };
