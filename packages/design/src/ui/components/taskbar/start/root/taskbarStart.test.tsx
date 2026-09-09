@@ -57,7 +57,9 @@ describe("TaskbarStart", () => {
     expect(button.getAttribute("aria-expanded")).toBe("true");
     expect(button.getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("dialog", { name: "시작" })).not.toBeNull();
-    expect(screen.getByRole("textbox", { name: "앱 및 문서 검색" })).not.toBeNull();
+    const input = screen.getByRole("textbox", { name: "앱 및 문서 검색" });
+    expect(input.classList.contains("taskbar-search")).toBe(true);
+    expect(input.parentElement?.querySelector(".taskbar-search__icon")).not.toBeNull();
   });
 
   it("한글 composition과 공백·삭제를 Start query에 그대로 전달한다", () => {

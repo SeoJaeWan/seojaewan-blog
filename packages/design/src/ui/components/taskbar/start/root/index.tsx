@@ -1,10 +1,8 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 
-import { Input } from "@base-ui/react/input";
-import { clsx } from "clsx";
-
 import type { TaskbarPanelConnection } from "../../panels/connection/index.js";
 import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import { TaskbarSearch } from "../../search/input/index.js";
 import { TaskbarStartButton, type TaskbarStartButtonProps } from "../button/index.js";
 
 import "./taskbarStart.css";
@@ -64,21 +62,19 @@ export const TaskbarStart = ({
       variant="start"
     >
       <div className="taskbar-start">
-        <span className="taskbar-start__search">
-          <Input
+        <div className="taskbar-start__search">
+          <TaskbarSearch
             {...inputProps}
             aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : placeholder)}
             aria-labelledby={ariaLabelledBy}
-            className={clsx("taskbar-start__search-input", searchInputClassName)}
+            className={searchInputClassName}
             onValueChange={(value) => {
               connection.actions.updateQuery(value);
             }}
             placeholder={placeholder}
-            type="text"
             value={connection.query}
           />
-          <span aria-hidden="true" className="taskbar-start__search-icon" />
-        </span>
+        </div>
         {children === undefined ? null : <div className="taskbar-start__body">{children}</div>}
       </div>
     </TaskbarPanelWidget>

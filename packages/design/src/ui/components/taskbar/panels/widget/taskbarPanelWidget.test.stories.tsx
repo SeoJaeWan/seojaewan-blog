@@ -143,10 +143,14 @@ const verifyOpenGeometry = async (
 ) => {
   const panelBounds = panel.getBoundingClientRect();
   const triggerBounds = trigger.getBoundingClientRect();
+  const taskbarBounds = trigger
+    .closest('.taskbar-root, nav[aria-label="작업 표시줄"]')
+    ?.getBoundingClientRect();
 
   await expect(getComputedStyle(panel).transitionDuration).toBe("0.22s");
+  await expect(taskbarBounds).toBeDefined();
   await expect(panelBounds.top).toBeGreaterThanOrEqual(0);
-  await expect(panelBounds.bottom).toBeLessThanOrEqual(triggerBounds.top);
+  await expect(Math.abs(panelBounds.bottom - (taskbarBounds?.top ?? 0) + 8)).toBeLessThan(1);
   await expect(panelBounds.height).toBeLessThanOrEqual(600);
 
   if (variant === "start") {

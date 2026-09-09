@@ -143,23 +143,26 @@ export const TaskbarPanelWidget = ({
     }
   };
 
-  /** Start는 viewport 중앙, Search는 실제 trigger 왼쪽을 anchor로 제공한다. */
+  /** 두 panel은 Taskbar 상단을 공통 세로 기준으로 삼고 가로 의미만 variant별로 나눈다. */
   const resolveAnchor = useCallback(() => {
     const triggerElement = triggerRef.current;
-    if (triggerElement === null || variant === "search") {
-      return triggerElement;
-    }
+    if (triggerElement === null) return null;
 
     const triggerBounds = triggerElement.getBoundingClientRect();
-    const center = window.innerWidth / 2;
+    const taskbarBounds = triggerElement
+      .closest('.taskbar-root, nav[aria-label="작업 표시줄"]')
+      ?.getBoundingClientRect();
+    const anchorTop = taskbarBounds?.top ?? triggerBounds.top;
+    const start = variant === "start";
+
     return {
       contextElement: triggerElement,
       getBoundingClientRect: () =>
         DOMRect.fromRect({
-          height: triggerBounds.height,
-          width: 0,
-          x: center,
-          y: triggerBounds.top,
+          height: 0,
+          width: start ? 0 : triggerBounds.width,
+          x: start ? window.innerWidth / 2 : triggerBounds.left,
+          y: anchorTop,
         }),
     };
   }, [variant]);

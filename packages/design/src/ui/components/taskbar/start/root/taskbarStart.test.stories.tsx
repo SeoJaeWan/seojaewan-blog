@@ -35,6 +35,9 @@ export const InteractionTest: Story = {
     await expect(button).toHaveAttribute("aria-pressed", "true");
 
     await userEvent.click(input);
+    const icon = input.parentElement?.querySelector(".taskbar-search__icon");
+    await expect(icon).not.toBeNull();
+    await waitFor(() => expect(getComputedStyle(icon as Element, "::after").opacity).toBe("1"));
     await userEvent.type(input, "한글  query ");
     await expect(input).toHaveValue("한글  query ");
     await expect(page.getByRole("dialog", { name: "시작" })).toBeVisible();

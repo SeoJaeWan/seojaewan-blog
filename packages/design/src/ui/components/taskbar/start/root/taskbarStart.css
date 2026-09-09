@@ -1,17 +1,4 @@
 .taskbar-start {
-  --wd-taskbar-start-search-input-background: rgb(255 255 255 / 0.9);
-  --wd-taskbar-start-search-input-border-color: rgb(204 208 217);
-  --wd-taskbar-start-search-input-border-radius: 9999px;
-  --wd-taskbar-start-search-input-focus-inner-color: var(--wd-color-surface-panel);
-  --wd-taskbar-start-search-input-focus-inner-width: 2px;
-  --wd-taskbar-start-search-input-focus-outer-color: var(--wd-color-focus-ring);
-  --wd-taskbar-start-search-input-focus-outer-width: 4px;
-  --wd-taskbar-start-search-input-height: 30px;
-  --wd-taskbar-start-search-input-icon-color: rgb(16 16 20);
-  --wd-taskbar-start-search-input-icon-mask: url("../../../../assets/taskbar/task-input-mask.svg");
-  --wd-taskbar-start-search-input-icon-size: 18px;
-  --wd-taskbar-start-search-input-placeholder-color: rgb(32 33 36 / 0.5);
-
   block-size: 100%;
   display: flex;
   flex-direction: column;
@@ -19,61 +6,15 @@
 }
 
 .taskbar-start__search {
-  display: inline-flex;
   flex: 0 0 auto;
   inline-size: 100%;
   min-inline-size: 0;
-  position: relative;
 }
 
-.taskbar-start__search-input {
-  appearance: none;
-  background: var(--wd-taskbar-start-search-input-background);
-  block-size: var(--wd-taskbar-start-search-input-height);
-  border: 1px solid var(--wd-taskbar-start-search-input-border-color);
-  border-radius: var(--wd-taskbar-start-search-input-border-radius);
-  box-sizing: border-box;
-  color: inherit;
-  font: inherit;
+.taskbar-start__search .taskbar-search-surface,
+.taskbar-start__search .taskbar-search {
   inline-size: 100%;
-  line-height: normal;
   min-inline-size: 0;
-  outline: none;
-  padding: 6px 6px 6px 30px;
-}
-
-.taskbar-start__search-input:focus-visible {
-  box-shadow:
-    0 0 0 var(--wd-taskbar-start-search-input-focus-inner-width)
-      var(--wd-taskbar-start-search-input-focus-inner-color),
-    0 0 0 var(--wd-taskbar-start-search-input-focus-outer-width)
-      var(--wd-taskbar-start-search-input-focus-outer-color);
-}
-
-.taskbar-start__search-input::placeholder {
-  color: var(--wd-taskbar-start-search-input-placeholder-color);
-  opacity: 1;
-}
-
-.taskbar-start__search-icon {
-  background-color: var(--wd-taskbar-start-search-input-icon-color);
-  block-size: var(--wd-taskbar-start-search-input-icon-size);
-  border-radius: 9999px;
-  inline-size: var(--wd-taskbar-start-search-input-icon-size);
-  inset-block-start: 50%;
-  inset-inline-start: 10px;
-  mask-image: var(--wd-taskbar-start-search-input-icon-mask);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-type: alpha;
-  pointer-events: none;
-  position: absolute;
-  translate: 0 -50%;
-  -webkit-mask-image: var(--wd-taskbar-start-search-input-icon-mask);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
 }
 
 .taskbar-start__body {
