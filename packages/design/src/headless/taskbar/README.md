@@ -15,6 +15,8 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `timestamp/index.ts`                    | local 형식, 분 경계 scheduler·clock port와 React controller                 |
 | `actions/index.ts`                      | Windows·Search·desktop/mobile click, shortcut, close-all intent와 실행 경계 |
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                            |
+| `primaryPanel/operations/index.ts`      | Start·Search 상호 전환, close 완료 초기화와 Resource 결과 조율              |
+| `primaryPanel/controller/index.ts`      | panel snapshot·Action과 UI transition 완료 신호의 React 경계                |
 
 ## 초기화와 Window 연결
 
@@ -124,3 +126,22 @@ const runtime = createHeadlessRuntime({
 desktop Group의 상태 파생·click·drag는 후속 작업에서 연결한다. 버튼의 표시선은 현재 전달받은 상태를
 표현한다. Storybook의 설명·상태 미리보기 작성 규칙은 Memory의 `storybook-authoring`을 따른다.
 관찰 가능한 입력값·Action을 표시하며 실제 Window 완료를 가짜로 처리하지 않는다.
+
+## Primary panel Operation
+
+`PrimaryPanelOperations`는 Start와 Search가 공유하는 하나의 transition queue를 사용한다. switch는
+현재 panel의 `primary-panel-exit` 완료·중단·watchdog을 기다리고 close 완료 command로 해당 query를
+초기화한 다음, 실행 시점에도 desktop이면 target을 activate하고 `primary-panel-enter`를 기다린다.
+일반 연속 trigger는 취소하지 않고 앞 Operation의 settled 뒤 최신 snapshot에서 다시 판정한다.
+
+query Action은 panel transition과 다른 target에 두어 opening animation 중 한글 조합과 공백 입력을
+지연하지 않는다. `dismiss-for-mobile`은 호출 즉시 현재 activation을 무효화하므로 진행 중 switch의
+exit 뒤 desktop panel이 다시 열리지 않는다. Component unmount는 `abortTransition`으로 표현 대기를
+끝내며 제품 close·query 정리와 queue 진행은 계속된다. reduced-motion은 Component가 같은 phase를
+즉시 `completeTransition`하면 별도 semantic 분기 없이 같은 최종 snapshot에 도달한다.
+
+Resource 연결은 실제 open 직전 `track-resource-open`으로 request ID를 현재 Search activation에 묶고,
+완료 뒤 `settle-resource-open`으로 명시적인 `succeeded` 또는 `failed`를 전달한다. 실패는 Search,
+query와 후속 result/detail 소유자의 상태를 바꾸지 않는다. 성공은 같은 activation일 때만 close하고,
+이미 닫히거나 다시 열린 뒤 도착한 결과는 `stale-resource-open` no-op이다. menu 종료와 focus 이동은
+Resource 성공 Action이 아니며 이 경계를 대신 호출하지 않는다.

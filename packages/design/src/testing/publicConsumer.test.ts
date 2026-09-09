@@ -5,11 +5,14 @@ import {
   HeadlessRuntimeProvider,
   type HeadlessRuntimeProviderProps,
   type OperationHandle,
+  type PrimaryPanelController,
+  type PrimaryPanelControllerViewModel,
   type StartController,
   type StartControllerViewModel,
   type TaskbarController,
   type TaskbarControllerViewModel,
   useHeadlessRuntime,
+  usePrimaryPanelController,
   useStartController,
   useTaskbarController,
   useWindowController,
@@ -24,12 +27,14 @@ type PublicController =
   | WindowController
   | WorkspaceController
   | StartController
-  | TaskbarController;
+  | TaskbarController
+  | PrimaryPanelController;
 type PublicViewModel =
   | WindowControllerViewModel
   | WorkspaceControllerViewModel
   | StartControllerViewModel
-  | TaskbarControllerViewModel;
+  | TaskbarControllerViewModel
+  | PrimaryPanelControllerViewModel;
 type PublicHandle = OperationHandle<
   { status: "committed" },
   { status: "presented" },
@@ -46,6 +51,7 @@ describe("package public consumer", () => {
       useWorkspaceController,
       useStartController,
       useTaskbarController,
+      usePrimaryPanelController,
     ] as const;
     const compileOnly = null as unknown as
       | PublicController
@@ -55,7 +61,8 @@ describe("package public consumer", () => {
 
     expect(runtimeProvider).toBeTypeOf("function");
     expect(runtimeHook).toBeTypeOf("function");
-    expect(controllerHooks).toHaveLength(4);
+    expect(controllerHooks).toHaveLength(5);
+    expect(runtime.primaryPanel).toBeDefined();
     expect(runtime.transitions).toBeDefined();
     expect(compileOnly).toBeNull();
   });

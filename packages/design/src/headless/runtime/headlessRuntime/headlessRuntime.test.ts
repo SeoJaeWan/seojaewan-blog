@@ -86,4 +86,24 @@ describe("createHeadlessRuntime", () => {
     expect(updated).not.toBe(first);
     expect(updated).toEqual({ status: "ready", snapshot });
   });
+
+  it("runtime마다 primary panel transient snapshot을 독립적으로 소유한다", async () => {
+    const first = createHeadlessRuntime();
+    const second = createHeadlessRuntime();
+
+    await first.primaryPanel.execute({
+      type: "update-query",
+      panel: "search",
+      query: "첫 runtime",
+    }).settled;
+
+    expect(first.primaryPanel.getSnapshot()).toEqual({
+      status: "ready",
+      snapshot: { activePanel: null, startQuery: "", searchQuery: "첫 runtime" },
+    });
+    expect(second.primaryPanel.getSnapshot()).toEqual({
+      status: "ready",
+      snapshot: { activePanel: null, startQuery: "", searchQuery: "" },
+    });
+  });
 });
