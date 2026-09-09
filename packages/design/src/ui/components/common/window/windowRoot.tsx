@@ -17,9 +17,11 @@ import {
   getWindowBounds,
   useWindowController,
   type WindowAction,
+  type WindowPlacementConfig,
   type WindowPresentationRequest,
   type WindowSessionId,
 } from "../../../../headless/windows/index.js";
+import { useWindowPointerGesture } from "./useWindowPointerGesture.js";
 import { WindowControls } from "./windowControls.js";
 import { WindowFrame, type WindowFrameProps } from "./windowFrame.js";
 import {
@@ -54,6 +56,8 @@ export type WindowRootProps = Omit<
     titleBarContent: ReactNode;
     /** runtime의 `windowPresentation`과 같은 객체를 전달해 mount 전 요청을 이어 받는다. */
     presentationBinding?: WindowPresentationBinding;
+    /** WindowStore 초기화와 동일한 bounds·최소 크기 설정이다. */
+    placementConfig: WindowPlacementConfig;
     /** root capture activation 뒤에도 호출할 caller의 native focus callback이다. */
     onFocusCapture?: WindowFrameProps["onFocusCapture"];
     /** root capture activation 뒤에도 호출할 caller의 native pointer callback이다. */
@@ -71,6 +75,7 @@ export const WindowRoot = ({
   onFocusCapture,
   onPointerDownCapture,
   presentationBinding,
+  placementConfig,
   sessionId,
   titleBarContent,
   ...props
@@ -79,6 +84,12 @@ export const WindowRoot = ({
   const [presentation, setPresentation] = useState<WindowPresentationRequest | null>(null);
   const activationRequested = useRef(false);
   const snapshot = viewModel.status === "ready" ? viewModel.snapshot : null;
+  const pointerGesture = useWindowPointerGesture(
+    actions,
+    sessionId,
+    snapshot?.workArea ?? null,
+    placementConfig,
+  );
   const session = snapshot?.sessions.find(({ id }) => id === sessionId);
   const active = snapshot?.activeSessionId === sessionId;
 
@@ -136,6 +147,7 @@ export const WindowRoot = ({
       {...props}
       active={active}
       bounds={bounds}
+      data-gesture-active={pointerGesture.active ? "true" : undefined}
       data-presentation-operation-id={presentation?.operationId}
       data-presentation-phase={presentation?.phase}
       maximized={maximized}
@@ -153,11 +165,13 @@ export const WindowRoot = ({
               onToggleMaximized={() => executeSessionAction({ type: "toggle-maximize", sessionId })}
             />
           }
+          onMoveStart={pointerGesture.startMove}
           onToggleMaximized={() => executeSessionAction({ type: "toggle-maximize", sessionId })}
         >
           {titleBarContent}
         </WindowTitleBar>
       }
+      onResizeStart={pointerGesture.startResize}
       variant={session.kind}
       zIndex={stackingIndex + 1}
     >

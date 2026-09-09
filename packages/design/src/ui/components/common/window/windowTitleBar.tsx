@@ -1,4 +1,4 @@
-import type { ComponentPropsWithRef, PointerEvent, ReactNode } from "react";
+import type { ComponentPropsWithRef, MouseEvent, PointerEvent, ReactNode } from "react";
 
 import { clsx } from "clsx";
 
@@ -23,6 +23,13 @@ export type WindowTitleBarProps = Omit<
     onToggleMaximized?: () => void;
   }>;
 
+const interactiveSelector =
+  'a, button, input, select, textarea, [contenteditable="true"], [role="button"], [role="tab"], [data-window-drag-exclude="true"]';
+
+/** titlebar event가 interactive child에서 시작했는지 DOM boundary 안에서 판정한다. */
+const isInteractiveTitleBarTarget = (target: EventTarget | null): boolean =>
+  target instanceof Element && target.closest(interactiveSelector) !== null;
+
 /**
  * application title slot과 Window controls를 30px Common titlebar에 배치한다.
  *
@@ -35,16 +42,28 @@ export const WindowTitleBar = ({
   onMoveStart,
   onToggleMaximized,
   ...props
-}: WindowTitleBarProps) => (
-  <div {...props} className={clsx("window-title-bar", className)}>
-    <div
-      className="window-title-bar__drag-region"
-      data-window-drag-region="true"
-      onDoubleClick={onToggleMaximized}
-      onPointerDown={onMoveStart}
-    >
-      {children}
+}: WindowTitleBarProps) => {
+  /** interactive child가 아닌 titlebar pointer 입력만 move 시작으로 전달한다. */
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!isInteractiveTitleBarTarget(event.target)) onMoveStart?.(event);
+  };
+
+  /** interactive child가 아닌 titlebar double click만 maximize toggle로 전달한다. */
+  const handleDoubleClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (!isInteractiveTitleBarTarget(event.target)) onToggleMaximized?.();
+  };
+
+  return (
+    <div {...props} className={clsx("window-title-bar", className)}>
+      <div
+        className="window-title-bar__drag-region"
+        data-window-drag-region="true"
+        onDoubleClick={handleDoubleClick}
+        onPointerDown={handlePointerDown}
+      >
+        {children}
+      </div>
+      {controls}
     </div>
-    {controls}
-  </div>
-);
+  );
+};

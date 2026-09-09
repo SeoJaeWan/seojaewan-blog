@@ -38,6 +38,10 @@
   box-shadow: var(--wd-window-frame-root-box-shadow-inactive);
 }
 
+.window-frame[data-gesture-active="true"] {
+  transition-property: box-shadow;
+}
+
 .window-frame[data-maximized="true"][data-mode="desktop"] {
   border-radius: 0;
   inset: 0;

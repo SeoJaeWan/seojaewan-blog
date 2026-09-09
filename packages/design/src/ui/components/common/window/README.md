@@ -25,11 +25,19 @@ import {
 
 const windowPresentation = createWindowPresentationBinding();
 const runtime = createHeadlessRuntime({ windowPresentation });
+const placementConfig = {
+  defaultSize: { width: 840, height: 500 },
+  minSize: { width: 320, height: 240 },
+  edgeMargin: 8,
+  cascadeOffset: { x: 24, y: 24 },
+  titlebarRecoverySize: { width: 120, height: 30 },
+};
 
 const ApplicationWindow = ({ sessionId }: { sessionId: WindowSessionId }) => (
   <HeadlessRuntimeProvider runtime={runtime}>
     <WindowRoot
       aria-label="Chrome 창"
+      placementConfig={placementConfig}
       presentationBinding={windowPresentation}
       sessionId={sessionId}
       titleBarContent="Chrome"
@@ -43,6 +51,10 @@ const ApplicationWindow = ({ sessionId }: { sessionId: WindowSessionId }) => (
 현재 binding은 `{ operationId, sessionId, phase }`를 root의 `data-presentation-*` 입력으로 연결하고
 Operation 대기가 끝나면 exact request를 제거한다. 실제 animation·presence·focus 완료 판정은 이 숫자 요청을
 사용하는 Component lifecycle이 담당하며, timer나 가짜 완료 신호로 대신하지 않는다.
+
+`placementConfig`는 `WindowStore.initialize`에 전달한 같은 객체를 사용한다. `WindowRoot`는 빈 titlebar와
+8방향 handle의 pointer를 capture하고 최신 좌표를 rAF마다 `actions.beginGesture` Handle의 numeric bounds로
+전달한다. `Escape`는 Handle의 시작 frame을 복구하며 capture 상실·unmount는 접수된 update까지만 끝낸다.
 
 ## 검증
 

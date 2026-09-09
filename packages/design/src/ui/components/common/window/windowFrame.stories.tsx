@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 
 import {
   ArrowLeft16Regular,
@@ -9,7 +9,7 @@ import {
   Search16Regular,
 } from "@fluentui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import {
   type ControllerViewModel,
@@ -17,8 +17,13 @@ import {
   type HeadlessRuntime,
   HeadlessRuntimeProvider,
   type WindowAction,
+  type WindowFrameState,
+  WindowGestures,
+  type WindowGestureStore,
+  type WindowPlacementConfig,
   type WindowSessionId,
   type WindowState,
+  type WindowStoreResult,
 } from "../../../../headless/index.js";
 import chromeIconSrc from "../../../assets/window/chrome.png";
 import fileExplorerIconSrc from "../../../assets/window/file-explorer.png";
@@ -39,6 +44,14 @@ const DESKTOP_BOUNDS: WindowFrameBounds = Object.freeze({
   width: 840,
 });
 
+const WINDOW_PLACEMENT_CONFIG: WindowPlacementConfig = Object.freeze({
+  defaultSize: Object.freeze({ width: 840, height: 500 }),
+  minSize: Object.freeze({ width: 320, height: 240 }),
+  edgeMargin: 8,
+  cascadeOffset: Object.freeze({ x: 24, y: 24 }),
+  titlebarRecoverySize: Object.freeze({ width: 120, height: 30 }),
+});
+
 /** fixture에서 Common titlebar의 application-owned tab slot을 채운다. */
 const ProductTab = ({
   icon,
@@ -53,6 +66,20 @@ const ProductTab = ({
     <img alt="" aria-hidden="true" className="window-story-tab__icon" src={icon} />
     <span className="window-story-tab__title">{title}</span>
   </h2>
+);
+
+/** interaction fixture에서 titlebar 안 focusable tab 경계를 제공한다. */
+const InteractiveProductTab = () => (
+  <div
+    aria-label="Chrome 활성 탭"
+    className="window-story-tab"
+    data-variant="chrome"
+    role="tab"
+    tabIndex={0}
+  >
+    <img alt="" aria-hidden="true" className="window-story-tab__icon" src={chromeIconSrc} />
+    <span className="window-story-tab__title">React Server Components 정리</span>
+  </div>
 );
 
 /** route fixture의 icon button을 실제 접근성 이름과 고정 geometry로 표시한다. */
@@ -217,6 +244,133 @@ const createWindowStoryRuntime = ({
   return Object.freeze({ windows }) as unknown as HeadlessRuntime;
 };
 
+/** interaction Story가 실제 headless gesture Handle과 구독 가능한 snapshot을 함께 사용할 runtime을 만든다. */
+const createInteractiveWindowRuntime = (initialSnapshot: WindowState): HeadlessRuntime => {
+  let snapshot = initialSnapshot;
+  let viewModel: ControllerViewModel<WindowState> = Object.freeze({
+    status: "ready",
+    snapshot,
+  });
+  const listeners = new Set<() => void>();
+  const sessionId = snapshot.sessions[0].id;
+
+  /** frame을 immutable snapshot에 반영하고 실제 controller subscriber를 알린다. */
+  const commitFrame = (
+    frame: WindowFrameState,
+    kind:
+      | "window-moved"
+      | "window-resized"
+      | "window-frame-restored"
+      | "window-maximized"
+      | "window-restored" = "window-moved",
+  ): WindowStoreResult => {
+    snapshot = Object.freeze({
+      ...snapshot,
+      sessions: Object.freeze(
+        snapshot.sessions.map((session) =>
+          session.id === sessionId ? Object.freeze({ ...session, frame }) : session,
+        ),
+      ),
+    });
+    viewModel = Object.freeze({ status: "ready", snapshot });
+    listeners.forEach((listener) => listener());
+    return { ok: true, changed: true, value: snapshot, change: { kind, sessionId } };
+  };
+
+  const gestureStore: WindowGestureStore = Object.freeze({
+    getSnapshot: () => snapshot,
+    applyGestureBounds: (_target, bounds, kind) => {
+      const session = snapshot.sessions[0];
+      return Promise.resolve(
+        commitFrame(
+          Object.freeze({
+            ...session.frame,
+            normalBounds: Object.freeze({ ...bounds }),
+            placement: "normal",
+          }),
+          kind === "move" ? "window-moved" : "window-resized",
+        ),
+      );
+    },
+    restoreFrame: (_target, frame) => Promise.resolve(commitFrame(frame, "window-frame-restored")),
+  });
+  const gestures = new WindowGestures(gestureStore);
+
+  /** interaction fixture에서 현재 task가 연결하는 activate·maximize Action만 observable state로 반영한다. */
+  const executeWindowAction = (action: WindowAction) => {
+    if (action.type === "toggle-maximize") {
+      const session = snapshot.sessions[0];
+      commitFrame(
+        Object.freeze({
+          ...session.frame,
+          placement: session.frame.placement === "maximized" ? "normal" : "maximized",
+        }),
+        session.frame.placement === "maximized" ? "window-restored" : "window-maximized",
+      );
+    }
+    return {} as never;
+  };
+
+  const windows = Object.freeze({
+    getSnapshot: () => viewModel,
+    getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
+    subscribe: (listener: () => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    execute: executeWindowAction,
+  }) as unknown as HeadlessFeatureRuntime<WindowState, WindowAction, never>;
+
+  return Object.freeze({
+    windows,
+    windowGestures: Object.freeze({ begin: gestures.begin.bind(gestures) }),
+  }) as unknown as HeadlessRuntime;
+};
+
+/** controller 구독으로 bounds가 실제 갱신되는 Common Window interaction fixture를 렌더링한다. */
+const InteractiveProductWindow = () => {
+  const id = storySessionId("chrome");
+  const initialSnapshot = useMemo<WindowState>(
+    () =>
+      Object.freeze({
+        mode: "desktop",
+        workArea: Object.freeze({ x: 0, y: 0, width: 960, height: 590 }),
+        sessions: Object.freeze([
+          Object.freeze({
+            id,
+            kind: "chrome",
+            applicationId: "chrome",
+            frame: Object.freeze({
+              normalBounds: Object.freeze({ x: 120, y: 28, width: 720, height: 520 }),
+              placement: "normal",
+              minimized: false,
+            }),
+            tabs: Object.freeze([]),
+            activeTabId: "chrome-tab" as never,
+          }),
+        ]),
+        stackingOrder: Object.freeze([id]),
+        activeSessionId: id,
+      }),
+    [id],
+  );
+  const runtime = useMemo(() => createInteractiveWindowRuntime(initialSnapshot), [initialSnapshot]);
+
+  return (
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <WindowRoot
+        aria-label="Chrome gesture 창"
+        placementConfig={WINDOW_PLACEMENT_CONFIG}
+        sessionId={id}
+        titleBarContent={<InteractiveProductTab />}
+      >
+        <ProductNavigation mode="desktop" variant="chrome" />
+        <ChromeContent mode="desktop" />
+      </WindowRoot>
+    </HeadlessRuntimeProvider>
+  );
+};
+
 /** 실제 controller root와 Common production parts 안에 product-specific fixture slots를 조합한다. */
 const ProductWindow = ({
   active,
@@ -241,6 +395,7 @@ const ProductWindow = ({
     <HeadlessRuntimeProvider runtime={runtime}>
       <WindowRoot
         aria-label={`${variant === "file-explorer" ? "파일 탐색기" : "Chrome"} 창`}
+        placementConfig={WINDOW_PLACEMENT_CONFIG}
         sessionId={sessionId}
         titleBarContent={<ProductTab icon={icon} title={title} variant={variant} />}
       >
@@ -474,5 +629,99 @@ export const FileExplorerMobile: Story = {
     await expect(within(frame).queryByRole("button", { name: "최소화" })).toBeNull();
     await expect(within(frame).queryByRole("complementary")).toBeNull();
     await expect(frame.querySelectorAll(".window-resize-handle")).toHaveLength(0);
+  },
+};
+
+export const PointerGestures: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "실제 browser pointer로 8방향 resize와 Esc rollback, 빈 titlebar doubleclick, maximized drag 복원을 검증한다. navigation과 content는 Application owner인 기존 placeholder를 유지한다.",
+      },
+    },
+  },
+  render: () => (
+    <WindowStage mode="desktop">
+      <InteractiveProductWindow />
+    </WindowStage>
+  ),
+  play: async ({ canvasElement }) => {
+    const frame = within(canvasElement).getByRole("region", { name: "Chrome gesture 창" });
+    const original = { left: 120, top: 28, width: 720, height: 520 };
+    const directions = ["n", "s", "w", "e", "nw", "ne", "sw", "se"] as const;
+
+    for (const direction of directions) {
+      const handle = frame.querySelector<HTMLElement>(`[data-direction="${direction}"]`)!;
+      const handleBounds = handle.getBoundingClientRect();
+      const start = {
+        clientX: handleBounds.left + handleBounds.width / 2,
+        clientY: handleBounds.top + handleBounds.height / 2,
+      };
+      await userEvent.pointer({ keys: "[MouseLeft>]", target: handle, coords: start });
+      await userEvent.pointer({
+        target: handle,
+        coords: { clientX: start.clientX + 20, clientY: start.clientY + 10 },
+      });
+      await waitFor(() => expect(frame.getAttribute("data-gesture-active")).toBe("true"));
+      await waitFor(async () => {
+        const resized = frame.getBoundingClientRect();
+        await expect(
+          resized.left !== original.left ||
+            resized.top !== original.top ||
+            resized.width !== original.width ||
+            resized.height !== original.height,
+        ).toBe(true);
+      });
+      await userEvent.keyboard("{Escape}");
+      await waitFor(async () => {
+        const restored = frame.getBoundingClientRect();
+        await expect(restored.left).toBe(original.left);
+        await expect(restored.top).toBe(original.top);
+        await expect(restored.width).toBe(original.width);
+        await expect(restored.height).toBe(original.height);
+      });
+      await userEvent.pointer({ keys: "[/MouseLeft]", target: handle, coords: start });
+    }
+
+    const address = within(frame).getByRole("textbox", { name: "검색어 또는 URL 입력" });
+    await userEvent.dblClick(address);
+    await expect(frame.getAttribute("data-maximized")).toBe("false");
+
+    const activeTab = within(frame).getByRole("tab", { name: "Chrome 활성 탭" });
+    await userEvent.dblClick(activeTab);
+    await expect(frame.getAttribute("data-maximized")).toBe("false");
+
+    const dragRegion = frame.querySelector<HTMLElement>("[data-window-drag-region]")!;
+    await userEvent.dblClick(dragRegion);
+    await waitFor(() => expect(frame.getAttribute("data-maximized")).toBe("true"));
+
+    await userEvent.pointer({
+      keys: "[MouseLeft>]",
+      target: dragRegion,
+      coords: { clientX: 240, clientY: 15 },
+    });
+    await userEvent.pointer({
+      target: dragRegion,
+      coords: { clientX: 400, clientY: 25 },
+    });
+    await waitFor(async () => {
+      const restoredForDrag = frame.getBoundingClientRect();
+      await expect(restoredForDrag.left).toBe(220);
+      await expect(restoredForDrag.top).toBe(10);
+      await expect(restoredForDrag.width).toBe(720);
+      await expect(restoredForDrag.height).toBe(520);
+    });
+    await userEvent.keyboard("{Escape}");
+    await waitFor(async () => {
+      await expect(frame.getAttribute("data-maximized")).toBe("true");
+      await expect(frame.getBoundingClientRect().width).toBe(960);
+      await expect(frame.getBoundingClientRect().height).toBe(590);
+    });
+    await userEvent.pointer({
+      keys: "[/MouseLeft]",
+      target: dragRegion,
+      coords: { clientX: 400, clientY: 25 },
+    });
   },
 };
