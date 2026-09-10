@@ -1,0 +1,73 @@
+.window-resize-handle {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+}
+
+.window-resize-handle[data-direction="n"] {
+  cursor: n-resize;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: var(--wd-window-frame-resize-edge-size);
+  z-index: 10;
+}
+
+.window-resize-handle[data-direction="s"] {
+  cursor: s-resize;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: var(--wd-window-frame-resize-edge-size);
+  z-index: 10;
+}
+
+.window-resize-handle[data-direction="w"] {
+  cursor: w-resize;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--wd-window-frame-resize-edge-size);
+  z-index: 10;
+}
+
+.window-resize-handle[data-direction="e"] {
+  cursor: e-resize;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: var(--wd-window-frame-resize-edge-size);
+  z-index: 10;
+}
+
+.window-resize-handle[data-direction="nw"],
+.window-resize-handle[data-direction="ne"],
+.window-resize-handle[data-direction="sw"],
+.window-resize-handle[data-direction="se"] {
+  block-size: var(--wd-window-frame-resize-corner-size);
+  inline-size: var(--wd-window-frame-resize-corner-size);
+  z-index: 11;
+}
+
+.window-resize-handle[data-direction="nw"] {
+  cursor: nw-resize;
+  inset-block-start: 0;
+  inset-inline-start: var(--wd-window-frame-resize-corner-offset);
+}
+
+.window-resize-handle[data-direction="ne"] {
+  cursor: ne-resize;
+  inset-block-start: 0;
+  inset-inline-end: var(--wd-window-frame-resize-corner-offset);
+}
+
+.window-resize-handle[data-direction="sw"] {
+  cursor: sw-resize;
+  inset-block-end: 0;
+  inset-inline-start: var(--wd-window-frame-resize-corner-offset);
+}
+
+.window-resize-handle[data-direction="se"] {
+  cursor: se-resize;
+  inset-block-end: 0;
+  inset-inline-end: var(--wd-window-frame-resize-corner-offset);
+}

@@ -100,6 +100,9 @@ importers:
       storybook:
         specifier: ^10.4.6
         version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7)
+      storybook-addon-pseudo-states:
+        specifier: 10.4.6
+        version: 10.4.6(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7))
       stylelint:
         specifier: ^17.14.1
         version: 17.14.1(typescript@6.0.3)
@@ -5226,6 +5229,14 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  storybook-addon-pseudo-states@10.4.6:
+    resolution:
+      {
+        integrity: sha512-yP6GgUTj2uju34ZLKzrFJz9uS+9Nn6uH3Wprei5x/KS6CSbLOuXf3pBhAfi+ur2y4Qm3l/thGyHYVcoACCbgIg==,
+      }
+    peerDependencies:
+      storybook: ^10.4.6
+
   storybook@10.4.6:
     resolution:
       {
@@ -9010,6 +9021,10 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       internal-slot: 1.1.0
+
+  storybook-addon-pseudo-states@10.4.6(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7)):
+    dependencies:
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7)
 
   storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.9.4)(react@19.2.7):
     dependencies:

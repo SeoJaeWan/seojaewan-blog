@@ -1,0 +1,63 @@
+.taskbar-start-button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: var(--wd-taskbar-start-button-border-width) solid transparent;
+  border-radius: var(--wd-taskbar-start-button-border-radius);
+  box-sizing: border-box;
+  color: var(--wd-color-text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  block-size: var(--wd-taskbar-start-button-size);
+  inline-size: var(--wd-taskbar-start-button-size);
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  transition:
+    background-color var(--wd-taskbar-start-button-transition-duration)
+      var(--wd-taskbar-start-button-transition-easing),
+    border-color var(--wd-taskbar-start-button-transition-duration)
+      var(--wd-taskbar-start-button-transition-easing),
+    box-shadow var(--wd-taskbar-start-button-transition-duration)
+      var(--wd-taskbar-start-button-transition-easing);
+  user-select: none;
+}
+
+.taskbar-start-button:active:not([data-disabled]) .taskbar-start-button__logo {
+  transform: scale(var(--wd-taskbar-start-button-logo-scale-pressed));
+}
+
+.taskbar-start-button[data-selected="true"] {
+  background: var(--wd-taskbar-start-button-background-selected);
+  color: var(--wd-color-accent-default);
+}
+
+.taskbar-start-button:hover:not([data-disabled]) {
+  background: var(--wd-taskbar-start-button-background-hover);
+}
+
+.taskbar-start-button:focus-visible:not([data-disabled]) {
+  box-shadow:
+    0 0 0 var(--wd-taskbar-start-button-focus-inner-width)
+      var(--wd-taskbar-start-button-focus-inner-color),
+    0 0 0 var(--wd-taskbar-start-button-focus-outer-width)
+      var(--wd-taskbar-start-button-focus-outer-color);
+}
+
+.taskbar-start-button[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--wd-taskbar-start-button-opacity-disabled);
+}
+
+.taskbar-start-button__logo {
+  display: block;
+  block-size: var(--wd-taskbar-start-button-logo-size);
+  inline-size: var(--wd-taskbar-start-button-logo-size);
+  flex: 0 0 auto;
+  pointer-events: none;
+  transition: transform var(--wd-taskbar-start-button-logo-transition-duration)
+    var(--wd-taskbar-start-button-logo-transition-easing);
+}
