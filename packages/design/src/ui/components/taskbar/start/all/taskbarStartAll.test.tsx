@@ -84,7 +84,8 @@ describe("TaskbarStartAll", () => {
     fireEvent.click(screen.getByRole("button", { name: "A 범주 인덱스 열기" }));
     expect(container.querySelector(".taskbar-start-all__index")?.hasAttribute("inert")).toBe(false);
     expect(container.querySelector(".taskbar-start-all__list")?.hasAttribute("inert")).toBe(true);
-    expect(container.querySelectorAll("[data-start-index-category]")).toHaveLength(51);
+    expect(container.querySelectorAll("[data-start-index-category]")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "F 범주로 이동" })).toBeNull();
   });
 
   it("category 선택은 실제 heading 위치로 scroll하고 overlay를 닫은 뒤 heading에 focus한다", async () => {
@@ -106,7 +107,7 @@ describe("TaskbarStartAll", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "7 범주로 이동" }));
 
-    expect(scrollTo).toHaveBeenCalledWith({ behavior: "smooth", top: 200 });
+    expect(scrollTo).toHaveBeenCalledWith({ top: 200 });
     expect(actions).toHaveBeenLastCalledWith({ type: "set-index-open", open: false });
     await waitFor(() => expect(document.activeElement).toBe(heading));
   });

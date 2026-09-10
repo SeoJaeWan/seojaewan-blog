@@ -24,9 +24,7 @@ export const InteractionTest: Story = {
 
     await userEvent.click(button);
     await waitFor(() =>
-      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute(
-        "data-starting-style",
-      ),
+      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute("data-starting-style"),
     );
     const input = page.getByRole<HTMLInputElement>("textbox", {
       name: "앱 및 문서 검색",
@@ -34,6 +32,19 @@ export const InteractionTest: Story = {
     await expect(button).toHaveFocus();
     await expect(input).not.toHaveFocus();
     await expect(button).toHaveAttribute("aria-expanded", "true");
+    const pinnedView = document.querySelector<HTMLElement>(
+      '.taskbar-start__browse-view[data-view="pinned"]',
+    );
+    const allView = document.querySelector<HTMLElement>(
+      '.taskbar-start__browse-view[data-view="all"]',
+    );
+    if (pinnedView === null || allView === null) {
+      throw new Error("Start browse에는 pinned와 all view가 함께 있어야 합니다");
+    }
+    await expect(getComputedStyle(pinnedView).transitionProperty).toBe("transform");
+    await expect(getComputedStyle(allView).transitionProperty).toBe("transform");
+    await expect(getComputedStyle(pinnedView).opacity).toBe("1");
+    await expect(getComputedStyle(allView).opacity).toBe("1");
 
     const initialItems = page.getAllByRole("gridcell");
     await expect(initialItems).toHaveLength(5);
@@ -78,6 +89,18 @@ export const InteractionTest: Story = {
     await userEvent.click(page.getByRole("button", { name: "모두" }));
     await expect(page.getByRole("status", { name: "Start browse view" })).toHaveTextContent("all");
     await waitFor(() => expect(page.getByRole("region", { name: "모두" })).toBeVisible());
+    const pinnedTitle = pinnedView.querySelector<HTMLElement>(".taskbar-start-pinned__title");
+    const allTitle = page.getByRole("heading", { name: "모두" });
+    if (pinnedTitle === null) throw new Error("고정됨 title이 렌더링되어야 합니다");
+    await expect(getComputedStyle(pinnedTitle).fontSize).toBe("14px");
+    await expect(getComputedStyle(allTitle).fontSize).toBe("14px");
+    await expect(getComputedStyle(pinnedTitle).fontWeight).toBe("700");
+    await expect(getComputedStyle(allTitle).fontWeight).toBe("700");
+    await waitFor(() => {
+      const parentLeft = allView.parentElement?.getBoundingClientRect().left;
+      if (parentLeft === undefined) throw new Error("All view clipping 영역이 있어야 합니다");
+      return expect(Math.abs(allView.getBoundingClientRect().left - parentLeft)).toBeLessThan(1);
+    });
     await userEvent.click(page.getByRole("button", { name: "A 범주 인덱스 열기" }));
     await waitFor(() => expect(page.getByRole("dialog", { name: "범주 인덱스" })).toBeVisible());
     await userEvent.click(page.getByRole("button", { name: "7 범주로 이동" }));
@@ -105,14 +128,14 @@ export const InteractionTest: Story = {
 
     await userEvent.click(button);
     await waitFor(() =>
-      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute(
-        "data-starting-style",
-      ),
+      expect(page.getByRole("dialog", { name: "시작" })).not.toHaveAttribute("data-starting-style"),
     );
     await expect(page.getByRole("status", { name: "Start browse view" })).toHaveTextContent(
       "pinned",
     );
-    await expect(page.getAllByRole("gridcell").map((item) => item.getAttribute("aria-label"))).toEqual([
+    await expect(
+      page.getAllByRole("gridcell").map((item) => item.getAttribute("aria-label")),
+    ).toEqual([
       "Alpha 문서",
       "7zip",
       "프로젝트 폴더",

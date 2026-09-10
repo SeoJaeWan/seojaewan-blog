@@ -6,10 +6,7 @@
 import type { KeyboardEvent, PointerEvent, RefObject } from "react";
 import { useEffect, useRef } from "react";
 
-import {
-  START_SCREEN_GROUP_ORDER,
-  type StartScreenGroupKey,
-} from "../../../../../../../headless/index.js";
+import type { StartScreenGroupKey } from "../../../../../../../headless/index.js";
 
 const INDEX_COLUMN_COUNT = 4;
 
@@ -37,19 +34,13 @@ const findCategoryButton = (
   step: number,
   overlay: HTMLDivElement,
 ): HTMLButtonElement | null => {
-  const currentIndex = START_SCREEN_GROUP_ORDER.indexOf(currentKey);
-  for (let distance = 1; distance <= START_SCREEN_GROUP_ORDER.length; distance += 1) {
-    const index =
-      (currentIndex + step * distance + START_SCREEN_GROUP_ORDER.length * distance) %
-      START_SCREEN_GROUP_ORDER.length;
-    const key = START_SCREEN_GROUP_ORDER[index];
-    if (key === undefined) continue;
-    const button = overlay.querySelector<HTMLButtonElement>(
-      `[data-start-index-category="${key}"]:not(:disabled)`,
-    );
-    if (button !== null) return button;
-  }
-  return null;
+  const buttons = [...overlay.querySelectorAll<HTMLButtonElement>("[data-start-index-category]")];
+  const currentIndex = buttons.findIndex(
+    (button) => button.dataset.startIndexCategory === currentKey,
+  );
+  if (currentIndex < 0 || buttons.length === 0) return null;
+  const nextIndex = (((currentIndex + step) % buttons.length) + buttons.length) % buttons.length;
+  return buttons[nextIndex] ?? null;
 };
 
 /** Start 모두 보기의 실제 scroll, overlay keyboard와 focus restore lifecycle을 제공한다. */
@@ -71,7 +62,7 @@ export const useTaskbarStartAllNavigation = ({
     const frame = requestAnimationFrame(() => {
       if (indexOpen) {
         overlayRef.current
-          ?.querySelector<HTMLButtonElement>("[data-start-index-category]:not(:disabled)")
+          ?.querySelector<HTMLButtonElement>("[data-start-index-category]")
           ?.focus();
         return;
       }
@@ -103,7 +94,7 @@ export const useTaskbarStartAllNavigation = ({
     const list = listRef.current;
     const heading = headingElementsRef.current.get(key);
     if (list !== null && heading !== undefined) {
-      list.scrollTo({ behavior: "smooth", top: heading.offsetTop - list.offsetTop });
+      list.scrollTo({ top: heading.offsetTop - list.offsetTop });
       restoreTargetRef.current = heading;
     }
     onIndexOpenChange(false);
@@ -129,17 +120,13 @@ export const useTaskbarStartAllNavigation = ({
     else if (event.key === "ArrowDown") next = findCategoryButton(key, INDEX_COLUMN_COUNT, overlay);
     else if (event.key === "ArrowUp") next = findCategoryButton(key, -INDEX_COLUMN_COUNT, overlay);
     else if (event.key === "Home") {
-      next = overlay.querySelector<HTMLButtonElement>("[data-start-index-category]:not(:disabled)");
+      next = overlay.querySelector<HTMLButtonElement>("[data-start-index-category]");
     } else if (event.key === "End") {
-      const buttons = overlay.querySelectorAll<HTMLButtonElement>(
-        "[data-start-index-category]:not(:disabled)",
-      );
+      const buttons = overlay.querySelectorAll<HTMLButtonElement>("[data-start-index-category]");
       next = buttons.item(buttons.length - 1);
     } else if (event.key === "Tab") {
       const buttons = [
-        ...overlay.querySelectorAll<HTMLButtonElement>(
-          "[data-start-index-category]:not(:disabled)",
-        ),
+        ...overlay.querySelectorAll<HTMLButtonElement>("[data-start-index-category]"),
       ];
       const currentIndex = buttons.indexOf(target);
       const nextIndex = event.shiftKey
