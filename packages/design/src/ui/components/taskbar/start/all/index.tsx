@@ -9,7 +9,6 @@ import { Fragment, useId } from "react";
 import { ChevronLeft12Regular, Document24Regular, Link24Regular } from "@fluentui/react-icons";
 
 import {
-  START_SCREEN_GROUP_ORDER,
   type StartScreenAction,
   type StartScreenAllGroup,
   type StartScreenAllItem,
@@ -57,7 +56,6 @@ export const TaskbarStartAll = ({
 }: TaskbarStartAllProps) => {
   const titleId = useId();
   const categoryIdPrefix = useId();
-  const availableKeys = new Set(groups.map((group) => group.key));
   const navigation = useTaskbarStartAllNavigation({
     indexOpen,
     onIndexOpenChange: (open) => onScreenAction({ type: "set-index-open", open }),
@@ -91,17 +89,16 @@ export const TaskbarStartAll = ({
           role="dialog"
         >
           <div className="taskbar-start-all__index-grid">
-            {START_SCREEN_GROUP_ORDER.map((key) => (
+            {groups.map((group) => (
               <button
-                key={key}
-                aria-label={`${key} 범주로 이동`}
+                key={group.key}
+                aria-label={`${group.key} 범주로 이동`}
                 className="taskbar-start-all__index-button"
-                data-start-index-category={key}
-                disabled={!availableKeys.has(key)}
-                onClick={() => navigation.selectCategory(key)}
+                data-start-index-category={group.key}
+                onClick={() => navigation.selectCategory(group.key)}
                 type="button"
               >
-                {key}
+                {group.key}
               </button>
             ))}
           </div>

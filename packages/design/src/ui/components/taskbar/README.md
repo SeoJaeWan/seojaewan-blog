@@ -78,8 +78,9 @@ Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않
   Action·Operation으로 전달됩니다.
 - 모두 보기는 Content와 ExternalShortcut을 A–Z, 한글 초성 ㄱ–ㅎ, 개별 0–9, # 순서로 표시합니다.
   Folder와 별도 ExternalShortcut 사용 가능 여부 filter는 없습니다.
-- All/Index는 실제 heading scroll과 focus restore를 관리합니다. index는 51개 canonical key를 4열로
-  표시하고 현재 비어 있는 key만 비활성화합니다.
+- All/Index는 실제 heading scroll과 focus restore를 관리합니다. index는 항목이 있는 canonical
+  key만 4열로 표시하고, 선택한 heading 위치를 먼저 맞춘 뒤 overlay를 닫습니다. 목록과 overlay의
+  scale·opacity 전환 중 scrollbar는 숨깁니다.
 - Resource는 Window commit 또는 이미 충족된 no-op, 혹은 external navigation adapter의 명시적
   성공 뒤 panel을 닫습니다. 거절·실행 오류·presentation 실패·external navigation 실패와 stale
   결과는 현재 panel과 browse/query 상태를 유지합니다. 초기화는 close transition 완료 뒤 일어납니다.

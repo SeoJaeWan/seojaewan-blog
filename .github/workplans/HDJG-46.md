@@ -18,6 +18,10 @@ h2. 확정 계약
   반환한 성공·실패만 open 결과로 사용한다.
 - index 선택은 실제 heading으로 scroll하고 overlay를 닫는다. keyboard와 focus는 유효한 heading 또는
   overlay opener로 이동한다.
+- pinned와 모두 보기 header는 같은 title typography와 spacing을 사용하며 500ms 수평 slide로
+  전환한다. 이 전환에 opacity 변화나 즉시 숨김을 섞지 않는다.
+- index는 항목이 있는 group만 표시한다. 목록과 overlay는 500ms scale·opacity로 전환하되 전환 중
+  scrollbar를 숨기고, group 선택 시 목록 위치를 먼저 즉시 맞춘 뒤 overlay를 닫고 heading에 focus한다.
 - pin, unpin과 reorder는 기존 Start Action·Operation을 사용한다. pointer drag는 이전 위치 측정,
   commit, 새 위치 측정과 150ms 이동 표현 순서를 따른다.
 - Folder·Content는 기존 Window Action으로, ExternalShortcut은 새 탭 navigation port로 연다.
@@ -47,13 +51,14 @@ h2. 검증 계약
 - Resource lifecycle: Window commit·충족된 no-op 성공, 거절·실행 오류·presentation 실패,
   external navigation 성공·실패·throw, duplicate·inactive·stale request와 close 완료 초기화
 - Product jsdom: current label·reorder capability, empty/long label, Action mapping과 query body 전환
-- Storybook Chromium: 6열 keyboard·pointer drag·150ms movement, 4열 index·focus·scroll·500ms 전환,
+- Storybook Chromium: 6열 keyboard·pointer drag·150ms movement, slide-only browse 전환,
+  실제 group만 있는 4열 index·focus·# scroll·scrollbar가 숨겨진 500ms 전환,
   전체 Start open·query·Resource success·reopen 흐름
 - pinned legacy 비교: 6열, 34px icon, 8px 12px tile padding, 12px 두 줄 label과 150ms 이동 표현을
   유지한다. persisted `ResourceRef`, keyboard grid와 pointer FLIP은 current architecture에 맞춘 차이다.
 - All/Index legacy 비교: 4열, 8px gap, 20px index, 16px list padding, 25px row icon, 14px row,
-  500ms list/index scale 전환을 유지한다. current 구현은 전체 51개 canonical key를 표시하고 빈 key를
-  비활성화하며 숫자를 0–9로 나눈다. legacy의 숫자→# 분류와 local state는 가져오지 않는다.
+  500ms list/index scale·opacity 전환과 항목이 있는 group만 표시하는 결과를 유지한다. current 구현은
+  숫자를 0–9로 나누고 전환 중 scrollbar를 숨긴다. legacy의 숫자→# 분류와 local state는 가져오지 않는다.
 
 최종 통합 head에서 다음을 모두 실행한다.
 
@@ -62,7 +67,7 @@ Storybook test와 static Storybook build를 차례로 실행한다.
 
 h2. Canonical Local Work Memory
 
-- `start-screen@01a088cb-49f2-7081-a1c0-34e4464689ea`
+- `start-screen@01a089ca-f8af-7b05-b5a8-8ac2650060f0`
 - `taskbar-panel-lifecycle@01a088ca-b0ac-728f-ac9f-5f474dbca31c`
 - `hdjg-46-start-screen-scope-decision@01a088cc-93d5-73e8-81a2-8563300cc031`
 
@@ -74,7 +79,7 @@ ExternalShortcut은 별도의 사용 가능 여부 모델 없이 실제 navigati
 detail은 HDJG-47, Context Menu UI는 HDJG-49, 실제 Window/Application 조합은 HDJG-52–55·58의 경계로
 남는다.
 
-이 작업에서는 push, PR 본문 변경, main 또는 사용자 branch merge와 worktree 정리를 수행하지 않는다.
+이 후속 수정에서는 push와 PR 본문 변경을 수행하지 않는다.
 
 ## Jira
 

@@ -130,10 +130,6 @@
   text-align: center;
 }
 
-.taskbar-start-pinned[data-active="false"] {
-  visibility: hidden;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .taskbar-start-pinned__item {
     transition-duration: 0ms;

@@ -35,33 +35,21 @@
 }
 
 .taskbar-start__browse-view {
-  inset: 0;
+  block-size: 100%;
+  inline-size: 100%;
+  inset-block: 0;
+  inset-inline-start: 0;
   position: absolute;
   transition-duration: var(--wd-window-panel-view-transition-duration);
-  transition-property: opacity, transform, visibility;
-}
-
-.taskbar-start__browse-view[data-view="pinned"] {
-  transform: translateX(0);
-}
-
-.taskbar-start__browse[data-view="all"]
-  .taskbar-start__browse-view[data-view="pinned"] {
-  opacity: 0;
-  transform: translateX(-100%);
-  visibility: hidden;
+  transition-property: transform;
 }
 
 .taskbar-start__browse-view[data-view="all"] {
-  opacity: 0;
-  transform: translateX(100%);
-  visibility: hidden;
+  inset-inline-start: 100%;
 }
 
-.taskbar-start__browse[data-view="all"] .taskbar-start__browse-view[data-view="all"] {
-  opacity: 1;
-  transform: translateX(0);
-  visibility: visible;
+.taskbar-start__browse[data-view="all"] .taskbar-start__browse-view {
+  transform: translateX(-100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
