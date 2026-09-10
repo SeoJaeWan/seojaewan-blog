@@ -93,9 +93,17 @@ export type WindowStoreChangeKind =
    */
   | "tab-scrolled"
   /**
-   * Chrome refresh 명령이 location과 history를 유지하고 reloadRevision을 증가시켰다.
+   * Explorer 또는 Chrome refresh가 제품별 화면 상태를 새 history 없이 갱신했다.
    */
-  | "tab-refreshed";
+  | "tab-refreshed"
+  /** Explorer tab-local 검색어가 바뀌었다. */
+  | "tab-query-changed"
+  /** Explorer tab-local Sidebar expansion set이 바뀌었다. */
+  | "tab-expansion-changed"
+  /** Explorer tab-local Content selection이 바뀌었다. */
+  | "tab-selection-changed"
+  /** Explorer Window가 공유하는 Sidebar runtime 폭이 바뀌었다. */
+  | "sidebar-width-changed";
 
 /**
  * commit을 식별하는 종류와 영향을 받은 runtime identity다.
@@ -162,6 +170,16 @@ export type WindowStoreFailureReason =
    * Chrome location의 discriminant, 필드 수, 주소 또는 값 구조가 계약과 달라 거절했다.
    */
   | "invalid-location"
+  /** Explorer target wrapper 또는 unresolved path 문자열이 계약과 달라 거절했다. */
+  | "invalid-explorer-target"
+  /** Explorer query가 문자열이 아니어서 거절했다. */
+  | "invalid-query"
+  /** Explorer expanded Folder ID 목록이 배열 또는 ResourceId 형식이 아니어서 거절했다. */
+  | "invalid-expanded-folder-ids"
+  /** Explorer selection이 ResourceRef 배열 형식이 아니어서 거절했다. */
+  | "invalid-selection"
+  /** Explorer Sidebar 폭이 유한한 양수가 아니어서 거절했다. */
+  | "invalid-sidebar-width"
   /**
    * setMode에 desktop 또는 mobile 이외의 값이 runtime 입력으로 전달되어 거절했다.
    */
