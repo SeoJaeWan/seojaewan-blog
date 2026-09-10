@@ -1,17 +1,23 @@
 # Agent Guide
 
-This repository rebuilds a Windows 11-style personal blog around the canonical
-`packages/design` UI/Core/Shell boundaries. `packages/ui` and `packages/shell` are
-legacy visual, asset, interaction, and timing references only.
+Before planning or changing this repository, read the relevant current canonical
+documents from Workbench Local Work Memory for project `seojaewan/seojaewan-blog`.
 
-## Knowledge precedence
+## Knowledge ownership
 
-1. Checked-in source, tests, scripts, and executable config describe the actual checkout.
-2. Workbench Local Work Memory owns durable architecture, conventions, guides, decisions, and
-   revision-pinned evidence.
-3. Gateway Work Items own current delivery status, priorities, dependencies, and follow-up work.
+- Checked-in source, tests, scripts, configuration, and executable results describe the
+  actual checkout.
+- Workbench Local Work Memory owns durable architecture, contracts, conventions,
+  decisions, guides, and revision-pinned evidence.
+- Gateway Work Items own current delivery status, priorities, dependencies, and
+  follow-up work.
 
-Do not recreate project knowledge under `.codex`. If repository reality differs from Local Work
-Memory, record it as documentation drift and reconcile both deliberately. Do not restore legacy
-decisions that conflict with the current canonical Memory; Git history remains available for
-historical inspection.
+Use the most specific current Concept, Contract, or Convention for implementation
+decisions. Historical Decisions and Evidence provide context but do not override
+current contracts.
+
+If repository reality differs from canonical Memory, report it as documentation drift
+and reconcile it deliberately. Do not silently restore a historical decision.
+
+Keep this file as bootstrap guidance only. Do not duplicate project knowledge here or
+under `.codex`.
