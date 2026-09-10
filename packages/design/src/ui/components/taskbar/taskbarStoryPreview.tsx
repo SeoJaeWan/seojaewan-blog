@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import type { Decorator } from "@storybook/react-vite";
 
+import "./taskbarStoryPreview.css";
+
 /** 제품과 보조 결과를 분리하는 Taskbar Storybook 전용 체험 영역이다. */
 export const TaskbarPreview = ({
   children,

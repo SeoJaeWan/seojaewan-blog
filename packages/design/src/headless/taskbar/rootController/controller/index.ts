@@ -10,6 +10,7 @@ import {
   createMobileTaskbarApplicationIntent,
   executeTaskbarWindowOperationIntent,
 } from "../../actions/index.js";
+import { selectTaskbarRootPrimaryPanel } from "../../actions/rootAction/index.js";
 import {
   selectTaskbarRootSnapshot,
   type TaskbarRootController,
@@ -43,7 +44,12 @@ export const useTaskbarRootController = (): TaskbarRootController => {
   const actions = useMemo<TaskbarRootControllerActions>(
     () =>
       Object.freeze({
-        execute: runtime.taskbarRoot.execute,
+        execute: (action) => {
+          runtime.primaryPanel.execute({
+            type: "trigger",
+            panel: selectTaskbarRootPrimaryPanel(action),
+          });
+        },
         launchMobileApplication: (applicationId) => {
           executeTaskbarWindowOperationIntent(
             createMobileTaskbarApplicationIntent(applicationId),

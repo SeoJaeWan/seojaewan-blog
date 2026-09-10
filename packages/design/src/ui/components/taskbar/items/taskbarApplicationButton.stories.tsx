@@ -3,14 +3,11 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 
-import {
-  TaskbarPreview,
-  withTaskbarDescription,
-} from "../../../../../.storybook/taskbarPreview.js";
+import { TaskbarPreview, withTaskbarDescription } from "../taskbarStoryPreview.js";
 import { TaskbarApplicationButton } from "./index.js";
 
 /**
- * 모드 정책과 독립적인 버튼 입력·선택한 앱를 관찰한다.
+ * 모드 정책과 독립적인 버튼 입력·앱 identity를 관찰한다.
  *
  * Window나 desktop Group 결과를 모사하지 않고 전달한 요청만 표시한다.
  */
@@ -69,7 +66,7 @@ export const Default: Story = {
   name: "직접 눌러 보기",
   parameters: {
     taskbarDescription:
-      "클릭하거나 Tab → Enter·Space로 실행해 보세요. 아래에서 요청 횟수와 선택한 앱를 확인할 수 있습니다. 실제 창은 열지 않습니다.",
+      "클릭하거나 Tab → Enter·Space로 실행해 보세요. 아래에서 요청 횟수와 선택한 앱을 확인할 수 있습니다. 실제 창은 열지 않습니다.",
   },
   render: () => <ApplicationExample />,
 };
@@ -148,8 +145,8 @@ export const StateComparison: Story = {
       {[
         { id: "default", label: "기본", active: false },
         { id: "active", label: "활성", active: true },
-        { id: "hover", label: "마우스를 올린 상태", active: false },
-        { id: "active-hover", label: "활성 앱에 마우스를 올린 상태", active: true },
+        { id: "hover", label: "호버", active: false },
+        { id: "active-hover", label: "활성 + 호버", active: true },
       ].map(({ id, label, active }) => (
         <div key={id}>
           <TaskbarPreview results={<span>{label}</span>}>
@@ -185,14 +182,14 @@ export const Disabled: Story = {
   args: { disabled: true },
   parameters: {
     taskbarDescription:
-      "흐리게 표시되며 입력 요청을 보내지 않습니다. 설정 패널에서 disabled를 끄면 사용할 수 있습니다.",
+      "흐리게 표시되며 입력 요청을 보내지 않습니다. 설정 패널에서 사용 불가 상태를 끄면 다시 사용할 수 있습니다.",
   },
 };
 export const Interaction: Story = {
   name: "입력 전달 자동 확인",
   parameters: {
     taskbarDescription:
-      "Tab → Enter → Space → 클릭으로 요청 3회와 선택한 앱이 파일 탐색기인지를 자동 확인합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
+      "Tab → Enter → Space → 클릭으로 요청 3회와 선택한 앱이 파일 탐색기인지 자동 확인합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
   },
   render: () => <ApplicationExample />,
   play: async ({ canvasElement }) => {

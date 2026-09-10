@@ -28,10 +28,18 @@ export {
   type TaskbarApplicationButtonProps,
 } from "./components/taskbar/items/index.js";
 export { TaskbarRoot, type TaskbarRootProps } from "./components/taskbar/root/index.js";
-export { TaskbarSearch, type TaskbarSearchProps } from "./components/taskbar/search/index.js";
 export {
+  TaskbarSearch,
+  TaskbarSearchPanel,
+  type TaskbarSearchPanelProps,
+  type TaskbarSearchProps,
+} from "./components/taskbar/search/index.js";
+export {
+  TaskbarStart,
   TaskbarStartButton,
   type TaskbarStartButtonProps,
+  type TaskbarStartProps,
+  type TaskbarStartSearchInputProps,
 } from "./components/taskbar/start/index.js";
 export {
   TaskbarTimestamp,

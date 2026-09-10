@@ -1,17 +1,25 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type {
   ControllerViewModel,
   HeadlessFeatureRuntime,
   HeadlessRuntime,
+  PrimaryPanelAction,
+  PrimaryPanelOperationHandle,
+  PrimaryPanelSnapshot,
   TaskbarTimestampClock,
   TaskbarTimestampTimer,
   WindowMode,
   WindowState,
 } from "../../../../headless/index.js";
 import type { TaskbarApplicationId } from "../../../../headless/index.js";
-import { HeadlessRuntimeProvider } from "../../../../headless/index.js";
+import {
+  createPrimaryPanelState,
+  HeadlessRuntimeProvider,
+  PrimaryPanelOperations,
+  TransitionRegistry,
+} from "../../../../headless/index.js";
 import { TaskbarRoot, type TaskbarRootProps } from "./index.js";
 
 const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
@@ -23,42 +31,94 @@ const TEST_TIMESTAMP_CLOCK: TaskbarTimestampClock = Object.freeze({
   clearTimeout: () => undefined,
 });
 
-/** UI fixture가 지정한 준비 상태와 공통 mode를 반환하는 최소 runtime을 만든다. */
-const createRuntime = (mode?: WindowMode, activeApplication?: TaskbarApplicationId) => {
-  const viewModel: ControllerViewModel<WindowState> =
+/** mode와 active application만 가진 immutable WindowState fixture를 만든다. */
+const createWindowState = (
+  mode: WindowMode,
+  activeApplication?: TaskbarApplicationId,
+): WindowState =>
+  Object.freeze({
+    mode,
+    workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
+    sessions:
+      activeApplication === undefined
+        ? Object.freeze([])
+        : Object.freeze([
+            Object.freeze({
+              applicationId: activeApplication,
+            }) as WindowState["sessions"][number],
+          ]),
+    stackingOrder: Object.freeze([]),
+    activeSessionId: null,
+  });
+
+/** UI fixture가 공통 mode와 실제 primary panel Operation connection을 함께 제공한다. */
+const createRuntime = (initialMode?: WindowMode, activeApplication?: TaskbarApplicationId) => {
+  let mode = initialMode;
+  let viewModel: ControllerViewModel<WindowState> =
     mode === undefined
       ? Object.freeze({ status: "not-ready", snapshot: null })
-      : Object.freeze({
-          status: "ready",
-          snapshot: Object.freeze({
-            mode,
-            workArea: Object.freeze({ x: 0, y: 0, width: 1440, height: 850 }),
-            sessions:
-              activeApplication === undefined
-                ? Object.freeze([])
-                : Object.freeze([
-                    Object.freeze({
-                      applicationId: activeApplication,
-                    }) as WindowState["sessions"][number],
-                  ]),
-            stackingOrder: Object.freeze([]),
-            activeSessionId: null,
-          }),
-        });
+      : Object.freeze({ status: "ready", snapshot: createWindowState(mode, activeApplication) });
+  const windowListeners = new Set<() => void>();
   const windows = Object.freeze({
     getSnapshot: () => viewModel,
     getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
-    subscribe: () => () => undefined,
+    subscribe: (listener: () => void) => {
+      windowListeners.add(listener);
+      return () => windowListeners.delete(listener);
+    },
     execute: vi.fn(() => ({}) as never),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
 
-  const executeRootAction = vi.fn();
+  const primaryPanelState = createPrimaryPanelState();
+  const transitions = new TransitionRegistry();
+  const primaryPanelOperations = new PrimaryPanelOperations({
+    modeReader: { getMode: () => mode ?? "not-ready" },
+    state: primaryPanelState,
+    transitions,
+  });
+  const primaryPanelNotReady = Object.freeze({
+    status: "not-ready",
+    snapshot: null,
+  }) satisfies ControllerViewModel<PrimaryPanelSnapshot>;
+  let primaryPanelSnapshot = primaryPanelState.getSnapshot();
+  let primaryPanelViewModel = Object.freeze({
+    status: "ready",
+    snapshot: primaryPanelSnapshot,
+  }) satisfies ControllerViewModel<PrimaryPanelSnapshot>;
+  const primaryPanel = Object.freeze({
+    getSnapshot: () => {
+      const snapshot = primaryPanelState.getSnapshot();
+      if (snapshot !== primaryPanelSnapshot) {
+        primaryPanelSnapshot = snapshot;
+        primaryPanelViewModel = Object.freeze({ status: "ready", snapshot });
+      }
+      return primaryPanelViewModel;
+    },
+    getServerSnapshot: () => primaryPanelNotReady,
+    subscribe: primaryPanelState.subscribe,
+    execute: (action: PrimaryPanelAction) => primaryPanelOperations.execute(action),
+  }) satisfies HeadlessFeatureRuntime<
+    PrimaryPanelSnapshot,
+    PrimaryPanelAction,
+    PrimaryPanelOperationHandle
+  >;
   const runtime = Object.freeze({
-    taskbarRoot: Object.freeze({ execute: executeRootAction }),
+    primaryPanel,
+    transitions,
     windows,
   }) as unknown as HeadlessRuntime;
 
-  return { executeRootAction, executeWindowAction: windows.execute, runtime };
+  return {
+    executeWindowAction: windows.execute,
+    primaryPanelState,
+    runtime,
+    /** 새 mode를 Root와 primary panel Operation에 같은 tick으로 반영한다. */
+    setMode(nextMode: WindowMode) {
+      mode = nextMode;
+      viewModel = Object.freeze({ status: "ready", snapshot: createWindowState(nextMode) });
+      for (const listener of windowListeners) listener();
+    },
+  };
 };
 
 /** 실제 provider와 TaskbarRoot를 지정한 mode로 렌더링한다. */
@@ -80,77 +140,74 @@ const renderRoot = (
 afterEach(() => cleanup());
 
 describe("TaskbarRoot", () => {
-  it("Search 입력값을 외부 query 소유자에게 전달하고 초기값을 표시한다", () => {
-    const onSearchValueChange = vi.fn();
-    const { executeRootAction } = renderRoot("desktop", {
-      defaultSearchValue: "이전 검색",
-      onSearchValueChange,
-    });
+  it("실제 Taskbar input 하나를 headless Search query와 panel에 연결한다", async () => {
+    const mounted = renderRoot("desktop");
     const input = screen.getByRole<HTMLInputElement>("textbox", { name: "검색" });
-    expect(input.value).toBe("이전 검색");
+
+    expect(screen.getAllByRole("textbox", { name: "검색" })).toHaveLength(1);
     fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: "새 검색어" } });
-    expect(input.value).toBe("새 검색어");
-    expect(onSearchValueChange).toHaveBeenLastCalledWith("새 검색어");
-    expect(executeRootAction).toHaveBeenCalledExactlyOnceWith({ type: "request-search" });
+    await waitFor(() => expect(mounted.primaryPanelState.getSnapshot().activePanel).toBe("search"));
+    fireEvent.change(input, { target: { value: "한글  검색 " } });
+    await waitFor(() => expect(input.value).toBe("한글  검색 "));
+    expect(mounted.primaryPanelState.getSnapshot().searchQuery).toBe("한글  검색 ");
+    expect(screen.getAllByRole("textbox", { name: "검색" })).toHaveLength(1);
   });
 
-  it("desktop mode에서 Windows 다음에 Search를 표시하고 각 Action을 한 번 전달한다", () => {
-    const { container, executeRootAction } = renderRoot("desktop");
+  it("desktop mode에서 실제 Start 다음에 Search를 표시하고 active identity를 연결한다", async () => {
+    const mounted = renderRoot("desktop");
     const taskbar = screen.getByRole("navigation", { name: "작업 표시줄" });
     const windows = screen.getByRole("button", { name: "시작" });
     const search = screen.getByRole("textbox", { name: "검색" });
 
     expect(taskbar.getAttribute("data-status")).toBe("ready");
     expect(taskbar.getAttribute("data-mode")).toBe("desktop");
-    expect(container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
-    expect(container.querySelector('[data-taskbar-region="desktop-applications"]')).not.toBeNull();
+    expect(mounted.container.querySelector('[data-taskbar-region="items"]')).not.toBeNull();
+    expect(
+      mounted.container.querySelector('[data-taskbar-region="desktop-applications"]'),
+    ).not.toBeNull();
     expect(Array.from(taskbar.querySelectorAll("button, input"))).toEqual([windows, search]);
     expect(screen.getByText("15:42")).not.toBeNull();
     expect(screen.getByText("2026-07-10")).not.toBeNull();
     expect(windows.getAttribute("aria-pressed")).toBe("false");
 
     fireEvent.click(windows);
-    expect(executeRootAction).toHaveBeenCalledExactlyOnceWith({ type: "request-windows" });
-
-    fireEvent.focus(search);
-    expect(executeRootAction).toHaveBeenNthCalledWith(2, { type: "request-search" });
-    expect(executeRootAction).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(mounted.primaryPanelState.getSnapshot().activePanel).toBe("start"));
+    expect(windows.getAttribute("aria-pressed")).toBe("true");
+    expect(windows.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("dialog", { name: "시작" })).not.toBeNull();
+    expect(screen.getByRole("textbox", { name: "앱 및 문서 검색" })).not.toBeNull();
   });
 
-  it("Windows selected 표현을 반영하고 disabled 입력은 Action을 전달하지 않는다", () => {
-    const selected = renderRoot("desktop", { windowsSelected: true });
-    const windows = screen.getByRole("button", { name: "시작" });
-    expect(windows.getAttribute("aria-pressed")).toBe("true");
-    expect(windows.getAttribute("data-selected")).toBe("true");
-    selected.unmount();
-
+  it("disabled Start 입력은 panel identity를 바꾸지 않고 Search와 독립적이다", async () => {
     const disabled = renderRoot("desktop", { windowsDisabled: true });
     const disabledWindows = screen.getByRole("button", { name: "시작" });
     fireEvent.click(disabledWindows);
     expect((disabledWindows as HTMLButtonElement).disabled).toBe(true);
-    expect(disabled.executeRootAction).not.toHaveBeenCalled();
+    expect(disabled.primaryPanelState.getSnapshot().activePanel).toBeNull();
+
+    const search = screen.getByRole("textbox", { name: "검색" });
+    fireEvent.focus(search);
+    await waitFor(() =>
+      expect(disabled.primaryPanelState.getSnapshot().activePanel).toBe("search"),
+    );
   });
 
-  it("Search selected 표현은 panel 관계를 만들지 않고 disabled 입력은 Windows와 독립적이다", () => {
-    const selected = renderRoot("desktop", { searchSelected: true });
-    const search = screen.getByRole("textbox", { name: "검색" });
-    expect(search.getAttribute("data-selected")).toBe("true");
-    expect(search.hasAttribute("aria-controls")).toBe(false);
-    expect(search.hasAttribute("aria-expanded")).toBe(false);
-    selected.unmount();
+  it("desktop Search가 열린 상태에서 mobile로 바뀌면 query와 대기 panel을 정리한다", async () => {
+    const mounted = renderRoot("desktop");
+    const input = screen.getByRole<HTMLInputElement>("textbox", { name: "검색" });
 
-    const disabled = renderRoot("desktop", { searchDisabled: true });
-    const disabledSearch = screen.getByRole("textbox", { name: "검색" });
-    const windows = screen.getByRole("button", { name: "시작" });
-    fireEvent.click(disabledSearch);
-    expect((disabledSearch as HTMLButtonElement).disabled).toBe(true);
-    expect(disabled.executeRootAction).not.toHaveBeenCalled();
+    fireEvent.focus(input);
+    await waitFor(() => expect(mounted.primaryPanelState.getSnapshot().activePanel).toBe("search"));
+    fireEvent.change(input, { target: { value: "mobile 전환" } });
+    await waitFor(() =>
+      expect(mounted.primaryPanelState.getSnapshot().searchQuery).toBe("mobile 전환"),
+    );
 
-    fireEvent.click(windows);
-    expect(disabled.executeRootAction).toHaveBeenCalledExactlyOnceWith({
-      type: "request-windows",
-    });
+    mounted.setMode("mobile");
+    await waitFor(() => expect(mounted.primaryPanelState.getSnapshot().activePanel).toBeNull());
+    await waitFor(() => expect(mounted.primaryPanelState.getSnapshot().searchQuery).toBe(""));
+    expect(screen.queryByRole("textbox", { name: "검색" })).toBeNull();
+    expect(screen.getByRole("button", { name: "파일 탐색기" })).not.toBeNull();
   });
 
   it("mobile mode에서 Explorer·Chrome·Timestamp 순서를 표시하고 각 application Action을 전달한다", () => {

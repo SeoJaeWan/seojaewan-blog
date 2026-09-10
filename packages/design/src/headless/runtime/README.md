@@ -90,6 +90,11 @@ const application = createElement(
 );
 ```
 
-네 controller는 `useSyncExternalStore`로 기존 immutable Store를 구독한다. `viewModel`은 `{ status: "ready", snapshot }` 또는 `{ status: "not-ready", snapshot: null }`이고 `actions`는 별도 객체다. SSR과 hydration 첫 읽기는 같은 안정적인 `not-ready` 객체를 사용하며 서버에서 사용자 Store를 초기화하지 않는다. 일반 구독 cleanup은 listener만 제거하고 실행 중 Operation을 취소하지 않는다.
+Foundation Store controller와 `usePrimaryPanelController`는 `useSyncExternalStore`로 기존 immutable snapshot을 구독한다. `viewModel`은 `{ status: "ready", snapshot }` 또는 `{ status: "not-ready", snapshot: null }`이고 `actions`는 별도 객체다. SSR과 hydration 첫 읽기는 같은 안정적인 `not-ready` 객체를 사용하며 서버에서 사용자 Store를 초기화하지 않는다. 일반 구독 cleanup은 listener만 제거하고 실행 중 Operation을 취소하지 않는다.
 
 Window·Start·Taskbar Component는 Handle의 `operationId`와 현재 phase를 `completeTransition`, `abortTransition`, `failTransition`에 전달한다. 중복되거나 늦은 신호는 `false`이며 기존 결과를 바꾸지 않는다. Workspace는 현재 별도 UI transition을 소유하지 않아 `execute`만 제공한다.
+
+runtime의 `primaryPanel` channel은 runtime별 in-memory state와 `PrimaryPanelOperations`를 조합한다.
+responsive mode는 Action 실행 시 Window adapter에서 다시 읽으며, Window가 준비되지 않았거나 mobile이면
+desktop panel activation을 명시적으로 거절한다. 이 channel은 DOM·Base UI callback을 알지 않고 후속
+Taskbar 제품 connection이 operation ID와 enter/exit phase를 widget callback에 연결한다.

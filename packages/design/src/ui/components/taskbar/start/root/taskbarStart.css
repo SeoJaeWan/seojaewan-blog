@@ -1,0 +1,23 @@
+.taskbar-start {
+  block-size: 100%;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.taskbar-start__search {
+  flex: 0 0 auto;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.taskbar-start__search .taskbar-search-surface,
+.taskbar-start__search .taskbar-search {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.taskbar-start__body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}

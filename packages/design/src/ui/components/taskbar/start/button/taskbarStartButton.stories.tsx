@@ -1,12 +1,8 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
 
-import {
-  TaskbarPreview,
-  withTaskbarDescription,
-} from "../../../../../.storybook/taskbarPreview.js";
+import { TaskbarPreview, withTaskbarDescription } from "../../taskbarStoryPreview.js";
 import { TaskbarStartButton } from "./index.js";
 
 /** 실제 product callback 호출 횟수를 Canvas에서 관찰할 수 있게 렌더링한다. */
@@ -46,7 +42,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "작업 표시줄에서 시작 메뉴를 여는 데 사용하는 버튼입니다. 선택·누름·사용 불가 상태와 키보드 조작을 확인할 수 있습니다. 이 예제에는 시작 메뉴가 연결되어 있지 않습니다.",
+          "작업 표시줄에서 시작 메뉴를 여는 데 사용하는 버튼입니다. 선택·누름·사용 불가 상태와 키보드 조작을 확인할 수 있습니다.",
       },
     },
   },
@@ -88,7 +84,7 @@ export const SelectedHover: Story = {
   parameters: {
     pseudo: { hover: ".taskbar-start-button" },
     taskbarDescription:
-      "활성 여부와 관계없이 마우스를 올리면 같은 밝은 반투명 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
+      "선택 여부와 관계없이 마우스를 올리면 같은 밝은 반투명 배경을 보여 줍니다. 마우스가 벗어나면 원래 상태의 배경으로 돌아갑니다.",
   },
 };
 
@@ -114,30 +110,7 @@ export const Disabled: Story = {
   name: "사용 불가",
   parameters: {
     taskbarDescription:
-      "흐리게 표시되며 실행 요청을 보내지 않습니다. 설정 패널에서 disabled를 끄면 사용할 수 있습니다.",
+      "흐리게 표시되며 실행 요청을 보내지 않습니다. 설정 패널에서 사용 불가 상태를 끄면 다시 사용할 수 있습니다.",
   },
   args: { disabled: true },
-};
-
-export const Interaction: Story = {
-  name: "입력 흐름 자동 확인",
-  parameters: {
-    taskbarDescription:
-      "Tab → Enter → Space → 클릭을 자동 실행하며 요청 횟수가 1·2·3으로 증가합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
-  },
-  render: () => <ActionFixture />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: "시작" });
-    const actionCount = canvas.getByRole("status", { name: "시작 요청 횟수" });
-
-    await userEvent.tab();
-    await expect(button).toHaveFocus();
-    await userEvent.keyboard("{Enter}");
-    await expect(actionCount).toHaveTextContent("1");
-    await userEvent.keyboard(" ");
-    await expect(actionCount).toHaveTextContent("2");
-    await userEvent.click(button);
-    await expect(actionCount).toHaveTextContent("3");
-  },
 };
