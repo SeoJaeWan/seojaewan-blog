@@ -4,6 +4,7 @@
  * 현재 상태와 저장 처리는 WorkspaceStore가 소유한다.
  */
 import type { WorkspaceState } from "../../model/index.js";
+import type { FolderNameFailureReason } from "../../namePolicy/index.js";
 
 /**
  * Workspace 명령이 변경을 반영하지 않은 이유다.
@@ -11,6 +12,7 @@ import type { WorkspaceState } from "../../model/index.js";
  * no-op은 오류가 아닌 변경 불필요 상태이며, 저장 실패는 WorkspaceStoreResult에서 별도로 표현한다.
  */
 export type WorkspaceOperationFailureReason =
+  | FolderNameFailureReason
   /**
    * 생성한 Folder의 ID가 현재 Workspace 또는 연결된 정적 Catalog에 이미 존재한다.
    */
@@ -23,6 +25,10 @@ export type WorkspaceOperationFailureReason =
    * 이름을 변경하려는 Folder가 현재 Workspace에 존재하지 않는다.
    */
   | "folder-not-found"
+  /**
+   * 같은 parent의 다른 Folder가 Unicode 정규화와 대소문자를 무시했을 때 같은 이름을 사용한다.
+   */
+  | "folder-name-conflict"
   /**
    * 요청한 이름 또는 parent가 현재 값과 같아 변경할 내용이 없다.
    */
