@@ -1,7 +1,8 @@
 /**
- * @file headless Window presentation 요청과 해당 Session의 제품 root mount를 연결한다.
+ * @file 외부 앱에서 Window Runtime의 전환 요청을 화면의 `WindowRoot`에 전달할 때 쓰는 연결 객체다.
  *
- * DOM animation과 transition 완료 판단은 소유하지 않고 serializable 요청의 전달·정리만 담당한다.
+ * Runtime이 상태를 바꾼 뒤 보낸 열기·닫기·최소화·복원·최대화 요청을 해당 창에 전달하고,
+ * 창이 아직 mount되지 않았으면 잠시 보관한다. 실제 상태 변경과 DOM animation은 담당하지 않는다.
  */
 import type {
   WindowPresentationPort,
@@ -9,24 +10,24 @@ import type {
   WindowSessionId,
 } from "../../../../../../headless/windows/index.js";
 
-/** Window 제품 root가 현재 표현할 요청 또는 정리 사실을 받는 함수다. */
+/** `WindowRoot`가 실행할 전환 요청을 받으며, `null`은 현재 요청이 끝났음을 뜻한다. */
 export type WindowPresentationConsumer = (request: WindowPresentationRequest | null) => void;
 
 /**
- * runtime presentation port와 Session별 제품 root mount를 잇는 UI binding이다.
+ * Window Runtime이 보낸 전환 요청을 같은 Session의 `WindowRoot`에 전달하는 외부 앱용 연결 객체다.
  *
- * 새 Window의 semantic commit 직후 root가 아직 mount되지 않았으면 숫자 요청을 보관하고,
- * 같은 Session이 mount될 때 전달한다. 별도 Store나 전역 구독 채널은 만들지 않는다.
+ * 외부 앱은 이 객체 하나를 Runtime의 `windowPresentation`과 각 `WindowRoot`의
+ * `presentationBinding`에 함께 전달한다.
  */
 export type WindowPresentationBinding = Omit<WindowPresentationPort, "release"> &
   Readonly<{
-    /** transition 대기가 끝난 exact request를 보관소와 연결된 root에서 제거한다. */
+    /** 완료된 요청이 현재 요청과 같을 때 해당 창에서 제거한다. */
     release(request: WindowPresentationRequest): void;
-    /** Session 제품 root를 연결하고 현재 보관 중인 정확한 요청을 즉시 전달한다. */
+    /** 한 창의 `WindowRoot`를 연결하고, 먼저 도착해 있던 요청이 있으면 즉시 전달한다. */
     mount(sessionId: WindowSessionId, consumer: WindowPresentationConsumer): () => void;
   }>;
 
-/** operation ID와 phase가 모두 같은 presentation 요청인지 확인한다. */
+/** 늦게 끝난 animation이 더 새로운 요청을 지우지 않도록 두 요청의 식별값을 비교한다. */
 const isSamePresentation = (
   current: WindowPresentationRequest,
   requested: WindowPresentationRequest,
@@ -36,29 +37,30 @@ const isSamePresentation = (
   current.phase === requested.phase;
 
 /**
- * mount 전 요청을 Session별로 보관하는 Window presentation binding을 만든다.
+ * 외부 앱에서 Window Runtime과 모든 `WindowRoot` 사이에 공유할 연결 객체를 만든다.
  *
- * `present`는 요청을 저장한 뒤 연결된 root에 전달하고, `release`는 현재 요청과 정확히
- * 일치할 때만 보관값과 root 입력을 지운다. unmount는 제품 Operation을 취소하지 않는다.
+ * 앱 초기화 때 한 번 만들고 Runtime의 `windowPresentation`과 각 `WindowRoot`의
+ * `presentationBinding`에 같은 객체를 전달한다. `WindowRoot`보다 요청이 먼저 도착하면
+ * 해당 창이 mount될 때까지 보관한다. 실제 창 상태는 Window Store가, DOM animation은 `WindowRoot`가 맡는다.
  */
 export const createWindowPresentationBinding = (): WindowPresentationBinding => {
   const requests = new Map<WindowSessionId, WindowPresentationRequest>();
   const consumers = new Map<WindowSessionId, WindowPresentationConsumer>();
 
   return Object.freeze({
-    /** queue가 실행한 최신 숫자 요청을 보관하고 준비된 Session root에 전달한다. */
+    /** Runtime이 요청한 전환을 보관하고, 준비된 해당 창의 `WindowRoot`에 전달한다. */
     present: (request: WindowPresentationRequest) => {
       requests.set(request.sessionId, request);
       consumers.get(request.sessionId)?.(request);
     },
-    /** 완료·중단·watchdog으로 끝난 정확한 요청만 제거하고 늦은 정리는 무시한다. */
+    /** 현재 요청이 끝났을 때만 제거하며, 이전 animation에서 늦게 온 완료 보고는 무시한다. */
     release: (request: WindowPresentationRequest) => {
       const current = requests.get(request.sessionId);
       if (current === undefined || !isSamePresentation(current, request)) return;
       requests.delete(request.sessionId);
       consumers.get(request.sessionId)?.(null);
     },
-    /** 한 Session root를 연결하고 cleanup에서는 현재 Operation이나 보관 요청을 건드리지 않는다. */
+    /** 한 창의 `WindowRoot`를 연결하며, 반환한 함수는 root 연결만 해제하고 요청은 유지한다. */
     mount: (sessionId: WindowSessionId, consumer: WindowPresentationConsumer) => {
       consumers.set(sessionId, consumer);
       consumer(requests.get(sessionId) ?? null);

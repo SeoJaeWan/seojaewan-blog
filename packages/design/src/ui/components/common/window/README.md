@@ -28,13 +28,20 @@ window/
 각 폴더의 `index.ts(x)`가 구현 진입점입니다. 두 Hook은 `WindowRoot`만 사용하므로 root 가까이에 두고,
 pointer capture·rAF·DOM animation·focus처럼 브라우저에 연결된 동작을 담당합니다. 순수 bounds 계산과
 Operation 순서는 headless가 담당합니다. `presentationBinding`은 `@window/design`을 사용하는 외부 앱이
-Runtime과 `WindowRoot` 양쪽에 전달하는 공개 연결 utility입니다.
+창의 상태를 관리하는 Runtime과 전환 animation을 실행하는 `WindowRoot` 사이에 요청을 전달하는 공개
+utility입니다.
 
-## Runtime presentation 연결
+## presentationBinding을 사용하는 이유
 
-새 Window는 semantic commit 직후 presentation을 요청하므로 Component mount보다 요청이 먼저 올 수 있다.
-외부 앱에서 `createWindowPresentationBinding`으로 한 번 만든 객체를 runtime과 root에 함께 전달하면
-DOM-free 숫자 요청을 Session별로 보관했다가 정확한 root에 전달합니다.
+창을 열거나 닫고 최소화·복원·최대화하면 Runtime은 먼저 Window Store의 상태를 바꿉니다. 화면의
+`WindowRoot`는 별도로 해당 전환 animation을 실행하고 완료 사실을 Runtime에 알려야 합니다.
+`presentationBinding`은 이때 “어느 창이 어떤 전환을 실행해야 하는지”를 Runtime에서 해당
+`WindowRoot`로 전달합니다.
+
+외부 앱은 앱 초기화 때 `createWindowPresentationBinding`으로 연결 객체를 한 번 만들고, Runtime의
+`windowPresentation`과 모든 `WindowRoot`의 `presentationBinding`에 같은 객체를 전달합니다. 새 창의
+전환 요청이 React mount보다 먼저 도착해도 이 객체가 요청을 Session별로 보관했다가 해당 root가 준비되면
+전달합니다.
 
 ```tsx
 import {
@@ -78,15 +85,22 @@ const ApplicationWindow = ({
 );
 ```
 
+역할은 다음과 같이 나뉩니다.
+
+- Window Store: 창의 최종 상태와 위치를 보관합니다.
+- `presentationBinding`: 이번 전환 요청을 해당 창의 `WindowRoot`에 전달합니다.
+- `WindowRoot`: DOM animation을 실행하고 끝난 요청을 Runtime에 보고합니다.
+
 `minimizeDestination`에는 제품 root가 실제 `TaskbarApplicationButton` icon의
 `getBoundingClientRect()`에서 읽은 viewport 숫자를 전달한다. Taskbar 위치나 viewport가 바뀌면 다음
 최소화·복원 Action 전에 다시 측정한다. Common은 Taskbar DOM을 탐색하지 않는다.
 
-현재 binding은 `{ operationId, sessionId, phase }`를 root의 `data-presentation-*` 입력으로 연결하고
-Operation 대기가 끝나면 exact request를 제거한다. 실제 animation·presence·focus 완료 판정은 이 숫자 요청을
-사용하는 Component lifecycle이 담당하며, timer나 가짜 완료 신호로 대신하지 않는다. enter·restore는 200ms,
-exit·minimize·일반 maximize는 150ms이며 정상 결과는 실제 `Animation.finished` 뒤에만 보고한다. reduced motion은
-즉시 완료하고 unmount·실패·gesture 중단은 정상 완료와 구분해 registry를 정리한다.
+binding은 요청을 식별하는 `{ operationId, sessionId, phase }`를 해당 root에 전달하고, 그 요청이 끝나면
+제거합니다. 늦게 끝난 이전 animation이 새 요청을 지우지 않도록 현재 요청과 식별값이 모두 같을 때만
+제거합니다. 실제 animation·presence·focus 완료 판정은 `WindowRoot`의 Component lifecycle이 담당합니다.
+enter·restore는 200ms, exit·minimize·일반 maximize는 150ms이며 정상 결과는 실제 `Animation.finished` 뒤에만
+보고합니다. reduced motion은 즉시 완료하고 unmount·실패·gesture 중단은 정상 완료와 구분해 registry를
+정리합니다.
 
 최소화된 root는 Session content를 unmount하지 않고 `hidden`, `inert`, `aria-hidden`으로 keyboard와 접근성
 탐색에서 제외한다. restore는 최소화 control이 덮어쓰지 않은 이전 focus element를 복원하고, element가
