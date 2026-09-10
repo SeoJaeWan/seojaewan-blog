@@ -58,7 +58,7 @@ Window Operation은 `waitFor` 등록 뒤 `present`를 호출한다. 따라서 Co
 
 ## React Provider와 controller 연결
 
-Application은 Workspace → Window → Start → Taskbar 순서로 브라우저 Store를 초기화한 뒤 runtime을 render 바깥에서 한 번 만든다. Provider는 이 객체만 전달하며 Store snapshot을 Context state로 복사하거나 재마운트 때 초기화하지 않는다.
+Application은 Workspace → Folder view settings → Window → Start → Taskbar 순서로 브라우저 Store를 초기화한 뒤 runtime을 render 바깥에서 한 번 만든다. Provider는 이 객체만 전달하며 Store snapshot을 Context state로 복사하거나 재마운트 때 초기화하지 않는다. File Explorer를 사용할 때는 Content와 ExternalShortcut Catalog reader도 `fileExplorerResources`로 연결한다.
 
 ```ts
 import {

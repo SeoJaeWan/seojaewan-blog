@@ -5,6 +5,10 @@ import {
   createResourceRef,
   DEFAULT_FOLDER_VIEW_SETTINGS,
   type ExplorerNavigationTarget,
+  type FileExplorerAction,
+  type FileExplorerController,
+  type FileExplorerControllerViewModel,
+  type FileExplorerReadModel,
   type FolderViewSettingsStorage,
   FolderViewSettingsStore,
   HeadlessRuntimeProvider,
@@ -13,12 +17,13 @@ import {
   parseFolderViewSettingsLocation,
   type PrimaryPanelController,
   type PrimaryPanelControllerViewModel,
+  resolveWorkspacePath,
   type StartController,
   type StartControllerViewModel,
   type TaskbarController,
   type TaskbarControllerViewModel,
-  resolveWorkspacePath,
   toExplorerNavigationTarget,
+  useFileExplorerController,
   useHeadlessRuntime,
   usePrimaryPanelController,
   useStartController,
@@ -33,12 +38,14 @@ import {
 } from "../index.js";
 
 type PublicController =
+  | FileExplorerController
   | WindowController
   | WorkspaceController
   | StartController
   | TaskbarController
   | PrimaryPanelController;
 type PublicViewModel =
+  | FileExplorerControllerViewModel
   | WindowControllerViewModel
   | WorkspaceControllerViewModel
   | StartControllerViewModel
@@ -57,6 +64,7 @@ describe("package public consumer", () => {
     const runtimeHook: typeof useHeadlessRuntime = useHeadlessRuntime;
     const controllerHooks = [
       useWindowController,
+      useFileExplorerController,
       useWorkspaceController,
       useStartController,
       useTaskbarController,
@@ -67,9 +75,23 @@ describe("package public consumer", () => {
 
     expect(runtimeProvider).toBeTypeOf("function");
     expect(runtimeHook).toBeTypeOf("function");
-    expect(controllerHooks).toHaveLength(5);
+    expect(controllerHooks).toHaveLength(6);
     expect(runtime.primaryPanel).toBeDefined();
     expect(runtime.transitions).toBeDefined();
+    expect(compileOnly).toBeNull();
+  });
+
+  it("File Explorer 제품 read model과 serializable Action을 package root에서 소비한다", () => {
+    const action: FileExplorerAction = {
+      type: "file-explorer.navigation.submit-address",
+      path: "/Blog",
+    };
+    const compileOnly = null as FileExplorerReadModel | null;
+
+    expect(action).toEqual({
+      type: "file-explorer.navigation.submit-address",
+      path: "/Blog",
+    });
     expect(compileOnly).toBeNull();
   });
 
@@ -84,8 +106,8 @@ describe("package public consumer", () => {
     const resolved = resolveWorkspacePath(workspace, "/blog/");
     const target: ExplorerNavigationTarget = toExplorerNavigationTarget(resolved);
     const storage: FolderViewSettingsStorage = {
-      load: async () => null,
-      save: async () => undefined,
+      load: () => Promise.resolve(null),
+      save: () => Promise.resolve(),
     };
 
     expect(target).toEqual({ kind: "location", location: folder });
