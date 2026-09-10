@@ -93,7 +93,11 @@ describe("PrimaryPanelOperations", () => {
     const opening = operations.execute({ type: "trigger", panel: "search" });
     await opening.committed;
 
-    const query = operations.execute({ type: "update-query", panel: "search", query: "한글  입력" });
+    const query = operations.execute({
+      type: "update-query",
+      panel: "search",
+      query: "한글  입력",
+    });
     await expect(query.settled).resolves.toMatchObject({ status: "settled" });
     expect(state.getSnapshot().searchQuery).toBe("한글  입력");
 
@@ -221,6 +225,101 @@ describe("PrimaryPanelOperations", () => {
     transitions.complete(succeeded.operationId, PRIMARY_PANEL_EXIT_PHASE);
     await succeeded.settled;
     expect(state.getSnapshot().searchQuery).toBe("");
+  });
+
+  it("Start Resource open의 실패는 상태를 유지하고 현재 성공만 close 완료 뒤 초기화한다", async () => {
+    const { operations, state, transitions } = createFixture();
+    const opening = operations.execute({ type: "trigger", panel: "start" });
+    await opening.committed;
+    transitions.complete(opening.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await opening.settled;
+    await operations.execute({ type: "update-query", panel: "start", query: "시작 상태" }).settled;
+
+    await operations.execute({ type: "track-resource-open", panel: "start", requestId: "failed" })
+      .settled;
+    const failed = operations.execute({
+      type: "settle-resource-open",
+      requestId: "failed",
+      outcome: "failed",
+    });
+    await expect(failed.settled).resolves.toMatchObject({
+      result: { status: "no-op", reason: "resource-open-failed" },
+    });
+    expect(state.getSnapshot()).toMatchObject({ activePanel: "start", startQuery: "시작 상태" });
+
+    await operations.execute({ type: "track-resource-open", panel: "start", requestId: "success" })
+      .settled;
+    const succeeded = operations.execute({
+      type: "settle-resource-open",
+      requestId: "success",
+      outcome: "succeeded",
+    });
+    await flushQueue();
+    expect(state.getSnapshot()).toMatchObject({ activePanel: null, startQuery: "시작 상태" });
+    transitions.complete(succeeded.operationId, PRIMARY_PANEL_EXIT_PHASE);
+    await succeeded.settled;
+    expect(state.getSnapshot().startQuery).toBe("");
+  });
+
+  it("Resource request ID 중복과 active가 아닌 panel 추적을 서로 구분한다", async () => {
+    const { operations, transitions } = createFixture();
+    const opening = operations.execute({ type: "trigger", panel: "start" });
+    await opening.committed;
+    transitions.complete(opening.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await opening.settled;
+
+    const tracked = operations.execute({
+      type: "track-resource-open",
+      panel: "start",
+      requestId: "same-request",
+    });
+    await expect(tracked.settled).resolves.toMatchObject({
+      result: { status: "tracked", action: { panel: "start" } },
+    });
+    const duplicate = operations.execute({
+      type: "track-resource-open",
+      panel: "start",
+      requestId: "same-request",
+    });
+    await expect(duplicate.settled).resolves.toMatchObject({
+      result: { status: "rejected", reason: "duplicate-request" },
+    });
+    const inactive = operations.execute({
+      type: "track-resource-open",
+      panel: "search",
+      requestId: "inactive-panel",
+    });
+    await expect(inactive.settled).resolves.toMatchObject({
+      result: { status: "rejected", reason: "panel-not-active" },
+    });
+  });
+
+  it("이전 Start activation의 늦은 Resource 성공이 Search activation을 닫지 않는다", async () => {
+    const { operations, state, transitions } = createFixture();
+    const start = operations.execute({ type: "trigger", panel: "start" });
+    await start.committed;
+    transitions.complete(start.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await start.settled;
+    await operations.execute({ type: "track-resource-open", panel: "start", requestId: "late" })
+      .settled;
+
+    const search = operations.execute({ type: "trigger", panel: "search" });
+    await flushQueue();
+    transitions.complete(search.operationId, PRIMARY_PANEL_EXIT_PHASE);
+    await search.committed;
+    transitions.complete(search.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await search.settled;
+    await operations.execute({ type: "update-query", panel: "search", query: "새 검색" }).settled;
+
+    const late = operations.execute({
+      type: "settle-resource-open",
+      requestId: "late",
+      outcome: "succeeded",
+    });
+    await expect(late.settled).resolves.toMatchObject({
+      result: { status: "no-op", reason: "stale-resource-open" },
+    });
+    expect(state.getSnapshot()).toMatchObject({ activePanel: "search", searchQuery: "새 검색" });
   });
 
   it("이전 Search activation의 늦은 Resource 성공이 다시 연 panel을 닫지 않는다", async () => {

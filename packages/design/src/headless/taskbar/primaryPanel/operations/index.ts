@@ -24,8 +24,7 @@ export const PRIMARY_PANEL_EXIT_PHASE = "primary-panel-exit";
 const PRIMARY_PANEL_TRANSITION_TARGET = "primary-panel-transition" as const;
 
 type PrimaryPanelOperationTarget =
-  | typeof PRIMARY_PANEL_TRANSITION_TARGET
-  | `primary-panel-query:${PrimaryPanelId}`;
+  typeof PRIMARY_PANEL_TRANSITION_TARGET | `primary-panel-query:${PrimaryPanelId}`;
 
 /** UI가 판정한 실제 dismiss 원인이다. portal 내부 이동은 UI에서 이 Action으로 만들지 않는다. */
 export type PrimaryPanelDismissReason = "escape" | "outside-interaction" | "focus-loss";
@@ -43,9 +42,14 @@ export type PrimaryPanelAction =
   | Readonly<{ type: "update-query"; panel: PrimaryPanelId; query: string }>
   /** mobile 진입 시 현재 panel을 닫고 대기 중 desktop open을 무효화한다. */
   | Readonly<{ type: "dismiss-for-mobile" }>
-  /** 실제 Resource open을 실행하기 직전 현재 Search activation을 request ID에 연결한다. */
-  | Readonly<{ type: "track-resource-open"; requestId: PrimaryPanelResourceOpenRequestId }>
-  /** Resource open 결과를 전달하고 현재 activation의 성공일 때만 Search를 닫는다. */
+  /** 실제 Resource open 직전 요청 panel과 현재 activation을 request ID에 연결한다. */
+  | Readonly<{
+      type: "track-resource-open";
+      /** 생략은 기존 Search caller 호환이며 새 panel 연결은 identity를 명시한다. */
+      panel?: PrimaryPanelId;
+      requestId: PrimaryPanelResourceOpenRequestId;
+    }>
+  /** Resource open 결과를 전달하고 추적한 현재 panel activation의 성공일 때만 닫는다. */
   | Readonly<{
       type: "settle-resource-open";
       requestId: PrimaryPanelResourceOpenRequestId;
@@ -83,6 +87,7 @@ export type PrimaryPanelCommittedResult =
       reason:
         | "desktop-unavailable"
         | "duplicate-request"
+        | "panel-not-active"
         | "search-not-active"
         | "stale-desktop-request";
     }>;
@@ -120,6 +125,11 @@ export type PrimaryPanelOperationsOptions = Readonly<{
   transitions?: TransitionRegistry;
 }>;
 
+type TrackedResourceOpenRequest = Readonly<{
+  panel: PrimaryPanelId;
+  activationRevision: number;
+}>;
+
 type ExecutionContext = OperationExecutionContext<
   PrimaryPanelOperationTarget,
   PrimaryPanelCommittedResult,
@@ -127,10 +137,7 @@ type ExecutionContext = OperationExecutionContext<
 >;
 
 /** changed command의 공개 change만 누적한다. */
-const appendChange = (
-  changes: PrimaryPanelChange[],
-  result: PrimaryPanelCommandResult,
-): void => {
+const appendChange = (changes: PrimaryPanelChange[], result: PrimaryPanelCommandResult): void => {
   if (result.status === "changed") changes.push(result.change);
 };
 
@@ -160,7 +167,10 @@ export class PrimaryPanelOperations {
   readonly #modeReader: PrimaryPanelModeReader;
   readonly #queue: OperationTargetQueue<PrimaryPanelOperationTarget>;
   readonly #transitions: TransitionRegistry;
-  readonly #resourceRequests = new Map<PrimaryPanelResourceOpenRequestId, number>();
+  readonly #resourceRequests = new Map<
+    PrimaryPanelResourceOpenRequestId,
+    TrackedResourceOpenRequest
+  >();
   #activationRevision = 0;
   #mobileRevision = 0;
 
@@ -243,19 +253,28 @@ export class PrimaryPanelOperations {
     return this.#finishWithoutPresentation(result, context);
   }
 
-  /** 현재 Search activation을 Resource request ID에 연결한다. */
+  /** 요청 panel이 현재 active일 때 panel identity와 activation을 request ID에 연결한다. */
   #trackResourceOpen(
     action: Extract<PrimaryPanelAction, { type: "track-resource-open" }>,
     context: ExecutionContext,
   ): PrimaryPanelSettledResult {
     const snapshot = this.#state.getSnapshot();
+    const panel = action.panel ?? "search";
     let result: PrimaryPanelCommittedResult;
     if (this.#resourceRequests.has(action.requestId)) {
       result = Object.freeze({ status: "rejected", action, snapshot, reason: "duplicate-request" });
-    } else if (snapshot.activePanel !== "search" || !this.#canOpenDesktopPanel()) {
-      result = Object.freeze({ status: "rejected", action, snapshot, reason: "search-not-active" });
+    } else if (snapshot.activePanel !== panel || !this.#canOpenDesktopPanel()) {
+      result = Object.freeze({
+        status: "rejected",
+        action,
+        snapshot,
+        reason: action.panel === undefined ? "search-not-active" : "panel-not-active",
+      });
     } else {
-      this.#resourceRequests.set(action.requestId, this.#activationRevision);
+      this.#resourceRequests.set(
+        action.requestId,
+        Object.freeze({ panel, activationRevision: this.#activationRevision }),
+      );
       result = Object.freeze({ status: "tracked", action, snapshot });
     }
     return this.#finishWithoutPresentation(result, context);
@@ -266,13 +285,13 @@ export class PrimaryPanelOperations {
     action: Extract<PrimaryPanelAction, { type: "settle-resource-open" }>,
     context: ExecutionContext,
   ): Promise<PrimaryPanelSettledResult> {
-    const trackedRevision = this.#resourceRequests.get(action.requestId);
+    const trackedRequest = this.#resourceRequests.get(action.requestId);
     this.#resourceRequests.delete(action.requestId);
     const snapshot = this.#state.getSnapshot();
     if (
-      trackedRevision === undefined ||
-      trackedRevision !== this.#activationRevision ||
-      snapshot.activePanel !== "search" ||
+      trackedRequest === undefined ||
+      trackedRequest.activationRevision !== this.#activationRevision ||
+      snapshot.activePanel !== trackedRequest.panel ||
       !this.#canOpenDesktopPanel()
     ) {
       return this.#finishWithoutPresentation(
@@ -286,7 +305,7 @@ export class PrimaryPanelOperations {
         context,
       );
     }
-    return this.#close("search", action, context);
+    return this.#close(trackedRequest.panel, action, context);
   }
 
   /** mobile signal에서 대기 open을 이미 무효화한 뒤 현재 active panel만 정리한다. */
@@ -446,8 +465,8 @@ export class PrimaryPanelOperations {
   /** 현재 activation request를 폐기하고 늦은 결과가 다음 panel에 적용되지 않게 한다. */
   #invalidateActivation(): void {
     const current = this.#activationRevision;
-    for (const [requestId, revision] of this.#resourceRequests) {
-      if (revision === current) this.#resourceRequests.delete(requestId);
+    for (const [requestId, request] of this.#resourceRequests) {
+      if (request.activationRevision === current) this.#resourceRequests.delete(requestId);
     }
     this.#activationRevision += 1;
   }
