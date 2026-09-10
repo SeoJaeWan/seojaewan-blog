@@ -3,6 +3,9 @@
  *
  * Resource, Start, Taskbar, Workspace와 Window feature의 구현 책임은 각각의 feature에 남겨 둔다.
  */
+import type { ExplorerNavigationTarget } from "./folders/index.js";
+import type { WorkspacePathResolution } from "./workspace/index.js";
+
 export {
   type ChromeLocation,
   type ChromeTab,
@@ -10,9 +13,42 @@ export {
   type InternalAddress,
 } from "./chrome/index.js";
 export {
+  areFolderViewSettingsEqual,
+  areFolderViewSettingsLocationsEqual,
+  createFolderViewSettingsStorageSnapshot,
+  DEFAULT_FOLDER_VIEW_SETTINGS,
+  type ExplorerNavigationTarget,
+  type FileExplorerNavigationValue,
   type FileExplorerLocation,
   type FileExplorerTab,
   type FileExplorerTabId,
+  type FolderDetailsColumnWidths,
+  type FolderViewMode,
+  type FolderViewSettings,
+  type FolderViewSettingsAction,
+  type FolderViewSettingsChange,
+  type FolderViewSettingsSnapshot,
+  type FolderViewSettingsStorage,
+  type FolderViewSettingsStorageEntry,
+  type FolderViewSettingsStorageSnapshot,
+  type FolderViewSettingsStoreCommandContext,
+  type FolderViewSettingsStoreCommittedResult,
+  type FolderViewSettingsStoreInitialization,
+  type FolderViewSettingsStoreNoOpResult,
+  type FolderViewSettingsStorePersistenceFailure,
+  type FolderViewSettingsStoreRejectedResult,
+  type FolderViewSettingsStoreRejectionReason,
+  type FolderViewSettingsStoreResult,
+  FolderViewSettingsStore,
+  FolderViewSettingsStoreAlreadyInitializedError,
+  FolderViewSettingsStoreNotInitializedError,
+  type FolderViewSettingsSurface,
+  type FolderViewSortDirection,
+  type FolderViewSortKey,
+  type ParsedFolderViewSettingsStorageSnapshot,
+  parseFolderViewSettings,
+  parseFolderViewSettingsLocation,
+  parseFolderViewSettingsStorageSnapshot,
 } from "./folders/index.js";
 export * from "./resources/index.js";
 export * from "./runtime/index.js";
@@ -20,6 +56,7 @@ export * from "./start/index.js";
 export * from "./taskbar/index.js";
 export {
   type ChromeWindowSession,
+  DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH,
   type FileExplorerWindowSession,
   getWindowBounds,
   type NavigationEntry,
@@ -65,6 +102,7 @@ export {
   WindowStoreAlreadyInitializedError,
   type WindowStoreChange,
   type WindowStoreChangeKind,
+  type WindowStoreCommandContext,
   type WindowStoreCommittedResult,
   type WindowStoreFailureReason,
   type WindowStoreInitialization,
@@ -75,3 +113,11 @@ export {
   type WindowWorkspaceReader,
 } from "./windows/index.js";
 export * from "./workspace/index.js";
+
+/** Workspace path 해석 결과를 Window가 소비하는 Explorer target으로 손실 없이 변환한다. */
+export const toExplorerNavigationTarget = (
+  resolution: WorkspacePathResolution,
+): ExplorerNavigationTarget =>
+  resolution.type === "location"
+    ? Object.freeze({ kind: "location", location: resolution.location })
+    : Object.freeze({ kind: "unresolved-path", path: resolution.path });

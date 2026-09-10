@@ -9,4 +9,10 @@ export {
   isFileExplorerTabId,
   parseFileExplorerTabId,
 } from "./fileExplorerTabId/index.js";
-export { type FileExplorerLocation, type FileExplorerTab } from "./model/index.js";
+export {
+  type ExplorerNavigationTarget,
+  type FileExplorerLocation,
+  type FileExplorerNavigationValue,
+  type FileExplorerTab,
+} from "./model/index.js";
+export * from "./viewSettings/index.js";
