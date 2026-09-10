@@ -8,8 +8,8 @@ import { TaskbarPanelWidget } from "../../panels/widget/index.js";
 import { TaskbarSearch } from "../../search/input/index.js";
 import { TaskbarStartAll } from "../all/index.js";
 import { TaskbarStartButton, type TaskbarStartButtonProps } from "../button/index.js";
+import type { TaskbarStartResourceIconResolver } from "../icon/index.js";
 import { TaskbarStartPinned } from "../pinned/index.js";
-import type { TaskbarStartResourceIconResolver } from "../resourceIcon/index.js";
 
 import "./taskbarStart.css";
 

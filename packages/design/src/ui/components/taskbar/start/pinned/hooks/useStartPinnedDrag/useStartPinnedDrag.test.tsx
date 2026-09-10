@@ -87,6 +87,7 @@ describe("useStartPinnedDrag", () => {
     if (originalRectDescriptor !== undefined)
       Object.defineProperty(HTMLElement.prototype, "getBoundingClientRect", originalRectDescriptor);
     vi.useRealTimers();
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
@@ -177,7 +178,32 @@ describe("useStartPinnedDrag", () => {
     expect(releasePointerCapture).toHaveBeenCalledWith(7);
   });
 
-  it("Escape와 pointercancel에서 capture, listeners와 pending frame을 정리한다", async () => {
+  it("여러 pointermove를 한 frame의 최신 위치로 합친다", async () => {
+    const actions = {
+      abortTransition: vi.fn(() => true),
+      completeTransition: vi.fn(() => true),
+      execute: vi.fn(() => {
+        throw new Error("pointermove는 Action을 만들면 안 됩니다");
+      }),
+      failTransition: vi.fn(() => true),
+    } satisfies StartControllerActions;
+    const requestFrame = vi.spyOn(window, "requestAnimationFrame");
+    render(<TaskbarStartPinned actions={actions} items={initialItems} />);
+    const first = screen.getByRole("gridcell", { name: "첫째" });
+
+    fireEvent.pointerDown(first, { button: 0, clientX: 10, clientY: 10, pointerId: 6 });
+    fireEvent.pointerMove(window, { clientX: 20, clientY: 10, pointerId: 6 });
+    fireEvent.pointerMove(window, { clientX: 40, clientY: 10, pointerId: 6 });
+    fireEvent.pointerMove(window, { clientX: 60, clientY: 10, pointerId: 6 });
+
+    expect(requestFrame).toHaveBeenCalledTimes(1);
+    await act(() => vi.advanceTimersByTimeAsync(20));
+    expect(first.style.transform).toBe("translate(50px, 0px)");
+    expect(actions.execute).not.toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: "Escape" });
+  });
+
+  it("Escape는 capture, listeners와 pending frame을 Action 없이 정리한다", async () => {
     const actions = {
       abortTransition: vi.fn(() => true),
       completeTransition: vi.fn(() => true),
@@ -216,10 +242,53 @@ describe("useStartPinnedDrag", () => {
     expect(releasePointerCapture).toHaveBeenCalledWith(8);
     expect(cancelFrame).toHaveBeenCalled();
     expect(removeListener).toHaveBeenCalledWith("pointermove", expect.any(Function));
+  });
+
+  it("pointercancel은 capture를 반환하고 reorder Action을 만들지 않는다", () => {
+    const actions = {
+      abortTransition: vi.fn(() => true),
+      completeTransition: vi.fn(() => true),
+      execute: vi.fn(() => {
+        throw new Error("pointercancel은 Action을 만들면 안 됩니다");
+      }),
+      failTransition: vi.fn(() => true),
+    } satisfies StartControllerActions;
+    render(<TaskbarStartPinned actions={actions} items={initialItems} />);
+    const first = screen.getByRole("gridcell", { name: "첫째" });
+    first.setPointerCapture = vi.fn();
+    first.hasPointerCapture = vi.fn(() => true);
+    const releasePointerCapture = vi.fn();
+    first.releasePointerCapture = releasePointerCapture;
 
     fireEvent.pointerDown(first, { button: 0, clientX: 10, clientY: 10, pointerId: 9 });
     fireEvent.pointerCancel(window, { pointerId: 9 });
+
     expect(releasePointerCapture).toHaveBeenCalledWith(9);
+    expect(actions.execute).not.toHaveBeenCalled();
+  });
+
+  it("pointer capture 상실은 preview를 복원하고 reorder Action을 만들지 않는다", async () => {
+    const actions = {
+      abortTransition: vi.fn(() => true),
+      completeTransition: vi.fn(() => true),
+      execute: vi.fn(() => {
+        throw new Error("capture 상실은 Action을 만들면 안 됩니다");
+      }),
+      failTransition: vi.fn(() => true),
+    } satisfies StartControllerActions;
+    render(<TaskbarStartPinned actions={actions} items={initialItems} />);
+    const first = screen.getByRole("gridcell", { name: "첫째" });
+    first.setPointerCapture = vi.fn();
+    first.hasPointerCapture = vi.fn(() => false);
+
+    fireEvent.pointerDown(first, { button: 0, clientX: 10, clientY: 10, pointerId: 11 });
+    fireEvent.pointerMove(window, { clientX: 220, clientY: 10, pointerId: 11 });
+    await act(() => vi.advanceTimersByTimeAsync(20));
+    expect(screen.getByRole("gridcell", { name: "둘째" }).dataset.dragPreview).toBe("true");
+
+    fireEvent.lostPointerCapture(first, { pointerId: 11 });
+
+    expect(screen.getByRole("gridcell", { name: "둘째" }).style.transform).toBe("");
     expect(actions.execute).not.toHaveBeenCalled();
   });
 

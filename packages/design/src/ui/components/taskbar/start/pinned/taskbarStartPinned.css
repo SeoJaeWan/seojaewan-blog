@@ -95,21 +95,7 @@
 }
 
 .taskbar-start-pinned__icon {
-  align-items: center;
-  block-size: 34px;
   display: flex;
-  flex: 0 0 34px;
-  inline-size: 34px;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.taskbar-start-pinned__icon > img,
-.taskbar-start-pinned__icon > svg {
-  block-size: 100%;
-  display: block;
-  inline-size: 100%;
-  object-fit: contain;
 }
 
 .taskbar-start-pinned__label {

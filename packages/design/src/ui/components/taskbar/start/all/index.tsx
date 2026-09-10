@@ -13,10 +13,7 @@ import {
   type StartScreenAllGroup,
   type StartScreenAllItem,
 } from "../../../../../headless/index.js";
-import {
-  TaskbarStartResourceIcon,
-  type TaskbarStartResourceIconResolver,
-} from "../resourceIcon/index.js";
+import { TaskbarStartIcon, type TaskbarStartResourceIconResolver } from "../icon/index.js";
 import { useTaskbarStartAllNavigation } from "./hooks/useTaskbarStartAllNavigation/index.js";
 
 import "./taskbarStartAll.css";
@@ -144,13 +141,12 @@ export const TaskbarStartAll = ({
                         }
                         type="button"
                       >
-                        <span aria-hidden="true" className="taskbar-start-all__item-icon">
-                          <TaskbarStartResourceIcon
-                            resolveIcon={resolveResourceIcon}
-                            resource={item.resource}
-                            size={24}
-                          />
-                        </span>
+                        <TaskbarStartIcon
+                          className="taskbar-start-all__item-icon"
+                          resolveIcon={resolveResourceIcon}
+                          resource={item.resource}
+                          variant="all"
+                        />
                         <span className="taskbar-start-all__item-label">{item.label}</span>
                       </button>
                     </li>

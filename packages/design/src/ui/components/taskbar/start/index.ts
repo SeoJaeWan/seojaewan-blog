@@ -5,12 +5,12 @@
  */
 export { TaskbarStartAll, type TaskbarStartAllProps } from "./all/index.js";
 export { TaskbarStartButton, type TaskbarStartButtonProps } from "./button/index.js";
+export type { TaskbarStartResourceIconResolver } from "./icon/index.js";
 export {
   type StartPinnedItemViewModel,
   TaskbarStartPinned,
   type TaskbarStartPinnedProps,
 } from "./pinned/index.js";
-export type { TaskbarStartResourceIconResolver } from "./resourceIcon/index.js";
 export {
   TaskbarStart,
   type TaskbarStartProps,
