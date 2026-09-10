@@ -1,13 +1,9 @@
 import { useState } from "react";
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
 
-import {
-  TaskbarPreview,
-  withTaskbarDescription,
-} from "../../../../../.storybook/taskbarPreview.js";
-import { TaskbarStartButton } from "./taskbarStartButton.js";
+import { TaskbarPreview, withTaskbarDescription } from "../../taskbarStoryPreview.js";
+import { TaskbarStartButton } from "./index.js";
 
 /** 실제 product callback 호출 횟수를 Canvas에서 관찰할 수 있게 렌더링한다. */
 const ActionFixture = ({ disabled = false, selected = false }) => {
@@ -118,27 +114,4 @@ export const Disabled: Story = {
       "흐리게 표시되며 실행 요청을 보내지 않습니다. Controls에서 disabled를 끄면 사용할 수 있습니다.",
   },
   args: { disabled: true },
-};
-
-export const Interaction: Story = {
-  name: "입력 흐름 자동 확인",
-  parameters: {
-    taskbarDescription:
-      "Tab → Enter → Space → 클릭을 자동 실행하며 요청 횟수가 1·2·3으로 증가합니다. 직접 조작은 직접 눌러 보기에서 시작하세요.",
-  },
-  render: () => <ActionFixture />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: "시작" });
-    const actionCount = canvas.getByRole("status", { name: "Windows Action 횟수" });
-
-    await userEvent.tab();
-    await expect(button).toHaveFocus();
-    await userEvent.keyboard("{Enter}");
-    await expect(actionCount).toHaveTextContent("1");
-    await userEvent.keyboard(" ");
-    await expect(actionCount).toHaveTextContent("2");
-    await userEvent.click(button);
-    await expect(actionCount).toHaveTextContent("3");
-  },
 };

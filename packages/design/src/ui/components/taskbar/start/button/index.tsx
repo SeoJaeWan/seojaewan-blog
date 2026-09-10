@@ -3,7 +3,7 @@ import type { ComponentPropsWithRef } from "react";
 import { Button } from "@base-ui/react/button";
 import { clsx } from "clsx";
 
-import windowsLogoSrc from "../../../assets/taskbar/windows.svg";
+import windowsLogoSrc from "../../../../assets/taskbar/windows.svg";
 
 import "./taskbarStartButton.css";
 

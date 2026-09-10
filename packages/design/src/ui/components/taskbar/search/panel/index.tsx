@@ -1,0 +1,77 @@
+/**
+ * @file Taskbar의 실제 Search input과 primary panel widget을 제품 연결에 조합한다.
+ *
+ * 검색 결과, recent, detail과 Resource renderer는 children을 제공하는 상위 제품 view가 소유한다.
+ */
+import type { KeyboardEvent, ReactNode } from "react";
+
+import type { TaskbarPanelsConnection } from "../../panels/connection/index.js";
+import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import { TaskbarSearch, type TaskbarSearchProps } from "../input/index.js";
+import { useTaskbarSearchInputFocus } from "./hooks/useTaskbarSearchInputFocus/index.js";
+
+/** Search 제품 연결이 계산하는 controlled input props다. */
+type ConnectedInputProp =
+  "defaultValue" | "onAction" | "onValueChange" | "ref" | "selected" | "value";
+
+/** 실제 Taskbar Search input과 panel 본문을 조합하는 public props다. */
+export type TaskbarSearchPanelProps = Omit<TaskbarSearchProps, ConnectedInputProp> &
+  Readonly<{
+    /** Root에서 한 번 생성해 Search에 나눠 주는 primary panel 제품 연결이다. */
+    connection: TaskbarPanelsConnection["search"];
+    /** Search panel에 표시할 실제 제품 본문이다. */
+    children: ReactNode;
+    /** panel portal을 붙일 문서 내 container다. */
+    portalContainer?: HTMLElement | null;
+  }>;
+
+/**
+ * 실제 Search input의 Space는 문자 입력으로 유지하고 Base UI Trigger의 button 동작만 건너뛴다.
+ *
+ * native default와 IME event는 막지 않는다.
+ */
+const preserveSearchInputSpace = (event: KeyboardEvent<HTMLInputElement>): void => {
+  if (event.key !== " ") return;
+  (
+    event as KeyboardEvent<HTMLInputElement> & Readonly<{ preventBaseUIHandler?: () => void }>
+  ).preventBaseUIHandler?.();
+};
+
+/**
+ * 작업 표시줄의 실제 input을 Search panel trigger로 유지하고 query와 lifecycle을 연결한다.
+ *
+ * panel 안에 두 번째 input을 만들지 않으며 Resource open 결과는 connection.resource를 사용하는
+ * 상위 Search view가 전달한다.
+ */
+export const TaskbarSearchPanel = ({
+  children,
+  connection,
+  onKeyDown,
+  portalContainer,
+  ...inputProps
+}: TaskbarSearchPanelProps) => {
+  const inputRef = useTaskbarSearchInputFocus(connection.widget.open);
+
+  return (
+    <TaskbarPanelWidget
+      {...connection.widget}
+      portalContainer={portalContainer}
+      trigger={
+        <TaskbarSearch
+          {...inputProps}
+          onKeyDown={(event) => {
+            onKeyDown?.(event);
+            if (!event.defaultPrevented) preserveSearchInputSpace(event);
+          }}
+          onValueChange={(value) => connection.actions.updateQuery(value)}
+          ref={inputRef}
+          selected={connection.widget.open}
+          value={connection.query}
+        />
+      }
+      variant="search"
+    >
+      {children}
+    </TaskbarPanelWidget>
+  );
+};

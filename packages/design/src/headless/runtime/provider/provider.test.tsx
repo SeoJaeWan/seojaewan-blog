@@ -57,14 +57,16 @@ const createRuntimeFixture = () => {
   const workspace = createFeature();
   const start = createFeature();
   const taskbar = createFeature();
+  const primaryPanel = createFeature();
   const runtime = Object.freeze({
     windows: windows.runtime,
     workspace: workspace.runtime,
     start: start.runtime,
     taskbar: taskbar.runtime,
+    primaryPanel: primaryPanel.runtime,
     transitions: new TransitionRegistry(),
   }) as HeadlessRuntime;
-  return { runtime, windows, workspace, start, taskbar };
+  return { runtime, windows, workspace, start, taskbar, primaryPanel };
 };
 
 afterEach(() => cleanup());

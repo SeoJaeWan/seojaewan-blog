@@ -59,16 +59,16 @@ const createRuntimeFixture = (mode: WindowMode, activeApplication?: TaskbarAppli
     },
     execute: vi.fn(() => ({}) as never),
   }) as unknown as HeadlessFeatureRuntime<WindowState, unknown, unknown>;
-  const executeRootAction = vi.fn();
+  const executePrimaryPanelAction = vi.fn(() => ({}) as never);
   const runtime = Object.freeze({
-    taskbarRoot: Object.freeze({ execute: executeRootAction }),
+    primaryPanel: Object.freeze({ execute: executePrimaryPanelAction }),
     windows,
   }) as unknown as HeadlessRuntime;
 
   return {
     getSnapshot,
     getServerSnapshot,
-    executeRootAction,
+    executePrimaryPanelAction,
     executeWindowAction: windows.execute,
     listenerCount: () => listeners.size,
     runtime,
@@ -104,7 +104,7 @@ describe("selectTaskbarRootSnapshot", () => {
 });
 
 describe("useTaskbarRootController", () => {
-  it("Windows와 Search Action을 runtime public 실행 진입점에 구분해 전달한다", () => {
+  it("Windows와 Search Action을 같은 identity의 primary panel Operation에 전달한다", () => {
     const fixture = createRuntimeFixture("desktop");
     let execute: ReturnType<typeof useTaskbarRootController>["actions"]["execute"] = () =>
       undefined;
@@ -124,9 +124,15 @@ describe("useTaskbarRootController", () => {
     const searchAction = createTaskbarSearchAction();
     act(() => execute(searchAction));
 
-    expect(fixture.executeRootAction).toHaveBeenNthCalledWith(1, action);
-    expect(fixture.executeRootAction).toHaveBeenNthCalledWith(2, searchAction);
-    expect(fixture.executeRootAction).toHaveBeenCalledTimes(2);
+    expect(fixture.executePrimaryPanelAction).toHaveBeenNthCalledWith(1, {
+      type: "trigger",
+      panel: "start",
+    });
+    expect(fixture.executePrimaryPanelAction).toHaveBeenNthCalledWith(2, {
+      type: "trigger",
+      panel: "search",
+    });
+    expect(fixture.executePrimaryPanelAction).toHaveBeenCalledTimes(2);
   });
 
   it("active mobile application도 같은 intent를 Window Operation에 한 번 전달한다", () => {

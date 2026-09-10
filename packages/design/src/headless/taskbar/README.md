@@ -15,6 +15,8 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `timestamp/index.ts`                    | local 형식, 분 경계 scheduler·clock port와 React controller                 |
 | `actions/index.ts`                      | Windows·Search·desktop/mobile click, shortcut, close-all intent와 실행 경계 |
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                            |
+| `primaryPanel/operations/index.ts`      | Start·Search 상호 전환, close 완료 초기화와 Resource 결과 조율              |
+| `primaryPanel/controller/index.ts`      | panel snapshot·Action과 UI transition 완료 신호의 React 경계                |
 
 ## 초기화와 Window 연결
 
@@ -73,8 +75,8 @@ Application은 WindowStore와 Catalog·storage를 연결해 TaskbarStore 초기�
 
 `useTaskbarRootController()`는 별도 breakpoint나 browser API를 만들지 않고 Window runtime의
 `WindowState.mode`와 `selectMobileTaskbarView()` 결과를 Root 읽기 모델로 투영한다. Windows·Search
-trigger는 panel 상태를 만들지 않고 각각 `{ type: "request-windows" }`,
-`{ type: "request-search" }` Action을 runtime에 주입된 단일 gateway로 전달한다. Mobile File Explorer와
+trigger는 각각 `{ type: "request-windows" }`, `{ type: "request-search" }` Action을
+runtime-local `primaryPanel` Operation의 Start·Search identity로 변환한다. Mobile File Explorer와
 Chrome 입력은 `createMobileTaskbarApplicationIntent()`와 `executeTaskbarWindowOperationIntent()`를 거쳐
 기존 Window Operation의 `{ type: "launch-mobile-application", applicationId }` Action으로 전달한다.
 active application을 다시 누른 경우도 같은 Action을 보내며 same-app no-op과 application 교체는 기존
@@ -90,13 +92,7 @@ Window headless 계약이 판정한다. `TaskbarRoot`는 같은 Provider 안에�
 필요하지 않다.
 
 ```tsx
-const runtime = createHeadlessRuntime({
-  taskbarRootActionGateway: {
-    execute(action) {
-      routeTaskbarRootAction(action);
-    },
-  },
-});
+const runtime = createHeadlessRuntime();
 
 <HeadlessRuntimeProvider runtime={runtime}>
   <TaskbarRoot />
@@ -109,18 +105,38 @@ const runtime = createHeadlessRuntime({
 향후 desktop Group은 자신의 실행 정책을 연결한다. 버튼 내부에서 mode나 Window 정책을 계산하지 않는다.
 `active`는 실행 중임을 포함하며, `running`은 비활성·최소화된 앱의 표시선을 표현한다.
 
-`TaskbarSearch`는 Base UI Input을 직접 조합한다. 클릭·Tab focus로 진입하면 `request-search`를 보내며,
-재클릭·문자·공백 입력은 추가 열기 요청을 보내지 않는다. `value`/`onValueChange`로 검색어를 제어하거나
-`defaultValue`로 독립 입력을 제공한다. Root에서는 `searchValue`/`onSearchValueChange` 또는
-`defaultSearchValue`로 연결한다. 한글 조합·공백을 정규화하지 않고 그대로 전달한다.
+`TaskbarSearch`는 Base UI Input을 직접 조합한다. `TaskbarSearchPanel`이 실제 Taskbar input 하나를
+Popover trigger와 `primaryPanel` query에 연결한다. 클릭·Tab focus로 Search를 열고, 이미 열린 input을
+재클릭하면 focus를 유지한다. 문자·한글 조합·연속 공백은 추가 열기 요청 없이 query에 그대로 전달된다.
 실제 input focus는 푸른 돋보기 표현과 연결되며, 누르는 동안에도 아이콘 크기를 유지한다.
 
 ```tsx
-<TaskbarRoot searchValue={query} onSearchValueChange={setQuery} />
-<TaskbarSearch value={query} onValueChange={setQuery} onAction={requestSearch} />
+<HeadlessRuntimeProvider runtime={runtime}>
+  <TaskbarRoot />
+</HeadlessRuntimeProvider>
 ```
 
-각 `selected` 입력은 외부 선택 표현이며 실제 panel 관계를 만들지 않는다. 검색 결과·recent·panel과
-desktop Group의 상태 파생·click·drag는 후속 작업에서 연결한다. 버튼의 표시선은 현재 전달받은 상태를
-표현한다. Storybook의 설명·상태 미리보기 작성 규칙은 Memory의 `storybook-authoring`을 따른다.
+`TaskbarRoot`는 Start와 Search에 같은 primary panel connection을 전달하므로 둘을 동시에 표시하지
+않고 현재 panel의 close 완료 뒤 다음 panel을 연다. 검색 결과·recent·detail과 desktop Group의
+상태 파생·click·drag는 후속 작업에서 연결한다. Storybook의 설명·상태 미리보기 작성 규칙은
+Memory의 `storybook-authoring`을 따른다.
 관찰 가능한 입력값·Action을 표시하며 실제 Window 완료를 가짜로 처리하지 않는다.
+
+## Primary panel Operation
+
+`PrimaryPanelOperations`는 Start와 Search가 공유하는 하나의 transition queue를 사용한다. switch는
+현재 panel의 `primary-panel-exit` 완료·중단·watchdog을 기다리고 close 완료 command로 해당 query를
+초기화한 다음, 실행 시점에도 desktop이면 target을 activate하고 `primary-panel-enter`를 기다린다.
+일반 연속 trigger는 취소하지 않고 앞 Operation의 settled 뒤 최신 snapshot에서 다시 판정한다.
+
+query Action은 panel transition과 다른 target에 두어 opening animation 중 한글 조합과 공백 입력을
+지연하지 않는다. `dismiss-for-mobile`은 호출 즉시 현재 activation을 무효화하므로 진행 중 switch의
+exit 뒤 desktop panel이 다시 열리지 않는다. Component unmount는 `abortTransition`으로 표현 대기를
+끝내며 제품 close·query 정리와 queue 진행은 계속된다. reduced-motion은 Component가 같은 phase를
+즉시 `completeTransition`하면 별도 semantic 분기 없이 같은 최종 snapshot에 도달한다.
+
+Resource 연결은 실제 open 직전 `track-resource-open`으로 request ID를 현재 Search activation에 묶고,
+완료 뒤 `settle-resource-open`으로 명시적인 `succeeded` 또는 `failed`를 전달한다. 실패는 Search,
+query와 후속 result/detail 소유자의 상태를 바꾸지 않는다. 성공은 같은 activation일 때만 close하고,
+이미 닫히거나 다시 열린 뒤 도착한 결과는 `stale-resource-open` no-op이다. menu 종료와 focus 이동은
+Resource 성공 Action이 아니며 이 경계를 대신 호출하지 않는다.

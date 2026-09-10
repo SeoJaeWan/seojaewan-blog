@@ -11,7 +11,6 @@ import {
   type StartOperationStore,
 } from "../../start/operations/index.js";
 import { StartStore } from "../../start/startStore/index.js";
-import type { TaskbarRootAction, TaskbarRootActionGateway } from "../../taskbar/actions/index.js";
 import type { TaskbarSnapshot } from "../../taskbar/model/index.js";
 import {
   type TaskbarOperationHandle,
@@ -19,6 +18,16 @@ import {
   type TaskbarOperationStore,
   type TaskbarPinAction,
 } from "../../taskbar/operations/index.js";
+import type { PrimaryPanelSnapshot } from "../../taskbar/primaryPanel/model/index.js";
+import {
+  type PrimaryPanelAction,
+  type PrimaryPanelOperationHandle,
+  PrimaryPanelOperations,
+} from "../../taskbar/primaryPanel/operations/index.js";
+import {
+  createPrimaryPanelState,
+  type PrimaryPanelState,
+} from "../../taskbar/primaryPanel/state/index.js";
 import { TaskbarStore } from "../../taskbar/taskbarStore/index.js";
 import type { WindowState } from "../../windows/model/index.js";
 import {
@@ -75,6 +84,8 @@ export type HeadlessRuntimeAdapters = Readonly<{
   start?: ExternalStoreReader<StartSnapshot> & StartOperationStore;
   /** Taskbar snapshot, 구독과 Pin 명령을 제공하는 adapter다. */
   taskbar?: ExternalStoreReader<TaskbarSnapshot> & TaskbarOperationStore;
+  /** runtime별 primary panel transient state를 제공하는 adapter다. */
+  primaryPanel?: PrimaryPanelState;
 }>;
 
 /** runtime 생성 시 Store adapter와 transition registry를 선택하는 입력이다. */
@@ -83,8 +94,6 @@ export type HeadlessRuntimeOptions = Readonly<{
   adapters?: HeadlessRuntimeAdapters;
   /** 여러 Foundation Operation과 UI 완료 신호가 공유할 registry다. */
   transitions?: TransitionRegistry;
-  /** Taskbar Root의 Windows·Search 요청을 panel 소유자에게 전달하는 단일 gateway다. */
-  taskbarRootActionGateway?: TaskbarRootActionGateway;
 }>;
 
 /** Provider와 controller가 공유하는 Store 구독, Action gateway와 transition 기반이다. */
@@ -97,20 +106,15 @@ export type HeadlessRuntime = Readonly<{
   start: HeadlessFeatureRuntime<StartSnapshot, StartAction, StartOperationHandle>;
   /** Taskbar snapshot과 TaskbarPinAction 실행 channel이다. */
   taskbar: HeadlessFeatureRuntime<TaskbarSnapshot, TaskbarPinAction, TaskbarOperationHandle>;
-  /** Taskbar Root 입력을 panel 상태 구현과 분리해 전달하는 Action channel이다. */
-  taskbarRoot: TaskbarRootActionGateway;
+  /** runtime-local primary panel snapshot과 순차 transition Action channel이다. */
+  primaryPanel: HeadlessFeatureRuntime<
+    PrimaryPanelSnapshot,
+    PrimaryPanelAction,
+    PrimaryPanelOperationHandle
+  >;
   /** operation ID와 phase별 UI 완료·중단·실패 신호를 연결한다. */
   transitions: TransitionRegistry;
 }>;
-
-/** 연결되지 않은 Root Action이 조용한 no-op이 되지 않도록 명시적으로 거절한다. */
-const executeMissingTaskbarRootAction = (_action: TaskbarRootAction): never => {
-  throw new Error("Taskbar Root Action Gateway가 연결되지 않았습니다");
-};
-
-const missingTaskbarRootActionGateway: TaskbarRootActionGateway = Object.freeze({
-  execute: executeMissingTaskbarRootAction,
-});
 
 /** 준비 전 controller가 서버와 브라우저 초기화 전까지 공유할 immutable 결과를 만든다. */
 const createNotReadyViewModel = <Snapshot>(): ControllerViewModel<Snapshot> =>
@@ -167,12 +171,27 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
   const workspaceStore = options.adapters?.workspace ?? WorkspaceStore;
   const startStore = options.adapters?.start ?? StartStore;
   const taskbarStore = options.adapters?.taskbar ?? TaskbarStore;
+  const primaryPanelState = options.adapters?.primaryPanel ?? createPrimaryPanelState();
   const windowOperations = new WindowOperations({ store: windowStore, transitions });
   const workspaceOperations = new WorkspaceOperations({ store: workspaceStore });
   const startOperations = new StartOperations({ store: startStore, transitions });
   const taskbarOperations = new TaskbarOperations({
     store: taskbarStore,
     windowReader: windowStore,
+    transitions,
+  });
+  const primaryPanelOperations = new PrimaryPanelOperations({
+    state: primaryPanelState,
+    modeReader: {
+      getMode: () => {
+        try {
+          return windowStore.getSnapshot().mode;
+        } catch (error) {
+          if (isNotInitializedError(error, "WindowStoreNotInitializedError")) return "not-ready";
+          throw error;
+        }
+      },
+    },
     transitions,
   });
 
@@ -197,7 +216,15 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       (action) => taskbarOperations.execute(action),
       "TaskbarStoreNotInitializedError",
     ),
-    taskbarRoot: options.taskbarRootActionGateway ?? missingTaskbarRootActionGateway,
+    primaryPanel: createFeatureRuntime<
+      PrimaryPanelSnapshot,
+      PrimaryPanelAction,
+      PrimaryPanelOperationHandle
+    >(
+      primaryPanelState,
+      (action) => primaryPanelOperations.execute(action),
+      "PrimaryPanelStateNotInitializedError",
+    ),
     transitions,
   });
 };

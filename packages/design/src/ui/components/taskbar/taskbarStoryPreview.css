@@ -1,0 +1,49 @@
+.taskbar-story {
+  color: var(--wd-color-text-primary);
+  font-family: var(--wd-font-family-sans);
+  width: 100%;
+}
+
+.taskbar-story-comparison {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.taskbar-story-surface {
+  align-items: center;
+  background: var(--wd-taskbar-root-background);
+  border: 1px solid var(--wd-taskbar-root-border-color);
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  min-height: 140px;
+  padding: 24px;
+  position: relative;
+}
+
+.taskbar-story-viewport {
+  min-height: 100vh;
+}
+
+.taskbar-story-results {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  gap: 8px 24px;
+  margin-top: 16px;
+}
+
+.taskbar-story-results p {
+  margin: 0;
+}
+
+.taskbar-story-description {
+  color: rgb(96 100 112);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 12px 0 0;
+  max-width: 75ch;
+}
