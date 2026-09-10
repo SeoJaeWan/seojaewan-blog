@@ -61,6 +61,9 @@ export type WindowSessionBase = Readonly<{
   desktopPlacementPending?: true;
 }>;
 
+/** 새 File Explorer Window가 사용하는 runtime Sidebar 기본 폭이다. */
+export const DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH = 240;
+
 /**
  * 하나의 File Explorer Window와 그 tab collection을 나타낸다.
  *
@@ -72,6 +75,8 @@ export type FileExplorerWindowSession = Readonly<
     applicationId: "file-explorer";
     tabs: readonly FileExplorerTab[];
     activeTabId: FileExplorerTabId;
+    /** 같은 Window의 모든 tab이 공유하는 reload 비영속 runtime 폭이다. */
+    sidebarWidth?: number;
   }
 >;
 

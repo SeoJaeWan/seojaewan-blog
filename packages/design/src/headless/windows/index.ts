@@ -3,6 +3,7 @@
  *
  * 내부 상태 계산과 ID 발급기, 제품 UI는 이 진입점에서 제공하지 않는다.
  */
+export type { ExplorerNavigationTarget } from "../folders/model/index.js";
 export {
   useWindowController,
   type WindowController,
@@ -28,6 +29,7 @@ export {
 } from "./gestures/index.js";
 export {
   type ChromeWindowSession,
+  DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH,
   type FileExplorerWindowSession,
   type WindowApplicationId,
   type WindowFrameState,

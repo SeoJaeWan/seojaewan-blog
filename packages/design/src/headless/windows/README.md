@@ -12,7 +12,7 @@
 | [windowStore/operationResult/index.ts](./windowStore/operationResult/index.ts) | commit, no-op과 거부 결과를 설명한다.                        |
 | [operations/index.ts](./operations/index.ts)                                   | Action을 Session queue와 transition에 연결한다.              |
 | [geometry/index.ts](./geometry/index.ts)                                       | 숫자 배치를 계산하고 `getWindowBounds`로 표시 영역을 읽는다. |
-| [gestures/index.ts](./gestures/index.ts)                                       | move·resize 시작 frame과 Esc rollback을 관리한다.             |
+| [gestures/index.ts](./gestures/index.ts)                                       | move·resize 시작 frame과 Esc rollback을 관리한다.            |
 | [routeSelector/index.ts](./routeSelector/index.ts)                             | active tab에서 현재 주소를 파생한다.                         |
 | [../folders/README.md](../folders/README.md)                                   | File Explorer tab의 위치와 탐색 모델을 안내한다.             |
 | [../chrome/README.md](../chrome/README.md)                                     | Chrome tab의 위치와 탐색 모델을 안내한다.                    |
@@ -60,9 +60,13 @@ if (!result.ok) {
 }
 ```
 
-Folder 기본 열기는 `openFolder(folderRef)`, Content 기본 열기는 `openContent(contentRef)`를 사용한다. 명시적인 새 창은 `createFileExplorerWindow` 또는 `openContentInNewWindow`를 사용한다. Explorer 내부 탐색은 `navigateFileExplorer(sessionId, tabId, folderRef)`로 요청한다.
+Folder 기본 열기는 `openFolder(folderRef)`, Content 기본 열기는 `openContent(contentRef)`를 사용한다. 명시적인 새 창은 `createFileExplorerWindow` 또는 `openContentInNewWindow`를 사용한다. Explorer 내부 탐색은 `navigateFileExplorer(sessionId, tabId, target)`로 요청하며 target은 `{ kind: "location", location: folderRef | null }` 또는 `{ kind: "unresolved-path", path }`다. unresolved path도 정상 target과 같은 back/forward stack entry다.
 
-Chrome의 `addChromeTab`, `navigateChrome`, `goBackChrome`, `goForwardChrome`, `setChromeScrollTop`, `refreshChrome`은 Session·tab ID를 받는다. Explorer에도 대응하는 tab·history·scroll 명령이 있다. 각 함수의 입력과 오류 조건은 해당 JSDoc을 확인한다.
+Explorer tab은 navigation 외에 `query`, `expandedFolderIds`, `selection`을 독립적으로 보존한다. 정상 target 이동과 back/forward는 query와 selection을 비우고, 같은 target 이동은 scroll을 포함한 tab 상태를 보존하는 no-op이다. unresolved target의 scroll은 항상 0이다. `setFileExplorerQuery`, `setFileExplorerExpandedFolderIds`, `setFileExplorerSelection`과 `setFileExplorerScrollTop`으로 각 runtime 값을 바꾼다.
+
+`FileExplorerWindowSession.sidebarWidth`는 같은 Window의 tab들이 공유하며 새 runtime Window의 기본값은 `DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH`다. `setFileExplorerSidebarWidth`는 다른 Explorer Window 폭을 바꾸지 않는다. tab 상태와 Sidebar 폭은 browser reload에 저장하지 않는다.
+
+`refreshFileExplorer(sessionId, tabId, resolvedLocation?)`는 history를 추가하지 않는다. 정상 target에서는 query·selection을 비우고 scroll을 0으로 만든다. unresolved path가 다시 해석되면 controller가 최신 `resolvedLocation`을 전달해 current entry만 정상 target으로 교체하며, 계속 누락이면 인자를 생략해 같은 오류 target을 유지한다. 문자열 path 해석 자체는 Workspace selector와 controller가 담당한다. Chrome의 `refreshChrome`은 기존 location·history·scroll을 유지하고 reload revision만 증가시키는 별도 동작이다.
 
 mobile Taskbar의 고정 앱 버튼은 `launchMobileApplication("file-explorer" | "chrome")`을 사용한다. 현재 앱은 Session·tab·history를 그대로 두는 no-op이고 다른 앱은 Explorer의 Desktop 위치(`null`) 또는 Chrome `new-tab` 창으로 한 commit에 교체된다. desktop 호출은 `mobile-mode-required`로 거부된다. mobile의 `minimize`, `addFileExplorerTab`, `addChromeTab`, move·resize·maximize는 ID 발급·snapshot 교체·알림이 없는 no-op이다. `openContent`는 현재 mobile Chrome의 유일한 tab history에서 navigate하고 Explorer가 열려 있으면 Chrome 하나로 교체한다.
 
