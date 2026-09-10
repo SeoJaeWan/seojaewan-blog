@@ -24,6 +24,10 @@ export {
   type WindowTitleBarProps,
 } from "./components/common/window/index.js";
 export {
+  FileExplorerWindow,
+  type FileExplorerWindowProps,
+} from "./components/folder/index.js";
+export {
   TaskbarApplicationButton,
   type TaskbarApplicationButtonProps,
 } from "./components/taskbar/items/index.js";
