@@ -3,6 +3,13 @@
  *
  * Store 초기화와 상태 계산은 기존 Store가 소유하며 이 파일은 React나 DOM을 사용하지 않는다.
  */
+import type { FileExplorerResourceReaders } from "../../folders/selectors/index.js";
+import type {
+  FolderViewSettingsAction,
+  FolderViewSettingsSnapshot,
+  FolderViewSettingsStoreResult,
+} from "../../folders/viewSettings/index.js";
+import { FolderViewSettingsStore } from "../../folders/viewSettings/index.js";
 import type { StartSnapshot } from "../../start/model/index.js";
 import {
   type StartAction,
@@ -111,6 +118,11 @@ export type HeadlessRuntimeAdapters = Readonly<{
   taskbar?: ExternalStoreReader<TaskbarSnapshot> & TaskbarOperationStore;
   /** runtime별 primary panel transient state를 제공하는 adapter다. */
   primaryPanel?: PrimaryPanelState;
+  /** File Explorer 위치별 view settings snapshot과 update 명령을 제공하는 adapter다. */
+  folderViewSettings?: ExternalStoreReader<FolderViewSettingsSnapshot> &
+    Readonly<{
+      dispatch(action: FolderViewSettingsAction): Promise<FolderViewSettingsStoreResult>;
+    }>;
 }>;
 
 /** runtime 생성 시 Store adapter와 transition registry를 선택하는 입력이다. */
@@ -123,6 +135,8 @@ export type HeadlessRuntimeOptions = Readonly<{
   windowPresentation?: WindowPresentationPort;
   /** ExternalShortcut actual browser 새 탭 결과를 반환하는 Application port다. */
   externalNavigation?: ExternalShortcutNavigationPort;
+  /** File Explorer item 표시 이름과 Content date를 조회하는 Application Catalog port다. */
+  fileExplorerResources?: FileExplorerResourceReaders;
 }>;
 
 /** Resource 종류별 open을 Window 또는 external navigation port로 보내는 runtime channel이다. */
@@ -160,9 +174,33 @@ export type HeadlessRuntime = Readonly<{
   >;
   /** Folder·Content·ExternalShortcut open 결과를 하나로 정규화하는 channel이다. */
   resourceOpen: HeadlessResourceOpenRuntime;
+  /** 위치별 Folder view settings snapshot과 serializable update Action channel이다. */
+  folderViewSettings: HeadlessFeatureRuntime<
+    FolderViewSettingsSnapshot,
+    FolderViewSettingsAction,
+    Promise<FolderViewSettingsStoreResult>
+  >;
+  /** File Explorer selector가 최신 Content·ExternalShortcut 원본을 읽는 port다. */
+  fileExplorerResources: FileExplorerResourceReaders;
   /** operation ID와 phase별 UI 완료·중단·실패 신호를 연결한다. */
   transitions: TransitionRegistry;
 }>;
+
+/** Catalog가 아직 연결되지 않은 runtime에서 빈 Resource collection을 제공한다. */
+const EMPTY_CATALOG = Object.freeze({
+  /** 빈 Catalog에는 어떤 ID도 존재하지 않는다. */
+  has: (_id: string): false => false,
+  /** 빈 Catalog 조회는 항상 undefined다. */
+  get: (_id: string): undefined => undefined,
+  /** 빈 Catalog 목록은 immutable 빈 배열이다. */
+  list: (): readonly never[] => Object.freeze([]),
+});
+
+/** Application Catalog가 생략됐을 때 사용하는 안정적인 빈 reader 모음이다. */
+const EMPTY_FILE_EXPLORER_RESOURCES = Object.freeze({
+  content: EMPTY_CATALOG,
+  externalShortcut: EMPTY_CATALOG,
+}) as FileExplorerResourceReaders;
 
 /** 준비 전 controller가 서버와 브라우저 초기화 전까지 공유할 immutable 결과를 만든다. */
 const createNotReadyViewModel = <Snapshot>(): ControllerViewModel<Snapshot> =>
@@ -226,6 +264,7 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
   const startScreenState = options.adapters?.startScreen ?? createStartScreenState();
   const taskbarStore = options.adapters?.taskbar ?? TaskbarStore;
   const primaryPanelState = options.adapters?.primaryPanel ?? createPrimaryPanelState();
+  const folderViewSettingsStore = options.adapters?.folderViewSettings ?? FolderViewSettingsStore;
   const windowOperations = new WindowOperations({
     store: windowStore,
     transitions,
@@ -323,6 +362,16 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
     resourceOpen: Object.freeze({
       execute: (action: ResourceOpenAction) => resourceOpenOperations.execute(action),
     }),
+    folderViewSettings: createFeatureRuntime<
+      FolderViewSettingsSnapshot,
+      FolderViewSettingsAction,
+      Promise<FolderViewSettingsStoreResult>
+    >(
+      folderViewSettingsStore,
+      (action) => folderViewSettingsStore.dispatch(action),
+      "FolderViewSettingsStoreNotInitializedError",
+    ),
+    fileExplorerResources: options.fileExplorerResources ?? EMPTY_FILE_EXPLORER_RESOURCES,
     transitions,
   });
 };

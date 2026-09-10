@@ -25,9 +25,9 @@ const collectSources = (directory: string): string[] =>
 
 /** source의 static import/export specifier를 TypeScript parser로 읽는다. */
 const readImports = (path: string): readonly string[] =>
-  ts.preProcessFile(readFileSync(path, "utf8"), true, true).importedFiles.map(({ fileName }) =>
-    fileName.replaceAll("\\", "/"),
-  );
+  ts
+    .preProcessFile(readFileSync(path, "utf8"), true, true)
+    .importedFiles.map(({ fileName }) => fileName.replaceAll("\\", "/"));
 
 /** 실제 TypeScript resolution 결과를 반환해 문자열 경로 추측을 피한다. */
 const resolveImport = (from: string, specifier: string): string | null =>
@@ -45,7 +45,9 @@ const resolveImport = (from: string, specifier: string): string | null =>
 /** 절대 경로가 지정 directory 내부인지 path separator 경계까지 확인한다. */
 const isInside = (path: string, directory: string): boolean => {
   const pathFromRoot = relative(directory, path);
-  return pathFromRoot !== ".." && !pathFromRoot.startsWith(`..${sep}`) && !pathFromRoot.startsWith(sep);
+  return (
+    pathFromRoot !== ".." && !pathFromRoot.startsWith(`..${sep}`) && !pathFromRoot.startsWith(sep)
+  );
 };
 
 /** model·commands·selectors element처럼 canonical pure 역할인지 판별한다. */
@@ -60,7 +62,10 @@ const isAsyncModule = (path: string): boolean =>
     .split(sep)
     .some(
       (segment) =>
-        segment === "operations" || segment === "provider" || segment === "runtime" || /Store$/.test(segment),
+        segment === "operations" ||
+        segment === "provider" ||
+        segment === "runtime" ||
+        /Store$/.test(segment),
     );
 
 describe("headless architecture", () => {
@@ -81,6 +86,20 @@ describe("headless architecture", () => {
   );
   const program = ts.createProgram(sources, compilerOptions);
   const checker = program.getTypeChecker();
+
+  /** public entry에서 한 export의 실제 선언 symbol을 찾는다. */
+  const getPublicExport = (entry: string, name: string): TypeScript.Symbol => {
+    const sourceFile = program.getSourceFile(entry);
+    const moduleSymbol =
+      sourceFile === undefined ? undefined : checker.getSymbolAtLocation(sourceFile);
+    const exported =
+      moduleSymbol === undefined
+        ? undefined
+        : checker.getExportsOfModule(moduleSymbol).find((symbol) => symbol.name === name);
+    if (exported === undefined)
+      throw new Error(`${relative(sourceRoot, entry)}에 ${name} export가 없습니다`);
+    return exported.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exported) : exported;
+  };
   const semanticImports = new Map<string, Set<string>>();
   for (const source of sources) {
     const sourceFile = program.getSourceFile(source);
@@ -92,9 +111,10 @@ describe("headless architecture", () => {
         if (bindings === undefined || !ts.isNamedImports(bindings)) continue;
         for (const element of bindings.elements) {
           const symbol = checker.getSymbolAtLocation(element.name);
-          const target = symbol?.flags && symbol.flags & ts.SymbolFlags.Alias
-            ? checker.getAliasedSymbol(symbol)
-            : symbol;
+          const target =
+            symbol?.flags && symbol.flags & ts.SymbolFlags.Alias
+              ? checker.getAliasedSymbol(symbol)
+              : symbol;
           for (const declaration of target?.declarations ?? []) {
             const declarationSource = declaration.getSourceFile().fileName;
             if (isInside(declarationSource, headlessRoot)) targets.add(declarationSource);
@@ -112,7 +132,11 @@ describe("headless architecture", () => {
         const target = dependency.resolved;
         if (dependency.specifier.startsWith("@base-ui/react")) {
           violations.push(`${relative(sourceRoot, source)} -> ${dependency.specifier}`);
-        } else if (target !== null && isInside(target, sourceRoot) && !isInside(target, headlessRoot)) {
+        } else if (
+          target !== null &&
+          isInside(target, sourceRoot) &&
+          !isInside(target, headlessRoot)
+        ) {
           violations.push(`${relative(sourceRoot, source)} -> ${relative(sourceRoot, target)}`);
         } else if (
           target !== null &&
@@ -155,9 +179,7 @@ describe("headless architecture", () => {
       for (const target of semanticImports.get(current) ?? []) {
         if (seen.has(target)) continue;
         if (isAsyncModule(target)) {
-          violations.push(
-            `${relative(sourceRoot, origin)} -> ${relative(sourceRoot, target)}`,
-          );
+          violations.push(`${relative(sourceRoot, origin)} -> ${relative(sourceRoot, target)}`);
           continue;
         }
         seen.add(target);
@@ -166,6 +188,85 @@ describe("headless architecture", () => {
     };
 
     for (const source of sources.filter(isPureModule)) visit(source, source, new Set([source]));
+    expect(violations).toEqual([]);
+  });
+
+  it("Folder·Workspace·Window의 새 계약을 feature와 headless entry에서 공개한다", () => {
+    const entries = [
+      {
+        path: resolve(headlessRoot, "folders/index.ts"),
+        names: [
+          "ExplorerNavigationTarget",
+          "FileExplorerNavigationValue",
+          "FolderViewSettingsStore",
+          "FolderViewSettingsStorage",
+          "parseFolderViewSettingsLocation",
+        ],
+      },
+      {
+        path: resolve(headlessRoot, "workspace/index.ts"),
+        names: ["WorkspacePathResolution", "resolveWorkspacePath", "selectWorkspaceSidebarTree"],
+      },
+      {
+        path: resolve(headlessRoot, "windows/index.ts"),
+        names: ["ExplorerNavigationTarget", "DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH", "WindowAction"],
+      },
+      {
+        path: resolve(headlessRoot, "index.ts"),
+        names: [
+          "ExplorerNavigationTarget",
+          "FolderViewSettingsStore",
+          "FolderViewSettingsStorage",
+          "WorkspacePathResolution",
+          "resolveWorkspacePath",
+          "toExplorerNavigationTarget",
+          "WindowAction",
+        ],
+      },
+    ] as const;
+
+    expect(() => {
+      for (const entry of entries) {
+        for (const name of entry.names) getPublicExport(entry.path, name);
+      }
+    }).not.toThrow();
+  });
+
+  it("새 public 계약 선언은 DOM·Base UI type을 노출하지 않는다", () => {
+    const selected = [
+      [resolve(headlessRoot, "folders/index.ts"), "ExplorerNavigationTarget"],
+      [resolve(headlessRoot, "folders/index.ts"), "FolderViewSettingsStore"],
+      [resolve(headlessRoot, "folders/index.ts"), "FolderViewSettingsStorage"],
+      [resolve(headlessRoot, "workspace/index.ts"), "WorkspacePathResolution"],
+      [resolve(headlessRoot, "workspace/index.ts"), "resolveWorkspacePath"],
+      [resolve(headlessRoot, "windows/index.ts"), "WindowAction"],
+      [resolve(headlessRoot, "index.ts"), "toExplorerNavigationTarget"],
+    ] as const;
+    const violations: string[] = [];
+
+    for (const [entry, name] of selected) {
+      const exported = getPublicExport(entry, name);
+      for (const declaration of exported.declarations ?? []) {
+        const visit = (node: TypeScript.Node): void => {
+          if (ts.isTypeReferenceNode(node)) {
+            const referenced = checker.getSymbolAtLocation(node.typeName);
+            const target =
+              referenced?.flags && referenced.flags & ts.SymbolFlags.Alias
+                ? checker.getAliasedSymbol(referenced)
+                : referenced;
+            for (const targetDeclaration of target?.declarations ?? []) {
+              const file = targetDeclaration.getSourceFile().fileName.replaceAll("\\", "/");
+              if (file.endsWith("/lib.dom.d.ts") || file.includes("/node_modules/@base-ui/")) {
+                violations.push(`${name} -> ${target?.name ?? node.typeName.getText()} (${file})`);
+              }
+            }
+          }
+          ts.forEachChild(node, visit);
+        };
+        visit(declaration);
+      }
+    }
+
     expect(violations).toEqual([]);
   });
 });

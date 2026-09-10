@@ -21,8 +21,7 @@ import {
 const stubIds = () => {
   let sequence = 0;
   vi.stubGlobal("crypto", {
-    randomUUID: () =>
-      `10000000-0000-4000-8000-${String((sequence += 1)).padStart(12, "0")}`,
+    randomUUID: () => `10000000-0000-4000-8000-${String((sequence += 1)).padStart(12, "0")}`,
   });
 };
 
@@ -31,14 +30,8 @@ const setup = async () => {
   vi.resetModules();
   stubIds();
   const design = await import("../headless/index.js");
-  const content = design.createResourceRef(
-    "content",
-    "30000000-0000-4000-8000-000000000001",
-  );
-  const contentInbox = design.createResourceRef(
-    "folder",
-    "30000000-0000-4000-8000-000000000002",
-  );
+  const content = design.createResourceRef("content", "30000000-0000-4000-8000-000000000001");
+  const contentInbox = design.createResourceRef("folder", "30000000-0000-4000-8000-000000000002");
   const workspace = {
     getSnapshot: () => ({
       schemaVersion: 1 as const,
@@ -85,11 +78,13 @@ const setup = async () => {
   const options: WindowOperationsOptions = { store, transitions };
   return {
     content,
+    contentInbox,
     design,
     gestures: new design.WindowGestures(design.WindowStore),
     operations: new design.WindowOperations(options),
     store: design.WindowStore,
     transitions,
+    workspace,
   };
 };
 
@@ -137,6 +132,32 @@ describe("public WindowOperations with WindowStore", () => {
     expect(destination).toEqual({ left: 12, top: 34, width: 30, height: 30 });
   });
 
+  it("Workspace path 결과를 public Explorer target으로 변환해 Window Action에 전달한다", async () => {
+    const { contentInbox, design, operations, store, workspace } = await setup();
+    const created = await store.createFileExplorerWindow(null);
+    if (!created.changed || created.change.sessionId === undefined) {
+      throw new Error("File Explorer Window 생성이 필요합니다");
+    }
+    const session = store.getSnapshot().sessions.find(({ id }) => id === created.change.sessionId);
+    if (session?.kind !== "file-explorer") throw new Error("File Explorer Session이 필요합니다");
+    const resolution = design.resolveWorkspacePath(workspace.getSnapshot(), "/content/");
+    const target = design.toExplorerNavigationTarget(resolution);
+    const action: WindowAction = {
+      type: "navigate-file-explorer",
+      sessionId: session.id,
+      tabId: session.activeTabId,
+      target,
+    };
+
+    expect(target).toEqual({ kind: "location", location: contentInbox });
+    if (target.kind !== "location") throw new Error("정상 Folder target이 필요합니다");
+    expect(target.location).toBe(contentInbox);
+    await expect(committedResult(operations.execute(action))).resolves.toMatchObject({
+      status: "committed",
+      result: { change: { kind: "tab-navigated", sessionId: session.id } },
+    });
+  });
+
   it("headless entry에서 atomic resize·gesture·presentation port를 함께 소비한다", async () => {
     const { design, gestures, store } = await setup();
     const created = await store.createChromeWindow();
@@ -165,11 +186,15 @@ describe("public WindowOperations with WindowStore", () => {
     await expect(started.handle.cancel()).resolves.toMatchObject({ status: "cancelled" });
 
     expect(store.getSnapshot().sessions[0].frame).toEqual(started.handle.startFrame);
-    expect(presentation.present({
-      operationId: "window-operation-1" as Parameters<WindowPresentationPort["present"]>[0]["operationId"],
-      sessionId: created.change.sessionId,
-      phase: "window-enter",
-    })).toBeUndefined();
+    expect(
+      presentation.present({
+        operationId: "window-operation-1" as Parameters<
+          WindowPresentationPort["present"]
+        >[0]["operationId"],
+        sessionId: created.change.sessionId,
+        phase: "window-enter",
+      }),
+    ).toBeUndefined();
   });
 
   it("새 Window Component mount 알림 전 presentation 요청을 보존하고 동기 완료한다", async () => {

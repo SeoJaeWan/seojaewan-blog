@@ -13,6 +13,10 @@ const folderA = createResourceRef("folder", "20000000-0000-4000-8000-00000000000
 const folderB = createResourceRef("folder", "20000000-0000-4000-8000-000000000002");
 const contentA = createResourceRef("content", "30000000-0000-4000-8000-000000000001");
 const contentB = createResourceRef("content", "30000000-0000-4000-8000-000000000002");
+const explorerTarget = (location: typeof folderA | null) => ({
+  kind: "location" as const,
+  location,
+});
 
 /**
  * 주어진 Content ref를 가진 Catalog 원본 fixture를 만든다.
@@ -221,7 +225,7 @@ describe("WindowStore", () => {
       expect(session.tabs).toHaveLength(1);
       expect(session.activeTabId).toBe(session.tabs[0].id);
       expect(session.tabs[0].navigation.current).toEqual({
-        location: method === "createChromeWindow" ? { kind: "new-tab" } : null,
+        location: method === "createChromeWindow" ? { kind: "new-tab" } : explorerTarget(null),
         scrollTop: 0,
       });
       expect(state.activeSessionId).toBe(session.id);
@@ -648,8 +652,8 @@ describe("WindowStore", () => {
          */
         scroll: (index: number, top: number) =>
           WindowStore.setFileExplorerScrollTop(session.id, id(index), top),
-        locationA: folderA,
-        locationB: folderB,
+        locationA: explorerTarget(folderA),
+        locationB: explorerTarget(folderB),
       };
     };
 
@@ -662,7 +666,10 @@ describe("WindowStore", () => {
         expect(f.tabs()).toHaveLength(2);
         expect(f.tabs()[0]).toEqual(before.sessions[0].tabs[0]);
         expect(f.tabs()[1].navigation).toEqual({
-          current: { location: kind === "chrome" ? { kind: "new-tab" } : null, scrollTop: 0 },
+          current: {
+            location: kind === "chrome" ? { kind: "new-tab" } : explorerTarget(null),
+            scrollTop: 0,
+          },
           backStack: [],
           forwardStack: [],
         });
@@ -848,6 +855,214 @@ describe("WindowStore", () => {
         });
       },
     );
+  });
+
+  describe("File Explorer runtime state", () => {
+    const createExplorer = async () => {
+      const fixture = await setup();
+      await fixture.WindowStore.initialize(fixture.initialization);
+      await fixture.WindowStore.createFileExplorerWindow(null);
+      const session = fixture.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      return { ...fixture, sessionId: session.id, tabId: session.activeTabId };
+    };
+
+    it("새 Window와 tab에 독립 runtime 기본값과 Window-local Sidebar 폭을 만든다", async () => {
+      const f = await createExplorer();
+      let session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.sidebarWidth).toBe(240);
+      expect(session.tabs[0]).toMatchObject({
+        query: "",
+        expandedFolderIds: [],
+        selection: [],
+        navigation: { current: { location: explorerTarget(null), scrollTop: 0 } },
+      });
+
+      await f.WindowStore.addFileExplorerTab(session.id);
+      session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[1]).toMatchObject({
+        query: "",
+        expandedFolderIds: [],
+        selection: [],
+      });
+    });
+
+    it("resolved와 unresolved entry를 같은 history 순서로 back·forward한다", async () => {
+      const f = await createExplorer();
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, explorerTarget(folderA));
+      await f.WindowStore.setFileExplorerScrollTop(f.sessionId, f.tabId, 37);
+      await f.WindowStore.setFileExplorerQuery(f.sessionId, f.tabId, "draft");
+      await f.WindowStore.setFileExplorerSelection(f.sessionId, f.tabId, [contentA]);
+      await f.WindowStore.setFileExplorerExpandedFolderIds(f.sessionId, f.tabId, [folderA.id]);
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, {
+        kind: "unresolved-path",
+        path: "/Missing/Child",
+      });
+
+      let session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0]).toMatchObject({
+        query: "",
+        expandedFolderIds: [folderA.id],
+        selection: [],
+        navigation: {
+          current: {
+            location: { kind: "unresolved-path", path: "/Missing/Child" },
+            scrollTop: 0,
+          },
+        },
+      });
+      const beforeScroll = f.WindowStore.getSnapshot();
+      expect(await f.WindowStore.setFileExplorerScrollTop(f.sessionId, f.tabId, 20)).toMatchObject({
+        changed: false,
+        reason: "no-op",
+      });
+      expect(f.WindowStore.getSnapshot()).toBe(beforeScroll);
+
+      await f.WindowStore.goBackFileExplorer(f.sessionId, f.tabId);
+      session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0].navigation.current).toEqual({
+        location: explorerTarget(folderA),
+        scrollTop: 37,
+      });
+      expect(session.tabs[0].navigation.forwardStack.at(-1)).toEqual({
+        location: { kind: "unresolved-path", path: "/Missing/Child" },
+        scrollTop: 0,
+      });
+
+      await f.WindowStore.goForwardFileExplorer(f.sessionId, f.tabId);
+      session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0].navigation.current).toEqual({
+        location: { kind: "unresolved-path", path: "/Missing/Child" },
+        scrollTop: 0,
+      });
+    });
+
+    it("같은 target navigate는 query·selection·scroll과 snapshot을 그대로 보존한다", async () => {
+      const f = await createExplorer();
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, explorerTarget(folderA));
+      await f.WindowStore.setFileExplorerQuery(f.sessionId, f.tabId, "A");
+      await f.WindowStore.setFileExplorerSelection(f.sessionId, f.tabId, [contentA]);
+      await f.WindowStore.setFileExplorerScrollTop(f.sessionId, f.tabId, 52);
+      const before = f.WindowStore.getSnapshot();
+
+      expect(await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, folderA)).toMatchObject(
+        { changed: false, reason: "no-op" },
+      );
+      expect(f.WindowStore.getSnapshot()).toBe(before);
+      const session = before.sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0]).toMatchObject({ query: "A", selection: [contentA] });
+      expect(session.tabs[0].navigation.current.scrollTop).toBe(52);
+
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, {
+        kind: "unresolved-path",
+        path: "/same-error",
+      });
+      const beforeError = f.WindowStore.getSnapshot();
+      expect(
+        await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, {
+          kind: "unresolved-path",
+          path: "/same-error",
+        }),
+      ).toMatchObject({ changed: false, reason: "no-op" });
+      expect(f.WindowStore.getSnapshot()).toBe(beforeError);
+    });
+
+    it("query·expansion·selection은 tab-local이고 Sidebar 폭은 Window-local이다", async () => {
+      const f = await createExplorer();
+      await f.WindowStore.addFileExplorerTab(f.sessionId);
+      let firstSession = f.WindowStore.getSnapshot().sessions[0];
+      if (firstSession?.kind !== "file-explorer") throw new Error("expected explorer");
+      const secondTabId = firstSession.tabs[1].id;
+
+      await f.WindowStore.setFileExplorerQuery(f.sessionId, f.tabId, "first");
+      await f.WindowStore.setFileExplorerExpandedFolderIds(f.sessionId, f.tabId, [folderA.id]);
+      await f.WindowStore.setFileExplorerSelection(f.sessionId, f.tabId, [contentA]);
+      await f.WindowStore.setFileExplorerSidebarWidth(f.sessionId, 312);
+      await f.WindowStore.createFileExplorerWindow(null);
+
+      const state = f.WindowStore.getSnapshot();
+      firstSession = state.sessions[0];
+      const secondSession = state.sessions[1];
+      if (firstSession?.kind !== "file-explorer" || secondSession?.kind !== "file-explorer") {
+        throw new Error("expected explorers");
+      }
+      expect(firstSession.tabs[0]).toMatchObject({
+        query: "first",
+        expandedFolderIds: [folderA.id],
+        selection: [contentA],
+      });
+      expect(firstSession.tabs.find(({ id }) => id === secondTabId)).toMatchObject({
+        query: "",
+        expandedFolderIds: [],
+        selection: [],
+      });
+      expect(firstSession.sidebarWidth).toBe(312);
+      expect(secondSession.sidebarWidth).toBe(240);
+    });
+
+    it("refresh는 target 종류에 따라 상태 초기화와 current-only 재해석을 적용한다", async () => {
+      const f = await createExplorer();
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, explorerTarget(folderA));
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, explorerTarget(folderB));
+      await f.WindowStore.goBackFileExplorer(f.sessionId, f.tabId);
+      await f.WindowStore.setFileExplorerScrollTop(f.sessionId, f.tabId, 24);
+      await f.WindowStore.setFileExplorerQuery(f.sessionId, f.tabId, "query");
+      await f.WindowStore.setFileExplorerSelection(f.sessionId, f.tabId, [contentA]);
+      await f.WindowStore.setFileExplorerExpandedFolderIds(f.sessionId, f.tabId, [folderA.id]);
+      await f.WindowStore.setFileExplorerSidebarWidth(f.sessionId, 300);
+      const beforeResolved = f.WindowStore.getSnapshot().sessions[0];
+      if (beforeResolved?.kind !== "file-explorer") throw new Error("expected explorer");
+      const resolvedHistory = beforeResolved.tabs[0].navigation.backStack;
+      const resolvedForward = beforeResolved.tabs[0].navigation.forwardStack;
+
+      await f.WindowStore.refreshFileExplorer(f.sessionId, f.tabId);
+      let session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0]).toMatchObject({
+        query: "",
+        selection: [],
+        expandedFolderIds: [folderA.id],
+        navigation: { current: { location: explorerTarget(folderA), scrollTop: 0 } },
+      });
+      expect(session.tabs[0].navigation.backStack).toEqual(resolvedHistory);
+      expect(session.tabs[0].navigation.forwardStack).toEqual(resolvedForward);
+      expect(session.sidebarWidth).toBe(300);
+
+      await f.WindowStore.navigateFileExplorer(f.sessionId, f.tabId, {
+        kind: "unresolved-path",
+        path: "/B",
+      });
+      session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      const unresolvedBack = session.tabs[0].navigation.backStack;
+      const unresolvedForward = session.tabs[0].navigation.forwardStack;
+      const beforeMissingRefresh = f.WindowStore.getSnapshot();
+      expect(
+        await f.WindowStore.refreshFileExplorer(f.sessionId, f.tabId),
+      ).toMatchObject({ changed: false, reason: "no-op" });
+      expect(f.WindowStore.getSnapshot()).toBe(beforeMissingRefresh);
+      await f.WindowStore.refreshFileExplorer(f.sessionId, f.tabId, folderB);
+
+      session = f.WindowStore.getSnapshot().sessions[0];
+      if (session?.kind !== "file-explorer") throw new Error("expected explorer");
+      expect(session.tabs[0].navigation).toEqual({
+        current: { location: explorerTarget(folderB), scrollTop: 0 },
+        backStack: unresolvedBack,
+        forwardStack: unresolvedForward,
+      });
+      expect(session.tabs[0]).toMatchObject({
+        query: "",
+        selection: [],
+        expandedFolderIds: [folderA.id],
+      });
+      expect(session.sidebarWidth).toBe(300);
+    });
   });
 
   describe("refreshChrome", () => {
@@ -1060,7 +1275,7 @@ describe("WindowStore", () => {
       const explorer = WindowStore.getSnapshot().sessions[0];
       expect(explorer?.kind).toBe("file-explorer");
       if (explorer?.kind !== "file-explorer") throw new Error("expected explorer");
-      expect(explorer.tabs[0]?.navigation.current.location).toEqual(folderB);
+      expect(explorer.tabs[0]?.navigation.current.location).toEqual(explorerTarget(folderB));
       expect(WindowStore.getSnapshot()).toMatchObject({
         mode: "mobile",
         activeSessionId: explorer.id,
@@ -1158,7 +1373,7 @@ describe("WindowStore", () => {
       const explorer = WindowStore.getSnapshot();
       expect(explorer.sessions[0]).toMatchObject({
         kind: "file-explorer",
-        tabs: [{ navigation: { current: { location: null } } }],
+        tabs: [{ navigation: { current: { location: explorerTarget(null) } } }],
       });
       const issueCount = getRandomUUIDCallCount();
       expect(await WindowStore.launchMobileApplication("file-explorer")).toMatchObject({
@@ -1329,7 +1544,7 @@ describe("WindowStore", () => {
       await WindowStore.close(WindowStore.getSnapshot().sessions[0].id);
       let explorer = WindowStore.getSnapshot().sessions[0];
       if (explorer?.kind !== "file-explorer") throw new Error("expected explorer");
-      expect(explorer.tabs[0]?.navigation.current.location).toBeNull();
+      expect(explorer.tabs[0]?.navigation.current.location).toEqual(explorerTarget(null));
 
       setWorkspaceState({
         ...initialWorkspace,
@@ -1341,7 +1556,7 @@ describe("WindowStore", () => {
       await WindowStore.close(WindowStore.getSnapshot().sessions[0].id);
       explorer = WindowStore.getSnapshot().sessions[0];
       if (explorer?.kind !== "file-explorer") throw new Error("expected explorer");
-      expect(explorer.tabs[0]?.navigation.current.location).toBeNull();
+      expect(explorer.tabs[0]?.navigation.current.location).toEqual(explorerTarget(null));
     });
 
     it("mobile Content 종료의 Explorer 후보 생성 실패는 현재 Chrome을 먼저 제거하지 않는다", async () => {
