@@ -44,19 +44,7 @@ afterEach(() => cleanup());
 
 describe("TaskbarStartPinned", () => {
   it("Folder, Content와 ExternalShortcut data, label과 위치 capability를 렌더링한다", () => {
-    const actions = createActions();
-    const onItemContextMenu = vi.fn();
-    const onItemOpen = vi.fn();
-    const onShowAll = vi.fn();
-    render(
-      <TaskbarStartPinned
-        actions={actions}
-        items={items}
-        onItemContextMenu={onItemContextMenu}
-        onItemOpen={onItemOpen}
-        onShowAll={onShowAll}
-      />,
-    );
+    render(<TaskbarStartPinned actions={createActions()} items={items} />);
 
     const grid = screen.getByRole("grid", { name: "고정된 항목" });
     expect(grid.getAttribute("aria-colcount")).toBe("6");
@@ -76,34 +64,47 @@ describe("TaskbarStartPinned", () => {
     expect(last.getAttribute("data-can-move-first")).toBe("true");
     expect(last.getAttribute("data-can-move-left")).toBe("true");
     expect(last.hasAttribute("data-can-move-right")).toBe(false);
+  });
 
-    fireEvent.click(middle);
+  it("item open, Context Menu와 모두 보기 intent를 각 callback으로 전달한다", () => {
+    const onItemContextMenu = vi.fn();
+    const onItemOpen = vi.fn();
+    const onShowAll = vi.fn();
+    render(
+      <TaskbarStartPinned
+        actions={createActions()}
+        items={items}
+        onItemContextMenu={onItemContextMenu}
+        onItemOpen={onItemOpen}
+        onShowAll={onShowAll}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("gridcell", { name: items[1].label }));
     expect(onItemOpen).toHaveBeenCalledTimes(1);
     expect(onItemOpen).toHaveBeenCalledWith(items[1]);
-    fireEvent.contextMenu(last);
+    fireEvent.contextMenu(screen.getByRole("gridcell", { name: "마지막 Shortcut" }));
     expect(onItemContextMenu).toHaveBeenCalledTimes(1);
     expect(onItemContextMenu).toHaveBeenCalledWith(expect.anything(), items[2]);
     fireEvent.click(screen.getByRole("button", { name: "모두" }));
     expect(onShowAll).toHaveBeenCalledTimes(1);
   });
 
-  it("ResourceRef resolver를 우선 사용하고 Folder에는 Taskbar File Explorer icon을 사용한다", () => {
+  it("ResourceRef resolver를 공유 Start icon Component에 전달한다", () => {
+    const resolveResourceIcon = vi.fn((resource: (typeof items)[number]["resource"]) =>
+      resource.kind === "external-shortcut" ? (
+        <span data-testid={`custom-${resource.id}`} />
+      ) : undefined,
+    );
     render(
       <TaskbarStartPinned
         actions={createActions()}
         items={items}
-        resolveResourceIcon={(resource) =>
-          resource.kind === "external-shortcut" ? (
-            <span data-testid={`custom-${resource.id}`} />
-          ) : undefined
-        }
+        resolveResourceIcon={resolveResourceIcon}
       />,
     );
 
-    const folderIcon = screen
-      .getByRole("gridcell", { name: "첫 폴더" })
-      .querySelector<HTMLImageElement>(".taskbar-start-pinned__icon img");
-    expect(folderIcon?.src).toContain("file-explorer.png");
+    expect(resolveResourceIcon).toHaveBeenCalledWith(items[2].resource);
     expect(
       screen
         .getByRole("gridcell", { name: "마지막 Shortcut" })
@@ -111,7 +112,7 @@ describe("TaskbarStartPinned", () => {
     ).not.toBeNull();
   });
 
-  it("Arrow와 Home/End로 6열 grid focus를 이동한다", () => {
+  it("grid keydown을 6열 keyboard navigation에 연결한다", () => {
     const manyItems = Array.from({ length: 8 }, (_, index) => ({
       resource: createResourceRef(
         index === 0 ? "folder" : "content",
@@ -126,22 +127,18 @@ describe("TaskbarStartPinned", () => {
     first.focus();
     fireEvent.keyDown(first, { key: "ArrowDown" });
     expect(document.activeElement).toBe(screen.getByRole("gridcell", { name: "항목 7" }));
-    fireEvent.keyDown(document.activeElement as HTMLElement, { key: "ArrowRight" });
-    expect(document.activeElement).toBe(screen.getByRole("gridcell", { name: "항목 8" }));
-    fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Home" });
-    expect(document.activeElement).toBe(screen.getByRole("gridcell", { name: "항목 7" }));
-    fireEvent.keyDown(document.activeElement as HTMLElement, { ctrlKey: true, key: "Home" });
-    expect(document.activeElement).toBe(first);
-    fireEvent.keyDown(first, { ctrlKey: true, key: "End" });
-    expect(document.activeElement).toBe(screen.getByRole("gridcell", { name: "항목 8" }));
   });
 
-  it("inactive view를 inert로 표시하고 빈 상태를 설명한다", () => {
+  it("inactive view를 inert로 표시한다", () => {
     const { container } = render(
       <TaskbarStartPinned actions={createActions()} active={false} items={[]} />,
     );
     const section = container.querySelector("section");
     expect(section?.hasAttribute("inert")).toBe(true);
+  });
+
+  it("Pin이 없으면 빈 상태를 설명한다", () => {
+    render(<TaskbarStartPinned actions={createActions()} items={[]} />);
     expect(screen.getByText("고정된 항목이 없습니다.")).not.toBeNull();
   });
 });

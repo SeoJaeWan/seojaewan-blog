@@ -54,8 +54,9 @@ h2. 검증 계약
   A–Z·ㄱ–ㅎ·개별 0–9·# 분류와 group 내부 정렬
 - Resource lifecycle: Window commit·충족된 no-op 성공, 거절·실행 오류·presentation 실패,
   external navigation 성공·실패·throw, duplicate·inactive·stale request와 close 완료 초기화
-- Product jsdom: current label·reorder capability, 공통 icon resolver와 fallback, drag preview·cancel·단일
-  commit, empty/long label, Action mapping과 query body 전환
+- Product jsdom: current label·reorder capability, `TaskbarStartIcon` resolver와 fallback, pinned keyboard와
+  All navigation hook, drag preview·rAF batching·모든 cancel 경로·단일 commit, empty/long label, Action
+  mapping과 query body 전환
 - Storybook Chromium: 6열 keyboard·pointer drag 중 150ms 주변 tile 이동, slide-only browse 전환,
   실제 group만 있는 4열 index·focus·# scroll·scrollbar가 숨겨진 500ms 전환,
   전체 Start open·query·Resource success·reopen 흐름

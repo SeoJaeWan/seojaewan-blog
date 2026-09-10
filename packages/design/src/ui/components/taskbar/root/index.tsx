@@ -11,8 +11,8 @@ import {
 import { TaskbarApplicationButton } from "../items/index.js";
 import { useTaskbarPanelsConnection } from "../panels/index.js";
 import { TaskbarSearchPanel } from "../search/index.js";
+import type { TaskbarStartResourceIconResolver } from "../start/icon/index.js";
 import { TaskbarStart } from "../start/index.js";
-import type { TaskbarStartResourceIconResolver } from "../start/resourceIcon/index.js";
 import { TaskbarTimestamp } from "../timestamp/index.js";
 import { useTaskbarResponsivePanelDismiss } from "./hooks/useTaskbarResponsivePanelDismiss/index.js";
 

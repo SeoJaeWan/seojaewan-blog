@@ -11,6 +11,7 @@ taskbar/
   root/                 전체 배치와 데스크톱·모바일 구성을 선택합니다.
   start/
     button/             Windows logo trigger를 표시합니다.
+    icon/               공통 Resource icon 주입과 kind별 fallback을 표시합니다.
     pinned/             6열 Pin grid, keyboard와 pointer reorder를 제공합니다.
     all/                Content·ExternalShortcut 목록과 4열 index를 제공합니다.
     root/               trigger, 검색 input과 Start browse/Search body를 조합합니다.
@@ -34,6 +35,10 @@ taskbar/
 anchor 좌표 계산은 `widget/utils/calculateTaskbarPanelAnchorRect`가 담당합니다.
 Search panel의 `useTaskbarSearchInputFocus`는 input ref와 열림 시 focus를 제공하고,
 Root의 `useTaskbarResponsivePanelDismiss`는 mobile 진입 시 panel 정리를 요청합니다.
+Start pinned의 `useStartPinnedKeyboard`와 `useStartPinnedDrag`, 모두 보기의
+`useTaskbarStartAllNavigation`은 각 owner 가까이에서 grid focus, pointer reorder와 category 탐색을
+관리합니다. `TaskbarStartIcon`은 Start 내부 공유 Component이며 일반 Story와 인접 unit test에서
+resolver 우선순위, fallback과 두 표시 크기를 검증합니다.
 각 hook과 utility의 인접 테스트는 입력·출력, 중복 방지와 cleanup을 검증합니다.
 이 내부 요소들은 package public API로 export하지 않습니다.
 

@@ -11,10 +11,7 @@ import type {
   StartControllerActions,
   StartReorderAction,
 } from "../../../../../headless/index.js";
-import {
-  TaskbarStartResourceIcon,
-  type TaskbarStartResourceIconResolver,
-} from "../resourceIcon/index.js";
+import { TaskbarStartIcon, type TaskbarStartResourceIconResolver } from "../icon/index.js";
 import { useStartPinnedDrag } from "./hooks/useStartPinnedDrag/index.js";
 import { useStartPinnedKeyboard } from "./hooks/useStartPinnedKeyboard/index.js";
 
@@ -140,13 +137,12 @@ export const TaskbarStartPinned = ({
                 title={item.label}
                 type="button"
               >
-                <span aria-hidden="true" className="taskbar-start-pinned__icon">
-                  <TaskbarStartResourceIcon
-                    resolveIcon={resolveResourceIcon}
-                    resource={item.resource}
-                    size={32}
-                  />
-                </span>
+                <TaskbarStartIcon
+                  className="taskbar-start-pinned__icon"
+                  resolveIcon={resolveResourceIcon}
+                  resource={item.resource}
+                  variant="pinned"
+                />
                 <span className="taskbar-start-pinned__label">{item.label}</span>
               </Button>
             );

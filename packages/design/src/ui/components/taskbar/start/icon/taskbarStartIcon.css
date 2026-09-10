@@ -1,0 +1,26 @@
+.taskbar-start-icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.taskbar-start-icon--all {
+  block-size: 25px;
+  flex: 0 0 25px;
+  inline-size: 25px;
+}
+
+.taskbar-start-icon--pinned {
+  block-size: 34px;
+  flex: 0 0 34px;
+  inline-size: 34px;
+}
+
+.taskbar-start-icon > img,
+.taskbar-start-icon > svg {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+  object-fit: contain;
+}

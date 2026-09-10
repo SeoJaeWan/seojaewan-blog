@@ -63,9 +63,8 @@ const AllFixture = ({
 afterEach(() => cleanup());
 
 describe("TaskbarStartAll", () => {
-  it("Content와 ExternalShortcut row만 enabled button으로 표시하고 item intent를 전달한다", () => {
-    const selected = vi.fn();
-    render(<AllFixture onItemSelect={selected} />);
+  it("Content와 ExternalShortcut row만 enabled button으로 표시한다", () => {
+    render(<AllFixture />);
 
     const content = screen.getByRole("button", { name: "Alpha" });
     const shortcut = screen.getByRole("button", { name: "7zip" });
@@ -74,8 +73,13 @@ describe("TaskbarStartAll", () => {
     expect(content.hasAttribute("disabled")).toBe(false);
     expect(shortcut.hasAttribute("disabled")).toBe(false);
     expect(document.querySelector('[data-resource-kind="folder"]')).toBeNull();
+  });
 
-    fireEvent.click(shortcut);
+  it("row 선택을 Resource item intent로 전달한다", () => {
+    const selected = vi.fn();
+    render(<AllFixture onItemSelect={selected} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "7zip" }));
     expect(selected).toHaveBeenCalledWith(groups[1]?.items[0]);
   });
 
@@ -96,11 +100,13 @@ describe("TaskbarStartAll", () => {
     ).not.toBeNull();
   });
 
-  it("비활성 view와 열린 overlay에서 각각 올바른 surface를 inert 처리한다", () => {
-    const { container, rerender } = render(<AllFixture active={false} />);
+  it("비활성 view를 inert 처리한다", () => {
+    const { container } = render(<AllFixture active={false} />);
     expect(container.querySelector(".taskbar-start-all")?.hasAttribute("inert")).toBe(true);
+  });
 
-    rerender(<AllFixture />);
+  it("열린 index overlay만 활성화하고 실제 group button만 표시한다", () => {
+    const { container } = render(<AllFixture />);
     fireEvent.click(screen.getByRole("button", { name: "A 범주 인덱스 열기" }));
     expect(container.querySelector(".taskbar-start-all__index")?.hasAttribute("inert")).toBe(false);
     expect(container.querySelector(".taskbar-start-all__list")?.hasAttribute("inert")).toBe(true);
@@ -132,7 +138,7 @@ describe("TaskbarStartAll", () => {
     await waitFor(() => expect(document.activeElement).toBe(heading));
   });
 
-  it("Escape는 overlay opener로 focus를 복원하고 back을 semantic Action으로 전달한다", async () => {
+  it("Escape는 overlay를 닫고 opener로 focus를 복원한다", async () => {
     const actions = vi.fn();
     render(<AllFixture onScreenAction={actions} />);
     const opener = screen.getByRole<HTMLButtonElement>("button", {
@@ -146,7 +152,11 @@ describe("TaskbarStartAll", () => {
     fireEvent.keyDown(screen.getByRole("dialog", { name: "범주 인덱스" }), { key: "Escape" });
     await waitFor(() => expect(document.activeElement).toBe(opener));
     expect(actions).toHaveBeenLastCalledWith({ type: "set-index-open", open: false });
+  });
 
+  it("back을 pinned view semantic Action으로 전달한다", () => {
+    const actions = vi.fn();
+    render(<AllFixture onScreenAction={actions} />);
     fireEvent.click(screen.getByRole("button", { name: /뒤로/u }));
     expect(actions).toHaveBeenLastCalledWith({ type: "set-view", view: "pinned" });
   });
