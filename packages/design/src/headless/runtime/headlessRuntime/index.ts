@@ -10,6 +10,16 @@ import {
   StartOperations,
   type StartOperationStore,
 } from "../../start/operations/index.js";
+import type { StartScreenSnapshot } from "../../start/screen/model/index.js";
+import {
+  type StartScreenAction,
+  type StartScreenOperationResult,
+  StartScreenOperations,
+} from "../../start/screen/operations/index.js";
+import {
+  createStartScreenState,
+  type StartScreenState,
+} from "../../start/screen/state/index.js";
 import { StartStore } from "../../start/startStore/index.js";
 import type { TaskbarSnapshot } from "../../taskbar/model/index.js";
 import {
@@ -28,6 +38,12 @@ import {
   createPrimaryPanelState,
   type PrimaryPanelState,
 } from "../../taskbar/primaryPanel/state/index.js";
+import {
+  type ExternalShortcutNavigationPort,
+  type ResourceOpenAction,
+  ResourceOpenOperations,
+  type ResourceOpenResult,
+} from "../../taskbar/resourceOpen/operations/index.js";
 import { TaskbarStore } from "../../taskbar/taskbarStore/index.js";
 import {
   type WindowGestureRequest,
@@ -89,6 +105,8 @@ export type HeadlessRuntimeAdapters = Readonly<{
   workspace?: ExternalStoreReader<WorkspaceState> & WorkspaceOperationStore;
   /** Start snapshot, 구독과 Pin 명령을 제공하는 adapter다. */
   start?: ExternalStoreReader<StartSnapshot> & StartOperationStore;
+  /** runtime별 Start screen transient state를 제공하는 adapter다. */
+  startScreen?: StartScreenState;
   /** Taskbar snapshot, 구독과 Pin 명령을 제공하는 adapter다. */
   taskbar?: ExternalStoreReader<TaskbarSnapshot> & TaskbarOperationStore;
   /** runtime별 primary panel transient state를 제공하는 adapter다. */
@@ -103,6 +121,14 @@ export type HeadlessRuntimeOptions = Readonly<{
   transitions?: TransitionRegistry;
   /** Window queue 실행 시 실제 UI transition 시작을 전달하는 DOM-free port다. */
   windowPresentation?: WindowPresentationPort;
+  /** ExternalShortcut actual browser 새 탭 결과를 반환하는 Application port다. */
+  externalNavigation?: ExternalShortcutNavigationPort;
+}>;
+
+/** Resource 종류별 open을 Window 또는 external navigation port로 보내는 runtime channel이다. */
+export type HeadlessResourceOpenRuntime = Readonly<{
+  /** 명시적 완료 결과를 성공 또는 실패로 정규화한다. */
+  execute(action: ResourceOpenAction): Promise<ResourceOpenResult>;
 }>;
 
 /** Provider와 controller가 공유하는 Store 구독, Action gateway와 transition 기반이다. */
@@ -118,6 +144,12 @@ export type HeadlessRuntime = Readonly<{
   workspace: HeadlessFeatureRuntime<WorkspaceState, WorkspaceAction, WorkspaceOperationHandle>;
   /** Start snapshot과 StartAction 실행 channel이다. */
   start: HeadlessFeatureRuntime<StartSnapshot, StartAction, StartOperationHandle>;
+  /** persisted Pin과 분리된 Start browse semantic state와 Action channel이다. */
+  startScreen: HeadlessFeatureRuntime<
+    StartScreenSnapshot,
+    StartScreenAction,
+    StartScreenOperationResult
+  >;
   /** Taskbar snapshot과 TaskbarPinAction 실행 channel이다. */
   taskbar: HeadlessFeatureRuntime<TaskbarSnapshot, TaskbarPinAction, TaskbarOperationHandle>;
   /** runtime-local primary panel snapshot과 순차 transition Action channel이다. */
@@ -126,6 +158,8 @@ export type HeadlessRuntime = Readonly<{
     PrimaryPanelAction,
     PrimaryPanelOperationHandle
   >;
+  /** Folder·Content·ExternalShortcut open 결과를 하나로 정규화하는 channel이다. */
+  resourceOpen: HeadlessResourceOpenRuntime;
   /** operation ID와 phase별 UI 완료·중단·실패 신호를 연결한다. */
   transitions: TransitionRegistry;
 }>;
@@ -173,6 +207,11 @@ const createFeatureRuntime = <Snapshot, Action, Handle>(
   });
 };
 
+/** adapter가 주입되지 않은 ExternalShortcut 요청을 명시적 실패로 보존한다. */
+const missingExternalNavigation: ExternalShortcutNavigationPort = Object.freeze({
+  openNewTab: () => Object.freeze({ status: "failed", reason: "adapter-not-configured" }),
+});
+
 /**
  * 기존 Store와 Foundation Operation을 한 번 조합해 Provider에 전달할 runtime을 만든다.
  *
@@ -184,6 +223,7 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
   const windowStore = options.adapters?.windows ?? WindowStore;
   const workspaceStore = options.adapters?.workspace ?? WorkspaceStore;
   const startStore = options.adapters?.start ?? StartStore;
+  const startScreenState = options.adapters?.startScreen ?? createStartScreenState();
   const taskbarStore = options.adapters?.taskbar ?? TaskbarStore;
   const primaryPanelState = options.adapters?.primaryPanel ?? createPrimaryPanelState();
   const windowOperations = new WindowOperations({
@@ -194,6 +234,7 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
   const windowGestures = new WindowGestures(windowStore);
   const workspaceOperations = new WorkspaceOperations({ store: workspaceStore });
   const startOperations = new StartOperations({ store: startStore, transitions });
+  const startScreenOperations = new StartScreenOperations({ state: startScreenState });
   const taskbarOperations = new TaskbarOperations({
     store: taskbarStore,
     windowReader: windowStore,
@@ -213,6 +254,31 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
     },
     transitions,
   });
+  const resourceOpenOperations = new ResourceOpenOperations({
+    windows: windowOperations,
+    externalNavigation: options.externalNavigation ?? missingExternalNavigation,
+  });
+
+  /** panel settle을 Start screen transient reset과 같은 runtime lifecycle로 연결한다. */
+  const executePrimaryPanel = (action: PrimaryPanelAction): PrimaryPanelOperationHandle => {
+    const handle = primaryPanelOperations.execute(action);
+    void handle.settled.then((settled) => {
+      if (settled.status !== "settled") return;
+      if (action.type === "dismiss-for-mobile") {
+        startScreenOperations.execute({ type: "reset", reason: "mobile" });
+        return;
+      }
+      if (
+        settled.result.status === "committed" &&
+        settled.result.changes.some(
+          (change) => change.kind === "deactivated" && change.panel === "start",
+        )
+      ) {
+        startScreenOperations.execute({ type: "reset", reason: "close-complete" });
+      }
+    });
+    return handle;
+  };
 
   return Object.freeze({
     windows: createFeatureRuntime<WindowState, WindowAction, WindowOperationHandle>(
@@ -231,6 +297,15 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       (action) => startOperations.execute(action),
       "StartStoreNotInitializedError",
     ),
+    startScreen: createFeatureRuntime<
+      StartScreenSnapshot,
+      StartScreenAction,
+      StartScreenOperationResult
+    >(
+      startScreenOperations,
+      (action) => startScreenOperations.execute(action),
+      "StartScreenStateNotInitializedError",
+    ),
     taskbar: createFeatureRuntime<TaskbarSnapshot, TaskbarPinAction, TaskbarOperationHandle>(
       taskbarStore,
       (action) => taskbarOperations.execute(action),
@@ -242,9 +317,12 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       PrimaryPanelOperationHandle
     >(
       primaryPanelState,
-      (action) => primaryPanelOperations.execute(action),
+      executePrimaryPanel,
       "PrimaryPanelStateNotInitializedError",
     ),
+    resourceOpen: Object.freeze({
+      execute: (action: ResourceOpenAction) => resourceOpenOperations.execute(action),
+    }),
     transitions,
   });
 };

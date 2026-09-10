@@ -91,6 +91,16 @@ export {
   usePrimaryPanelController,
 } from "./primaryPanel/index.js";
 export {
+  type ExternalShortcutNavigationPort,
+  type ExternalShortcutNavigationResult,
+  type ResourceOpenAction,
+  ResourceOpenOperations,
+  type ResourceOpenOperationsOptions,
+  type ResourceOpenResult,
+  type ResourceOpenWindowAction,
+  type ResourceOpenWindowOperationPort,
+} from "./resourceOpen/index.js";
+export {
   selectTaskbarRootSnapshot,
   type TaskbarRootController,
   type TaskbarRootControllerActions,
