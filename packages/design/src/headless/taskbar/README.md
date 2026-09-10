@@ -17,6 +17,7 @@ desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 
 | `operations/index.ts`                   | Pin Action의 commit·측정·transition·settled 조율                            |
 | `primaryPanel/operations/index.ts`      | Start·Search 상호 전환, close 완료 초기화와 Resource 결과 조율              |
 | `primaryPanel/controller/index.ts`      | panel snapshot·Action과 UI transition 완료 신호의 React 경계                |
+| `resourceOpen/operations/index.ts`      | Window와 external navigation 완료 결과의 공통 open 분류                     |
 
 ## 초기화와 Window 연결
 
@@ -92,10 +93,10 @@ Window headless 계약이 판정한다. `TaskbarRoot`는 같은 Provider 안에�
 필요하지 않다.
 
 ```tsx
-const runtime = createHeadlessRuntime();
+const runtime = createHeadlessRuntime({ externalNavigation, windowPresentation });
 
 <HeadlessRuntimeProvider runtime={runtime}>
-  <TaskbarRoot />
+  <TaskbarRoot resourceReaders={resourceReaders} />
 </HeadlessRuntimeProvider>;
 ```
 
@@ -117,8 +118,10 @@ Popover trigger와 `primaryPanel` query에 연결한다. 클릭·Tab focus로 Se
 ```
 
 `TaskbarRoot`는 Start와 Search에 같은 primary panel connection을 전달하므로 둘을 동시에 표시하지
-않고 현재 panel의 close 완료 뒤 다음 panel을 연다. 검색 결과·recent·detail과 desktop Group의
-상태 파생·click·drag는 후속 작업에서 연결한다. Storybook의 설명·상태 미리보기 작성 규칙은
+않고 현재 panel의 close 완료 뒤 다음 panel을 연다. Start는 전달받은 `ResourceReaders`로 현재
+pinned label과 Content·ExternalShortcut 모두 보기 group을 만들고 Folder는 모두 보기에서 제외한다.
+pinned keyboard·pointer drag와 All/Index focus·scroll은 제품 Component가 연결한다.
+Search 결과·recent·detail과 desktop Group은 후속 작업에서 연결한다. Storybook의 설명·상태 미리보기 작성 규칙은
 Memory의 `storybook-authoring`을 따른다.
 관찰 가능한 입력값·Action을 표시하며 실제 Window 완료를 가짜로 처리하지 않는다.
 
@@ -135,8 +138,19 @@ exit 뒤 desktop panel이 다시 열리지 않는다. Component unmount는 `abor
 끝내며 제품 close·query 정리와 queue 진행은 계속된다. reduced-motion은 Component가 같은 phase를
 즉시 `completeTransition`하면 별도 semantic 분기 없이 같은 최종 snapshot에 도달한다.
 
-Resource 연결은 실제 open 직전 `track-resource-open`으로 request ID를 현재 Search activation에 묶고,
-완료 뒤 `settle-resource-open`으로 명시적인 `succeeded` 또는 `failed`를 전달한다. 실패는 Search,
-query와 후속 result/detail 소유자의 상태를 바꾸지 않는다. 성공은 같은 activation일 때만 close하고,
+Resource 연결은 실제 open 직전 `track-resource-open`으로 request ID를 Start 또는 Search의 현재
+activation에 묶고, 완료 뒤 `settle-resource-open`으로 명시적인 `succeeded` 또는 `failed`를 전달한다.
+실패는 panel, query와 browse/result/detail 상태를 바꾸지 않는다. 성공은 같은 activation일 때만 close하고,
 이미 닫히거나 다시 열린 뒤 도착한 결과는 `stale-resource-open` no-op이다. menu 종료와 focus 이동은
 Resource 성공 Action이 아니며 이 경계를 대신 호출하지 않는다.
+
+`resourceOpen` runtime은 Folder·Content를 기존 Window Operation으로 전달한다. Window Store가
+commit했거나 대상이 이미 충족된 no-op이고 presentation이 실패하지 않았을 때 성공이다. Store 거절,
+Operation 실패·throw와 presentation 실패는 각각 구분된 실패다. ExternalShortcut은
+`externalNavigation.openNewTab({ type: "open-external-shortcut", url, target: "_blank" })`를 한 번
+호출하고 그 명시적 결과 또는 throw만 분류하며 Window Operation을 호출하지 않는다. 사용 가능 여부
+상태와 enabled filter는 없다.
+
+Start close가 transition까지 settled되면 같은 `HeadlessRuntime`의 `startScreen`만 pinned/closed-index로
+reset한다. `StartStore` Pin은 유지한다. 실제 browser navigation adapter와 Application bootstrap은
+HDJG-58, Search 결과 제품 body는 HDJG-47이 소유한다.

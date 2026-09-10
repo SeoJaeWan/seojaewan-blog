@@ -8,6 +8,7 @@ export {
   createHeadlessRuntime,
   type ExternalStoreReader,
   type HeadlessFeatureRuntime,
+  type HeadlessResourceOpenRuntime,
   type HeadlessRuntime,
   type HeadlessRuntimeAdapters,
   type HeadlessRuntimeOptions,

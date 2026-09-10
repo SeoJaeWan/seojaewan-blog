@@ -1,17 +1,26 @@
 # Start
 
-desktop Start 화면의 Folder, Content와 ExternalShortcut Pin을 독립된 `StartStore`가 소유한다. Pin에는 `ResourceRef`만 남기며 title, icon, URL, parent, body, Window와 Taskbar 상태는 저장하지 않는다. Resource 원본은 [Resources](../resources/README.md), Folder 배치와 복원 순서는 [Workspace](../workspace/README.md), 전체 진입점은 [Headless 안내](../README.md)를 참고한다.
+desktop Start의 persisted Pin은 `StartStore`, pinned/all view와 index overlay의 transient 상태는
+runtime별 `startScreen` channel이 소유한다. Pin에는 `ResourceRef`만 남기며 title, icon, URL,
+parent, body, Window와 Taskbar 상태는 저장하지 않는다. Resource 원본은
+[Resources](../resources/README.md), Folder 배치와 복원 순서는 [Workspace](../workspace/README.md),
+전체 진입점은 [Headless 안내](../README.md)를 참고한다.
 
 ## 파일별 역할
 
-| 파일                                                                         | 역할                                                     | 인접 테스트                                           |
-| ---------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------- |
-| [index.ts](./index.ts)                                                       | Start public API와 type 재노출                           | 자체 동작 없음                                        |
-| [model/index.ts](./model/index.ts)                                           | `StartPinnedItem`, snapshot과 reorder intent             | type-only; Store 행동 테스트에서 검증                 |
-| [startStore/index.ts](./startStore/index.ts)                                 | 초기화, 구독, Pin·Unpin·reorder·reload·reconcile와 queue | [startStore.test.ts](./startStore/startStore.test.ts) |
-| [startStore/operationResult/index.ts](./startStore/operationResult/index.ts) | commit, no-op, 거절과 조용한 저장 실패                   | type-only; Store 행동 테스트에서 검증                 |
-| [startStore/startStorage/index.ts](./startStore/startStorage/index.ts)       | schema version 1의 Start 전용 비동기 load/save port      | type-only; Store persistence 테스트에서 검증          |
-| [operations/index.ts](./operations/index.ts)                                 | Pin Action의 commit·transition·settled 순서              | [operations.test.ts](./operations/operations.test.ts) |
+| 파일                                                                         | 역할                                                     | 인접 테스트                                                    |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------- |
+| [index.ts](./index.ts)                                                       | Start public API와 type 재노출                           | 자체 동작 없음                                                 |
+| [model/index.ts](./model/index.ts)                                           | `StartPinnedItem`, snapshot과 reorder intent             | type-only; Store 행동 테스트에서 검증                          |
+| [startStore/index.ts](./startStore/index.ts)                                 | 초기화, 구독, Pin·Unpin·reorder·reload·reconcile와 queue | [startStore.test.ts](./startStore/startStore.test.ts)          |
+| [startStore/operationResult/index.ts](./startStore/operationResult/index.ts) | commit, no-op, 거절과 조용한 저장 실패                   | type-only; Store 행동 테스트에서 검증                          |
+| [startStore/startStorage/index.ts](./startStore/startStorage/index.ts)       | schema version 1의 Start 전용 비동기 load/save port      | type-only; Store persistence 테스트에서 검증                   |
+| [operations/index.ts](./operations/index.ts)                                 | Pin Action의 commit·transition·settled 순서              | [operations.test.ts](./operations/operations.test.ts)          |
+| [screen/model/index.ts](./screen/model/index.ts)                             | pinned/all view와 index overlay snapshot                 | screen state·command 테스트에서 검증                           |
+| [screen/state/index.ts](./screen/state/index.ts)                             | runtime-local transient state와 구독                     | [state.test.ts](./screen/state/state.test.ts)                  |
+| [screen/selectors/index.ts](./screen/selectors/index.ts)                     | 모두 보기 대상, canonical group과 정렬                   | [selectors.test.ts](./screen/selectors/selectors.test.ts)      |
+| [screen/operations/index.ts](./screen/operations/index.ts)                   | serializable view·index·reset Action                     | [operations.test.ts](./screen/operations/operations.test.ts)   |
+| [screen/controller/index.ts](./screen/controller/index.ts)                   | `startScreen` runtime의 React 구독·Action 경계           | [controller.test.tsx](./screen/controller/controller.test.tsx) |
 
 ## 브라우저 초기화
 
@@ -69,8 +78,56 @@ save 실패는 `{ ok: false, reason: "storage-write-failed", committed: true, va
 
 현재 canonical 계약은 Local Work Memory의 `start-screen-pin-model`, `pin-store-persistence`, `resource-model`과 `workspace-resource-placement`다.
 
-## React controller
+## Start screen과 모두 보기
+
+`startScreen` snapshot은 `{ view: "pinned" | "all", indexOpen: boolean }`만 포함한다. `set-view`,
+`set-index-open`과 `reset`은 immutable changed/no-op 결과를 반환한다. pinned로 돌아갈 때 index가
+닫히며, close 완료와 mobile 전환의 reset은 항상 `{ view: "pinned", indexOpen: false }`로 돌아간다.
+이 state는 `StartStore`를 참조하지 않으므로 stored Pin을 변경할 수 없다.
+
+`selectStartScreenAllGroups()`는 현재 Content와 ExternalShortcut Catalog를 읽고 Folder reader는
+호출하지 않는다. 순서는 A–Z, 한글 초성 ㄱ–ㅎ, 첫 글자별 0–9, 기호 #이며 비어 있는 group은 결과에서
+생략한다. 각 group 안에서는 current title/name을 `ko-KR`로 정렬하고 같은 label은 kind와 ID로
+안정화한다. ExternalShortcut의 별도 사용 가능 여부나 filter는 이 model에 없다.
+
+## Public runtime과 React controller
 
 `useStartController()`의 `viewModel`은 준비 상태와 StartStore의 immutable snapshot을 구분하고, `actions`는 Pin Action과 operation ID별 transition 완료 신호를 제공한다. Provider 재마운트나 StrictMode의 구독 cleanup은 Pin 상태를 초기화하거나 사용자 Action을 취소하지 않는다.
 
-Application은 Workspace 기반 `resourceLookup`과 storage로 StartStore 초기화를 끝낸 뒤 runtime을 만든다. `committed`는 메모리 반영, `presented`는 항목 표현, `settled`는 저장과 정리를 포함하므로 일반 caller는 `settled`를 기다린다. SSR은 storage를 읽지 않고 `not-ready`를 반환한다.
+`useStartScreenController()`는 별도의 `startScreen` snapshot과 synchronous Action 결과를 제공한다.
+`createHeadlessRuntime()`은 주입된 `startScreen` state가 없으면 새 runtime-local state를 만들며,
+primary panel의 Start close가 settled된 뒤 `close-complete` reset을 실행한다. mobile dismiss는 panel
+활성 여부와 관계없이 `mobile` reset을 실행한다.
+
+Application은 Workspace 기반 `resourceLookup`과 storage로 StartStore 초기화를 끝낸 뒤 runtime을
+render 바깥에서 한 번 만들고 같은 `ResourceReaders`를 `TaskbarRoot`에 전달한다. ExternalShortcut을
+실제로 열려면 명시적 `externalNavigation` port를 주입해야 한다. 생략하면 runtime은
+`adapter-not-configured` 실패를 반환한다.
+
+```tsx
+const runtime = createHeadlessRuntime({
+  externalNavigation,
+  windowPresentation,
+});
+
+<HeadlessRuntimeProvider runtime={runtime}>
+  <TaskbarRoot
+    resourceReaders={{
+      content: ContentCatalog,
+      folder: FolderCatalog,
+      externalShortcut: ExternalShortcutCatalog,
+    }}
+    renderStartSearchBody={(query) => <StartSearchBoundary query={query} />}
+  />
+</HeadlessRuntimeProvider>;
+```
+
+`committed`는 Pin 메모리 반영, `presented`는 항목 표현, `settled`는 저장과 정리를 포함하므로 Pin
+caller는 보통 `settled`를 기다린다. Resource open은 Window commit과 이미 충족된 Window no-op을
+성공으로 해석하고 Store 거절, 실행 오류와 presentation 실패를 실패로 해석한다. ExternalShortcut은
+navigation port의 명시적 결과만 사용하며 내부 `WindowSession`을 만들거나 외부 사이트 상태를
+조회하지 않는다. current panel activation의 성공만 close를 시작하고 실패·중복·stale 결과는 현재
+화면을 보존한다. SSR은 storage를 읽지 않고 Store-backed controller에서 `not-ready`를 반환한다.
+
+Search result·recent·ranking·detail은 HDJG-47, Start Context Menu UI는 HDJG-49, 실제
+Catalog·router·storage·navigation adapter와 제품 tree bootstrap은 HDJG-58이 소유한다.

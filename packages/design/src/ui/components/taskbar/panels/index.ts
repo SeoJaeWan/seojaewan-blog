@@ -5,8 +5,12 @@ export {
   type TaskbarPanelConnection,
   type TaskbarPanelConnectionActions,
   type TaskbarPanelsConnection,
+  type TaskbarPanelsConnectionOptions,
   type TaskbarPanelWidgetConnection,
   type TaskbarSearchResourceConnection,
+  type TaskbarStartConnection,
+  type TaskbarStartPinnedConnectionItem,
+  type TaskbarStartResourceOpenResult,
   useTaskbarPanelsConnection,
 } from "./connection/index.js";
 export {

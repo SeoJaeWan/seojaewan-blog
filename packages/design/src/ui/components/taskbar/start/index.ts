@@ -3,7 +3,14 @@
  *
  * active identity와 query 전이는 외부 primary panel connection이 소유한다.
  */
+export { TaskbarStartAll, type TaskbarStartAllProps } from "./all/index.js";
 export { TaskbarStartButton, type TaskbarStartButtonProps } from "./button/index.js";
+export type { TaskbarStartResourceIconResolver } from "./icon/index.js";
+export {
+  type StartPinnedItemViewModel,
+  TaskbarStartPinned,
+  type TaskbarStartPinnedProps,
+} from "./pinned/index.js";
 export {
   TaskbarStart,
   type TaskbarStartProps,

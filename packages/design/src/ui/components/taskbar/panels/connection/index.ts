@@ -4,7 +4,7 @@
  * active identity와 전환 순서는 headless가 소유하고, 이 hook은 실제 widget completion을
  * 대기 중인 operation ID와 phase에만 전달한다.
  */
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 
 import {
   PRIMARY_PANEL_ENTER_PHASE,
@@ -13,9 +13,22 @@ import {
   type PrimaryPanelId,
   type PrimaryPanelOperationHandle,
   type PrimaryPanelResourceOpenRequestId,
+  type ResourceOpenAction,
+  type ResourceOpenResult,
+  type ResourceReaders,
+  type ResourceRef,
   selectPrimaryPanelView,
+  selectStartScreenAllGroups,
+  type StartControllerActions,
+  type StartReorderAction,
+  type StartScreenAllGroup,
+  type StartScreenControllerActions,
+  type StartScreenSnapshot,
+  useHeadlessRuntime,
   usePrimaryPanelController,
-} from "../../../../../headless/taskbar/index.js";
+  useStartController,
+  useStartScreenController,
+} from "../../../../../headless/index.js";
 import type { TaskbarPanelOpenChangeReason, TaskbarPanelWidgetProps } from "../widget/index.js";
 
 /** panel widget에 그대로 전달할 controlled 제품 연결 props다. */
@@ -42,6 +55,37 @@ export type TaskbarPanelConnection = Readonly<{
   actions: TaskbarPanelConnectionActions;
 }>;
 
+/** Start pinned Component가 현재 Catalog label과 위치별 Action으로 소비할 item이다. */
+export type TaskbarStartPinnedConnectionItem = Readonly<{
+  resource: ResourceRef;
+  label: string;
+  reorderActions: readonly StartReorderAction[];
+}>;
+
+/** 실제 Resource open이 panel activation에 연결됐는지와 adapter 결과를 구분한다. */
+export type TaskbarStartResourceOpenResult =
+  | Readonly<{ status: "completed"; result: ResourceOpenResult }>
+  | Readonly<{ status: "ignored"; reason: "request-not-tracked" }>
+  | Readonly<{ status: "failed"; reason: "resource-unavailable" }>;
+
+/** Start 제품 body가 Pin, browse state와 Resource lifecycle을 소비하는 연결이다. */
+export type TaskbarStartConnection = TaskbarPanelConnection &
+  Readonly<{
+    ready: boolean;
+    screen: Readonly<{
+      snapshot: StartScreenSnapshot;
+      actions: StartScreenControllerActions;
+    }>;
+    pins: Readonly<{
+      items: readonly TaskbarStartPinnedConnectionItem[];
+      actions: StartControllerActions;
+    }>;
+    all: Readonly<{ groups: readonly StartScreenAllGroup[] }>;
+    resource: Readonly<{
+      open(resource: ResourceRef): Promise<TaskbarStartResourceOpenResult>;
+    }>;
+  }>;
+
 /** Search 결과의 실제 open 전후를 current activation에 연결하는 Action이다. */
 export type TaskbarSearchResourceConnection = Readonly<{
   /** 실제 Resource open 전에 caller의 request ID를 현재 Search activation에 연결한다. */
@@ -56,10 +100,15 @@ export type TaskbarSearchResourceConnection = Readonly<{
 /** Root가 Start와 Search에 나눠 전달할 전체 primary panel 제품 연결이다. */
 export type TaskbarPanelsConnection = Readonly<{
   ready: boolean;
-  start: TaskbarPanelConnection;
+  start: TaskbarStartConnection;
   search: TaskbarPanelConnection & Readonly<{ resource: TaskbarSearchResourceConnection }>;
   /** responsive mode가 mobile로 바뀌었을 때 open과 대기 중 desktop 요청을 정리한다. */
   dismissForMobile(): PrimaryPanelOperationHandle;
+}>;
+
+/** Start 제품 연결에 현재 Catalog와 Workspace reader를 주입하는 옵션이다. */
+export type TaskbarPanelsConnectionOptions = Readonly<{
+  resources?: ResourceReaders;
 }>;
 
 type PendingOperation = Readonly<{
@@ -76,13 +125,79 @@ const resolveDismissReason = (
   return null;
 };
 
+const EMPTY_CATALOG = Object.freeze({
+  has: () => false,
+  get: () => undefined,
+  list: () => Object.freeze([]),
+});
+
+/** Application reader가 아직 연결되지 않은 조합에서 빈 Start 제품 상태를 유지한다. */
+const EMPTY_RESOURCE_READERS = Object.freeze({
+  content: EMPTY_CATALOG,
+  folder: EMPTY_CATALOG,
+  externalShortcut: EMPTY_CATALOG,
+}) as ResourceReaders;
+
+/** 현재 위치에서 실제로 의미가 있는 Context Menu reorder Action만 만든다. */
+const selectReorderActions = (index: number, length: number): readonly StartReorderAction[] =>
+  Object.freeze([
+    ...(index > 0 ? (["first", "left"] as const) : []),
+    ...(index < length - 1 ? (["right"] as const) : []),
+  ]);
+
+/** Pin identity를 현재 Catalog 또는 Workspace label과 결합하고 사라진 원본은 숨긴다. */
+const selectPinnedItems = (
+  pinnedItems: readonly Readonly<{ resource: ResourceRef }>[],
+  resources: ResourceReaders,
+): readonly TaskbarStartPinnedConnectionItem[] =>
+  Object.freeze(
+    pinnedItems.flatMap(({ resource }, index) => {
+      const value =
+        resource.kind === "content"
+          ? resources.content.get(resource.id)
+          : resource.kind === "folder"
+            ? resources.folder.get(resource.id)
+            : resources.externalShortcut.get(resource.id);
+      if (value === undefined) return [];
+      const label = "title" in value ? value.title : value.name;
+      return [
+        Object.freeze({
+          resource,
+          label,
+          reorderActions: selectReorderActions(index, pinnedItems.length),
+        }),
+      ];
+    }),
+  );
+
+/** ResourceRef를 기존 Window Action 또는 external browser intent로 변환한다. */
+const selectResourceOpenAction = (
+  resource: ResourceRef,
+  resources: ResourceReaders,
+): ResourceOpenAction | null => {
+  if (resource.kind === "folder") return Object.freeze({ type: "open-folder", folder: resource });
+  if (resource.kind === "content")
+    return Object.freeze({ type: "open-content", content: resource });
+  const shortcut = resources.externalShortcut.get(resource.id);
+  return shortcut === undefined
+    ? null
+    : Object.freeze({ type: "open-external-shortcut", url: shortcut.url, target: "_blank" });
+};
+
 /**
  * 하나의 controller와 pending operation 집합을 공유해 Start exit와 Search enter를 같은 ID에 연결한다.
  *
  * 호출자는 반환한 `start.widget`과 `search.widget`을 각 TaskbarPanelWidget에 전달한다.
  */
-export const useTaskbarPanelsConnection = (): TaskbarPanelsConnection => {
+export const useTaskbarPanelsConnection = (
+  options: TaskbarPanelsConnectionOptions = {},
+): TaskbarPanelsConnection => {
+  const runtime = useHeadlessRuntime();
   const controller = usePrimaryPanelController();
+  const startController = useStartController();
+  const startScreenController = useStartScreenController();
+  const requestScope = useId().replaceAll(":", "");
+  const requestSequenceRef = useRef(0);
   const pendingRef = useRef(
     new Map<PrimaryPanelOperationHandle["operationId"], PendingOperation>(),
   );
@@ -205,21 +320,77 @@ export const useTaskbarPanelsConnection = (): TaskbarPanelsConnection => {
   );
 
   return useMemo(() => {
-    const start = createPanelConnection("start", startView.active, startView.query);
+    const resources = options.resources ?? EMPTY_RESOURCE_READERS;
+    const panelStart = createPanelConnection("start", startView.active, startView.query);
     const search = createPanelConnection("search", searchView.active, searchView.query);
-    const resource = Object.freeze({
+    const searchResource = Object.freeze({
       track: (requestId: PrimaryPanelResourceOpenRequestId) =>
-        trackOperation(controller.actions.execute({ type: "track-resource-open", requestId })),
+        trackOperation(
+          controller.actions.execute({ type: "track-resource-open", panel: "search", requestId }),
+        ),
       settle: (requestId: PrimaryPanelResourceOpenRequestId, outcome: "succeeded" | "failed") =>
         trackOperation(
           controller.actions.execute({ type: "settle-resource-open", requestId, outcome }),
         ),
     });
+    const startSnapshot = startScreenController.viewModel.snapshot ?? {
+      view: "pinned",
+      indexOpen: false,
+    };
+    const start = Object.freeze({
+      ...panelStart,
+      ready:
+        controller.viewModel.status === "ready" &&
+        startController.viewModel.status === "ready" &&
+        startScreenController.viewModel.status === "ready",
+      screen: Object.freeze({ snapshot: startSnapshot, actions: startScreenController.actions }),
+      pins: Object.freeze({
+        items: selectPinnedItems(startController.viewModel.snapshot?.pinnedItems ?? [], resources),
+        actions: startController.actions,
+      }),
+      all: Object.freeze({ groups: selectStartScreenAllGroups(resources) }),
+      resource: Object.freeze({
+        open: async (resource: ResourceRef): Promise<TaskbarStartResourceOpenResult> => {
+          requestSequenceRef.current += 1;
+          const requestId = `start-${requestScope}-${String(requestSequenceRef.current)}`;
+          const tracking = trackOperation(
+            controller.actions.execute({ type: "track-resource-open", panel: "start", requestId }),
+          );
+          const tracked = await tracking.committed;
+          if (tracked.status !== "tracked") {
+            await tracking.settled;
+            return Object.freeze({ status: "ignored", reason: "request-not-tracked" });
+          }
+
+          const action = selectResourceOpenAction(resource, resources);
+          if (action === null) {
+            await trackOperation(
+              controller.actions.execute({
+                type: "settle-resource-open",
+                requestId,
+                outcome: "failed",
+              }),
+            ).settled;
+            return Object.freeze({ status: "failed", reason: "resource-unavailable" });
+          }
+
+          const result = await runtime.resourceOpen.execute(action);
+          void trackOperation(
+            controller.actions.execute({
+              type: "settle-resource-open",
+              requestId,
+              outcome: result.status,
+            }),
+          );
+          return Object.freeze({ status: "completed", result });
+        },
+      }),
+    }) satisfies TaskbarStartConnection;
 
     return Object.freeze({
       ready: controller.viewModel.status === "ready",
       start,
-      search: Object.freeze({ ...search, resource }),
+      search: Object.freeze({ ...search, resource: searchResource }),
       dismissForMobile: () =>
         trackOperation(controller.actions.execute({ type: "dismiss-for-mobile" })),
     });
@@ -227,7 +398,14 @@ export const useTaskbarPanelsConnection = (): TaskbarPanelsConnection => {
     controller.actions,
     controller.viewModel.status,
     createPanelConnection,
+    options.resources,
+    requestScope,
+    runtime.resourceOpen,
     searchView,
+    startController.actions,
+    startController.viewModel,
+    startScreenController.actions,
+    startScreenController.viewModel,
     startView,
     trackOperation,
   ]);
