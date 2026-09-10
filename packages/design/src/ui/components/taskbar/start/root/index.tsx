@@ -9,6 +9,7 @@ import { TaskbarSearch } from "../../search/input/index.js";
 import { TaskbarStartAll } from "../all/index.js";
 import { TaskbarStartButton, type TaskbarStartButtonProps } from "../button/index.js";
 import { TaskbarStartPinned } from "../pinned/index.js";
+import type { TaskbarStartResourceIconResolver } from "../resourceIcon/index.js";
 
 import "./taskbarStart.css";
 
@@ -37,6 +38,8 @@ export type TaskbarStartProps = Readonly<{
   ) => void;
   /** HDJG-49 Context Menu가 All row를 받을 명시적 경계다. */
   onAllItemContextMenu?: ComponentPropsWithRef<typeof TaskbarStartAll>["onItemContextMenu"];
+  /** pinned와 모두 보기에서 공통으로 사용할 ResourceRef 기반 icon resolver다. */
+  resolveResourceIcon?: TaskbarStartResourceIconResolver;
 }>;
 
 /**
@@ -52,6 +55,7 @@ export const TaskbarStart = ({
   onPinnedItemContextMenu,
   portalContainer,
   renderSearchBody,
+  resolveResourceIcon,
   searchInputProps,
 }: TaskbarStartProps) => {
   const {
@@ -111,6 +115,7 @@ export const TaskbarStart = ({
                   onShowAll={() =>
                     connection.screen.actions.execute({ type: "set-view", view: "all" })
                   }
+                  resolveResourceIcon={resolveResourceIcon}
                 />
               </div>
               <div
@@ -127,6 +132,7 @@ export const TaskbarStart = ({
                   onItemContextMenu={onAllItemContextMenu}
                   onItemSelect={(item) => void connection.resource.open(item.resource)}
                   onScreenAction={connection.screen.actions.execute}
+                  resolveResourceIcon={resolveResourceIcon}
                 />
               </div>
             </div>

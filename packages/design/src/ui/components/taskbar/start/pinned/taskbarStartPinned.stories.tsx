@@ -10,7 +10,7 @@ import {
   type StartOperationHandle,
 } from "../../../../../headless/index.js";
 import { withTaskbarDescription } from "../../taskbarStoryPreview.js";
-import { type StartPinnedItemViewModel,TaskbarStartPinned } from "./index.js";
+import { type StartPinnedItemViewModel, TaskbarStartPinned } from "./index.js";
 
 const sourceItems = [
   {
@@ -22,10 +22,7 @@ const sourceItems = [
     label: "디자인 시스템을 오래 유지하기 위한 아주 긴 문서 제목",
   },
   {
-    resource: createResourceRef(
-      "external-shortcut",
-      "40000000-0000-4000-8000-000000000003",
-    ),
+    resource: createResourceRef("external-shortcut", "40000000-0000-4000-8000-000000000003"),
     label: "OpenAI",
   },
   {
@@ -37,10 +34,7 @@ const sourceItems = [
     label: "사진",
   },
   {
-    resource: createResourceRef(
-      "external-shortcut",
-      "40000000-0000-4000-8000-000000000006",
-    ),
+    resource: createResourceRef("external-shortcut", "40000000-0000-4000-8000-000000000006"),
     label: "GitHub",
   },
   {
@@ -166,12 +160,12 @@ const meta = {
     docs: {
       description: {
         component:
-          "Folder, Content와 ExternalShortcut을 6열로 표시하고 keyboard focus, pointer reorder와 150ms FLIP movement를 public Start Action에 연결한다.",
+          "Folder, Content와 ExternalShortcut을 6열로 표시하고 keyboard focus, pointer reorder 중 150ms 주변 tile preview와 drop Action을 연결한다.",
       },
     },
     layout: "centered",
     taskbarDescription:
-      "첫·중간·마지막 위치 capability, 긴 두 줄 label, 6열 keyboard 이동과 실제 pointer reorder를 확인할 수 있다.",
+      "첫·중간·마지막 위치 capability, 긴 두 줄 label, 6열 keyboard 이동과 drop 전 주변 tile이 밀리는 pointer reorder를 확인할 수 있다.",
   },
   args: {
     actions: {} as StartControllerActions,

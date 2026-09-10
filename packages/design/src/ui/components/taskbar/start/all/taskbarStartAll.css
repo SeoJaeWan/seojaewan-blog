@@ -158,10 +158,12 @@
   inline-size: 25px;
 }
 
+.taskbar-start-all__item-icon > img,
 .taskbar-start-all__item-icon > svg {
   block-size: 100%;
   display: block;
   inline-size: 100%;
+  object-fit: contain;
 }
 
 .taskbar-start-all__item-label {

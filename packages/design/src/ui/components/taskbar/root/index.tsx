@@ -12,6 +12,7 @@ import { TaskbarApplicationButton } from "../items/index.js";
 import { useTaskbarPanelsConnection } from "../panels/index.js";
 import { TaskbarSearchPanel } from "../search/index.js";
 import { TaskbarStart } from "../start/index.js";
+import type { TaskbarStartResourceIconResolver } from "../start/resourceIcon/index.js";
 import { TaskbarTimestamp } from "../timestamp/index.js";
 import { useTaskbarResponsivePanelDismiss } from "./hooks/useTaskbarResponsivePanelDismiss/index.js";
 
@@ -33,6 +34,8 @@ export type TaskbarRootProps = Omit<
     resourceReaders?: ResourceReaders;
     /** HDJG-47이 Start query에 맞는 Search result/detail body를 제공할 경계다. */
     renderStartSearchBody?: (query: string) => ReactNode;
+    /** Start pinned와 모두 보기에 같은 ResourceRef 기반 icon을 제공하는 Application 경계다. */
+    resolveStartResourceIcon?: TaskbarStartResourceIconResolver;
   }>;
 
 /**
@@ -46,6 +49,7 @@ export const TaskbarRoot = ({
   className,
   resourceReaders,
   renderStartSearchBody,
+  resolveStartResourceIcon,
   searchDisabled = false,
   timestampClock,
   windowsDisabled = false,
@@ -71,6 +75,7 @@ export const TaskbarRoot = ({
             buttonProps={{ disabled: windowsDisabled }}
             connection={panels.start}
             renderSearchBody={renderStartSearchBody}
+            resolveResourceIcon={resolveStartResourceIcon}
           />
           <TaskbarSearchPanel connection={panels.search} disabled={searchDisabled}>
             {null}

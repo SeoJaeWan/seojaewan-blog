@@ -44,6 +44,7 @@ export {
   TaskbarStartPinned,
   type TaskbarStartPinnedProps,
   type TaskbarStartProps,
+  type TaskbarStartResourceIconResolver,
   type TaskbarStartSearchInputProps,
 } from "./components/taskbar/start/index.js";
 export {

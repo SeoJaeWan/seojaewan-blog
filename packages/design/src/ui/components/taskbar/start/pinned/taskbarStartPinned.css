@@ -90,6 +90,10 @@
   z-index: 1;
 }
 
+.taskbar-start-pinned__item[data-drag-preview="true"] {
+  will-change: transform;
+}
+
 .taskbar-start-pinned__icon {
   align-items: center;
   block-size: 34px;

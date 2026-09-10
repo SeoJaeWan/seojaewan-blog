@@ -1,21 +1,20 @@
 /**
  * @file Start pinned header, Resource tile grid와 drag reorder 제품 경계를 제공한다.
  */
-import type { MouseEvent, ReactNode } from "react";
+import type { MouseEvent } from "react";
 
 import { Button } from "@base-ui/react/button";
-import {
-  ChevronRight12Regular,
-  Document32Regular,
-  Folder32Regular,
-  Link32Regular,
-} from "@fluentui/react-icons";
+import { ChevronRight12Regular } from "@fluentui/react-icons";
 
 import type {
   ResourceRef,
   StartControllerActions,
   StartReorderAction,
 } from "../../../../../headless/index.js";
+import {
+  TaskbarStartResourceIcon,
+  type TaskbarStartResourceIconResolver,
+} from "../resourceIcon/index.js";
 import { useStartPinnedDrag } from "./hooks/useStartPinnedDrag/index.js";
 import { useStartPinnedKeyboard } from "./hooks/useStartPinnedKeyboard/index.js";
 
@@ -27,8 +26,6 @@ export type StartPinnedItemViewModel = Readonly<{
   resource: ResourceRef;
   /** 현재 Catalog 또는 Workspace에서 파생한 화면 label이다. */
   label: string;
-  /** 생략하면 Resource kind별 기본 icon을 사용한다. */
-  icon?: ReactNode;
   /** 현재 위치에서 가능한 Context Menu reorder Action이다. */
   reorderActions: readonly StartReorderAction[];
 }>;
@@ -50,19 +47,9 @@ export type TaskbarStartPinnedProps = Readonly<{
   onItemOpen?: (item: StartPinnedItemViewModel) => void;
   /** 모두 보기 semantic Action을 상위 Start 조합에 전달한다. */
   onShowAll?: () => void;
+  /** Application이 ResourceRef를 Content browser 또는 shortcut brand icon으로 바꾸는 경계다. */
+  resolveResourceIcon?: TaskbarStartResourceIconResolver;
 }>;
-
-/** Resource kind에 해당하는 장식용 기본 icon을 반환한다. */
-const defaultIcon = (resource: ResourceRef): ReactNode => {
-  switch (resource.kind) {
-    case "folder":
-      return <Folder32Regular />;
-    case "content":
-      return <Document32Regular />;
-    case "external-shortcut":
-      return <Link32Regular />;
-  }
-};
 
 /** Resource identity를 test와 DOM 측정이 공유할 stable key로 만든다. */
 const resourceKey = (resource: ResourceRef): string => `${resource.kind}:${resource.id}`;
@@ -79,6 +66,7 @@ export const TaskbarStartPinned = ({
   onItemContextMenu,
   onItemOpen,
   onShowAll,
+  resolveResourceIcon,
 }: TaskbarStartPinnedProps) => {
   const keyboard = useStartPinnedKeyboard(items.length);
   const drag = useStartPinnedDrag({ actions, items });
@@ -108,7 +96,9 @@ export const TaskbarStartPinned = ({
         >
           {items.map((item, index) => {
             const key = resourceKey(item.resource);
-            const visual = drag.dragVisual?.key === key ? drag.dragVisual : null;
+            const visual = drag.dragVisual;
+            const dragging = visual?.key === key;
+            const offset = dragging ? { x: visual.x, y: visual.y } : visual?.itemOffsets.get(key);
             return (
               <Button
                 aria-colindex={(index % 6) + 1}
@@ -118,7 +108,8 @@ export const TaskbarStartPinned = ({
                 data-can-move-first={item.reorderActions.includes("first") ? "true" : undefined}
                 data-can-move-left={item.reorderActions.includes("left") ? "true" : undefined}
                 data-can-move-right={item.reorderActions.includes("right") ? "true" : undefined}
-                data-dragging={visual === null ? undefined : "true"}
+                data-drag-preview={offset === undefined || dragging ? undefined : "true"}
+                data-dragging={dragging ? "true" : undefined}
                 data-resource-id={item.resource.id}
                 data-resource-key={key}
                 data-resource-kind={item.resource.kind}
@@ -142,15 +133,19 @@ export const TaskbarStartPinned = ({
                 }}
                 role="gridcell"
                 style={
-                  visual === null
+                  offset === undefined
                     ? undefined
-                    : { transform: `translate(${visual.x}px, ${visual.y}px)` }
+                    : { transform: `translate(${offset.x}px, ${offset.y}px)` }
                 }
                 title={item.label}
                 type="button"
               >
                 <span aria-hidden="true" className="taskbar-start-pinned__icon">
-                  {item.icon ?? defaultIcon(item.resource)}
+                  <TaskbarStartResourceIcon
+                    resolveIcon={resolveResourceIcon}
+                    resource={item.resource}
+                    size={32}
+                  />
                 </span>
                 <span className="taskbar-start-pinned__label">{item.label}</span>
               </Button>
