@@ -8,6 +8,12 @@ import type {
   PrimaryPanelAction,
   PrimaryPanelOperationHandle,
   PrimaryPanelSnapshot,
+  StartAction,
+  StartOperationHandle,
+  StartScreenAction,
+  StartScreenOperationResult,
+  StartScreenSnapshot,
+  StartSnapshot,
   TaskbarTimestampClock,
   TaskbarTimestampTimer,
   WindowMode,
@@ -15,9 +21,15 @@ import type {
 } from "../../../../headless/index.js";
 import type { TaskbarApplicationId } from "../../../../headless/index.js";
 import {
+  createHeadlessRuntime,
   createPrimaryPanelState,
+  createResourceRef,
+  createStartScreenState,
+  createStaticCatalog,
+  type HeadlessRuntimeAdapters,
   HeadlessRuntimeProvider,
   PrimaryPanelOperations,
+  StartScreenOperations,
   TransitionRegistry,
 } from "../../../../headless/index.js";
 import { TaskbarRoot, type TaskbarRootProps } from "./index.js";
@@ -102,8 +114,45 @@ const createRuntime = (initialMode?: WindowMode, activeApplication?: TaskbarAppl
     PrimaryPanelAction,
     PrimaryPanelOperationHandle
   >;
+  const startNotReady = Object.freeze({
+    status: "not-ready",
+    snapshot: null,
+  }) satisfies ControllerViewModel<StartSnapshot>;
+  const start = Object.freeze({
+    getSnapshot: () => startNotReady,
+    getServerSnapshot: () => startNotReady,
+    subscribe: () => () => undefined,
+    execute: () => ({}) as StartOperationHandle,
+  }) satisfies HeadlessFeatureRuntime<StartSnapshot, StartAction, StartOperationHandle>;
+  const startScreenState = createStartScreenState();
+  const startScreenOperations = new StartScreenOperations({ state: startScreenState });
+  let currentStartScreenSnapshot = startScreenState.getSnapshot();
+  let currentStartScreenViewModel = Object.freeze({
+    status: "ready",
+    snapshot: currentStartScreenSnapshot,
+  }) as ControllerViewModel<StartScreenSnapshot>;
+  const startScreen = Object.freeze({
+    getSnapshot: () => {
+      const snapshot = startScreenState.getSnapshot();
+      if (snapshot !== currentStartScreenSnapshot) {
+        currentStartScreenSnapshot = snapshot;
+        currentStartScreenViewModel = Object.freeze({ status: "ready", snapshot });
+      }
+      return currentStartScreenViewModel;
+    },
+    getServerSnapshot: () => Object.freeze({ status: "not-ready", snapshot: null }),
+    subscribe: startScreenState.subscribe,
+    execute: (action: StartScreenAction) => startScreenOperations.execute(action),
+  }) satisfies HeadlessFeatureRuntime<
+    StartScreenSnapshot,
+    StartScreenAction,
+    StartScreenOperationResult
+  >;
   const runtime = Object.freeze({
     primaryPanel,
+    resourceOpen: Object.freeze({ execute: vi.fn() }),
+    start,
+    startScreen,
     transitions,
     windows,
   }) as unknown as HeadlessRuntime;
@@ -139,7 +188,85 @@ const renderRoot = (
 
 afterEach(() => cleanup());
 
+const rootShortcut = createResourceRef(
+  "external-shortcut",
+  "21000000-0000-4000-8000-000000000001",
+);
+const rootResources = Object.freeze({
+  folder: createStaticCatalog([]),
+  content: createStaticCatalog([]),
+  externalShortcut: createStaticCatalog([
+    { ref: rootShortcut, name: "7zip", url: "https://example.com/7zip" },
+  ]),
+});
+
+/** production Root가 소비하는 실제 runtime channel을 최소 deterministic adapter로 만든다. */
+const renderProductRoot = () => {
+  const windowState = createWindowState("desktop");
+  const windows = {
+    getSnapshot: () => windowState,
+    subscribe: () => () => undefined,
+  } as unknown as NonNullable<HeadlessRuntimeAdapters["windows"]>;
+  const startSnapshot = Object.freeze({
+    pinnedItems: Object.freeze([Object.freeze({ resource: rootShortcut })]),
+  });
+  const noOp = () => Promise.resolve(Object.freeze({ ok: false, reason: "no-op" }));
+  const start = {
+    getSnapshot: () => startSnapshot,
+    subscribe: () => () => undefined,
+    isPinned: () => true,
+    pin: noOp,
+    unpin: noOp,
+    reorder: noOp,
+  } as unknown as NonNullable<HeadlessRuntimeAdapters["start"]>;
+  const openNewTab = vi.fn(
+    (): Readonly<{ status: "succeeded" }> => Object.freeze({ status: "succeeded" }),
+  );
+  const runtime = createHeadlessRuntime({
+    adapters: { start, windows },
+    externalNavigation: { openNewTab },
+  });
+  const mounted = render(
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <TaskbarRoot
+        resourceReaders={rootResources}
+        renderStartSearchBody={(query) => <p aria-label="Start Search 경계">{query}</p>}
+        timestampClock={TEST_TIMESTAMP_CLOCK}
+      />
+    </HeadlessRuntimeProvider>,
+  );
+  return { ...mounted, openNewTab, runtime };
+};
+
 describe("TaskbarRoot", () => {
+  it("production Root가 pinned/all/Search와 ExternalShortcut 성공 close를 연결한다", async () => {
+    const mounted = renderProductRoot();
+    fireEvent.click(screen.getByRole("button", { name: "시작" }));
+    await waitFor(() => expect(screen.getByRole("gridcell", { name: "7zip" })).not.toBeNull());
+
+    fireEvent.click(screen.getByRole("button", { name: "모두" }));
+    await waitFor(() => expect(screen.getByRole("heading", { name: "모두" })).not.toBeNull());
+    const input = screen.getByRole<HTMLInputElement>("textbox", { name: "앱 및 문서 검색" });
+    fireEvent.change(input, { target: { value: "7" } });
+    await waitFor(() => expect(screen.getByLabelText("Start Search 경계").textContent).toBe("7"));
+    fireEvent.change(input, { target: { value: "" } });
+    await waitFor(() => expect(screen.getByRole("heading", { name: "모두" })).not.toBeNull());
+
+    fireEvent.click(screen.getByRole("button", { name: "7zip" }));
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "시작" })).toBeNull());
+    expect(mounted.openNewTab).toHaveBeenCalledExactlyOnceWith({
+      type: "open-external-shortcut",
+      url: "https://example.com/7zip",
+      target: "_blank",
+    });
+    expect(mounted.runtime.windows.getSnapshot().snapshot?.sessions).toEqual([]);
+    expect(mounted.runtime.start.getSnapshot().snapshot?.pinnedItems).toHaveLength(1);
+    expect(mounted.runtime.startScreen.getSnapshot().snapshot).toEqual({
+      view: "pinned",
+      indexOpen: false,
+    });
+  });
+
   it("실제 Taskbar input 하나를 headless Search query와 panel에 연결한다", async () => {
     const mounted = renderRoot("desktop");
     const input = screen.getByRole<HTMLInputElement>("textbox", { name: "검색" });

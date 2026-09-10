@@ -35,9 +35,14 @@ export {
   type TaskbarSearchProps,
 } from "./components/taskbar/search/index.js";
 export {
+  type StartPinnedItemViewModel,
   TaskbarStart,
+  TaskbarStartAll,
+  type TaskbarStartAllProps,
   TaskbarStartButton,
   type TaskbarStartButtonProps,
+  TaskbarStartPinned,
+  type TaskbarStartPinnedProps,
   type TaskbarStartProps,
   type TaskbarStartSearchInputProps,
 } from "./components/taskbar/start/index.js";

@@ -20,4 +20,52 @@
 .taskbar-start__body {
   flex: 1 1 auto;
   min-block-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.taskbar-start__browse,
+.taskbar-start__search-boundary {
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+.taskbar-start__browse {
+  position: relative;
+}
+
+.taskbar-start__browse-view {
+  inset: 0;
+  position: absolute;
+  transition-duration: var(--wd-window-panel-view-transition-duration);
+  transition-property: opacity, transform, visibility;
+}
+
+.taskbar-start__browse-view[data-view="pinned"] {
+  transform: translateX(0);
+}
+
+.taskbar-start__browse[data-view="all"]
+  .taskbar-start__browse-view[data-view="pinned"] {
+  opacity: 0;
+  transform: translateX(-100%);
+  visibility: hidden;
+}
+
+.taskbar-start__browse-view[data-view="all"] {
+  opacity: 0;
+  transform: translateX(100%);
+  visibility: hidden;
+}
+
+.taskbar-start__browse[data-view="all"] .taskbar-start__browse-view[data-view="all"] {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taskbar-start__browse-view {
+    transition-duration: 0s;
+  }
 }

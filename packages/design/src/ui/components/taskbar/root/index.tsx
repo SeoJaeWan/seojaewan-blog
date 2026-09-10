@@ -1,12 +1,13 @@
-import type { ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
 import { clsx } from "clsx";
 
 import {
+  type ResourceReaders,
   type TaskbarTimestampClock,
   useTaskbarRootController,
   useTaskbarTimestampController,
-} from "../../../../headless/taskbar/index.js";
+} from "../../../../headless/index.js";
 import { TaskbarApplicationButton } from "../items/index.js";
 import { useTaskbarPanelsConnection } from "../panels/index.js";
 import { TaskbarSearchPanel } from "../search/index.js";
@@ -28,6 +29,10 @@ export type TaskbarRootProps = Omit<
     searchDisabled?: boolean;
     /** 기본 system clock 대신 deterministic host가 선택적으로 주입할 Timestamp clock이다. */
     timestampClock?: TaskbarTimestampClock;
+    /** Start pinned와 All view가 현재 label, URL과 목록을 읽는 Application Catalog 경계다. */
+    resourceReaders?: ResourceReaders;
+    /** HDJG-47이 Start query에 맞는 Search result/detail body를 제공할 경계다. */
+    renderStartSearchBody?: (query: string) => ReactNode;
   }>;
 
 /**
@@ -39,13 +44,15 @@ export type TaskbarRootProps = Omit<
  */
 export const TaskbarRoot = ({
   className,
+  resourceReaders,
+  renderStartSearchBody,
   searchDisabled = false,
   timestampClock,
   windowsDisabled = false,
   ...props
 }: TaskbarRootProps) => {
   const { actions, viewModel } = useTaskbarRootController();
-  const panels = useTaskbarPanelsConnection();
+  const panels = useTaskbarPanelsConnection({ resources: resourceReaders });
   const timestamp = useTaskbarTimestampController(timestampClock);
   const mode = viewModel.status === "ready" ? viewModel.snapshot.mode : undefined;
   useTaskbarResponsivePanelDismiss(mode, panels.dismissForMobile);
@@ -60,7 +67,11 @@ export const TaskbarRoot = ({
     >
       {mode === "desktop" ? (
         <div className="taskbar-root__items" data-taskbar-region="items">
-          <TaskbarStart buttonProps={{ disabled: windowsDisabled }} connection={panels.start} />
+          <TaskbarStart
+            buttonProps={{ disabled: windowsDisabled }}
+            connection={panels.start}
+            renderSearchBody={renderStartSearchBody}
+          />
           <TaskbarSearchPanel connection={panels.search} disabled={searchDisabled}>
             {null}
           </TaskbarSearchPanel>
