@@ -6,11 +6,9 @@ import type {
   WindowControllerActions,
   WindowPresentationRequest,
   WindowSessionId,
-} from "../../../../../../headless/index.js";
-import {
-  useWindowPresentation,
-  type WindowMotionDestination,
-} from "./index.js";
+} from "../../../../../../../headless/index.js";
+import type { WindowMotionDestination } from "../../index.js";
+import { useWindowPresentation } from "./index.js";
 
 /** Presentation Hook이 요구하는 동작만 관찰 가능한 mock으로 제공한다. */
 const createActions = () =>
@@ -108,18 +106,14 @@ describe("useWindowPresentation", () => {
       resolveFinished = resolve;
     });
     const animate = vi.fn(
-      (
-        _keyframes: Keyframe[] | PropertyIndexedKeyframes,
-        _options?: KeyframeAnimationOptions,
-      ) => ({ cancel: vi.fn(), finished }) as unknown as Animation,
+      (_keyframes: Keyframe[] | PropertyIndexedKeyframes, _options?: KeyframeAnimationOptions) =>
+        ({ cancel: vi.fn(), finished }) as unknown as Animation,
     );
     const firstDestination = { left: 800, top: 740, width: 32, height: 32 };
     const measuredDestination = { left: 620, top: 740, width: 32, height: 32 };
     const laterDestination = { left: 500, top: 740, width: 32, height: 32 };
 
-    const view = render(
-      <PresentationHarness actions={actions} destination={firstDestination} />,
-    );
+    const view = render(<PresentationHarness actions={actions} destination={firstDestination} />);
     const frame = screen.getByRole("region", { name: "테스트 창" });
     Object.defineProperty(frame, "getBoundingClientRect", {
       configurable: true,

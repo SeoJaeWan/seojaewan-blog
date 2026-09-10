@@ -6,7 +6,7 @@ import type {
   WindowGestureHandle,
   WindowPlacementConfig,
   WindowSessionId,
-} from "../../../../../../headless/windows/index.js";
+} from "../../../../../../../headless/windows/index.js";
 import { useWindowPointerGesture } from "./index.js";
 
 const placementConfig: WindowPlacementConfig = Object.freeze({

@@ -10,7 +10,7 @@ export type WindowMoveStartHandler = (event: PointerEvent<HTMLDivElement>) => vo
 /** Common titlebar의 application slot과 controlled callback 입력이다. */
 export type WindowTitleBarProps = Omit<
   ComponentPropsWithRef<"div">,
-  "children" | "dangerouslySetInnerHTML" | "onDoubleClick"
+  "children" | "dangerouslySetInnerHTML" | "onClick" | "onDoubleClick"
 > &
   Readonly<{
     /** application tab strip 또는 현재 title slot이다. */
@@ -48,9 +48,15 @@ export const WindowTitleBar = ({
     if (!isInteractiveTitleBarTarget(event.target)) onMoveStart?.(event);
   };
 
-  /** interactive child가 아닌 titlebar double click만 maximize toggle로 전달한다. */
-  const handleDoubleClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isInteractiveTitleBarTarget(event.target)) onToggleMaximized?.();
+  /**
+   * 빈 titlebar에서 끝난 매 두 번째 click을 maximize toggle로 전달한다.
+   *
+   * 브라우저가 같은 위치의 연속 입력을 3·4번째 click으로 이어도 두 번째 쌍을 놓치지 않는다.
+   */
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.detail > 0 && event.detail % 2 === 0 && !isInteractiveTitleBarTarget(event.target)) {
+      onToggleMaximized?.();
+    }
   };
 
   return (
@@ -58,7 +64,7 @@ export const WindowTitleBar = ({
       <div
         className="window-title-bar__drag-region"
         data-window-drag-region="true"
-        onDoubleClick={handleDoubleClick}
+        onClick={handleClick}
         onPointerDown={handlePointerDown}
       >
         {children}

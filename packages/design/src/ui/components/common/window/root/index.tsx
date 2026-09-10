@@ -23,16 +23,29 @@ import {
 } from "../../../../../headless/windows/index.js";
 import { WindowControls } from "../controls/index.js";
 import { WindowFrame, type WindowFrameProps } from "../frame/index.js";
-import { useWindowPointerGesture } from "../hooks/useWindowPointerGesture/index.js";
-import {
-  useWindowPresentation,
-  type WindowMotionDestination,
-} from "../hooks/useWindowPresentation/index.js";
+import { WindowTitleBar } from "../titleBar/index.js";
 import {
   type WindowPresentationBinding,
   type WindowPresentationConsumer,
-} from "../presentationBinding/index.js";
-import { WindowTitleBar } from "../titleBar/index.js";
+} from "../utils/presentationBinding/index.js";
+import { useWindowPointerGesture } from "./hooks/useWindowPointerGesture/index.js";
+import { useWindowPresentation } from "./hooks/useWindowPresentation/index.js";
+
+/**
+ * Taskbar application icon에서 측정한 viewport px destination이다.
+ *
+ * 외부 앱이 DOM에서 측정해 전달하며 Common Window는 Taskbar Store나 DOM을 직접 조회하지 않는다.
+ */
+export type WindowMotionDestination = Readonly<{
+  /** icon border box의 viewport 왼쪽 위치다. */
+  left: number;
+  /** icon border box의 viewport 위쪽 위치다. */
+  top: number;
+  /** icon border box의 px 너비다. */
+  width: number;
+  /** icon border box의 px 높이다. */
+  height: number;
+}>;
 
 /**
  * controller를 사용하는 Common Window 제품 root의 Session과 application slot 입력이다.

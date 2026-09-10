@@ -13,25 +13,28 @@ File Explorer·Chrome 화면이 아니다.
 
 ```text
 window/
-  controls/            창 조작 버튼
+  controls/            창 조작 버튼과 Story
   frame/               창 테두리와 Story
   root/                headless 상태와 Common Window 조합
-  titleBar/            제목 표시줄과 drag 영역
+    hooks/
+      useWindowPointerGesture/
+      useWindowPresentation/
+  titleBar/            제목 표시줄, drag 영역과 Story
   resizeHandles/       여덟 방향 크기 조절 영역
-  presentationBinding/ 표현 요청을 해당 창에 연결하는 binding
-  hooks/
-    useWindowPointerGesture/
-    useWindowPresentation/
+  utils/
+    presentationBinding/ 외부 Runtime과 WindowRoot를 연결하는 공개 utility
 ```
 
-각 폴더의 `index.ts(x)`가 구현 진입점입니다. 두 Hook은 pointer capture·rAF·DOM animation·focus처럼
-브라우저에 연결된 동작을 다루므로 UI에 두며, 순수 bounds 계산과 Operation 순서는 headless가
-담당합니다.
+각 폴더의 `index.ts(x)`가 구현 진입점입니다. 두 Hook은 `WindowRoot`만 사용하므로 root 가까이에 두고,
+pointer capture·rAF·DOM animation·focus처럼 브라우저에 연결된 동작을 담당합니다. 순수 bounds 계산과
+Operation 순서는 headless가 담당합니다. `presentationBinding`은 `@window/design`을 사용하는 외부 앱이
+Runtime과 `WindowRoot` 양쪽에 전달하는 공개 연결 utility입니다.
 
 ## Runtime presentation 연결
 
 새 Window는 semantic commit 직후 presentation을 요청하므로 Component mount보다 요청이 먼저 올 수 있다.
-runtime과 root에 같은 binding을 전달하면 DOM-free 숫자 요청을 Session별로 보관했다가 정확한 root에 전달한다.
+외부 앱에서 `createWindowPresentationBinding`으로 한 번 만든 객체를 runtime과 root에 함께 전달하면
+DOM-free 숫자 요청을 Session별로 보관했다가 정확한 root에 전달합니다.
 
 ```tsx
 import {

@@ -18,8 +18,8 @@ import type {
   WindowRect,
   WindowResizeDirection,
   WindowSessionId,
-} from "../../../../../../headless/windows/index.js";
-import { resizeWindowBounds } from "../../../../../../headless/windows/index.js";
+} from "../../../../../../../headless/windows/index.js";
+import { resizeWindowBounds } from "../../../../../../../headless/windows/index.js";
 
 type GestureOwner = HTMLElement & {
   hasPointerCapture?(pointerId: number): boolean;
@@ -57,7 +57,8 @@ const calculateGestureBounds = (
   pointer: Readonly<{ x: number; y: number }>,
 ): WindowRect => {
   const { handle, resizeDirection, startPointer } = gesture;
-  if (handle === null) throw new Error("활성화되지 않은 Window gesture의 bounds를 계산할 수 없습니다");
+  if (handle === null)
+    throw new Error("활성화되지 않은 Window gesture의 bounds를 계산할 수 없습니다");
   const deltaX = pointer.x - startPointer.x;
   const deltaY = pointer.y - startPointer.y;
 
@@ -121,7 +122,10 @@ export type WindowPointerGestureController = Readonly<{
   /** 빈 titlebar pointer 입력으로 move를 시작한다. */
   startMove(event: ReactPointerEvent<HTMLDivElement>): boolean;
   /** 방향 handle pointer 입력으로 resize를 시작한다. */
-  startResize(event: ReactPointerEvent<HTMLButtonElement>, direction: WindowResizeDirection): boolean;
+  startResize(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    direction: WindowResizeDirection,
+  ): boolean;
 }>;
 
 /**
@@ -146,10 +150,7 @@ export const useWindowPointerGesture = (
     window.removeEventListener("pointermove", gesture.listeners.pointerMove);
     window.removeEventListener("pointerup", gesture.listeners.pointerUp);
     window.removeEventListener("pointercancel", gesture.listeners.pointerCancel);
-    gesture.owner.removeEventListener(
-      "lostpointercapture",
-      gesture.listeners.lostPointerCapture,
-    );
+    gesture.owner.removeEventListener("lostpointercapture", gesture.listeners.lostPointerCapture);
     if (gesture.handle !== null) window.removeEventListener("keydown", gesture.listeners.keyDown);
     if (gestureRef.current === gesture) gestureRef.current = null;
     releasePointerCapture(gesture.owner, gesture.pointerId);
@@ -166,10 +167,7 @@ export const useWindowPointerGesture = (
       }
       gesture.handle = started.handle;
       gesture.owner.setPointerCapture?.(gesture.pointerId);
-      gesture.owner.addEventListener(
-        "lostpointercapture",
-        gesture.listeners.lostPointerCapture,
-      );
+      gesture.owner.addEventListener("lostpointercapture", gesture.listeners.lostPointerCapture);
       window.addEventListener("keydown", gesture.listeners.keyDown);
       setActive(true);
       onGestureActivated?.();

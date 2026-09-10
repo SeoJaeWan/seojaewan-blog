@@ -16,14 +16,14 @@ import {
 import type {
   WindowControllerActions,
   WindowPresentationRequest,
-} from "../../../../../../headless/windows/index.js";
+} from "../../../../../../../headless/windows/index.js";
 
 /**
  * Taskbar application icon에서 측정한 viewport px destination이다.
  *
  * 제품 root가 DOM에서 측정해 전달하며 Common Window는 Taskbar Store나 DOM을 직접 조회하지 않는다.
  */
-export type WindowMotionDestination = Readonly<{
+type WindowMotionDestination = Readonly<{
   /** icon border box의 viewport 왼쪽 위치다. */
   left: number;
   /** icon border box의 viewport 위쪽 위치다. */
@@ -69,7 +69,7 @@ const NEUTRAL_EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
  *
  * ref가 생략됐거나 `null`이면 부수 효과 없이 반환한다.
  */
-const assignRef = <Value,>(ref: Ref<Value> | undefined, value: Value | null): void => {
+const assignRef = <Value>(ref: Ref<Value> | undefined, value: Value | null): void => {
   if (typeof ref === "function") {
     ref(value);
     return;
@@ -112,10 +112,7 @@ const createMotion = (
   const identity: Keyframe = { opacity: 1, transform: "none", transformOrigin: "top left" };
   if (phase === "window-enter") {
     return {
-      keyframes: [
-        { opacity: 0, transform: "scale(0.6)", transformOrigin: "top left" },
-        identity,
-      ],
+      keyframes: [{ opacity: 0, transform: "scale(0.6)", transformOrigin: "top left" }, identity],
       options: { duration: ENTER_DURATION, easing: ENTER_EASING, fill: "both" },
     };
   }
