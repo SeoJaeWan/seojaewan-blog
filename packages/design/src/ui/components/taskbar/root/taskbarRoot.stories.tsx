@@ -78,12 +78,12 @@ const PrimaryPanelProbe = () => {
         활성 패널: <output aria-label="활성 패널">{snapshot?.activePanel ?? "없음"}</output>
       </p>
       <p>
-        Start 검색어:{" "}
-        <output aria-label="Start 검색어">{snapshot?.startQuery || "(비어 있음)"}</output>
+        시작 메뉴 검색어:{" "}
+        <output aria-label="시작 메뉴 검색어">{snapshot?.startQuery || "(비어 있음)"}</output>
       </p>
       <p>
-        Search 검색어:{" "}
-        <output aria-label="Search 검색어">{snapshot?.searchQuery || "(비어 있음)"}</output>
+        검색 패널 검색어:{" "}
+        <output aria-label="검색 패널 검색어">{snapshot?.searchQuery || "(비어 있음)"}</output>
       </p>
     </>
   );
@@ -120,11 +120,10 @@ const RootStory = ({
           <>
             <PrimaryPanelProbe />
             <p>
-              앱 요청: <output aria-label="Mobile Action 횟수">{mobileActionCount}</output>
+              앱 요청: <output aria-label="앱 요청 횟수">{mobileActionCount}</output>
             </p>
             <p>
-              마지막 앱:{" "}
-              <output aria-label="마지막 Mobile application">{lastMobileApplication}</output>
+              마지막 앱: <output aria-label="마지막 선택한 앱">{lastMobileApplication}</output>
             </p>
             <button type="button">패널 밖</button>
           </>
@@ -150,9 +149,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "공통 WindowState.mode를 소비하는 화면 하단 Taskbar 제품 Root다. " +
-          "desktop Start·Search primary panel과 mobile File Explorer·Chrome Action, local Timestamp를 제공한다. " +
-          "고정 목록·검색 결과·recent·detail과 실제 Window 본문은 후속 제품 view가 연결한다.",
+          "화면 아래에 표시되는 작업 표시줄입니다. 데스크톱에서는 시작 버튼과 검색창 및 각 패널을, 모바일에서는 파일 탐색기와 Chrome 버튼을 보여 줍니다. 오른쪽에는 현재 시간과 날짜가 표시됩니다.",
       },
       story: { iframeHeight: 360, inline: false },
     },
@@ -168,13 +165,13 @@ export const Desktop: Story = {
   name: "데스크톱",
   parameters: {
     taskbarDescription:
-      "실제 Start/Search panel의 toggle·순차 전환, Taskbar input의 한글·공백 유지, Escape blur·초기화와 outside dismiss를 확인합니다. 고정 목록·검색 결과·recent·detail 본문은 후속 작업입니다.",
+      "시작 버튼과 검색창을 직접 눌러 각 패널을 열고 전환할 수 있습니다. 검색어 입력과 Escape 닫기, 패널 바깥을 눌러 닫는 동작도 확인할 수 있습니다. 패널의 실제 목록과 검색 결과는 후속 작업에서 연결합니다.",
   },
   render: () => <RootStory mode="desktop" />,
 };
 
 export const WindowsDisabled: Story = {
-  name: "시작 사용 불가",
+  name: "시작 버튼 · 사용 불가",
   parameters: {
     taskbarDescription:
       "시작 버튼만 사용할 수 없는 상태입니다. 검색창은 독립적으로 입력할 수 있습니다.",
@@ -183,7 +180,7 @@ export const WindowsDisabled: Story = {
 };
 
 export const SearchDisabled: Story = {
-  name: "검색 사용 불가",
+  name: "검색창 · 사용 불가",
   parameters: {
     taskbarDescription: "검색창만 입력할 수 없는 상태입니다. 시작 버튼은 사용할 수 있습니다.",
   },
@@ -200,10 +197,10 @@ export const Mobile: Story = {
 };
 
 export const MobileChromeActive: Story = {
-  name: "Chrome 활성 상태",
+  name: "모바일 · Chrome 활성 상태",
   parameters: {
     taskbarDescription:
-      "Chrome이 활성 상태여도 입력 요청을 전달합니다. 현재 창 유지 여부는 mobile headless 정책이 결정합니다.",
+      "Chrome이 현재 활성 앱인 모습을 보여 줍니다. 버튼을 다시 눌러도 입력 요청이 전달되며, 이 예제에서는 실제 창을 열지 않습니다.",
   },
   render: () => <RootStory activeApplication="chrome" mode="mobile" />,
 };
@@ -211,7 +208,7 @@ export const MobileChromeActive: Story = {
 export const NotReady: Story = {
   name: "준비 중",
   parameters: {
-    taskbarDescription: "공통 Window 상태 준비 전에는 빈 Taskbar surface만 표시합니다.",
+    taskbarDescription: "화면 구성이 준비되기 전에는 작업 표시줄의 배경만 표시합니다.",
   },
   render: () => <RootStory />,
 };

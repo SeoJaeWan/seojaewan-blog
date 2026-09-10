@@ -36,6 +36,7 @@ import type {
   ChromeWindowSession,
   FileExplorerWindowSession,
   WindowApplicationId,
+  WindowFrameState,
   WindowMode,
   WindowRect,
   WindowSession,
@@ -1354,6 +1355,87 @@ export class WindowStore {
   }
 
   /**
+   * gesture가 계산한 위치와 크기를 한 번의 normalBounds commit으로 반영한다.
+   *
+   * maximized drag의 첫 갱신은 `placement`도 normal로 바꾸며 별도 transition을 기다리지 않는다.
+   */
+  static applyGestureBounds(
+    sessionId: WindowSessionId,
+    bounds: WindowRect,
+    kind: "move" | "resize",
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    if (kind !== "move" && kind !== "resize") {
+      return WindowStore.enqueue(
+        () => WindowStore.reject("invalid-geometry"),
+        false,
+        context,
+      );
+    }
+    return WindowStore.changeBounds(
+      sessionId,
+      () => bounds,
+      kind === "move" ? "window-moved" : "window-resized",
+      context,
+      true,
+      kind === "resize",
+    );
+  }
+
+  /**
+   * gesture 시작 시점의 전체 frame을 한 번의 commit으로 복구한다.
+   *
+   * Session이 사라졌거나 mobile로 전환됐으면 상태를 바꾸지 않고, 잘못된 frame geometry는 거부한다.
+   */
+  static restoreFrame(
+    sessionId: WindowSessionId,
+    frame: WindowFrameState,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        constrainWindowBounds(
+          frame.normalBounds,
+          state.workArea,
+          WindowStore.requirePlacementConfig(),
+        );
+        if (
+          (frame.placement !== "normal" && frame.placement !== "maximized") ||
+          typeof frame.minimized !== "boolean"
+        ) {
+          return WindowStore.reject("invalid-geometry");
+        }
+        if (
+          frame.normalBounds.x === session.frame.normalBounds.x &&
+          frame.normalBounds.y === session.frame.normalBounds.y &&
+          frame.normalBounds.width === session.frame.normalBounds.width &&
+          frame.normalBounds.height === session.frame.normalBounds.height &&
+          frame.placement === session.frame.placement &&
+          frame.minimized === session.frame.minimized
+        ) {
+          return { kind: "no-op" };
+        }
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId ? { ...current, frame: { ...frame } } : current,
+            ),
+          },
+          change: { kind: "window-frame-restored", sessionId },
+        };
+      },
+      false,
+      context,
+    );
+  }
+
+  /**
    * Session의 normal bounds 변경을 검증해 queue에서 반영한다. mobile과 동일 결과는 no-op이며 잘못된 Session·geometry는 거부한다.
    */
   private static changeBounds = (
@@ -1361,38 +1443,56 @@ export class WindowStore {
     update: (bounds: WindowRect) => WindowRect,
     kind: "window-moved" | "window-resized",
     context?: WindowStoreCommandContext,
+    restoreNormalPlacement = false,
+    preserveRequestedResizeBounds = false,
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      const bounds = constrainWindowBounds(
-        update(session.frame.normalBounds),
-        state.workArea,
-        WindowStore.requirePlacementConfig(),
-      );
-      if (
-        bounds.x === session.frame.normalBounds.x &&
-        bounds.y === session.frame.normalBounds.y &&
-        bounds.width === session.frame.normalBounds.width &&
-        bounds.height === session.frame.normalBounds.height
-      ) {
-        return { kind: "no-op" };
-      }
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
-              ? { ...current, frame: { ...current.frame, normalBounds: bounds } }
-              : current,
-          ),
-        },
-        change: { kind, sessionId },
-      };
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        const requestedBounds = update(session.frame.normalBounds);
+        const config = WindowStore.requirePlacementConfig();
+        const constrainedBounds = constrainWindowBounds(requestedBounds, state.workArea, config);
+        if (
+          preserveRequestedResizeBounds &&
+          (requestedBounds.width < config.minSize.width ||
+            requestedBounds.height < config.minSize.height)
+        ) {
+          return WindowStore.reject("invalid-geometry");
+        }
+        const bounds = preserveRequestedResizeBounds
+          ? { ...requestedBounds }
+          : constrainedBounds;
+        if (
+          bounds.x === session.frame.normalBounds.x &&
+          bounds.y === session.frame.normalBounds.y &&
+          bounds.width === session.frame.normalBounds.width &&
+          bounds.height === session.frame.normalBounds.height &&
+          (!restoreNormalPlacement || session.frame.placement === "normal")
+        ) {
+          return { kind: "no-op" };
+        }
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
+                ? {
+                    ...current,
+                    frame: {
+                      ...current.frame,
+                      normalBounds: bounds,
+                      placement: restoreNormalPlacement ? "normal" : current.frame.placement,
+                    },
+                  }
+                : current,
+            ),
+          },
+          change: { kind, sessionId },
+        };
       },
       false,
       context,

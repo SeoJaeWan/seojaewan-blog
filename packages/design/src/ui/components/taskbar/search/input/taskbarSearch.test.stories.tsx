@@ -29,7 +29,7 @@ export const InteractionTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox", { name: "검색" });
-    const count = canvas.getByRole("status", { name: "Search Action 횟수" });
+    const count = canvas.getByRole("status", { name: "검색 진입 횟수" });
     await expect(getComputedStyle(input, "::placeholder").opacity).toBe("1");
     await userEvent.tab();
     await expect(input).toHaveFocus();

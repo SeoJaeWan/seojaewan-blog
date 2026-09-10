@@ -18,7 +18,7 @@ const SearchExample = () => {
             입력값: <output aria-label="현재 검색어">{value || "(비어 있음)"}</output>
           </p>
           <p>
-            검색 진입: <output aria-label="Search Action 횟수">{count}</output>
+            검색 진입: <output aria-label="검색 진입 횟수">{count}</output>
           </p>
         </>
       }
@@ -46,7 +46,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "작업 표시줄에서 직접 검색어를 입력하는 제품 입력창입니다. 독립적으로 사용할 때는 value와 onValueChange를 연결하고, 실제 Search panel에서는 TaskbarSearchPanel이 같은 입력창을 trigger로 사용합니다.",
+          "작업 표시줄의 검색창입니다. 클릭하거나 Tab으로 이동해 검색어를 입력할 수 있습니다. 검색 패널에서도 작업 표시줄의 같은 검색창을 사용합니다.",
       },
     },
   },

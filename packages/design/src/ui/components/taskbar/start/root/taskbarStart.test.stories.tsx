@@ -41,13 +41,13 @@ export const InteractionTest: Story = {
     await userEvent.type(input, "한글  query ");
     await expect(input).toHaveValue("한글  query ");
     await expect(page.getByRole("dialog", { name: "시작" })).toBeVisible();
-    await expect(page.getByRole("status", { name: "Start 검색어" }).textContent).toBe(
+    await expect(page.getByRole("status", { name: "시작 메뉴 검색어" }).textContent).toBe(
       "한글  query ",
     );
 
     await userEvent.click(outside);
     await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
-    await expect(page.getByRole("status", { name: "Start 검색어" })).toHaveTextContent(
+    await expect(page.getByRole("status", { name: "시작 메뉴 검색어" })).toHaveTextContent(
       "(비어 있음)",
     );
 

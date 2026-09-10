@@ -25,6 +25,15 @@ export type WindowPlacementConfig = Readonly<{
 }>;
 
 /**
+ * Window의 한 변 또는 모서리를 나타내는 eight-direction resize 식별자다.
+ *
+ * Product Component는 pointer delta만 전달하고 반대쪽 변 고정과 최소 크기 정책은 이 방향을 기준으로 계산한다.
+ */
+export type WindowResizeDirection = "n" | "ne" | "e" | "se" | "s" | "sw" | "w" | "nw";
+
+const windowResizeDirections: readonly string[] = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
+
+/**
  * geometry 입력이 유한한 숫자와 허용된 크기 범위를 만족하지 않을 때 발생한다.
  *
  * 입력을 보정하거나 현재 WindowState를 변경하지 않는다.
@@ -222,6 +231,72 @@ export const constrainWindowBounds = (
     width,
     height,
   });
+};
+
+/**
+ * 한 축의 resize 후보를 만들며 움직이지 않는 반대쪽 변과 최소 크기를 보존한다.
+ */
+const resizeAxis = (
+  origin: number,
+  size: number,
+  delta: number,
+  edge: "near" | "far" | null,
+  minimumSize: number,
+): Readonly<{ origin: number; size: number }> => {
+  if (edge === null) return { origin, size };
+  if (edge === "far") return { origin, size: Math.max(size + delta, minimumSize) };
+
+  const oppositeEdge = origin + size;
+  const resizedOrigin = Math.min(origin + delta, oppositeEdge - minimumSize);
+  return { origin: resizedOrigin, size: oppositeEdge - resizedOrigin };
+};
+
+/**
+ * 시작 bounds와 pointer delta에서 eight-direction resize 후보를 계산한다.
+ *
+ * 왼쪽·위쪽 변은 반대쪽 변을 고정하고 잡지 않은 변과 축은 시작 위치를 유지한다.
+ * 이미 workArea 밖에 있는 변은 resize 중 보정하지 않으며 최소 크기와 입력 유효성만 보장한다.
+ */
+export const resizeWindowBounds = (
+  startBounds: WindowRect,
+  direction: WindowResizeDirection,
+  delta: WindowPoint,
+  workArea: WindowRect,
+  config: WindowPlacementConfig,
+): WindowRect => {
+  assertRect(startBounds, "startBounds", true);
+  if (!windowResizeDirections.includes(direction)) {
+    throw new InvalidWindowGeometryError("resize direction이 유효하지 않습니다");
+  }
+  assertFiniteNumber(delta.x, "delta.x");
+  assertFiniteNumber(delta.y, "delta.y");
+  assertRect(workArea, "workArea", false);
+  assertConfig(config);
+
+  const horizontalEdge = direction.includes("w") ? "near" : direction.includes("e") ? "far" : null;
+  const verticalEdge = direction.includes("n") ? "near" : direction.includes("s") ? "far" : null;
+  const horizontal = resizeAxis(
+    startBounds.x,
+    startBounds.width,
+    delta.x,
+    horizontalEdge,
+    config.minSize.width,
+  );
+  const vertical = resizeAxis(
+    startBounds.y,
+    startBounds.height,
+    delta.y,
+    verticalEdge,
+    config.minSize.height,
+  );
+
+  const resized = {
+    x: horizontal.origin,
+    y: vertical.origin,
+    width: horizontal.size,
+    height: vertical.size,
+  };
+  return validateCalculatedNormalBounds(resized);
 };
 
 /**

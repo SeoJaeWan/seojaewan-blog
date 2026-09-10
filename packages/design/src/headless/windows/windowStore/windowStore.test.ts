@@ -428,6 +428,103 @@ describe("WindowStore", () => {
     });
   });
 
+  describe("gesture frame 명령", () => {
+    it("위치·크기와 maximized 복원을 한 번에 반영하고 한 번만 알린다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const id = WindowStore.getSnapshot().sessions[0].id;
+      await WindowStore.toggleMaximize(id);
+      const listener = vi.fn();
+      WindowStore.subscribe(listener);
+
+      const result = await WindowStore.applyGestureBounds(
+        id,
+        { x: 120, y: 80, width: 700, height: 500 },
+        "move",
+      );
+
+      expect(result).toMatchObject({
+        changed: true,
+        change: { kind: "window-moved", sessionId: id },
+      });
+      expect(WindowStore.getSnapshot().sessions[0].frame).toMatchObject({
+        placement: "normal",
+        normalBounds: { x: 120, y: 80, width: 700, height: 500 },
+      });
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it("시작 frame의 bounds·placement를 한 commit으로 정확히 복구한다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const id = WindowStore.getSnapshot().sessions[0].id;
+      await WindowStore.toggleMaximize(id);
+      const startFrame = WindowStore.getSnapshot().sessions[0].frame;
+      await WindowStore.applyGestureBounds(id, { x: 120, y: 80, width: 700, height: 500 }, "move");
+      const listener = vi.fn();
+      WindowStore.subscribe(listener);
+
+      const result = await WindowStore.restoreFrame(id, startFrame);
+
+      expect(result).toMatchObject({
+        changed: true,
+        change: { kind: "window-frame-restored", sessionId: id },
+      });
+      expect(WindowStore.getSnapshot().sessions[0].frame).toEqual(startFrame);
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it("화면 밖 resize에서 잡지 않은 왼쪽·위쪽 위치를 보정하지 않는다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const id = WindowStore.getSnapshot().sessions[0].id;
+
+      const result = await WindowStore.applyGestureBounds(
+        id,
+        { x: -80, y: -40, width: 700, height: 620 },
+        "resize",
+      );
+
+      expect(result).toMatchObject({
+        changed: true,
+        change: { kind: "window-resized", sessionId: id },
+      });
+      expect(WindowStore.getSnapshot().sessions[0].frame.normalBounds).toEqual({
+        x: -80,
+        y: -40,
+        width: 700,
+        height: 620,
+      });
+    });
+
+    it("invalid·no-op gesture frame은 snapshot과 알림을 유지한다", async () => {
+      const { WindowStore, initialization } = await setup();
+      await WindowStore.initialize(initialization);
+      await WindowStore.createChromeWindow();
+      const before = WindowStore.getSnapshot();
+      const id = before.sessions[0].id;
+      const listener = vi.fn();
+      WindowStore.subscribe(listener);
+
+      await expect(
+        WindowStore.applyGestureBounds(
+          id,
+          { x: Number.NaN, y: 0, width: 600, height: 400 },
+          "resize",
+        ),
+      ).resolves.toMatchObject({ changed: false, reason: "invalid-geometry" });
+      await expect(WindowStore.restoreFrame(id, before.sessions[0].frame)).resolves.toMatchObject({
+        changed: false,
+        reason: "no-op",
+      });
+      expect(WindowStore.getSnapshot()).toBe(before);
+      expect(listener).not.toHaveBeenCalled();
+    });
+  });
+
   describe.each(["chrome", "file-explorer"] as const)("%s tab 명령", (kind) => {
     /**
      * 실제 앱별 Store 명령을 호출하는 fixture를 만든다. private 구현을 노출하지 않고 snapshot의 tab을 관찰한다.

@@ -45,6 +45,10 @@ export type WindowStoreChangeKind =
    */
   | "window-resized"
   /**
+   * gesture 취소가 시작 시점의 bounds·placement·minimized 값을 한 commit으로 복구했다.
+   */
+  | "window-frame-restored"
+  /**
    * setWorkArea가 새 측정 영역과 필요한 desktop frame 보정을 한 commit으로 반영했다.
    */
   | "work-area-changed"

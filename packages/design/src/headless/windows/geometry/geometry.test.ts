@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import type { WindowFrameState, WindowRect } from "../model/index.js";
+import type { WindowFrameState, WindowPoint, WindowRect } from "../model/index.js";
 import {
   constrainWindowBounds,
   createWindowBounds,
   getWindowBounds,
   InvalidWindowGeometryError,
   recoverWindowBounds,
+  resizeWindowBounds,
   type WindowPlacementConfig,
+  type WindowResizeDirection,
 } from "./index.js";
 
 const config: WindowPlacementConfig = {
@@ -110,6 +112,97 @@ describe("constrainWindowBounds", () => {
         { x: 0, y: 0, width: 500, height: 500 },
         config,
       ),
+    ).toThrow(InvalidWindowGeometryError);
+  });
+});
+
+describe("resizeWindowBounds", () => {
+  const start = { x: 200, y: 150, width: 400, height: 300 };
+  const workArea = { x: 0, y: 0, width: 1_000, height: 800 };
+  const cases = [
+    ["n", { x: 0, y: -40 }, { x: 200, y: 110, width: 400, height: 340 }],
+    ["ne", { x: 50, y: -40 }, { x: 200, y: 110, width: 450, height: 340 }],
+    ["e", { x: 50, y: 0 }, { x: 200, y: 150, width: 450, height: 300 }],
+    ["se", { x: 50, y: 40 }, { x: 200, y: 150, width: 450, height: 340 }],
+    ["s", { x: 0, y: 40 }, { x: 200, y: 150, width: 400, height: 340 }],
+    ["sw", { x: -50, y: 40 }, { x: 150, y: 150, width: 450, height: 340 }],
+    ["w", { x: -50, y: 0 }, { x: 150, y: 150, width: 450, height: 300 }],
+    ["nw", { x: -50, y: -40 }, { x: 150, y: 110, width: 450, height: 340 }],
+  ] as const satisfies readonly (readonly [WindowResizeDirection, WindowPoint, WindowRect])[];
+
+  it.each(cases)("%s 방향에서 위치와 크기를 함께 계산한다", (direction, delta, expected) => {
+    expect(resizeWindowBounds(start, direction, delta, workArea, config)).toEqual(expected);
+  });
+
+  it("왼쪽·위쪽을 최소 크기 너머로 끌어도 오른쪽·아래쪽 변을 고정한다", () => {
+    const resized = resizeWindowBounds(start, "nw", { x: 390, y: 290 }, workArea, config);
+
+    expect(resized).toEqual({ x: 360, y: 290, width: 240, height: 160 });
+    expect(resized.x + resized.width).toBe(start.x + start.width);
+    expect(resized.y + resized.height).toBe(start.y + start.height);
+  });
+
+  it("작거나 0인 workArea에서도 잡지 않은 변을 화면 안으로 보정하지 않는다", () => {
+    expect(
+      resizeWindowBounds(
+        start,
+        "se",
+        { x: 100, y: 100 },
+        { x: 10, y: 20, width: 120, height: 90 },
+        config,
+      ),
+    ).toEqual({ x: 200, y: 150, width: 500, height: 400 });
+    expect(
+      resizeWindowBounds(
+        start,
+        "se",
+        { x: 100, y: 100 },
+        { x: 10, y: 20, width: 0, height: 0 },
+        config,
+      ),
+    ).toEqual({ x: 200, y: 150, width: 500, height: 400 });
+  });
+
+  it("화면 밖에 걸친 창의 아래쪽만 늘리면 왼쪽·위쪽과 너비를 유지한다", () => {
+    const offscreen = { x: -80, y: -40, width: 400, height: 300 };
+
+    expect(resizeWindowBounds(offscreen, "s", { x: 0, y: 120 }, workArea, config)).toEqual({
+      x: -80,
+      y: -40,
+      width: 400,
+      height: 420,
+    });
+  });
+
+  it("화면 밖에 걸친 창도 잡은 변과 같은 축만 변경한다", () => {
+    const offscreen = { x: -80, y: -40, width: 400, height: 300 };
+
+    expect(resizeWindowBounds(offscreen, "se", { x: 90, y: 120 }, workArea, config)).toEqual({
+      x: -80,
+      y: -40,
+      width: 490,
+      height: 420,
+    });
+  });
+
+  it.each([
+    ["delta", { x: Number.NaN, y: 0 }],
+    ["workArea", { x: 0, y: 0 }],
+  ] as const)("잘못된 %s 입력을 거부한다", (_name, delta) => {
+    expect(() =>
+      resizeWindowBounds(
+        start,
+        "e",
+        delta,
+        _name === "workArea" ? { x: 0, y: 0, width: -1, height: 10 } : workArea,
+        config,
+      ),
+    ).toThrow(InvalidWindowGeometryError);
+  });
+
+  it("runtime의 잘못된 resize 방향을 거부한다", () => {
+    expect(() =>
+      resizeWindowBounds(start, "center" as WindowResizeDirection, { x: 10, y: 10 }, workArea, config),
     ).toThrow(InvalidWindowGeometryError);
   });
 });

@@ -80,8 +80,8 @@ const StartStoryLayout = ({
         <output aria-label="Start panel 상태">{panels.start.widget.open ? "열림" : "닫힘"}</output>
       </p>
       <p>
-        Start 검색어:{" "}
-        <output aria-label="Start 검색어">{panels.start.query || "(비어 있음)"}</output>
+        시작 메뉴 검색어:{" "}
+        <output aria-label="시작 메뉴 검색어">{panels.start.query || "(비어 있음)"}</output>
       </p>
     </div>
   </div>

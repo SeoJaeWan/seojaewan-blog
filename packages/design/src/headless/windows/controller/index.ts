@@ -11,6 +11,7 @@ import {
   type TransitionPhase,
   useHeadlessRuntime,
 } from "../../runtime/index.js";
+import type { WindowGestureRequest, WindowGestureStartResult } from "../gestures/index.js";
 import type { WindowState } from "../model/index.js";
 import type { WindowAction, WindowOperationHandle } from "../operations/index.js";
 
@@ -21,6 +22,8 @@ export type WindowControllerViewModel = ControllerViewModel<WindowState>;
 export type WindowControllerActions = Readonly<{
   /** serializable WindowAction을 대상 Session queue에 보내고 OperationHandle을 반환한다. */
   execute(action: WindowAction): WindowOperationHandle;
+  /** move·resize gesture의 시작 frame을 캡처하고 update·종료·Esc rollback Handle을 반환한다. */
+  beginGesture(request: WindowGestureRequest): WindowGestureStartResult;
   /** 현재 operation ID와 phase의 UI transition 정상 완료를 알린다. */
   completeTransition(operationId: OperationId, phase: TransitionPhase): boolean;
   /** Component 제거 등으로 현재 transition 대기가 중단됐음을 알린다. */
@@ -54,6 +57,7 @@ export const useWindowController = (): WindowController => {
     () =>
       Object.freeze({
         execute: (action: WindowAction) => runtime.windows.execute(action),
+        beginGesture: (request: WindowGestureRequest) => runtime.windowGestures.begin(request),
         completeTransition: (operationId: OperationId, phase: TransitionPhase) =>
           runtime.transitions.complete(operationId, phase),
         abortTransition: (

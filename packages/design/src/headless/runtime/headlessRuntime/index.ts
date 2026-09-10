@@ -29,12 +29,19 @@ import {
   type PrimaryPanelState,
 } from "../../taskbar/primaryPanel/state/index.js";
 import { TaskbarStore } from "../../taskbar/taskbarStore/index.js";
+import {
+  type WindowGestureRequest,
+  WindowGestures,
+  type WindowGestureStartResult,
+  type WindowGestureStore,
+} from "../../windows/gestures/index.js";
 import type { WindowState } from "../../windows/model/index.js";
 import {
   type WindowAction,
   type WindowOperationHandle,
   WindowOperations,
   type WindowOperationStore,
+  type WindowPresentationPort,
 } from "../../windows/operations/index.js";
 import { WindowStore } from "../../windows/windowStore/index.js";
 import type { WorkspaceState } from "../../workspace/model/index.js";
@@ -77,7 +84,7 @@ export type HeadlessFeatureRuntime<Snapshot, Action, Handle> = Readonly<{
 /** 기본 runtime 대신 연결할 Store port 모음이다. */
 export type HeadlessRuntimeAdapters = Readonly<{
   /** Window snapshot, 구독과 명령을 제공하는 adapter다. */
-  windows?: ExternalStoreReader<WindowState> & WindowOperationStore;
+  windows?: ExternalStoreReader<WindowState> & WindowOperationStore & WindowGestureStore;
   /** Workspace snapshot, 구독과 명령을 제공하는 adapter다. */
   workspace?: ExternalStoreReader<WorkspaceState> & WorkspaceOperationStore;
   /** Start snapshot, 구독과 Pin 명령을 제공하는 adapter다. */
@@ -94,12 +101,19 @@ export type HeadlessRuntimeOptions = Readonly<{
   adapters?: HeadlessRuntimeAdapters;
   /** 여러 Foundation Operation과 UI 완료 신호가 공유할 registry다. */
   transitions?: TransitionRegistry;
+  /** Window queue 실행 시 실제 UI transition 시작을 전달하는 DOM-free port다. */
+  windowPresentation?: WindowPresentationPort;
 }>;
 
 /** Provider와 controller가 공유하는 Store 구독, Action gateway와 transition 기반이다. */
 export type HeadlessRuntime = Readonly<{
   /** Window snapshot과 WindowAction 실행 channel이다. */
   windows: HeadlessFeatureRuntime<WindowState, WindowAction, WindowOperationHandle>;
+  /** move·resize 시작 frame과 Esc rollback을 관리하는 즉시 반영 gesture API다. */
+  windowGestures: Readonly<{
+    /** visible desktop Session에서 gesture를 시작하고 DOM-free Handle을 반환한다. */
+    begin(request: WindowGestureRequest): WindowGestureStartResult;
+  }>;
   /** Workspace snapshot과 WorkspaceAction 실행 channel이다. */
   workspace: HeadlessFeatureRuntime<WorkspaceState, WorkspaceAction, WorkspaceOperationHandle>;
   /** Start snapshot과 StartAction 실행 channel이다. */
@@ -172,7 +186,12 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
   const startStore = options.adapters?.start ?? StartStore;
   const taskbarStore = options.adapters?.taskbar ?? TaskbarStore;
   const primaryPanelState = options.adapters?.primaryPanel ?? createPrimaryPanelState();
-  const windowOperations = new WindowOperations({ store: windowStore, transitions });
+  const windowOperations = new WindowOperations({
+    store: windowStore,
+    transitions,
+    presentation: options.windowPresentation,
+  });
+  const windowGestures = new WindowGestures(windowStore);
   const workspaceOperations = new WorkspaceOperations({ store: workspaceStore });
   const startOperations = new StartOperations({ store: startStore, transitions });
   const taskbarOperations = new TaskbarOperations({
@@ -201,6 +220,7 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       (action) => windowOperations.execute(action),
       "WindowStoreNotInitializedError",
     ),
+    windowGestures,
     workspace: createFeatureRuntime<WorkspaceState, WorkspaceAction, WorkspaceOperationHandle>(
       workspaceStore,
       (action) => workspaceOperations.execute(action),

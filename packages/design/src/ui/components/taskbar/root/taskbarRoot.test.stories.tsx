@@ -92,7 +92,7 @@ export const DesktopTest: Story = {
     await waitFor(() => expect(page.getByRole("dialog", { name: "검색" })).toBeVisible());
     await userEvent.type(search, "한글  검색 ");
     await expect(search).toHaveValue("한글  검색 ");
-    await expect(canvas.getByRole("status", { name: "Search 검색어" }).textContent).toBe(
+    await expect(canvas.getByRole("status", { name: "검색 패널 검색어" }).textContent).toBe(
       "한글  검색 ",
     );
 
@@ -142,24 +142,24 @@ export const MobileTest: Story = {
     const chrome = canvas.getByRole("button", { name: "Chrome" });
 
     await userEvent.click(fileExplorer);
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
-    await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
-    ).toHaveTextContent("file-explorer");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("1");
+    await expect(canvas.getByRole("status", { name: "마지막 선택한 앱" })).toHaveTextContent(
+      "file-explorer",
+    );
 
     await userEvent.tab();
     await expect(chrome).toHaveFocus();
     await userEvent.keyboard("{Enter}");
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("2");
-    await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
-    ).toHaveTextContent("chrome");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("2");
+    await expect(canvas.getByRole("status", { name: "마지막 선택한 앱" })).toHaveTextContent(
+      "chrome",
+    );
 
     await userEvent.tab({ shift: true });
     await expect(fileExplorer).toHaveFocus();
     await expect(getComputedStyle(fileExplorer).boxShadow).not.toBe("none");
     await userEvent.keyboard(" ");
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("3");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("3");
   },
 };
 
@@ -171,9 +171,9 @@ export const MobileChromeActiveTest: Story = {
     const chrome = canvas.getByRole("button", { name: "Chrome" });
     await expect(chrome).toHaveAttribute("aria-pressed", "true");
     await userEvent.click(chrome);
-    await expect(canvas.getByRole("status", { name: "Mobile Action 횟수" })).toHaveTextContent("1");
-    await expect(
-      canvas.getByRole("status", { name: "마지막 Mobile application" }),
-    ).toHaveTextContent("chrome");
+    await expect(canvas.getByRole("status", { name: "앱 요청 횟수" })).toHaveTextContent("1");
+    await expect(canvas.getByRole("status", { name: "마지막 선택한 앱" })).toHaveTextContent(
+      "chrome",
+    );
   },
 };

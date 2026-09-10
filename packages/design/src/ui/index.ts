@@ -3,6 +3,27 @@
 import "./tokens/index.css";
 
 export {
+  createWindowPresentationBinding,
+  WindowControls,
+  type WindowControlsProps,
+  WindowFrame,
+  type WindowFrameBounds,
+  type WindowFrameMode,
+  type WindowFrameProps,
+  type WindowFrameVariant,
+  type WindowMotionDestination,
+  type WindowMoveStartHandler,
+  type WindowPresentationBinding,
+  type WindowPresentationConsumer,
+  WindowResizeHandles,
+  type WindowResizeHandlesProps,
+  type WindowResizeStartHandler,
+  WindowRoot,
+  type WindowRootProps,
+  WindowTitleBar,
+  type WindowTitleBarProps,
+} from "./components/common/window/index.js";
+export {
   TaskbarApplicationButton,
   type TaskbarApplicationButtonProps,
 } from "./components/taskbar/items/index.js";

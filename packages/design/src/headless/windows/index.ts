@@ -9,7 +9,23 @@ export {
   type WindowControllerActions,
   type WindowControllerViewModel,
 } from "./controller/index.js";
-export { getWindowBounds, type WindowPlacementConfig } from "./geometry/index.js";
+export {
+  getWindowBounds,
+  resizeWindowBounds,
+  type WindowPlacementConfig,
+  type WindowResizeDirection,
+} from "./geometry/index.js";
+export {
+  type WindowGestureCancelResult,
+  type WindowGestureFinishResult,
+  type WindowGestureHandle,
+  type WindowGestureKind,
+  type WindowGestureRequest,
+  WindowGestures,
+  type WindowGestureStartResult,
+  type WindowGestureStore,
+  type WindowGestureUpdateResult,
+} from "./gestures/index.js";
 export {
   type ChromeWindowSession,
   type FileExplorerWindowSession,
@@ -31,6 +47,8 @@ export {
   WindowOperations,
   type WindowOperationsOptions,
   type WindowOperationStore,
+  type WindowPresentationPort,
+  type WindowPresentationRequest,
   type WindowPresentedResult,
   type WindowSettledResult,
 } from "./operations/index.js";

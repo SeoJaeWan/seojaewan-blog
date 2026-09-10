@@ -20,7 +20,7 @@ export const InteractionTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button", { name: "시작" });
-    const actionCount = canvas.getByRole("status", { name: "Windows Action 횟수" });
+    const actionCount = canvas.getByRole("status", { name: "시작 요청 횟수" });
 
     await userEvent.tab();
     await expect(button).toHaveFocus();
