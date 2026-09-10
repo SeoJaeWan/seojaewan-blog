@@ -1,9 +1,12 @@
 import type { ReactElement, ReactNode } from "react";
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useId } from "react";
 
 import { Popover } from "@base-ui/react/popover";
 
 import { TaskbarPanelSurface } from "../surface/index.js";
+import { useTaskbarPanelAnchor } from "./hooks/useTaskbarPanelAnchor/index.js";
+import { useTaskbarPanelInteraction } from "./hooks/useTaskbarPanelInteraction/index.js";
+import { useTaskbarPanelTransition } from "./hooks/useTaskbarPanelTransition/index.js";
 
 import "./taskbarPanelWidget.css";
 
@@ -34,73 +37,6 @@ export type TaskbarPanelWidgetProps = Readonly<{
   portalContainer?: HTMLElement | null;
 }>;
 
-/** Base UI의 상세 원인을 제품 Component의 안정된 open 변경 원인으로 좁힌다. */
-const resolveOpenChangeReason = (reason: string): TaskbarPanelOpenChangeReason => {
-  switch (reason) {
-    case "escape-key":
-      return "escape";
-    case "focus-out":
-      return "focus-out";
-    case "outside-press":
-      return "outside";
-    case "trigger-focus":
-    case "trigger-press":
-      return "trigger";
-    default:
-      return "unknown";
-  }
-};
-
-/** controlled open 값마다 완료 또는 중단 callback을 정확히 한 번 연결한다. */
-const useTransitionCallbacks = (
-  open: boolean,
-  onTransitionCancel: TaskbarPanelWidgetProps["onTransitionCancel"],
-  onTransitionComplete: TaskbarPanelWidgetProps["onTransitionComplete"],
-) => {
-  const mountedRef = useRef(false);
-  const pendingRef = useRef<boolean | null>(open ? true : null);
-  const cancelRef = useRef(onTransitionCancel);
-  const completeRef = useRef(onTransitionComplete);
-
-  cancelRef.current = onTransitionCancel;
-  completeRef.current = onTransitionComplete;
-
-  useEffect(() => {
-    if (!mountedRef.current) {
-      mountedRef.current = true;
-      return;
-    }
-
-    const pending = pendingRef.current;
-    if (pending !== null && pending !== open) {
-      cancelRef.current?.(pending);
-    }
-    pendingRef.current = open;
-  }, [open]);
-
-  useEffect(
-    () => () => {
-      const pending = pendingRef.current;
-      if (pending !== null) {
-        cancelRef.current?.(pending);
-        pendingRef.current = null;
-      }
-    },
-    [],
-  );
-
-  /** Base UI가 관찰한 실제 CSS transition 완료를 현재 목표와 대조해 전달한다. */
-  const complete = (completedOpen: boolean) => {
-    if (pendingRef.current !== completedOpen) {
-      return;
-    }
-    pendingRef.current = null;
-    completeRef.current?.(completedOpen);
-  };
-
-  return complete;
-};
-
 /**
  * Start와 Search panel의 anchor, portal, dismiss, focus, presence와 motion을 조합한다.
  *
@@ -119,53 +55,17 @@ export const TaskbarPanelWidget = ({
 }: TaskbarPanelWidgetProps) => {
   const generatedId = useId();
   const triggerId = `taskbar-panel-${variant}-${generatedId.replaceAll(":", "")}`;
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const completeTransition = useTransitionCallbacks(open, onTransitionCancel, onTransitionComplete);
-
-  /** Base UI dismiss를 제품 open 요청으로 전달하고 Search Escape focus를 제거한다. */
-  const handleOpenChange = (nextOpen: boolean, details: Popover.Root.ChangeEventDetails) => {
-    const reason = resolveOpenChangeReason(details.reason);
-
-    if (!nextOpen && variant === "search" && reason === "escape") {
-      const activeElement = document.activeElement;
-      if (activeElement instanceof HTMLElement) {
-        activeElement.blur();
-      }
-    }
-
-    onOpenChange(nextOpen, reason);
-  };
-
-  /** Search input의 keyboard/pointer focus도 동일한 controlled open 요청으로 연결한다. */
-  const handleTriggerFocus = () => {
-    if (variant === "search" && !open) {
-      onOpenChange(true, "trigger");
-    }
-  };
-
-  /** 두 panel은 Taskbar 상단을 공통 세로 기준으로 삼고 가로 의미만 variant별로 나눈다. */
-  const resolveAnchor = useCallback(() => {
-    const triggerElement = triggerRef.current;
-    if (triggerElement === null) return null;
-
-    const triggerBounds = triggerElement.getBoundingClientRect();
-    const taskbarBounds = triggerElement
-      .closest('.taskbar-root, nav[aria-label="작업 표시줄"]')
-      ?.getBoundingClientRect();
-    const anchorTop = taskbarBounds?.top ?? triggerBounds.top;
-    const start = variant === "start";
-
-    return {
-      contextElement: triggerElement,
-      getBoundingClientRect: () =>
-        DOMRect.fromRect({
-          height: 0,
-          width: start ? 0 : triggerBounds.width,
-          x: start ? window.innerWidth / 2 : triggerBounds.left,
-          y: anchorTop,
-        }),
-    };
-  }, [variant]);
+  const { triggerRef, resolveAnchor } = useTaskbarPanelAnchor(variant);
+  const completeTransition = useTaskbarPanelTransition(
+    open,
+    onTransitionCancel,
+    onTransitionComplete,
+  );
+  const { handleOpenChange, handleTriggerFocus, handleTriggerClick } = useTaskbarPanelInteraction({
+    open,
+    variant,
+    onOpenChange,
+  });
 
   return (
     <Popover.Root
@@ -178,11 +78,7 @@ export const TaskbarPanelWidget = ({
       <Popover.Trigger
         id={triggerId}
         nativeButton={variant === "start"}
-        onClick={(event) => {
-          if (variant === "search") {
-            event.preventBaseUIHandler();
-          }
-        }}
+        onClick={handleTriggerClick}
         onFocus={handleTriggerFocus}
         ref={triggerRef}
         render={trigger}

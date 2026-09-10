@@ -27,6 +27,14 @@ taskbar/
 요소가 추가되면 하위 폴더로 나누고 상위 `index.ts`에서 공개 API를 모읍니다. Start와 Search는
 독립 요소를 각각 `button`·`root`, `input`·`panel`로 나누고 역할의 `index.ts`에서 export합니다.
 
+내부 동작은 각 owner의 `hooks/<hookName>/index.ts`에 둡니다. Widget은
+`useTaskbarPanelTransition`, `useTaskbarPanelInteraction`, `useTaskbarPanelAnchor`를 조합하고,
+anchor 좌표 계산은 `widget/utils/calculateTaskbarPanelAnchorRect`가 담당합니다.
+Search panel의 `useTaskbarSearchInputFocus`는 input ref와 열림 시 focus를 제공하고,
+Root의 `useTaskbarResponsivePanelDismiss`는 mobile 진입 시 panel 정리를 요청합니다.
+각 hook과 utility의 인접 테스트는 입력·출력, 중복 방지와 cleanup을 검증합니다.
+이 내부 요소들은 package public API로 export하지 않습니다.
+
 ## 기본 사용
 
 `TaskbarRoot`는 `HeadlessRuntimeProvider` 안에서 사용합니다. Root가 한 primary panel connection을

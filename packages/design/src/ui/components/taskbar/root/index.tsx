@@ -1,5 +1,4 @@
 import type { ComponentPropsWithRef } from "react";
-import { useEffect, useRef } from "react";
 
 import { clsx } from "clsx";
 
@@ -13,6 +12,7 @@ import { useTaskbarPanelsConnection } from "../panels/index.js";
 import { TaskbarSearchPanel } from "../search/index.js";
 import { TaskbarStart } from "../start/index.js";
 import { TaskbarTimestamp } from "../timestamp/index.js";
+import { useTaskbarResponsivePanelDismiss } from "./hooks/useTaskbarResponsivePanelDismiss/index.js";
 
 import "./taskbarRoot.css";
 
@@ -48,13 +48,7 @@ export const TaskbarRoot = ({
   const panels = useTaskbarPanelsConnection();
   const timestamp = useTaskbarTimestampController(timestampClock);
   const mode = viewModel.status === "ready" ? viewModel.snapshot.mode : undefined;
-  const previousModeRef = useRef<typeof mode>(undefined);
-
-  useEffect(() => {
-    const previousMode = previousModeRef.current;
-    previousModeRef.current = mode;
-    if (mode === "mobile" && previousMode !== "mobile") panels.dismissForMobile();
-  }, [mode, panels]);
+  useTaskbarResponsivePanelDismiss(mode, panels.dismissForMobile);
 
   return (
     <nav

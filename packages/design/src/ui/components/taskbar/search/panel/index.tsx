@@ -4,11 +4,11 @@
  * 검색 결과, recent, detail과 Resource renderer는 children을 제공하는 상위 제품 view가 소유한다.
  */
 import type { KeyboardEvent, ReactNode } from "react";
-import { useEffect, useRef } from "react";
 
 import type { TaskbarPanelsConnection } from "../../panels/connection/index.js";
 import { TaskbarPanelWidget } from "../../panels/widget/index.js";
 import { TaskbarSearch, type TaskbarSearchProps } from "../input/index.js";
+import { useTaskbarSearchInputFocus } from "./hooks/useTaskbarSearchInputFocus/index.js";
 
 /** Search 제품 연결이 계산하는 controlled input props다. */
 type ConnectedInputProp =
@@ -50,16 +50,7 @@ export const TaskbarSearchPanel = ({
   portalContainer,
   ...inputProps
 }: TaskbarSearchPanelProps) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const wasOpenRef = useRef(false);
-
-  /** pointer 이외의 제품 요청으로 열린 경우에도 실제 Taskbar input에 focus한다. */
-  useEffect(() => {
-    if (connection.widget.open && !wasOpenRef.current) {
-      inputRef.current?.focus({ preventScroll: true });
-    }
-    wasOpenRef.current = connection.widget.open;
-  }, [connection.widget.open]);
+  const inputRef = useTaskbarSearchInputFocus(connection.widget.open);
 
   return (
     <TaskbarPanelWidget
