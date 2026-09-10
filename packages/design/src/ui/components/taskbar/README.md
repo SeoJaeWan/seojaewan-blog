@@ -11,7 +11,9 @@ taskbar/
   root/                 전체 배치와 데스크톱·모바일 구성을 선택합니다.
   start/
     button/             Windows logo trigger를 표시합니다.
-    root/               trigger와 Start panel을 조합합니다.
+    pinned/             6열 Pin grid, keyboard와 pointer reorder를 제공합니다.
+    all/                Content·ExternalShortcut 목록과 4열 index를 제공합니다.
+    root/               trigger, 검색 input과 Start browse/Search body를 조합합니다.
   search/
     input/              Taskbar의 실제 검색 input을 표시합니다.
     panel/              input과 Search panel을 조합합니다.
@@ -39,22 +41,28 @@ Root의 `useTaskbarResponsivePanelDismiss`는 mobile 진입 시 panel 정리를 
 
 `TaskbarRoot`는 `HeadlessRuntimeProvider` 안에서 사용합니다. Root가 한 primary panel connection을
 만들고 Start와 Search에 나누어 주므로 application은 별도 panel callback이나 검색어 상태를 전달하지
-않습니다.
+않습니다. Start의 current label, 모두 보기 목록과 ExternalShortcut URL에는 `resourceReaders`를
+전달합니다. 실제 새 탭 open에는 runtime의 `externalNavigation` adapter가 필요합니다.
 
 ```tsx
 import { HeadlessRuntimeProvider, TaskbarRoot, createHeadlessRuntime } from "@window/design";
 
-const runtime = createHeadlessRuntime();
+const runtime = createHeadlessRuntime({ externalNavigation, windowPresentation });
 
 export const DesktopTaskbar = () => (
   <HeadlessRuntimeProvider runtime={runtime}>
-    <TaskbarRoot />
+    <TaskbarRoot
+      resourceReaders={resourceReaders}
+      renderStartSearchBody={(query) => <StartSearchBoundary query={query} />}
+    />
   </HeadlessRuntimeProvider>
 );
 ```
 
-현재 Root는 Start와 Search의 trigger, panel lifecycle과 query 초기화를 연결합니다. Start의 고정
-목록·모두 보기와 Search의 결과·recent·detail 본문은 후속 제품 view에서 연결합니다.
+현재 Root는 Start와 Search의 trigger, panel lifecycle과 query 초기화를 연결합니다. Start의 pinned
+grid, Content·ExternalShortcut 모두 보기와 category index는 제품 Component로 연결되어 있습니다.
+Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않습니다. query가 생기면 browse body를
+`renderStartSearchBody` 경계로 교체하며 실제 Search 결과·recent·detail은 HDJG-47이 제공합니다.
 
 ## 연결 경계
 
@@ -65,10 +73,18 @@ export const DesktopTaskbar = () => (
   않습니다.
 - Search에서 Escape를 누르면 input focus를 해제합니다. panel close 완료 뒤 query를 비우며 focus를
   복원하지 않습니다.
-- Resource는 열기에 성공한 뒤 panel을 닫고, 실패하면 query와 결과를 유지합니다. Context Menu는
-  항목을 선택하면 즉시 닫습니다.
-- 실제 Resource open, Catalog, router, storage와 Window 화면은 Application adapter 또는 후속 제품
-  view에서 연결합니다.
+- Start pinned는 Folder, Content와 ExternalShortcut을 6열로 표시하고 현재 Catalog/Workspace label과
+  첫·왼쪽·오른쪽 reorder capability를 사용합니다. keyboard focus와 pointer drag는 기존 Start
+  Action·Operation으로 전달됩니다.
+- 모두 보기는 Content와 ExternalShortcut을 A–Z, 한글 초성 ㄱ–ㅎ, 개별 0–9, # 순서로 표시합니다.
+  Folder와 별도 ExternalShortcut 사용 가능 여부 filter는 없습니다.
+- All/Index는 실제 heading scroll과 focus restore를 관리합니다. index는 51개 canonical key를 4열로
+  표시하고 현재 비어 있는 key만 비활성화합니다.
+- Resource는 Window commit 또는 이미 충족된 no-op, 혹은 external navigation adapter의 명시적
+  성공 뒤 panel을 닫습니다. 거절·실행 오류·presentation 실패·external navigation 실패와 stale
+  결과는 현재 panel과 browse/query 상태를 유지합니다. 초기화는 close transition 완료 뒤 일어납니다.
+- Context Menu 제품 UI는 HDJG-49, Catalog·router·storage·navigation adapter와 실제 Window 화면의
+  Application 조합은 HDJG-52–55·58에서 연결합니다.
 
 상세 제품 정책은 Local Work Memory의 `Taskbar 기능 아키텍처`, `Taskbar Panel lifecycle 계약`,
 `Taskbar Search 기능 계약`을 따릅니다.
@@ -80,10 +96,12 @@ dismiss, 전환 검사는 같은 fixture를 재사용하는 `*.test.stories.tsx`
 일반 sidebar와 Docs에서 숨깁니다.
 
 - `*.test.tsx`: jsdom에서 결정적으로 관찰 가능한 제품 props, Action mapping과 정적 DOM 관계
-- `*.test.stories.tsx`: Chromium에서 실제 keyboard, focus, portal, outside dismiss, collision과 motion 결과
+- `*.test.stories.tsx`: Chromium에서 실제 keyboard, focus, portal, outside dismiss, category scroll,
+  pointer drag, collision과 motion 결과
 - 일반 `*.stories.tsx`: 대표 상태, responsive visual과 직접 조작 가능한 제품 사용 예
 
 ```sh
 pnpm --filter @window/design test
 pnpm --filter @window/design test:storybook
+pnpm --filter @window/design build:storybook
 ```
