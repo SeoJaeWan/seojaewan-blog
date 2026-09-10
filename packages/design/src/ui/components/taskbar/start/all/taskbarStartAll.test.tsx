@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ComponentProps, useState } from "react";
 
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -37,10 +37,12 @@ const AllFixture = ({
   active = true,
   onItemSelect = () => undefined,
   onScreenAction = () => undefined,
+  resolveResourceIcon,
 }: {
   active?: boolean;
   onItemSelect?: (item: StartScreenAllItem) => void;
   onScreenAction?: (action: StartScreenAction) => void;
+  resolveResourceIcon?: ComponentProps<typeof TaskbarStartAll>["resolveResourceIcon"];
 }) => {
   const [indexOpen, setIndexOpen] = useState(false);
   return (
@@ -49,6 +51,7 @@ const AllFixture = ({
       groups={groups}
       indexOpen={indexOpen}
       onItemSelect={onItemSelect}
+      resolveResourceIcon={resolveResourceIcon}
       onScreenAction={(action) => {
         onScreenAction(action);
         if (action.type === "set-index-open") setIndexOpen(action.open);
@@ -74,6 +77,23 @@ describe("TaskbarStartAll", () => {
 
     fireEvent.click(shortcut);
     expect(selected).toHaveBeenCalledWith(groups[1]?.items[0]);
+  });
+
+  it("같은 ResourceRef resolver로 Content와 ExternalShortcut icon을 주입한다", () => {
+    render(
+      <AllFixture
+        resolveResourceIcon={(resource) => <span data-testid={`icon-${resource.kind}`} />}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Alpha" }).querySelector('[data-testid="icon-content"]'),
+    ).not.toBeNull();
+    expect(
+      screen
+        .getByRole("button", { name: "7zip" })
+        .querySelector('[data-testid="icon-external-shortcut"]'),
+    ).not.toBeNull();
   });
 
   it("비활성 view와 열린 overlay에서 각각 올바른 surface를 inert 처리한다", () => {

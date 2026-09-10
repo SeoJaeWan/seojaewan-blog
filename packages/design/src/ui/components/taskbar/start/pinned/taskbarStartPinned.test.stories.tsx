@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, fireEvent, userEvent, waitFor, within } from "storybook/test";
 
 import pinnedMeta, { Default } from "./taskbarStartPinned.stories.js";
 
@@ -57,8 +57,18 @@ export const InteractionTest: Story = {
         },
         target: destination,
       },
-      { keys: "[/MouseLeft]", target: destination },
     ]);
+    await waitFor(() => expect(initialItems[1].dataset.dragPreview).toBe("true"));
+    await expect(initialItems[1].style.transform).toMatch(/^translate\(-/u);
+    await expect(initialItems[2].style.transform).toMatch(/^translate\(-/u);
+    await expect(page.getByRole("status", { name: "마지막 Start Action" })).toHaveTextContent(
+      "없음",
+    );
+    await fireEvent.pointerUp(window, {
+      clientX: destinationRect.left + destinationRect.width / 2,
+      clientY: destinationRect.top + destinationRect.height / 2,
+      pointerId: 1,
+    });
 
     await waitFor(() =>
       expect(page.getByRole("status", { name: "마지막 Start Action" }).textContent).toContain(

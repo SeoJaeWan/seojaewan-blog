@@ -74,8 +74,12 @@ Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않
 - Search에서 Escape를 누르면 input focus를 해제합니다. panel close 완료 뒤 query를 비우며 focus를
   복원하지 않습니다.
 - Start pinned는 Folder, Content와 ExternalShortcut을 6열로 표시하고 현재 Catalog/Workspace label과
-  첫·왼쪽·오른쪽 reorder capability를 사용합니다. keyboard focus와 pointer drag는 기존 Start
-  Action·Operation으로 전달됩니다.
+  첫·왼쪽·오른쪽 reorder capability를 사용합니다. `TaskbarRoot`의 공통 ResourceRef icon resolver를
+  pinned와 모두 보기에 함께 적용하며, 누락 시 Folder는 File Explorer, Content는 Document,
+  ExternalShortcut은 Link icon을 사용합니다.
+- pointer drag 중에는 예상 destination 사이의 tile을 150ms로 미리 이동시키고 Store는 유지합니다.
+  drop 때 최종 reorder Action을 한 번만 전달하며 Escape·pointer cancel·capture 상실은 원래 배치로
+  복원합니다.
 - 모두 보기는 Content와 ExternalShortcut을 A–Z, 한글 초성 ㄱ–ㅎ, 개별 0–9, # 순서로 표시합니다.
   Folder와 별도 ExternalShortcut 사용 가능 여부 filter는 없습니다.
 - All/Index는 실제 heading scroll과 focus restore를 관리합니다. index는 항목이 있는 canonical

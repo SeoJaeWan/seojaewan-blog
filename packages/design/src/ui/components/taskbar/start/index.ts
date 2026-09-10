@@ -10,6 +10,7 @@ export {
   TaskbarStartPinned,
   type TaskbarStartPinnedProps,
 } from "./pinned/index.js";
+export type { TaskbarStartResourceIconResolver } from "./resourceIcon/index.js";
 export {
   TaskbarStart,
   type TaskbarStartProps,

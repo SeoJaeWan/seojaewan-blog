@@ -10,7 +10,7 @@ import {
   type StartControllerActions,
   type StartOperationHandle,
 } from "../../../../../../../headless/index.js";
-import { type StartPinnedItemViewModel,TaskbarStartPinned } from "../../index.js";
+import { type StartPinnedItemViewModel, TaskbarStartPinned } from "../../index.js";
 
 const initialItems = [
   {
@@ -24,10 +24,7 @@ const initialItems = [
     reorderActions: ["first", "left", "right"],
   },
   {
-    resource: createResourceRef(
-      "external-shortcut",
-      "30000000-0000-4000-8000-000000000003",
-    ),
+    resource: createResourceRef("external-shortcut", "30000000-0000-4000-8000-000000000003"),
     label: "셋째",
     reorderActions: ["first", "left"],
   },
@@ -114,9 +111,11 @@ describe("useStartPinnedDrag", () => {
           setItems([initialItems[1], initialItems[2], initialItems[0]]);
           committed.resolve({
             status: "committed",
-            value: { pinnedItems: order.map((label) => ({
-              resource: initialItems.find((item) => item.label === label)!.resource,
-            })) },
+            value: {
+              pinnedItems: order.map((label) => ({
+                resource: initialItems.find((item) => item.label === label)!.resource,
+              })),
+            },
           });
         }
         return true;
@@ -131,6 +130,8 @@ describe("useStartPinnedDrag", () => {
     };
     render(<Harness />);
     const first = screen.getByRole("gridcell", { name: "첫째" });
+    const second = screen.getByRole("gridcell", { name: "둘째" });
+    const third = screen.getByRole("gridcell", { name: "셋째" });
     let captured = false;
     const releasePointerCapture = vi.fn(() => {
       captured = false;
@@ -145,6 +146,11 @@ describe("useStartPinnedDrag", () => {
     fireEvent.pointerMove(window, { clientX: 220, clientY: 20, pointerId: 7 });
     await act(() => vi.advanceTimersByTimeAsync(20));
     expect(first.getAttribute("data-dragging")).toBe("true");
+    expect(second.getAttribute("data-drag-preview")).toBe("true");
+    expect(third.getAttribute("data-drag-preview")).toBe("true");
+    expect(second.style.transform).toBe("translate(-100px, 0px)");
+    expect(third.style.transform).toBe("translate(-100px, 0px)");
+    expect(execute).not.toHaveBeenCalled();
     fireEvent.pointerUp(window, { clientX: 220, clientY: 20, pointerId: 7 });
     await act(() => Promise.resolve());
 
@@ -153,19 +159,14 @@ describe("useStartPinnedDrag", () => {
       resource: initialItems[0].resource,
       intent: { type: "index", index: 2 },
     });
-    expect(completed).toEqual([
-      "start-reorder-measure-before",
-      "start-reorder-measure-after",
-    ]);
+    expect(completed).toEqual(["start-reorder-measure-before", "start-reorder-measure-after"]);
     expect(screen.getAllByRole("gridcell").map((item) => item.getAttribute("aria-label"))).toEqual([
       "둘째",
       "셋째",
       "첫째",
     ]);
     await act(() => vi.advanceTimersByTimeAsync(20));
-    expect(
-      screen.getByRole("gridcell", { name: "첫째" }).style.transition,
-    ).toContain("150ms");
+    expect(screen.getByRole("gridcell", { name: "첫째" }).style.transition).toContain("150ms");
 
     await act(() => vi.advanceTimersByTimeAsync(260));
     expect(completed).toEqual([
@@ -176,7 +177,7 @@ describe("useStartPinnedDrag", () => {
     expect(releasePointerCapture).toHaveBeenCalledWith(7);
   });
 
-  it("Escape와 pointercancel에서 capture, listeners와 pending frame을 정리한다", () => {
+  it("Escape와 pointercancel에서 capture, listeners와 pending frame을 정리한다", async () => {
     const actions = {
       abortTransition: vi.fn(() => true),
       completeTransition: vi.fn(() => true),
@@ -200,9 +201,18 @@ describe("useStartPinnedDrag", () => {
     first.releasePointerCapture = releasePointerCapture;
 
     fireEvent.pointerDown(first, { button: 0, clientX: 10, clientY: 10, pointerId: 8 });
-    fireEvent.pointerMove(window, { clientX: 80, clientY: 10, pointerId: 8 });
+    fireEvent.pointerMove(window, { clientX: 220, clientY: 10, pointerId: 8 });
+    await act(() => vi.advanceTimersByTimeAsync(20));
+    expect(screen.getByRole("gridcell", { name: "둘째" }).style.transform).toBe(
+      "translate(-100px, 0px)",
+    );
+    fireEvent.pointerMove(window, { clientX: 20, clientY: 10, pointerId: 8 });
+    await act(() => vi.advanceTimersByTimeAsync(20));
+    expect(screen.getByRole("gridcell", { name: "둘째" }).style.transform).toBe("");
+    fireEvent.pointerMove(window, { clientX: 220, clientY: 10, pointerId: 8 });
     fireEvent.keyDown(window, { key: "Escape" });
     expect(actions.execute).not.toHaveBeenCalled();
+    expect(screen.getByRole("gridcell", { name: "둘째" }).style.transform).toBe("");
     expect(releasePointerCapture).toHaveBeenCalledWith(8);
     expect(cancelFrame).toHaveBeenCalled();
     expect(removeListener).toHaveBeenCalledWith("pointermove", expect.any(Function));

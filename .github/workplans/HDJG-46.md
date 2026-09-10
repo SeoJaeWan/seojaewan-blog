@@ -11,6 +11,9 @@ h2. 확정 계약
 - Start는 pinned 화면으로 열리고 상단 Search input을 자동 focus하지 않는다.
 - pinned에는 Folder, Content와 ExternalShortcut을 표시한다. label은 현재 Catalog 또는 Workspace에서
   파생하고 identity와 순서는 기존 `StartStore`가 저장한다.
+- Application은 하나의 `ResourceRef` 기반 icon resolver를 pinned와 모두 보기에 제공한다. 주입값이
+  없으면 Folder는 Taskbar File Explorer, Content는 Document, ExternalShortcut은 Link icon을 사용한다.
+  실제 Content browser와 ExternalShortcut brand icon은 Application 조합이 결정한다.
 - 모두 보기에는 Content와 ExternalShortcut을 표시하고 Folder를 제외한다.
 - 모두 보기 group 순서는 A–Z, 한글 초성 ㄱ–ㅎ, 첫 글자별 0–9, 기호 #이다. group 안은 현재
   title/name 오름차순이다.
@@ -22,8 +25,9 @@ h2. 확정 계약
   전환한다. 이 전환에 opacity 변화나 즉시 숨김을 섞지 않는다.
 - index는 항목이 있는 group만 표시한다. 목록과 overlay는 500ms scale·opacity로 전환하되 전환 중
   scrollbar를 숨기고, group 선택 시 목록 위치를 먼저 즉시 맞춘 뒤 overlay를 닫고 heading에 focus한다.
-- pin, unpin과 reorder는 기존 Start Action·Operation을 사용한다. pointer drag는 이전 위치 측정,
-  commit, 새 위치 측정과 150ms 이동 표현 순서를 따른다.
+- pin, unpin과 reorder는 기존 Start Action·Operation을 사용한다. pointer drag는 예상 destination에
+  따라 주변 tile을 150ms로 미리 이동시키되 Store를 바꾸지 않고, drop 때 최종 위치를 한 번만 commit한다.
+  Escape·pointer cancel·capture 상실은 Action 없이 원래 배치로 복원한다.
 - Folder·Content는 기존 Window Action으로, ExternalShortcut은 새 탭 navigation port로 연다.
   current activation의 성공 결과만 Start를 닫고, 실패와 stale 결과는 현재 panel과 browse 상태를
   유지한다. transient 상태는 close 완료 뒤 초기화하며 stored Pin은 보존한다.
@@ -50,12 +54,14 @@ h2. 검증 계약
   A–Z·ㄱ–ㅎ·개별 0–9·# 분류와 group 내부 정렬
 - Resource lifecycle: Window commit·충족된 no-op 성공, 거절·실행 오류·presentation 실패,
   external navigation 성공·실패·throw, duplicate·inactive·stale request와 close 완료 초기화
-- Product jsdom: current label·reorder capability, empty/long label, Action mapping과 query body 전환
-- Storybook Chromium: 6열 keyboard·pointer drag·150ms movement, slide-only browse 전환,
+- Product jsdom: current label·reorder capability, 공통 icon resolver와 fallback, drag preview·cancel·단일
+  commit, empty/long label, Action mapping과 query body 전환
+- Storybook Chromium: 6열 keyboard·pointer drag 중 150ms 주변 tile 이동, slide-only browse 전환,
   실제 group만 있는 4열 index·focus·# scroll·scrollbar가 숨겨진 500ms 전환,
   전체 Start open·query·Resource success·reopen 흐름
 - pinned legacy 비교: 6열, 34px icon, 8px 12px tile padding, 12px 두 줄 label과 150ms 이동 표현을
-  유지한다. persisted `ResourceRef`, keyboard grid와 pointer FLIP은 current architecture에 맞춘 차이다.
+  유지한다. persisted `ResourceRef`, keyboard grid와 drop 전 주변 tile preview는 current architecture에
+  맞춘 차이다.
 - All/Index legacy 비교: 4열, 8px gap, 20px index, 16px list padding, 25px row icon, 14px row,
   500ms list/index scale·opacity 전환과 항목이 있는 group만 표시하는 결과를 유지한다. current 구현은
   숫자를 0–9로 나누고 전환 중 scrollbar를 숨긴다. legacy의 숫자→# 분류와 local state는 가져오지 않는다.
@@ -67,7 +73,7 @@ Storybook test와 static Storybook build를 차례로 실행한다.
 
 h2. Canonical Local Work Memory
 
-- `start-screen@01a089ca-f8af-7b05-b5a8-8ac2650060f0`
+- `start-screen@01a089f6-0ac2-7033-b98d-4b1764b2ebef`
 - `taskbar-panel-lifecycle@01a088ca-b0ac-728f-ac9f-5f474dbca31c`
 - `hdjg-46-start-screen-scope-decision@01a088cc-93d5-73e8-81a2-8563300cc031`
 

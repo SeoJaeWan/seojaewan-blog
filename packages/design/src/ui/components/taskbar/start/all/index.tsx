@@ -6,13 +6,17 @@
 import type { MouseEvent } from "react";
 import { Fragment, useId } from "react";
 
-import { ChevronLeft12Regular, Document24Regular, Link24Regular } from "@fluentui/react-icons";
+import { ChevronLeft12Regular } from "@fluentui/react-icons";
 
 import {
   type StartScreenAction,
   type StartScreenAllGroup,
   type StartScreenAllItem,
 } from "../../../../../headless/index.js";
+import {
+  TaskbarStartResourceIcon,
+  type TaskbarStartResourceIconResolver,
+} from "../resourceIcon/index.js";
 import { useTaskbarStartAllNavigation } from "./hooks/useTaskbarStartAllNavigation/index.js";
 
 import "./taskbarStartAll.css";
@@ -29,17 +33,11 @@ export type TaskbarStartAllProps = Readonly<{
   onScreenAction: (action: StartScreenAction) => void;
   /** Content 또는 ExternalShortcut row 선택 intent를 전달한다. */
   onItemSelect: (item: StartScreenAllItem) => void;
+  /** Application이 ResourceRef를 Content browser 또는 shortcut brand icon으로 바꾸는 경계다. */
+  resolveResourceIcon?: TaskbarStartResourceIconResolver;
   /** 후속 Context Menu 제품이 연결할 optional row invocation 경계다. */
   onItemContextMenu?: (event: MouseEvent<HTMLButtonElement>, item: StartScreenAllItem) => void;
 }>;
-
-/** Resource kind만으로 current All row의 장식 icon을 고른다. */
-const ResourceIcon = ({ item }: { item: StartScreenAllItem }) =>
-  item.resource.kind === "content" ? (
-    <Document24Regular aria-hidden="true" />
-  ) : (
-    <Link24Regular aria-hidden="true" />
-  );
 
 /**
  * Content와 ExternalShortcut section, 실제 scroll heading과 4열 index overlay를 렌더링한다.
@@ -53,6 +51,7 @@ export const TaskbarStartAll = ({
   onItemContextMenu,
   onItemSelect,
   onScreenAction,
+  resolveResourceIcon,
 }: TaskbarStartAllProps) => {
   const titleId = useId();
   const categoryIdPrefix = useId();
@@ -146,7 +145,11 @@ export const TaskbarStartAll = ({
                         type="button"
                       >
                         <span aria-hidden="true" className="taskbar-start-all__item-icon">
-                          <ResourceIcon item={item} />
+                          <TaskbarStartResourceIcon
+                            resolveIcon={resolveResourceIcon}
+                            resource={item.resource}
+                            size={24}
+                          />
                         </span>
                         <span className="taskbar-start-all__item-label">{item.label}</span>
                       </button>

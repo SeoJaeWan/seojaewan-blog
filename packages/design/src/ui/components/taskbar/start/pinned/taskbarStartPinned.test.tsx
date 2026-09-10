@@ -6,7 +6,7 @@ import {
   type StartControllerActions,
   type StartOperationHandle,
 } from "../../../../../headless/index.js";
-import { type StartPinnedItemViewModel,TaskbarStartPinned } from "./index.js";
+import { type StartPinnedItemViewModel, TaskbarStartPinned } from "./index.js";
 
 const items = [
   {
@@ -20,10 +20,7 @@ const items = [
     reorderActions: ["first", "left", "right"],
   },
   {
-    resource: createResourceRef(
-      "external-shortcut",
-      "10000000-0000-4000-8000-000000000003",
-    ),
+    resource: createResourceRef("external-shortcut", "10000000-0000-4000-8000-000000000003"),
     label: "마지막 Shortcut",
     reorderActions: ["first", "left"],
   },
@@ -90,6 +87,30 @@ describe("TaskbarStartPinned", () => {
     expect(onShowAll).toHaveBeenCalledTimes(1);
   });
 
+  it("ResourceRef resolver를 우선 사용하고 Folder에는 Taskbar File Explorer icon을 사용한다", () => {
+    render(
+      <TaskbarStartPinned
+        actions={createActions()}
+        items={items}
+        resolveResourceIcon={(resource) =>
+          resource.kind === "external-shortcut" ? (
+            <span data-testid={`custom-${resource.id}`} />
+          ) : undefined
+        }
+      />,
+    );
+
+    const folderIcon = screen
+      .getByRole("gridcell", { name: "첫 폴더" })
+      .querySelector<HTMLImageElement>(".taskbar-start-pinned__icon img");
+    expect(folderIcon?.src).toContain("file-explorer.png");
+    expect(
+      screen
+        .getByRole("gridcell", { name: "마지막 Shortcut" })
+        .querySelector(`[data-testid="custom-${items[2].resource.id}"]`),
+    ).not.toBeNull();
+  });
+
   it("Arrow와 Home/End로 6열 grid focus를 이동한다", () => {
     const manyItems = Array.from({ length: 8 }, (_, index) => ({
       resource: createResourceRef(
@@ -116,7 +137,9 @@ describe("TaskbarStartPinned", () => {
   });
 
   it("inactive view를 inert로 표시하고 빈 상태를 설명한다", () => {
-    const { container } = render(<TaskbarStartPinned actions={createActions()} active={false} items={[]} />);
+    const { container } = render(
+      <TaskbarStartPinned actions={createActions()} active={false} items={[]} />,
+    );
     const section = container.querySelector("section");
     expect(section?.hasAttribute("inert")).toBe(true);
     expect(screen.getByText("고정된 항목이 없습니다.")).not.toBeNull();

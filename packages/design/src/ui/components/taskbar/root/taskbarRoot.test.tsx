@@ -8,6 +8,7 @@ import type {
   PrimaryPanelAction,
   PrimaryPanelOperationHandle,
   PrimaryPanelSnapshot,
+  ResourceRef,
   StartAction,
   StartOperationHandle,
   StartScreenAction,
@@ -188,10 +189,7 @@ const renderRoot = (
 
 afterEach(() => cleanup());
 
-const rootShortcut = createResourceRef(
-  "external-shortcut",
-  "21000000-0000-4000-8000-000000000001",
-);
+const rootShortcut = createResourceRef("external-shortcut", "21000000-0000-4000-8000-000000000001");
 const rootResources = Object.freeze({
   folder: createStaticCatalog([]),
   content: createStaticCatalog([]),
@@ -219,9 +217,12 @@ const renderProductRoot = () => {
     unpin: noOp,
     reorder: noOp,
   } as unknown as NonNullable<HeadlessRuntimeAdapters["start"]>;
-  const openNewTab = vi.fn(
-    (): Readonly<{ status: "succeeded" }> => Object.freeze({ status: "succeeded" }),
+  const openNewTab = vi.fn((): Readonly<{ status: "succeeded" }> =>
+    Object.freeze({ status: "succeeded" }),
   );
+  const resolveStartResourceIcon = vi.fn((resource: ResourceRef) => (
+    <span data-testid={`start-icon-${resource.kind}:${resource.id}`} />
+  ));
   const runtime = createHeadlessRuntime({
     adapters: { start, windows },
     externalNavigation: { openNewTab },
@@ -231,11 +232,12 @@ const renderProductRoot = () => {
       <TaskbarRoot
         resourceReaders={rootResources}
         renderStartSearchBody={(query) => <p aria-label="Start Search 경계">{query}</p>}
+        resolveStartResourceIcon={resolveStartResourceIcon}
         timestampClock={TEST_TIMESTAMP_CLOCK}
       />
     </HeadlessRuntimeProvider>,
   );
-  return { ...mounted, openNewTab, runtime };
+  return { ...mounted, openNewTab, resolveStartResourceIcon, runtime };
 };
 
 describe("TaskbarRoot", () => {
@@ -243,9 +245,20 @@ describe("TaskbarRoot", () => {
     const mounted = renderProductRoot();
     fireEvent.click(screen.getByRole("button", { name: "시작" }));
     await waitFor(() => expect(screen.getByRole("gridcell", { name: "7zip" })).not.toBeNull());
+    expect(
+      screen
+        .getByRole("gridcell", { name: "7zip" })
+        .querySelector(`[data-testid="start-icon-external-shortcut:${rootShortcut.id}"]`),
+    ).not.toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "모두" }));
     await waitFor(() => expect(screen.getByRole("heading", { name: "모두" })).not.toBeNull());
+    expect(
+      screen
+        .getByRole("button", { name: "7zip" })
+        .querySelector(`[data-testid="start-icon-external-shortcut:${rootShortcut.id}"]`),
+    ).not.toBeNull();
+    expect(mounted.resolveStartResourceIcon).toHaveBeenCalledWith(rootShortcut);
     const input = screen.getByRole<HTMLInputElement>("textbox", { name: "앱 및 문서 검색" });
     fireEvent.change(input, { target: { value: "7" } });
     await waitFor(() => expect(screen.getByLabelText("Start Search 경계").textContent).toBe("7"));
