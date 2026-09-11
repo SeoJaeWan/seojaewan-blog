@@ -5,7 +5,13 @@
  */
 import type { ChromeLocation, ChromeTabId } from "../../chrome/index.js";
 import type { FileExplorerLocation, FileExplorerTabId } from "../../folders/index.js";
-import type { ContentResourceRef, FolderResourceRef } from "../../resources/index.js";
+import type { ExplorerNavigationTarget } from "../../folders/model/index.js";
+import type {
+  ContentResourceRef,
+  FolderResourceRef,
+  ResourceId,
+  ResourceRef,
+} from "../../resources/index.js";
 import {
   type OperationExecutionContext,
   type OperationHandle,
@@ -69,12 +75,12 @@ export type WindowAction =
     }>
   /** Chrome 탭을 닫고 마지막 탭이면 Session도 닫는다. */
   | Readonly<{ type: "close-chrome-tab"; sessionId: WindowSessionId; tabId: ChromeTabId }>
-  /** File Explorer 탭을 새 Folder 위치로 이동한다. */
+  /** File Explorer 탭을 정상 위치 또는 unresolved path로 이동한다. */
   | Readonly<{
       type: "navigate-file-explorer";
       sessionId: WindowSessionId;
       tabId: FileExplorerTabId;
-      location: FileExplorerLocation;
+      target: ExplorerNavigationTarget;
     }>
   /** Chrome 탭을 새 위치로 이동한다. */
   | Readonly<{
@@ -106,12 +112,46 @@ export type WindowAction =
       tabId: FileExplorerTabId;
       scrollTop: number;
     }>
+  /** File Explorer 탭의 즉시 검색어를 교체한다. */
+  | Readonly<{
+      type: "set-file-explorer-query";
+      sessionId: WindowSessionId;
+      tabId: FileExplorerTabId;
+      query: string;
+    }>
+  /** File Explorer 탭의 Sidebar expansion set을 교체한다. */
+  | Readonly<{
+      type: "set-file-explorer-expanded-folder-ids";
+      sessionId: WindowSessionId;
+      tabId: FileExplorerTabId;
+      expandedFolderIds: readonly ResourceId[];
+    }>
+  /** File Explorer 탭의 Content selection을 교체한다. */
+  | Readonly<{
+      type: "set-file-explorer-selection";
+      sessionId: WindowSessionId;
+      tabId: FileExplorerTabId;
+      selection: readonly ResourceRef[];
+    }>
+  /** 같은 File Explorer Window tab들이 공유하는 Sidebar 폭을 교체한다. */
+  | Readonly<{
+      type: "set-file-explorer-sidebar-width";
+      sessionId: WindowSessionId;
+      sidebarWidth: number;
+    }>
   /** Chrome 탭의 숫자 scrollTop을 반영한다. */
   | Readonly<{
       type: "set-chrome-scroll-top";
       sessionId: WindowSessionId;
       tabId: ChromeTabId;
       scrollTop: number;
+    }>
+  /** File Explorer 탭을 새 history 없이 초기화하고 unresolved path의 최신 해석을 적용한다. */
+  | Readonly<{
+      type: "refresh-file-explorer";
+      sessionId: WindowSessionId;
+      tabId: FileExplorerTabId;
+      resolvedLocation?: FileExplorerLocation;
     }>
   /** Chrome 탭의 현재 위치를 새 history entry 없이 새로 고친다. */
   | Readonly<{ type: "refresh-chrome"; sessionId: WindowSessionId; tabId: ChromeTabId }>;
@@ -197,7 +237,12 @@ export type WindowOperationStore = Pick<
   | "goBackChrome"
   | "goForwardChrome"
   | "setFileExplorerScrollTop"
+  | "setFileExplorerQuery"
+  | "setFileExplorerExpandedFolderIds"
+  | "setFileExplorerSelection"
+  | "setFileExplorerSidebarWidth"
   | "setChromeScrollTop"
+  | "refreshFileExplorer"
   | "refreshChrome"
 >;
 
@@ -232,7 +277,14 @@ const resolveExistingTarget = (
       const session = findSession(snapshot, snapshot.stackingOrder[index]);
       if (session?.kind !== "file-explorer") continue;
       const tab = session.tabs.find(({ id }) => id === session.activeTabId);
-      if (tab?.navigation.current.location?.id === action.folder.id) return session.id;
+      const target = tab?.navigation.current.location;
+      const location =
+        target === null || target?.kind === "folder"
+          ? target
+          : target?.kind === "location"
+            ? target.location
+            : undefined;
+      if (location?.id === action.folder.id) return session.id;
     }
   }
   if (action.type === "open-content" && snapshot.mode === "desktop") {
@@ -401,7 +453,7 @@ export class WindowOperations {
         return this.#store.navigateFileExplorer(
           action.sessionId,
           action.tabId,
-          action.location,
+          action.target,
           context,
         );
       case "navigate-chrome":
@@ -421,6 +473,33 @@ export class WindowOperations {
           action.scrollTop,
           context,
         );
+      case "set-file-explorer-query":
+        return this.#store.setFileExplorerQuery(
+          action.sessionId,
+          action.tabId,
+          action.query,
+          context,
+        );
+      case "set-file-explorer-expanded-folder-ids":
+        return this.#store.setFileExplorerExpandedFolderIds(
+          action.sessionId,
+          action.tabId,
+          action.expandedFolderIds,
+          context,
+        );
+      case "set-file-explorer-selection":
+        return this.#store.setFileExplorerSelection(
+          action.sessionId,
+          action.tabId,
+          action.selection,
+          context,
+        );
+      case "set-file-explorer-sidebar-width":
+        return this.#store.setFileExplorerSidebarWidth(
+          action.sessionId,
+          action.sidebarWidth,
+          context,
+        );
       case "set-chrome-scroll-top":
         return this.#store.setChromeScrollTop(
           action.sessionId,
@@ -430,6 +509,13 @@ export class WindowOperations {
         );
       case "refresh-chrome":
         return this.#store.refreshChrome(action.sessionId, action.tabId, context);
+      case "refresh-file-explorer":
+        return this.#store.refreshFileExplorer(
+          action.sessionId,
+          action.tabId,
+          action.resolvedLocation,
+          context,
+        );
     }
   }
 

@@ -6,16 +6,20 @@ import {
   type RefCallback,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
 
-import type {
-  StartControllerActions,
-  StartOperationHandle,
-} from "../../../../../../../headless/index.js";
+import type { StartControllerActions } from "../../../../../../../headless/index.js";
 import type { StartPinnedItemViewModel } from "../../index.js";
+import {
+  createPinnedPreviewOffsets,
+  type DragItemOffset,
+  findPinnedDestinationIndex,
+  measurePinnedItemRects,
+  pinnedItemKey,
+} from "../../utils/startPinnedDragGeometry/index.js";
+import { useStartPinnedReorderTransition } from "../useStartPinnedReorderTransition/index.js";
 
 type DragOwner = HTMLButtonElement & {
   hasPointerCapture?(pointerId: number): boolean;
@@ -43,16 +47,6 @@ type DragGesture = {
   startPointer: Readonly<{ x: number; y: number }>;
 };
 
-type PendingReorder = {
-  beforeRects: ReadonlyMap<string, DOMRect>;
-  cleanupMove: (() => void) | null;
-  handle: StartOperationHandle;
-  phase: "start-reorder-measure-before" | "start-reorder-measure-after" | "start-reorder-move";
-  signalFrame: number | null;
-};
-
-type DragItemOffset = Readonly<{ x: number; y: number }>;
-
 type DragVisual = Readonly<{
   itemOffsets: ReadonlyMap<string, DragItemOffset>;
   key: string;
@@ -79,76 +73,6 @@ export type StartPinnedDragController = Readonly<{
 }>;
 
 const MOVE_ACTIVATION_DISTANCE = 4;
-const MOVE_DURATION_MS = 150;
-const MOVE_WATCHDOG_MS = MOVE_DURATION_MS + 100;
-
-/** ResourceRef를 DOM map에서 충돌하지 않는 key로 바꾼다. */
-const itemKey = (item: StartPinnedItemViewModel): string =>
-  `${item.resource.kind}:${item.resource.id}`;
-
-/** 현재 item DOM rect를 표시 순서와 같은 key map으로 측정한다. */
-const measureItems = (
-  items: readonly StartPinnedItemViewModel[],
-  elements: ReadonlyMap<string, HTMLButtonElement>,
-): ReadonlyMap<string, DOMRect> =>
-  new Map(
-    items.flatMap((item) => {
-      const element = elements.get(itemKey(item));
-      return element === undefined
-        ? []
-        : ([[itemKey(item), element.getBoundingClientRect()]] as const);
-    }),
-  );
-
-/** pointer와 가장 가까운 tile center의 표시 index를 찾는다. */
-const destinationIndex = (
-  pointer: Readonly<{ x: number; y: number }>,
-  items: readonly StartPinnedItemViewModel[],
-  rects: ReadonlyMap<string, DOMRect>,
-): number => {
-  let destination = 0;
-  let distance = Number.POSITIVE_INFINITY;
-  items.forEach((item, index) => {
-    const rect = rects.get(itemKey(item));
-    if (rect === undefined) return;
-    const nextDistance = Math.hypot(
-      pointer.x - (rect.left + rect.width / 2),
-      pointer.y - (rect.top + rect.height / 2),
-    );
-    if (nextDistance < distance) {
-      destination = index;
-      distance = nextDistance;
-    }
-  });
-  return destination;
-};
-
-/** source와 예상 destination 사이의 tile을 최종 slot 방향으로 한 칸씩 이동시킨다. */
-const previewItemOffsets = (
-  source: number,
-  destination: number,
-  items: readonly StartPinnedItemViewModel[],
-  rects: ReadonlyMap<string, DOMRect>,
-): ReadonlyMap<string, DragItemOffset> => {
-  const offsets = new Map<string, DragItemOffset>();
-  if (source === destination) return offsets;
-  const first = source < destination ? source + 1 : destination;
-  const last = source < destination ? destination : source - 1;
-  const slotStep = source < destination ? -1 : 1;
-  for (let index = first; index <= last; index += 1) {
-    const item = items[index];
-    const slot = items[index + slotStep];
-    if (item === undefined || slot === undefined) continue;
-    const itemRect = rects.get(itemKey(item));
-    const slotRect = rects.get(itemKey(slot));
-    if (itemRect === undefined || slotRect === undefined) continue;
-    offsets.set(
-      itemKey(item),
-      Object.freeze({ x: slotRect.left - itemRect.left, y: slotRect.top - itemRect.top }),
-    );
-  }
-  return offsets;
-};
 
 /** capture API가 있는 browser에서 현재 pointer capture를 안전하게 반환한다. */
 const releasePointerCapture = (owner: DragOwner, pointerId: number): void => {
@@ -168,13 +92,17 @@ export const useStartPinnedDrag = ({
 }: StartPinnedDragOptions): StartPinnedDragController => {
   const elementsRef = useRef(new Map<string, HTMLButtonElement>());
   const gestureRef = useRef<DragGesture | null>(null);
-  const pendingReorderRef = useRef<PendingReorder | null>(null);
   const itemsRef = useRef(items);
   const mountedRef = useRef(true);
   const suppressClickRef = useRef(false);
   const [dragVisual, setDragVisual] = useState<DragVisual>(null);
   const [isDragging, setIsDragging] = useState(false);
   itemsRef.current = items;
+  const { hasPendingReorder, trackReorder } = useStartPinnedReorderTransition({
+    actions,
+    elements: elementsRef,
+    items,
+  });
 
   const getItemRef = useCallback(
     (key: string): RefCallback<HTMLButtonElement> =>
@@ -215,10 +143,10 @@ export const useStartPinnedDrag = ({
     }
     if (gesture.active) {
       const currentItems = itemsRef.current;
-      const destination = destinationIndex(pointer, currentItems, gesture.beforeRects);
+      const destination = findPinnedDestinationIndex(pointer, currentItems, gesture.beforeRects);
       setDragVisual(
         Object.freeze({
-          itemOffsets: previewItemOffsets(
+          itemOffsets: createPinnedPreviewOffsets(
             gesture.itemIndex,
             destination,
             currentItems,
@@ -239,7 +167,7 @@ export const useStartPinnedDrag = ({
     setIsDragging(false);
   }, []);
 
-  /** 실제 순서 변경 Action을 시작하고 첫 측정 phase를 완료한다. */
+  /** 실제 순서 변경 Action을 시작하고 presentation lifecycle에 등록한다. */
   const startReorder = useCallback(
     (gesture: DragGesture, item: StartPinnedItemViewModel, destination: number): void => {
       const handle = actions.execute({
@@ -247,31 +175,9 @@ export const useStartPinnedDrag = ({
         resource: item.resource,
         intent: { type: "index", index: destination },
       });
-      const pending: PendingReorder = {
-        beforeRects: gesture.beforeRects,
-        cleanupMove: null,
-        handle,
-        phase: "start-reorder-measure-before",
-        signalFrame: null,
-      };
-      pendingReorderRef.current = pending;
-      const signalMeasurement = (): void => {
-        if (pendingReorderRef.current !== pending) return;
-        if (actions.completeTransition(handle.operationId, pending.phase)) {
-          pending.signalFrame = null;
-          pending.phase = "start-reorder-measure-after";
-        } else {
-          pending.signalFrame = requestAnimationFrame(signalMeasurement);
-        }
-      };
-      queueMicrotask(signalMeasurement);
-      void handle.committed.then((result) => {
-        if (pendingReorderRef.current !== pending || result.status === "committed") return;
-        if (pending.signalFrame !== null) cancelAnimationFrame(pending.signalFrame);
-        pendingReorderRef.current = null;
-      });
+      trackReorder(handle, gesture.beforeRects);
     },
-    [actions],
+    [actions, trackReorder],
   );
 
   /** pointer move를 rAF로 합치고 drag activation threshold를 적용한다. */
@@ -299,11 +205,11 @@ export const useStartPinnedDrag = ({
     if (!active) return;
     suppressClickRef.current = true;
     const currentItems = itemsRef.current;
-    const destination = destinationIndex(pointer, currentItems, gesture.beforeRects);
+    const destination = findPinnedDestinationIndex(pointer, currentItems, gesture.beforeRects);
     if (destination !== gesture.itemIndex) {
-      const item = currentItems.find((candidate) => itemKey(candidate) === gesture.key);
+      const item = currentItems.find((candidate) => pinnedItemKey(candidate) === gesture.key);
       if (item !== undefined) {
-        const previewRects = measureItems(currentItems, elementsRef.current);
+        const previewRects = measurePinnedItemRects(currentItems, elementsRef.current);
         startReorder({ ...gesture, beforeRects: previewRects }, item, destination);
       }
     }
@@ -338,7 +244,7 @@ export const useStartPinnedDrag = ({
         event.button !== 0 ||
         event.isPrimary === false ||
         gestureRef.current !== null ||
-        pendingReorderRef.current !== null
+        hasPendingReorder()
       )
         return;
       const owner = event.currentTarget;
@@ -352,9 +258,9 @@ export const useStartPinnedDrag = ({
       const gesture: DragGesture = {
         active: false,
         animationFrame: null,
-        beforeRects: measureItems(itemsRef.current, elementsRef.current),
+        beforeRects: measurePinnedItemRects(itemsRef.current, elementsRef.current),
         itemIndex: index,
-        key: itemKey(item),
+        key: pinnedItemKey(item),
         lastPointer: { x: event.clientX, y: event.clientY },
         listeners,
         owner,
@@ -375,87 +281,8 @@ export const useStartPinnedDrag = ({
       window.addEventListener("pointercancel", listeners.pointerCancel);
       window.addEventListener("keydown", listeners.keyDown);
     },
-    [],
+    [hasPendingReorder],
   );
-
-  /** committed render 뒤 새 rect를 측정하고 모든 이동 tile에 FLIP transition을 적용한다. */
-  useLayoutEffect(() => {
-    const pending = pendingReorderRef.current;
-    if (pending === null || pending.phase !== "start-reorder-measure-after") return undefined;
-    const afterRects = measureItems(items, elementsRef.current);
-    if (!actions.completeTransition(pending.handle.operationId, pending.phase)) return undefined;
-    pending.phase = "start-reorder-move";
-
-    const moving = items.flatMap((item) => {
-      const key = itemKey(item);
-      const element = elementsRef.current.get(key);
-      const before = pending.beforeRects.get(key);
-      const after = afterRects.get(key);
-      if (element === undefined || before === undefined || after === undefined) return [];
-      const x = before.left - after.left;
-      const y = before.top - after.top;
-      return x === 0 && y === 0 ? [] : [{ element, key, x, y }];
-    });
-
-    let frame: number | null = null;
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    let settled = false;
-    const remaining = new Set(moving.map(({ key }) => key));
-    const cleanStyles = (): void => {
-      moving.forEach(({ element }) => {
-        element.style.removeProperty("transition");
-        element.style.removeProperty("transform");
-        element.style.removeProperty("will-change");
-      });
-    };
-    const finish = (): void => {
-      if (settled) return;
-      settled = true;
-      if (frame !== null) cancelAnimationFrame(frame);
-      if (timeout !== null) clearTimeout(timeout);
-      moving.forEach(({ element }) =>
-        element.removeEventListener("transitionend", onTransitionEnd),
-      );
-      cleanStyles();
-      if (pendingReorderRef.current === pending) pendingReorderRef.current = null;
-      actions.completeTransition(pending.handle.operationId, pending.phase);
-    };
-    function onTransitionEnd(event: TransitionEvent): void {
-      if (event.propertyName !== "transform") return;
-      const element = event.currentTarget;
-      if (!(element instanceof HTMLButtonElement)) return;
-      const key = element.dataset.resourceKey;
-      if (key !== undefined) remaining.delete(key);
-      if (remaining.size === 0) finish();
-    }
-
-    moving.forEach(({ element, x, y }) => {
-      element.style.transition = "none";
-      element.style.transform = `translate(${x}px, ${y}px)`;
-      element.style.willChange = "transform";
-      element.addEventListener("transitionend", onTransitionEnd);
-    });
-    void elementsRef.current.values().next().value?.offsetWidth;
-    frame = requestAnimationFrame(() => {
-      moving.forEach(({ element }) => {
-        element.style.transition = `transform ${MOVE_DURATION_MS}ms ease-in-out`;
-        element.style.transform = "translate(0, 0)";
-      });
-      timeout = setTimeout(finish, MOVE_WATCHDOG_MS);
-      if (moving.length === 0) queueMicrotask(finish);
-    });
-    pending.cleanupMove = () => {
-      settled = true;
-      if (frame !== null) cancelAnimationFrame(frame);
-      if (timeout !== null) clearTimeout(timeout);
-      moving.forEach(({ element }) =>
-        element.removeEventListener("transitionend", onTransitionEnd),
-      );
-      cleanStyles();
-    };
-
-    return undefined;
-  }, [actions, items]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -463,18 +290,8 @@ export const useStartPinnedDrag = ({
       mountedRef.current = false;
       const gesture = gestureRef.current;
       if (gesture !== null) detachGesture(gesture);
-      const pending = pendingReorderRef.current;
-      if (pending === null) return;
-      if (pending.signalFrame !== null) cancelAnimationFrame(pending.signalFrame);
-      pending.cleanupMove?.();
-      actions.abortTransition(
-        pending.handle.operationId,
-        pending.phase,
-        "start-pinned-component-unmounted",
-      );
-      pendingReorderRef.current = null;
     };
-  }, [actions, detachGesture]);
+  }, [detachGesture]);
 
   const consumeClickSuppression = useCallback((): boolean => {
     const suppressed = suppressClickRef.current;

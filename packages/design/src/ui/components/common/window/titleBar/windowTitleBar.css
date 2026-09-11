@@ -18,7 +18,7 @@
 }
 
 .window-title-bar__drag-region {
-  align-items: flex-end;
+  align-items: stretch;
   display: flex;
   flex: 1 1 auto;
   min-inline-size: 0;

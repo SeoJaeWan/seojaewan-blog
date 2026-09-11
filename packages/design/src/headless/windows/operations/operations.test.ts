@@ -8,7 +8,7 @@ import type {
   WindowStoreCommittedResult,
   WindowStoreResult,
 } from "../windowStore/operationResult/index.js";
-import { WindowOperations, type WindowOperationStore } from "./index.js";
+import { type WindowAction, WindowOperations, type WindowOperationStore } from "./index.js";
 
 /** 테스트용 UUID를 WindowSessionId로 표시한다. */
 const sessionId = (suffix: string) => `10000000-0000-4000-8000-${suffix}` as WindowSessionId;
@@ -61,6 +61,90 @@ const commit = (
 const flush = () => new Promise<void>((resolve) => queueMicrotask(resolve));
 
 describe("WindowOperations", () => {
+  it("Explorer runtime Action을 같은 Session queue의 정확한 Store 명령으로 전달한다", async () => {
+    const id = sessionId("000000000011");
+    const current = snapshot([session(id)]);
+    const tabId = "10000000-0000-4000-8000-000000000012" as never;
+    const folderId = "20000000-0000-4000-8000-000000000001" as never;
+    const folder = { kind: "folder" as const, id: folderId };
+    const content = {
+      kind: "content" as const,
+      id: "30000000-0000-4000-8000-000000000001" as never,
+    };
+    const cases: readonly Readonly<{
+      action: WindowAction;
+      method: keyof WindowOperationStore;
+      args: readonly unknown[];
+    }>[] = [
+      {
+        action: {
+          type: "navigate-file-explorer",
+          sessionId: id,
+          tabId,
+          target: { kind: "unresolved-path", path: "/missing" },
+        },
+        method: "navigateFileExplorer",
+        args: [id, tabId, { kind: "unresolved-path", path: "/missing" }],
+      },
+      {
+        action: { type: "set-file-explorer-query", sessionId: id, tabId, query: "react" },
+        method: "setFileExplorerQuery",
+        args: [id, tabId, "react"],
+      },
+      {
+        action: {
+          type: "set-file-explorer-expanded-folder-ids",
+          sessionId: id,
+          tabId,
+          expandedFolderIds: [folderId],
+        },
+        method: "setFileExplorerExpandedFolderIds",
+        args: [id, tabId, [folderId]],
+      },
+      {
+        action: {
+          type: "set-file-explorer-selection",
+          sessionId: id,
+          tabId,
+          selection: [content],
+        },
+        method: "setFileExplorerSelection",
+        args: [id, tabId, [content]],
+      },
+      {
+        action: { type: "set-file-explorer-sidebar-width", sessionId: id, sidebarWidth: 288 },
+        method: "setFileExplorerSidebarWidth",
+        args: [id, 288],
+      },
+      {
+        action: {
+          type: "refresh-file-explorer",
+          sessionId: id,
+          tabId,
+          resolvedLocation: folder,
+        },
+        method: "refreshFileExplorer",
+        args: [id, tabId, folder],
+      },
+    ];
+
+    for (const entry of cases) {
+      const call = vi.fn((): Promise<WindowStoreResult> =>
+        Promise.resolve({ ok: true, changed: false, reason: "no-op", value: current }),
+      );
+      const store = {
+        getSnapshot: () => current,
+        [entry.method]: call,
+      } as unknown as WindowOperationStore;
+      const operations = new WindowOperations({ store });
+      await operations.execute(entry.action).settled;
+      expect(call).toHaveBeenCalledTimes(1);
+      expect(call.mock.calls[0]?.slice(0, -1)).toEqual(entry.args);
+      const context = call.mock.calls[0]?.at(-1) as WindowStoreCommandContext | undefined;
+      expect(typeof context?.onCommit).toBe("function");
+    }
+  });
+
   it("생성 commit에서 Session queue를 subscriber 재진입보다 먼저 연결한다", async () => {
     const createdId = sessionId("000000000001");
     const transitions = new TransitionRegistry();

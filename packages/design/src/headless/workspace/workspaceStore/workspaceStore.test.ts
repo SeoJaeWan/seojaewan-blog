@@ -614,6 +614,46 @@ describe("WorkspaceStore.createFolder", () => {
     expect(listener).not.toHaveBeenCalled();
     expect(fakeStorage.save).not.toHaveBeenCalled();
   });
+
+  it.each([
+    ["", "folder-name-empty"],
+    ["bad?name", "folder-name-invalid-character"],
+    ["NUL.txt", "folder-name-reserved"],
+    ["name.", "folder-name-trailing-space-or-period"],
+    ["📁".repeat(256), "folder-name-too-long"],
+  ] as const)("invalid 이름 %j은 %s로 거절하고 commit하지 않는다", async (name, reason) => {
+    const generator = mockUuid();
+    const { WorkspaceStore, fakeStorage } = await initialize();
+    const before = WorkspaceStore.getSnapshot();
+    const listener = vi.fn();
+    WorkspaceStore.subscribe(listener);
+
+    expect(await WorkspaceStore.createFolder(name, null)).toEqual({ ok: false, reason });
+    expect(WorkspaceStore.getSnapshot()).toBe(before);
+    expect(listener).not.toHaveBeenCalled();
+    expect(fakeStorage.save).not.toHaveBeenCalled();
+    expect(generator).not.toHaveBeenCalled();
+  });
+
+  it("NFC로 저장하고 같은 parent의 normalization/case-insensitive 중복을 거절한다", async () => {
+    const generator = mockUuid();
+    const { WorkspaceStore, fakeStorage } = await initialize();
+
+    await expect(WorkspaceStore.createFolder("bLoG", null)).resolves.toEqual({
+      ok: false,
+      reason: "folder-name-conflict",
+    });
+    expect(generator).not.toHaveBeenCalled();
+
+    await WorkspaceStore.createFolder("Cafe\u0301", inbox);
+    expect(WorkspaceStore.getSnapshot().folders.at(-1)?.name).toBe("Caf\u00e9");
+    fakeStorage.save.mockClear();
+    await expect(WorkspaceStore.createFolder("CAF\u00c9", inbox)).resolves.toEqual({
+      ok: false,
+      reason: "folder-name-conflict",
+    });
+    expect(fakeStorage.save).not.toHaveBeenCalled();
+  });
 });
 
 describe("WorkspaceStore.renameFolder", () => {
@@ -642,6 +682,34 @@ describe("WorkspaceStore.renameFolder", () => {
     expect(WorkspaceStore.getSnapshot()).toBe(before);
     expect(listener).not.toHaveBeenCalled();
     expect(fakeStorage.save).not.toHaveBeenCalled();
+  });
+
+  it("invalid 이름과 같은 parent의 sibling 중복을 거절하고 case-only rename은 허용한다", async () => {
+    const sibling = ref("folder", "000000000027");
+    mockUuid(sibling.id);
+    const { WorkspaceStore, fakeStorage } = await initialize();
+    await WorkspaceStore.createFolder("Archive", null);
+    fakeStorage.save.mockClear();
+    const before = WorkspaceStore.getSnapshot();
+    const listener = vi.fn();
+    WorkspaceStore.subscribe(listener);
+
+    await expect(WorkspaceStore.renameFolder(sibling, "CON.log")).resolves.toEqual({
+      ok: false,
+      reason: "folder-name-reserved",
+    });
+    await expect(WorkspaceStore.renameFolder(sibling, "BLOG")).resolves.toEqual({
+      ok: false,
+      reason: "folder-name-conflict",
+    });
+    expect(WorkspaceStore.getSnapshot()).toBe(before);
+    expect(listener).not.toHaveBeenCalled();
+    expect(fakeStorage.save).not.toHaveBeenCalled();
+
+    await expect(WorkspaceStore.renameFolder(sibling, "archive")).resolves.toMatchObject({
+      ok: true,
+    });
+    expect(WorkspaceStore.getSnapshot().folders.at(-1)?.name).toBe("archive");
   });
 });
 

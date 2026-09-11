@@ -38,6 +38,15 @@
   color: var(--wd-window-frame-control-color-close-hover);
 }
 
+.window-controls__button--close {
+  border-start-end-radius: var(--wd-window-frame-root-border-radius);
+}
+
+.window-frame[data-maximized="true"] .window-controls__button--close,
+.window-frame[data-mode="mobile"] .window-controls__button--close {
+  border-start-end-radius: 0;
+}
+
 .window-controls__button:focus-visible {
   box-shadow:
     inset 0 0 0 var(--wd-window-frame-control-focus-inner-width)

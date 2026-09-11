@@ -14,6 +14,7 @@ import {
 } from "../../resources/index.js";
 import { IdGenerator } from "../idGenerator/index.js";
 import type { WorkspaceState } from "../model/index.js";
+import { getFolderNameComparisonKey, validateFolderName } from "../namePolicy/index.js";
 import type {
   WorkspaceOperationFailureReason,
   WorkspaceOperationResult,
@@ -511,6 +512,36 @@ export class WorkspaceStore {
     right: FolderResourceRef | null,
   ): boolean => left?.id === right?.id && (left === null) === (right === null);
 
+  /** 현재 Folder placement가 가리키는 parent를 반환한다. */
+  private static getFolderParent = (
+    folder: FolderResourceRef,
+  ): FolderResourceRef | null | undefined =>
+    WorkspaceStore.requireSnapshot().placements.find(
+      (placement) => placement.resource.kind === "folder" && placement.resource.id === folder.id,
+    )?.parent;
+
+  /** 같은 parent의 다른 Folder가 동일한 정규화/case-insensitive 이름 key를 쓰는지 확인한다. */
+  private static hasSiblingFolderName = (
+    parent: FolderResourceRef | null,
+    comparisonKey: string,
+    excludingId?: ResourceId,
+  ): boolean => {
+    const state = WorkspaceStore.requireSnapshot();
+    const folderById = new Map(state.folders.map((folder) => [folder.ref.id, folder]));
+
+    return state.placements.some((placement) => {
+      if (
+        placement.resource.kind !== "folder" ||
+        placement.resource.id === excludingId ||
+        !WorkspaceStore.sameParent(placement.parent, parent)
+      ) {
+        return false;
+      }
+      const sibling = folderById.get(placement.resource.id);
+      return sibling !== undefined && getFolderNameComparisonKey(sibling.name) === comparisonKey;
+    });
+  };
+
   /**
    * 현재 Folder 원본과 placement에 이미 사용된 ID인지 확인한다.
    *
@@ -534,6 +565,15 @@ export class WorkspaceStore {
       return WorkspaceStore.failure("parent-folder-not-found");
     }
 
+    const validation = validateFolderName(name);
+    if (!validation.ok) {
+      return WorkspaceStore.failure(validation.reason);
+    }
+
+    if (WorkspaceStore.hasSiblingFolderName(parent, validation.comparisonKey)) {
+      return WorkspaceStore.failure("folder-name-conflict");
+    }
+
     const id = IdGenerator.generateId();
     if (WorkspaceStore.hasResourceId(id)) {
       return WorkspaceStore.failure("duplicate-resource-id");
@@ -545,7 +585,7 @@ export class WorkspaceStore {
       ok: true,
       value: {
         ...state,
-        folders: [...state.folders, { ref, name }],
+        folders: [...state.folders, { ref, name: validation.name }],
         placements: [...state.placements, { resource: ref, parent }],
       },
     };
@@ -564,7 +604,21 @@ export class WorkspaceStore {
       return WorkspaceStore.failure("folder-not-found");
     }
 
-    if (state.folders[folderIndex]?.name === name) {
+    const validation = validateFolderName(name);
+    if (!validation.ok) {
+      return WorkspaceStore.failure(validation.reason);
+    }
+
+    const parent = WorkspaceStore.getFolderParent(folder);
+    if (parent === undefined) {
+      return WorkspaceStore.failure("resource-not-found");
+    }
+
+    if (WorkspaceStore.hasSiblingFolderName(parent, validation.comparisonKey, folder.id)) {
+      return WorkspaceStore.failure("folder-name-conflict");
+    }
+
+    if (state.folders[folderIndex]?.name === validation.name) {
       return WorkspaceStore.failure("no-op");
     }
 
@@ -573,7 +627,7 @@ export class WorkspaceStore {
       value: {
         ...state,
         folders: state.folders.map((current, index) =>
-          index === folderIndex ? { ...current, name } : current,
+          index === folderIndex ? { ...current, name: validation.name } : current,
         ),
       },
     };

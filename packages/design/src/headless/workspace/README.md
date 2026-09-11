@@ -11,6 +11,8 @@
 | [seed/index.ts](./seed/index.ts)                                                           | 고정 inbox ID로 Desktop의 Blog와 초기 Content 배치 생성   | [seed.test.ts](./seed/seed.test.ts)                                                          |
 | [folderCatalog/index.ts](./folderCatalog/index.ts)                                         | Store의 현재 Folder 원본을 `has/get/list`로 조회          | [folderCatalog.test.ts](./folderCatalog/folderCatalog.test.ts)                               |
 | [idGenerator/index.ts](./idGenerator/index.ts)                                             | 생성·복구가 공유하는 내부 Web Crypto UUID 발급기          | [idGenerator.test.ts](./idGenerator/idGenerator.test.ts)                                     |
+| [namePolicy/index.ts](./namePolicy/index.ts)                                               | Windows형 Folder 이름 검증·NFC·case-insensitive 비교      | [namePolicy.test.ts](./namePolicy/namePolicy.test.ts)                                        |
+| [selectors/index.ts](./selectors/index.ts)                                                 | 절대 경로·breadcrumb·Sidebar tree·새 Folder 이름 파생     | [selectors.test.ts](./selectors/selectors.test.ts)                                           |
 | [workspaceStore/index.ts](./workspaceStore/index.ts)                                       | 초기화, 검증·동결, 상태, 구독, 명령 계산·직렬화와 저장    | [workspaceStore.test.ts](./workspaceStore/workspaceStore.test.ts)                            |
 | [workspaceStore/operationResult/index.ts](./workspaceStore/operationResult/index.ts)       | domain 결과와 사유별 발생 조건                            | type-only; 결과는 Store 테스트에서 검증                                                      |
 | [operations/index.ts](./operations/index.ts)                                               | create·rename·move Action과 완료 시점 연결                | [operations.test.ts](./operations/operations.test.ts)                                        |
@@ -92,6 +94,10 @@ unsubscribe(); // 소비자 정리 시 구독 해제
 ```
 
 실제 호출부는 생성·이동 결과도 이름 변경처럼 처리한다. 예상하지 못한 예외나 초기화 오류는 domain 결과와 별개로 처리해야 한다. `subscribe`는 등록 즉시 호출하지 않으며 알림에서 저장 완료를 의미하지도 않는다. 현재 snapshot은 직접 읽고, 변경은 명령으로만 요청한다.
+
+create와 rename은 Store가 commit 전에 Folder 이름을 NFC로 정규화하고 Unicode code point 길이, Windows 금지 문자·제어 문자, `.`·`..`, 예약 장치명과 trailing ASCII space/period를 검사한다. 같은 parent의 sibling 이름은 같은 정규화와 case-insensitive key로 비교한다. 거절 결과는 `folder-name-*` reason을 반환하며 snapshot 교체, 구독 알림, ID 발급과 저장을 만들지 않는다.
+
+경로와 File Explorer projection은 순수 selector로 읽는다. `resolveWorkspacePath`는 `/`를 Desktop `null`로, Folder segment를 NFC/case-insensitive 비교로 해석하고 trailing slash를 무시한다. 실패하면 제출 문자열을 보존한 `unresolved-path`를 반환한다. `selectWorkspacePath`, `selectWorkspaceBreadcrumb`, `selectWorkspaceSidebarTree`, `suggestWorkspaceFolderName`은 각각 현재 저장 casing의 경로, Desktop부터의 breadcrumb, case-insensitive sibling 순서의 Folder-only tree, 같은 parent에서 비어 있는 최소 `새 폴더 (n)` 이름을 반환한다.
 
 제품 Action 경계에서는 `WorkspaceOperations.execute`를 사용한다. 목록 queue는 create·rename·move를 순서대로 실행하고 `committed`는 메모리 반영 직후, `settled`는 Store의 저장 성공 또는 rollback 없는 저장 실패까지 끝난 뒤 완료된다. Workspace 변경은 이 단계에서 별도 UI transition을 소유하지 않으므로 `presented`는 `not-required`다.
 

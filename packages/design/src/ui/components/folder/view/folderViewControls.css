@@ -1,0 +1,35 @@
+.folder-view-controls {
+  display: flex;
+}
+
+.folder-view-controls__button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--wd-color-text-primary);
+  cursor: default;
+  display: inline-flex;
+  justify-content: center;
+  margin: 0;
+  min-block-size: 28px;
+  min-inline-size: 32px;
+  outline: none;
+}
+
+.folder-view-controls__button:hover:not(:disabled) {
+  background: var(--wd-color-surface-muted);
+}
+
+.folder-view-controls__button[aria-pressed="true"] {
+  background: rgb(0 103 192 / 0.12);
+  color: var(--wd-color-accent-default);
+}
+
+.folder-view-controls__button:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--wd-color-focus-ring);
+}
+
+.folder-view-controls__button:disabled {
+  opacity: 0.38;
+}

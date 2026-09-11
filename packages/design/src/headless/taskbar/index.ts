@@ -99,6 +99,7 @@ export {
   type ResourceOpenResult,
   type ResourceOpenWindowAction,
   type ResourceOpenWindowOperationPort,
+  selectResourceOpenAction,
 } from "./resourceOpen/index.js";
 export {
   selectTaskbarRootSnapshot,

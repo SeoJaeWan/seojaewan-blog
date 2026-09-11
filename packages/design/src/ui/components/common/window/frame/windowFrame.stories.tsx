@@ -718,7 +718,7 @@ const WindowStage = ({ children, mode }: { children: ReactNode; mode: WindowFram
   </div>
 );
 
-/** desktop normal frame의 핵심 legacy geometry를 실제 browser에서 확인한다. */
+/** Desktop normal frame의 현재 titlebar control geometry를 실제 browser에서 확인한다. */
 const verifyDesktopNormalGeometry = async (canvasElement: HTMLElement, label: string) => {
   const canvas = within(canvasElement);
   const frame = canvas.getByRole("region", { name: label });
@@ -733,8 +733,8 @@ const verifyDesktopNormalGeometry = async (canvasElement: HTMLElement, label: st
   await expect(frameBounds.top).toBe(36);
   await expect(controls).toHaveLength(3);
   for (const control of controls) {
-    await expect(control.getBoundingClientRect().width).toBe(30);
-    await expect(control.getBoundingClientRect().height).toBe(30);
+    await expect(control.getBoundingClientRect().width).toBe(42);
+    await expect(control.getBoundingClientRect().height).toBe(36);
   }
   await expect(frame.querySelectorAll(".window-resize-handle")).toHaveLength(8);
 };

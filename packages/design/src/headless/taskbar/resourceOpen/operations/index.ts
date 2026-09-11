@@ -3,21 +3,14 @@
  *
  * DOM, browser 전역과 panel 상태는 다루지 않으며 각 port가 명시적으로 완료한 결과만 분류한다.
  */
+import type { WindowOperationHandle, WindowSettledResult } from "../../../windows/index.js";
 import type {
-  WindowAction,
-  WindowOperationHandle,
-  WindowSettledResult,
-} from "../../../windows/index.js";
-import type { TaskbarExternalShortcutIntent } from "../../actions/index.js";
+  ResourceOpenAction,
+  ResourceOpenExternalAction,
+  ResourceOpenWindowAction,
+} from "../model/index.js";
 
-/** 내부 WindowSession으로 여는 Folder와 Content Action이다. */
-export type ResourceOpenWindowAction = Extract<
-  WindowAction,
-  { type: "open-folder" | "open-content" }
->;
-
-/** Taskbar surface에서 실행할 수 있는 Resource open intent다. */
-export type ResourceOpenAction = ResourceOpenWindowAction | TaskbarExternalShortcutIntent;
+export type { ResourceOpenAction, ResourceOpenWindowAction } from "../model/index.js";
 
 /** 외부 새 탭 adapter가 호출 수락이 아니라 실제 navigation 요청 결과로 반환하는 값이다. */
 export type ExternalShortcutNavigationResult =
@@ -27,7 +20,7 @@ export type ExternalShortcutNavigationResult =
 /** actual browser 새 탭을 여는 Application 주입 port다. */
 export type ExternalShortcutNavigationPort = Readonly<{
   openNewTab(
-    intent: TaskbarExternalShortcutIntent,
+    intent: ResourceOpenExternalAction,
   ): ExternalShortcutNavigationResult | Promise<ExternalShortcutNavigationResult>;
 }>;
 
@@ -47,7 +40,7 @@ export type ResourceOpenResult =
   | Readonly<{
       status: "succeeded";
       kind: "external-navigation-succeeded";
-      action: TaskbarExternalShortcutIntent;
+      action: ResourceOpenExternalAction;
       result: Extract<ExternalShortcutNavigationResult, { status: "succeeded" }>;
     }>
   | Readonly<{
@@ -71,13 +64,13 @@ export type ResourceOpenResult =
   | Readonly<{
       status: "failed";
       kind: "external-navigation-failed";
-      action: TaskbarExternalShortcutIntent;
+      action: ResourceOpenExternalAction;
       result: Extract<ExternalShortcutNavigationResult, { status: "failed" }>;
     }>
   | Readonly<{
       status: "failed";
       kind: "external-navigation-threw";
-      action: TaskbarExternalShortcutIntent;
+      action: ResourceOpenExternalAction;
       result: unknown;
     }>;
 
@@ -135,7 +128,7 @@ export class ResourceOpenOperations {
   }
 
   /** 외부 사이트 상태를 조회하지 않고 adapter의 명시적 새 탭 결과만 사용한다. */
-  async #openExternalShortcut(action: TaskbarExternalShortcutIntent): Promise<ResourceOpenResult> {
+  async #openExternalShortcut(action: ResourceOpenExternalAction): Promise<ResourceOpenResult> {
     try {
       const result = await this.#externalNavigation.openNewTab(action);
       return result.status === "succeeded"

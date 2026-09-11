@@ -17,12 +17,18 @@ import {
   isFileExplorerTabId,
   parseFileExplorerTabId,
 } from "../../folders/index.js";
+import type {
+  ExplorerNavigationTarget,
+  FileExplorerNavigationValue,
+} from "../../folders/model/index.js";
 import {
   type ContentCatalogReader,
   type ContentResourceRef,
   type FolderResourceRef,
+  parseResourceId,
   parseResourceRef,
   type ResourceId,
+  type ResourceRef,
 } from "../../resources/index.js";
 import type { WorkspaceState } from "../../workspace/index.js";
 import {
@@ -42,6 +48,7 @@ import type {
   WindowSession,
   WindowState,
 } from "../model/index.js";
+import { DEFAULT_FILE_EXPLORER_SIDEBAR_WIDTH as DEFAULT_SIDEBAR_WIDTH } from "../model/index.js";
 import { findTopVisibleSessionId, transitionWindowMode } from "../modeTransition/index.js";
 import type { NavigationEntry, NavigationState } from "../navigation/index.js";
 import {
@@ -143,6 +150,73 @@ type PendingDesktopWorkAreaChange = Readonly<{
 const cloneFolderLocation = (location: FileExplorerLocation): FileExplorerLocation =>
   location === null ? null : Object.freeze({ ...location });
 
+/** Explorer target을 종류별로 복사·동결한다. legacy direct location도 읽기 호환을 위해 보존한다. */
+const cloneExplorerNavigationValue = (
+  target: FileExplorerNavigationValue,
+): FileExplorerNavigationValue => {
+  if (target === null) return null;
+  if (target.kind === "folder") return cloneFolderLocation(target);
+  return createExplorerNavigationValue(
+    target.kind === "location"
+      ? { kind: "location", location: cloneFolderLocation(target.location) }
+      : { kind: "unresolved-path", path: target.path },
+  );
+};
+
+/**
+ * exact target에 기존 preview selector용 non-enumerable ID projection을 붙인다.
+ *
+ * 직렬화와 구조 비교에는 target의 canonical 필드만 나타난다.
+ */
+const createExplorerNavigationValue = (
+  target: ExplorerNavigationTarget,
+): FileExplorerNavigationValue => {
+  const value = { ...target } as ExplorerNavigationTarget & { id?: ResourceId };
+  Object.defineProperty(value, "id", {
+    value: target.kind === "location" ? target.location?.id : undefined,
+    enumerable: false,
+  });
+  return Object.freeze(value) as FileExplorerNavigationValue;
+};
+
+/** runtime에서 사용하는 exact Explorer target으로 direct location 호환 입력을 정규화한다. */
+const normalizeExplorerTarget = (
+  target: ExplorerNavigationTarget | FileExplorerLocation,
+): ExplorerNavigationTarget =>
+  target === null || target.kind === "folder" ? { kind: "location", location: target } : target;
+
+/** Explorer target이 가리키는 정상 위치를 반환하고 unresolved path에는 undefined를 반환한다. */
+const resolvedExplorerLocation = (
+  target: FileExplorerNavigationValue,
+): FileExplorerLocation | undefined => {
+  if (target === null || target.kind === "folder") return target;
+  return target.kind === "location" ? target.location : undefined;
+};
+
+/** Explorer target의 kind와 identity 또는 제출 path를 비교한다. */
+const sameExplorerTarget = (
+  left: ExplorerNavigationTarget | FileExplorerLocation,
+  right: ExplorerNavigationTarget | FileExplorerLocation,
+): boolean => {
+  const normalizedLeft = normalizeExplorerTarget(left);
+  const normalizedRight = normalizeExplorerTarget(right);
+  if (normalizedLeft.kind !== normalizedRight.kind) return false;
+  return normalizedLeft.kind === "location" && normalizedRight.kind === "location"
+    ? sameFolderLocation(normalizedLeft.location, normalizedRight.location)
+    : normalizedLeft.kind === "unresolved-path" &&
+        normalizedRight.kind === "unresolved-path" &&
+        normalizedLeft.path === normalizedRight.path;
+};
+
+/** primitive 배열의 순서와 값을 비교한다. */
+const sameIds = (left: readonly string[], right: readonly string[]): boolean =>
+  left.length === right.length && left.every((value, index) => value === right[index]);
+
+/** Resource 선택 배열의 순서와 kind·ID를 비교한다. */
+const sameSelection = (left: readonly ResourceRef[], right: readonly ResourceRef[]): boolean =>
+  left.length === right.length &&
+  left.every((value, index) => value.kind === right[index]?.kind && value.id === right[index]?.id);
+
 /**
  * Chrome 위치를 종류에 맞게 복사·동결한다. Content ref까지 복사하며 원본 객체를 변경하지 않는다.
  */
@@ -192,11 +266,17 @@ const freezeWindowState = (state: WindowState): WindowState => {
       return Object.freeze({
         ...session,
         frame,
+        sidebarWidth: session.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH,
         tabs: Object.freeze(
           session.tabs.map((tab) =>
             Object.freeze({
               id: tab.id,
-              navigation: freezeNavigation(tab.navigation, cloneFolderLocation),
+              navigation: freezeNavigation(tab.navigation, cloneExplorerNavigationValue),
+              query: tab.query ?? "",
+              expandedFolderIds: Object.freeze([...(tab.expandedFolderIds ?? [])]),
+              selection: Object.freeze(
+                (tab.selection ?? []).map((ref) => Object.freeze({ ...ref })),
+              ),
             }),
           ),
         ),
@@ -250,6 +330,20 @@ const createNavigation = <Location>(location: Location): NavigationState<Locatio
   current: { location, scrollTop: 0 },
   backStack: [],
   forwardStack: [],
+});
+
+/** 새 Explorer tab의 모든 tab-local runtime 필드를 기본값으로 만든다. */
+const createFileExplorerTab = (
+  id: FileExplorerTabId,
+  location: FileExplorerLocation,
+): FileExplorerTab => ({
+  id,
+  navigation: createNavigation<FileExplorerNavigationValue>(
+    createExplorerNavigationValue({ kind: "location", location }),
+  ),
+  query: "",
+  expandedFolderIds: [],
+  selection: [],
 });
 
 /**
@@ -627,6 +721,63 @@ export class WindowStore {
     }
   };
 
+  /** Explorer의 정상 위치 wrapper와 unresolved path를 검증하고 exact runtime target으로 복원한다. */
+  private static validateExplorerTarget = (
+    input: ExplorerNavigationTarget | FileExplorerLocation,
+  ): ExplorerNavigationTarget | WindowStoreFailureReason => {
+    if (input === null || (typeof input === "object" && input?.kind === "folder")) {
+      const location = WindowStore.validateFolderLocation(input);
+      return typeof location === "string" ? location : { kind: "location", location };
+    }
+    if (typeof input !== "object" || input === null) return "invalid-explorer-target";
+    if (input.kind === "location" && Object.keys(input).length === 2) {
+      const location = WindowStore.validateFolderLocation(input.location);
+      return typeof location === "string" ? location : { kind: "location", location };
+    }
+    return input.kind === "unresolved-path" &&
+      Object.keys(input).length === 2 &&
+      typeof input.path === "string" &&
+      input.path.length > 0
+      ? { kind: "unresolved-path", path: input.path }
+      : "invalid-explorer-target";
+  };
+
+  /** Folder ID 배열을 파싱하고 첫 등장 순서를 유지해 중복을 제거한다. */
+  private static validateExpandedFolderIds = (
+    input: readonly ResourceId[],
+  ): readonly ResourceId[] | WindowStoreFailureReason => {
+    if (!Array.isArray(input)) return "invalid-expanded-folder-ids";
+    try {
+      return [
+        ...new Set(
+          (input as readonly unknown[]).map((id) => {
+            if (typeof id !== "string") throw new TypeError("invalid ResourceId");
+            return parseResourceId(id);
+          }),
+        ),
+      ];
+    } catch {
+      return "invalid-expanded-folder-ids";
+    }
+  };
+
+  /** ResourceRef 배열을 파싱하고 kind·ID가 같은 중복 선택을 제거한다. */
+  private static validateSelection = (
+    input: readonly ResourceRef[],
+  ): readonly ResourceRef[] | WindowStoreFailureReason => {
+    if (!Array.isArray(input)) return "invalid-selection";
+    try {
+      const unique = new Map<string, ResourceRef>();
+      for (const value of input) {
+        const ref = parseResourceRef(value);
+        unique.set(`${ref.kind}:${ref.id}`, ref);
+      }
+      return [...unique.values()];
+    } catch {
+      return "invalid-selection";
+    }
+  };
+
   /**
    * Content ref의 kind와 현재 Catalog 존재를 검사한다. 유효한 ref 또는 구분 가능한 실패 사유를 반환한다.
    */
@@ -782,8 +933,9 @@ export class WindowStore {
         placement: "normal",
         minimized: false,
       },
-      tabs: [{ id: tabId, navigation: createNavigation(location) }],
+      tabs: [createFileExplorerTab(tabId, location)],
       activeTabId: tabId,
+      sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
       ...(state.mode === "mobile" ? { desktopPlacementPending: true } : {}),
     };
     return {
@@ -956,47 +1108,47 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      if (mode !== "desktop" && mode !== "mobile") return WindowStore.reject("invalid-mode");
-      const state = WindowStore.requireSnapshot();
-      if (state.mode === mode) return { kind: "no-op" };
+        if (mode !== "desktop" && mode !== "mobile") return WindowStore.reject("invalid-mode");
+        const state = WindowStore.requireSnapshot();
+        if (state.mode === mode) return { kind: "no-op" };
 
-      if (mode === "mobile") {
-        const pending = WindowStore.pendingDesktopWorkAreaChange;
-        const source =
-          pending === null
-            ? state
-            : {
-                ...state,
-                sessions: state.sessions.map((session) => {
-                  const normalBounds = pending.previousBounds.get(session.id);
-                  return normalBounds === undefined
-                    ? session
-                    : { ...session, frame: { ...session.frame, normalBounds } };
-                }),
-              };
-        const next = transitionWindowMode(source, mode);
-        if (next === null) return { kind: "no-op" };
-        WindowStore.awaitingMobileWorkArea = pending === null;
+        if (mode === "mobile") {
+          const pending = WindowStore.pendingDesktopWorkAreaChange;
+          const source =
+            pending === null
+              ? state
+              : {
+                  ...state,
+                  sessions: state.sessions.map((session) => {
+                    const normalBounds = pending.previousBounds.get(session.id);
+                    return normalBounds === undefined
+                      ? session
+                      : { ...session, frame: { ...session.frame, normalBounds } };
+                  }),
+                };
+          const next = transitionWindowMode(source, mode);
+          if (next === null) return { kind: "no-op" };
+          WindowStore.awaitingMobileWorkArea = pending === null;
+          WindowStore.mobileWorkAreaReadyForDesktop = false;
+          WindowStore.awaitingDesktopWorkArea = false;
+          WindowStore.pendingDesktopWorkAreaChange = null;
+          return { kind: "commit", state: next, change: { kind: "mode-changed" } };
+        }
+
+        const transitioned = transitionWindowMode(state, mode);
+        if (transitioned === null) return { kind: "no-op" };
+        const applyCurrentWorkArea = WindowStore.mobileWorkAreaReadyForDesktop;
+        const next = applyCurrentWorkArea
+          ? {
+              ...transitioned,
+              sessions: WindowStore.applyDesktopWorkArea(transitioned, state.workArea),
+            }
+          : transitioned;
+        WindowStore.awaitingDesktopWorkArea = !applyCurrentWorkArea;
+        WindowStore.awaitingMobileWorkArea = false;
         WindowStore.mobileWorkAreaReadyForDesktop = false;
-        WindowStore.awaitingDesktopWorkArea = false;
         WindowStore.pendingDesktopWorkAreaChange = null;
         return { kind: "commit", state: next, change: { kind: "mode-changed" } };
-      }
-
-      const transitioned = transitionWindowMode(state, mode);
-      if (transitioned === null) return { kind: "no-op" };
-      const applyCurrentWorkArea = WindowStore.mobileWorkAreaReadyForDesktop;
-      const next = applyCurrentWorkArea
-        ? {
-            ...transitioned,
-            sessions: WindowStore.applyDesktopWorkArea(transitioned, state.workArea),
-          }
-        : transitioned;
-      WindowStore.awaitingDesktopWorkArea = !applyCurrentWorkArea;
-      WindowStore.awaitingMobileWorkArea = false;
-      WindowStore.mobileWorkAreaReadyForDesktop = false;
-      WindowStore.pendingDesktopWorkAreaChange = null;
-      return { kind: "commit", state: next, change: { kind: "mode-changed" } };
       },
       true,
       context,
@@ -1015,15 +1167,15 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      if (state.mode !== "mobile") return WindowStore.reject("mobile-mode-required");
-      if (applicationId !== "file-explorer" && applicationId !== "chrome") {
-        return WindowStore.reject("invalid-application");
-      }
-      if (state.sessions[0]?.applicationId === applicationId) return { kind: "no-op" };
-      return applicationId === "file-explorer"
-        ? WindowStore.createFileExplorer(null, "mobile-application-launched")
-        : WindowStore.createChrome({ kind: "new-tab" }, "mobile-application-launched");
+        const state = WindowStore.requireSnapshot();
+        if (state.mode !== "mobile") return WindowStore.reject("mobile-mode-required");
+        if (applicationId !== "file-explorer" && applicationId !== "chrome") {
+          return WindowStore.reject("invalid-application");
+        }
+        if (state.sessions[0]?.applicationId === applicationId) return { kind: "no-op" };
+        return applicationId === "file-explorer"
+          ? WindowStore.createFileExplorer(null, "mobile-application-launched")
+          : WindowStore.createChrome({ kind: "new-tab" }, "mobile-application-launched");
       },
       false,
       context,
@@ -1039,10 +1191,10 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const validated = WindowStore.validateFolderLocation(location);
-      return typeof validated === "string"
-        ? WindowStore.reject(validated)
-        : WindowStore.createFileExplorer(validated);
+        const validated = WindowStore.validateFolderLocation(location);
+        return typeof validated === "string"
+          ? WindowStore.reject(validated)
+          : WindowStore.createFileExplorer(validated);
       },
       false,
       context,
@@ -1058,10 +1210,10 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const validated = WindowStore.validateChromeLocation(location);
-      return typeof validated === "string"
-        ? WindowStore.reject(validated)
-        : WindowStore.createChrome(validated);
+        const validated = WindowStore.validateChromeLocation(location);
+        return typeof validated === "string"
+          ? WindowStore.reject(validated)
+          : WindowStore.createChrome(validated);
       },
       false,
       context,
@@ -1077,33 +1229,36 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const location = WindowStore.validateFolderLocation(folder);
-      if (typeof location === "string" || location === null) {
+        const location = WindowStore.validateFolderLocation(folder);
+        if (typeof location === "string" || location === null) {
           return WindowStore.reject(
             typeof location === "string" ? location : "invalid-resource-ref",
           );
-      }
-      const state = WindowStore.requireSnapshot();
-      for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
-        const session = state.sessions.find(({ id }) => id === state.stackingOrder[index]);
-        if (session?.kind !== "file-explorer") continue;
-        const activeTab = session.tabs.find(({ id }) => id === session.activeTabId);
-        if (activeTab?.navigation.current.location?.id === location.id) {
-          const next = WindowStore.activateInState(state, session.id);
-          const alreadyActive =
-            state.activeSessionId === session.id &&
-            !session.frame.minimized &&
-            state.stackingOrder.at(-1) === session.id;
-          return alreadyActive
-            ? { kind: "no-op" }
-            : {
-                kind: "commit",
-                state: next,
-                change: { kind: "window-activated", sessionId: session.id },
-              };
         }
-      }
-      return WindowStore.createFileExplorer(location);
+        const state = WindowStore.requireSnapshot();
+        for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
+          const session = state.sessions.find(({ id }) => id === state.stackingOrder[index]);
+          if (session?.kind !== "file-explorer") continue;
+          const activeTab = session.tabs.find(({ id }) => id === session.activeTabId);
+          if (
+            resolvedExplorerLocation(activeTab?.navigation.current.location ?? null)?.id ===
+            location.id
+          ) {
+            const next = WindowStore.activateInState(state, session.id);
+            const alreadyActive =
+              state.activeSessionId === session.id &&
+              !session.frame.minimized &&
+              state.stackingOrder.at(-1) === session.id;
+            return alreadyActive
+              ? { kind: "no-op" }
+              : {
+                  kind: "commit",
+                  state: next,
+                  change: { kind: "window-activated", sessionId: session.id },
+                };
+          }
+        }
+        return WindowStore.createFileExplorer(location);
       },
       false,
       context,
@@ -1119,50 +1274,50 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const ref = WindowStore.validateContentRef(content);
-      if (typeof ref === "string") return WindowStore.reject(ref);
-      const state = WindowStore.requireSnapshot();
-      if (state.mode === "mobile") {
-        const current = state.sessions[0];
-        if (current?.kind !== "chrome") {
-          context?.onOpenContentTarget?.(null);
-          return WindowStore.createChrome({ kind: "content", ref });
+        const ref = WindowStore.validateContentRef(content);
+        if (typeof ref === "string") return WindowStore.reject(ref);
+        const state = WindowStore.requireSnapshot();
+        if (state.mode === "mobile") {
+          const current = state.sessions[0];
+          if (current?.kind !== "chrome") {
+            context?.onOpenContentTarget?.(null);
+            return WindowStore.createChrome({ kind: "content", ref });
+          }
+          context?.onOpenContentTarget?.(current.id);
+          const tab = current.tabs.find(({ id }) => id === current.activeTabId);
+          if (tab === undefined) throw new Error("mobile Chrome active tab을 찾을 수 없습니다");
+          const location: ChromeLocation = { kind: "content", ref };
+          const navigation = navigate(tab.navigation, location, sameChromeLocation);
+          if (navigation === null) return { kind: "no-op" };
+          return {
+            kind: "commit",
+            state: {
+              ...state,
+              sessions: [
+                {
+                  ...current,
+                  tabs: [{ ...tab, navigation }],
+                },
+              ],
+            },
+            change: { kind: "tab-navigated", sessionId: current.id, tabId: tab.id },
+          };
         }
-        context?.onOpenContentTarget?.(current.id);
-        const tab = current.tabs.find(({ id }) => id === current.activeTabId);
-        if (tab === undefined) throw new Error("mobile Chrome active tab을 찾을 수 없습니다");
-        const location: ChromeLocation = { kind: "content", ref };
-        const navigation = navigate(tab.navigation, location, sameChromeLocation);
-        if (navigation === null) return { kind: "no-op" };
-        return {
-          kind: "commit",
-          state: {
-            ...state,
-            sessions: [
-              {
-                ...current,
-                tabs: [{ ...tab, navigation }],
-              },
-            ],
-          },
-          change: { kind: "tab-navigated", sessionId: current.id, tabId: tab.id },
-        };
-      }
-      const active = state.sessions.find(({ id }) => id === state.activeSessionId);
-      let target = active?.kind === "chrome" ? active : undefined;
-      if (target === undefined) {
-        for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
-          const session = state.sessions.find(({ id }) => id === state.stackingOrder[index]);
-          if (session?.kind === "chrome") {
-            target = session;
-            break;
+        const active = state.sessions.find(({ id }) => id === state.activeSessionId);
+        let target = active?.kind === "chrome" ? active : undefined;
+        if (target === undefined) {
+          for (let index = state.stackingOrder.length - 1; index >= 0; index -= 1) {
+            const session = state.sessions.find(({ id }) => id === state.stackingOrder[index]);
+            if (session?.kind === "chrome") {
+              target = session;
+              break;
+            }
           }
         }
-      }
-      context?.onOpenContentTarget?.(target?.id ?? null);
-      return target === undefined
-        ? WindowStore.createChrome({ kind: "content", ref })
-        : WindowStore.addChromeTabCalculation(target, { kind: "content", ref });
+        context?.onOpenContentTarget?.(target?.id ?? null);
+        return target === undefined
+          ? WindowStore.createChrome({ kind: "content", ref })
+          : WindowStore.addChromeTabCalculation(target, { kind: "content", ref });
       },
       false,
       context,
@@ -1178,10 +1333,10 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const ref = WindowStore.validateContentRef(content);
-      return typeof ref === "string"
-        ? WindowStore.reject(ref)
-        : WindowStore.createChrome({ kind: "content", ref });
+        const ref = WindowStore.validateContentRef(content);
+        return typeof ref === "string"
+          ? WindowStore.reject(ref)
+          : WindowStore.createChrome({ kind: "content", ref });
       },
       false,
       context,
@@ -1197,22 +1352,22 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      if (!isWindowSessionId(sessionId)) return WindowStore.reject("session-not-found");
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (
-        state.activeSessionId === sessionId &&
-        !session.frame.minimized &&
-        state.stackingOrder.at(-1) === sessionId
-      ) {
-        return { kind: "no-op" };
-      }
-      return {
-        kind: "commit",
-        state: WindowStore.activateInState(state, sessionId),
-        change: { kind: "window-activated", sessionId },
-      };
+        if (!isWindowSessionId(sessionId)) return WindowStore.reject("session-not-found");
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (
+          state.activeSessionId === sessionId &&
+          !session.frame.minimized &&
+          state.stackingOrder.at(-1) === sessionId
+        ) {
+          return { kind: "no-op" };
+        }
+        return {
+          kind: "commit",
+          state: WindowStore.activateInState(state, sessionId),
+          change: { kind: "window-activated", sessionId },
+        };
       },
       false,
       context,
@@ -1230,28 +1385,28 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      if (session.frame.minimized) return { kind: "no-op" };
-      const sessions = state.sessions.map((current) =>
-        current.id === sessionId
-          ? { ...current, frame: { ...current.frame, minimized: true } }
-          : current,
-      );
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions,
-          activeSessionId:
-            state.activeSessionId === sessionId
-              ? findTopVisibleSessionId(sessions, state.stackingOrder)
-              : state.activeSessionId,
-        },
-        change: { kind: "window-minimized", sessionId },
-      };
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        if (session.frame.minimized) return { kind: "no-op" };
+        const sessions = state.sessions.map((current) =>
+          current.id === sessionId
+            ? { ...current, frame: { ...current.frame, minimized: true } }
+            : current,
+        );
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions,
+            activeSessionId:
+              state.activeSessionId === sessionId
+                ? findTopVisibleSessionId(sessions, state.stackingOrder)
+                : state.activeSessionId,
+          },
+          change: { kind: "window-minimized", sessionId },
+        };
       },
       false,
       context,
@@ -1267,15 +1422,15 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) {
-        return WindowStore.reject("session-not-found");
-      }
-      return WindowStore.explicitlyCloseSession(state, session, {
-        kind: "window-closed",
-        sessionId,
-      });
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) {
+          return WindowStore.reject("session-not-found");
+        }
+        return WindowStore.explicitlyCloseSession(state, session, {
+          kind: "window-closed",
+          sessionId,
+        });
       },
       false,
       context,
@@ -1291,31 +1446,31 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      const placement = session.frame.placement === "normal" ? "maximized" : "normal";
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
-              ? {
-                  ...current,
-                  frame: { ...current.frame, placement, minimized: false },
-                }
-              : current,
-          ),
-          stackingOrder: [...state.stackingOrder.filter((id) => id !== sessionId), sessionId],
-          activeSessionId: sessionId,
-        },
-        change: {
-          kind: placement === "maximized" ? "window-maximized" : "window-restored",
-          sessionId,
-        },
-      };
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        const placement = session.frame.placement === "normal" ? "maximized" : "normal";
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
+                ? {
+                    ...current,
+                    frame: { ...current.frame, placement, minimized: false },
+                  }
+                : current,
+            ),
+            stackingOrder: [...state.stackingOrder.filter((id) => id !== sessionId), sessionId],
+            activeSessionId: sessionId,
+          },
+          change: {
+            kind: placement === "maximized" ? "window-maximized" : "window-restored",
+            sessionId,
+          },
+        };
       },
       false,
       context,
@@ -1366,11 +1521,7 @@ export class WindowStore {
     context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     if (kind !== "move" && kind !== "resize") {
-      return WindowStore.enqueue(
-        () => WindowStore.reject("invalid-geometry"),
-        false,
-        context,
-      );
+      return WindowStore.enqueue(() => WindowStore.reject("invalid-geometry"), false, context);
     }
     return WindowStore.changeBounds(
       sessionId,
@@ -1462,9 +1613,7 @@ export class WindowStore {
         ) {
           return WindowStore.reject("invalid-geometry");
         }
-        const bounds = preserveRequestedResizeBounds
-          ? { ...requestedBounds }
-          : constrainedBounds;
+        const bounds = preserveRequestedResizeBounds ? { ...requestedBounds } : constrainedBounds;
         if (
           bounds.x === session.frame.normalBounds.x &&
           bounds.y === session.frame.normalBounds.y &&
@@ -1510,49 +1659,49 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      createWindowBounds(workArea, null, WindowStore.requirePlacementConfig());
-      const sameWorkArea =
-        state.workArea.x === workArea.x &&
-        state.workArea.y === workArea.y &&
-        state.workArea.width === workArea.width &&
-        state.workArea.height === workArea.height;
+        const state = WindowStore.requireSnapshot();
+        createWindowBounds(workArea, null, WindowStore.requirePlacementConfig());
+        const sameWorkArea =
+          state.workArea.x === workArea.x &&
+          state.workArea.y === workArea.y &&
+          state.workArea.width === workArea.width &&
+          state.workArea.height === workArea.height;
 
-      if (state.mode === "mobile") {
-        if (sameWorkArea) return { kind: "no-op" };
-        if (WindowStore.awaitingMobileWorkArea) {
-          WindowStore.awaitingMobileWorkArea = false;
-          WindowStore.mobileWorkAreaReadyForDesktop = false;
-        } else {
-          WindowStore.mobileWorkAreaReadyForDesktop = true;
+        if (state.mode === "mobile") {
+          if (sameWorkArea) return { kind: "no-op" };
+          if (WindowStore.awaitingMobileWorkArea) {
+            WindowStore.awaitingMobileWorkArea = false;
+            WindowStore.mobileWorkAreaReadyForDesktop = false;
+          } else {
+            WindowStore.mobileWorkAreaReadyForDesktop = true;
+          }
+          return {
+            kind: "commit",
+            state: { ...state, workArea: { ...workArea } },
+            change: { kind: "work-area-changed" },
+          };
         }
+
+        const needsDesktopPlacement =
+          WindowStore.awaitingDesktopWorkArea ||
+          state.sessions.some(({ desktopPlacementPending }) => desktopPlacementPending === true);
+        if (sameWorkArea && !needsDesktopPlacement) {
+          return { kind: "no-op" };
+        }
+        const sessions = WindowStore.applyDesktopWorkArea(state, workArea);
+        WindowStore.pendingDesktopWorkAreaChange = needsDesktopPlacement
+          ? null
+          : {
+              previousBounds: new Map(
+                state.sessions.map((session) => [session.id, session.frame.normalBounds]),
+              ),
+            };
+        WindowStore.awaitingDesktopWorkArea = false;
         return {
           kind: "commit",
-          state: { ...state, workArea: { ...workArea } },
+          state: { ...state, workArea: { ...workArea }, sessions },
           change: { kind: "work-area-changed" },
         };
-      }
-
-      const needsDesktopPlacement =
-        WindowStore.awaitingDesktopWorkArea ||
-        state.sessions.some(({ desktopPlacementPending }) => desktopPlacementPending === true);
-      if (sameWorkArea && !needsDesktopPlacement) {
-        return { kind: "no-op" };
-      }
-      const sessions = WindowStore.applyDesktopWorkArea(state, workArea);
-      WindowStore.pendingDesktopWorkAreaChange = needsDesktopPlacement
-        ? null
-        : {
-            previousBounds: new Map(
-              state.sessions.map((session) => [session.id, session.frame.normalBounds]),
-            ),
-          };
-      WindowStore.awaitingDesktopWorkArea = false;
-      return {
-        kind: "commit",
-        state: { ...state, workArea: { ...workArea }, sessions },
-        change: { kind: "work-area-changed" },
-      };
       },
       true,
       context,
@@ -1570,29 +1719,29 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      const issue = WindowStore.issueId(new Set());
-      if (!issue.ok) return WindowStore.reject(issue.reason);
-      const raw = issue.value;
-      const tabId = parseFileExplorerTabId(raw);
-      const tab: FileExplorerTab = { id: tabId, navigation: createNavigation(null) };
-      const changed = {
-        ...state,
-        sessions: state.sessions.map((current) =>
-          current.id === sessionId
-            ? { ...session, tabs: [...session.tabs, tab], activeTabId: tabId }
-            : current,
-        ),
-      };
-      return {
-        kind: "commit",
-        state: WindowStore.activateInState(changed, sessionId),
-        change: { kind: "tab-added", sessionId, tabId },
-      };
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        const issue = WindowStore.issueId(new Set());
+        if (!issue.ok) return WindowStore.reject(issue.reason);
+        const raw = issue.value;
+        const tabId = parseFileExplorerTabId(raw);
+        const tab = createFileExplorerTab(tabId, null);
+        const changed = {
+          ...state,
+          sessions: state.sessions.map((current) =>
+            current.id === sessionId
+              ? { ...session, tabs: [...session.tabs, tab], activeTabId: tabId }
+              : current,
+          ),
+        };
+        return {
+          kind: "commit",
+          state: WindowStore.activateInState(changed, sessionId),
+          change: { kind: "tab-added", sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1642,12 +1791,12 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
-      if (state.mode === "mobile") return { kind: "no-op" };
-      return WindowStore.addChromeTabCalculation(session, { kind: "new-tab" });
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
+        if (state.mode === "mobile") return { kind: "no-op" };
+        return WindowStore.addChromeTabCalculation(session, { kind: "new-tab" });
       },
       false,
       context,
@@ -1687,23 +1836,23 @@ export class WindowStore {
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== kind) return WindowStore.reject("session-kind-mismatch");
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== kind) return WindowStore.reject("session-kind-mismatch");
         if (!session.tabs.some(({ id }) => id === tabId))
           return WindowStore.reject("tab-not-found");
-      if (session.activeTabId === tabId) return { kind: "no-op" };
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId ? { ...current, activeTabId: tabId } : current,
-          ) as WindowSession[],
-        },
-        change: { kind: "tab-activated", sessionId, tabId },
-      };
+        if (session.activeTabId === tabId) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId ? { ...current, activeTabId: tabId } : current,
+            ) as WindowSession[],
+          },
+          change: { kind: "tab-activated", sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1742,47 +1891,47 @@ export class WindowStore {
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== expectedKind) return WindowStore.reject("session-kind-mismatch");
-      const index = session.tabs.findIndex(({ id }) => id === tabId);
-      if (index === -1) return WindowStore.reject("tab-not-found");
-      if (session.tabs.length === 1) {
-        return WindowStore.explicitlyCloseSession(state, session, {
-          kind: "tab-closed",
-          sessionId,
-          tabId,
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== expectedKind) return WindowStore.reject("session-kind-mismatch");
+        const index = session.tabs.findIndex(({ id }) => id === tabId);
+        if (index === -1) return WindowStore.reject("tab-not-found");
+        if (session.tabs.length === 1) {
+          return WindowStore.explicitlyCloseSession(state, session, {
+            kind: "tab-closed",
+            sessionId,
+            tabId,
+          });
+        }
+        const activeTabId = selectedAfterClose(
+          session.tabs as readonly Readonly<{ id: string }>[],
+          session.activeTabId,
+          index,
+        );
+        const sessions = state.sessions.map((current) => {
+          if (current.id !== sessionId) return current;
+          if (current.kind === "file-explorer" && expectedKind === "file-explorer") {
+            return {
+              ...current,
+              tabs: current.tabs.filter(({ id }) => id !== tabId),
+              activeTabId: parseFileExplorerTabId(activeTabId),
+            };
+          }
+          if (current.kind === "chrome" && expectedKind === "chrome") {
+            return {
+              ...current,
+              tabs: current.tabs.filter(({ id }) => id !== tabId),
+              activeTabId: parseChromeTabId(activeTabId),
+            };
+          }
+          return current;
         });
-      }
-      const activeTabId = selectedAfterClose(
-        session.tabs as readonly Readonly<{ id: string }>[],
-        session.activeTabId,
-        index,
-      );
-      const sessions = state.sessions.map((current) => {
-        if (current.id !== sessionId) return current;
-        if (current.kind === "file-explorer" && expectedKind === "file-explorer") {
-          return {
-            ...current,
-            tabs: current.tabs.filter(({ id }) => id !== tabId),
-            activeTabId: parseFileExplorerTabId(activeTabId),
-          };
-        }
-        if (current.kind === "chrome" && expectedKind === "chrome") {
-          return {
-            ...current,
-            tabs: current.tabs.filter(({ id }) => id !== tabId),
-            activeTabId: parseChromeTabId(activeTabId),
-          };
-        }
-        return current;
-      });
-      return {
-        kind: "commit",
-        state: { ...state, sessions },
-        change: { kind: "tab-closed", sessionId, tabId },
-      };
+        return {
+          kind: "commit",
+          state: { ...state, sessions },
+          change: { kind: "tab-closed", sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1800,30 +1949,30 @@ export class WindowStore {
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
-      if (!isFileExplorerTabId(tabId)) return WindowStore.reject("tab-kind-mismatch");
-      const tab = session.tabs.find(({ id }) => id === tabId);
-      if (tab === undefined) return WindowStore.reject("tab-not-found");
-      const next = update(tab);
-      if (next === null) return { kind: "no-op" };
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
+        if (!isFileExplorerTabId(tabId)) return WindowStore.reject("tab-kind-mismatch");
+        const tab = session.tabs.find(({ id }) => id === tabId);
+        if (tab === undefined) return WindowStore.reject("tab-not-found");
+        const next = update(tab);
+        if (next === null) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
                 ? {
                     ...session,
                     tabs: session.tabs.map((item) => (item.id === tabId ? next : item)),
                   }
-              : current,
-          ),
-        },
-        change: { kind: changeKind, sessionId, tabId },
-      };
+                : current,
+            ),
+          },
+          change: { kind: changeKind, sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1841,73 +1990,75 @@ export class WindowStore {
   ): Promise<WindowStoreResult> =>
     WindowStore.enqueue(
       () => {
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
-      if (!isChromeTabId(tabId)) return WindowStore.reject("tab-kind-mismatch");
-      const tab = session.tabs.find(({ id }) => id === tabId);
-      if (tab === undefined) return WindowStore.reject("tab-not-found");
-      const next = update(tab);
-      if (next === null) return { kind: "no-op" };
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
+        if (!isChromeTabId(tabId)) return WindowStore.reject("tab-kind-mismatch");
+        const tab = session.tabs.find(({ id }) => id === tabId);
+        if (tab === undefined) return WindowStore.reject("tab-not-found");
+        const next = update(tab);
+        if (next === null) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
                 ? {
                     ...session,
                     tabs: session.tabs.map((item) => (item.id === tabId ? next : item)),
                   }
-              : current,
-          ),
-        },
-        change: { kind: changeKind, sessionId, tabId },
-      };
+                : current,
+            ),
+          },
+          change: { kind: changeKind, sessionId, tabId },
+        };
       },
       false,
       context,
     );
 
-  /**
-   * Explorer tab의 current location으로 이동하고 forward history를 비운다.
-   */
+  /** Explorer tab의 정상 위치 또는 unresolved path로 이동하고 tab-local query·selection을 비운다. */
   static navigateFileExplorer(
     sessionId: WindowSessionId,
     tabId: FileExplorerTabId,
-    location: FileExplorerLocation,
+    target: ExplorerNavigationTarget | FileExplorerLocation,
     context?: WindowStoreCommandContext,
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const validated = WindowStore.validateFolderLocation(location);
-      if (typeof validated === "string") return WindowStore.reject(validated);
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
-      const tab = session.tabs.find(({ id }) => id === tabId);
-      if (tab === undefined) return WindowStore.reject("tab-not-found");
-      const navigation = navigate(tab.navigation, validated, sameFolderLocation);
-      if (navigation === null) return { kind: "no-op" };
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
-              ? {
-                  ...session,
-                  tabs: session.tabs.map((item) =>
-                    item.id === tabId ? { ...item, navigation } : item,
-                  ),
-                }
-              : current,
-          ),
-        },
-        change: { kind: "tab-navigated", sessionId, tabId },
-      };
+        const validated = WindowStore.validateExplorerTarget(target);
+        if (typeof validated === "string") return WindowStore.reject(validated);
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
+        const tab = session.tabs.find(({ id }) => id === tabId);
+        if (tab === undefined) return WindowStore.reject("tab-not-found");
+        const navigation = navigate(
+          tab.navigation,
+          createExplorerNavigationValue(validated),
+          sameExplorerTarget,
+        );
+        if (navigation === null) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
+                ? {
+                    ...session,
+                    tabs: session.tabs.map((item) =>
+                      item.id === tabId ? { ...item, navigation, query: "", selection: [] } : item,
+                    ),
+                  }
+                : current,
+            ),
+          },
+          change: { kind: "tab-navigated", sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1925,33 +2076,33 @@ export class WindowStore {
   ): Promise<WindowStoreResult> {
     return WindowStore.enqueue(
       () => {
-      const validated = WindowStore.validateChromeLocation(location);
-      if (typeof validated === "string") return WindowStore.reject(validated);
-      const state = WindowStore.requireSnapshot();
-      const session = WindowStore.findSession(sessionId);
-      if (session === undefined) return WindowStore.reject("session-not-found");
-      if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
-      const tab = session.tabs.find(({ id }) => id === tabId);
-      if (tab === undefined) return WindowStore.reject("tab-not-found");
-      const navigation = navigate(tab.navigation, validated, sameChromeLocation);
-      if (navigation === null) return { kind: "no-op" };
-      return {
-        kind: "commit",
-        state: {
-          ...state,
-          sessions: state.sessions.map((current) =>
-            current.id === sessionId
-              ? {
-                  ...session,
-                  tabs: session.tabs.map((item) =>
-                    item.id === tabId ? { ...item, navigation } : item,
-                  ),
-                }
-              : current,
-          ),
-        },
-        change: { kind: "tab-navigated", sessionId, tabId },
-      };
+        const validated = WindowStore.validateChromeLocation(location);
+        if (typeof validated === "string") return WindowStore.reject(validated);
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "chrome") return WindowStore.reject("session-kind-mismatch");
+        const tab = session.tabs.find(({ id }) => id === tabId);
+        if (tab === undefined) return WindowStore.reject("tab-not-found");
+        const navigation = navigate(tab.navigation, validated, sameChromeLocation);
+        if (navigation === null) return { kind: "no-op" };
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId
+                ? {
+                    ...session,
+                    tabs: session.tabs.map((item) =>
+                      item.id === tabId ? { ...item, navigation } : item,
+                    ),
+                  }
+                : current,
+            ),
+          },
+          change: { kind: "tab-navigated", sessionId, tabId },
+        };
       },
       false,
       context,
@@ -1971,7 +2122,7 @@ export class WindowStore {
       tabId,
       (tab) => {
         const navigation = goBack(tab.navigation);
-        return navigation === null ? null : { ...tab, navigation };
+        return navigation === null ? null : { ...tab, navigation, query: "", selection: [] };
       },
       "tab-went-back",
       context,
@@ -1991,7 +2142,7 @@ export class WindowStore {
       tabId,
       (tab) => {
         const navigation = goForward(tab.navigation);
-        return navigation === null ? null : { ...tab, navigation };
+        return navigation === null ? null : { ...tab, navigation, query: "", selection: [] };
       },
       "tab-went-forward",
       context,
@@ -2054,10 +2205,164 @@ export class WindowStore {
       sessionId,
       tabId,
       (tab) => {
+        if (normalizeExplorerTarget(tab.navigation.current.location).kind === "unresolved-path") {
+          return null;
+        }
         const navigation = withScrollTop(tab.navigation, scrollTop);
         return navigation === null ? null : { ...tab, navigation };
       },
       "tab-scrolled",
+      context,
+    );
+  }
+
+  /** Explorer tab의 즉시 검색어를 바꾸며 unresolved target에서는 빈 값을 유지한다. */
+  static setFileExplorerQuery(
+    sessionId: WindowSessionId,
+    tabId: FileExplorerTabId,
+    query: string,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    if (typeof query !== "string") {
+      return WindowStore.enqueue(() => WindowStore.reject("invalid-query"), false, context);
+    }
+    return WindowStore.updateExplorerTab(
+      sessionId,
+      tabId,
+      (tab) => {
+        const next =
+          normalizeExplorerTarget(tab.navigation.current.location).kind === "unresolved-path"
+            ? ""
+            : query;
+        return (tab.query ?? "") === next ? null : { ...tab, query: next };
+      },
+      "tab-query-changed",
+      context,
+    );
+  }
+
+  /** Explorer tab의 Sidebar expansion set을 다른 tab과 독립적으로 교체한다. */
+  static setFileExplorerExpandedFolderIds(
+    sessionId: WindowSessionId,
+    tabId: FileExplorerTabId,
+    expandedFolderIds: readonly ResourceId[],
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    const validated = WindowStore.validateExpandedFolderIds(expandedFolderIds);
+    if (typeof validated === "string") {
+      return WindowStore.enqueue(() => WindowStore.reject(validated), false, context);
+    }
+    return WindowStore.updateExplorerTab(
+      sessionId,
+      tabId,
+      (tab) =>
+        sameIds(tab.expandedFolderIds ?? [], validated)
+          ? null
+          : { ...tab, expandedFolderIds: validated },
+      "tab-expansion-changed",
+      context,
+    );
+  }
+
+  /** Explorer tab의 serializable Content selection을 교체한다. */
+  static setFileExplorerSelection(
+    sessionId: WindowSessionId,
+    tabId: FileExplorerTabId,
+    selection: readonly ResourceRef[],
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    const validated = WindowStore.validateSelection(selection);
+    if (typeof validated === "string") {
+      return WindowStore.enqueue(() => WindowStore.reject(validated), false, context);
+    }
+    return WindowStore.updateExplorerTab(
+      sessionId,
+      tabId,
+      (tab) => {
+        const next =
+          normalizeExplorerTarget(tab.navigation.current.location).kind === "unresolved-path"
+            ? []
+            : validated;
+        return sameSelection(tab.selection ?? [], next) ? null : { ...tab, selection: next };
+      },
+      "tab-selection-changed",
+      context,
+    );
+  }
+
+  /** 같은 Explorer Window tab들이 공유하는 runtime Sidebar 폭을 교체한다. */
+  static setFileExplorerSidebarWidth(
+    sessionId: WindowSessionId,
+    sidebarWidth: number,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    return WindowStore.enqueue(
+      () => {
+        if (!Number.isFinite(sidebarWidth) || sidebarWidth <= 0) {
+          return WindowStore.reject("invalid-sidebar-width");
+        }
+        const state = WindowStore.requireSnapshot();
+        const session = WindowStore.findSession(sessionId);
+        if (session === undefined) return WindowStore.reject("session-not-found");
+        if (session.kind !== "file-explorer") return WindowStore.reject("session-kind-mismatch");
+        if ((session.sidebarWidth ?? DEFAULT_SIDEBAR_WIDTH) === sidebarWidth) {
+          return { kind: "no-op" };
+        }
+        return {
+          kind: "commit",
+          state: {
+            ...state,
+            sessions: state.sessions.map((current) =>
+              current.id === sessionId ? { ...session, sidebarWidth } : current,
+            ),
+          },
+          change: { kind: "sidebar-width-changed", sessionId },
+        };
+      },
+      false,
+      context,
+    );
+  }
+
+  /**
+   * Explorer 화면 상태를 history 추가 없이 초기화한다.
+   *
+   * unresolved path의 최신 해석이 성공했다면 resolvedLocation으로 current target만 교체한다.
+   */
+  static refreshFileExplorer(
+    sessionId: WindowSessionId,
+    tabId: FileExplorerTabId,
+    resolvedLocation?: FileExplorerLocation,
+    context?: WindowStoreCommandContext,
+  ): Promise<WindowStoreResult> {
+    const validated =
+      resolvedLocation === undefined
+        ? undefined
+        : WindowStore.validateFolderLocation(resolvedLocation);
+    if (typeof validated === "string") {
+      return WindowStore.enqueue(() => WindowStore.reject(validated), false, context);
+    }
+    return WindowStore.updateExplorerTab(
+      sessionId,
+      tabId,
+      (tab) => {
+        const currentTarget = normalizeExplorerTarget(tab.navigation.current.location);
+        const nextTarget =
+          currentTarget.kind === "unresolved-path" && validated !== undefined
+            ? ({ kind: "location", location: validated } as const)
+            : currentTarget;
+        const navigation = {
+          ...tab.navigation,
+          current: { location: createExplorerNavigationValue(nextTarget), scrollTop: 0 },
+        };
+        const unchanged =
+          sameExplorerTarget(currentTarget, nextTarget) &&
+          tab.navigation.current.scrollTop === 0 &&
+          (tab.query ?? "") === "" &&
+          (tab.selection ?? []).length === 0;
+        return unchanged ? null : { ...tab, navigation, query: "", selection: [] };
+      },
+      "tab-refreshed",
       context,
     );
   }

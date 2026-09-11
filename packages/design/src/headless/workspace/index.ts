@@ -12,6 +12,14 @@ export {
 export { FolderCatalog } from "./folderCatalog/index.js";
 export { type ResourcePlacement, type WorkspaceState } from "./model/index.js";
 export {
+  compareFolderNames,
+  type FolderNameFailureReason,
+  type FolderNameValidation,
+  getFolderNameComparisonKey,
+  normalizeFolderName,
+  validateFolderName,
+} from "./namePolicy/index.js";
+export {
   WORKSPACE_OPERATION_TARGET,
   type WorkspaceAction,
   type WorkspaceCommittedResult,
@@ -23,6 +31,17 @@ export {
   type WorkspaceSettledResult,
 } from "./operations/index.js";
 export { createWorkspaceSeed, type WorkspaceSeed } from "./seed/index.js";
+export {
+  resolveWorkspacePath,
+  selectWorkspaceBreadcrumb,
+  selectWorkspacePath,
+  selectWorkspaceSidebarTree,
+  suggestWorkspaceFolderName,
+  type WorkspaceBreadcrumbItem,
+  type WorkspaceLocation,
+  type WorkspacePathResolution,
+  type WorkspaceSidebarTreeNode,
+} from "./selectors/index.js";
 export {
   WorkspaceStore,
   WorkspaceStoreAlreadyInitializedError,
