@@ -55,6 +55,7 @@ export {
   type StartScreenView,
   useStartScreenController,
 } from "./screen/index.js";
+export { selectStartPinnedResources, type StartPinnedResourceView } from "./selectors/index.js";
 export {
   StartStore,
   StartStoreAlreadyInitializedError,

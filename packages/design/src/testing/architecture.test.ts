@@ -50,6 +50,12 @@ const isInside = (path: string, directory: string): boolean => {
   );
 };
 
+/**
+ * TypeScript resolver가 반환한 platform 혼합 경로에서 node_modules 구간을 판별한다.
+ */
+const isNodeModulesPath = (path: string): boolean =>
+  path.replaceAll("\\", "/").split("/").includes("node_modules");
+
 /** model·commands·selectors element처럼 canonical pure 역할인지 판별한다. */
 const isPureModule = (path: string): boolean =>
   relative(headlessRoot, path)
@@ -142,7 +148,7 @@ describe("headless architecture", () => {
           target !== null &&
           isInside(target, repositoryRoot) &&
           !isInside(target, packageRoot) &&
-          !target.split(sep).includes("node_modules")
+          !isNodeModulesPath(target)
         ) {
           violations.push(`${relative(sourceRoot, source)} -> ${relative(repositoryRoot, target)}`);
         }

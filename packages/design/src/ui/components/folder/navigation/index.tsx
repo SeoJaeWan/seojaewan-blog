@@ -1,5 +1,3 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 import { Menu } from "@base-ui/react/menu";
@@ -17,6 +15,12 @@ import type {
   FileExplorerReadModel,
 } from "../../../../headless/folders/index.js";
 import type { WorkspaceBreadcrumbItem } from "../../../../headless/workspace/index.js";
+import { useAddressEditor } from "./hooks/useAddressEditor/index.js";
+import {
+  type AddressBreadcrumbItem,
+  createUnresolvedBreadcrumb,
+  splitBreadcrumb,
+} from "./utils/breadcrumb/index.js";
 
 import "./folderNavigation.css";
 
@@ -35,12 +39,6 @@ export type FolderNavigationProps = Readonly<{
   error: FileExplorerReadModel["error"];
 }>;
 
-/** breadcrumb가 긴 경우 Desktop과 current 사이에서 menu로 접을 항목을 나눈다. */
-const splitBreadcrumb = (items: readonly WorkspaceBreadcrumbItem[]) =>
-  items.length > 3
-    ? { leading: items.slice(0, 1), hidden: items.slice(1, -1), trailing: items.slice(-1) }
-    : { leading: items, hidden: [], trailing: [] };
-
 /** File Explorer의 history controls와 editable address/breadcrumb를 직접 조합한다. */
 export const FolderNavigation = ({
   actions,
@@ -52,68 +50,28 @@ export const FolderNavigation = ({
   contentFocusTarget,
   error,
 }: FolderNavigationProps) => {
-  const [editing, setEditing] = useState(error !== null);
-  const [draft, setDraft] = useState(address);
-  const [submitted, setSubmitted] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const previousErrorRef = useRef(error);
-  const parts = splitBreadcrumb(breadcrumb);
-  const showInput = editing || error !== null;
+  const {
+    beginEditing,
+    cancelEditing,
+    draft,
+    editing,
+    inputRef,
+    setDraft,
+    submitAddress,
+    submitted,
+  } = useAddressEditor({ actions, address, contentFocusTarget, error });
+  const parts = splitBreadcrumb(error === null ? breadcrumb : createUnresolvedBreadcrumb(address));
+  const showInput = editing;
 
-  useEffect(() => {
-    if (!editing || error !== null) setDraft(address);
-  }, [address, editing, error]);
-
-  useEffect(() => {
-    if (previousErrorRef.current !== null && error === null) {
-      setEditing(false);
-      contentFocusTarget?.focus();
-    }
-    previousErrorRef.current = error;
-  }, [contentFocusTarget, error]);
-
-  useEffect(() => {
-    if (submitted === null) return;
-    if (error !== null) {
-      setEditing(true);
-      setDraft(address);
-      setSubmitted(null);
-      return;
-    }
-    setEditing(false);
-    setSubmitted(null);
-    contentFocusTarget?.focus();
-  }, [address, contentFocusTarget, error, submitted]);
-
-  useLayoutEffect(() => {
-    if (!showInput) return;
-    const input = inputRef.current;
-    input?.focus();
-    if (editing && error === null) input?.select();
-  }, [editing, error, showInput]);
-
-  const beginEditing = () => {
-    if (error !== null) return;
-    setDraft(address);
-    setEditing(true);
+  const navigate = (item: AddressBreadcrumbItem) => {
+    void actions.execute(
+      item.location === undefined
+        ? { type: "file-explorer.navigation.submit-address", path: item.path }
+        : { type: "file-explorer.navigation.navigate", location: item.location },
+    );
   };
 
-  const cancelEditing = () => {
-    setDraft(address);
-    setEditing(false);
-  };
-
-  const submitAddress = () => {
-    const path = draft;
-    setSubmitted(path);
-    void actions.execute({ type: "file-explorer.navigation.submit-address", path });
-  };
-
-  const navigate = (item: WorkspaceBreadcrumbItem) => {
-    void actions.execute({ type: "file-explorer.navigation.navigate", location: item.location });
-  };
-
-  const renderSegment = (item: WorkspaceBreadcrumbItem, current: boolean) => (
+  const renderSegment = (item: AddressBreadcrumbItem, current: boolean) => (
     <span className="folder-navigation__segment" key={item.path}>
       {current ? (
         <span aria-current="page" className="folder-navigation__current" title={item.path}>
@@ -181,13 +139,13 @@ export const FolderNavigation = ({
             aria-label="주소"
             className="folder-navigation__address-input"
             onBlur={() => {
-              if (error === null && submitted === null) cancelEditing();
+              if (submitted === null) cancelEditing();
             }}
             onFocus={() =>
               void actions.execute({ type: "file-explorer.selection.set", selection: [] })
             }
             onKeyDown={(event) => {
-              if (event.key === "Escape" && error === null) {
+              if (event.key === "Escape") {
                 event.preventDefault();
                 cancelEditing();
               }

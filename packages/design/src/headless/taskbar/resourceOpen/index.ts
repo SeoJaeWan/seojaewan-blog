@@ -13,3 +13,4 @@ export {
   type ResourceOpenWindowAction,
   type ResourceOpenWindowOperationPort,
 } from "./operations/index.js";
+export { selectResourceOpenAction } from "./selectors/index.js";

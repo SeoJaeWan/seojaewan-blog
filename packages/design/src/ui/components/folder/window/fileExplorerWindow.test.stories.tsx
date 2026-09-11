@@ -4,6 +4,7 @@ import { expect, userEvent, waitFor, within } from "storybook/test";
 import fileExplorerMeta, {
   Desktop,
   DetailsView,
+  InteractiveActions,
   LongBreadcrumb,
   Mobile,
   OverflowTabs,
@@ -40,9 +41,7 @@ export const ControllerConnectionsTest: Story = {
     await userEvent.type(address, "/Archive{Enter}");
     await waitFor(async () => {
       await expect(log.textContent).toContain("navigate-file-explorer");
-      await expect(log.textContent).toContain(
-        '"id":"72000000-0000-4000-8000-000000000005"',
-      );
+      await expect(log.textContent).toContain('"id":"72000000-0000-4000-8000-000000000005"');
     });
 
     const search = canvas.getByRole("searchbox", { name: "현재 폴더 검색" });
@@ -56,6 +55,55 @@ export const ControllerConnectionsTest: Story = {
 
     await userEvent.click(canvas.getByRole("button", { name: "자세히" }));
     await waitFor(() => expect(log.textContent).toContain("folder-view-settings.update"));
+  },
+};
+
+export const InteractiveStateTest: Story = {
+  ...InteractiveActions,
+  name: "탭·주소·검색·Sidebar 화면 상태 자동 검사",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const search = canvas.getByRole("searchbox", { name: "현재 폴더 검색" });
+    await userEvent.type(search, "no-match");
+    await waitFor(() =>
+      expect(canvas.getByRole("status", { name: "" })).toHaveTextContent("검색 결과가 없습니다."),
+    );
+    await userEvent.clear(search);
+    await waitFor(() => expect(canvas.queryByText("검색 결과가 없습니다.")).toBeNull());
+
+    await userEvent.click(canvas.getByRole("treeitem", { name: "Design System" }));
+    await waitFor(() =>
+      expect(canvas.getByRole("tab", { name: "Design System" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      ),
+    );
+    await expect(canvas.getByRole("button", { name: "뒤로" })).toBeEnabled();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Projects 접기" }));
+    await waitFor(() => expect(canvas.queryByRole("treeitem", { name: "2026" })).toBeNull());
+
+    await userEvent.click(canvas.getByRole("button", { name: "새 탭" }));
+    await waitFor(() => expect(canvas.getAllByRole("tab")).toHaveLength(3));
+    await expect(canvas.getByRole("tab", { name: "Desktop" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+
+    await userEvent.click(canvas.getByRole("button", { name: "Desktop 탭 닫기" }));
+    await waitFor(() => expect(canvas.getAllByRole("tab")).toHaveLength(2));
+
+    await userEvent.click(canvas.getByRole("group", { name: "주소" }));
+    const address = canvas.getByRole("textbox", { name: "주소" });
+    await userEvent.clear(address);
+    await userEvent.type(address, "/Projects{Enter}");
+    await waitFor(() =>
+      expect(canvas.getByRole("tab", { name: "Projects" })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      ),
+    );
   },
 };
 
@@ -104,6 +152,10 @@ export const UnresolvedTest: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("tab", { name: "폴더를 찾을 수 없음" })).toBeVisible();
+    const breadcrumb = canvas.getByRole("group", { name: "주소" });
+    await expect(within(breadcrumb).getByText("Missing")).toBeVisible();
+    await expect(within(breadcrumb).getByText("Archive")).toBeVisible();
+    await userEvent.click(breadcrumb);
     await expect(canvas.getByRole("textbox", { name: "주소" })).toHaveValue("/Missing/Archive");
     await expect(canvas.getByRole("alert")).toHaveTextContent("폴더를 찾을 수 없습니다.");
     await expect(canvas.getByRole("searchbox", { name: "현재 폴더 검색" })).toBeDisabled();

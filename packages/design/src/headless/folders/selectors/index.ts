@@ -159,12 +159,12 @@ export const selectFileExplorerAddress = (
     ? target.path
     : (selectWorkspacePath(workspace, target.location) ?? "/");
 
-/** 현재 Workspace 원본에서 target의 tab/title label을 반환한다. */
+/** 현재 Workspace 원본과 해석 상태에서 target의 tab/title label을 반환한다. */
 export const selectFileExplorerTitle = (
   workspace: WorkspaceState,
   target: ExplorerNavigationTarget,
 ): string => {
-  if (target.kind === "unresolved-path") return target.path;
+  if (target.kind === "unresolved-path") return "폴더를 찾을 수 없음";
   if (target.location === null) return "Desktop";
   return workspace.folders.find(({ ref }) => ref.id === target.location?.id)?.name ?? "Desktop";
 };

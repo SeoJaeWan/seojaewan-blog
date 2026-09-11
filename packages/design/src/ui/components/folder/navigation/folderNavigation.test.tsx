@@ -79,7 +79,7 @@ describe("FolderNavigation", () => {
     ]);
   });
 
-  it("unresolved 주소와 입력값은 Esc 뒤에도 유지한다", () => {
+  it("unresolved 주소를 breadcrumb로 표시하고 빈 영역에서 다시 편집한다", () => {
     const { actions } = createActions();
     render(
       <FolderNavigation
@@ -91,10 +91,17 @@ describe("FolderNavigation", () => {
         error={{ kind: "unresolved-path", path: "/Missing", message: "missing" }}
       />,
     );
+    expect(screen.queryByRole("textbox", { name: "주소" })).toBeNull();
+    expect(screen.getByText("Missing")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("group", { name: "주소" }));
     const input = screen.getByRole<HTMLInputElement>("textbox", { name: "주소" });
-    fireEvent.keyDown(input, { key: "Escape" });
     expect(input.value).toBe("/Missing");
-    expect(input.getAttribute("aria-invalid")).toBe("true");
+    expect(input.selectionStart).toBe(0);
+    expect(input.selectionEnd).toBe(input.value.length);
+    fireEvent.keyDown(input, { key: "Escape" });
+    expect(screen.queryByRole("textbox", { name: "주소" })).toBeNull();
+    expect(screen.getByText("Missing")).toBeTruthy();
   });
 
   it("긴 breadcrumb의 중간 ancestors를 menu trigger로 노출한다", () => {

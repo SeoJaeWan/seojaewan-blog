@@ -93,6 +93,14 @@
   inline-size: 16px;
 }
 
+.file-explorer-sidebar__icon {
+  color: rgb(214 151 23);
+}
+
+.file-explorer-sidebar__row[data-kind="desktop"] .file-explorer-sidebar__icon {
+  color: var(--wd-color-text-primary);
+}
+
 .file-explorer-sidebar__label {
   flex: 1;
   min-inline-size: 0;

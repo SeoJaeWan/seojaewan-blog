@@ -4,8 +4,11 @@
   border: 1px solid var(--wd-color-border-default);
   border-radius: var(--wd-reference-radius-1);
   box-sizing: border-box;
+  block-size: 34px;
   display: flex;
   flex: 0 1 240px;
+  font-size: 13px;
+  line-height: 18px;
   min-inline-size: 120px;
   position: relative;
 }
@@ -18,6 +21,8 @@
   color: var(--wd-color-text-primary);
   flex: 0 0 auto;
   margin-inline-start: var(--wd-reference-spacing-2);
+  block-size: 16px;
+  inline-size: 16px;
 }
 
 .folder-search__input {
@@ -30,7 +35,9 @@
   inline-size: 100%;
   min-inline-size: 0;
   outline: none;
-  padding: var(--wd-reference-spacing-2);
+  block-size: 32px;
+  line-height: 18px;
+  padding: 0 var(--wd-reference-spacing-2);
 }
 
 .folder-search:focus-within {

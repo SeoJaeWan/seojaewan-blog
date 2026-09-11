@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-
 import { Input } from "@base-ui/react/input";
 import { Search20Regular } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
 import type { FileExplorerControllerActions } from "../../../../headless/folders/index.js";
+import { useFolderSearchInput } from "./hooks/useFolderSearchInput/index.js";
 
 import "./folderSearch.css";
 
@@ -25,20 +24,10 @@ export const FolderSearch = ({
   placeholder = "현재 폴더 검색",
   query,
 }: FolderSearchProps) => {
-  const [rawValue, setRawValue] = useState(query);
-  const composingRef = useRef(false);
-  const lastCommittedRef = useRef(query);
-
-  useEffect(() => {
-    lastCommittedRef.current = query;
-    if (!composingRef.current) setRawValue(query);
-  }, [query]);
-
-  const commit = (value: string) => {
-    if (lastCommittedRef.current === value) return;
-    lastCommittedRef.current = value;
-    void actions.execute({ type: "file-explorer.query.set", query: value });
-  };
+  const { changeValue, endComposition, rawValue, startComposition } = useFolderSearchInput({
+    actions,
+    query,
+  });
 
   return (
     <label
@@ -51,19 +40,11 @@ export const FolderSearch = ({
         className="folder-search__input"
         disabled={disabled}
         onCompositionEnd={(event) => {
-          composingRef.current = false;
-          const value = event.currentTarget.value;
-          setRawValue(value);
-          commit(value);
+          endComposition(event.currentTarget.value);
         }}
-        onCompositionStart={() => {
-          composingRef.current = true;
-        }}
+        onCompositionStart={startComposition}
         onFocus={() => void actions.execute({ type: "file-explorer.selection.set", selection: [] })}
-        onValueChange={(value) => {
-          setRawValue(value);
-          if (!composingRef.current) commit(value);
-        }}
+        onValueChange={changeValue}
         placeholder={placeholder}
         spellCheck={false}
         type="search"

@@ -1,12 +1,12 @@
-import { useLayoutEffect, useRef, useState } from "react";
-
 import { Button } from "@base-ui/react/button";
 import { Tabs } from "@base-ui/react/tabs";
 import {
   Add20Regular,
   ChevronLeft20Regular,
   ChevronRight20Regular,
-  Dismiss16Regular,
+  Desktop16Regular,
+  Dismiss12Regular,
+  Folder16Filled,
 } from "@fluentui/react-icons";
 import { clsx } from "clsx";
 
@@ -15,6 +15,7 @@ import type {
   FileExplorerReadModel,
   FileExplorerTabView,
 } from "../../../../headless/folders/index.js";
+import { useFolderTabsViewport } from "./hooks/useFolderTabsViewport/index.js";
 
 import "./folderTabs.css";
 
@@ -44,39 +45,9 @@ export const FolderTabs = ({
   className,
   tabs,
 }: FolderTabsProps) => {
-  const viewportRef = useRef<HTMLDivElement | null>(null);
-  const activeRef = useRef<HTMLElement | null>(null);
-  const tabRefs = useRef(new Map<FileExplorerTabView["id"], HTMLElement>());
-  const [overflow, setOverflow] = useState(false);
   const visibleTabs = tabs ?? [];
-
-  useLayoutEffect(() => {
-    const viewport = viewportRef.current;
-    if (viewport === null) return;
-
-    const measure = () => setOverflow(viewport.scrollWidth > viewport.clientWidth + 1);
-    measure();
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
-    observer?.observe(viewport);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer?.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [tabs]);
-
-  useLayoutEffect(() => {
-    activeRef.current?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
-  }, [activeTabId]);
-
-  const scrollTabs = (direction: -1 | 1) => {
-    const viewport = viewportRef.current;
-    if (viewport === null) return;
-    viewport.scrollBy({
-      behavior: "smooth",
-      left: direction * Math.max(120, viewport.clientWidth * 0.75),
-    });
-  };
+  const { handleTabKeyDown, overflow, registerTab, scrollTabs, viewportRef } =
+    useFolderTabsViewport({ actions, activeTabId, tabs: visibleTabs });
 
   if (tabs === null) return null;
 
@@ -114,29 +85,19 @@ export const FolderTabs = ({
             >
               <Tabs.Tab
                 className="folder-tabs__tab"
-                onKeyDown={(event) => {
-                  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-                  event.preventDefault();
-                  const offset = event.key === "ArrowLeft" ? -1 : 1;
-                  const next =
-                    visibleTabs[(index + offset + visibleTabs.length) % visibleTabs.length];
-                  if (next === undefined) return;
-                  tabRefs.current.get(next.id)?.focus();
-                  if (next.id !== activeTabId) {
-                    void actions.execute({
-                      type: "file-explorer.tab.activate",
-                      tabId: next.id,
-                    });
-                  }
-                }}
-                ref={(node) => {
-                  if (node === null) tabRefs.current.delete(tab.id);
-                  else tabRefs.current.set(tab.id, node);
-                  if (tab.id === activeTabId) activeRef.current = node;
-                }}
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
+                ref={registerTab(tab.id)}
                 title={tab.address}
                 value={tab.id}
               >
+                {tab.target.kind === "location" && tab.target.location === null ? (
+                  <Desktop16Regular
+                    aria-hidden="true"
+                    className="folder-tabs__resource-icon folder-tabs__resource-icon--desktop"
+                  />
+                ) : (
+                  <Folder16Filled aria-hidden="true" className="folder-tabs__resource-icon" />
+                )}
                 <span className="folder-tabs__title">{tab.title}</span>
               </Tabs.Tab>
               <Button
@@ -147,7 +108,7 @@ export const FolderTabs = ({
                 }
                 type="button"
               >
-                <Dismiss16Regular aria-hidden="true" />
+                <Dismiss12Regular aria-hidden="true" />
               </Button>
             </span>
           ))}

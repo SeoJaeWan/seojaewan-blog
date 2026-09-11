@@ -4,23 +4,22 @@
  * active identity와 전환 순서는 headless가 소유하고, 이 hook은 실제 widget completion을
  * 대기 중인 operation ID와 phase에만 전달한다.
  */
-import { useCallback, useEffect, useId, useMemo, useRef } from "react";
+import { useCallback, useId, useMemo, useRef } from "react";
 
 import {
-  PRIMARY_PANEL_ENTER_PHASE,
-  PRIMARY_PANEL_EXIT_PHASE,
   type PrimaryPanelDismissReason,
   type PrimaryPanelId,
   type PrimaryPanelOperationHandle,
   type PrimaryPanelResourceOpenRequestId,
-  type ResourceOpenAction,
   type ResourceOpenResult,
   type ResourceReaders,
   type ResourceRef,
   selectPrimaryPanelView,
+  selectResourceOpenAction,
+  selectStartPinnedResources,
   selectStartScreenAllGroups,
   type StartControllerActions,
-  type StartReorderAction,
+  type StartPinnedResourceView,
   type StartScreenAllGroup,
   type StartScreenControllerActions,
   type StartScreenSnapshot,
@@ -30,6 +29,7 @@ import {
   useStartScreenController,
 } from "../../../../../headless/index.js";
 import type { TaskbarPanelOpenChangeReason, TaskbarPanelWidgetProps } from "../widget/index.js";
+import { usePrimaryPanelTransitionRegistry } from "./hooks/usePrimaryPanelTransitionRegistry/index.js";
 
 /** panel widget에 그대로 전달할 controlled 제품 연결 props다. */
 export type TaskbarPanelWidgetConnection = Pick<
@@ -56,11 +56,7 @@ export type TaskbarPanelConnection = Readonly<{
 }>;
 
 /** Start pinned Component가 현재 Catalog label과 위치별 Action으로 소비할 item이다. */
-export type TaskbarStartPinnedConnectionItem = Readonly<{
-  resource: ResourceRef;
-  label: string;
-  reorderActions: readonly StartReorderAction[];
-}>;
+export type TaskbarStartPinnedConnectionItem = StartPinnedResourceView;
 
 /** 실제 Resource open이 panel activation에 연결됐는지와 adapter 결과를 구분한다. */
 export type TaskbarStartResourceOpenResult =
@@ -111,10 +107,6 @@ export type TaskbarPanelsConnectionOptions = Readonly<{
   resources?: ResourceReaders;
 }>;
 
-type PendingOperation = Readonly<{
-  handle: PrimaryPanelOperationHandle;
-}>;
-
 /** widget 원인을 headless가 소유하는 실제 dismiss 원인으로 좁힌다. */
 const resolveDismissReason = (
   reason: TaskbarPanelOpenChangeReason,
@@ -138,52 +130,6 @@ const EMPTY_RESOURCE_READERS = Object.freeze({
   externalShortcut: EMPTY_CATALOG,
 }) as ResourceReaders;
 
-/** 현재 위치에서 실제로 의미가 있는 Context Menu reorder Action만 만든다. */
-const selectReorderActions = (index: number, length: number): readonly StartReorderAction[] =>
-  Object.freeze([
-    ...(index > 0 ? (["first", "left"] as const) : []),
-    ...(index < length - 1 ? (["right"] as const) : []),
-  ]);
-
-/** Pin identity를 현재 Catalog 또는 Workspace label과 결합하고 사라진 원본은 숨긴다. */
-const selectPinnedItems = (
-  pinnedItems: readonly Readonly<{ resource: ResourceRef }>[],
-  resources: ResourceReaders,
-): readonly TaskbarStartPinnedConnectionItem[] =>
-  Object.freeze(
-    pinnedItems.flatMap(({ resource }, index) => {
-      const value =
-        resource.kind === "content"
-          ? resources.content.get(resource.id)
-          : resource.kind === "folder"
-            ? resources.folder.get(resource.id)
-            : resources.externalShortcut.get(resource.id);
-      if (value === undefined) return [];
-      const label = "title" in value ? value.title : value.name;
-      return [
-        Object.freeze({
-          resource,
-          label,
-          reorderActions: selectReorderActions(index, pinnedItems.length),
-        }),
-      ];
-    }),
-  );
-
-/** ResourceRef를 기존 Window Action 또는 external browser intent로 변환한다. */
-const selectResourceOpenAction = (
-  resource: ResourceRef,
-  resources: ResourceReaders,
-): ResourceOpenAction | null => {
-  if (resource.kind === "folder") return Object.freeze({ type: "open-folder", folder: resource });
-  if (resource.kind === "content")
-    return Object.freeze({ type: "open-content", content: resource });
-  const shortcut = resources.externalShortcut.get(resource.id);
-  return shortcut === undefined
-    ? null
-    : Object.freeze({ type: "open-external-shortcut", url: shortcut.url, target: "_blank" });
-};
-
 /**
  * 하나의 controller와 pending operation 집합을 공유해 Start exit와 Search enter를 같은 ID에 연결한다.
  *
@@ -198,83 +144,8 @@ export const useTaskbarPanelsConnection = (
   const startScreenController = useStartScreenController();
   const requestScope = useId().replaceAll(":", "");
   const requestSequenceRef = useRef(0);
-  const pendingRef = useRef(
-    new Map<PrimaryPanelOperationHandle["operationId"], PendingOperation>(),
-  );
-  const unmountedRef = useRef(false);
-
-  /** 현재 등록된 waiter 하나만 중단하고 switch의 다음 phase가 생기면 다시 정리한다. */
-  const abortUnmountedOperations = useCallback((): void => {
-    for (const { handle } of pendingRef.current.values()) {
-      const exitAborted = controller.actions.abortTransition(
-        handle.operationId,
-        PRIMARY_PANEL_EXIT_PHASE,
-        "taskbar-panels-connection-unmounted",
-      );
-      const enterAborted = controller.actions.abortTransition(
-        handle.operationId,
-        PRIMARY_PANEL_ENTER_PHASE,
-        "taskbar-panels-connection-unmounted",
-      );
-      if (exitAborted || enterAborted) setTimeout(abortUnmountedOperations, 0);
-    }
-  }, [controller.actions]);
-
-  /** Handle을 completion 후보에 등록하고 settled 뒤 exact ID만 제거한다. */
-  const trackOperation = useCallback(
-    (handle: PrimaryPanelOperationHandle): PrimaryPanelOperationHandle => {
-      pendingRef.current.set(handle.operationId, Object.freeze({ handle }));
-      void handle.settled.then(
-        () => {
-          pendingRef.current.delete(handle.operationId);
-          if (unmountedRef.current) setTimeout(abortUnmountedOperations, 0);
-        },
-        () => {
-          pendingRef.current.delete(handle.operationId);
-          if (unmountedRef.current) setTimeout(abortUnmountedOperations, 0);
-        },
-      );
-      return handle;
-    },
-    [abortUnmountedOperations],
-  );
-
-  /** 실제 callback 방향과 현재 registry waiter가 모두 맞는 첫 operation만 완료한다. */
-  const completeTransition = useCallback(
-    (open: boolean): void => {
-      const phase = open ? PRIMARY_PANEL_ENTER_PHASE : PRIMARY_PANEL_EXIT_PHASE;
-      for (const { handle } of pendingRef.current.values()) {
-        if (controller.actions.completeTransition(handle.operationId, phase)) return;
-      }
-    },
-    [controller.actions],
-  );
-
-  /** 반대 controlled 상태 또는 widget unmount가 중단한 현재 phase만 abort한다. */
-  const cancelTransition = useCallback(
-    (open: boolean): void => {
-      const phase = open ? PRIMARY_PANEL_ENTER_PHASE : PRIMARY_PANEL_EXIT_PHASE;
-      for (const { handle } of pendingRef.current.values()) {
-        if (
-          controller.actions.abortTransition(
-            handle.operationId,
-            phase,
-            "taskbar-panel-widget-transition-cancelled",
-          )
-        )
-          return;
-      }
-    },
-    [controller.actions],
-  );
-
-  useEffect(() => {
-    unmountedRef.current = false;
-    return () => {
-      unmountedRef.current = true;
-      abortUnmountedOperations();
-    };
-  }, [abortUnmountedOperations]);
+  const { cancelTransition, completeTransition, trackOperation } =
+    usePrimaryPanelTransitionRegistry(controller.actions);
 
   const snapshot = controller.viewModel.snapshot;
   const startView = selectPrimaryPanelView(
@@ -345,7 +216,10 @@ export const useTaskbarPanelsConnection = (
         startScreenController.viewModel.status === "ready",
       screen: Object.freeze({ snapshot: startSnapshot, actions: startScreenController.actions }),
       pins: Object.freeze({
-        items: selectPinnedItems(startController.viewModel.snapshot?.pinnedItems ?? [], resources),
+        items: selectStartPinnedResources(
+          startController.viewModel.snapshot?.pinnedItems ?? [],
+          resources,
+        ),
         actions: startController.actions,
       }),
       all: Object.freeze({ groups: selectStartScreenAllGroups(resources) }),

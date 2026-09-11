@@ -202,7 +202,7 @@ describe("selectFileExplorerReadModel", () => {
     });
 
     expect(model).toMatchObject({
-      title: "/Missing/Folder",
+      title: "폴더를 찾을 수 없음",
       address: "/Missing/Folder",
       breadcrumb: [],
       query: "",

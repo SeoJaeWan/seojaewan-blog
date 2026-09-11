@@ -19,7 +19,7 @@ import type {
   WindowResizeDirection,
   WindowSessionId,
 } from "../../../../../../../headless/windows/index.js";
-import { resizeWindowBounds } from "../../../../../../../headless/windows/index.js";
+import { calculateWindowGestureBounds } from "../../utils/windowGestureBounds/index.js";
 
 type GestureOwner = HTMLElement & {
   hasPointerCapture?(pointerId: number): boolean;
@@ -50,50 +50,6 @@ type WindowPointerGesture = {
 
 /** 클릭의 미세한 좌표 흔들림을 Window 이동으로 바꾸지 않는 최소 거리다. */
 const MOVE_ACTIVATION_DISTANCE = 4;
-
-/** pointer 위치를 headless가 받을 px bounds로 변환한다. */
-const calculateGestureBounds = (
-  gesture: WindowPointerGesture,
-  pointer: Readonly<{ x: number; y: number }>,
-): WindowRect => {
-  const { handle, resizeDirection, startPointer } = gesture;
-  if (handle === null)
-    throw new Error("활성화되지 않은 Window gesture의 bounds를 계산할 수 없습니다");
-  const deltaX = pointer.x - startPointer.x;
-  const deltaY = pointer.y - startPointer.y;
-
-  if (handle.kind === "move") {
-    if (handle.startFrame.placement === "maximized") {
-      const horizontalRatio = Math.min(
-        1,
-        Math.max(0, (startPointer.x - handle.startBounds.x) / handle.startBounds.width),
-      );
-      const normalBounds = handle.startFrame.normalBounds;
-      return {
-        x: pointer.x - normalBounds.width * horizontalRatio,
-        y: pointer.y - (startPointer.y - handle.startBounds.y),
-        width: normalBounds.width,
-        height: normalBounds.height,
-      };
-    }
-
-    return {
-      ...handle.startBounds,
-      x: handle.startBounds.x + deltaX,
-      y: handle.startBounds.y + deltaY,
-    };
-  }
-
-  return resizeDirection === null
-    ? handle.startBounds
-    : resizeWindowBounds(
-        handle.startBounds,
-        resizeDirection,
-        { x: deltaX, y: deltaY },
-        gesture.workArea,
-        gesture.placementConfig,
-      );
-};
 
 /** pointer event에서 rAF가 사용할 viewport 좌표만 복사한다. */
 const readPointerPosition = (event: PointerEvent): Readonly<{ x: number; y: number }> =>
@@ -192,7 +148,7 @@ export const useWindowPointerGesture = (
     gesture.animationFrame = null;
     if (pointer === null || gestureRef.current !== gesture || gesture.handle === null) return;
     gesture.lastPointer = pointer;
-    void gesture.handle.update(calculateGestureBounds(gesture, pointer));
+    void gesture.handle.update(calculateWindowGestureBounds(gesture, pointer));
   }, []);
 
   /** 같은 pointer의 최신 위치만 보관하고 한 animation frame에 한 번 update한다. */

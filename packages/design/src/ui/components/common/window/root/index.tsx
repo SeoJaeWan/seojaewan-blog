@@ -3,33 +3,23 @@
  *
  * Application이 제공하는 titlebar/content slot은 그대로 유지하고 제품 상태 계산은 WindowStore에 남긴다.
  */
-import {
-  type FocusEvent,
-  type PointerEvent,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type FocusEvent, type PointerEvent, type ReactNode } from "react";
 
 import {
   getWindowBounds,
   useWindowController,
   type WindowAction,
   type WindowPlacementConfig,
-  type WindowPresentationRequest,
   type WindowSessionId,
 } from "../../../../../headless/windows/index.js";
 import { WindowControls } from "../controls/index.js";
 import { WindowFrame, type WindowFrameProps } from "../frame/index.js";
 import { WindowTitleBar } from "../titleBar/index.js";
-import {
-  type WindowPresentationBinding,
-  type WindowPresentationConsumer,
-} from "../utils/presentationBinding/index.js";
+import { type WindowPresentationBinding } from "../utils/presentationBinding/index.js";
+import { useWindowActivation } from "./hooks/useWindowActivation/index.js";
 import { useWindowPointerGesture } from "./hooks/useWindowPointerGesture/index.js";
 import { useWindowPresentation } from "./hooks/useWindowPresentation/index.js";
+import { useWindowPresentationBinding } from "./hooks/useWindowPresentationBinding/index.js";
 
 /**
  * Taskbar application icon에서 측정한 viewport px destination이다.
@@ -102,11 +92,11 @@ export const WindowRoot = ({
   ...props
 }: WindowRootProps) => {
   const { actions, viewModel } = useWindowController();
-  const [presentation, setPresentation] = useState<WindowPresentationRequest | null>(null);
-  const activationRequested = useRef(false);
   const snapshot = viewModel.status === "ready" ? viewModel.snapshot : null;
   const session = snapshot?.sessions.find(({ id }) => id === sessionId);
   const active = snapshot?.activeSessionId === sessionId;
+  const presentation = useWindowPresentationBinding(presentationBinding, sessionId);
+  const requestActivation = useWindowActivation(actions, active, sessionId);
   const presentationLifecycle = useWindowPresentation(ref, {
     actions,
     active,
@@ -121,26 +111,6 @@ export const WindowRoot = ({
     placementConfig,
     presentationLifecycle.interruptForGesture,
   );
-
-  useEffect(() => {
-    if (active) activationRequested.current = false;
-  }, [active]);
-
-  useEffect(() => {
-    if (presentationBinding === undefined) {
-      setPresentation(null);
-      return undefined;
-    }
-    const consume: WindowPresentationConsumer = (request) => setPresentation(request);
-    return presentationBinding.mount(sessionId, consume);
-  }, [presentationBinding, sessionId]);
-
-  /** 같은 render cycle의 pointer→focus 연속 입력이 activate Action을 중복 예약하지 않게 전달한다. */
-  const requestActivation = useCallback(() => {
-    if (active || activationRequested.current) return;
-    activationRequested.current = true;
-    actions.execute({ type: "activate", sessionId });
-  }, [actions, active, sessionId]);
 
   /** root capture에서 Session을 활성화한 뒤 caller의 pointer callback을 보존한다. */
   const handlePointerDownCapture = (event: PointerEvent<HTMLElement>) => {

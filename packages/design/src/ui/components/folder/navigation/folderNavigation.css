@@ -2,9 +2,11 @@
   align-items: center;
   background: var(--wd-color-surface-window);
   display: flex;
-  gap: var(--wd-reference-spacing-2);
+  font-size: 13px;
+  gap: 6px;
+  line-height: 18px;
   min-inline-size: 0;
-  padding: var(--wd-reference-spacing-2);
+  padding: 6px var(--wd-reference-spacing-2);
 }
 
 .folder-navigation__history {
@@ -75,10 +77,6 @@
   padding: 0 var(--wd-reference-spacing-2);
 }
 
-.folder-navigation__address-input[aria-invalid="true"] {
-  border-color: var(--wd-color-danger-surface);
-}
-
 .folder-navigation__breadcrumb {
   align-items: stretch;
   display: flex;
@@ -95,9 +93,11 @@
 
 .folder-navigation__breadcrumb-button,
 .folder-navigation__current {
+  align-items: center;
   block-size: 100%;
   box-sizing: border-box;
   max-inline-size: 180px;
+  display: inline-flex;
   overflow: hidden;
   padding: 0 var(--wd-reference-spacing-2);
   text-overflow: ellipsis;

@@ -68,6 +68,19 @@ export const Desktop: Story = {
   render: () => <FileExplorerStory scenario={Object.freeze({ selected: true })} />,
 };
 
+export const InteractiveActions: Story = {
+  name: "탭·주소·검색·Sidebar 직접 확인",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "새 탭 추가·전환·닫기, 주소 이동과 history, 현재 폴더 검색, Sidebar 펼침·접기를 직접 조작하면 실제 제품 snapshot과 화면이 함께 갱신됩니다.",
+      },
+    },
+  },
+  render: () => <FileExplorerStory scenario={Object.freeze({ expanded: true })} />,
+};
+
 export const Mobile: Story = {
   name: "Mobile 제품 조합",
   parameters: {
