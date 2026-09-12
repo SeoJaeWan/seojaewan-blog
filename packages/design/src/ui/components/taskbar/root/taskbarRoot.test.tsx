@@ -150,6 +150,7 @@ const createRuntime = (initialMode?: WindowMode, activeApplication?: TaskbarAppl
     StartScreenOperationResult
   >;
   const runtime = Object.freeze({
+    ...createHeadlessRuntime(),
     primaryPanel,
     resourceOpen: Object.freeze({ execute: vi.fn() }),
     start,

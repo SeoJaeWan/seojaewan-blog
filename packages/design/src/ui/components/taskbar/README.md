@@ -18,6 +18,8 @@ taskbar/
   search/
     input/              Taskbar의 실제 검색 input을 표시합니다.
     panel/              input과 Search panel을 조합합니다.
+    body/               실제 결과·recent·추천·종류별 detail을 표시합니다.
+    hooks/              Surface별 debounce·IME·keyboard·detail focus를 관리합니다.
   panels/
     connection/         headless primary panel 상태와 callback을 연결합니다.
     surface/            공통 panel 외형과 responsive bounds를 제공합니다.
@@ -52,22 +54,28 @@ resolver 우선순위, fallback과 두 표시 크기를 검증합니다.
 ```tsx
 import { HeadlessRuntimeProvider, TaskbarRoot, createHeadlessRuntime } from "@window/design";
 
-const runtime = createHeadlessRuntime({ externalNavigation, windowPresentation });
+const runtime = createHeadlessRuntime({
+  adapters,
+  fileExplorerResources,
+  externalNavigation,
+  windowPresentation,
+});
+// Catalog와 Workspace 준비 이후 검색 저장 기록을 복원합니다.
+await runtime.search.initialize();
 
 export const DesktopTaskbar = () => (
   <HeadlessRuntimeProvider runtime={runtime}>
-    <TaskbarRoot
-      resourceReaders={resourceReaders}
-      renderStartSearchBody={(query) => <StartSearchBoundary query={query} />}
-    />
+    <TaskbarRoot resourceReaders={resourceReaders} />
   </HeadlessRuntimeProvider>
 );
 ```
 
 현재 Root는 Start와 Search의 trigger, panel lifecycle과 query 초기화를 연결합니다. Start의 pinned
 grid, Content·ExternalShortcut 모두 보기와 category index는 제품 Component로 연결되어 있습니다.
-Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않습니다. query가 생기면 browse body를
-`renderStartSearchBody` 경계로 교체하며 실제 Search 결과·recent·detail은 HDJG-47이 제공합니다.
+Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않습니다. 기본 검색 본문은 두 Surface에
+자동 연결됩니다. Application은 결과별 callback을 제공하지 않습니다. `renderStartSearchBody`와
+Search panel의 `children`은 선택적 본문 교체 경계입니다. 준비 전 Search는 Catalog나 저장소를 읽지
+않으며, runtime을 준비하고 `search.initialize()`를 호출하는 순서는 Application이 관리합니다.
 
 ## 연결 경계
 
@@ -98,6 +106,16 @@ Folder는 pinned에 표시할 수 있지만 모두 보기에는 표시하지 않
 
 상세 제품 정책은 Local Work Memory의 `Taskbar 기능 아키텍처`, `Taskbar Panel lifecycle 계약`,
 `Taskbar Search 기능 계약`을 따릅니다.
+
+검색 정본은 project `seojaewan/seojaewan-blog`의 `resource-search`
+@`01a095bf-efe4-7052-9527-f212ece70bc0`, `taskbar-search`
+@`01a095c0-6f90-7378-88a9-821b0a62b27e`, `taskbar-panel-lifecycle`
+@`01a095c1-46c2-7f6e-9afc-3d52dd6c9a0d`입니다. 코드·검사는 checkout의 실행 결과를,
+durable 정책과 개정은 Memory를, 후속 작업은 Gateway Work Item HDJG-47을 참조합니다.
+
+현재 실제 Search open 성공으로 내부 생성한 primary panel exit transition은 UI registry에 handle이
+전달되지 않습니다. `CloseCompletionContract`가 Popup exit 뒤 query 초기화 지연을 검출합니다.
+정확한 내부 transition identity를 UI에 전달하는 headless 연결이 필요한 상태입니다.
 
 ## 검증
 

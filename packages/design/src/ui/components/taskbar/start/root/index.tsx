@@ -1,10 +1,13 @@
 import type { ComponentPropsWithRef, MouseEvent, ReactNode } from "react";
 
+import { normalizeResourceSearchQuery } from "../../../../../headless/index.js";
 import type {
   TaskbarStartConnection,
   TaskbarStartPinnedConnectionItem,
 } from "../../panels/connection/index.js";
 import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import { TaskbarSearchBody } from "../../search/body/index.js";
+import { useTaskbarSearchOwner } from "../../search/hooks/useTaskbarSearchOwner/index.js";
 import { TaskbarSearch } from "../../search/input/index.js";
 import { TaskbarStartAll } from "../all/index.js";
 import { TaskbarStartButton, type TaskbarStartButtonProps } from "../button/index.js";
@@ -29,7 +32,7 @@ export type TaskbarStartProps = Readonly<{
   searchInputProps?: TaskbarStartSearchInputProps;
   /** panel portal을 붙일 문서 내 container다. 기본값은 document.body다. */
   portalContainer?: HTMLElement | null;
-  /** HDJG-47이 query에 맞는 실제 Search result/detail body를 제공할 명시적 경계다. */
+  /** 기본 Search 결과·detail 본문을 선택적으로 교체하는 제품 조합 경계다. */
   renderSearchBody?: (query: string) => ReactNode;
   /** HDJG-49 Context Menu가 pinned item과 capability를 받을 명시적 경계다. */
   onPinnedItemContextMenu?: (
@@ -46,7 +49,7 @@ export type TaskbarStartProps = Readonly<{
  * Taskbar 시작 버튼과 Start panel, 독립된 상단 검색 input을 하나의 제품 part로 연결한다.
  *
  * active identity와 query 초기화는 `connection`의 headless 정책을 따르고, 고정 목록·모두 보기와
- * Index를 실제 제품 Component로 조합한다. Search 결과와 Context Menu는 명시적 후속 경계로 남긴다.
+ * Index와 공통 Search 본문을 실제 제품 Component로 조합한다. Context Menu는 후속 연결 경계다.
  */
 export const TaskbarStart = ({
   buttonProps,
@@ -65,7 +68,8 @@ export const TaskbarStart = ({
     placeholder = "앱 및 문서 검색",
     ...inputProps
   } = searchInputProps ?? {};
-  const browseActive = connection.query.length === 0;
+  const owner = useTaskbarSearchOwner(connection);
+  const browseActive = normalizeResourceSearchQuery(connection.query).length === 0;
   const pinnedActive = browseActive && connection.screen.snapshot.view === "pinned";
   const allActive = browseActive && connection.screen.snapshot.view === "all";
 
@@ -86,6 +90,18 @@ export const TaskbarStart = ({
         <div className="taskbar-start__search">
           <TaskbarSearch
             {...inputProps}
+            onCompositionStart={(event) => {
+              inputProps.onCompositionStart?.(event);
+              owner.inputProps.onCompositionStart();
+            }}
+            onCompositionEnd={(event) => {
+              inputProps.onCompositionEnd?.(event);
+              owner.inputProps.onCompositionEnd();
+            }}
+            onKeyDown={(event) => {
+              inputProps.onKeyDown?.(event);
+              if (!event.defaultPrevented) owner.inputProps.onKeyDown(event);
+            }}
             aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : placeholder)}
             aria-labelledby={ariaLabelledBy}
             className={searchInputClassName}
@@ -138,7 +154,11 @@ export const TaskbarStart = ({
             </div>
           ) : (
             <div className="taskbar-start__search-boundary" data-query={connection.query}>
-              {renderSearchBody?.(connection.query)}
+              {renderSearchBody ? (
+                renderSearchBody(connection.query)
+              ) : (
+                <TaskbarSearchBody owner={owner} resolveIcon={resolveResourceIcon} />
+              )}
             </div>
           )}
         </div>

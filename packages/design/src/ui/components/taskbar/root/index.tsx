@@ -32,9 +32,9 @@ export type TaskbarRootProps = Omit<
     timestampClock?: TaskbarTimestampClock;
     /** Start pinned와 All view가 현재 label, URL과 목록을 읽는 Application Catalog 경계다. */
     resourceReaders?: ResourceReaders;
-    /** HDJG-47이 Start query에 맞는 Search result/detail body를 제공할 경계다. */
+    /** 기본 Start Search 본문을 선택적으로 교체하는 제품 조합 경계다. */
     renderStartSearchBody?: (query: string) => ReactNode;
-    /** Start pinned와 모두 보기에 같은 ResourceRef 기반 icon을 제공하는 Application 경계다. */
+    /** Start browse와 두 Search Surface에 같은 ResourceRef 기반 icon을 제공하는 경계다. */
     resolveStartResourceIcon?: TaskbarStartResourceIconResolver;
   }>;
 
@@ -77,9 +77,11 @@ export const TaskbarRoot = ({
             renderSearchBody={renderStartSearchBody}
             resolveResourceIcon={resolveStartResourceIcon}
           />
-          <TaskbarSearchPanel connection={panels.search} disabled={searchDisabled}>
-            {null}
-          </TaskbarSearchPanel>
+          <TaskbarSearchPanel
+            connection={panels.search}
+            disabled={searchDisabled}
+            resolveResourceIcon={resolveStartResourceIcon}
+          />
           <span
             aria-hidden="true"
             className="taskbar-root__desktop-applications"

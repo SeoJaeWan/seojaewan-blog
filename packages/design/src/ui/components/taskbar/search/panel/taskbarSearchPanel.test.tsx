@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { PrimaryPanelOperationHandle } from "../../../../../headless/index.js";
+import { createHeadlessRuntime, HeadlessRuntimeProvider } from "../../../../../headless/index.js";
 import type { TaskbarPanelsConnection } from "../../panels/connection/index.js";
 import { TaskbarSearchPanel } from "./index.js";
 
@@ -50,9 +51,11 @@ describe("TaskbarSearchPanel", () => {
     const { connection, onOpenChange, updateQuery } = createConnection();
 
     render(
-      <TaskbarSearchPanel connection={connection}>
-        <p>검색 결과</p>
-      </TaskbarSearchPanel>,
+      <HeadlessRuntimeProvider runtime={createHeadlessRuntime()}>
+        <TaskbarSearchPanel connection={connection}>
+          <p>검색 결과</p>
+        </TaskbarSearchPanel>
+      </HeadlessRuntimeProvider>,
     );
 
     const input = screen.getByRole<HTMLInputElement>("textbox", { name: "검색" });

@@ -11,7 +11,11 @@ import type {
   StartScreenOperationResult,
   StartScreenSnapshot,
 } from "../../../../../headless/index.js";
-import { createResourceRef } from "../../../../../headless/index.js";
+import {
+  createHeadlessRuntime,
+  createResourceRef,
+  HeadlessRuntimeProvider,
+} from "../../../../../headless/index.js";
 import type { TaskbarStartConnection } from "../../panels/connection/index.js";
 import { TaskbarStart } from "./index.js";
 
@@ -27,6 +31,7 @@ const StartFixture = ({
   onQueryChange?: (query: string) => void;
 }) => {
   const [open, setOpen] = useState(initialOpen);
+  const runtime = useMemo(() => createHeadlessRuntime(), []);
   const [query, setQuery] = useState("");
   const [startScreen, setStartScreen] = useState<StartScreenSnapshot>({
     view: "pinned",
@@ -38,7 +43,10 @@ const StartFixture = ({
         execute: (action: StartScreenAction) => {
           setStartScreen((current) => {
             if (action.type === "set-view")
-              return { view: action.view, indexOpen: action.view === "pinned" ? false : current.indexOpen };
+              return {
+                view: action.view,
+                indexOpen: action.view === "pinned" ? false : current.indexOpen,
+              };
             if (action.type === "set-index-open")
               return { ...current, indexOpen: action.open && current.view === "all" };
             return { view: "pinned", indexOpen: false };
@@ -82,16 +90,17 @@ const StartFixture = ({
     },
     all: { groups: [{ key: "A", items: [{ resource: content, label: "Alpha" }] }] },
     resource: {
-      open: () =>
-        Promise.resolve({ status: "ignored", reason: "request-not-tracked" } as const),
+      open: () => Promise.resolve({ status: "ignored", reason: "request-not-tracked" } as const),
     },
   } satisfies TaskbarStartConnection;
 
   return (
-    <TaskbarStart
-      connection={connection}
-      renderSearchBody={(value) => <p>Search 경계: {value}</p>}
-    />
+    <HeadlessRuntimeProvider runtime={runtime}>
+      <TaskbarStart
+        connection={connection}
+        renderSearchBody={(value) => <p>Search 경계: {value}</p>}
+      />
+    </HeadlessRuntimeProvider>
   );
 };
 

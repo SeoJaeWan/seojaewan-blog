@@ -1,12 +1,15 @@
 /**
  * @file Taskbar의 실제 Search input과 primary panel widget을 제품 연결에 조합한다.
  *
- * 검색 결과, recent, detail과 Resource renderer는 children을 제공하는 상위 제품 view가 소유한다.
+ * 기본 본문은 실제 Search 결과·recent·추천·detail이며 입력 조합과 탐색 DOM을 이 Surface가 관리한다.
  */
 import type { KeyboardEvent, ReactNode } from "react";
 
 import type { TaskbarPanelsConnection } from "../../panels/connection/index.js";
 import { TaskbarPanelWidget } from "../../panels/widget/index.js";
+import type { TaskbarStartResourceIconResolver } from "../../start/icon/index.js";
+import { TaskbarSearchBody } from "../body/index.js";
+import { useTaskbarSearchOwner } from "../hooks/useTaskbarSearchOwner/index.js";
 import { TaskbarSearch, type TaskbarSearchProps } from "../input/index.js";
 import { useTaskbarSearchInputFocus } from "./hooks/useTaskbarSearchInputFocus/index.js";
 
@@ -19,8 +22,10 @@ export type TaskbarSearchPanelProps = Omit<TaskbarSearchProps, ConnectedInputPro
   Readonly<{
     /** Root에서 한 번 생성해 Search에 나눠 주는 primary panel 제품 연결이다. */
     connection: TaskbarPanelsConnection["search"];
-    /** Search panel에 표시할 실제 제품 본문이다. */
-    children: ReactNode;
+    /** 기본 검색 본문을 선택적으로 교체하는 제품 조합 경계다. */
+    children?: ReactNode;
+    /** 두 Surface에 공통으로 표시할 Resource icon 표현이다. */
+    resolveResourceIcon?: TaskbarStartResourceIconResolver;
     /** panel portal을 붙일 문서 내 container다. */
     portalContainer?: HTMLElement | null;
   }>;
@@ -48,9 +53,11 @@ export const TaskbarSearchPanel = ({
   connection,
   onKeyDown,
   portalContainer,
+  resolveResourceIcon,
   ...inputProps
 }: TaskbarSearchPanelProps) => {
   const inputRef = useTaskbarSearchInputFocus(connection.widget.open);
+  const owner = useTaskbarSearchOwner(connection);
 
   return (
     <TaskbarPanelWidget
@@ -59,8 +66,17 @@ export const TaskbarSearchPanel = ({
       trigger={
         <TaskbarSearch
           {...inputProps}
+          onCompositionStart={(event) => {
+            inputProps.onCompositionStart?.(event);
+            owner.inputProps.onCompositionStart();
+          }}
+          onCompositionEnd={(event) => {
+            inputProps.onCompositionEnd?.(event);
+            owner.inputProps.onCompositionEnd();
+          }}
           onKeyDown={(event) => {
             onKeyDown?.(event);
+            if (!event.defaultPrevented) owner.inputProps.onKeyDown(event);
             if (!event.defaultPrevented) preserveSearchInputSpace(event);
           }}
           onValueChange={(value) => connection.actions.updateQuery(value)}
@@ -71,7 +87,7 @@ export const TaskbarSearchPanel = ({
       }
       variant="search"
     >
-      {children}
+      {children ?? <TaskbarSearchBody owner={owner} resolveIcon={resolveResourceIcon} />}
     </TaskbarPanelWidget>
   );
 };
