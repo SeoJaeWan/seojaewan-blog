@@ -44,6 +44,7 @@ export const usePrimaryPanelTransitionRegistry = (actions: PrimaryPanelControlle
    */
   const trackOperation = useCallback(
     (handle: PrimaryPanelOperationHandle): PrimaryPanelOperationHandle => {
+      if (pendingRef.current.has(handle.operationId)) return handle;
       pendingRef.current.set(handle.operationId, Object.freeze({ handle }));
       void handle.settled.then(
         () => {
@@ -96,11 +97,13 @@ export const usePrimaryPanelTransitionRegistry = (actions: PrimaryPanelControlle
 
   useEffect(() => {
     unmountedRef.current = false;
+    const unsubscribe = actions.subscribeOperations(trackOperation);
     return () => {
+      unsubscribe();
       unmountedRef.current = true;
       abortUnmountedOperations();
     };
-  }, [abortUnmountedOperations]);
+  }, [abortUnmountedOperations, actions, trackOperation]);
 
   return { cancelTransition, completeTransition, trackOperation } as const;
 };

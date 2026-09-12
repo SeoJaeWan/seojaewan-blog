@@ -110,11 +110,9 @@ const createRuntime = (initialMode?: WindowMode, activeApplication?: TaskbarAppl
     getServerSnapshot: () => primaryPanelNotReady,
     subscribe: primaryPanelState.subscribe,
     execute: (action: PrimaryPanelAction) => primaryPanelOperations.execute(action),
-  }) satisfies HeadlessFeatureRuntime<
-    PrimaryPanelSnapshot,
-    PrimaryPanelAction,
-    PrimaryPanelOperationHandle
-  >;
+    subscribeOperations: (listener: (handle: PrimaryPanelOperationHandle) => void) =>
+      primaryPanelOperations.subscribeOperations(listener),
+  }) satisfies HeadlessRuntime["primaryPanel"];
   const startNotReady = Object.freeze({
     status: "not-ready",
     snapshot: null,

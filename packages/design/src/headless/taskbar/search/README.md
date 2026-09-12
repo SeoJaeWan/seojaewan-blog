@@ -74,6 +74,13 @@ Search open Promise는 실제 open 결과를 반환하며 panel exit나 recent �
 rollback 없이 내부 persistence 결과로 분류한다. 늦은 성공은 기록하지만 현재 activation을
 닫지 않는다. close 완료와 mobile 정리는 runtime의 panel Operation에서 연결된다.
 
+Taskbar 제품 연결은 `usePrimaryPanelController().actions.subscribeOperations(listener)`로
+Search 내부 settle을 포함한 exact Handle을 추적한다. 등록 시 미종료 Handle을 재전달하고
+동일 ID는 중복 등록하지 않는다. 실제 widget callback이 해당 ID와 enter/exit phase의
+완료·중단을 보고하며 close 완료 뒤 query와 detail을 초기화한다. 구독 해제는 실행을
+취소하지 않는다. 표현 listener가 예외를 던지면 해당 연결만 해제하며 누락 신호는 기존
+1000ms watchdog으로 정리한다. Search open 결과를 UI close 완료로 대신 보고하지 않는다.
+
 ## 검증 위치
 
 `src/testing/taskbarSearchPublic.test.ts`는 실제 WindowStore와 공개 Search/ResourceOpen/

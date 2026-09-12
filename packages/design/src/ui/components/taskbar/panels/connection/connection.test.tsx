@@ -31,10 +31,7 @@ const desktopSnapshot = Object.freeze({
 
 const folder = createResourceRef("folder", "10000000-0000-4000-8000-000000000001");
 const content = createResourceRef("content", "10000000-0000-4000-8000-000000000002");
-const shortcut = createResourceRef(
-  "external-shortcut",
-  "10000000-0000-4000-8000-000000000003",
-);
+const shortcut = createResourceRef("external-shortcut", "10000000-0000-4000-8000-000000000003");
 const resources = Object.freeze({
   folder: createStaticCatalog([{ ref: folder, name: "프로젝트" }]),
   content: createStaticCatalog([
@@ -293,7 +290,10 @@ describe("useTaskbarPanelsConnection", () => {
 
   it("Start 제품 identity와 open 실패·성공을 같은 runtime lifecycle에 연결한다", async () => {
     const execute = vi.fn<(resource: ResourceRef) => Promise<ResourceOpenResult>>();
-    execute.mockResolvedValueOnce({ status: "failed", kind: "external-navigation-failed" } as never);
+    execute.mockResolvedValueOnce({
+      status: "failed",
+      kind: "external-navigation-failed",
+    } as never);
     execute.mockResolvedValueOnce({
       status: "succeeded",
       kind: "external-navigation-succeeded",
@@ -403,6 +403,62 @@ describe("useTaskbarPanelsConnection", () => {
       snapshot: { activePanel: null },
     });
   });
+
+  it("mount 전에 시작한 Handle을 replay해 exact 완료와 settled 뒤 재연결을 처리한다", async () => {
+    const runtime = createRuntime();
+    const opening = runtime.primaryPanel.execute({ type: "trigger", panel: "search" });
+    await opening.committed;
+    const mounted = renderConnection(runtime);
+    await act(async () => {
+      mounted.current.search.widget.onTransitionComplete?.(true);
+      await opening.settled;
+    });
+    expect(await opening.presented).toMatchObject({
+      status: "completed",
+      operationId: opening.operationId,
+    });
+    mounted.unmount();
+    const remounted = renderConnection(runtime);
+    act(() => {
+      remounted.current.search.widget.onTransitionComplete?.(true);
+    });
+    expect(runtime.transitions.complete(opening.operationId, "primary-panel-enter")).toBe(false);
+  });
+
+  it.each(["start", "search"] as const)(
+    "내부 %s close 중 unmount는 exact exit를 중단하고 transient를 정리한다",
+    async (panel) => {
+      const runtime = createRuntime();
+      const mounted = renderConnection(runtime);
+      const opening = await startCommitted(() => mounted.current[panel].actions.trigger());
+      await act(async () => {
+        mounted.current[panel].widget.onTransitionComplete?.(true);
+        await opening.settled;
+        await mounted.current[panel].actions.updateQuery("보존 중").settled;
+        await runtime.primaryPanel.execute({
+          type: "track-resource-open",
+          panel,
+          requestId: "internal",
+        }).settled;
+      });
+      const close = runtime.primaryPanel.execute({
+        type: "settle-resource-open",
+        requestId: "internal",
+        outcome: "succeeded",
+      });
+      await act(async () => Promise.resolve());
+      act(() => mounted.unmount());
+      await expect(close.presented).resolves.toMatchObject({
+        status: "aborted",
+        operationId: close.operationId,
+        reason: "taskbar-panels-connection-unmounted",
+      });
+      await close.settled;
+      const snapshot = runtime.primaryPanel.getSnapshot().snapshot;
+      expect(snapshot?.[panel === "start" ? "startQuery" : "searchQuery"]).toBe("");
+      expect(runtime.transitions.complete(close.operationId, "primary-panel-exit")).toBe(false);
+    },
+  );
 
   it("connection unmount는 대기 중 exact phase를 중단하고 늦은 completion을 남기지 않는다", async () => {
     const mounted = renderConnection();

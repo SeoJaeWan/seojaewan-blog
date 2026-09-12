@@ -20,6 +20,12 @@ export type PrimaryPanelControllerViewModel = ControllerViewModel<PrimaryPanelSn
 /** 제품 Component가 사용할 Action과 transition 완료 진입점이다. */
 export type PrimaryPanelControllerActions = Readonly<{
   execute(action: PrimaryPanelAction): PrimaryPanelOperationHandle;
+  /**
+   * 내부 실행과 등록 전 대기 Handle을 UI 완료·중단 연결에 전달한다.
+   *
+   * 해제는 구독만 제거하고 Resource open이나 제품 Operation을 취소하지 않는다.
+   */
+  subscribeOperations(listener: (handle: PrimaryPanelOperationHandle) => void): () => void;
   completeTransition(operationId: OperationId, phase: TransitionPhase): boolean;
   abortTransition(operationId: OperationId, phase: TransitionPhase, reason: string): boolean;
   failTransition(operationId: OperationId, phase: TransitionPhase, error: unknown): boolean;
@@ -43,6 +49,8 @@ export const usePrimaryPanelController = (): PrimaryPanelController => {
     () =>
       Object.freeze({
         execute: (action: PrimaryPanelAction) => runtime.primaryPanel.execute(action),
+        subscribeOperations: (listener: (handle: PrimaryPanelOperationHandle) => void) =>
+          runtime.primaryPanel.subscribeOperations(listener),
         completeTransition: (operationId: OperationId, phase: TransitionPhase) =>
           runtime.transitions.complete(operationId, phase),
         abortTransition: (operationId: OperationId, phase: TransitionPhase, reason: string) =>

@@ -5,6 +5,7 @@ import { createPrimaryPanelState } from "../state/index.js";
 import {
   PRIMARY_PANEL_ENTER_PHASE,
   PRIMARY_PANEL_EXIT_PHASE,
+  type PrimaryPanelOperationHandle,
   PrimaryPanelOperations,
 } from "./index.js";
 
@@ -30,6 +31,82 @@ const flushQueue = async (): Promise<void> => {
 describe("PrimaryPanelOperations", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
+
+  it("등록 전 Handle을 재전달하고 settled·해제 뒤에는 전달하지 않는다", async () => {
+    const { operations, transitions } = createFixture();
+    const opening = operations.execute({ type: "trigger", panel: "search" });
+    await opening.committed;
+    const listener = vi.fn();
+    const unsubscribe = operations.subscribeOperations(listener);
+    expect(listener).toHaveBeenCalledExactlyOnceWith(opening);
+    transitions.complete(opening.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await opening.settled;
+
+    const replay = vi.fn();
+    const disconnect = operations.subscribeOperations(replay);
+    expect(replay).not.toHaveBeenCalled();
+    unsubscribe();
+    unsubscribe();
+    const close = operations.execute({ type: "dismiss", panel: "search", reason: "escape" });
+    await flushQueue();
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(replay).toHaveBeenCalledExactlyOnceWith(close);
+    transitions.complete(close.operationId, PRIMARY_PANEL_EXIT_PHASE);
+    await close.settled;
+    disconnect();
+  });
+
+  it("실패한 표현 listener를 격리해 semantic 결과와 다른 연결을 유지한다", async () => {
+    const { operations, transitions } = createFixture();
+    const broken = vi.fn(() => {
+      throw new Error("presentation connection failed");
+    });
+    const healthy = vi.fn();
+    operations.subscribeOperations(broken);
+    operations.subscribeOperations(healthy);
+    const open = operations.execute({ type: "trigger", panel: "start" });
+    await open.committed;
+    expect(healthy).toHaveBeenCalledExactlyOnceWith(open);
+    transitions.complete(open.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await expect(open.settled).resolves.toMatchObject({
+      status: "settled",
+      result: { status: "committed" },
+      presentation: { status: "completed" },
+    });
+    const query = operations.execute({ type: "update-query", panel: "start", query: "보존" });
+    await query.settled;
+    expect(broken).toHaveBeenCalledTimes(1);
+    expect(healthy).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(["start", "search"] as const)(
+    "내부 %s Resource settle Handle로 close 완료를 연결한다",
+    async (panel) => {
+      const { operations, state, transitions } = createFixture();
+      state.activate(panel);
+      state.updateQuery(panel, "정리 대상");
+      const handles: PrimaryPanelOperationHandle[] = [];
+      operations.subscribeOperations((handle) => handles.push(handle));
+      await operations.execute({ type: "track-resource-open", panel, requestId: "internal-open" })
+        .settled;
+      // Search와 같은 내부 caller는 반환 Handle을 UI에 직접 전달하지 않는다.
+      void operations.execute({
+        type: "settle-resource-open",
+        requestId: "internal-open",
+        outcome: "succeeded",
+      });
+      await flushQueue();
+      const close = handles.at(-1)!;
+      expect(state.getSnapshot()).toMatchObject({
+        activePanel: null,
+        [panel + "Query"]: "정리 대상",
+      });
+      expect(transitions.complete(close.operationId, PRIMARY_PANEL_EXIT_PHASE)).toBe(true);
+      await expect(close.settled).resolves.toMatchObject({ presentation: { status: "completed" } });
+      expect(state.getSnapshot()[panel === "start" ? "startQuery" : "searchQuery"]).toBe("");
+      expect(transitions.complete(close.operationId, PRIMARY_PANEL_EXIT_PHASE)).toBe(false);
+    },
+  );
 
   it("현재 panel exit 완료 뒤 query를 초기화하고 다음 panel을 연다", async () => {
     const { operations, state, transitions } = createFixture();

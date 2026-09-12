@@ -176,6 +176,11 @@ export class PrimaryPanelOperations {
     PrimaryPanelResourceOpenRequestId,
     TrackedResourceOpenRequest
   >();
+  readonly #pendingOperations = new Map<
+    PrimaryPanelOperationHandle["operationId"],
+    PrimaryPanelOperationHandle
+  >();
+  readonly #operationListeners = new Set<(handle: PrimaryPanelOperationHandle) => void>();
   #activationRevision = 0;
   #mobileRevision = 0;
 
@@ -196,14 +201,47 @@ export class PrimaryPanelOperations {
       this.#invalidateActivation();
       this.#mobileRevision += 1;
     }
-    if (action.type === "update-query") {
-      return this.#queue.enqueue(`primary-panel-query:${action.panel}`, (context) =>
-        this.#run(action, context, mobileRevision),
-      );
+    const handle: PrimaryPanelOperationHandle =
+      action.type === "update-query"
+        ? this.#queue.enqueue(`primary-panel-query:${action.panel}`, (context) =>
+            this.#run(action, context, mobileRevision),
+          )
+        : this.#queue.enqueue(PRIMARY_PANEL_TRANSITION_TARGET, (context) =>
+            this.#run(action, context, mobileRevision, requestedActivationRevision),
+          );
+    this.#pendingOperations.set(handle.operationId, handle);
+    void handle.settled.then(() => this.#pendingOperations.delete(handle.operationId));
+    for (const listener of [...this.#operationListeners]) this.#notifyOperation(listener, handle);
+    return handle;
+  }
+
+  /**
+   * UI가 내부 Search 실행을 포함한 exact Handle의 표현 완료를 연결하도록 알린다.
+   *
+   * 등록 시 미종료 Handle을 재전달하며 해제는 실행이나 semantic 상태를 변경하지 않는다.
+   * listener 예외는 해당 연결만 해제하고 기존 watchdog 안전장치를 유지한다.
+   */
+  subscribeOperations(listener: (handle: PrimaryPanelOperationHandle) => void): () => void {
+    this.#operationListeners.add(listener);
+    for (const handle of this.#pendingOperations.values()) this.#notifyOperation(listener, handle);
+    return () => {
+      this.#operationListeners.delete(listener);
+    };
+  }
+
+  /**
+   * 표현 연결의 예외가 이미 시작한 제품 Operation과 다른 연결에 전파되지 않도록 격리한다.
+   */
+  #notifyOperation(
+    listener: (handle: PrimaryPanelOperationHandle) => void,
+    handle: PrimaryPanelOperationHandle,
+  ): void {
+    if (!this.#operationListeners.has(listener)) return;
+    try {
+      listener(handle);
+    } catch {
+      this.#operationListeners.delete(listener);
     }
-    return this.#queue.enqueue(PRIMARY_PANEL_TRANSITION_TARGET, (context) =>
-      this.#run(action, context, mobileRevision, requestedActivationRevision),
-    );
   }
 
   /** 한 Action의 phase를 반드시 완료하고 cleanup에서 남은 transition 대기를 중단한다. */

@@ -222,7 +222,15 @@ export type HeadlessRuntime = Readonly<{
     PrimaryPanelSnapshot,
     PrimaryPanelAction,
     PrimaryPanelOperationHandle
-  >;
+  > &
+    Readonly<{
+      /**
+       * 내부 Search settle을 포함한 미종료 exact Handle을 UI 표현 연결에 전달한다.
+       *
+       * 등록 시 대기 Handle을 재전달하고 해제는 제품 실행을 취소하지 않는다.
+       */
+      subscribeOperations(listener: (handle: PrimaryPanelOperationHandle) => void): () => void;
+    }>;
   /** Folder·Content·ExternalShortcut open 결과를 하나로 정규화하는 channel이다. */
   resourceOpen: HeadlessResourceOpenRuntime;
   /** 두 검색 진입점의 적용 query·detail, 공유 recent와 실제 open channel이다. */
@@ -464,11 +472,15 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       (action) => taskbarOperations.execute(action),
       "TaskbarStoreNotInitializedError",
     ),
-    primaryPanel: createFeatureRuntime<
-      PrimaryPanelSnapshot,
-      PrimaryPanelAction,
-      PrimaryPanelOperationHandle
-    >(primaryPanelState, executePrimaryPanel, "PrimaryPanelStateNotInitializedError"),
+    primaryPanel: Object.freeze({
+      ...createFeatureRuntime<
+        PrimaryPanelSnapshot,
+        PrimaryPanelAction,
+        PrimaryPanelOperationHandle
+      >(primaryPanelState, executePrimaryPanel, "PrimaryPanelStateNotInitializedError"),
+      subscribeOperations: (listener: (handle: PrimaryPanelOperationHandle) => void) =>
+        primaryPanelOperations.subscribeOperations(listener),
+    }),
     resourceOpen: Object.freeze({
       execute: (action: ResourceOpenAction) => resourceOpenOperations.execute(action),
     }),

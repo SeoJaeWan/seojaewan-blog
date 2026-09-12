@@ -179,19 +179,87 @@ export const LateOpenAndMobile: Story = {
   },
 };
 
+/** 각 production input을 통해 같은 결과·detail 흐름에 진입한다. */
+const openPanelSearch = async (panel: "start" | "search") => {
+  if (panel === "search") return openSearch();
+  const page = within(document.body);
+  await userEvent.click(await page.findByRole("button", { name: "시작" }));
+  const input = await page.findByRole<HTMLInputElement>("textbox", { name: "앱 및 문서 검색" });
+  await userEvent.click(input);
+  await userEvent.paste("검색");
+  await waitFor(() => expect(page.getByRole("heading", { name: "최고의 일치" })).toBeVisible());
+  return { page, input };
+};
+
 export const CloseCompletionContract: Story = {
   ...ProductReference,
-  name: "실제 close 완료 시 transient 초기화 계약",
+  name: "두 Surface 실제 close 완료 시 transient 초기화 계약",
   play: async () => {
-    const { page, input } = await openSearch();
+    for (const panel of ["search", "start"] as const) {
+      const { page, input } = await openPanelSearch(panel);
+      const state = page.getByRole("status", {
+        name: panel === "start" ? "시작 검색 상태" : "독립 검색 상태",
+      });
+      await userEvent.click(page.getAllByRole("button", { name: /자세히$/ })[0]);
+      await expect(page.getByRole("region", { name: "검색 항목 상세" })).toBeVisible();
+      await expect(input).toHaveValue("검색");
+      await expect(state).not.toHaveTextContent("detail=none");
+      await userEvent.click(page.getByRole("button", { name: "파일 열기" }));
+      await waitFor(() =>
+        expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull(),
+      );
+      // timeout·watchdog 대신 실제 Popup 종료 직후 owner의 query/detail 초기화를 관찰한다.
+      await expect(state).toHaveTextContent("query=;detail=none");
+      await expect(page.getByRole("status", { name: "검색 recent 개수" })).toHaveTextContent("2");
+    }
+  },
+};
+
+export const ReducedMotionCloseCompletion: Story = {
+  ...CloseCompletionContract,
+  name: "두 Surface 0 duration 실제 close 완료 계약",
+  args: { reducedMotion: true },
+};
+
+export const StartOpenFailure: Story = {
+  ...ProductReference,
+  name: "Start 검색 열기 실패 보존 계약",
+  args: { fail: true },
+  play: async () => {
+    const { page, input } = await openPanelSearch("start");
+    await userEvent.click(page.getAllByRole("button", { name: /자세히$/ })[0]);
+    await userEvent.click(page.getByRole("button", { name: "파일 열기" }));
+    await waitFor(() =>
+      expect(page.getByRole("status", { name: "검색 open 횟수" })).toHaveTextContent("1"),
+    );
+    await expect(input).toHaveValue("검색");
+    await expect(page.getByRole("region", { name: "검색 항목 상세" })).toBeVisible();
+    await expect(page.getByRole("status", { name: "검색 recent 개수" })).toHaveTextContent("1");
+  },
+};
+
+export const StartLateOpen: Story = {
+  ...ProductReference,
+  name: "Start 늦은 성공은 현재 Search activation 보존",
+  args: { deferred: true },
+  play: async () => {
+    const { page } = await openPanelSearch("start");
     await userEvent.click(
       page.getByRole("region", { name: "최고의 일치" }).querySelector("button")!,
     );
     await waitFor(() =>
       expect(page.getByRole("status", { name: "검색 open 횟수" })).toHaveTextContent("1"),
     );
-    await waitFor(() => expect(document.querySelector(".taskbar-panel-widget__popup")).toBeNull());
-    // watchdog 대신 실제 Popup 종료가 transient 초기화 시점이어야 한다.
-    await expect(input).toHaveValue("");
+    const input = page.getByRole<HTMLInputElement>("textbox", { name: "검색" });
+    await userEvent.click(input);
+    await waitFor(() => expect(page.getByRole("dialog", { name: "검색" })).toBeVisible());
+    await userEvent.paste("새 입력");
+    await fireEvent.click(page.getByRole("button", { name: "대기 중 열기 완료" }));
+    await waitFor(() =>
+      expect(page.getByRole("status", { name: "검색 recent 개수" })).toHaveTextContent("2"),
+    );
+    await expect(input).toHaveValue("새 입력");
+    await expect(page.getByRole("dialog", { name: "검색" })).toBeVisible();
+    await expect(page.getByRole("status", { name: "활성 검색 패널" })).toHaveTextContent("search");
   },
 };

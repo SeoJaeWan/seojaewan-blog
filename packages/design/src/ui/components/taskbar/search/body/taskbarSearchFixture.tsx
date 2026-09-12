@@ -160,6 +160,14 @@ const SearchProbe = () => {
       <output aria-label="활성 검색 패널">
         {primary.viewModel.snapshot?.activePanel ?? "없음"}
       </output>
+      <output aria-label="시작 검색 상태">
+        query={primary.viewModel.snapshot?.startQuery ?? ""};detail=
+        {search.viewModel.panels.start.detail?.id ?? "none"}
+      </output>
+      <output aria-label="독립 검색 상태">
+        query={primary.viewModel.snapshot?.searchQuery ?? ""};detail=
+        {search.viewModel.panels.search.detail?.id ?? "none"}
+      </output>
       <output aria-label="적용된 검색어">{search.viewModel.panels.search.query}</output>
       <output aria-label="검색 recent 개수">{search.viewModel.recent.length}</output>
     </div>
@@ -177,6 +185,7 @@ export const SearchProductStory = ({
   saveReject = false,
   deferred = false,
   fail = false,
+  reducedMotion = false,
 }: {
   initialPanel?: PrimaryPanelId;
   initialQuery?: string;
@@ -184,6 +193,7 @@ export const SearchProductStory = ({
   saveReject?: boolean;
   deferred?: boolean;
   fail?: boolean;
+  reducedMotion?: boolean;
 }) => {
   const [openCount, setOpenCount] = useState(0);
   const fixture = useMemo(
@@ -233,6 +243,9 @@ export const SearchProductStory = ({
         lang="ko-KR"
         style={{ background: "linear-gradient(135deg, #c9def4, #eef4f8)", minHeight: "100vh" }}
       >
+        {reducedMotion ? (
+          <style>{`.taskbar-panel-widget__popup { transition-duration: 0s !important; }`}</style>
+        ) : null}
         <TaskbarRoot
           resourceReaders={searchResources}
           timestampClock={{
