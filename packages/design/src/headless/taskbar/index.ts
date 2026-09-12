@@ -99,7 +99,9 @@ export {
   type ResourceOpenResult,
   type ResourceOpenWindowAction,
   type ResourceOpenWindowOperationPort,
+  type SearchResourceOpenTarget,
   selectResourceOpenAction,
+  selectSearchResourceOpenTarget,
 } from "./resourceOpen/index.js";
 export {
   selectTaskbarRootSnapshot,
@@ -109,6 +111,28 @@ export {
   type TaskbarRootViewModel,
   useTaskbarRootController,
 } from "./rootController/index.js";
+export {
+  type SearchAction,
+  type SearchOpenAction,
+  type SearchOpenResult,
+  type SearchPanelSnapshot,
+  type SearchRecentEntry,
+  type SearchRecentStorage,
+  type SearchRecentStorageSnapshot,
+  type SearchResourceReader,
+  selectSearchCandidates,
+  selectSearchRecommendations,
+  selectTaskbarSearchResults,
+  type TaskbarSearchController,
+  type TaskbarSearchControllerViewModel,
+  TaskbarSearchOperations,
+  type TaskbarSearchOperationsOptions,
+  type TaskbarSearchResult,
+  type TaskbarSearchSnapshot,
+  TaskbarSearchStore,
+  type TaskbarSearchStoreOptions,
+  useTaskbarSearchController,
+} from "./search/index.js";
 export {
   type MobileTaskbarApplicationView,
   type MobileTaskbarTimestampView,

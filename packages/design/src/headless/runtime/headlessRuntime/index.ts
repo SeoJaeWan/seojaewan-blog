@@ -10,6 +10,7 @@ import type {
   FolderViewSettingsStoreResult,
 } from "../../folders/viewSettings/index.js";
 import { FolderViewSettingsStore } from "../../folders/viewSettings/index.js";
+import { normalizeResourceSearchQuery, type ResourceReaders } from "../../resources/index.js";
 import type { StartSnapshot } from "../../start/model/index.js";
 import {
   type StartAction,
@@ -23,10 +24,7 @@ import {
   type StartScreenOperationResult,
   StartScreenOperations,
 } from "../../start/screen/operations/index.js";
-import {
-  createStartScreenState,
-  type StartScreenState,
-} from "../../start/screen/state/index.js";
+import { createStartScreenState, type StartScreenState } from "../../start/screen/state/index.js";
 import { StartStore } from "../../start/startStore/index.js";
 import type { TaskbarSnapshot } from "../../taskbar/model/index.js";
 import {
@@ -51,6 +49,17 @@ import {
   ResourceOpenOperations,
   type ResourceOpenResult,
 } from "../../taskbar/resourceOpen/operations/index.js";
+import {
+  type SearchAction,
+  type SearchOpenAction,
+  type SearchOpenResult,
+  type SearchRecentStorage,
+  type SearchResourceReader,
+  TaskbarSearchOperations,
+  type TaskbarSearchResult,
+  type TaskbarSearchSnapshot,
+  TaskbarSearchStore,
+} from "../../taskbar/search/index.js";
 import { TaskbarStore } from "../../taskbar/taskbarStore/index.js";
 import {
   type WindowGestureRequest,
@@ -137,6 +146,48 @@ export type HeadlessRuntimeOptions = Readonly<{
   externalNavigation?: ExternalShortcutNavigationPort;
   /** File Explorer item 표시 이름과 Content date를 조회하는 Application Catalog port다. */
   fileExplorerResources?: FileExplorerResourceReaders;
+  /**
+   * recent를 명시적 browser 초기화 이후 load/save하는 Application port다.
+   */
+  searchStorage?: SearchRecentStorage;
+  /**
+   * Search 실제 open 완료 시각을 제공하며 테스트에서 고정할 수 있다.
+   */
+  searchClock?: Readonly<{ now(): number }>;
+}>;
+
+/**
+ * Search transient 구독, 명시적 recent 복원과 실제 대상 open을 제공하는 runtime channel이다.
+ *
+ * raw query는 primaryPanel, DOM 입력·timer·IME는 제품 Component가 소유한다.
+ */
+export type HeadlessTaskbarSearchRuntime = Readonly<{
+  /**
+   * 현재 적용 query·detail과 공유 recent를 읽는다.
+   */
+  getSnapshot(): TaskbarSearchSnapshot;
+  /**
+   * SSR에서는 저장소·Catalog를 읽지 않고 생성 당시 빈 snapshot을 반환한다.
+   */
+  getServerSnapshot(): TaskbarSearchSnapshot;
+  /**
+   * Store commit을 구독하며 해제는 실제 open을 취소하지 않는다.
+   */
+  subscribe(listener: () => void): () => void;
+  /**
+   * Catalog·Workspace 준비 후 recent를 복원하며 준비 전 호출은 false이고 load하지 않는다.
+   */
+  initialize(): Promise<boolean>;
+  /**
+   * 현재 준비된 typed reader를 제공하며 준비 전 빈 Catalog 대신 null을 반환한다.
+   */
+  getReaders(): ResourceReaders | null;
+  /**
+   * query 적용·detail·reconcile 또는 실제 대상 열기를 제품 Operation으로 실행한다.
+   */
+  execute(
+    action: SearchAction | SearchOpenAction,
+  ): TaskbarSearchResult | Promise<TaskbarSearchResult | SearchOpenResult>;
 }>;
 
 /** Resource 종류별 open을 Window 또는 external navigation port로 보내는 runtime channel이다. */
@@ -174,6 +225,8 @@ export type HeadlessRuntime = Readonly<{
   >;
   /** Folder·Content·ExternalShortcut open 결과를 하나로 정규화하는 channel이다. */
   resourceOpen: HeadlessResourceOpenRuntime;
+  /** 두 검색 진입점의 적용 query·detail, 공유 recent와 실제 open channel이다. */
+  search: HeadlessTaskbarSearchRuntime;
   /** 위치별 Folder view settings snapshot과 serializable update Action channel이다. */
   folderViewSettings: HeadlessFeatureRuntime<
     FolderViewSettingsSnapshot,
@@ -279,6 +332,41 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
     windowReader: windowStore,
     transitions,
   });
+  /** 현재 Workspace Folder를 읽으며 정적 Catalog 연결 전에는 사용하지 않는다. */
+  const folderReader: ResourceReaders["folder"] = Object.freeze({
+    has: (id: string) =>
+      workspaceStore.getSnapshot().folders.some((folder) => folder.ref.id === id),
+    get: (id: string) =>
+      workspaceStore.getSnapshot().folders.find((folder) => folder.ref.id === id),
+    list: () => workspaceStore.getSnapshot().folders,
+  });
+  const searchReaders: ResourceReaders = Object.freeze({
+    content: options.fileExplorerResources?.content ?? EMPTY_CATALOG,
+    externalShortcut: options.fileExplorerResources?.externalShortcut ?? EMPTY_CATALOG,
+    folder: folderReader,
+  });
+  /**
+   * Catalog 주입과 Workspace 초기화를 모두 확인해 준비 전 reconcile을 방지한다.
+   */
+  const getSearchReaders = (): ResourceReaders | null => {
+    if (options.fileExplorerResources === undefined) return null;
+    try {
+      workspaceStore.getSnapshot();
+      return searchReaders;
+    } catch (error) {
+      if (isNotInitializedError(error, "WorkspaceStoreNotInitializedError")) return null;
+      throw error;
+    }
+  };
+  const searchResourceReader: SearchResourceReader = Object.freeze({
+    getReaders: getSearchReaders,
+  });
+  const searchStore = new TaskbarSearchStore({
+    resources: searchResourceReader,
+    storage: options.searchStorage,
+    clock: options.searchClock,
+  });
+  const searchServerSnapshot = searchStore.getSnapshot();
   const primaryPanelOperations = new PrimaryPanelOperations({
     state: primaryPanelState,
     modeReader: {
@@ -292,14 +380,25 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       },
     },
     transitions,
+    onCloseComplete: (panel) => {
+      searchStore.reset(panel);
+      if (panel === "start")
+        startScreenOperations.execute({ type: "reset", reason: "close-complete" });
+    },
   });
   const resourceOpenOperations = new ResourceOpenOperations({
     windows: windowOperations,
     externalNavigation: options.externalNavigation ?? missingExternalNavigation,
   });
 
-  /** panel settle을 Start screen transient reset과 같은 runtime lifecycle로 연결한다. */
+  /**
+   * raw 변경을 즉시 invalidation하고 mobile settle을 Start screen transient 정리에 연결한다.
+   */
   const executePrimaryPanel = (action: PrimaryPanelAction): PrimaryPanelOperationHandle => {
+    if (action.type === "update-query") {
+      // queue 반영 전 연속 입력에도 마지막 빈 값을 즉시 반영한다.
+      searchStore.invalidateQuery(action.panel, action.query);
+    }
     const handle = primaryPanelOperations.execute(action);
     void handle.settled.then((settled) => {
       if (settled.status !== "settled") return;
@@ -307,16 +406,31 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
         startScreenOperations.execute({ type: "reset", reason: "mobile" });
         return;
       }
-      if (
-        settled.result.status === "committed" &&
-        settled.result.changes.some(
-          (change) => change.kind === "deactivated" && change.panel === "start",
-        )
-      ) {
-        startScreenOperations.execute({ type: "reset", reason: "close-complete" });
-      }
     });
     return handle;
+  };
+  const searchOperations = new TaskbarSearchOperations({
+    store: searchStore,
+    resources: searchResourceReader,
+    workspace: workspaceStore,
+    resourceOpen: resourceOpenOperations,
+    primaryPanel: { execute: executePrimaryPanel },
+  });
+  /**
+   * 적용 query가 현재 raw 입력과 같은 revision인지 확인하고 실제 open은 수명과 분리한다.
+   */
+  const executeSearch = (
+    action: SearchAction | SearchOpenAction,
+  ): TaskbarSearchResult | Promise<TaskbarSearchResult | SearchOpenResult> => {
+    if (action.type === "search.open-resource" || action.type === "search.open-file-location")
+      return searchOperations.execute(action);
+    if (action.type === "search.apply-query") {
+      const primary = primaryPanelState.getSnapshot();
+      const raw = action.panel === "start" ? primary.startQuery : primary.searchQuery;
+      if (normalizeResourceSearchQuery(raw) !== normalizeResourceSearchQuery(action.query))
+        return Object.freeze({ changed: false, persistence: "not-required" });
+    }
+    return searchStore.execute(action);
   };
 
   return Object.freeze({
@@ -354,13 +468,17 @@ export const createHeadlessRuntime = (options: HeadlessRuntimeOptions = {}): Hea
       PrimaryPanelSnapshot,
       PrimaryPanelAction,
       PrimaryPanelOperationHandle
-    >(
-      primaryPanelState,
-      executePrimaryPanel,
-      "PrimaryPanelStateNotInitializedError",
-    ),
+    >(primaryPanelState, executePrimaryPanel, "PrimaryPanelStateNotInitializedError"),
     resourceOpen: Object.freeze({
       execute: (action: ResourceOpenAction) => resourceOpenOperations.execute(action),
+    }),
+    search: Object.freeze({
+      getSnapshot: searchStore.getSnapshot,
+      getServerSnapshot: () => searchServerSnapshot,
+      subscribe: searchStore.subscribe,
+      initialize: () => searchStore.initialize(),
+      getReaders: getSearchReaders,
+      execute: executeSearch,
     }),
     folderViewSettings: createFeatureRuntime<
       FolderViewSettingsSnapshot,

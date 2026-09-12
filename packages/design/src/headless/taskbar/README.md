@@ -1,5 +1,9 @@
 # Taskbar
 
+Start·Taskbar 공통 검색의 적용 query·detail, 공유 recent와 실제 열기는
+[`search/README.md`](./search/README.md)의 `runtime.search` 연결을 사용한다.
+raw 입력과 close 완료는 기존 primaryPanel 공개 Action이 소유한다.
+
 desktop Taskbar의 persistent Pin과 runtime visible order를 `TaskbarStore`가 함께 소유한다. Pin에는 `file-explorer`·`chrome` application identity 또는 `ExternalShortcutResourceRef`만 저장한다. Window target, active/minimized 상태, label, URL과 title은 현재 reader에서 파생한다.
 
 ## 파일별 역할

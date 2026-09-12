@@ -1,5 +1,10 @@
 # Operation runtime 사용 안내
 
+`createHeadlessRuntime`의 `search` channel은 기존 `fileExplorerResources`와 초기화된
+Workspace를 사용한다. Application은 browser 준비 후 `runtime.search.initialize()`로
+recent를 복원한다. Search Store 생성과 server snapshot은 저장소나 singleton을 읽지 않는다.
+입력·실제 열기와 저장 port 사용 예는 [`Search 사용 안내`](../taskbar/search/README.md)를 따른다.
+
 `runtime`은 feature Action을 실행할 때 필요한 세 가지 DOM-free 기반을 제공한다. `OperationHandle`은 semantic commit, UI 표현과 전체 종료를 별도 Promise로 공개하고, `OperationTargetQueue`는 같은 target을 `settled`까지 순서대로 실행하며, `TransitionRegistry`는 operation ID와 phase에 맞는 UI 완료 신호를 연결한다.
 
 이 기능은 Store 상태 계산, 저장, DOM event와 실제 animation을 구현하지 않는다. Store command 연결과 동작별 commit 순서는 feature Operation이 소유하고, Component는 전달받은 operation ID와 phase로 완료·중단·실패만 보고한다. 지속적인 계약의 정본은 Workbench Local Work Memory의 `action-operation`, `transition-lifecycle`, `module-boundaries`, `coding`, `testing`이다.

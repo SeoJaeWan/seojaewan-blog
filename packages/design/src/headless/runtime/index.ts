@@ -12,6 +12,7 @@ export {
   type HeadlessRuntime,
   type HeadlessRuntimeAdapters,
   type HeadlessRuntimeOptions,
+  type HeadlessTaskbarSearchRuntime,
 } from "./headlessRuntime/index.js";
 export {
   createOperationHandle,

@@ -322,6 +322,31 @@ describe("PrimaryPanelOperations", () => {
     expect(state.getSnapshot()).toMatchObject({ activePanel: "search", searchQuery: "새 검색" });
   });
 
+  it("queue 대기 중 activation이 바뀐 open 추적은 다음 activation에 연결하지 않는다", async () => {
+    const { operations, state, transitions } = createFixture();
+    const opening = operations.execute({ type: "trigger", panel: "search" });
+    await opening.committed;
+    transitions.complete(opening.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await opening.settled;
+    const closing = operations.execute({ type: "dismiss", panel: "search", reason: "escape" });
+    const reopening = operations.execute({ type: "trigger", panel: "search" });
+    const tracking = operations.execute({
+      type: "track-resource-open",
+      panel: "search",
+      requestId: "queued-old",
+    });
+    await flushQueue();
+    transitions.complete(closing.operationId, PRIMARY_PANEL_EXIT_PHASE);
+    await closing.settled;
+    await reopening.committed;
+    transitions.complete(reopening.operationId, PRIMARY_PANEL_ENTER_PHASE);
+    await reopening.settled;
+    await expect(tracking.settled).resolves.toMatchObject({
+      result: { status: "rejected", reason: "panel-not-active" },
+    });
+    expect(state.getSnapshot().activePanel).toBe("search");
+  });
+
   it("이전 Search activation의 늦은 Resource 성공이 다시 연 panel을 닫지 않는다", async () => {
     const { operations, state, transitions } = createFixture();
     const firstOpen = operations.execute({ type: "trigger", panel: "search" });

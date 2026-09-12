@@ -1,3 +1,8 @@
+/**
+ * @file Taskbar Resource open과 Desktop 위치 열기의 실행 intent를 정의한다.
+ *
+ * Resource identity, Workspace placement와 Window 상태 계산은 원본 feature가 소유한다.
+ */
 import type { ContentResourceRef, FolderResourceRef } from "../../../resources/index.js";
 
 /**
@@ -5,7 +10,11 @@ import type { ContentResourceRef, FolderResourceRef } from "../../../resources/i
  */
 export type ResourceOpenWindowAction =
   | Readonly<{ type: "open-folder"; folder: FolderResourceRef }>
-  | Readonly<{ type: "open-content"; content: ContentResourceRef }>;
+  | Readonly<{ type: "open-content"; content: ContentResourceRef }>
+  /**
+   * Resource가 아닌 Desktop을 기존 Window 생성 경계로 연다.
+   */
+  | Readonly<{ type: "create-file-explorer-window"; location: null }>;
 
 /**
  * 외부 browser 새 context에서 URL을 여는 Action이다.

@@ -123,6 +123,10 @@ export type PrimaryPanelOperationsOptions = Readonly<{
   modeReader: PrimaryPanelModeReader;
   queue?: OperationTargetQueue<PrimaryPanelOperationTarget>;
   transitions?: TransitionRegistry;
+  /**
+   * exit 완료와 query 초기화 직후 해당 panel의 인접 transient를 정리한다.
+   */
+  onCloseComplete?: (panel: PrimaryPanelId) => void;
 }>;
 
 type TrackedResourceOpenRequest = Readonly<{
@@ -167,6 +171,7 @@ export class PrimaryPanelOperations {
   readonly #modeReader: PrimaryPanelModeReader;
   readonly #queue: OperationTargetQueue<PrimaryPanelOperationTarget>;
   readonly #transitions: TransitionRegistry;
+  readonly #onCloseComplete: ((panel: PrimaryPanelId) => void) | undefined;
   readonly #resourceRequests = new Map<
     PrimaryPanelResourceOpenRequestId,
     TrackedResourceOpenRequest
@@ -180,11 +185,13 @@ export class PrimaryPanelOperations {
     this.#modeReader = options.modeReader;
     this.#queue = options.queue ?? new OperationTargetQueue();
     this.#transitions = options.transitions ?? new TransitionRegistry();
+    this.#onCloseComplete = options.onCloseComplete;
   }
 
   /** Action을 목적에 맞는 queue에 넣고 완료 시점별 Handle을 즉시 반환한다. */
   execute(action: PrimaryPanelAction): PrimaryPanelOperationHandle {
     const mobileRevision = this.#mobileRevision;
+    const requestedActivationRevision = this.#activationRevision;
     if (action.type === "dismiss-for-mobile") {
       this.#invalidateActivation();
       this.#mobileRevision += 1;
@@ -195,7 +202,7 @@ export class PrimaryPanelOperations {
       );
     }
     return this.#queue.enqueue(PRIMARY_PANEL_TRANSITION_TARGET, (context) =>
-      this.#run(action, context, mobileRevision),
+      this.#run(action, context, mobileRevision, requestedActivationRevision),
     );
   }
 
@@ -204,13 +211,15 @@ export class PrimaryPanelOperations {
     action: PrimaryPanelAction,
     context: ExecutionContext,
     mobileRevision: number,
+    requestedActivationRevision = this.#activationRevision,
   ): Promise<PrimaryPanelSettledResult> {
     context.onCleanup(() => {
       this.#transitions.abortOperation(context.operationId, "primary-panel-operation-settled");
     });
 
     if (action.type === "update-query") return this.#runQuery(action, context);
-    if (action.type === "track-resource-open") return this.#trackResourceOpen(action, context);
+    if (action.type === "track-resource-open")
+      return this.#trackResourceOpen(action, context, requestedActivationRevision);
     if (action.type === "settle-resource-open") {
       return this.#settleResourceOpen(action, context);
     }
@@ -253,17 +262,24 @@ export class PrimaryPanelOperations {
     return this.#finishWithoutPresentation(result, context);
   }
 
-  /** 요청 panel이 현재 active일 때 panel identity와 activation을 request ID에 연결한다. */
+  /**
+   * 요청 당시와 실행 시 activation이 같을 때만 panel identity를 request ID에 연결한다.
+   */
   #trackResourceOpen(
     action: Extract<PrimaryPanelAction, { type: "track-resource-open" }>,
     context: ExecutionContext,
+    requestedActivationRevision: number,
   ): PrimaryPanelSettledResult {
     const snapshot = this.#state.getSnapshot();
     const panel = action.panel ?? "search";
     let result: PrimaryPanelCommittedResult;
     if (this.#resourceRequests.has(action.requestId)) {
       result = Object.freeze({ status: "rejected", action, snapshot, reason: "duplicate-request" });
-    } else if (snapshot.activePanel !== panel || !this.#canOpenDesktopPanel()) {
+    } else if (
+      snapshot.activePanel !== panel ||
+      requestedActivationRevision !== this.#activationRevision ||
+      !this.#canOpenDesktopPanel()
+    ) {
       result = Object.freeze({
         status: "rejected",
         action,
@@ -308,24 +324,40 @@ export class PrimaryPanelOperations {
     return this.#close(trackedRequest.panel, action, context);
   }
 
-  /** mobile signal에서 대기 open을 이미 무효화한 뒤 현재 active panel만 정리한다. */
-  #dismissForMobile(
+  /**
+   * mobile signal에서 대기 open을 무효화한 뒤 양쪽 입력과 인접 transient를 정리한다.
+   */
+  async #dismissForMobile(
     action: Extract<PrimaryPanelAction, { type: "dismiss-for-mobile" }>,
     context: ExecutionContext,
-  ): Promise<PrimaryPanelSettledResult> | PrimaryPanelSettledResult {
+  ): Promise<PrimaryPanelSettledResult> {
     const panel = this.#state.getSnapshot().activePanel;
+    const changes: PrimaryPanelChange[] = [];
+    const transitions: TransitionResult[] = [];
     if (panel === null) {
+      appendChange(changes, this.#state.completeClose("start"));
+      appendChange(changes, this.#state.completeClose("search"));
+      this.#onCloseComplete?.("start");
+      this.#onCloseComplete?.("search");
       return this.#finishWithoutPresentation(
-        Object.freeze({
-          status: "no-op",
-          action,
-          snapshot: this.#state.getSnapshot(),
-          reason: "already-closed",
-        }),
+        changes.length > 0
+          ? committedResult(action, this.#state.getSnapshot(), changes)
+          : Object.freeze({
+              status: "no-op",
+              action,
+              snapshot: this.#state.getSnapshot(),
+              reason: "already-closed",
+            }),
         context,
       );
     }
-    return this.#close(panel, action, context);
+    await this.#deactivateAndWait(panel, context, changes, transitions);
+    const other = panel === "start" ? "search" : "start";
+    appendChange(changes, this.#state.completeClose(other));
+    this.#onCloseComplete?.(other);
+    const result = committedResult(action, this.#state.getSnapshot(), changes);
+    context.completeCommitted(result);
+    return this.#finishPresented(result, transitions, context);
   }
 
   /** UI가 판정한 dismiss가 아직 같은 active panel을 가리킬 때만 닫는다. */
@@ -453,6 +485,7 @@ export class PrimaryPanelOperations {
       await this.#transitions.waitFor(context.operationId, PRIMARY_PANEL_EXIT_PHASE),
     );
     appendChange(changes, this.#state.completeClose(panel));
+    this.#onCloseComplete?.(panel);
   }
 
   /** 새 active identity를 만들고 Resource 결과를 구분할 activation revision을 발급한다. */
