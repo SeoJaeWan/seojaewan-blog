@@ -35,6 +35,13 @@ export {
   type ResourceReaders,
 } from "./resourceLookup/index.js";
 export {
+  normalizeResourceSearchQuery,
+  type ResourceSearchInput,
+  type ResourceSearchMatch,
+  type ResourceSearchTier,
+  searchResources,
+} from "./search/index.js";
+export {
   assertUniqueResourceIds,
   type CatalogResource,
   createStaticCatalog,

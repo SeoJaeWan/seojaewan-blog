@@ -2,6 +2,8 @@
 
 Resource의 전역 identity, 종류별 원본, 직렬화 가능한 참조와 조회 계약을 제공한다. 위치나 사용자 변경 상태는 [Workspace](../workspace/README.md)가 소유한다. 전체 연결과 정본 문서 위치는 [Headless 안내](../README.md)를 따른다.
 
+공통 정규화·한글 초성/혼합·단어 AND·ranking은 [Resource 검색](./search/README.md)의 pure API를 사용한다. 후보 범위와 입력 수명·제품 화면은 소비 제품이 소유한다.
+
 ## 파일별 역할
 
 | 파일                                                               | 역할                                          | 인접 테스트                                                       |
