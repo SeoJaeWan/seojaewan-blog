@@ -1,40 +1,20 @@
-# HDJG-47 — [Taskbar 09] Search·Recent·Recommendation·Ranking·Detail
+# HDJG-47 실행 안내
 
-h2. 목적
+이 파일은 승인된 Prepare 범위와 현재 Memory를 찾기 위한 checkout 안내입니다. durable 계약 본문은
+Workbench Local Work Memory project `seojaewan/seojaewan-blog`가 소유하고 delivery status와 후속 작업은
+Gateway Work Item `HDJG-47`이 소유합니다.
 
-작업 표시줄 Search의 최근 항목, 추천 Content, fuzzy ranking, 상세 영역과 open 기록을 계약대로 구현한다.
+- 승인된 Prepare: artifact `01a095dd-8519-7b05-be43-049bb343ceb8`, folder `prepare`
+- 공통 검색: `resource-search` @ `01a095bf-efe4-7052-9527-f212ece70bc0`
+- 제품 검색: `taskbar-search` @ `01a095c0-6f90-7378-88a9-821b0a62b27e`
+- panel lifecycle: `taskbar-panel-lifecycle` @ `01a095c1-46c2-7f6e-9afc-3d52dd6c9a0d`
+- 범위 합의: `hdjg-47-search-scope-decision` @ `01a095c2-0ce2-7d30-9e8e-6181cf8948bc`
 
-h2. 선행 작업
+TASK-003은 Start·Taskbar production 검색 본문, 입력·탐색 DOM, 인접 검사·Story와 시각 비교를 소유합니다.
+Context Menu는 HDJG-49가 소유합니다. Application adapter와 개별 Window 화면 연결은 이 작업의 범위
+밖입니다. Prepare의 사용자 결정은 승인되었으며 canonical Memory 변경 시 plan revision을 재검토합니다.
 
-* HDJG-46
-* 선행 이슈의 구현 완료·Memory 정합화 후 이 작업의 Shape를 시작한다.
-
-h2. 범위
-
-* 최근 항목: Search에서 연 Content 최대 20개, 검색어 미저장
-* 추천 Content: Notion 설정 기반 category별 최대 6개, 최신 작성일 순
-* 제목 기반 fuzzy 검색과 일치율 ranking, 한글 초성 지원
-* 왼쪽 최고 매치/결과와 오른쪽 상세 icon·구분선·이름·경로·open action
-* Start panel 내 Search view와 독립 Search panel의 결과 공유
-
-h2. 완료 기준
-
-* 최근 기록과 자주 방문한 Content 기록이 분리된다.
-* 빈 query·입력·결과 없음·상세 선택 상태가 테스트된다.
-* Folder/Chrome open intent와 부모 Folder 열기 규칙이 검증된다.
-
-h2. Canonical Local Work Memory
-
-* {{taskbar-search}}
-* {{frequent-content-history}}
-* {{resource-model}}
-* {{application-resource-routing-404}}
-* {{testing}}
-
-h2. 전달 규칙
-
-최신 Memory revision을 Shape에서 고정하고, Prepare 이후 이 작업 전용 PR을 하나만 만든다. Jira 생성만으로 구현 또는 시각 동등성 완료를 주장하지 않는다. UI 작업은 동일 viewport의 legacy reference 비교를 완료 조건으로 포함한다.
-
-## Jira
-
-- https://seojaewan.atlassian.net/browse/HDJG-47
+실행 중 발견한 실제 open 후 exit completion 연결 결함은 `CloseCompletionContract`로 검출합니다.
+Search Operation 내부 primary panel settle handle이 UI transition registry에 전달되지 않아 실제 Popup
+exit 완료 뒤 query/detail 초기화가 watchdog까지 늦어집니다. UI에서 API를 가로채거나 가짜 completion을
+주입하지 않았습니다. headless owner가 정확한 transition identity 전달 경계를 보완해야 합니다.

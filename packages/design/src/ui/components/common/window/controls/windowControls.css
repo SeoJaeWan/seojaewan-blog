@@ -1,0 +1,69 @@
+.window-controls {
+  display: flex;
+  flex: 0 0 auto;
+  block-size: 100%;
+}
+
+.window-controls__button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: var(--wd-window-frame-control-color);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 var(--wd-window-frame-control-size);
+  block-size: 100%;
+  inline-size: var(--wd-window-frame-control-size);
+  justify-content: center;
+  line-height: 0;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  transition:
+    background-color var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing),
+    color var(--wd-window-frame-root-transition-duration)
+      var(--wd-window-frame-root-transition-easing);
+}
+
+.window-controls__button:hover {
+  background: var(--wd-window-frame-control-background-hover);
+  color: var(--wd-window-frame-control-color-hover);
+}
+
+.window-controls__button--close:hover {
+  background: var(--wd-window-frame-control-background-close-hover);
+  color: var(--wd-window-frame-control-color-close-hover);
+}
+
+.window-controls__button--close {
+  border-start-end-radius: var(--wd-window-frame-root-border-radius);
+}
+
+.window-frame[data-maximized="true"] .window-controls__button--close,
+.window-frame[data-mode="mobile"] .window-controls__button--close {
+  border-start-end-radius: 0;
+}
+
+.window-controls__button:focus-visible {
+  box-shadow:
+    inset 0 0 0 var(--wd-window-frame-control-focus-inner-width)
+      var(--wd-window-frame-control-focus-inner-color),
+    inset 0 0 0 var(--wd-window-frame-control-focus-outer-width)
+      var(--wd-window-frame-control-focus-outer-color);
+}
+
+.window-controls__button > svg {
+  display: block;
+  flex: 0 0 auto;
+  block-size: var(--wd-window-frame-control-icon-size);
+  inline-size: var(--wd-window-frame-control-icon-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-controls__button {
+    transition-duration: 0ms;
+  }
+}
