@@ -38,7 +38,7 @@ _codocs:
   - Acrylic: `backdrop-filter: blur()`에 Windows UI kit의 틴트·루미너스 층과 노이즈 질감을 얹는다.
   - Mica: 흐리게 처리한 배경화면을 창 뒤에 깔아 흉내 낸다.
   - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
-  - 노이즈 질감은 코드에만 넣는다. Windows UI kit의 노이즈 이미지를 피그마 도구로 옮길 수 없고, 피그마 일치 검사는 효과를 끈 상태로 비교하므로 영향이 없다.
+  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)으로 넣었고, 코드도 같은 이미지와 값을 쓴다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
 
   피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 픽셀 비교가 어렵다. 그래서 테스트할 때만 효과를 끄는 스위치를 두고, 피그마 일치 검사는 효과를 뺀 상태(컴포넌트의 `Material=Solid` 변형)로 비교한다. 재질 효과는 Storybook에서 눈으로 확인한다.
 아이콘: |
