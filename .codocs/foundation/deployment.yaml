@@ -1,0 +1,13 @@
+_codocs:
+  id: deployment
+  name: 배포 환경
+  parent:
+    - seojaewan 블로그
+개요: |
+  블로그를 어디에 배포하는지에 대한 결정이다.
+결정: |
+  Vercel에 배포한다.
+  [[콘텐츠 원천]]에서 정한 ISR과 웹훅 기반 즉시 갱신에는 서버 런타임이 필요하며, Vercel은 이를 별도 서버 운영 없이 제공한다.
+검토한 대안: |
+  - Cloudflare(OpenNext): ISR을 쓰려면 추가 설정이 필요하다.
+  - 직접 운영하는 서버: 운영 부담이 생긴다.
