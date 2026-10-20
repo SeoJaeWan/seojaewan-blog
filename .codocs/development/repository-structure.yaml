@@ -44,7 +44,11 @@ _codocs:
   - Node는 24로 고정한다(`engines`, `.nvmrc`, `engine-strict`).
   - pnpm 버전은 `packageManager` 필드로 고정한다.
   - 의존성은 정확한 버전으로 저장한다(`save-exact`). 설치할 때마다 버전이 바뀌지 않게 하기 위해서다.
-  - 업데이트는 Renovate가 여는 PR로 받는다. 함께 올려야 하는 패키지(React와 React DOM, Storybook 패키지들)는 한 PR로 묶는다.
+  - pnpm 설정(`save-exact`, `engine-strict` 등)은 `pnpm-workspace.yaml`에 둔다. pnpm 12는 `.npmrc`의 이 설정을 읽지 않는다.
+  - 공개된 지 하루가 지나지 않은 버전은 설치하지 않는다. pnpm 기본 정책이며 Renovate도 같은 기준을 따른다. 갓 나온 버전의 문제가 바로 들어오지 않게 하기 위해서다.
+  - 업데이트는 Renovate가 여는 PR로 받는다. 함께 올려야 하는 패키지(React와 React DOM, Storybook 패키지들)는 한 PR로 묶는다. Renovate는 저장소에 Renovate GitHub App을 설치해야 동작한다.
+  - 이 PC는 Windows 스마트 앱 컨트롤이 Next.js의 네이티브 컴파일러(Turbopack)를 막아, 로컬에서는 `next dev --webpack`, `next build --webpack`을 쓴다. CI와 Vercel은 기본 빌드를 쓴다.
 TypeScript: |
   - `strict`, `noUncheckedIndexedAccess`, `noFallthroughCasesInSwitch`, `noImplicitOverride`를 켠다.
+  - TypeScript는 typescript-eslint가 지원하는 범위(6.1 미만)의 버전을 쓴다. ESLint는 `eslint-plugin-react`가 지원하는 9를 쓴다. 두 플러그인이 지원 범위를 넓히면 Renovate PR로 올린다.
   - 타입 작성 규칙은 [[코드 작성 규칙:타입]]에서 확인한다.
