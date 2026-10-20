@@ -1,0 +1,12 @@
+# codocs 도구가 쓰는 형식을 유지한다
+.codocs/
+
+pnpm-lock.yaml
+**/.next/
+**/.turbo/
+**/dist/
+**/storybook-static/
+**/playwright-report/
+**/test-results/
+**/coverage/
+**/next-env.d.ts

@@ -1,0 +1,5 @@
+# @codocs [[Git 작업 규칙:Git 훅]]
+# 작업한 범위만 검사한다. 전체 검사는 CI에서 한다.
+pnpm exec lint-staged
+node scripts/run-affected-tests.mjs
+pnpm typecheck
