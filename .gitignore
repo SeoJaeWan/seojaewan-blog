@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+
+# build output
+.next/
+out/
+dist/
+storybook-static/
+*.tsbuildinfo
+next-env.d.ts
+
+# tooling caches
+.turbo/
+.eslintcache
+coverage/
+
+# playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# env
+.env*
+
+# logs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# local agent settings
+.claude/settings.local.json
+.claude/worktrees/
