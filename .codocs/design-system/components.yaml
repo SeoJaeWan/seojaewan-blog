@@ -5,9 +5,11 @@ _codocs:
     - 디자인 시스템
 개요: |
   디자인 시스템이 제공하는 컴포넌트 목록이다. 피그마 01 · Components 페이지와 `packages/design-system`의 컴포넌트가 이 목록과 같다.
-  [[제품 정의:첫 공개 범위]]에 필요한 것에서 뽑았고, 화면별 세부 기능을 정하면서 변형이 늘거나 줄 수 있다. 모바일 전용 변형은 피그마 Screens를 만들 때 판단한다.
+  [[제품 정의:첫 공개 범위]]에 필요한 것에서 뽑았고, 화면별 세부 기능을 정하면서 변형이 늘거나 줄 수 있다. 모바일 전용 변형은 피그마 Screens를 만들면서 정했다: StartMenu·SearchPanel·ExplorerContent의 `Device=Mobile`, Menu의 `Chrome more (Mobile)`([[모바일:차이]]).
 
-  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다. 재질 효과를 쓰는 컴포넌트는 효과를 끈 단색 변형(`Material=Solid`)도 갖는다([[피그마 일치 검사]]). 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
+  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다. 피그마에서는 Rest → Hover → Pressed를 프로토타입 상호작용(Interactive components)으로 이어 두었다. 재질 효과를 쓰는 컴포넌트는 효과를 끈 단색 변형(`Material=Solid`)도 갖는다([[피그마 일치 검사]]). 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
+
+  다른 컴포넌트를 담는 자리(WindowFrame의 앱 콘텐츠·탭 표시줄, Flyout의 내용, TaskbarPreview의 축소 화면, ChromeWindow의 페이지, ExplorerContent의 항목)는 피그마 슬롯(SLOT 속성)이다. Screens는 슬롯에 다른 컴포넌트의 인스턴스를 넣어 조립하고, 코드에서는 `children` 같은 자리에 대응한다.
 기본 컨트롤: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
@@ -39,3 +41,19 @@ Windows 화면 요소: |
   | BootScreen | 다시 시작할 때의 재부팅 화면 |
 
   Start 메뉴와 검색 패널은 Flyout이 아니라 Windows UI kit의 Shell Surface(셸 표면)를 바탕으로 한다. 실제 Windows에서도 셸 패널은 앱의 플라이아웃과 그림자·배경이 다르기 때문이다.
+Screens에서 추가한 컴포넌트: |
+  5단계 피그마 Screens를 그리면서 필요해져 만든 화면 요소다([[구현 순서:5단계 피그마 Screens]]).
+
+  | 컴포넌트 | 쓰이는 곳 |
+  |---|---|
+  | ExplorerContent(Device Desktop·Mobile × Mode Folder·Recycle Bin × View Icons·Details) | 탐색기 창 본문. 주소 표시줄(뒤로·앞으로·위로·새로 고침, Breadcrumb, SearchBox), 명령 모음, 탐색 창(NavigationItem), 항목 슬롯, 상태 표시줄 |
+  | ChromeWindow(State × Maximized) | Chrome 창. BrowserTabStrip + BrowserToolbar + 페이지 슬롯 |
+  | ChromePage(Page 글·새 탭·검색 결과·찾을 수 없음 × Layout Wide·Narrow) | Chrome 탭 안의 페이지. 글은 본문 최대 720px, Wide는 오른쪽 고정 목차, Narrow는 접힌 목차 |
+  | SnapLayoutFlyout, SnapZone(Rest·Hover) | 최대화 버튼 hover 시 스냅 레이아웃([[창 동작:스냅]]) |
+  | SnapPreview | 끌어서 스냅·Snap Assist에서 채울 영역 미리보기 |
+  | SelectionMarquee | 바탕화면·탐색기에서 빈 곳을 끌어 여러 개를 고르는 사각형 |
+
+  기존 컴포넌트에 더한 변형:
+  - Menu: 글, 외부 링크, 휴지통, 여러 개 선택, 탐색기 폴더·글·빈 곳, 휴지통 항목(복원), 작업 표시줄 앱 버튼, Start 고정 항목, Chrome ⋮(데스크톱·모바일), 정렬 기준·새로 만들기·탐색기 보기·탐색기 정렬 하위 메뉴
+  - StartMenu, SearchPanel: `Device=Mobile`(화면 폭, 높이 640, 위쪽 모서리만 둥글게)
+  - WindowFrame, Flyout, TaskbarPreview: 자리 표시용 프레임을 실제 슬롯 속성으로 바꿈
