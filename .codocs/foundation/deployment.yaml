@@ -17,6 +17,6 @@ Vercel 프로젝트 설정: |
   - Root Directory: `apps/web`
   - Framework: Next.js
   - Node: 24.x
-  - Include files outside the root directory: 켬다. 앱이 워크스페이스의 `packages/design-system`을 쓰기 때문이다.
+  - Include files outside the root directory: 켠다. 앱이 워크스페이스의 `packages/design-system`을 쓰기 때문이다.
   - 설치·빌드 명령: 기본값(`next build`)
   - Turborepo 원격 캐시는 선택으로 연결한다.
