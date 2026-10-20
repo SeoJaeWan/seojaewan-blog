@@ -1,0 +1,12 @@
+/*
+ * 디자인 토큰을 정의하는 단 하나의 @theme 블록이다.
+ * 실제 토큰은 6단계(디자인 시스템 코드화)에서 피그마 Variables를 기준으로 채운다.
+ *
+ * @codocs [[기술 스택:스타일링]]
+ * Tailwind 기본 색상·간격 팔레트를 끄고 디자인 토큰 이름으로만 쓰게 한다.
+ */
+@theme {
+  --color-*: initial;
+  --spacing: initial;
+  --spacing-*: initial;
+}

@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '@seojaewan/design-system/theme.css';
+
+/* @codocs [[기술 스택:스타일링]] 앱의 CSS가 디자인 시스템 소스의 클래스도 읽게 한다. */
+@source '../../../../packages/design-system/src';
