@@ -1,0 +1,34 @@
+_codocs:
+  id: notion-image-delivery
+  name: Notion 이미지 제공
+  parent:
+    - seojaewan 블로그
+개요: |
+  Notion 글에 들어있는 이미지를 블로그에서 어떻게 제공하는지에 대한 결정이다.
+  Notion이 돌려주는 이미지 URL은 약 1시간 뒤 만료되지만, [[콘텐츠 원천]]의 주기적 갱신으로 만든 페이지는 그보다 오래 캐시될 수 있다. 이 원문 URL을 그대로 쓰면 방문자가 깨진 이미지를 보게 된다.
+결정: |
+  이미지는 개인 서버 Firebat에 저장하고 Cloudflare를 CDN으로 삼아 제공한다.
+
+  - 원본 저장소: Firebat 디스크에 Notion 블록 ID 기준으로 저장한다.
+  - 공개 주소: Firebat에서 운영 중인 Cloudflare 터널로 연결한다.
+  - 캐시: 응답에 변하지 않는 리소스(`immutable`)와 긴 캐시 기간을 주어 Cloudflare 엣지가 응답하고 Firebat까지 오는 요청을 줄인다.
+  - 블로그: Notion 이미지 URL을 아래 고정 주소로 바꾸어 그린다. Notion의 만료 URL은 화면에 나가지 않는다.
+가져오는 시점: |
+  저장된 이미지가 없을 때 요청 시점에 가져온다.
+  요청한 블록 ID의 이미지가 Firebat에 없으면, Firebat이 Notion API로 그 블록의 새 URL을 받아 이미지를 내려받고 저장한 뒤 응답한다.
+
+  별도 동기화 작업이 필요 없고, Notion에 새 이미지를 넣으면 바로 보인다.
+  미리 동기화하는 방식은 동기화보다 주기적 갱신이 먼저 일어나면 이미지가 잠깐 깨질 수 있어 고르지 않았다.
+검토한 대안: |
+  - Vercel Blob에 복사: 저장 용량과 동기화 로직이 필요하다.
+  - 블로그 앱 안의 이미지 프록시 경로: 별도 저장소가 필요 없지만 원본을 보관하지 않아, CDN 캐시가 비면 매번 Notion API를 호출한다.
+  - `next/image` 최적화에만 맡기기: 캐시가 만료된 뒤 원본 URL도 만료돼 있으면 깨져서 단독 해결책이 아니다.
+조건: |
+  - Firebat은 집 서버라 꺼질 수 있다. Cloudflare에 캐시된 이미지는 계속 보이지만, 캐시에 없는 이미지는 서버가 꺼진 동안 깨진다. Cloudflare 무료 플랜은 캐시 보존 기간을 보장하지 않아 이 위험을 완전히 없앨 수는 없다.
+  - Firebat에도 Notion 토큰이 필요하다. local-server의 원칙에 따라 이미지 앱은 별도 프로세스와 credential로 분리하고, 토큰에는 읽기 권한만 준다.
+  - 이미지 앱의 소스는 local-server 저장소에 둔다. 이 문서는 블로그가 기대하는 동작을 정하고, 서버 구현과 운영은 local-server에서 정한다.
+주소: |
+  `https://images.seojaewan.com/notion/<블록 ID>`
+
+  - 용도가 드러나는 호스트 이름이고, Notion 외의 이미지(배경화면 등)를 둘 때는 `/wallpaper/...`처럼 경로로 나눈다.
+  - 확장자는 경로에 넣지 않고 응답의 `Content-Type`으로 알린다. Notion에서 이미지 형식이 바뀌어도 주소가 그대로다.
