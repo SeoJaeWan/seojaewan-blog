@@ -1,7 +1,0 @@
-{
-  "name": "@window/prettier-config",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "main": "index.json"
-}

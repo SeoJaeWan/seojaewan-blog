@@ -1,7 +1,0 @@
-.wb-taskbar-panel-layer {
-  /* taskbar보다 한 단계 아래에서 panel이 올라오는 visual stacking */
-  inset: 0;
-  pointer-events: none;
-  position: fixed;
-  z-index: 2147483646;
-}
