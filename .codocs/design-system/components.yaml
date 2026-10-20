@@ -5,30 +5,37 @@ _codocs:
     - 디자인 시스템
 개요: |
   디자인 시스템이 제공하는 컴포넌트 목록이다. 피그마 01 · Components 페이지와 `packages/design-system`의 컴포넌트가 이 목록과 같다.
-  [[제품 정의:첫 공개 범위]]에 필요한 것에서 뽑았고, 화면별 세부 기능을 정하면서 변형이 늘거나 줄 수 있다. 모바일 전용 컴포넌트가 필요한지는 모바일 동작을 정할 때 판단한다.
+  [[제품 정의:첫 공개 범위]]에 필요한 것에서 뽑았고, 화면별 세부 기능을 정하면서 변형이 늘거나 줄 수 있다. 모바일 전용 변형은 피그마 Screens를 만들 때 판단한다.
 
-  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다. 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
+  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다. 재질 효과를 쓰는 컴포넌트는 효과를 끈 단색 변형(`Material=Solid`)도 갖는다([[피그마 일치 검사]]). 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
 기본 컨트롤: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바, 창 버튼 |
+  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바 |
+  | FocusRect | 키보드 포커스 테두리. 버튼 등의 Focused 상태가 이 컴포넌트를 쓴다 |
   | SearchBox | Start 검색, 탐색기 검색 |
-  | Menu(MenuItem, 구분선, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
+  | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창. 진짜 Windows처럼 진한 1px 테두리를 쓴다 |
+  | Menu(MenuItem, MenuSeparator, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
   | Tooltip | 아이콘 버튼, Taskbar, 잘못된 폴더 이름 안내 말풍선 |
-  | ScrollArea | Windows 11 스타일 얇은 스크롤바 |
-  | Flyout | Start 메뉴, 검색 패널 같은 떠 있는 패널의 공통 바탕 |
+  | Scrollbar, ScrollArea | Windows 11 스타일 얇은 스크롤바 |
+  | ListItem | 추천 목록, 검색 결과, 주소창 추천 |
+  | Flyout | 우클릭 메뉴 같은 떠 있는 패널의 공통 바탕 |
   | MessageBox | 휴지통 비우기 안내 같은 확인·알림 대화 상자 |
   | ProgressRing | 글 로딩, 재부팅 화면 |
 Windows 화면 요소: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | WindowFrame(제목 표시줄, 최소화·최대화·닫기 버튼) | 모든 앱 창 |
+  | WindowFrame, CaptionButton(최소화·최대화·닫기) | 모든 앱 창 |
   | Taskbar, TaskbarButton(실행 중·활성 표시) | 작업 표시줄 |
-  | StartMenu(고정 앱 그리드, 추천 목록, 전원 버튼) | Start |
-  | DesktopIcon(선택·hover 상태) | 바탕화면, 휴지통 |
-  | NavigationItem | 탐색기 왼쪽 목록 |
-  | FileItem(아이콘 보기·목록 보기) | 탐색기 본문 |
-  | Breadcrumb | 탐색기 주소 표시줄 |
-  | BrowserTab, BrowserTabStrip, AddressBar | Chrome |
+  | TaskbarPreview, TaskbarPreviewList | 작업 표시줄 창 미리보기([[작업 표시줄:창 미리보기]]) |
   | SystemTray(시계) | Taskbar 오른쪽 |
+  | StartMenu(고정됨, 모든 항목, 추천, 전원 메뉴), PinnedTile | Start |
+  | SearchPanel(입력 전, 결과, 결과 없음) | 검색 |
+  | DesktopIcon(hover·선택·이름 바꾸기·잘라냄) | 바탕화면, 휴지통 |
+  | ExplorerTab, NavigationItem(들여쓰기 Level 0~3) | 탐색기 탭, 왼쪽 목록 |
+  | FileItem(큰·보통 아이콘, 자세히, 잘라냄), ColumnHeader, DetailsHeader | 탐색기 본문 |
+  | Breadcrumb, BreadcrumbItem | 탐색기 주소 표시줄 |
+  | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar | Chrome |
   | BootScreen | 다시 시작할 때의 재부팅 화면 |
+
+  Start 메뉴와 검색 패널은 Flyout이 아니라 Windows UI kit의 Shell Surface(셸 표면)를 바탕으로 한다. 실제 Windows에서도 셸 패널은 앱의 플라이아웃과 그림자·배경이 다르기 때문이다.
