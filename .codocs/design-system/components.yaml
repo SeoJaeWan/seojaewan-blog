@@ -13,20 +13,22 @@ _codocs:
   |---|---|
   | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바, 창 버튼 |
   | SearchBox | Start 검색, 탐색기 검색 |
-  | Menu(MenuItem, 구분선, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴 |
-  | Tooltip | 아이콘 버튼, Taskbar |
+  | Menu(MenuItem, 구분선, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
+  | Tooltip | 아이콘 버튼, Taskbar, 잘못된 폴더 이름 안내 말풍선 |
   | ScrollArea | Windows 11 스타일 얇은 스크롤바 |
   | Flyout | Start 메뉴, 검색 패널 같은 떠 있는 패널의 공통 바탕 |
-  | ProgressRing | 글 로딩 |
+  | MessageBox | 휴지통 비우기 안내 같은 확인·알림 대화 상자 |
+  | ProgressRing | 글 로딩, 재부팅 화면 |
 Windows 화면 요소: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
   | WindowFrame(제목 표시줄, 최소화·최대화·닫기 버튼) | 모든 앱 창 |
   | Taskbar, TaskbarButton(실행 중·활성 표시) | 작업 표시줄 |
-  | StartMenu(고정 앱 그리드, 추천 목록) | Start |
-  | DesktopIcon(선택·hover 상태) | 바탕화면 |
+  | StartMenu(고정 앱 그리드, 추천 목록, 전원 버튼) | Start |
+  | DesktopIcon(선택·hover 상태) | 바탕화면, 휴지통 |
   | NavigationItem | 탐색기 왼쪽 목록 |
   | FileItem(아이콘 보기·목록 보기) | 탐색기 본문 |
   | Breadcrumb | 탐색기 주소 표시줄 |
   | BrowserTab, BrowserTabStrip, AddressBar | Chrome |
   | SystemTray(시계) | Taskbar 오른쪽 |
+  | BootScreen | 다시 시작할 때의 재부팅 화면 |

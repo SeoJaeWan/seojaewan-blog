@@ -19,13 +19,15 @@ _codocs:
   | 타입 | PascalCase, `I` 같은 접두사 없음 | 같은 규칙 |
   | React 컴포넌트 | PascalCase | TypeScript JSX 검사(소문자 태그는 HTML 태그로 해석돼 쓸 수 없다), `react-hooks/rules-of-hooks`, `react/jsx-pascal-case` |
   | 상수 | UPPER_SNAKE_CASE | `no-restricted-syntax` |
-  | boolean | `is`·`has`·`can`·`should`로 시작 | `naming-convention`의 타입 기반 검사 |
+  | boolean 변수·매개변수 | `is`·`has`·`can`·`should`로 시작 | `naming-convention`의 타입 기반 검사 |
   | 이벤트 핸들러 | props는 `on*`, 내부 함수는 `handle*` | `react/jsx-handler-names` |
   | 훅 | `use*` | `react-hooks/rules-of-hooks` |
 
   상수는 모듈 최상위에서 리터럴(숫자·문자열 등)이나 `as const`로 초기화한 `const`다. 예: `TASKBAR_HEIGHT = 48`, `PINNED_APPS = ['chrome'] as const`.
-  초기값의 모양으로 정의해야 lint가 설정 값과 계산 결과를 구분할 수 있다. 함수 호출 결과 같은 계산 값(`const store = createStore()`)은 camelCase다.
+  초기값의 모양으로 정의해야 lint가 설정 값과 계산 결과를 구분할 수 있다. 함수 호출 결과 같은 계산 값(`const store = createStore()`)은 camelCase이며, 계산 값에 UPPER_SNAKE_CASE를 쓰는 것도 lint가 막는다. `as const`가 아닌 타입 단언(`x as Foo`)은 상수로 보지 않는다.
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
+
+  boolean 접두사는 변수와 매개변수에만 강제한다. 컴포넌트 props와 타입 속성은 `open`, `disabled`처럼 HTML·Base UI와 같은 이름을 쓸 수 있게 검사하지 않는다.
 함수: |
   이름 있는 함수는 `function` 선언으로 쓰고(컴포넌트 포함), 다른 함수에 넘기는 콜백은 화살표 함수로 쓴다.
   타입을 붙인 화살표 함수(`const handler: Handler = () => {}`)도 쓰지 않는다. Zustand의 `create((set) => ({ ... }))`처럼 라이브러리에 넘기는 함수는 콜백이다.
@@ -41,7 +43,7 @@ export와 import: |
 JSDoc: |
   - 함수와 메서드에는 한국어 설명을 단다. 5줄 이상인 콜백도 같다.
   - `@param`과 `@returns`에는 설명을 반드시 쓰고, 타입은 쓰지 않는다. TypeScript가 이미 갖고 있다.
-  - 컴포넌트 props는 이름이 `Props`로 끝나는 타입의 각 속성에 설명을 달고, 컴포넌트 함수의 JSDoc에는 `@param props` 한 줄만 둔다. 사용하는 쪽 IDE에서 속성 설명이 보이기 때문이다.
+  - 컴포넌트 props는 이름이 `Props`로 끝나는 타입의 각 속성에 설명을 달고, 컴포넌트 함수의 JSDoc에는 설명 없는 `@param props` 한 줄만 둔다. 사용하는 쪽 IDE에서 속성 설명이 보이기 때문이다. 이를 위해 첫 번째 매개변수 이름이 `props`인 경우 `@param` 설명 필수 규칙의 예외로 둔다.
   - 문서의 규칙을 구현한 함수에는 JSDoc 안에 `@codocs`를 단다([[codocs 연결 규칙]]).
   - 테스트·fixture·스토리 파일은 제외한다. 테스트 이름과 스토리 이름이 설명 역할을 한다.
 
