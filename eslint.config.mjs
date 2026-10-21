@@ -137,6 +137,7 @@ function restrictedProperties(restrictions) {
 export default defineConfig(
   globalIgnores([
     '.codocs/**',
+    '.claude/**',
     '**/node_modules/**',
     '**/.next/**',
     '**/.turbo/**',
