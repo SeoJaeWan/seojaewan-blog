@@ -1,0 +1,16 @@
+/*
+ * 웹 폰트를 패키지에서 직접 제공한다. 피그마, 로컬, CI, 방문자가 모두 같은 서체로 보게 하기 위해서다.
+ *
+ * @codocs [[디자인 기반:서체]]
+ * - 굵기는 Regular(400), SemiBold(600), Bold(700)만 불러온다.
+ * - 각 파일은 unicode-range로 나뉜 하위 집합이라 브라우저가 화면에 나온 글자의 파일만 받는다.
+ *   Open Sans에는 한글 범위가 없어 한글은 글자마다 Pretendard로 그린다.
+ * - 코드 블록용 Cascadia Mono는 Regular만 쓴다.
+ */
+@import '@fontsource/open-sans/400.css';
+@import '@fontsource/open-sans/600.css';
+@import '@fontsource/open-sans/700.css';
+@import 'pretendard/dist/web/static/Pretendard-Regular.css';
+@import 'pretendard/dist/web/static/Pretendard-SemiBold.css';
+@import 'pretendard/dist/web/static/Pretendard-Bold.css';
+@import '@fontsource/cascadia-mono/400.css';
