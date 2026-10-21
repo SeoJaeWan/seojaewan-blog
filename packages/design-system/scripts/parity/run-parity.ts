@@ -20,6 +20,7 @@ import { compareImages, readPng, writePng } from './compare-images.ts';
 import type { ParityCase } from './figma-export.ts';
 import { isComparedVariant, parseFigmaExport, pixelClip } from './figma-export.ts';
 import {
+  BROWSER_ARGS,
   MAX_DIFF_PIXELS,
   PIXELMATCH_THRESHOLD,
   SHOULD_INCLUDE_ANTI_ALIASING,
@@ -88,7 +89,7 @@ async function main(): Promise<void> {
   const index = readJson(path.join(storybookStaticDir, 'index.json'));
 
   const server = await startStaticServer(storybookStaticDir);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: [...BROWSER_ARGS] });
   const results: CaseResult[] = [];
   try {
     for (const parityCase of comparedCases) {

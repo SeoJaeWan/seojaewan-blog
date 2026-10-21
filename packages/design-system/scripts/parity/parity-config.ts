@@ -21,3 +21,8 @@ export const RENDER_TIMEOUT_MS = 15_000;
 // 재질 효과를 쓰는 컴포넌트는 효과를 뺀 변형(Material=Solid)만 비교한다. 정규화한 속성 이름과 값이다.
 export const MATERIAL_PROPERTY = 'material';
 export const COMPARED_MATERIAL = 'solid';
+
+// @codocs [[피그마 일치 검사:CI 비교]]
+// 피그마처럼 글자를 그리도록 Chromium 글꼴 렌더링을 맞춘다.
+// 피그마는 힌팅 없이(글리프를 픽셀 격자에 맞추지 않고) 회색조 안티앨리어싱으로 글자를 그린다.
+export const BROWSER_ARGS = ['--font-render-hinting=none', '--disable-lcd-text'] as const;
