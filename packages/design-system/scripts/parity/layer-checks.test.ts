@@ -25,6 +25,16 @@ const tokens: TokenNames = {
         letterSpacing: '{"unit":"%","value":0}',
       },
     ],
+    [
+      'type-title',
+      {
+        fontFamily: 'font/family/base',
+        fontSize: 'font/size/body',
+        fontWeight: 'font/weight/regular',
+        lineHeight: 'font/line-height/body',
+        letterSpacing: '{"unit":"%","value":-0.5}',
+      },
+    ],
   ]),
 };
 
@@ -133,6 +143,32 @@ describe('레이어 확인 항목', () => {
     expect(text?.characters).toBe('버튼');
     expect(text?.segments[0]?.typeClasses).toEqual(['type-body']);
     expect(text?.segments[0]?.fontFamily).toBe('Pretendard');
+  });
+
+  it('0이 아닌 자간도 값과 단위가 같으면 type-* 유틸리티와 일치한다', () => {
+    /**
+     * 자간만 바꾼 label 레이어를 만든다.
+     * @param value 피그마 자간
+     * @returns 레이어
+     */
+    function withSpacing(value: string): unknown {
+      const [segment] = label.text.segments;
+      return {
+        ...label,
+        text: {
+          ...label.text,
+          segments: [{ ...segment, style: { ...segment?.style, letterSpacing: { value } } }],
+        },
+      };
+    }
+    const tight = variantChecks([root, withSpacing('-0.5000000149%')], [], tokens).texts[0];
+    expect(tight?.segments[0]?.typeClasses).toEqual(['type-title']);
+    expect(tight?.segments[0]?.styleComputed).toContainEqual({
+      property: 'letter-spacing',
+      css: '-0.005em',
+    });
+    const other = variantChecks([root, withSpacing('-0.4%')], [], tokens).texts[0];
+    expect(other?.segments[0]?.typeClasses).toEqual([]);
   });
 
   it('숨긴 레이어는 그대로 넘긴다(D4)', () => {

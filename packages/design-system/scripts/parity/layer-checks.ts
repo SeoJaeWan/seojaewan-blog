@@ -103,6 +103,9 @@ export type VariantChecks = {
   unsupported: { layer: string; message: string }[];
 };
 
+// 자간 비교 허용 오차(피그마 소수 오차)
+const LETTER_SPACING_TOLERANCE = 0.001;
+
 // 네 방향(CSS 이름)
 const CSS_SIDES = ['top', 'right', 'bottom', 'left'] as const;
 
@@ -891,13 +894,14 @@ function segmentCheck(segment: JsonRecord, tokens: TokenNames): SegmentCheck {
   const lineHeight = styleField(style, 'lineHeight', 'variable');
   const fontWeight = styleField(style, 'fontWeight', 'variable');
   const letterSpacing = styleField(style, 'letterSpacing', 'value');
+  const letterSpacingVariable = styleField(style, 'letterSpacing', 'variable');
   const typeClasses: string[] = [];
   for (const [name, used] of tokens.textUtilities) {
     if (
       used.fontSize === fontSize &&
       used.lineHeight === lineHeight &&
       used.fontWeight === fontWeight &&
-      sameLetterSpacing(used.letterSpacing, letterSpacing)
+      sameLetterSpacing(used.letterSpacing, letterSpacing, letterSpacingVariable)
     ) {
       typeClasses.push(name);
     }
@@ -917,6 +921,10 @@ function segmentCheck(segment: JsonRecord, tokens: TokenNames): SegmentCheck {
       property: 'font-weight',
       css: `var(${variableName(fontWeight.split('/'))})`,
     });
+  }
+  const spacingCss = letterSpacing === undefined ? undefined : letterSpacingCss(letterSpacing);
+  if (spacingCss !== undefined) {
+    styleComputed.push({ property: 'letter-spacing', css: spacingCss });
   }
   const fill = isRecord(segment.fill) ? segment.fill : null;
   if (fill !== null && typeof fill.variable !== 'string') {
@@ -1048,19 +1056,62 @@ function stripNamespace(name: string, namespace: string): string {
 }
 
 /**
- * 자간 값이 같은지 본다. 0은 단위와 상관없이 같다.
- * @param used 유틸리티가 쓰는 값(JSON 문자열이나 변수 경로)
- * @param figma 피그마 구간 값(`0%`)
+ * 자간 값이 같은지 본다. 변수에 연결되어 있으면 변수 경로를, 아니면 값과 단위를 비교한다. 0은 단위와 상관없이 같다.
+ * @codocs [[피그마 일치 검사:글자]]
+ * @param used 유틸리티가 쓰는 값(`{"unit":"%","value":-0.5}` 같은 JSON 문자열이나 변수 경로)
+ * @param figma 피그마 구간 값(`-0.5%`, `1px`)
+ * @param figmaVariable 피그마 구간 자간에 연결된 변수 경로
  * @returns 같으면 true
  */
-function sameLetterSpacing(used: string, figma: string | undefined): boolean {
-  if (figma === undefined) {
+function sameLetterSpacing(
+  used: string,
+  figma: string | undefined,
+  figmaVariable: string | undefined,
+): boolean {
+  if (!used.startsWith('{')) {
+    return figmaVariable !== undefined && used === figmaVariable;
+  }
+  const parsed: unknown = JSON.parse(used);
+  const figmaSpacing = figma === undefined ? null : parseLetterSpacing(figma);
+  if (!isRecord(parsed) || typeof parsed.value !== 'number' || figmaSpacing === null) {
     return false;
   }
-  const parsed: unknown = used.startsWith('{') ? JSON.parse(used) : null;
-  const usedValue = isRecord(parsed) && typeof parsed.value === 'number' ? parsed.value : NaN;
-  const figmaValue = Number.parseFloat(figma);
-  return usedValue === 0 && figmaValue === 0;
+  if (parsed.value === 0 && figmaSpacing.value === 0) {
+    return true;
+  }
+  return (
+    parsed.unit === figmaSpacing.unit &&
+    Math.abs(parsed.value - figmaSpacing.value) < LETTER_SPACING_TOLERANCE
+  );
+}
+
+/**
+ * 피그마 자간 문자열을 값과 단위로 나눈다.
+ * @param value `-0.5%`, `1px`
+ * @returns 값과 단위(읽을 수 없으면 null)
+ */
+function parseLetterSpacing(value: string): { value: number; unit: '%' | 'px' } | null {
+  const match = /^(-?[\d.]+(?:e-?\d+)?)(%|px)$/u.exec(value);
+  if (match?.[1] === undefined || match[2] === undefined) {
+    return null;
+  }
+  return { value: Number.parseFloat(match[1]), unit: match[2] === 'px' ? 'px' : '%' };
+}
+
+/**
+ * 피그마 자간을 CSS 값으로 바꾼다. 피그마 %는 글자 크기의 백분율이라 em으로 옮긴다.
+ * @param value `-0.5%`, `1px`
+ * @returns CSS 자간 값(읽을 수 없으면 undefined)
+ */
+function letterSpacingCss(value: string): string | undefined {
+  const parsed = parseLetterSpacing(value);
+  if (parsed === null) {
+    return undefined;
+  }
+  const rounded = Number(parsed.value.toFixed(4));
+  return parsed.unit === 'px'
+    ? `${String(rounded)}px`
+    : `${String(Number((rounded / 100).toFixed(6)))}em`;
 }
 
 /**
