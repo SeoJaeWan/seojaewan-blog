@@ -80,12 +80,17 @@ jobs:
           retention-days: 7
 
   # @codocs [[피그마 일치 검사:CI 비교]]
-  # 피그마 이미지와 Storybook 스크린샷을 비교한다. PR은 main 대비 영향받는 컴포넌트만, main push는 전체를 비교한다.
+  # PR에서 main 대비 영향받는 컴포넌트를 피그마 내보내기 자료와 값·픽셀로 비교하고, 결과를 PR 댓글 하나로 남긴다.
   figma-parity:
     name: Figma parity
     # PR에서 영향받는 컴포넌트만 비교한다. main 병합 뒤 전체 비교는 두지 않는다
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      # 댓글 이미지를 parity-report/pr-<번호> 브랜치에 올린다
+      contents: write
+      # 결과 댓글을 남기고 고친다
+      pull-requests: write
     steps:
       - uses: actions/checkout@v7
         with:
@@ -95,11 +100,11 @@ jobs:
       - name: Check Figma export
         id: figma
         run: |
-          if [ -f packages/design-system/figma/export.json ]; then
+          if [ -f packages/design-system/figma/figma.json ]; then
             echo "present=true" >> "$GITHUB_OUTPUT"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "figma/export.json이 아직 없어 피그마 일치 검사를 건너뛴다."
+            echo "figma/figma.json이 아직 없어 피그마 일치 검사를 건너뛴다."
           fi
 
       - uses: pnpm/action-setup@v6
@@ -119,13 +124,29 @@ jobs:
         run: pnpm --filter @seojaewan/design-system exec playwright install --with-deps chromium
 
       - name: Figma parity (affected)
+        id: parity
         if: steps.figma.outputs.present == 'true'
+        continue-on-error: true
         run: pnpm --filter @seojaewan/design-system test:parity --affected --base origin/${{ github.base_ref }}
 
+      # 포크에서 온 PR은 쓰기 토큰이 없어 댓글을 남기지 않는다
+      - name: Comment results on PR
+        if: always() && steps.figma.outputs.present == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        working-directory: packages/design-system
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          node scripts/parity/post-pr-comment.ts --repository "${{ github.repository }}" --server "${{ github.server_url }}" --run-id "${{ github.run_id }}" --pr "${{ github.event.pull_request.number }}"
+
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: always() && steps.figma.outputs.present == 'true'
         with:
           name: figma-parity-results
           path: packages/design-system/parity-results/
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Fail when parity failed
+        if: steps.parity.outcome == 'failure'
+        run: exit 1

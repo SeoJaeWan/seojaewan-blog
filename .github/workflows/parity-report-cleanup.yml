@@ -1,0 +1,28 @@
+# @codocs [[피그마 일치 검사:CI 비교]]
+# PR이 닫히면 피그마 일치 검사 댓글 이미지를 올린 브랜치(parity-report/pr-<번호>)를 지운다.
+name: Parity report cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-report-branch:
+    name: Delete parity report branch
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: parity-report/pr-${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/${{ github.repository }}/git/ref/heads/$BRANCH" > /dev/null 2>&1; then
+            gh api -X DELETE "repos/${{ github.repository }}/git/refs/heads/$BRANCH"
+            echo "$BRANCH를 지웠다."
+          else
+            echo "$BRANCH가 없다."
+          fi
