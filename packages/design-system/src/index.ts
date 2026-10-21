@@ -1,2 +1,9 @@
-// @seojaewan/design-system 공개 진입점이다. 토큰과 컴포넌트는 6단계(디자인 시스템 코드화)에서 채운다.
-export {};
+// @seojaewan/design-system 공개 진입점이다.
+export type { ButtonVariant } from './components/button/button';
+export { Button } from './components/button/button';
+export type { FlyoutMaterial } from './components/flyout/flyout';
+export { Flyout } from './components/flyout/flyout';
+export { FocusRect } from './components/focus-rect/focus-rect';
+export { MenuItem } from './components/menu-item/menu-item';
+export type { SearchBoxAppearance } from './components/search-box/search-box';
+export { SearchBox } from './components/search-box/search-box';

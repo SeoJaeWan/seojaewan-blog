@@ -39,16 +39,18 @@ _codocs:
   - Acrylic: `backdrop-filter: blur()`에 Windows UI kit의 틴트·루미너스 층과 노이즈 질감을 얹는다.
   - Mica: 흐리게 처리한 배경화면을 창 뒤에 깔아 흉내 낸다.
   - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
-  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)으로 넣었고, 코드도 같은 이미지와 값을 쓴다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
+  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)으로 넣었고, 코드도 같은 이미지와 값을 쓴다(`src/assets/acrylic-noise.png`, `theme.css`의 `material-acrylic-default`). `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
 
-  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 픽셀 비교가 어렵다. 그래서 테스트할 때만 효과를 끄는 스위치를 두고, 피그마 일치 검사는 효과를 뺀 상태(컴포넌트의 `Material=Solid` 변형)로 비교한다. 재질 효과는 Storybook에서 눈으로 확인한다.
+  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 픽셀 비교가 어렵다. 그래서 테스트할 때만 효과를 끄는 스위치를 두고, 피그마 일치 검사는 효과를 뺠 상태(컴포넌트의 `Material=Solid` 변형)로 비교한다. 비교 스크립트는 `Material` 속성이 `Solid`가 아닌 변형을 건너뛰고 그 사실을 출력한다. 재질 효과는 Storybook에서 눈으로 확인한다.
 컨트롤 테두리: |
   WinUI 컨트롤의 1px 테두리는 단색이 아니라 아래쪽 몇 픽셀만 진해지는 세로 그라데이션이다(WinUI의 `ControlElevationBorderBrush` 계열). 버튼이 살짝 떠 보이게 하는 효과라 Windows 느낌에 중요하다.
   피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
 
   - 토큰 생성은 이 스타일을 `--gradient-*` CSS 배경 값으로 옮긴다. 피그마 정지점 위치는 노드 높이 대비 비율이라 CSS에서도 같은 비율(`to bottom`, 90.58% 등)로 둔다. 그래서 피그마와 같은 높이의 컨트롤에서 같은 결과가 나온다.
   - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 `--border-width-default` 두께의 고리 모양으로 가리고 그라데이션을 칠한다. CSS `border`에는 둥근 모서리를 지키는 그라데이션을 칠할 수 없고, 배경 두 겹(`padding-box`·`border-box`) 방식은 컴포넌트 배경색과 섞여 따로 쓸 수 없기 때문이다.
-  - 피그마 안쪽 선(inside stroke)처럼 요소 크기 안에, 자식 위에 그린다. `::before`가 요소에 맞춰지도록 요소에 `relative` 같은 위치 지정이 있어야 한다.
+  - 피그마 안쪽 선(inside stroke)처럼 요소 크기 안에, 자식 위에 그린다. 피그마는 프레임의 선을 절대 위치 자식(예: SearchBox의 포커스 아래 선)보다도 위에 그리므로 `::before`는 `z-index: 1`이다. `::before`가 요소에 맞춰지도록 요소에 `relative` 같은 위치 지정이, 고리가 요소 밖의 형제를 덮지 않도록 쌓임 맥락(`isolate`)이 있어야 한다.
+  - 단색 안쪽 선은 같은 방식의 `inner-border-*` 유틸리티로 색 토큰 이름으로 그린다(예: `inner-border-control-stroke-default`). Pressed·Disabled처럼 상태에 따라 그라데이션 선과 단색 선을 바꾸는 컨트롤이 같은 자리에 그리게 하기 위해서다. CSS `border`는 레이아웃 크기를 바꾸고 자식 아래에 그려져 피그마 안쪽 선과 다르다.
+  - 피그마에서 선이 레이아웃에 들어가는 프레임(strokes included in layout, 예: Flyout)은 CSS `border`와 같으므로 `border`를 쓴다.
 아이콘: |
   - UI 아이콘(닫기, 최소화, 검색, 화살표 등): Fluent UI System Icons(MIT, github.com/microsoft/fluentui-system-icons). 피그마에는 이 저장소의 SVG 경로를 그대로 넣고, 코드는 `@fluentui/react-icons`를 써서 피그마와 코드가 같은 아이콘을 쓴다.
   - Windows 자산은 Windows 11 PC에 들어 있는 원본에서 가져왔다. 추측하거나 다시 그리지 않기 위해서다.
