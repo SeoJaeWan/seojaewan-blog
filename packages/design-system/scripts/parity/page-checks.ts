@@ -512,12 +512,14 @@ export function inspectVariant(input: InspectInput): InspectResult {
    * @param expectation.property CSS 속성
    * @param expectation.css 넣을 값
    * @param expectation.probeClass 넣을 클래스
+   * @param expectation.pseudo 클래스로 기대값을 만들 때 읽을 의사 요소
    * @returns 기대 계산값
    */
   function expectedValue(expectation: {
     property: string;
     css?: string;
     probeClass?: string;
+    pseudo?: string;
   }): string {
     if (expectation.property === 'content') {
       return expectation.css ?? '';
@@ -535,9 +537,11 @@ export function inspectVariant(input: InspectInput): InspectResult {
       probe.style.setProperty(expectation.property, expectation.css);
     }
     document.body.append(holder);
+    // 유틸리티 클래스로 기대값을 만들 때는 그 유틸리티의 의사 요소 값을 읽는다.
+    const probePseudo = expectation.probeClass === undefined ? undefined : expectation.pseudo;
     const value = normalizeValue(
       expectation.property,
-      getComputedStyle(probe).getPropertyValue(expectation.property).trim(),
+      getComputedStyle(probe, probePseudo).getPropertyValue(expectation.property).trim(),
     );
     holder.remove();
     return value;

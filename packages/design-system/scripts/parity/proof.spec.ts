@@ -348,6 +348,20 @@ const cases: ProofCase[] = [
     dom: { change: overrideStyle, layer: '', arg: 'padding-left:20px' },
   },
   {
+    name: '정상 Flyout 아크릴',
+    component: 'flyout',
+    resultName: 'material=acrylic',
+    shouldFail: false,
+  },
+  {
+    // 재질 칠의 루미너시티 층은 요소가 쌓임 맥락을 만들면 뒤 배경과 섞이지 않는다.
+    name: '재질 요소가 쌓임 맥락을 만듦(isolate)',
+    component: 'flyout',
+    resultName: 'material=acrylic',
+    shouldFail: true,
+    dom: { change: overrideStyle, layer: '', arg: 'isolation:isolate' },
+  },
+  {
     name: '한글 스타일 구간에 라틴 글자(서체 다름)',
     component: 'button',
     resultName: BUTTON_REST,
@@ -357,7 +371,7 @@ const cases: ProofCase[] = [
   },
 ];
 
-const plan = loadParityPlan(['button', 'menu-item']);
+const plan = loadParityPlan(['button', 'menu-item', 'flyout']);
 const storybookIndex: unknown = JSON.parse(
   readFileSync(path.join(storybookStaticDir, 'index.json'), 'utf8'),
 );
