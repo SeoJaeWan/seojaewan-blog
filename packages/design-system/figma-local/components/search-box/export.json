@@ -1,0 +1,2016 @@
+{
+  "exportedAt": "2026-10-21T00:45:29.077Z",
+  "hash": "04fb661f88ef3be54ce5afca2d67c842130773d25cb0b7774850dfdb8a0d0c35",
+  "name": "SearchBox",
+  "nodeId": "14:92",
+  "variants": {
+    "appearance=default,filled=false,state=disabled": {
+      "hash": "230ea3c1f92fb9e130912d67b522b1d9891c3973a7465c4f35f00391e1905524",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#f9f9f94d",
+              "token": "{control-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 12.6289,
+              "y": 9.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "1be9173188ae616494b4c2d0dedd559a125fff14664b5b6043e1d6a3468e8d7f.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 1,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 240,
+          "x": 0,
+          "y": 31
+        }
+      ],
+      "nodeId": "14:27",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "False",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=false,state=focused": {
+      "hash": "62ab04d231699b6e06e29896170ddabad89056810d8776f8090e42f6522db855",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#ffffff",
+              "token": "{control-fill.input-active}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 12.6289,
+              "y": 9.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#005fb8",
+              "token": "{accent-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 2,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 240,
+          "x": 0,
+          "y": 30
+        }
+      ],
+      "nodeId": "14:22",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "False",
+        "State": "Focused"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=false,state=hover": {
+      "hash": "3ed9433ca384502cb4987d713bd6fd2f93fa85b8b009ba4305261b92bd2e2165",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#f9f9f980",
+              "token": "{control-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeStyle": "Elevation/Text Control Border",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "stops": [
+                {
+                  "color": "#0000000f",
+                  "position": 0.9999,
+                  "token": "{control-stroke.default}"
+                },
+                {
+                  "color": "#00000072",
+                  "position": 1,
+                  "token": "{control-strong-fill.default}"
+                }
+              ],
+              "type": "GRADIENT_LINEAR"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 12.6289,
+              "y": 9.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:17",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "False",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=false,state=rest": {
+      "hash": "0d245d05b9cf3fd2e734f60e64835b42e7b63812a51d86e4d150af40a026d1f7",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#ffffffb2",
+              "token": "{control-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeStyle": "Elevation/Text Control Border",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "stops": [
+                {
+                  "color": "#0000000f",
+                  "position": 0.9999,
+                  "token": "{control-stroke.default}"
+                },
+                {
+                  "color": "#00000072",
+                  "position": 1,
+                  "token": "{control-strong-fill.default}"
+                }
+              ],
+              "type": "GRADIENT_LINEAR"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 12.6289,
+              "y": 9.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:12",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "False",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=true,state=disabled": {
+      "hash": "db0f25ccf828e4edc7ce1b47d811f25760c4256670a6047a1ddebe32eafbb4e4",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#f9f9f94d",
+              "token": "{control-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 13.1758,
+              "y": 9.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "1be9173188ae616494b4c2d0dedd559a125fff14664b5b6043e1d6a3468e8d7f.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 1,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 240,
+          "x": 0,
+          "y": 31
+        }
+      ],
+      "nodeId": "14:47",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "True",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=true,state=focused": {
+      "hash": "f49a3648d94f0fb4db291e2b9cf8232338b43dcd0dded1b99cc59b5b08123480",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#ffffff",
+              "token": "{control-fill.input-active}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 13.1758,
+              "y": 9.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#005fb8",
+              "token": "{accent-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 2,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 240,
+          "x": 0,
+          "y": 30
+        }
+      ],
+      "nodeId": "14:42",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "True",
+        "State": "Focused"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=true,state=hover": {
+      "hash": "e3c6bd459bffe98f7c7a8c43678ea3e72304340e6e9d90247e7fbc5702e87192",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#f9f9f980",
+              "token": "{control-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeStyle": "Elevation/Text Control Border",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "stops": [
+                {
+                  "color": "#0000000f",
+                  "position": 0.9999,
+                  "token": "{control-stroke.default}"
+                },
+                {
+                  "color": "#00000072",
+                  "position": 1,
+                  "token": "{control-strong-fill.default}"
+                }
+              ],
+              "type": "GRADIENT_LINEAR"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 13.1758,
+              "y": 9.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:37",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "True",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=default,filled=true,state=rest": {
+      "hash": "6bd089c5806bdffb66dd4a1f1b6583c0333fd844570b464194ea73a34cc4c9cb",
+      "height": 32,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "fills": [
+            {
+              "color": "#ffffffb2",
+              "token": "{control-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 32,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 6,
+            "left": 12,
+            "right": 8,
+            "top": 6
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeStyle": "Elevation/Text Control Border",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "stops": [
+                {
+                  "color": "#0000000f",
+                  "position": 0.9999,
+                  "token": "{control-stroke.default}"
+                },
+                {
+                  "color": "#00000072",
+                  "position": 1,
+                  "token": "{control-strong-fill.default}"
+                }
+              ],
+              "type": "GRADIENT_LINEAR"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 240,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 13.1758,
+              "y": 9.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 196,
+          "x": 12,
+          "y": 6
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 216,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:32",
+      "properties": {
+        "Appearance": "Default",
+        "Filled": "True",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "appearance=pill,filled=false,state=disabled": {
+      "hash": "b8299e3e5ff05eb302a20198b00ff9b3da0503197e7bd979e3028cce9b8f45ad",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#f9f9f94d",
+              "token": "{control-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "1be9173188ae616494b4c2d0dedd559a125fff14664b5b6043e1d6a3468e8d7f.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 40.6289,
+              "y": 11.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:67",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "False",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=false,state=focused": {
+      "hash": "99a1e867b149fefe20b2d4e2649201fdb4b1a8633becebf15ef43f9e55c2f3ef",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#ffffff",
+              "token": "{control-fill.input-active}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 40.6289,
+              "y": 11.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#005fb8",
+              "token": "{accent-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 2,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 320,
+          "x": 0,
+          "y": 34
+        }
+      ],
+      "nodeId": "14:62",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "False",
+        "State": "Focused"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=false,state=hover": {
+      "hash": "2b55a8053b31e2fd770feff851a3149ea9c0ea8adb5ffedd1bbf5f6c93d46c7a",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#f9f9f980",
+              "token": "{control-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 40.6289,
+              "y": 11.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:57",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "False",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=false,state=rest": {
+      "hash": "04e7cdc43b53eee2caa4c0e70690e4745af4af03ed31aeadbb008c6972282760",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#ffffffb2",
+              "token": "{control-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1406,
+              "width": 22.2852,
+              "x": 40.6289,
+              "y": 11.9668
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:52",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "False",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=true,state=disabled": {
+      "hash": "9a416e419da395148a5cfa81d31dae24969ed40462efef29663d7e52c1f3997b",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#f9f9f94d",
+              "token": "{control-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "1be9173188ae616494b4c2d0dedd559a125fff14664b5b6043e1d6a3468e8d7f.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#0000005c",
+              "token": "{text-fill.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 41.1758,
+              "y": 11.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:87",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "True",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=true,state=focused": {
+      "hash": "854370acc707901ba3cf65783a8ab5db12cfeaeb77eac294a4f7a9110de03b79",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#ffffff",
+              "token": "{control-fill.input-active}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 41.1758,
+              "y": 11.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        },
+        {
+          "absolute": true,
+          "cornerRadius": 0,
+          "fills": [
+            {
+              "color": "#005fb8",
+              "token": "{accent-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 2,
+          "kind": "frame",
+          "path": "bottom border",
+          "type": "RECTANGLE",
+          "width": 320,
+          "x": 0,
+          "y": 34
+        }
+      ],
+      "nodeId": "14:82",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "True",
+        "State": "Focused"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=true,state=hover": {
+      "hash": "7e2238f7e59267616412b068f089d143a837789006179a19fddb0b0f95bcb212",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#f9f9f980",
+              "token": "{control-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 41.1758,
+              "y": 11.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:77",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "True",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    },
+    "appearance=pill,filled=true,state=rest": {
+      "hash": "d3a09adf39ae93f762f476b1191731f0245ac33952d82e4c776f6905b012d2ff",
+      "height": 36,
+      "layers": [
+        {
+          "clipsContent": true,
+          "cornerRadius": 9999,
+          "fills": [
+            {
+              "color": "#ffffffb2",
+              "token": "{control-fill.default}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 36,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "HORIZONTAL",
+          "padding": {
+            "bottom": 8,
+            "left": 16,
+            "right": 16,
+            "top": 8
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{control-stroke.default}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "component": "ic_fluent_search_16_regular",
+          "fills": [
+            {
+              "color": "#0000009b",
+              "token": "{text-fill.secondary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "vector",
+          "path": "icon",
+          "svg": {
+            "file": "5e114cedef9b55992b7afc0fbc42bd2cd2a241e5209c28b5a2d0316ab450690a.svg",
+            "height": 16,
+            "width": 16,
+            "x": 0,
+            "y": 0
+          },
+          "type": "INSTANCE",
+          "width": 16,
+          "x": 16,
+          "y": 10
+        },
+        {
+          "fills": [
+            {
+              "color": "#000000e4",
+              "token": "{text-fill.primary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 20,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "fontFamily": [
+              "Pretendard"
+            ],
+            "fontSize": 14,
+            "fontWeight": 400,
+            "ink": {
+              "height": 12.1816,
+              "width": 34.6445,
+              "x": 41.1758,
+              "y": 11.9531
+            },
+            "letterSpacing": 0,
+            "lineHeight": 20,
+            "textStyle": [
+              "Hangul/Body"
+            ]
+          },
+          "type": "TEXT",
+          "width": 264,
+          "x": 40,
+          "y": 8
+        }
+      ],
+      "nodeId": "14:72",
+      "properties": {
+        "Appearance": "Pill",
+        "Filled": "True",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "width": 320
+    }
+  }
+}

@@ -127,7 +127,7 @@ jobs:
         id: parity
         if: steps.figma.outputs.present == 'true'
         continue-on-error: true
-        run: pnpm --filter @seojaewan/design-system test:parity --affected --base origin/${{ github.base_ref }}
+        run: pnpm --filter @seojaewan/design-system test:parity --figma-dir figma-local
 
       # 포크에서 온 PR은 쓰기 토큰이 없어 댓글을 남기지 않는다
       - name: Comment results on PR
