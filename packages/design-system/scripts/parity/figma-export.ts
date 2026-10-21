@@ -58,12 +58,15 @@ export function parseFigmaExport(json: unknown): FigmaExport {
     for (const [variant, variantValue] of Object.entries(variants)) {
       const variantWhere = `${where}.variants.${variant}`;
       const item = expectRecord(variantValue, variantWhere);
-      const properties = Object.entries(
-        expectRecord(item.properties ?? {}, `${variantWhere}.properties`),
-      ).map(([name, propertyValue]): [string, string] => [
-        name,
-        expectString(propertyValue, `${variantWhere}.properties.${name}`),
-      ]);
+      const properties = inFileNameOrder(
+        Object.entries(expectRecord(item.properties ?? {}, `${variantWhere}.properties`)).map(
+          ([name, propertyValue]): [string, string] => [
+            name,
+            expectString(propertyValue, `${variantWhere}.properties.${name}`),
+          ],
+        ),
+        variant,
+      );
       const expectedName = variantFileName(properties);
       if (expectedName !== variant) {
         throw new Error(`${variantWhere}: 속성으로 만든 파일 이름은 "${expectedName}"이다.`);
@@ -153,6 +156,22 @@ export function normalizeName(value: string): string {
     .replace(/[^a-z0-9-]+/gu, '-')
     .replace(/-+/gu, '-')
     .replace(/^-|-$/gu, '');
+}
+
+/**
+ * 속성을 변형 파일 이름의 순서(피그마 순서)로 놓는다.
+ * 플러그인은 JSON 키를 정렬해 쓰므로 properties의 순서는 피그마 순서가 아닐 수 있다.
+ * 파일 이름에 없는 속성이 있으면 원래 순서를 그대로 돌려줘, 이후 파일 이름 비교가 실패하게 한다.
+ * @param properties export.json의 `[속성, 값]` 목록
+ * @param variant 변형 파일 이름
+ * @returns 파일 이름 순서의 `[속성, 값]` 목록
+ */
+function inFileNameOrder(properties: [string, string][], variant: string): [string, string][] {
+  const order = variant.split(',').map((part) => part.split('=')[0] ?? '');
+  const ordered = order.flatMap((name) =>
+    properties.filter(([property]) => normalizeName(property) === name),
+  );
+  return ordered.length === properties.length ? ordered : properties;
 }
 
 /**

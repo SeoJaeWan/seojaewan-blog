@@ -89,6 +89,19 @@ describe('피그마 이미지 이름', () => {
     });
   });
 
+  it('export.json의 속성이 이름순으로 정렬돼 있어도 변형 파일 이름의 순서(피그마 순서)로 읽는다', () => {
+    const sorted = structuredClone(exportFixture);
+    sorted.components.button.variants['variant=accent,state=rest'].properties = {
+      State: 'Rest',
+      Variant: 'Accent',
+    };
+    const { cases } = parseFigmaExport(sorted);
+    expect(cases.find((item) => item.variant === 'variant=accent,state=rest')?.properties).toEqual([
+      ['Variant', 'Accent'],
+      ['State', 'Rest'],
+    ]);
+  });
+
   it('속성과 변형 파일 이름이 어긋나면 실패한다', () => {
     const broken = structuredClone(exportFixture);
     broken.components.button.variants['variant=accent,state=rest'].properties.State = 'Hover';
