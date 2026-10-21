@@ -5,9 +5,8 @@ import type {
   ComponentManifest,
   VariantEntry,
 } from '../export-manifest';
-import { componentHash } from '../export-manifest';
+import { componentHash, variantHash } from '../export-manifest';
 import { assetFile, booleanPropName, componentSlug, variantSlug } from '../naming';
-import { sha256Hex } from '../sha256';
 import { monoColorSvg, normalizeSvgBytes } from '../svg-normalize';
 import { buildLayers, hiddenLayerPaths } from './build-layers';
 import { type CheckContext, checkVariant, type Violation } from './check-structure';
@@ -143,14 +142,13 @@ async function exportComponentWithHidden(
       constraint: { type: 'SCALE', value: scale },
     });
     pngs.set(slug, png);
-    entries[slug] = {
-      nodeId: variant.id,
+    const info = {
       properties: node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {},
-      hash: sha256Hex(png),
       layers: buildLayers(tree, context),
       hidden: hiddenLayerPaths(tree),
       cases,
     };
+    entries[slug] = { nodeId: variant.id, ...info, hash: variantHash(info) };
   }
   if (violations.length > 0) {
     return { ok: false, name: node.name, violations };

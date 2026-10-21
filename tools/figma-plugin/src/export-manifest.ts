@@ -17,7 +17,7 @@ export type VariantEntry = {
   nodeId: string;
   /** 변형 속성(피그마 이름 → 값) */
   properties: Record<string, string>;
-  /** PNG 해시(PR 댓글용 이미지) */
+  /** 비교에 쓰는 이름 정보(속성·레이어·숨김·경우)의 해시. PNG(사람이 보는 이미지)는 넣지 않는다 */
   hash: string;
   /** 레이어 목록. 첫 항목이 루트다 */
   layers: JsonObject[];
@@ -69,17 +69,40 @@ export type ComponentChanges = {
 export const COMPONENT_MANIFEST_FILE = 'export.json';
 
 /**
- * 컴포넌트 해시를 계산한다. 변형마다 PNG 해시와 레이어·숨김·경우 정보를 이은 값을 정렬해 이어 붙인 문자열의 SHA-256이다.
+ * 변형 해시를 계산한다. 비교에 쓰는 이름 정보(속성·레이어·숨김·경우)만 넣는다.
+ * 피그마가 내보낼 때마다 PNG 바이트가 조금씩 달라져도 해시가 흔들리지 않게 PNG는 넣지 않는다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param variant 변형 항목(해시 제외)
+ * @returns 변형 해시
+ */
+export function variantHash(variant: Omit<VariantEntry, 'hash' | 'nodeId'>): string {
+  return sha256Hex(
+    utf8Encode(
+      stableStringify({
+        properties: variant.properties,
+        layers: variant.layers,
+        hidden: variant.hidden,
+        cases: casesJson(variant.cases),
+      }),
+    ),
+  );
+}
+
+/**
+ * 컴포넌트 해시를 계산한다. 변형 해시를 정렬해 이어 붙인 문자열의 SHA-256이다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param variants 변형 항목
  * @returns 컴포넌트 해시
  */
 export function componentHash(variants: readonly VariantEntry[]): string {
-  const parts = variants.map(
-    (variant) =>
-      `${variant.hash}${stableStringify({ layers: variant.layers, hidden: variant.hidden, cases: casesJson(variant.cases) })}`,
+  return sha256Hex(
+    utf8Encode(
+      variants
+        .map((variant) => variant.hash)
+        .sort()
+        .join(''),
+    ),
   );
-  return sha256Hex(utf8Encode(parts.sort().join('')));
 }
 
 /**

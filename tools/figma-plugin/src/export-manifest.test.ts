@@ -10,33 +10,33 @@ import {
   renamedFolders,
   settingsText,
   type VariantEntry,
+  variantHash,
 } from './export-manifest';
 
 /**
- * 테스트용 변형 항목을 만든다.
- * @param hash PNG 해시
+ * 테스트용 변형 항목을 만든다. 해시는 이름 정보로 계산한다.
+ * @param state 변형 속성 State 값(값이 다르면 해시도 다르다)
  * @param fill 루트 칠 변수 이름
  * @returns 변형 항목
  */
-function variantEntry(hash: string, fill = 'accent-fill/default'): VariantEntry {
-  return {
-    nodeId: `node-${hash}`,
-    properties: { State: 'Rest' },
-    hash,
+function variantEntry(state: string, fill = 'accent-fill/default'): VariantEntry {
+  const info = {
+    properties: { State: state },
     layers: [{ path: '', type: 'COMPONENT', fill: { variable: fill } }],
     hidden: ['icon'],
     cases: { 'showIcon=true': { layers: [{ path: '' }, { path: 'icon' }], hidden: [] } },
   };
+  return { nodeId: `node-${state}`, ...info, hash: variantHash(info) };
 }
 
 /**
  * 테스트용 컴포넌트 export.json을 만든다.
- * @param variants 변형 이름 → PNG 해시
+ * @param variants 변형 이름 → State 값
  * @returns 컴포넌트 export.json
  */
 function manifest(variants: Record<string, string>): ComponentManifest {
   const entries = Object.fromEntries(
-    Object.entries(variants).map(([name, hash]) => [name, variantEntry(hash)]),
+    Object.entries(variants).map(([name, state]) => [name, variantEntry(state)]),
   );
   return {
     name: 'Button',
@@ -69,7 +69,13 @@ describe('컴포넌트마다 내용 해시를 계산해 바뀐 컴포넌트만 �
     expect(componentHash([a, b])).toBe(componentHash([b, a]));
   });
 
-  it('레이어 이름 정보가 바뀌면 이미지가 같아도 해시가 바뀐다', () => {
+  it('변형 해시는 이름 정보만으로 정해진다(노드 ID·PNG는 넣지 않는다)', () => {
+    const a = variantEntry('aaa');
+    expect(variantHash({ ...a, properties: { State: 'aaa' } })).toBe(a.hash);
+    expect(variantEntry('aaa').hash).not.toBe(variantEntry('bbb').hash);
+  });
+
+  it('레이어 이름 정보가 바뀌면 해시가 바뀐다', () => {
     expect(componentHash([variantEntry('aaa')])).not.toBe(
       componentHash([variantEntry('aaa', 'accent-fill/secondary')]),
     );
