@@ -118,6 +118,8 @@ export type DesignTokensInput = {
   textStyles: readonly TextStyleInput[];
   effectStyles: readonly EffectStyleInput[];
   paintStyles: readonly PaintStyleInput[];
+  /** 이미지 해시 → 이미지 자산 파일(`images/noise-acrylic.png`). Foundations / Assets / Images의 이름 있는 자산이다(G4) */
+  imageAssets: Readonly<Record<string, string>>;
 };
 
 const FIGMA_EXTENSION = 'com.figma';
@@ -138,7 +140,11 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   const root: JsonObject = {};
   const skippedStyles: string[] = [];
   const problems: string[] = [];
-  const context: ConversionContext = { aliasNames: input.aliasNames, problems };
+  const context: ConversionContext = {
+    aliasNames: input.aliasNames,
+    imageAssets: input.imageAssets,
+    problems,
+  };
 
   for (const variable of input.variables) {
     const token = variableToken(variable, context);
@@ -199,6 +205,7 @@ export function parseCubicBezier(easing: string): number[] | null {
 
 type ConversionContext = {
   aliasNames: Readonly<Record<string, string>>;
+  imageAssets: Readonly<Record<string, string>>;
   problems: string[];
 };
 
@@ -538,6 +545,15 @@ function paintLayer(
     return layer;
   }
   layer.imageHash = paint.imageHash;
+  // G4: 이미지는 이름 있는 이미지 자산이어야 코드가 같은 파일을 쓴다. 이름 없는 이미지는 막는다.
+  const asset = paint.imageHash === null ? undefined : context.imageAssets[paint.imageHash];
+  if (asset === undefined) {
+    context.problems.push(
+      `${label}: 이미지(${paint.imageHash ?? '해시 없음'})가 Foundations / Assets / Images의 자산이 아니다. 이미지를 Images 묶음의 컴포넌트로 만들고 이름을 짓는다(G4)`,
+    );
+  } else {
+    layer.asset = asset;
+  }
   layer.scaleMode = paint.scaleMode;
   // scalingFactor는 TILE에서만 쓰인다.
   if (paint.scaleMode === 'TILE' && paint.scalingFactor !== undefined) {

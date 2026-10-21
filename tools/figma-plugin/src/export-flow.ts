@@ -174,6 +174,14 @@ export async function runExport(request: ExportRequest): Promise<ExportResult> {
     }
     tokensText =
       tokens.text === (await getFileText(token, TOKENS_PATH, head.commitSha)) ? null : tokens.text;
+    for (const [file, bytes] of tokens.images) {
+      if (
+        !assetUploads.has(file) &&
+        !(await isSameFile(token, assetFilePath(file), head.commitSha, bytes))
+      ) {
+        assetUploads.set(file, bytes);
+      }
+    }
   }
 
   const changed = changes.filter(hasComponentChange);

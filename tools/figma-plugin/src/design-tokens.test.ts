@@ -239,6 +239,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
               opacity: 0.02,
               blendMode: 'NORMAL',
               imageHash: 'a563f96d0f0af894df83be986ec4e7a84096fd54',
+              asset: 'images/noise-acrylic.png',
               scaleMode: 'TILE',
               scalingFactor: 1,
             },
@@ -246,6 +247,12 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
         },
       },
     });
+  });
+
+  it('이름 있는 이미지 자산이 아닌 이미지 칠은 막는다(G4)', () => {
+    expect(() =>
+      buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle], imageAssets: {} })),
+    ).toThrow('Foundations / Assets / Images의 자산이 아니다');
   });
 
   it('단색 없이 그라디언트가 있는 칠 스타일은 첫 그라디언트의 색 지점을 값으로 둔 gradient 토큰이다', () => {

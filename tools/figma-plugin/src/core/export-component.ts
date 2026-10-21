@@ -322,10 +322,30 @@ async function exportAsset(asset: AssetData): Promise<Uint8Array> {
     throw new Error(`자산 컴포넌트 ${asset.name}를 찾을 수 없다.`);
   }
   if (asset.kind === 'raster') {
-    return node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
+    return rasterBytes(node);
   }
   const svg = normalizeSvgBytes(
     await node.exportAsync({ format: 'SVG', svgOutlineText: true, svgIdAttribute: false }),
   );
   return asset.kind === 'mono' ? monoColorSvg(svg) : svg;
+}
+
+/**
+ * 이미지 자산(G4)의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
+ * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다.
+ * @codocs [[피그마 일치 검사:자산]]
+ * @param node 자산 컴포넌트
+ * @returns PNG 등 이미지 바이트
+ */
+export async function rasterBytes(node: ComponentNode): Promise<Uint8Array> {
+  const fills =
+    node.fills === figma.mixed ? [] : node.fills.filter((fill) => fill.visible !== false);
+  const [fill] = fills;
+  if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
+    const image = figma.getImageByHash(fill.imageHash);
+    if (image !== null) {
+      return image.getBytesAsync();
+    }
+  }
+  return node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
 }

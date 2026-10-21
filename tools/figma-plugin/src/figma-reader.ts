@@ -1,3 +1,4 @@
+import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -9,6 +10,7 @@ import type {
   VariableValueInput,
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
+import { assetFile } from './naming';
 import { COMPONENTS_PAGE_ID } from './plugin-config';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
@@ -67,6 +69,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
   const textStyles = await figma.getLocalTextStylesAsync();
   const effectStyles = await figma.getLocalEffectStylesAsync();
   const paintStyles = await figma.getLocalPaintStylesAsync();
+  const images = await readImageAssets();
   const input: DesignTokensInput = {
     variables: inputs,
     aliasNames,
@@ -79,9 +82,62 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
       name: style.name,
       paints: style.paints.map(paintInput),
     })),
+    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.file])),
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
+}
+
+/** 이미지 자산 하나(G4) */
+export type ImageAsset = {
+  /** 자산 파일(`images/noise-acrylic.png`) */
+  file: string;
+  /** 자산 컴포넌트 */
+  node: ComponentNode;
+};
+
+/**
+ * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
+ * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻는다(G4).
+ * 묶음 프레임이 있는 첫 페이지만 읽는다.
+ * @codocs [[피그마 일치 검사:자산]]
+ * @returns 이미지 해시 → 자산
+ */
+export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
+  const { assetGroupPrefix, assetGroups } = parityDecisions.d6;
+  const rasterGroups = new Set(
+    Object.entries(assetGroups)
+      .filter(([, kind]) => kind === 'raster')
+      .map(([group]) => `${assetGroupPrefix}${group}`),
+  );
+  const images = new Map<string, ImageAsset>();
+  for (const page of figma.root.children) {
+    await page.loadAsync();
+    const frames = page.findAll((node) => rasterGroups.has(node.name) && 'children' in node);
+    for (const frame of frames) {
+      if (!('findAllWithCriteria' in frame)) {
+        continue;
+      }
+      const group = frame.name.slice(assetGroupPrefix.length);
+      for (const component of frame.findAllWithCriteria({ types: ['COMPONENT'] })) {
+        const fills =
+          component.fills === figma.mixed
+            ? []
+            : component.fills.filter((fill) => fill.visible !== false);
+        const [fill] = fills;
+        if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
+          images.set(fill.imageHash, {
+            file: assetFile({ group, name: component.name, kind: 'raster' }),
+            node: component,
+          });
+        }
+      }
+    }
+    if (frames.length > 0) {
+      break;
+    }
+  }
+  return images;
 }
 
 /**
