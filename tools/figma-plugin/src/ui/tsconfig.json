@@ -1,0 +1,8 @@
+{
+  "extends": "../../../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [],
+    "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo-ui.json"
+  },
+  "include": ["*.ts"]
+}

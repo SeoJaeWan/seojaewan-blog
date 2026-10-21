@@ -137,6 +137,7 @@ function restrictedProperties(restrictions) {
 export default defineConfig(
   globalIgnores([
     '.codocs/**',
+    '.claude/**',
     '**/node_modules/**',
     '**/.next/**',
     '**/.turbo/**',
@@ -217,6 +218,7 @@ export default defineConfig(
           'apps/web/e2e/**/': 'KEBAB_CASE',
           'packages/*/src/**/': 'KEBAB_CASE',
           'scripts/**/': 'KEBAB_CASE',
+          'tools/*/src/**/': 'KEBAB_CASE',
         },
       ],
       'check-file/no-index': ['error', { ignoreMiddleExtensions: true }],
@@ -539,6 +541,15 @@ export default defineConfig(
     files: [`${DESIGN_SYSTEM}/src/index.ts`],
     rules: {
       'check-file/no-index': 'off',
+    },
+  },
+
+  // 경로 단위 예외: 피그마 타입이 `variantProperties`를 인스턴스 기준으로 deprecated 표시하지만,
+  // 컴포넌트 세트의 변형에서는 이 속성이 변형 속성을 읽는 정식 방법이다.
+  {
+    files: ['tools/figma-plugin/src/figma-reader.ts'],
+    rules: {
+      '@typescript-eslint/no-deprecated': 'off',
     },
   },
 
