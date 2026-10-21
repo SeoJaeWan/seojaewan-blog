@@ -1,12 +1,12 @@
 {
   "booleans": {},
-  "hash": "4ae7e16b5662fa8bf0c94e155b7d7e41cff461d0187c8363335f882deef3e4b3",
+  "hash": "6a9f0072c1d77e87fbcaff5347643af522634d0ea8d605add4a5bbace6a24942",
   "name": "Flyout",
   "nodeId": "16:195",
   "variants": {
     "material=acrylic": {
       "cases": {},
-      "hash": "da3f4e18d83b19534e2f2c5940f791b4d4a499f3881af8fb3045bddebd685696",
+      "hash": "f77193d926b0ca79cd30849d0be25086076c449777c027a7a400226df81feb74",
       "hidden": [],
       "layers": [
         {
@@ -90,7 +90,7 @@
     },
     "material=solid": {
       "cases": {},
-      "hash": "43f1a2f4c442eec82ce1e941c95dddf2ecc799572e8eb0bb45c7582b50c2da35",
+      "hash": "90ddf7062082796ec65dd4f6687f4e485c8e2acaab684178b58529ab6eff54a6",
       "hidden": [],
       "layers": [
         {
