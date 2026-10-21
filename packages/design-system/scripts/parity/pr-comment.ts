@@ -133,6 +133,7 @@ function paginate(
       withImages[index] === true && block.imageRows.length > 0
         ? [
             '',
+            '',
             '| 변형 · 레이어 | 피그마 | 브라우저 | 차이 |',
             '|---|---|---|---|',
             ...block.imageRows,

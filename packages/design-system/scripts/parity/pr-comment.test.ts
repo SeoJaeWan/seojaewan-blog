@@ -104,6 +104,8 @@ describe('PR 댓글', () => {
       '| state=rest · chevron | <img src="https://img/menu-item/state=rest/vector-chevron-expected.png" height="64">',
     );
     expect(images).toHaveLength(3);
+    // 목록 바로 뒤에 표를 붙이면 목록의 일부로 읽혀 표가 그려지지 않으므로 빈 줄을 둔다.
+    expect(bodies[0]).toContain('\n\n| 변형 · 레이어 | 피그마 | 브라우저 | 차이 |');
   });
 
   it('길이 제한을 넘으면 이미지를 먼저 빼고, 그래도 넘으면 실패를 빼지 않고 댓글을 나눈다', () => {
