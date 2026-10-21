@@ -9,14 +9,17 @@
       "key": "Show shortcut#14:34"
     }
   },
-  "hash": "91ee26797353bfe49bd406e2838fcd93e991fbcd4879b7815dc8eda01aef4675",
+  "hash": "f4296d1e8c5bff3a1e7551edd1ce1f00bceeaa0aadb2ebdef5e9a272598e7477",
   "name": "MenuItem",
   "nodeId": "14:205",
   "variants": {
     "kind=default,state=disabled": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -477,7 +480,10 @@
     "kind=default,state=hover": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -938,7 +944,10 @@
     "kind=default,state=pressed": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -1399,7 +1408,10 @@
     "kind=default,state=rest": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -1860,7 +1872,9 @@
     "kind=radio-on,state=disabled": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -2353,7 +2367,9 @@
     "kind=radio-on,state=hover": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -2846,7 +2862,9 @@
     "kind=radio-on,state=pressed": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -3339,7 +3357,9 @@
     "kind=radio-on,state=rest": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -3832,7 +3852,10 @@
     "kind=submenu,state=disabled": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -4347,7 +4370,10 @@
     "kind=submenu,state=hover": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -4862,7 +4888,10 @@
     "kind=submenu,state=pressed": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -5377,7 +5406,10 @@
     "kind=submenu,state=rest": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/leading",
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -5892,7 +5924,9 @@
     "kind=toggle-on,state=disabled": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -6397,7 +6431,9 @@
     "kind=toggle-on,state=hover": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -6902,7 +6938,9 @@
     "kind=toggle-on,state=pressed": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
@@ -7407,7 +7445,9 @@
     "kind=toggle-on,state=rest": {
       "cases": {
         "showIcon=false": {
-          "hidden": [],
+          "hidden": [
+            "base/shortcut"
+          ],
           "layers": [
             {
               "layout": {
