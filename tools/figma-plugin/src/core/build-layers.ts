@@ -23,7 +23,7 @@ export function buildLayers(root: NodeData, context: CheckContext): JsonObject[]
    */
   function visit(node: NodeData, isRoot: boolean): void {
     layers.push(layerOf(node, isRoot, context));
-    if (node.asset !== null) {
+    if (node.asset !== null || node.type === 'SLOT') {
       return;
     }
     for (const child of node.children) {
@@ -81,6 +81,15 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
     addSelf(layer, node, context);
     return layer;
   }
+  if (node.type === 'SLOT') {
+    // G1: 슬롯은 자기 배치만 비교한다. 칠·선·효과는 구조 검사가 막는다.
+    const layout = layoutJson(node);
+    if (layout !== null) {
+      layer.layout = layout;
+    }
+    addSelf(layer, node, context);
+    return layer;
+  }
   if (node.opacity.variable !== undefined) {
     layer.opacity = node.opacity.variable;
   }
@@ -120,25 +129,9 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
   if (node.effectStyle !== undefined && (node.effects ?? []).some((effect) => effect.visible)) {
     layer.effect = node.effectStyle;
   }
-  if (node.layout !== null && node.layout.mode !== 'NONE') {
-    const { layout } = node;
-    layer.layout = {
-      mode: layout.mode,
-      wrap: layout.wrap,
-      primaryAlign: layout.primaryAlign,
-      counterAlign: layout.counterAlign,
-      ...(layout.wrap === 'WRAP' ? { alignContent: layout.alignContent } : {}),
-      padding: sidesJson(layout.padding),
-      gap:
-        node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE').length > 1 &&
-        layout.primaryAlign !== 'SPACE_BETWEEN'
-          ? (layout.itemSpacing.variable ?? null)
-          : null,
-      counterGap:
-        layout.wrap === 'WRAP' && layout.counterAxisSpacing !== null
-          ? (layout.counterAxisSpacing.variable ?? null)
-          : null,
-    };
+  const layout = layoutJson(node);
+  if (layout !== null) {
+    layer.layout = layout;
   }
   addSelf(layer, node, context);
   if (node.text !== null) {
@@ -153,6 +146,35 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
     };
   }
   return layer;
+}
+
+/**
+ * 자동 배치를 레이어 항목으로 만든다. 슬롯은 안쪽 내용을 읽지 않으므로 간격을 늘 넣는다.
+ * @param node 노드
+ * @returns 자동 배치 항목, 자동 배치가 아니면 null
+ */
+function layoutJson(node: NodeData): JsonObject | null {
+  if (node.layout === null || node.layout.mode === 'NONE') {
+    return null;
+  }
+  const { layout } = node;
+  const hasGap =
+    (node.type === 'SLOT' ||
+      node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE').length > 1) &&
+    layout.primaryAlign !== 'SPACE_BETWEEN';
+  return {
+    mode: layout.mode,
+    wrap: layout.wrap,
+    primaryAlign: layout.primaryAlign,
+    counterAlign: layout.counterAlign,
+    ...(layout.wrap === 'WRAP' ? { alignContent: layout.alignContent } : {}),
+    padding: sidesJson(layout.padding),
+    gap: hasGap ? (layout.itemSpacing.variable ?? null) : null,
+    counterGap:
+      layout.wrap === 'WRAP' && layout.counterAxisSpacing !== null
+        ? (layout.counterAxisSpacing.variable ?? null)
+        : null,
+  };
 }
 
 /**

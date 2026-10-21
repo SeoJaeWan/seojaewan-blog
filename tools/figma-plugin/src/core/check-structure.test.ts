@@ -49,6 +49,20 @@ function label(root: NodeData): NodeData {
   return first;
 }
 
+/**
+ * Flyout Content를 본뜬 슬롯을 만든다.
+ * @returns 슬롯 노드
+ */
+function slot(): NodeData {
+  const root = buttonRoot();
+  return node({
+    path: 'Content',
+    type: 'SLOT',
+    layout: { ...must(root.layout), primaryAlign: 'MIN', counterAlign: 'MIN' },
+    child: { ...must(label(root).child), sizingHorizontal: 'FILL' },
+  });
+}
+
 // @codocs [[피그마 일치 검사:구조 검사]]
 describe('구조 검사', () => {
   it('변수·스타일에 연결된 정상 구조는 위반이 없다', () => {
@@ -256,6 +270,24 @@ describe('구조 검사', () => {
     ]);
   });
 
+  it('슬롯은 칠·선·효과를 막고 간격은 변수에 연결해야 한다(G1)', () => {
+    expect(reasonsAfter((root) => root.children.push(slot()))).toEqual([]);
+    const painted = reasonsAfter((root) => {
+      const content = slot();
+      content.fills = [
+        { type: 'SOLID', visible: true, blendMode: 'NORMAL', opacity: 1, variable: 'x/y' },
+      ];
+      root.children.push(content);
+    });
+    expect(painted).toEqual(['슬롯에 칠·선·효과가 있다(G1)']);
+    const unboundGap = reasonsAfter((root) => {
+      const content = slot();
+      content.layout = { ...must(content.layout), itemSpacing: { value: 8 } };
+      root.children.push(content);
+    });
+    expect(unboundGap).toEqual(['간격 8가 변수에 연결되어 있지 않다']);
+  });
+
   it('형제 레이어 이름이 겹치면 짝지을 수 없어 막는다', () => {
     expect(
       reasonsAfter((root) =>
@@ -347,6 +379,26 @@ describe('레이어 목록', () => {
       },
     });
     expect(JSON.stringify(text)).not.toMatch(/"x"|"y"/u);
+  });
+
+  it('슬롯은 자기 배치만 남기고 안쪽 내용은 남기지 않는다(G1)', () => {
+    const root = buttonRoot();
+    const content = slot();
+    content.children = [label(buttonRoot())];
+    root.children.push(content);
+    const layers = buildLayers(root, context);
+    const slotLayer = must(layers.find((layer) => layer.path === 'Content'));
+    expect(Object.keys(slotLayer).sort()).toEqual([
+      'layout',
+      'parentLayout',
+      'path',
+      'sizing',
+      'type',
+    ]);
+    expect(must(slotLayer.layout)).toMatchObject({ gap: 'spacing/8' });
+    expect(
+      layers.some((layer) => typeof layer.path === 'string' && layer.path.startsWith('Content/')),
+    ).toBe(false);
   });
 
   it('숨긴 레이어는 목록에 넣지 않고 경로만 남긴다(D4)', () => {

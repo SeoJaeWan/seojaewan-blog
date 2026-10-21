@@ -67,6 +67,10 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   if (!checkType(node, isRoot, add)) {
     return;
   }
+  if (node.type === 'SLOT') {
+    checkSlot(node, isRoot, context, add);
+    return;
+  }
   checkSiblingNames(node, add);
   checkCommon(node, add);
   checkPaints(node, add);
@@ -92,6 +96,42 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   for (const child of node.children) {
     checkNode(child, false, context, add);
   }
+}
+
+/**
+ * 슬롯(G1)을 검사한다. 슬롯은 내용을 담는 자리라 칠·선·효과를 두지 않고, 자기 배치(방향·정렬·여백·간격·크기)만 비교한다.
+ * 안쪽 내용은 쓰는 쪽이 정하므로 검사하지 않는다.
+ * @codocs [[피그마 일치 검사:구조 검사]]
+ * @param node 슬롯 노드
+ * @param isRoot 변형 루트인지
+ * @param context 파일 수준 정보
+ * @param add 위반을 더하는 함수
+ */
+function checkSlot(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+  if (
+    hasPaint(node.fills) ||
+    hasPaint(node.strokes) ||
+    (node.effects ?? []).some((effect) => effect.visible)
+  ) {
+    add(
+      node,
+      '슬롯에 칠·선·효과가 있다(G1)',
+      '슬롯은 내용을 담는 자리만 정한다. 칠·선·효과는 지우거나 슬롯 바깥 프레임에 둔다.',
+    );
+  }
+  checkCommon(node, add);
+  checkLayout(node, add);
+  checkChildLayout(node, context, add);
+  checkSizes(node, isRoot, add);
+}
+
+/**
+ * 보이는 칠이 있는지 확인한다.
+ * @param paints 칠 목록
+ * @returns 섞였거나 보이는 칠이 있으면 true
+ */
+function hasPaint(paints: NodeData['fills']): boolean {
+  return paints === 'mixed' || (paints !== null && paints.some((paint) => paint.visible));
 }
 
 /**
@@ -481,7 +521,10 @@ function checkLayout(node: NodeData, add: Add): void {
     requireBound(node, `여백(${side})`, padding, 'spacing', add);
   }
   const flowChildren = node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE');
-  if (flowChildren.length > 1 && layout.primaryAlign !== 'SPACE_BETWEEN') {
+  if (
+    (node.type === 'SLOT' || flowChildren.length > 1) &&
+    layout.primaryAlign !== 'SPACE_BETWEEN'
+  ) {
     requireBound(node, '간격', layout.itemSpacing, 'spacing', add);
   }
   if (layout.wrap === 'WRAP' && layout.counterAxisSpacing !== null) {

@@ -145,6 +145,10 @@ async function readNode(
       return data;
     }
   }
+  // G1: 슬롯은 내용을 담는 자리라 슬롯 자체의 배치만 비교한다. 안쪽 내용은 쓰는 쪽이 정한다.
+  if (node.type === 'SLOT') {
+    return data;
+  }
   if ('children' in node) {
     for (const child of node.children) {
       const childPath = path === '' ? child.name : `${path}/${child.name}`;
@@ -420,6 +424,7 @@ function childLayout(node: SceneNode, parent: BaseNode & ChildrenMixin): ChildLa
  * @returns 글자 데이터
  */
 async function textData(node: TextNode, names: NameCache): Promise<TextData> {
+  await loadFonts(node);
   const segments: TextSegmentData[] = [];
   for (const segment of node.getStyledTextSegments([
     'fontName',
@@ -627,4 +632,19 @@ export async function styleName(
     names.set(id, (await figma.getStyleByIdAsync(id))?.name);
   }
   return names.get(id);
+}
+
+/**
+ * 글자 노드가 쓰는 글꼴을 불러온다. 불러오기 전에는 설치된 글꼴도 hasMissingFont가 true로 읽힐 때가 있다.
+ * 불러올 수 없는 글꼴은 그대로 두어 hasMissingFont가 알리게 한다.
+ * @param node 글자 노드
+ */
+async function loadFonts(node: TextNode): Promise<void> {
+  for (const segment of node.getStyledTextSegments(['fontName'])) {
+    try {
+      await figma.loadFontAsync(segment.fontName);
+    } catch {
+      // 없는 글꼴은 hasMissingFont로 막는다.
+    }
+  }
 }
