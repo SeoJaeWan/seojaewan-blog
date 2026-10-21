@@ -471,3 +471,63 @@
 @utility h-stroke-* {
   height: --value(--border-width-*);
 }
+
+@utility backdrop-blur-* {
+  --material-backdrop-blur: --value(--backdrop-blur-*);
+}
+
+@utility material-acrylic-base {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  &::before {
+    -webkit-backdrop-filter: blur(var(--material-backdrop-blur, 0px));
+    backdrop-filter: blur(var(--material-backdrop-blur, 0px));
+  }
+  &::after {
+    background: linear-gradient(rgb(243 243 243 / 0.98), rgb(243 243 243 / 0.98)), url('./assets/images/noise-acrylic.png') repeat, #f3f3f3;
+    mix-blend-mode: luminosity;
+    opacity: 0.9;
+  }
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@utility material-acrylic-default {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  &::before {
+    -webkit-backdrop-filter: blur(var(--material-backdrop-blur, 0px));
+    backdrop-filter: blur(var(--material-backdrop-blur, 0px));
+  }
+  &::after {
+    background: linear-gradient(rgb(252 252 252 / 0.98), rgb(252 252 252 / 0.98)), url('./assets/images/noise-acrylic.png') repeat, #fcfcfc;
+    mix-blend-mode: luminosity;
+    opacity: 0.85;
+  }
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Material/Mica Base: 블렌드 층 위에 노이즈 이미지(NORMAL, TILE) 말고 보이는 층이 있어 한 요소로 그릴 수 없다. material-mica-base 유틸리티를 만들지 않는다. */
+
+/* Material/Mica Base Alt: 블렌드 층 위에 노이즈 이미지(NORMAL, TILE) 말고 보이는 층이 있어 한 요소로 그릴 수 없다. material-mica-base-alt 유틸리티를 만들지 않는다. */

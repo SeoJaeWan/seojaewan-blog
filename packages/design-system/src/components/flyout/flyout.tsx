@@ -10,6 +10,8 @@ type FlyoutProps = ComponentProps<'div'> & {
 };
 
 // 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다.
+// material-* 유틸리티는 흐림과 루미너시티 층을 의사 요소로 그려 뒤 배경과 섞으므로, 루트는 쌓임 맥락을
+// 만들면 안 된다(isolate, z-index, opacity, transform 등을 두지 않는다).
 const materialClassNames = {
   acrylic:
     'material-acrylic-default shadow-surface-flyout-acrylic backdrop-blur-surface-flyout-acrylic',
@@ -31,7 +33,7 @@ export function Flyout(props: FlyoutProps): JSX.Element {
       // @codocs [[피그마 일치 검사:짝짓기]] 피그마 Flyout 변형 루트와 짝짓는다.
       data-figma-root="Flyout"
       className={mergeClassNames(
-        'relative isolate flex w-flyout-width flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout p-16',
+        'relative flex w-flyout-width flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout p-16',
         materialClassNames[material],
         className,
       )}

@@ -152,24 +152,35 @@ export const textDecorationClasses: Readonly<Record<string, ClassChoice>> = {
   STRIKETHROUGH: ['line-through'],
 };
 
-/** 블렌드 모드 */
-export const blendModeClasses: Readonly<Record<string, ClassChoice>> = {
-  DARKEN: ['mix-blend-darken'],
-  MULTIPLY: ['mix-blend-multiply'],
-  COLOR_BURN: ['mix-blend-color-burn'],
-  LIGHTEN: ['mix-blend-lighten'],
-  SCREEN: ['mix-blend-screen'],
-  COLOR_DODGE: ['mix-blend-color-dodge'],
-  OVERLAY: ['mix-blend-overlay'],
-  SOFT_LIGHT: ['mix-blend-soft-light'],
-  HARD_LIGHT: ['mix-blend-hard-light'],
-  DIFFERENCE: ['mix-blend-difference'],
-  EXCLUSION: ['mix-blend-exclusion'],
-  HUE: ['mix-blend-hue'],
-  SATURATION: ['mix-blend-saturation'],
-  COLOR: ['mix-blend-color'],
-  LUMINOSITY: ['mix-blend-luminosity'],
-};
+/**
+ * 피그마 블렌드 모드 → CSS 블렌드 모드(`mix-blend-mode` 값). 레이어 블렌드 클래스와
+ * 재질 칠 스타일 생성(scripts/tokens/tokens-css.ts)이 함께 쓰는 표다.
+ */
+export const FIGMA_BLEND_MODE_CSS = {
+  NORMAL: 'normal',
+  DARKEN: 'darken',
+  MULTIPLY: 'multiply',
+  COLOR_BURN: 'color-burn',
+  LIGHTEN: 'lighten',
+  SCREEN: 'screen',
+  COLOR_DODGE: 'color-dodge',
+  OVERLAY: 'overlay',
+  SOFT_LIGHT: 'soft-light',
+  HARD_LIGHT: 'hard-light',
+  DIFFERENCE: 'difference',
+  EXCLUSION: 'exclusion',
+  HUE: 'hue',
+  SATURATION: 'saturation',
+  COLOR: 'color',
+  LUMINOSITY: 'luminosity',
+} as const;
+
+/** 레이어 블렌드 모드(NORMAL 말고) → 클래스 */
+export const blendModeClasses: Readonly<Record<string, ClassChoice>> = Object.fromEntries(
+  Object.entries(FIGMA_BLEND_MODE_CSS)
+    .filter(([mode]) => mode !== 'NORMAL')
+    .map(([mode, css]) => [mode, [`mix-blend-${css}`]]),
+);
 
 /**
  * 표시 없는 요소에 있으면 안 되는 토큰 클래스(변형 접두어를 뗀 이름). 디자인 값을 정하는 클래스는 모두

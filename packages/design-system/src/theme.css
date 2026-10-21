@@ -27,31 +27,3 @@
 }
 
 @import './tokens.css';
-
-/*
- * @codocs [[디자인 기반:재질 효과]]
- * Acrylic 재질 칠(피그마 Material/Acrylic Default 칠 스타일)은 손으로 쓴다. 생성기로 만들지 않는 이유:
- * 피그마 칠 층의 LUMINOSITY·COLOR 블렌드는 CSS로 똑같이 그릴 수 없어, 칠 스타일 값에서 기계적으로 CSS를 만들 수 없다.
- * 피그마 일치 검사는 이 칠 스타일 이름을 클래스 이름(material-acrylic-default)으로 비교한다.
- * 뒤 흐림은 칠이 아니라 효과 스타일(Surface/*)이 정하므로 여기서 하지 않는다(backdrop-blur-* 클래스).
- *
- * 루미너스 층 색(acrylic-background-fill/default)을 깔고, 맨 위에 노이즈 이미지(256×256, 바둑판 반복)를
- * 불투명도 2%로 얹는다. 노이즈 이미지는 피그마 Images 묶음의 noise/Acrylic 자산이고,
- * generate:assets가 figma/assets/images/에서 src/assets/images/로 옮긴다.
- * 노이즈는 내용 아래에 깔리도록 ::after(z-index -1)로 그리므로, 요소에 relative 같은 위치 지정과
- * 쌓임 맥락(isolate)이 있어야 한다.
- */
-@utility material-acrylic-default {
-  background-color: var(--color-acrylic-background-fill-default);
-
-  &::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    border-radius: inherit;
-    background: url('./assets/images/noise-acrylic.png') repeat;
-    opacity: 2%;
-    pointer-events: none;
-  }
-}

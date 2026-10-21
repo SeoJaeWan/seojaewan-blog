@@ -197,9 +197,22 @@ export const TOKENS_FIXTURE = {
                   opacity: 0.02,
                   blendMode: 'NORMAL',
                   imageHash: 'noise',
+                  asset: 'images/noise-acrylic.png',
                   scaleMode: 'TILE',
                   scalingFactor: 1,
                 },
+              ],
+            },
+          },
+        },
+        'Mica Base': {
+          $type: 'color',
+          $value: '#f3f3f3',
+          $extensions: {
+            'com.seojaewan': {
+              layers: [
+                { type: 'SOLID', color: '#f3f3f3', opacity: 1, blendMode: 'LUMINOSITY' },
+                { type: 'SOLID', color: '#f3f3f3', opacity: 0.5, blendMode: 'COLOR' },
               ],
             },
           },

@@ -54,11 +54,29 @@ describe('토큰 생성', () => {
     expect(css).toContain('--text-shadow-desktop-label-shadow: 0px 1px 2px #00000099;');
   });
 
-  it('층이 여럿인 재질 칠 스타일은 만들지 않고 단색 칠 스타일만 만든다', () => {
+  it('층이 여럿인 재질 칠 스타일은 변수가 아니라 material-* 유틸리티로 만든다', () => {
     expect(css).not.toContain('--color-material-acrylic-default');
+    expect(css).toContain('@utility material-acrylic-default {');
     expect(css).toContain(
       '--color-material-fallback-acrylic-default: var(--color-acrylic-background-fill-default-fallback);',
     );
+  });
+
+  it('재질 유틸리티는 흐림을 ::before로, 루미너시티 층을 ::after 블렌드로 그리고 노이즈를 층 색에 섞는다', () => {
+    const block = css.slice(css.indexOf('@utility material-acrylic-default {'));
+    expect(block).toContain('backdrop-filter: none !important;');
+    expect(block).toContain('backdrop-filter: blur(var(--material-backdrop-blur, 0px));');
+    expect(block).toContain(
+      "background: linear-gradient(rgb(252 252 252 / 0.98), rgb(252 252 252 / 0.98)), url('./assets/images/noise-acrylic.png') repeat, #fcfcfc;",
+    );
+    expect(block).toContain('mix-blend-mode: luminosity;');
+    expect(block).toContain('opacity: 0.85;');
+    expect(css).toContain('--material-backdrop-blur: --value(--backdrop-blur-*);');
+  });
+
+  it('한 요소로 그릴 수 없는 재질 층 구성(보이는 색 층)은 유틸리티를 만들지 않고 이유를 남긴다', () => {
+    expect(css).not.toContain('@utility material-mica-base {');
+    expect(css).toContain('/* Material/Mica Base: ');
   });
 
   it('그라데이션 칠 스타일은 층을 옮긴 --gradient-* 배경 값이 된다', () => {

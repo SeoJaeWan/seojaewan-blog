@@ -2,6 +2,7 @@
  * figma/tokens.json(DTCG 형식)을 Tailwind v4 `@theme` 블록과 글자 스타일 `@utility`로 바꾼다.
  * 파일을 읽거나 쓰지 않는 순수 변환이다. 파일 입출력은 generate-tokens.ts가 맡는다.
  */
+import { FIGMA_BLEND_MODE_CSS } from '../parity/rules/class-rules.ts';
 
 // 피그마 Variables 이름 경로에서 웹 서체 짝을 찾는 기준이다. 한글은 이 변수의 서체로 그린다.
 const HANGUL_FAMILY_PATH = 'font/family/korean';
@@ -90,6 +91,9 @@ export function tokensToCss(tokens: unknown): string {
 
   const textStyles = flattenTokens(asGroup(styles.text, 'style/text'), []);
   const utilities = textUtilities(textStyles, names);
+  const materials = flattenTokens(asGroup(styles.paint, 'style/paint'), []).flatMap((item) =>
+    materialUtility(item),
+  );
 
   const theme = sections
     .filter((section) => section.variables.length > 0)
@@ -101,7 +105,7 @@ export function tokensToCss(tokens: unknown): string {
     .join('\n\n');
 
   const themeBlock = theme === '' ? '@theme static {\n}' : `@theme static {\n${theme}\n}`;
-  const blocks = [GENERATED_HEADER, themeBlock, ...utilities, ...roleUtilities];
+  const blocks = [GENERATED_HEADER, themeBlock, ...utilities, ...roleUtilities, ...materials];
   return `${blocks.join('\n\n')}\n`;
 }
 
@@ -130,6 +134,8 @@ const roleUtilities = [
   ringUtility('border-gradient-*', '--value(--gradient-*)'),
   utility('w-stroke-*', ['width: --value(--border-width-*);']),
   utility('h-stroke-*', ['height: --value(--border-width-*);']),
+  // 재질 칠(material-*)이 배경 흐림을 ::before로 옮겨 그리도록 효과 스타일의 흐림 값을 상속되는 변수로도 둔다.
+  utility('backdrop-blur-*', ['--material-backdrop-blur: --value(--backdrop-blur-*);']),
 ];
 
 /**
@@ -155,6 +161,146 @@ function ringUtility(name: string, background: string): string {
     ...ringDeclarations.slice(6),
   ];
   return utility(name, ['&::before {', ...lines.map((line) => `  ${line}`), '}']);
+}
+
+/**
+ * 층이 여럿인 재질 칠 스타일(`Material/*`)을 `material-*` 유틸리티로 만든다.
+ * 피그마 층(아래 → 위)은 흐린 배경 위에 루미너시티 층, 색 층, 노이즈 이미지(TILE)다. 브라우저에서 블렌드 층이
+ * 흐린 배경과 섞이려면 흐림과 블렌드 층이 배경과 같은 쌓임 맥락에 있어야 한다. 그래서
+ * - 요소 자신은 쌓임 맥락을 만들지 않는다(효과 스타일의 backdrop-filter도 끈다).
+ * - ::before가 효과 스타일의 흐림(`--material-backdrop-blur`)으로 뒤를 흐린다.
+ * - ::after가 루미너시티 층을 `mix-blend-mode`로 섞는다. 노이즈(불투명도 n, NORMAL)는 이 층 색에 n만큼 섞어 넣는다.
+ * - 자식은 두 층 위에 오도록 `position: relative; z-index: 1`이다.
+ * 요소에는 relative 같은 위치 지정이 있어야 하고, ::before를 쓰는 안쪽 선 유틸리티와 함께 쓸 수 없다.
+ * 이 구조로 그릴 수 없는 층 구성(보이는 색 층 등)은 만들지 않고 이유를 주석으로 남긴다. 그 칠 스타일을 쓰면
+ * 피그마 일치 검사가 유틸리티가 없다고 실패한다.
+ * @codocs [[디자인 기반:재질 효과]]
+ * @param item 칠 스타일 경로와 토큰
+ * @returns `@utility` 블록 또는 만들지 못한 이유 주석(재질 스타일이 아니면 빈 목록)
+ */
+function materialUtility(item: FlatToken): string[] {
+  const custom = item.token.extensions['com.seojaewan'];
+  const layers = isRecord(custom) ? custom.layers : undefined;
+  if (item.token.type === 'gradient' || !Array.isArray(layers)) {
+    return [];
+  }
+  const path = `style/paint/${item.path.join('/')}`;
+  const name = item.path.map(kebabSegment).join('-');
+  const plan = materialPlan(layers, path);
+  if (typeof plan === 'string') {
+    return [
+      `/* ${item.path.join('/')}: ${plan} material-${name.replace(/^material-/u, '')} 유틸리티를 만들지 않는다. */`,
+    ];
+  }
+  const { blend, color, opacity, noise } = plan;
+  const base =
+    noise === null
+      ? color
+      : `linear-gradient(${withAlpha(color, 1 - noise.opacity)}, ${withAlpha(color, 1 - noise.opacity)}), url('./assets/${noise.asset}') repeat, ${color}`;
+  return [
+    utility(name, [
+      '-webkit-backdrop-filter: none !important;',
+      'backdrop-filter: none !important;',
+      '&::before,',
+      '&::after {',
+      "  content: '';",
+      '  position: absolute;',
+      '  inset: 0;',
+      '  border-radius: inherit;',
+      '  pointer-events: none;',
+      '}',
+      '&::before {',
+      '  -webkit-backdrop-filter: blur(var(--material-backdrop-blur, 0px));',
+      '  backdrop-filter: blur(var(--material-backdrop-blur, 0px));',
+      '}',
+      '&::after {',
+      `  background: ${base};`,
+      `  mix-blend-mode: ${blend};`,
+      `  opacity: ${formatNumber(opacity)};`,
+      '}',
+      '& > * {',
+      '  position: relative;',
+      '  z-index: 1;',
+      '}',
+    ]),
+  ];
+}
+
+type MaterialPlan = {
+  /** CSS 블렌드 모드 */
+  blend: string;
+  /** 블렌드 층 색(#rrggbb) */
+  color: string;
+  /** 블렌드 층 불투명도 */
+  opacity: number;
+  /** 노이즈 이미지 층 */
+  noise: { asset: string; opacity: number } | null;
+};
+
+/**
+ * 재질 칠 층을 유틸리티 구조(블렌드 층 하나 + 노이즈)로 옮길 수 있는지 본다.
+ * 불투명도 0인 층은 그려지는 것이 없어 건너뛴다.
+ * @param layers `com.seojaewan.layers`(아래 → 위)
+ * @param path 오류 메시지에 쓸 경로
+ * @returns 옮길 내용, 또는 옮길 수 없는 이유
+ */
+function materialPlan(layers: readonly unknown[], path: string): MaterialPlan | string {
+  const visible = layers.filter(
+    (layer) =>
+      !isRecord(layer) || layer.opacity === undefined || numberValue(layer.opacity, path) > 0,
+  );
+  const [first, ...rest] = visible;
+  if (!isRecord(first) || first.type !== 'SOLID') {
+    return '맨 아래 보이는 층이 단색이 아니다.';
+  }
+  const blend = blendModeCss(first.blendMode);
+  if (blend === undefined || blend === 'normal') {
+    return '맨 아래 보이는 층이 블렌드 층이 아니다.';
+  }
+  let noise: MaterialPlan['noise'] = null;
+  for (const layer of rest) {
+    const isTileImage =
+      isRecord(layer) &&
+      layer.type === 'IMAGE' &&
+      layer.blendMode === 'NORMAL' &&
+      layer.scaleMode === 'TILE' &&
+      layer.scalingFactor === 1 &&
+      typeof layer.asset === 'string';
+    if (!isTileImage || noise !== null) {
+      return '블렌드 층 위에 노이즈 이미지(NORMAL, TILE) 말고 보이는 층이 있어 한 요소로 그릴 수 없다.';
+    }
+    noise = { asset: String(layer.asset), opacity: numberValue(layer.opacity ?? 1, path) };
+  }
+  return {
+    blend,
+    color: colorValue(first.color, path),
+    opacity: first.opacity === undefined ? 1 : numberValue(first.opacity, path),
+    noise,
+  };
+}
+
+/**
+ * 피그마 블렌드 모드를 CSS 값으로 바꾼다.
+ * @param mode 피그마 블렌드 모드
+ * @returns CSS 블렌드 모드(표에 없으면 undefined)
+ */
+function blendModeCss(mode: unknown): string | undefined {
+  return typeof mode === 'string' && mode in FIGMA_BLEND_MODE_CSS
+    ? FIGMA_BLEND_MODE_CSS[mode as keyof typeof FIGMA_BLEND_MODE_CSS]
+    : undefined;
+}
+
+/**
+ * #rrggbb 색에 불투명도를 붙인다.
+ * @param color #rrggbb
+ * @param alpha 불투명도
+ * @returns `rgb(r g b / a)`
+ */
+function withAlpha(color: string, alpha: number): string {
+  const [red, green, blue] = [1, 3, 5].map((start) =>
+    Number.parseInt(color.slice(start, start + 2), 16),
+  );
+  return `rgb(${String(red)} ${String(green)} ${String(blue)} / ${formatNumber(alpha)})`;
 }
 
 /** 글자 스타일 유틸리티가 쓰는 변수(피그마 변수 경로). 별칭이 아닌 값은 값 그대로다 */
