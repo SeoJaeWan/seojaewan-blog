@@ -12,6 +12,8 @@ export type ComponentSummary = {
 export type MainMessage =
   | { type: 'init'; token: string; branch: string; components: ComponentSummary[] }
   | { type: 'log'; text: string }
+  /** 쓰는 곳이 없는 변수·스타일 알림(G2, 막지 않음) */
+  | { type: 'notices'; notices: string[] }
   | {
       type: 'done';
       /** 커밋 결과, 바뀐 것 없음, 또는 구조 검사 위반 목록 */

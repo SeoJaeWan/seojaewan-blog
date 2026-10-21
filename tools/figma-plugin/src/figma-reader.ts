@@ -12,6 +12,7 @@ import type {
 import type { ComponentSummary } from './messages';
 import { assetFile } from './naming';
 import { COMPONENTS_PAGE_ID } from './plugin-config';
+import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
 
@@ -86,6 +87,95 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
+}
+
+/**
+ * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수 연결을 읽는다(G2).
+ * 페이지를 하나씩 불러와 노드를 훑으므로 파일이 크면 시간이 걸린다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @returns 사용처 계산 입력
+ */
+export async function readUsageInput(): Promise<UsageInput> {
+  const variables = await figma.variables.getLocalVariablesAsync();
+  const styles: UsageStyle[] = [];
+  const kinds = [
+    ['paint', await figma.getLocalPaintStylesAsync()],
+    ['text', await figma.getLocalTextStylesAsync()],
+    ['effect', await figma.getLocalEffectStylesAsync()],
+  ] as const;
+  for (const [kind, list] of kinds) {
+    for (const style of list) {
+      const ids = new Set<string>();
+      collectAliasIds(style.boundVariables, ids);
+      if (style.type === 'PAINT') {
+        collectAliasIds(style.paints, ids);
+      } else if (style.type === 'EFFECT') {
+        collectAliasIds(style.effects, ids);
+      }
+      styles.push({
+        id: style.id,
+        name: style.name,
+        kind,
+        consumerCount: (await style.getStyleConsumersAsync()).length,
+        variableIds: [...ids],
+      });
+    }
+  }
+  const nodeVariableIds = new Set<string>();
+  for (const page of figma.root.children) {
+    await page.loadAsync();
+    for (const node of page.findAll(() => true)) {
+      collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, nodeVariableIds);
+      for (const key of ['fills', 'strokes', 'effects'] as const) {
+        const value: unknown = key in node ? Reflect.get(node, key) : undefined;
+        if (Array.isArray(value)) {
+          collectAliasIds(value, nodeVariableIds);
+        }
+      }
+    }
+  }
+  return {
+    variables: variables.map(usageVariable),
+    styles,
+    nodeVariableIds,
+  };
+}
+
+/**
+ * 변수 하나의 별칭 대상을 읽는다.
+ * @param variable 피그마 변수
+ * @returns 사용처 계산용 변수
+ */
+function usageVariable(variable: Variable): UsageVariable {
+  const ids = new Set<string>();
+  collectAliasIds(Object.values(variable.valuesByMode), ids);
+  return { id: variable.id, name: variable.name, scopes: [...variable.scopes], aliasIds: [...ids] };
+}
+
+/**
+ * 값 안의 모든 변수 별칭(`{ type: 'VARIABLE_ALIAS', id }`) ID를 모은다.
+ * @param value 피그마 값(객체·배열 중첩 가능)
+ * @param ids 모을 곳
+ */
+function collectAliasIds(value: unknown, ids: Set<string>): void {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectAliasIds(item, ids);
+    }
+    return;
+  }
+  if (value === null || typeof value !== 'object') {
+    return;
+  }
+  const type: unknown = Reflect.get(value, 'type');
+  const id: unknown = Reflect.get(value, 'id');
+  if (type === 'VARIABLE_ALIAS' && typeof id === 'string') {
+    ids.add(id);
+    return;
+  }
+  for (const item of Object.values(value)) {
+    collectAliasIds(item, ids);
+  }
 }
 
 /** 이미지 자산 하나(G4) */

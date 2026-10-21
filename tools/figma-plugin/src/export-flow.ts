@@ -54,6 +54,8 @@ export type ExportRequest = {
   /** 커밋할 기존 브랜치. 비어 있으면 새 브랜치를 만들고 PR을 연다 */
   branch: string;
   log: (text: string) => void;
+  /** 쓰는 곳이 없는 변수·스타일 알림(G2, 막지 않음)을 UI에 보여 준다 */
+  notify: (notices: string[]) => void;
 };
 
 /** 커밋 결과 */
@@ -172,6 +174,7 @@ export async function runExport(request: ExportRequest): Promise<ExportResult> {
     for (const name of tokens.skippedStyles) {
       log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
     }
+    request.notify(tokens.notices);
     tokensText =
       tokens.text === (await getFileText(token, TOKENS_PATH, head.commitSha)) ? null : tokens.text;
     for (const [file, bytes] of tokens.images) {

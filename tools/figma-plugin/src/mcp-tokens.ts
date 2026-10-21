@@ -10,9 +10,13 @@ import { sha256Hex, utf8Encode } from './sha256';
 /**
  * Variables와 스타일을 읽어 tokens.json 파일과, 토큰의 이미지 칠이 가리키는 이미지 자산 파일을 만든다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @returns tokens.json과 이미지 자산 파일, 토큰으로 옮기지 않은 칠 스타일
+ * @returns tokens.json과 이미지 자산 파일, 토큰으로 옮기지 않은 칠 스타일, 쓰는 곳이 없는 변수·스타일 알림(G2)
  */
-export async function runMcpTokens(): Promise<{ files: McpFile[]; skippedStyles: string[] }> {
+export async function runMcpTokens(): Promise<{
+  files: McpFile[];
+  skippedStyles: string[];
+  notices: string[];
+}> {
   const tokens = await exportTokensText();
   const files: McpFile[] = [
     {
@@ -30,5 +34,5 @@ export async function runMcpTokens(): Promise<{ files: McpFile[]; skippedStyles:
       sha256: sha256Hex(bytes),
     });
   }
-  return { files, skippedStyles: tokens.skippedStyles };
+  return { files, skippedStyles: tokens.skippedStyles, notices: tokens.notices };
 }

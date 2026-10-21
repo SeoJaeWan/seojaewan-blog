@@ -54,6 +54,9 @@ async function exportFromUi(message: UiMessage): Promise<void> {
     log: (text) => {
       post({ type: 'log', text });
     },
+    notify: (notices) => {
+      post({ type: 'notices', notices });
+    },
   });
   post({ type: 'done', result });
 }

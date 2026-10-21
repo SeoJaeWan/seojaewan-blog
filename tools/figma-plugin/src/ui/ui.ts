@@ -9,6 +9,7 @@ const componentList = element('components', HTMLDivElement);
 const tokensCheckbox = element('tokens', HTMLInputElement);
 const exportButton = element('export', HTMLButtonElement);
 const result = element('result', HTMLParagraphElement);
+const noticesBox = element('notices', HTMLDivElement);
 const logArea = element('log', HTMLDivElement);
 
 window.addEventListener('message', handleWindowMessage);
@@ -50,6 +51,9 @@ function handleMainMessage(message: MainMessage): void {
     case 'log':
       appendLog(message.text);
       break;
+    case 'notices':
+      showNotices(message.notices);
+      break;
     case 'done':
       exportButton.disabled = false;
       showResult(message.result);
@@ -83,6 +87,28 @@ function showResult(outcome: Extract<MainMessage, { type: 'done' }>['result']): 
   }
   result.replaceChildren(...parts);
   appendLog('완료');
+}
+
+/**
+ * 쓰는 곳이 없는 변수·스타일 알림을 보여 준다. 정리 알림이라 내보내기를 막지 않는다(G2).
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param notices 알림 문장
+ */
+function showNotices(notices: readonly string[]): void {
+  if (notices.length === 0) {
+    noticesBox.replaceChildren();
+    return;
+  }
+  const list = document.createElement('ul');
+  for (const notice of notices) {
+    const item = document.createElement('li');
+    item.textContent = notice;
+    list.append(item);
+  }
+  noticesBox.replaceChildren(
+    muted(`정리 알림 ${String(notices.length)}개(막지 않음): 쓰는 곳이 없으면 지울지 확인한다.`),
+    list,
+  );
 }
 
 /**
