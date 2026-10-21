@@ -152,7 +152,7 @@ _codocs:
   플러그인은 내보내기 전에 변형마다 구조를 검사하고, 위반이 하나라도 있으면 그 컴포넌트를 내보내지 않는다. 코드와 같은 이름으로 비교할 수 없는 구조를 디자인 단계에서 고치게 하기 위해서다.
 
   막는 것:
-  - 변수·스타일에 연결되지 않은 시각 값(칠, 선, 선 두께, 반경, 여백, 간격, 고정 크기, 불투명도, 글자 스타일). 효과는 효과 스타일로 묶어야 하고, 그라데이션·이미지 칠은 칠 스타일로만 쓴다.
+  - 변수·스타일에 연결되지 않은 시각 값(칠, 선, 선 두께, 반경, 여백, 간격, 고정 크기, 불투명도, 글자 스타일). 효과는 효과 스타일로 묶어야 하고, 그라데이션·이미지 칠은 칠 스타일로만 쓴다. 칠 스타일 안의 층 색(재질 칠 스타일의 층 포함)도 색 변수에 연결되어 있어야 한다.
   - 수동 배치, GRID 자동 배치, 그룹, 자식 쌓임 순서 뒤집기([[디자인 기반:레이아웃]])
   - 슬롯(SLOT)에 넣은 칠·선·효과. 슬롯은 빈 자리다([[디자인 기반:레이아웃]]).
   - 단계에 없는 절대 위치 거리, 비례 제약([[피그마 일치 검사:겹쳐 놓기]])
@@ -219,7 +219,7 @@ _codocs:
   - Variables를 읽어 토큰 JSON으로 내보낸다. Figma REST API의 Variables 엔드포인트는 Enterprise 플랜 전용이지만, 플러그인 API는 플랜과 상관없이 Variables를 읽을 수 있다.
   - 토큰 JSON은 W3C 디자인 토큰 형식(DTCG)으로 쓴다. 토큰마다 `$value`와 `$type`을 두고, 다른 토큰을 가리키는 값은 `{color.gray.f9f9f9}`처럼 경로로 남긴다. 피그마 공식 예제 플러그인과 커뮤니티 내보내기 플러그인 대부분이 쓰는 형식이다.
   - 글자 스타일과 효과 스타일(재질, 그림자)은 Variables가 아니라 스타일이라 따로 읽어 같은 파일에 넣는다. 피그마 기본 내보내기 기능은 이런 묶음 토큰을 아직 다루지 못하고, 손으로 실행해야 해 자동화에도 맞지 않는다.
-  - 컴포넌트마다 내용 해시를 계산하고, 커밋할 브랜치의 그 컴포넌트 폴더와 비교해 바뀐 파일만 커밋한다. 사라진 변형의 파일은 그 컴포넌트 폴더에서만 지운다.
+  - 컴포넌트마다 이름 정보 해시를 계산하고, 커밋할 브랜치의 그 컴포넌트 폴더와 비교해 해시가 바뀐 변형의 PNG와 export.json만 커밋한다. PNG는 사람이 보는 이미지이고, 피그마가 내보낼 때마다 바이트가 조금씩 달라져 해시에 넣지 않는다. 사라진 변형의 파일은 그 컴포넌트 폴더에서만 지운다.
   - 플러그인은 사용자가 실행했을 때만 동작하므로, 피그마 작업을 마치면 내보내기를 직접 실행한다.
   - 기본은 `main`에서 새 브랜치(`chore/figma-export-<날짜>-<시각>`)를 만들고 커밋해 PR을 연다. 기존 브랜치 이름을 넣으면 그 브랜치 끝에 이어서 커밋하고 PR을 새로 열지 않는다.
   - 이 저장소에만 권한이 있는 GitHub fine-grained 토큰과 마지막으로 쓴 기존 브랜치 이름을 플러그인 로컬 저장소에 보관한다.
@@ -228,7 +228,7 @@ export.json 계약: |
   플러그인이 쓰고 비교 도구가 읽는 파일이다. 손으로 고치지 않는다. 피그마 이름과 선택지만 담고, 위치 좌표나 측정값은 담지 않는다. 이름을 코드 클래스로 바꾸는 규칙은 비교 도구가 가진다([[피그마 일치 검사:비교 규칙]]).
 
   - `figma/figma.json`: 바뀌지 않는 전역 값 `{ fileKey, scale }`(PNG 배율).
-  - `figma/components/<컴포넌트>/export.json`: `name`, `nodeId`, `hash`, `booleans`(prop 이름 → 피그마 속성 키와 기본값), `variants`. 변형마다 `nodeId`, `properties`, `hash`(PNG 해시), `layers`, `hidden`(숨긴 레이어 경로), `cases`(BOOLEAN 경우마다 `layers`와 `hidden`, 키는 `showIcon=true` 꼴).
+  - `figma/components/<컴포넌트>/export.json`: `name`, `nodeId`, `hash`, `booleans`(prop 이름 → 피그마 속성 키와 기본값), `variants`. 변형마다 `nodeId`, `properties`, `hash`(비교에 쓰는 이름 정보 `properties`·`layers`·`hidden`·`cases`의 해시. PNG는 넣지 않는다), `layers`, `hidden`(숨긴 레이어 경로), `cases`(BOOLEAN 경우마다 `layers`와 `hidden`, 키는 `showIcon=true` 꼴).
   - 같은 폴더에 변형 PNG(`<변형>.png`)를 둔다. 다른 컴포넌트와 파일을 나눠 쓰지 않는다.
   - `figma/assets/<묶음>/<자산>.<svg|png>`: 자산 파일([[피그마 일치 검사:자산]]).
   - JSON은 키를 정렬해 쓴다. 같은 내용이면 파일도 같게 하기 위해서다.
@@ -281,7 +281,9 @@ export.json 계약: |
   | 효과 스타일의 레이어 블러 | `--blur-*` | `blur-*` |
   | 단색 칠 스타일 `Material/Fallback/Acrylic Default` | `--color-material-fallback-acrylic-default` | 색 유틸리티 |
   | 그라데이션 칠 스타일 `Elevation/Control Border` | `--gradient-elevation-control-border` | `border-gradient-elevation-control-border`([[디자인 기반:컨트롤 테두리]]) |
-  | 층이 여럿인 재질 칠 스타일 `Material/Acrylic Default` | 층마다 값 | `material-acrylic-default`(생성 유틸리티, [[디자인 기반:재질 효과]]) |
+  | 층이 여럿인 재질 칠 스타일 `Material/Acrylic Default`, `Material/Acrylic Base` | 층마다 색 변수 | `material-acrylic-default`, `material-acrylic-base`(생성 유틸리티, [[디자인 기반:재질 효과]]). `Material/Mica *`는 창 컴포넌트를 만들 때까지 만들지 않는다(이유는 `tokens.css` 주석) |
+
+  피그마 블렌드 모드(LUMINOSITY, COLOR, NORMAL 등)를 CSS `mix-blend-mode` 값으로 옮기는 표는 `scripts/parity/rules/class-rules.ts`의 `FIGMA_BLEND_MODE_CSS` 한곳에 있고, 생성기와 비교 도구가 함께 쓴다.
 
   - 스타일 이름의 공백과 괄호는 `-`가 된다(`Surface/Flyout (Acrylic)` → `--shadow-surface-flyout-acrylic`, `--backdrop-blur-surface-flyout-acrylic`).
   - 라틴 서체 변수에는 `font/family/korean`을 이어 붙인다([[디자인 기반:서체]]).

@@ -8,8 +8,8 @@ _codocs:
   피그마의 00 · Foundations 페이지와 `packages/design-system`의 토큰이 이 규칙을 따른다.
   레이아웃·크기·효과 규칙 가운데 상당수는 피그마와 코드를 같은 이름으로 비교하기 위한 것이다. 비교 방법과 피그마 도구의 한계로 생기는 주의 사항은 [[피그마 일치 검사]]에 있다.
 모드: |
-  첫 공개는 라이트 모드만 제공한다.
-  다만 토큰은 처음부터 Primitive → Semantic → Component 구조로 만든다. 나중에 다크 모드를 더할 때 Semantic 토큰에 모드만 추가하면 되고, 컴포넌트는 고치지 않는다.
+  Windows 11 UI는 라이트 모드만 둔다. 다크 모드는 Windows의 다크 테마가 아니라 macOS UI로 전환하는 별도 화면으로 제공할 계획이다. 그래서 Windows UI의 토큰과 컴포넌트에는 모드를 추가하지 않는다. macOS UI를 어떻게 구성할지는 [[미결 사항:다크 모드(macOS UI)]]에 남겨 두었다.
+  토큰은 Primitive → Semantic → Component 구조로 만든다([[디자인 기반:토큰 이름]]).
 토큰 이름: |
   - 3단계다. Primitive(실제 값, 예: `blue-60`) → Semantic(의미) → Component(꼭 필요한 예외에만).
   - Semantic 토큰은 WinUI 테마 리소스 이름 체계를 따른다. 예: `TextFillColorPrimary` → `text-fill/primary`, `AccentFillColorDefault` → `accent-fill/default`, `ControlFillColorDefault` → `control-fill/default`.
@@ -39,7 +39,8 @@ _codocs:
   - 수동 배치(자동 배치가 아닌 프레임 안에 자식을 두고 x·y로 위치를 정하는 것)는 쓰지 않는다. 코드에 대응하는 선언이 없고, 좌표를 비교하면 엔진 차이가 다시 끼어든다. 자식이 없는 프레임(사각형처럼 쓰는 것)은 괜찮다.
   - 방향(가로·세로), 주축·교차축 정렬, 크기 방식(HUG 내용에 맞춤, FILL 부모 채움, FIXED 고정), 줄바꿈, 내용 자르기만 쓴다. 고정 크기는 [[디자인 기반:크기 변수]]를 따른다.
   - 겹쳐 놓아야 하는 요소는 자동 배치 안의 절대 위치 자식으로만 둔다([[피그마 일치 검사:겹쳐 놓기]]).
-  - GRID 자동 배치는 쓰지 않는다. 지금 필요한 곳은 가로 배치와 줄바꿈으로 된다. GRID는 트랙 크기·자리 지정 같은 선택지가 많아 코드 클래스와의 대응을 따로 만들어야 하는데 쓰는 곳이 없다. 바탕화면 아이콘의 세로 우선 배치처럼 flex로 안 될 수 있는 경우는 앱 화면 수준이라 그 화면을 만들 때 다시 정한다([[미결 사항:바탕화면 세로 우선 배치]]).
+  - GRID 자동 배치는 쓰지 않는다. 지금 필요한 곳은 가로 배치와 줄바꿈으로 된다. GRID는 트랙 크기·자리 지정 같은 선택지가 많아 코드 클래스와의 대응을 따로 만들어야 하는데 쓰는 곳이 없다.
+  - 바탕화면 아이콘을 위에서 아래로 채우는 배치는 디자인이 아니라 앱이 하는 배치다. 아이콘 하나(DesktopIcon)만 컴포넌트로 비교하고, 아이콘을 늘어놓는 배치는 앱 코드(CSS grid 등)가 정한다([[피그마 일치 검사:겹쳐 놓기]]의 실행 중 위치).
   - 슬롯(SLOT, 다른 컴포넌트를 넣는 자리)은 빈 자리다. 칠·선·효과를 넣지 않는다. 자리를 보여 주는 점선 같은 표시는 코드가 그리지 않는 모양이라 비교할 수 없기 때문이다. Flyout `Content`의 점선 자리표시도 지웠다.
 간격 단계: |
   여백과 간격은 Fluent 2와 같은 간격 단계 `spacing/<숫자>`만 쓴다: 0, 2, 4, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48(px). 코드 이름은 `--spacing-<숫자>`이고 클래스는 `p-12`, `gap-8`처럼 숫자를 그대로 쓴다([[피그마 일치 검사:토큰 생성]]).
@@ -59,13 +60,17 @@ _codocs:
   Mica(창 배경에 바탕화면이 흐릿하게 비침)와 Acrylic(뒤 내용이 흐리게 비치는 반투명, Start·메뉴·플라이아웃)을 모든 화면에서 충실하게 재현한다.
   개인 블로그이자 포트폴리오라 성능보다 Windows 11 느낌의 재현을 우선한다.
 
-  - Acrylic: `backdrop-filter: blur()`에 Windows UI kit의 틴트·루미너스 층과 노이즈 질감을 얹는다.
-  - Mica: 흐리게 처리한 배경화면을 창 뒤에 깔아 흉내 낸다.
-  - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
-  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
-  - 코드는 재질 칠 스타일 이름의 생성 유틸리티(`material-acrylic-default` 등)로 그리고, 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
+  재질은 피그마에서 칠 스타일(`Material/*`)의 층 목록과 효과 스타일(`Surface/*`)의 배경 블러로 만든다. 층 색은 모두 색 변수에 연결한다. 보이지 않는 층(불투명도 0인 틴트 층)은 두지 않는다. Windows UI에는 다크 모드가 없어 틴트 층이 보일 일이 없기 때문이다([[디자인 기반:모드]]).
 
-  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 그림이 아니라 이름으로 비교하므로, 재질 변형도 다른 변형과 같이 칠 스타일 이름(`material-*`), 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`), 계산값으로 비교한다. 흐린 배경 위의 실제 혼합 모습은 Storybook에서 눈으로 확인한다.
+  - Acrylic(Menu, Tooltip, Flyout, Scrollbar, StartMenu, Taskbar, SearchPanel 등 잠깐 떠 있는 것): 뒤에 있는 것 전부를 흐리게 한 뒤, 루미너스 층(거의 흰색)을 루미너시티 방식으로 섞고 노이즈를 얹는다. 루미너시티 섞기는 밝기만 바꾸고 색감은 뒤 배경에서 가져와, 배경화면 색이 은은하게 남는다.
+    - 코드는 칠 스타일 층에서 생성한 유틸리티(`material-acrylic-default`, `material-acrylic-base`)로 그린다. `::before`가 흐림(`backdrop-filter`)을, `::after`가 루미너스 층을 `mix-blend-mode: luminosity`로 맡고, 자식은 그 위에 놓인다. 노이즈는 의사 요소가 둘뿐이라 루미너스 층 색에 2% 섞는다(피그마는 맨 위 층). 같은 배경화면 위에서 피그마와의 차이는 채널 최대 4다.
+    - 블렌드 층은 같은 쌓임 맥락 안에서만 뒤 배경과 섞인다. 재질 요소와, 재질 요소와 배경 사이의 요소에는 쌓임 맥락을 만드는 속성(`z-index`, `isolate`, `opacity`, `transform`, `filter`)을 쓰지 않고, 겹침 순서는 HTML 순서로 정한다. 이 속성이 있으면 블렌드가 배경과 섞이지 않아 회색이 된다.
+  - Mica(WindowFrame, 앱 창의 바탕): 뒤를 흐리게 하는 것이 아니라 바탕화면 배경화면의 색감만 비친다. 실제 Windows에서 창 뒤의 다른 창은 마이카에 비치지 않는다. 그래서 코드는 블러 대신 흐린 배경화면 그림을 창 바탕에 화면 기준으로 고정해 깔고, 그 위에 루미너스 층과 컬러 층을 얹는다(요소 자체, `::before`, `::after` 세 자리). 피그마의 마이카 칠 스타일도 같은 구조로 바꾼다. 창 컴포넌트를 만들 때(컴포넌트 묶음 ②) 구현하며, 그때까지 생성기는 마이카 유틸리티를 만들지 않는다.
+  - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
+  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다. 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
+  - `Material/Fallback/*`는 투명 효과를 끈 단색 버전으로, 컴포넌트의 `Material=Solid` 변형에 쓴다.
+
+  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 재질 변형도 칠 스타일 이름(`material-*`)과 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`)으로 비교하고, 계산값으로 `::after` 블렌드 층(배경, 섞는 방식, 불투명도)과 요소가 쌓임 맥락을 만들지 않는지(isolation, z-index)를 확인한다. 흐린 배경 위 색감은 피그마 Foundations의 배경화면 예시와 나란히 놓고 맞췄다.
 컨트롤 테두리: |
   WinUI 컨트롤의 1px 테두리는 단색이 아니라 아래쪽 몇 픽셀만 진해지는 세로 그라데이션이다(WinUI의 `ControlElevationBorderBrush` 계열). 버튼이 살짝 떠 보이게 하는 효과라 Windows 느낌에 중요하다.
   피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
@@ -81,8 +86,7 @@ _codocs:
   - Focused 상태에서는 입체감 테두리(안쪽 그라데이션 선, [[디자인 기반:컨트롤 테두리]])를 빼고, 그 자리의 선을 바깥쪽 단색 선으로 바꾼다. 피그마에서 선의 위치(안쪽·바깥쪽)는 레이어마다 하나만 정할 수 있기 때문이다.
   - 코드는 바깥쪽 선을 Tailwind outline 유틸리티로 그린다. 색은 `outline-<색 토큰>`, 두께는 `outline-<두께 토큰>`이다(예: `outline-focus-stroke-outer outline-focus-outer`). Tailwind v4에는 `outline-w-*`가 없고 outline 유틸리티가 색과 두께를 모두 받는다. CSS outline은 레이아웃 크기를 바꾸지 않고 요소 바깥에 그려져 피그마 바깥쪽 선과 같다.
   - 포커스 테두리를 별도 레이어로 겹쳐 놓지 않는다. 예전에는 FocusRect 컴포넌트(바깥 진한 선 + 안쪽 흰 선 두 겹)를 컨트롤 위에 겹쳐 놓았는데, 겹쳐 놓은 레이어는 위치를 비교해야 하고 크기를 변수에 묶을 수 없어 FocusRect 컴포넌트를 지웠다. 퍼짐 그림자 효과 스타일로 그리는 방법도 시험했지만, 피그마는 채움이 완전히 투명한 노드(Subtle 버튼)와 내용 자르기를 끈 프레임에서 퍼짐 그림자를 그리지 않아 고르지 않았다.
-  - 안쪽 흰 선을 더한 두 겹은 쓰지 않는다.
-  - 다크 모드 색은 `focus-stroke/outer` 변수의 모드 값으로 정한다([[미결 사항:다크 모드 포커스 선 색]]).
+  - 안쪽 흰 선을 더한 두 겹은 쓰지 않는다. 두 겹에만 쓰던 변수(`focus-stroke/inner`, `stroke-width/focus-inner`, `radius/focus-inner`, `radius/focus-outer`)는 지웠다. 바깥쪽 선은 요소의 반경을 그대로 따라가 포커스용 반경 변수가 필요 없다.
 그림자: |
   그림자는 효과 스타일(`Elevation/*`, `Surface/*`, `Text/*`)로만 쓴다. 효과 스타일의 그림자는 "투명한 부분 뒤에도 표시"(showShadowBehindNode)를 끈다.
 
