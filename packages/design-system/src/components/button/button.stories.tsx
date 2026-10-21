@@ -9,17 +9,21 @@ const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focused'] as const;
 type ParityArgs = {
   style: (typeof STYLES)[number];
   state: (typeof STATES)[number];
+  /** 피그마 BOOLEAN 속성 Show icon */
+  showIcon: boolean;
 };
 
 const meta = {
   title: 'Components/Button',
-  args: { style: 'accent', state: 'rest' },
+  args: { style: 'accent', state: 'rest', showIcon: false },
   argTypes: {
     style: { control: 'inline-radio', options: STYLES },
     state: { control: 'inline-radio', options: STATES },
+    showIcon: { control: 'boolean' },
   },
   render: (args) => (
-    <Button variant={args.style} disabled={args.state === 'disabled'}>
+    // 글자는 피그마 예시 글자와 같아야 한다([[피그마 일치 검사:글자]]).
+    <Button variant={args.style} disabled={args.state === 'disabled'} showIcon={args.showIcon}>
       버튼
     </Button>
   ),

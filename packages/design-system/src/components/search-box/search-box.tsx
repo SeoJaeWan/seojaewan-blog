@@ -1,8 +1,8 @@
 import { Input } from '@base-ui/react/input';
-import { Search16Regular } from '@fluentui/react-icons/svg/search';
 import type { ComponentProps, JSX } from 'react';
 
 import { mergeClassNames } from '../../merge-class-names';
+import { Asset } from '../asset/asset';
 
 export type SearchBoxAppearance = 'default' | 'pill';
 
@@ -13,21 +13,36 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
   className?: string;
 };
 
-// 상태별 바깥 상자 모양이다. Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾼다.
-// 테두리는 피그마 안쪽 선처럼 자식(포커스 아래 선) 위에 그린다(border-gradient-*, inner-border-*).
+// 모양별 바깥 상자다. Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾼다.
+// 안쪽 선은 피그마 안쪽 선처럼 ::before 고리(border-gradient-*, inner-border-*)로 그린다.
 const appearanceClassNames = {
   default: {
-    base: 'rounded-control py-6 pr-8 pl-12',
+    base: 'w-search-box-width h-control-height rounded-control py-6 pr-8 pl-12',
     enabled:
       'not-focus-within:border-gradient-elevation-text-control-border focus-within:inner-border-control-stroke-default',
     disabled: 'inner-border-control-stroke-default',
   },
   pill: {
-    base: 'rounded-circular px-16 py-8 inner-border-control-stroke-default',
+    base: 'w-search-box-width-pill h-search-box-height-pill rounded-circular px-16 py-8 inner-border-control-stroke-default',
     enabled: '',
     disabled: '',
   },
 } as const satisfies Record<SearchBoxAppearance, Record<'base' | 'enabled' | 'disabled', string>>;
+
+// 아래쪽 강조선(피그마 bottom border, 양쪽 늘이기 + 아래 붙임). 포커스일 때 강조색 2px,
+// 기본 모양이 disabled일 때 1px 회색 선이다. pill 모양은 포커스일 때만 보인다.
+const bottomBorderClassNames = {
+  default: {
+    enabled:
+      'hidden group-focus-within:block group-focus-within:h-stroke-focus-outer group-focus-within:bg-accent-fill-default',
+    disabled: 'h-stroke-default bg-control-stroke-default',
+  },
+  pill: {
+    enabled:
+      'hidden group-focus-within:block group-focus-within:h-stroke-focus-outer group-focus-within:bg-accent-fill-default',
+    disabled: 'hidden',
+  },
+} as const satisfies Record<SearchBoxAppearance, Record<'enabled' | 'disabled', string>>;
 
 /**
  * 검색 상자(피그마 SearchBox)를 그린다. 입력값이 있으면 피그마 Filled=True 모양이 된다.
@@ -38,21 +53,23 @@ const appearanceClassNames = {
 export function SearchBox(props: SearchBoxProps): JSX.Element {
   const { appearance = 'default', className, disabled: isDisabled = false, ...inputProps } = props;
   const classNames = appearanceClassNames[appearance];
-  // data-figma는 피그마 SearchBox의 레이어 이름이다([[피그마 일치 검사:스토리 규칙]]).
+  const state = isDisabled ? 'disabled' : 'enabled';
+  // data-figma는 피그마 SearchBox의 레이어 이름이다([[피그마 일치 검사:짝짓기]]).
   const icon = (
-    <Search16Regular
+    <Asset
       data-figma="icon"
+      name="icons/ic_fluent_search_16_regular.svg"
       className={mergeClassNames(
         'size-icon-16 shrink-0',
         isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
       )}
     />
   );
-
   return (
     <div
+      data-figma-root="SearchBox"
       className={mergeClassNames(
-        'group relative isolate flex items-center gap-8 overflow-hidden type-body',
+        'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
         'transition-colors duration-faster ease-fade',
         classNames.base,
         isDisabled
@@ -71,18 +88,15 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         role="searchbox"
         data-figma="label"
         disabled={isDisabled}
-        className="min-w-0 flex-1 truncate bg-transparent text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
+        className="min-w-0 flex-1 truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
       />
       {appearance === 'default' && icon}
-      {/* 포커스일 때 아래쪽 강조색 선. 기본 모양은 disabled일 때 아래쪽 1px 선이 더 진해진다. */}
       <span
         aria-hidden
         data-figma="bottom border"
         className={mergeClassNames(
           'pointer-events-none absolute inset-x-0 bottom-0',
-          isDisabled
-            ? appearance === 'default' && 'border-b-default border-control-stroke-default'
-            : 'hidden border-b-focus-outer border-accent-fill-default group-focus-within:block',
+          bottomBorderClassNames[appearance][state],
         )}
       />
     </div>

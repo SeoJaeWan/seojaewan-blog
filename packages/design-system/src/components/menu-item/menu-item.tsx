@@ -1,16 +1,16 @@
 import { Menu } from '@base-ui/react/menu';
-import { Checkmark20Regular } from '@fluentui/react-icons/svg/checkmark';
-import { ChevronRight16Regular } from '@fluentui/react-icons/svg/chevron-right';
 import type { JSX, ReactNode } from 'react';
 
+import type { SvgAssetName } from '../../assets/asset-data';
 import { mergeClassNames } from '../../merge-class-names';
+import { Asset } from '../asset/asset';
 
 type MenuItemCommonProps = {
   /** 항목 이름. 길면 한 줄로 말줄임한다 */
   label: string;
-  /** 이름 앞 16px 아이콘. 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다 */
-  icon?: ReactNode;
-  /** 오른쪽에 보이는 단축키(예: `Ctrl+O`) */
+  /** 이름 앞 16px 아이콘(피그마 Show icon). 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다 */
+  icon?: SvgAssetName;
+  /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Show shortcut) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
   disabled?: boolean;
@@ -48,17 +48,21 @@ type MenuItemProps = MenuItemCommonProps &
       }
   );
 
-// 행(32px) 안에 위아래 2·좌우 4 들여 쓴 28px 강조 영역(base)을 둔다.
+// 행(피그마 MenuItem 루트). 위아래 2·좌우 4 들여 쓴 강조 영역(base)을 담는다.
 const ROW_CLASS_NAME =
-  'group flex h-menu-item-height w-full px-4 py-2 outline-none select-none cursor-default';
-// 강조 영역의 상태 색이다. 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다.
+  'group flex w-menu-item-width items-center justify-start px-4 py-2 outline-none select-none cursor-default';
+
+// 강조 영역(피그마 base)과 상태 색이다. 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다.
+// 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
 const baseClassName = [
-  'flex min-w-0 flex-1 items-center gap-12 overflow-hidden rounded-control px-12 py-4',
+  'flex flex-1 items-center justify-start gap-12 self-stretch overflow-hidden rounded-control px-12 py-4',
   'bg-subtle-fill-transparent text-text-fill-primary transition-colors duration-faster ease-fade',
   'group-data-highlighted:bg-subtle-fill-secondary group-data-popup-open:bg-subtle-fill-secondary',
   'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
-  'group-data-disabled:bg-subtle-fill-disabled group-data-disabled:text-text-fill-disabled',
+  'group-data-disabled:text-text-fill-disabled',
 ].join(' ');
+
+// 단축키·꺾쇠처럼 흐린 글자 색이다.
 const SECONDARY_TEXT_CLASS_NAME =
   'text-text-fill-secondary group-data-disabled:text-text-fill-disabled';
 
@@ -71,9 +75,12 @@ const SECONDARY_TEXT_CLASS_NAME =
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = mergeClassNames(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
-  // @codocs [[피그마 일치 검사:스토리 규칙]] 행이 피그마 MenuItem 변형 루트다(비교 요소는 메뉴 팝업).
-  const rootProps = { 'data-figma-root': '' };
-
+  // @codocs [[피그마 일치 검사:짝짓기]] 행이 피그마 MenuItem 변형 루트다.
+  const rootProps = { 'data-figma-root': 'MenuItem' };
+  const icon =
+    props.icon === undefined ? undefined : (
+      <Asset data-figma="base/leading/icon" name={props.icon} className="size-icon-16" />
+    );
   switch (props.kind) {
     case 'submenu':
       return (
@@ -83,7 +90,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           disabled={isDisabled}
           label={props.label}
         >
-          <MenuItemContent {...props} leading={props.icon} />
+          <MenuItemContent {...props} leading={icon} />
         </Menu.SubmenuTrigger>
       );
     case 'checkbox':
@@ -101,7 +108,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.CheckboxItemIndicator className="flex">
-                <Checkmark20Regular className="size-icon-16" />
+                <Asset
+                  data-figma="base/leading/icon"
+                  name="icons/ic_fluent_checkmark_20_regular.svg"
+                  className="size-icon-16"
+                />
               </Menu.CheckboxItemIndicator>
             }
           />
@@ -119,8 +130,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           <MenuItemContent
             {...props}
             leading={
-              <Menu.RadioItemIndicator className="flex size-icon-16 items-center justify-center">
-                <span className="size-6 rounded-circular bg-current" />
+              <Menu.RadioItemIndicator className="flex">
+                <span
+                  data-figma="base/leading/bullet"
+                  className="size-menu-item-bullet rounded-full bg-text-fill-primary group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary"
+                />
               </Menu.RadioItemIndicator>
             }
           />
@@ -136,14 +150,14 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           label={props.label}
           onClick={props.onClick}
         >
-          <MenuItemContent {...props} leading={props.icon} />
+          <MenuItemContent {...props} leading={icon} />
         </Menu.Item>
       );
   }
 }
 
 type MenuItemContentProps = MenuItemCommonProps & {
-  /** 이름 앞 16px 자리에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다 */
+  /** 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다 */
   leading: ReactNode;
   /** 항목 종류 */
   kind?: 'default' | 'submenu' | 'checkbox' | 'radio';
@@ -151,36 +165,35 @@ type MenuItemContentProps = MenuItemCommonProps & {
 
 /**
  * 강조 영역과 그 안의 아이콘·이름·단축키·꺾쇠를 그린다.
+ * data-figma는 피그마 MenuItem의 레이어 경로다([[피그마 일치 검사:짝짓기]]).
  * @param props
  */
 function MenuItemContent(props: MenuItemContentProps): JSX.Element {
-  const hasLeading =
-    props.leading !== undefined || props.kind === 'checkbox' || props.kind === 'radio';
   return (
-    // data-figma는 피그마 MenuItem의 레이어 이름이다([[피그마 일치 검사:스토리 규칙]]).
     <span data-figma="base" className={baseClassName}>
-      {hasLeading && (
+      {props.leading !== undefined && (
         <span
-          data-figma="leading"
-          className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden"
+          data-figma="base/leading"
+          className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0"
         >
           {props.leading}
         </span>
       )}
-      <span data-figma="label" className="min-w-0 flex-1 truncate type-body">
+      <span data-figma="base/label" className="min-w-0 flex-1 truncate type-body">
         {props.label}
       </span>
       {props.shortcut !== undefined && (
         <span
-          data-figma="shortcut"
+          data-figma="base/shortcut"
           className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}
         >
           {props.shortcut}
         </span>
       )}
       {props.kind === 'submenu' && (
-        <ChevronRight16Regular
-          data-figma="chevron"
+        <Asset
+          data-figma="base/chevron"
+          name="icons/ic_fluent_chevron_right_16_regular.svg"
           className={mergeClassNames('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
         />
       )}
