@@ -69,6 +69,7 @@ export function tokensToCss(tokens: unknown): string {
   for (const { path } of variables) {
     names.set(path.join('/'), variableName(path));
   }
+  const colors = resolvedColors(variables);
 
   const sections: ThemeSection[] = [
     { title: 'Variables', variables: variables.flatMap((item) => variableCss(item, names)) },
@@ -81,7 +82,7 @@ export function tokensToCss(tokens: unknown): string {
     {
       title: 'Paint styles',
       variables: flattenTokens(asGroup(styles.paint, 'style/paint'), []).flatMap((item) =>
-        paintCss(item, names),
+        paintCss(item, names, colors),
       ),
     },
   ];
@@ -309,9 +310,14 @@ function effectCss(item: FlatToken, names: ReadonlyMap<string, string>): CssVari
  * @codocs [[디자인 기반:재질 효과]]
  * @param item 경로와 토큰
  * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param colors 색 변수 경로에서 별칭을 끝까지 따라간 실제 색으로 가는 표
  * @returns 사용자 속성(재질 스타일이면 빈 목록)
  */
-function paintCss(item: FlatToken, names: ReadonlyMap<string, string>): CssVariable[] {
+function paintCss(
+  item: FlatToken,
+  names: ReadonlyMap<string, string>,
+  colors: ReadonlyMap<string, string>,
+): CssVariable[] {
   const path = `style/paint/${item.path.join('/')}`;
   const nameTail = item.path.map(kebabSegment).join('-');
   const custom = item.token.extensions['com.seojaewan'];
@@ -320,7 +326,7 @@ function paintCss(item: FlatToken, names: ReadonlyMap<string, string>): CssVaria
     return [
       {
         name: `--gradient-${nameTail}`,
-        value: gradientValue(item.token.value, layers, names, path),
+        value: gradientValue(item.token.value, layers, { names, colors }, path),
       },
     ];
   }
@@ -337,24 +343,24 @@ function paintCss(item: FlatToken, names: ReadonlyMap<string, string>): CssVaria
  * `layers`가 없으면 `$value`의 정지점을 위에서 아래로 칠한다.
  * @param value `$value`의 정지점 목록
  * @param layers `com.seojaewan.layers`
- * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param context 변수 이름과 실제 색 표
  * @param path 오류 메시지에 쓸 경로
  * @returns `linear-gradient(...)`를 쉼표로 이은 값
  */
 function gradientValue(
   value: unknown,
   layers: unknown,
-  names: ReadonlyMap<string, string>,
+  context: ColorContext,
   path: string,
 ): string {
   if (layers === undefined) {
-    return linearGradient(topToBottom, value, 1, names, path);
+    return linearGradient(topToBottom, value, 1, context, path);
   }
   if (!Array.isArray(layers) || layers.length === 0) {
     throw new TokenFormatError(path, 'layers는 비어 있지 않은 배열이어야 한다.');
   }
   return layers
-    .map((layer: unknown) => layerBackground(layer, names, path))
+    .map((layer: unknown) => layerBackground(layer, context, path))
     .reverse()
     .join(', ');
 }
@@ -362,22 +368,22 @@ function gradientValue(
 /**
  * 칠 층 하나를 CSS 배경 이미지로 바꾼다.
  * @param layer `{type, color | gradientStops, gradientTransform, opacity}`
- * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param context 변수 이름과 실제 색 표
  * @param path 오류 메시지에 쓸 경로
  * @returns `linear-gradient(...)`
  */
-function layerBackground(layer: unknown, names: ReadonlyMap<string, string>, path: string): string {
+function layerBackground(layer: unknown, context: ColorContext, path: string): string {
   if (!isRecord(layer)) {
     throw new TokenFormatError(path, '칠 층은 객체여야 한다.');
   }
   const opacity = layer.opacity === undefined ? 1 : numberValue(layer.opacity, path);
   if (layer.type === 'SOLID') {
-    const color = layerColor(layer.color, opacity, names, path);
+    const color = layerColor(layer.color, opacity, context.names, path);
     return `linear-gradient(${color}, ${color})`;
   }
   if (layer.type === 'GRADIENT_LINEAR') {
     const axis = gradientAxis(layer.gradientTransform, path);
-    return linearGradient(axis, layer.gradientStops, opacity, names, path);
+    return linearGradient(axis, layer.gradientStops, opacity, context, path);
   }
   throw new TokenFormatError(
     path,
@@ -454,12 +460,36 @@ function toNodePoint(
   return [(e * (gx - c) - b * (gy - f)) / det, (-d * (gx - c) + a * (gy - f)) / det];
 }
 
+type ColorContext = {
+  /** 변수 경로에서 CSS 이름으로 가는 표 */
+  names: ReadonlyMap<string, string>;
+  /** 색 변수 경로에서 별칭을 끝까지 따라간 실제 색(#rrggbb[aa])으로 가는 표 */
+  colors: ReadonlyMap<string, string>;
+};
+
+type Rgba = [number, number, number, number];
+
+type ParsedStop = {
+  /** CSS 색(별칭이면 var()) */
+  css: string;
+  /** CSS 정지점 위치(0~1) */
+  position: number;
+  /** 실제 색(0~255). 알 수 없으면 undefined */
+  rgba: Rgba | undefined;
+};
+
+// 투명도가 다른 두 정지점 사이에 넣는 중간 정지점 수다. 피그마와의 색 차이가 반올림 오차 수준이 되는 값이다.
+const INTERPOLATION_STOPS = 4;
+
 /**
  * 정지점 목록을 `linear-gradient()`로 바꾼다.
+ * 피그마는 정지점 사이 색을 투명도와 따로(투명도를 곱하지 않고) 섞고, CSS는 투명도를 곱한 값으로 섞는다.
+ * 투명도가 다른 두 정지점 사이에는 피그마 방식으로 계산한 중간 정지점을 넣어 같은 색이 나오게 한다.
+ * @codocs [[피그마 일치 검사:토큰 생성]]
  * @param axis 방향과 위치 변환
  * @param stops `[{color, position}]`
  * @param opacity 층 불투명도
- * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param context 변수 이름과 실제 색 표
  * @param path 오류 메시지에 쓸 경로
  * @returns `linear-gradient(to bottom, var(--color-x) 90.58%, ...)`
  */
@@ -467,37 +497,140 @@ function linearGradient(
   axis: GradientAxis,
   stops: unknown,
   opacity: number,
-  names: ReadonlyMap<string, string>,
+  context: ColorContext,
   path: string,
 ): string {
   if (!Array.isArray(stops) || stops.length === 0) {
     throw new TokenFormatError(path, '그라데이션 정지점은 비어 있지 않은 배열이어야 한다.');
   }
-  const parts = stops.map((stop: unknown) => gradientStop(stop, axis, opacity, names, path));
+  const parsed = stops.map((stop: unknown) => gradientStop(stop, axis, opacity, context, path));
+  const parts: string[] = [];
+  for (const [index, stop] of parsed.entries()) {
+    parts.push(`${stop.css} ${formatNumber(stop.position * 100)}%`);
+    const next = parsed[index + 1];
+    if (next !== undefined) {
+      parts.push(...interpolatedStops(stop, next));
+    }
+  }
   return `linear-gradient(${axis.direction}, ${parts.join(', ')})`;
 }
 
 /**
- * 정지점 하나를 CSS 정지점으로 바꾼다.
+ * 두 정지점 사이에 피그마 방식(투명도를 곱하지 않고 섞기)으로 계산한 중간 정지점을 만든다.
+ * 투명도나 RGB가 같으면 CSS와 피그마의 결과가 같으므로 만들지 않는다.
+ * @param from 앞 정지점
+ * @param to 뒤 정지점
+ * @returns `#rrggbbaa 95%` 형태의 중간 정지점 목록
+ */
+function interpolatedStops(from: ParsedStop, to: ParsedStop): string[] {
+  const start = from.rgba;
+  const end = to.rgba;
+  const span = to.position - from.position;
+  if (start === undefined || end === undefined || span <= 0) {
+    return [];
+  }
+  // 투명도나 RGB 중 하나가 같으면 두 방식의 결과가 같다.
+  const isSameAlpha = start[3] === end[3];
+  const isSameRgb = start.slice(0, 3).every((channel, index) => channel === end[index]);
+  if (isSameAlpha || isSameRgb) {
+    return [];
+  }
+  const stops: string[] = [];
+  for (let index = 1; index <= INTERPOLATION_STOPS; index++) {
+    const ratio = index / (INTERPOLATION_STOPS + 1);
+    const hex = start.map((channel, channelIndex) =>
+      mixedChannel(channel, end[channelIndex] ?? channel, ratio),
+    );
+    stops.push(`#${hex.join('')} ${formatNumber((from.position + span * ratio) * 100)}%`);
+  }
+  return stops;
+}
+
+/**
+ * 색 채널 하나를 비율대로 섞어 16진수 두 자리로 쓴다.
+ * @param from 시작 값(0~255)
+ * @param to 끝 값(0~255)
+ * @param ratio 끝 값의 비율(0~1)
+ * @returns `00`~`ff`
+ */
+function mixedChannel(from: number, to: number, ratio: number): string {
+  return Math.round(from + (to - from) * ratio)
+    .toString(16)
+    .padStart(2, '0');
+}
+
+/**
+ * 정지점 하나를 읽는다.
  * @param stop `{color, position}`
  * @param axis 방향과 위치 변환
  * @param opacity 층 불투명도
- * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param context 변수 이름과 실제 색 표
  * @param path 오류 메시지에 쓸 경로
- * @returns `var(--color-x) 90.58%`
+ * @returns CSS 색, 위치, 실제 색
  */
 function gradientStop(
   stop: unknown,
   axis: GradientAxis,
   opacity: number,
-  names: ReadonlyMap<string, string>,
+  context: ColorContext,
   path: string,
-): string {
+): ParsedStop {
   if (!isRecord(stop)) {
     throw new TokenFormatError(path, '그라데이션 정지점은 {color, position}이어야 한다.');
   }
-  const position = axis.position(numberValue(stop.position, path));
-  return `${layerColor(stop.color, opacity, names, path)} ${formatNumber(position * 100)}%`;
+  const rgba = resolvedRgba(stop.color, context.colors);
+  return {
+    css: layerColor(stop.color, opacity, context.names, path),
+    position: axis.position(numberValue(stop.position, path)),
+    rgba: rgba === undefined ? undefined : [rgba[0], rgba[1], rgba[2], rgba[3] * opacity],
+  };
+}
+
+/**
+ * 별칭이나 16진수 색을 실제 RGBA(0~255)로 바꾼다.
+ * @param color 16진수 색이나 별칭
+ * @param colors 색 변수 경로에서 실제 색으로 가는 표
+ * @returns RGBA. 알 수 없으면 undefined
+ */
+function resolvedRgba(color: unknown, colors: ReadonlyMap<string, string>): Rgba | undefined {
+  if (typeof color !== 'string') {
+    return undefined;
+  }
+  const alias = /^\{(.+)\}$/u.exec(color)?.[1];
+  const hex = alias === undefined ? color : colors.get(alias.split('.').join('/'));
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/iu.exec(hex ?? '');
+  if (match === null) {
+    return undefined;
+  }
+  const [, r = '00', g = '00', b = '00', a = 'ff'] = match;
+  return [parseInt(r, 16), parseInt(g, 16), parseInt(b, 16), parseInt(a, 16)];
+}
+
+/**
+ * 색 변수의 별칭을 끝까지 따라가 실제 색 표를 만든다.
+ * @param variables 펼친 변수 목록
+ * @returns 변수 경로에서 실제 색(#rrggbb[aa])으로 가는 표
+ */
+function resolvedColors(variables: readonly FlatToken[]): Map<string, string> {
+  const raw = new Map(variables.map((item) => [item.path.join('/'), item.token.value]));
+  const colors = new Map<string, string>();
+  for (const item of variables) {
+    if (item.token.type !== 'color') {
+      continue;
+    }
+    let value: unknown = item.token.value;
+    for (let depth = 0; depth < raw.size && typeof value === 'string'; depth++) {
+      const alias = /^\{(.+)\}$/u.exec(value)?.[1];
+      if (alias === undefined) {
+        break;
+      }
+      value = raw.get(alias.split('.').join('/'));
+    }
+    if (typeof value === 'string' && value.startsWith('#')) {
+      colors.set(item.path.join('/'), value);
+    }
+  }
+  return colors;
 }
 
 /**

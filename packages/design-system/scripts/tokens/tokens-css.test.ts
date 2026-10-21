@@ -67,7 +67,20 @@ describe('토큰 생성', () => {
     );
     // layers가 없으면 $value의 정지점을 위에서 아래로 칠한다.
     expect(css).toContain(
-      '--gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, var(--color-accent-fill-default) 96.89%);',
+      '--gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, ',
+    );
+  });
+
+  it('투명도와 RGB가 모두 다른 정지점 사이에는 피그마처럼 투명도를 곱하지 않고 섞은 중간 정지점을 넣는다', () => {
+    // #0000000f(검정 6%) → #005fb8(강조색 100%): 중간 정지점은 RGB와 투명도를 각각 따로 섞은 값이다.
+    expect(css).toContain(
+      'var(--color-control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--color-accent-fill-default) 96.89%',
+    );
+  });
+
+  it('RGB가 같은 정지점 사이(투명도만 다름)는 CSS와 결과가 같으므로 중간 정지점을 넣지 않는다', () => {
+    expect(css).toContain(
+      'linear-gradient(to bottom, var(--color-control-stroke-default) 90.58%, var(--color-control-stroke-secondary) 100%)',
     );
   });
 

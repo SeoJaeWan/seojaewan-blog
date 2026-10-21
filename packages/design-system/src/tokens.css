@@ -327,11 +327,11 @@
   --text-shadow-desktop-label-shadow: 0px 1px 2px #00000099;
 
   /* Paint styles */
-  --gradient-elevation-accent-control-border: linear-gradient(to bottom, var(--color-control-stroke-on-accent-default) 90.67%, var(--color-control-stroke-on-accent-secondary) 100%);
+  --gradient-elevation-accent-control-border: linear-gradient(to bottom, var(--color-control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--color-control-stroke-on-accent-secondary) 100%);
   --gradient-elevation-circle-border: linear-gradient(to bottom, var(--color-control-stroke-default) 50.02%, var(--color-control-stroke-secondary) 95.45%);
   --gradient-elevation-control-border: linear-gradient(to bottom, var(--color-control-stroke-default) 90.58%, var(--color-control-stroke-secondary) 100%);
   --gradient-elevation-text-control-border: linear-gradient(to bottom, var(--color-control-stroke-default) 99.99%, var(--color-control-strong-fill-default) 100%);
-  --gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, var(--color-accent-fill-default) 96.89%);
+  --gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--color-accent-fill-default) 96.89%);
   --color-material-fallback-acrylic-base: var(--color-acrylic-background-fill-base-fallback);
   --color-material-fallback-acrylic-default: var(--color-acrylic-background-fill-default-fallback);
   --color-material-fallback-mica-base: var(--color-mica-background-fill-base-fallback);

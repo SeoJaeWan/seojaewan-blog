@@ -52,6 +52,7 @@ _codocs:
 
   - WinUI 경로 이름을 Tailwind 이름으로 바꾼다(예: `text-fill/primary` → `--color-text-fill-primary`).
   - 별칭은 실제 값으로 풀지 않고 `var()` 참조로 남긴다. Primitive → Semantic → Component 단계가 CSS에서도 보이고, Primitive 값 하나만 바뀌면 생성 파일도 한 줄만 바뀐다.
+  - 그라데이션 정지점 사이 색은 피그마가 투명도를 곱하지 않고 섞고, CSS는 투명도를 곱한 값으로 섞는다. 투명도와 RGB가 모두 다른 두 정지점 사이(예: 흰색 8% → 검정 40%인 `Elevation/Accent Control Border`)는 결과가 달라지므로, 피그마 방식으로 계산한 중간 정지점 4개를 실제 색 값으로 넣는다. 양 끝 정지점은 `var()` 참조로 남는다.
   - 스크립트는 직접 작성하고 Vitest 테스트를 붙인다. 출력 대상이 웹 CSS 하나뿐이고 이름 규칙이 이 프로젝트에만 있어, 범용 도구가 대신해 주는 부분이 적기 때문이다.
   - CI는 생성 파일이 `tokens.json`과 맞는지 검사한다. 플러그인 PR에서 토큰이 바뀌면 같은 PR에서 생성 파일도 함께 바뀐다.
 
