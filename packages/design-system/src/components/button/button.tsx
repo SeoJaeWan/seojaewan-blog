@@ -56,7 +56,8 @@ export function Button(props: ButtonProps): JSX.Element {
         className,
       )}
     >
-      {children}
+      {/* @codocs [[피그마 일치 검사:스토리 규칙]] 피그마 label 레이어와 짝짓는다. */}
+      <span data-figma="label">{children}</span>
       <FocusRect className="hidden group-focus-visible:block" />
     </BaseButton>
   );

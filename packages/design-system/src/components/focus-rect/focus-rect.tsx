@@ -17,6 +17,8 @@ export function FocusRect(props: FocusRectProps): JSX.Element {
   return (
     <span
       aria-hidden
+      // @codocs [[피그마 일치 검사:스토리 규칙]] 피그마에서 컨트롤에 넣은 FocusRect 인스턴스 이름이다.
+      data-figma="focus rect"
       className={mergeClassNames(
         'pointer-events-none absolute inset-focus-rect rounded-focus-outer border-focus-outer border-focus-stroke-outer',
         props.className,

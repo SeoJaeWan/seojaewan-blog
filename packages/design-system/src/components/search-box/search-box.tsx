@@ -38,8 +38,10 @@ const appearanceClassNames = {
 export function SearchBox(props: SearchBoxProps): JSX.Element {
   const { appearance = 'default', className, disabled: isDisabled = false, ...inputProps } = props;
   const classNames = appearanceClassNames[appearance];
+  // data-figma는 피그마 SearchBox의 레이어 이름이다([[피그마 일치 검사:스토리 규칙]]).
   const icon = (
     <Search16Regular
+      data-figma="icon"
       className={mergeClassNames(
         'size-icon-16 shrink-0',
         isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
@@ -67,6 +69,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         {...inputProps}
         type="text"
         role="searchbox"
+        data-figma="label"
         disabled={isDisabled}
         className="min-w-0 flex-1 truncate bg-transparent text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
       />
@@ -74,6 +77,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
       {/* 포커스일 때 아래쪽 강조색 선. 기본 모양은 disabled일 때 아래쪽 1px 선이 더 진해진다. */}
       <span
         aria-hidden
+        data-figma="bottom border"
         className={mergeClassNames(
           'pointer-events-none absolute inset-x-0 bottom-0',
           isDisabled

@@ -46,6 +46,7 @@ function SlotPlaceholder(): JSX.Element {
     <div className="relative">
       <svg
         aria-hidden
+        data-figma-stroke="Content"
         className="absolute inset-0 text-control-strong-stroke-disabled"
         width={SLOT_WIDTH}
         height={SLOT_HEIGHT}
@@ -62,8 +63,11 @@ function SlotPlaceholder(): JSX.Element {
         ))}
       </svg>
       {/* 피그마 슬롯은 선 두께가 레이아웃에 들어가므로 투명한 테두리로 같은 크기를 만든다. */}
-      <div className="flex flex-col items-center justify-center border-default border-transparent px-16 py-24 type-caption text-text-fill-tertiary">
-        콘텐츠 영역 (slot)
+      <div
+        data-figma="Content"
+        className="flex flex-col items-center justify-center rounded-control border-default border-transparent px-16 py-24 type-caption text-text-fill-tertiary"
+      >
+        <span data-figma="label">콘텐츠 영역 (slot)</span>
       </div>
     </div>
   );

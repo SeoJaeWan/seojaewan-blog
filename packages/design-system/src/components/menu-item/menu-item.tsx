@@ -71,17 +71,25 @@ const SECONDARY_TEXT_CLASS_NAME =
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = mergeClassNames(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
+  // @codocs [[피그마 일치 검사:스토리 규칙]] 행이 피그마 MenuItem 변형 루트다(비교 요소는 메뉴 팝업).
+  const rootProps = { 'data-figma-root': '' };
 
   switch (props.kind) {
     case 'submenu':
       return (
-        <Menu.SubmenuTrigger className={className} disabled={isDisabled} label={props.label}>
+        <Menu.SubmenuTrigger
+          {...rootProps}
+          className={className}
+          disabled={isDisabled}
+          label={props.label}
+        >
           <MenuItemContent {...props} leading={props.icon} />
         </Menu.SubmenuTrigger>
       );
     case 'checkbox':
       return (
         <Menu.CheckboxItem
+          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -102,6 +110,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     case 'radio':
       return (
         <Menu.RadioItem
+          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -121,6 +130,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     case undefined:
       return (
         <Menu.Item
+          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -147,20 +157,30 @@ function MenuItemContent(props: MenuItemContentProps): JSX.Element {
   const hasLeading =
     props.leading !== undefined || props.kind === 'checkbox' || props.kind === 'radio';
   return (
-    <span className={baseClassName}>
+    // data-figma는 피그마 MenuItem의 레이어 이름이다([[피그마 일치 검사:스토리 규칙]]).
+    <span data-figma="base" className={baseClassName}>
       {hasLeading && (
-        <span className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden">
+        <span
+          data-figma="leading"
+          className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden"
+        >
           {props.leading}
         </span>
       )}
-      <span className="min-w-0 flex-1 truncate type-body">{props.label}</span>
+      <span data-figma="label" className="min-w-0 flex-1 truncate type-body">
+        {props.label}
+      </span>
       {props.shortcut !== undefined && (
-        <span className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}>
+        <span
+          data-figma="shortcut"
+          className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}
+        >
           {props.shortcut}
         </span>
       )}
       {props.kind === 'submenu' && (
         <ChevronRight16Regular
+          data-figma="chevron"
           className={mergeClassNames('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
         />
       )}
