@@ -36,10 +36,10 @@ _codocs:
   |---|---|---|
   | 칠 변수 `accent-fill/default` | 배경 | `bg-accent-fill-default` |
   | 글자 칠 변수 `text-fill/primary` | 글자 색 | `text-text-fill-primary` |
-  | 칠 스타일 `Elevation/Control Border` | 안쪽 선(레이아웃 제외) | `border-gradient-elevation-control-border` |
-  | 단색 선 변수, 안쪽·레이아웃 제외 | 선 | `inner-border-<색>` |
+  | 칠 스타일 `Elevation/Control Border` | 안쪽 선(레이아웃 제외) | `border-gradient-elevation-control-border` + `inner-border-w-<두께>` |
+  | 단색 선 변수, 안쪽·레이아웃 제외 | 선 | `inner-border-<색>` + `inner-border-w-<두께>` |
   | 단색 선 변수, 안쪽·레이아웃 포함 | 선 | `border-<색>` + 선 두께 클래스 |
-  | 단색 선 변수, 바깥쪽 | 선 | `outline-<색>` + `outline-w-<두께>` |
+  | 단색 선 변수, 바깥쪽 | 선 | `outline-<색>` + `outline-<두께>`(Tailwind v4에는 `outline-w-*`가 없어 outline 유틸리티가 두께 토큰도 받는다. 예: `outline-focus-stroke-outer outline-focus-outer`) |
   | 반경 변수 `radius/control` | 모서리 | `rounded-control`(모서리별이면 `rounded-tl-*` 등) |
   | 효과 스타일 `Elevation/Flyout` | 그림자 | `shadow-elevation-flyout` |
   | 효과 스타일 `Surface/Flyout (Acrylic)` | 그림자와 배경 블러 | `shadow-surface-flyout-acrylic backdrop-blur-surface-flyout-acrylic` |

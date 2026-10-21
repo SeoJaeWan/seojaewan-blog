@@ -62,7 +62,7 @@ _codocs:
   - Acrylic: `backdrop-filter: blur()`에 Windows UI kit의 틴트·루미너스 층과 노이즈 질감을 얹는다.
   - Mica: 흐리게 처리한 배경화면을 창 뒤에 깔아 흉내 낸다.
   - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
-  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
+  - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다.
   - 코드는 재질 칠 스타일 이름의 생성 유틸리티(`material-acrylic-default` 등)로 그리고, 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
 
   피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 그림이 아니라 이름으로 비교하므로, 재질 변형도 다른 변형과 같이 칠 스타일 이름(`material-*`), 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`), 계산값으로 비교한다. 흐린 배경 위의 실제 혼합 모습은 Storybook에서 눈으로 확인한다.
@@ -71,15 +71,15 @@ _codocs:
   피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
 
   - 토큰 생성은 이 스타일을 `--gradient-*` CSS 배경 값으로 옮긴다. 피그마 정지점 위치는 노드 높이 대비 비율이라 CSS에서도 같은 비율(`to bottom`, 90.58% 등)로 둔다. 그래서 피그마와 같은 높이의 컨트롤에서 같은 결과가 나온다.
-  - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 `--border-width-default` 두께의 고리 모양으로 가리고 그라데이션을 칠한다. CSS `border`에는 둥근 모서리를 지키는 그라데이션을 칠할 수 없고, 배경 두 겹(`padding-box`·`border-box`) 방식은 컴포넌트 배경색과 섞여 따로 쓸 수 없기 때문이다.
+  - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 고리 모양으로 가리고 그라데이션을 칠한다. 고리 두께는 피그마 선 두께 변수에 대응하는 `inner-border-w-<두께 토큰>`(예: `inner-border-w-default`)으로 함께 정한다. CSS `border`에는 둥근 모서리를 지키는 그라데이션을 칠할 수 없고, 배경 두 겹(`padding-box`·`border-box`) 방식은 컴포넌트 배경색과 섞여 따로 쓸 수 없기 때문이다.
   - 피그마 안쪽 선(inside stroke)처럼 요소 크기 안에, 자식 위에 그린다. 피그마는 프레임의 선을 절대 위치 자식(예: SearchBox의 포커스 아래 선)보다도 위에 그리므로 `::before`는 `z-index: 1`이다. `::before`가 요소에 맞춰지도록 요소에 `relative` 같은 위치 지정이, 고리가 요소 밖의 형제를 덮지 않도록 쌓임 맥락(`isolate`)이 있어야 한다.
-  - 단색 안쪽 선은 같은 방식의 `inner-border-*` 유틸리티로 색 토큰 이름으로 그린다(예: `inner-border-control-stroke-default`). Pressed·Disabled처럼 상태에 따라 그라데이션 선과 단색 선을 바꾸는 컨트롤이 같은 자리에 그리게 하기 위해서다. CSS `border`는 레이아웃 크기를 바꾸고 자식 아래에 그려져 피그마 안쪽 선과 다르다.
+  - 단색 안쪽 선은 같은 방식의 `inner-border-*` 유틸리티로 색 토큰 이름으로 그린다(예: `inner-border-control-stroke-default`). 두께는 그라데이션 선과 같이 `inner-border-w-<두께 토큰>`으로 정한다. Pressed·Disabled처럼 상태에 따라 그라데이션 선과 단색 선을 바꾸는 컨트롤이 같은 자리에 그리게 하기 위해서다. CSS `border`는 레이아웃 크기를 바꾸고 자식 아래에 그려져 피그마 안쪽 선과 다르다.
   - 피그마에서 선이 레이아웃에 들어가는 프레임(strokes included in layout, 예: Flyout)은 CSS `border`와 같으므로 `border`를 쓴다.
 포커스 표현: |
   키보드 포커스(Focused 상태)는 컨트롤 바깥쪽(OUTSIDE)에 단색 선 한 겹으로 그린다. 색은 `focus-stroke/outer`, 두께는 `stroke-width/focus-outer`(2px)다. Button(Accent, Standard, Subtle)과 IconButton이 같은 방식이다.
 
   - Focused 상태에서는 입체감 테두리(안쪽 그라데이션 선, [[디자인 기반:컨트롤 테두리]])를 빼고, 그 자리의 선을 바깥쪽 단색 선으로 바꾼다. 피그마에서 선의 위치(안쪽·바깥쪽)는 레이어마다 하나만 정할 수 있기 때문이다.
-  - 코드는 바깥쪽 선을 `outline-<색 토큰>`과 `outline-w-<두께 토큰>`(생성 유틸리티)으로 그린다. CSS outline은 레이아웃 크기를 바꾸지 않고 요소 바깥에 그려져 피그마 바깥쪽 선과 같다.
+  - 코드는 바깥쪽 선을 Tailwind outline 유틸리티로 그린다. 색은 `outline-<색 토큰>`, 두께는 `outline-<두께 토큰>`이다(예: `outline-focus-stroke-outer outline-focus-outer`). Tailwind v4에는 `outline-w-*`가 없고 outline 유틸리티가 색과 두께를 모두 받는다. CSS outline은 레이아웃 크기를 바꾸지 않고 요소 바깥에 그려져 피그마 바깥쪽 선과 같다.
   - 포커스 테두리를 별도 레이어로 겹쳐 놓지 않는다. 예전에는 FocusRect 컴포넌트(바깥 진한 선 + 안쪽 흰 선 두 겹)를 컨트롤 위에 겹쳐 놓았는데, 겹쳐 놓은 레이어는 위치를 비교해야 하고 크기를 변수에 묶을 수 없어 FocusRect 컴포넌트를 지웠다. 퍼짐 그림자 효과 스타일로 그리는 방법도 시험했지만, 피그마는 채움이 완전히 투명한 노드(Subtle 버튼)와 내용 자르기를 끈 프레임에서 퍼짐 그림자를 그리지 않아 고르지 않았다.
   - 안쪽 흰 선을 더한 두 겹은 쓰지 않는다.
   - 다크 모드 색은 `focus-stroke/outer` 변수의 모드 값으로 정한다([[미결 사항:다크 모드 포커스 선 색]]).
@@ -107,7 +107,7 @@ _codocs:
 
   - 묶음마다 `group/<묶음>` 프레임에 넣는다. 플러그인이 이 프레임 이름으로 처리 방식을 정한다.
   - 완전한 원과 사각형은 자산이 아니라 CSS(`rounded-*`)로 그린다.
-  - 이미지는 이름 있는 Images 자산으로만 쓴다. 아크릴 노이즈(`noise/acrylic`)와 배경화면(`wallpaper/bloom`)도 Images 자산이고, 칠 스타일 안에 넣는 이미지도 같은 이미지를 쓴다. 플러그인은 이미지 해시로 자산 이름을 찾고, 이름 있는 자산에 없는 이미지는 막는다.
+  - 이미지는 이름 있는 Images 자산으로만 쓴다. 아크릴 노이즈(`noise/Acrylic`)와 배경화면(`wallpaper/Bloom`)도 Images 자산이고, 칠 스타일 안에 넣는 이미지도 같은 이미지를 쓴다. 플러그인은 이미지 해시로 자산 이름을 찾고, 이름 있는 자산에 없는 이미지는 막는다.
   - UI 아이콘은 Fluent UI System Icons(MIT, github.com/microsoft/fluentui-system-icons)의 SVG 경로를 그대로 넣었다. 코드는 피그마에서 내보낸 같은 SVG를 쓴다.
   - Windows 자산은 Windows 11 PC에 들어 있는 원본에서 가져왔다. 추측하거나 다시 그리지 않기 위해서다.
 
