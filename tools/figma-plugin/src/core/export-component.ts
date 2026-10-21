@@ -70,6 +70,29 @@ export async function exportComponentCore(
   context: CheckContext,
   scale: number,
 ): Promise<ComponentOutcome> {
+  // 인스턴스 안의 숨긴 레이어도 읽어야 숨김 목록(D4)이 맞다. 실행 환경마다 기본값이 달라(피그마 MCP는 true)
+  // 플러그인과 MCP가 같은 결과를 내도록 여기서 정하고 끝나면 되돌린다.
+  const shouldSkipInvisible = figma.skipInvisibleInstanceChildren;
+  figma.skipInvisibleInstanceChildren = false;
+  try {
+    return await exportComponentWithHidden(nodeId, context, scale);
+  } finally {
+    figma.skipInvisibleInstanceChildren = shouldSkipInvisible;
+  }
+}
+
+/**
+ * exportComponentCore의 본문이다. 인스턴스 안의 숨긴 레이어를 읽는 상태에서 실행한다.
+ * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
+ * @param context 검사 정보
+ * @param scale PNG 배율
+ * @returns 내보낸 컴포넌트, 또는 위반 목록
+ */
+async function exportComponentWithHidden(
+  nodeId: string,
+  context: CheckContext,
+  scale: number,
+): Promise<ComponentOutcome> {
   const node = await figma.getNodeByIdAsync(nodeId);
   if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
     throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
