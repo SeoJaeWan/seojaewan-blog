@@ -1,8 +1,17 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-import { isComparedVariant, parseFigmaExport, pixelClip, variantFileName } from './figma-export.ts';
-import { exportFixture, storybookIndexFixture } from './story-target.fixture.ts';
+import {
+  isPixelComparedVariant,
+  parseFigmaExport,
+  pixelClip,
+  variantFileName,
+} from './figma-export.ts';
+import {
+  componentsFixture,
+  settingsFixture,
+  storybookIndexFixture,
+} from './story-target.fixture.ts';
 import { camelCase, findParityStoryId, storyArgsParam, storyTarget } from './story-target.ts';
 
 // @codocs [[피그마 일치 검사:스토리 규칙]]
@@ -63,8 +72,8 @@ describe('피그마 이미지 이름', () => {
     expect(variantFileName([])).toBe('default');
   });
 
-  it('export.json을 컴포넌트·변형 목록으로 바꾼다', () => {
-    const { cases } = parseFigmaExport(exportFixture);
+  it('figma.json과 컴포넌트 export.json을 컴포넌트·변형 목록으로 바꾼다', () => {
+    const { cases } = parseFigmaExport(settingsFixture, componentsFixture);
     expect(cases.map((item) => `${item.component}/${item.variant}`)).toEqual([
       'button/variant=accent,state=hover',
       'button/variant=accent,state=rest',
@@ -90,12 +99,12 @@ describe('피그마 이미지 이름', () => {
   });
 
   it('export.json의 속성이 이름순으로 정렬돼 있어도 변형 파일 이름의 순서(피그마 순서)로 읽는다', () => {
-    const sorted = structuredClone(exportFixture);
-    sorted.components.button.variants['variant=accent,state=rest'].properties = {
+    const sorted = structuredClone(componentsFixture);
+    sorted.button.variants['variant=accent,state=rest'].properties = {
       State: 'Rest',
       Variant: 'Accent',
     };
-    const { cases } = parseFigmaExport(sorted);
+    const { cases } = parseFigmaExport(settingsFixture, sorted);
     expect(cases.find((item) => item.variant === 'variant=accent,state=rest')?.properties).toEqual([
       ['Variant', 'Accent'],
       ['State', 'Rest'],
@@ -103,22 +112,35 @@ describe('피그마 이미지 이름', () => {
   });
 
   it('속성과 변형 파일 이름이 어긋나면 실패한다', () => {
-    const broken = structuredClone(exportFixture);
-    broken.components.button.variants['variant=accent,state=rest'].properties.State = 'Hover';
-    expect(() => parseFigmaExport(broken)).toThrow(/state=hover/u);
+    const broken = structuredClone(componentsFixture);
+    broken.button.variants['variant=accent,state=rest'].properties.State = 'Hover';
+    expect(() => parseFigmaExport(settingsFixture, broken)).toThrow(/state=hover/u);
+  });
+
+  it('레이어 정보가 없는 변형은 그 변형만 실패하도록 이유를 남긴다', () => {
+    const old = structuredClone(componentsFixture) as Record<string, unknown>;
+    const button = structuredClone(componentsFixture.button) as {
+      variants: Record<string, Record<string, unknown>>;
+    };
+    delete button.variants['variant=accent,state=rest']?.layers;
+    old.button = button;
+    const { cases } = parseFigmaExport(settingsFixture, old);
+    expect(cases.find((item) => item.variant === 'variant=accent,state=rest')?.layersError).toMatch(
+      /레이어 정보가 없다/u,
+    );
   });
 });
 
 // @codocs [[디자인 기반:재질 효과]]
 describe('재질 효과', () => {
-  it('재질 속성이 있는 컴포넌트는 Material=Solid 변형만 비교한다', () => {
-    expect(isComparedVariant({ properties: [['Material', 'Solid']] })).toBe(true);
-    expect(isComparedVariant({ properties: [['Material', 'Acrylic']] })).toBe(false);
+  it('재질 속성이 있는 컴포넌트는 Material=Solid 변형만 전체 이미지를 픽셀로 비교한다', () => {
+    expect(isPixelComparedVariant({ properties: [['Material', 'Solid']] })).toBe(true);
+    expect(isPixelComparedVariant({ properties: [['Material', 'Acrylic']] })).toBe(false);
   });
 
-  it('재질 속성이 없는 변형은 모두 비교한다', () => {
+  it('재질 속성이 없는 변형은 모두 픽셀로 비교한다', () => {
     expect(
-      isComparedVariant({
+      isPixelComparedVariant({
         properties: [
           ['Style', 'Accent'],
           ['State', 'Rest'],

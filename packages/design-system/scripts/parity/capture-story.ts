@@ -1,4 +1,4 @@
-import type { Browser, Locator, Page } from '@playwright/test';
+import type { Browser, BrowserContext, Locator, Page } from '@playwright/test';
 
 import type { ParityCase } from './figma-export.ts';
 import { pixelClip } from './figma-export.ts';
@@ -6,8 +6,12 @@ import { PAGE_MARGIN, PARITY_TARGET_ATTRIBUTE, RENDER_TIMEOUT_MS } from './parit
 import type { StoryArgValue } from './story-target.ts';
 import { storyArgsParam, storyTarget } from './story-target.ts';
 
-export type CaptureResult =
-  { ok: true; image: Buffer } | { ok: false; message: string; image?: Buffer };
+export type CaptureResult<T> =
+  | { ok: true; image: Buffer; inspected: T }
+  | { ok: false; message: string; image?: Buffer; inspected?: T };
+
+/** 스크린샷을 찍은 뒤 같은 상태의 페이지에서 값을 재는 함수 */
+export type Inspect<T> = (context: BrowserContext, page: Page, target: Locator) => Promise<T>;
 
 // Storybook 미리보기가 스토리 렌더링을 마쳤는지 확인하는 브라우저 코드다.
 // 내부 API(__STORYBOOK_PREVIEW__)가 없으면 루트에 요소가 생겼는지로 판단한다.
@@ -21,6 +25,9 @@ const STORY_RENDERED_SCRIPT = `(() => {
 
 // 크기·위치를 소수 오차 없이 같다고 볼 범위(CSS px)다.
 const SIZE_EPSILON = 0.01;
+// 비교 요소가 피그마 크기가 되기를 기다리는 최대 시간과 확인 간격(ms)이다.
+const SIZE_WAIT_MS = 3000;
+const SIZE_POLL_MS = 50;
 
 /**
  * 변형 하나에 해당하는 스토리를 피그마와 같은 크기·배율로 렌더링해 스크린샷을 찍는다.
@@ -29,14 +36,16 @@ const SIZE_EPSILON = 0.01;
  * @param baseUrl 정적 Storybook 주소
  * @param storyId 스토리 ID
  * @param parityCase 비교할 변형
- * @returns renderBounds 영역의 투명 배경 스크린샷, 또는 실패 이유
+ * @param inspect 스크린샷을 찍은 뒤(상호작용 상태 그대로) 값을 재는 함수
+ * @returns renderBounds 영역의 투명 배경 스크린샷과 잰 값, 또는 실패 이유
  */
-export async function captureStory(
+export async function captureStory<T>(
   browser: Browser,
   baseUrl: string,
   storyId: string,
   parityCase: ParityCase,
-): Promise<CaptureResult> {
+  inspect: Inspect<T>,
+): Promise<CaptureResult<T>> {
   const { width, height, scale } = parityCase;
   const clip = pixelClip(parityCase.renderBounds, scale);
   const left = PAGE_MARGIN + Math.max(0, Math.ceil(-clip.x));
@@ -69,6 +78,7 @@ export async function captureStory(
     if (fontError !== undefined) {
       return { ok: false, message: fontError };
     }
+    await waitForSize(target, width, height);
 
     const box = await target.boundingBox();
     if (box === null) {
@@ -92,6 +102,7 @@ export async function captureStory(
       caret: 'hide',
       scale: 'device',
     });
+    const inspected = await inspect(context, page, target);
 
     if (
       Math.abs(box.width - width) > SIZE_EPSILON ||
@@ -100,6 +111,7 @@ export async function captureStory(
       return {
         ok: false,
         image,
+        inspected,
         message: `컴포넌트 크기가 다르다: 피그마 ${width}×${height}, 스토리 ${round(box.width)}×${round(box.height)}`,
       };
     }
@@ -108,10 +120,11 @@ export async function captureStory(
       return {
         ok: false,
         image,
+        inspected,
         message: `요소가 픽셀 경계에 있지 않다(x=${round(box.x)}, y=${round(box.y)}). 스토리 레이아웃을 확인한다.`,
       };
     }
-    return { ok: true, image };
+    return { ok: true, image, inspected };
   } finally {
     await context.close();
   }
@@ -222,6 +235,28 @@ async function waitForFonts(page: Page): Promise<string | undefined> {
       return undefined;
     },
   );
+}
+
+/**
+ * 비교 요소가 피그마 노드 크기가 될 때까지 잠시 기다린다. 포털·위치 계산이 늦게 끝나는 컴포넌트(메뉴 팝업 등)가 있어서다.
+ * 시간 안에 같아지지 않으면 그대로 진행하고, 크기 비교가 실패로 알린다.
+ * @param target 비교 요소
+ * @param width 피그마 노드 폭
+ * @param height 피그마 노드 높이
+ */
+async function waitForSize(target: Locator, width: number, height: number): Promise<void> {
+  const deadline = Date.now() + SIZE_WAIT_MS;
+  while (Date.now() < deadline) {
+    const box = await target.boundingBox();
+    if (
+      box !== null &&
+      Math.abs(box.width - width) <= SIZE_EPSILON &&
+      Math.abs(box.height - height) <= SIZE_EPSILON
+    ) {
+      return;
+    }
+    await target.page().waitForTimeout(SIZE_POLL_MS);
+  }
 }
 
 /**

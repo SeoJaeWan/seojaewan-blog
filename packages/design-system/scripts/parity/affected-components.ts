@@ -7,11 +7,11 @@ export type AffectedSelection =
 
 // 패키지 기준 경로다. 이 파일이 바뀌면 모든 컴포넌트에 영향을 준다고 본다.
 const GLOBAL_FILE_PATTERN =
-  /^(src\/(theme|tokens|fonts)\.css|figma\/tokens\.json|\.storybook\/.*|package\.json|tsconfig\.json|scripts\/parity\/.*|scripts\/package-paths\.ts)$/u;
+  /^(src\/(theme|tokens|fonts)\.css|figma\/(tokens|figma)\.json|\.storybook\/.*|package\.json|tsconfig\.json|scripts\/parity\/.*|scripts\/package-paths\.ts)$/u;
 // 저장소 기준 경로다.
 const GLOBAL_REPO_FILE_PATTERN = /^(pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig\.base\.json)$/u;
 const COMPONENT_FILE_PATTERN = /^src\/components\/([^/]+)\/(.+)$/u;
-const FIGMA_IMAGE_PATTERN = /^figma\/images\/([^/]+)\//u;
+const FIGMA_COMPONENT_PATTERN = /^figma\/components\/([^/]+)\//u;
 const NON_RENDERING_FILE_PATTERN = /\.(test|fixture)\.tsx?$/u;
 const RELATIVE_COMPONENT_IMPORT = /from\s+['"]\.\.\/([^/'"]+)\//gu;
 
@@ -21,16 +21,14 @@ const RELATIVE_COMPONENT_IMPORT = /from\s+['"]\.\.\/([^/'"]+)\//gu;
  * @param changedFiles 저장소 기준 경로 목록(`packages/design-system/src/...`)
  * @param packagePrefix 저장소 기준 패키지 경로(`packages/design-system/`)
  * @param dependents 컴포넌트 → 그 컴포넌트를 import하는 컴포넌트 목록
- * @param changedExportComponents export.json에서 항목이 바뀐 컴포넌트
  * @returns 전체 비교 여부와 이유, 또는 비교할 컴포넌트 집합
  */
 export function selectAffectedComponents(
   changedFiles: readonly string[],
   packagePrefix: string,
   dependents: ReadonlyMap<string, readonly string[]>,
-  changedExportComponents: Iterable<string>,
 ): AffectedSelection {
-  const direct = new Set<string>(changedExportComponents);
+  const direct = new Set<string>();
 
   for (const file of changedFiles) {
     if (GLOBAL_REPO_FILE_PATTERN.test(file)) {
@@ -54,9 +52,10 @@ export function selectAffectedComponents(
       // 컴포넌트 폴더 밖의 소스(공용 함수 등)는 어느 컴포넌트가 쓰는지 따라가지 않고 전체를 비교한다.
       return { all: true, reason: file };
     }
-    const image = FIGMA_IMAGE_PATTERN.exec(relative);
-    if (image?.[1] !== undefined) {
-      direct.add(image[1]);
+    // 플러그인이 쓴 컴포넌트 폴더(export.json, 변형 PNG, vector SVG)가 바뀐 컴포넌트다.
+    const figmaComponent = FIGMA_COMPONENT_PATTERN.exec(relative);
+    if (figmaComponent?.[1] !== undefined) {
+      direct.add(figmaComponent[1]);
     }
   }
 
@@ -91,21 +90,6 @@ export function componentDependents(
 }
 
 /**
- * export.json 두 버전에서 항목이 바뀌거나 새로 생긴 컴포넌트를 찾는다.
- * @param base 기준 브랜치의 export.json(없으면 undefined)
- * @param head 지금의 export.json
- * @returns 바뀐 컴포넌트 폴더 이름 목록
- */
-export function changedExportComponents(base: unknown, head: unknown): string[] {
-  const baseComponents = componentsOf(base);
-  const headComponents = componentsOf(head);
-  return Object.keys(headComponents).filter(
-    (component) =>
-      JSON.stringify(baseComponents[component]) !== JSON.stringify(headComponents[component]),
-  );
-}
-
-/**
  * 직접 바뀐 컴포넌트에 그것을 쓰는 컴포넌트를 거슬러 올라가며 더한다.
  * @param direct 직접 바뀐 컴포넌트
  * @param dependents 컴포넌트 → 그 컴포넌트를 import하는 컴포넌트 목록
@@ -126,19 +110,4 @@ function withDependents(
     }
   }
   return result;
-}
-
-/**
- * export.json에서 components 객체를 꺼낸다.
- * @param json export.json을 파싱한 값
- * @returns 컴포넌트 폴더 이름 → 항목
- */
-function componentsOf(json: unknown): Record<string, unknown> {
-  if (typeof json !== 'object' || json === null || !('components' in json)) {
-    return {};
-  }
-  const { components } = json;
-  return typeof components === 'object' && components !== null
-    ? Object.fromEntries(Object.entries(components))
-    : {};
 }

@@ -1,186 +1,367 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import type { Browser, BrowserContext, Locator, Page } from '@playwright/test';
 import { chromium } from '@playwright/test';
 
 import {
-  exportJsonPath,
-  figmaImagesDir,
+  COMPONENT_MANIFEST_FILE,
+  FIGMA_COMPONENTS_FOLDER,
+  FIGMA_SETTINGS_FILE,
+  figmaDir,
   packageRoot,
   parityResultsDir,
   storybookStaticDir,
+  tokensJsonPath,
 } from '../package-paths.ts';
-import {
-  changedExportComponents,
-  componentDependents,
-  selectAffectedComponents,
-} from './affected-components.ts';
+import { colorTokenTable } from '../tokens/tokens-css.ts';
+import { componentDependents, selectAffectedComponents } from './affected-components.ts';
 import { captureStory } from './capture-story.ts';
-import { compareImages, readPng, writePng } from './compare-images.ts';
+import { compareImages, compareVectorImages, readPng, writePng } from './compare-images.ts';
+import type { CheckFailure, VectorResult } from './compare-values.ts';
+import { compareVariantValues } from './compare-values.ts';
 import type { ParityCase } from './figma-export.ts';
-import { isComparedVariant, parseFigmaExport, pixelClip } from './figma-export.ts';
+import { isPixelComparedVariant, parseFigmaExport, pixelClip } from './figma-export.ts';
+import { measureVariant } from './measure-story.ts';
+import type { VariantMeasurement } from './measured-element.ts';
 import {
   BROWSER_ARGS,
-  MAX_DIFF_PIXELS,
-  PIXELMATCH_THRESHOLD,
-  SHOULD_INCLUDE_ANTI_ALIASING,
+  FIGMA_LAYER_ATTRIBUTE,
+  MAX_DIFF_RATIO,
+  PIXEL_THRESHOLD,
+  VECTOR_MAX_DIFF_RATIO,
 } from './parity-config.ts';
+import type { ParitySummary, VariantResult } from './parity-summary.ts';
+import { SUMMARY_FILE } from './parity-summary.ts';
 import { startStaticServer } from './static-server.ts';
 import { findParityStoryId } from './story-target.ts';
+import { captureVector } from './vector-capture.ts';
 
-// 사용법: node scripts/parity/run-parity.ts [--affected] [--base <ref>] [--no-build] [--component <name>]...
+// 사용법: node scripts/parity/run-parity.ts [--affected] [--base <ref>] [--no-build] [--component <name>]... [--figma-dir <dir>]
+// --figma-dir는 figma/ 대신 쓸 폴더다(로컬에서 다른 내보내기 자료로 비교해 볼 때).
 const AFFECTED_FLAG = '--affected';
 const BASE_FLAG = '--base';
 const NO_BUILD_FLAG = '--no-build';
 const COMPONENT_FLAG = '--component';
+const FIGMA_DIR_FLAG = '--figma-dir';
 const DEFAULT_BASES = ['origin/main', 'main'] as const;
 
-type CaseResult = {
-  component: string;
-  variant: string;
-  status: 'pass' | 'fail';
-  message: string;
+type Inspected = {
+  measurement: VariantMeasurement;
+  vectors: Map<string, VectorResult>;
 };
 
 await main();
 
 /**
- * 피그마 이미지와 Storybook 스토리 스크린샷을 비교하고 결과를 요약한다.
+ * 피그마 내보내기 자료와 Storybook 스토리를 값과 픽셀로 비교하고 결과를 요약한다.
  * @codocs [[피그마 일치 검사:CI 비교]]
  */
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
-  if (!existsSync(exportJsonPath)) {
-    console.log('[parity] figma/export.json이 아직 없어 피그마 일치 검사를 건너뛴다.');
+  const sourceDir = path.resolve(optionValue(argv, FIGMA_DIR_FLAG) ?? figmaDir);
+  if (!existsSync(path.join(sourceDir, FIGMA_SETTINGS_FILE))) {
+    console.log(`[parity] ${FIGMA_SETTINGS_FILE}이 아직 없어 피그마 일치 검사를 건너뛴다.`);
     return;
   }
-
-  const figmaExport = parseFigmaExport(readJson(exportJsonPath));
+  const componentsDir = path.join(sourceDir, FIGMA_COMPONENTS_FOLDER);
+  const manifests = readComponentManifests(componentsDir);
+  const figmaExport = parseFigmaExport(
+    readJson(path.join(sourceDir, FIGMA_SETTINGS_FILE)),
+    manifests,
+  );
   const cases = selectCases(figmaExport.cases, argv);
+  rmSync(parityResultsDir, { recursive: true, force: true });
   if (cases.length === 0) {
     console.log('[parity] 비교할 컴포넌트가 없다.');
+    writeSummary({ total: 0, failed: 0, results: [], fileErrors: [] });
     return;
   }
 
-  rmSync(parityResultsDir, { recursive: true, force: true });
-  const missingImages = findMissingImages(cases);
-  const orphanImages = findOrphanImages(figmaExport.cases);
-  if (missingImages.length > 0 || orphanImages.length > 0) {
-    for (const file of missingImages) {
-      console.error(`[parity] export.json에 있는 이미지가 없다: ${file}`);
-    }
-    for (const file of orphanImages) {
-      console.error(`[parity] export.json에 없는 이미지가 있다: ${file}`);
-    }
-    process.exitCode = 1;
-    return;
+  const fileErrors = findFileErrors(componentsDir, manifests, figmaExport.cases);
+  for (const error of fileErrors) {
+    console.error(`[parity] ${error}`);
   }
-
-  for (const skipped of cases.filter((item) => !isComparedVariant(item))) {
-    console.log(
-      `[parity] 재질 효과 변형은 비교하지 않는다: ${skipped.component}/${skipped.variant}`,
-    );
-  }
-  const comparedCases = cases.filter(isComparedVariant);
 
   if (!argv.includes(NO_BUILD_FLAG)) {
     buildStorybook();
   }
   const index = readJson(path.join(storybookStaticDir, 'index.json'));
+  const ownTokens = path.join(sourceDir, 'tokens.json');
+  const colors = colorTokenTable(readJson(existsSync(ownTokens) ? ownTokens : tokensJsonPath));
 
   const server = await startStaticServer(storybookStaticDir);
   const browser = await chromium.launch({ args: [...BROWSER_ARGS] });
-  const results: CaseResult[] = [];
+  const results: VariantResult[] = [];
   try {
-    for (const parityCase of comparedCases) {
-      results.push(await runCase(browser, server.url, index, parityCase));
+    for (const parityCase of cases) {
+      const result = await runCase(browser, server.url, index, parityCase, componentsDir, colors);
+      results.push(result);
     }
   } finally {
     await browser.close();
     await server.close();
   }
 
-  printSummary(results);
-  if (results.some((result) => result.status === 'fail')) {
+  const failed = results.filter((result) => result.failures.length > 0).length;
+  writeSummary({ total: results.length, failed, results, fileErrors });
+  printSummary(results, fileErrors);
+  if (failed > 0 || fileErrors.length > 0) {
     process.exitCode = 1;
   }
 }
 
 /**
- * 변형 하나를 비교하고, 실패하면 기준·실제·차이 이미지를 남긴다.
+ * 변형 하나를 값과 픽셀로 비교하고, 실패하면 기준·실제·차이 이미지를 남긴다.
  * @param browser Chromium 브라우저
  * @param baseUrl 정적 Storybook 주소
  * @param index Storybook index.json
  * @param parityCase 비교할 변형
- * @returns 비교 결과
+ * @param componentsDir 피그마 컴포넌트 폴더
+ * @param colors 토큰 색 표
+ * @returns 변형 결과
  */
 async function runCase(
-  browser: Awaited<ReturnType<typeof chromium.launch>>,
+  browser: Browser,
   baseUrl: string,
   index: unknown,
   parityCase: ParityCase,
-): Promise<CaseResult> {
+  componentsDir: string,
+  colors: ReadonlyMap<string, string>,
+): Promise<VariantResult> {
   const { component, variant } = parityCase;
+  const outputDir = path.join(parityResultsDir, component, variant);
+  const result: VariantResult = {
+    component,
+    variant,
+    failures: [],
+    notes: [],
+    images: [],
+    vectorRatios: {},
+    pixelRatio: null,
+  };
+  /**
+   * 실패를 결과에 더한다.
+   * @param failure 실패
+   */
+  function fail(failure: CheckFailure): void {
+    result.failures.push(failure);
+  }
+
   const storyId = findParityStoryId(index, component);
   if (storyId === undefined) {
-    return failure(
-      parityCase,
-      `스토리가 없다: src/components/${component}/${component}.stories.tsx의 Parity 스토리를 만든다.`,
-    );
+    fail({
+      layer: 'story',
+      message: `스토리가 없다: src/components/${component}/${component}.stories.tsx의 Parity 스토리를 만든다`,
+    });
+    return result;
+  }
+  if (parityCase.layersError !== undefined) {
+    fail({ layer: 'export', message: parityCase.layersError });
   }
 
-  const expectedBuffer = readFileSync(imagePath(parityCase));
-  const expected = readPng(expectedBuffer);
-  const { pixelWidth: expectedWidth, pixelHeight: expectedHeight } = pixelClip(
-    parityCase.renderBounds,
-    parityCase.scale,
+  const capture = await captureStory(
+    browser,
+    baseUrl,
+    storyId,
+    parityCase,
+    async (context, page, target) =>
+      inspect(context, page, target, parityCase, componentsDir, outputDir, result),
   );
-  if (expected.width !== expectedWidth || expected.height !== expectedHeight) {
-    return failure(
-      parityCase,
-      `피그마 이미지 크기(${expected.width}×${expected.height})가 renderBounds를 픽셀로 덮은 크기(${expectedWidth}×${expectedHeight})과 다르다.`,
-    );
-  }
-
-  const capture = await captureStory(browser, baseUrl, storyId, parityCase);
-  if (capture.image === undefined) {
-    return failure(parityCase, capture.ok ? '스크린샷이 없다.' : capture.message);
-  }
-
-  const comparison = compareImages(expected, readPng(capture.image));
-  if (capture.ok && comparison.status === 'pass') {
-    return { component, variant, status: 'pass', message: '일치' };
-  }
-  // 실패하면 기준·실제 이미지와, 크기가 같으면 차이 이미지를 남긴다.
-  const outputDir = path.join(parityResultsDir, component, variant);
-  mkdirSync(outputDir, { recursive: true });
-  writeFileSync(path.join(outputDir, 'expected.png'), expectedBuffer);
-  writeFileSync(path.join(outputDir, 'actual.png'), capture.image);
-  if (comparison.status === 'diff') {
-    writeFileSync(path.join(outputDir, 'diff.png'), writePng(comparison.diff));
-  }
   if (!capture.ok) {
-    return failure(parityCase, capture.message);
+    fail({ layer: 'root', message: capture.message });
   }
-  if (comparison.status === 'size-mismatch') {
-    return failure(parityCase, comparison.message);
+  if (capture.inspected !== undefined && parityCase.layersError === undefined) {
+    const values = compareVariantValues(
+      parityCase.layers,
+      capture.inspected.measurement,
+      colors,
+      capture.inspected.vectors,
+    );
+    result.failures.push(...values.failures);
+    result.notes.push(...values.notes);
   }
-  return failure(parityCase, `다른 픽셀 ${comparison.diffPixels}개(허용 ${MAX_DIFF_PIXELS}개)`);
+
+  if (capture.image !== undefined) {
+    if (isPixelComparedVariant(parityCase)) {
+      const expectedBuffer = readFileSync(path.join(componentsDir, component, `${variant}.png`));
+      const expected = readPng(expectedBuffer);
+      const { pixelWidth, pixelHeight } = pixelClip(parityCase.renderBounds, parityCase.scale);
+      if (expected.width !== pixelWidth || expected.height !== pixelHeight) {
+        fail({
+          layer: 'image',
+          message: `피그마 이미지 크기(${expected.width}×${expected.height})가 renderBounds를 픽셀로 덮은 크기(${pixelWidth}×${pixelHeight})와 다르다`,
+        });
+      }
+      const comparison = compareImages(expected, readPng(capture.image));
+      result.pixelRatio = comparison.status === 'size-mismatch' ? null : comparison.ratio;
+      if (comparison.status !== 'pass') {
+        mkdirSync(outputDir, { recursive: true });
+        writeFileSync(path.join(outputDir, 'expected.png'), expectedBuffer);
+        writeFileSync(path.join(outputDir, 'actual.png'), capture.image);
+        const images = ['expected.png', 'actual.png'];
+        if (comparison.status === 'diff') {
+          writeFileSync(path.join(outputDir, 'diff.png'), writePng(comparison.diff));
+          images.push('diff.png');
+        }
+        result.images.push({ label: '전체', files: images });
+        fail({
+          layer: 'image',
+          hasImage: true,
+          message:
+            comparison.status === 'diff'
+              ? `전체 이미지 다른 픽셀 ${percent(comparison.ratio)} (허용 ${percent(MAX_DIFF_RATIO)})`
+              : comparison.message,
+        });
+      }
+    } else {
+      result.notes.push('재질 효과 변형이라 전체 이미지는 픽셀로 비교하지 않고 값만 비교했다');
+    }
+  }
+  return result;
 }
 
 /**
- * 실패 결과를 만든다.
- * @param parityCase 비교한 변형
- * @param message 실패 이유
- * @returns 실패 결과
+ * 스크린샷을 찍은 상태 그대로 값을 재고, vector 레이어를 피그마 SVG와 그려 비교한다.
+ * @param context 브라우저 컨텍스트
+ * @param page 스토리 페이지
+ * @param target 비교 요소
+ * @param parityCase 변형
+ * @param componentsDir 피그마 컴포넌트 폴더
+ * @param outputDir 결과 이미지 폴더
+ * @param result 변형 결과(이미지 목록을 채운다)
+ * @returns 측정값과 vector 비교 결과
  */
-function failure(parityCase: ParityCase, message: string): CaseResult {
-  return { component: parityCase.component, variant: parityCase.variant, status: 'fail', message };
+async function inspect(
+  context: BrowserContext,
+  page: Page,
+  target: Locator,
+  parityCase: ParityCase,
+  componentsDir: string,
+  outputDir: string,
+  result: VariantResult,
+): Promise<Inspected> {
+  const measurement = await measureVariant(page, target);
+  const vectors = new Map<string, VectorResult>();
+  for (const layer of parityCase.layers) {
+    if (layer.kind !== 'vector' || layer.svg === undefined) {
+      continue;
+    }
+    const element = page.locator(`[${FIGMA_LAYER_ATTRIBUTE}="${layer.path}"]`);
+    if ((await element.count()) !== 1 || !(await element.isVisible())) {
+      continue;
+    }
+    const svgPath = path.join(componentsDir, parityCase.component, layer.svg.file);
+    if (!existsSync(svgPath)) {
+      vectors.set(layer.path, { ok: false, message: `SVG 파일 ${layer.svg.file}이 없다` });
+      continue;
+    }
+    const capture = await captureVector(
+      context,
+      page,
+      element,
+      layer,
+      readFileSync(svgPath, 'utf8'),
+      parityCase.scale,
+    );
+    const comparison = compareVectorImages(readPng(capture.expected), readPng(capture.actual));
+    if (comparison.status !== 'size-mismatch') {
+      result.vectorRatios[layer.path] = comparison.ratio;
+    }
+    if (comparison.status === 'pass') {
+      vectors.set(layer.path, { ok: true });
+      continue;
+    }
+    const prefix = `vector-${safeFileName(layer.path)}`;
+    mkdirSync(outputDir, { recursive: true });
+    writeFileSync(path.join(outputDir, `${prefix}-expected.png`), capture.expected);
+    writeFileSync(path.join(outputDir, `${prefix}-actual.png`), capture.actual);
+    const files = [`${prefix}-expected.png`, `${prefix}-actual.png`];
+    if (comparison.status === 'diff') {
+      writeFileSync(path.join(outputDir, `${prefix}-diff.png`), writePng(comparison.diff));
+      files.push(`${prefix}-diff.png`);
+    }
+    result.images.push({ label: layer.path, files });
+    vectors.set(layer.path, {
+      ok: false,
+      message:
+        comparison.status === 'diff'
+          ? `모양 다름 (다른 픽셀 ${percent(comparison.ratio)}, 허용 ${percent(VECTOR_MAX_DIFF_RATIO)})`
+          : comparison.message,
+    });
+  }
+  return { measurement, vectors };
+}
+
+/**
+ * 컴포넌트 폴더마다 export.json을 읽는다.
+ * @param componentsDir 피그마 컴포넌트 폴더
+ * @returns 폴더 이름 → export.json 값
+ */
+function readComponentManifests(componentsDir: string): Record<string, unknown> {
+  if (!existsSync(componentsDir)) {
+    return {};
+  }
+  const manifests: Record<string, unknown> = {};
+  for (const component of readdirSync(componentsDir).sort()) {
+    const file = path.join(componentsDir, component, COMPONENT_MANIFEST_FILE);
+    if (existsSync(file)) {
+      manifests[component] = readJson(file);
+    }
+  }
+  return manifests;
+}
+
+/**
+ * 컴포넌트 폴더의 파일이 export.json과 맞는지 확인한다.
+ * 변형 PNG·SVG가 없거나, export.json이 가리키지 않는 파일·export.json 없는 폴더가 있으면 오류다.
+ * @param componentsDir 피그마 컴포넌트 폴더
+ * @param manifests 폴더 이름 → export.json 값
+ * @param cases 모든 변형
+ * @returns 오류 메시지 목록
+ */
+function findFileErrors(
+  componentsDir: string,
+  manifests: Readonly<Record<string, unknown>>,
+  cases: readonly ParityCase[],
+): string[] {
+  const errors: string[] = [];
+  if (!existsSync(componentsDir)) {
+    return errors;
+  }
+  for (const component of readdirSync(componentsDir).sort()) {
+    if (!(component in manifests)) {
+      errors.push(`${FIGMA_COMPONENTS_FOLDER}/${component}/에 ${COMPONENT_MANIFEST_FILE}이 없다`);
+      continue;
+    }
+    const own = cases.filter((item) => item.component === component);
+    const wanted = new Set([
+      COMPONENT_MANIFEST_FILE,
+      ...own.map((item) => `${item.variant}.png`),
+      ...own.flatMap((item) =>
+        item.layers.flatMap((layer) => (layer.svg === undefined ? [] : [layer.svg.file])),
+      ),
+    ]);
+    const present = new Set(readdirSync(path.join(componentsDir, component)));
+    for (const file of wanted) {
+      if (!present.has(file)) {
+        errors.push(`${FIGMA_COMPONENTS_FOLDER}/${component}/${file}이 없다`);
+      }
+    }
+    for (const file of present) {
+      if (!wanted.has(file)) {
+        errors.push(
+          `${FIGMA_COMPONENTS_FOLDER}/${component}/${file}은 export.json이 가리키지 않는 파일이다`,
+        );
+      }
+    }
+  }
+  return errors;
 }
 
 /**
  * 인자에 따라 비교할 변형을 고른다.
- * @param cases export.json의 모든 변형
+ * @param cases 모든 변형
  * @param argv 명령줄 인자
  * @returns 비교할 변형
  */
@@ -194,8 +375,7 @@ function selectCases(cases: readonly ParityCase[], argv: readonly string[]): Par
     return selected;
   }
 
-  const baseIndex = argv.indexOf(BASE_FLAG);
-  const base = baseIndex >= 0 ? argv[baseIndex + 1] : DEFAULT_BASES.find(hasRef);
+  const base = optionValue(argv, BASE_FLAG) ?? DEFAULT_BASES.find(hasRef);
   if (base === undefined) {
     throw new Error(`비교 기준 브랜치를 찾지 못했다. ${BASE_FLAG} <ref>로 정한다.`);
   }
@@ -210,7 +390,6 @@ function selectCases(cases: readonly ParityCase[], argv: readonly string[]): Par
     changedFiles,
     packagePrefix,
     componentDependents(readComponentSources()),
-    changedExportComponents(readBaseExport(mergeBase, packagePrefix), readJson(exportJsonPath)),
   );
   if (selection.all) {
     console.log(`[parity] ${selection.reason}이 바뀌어 모든 컴포넌트를 비교한다.`);
@@ -239,44 +418,6 @@ function buildStorybook(): void {
 }
 
 /**
- * export.json의 변형 중 이미지 파일이 없는 것을 찾는다.
- * @param cases 비교할 변형
- * @returns 없는 이미지의 패키지 기준 경로
- */
-function findMissingImages(cases: readonly ParityCase[]): string[] {
-  return cases
-    .map(imagePath)
-    .filter((file) => !existsSync(file))
-    .map((file) => path.relative(packageRoot, file));
-}
-
-/**
- * figma/images에 있지만 export.json에 없는 이미지를 찾는다.
- * @param cases export.json의 모든 변형
- * @returns export.json에 없는 이미지의 패키지 기준 경로
- */
-function findOrphanImages(cases: readonly ParityCase[]): string[] {
-  if (!existsSync(figmaImagesDir)) {
-    return [];
-  }
-  const known = new Set(cases.map(imagePath));
-  return readdirSync(figmaImagesDir, { recursive: true, encoding: 'utf8' })
-    .filter((file) => file.endsWith('.png'))
-    .map((file) => path.join(figmaImagesDir, file))
-    .filter((file) => !known.has(file))
-    .map((file) => path.relative(packageRoot, file));
-}
-
-/**
- * 변형의 피그마 이미지 경로를 만든다.
- * @param parityCase 변형
- * @returns figma/images/<component>/<variant>.png 절대 경로
- */
-function imagePath(parityCase: ParityCase): string {
-  return path.join(figmaImagesDir, parityCase.component, `${parityCase.variant}.png`);
-}
-
-/**
  * 컴포넌트 폴더마다 소스 파일 내용을 읽는다(의존 관계 계산용).
  * @returns 컴포넌트 폴더 이름 → 소스 내용 목록
  */
@@ -298,47 +439,66 @@ function readComponentSources(): Map<string, string[]> {
 }
 
 /**
- * 기준 커밋의 export.json을 읽는다.
- * @param mergeBase 기준 커밋
- * @param packagePrefix 저장소 기준 패키지 경로
- * @returns 파싱한 값. 기준 커밋에 파일이 없으면 undefined
+ * 결과를 parity-results/summary.json으로 남긴다. PR 댓글은 이 파일로 만든다.
+ * @param summary 요약
  */
-function readBaseExport(mergeBase: string, packagePrefix: string): unknown {
-  try {
-    const content = git(['show', `${mergeBase}:${packagePrefix}figma/export.json`]);
-    const json: unknown = JSON.parse(content);
-    return json;
-  } catch {
-    return undefined;
-  }
+function writeSummary(summary: ParitySummary): void {
+  mkdirSync(parityResultsDir, { recursive: true });
+  writeFileSync(path.join(parityResultsDir, SUMMARY_FILE), `${JSON.stringify(summary, null, 2)}\n`);
 }
 
 /**
- * 비교 결과를 표로 출력하고 summary.json으로 남긴다.
+ * 비교 결과를 출력한다.
  * @param results 변형별 결과
+ * @param fileErrors 파일 오류
  */
-function printSummary(results: readonly CaseResult[]): void {
-  const failed = results.filter((result) => result.status === 'fail');
+function printSummary(results: readonly VariantResult[], fileErrors: readonly string[]): void {
+  const failed = results.filter((result) => result.failures.length > 0);
   console.log(
-    `\n[parity] 기준: threshold=${PIXELMATCH_THRESHOLD}, includeAA=${String(SHOULD_INCLUDE_ANTI_ALIASING)}, 허용 픽셀=${MAX_DIFF_PIXELS}`,
+    `\n[parity] 기준: 위치·크기 ±0.5px, 값 정확히, 전체 픽셀 threshold=${PIXEL_THRESHOLD} 허용 ${percent(MAX_DIFF_RATIO)}, 벡터 허용 ${percent(VECTOR_MAX_DIFF_RATIO)}`,
   );
   for (const result of results) {
-    const mark = result.status === 'pass' ? 'PASS' : 'FAIL';
-    console.log(`  ${mark}  ${result.component}/${result.variant}  ${result.message}`);
+    const mark = result.failures.length === 0 ? 'PASS' : 'FAIL';
+    console.log(`  ${mark}  ${result.component}/${result.variant}`);
+    for (const failure of result.failures) {
+      console.log(`        - ${failure.message}`);
+    }
+    for (const note of result.notes) {
+      console.log(`        · ${note}`);
+    }
   }
   console.log(
-    `[parity] ${results.length}개 중 ${results.length - failed.length}개 통과, ${failed.length}개 실패`,
+    `[parity] ${results.length}개 중 ${results.length - failed.length}개 통과, ${failed.length}개 실패${fileErrors.length > 0 ? `, 파일 오류 ${fileErrors.length}개` : ''}`,
   );
-  if (failed.length > 0) {
-    mkdirSync(parityResultsDir, { recursive: true });
-    writeFileSync(
-      path.join(parityResultsDir, 'summary.json'),
-      `${JSON.stringify(results, null, 2)}\n`,
-    );
-    console.log(
-      `[parity] 실패한 변형의 이미지는 ${path.relative(process.cwd(), parityResultsDir)}에 있다.`,
-    );
-  }
+}
+
+/**
+ * 비율을 백분율로 쓴다.
+ * @param ratio 0~1 비율
+ * @returns `1.23%`
+ */
+function percent(ratio: number): string {
+  return `${(ratio * 100).toFixed(2)}%`;
+}
+
+/**
+ * 레이어 경로를 파일 이름에 쓸 수 있게 바꾼다.
+ * @param value 레이어 경로
+ * @returns 파일 이름 조각
+ */
+function safeFileName(value: string): string {
+  return value.replace(/[^a-zA-Z0-9-]+/gu, '_');
+}
+
+/**
+ * `--이름 값` 형태의 인자 값을 읽는다.
+ * @param argv 명령줄 인자
+ * @param flag 인자 이름
+ * @returns 값, 없으면 undefined
+ */
+function optionValue(argv: readonly string[], flag: string): string | undefined {
+  const index = argv.indexOf(flag);
+  return index >= 0 ? argv[index + 1] : undefined;
 }
 
 /**

@@ -106,6 +106,23 @@ export function tokensToCss(tokens: unknown): string {
 }
 
 /**
+ * 색 변수의 별칭을 끝까지 따라가 실제 색 표를 만든다. tokens.css를 만들 때와 같은 규칙이다.
+ * 피그마 일치 검사가 토큰 별칭(`{accent-fill.default}`)을 실제 색으로 풀 때 쓴다.
+ * @codocs [[피그마 일치 검사:CI 비교]]
+ * @param tokens figma/tokens.json을 파싱한 값
+ * @returns 변수 경로(`accent-fill/default`) → `#rrggbb` 또는 `#rrggbbaa`
+ */
+export function colorTokenTable(tokens: unknown): Map<string, string> {
+  if (!isRecord(tokens)) {
+    throw new TokenFormatError('(root)', '토큰 JSON의 최상위는 객체여야 한다.');
+  }
+  const variableGroups = Object.fromEntries(
+    Object.entries(tokens).filter(([key]) => key !== 'style'),
+  );
+  return resolvedColors(flattenTokens(variableGroups, []));
+}
+
+/**
  * 피그마 변수 경로를 CSS 사용자 속성 이름으로 바꾼다.
  * Tailwind가 유틸리티를 만드는 이름공간이 있으면 그 이름공간을 쓴다.
  * @codocs [[디자인 기반:토큰 이름]]

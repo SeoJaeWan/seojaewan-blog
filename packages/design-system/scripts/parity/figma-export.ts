@@ -1,8 +1,10 @@
 /**
- * 피그마 플러그인이 쓴 figma/export.json을 읽어 비교할 변형 목록으로 바꾼다.
+ * 피그마 플러그인이 쓴 figma/figma.json과 figma/components/<컴포넌트>/export.json을 읽어 비교할 변형 목록으로 바꾼다.
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
+import type { FigmaLayer } from './figma-layers.ts';
+import { parseLayers } from './figma-layers.ts';
 import { COMPARED_MATERIAL, MATERIAL_PROPERTY } from './parity-config.ts';
 
 export type RenderBounds = {
@@ -28,6 +30,9 @@ export type ParityCase = {
   renderBounds: RenderBounds;
   /** 내보낸 PNG의 배율. 브라우저 deviceScaleFactor로 쓴다 */
   scale: number;
+  /** 변형 루트와 그 아래 레이어 정보. 첫 항목이 루트다. 읽지 못하면 빈 목록이고 layersError에 이유가 있다 */
+  layers: FigmaLayer[];
+  layersError?: string;
 };
 
 export type FigmaExport = {
@@ -40,23 +45,26 @@ export type FigmaExport = {
 export const DEFAULT_VARIANT = 'default';
 
 /**
- * export.json 내용을 검증하고 비교할 변형 목록으로 바꾼다.
+ * figma.json과 컴포넌트별 export.json을 검증하고 비교할 변형 목록으로 바꾼다.
  * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
- * @param json export.json을 파싱한 값
+ * @param settings figma.json을 파싱한 값
+ * @param components 컴포넌트 폴더 이름 → 그 폴더의 export.json을 파싱한 값
  * @returns 컴포넌트·변형 순서대로 정렬한 비교 목록
  */
-export function parseFigmaExport(json: unknown): FigmaExport {
-  const root = expectRecord(json, 'export.json');
-  const scale = expectNumber(root.scale, 'scale');
-  const components = expectRecord(root.components, 'components');
+export function parseFigmaExport(
+  settings: unknown,
+  components: Readonly<Record<string, unknown>>,
+): FigmaExport {
+  const root = expectRecord(settings, 'figma.json');
+  const scale = expectNumber(root.scale, 'figma.json scale');
   const cases: ParityCase[] = [];
 
   for (const [component, value] of Object.entries(components)) {
-    const where = `components.${component}`;
+    const where = `components/${component}/export.json`;
     const entry = expectRecord(value, where);
     const componentName = expectString(entry.name, `${where}.name`);
 
-    const variants = expectRecord(entry.variants, `${where}.variants`);
+    const variants = expectRecord(entry.variants, `${where} variants`);
     for (const [variant, variantValue] of Object.entries(variants)) {
       const variantWhere = `${where}.variants.${variant}`;
       const item = expectRecord(variantValue, variantWhere);
@@ -88,6 +96,7 @@ export function parseFigmaExport(json: unknown): FigmaExport {
           height: expectNumber(bounds.height, `${variantWhere}.renderBounds.height`),
         },
         scale,
+        ...readLayers(item.layers, `${variantWhere}.layers`),
       });
     }
   }
@@ -97,7 +106,7 @@ export function parseFigmaExport(json: unknown): FigmaExport {
       ? a.variant.localeCompare(b.variant)
       : a.component.localeCompare(b.component),
   );
-  return { fileKey: expectString(root.fileKey, 'fileKey'), scale, cases };
+  return { fileKey: expectString(root.fileKey, 'figma.json fileKey'), scale, cases };
 }
 
 export type PixelClip = {
@@ -177,6 +186,20 @@ function inFileNameOrder(properties: [string, string][], variant: string): [stri
 }
 
 /**
+ * 변형의 레이어 정보를 읽는다. 계약과 다르면 그 변형만 실패하도록 이유를 남긴다.
+ * @param value layers 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 레이어 목록, 또는 빈 목록과 이유
+ */
+function readLayers(value: unknown, where: string): Pick<ParityCase, 'layers' | 'layersError'> {
+  try {
+    return { layers: parseLayers(value, where) };
+  } catch (error) {
+    return { layers: [], layersError: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+/**
  * 객체인지 확인한다.
  * @param value 확인할 값
  * @param where 오류 메시지에 쓸 위치
@@ -216,13 +239,14 @@ function expectString(value: unknown, where: string): string {
 }
 
 /**
- * 비교하는 변형인지 확인한다. 재질 속성이 있으면 효과를 뺀 단색 변형만 비교한다.
+ * 이미지 전체를 픽셀로 비교하는 변형인지 확인한다. 재질 속성이 있으면 효과를 뺀 단색 변형만 픽셀로 비교한다.
  * 피그마 배경 블러와 브라우저 backdrop-filter는 계산 방식이 달라 픽셀로 비교할 수 없기 때문이다.
+ * 재질 변형도 값 비교(칠·이미지·블러·그림자 값)는 한다.
  * @codocs [[디자인 기반:재질 효과]]
  * @param parityCase 변형
- * @returns 비교하면 true
+ * @returns 픽셀로 비교하면 true
  */
-export function isComparedVariant(parityCase: Pick<ParityCase, 'properties'>): boolean {
+export function isPixelComparedVariant(parityCase: Pick<ParityCase, 'properties'>): boolean {
   return parityCase.properties.every(
     ([name, value]) =>
       normalizeName(name) !== MATERIAL_PROPERTY || normalizeName(value) === COMPARED_MATERIAL,
