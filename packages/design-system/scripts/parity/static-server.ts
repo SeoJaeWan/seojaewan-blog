@@ -26,9 +26,10 @@ const contentTypes = new Map<string, string>([
 /**
  * 정적 빌드한 Storybook을 로컬에서 띄운다. 개발 서버 대신 빌드 결과를 써야 매번 같은 결과가 나온다.
  * @param root storybook-static 폴더
+ * @param listenPort 들을 포트(0이면 빈 포트)
  * @returns 주소와 종료 함수
  */
-export async function startStaticServer(root: string): Promise<StaticServer> {
+export async function startStaticServer(root: string, listenPort = 0): Promise<StaticServer> {
   const server = createServer(
     /**
      * 요청 경로의 파일을 돌려준다. storybook-static 밖의 경로는 404다.
@@ -58,7 +59,7 @@ export async function startStaticServer(root: string): Promise<StaticServer> {
   );
 
   await new Promise<void>((resolve) => {
-    server.listen(0, '127.0.0.1', resolve);
+    server.listen(listenPort, '127.0.0.1', resolve);
   });
   const { port } = toAddressInfo(server.address());
   return {

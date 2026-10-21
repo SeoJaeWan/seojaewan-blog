@@ -16,7 +16,8 @@
     "build-storybook": "storybook build",
     "generate:tokens": "node scripts/tokens/generate-tokens.ts",
     "generate:fonts": "node scripts/fonts/generate-fonts.ts",
-    "generate:assets": "node scripts/assets/generate-assets.ts"
+    "generate:assets": "node scripts/assets/generate-assets.ts",
+    "test:parity": "node scripts/parity/run-parity.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

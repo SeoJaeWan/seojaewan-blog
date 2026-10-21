@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 
-import { PARITY_TARGET_ATTRIBUTE, RENDER_TIMEOUT_MS } from './parity-config.ts';
+import { FIGMA_ROOT_ATTRIBUTE, RENDER_TIMEOUT_MS } from './parity-config.ts';
 import type { Interaction, StoryArgValue } from './story-target.ts';
 import { storyArgsParam } from './story-target.ts';
 
@@ -23,6 +23,7 @@ export type StoryPageResult = { ok: true; target: Locator } | { ok: false; messa
  * @param storyId 스토리 ID
  * @param args 스토리 args
  * @param interaction 재현할 상호작용
+ * @param rootName 피그마 컴포넌트 이름(비교 요소의 data-figma-root 값)
  * @returns 비교 요소, 또는 실패 이유
  */
 export async function openStory(
@@ -30,6 +31,7 @@ export async function openStory(
   storyId: string,
   args: Readonly<Record<string, StoryArgValue>>,
   interaction: Interaction,
+  rootName: string,
 ): Promise<StoryPageResult> {
   const query = new URLSearchParams({ id: storyId, viewMode: 'story', args: storyArgsParam(args) });
   await page.goto(`/iframe.html?${query.toString()}`);
@@ -38,7 +40,7 @@ export async function openStory(
   if (renderError !== undefined) {
     return { ok: false, message: `스토리를 그리지 못했다: ${renderError}` };
   }
-  const target = await findTarget(page);
+  const target = findTarget(page, rootName);
   const fontError = await waitForFonts(page);
   if (fontError !== undefined) {
     return { ok: false, message: fontError };
@@ -111,16 +113,13 @@ async function waitForFonts(page: Page): Promise<string | undefined> {
 }
 
 /**
- * 비교할 요소를 찾는다. `data-parity-target`이 있으면 그 요소, 없으면 #storybook-root의 첫 요소다.
+ * 비교할 요소(피그마 변형 루트와 짝지은 data-figma-root 요소)를 찾는다. 상태 재현도 이 요소에 한다.
  * @param page 스토리 페이지
+ * @param rootName 피그마 컴포넌트 이름(data-figma-root 값)
  * @returns 비교할 요소
  */
-async function findTarget(page: Page): Promise<Locator> {
-  const marked = page.locator(`[${PARITY_TARGET_ATTRIBUTE}]`);
-  if ((await marked.count()) > 0) {
-    return marked.first();
-  }
-  return page.locator('#storybook-root > *').first();
+function findTarget(page: Page, rootName: string): Locator {
+  return page.locator(`[${FIGMA_ROOT_ATTRIBUTE}="${rootName}"]`).first();
 }
 
 /**
