@@ -20,3 +20,8 @@ export const parityResultsDir = path.join(packageRoot, 'parity-results');
 // 웹 폰트 패키지 폴더다. generate:fonts가 이 패키지들의 CSS에서 woff2만 가리키는 CSS를 src/에 만든다.
 export const nodeModulesDir = path.join(packageRoot, 'node_modules');
 export const sourceDir = path.join(packageRoot, 'src');
+
+// 피그마 자산(figma/assets/)과 코드가 쓰는 자산(src/assets/)이다. generate:assets가 앞에서 뒤를 만든다.
+export const figmaAssetsDir = path.join(figmaDir, 'assets');
+export const sourceAssetsDir = path.join(sourceDir, 'assets');
+export const assetDataPath = path.join(sourceAssetsDir, 'asset-data.ts');
