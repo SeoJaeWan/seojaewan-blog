@@ -48,3 +48,18 @@ export function utf8Decode(bytes: Uint8Array): string {
 export function normalizeSvgBytes(bytes: Uint8Array): Uint8Array {
   return utf8Encode(normalizeSvgIds(utf8Decode(bytes)));
 }
+
+/**
+ * 한 가지 색 자산 SVG의 칠·선 색을 currentColor로 바꾸고 색 불투명도 속성을 지운다(D6).
+ * 색과 투명도는 코드의 글자 색 클래스(색 토큰)가 정한다. 색 토큰의 투명도가 SVG에 한 번 더 곱해지지 않게 불투명도도 지운다.
+ * `fill="none"`처럼 칠하지 않는 값은 그대로 둔다.
+ * @codocs [[피그마 일치 검사:자산]]
+ * @param bytes SVG 바이트
+ * @returns 바꾼 SVG 바이트
+ */
+export function monoColorSvg(bytes: Uint8Array): Uint8Array {
+  const svg = utf8Decode(bytes)
+    .replace(/\s(fill|stroke)="(?!none")[^"]*"/gu, ' $1="currentColor"')
+    .replace(/\s(fill|stroke)-opacity="[^"]*"/gu, '');
+  return utf8Encode(svg);
+}

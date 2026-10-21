@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
-import { componentFilePath, componentSlug, variantSlug } from './naming';
+import {
+  assetFile,
+  assetFilePath,
+  booleanPropName,
+  componentFilePath,
+  componentSlug,
+  variantSlug,
+} from './naming';
+import { utf8Encode } from './sha256';
+import { utf8Decode } from './svg-normalize';
+import { monoColorSvg } from './svg-normalize';
 
 // @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
 describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다', () => {
@@ -43,5 +53,36 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
     expect(componentFilePath('button', 'export.json')).toBe(
       'packages/design-system/figma/components/button/export.json',
     );
+  });
+});
+
+// @codocs [[피그마 일치 검사:자산]]
+describe('자산 파일', () => {
+  it('자산은 figma/assets/<묶음>/<이름>에 두고, 래스터만 PNG다', () => {
+    expect(assetFile({ group: 'Icons', name: 'ic_fluent_add_20_regular', kind: 'mono' })).toBe(
+      'icons/ic_fluent_add_20_regular.svg',
+    );
+    expect(assetFile({ group: 'Illustrations', name: 'file/Folder', kind: 'color' })).toBe(
+      'illustrations/file-folder.svg',
+    );
+    expect(assetFile({ group: 'Images', name: 'avatar/Profile', kind: 'raster' })).toBe(
+      'images/avatar-profile.png',
+    );
+    expect(assetFilePath('icons/a.svg')).toBe('packages/design-system/figma/assets/icons/a.svg');
+  });
+
+  it('한 가지 색 자산 SVG의 색은 currentColor가 되고 색 불투명도는 지운다', () => {
+    const svg = '<svg><path fill="#242424" fill-opacity="0.6" d="M0"/><rect fill="none"/></svg>';
+    expect(utf8Decode(monoColorSvg(utf8Encode(svg)))).toBe(
+      '<svg><path fill="currentColor" d="M0"/><rect fill="none"/></svg>',
+    );
+  });
+});
+
+// @codocs [[피그마 일치 검사:결정 사항]]
+describe('BOOLEAN 컴포넌트 속성 이름(D4)', () => {
+  it('속성 키의 #id를 떼고 camelCase로 바꾼 것이 React prop 이름이다', () => {
+    expect(booleanPropName('Show icon#13:16')).toBe('showIcon');
+    expect(booleanPropName('Show shortcut#14:34')).toBe('showShortcut');
   });
 });

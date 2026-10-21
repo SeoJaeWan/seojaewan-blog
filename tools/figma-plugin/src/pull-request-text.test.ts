@@ -12,7 +12,7 @@ const summary: ExportSummary = {
   changedComponents: ['Button', 'Tooltip'],
   uploadCount: 3,
   deletionCount: 1,
-  vectorUploadCount: 0,
+  assetUploadCount: 0,
   hasTokenChange: true,
 };
 
@@ -42,7 +42,7 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
 
   it('벡터 SVG가 바뀌었을 때만 그 줄을 적는다', () => {
     expect(commitBody(summary)).not.toContain('벡터 SVG');
-    expect(commitBody({ ...summary, vectorUploadCount: 2 })).toContain('- 벡터 SVG 2개 추가');
+    expect(commitBody({ ...summary, assetUploadCount: 2 })).toContain('- 자산 파일 2개 갱신');
   });
 
   it('PR 본문도 같은 변경 목록을 담는다', () => {

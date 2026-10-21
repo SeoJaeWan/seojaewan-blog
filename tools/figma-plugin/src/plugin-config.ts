@@ -25,3 +25,6 @@ export const TOKEN_STORAGE_KEY = 'github-token';
 
 /** 마지막으로 쓴 기존 브랜치를 보관하는 figma.clientStorage 키 */
 export const BRANCH_STORAGE_KEY = 'export-branch';
+
+/** 자산(아이콘·도형·일러스트·이미지)을 묶음별로 두는 폴더 */
+export const ASSETS_DIR = `${FIGMA_DIR}/assets`;

@@ -51,6 +51,31 @@ export async function getFileText(
 }
 
 /**
+ * 커밋 시점의 파일 내용을 바이트로 가져온다.
+ * @param token GitHub 토큰
+ * @param path 저장소 경로
+ * @param ref 커밋 SHA나 브랜치
+ * @returns 파일 내용, 파일이 없으면 null
+ */
+export async function getFileBytes(
+  token: string,
+  path: string,
+  ref: string,
+): Promise<Uint8Array | null> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
+    method: 'GET',
+    headers: { ...headers(token), Accept: 'application/vnd.github.raw+json' },
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`GitHub ${path} 읽기 실패 (${response.status} ${response.statusText})`);
+  }
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+/**
  * 트리 아래 모든 파일 경로를 가져온다(하위 폴더 포함).
  * @param token GitHub 토큰
  * @param treeSha 트리 SHA

@@ -63,13 +63,18 @@ function handleMainMessage(message: MainMessage): void {
 
 /**
  * 내보내기 결과(커밋, PR 링크)를 보여 준다.
- * @param done 결과. 바뀐 것이 없으면 null
+ * @param outcome 커밋 결과, 바뀐 것 없음, 또는 위반 목록
  */
-function showResult(done: Extract<MainMessage, { type: 'done' }>['result']): void {
-  if (done === null) {
+function showResult(outcome: Extract<MainMessage, { type: 'done' }>['result']): void {
+  if (outcome.kind === 'unchanged') {
     result.textContent = '바뀐 것이 없어 커밋하지 않았다.';
     return;
   }
+  if (outcome.kind === 'blocked') {
+    showViolations(outcome.violations);
+    return;
+  }
+  const done = outcome.commit;
   const parts: (string | Node)[] = [`${done.branch}: `, link(done.commitUrl, '커밋')];
   if (done.pullRequestUrl !== null) {
     parts.push(done.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ', link(done.pullRequestUrl));
@@ -78,6 +83,39 @@ function showResult(done: Extract<MainMessage, { type: 'done' }>['result']): voi
   }
   result.replaceChildren(...parts);
   appendLog('완료');
+}
+
+/**
+ * 구조 검사 위반을 레이어 경로·이유·고칠 방법 목록으로 보여 준다. 위반이 있으면 커밋하지 않는다.
+ * @codocs [[피그마 일치 검사:구조 검사]]
+ * @param violations 위반 목록
+ */
+function showViolations(
+  violations: Extract<
+    Extract<MainMessage, { type: 'done' }>['result'],
+    { kind: 'blocked' }
+  >['violations'],
+): void {
+  const list = document.createElement('ol');
+  list.className = 'violations';
+  for (const violation of violations) {
+    const item = document.createElement('li');
+    const where = document.createElement('strong');
+    where.textContent = violation.where;
+    item.append(
+      where,
+      document.createElement('br'),
+      violation.reason,
+      document.createElement('br'),
+      muted(`고칠 방법: ${violation.fix}`),
+    );
+    list.append(item);
+  }
+  result.replaceChildren(
+    `구조 검사 위반 ${String(violations.length)}개. 고친 뒤 다시 내보낸다(커밋하지 않았다).`,
+    list,
+  );
+  appendLog('구조 검사 위반으로 커밋하지 않음');
 }
 
 /**

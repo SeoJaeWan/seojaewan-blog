@@ -6,8 +6,8 @@ export type ExportSummary = {
   uploadCount: number;
   /** 지운 파일 수(이미지, SVG, 이름이 바뀐 컴포넌트의 이전 폴더) */
   deletionCount: number;
-  /** 새로 올린 vector SVG 수 */
-  vectorUploadCount: number;
+  /** 새로 올리거나 바꾼 자산 파일 수 */
+  assetUploadCount: number;
   /** tokens.json이 바뀌었는지 */
   hasTokenChange: boolean;
 };
@@ -32,7 +32,8 @@ export function exportBranchName(date: Date): string {
  */
 export function commitSubject(summary: ExportSummary): string {
   const hasComponentChange =
-    summary.changedComponents.length > 0 || summary.uploadCount + summary.deletionCount > 0;
+    summary.changedComponents.length > 0 ||
+    summary.uploadCount + summary.deletionCount + summary.assetUploadCount > 0;
   if (hasComponentChange && summary.hasTokenChange) {
     return 'chore(figma): export components and tokens';
   }
@@ -47,7 +48,7 @@ export function commitSubject(summary: ExportSummary): string {
  */
 export function commitBody(summary: ExportSummary): string {
   return [
-    '피그마에서 내보낸 기준 이미지, 레이어 정보, 토큰을 갱신한다.',
+    '피그마에서 내보낸 레이어 이름 정보, 변형 이미지, 자산, 토큰을 갱신한다.',
     '',
     ...changeLines(summary),
   ].join('\n');
@@ -84,9 +85,9 @@ function changeLines(summary: ExportSummary): string[] {
           `- 바뀐 컴포넌트 ${summary.changedComponents.length}개 (이미지 ${summary.uploadCount}개 갱신, 파일 ${summary.deletionCount}개 삭제)`,
           ...summary.changedComponents.map((name) => `  - ${name}`),
         ];
-  const vectors =
-    summary.vectorUploadCount > 0 ? [`- 벡터 SVG ${summary.vectorUploadCount}개 추가`] : [];
-  return [...components, ...vectors, `- 토큰: ${summary.hasTokenChange ? '바뀜' : '바뀌지 않음'}`];
+  const assets =
+    summary.assetUploadCount > 0 ? [`- 자산 파일 ${summary.assetUploadCount}개 갱신`] : [];
+  return [...components, ...assets, `- 토큰: ${summary.hasTokenChange ? '바뀜' : '바뀌지 않음'}`];
 }
 
 /**

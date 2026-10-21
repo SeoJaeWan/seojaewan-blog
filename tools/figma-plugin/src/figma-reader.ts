@@ -8,26 +8,10 @@ import type {
   VariableInput,
   VariableValueInput,
 } from './design-tokens';
-import type { RenderBounds } from './export-manifest';
 import type { ComponentSummary } from './messages';
-import { COMPONENTS_PAGE_ID, SCALE } from './plugin-config';
-import type { JsonObject } from './stable-json';
+import { COMPONENTS_PAGE_ID } from './plugin-config';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
-
-/** 내보낸 변형 하나 */
-export type ExportedVariant = {
-  nodeId: string;
-  properties: Record<string, string>;
-  width: number;
-  height: number;
-  renderBounds: RenderBounds;
-  /** 변형 루트와 그 아래 레이어 정보(export.json 계약) */
-  layers: JsonObject[];
-  png: Uint8Array;
-  /** vector 레이어 SVG. 파일 이름(내용 SHA-256 + .svg) → 내용 */
-  svgs: Map<string, Uint8Array>;
-};
 
 /**
  * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 문서 순서대로 찾는다.
@@ -50,42 +34,6 @@ export async function listComponents(): Promise<ComponentSummary[]> {
     }
   }
   return summaries;
-}
-
-/**
- * 컴포넌트(세트)의 모든 변형을 PNG로 내보낸다. 노드를 그대로 내보내 배경은 투명이다.
- * 그림자는 노드 상자 밖으로 그려지므로 노드 왼쪽 위 기준 렌더링 영역을 함께 기록한다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @returns 컴포넌트 이름, ID, 변형 목록
- */
-export async function exportComponent(
-  nodeId: string,
-): Promise<{ name: string; nodeId: string; variants: ExportedVariant[] }> {
-  await loadComponentsPage();
-  const node = await figma.getNodeByIdAsync(nodeId);
-  if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
-    throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
-  }
-  const components = node.type === 'COMPONENT_SET' ? variantsOf(node) : [node];
-  const variants: ExportedVariant[] = [];
-  for (const component of components) {
-    const png = await component.exportAsync({
-      format: 'PNG',
-      constraint: { type: 'SCALE', value: SCALE },
-    });
-    variants.push({
-      nodeId: component.id,
-      properties: node.type === 'COMPONENT_SET' ? { ...component.variantProperties } : {},
-      width: component.width,
-      height: component.height,
-      renderBounds: renderBoundsOf(component),
-      layers: [],
-      png,
-      svgs: new Map(),
-    });
-  }
-  return { name: node.name, nodeId: node.id, variants };
 }
 
 /**
@@ -140,7 +88,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
  * 컴포넌트 페이지를 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
  * @returns 컴포넌트 페이지
  */
-async function loadComponentsPage(): Promise<PageNode> {
+export async function loadComponentsPage(): Promise<PageNode> {
   const page = await figma.getNodeByIdAsync(COMPONENTS_PAGE_ID);
   if (page?.type !== 'PAGE') {
     throw new Error(`컴포넌트 페이지 ${COMPONENTS_PAGE_ID}를 찾을 수 없다.`);
@@ -156,20 +104,6 @@ async function loadComponentsPage(): Promise<PageNode> {
  */
 function variantsOf(set: ComponentSetNode): ComponentNode[] {
   return set.children.filter((child): child is ComponentNode => child.type === 'COMPONENT');
-}
-
-/**
- * 노드 상자 왼쪽 위를 원점으로 한 렌더링 영역을 계산한다. 그려지는 것이 없으면 노드 상자다.
- * @param node 변형 노드
- * @returns 렌더링 영역
- */
-function renderBoundsOf(node: ComponentNode): RenderBounds {
-  const box = node.absoluteBoundingBox;
-  const render = node.absoluteRenderBounds;
-  if (box === null || render === null) {
-    return { x: 0, y: 0, width: node.width, height: node.height };
-  }
-  return { x: render.x - box.x, y: render.y - box.y, width: render.width, height: render.height };
 }
 
 /**

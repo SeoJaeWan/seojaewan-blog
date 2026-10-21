@@ -14,13 +14,19 @@ export type MainMessage =
   | { type: 'log'; text: string }
   | {
       type: 'done';
-      /** 바뀐 것이 없으면 null */
-      result: {
-        branch: string;
-        commitUrl: string;
-        pullRequestUrl: string | null;
-        isNewPullRequest: boolean;
-      } | null;
+      /** 커밋 결과, 바뀐 것 없음, 또는 구조 검사 위반 목록 */
+      result:
+        | {
+            kind: 'committed';
+            commit: {
+              branch: string;
+              commitUrl: string;
+              pullRequestUrl: string | null;
+              isNewPullRequest: boolean;
+            };
+          }
+        | { kind: 'unchanged' }
+        | { kind: 'blocked'; violations: { where: string; reason: string; fix: string }[] };
     }
   | { type: 'failed'; message: string };
 
