@@ -1,0 +1,248 @@
+{
+  "exportedAt": "2026-10-21T00:45:29.077Z",
+  "hash": "ab4c04ff569996e00ad7f547a10d3b17a8c2804508dea185644216e736d44f88",
+  "name": "Button",
+  "nodeId": "13:62",
+  "variants": {
+    "style=accent,state=disabled": {
+      "hash": "afdbc37689fa8e8cee590725db8a1c53e364ccac22fc82ed5a7b6e6c194ed054",
+      "height": 32,
+      "nodeId": "13:14",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Accent"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=accent,state=focused": {
+      "hash": "bb77b2ee6ff0e866a729fd57d4bc2e6b5e9912856f60f1eba5d41b8222cf5c1c",
+      "height": 32,
+      "nodeId": "13:18",
+      "properties": {
+        "State": "Focused",
+        "Style": "Accent"
+      },
+      "renderBounds": {
+        "height": 38,
+        "width": 126,
+        "x": -3,
+        "y": -3
+      },
+      "width": 120
+    },
+    "style=accent,state=hover": {
+      "hash": "06f9e5845b85c79507226f569555958fd3996fed82329506a5c068d97afcbf42",
+      "height": 32,
+      "nodeId": "13:6",
+      "properties": {
+        "State": "Hover",
+        "Style": "Accent"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=accent,state=pressed": {
+      "hash": "4667a45315baf5eeae414b3fee2eecfbab24fde9ccb265133e6daa331240019a",
+      "height": 32,
+      "nodeId": "13:10",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Accent"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=accent,state=rest": {
+      "hash": "ead914a6d672eeb76c17a2a5e4fd78b97d492c9ef93c4f83da7c6bfa743102aa",
+      "height": 32,
+      "nodeId": "13:2",
+      "properties": {
+        "State": "Rest",
+        "Style": "Accent"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=standard,state=disabled": {
+      "hash": "be79a23f2cdcbb024ded10eb2c9c9e800403eb40b13b9f2cc324a4c1ed8bc222",
+      "height": 32,
+      "nodeId": "13:34",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Standard"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=standard,state=focused": {
+      "hash": "c4931782d8c02117ce7179734c8e985d286eaf2c8452f240e6b78d2dd157a666",
+      "height": 32,
+      "nodeId": "13:38",
+      "properties": {
+        "State": "Focused",
+        "Style": "Standard"
+      },
+      "renderBounds": {
+        "height": 38,
+        "width": 126,
+        "x": -3,
+        "y": -3
+      },
+      "width": 120
+    },
+    "style=standard,state=hover": {
+      "hash": "77a2e053bba7cd92964687f4accf8d413eaa188245bc56413e2a1952d738b076",
+      "height": 32,
+      "nodeId": "13:26",
+      "properties": {
+        "State": "Hover",
+        "Style": "Standard"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=standard,state=pressed": {
+      "hash": "0c7becfb239e5980c0fff77a99aec084534af86e8277ab6331527c50dcd81382",
+      "height": 32,
+      "nodeId": "13:30",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Standard"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=standard,state=rest": {
+      "hash": "3c2ba7a58564932d0e63b342d5756275b8f968bf0197619fe96b6a04ba91e0ae",
+      "height": 32,
+      "nodeId": "13:22",
+      "properties": {
+        "State": "Rest",
+        "Style": "Standard"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=subtle,state=disabled": {
+      "hash": "a39fdc416d341892b56fffb27602ce4e2b5fd18b11fe5f6a4db8400e36dcb181",
+      "height": 32,
+      "nodeId": "13:54",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Subtle"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=subtle,state=focused": {
+      "hash": "3a4b51a0f27cfca28bbe0459ba461b81b0639e5e054be1aa2397e760dcd0d67a",
+      "height": 32,
+      "nodeId": "13:58",
+      "properties": {
+        "State": "Focused",
+        "Style": "Subtle"
+      },
+      "renderBounds": {
+        "height": 38,
+        "width": 126,
+        "x": -3,
+        "y": -3
+      },
+      "width": 120
+    },
+    "style=subtle,state=hover": {
+      "hash": "50ed1abb4295bf6e7b1c5d5bd111dd750ce4418d52e2529aa8890ca260caf4e8",
+      "height": 32,
+      "nodeId": "13:46",
+      "properties": {
+        "State": "Hover",
+        "Style": "Subtle"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=subtle,state=pressed": {
+      "hash": "a1eaf56084679d03e6c19835704012390893a60a84a1e906fad3837b1bb58ea5",
+      "height": 32,
+      "nodeId": "13:50",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Subtle"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    },
+    "style=subtle,state=rest": {
+      "hash": "f0d04d22042661aaaa4cbb814445604a074878737d1d8257a1e9885a56395f44",
+      "height": 32,
+      "nodeId": "13:42",
+      "properties": {
+        "State": "Rest",
+        "Style": "Subtle"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
+      "width": 120
+    }
+  }
+}

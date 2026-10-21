@@ -1,0 +1,38 @@
+{
+  "exportedAt": "2026-10-21T00:45:29.077Z",
+  "hash": "986510180f1c6b35f48053e83c4a231025b96d0e345e27452e17cb3796d956b1",
+  "name": "Flyout",
+  "nodeId": "16:195",
+  "variants": {
+    "material=acrylic": {
+      "hash": "44c656627390bbab85a8515174f6a467f9149798d4a61c1d9f479a69fdf1cc8a",
+      "height": 100,
+      "nodeId": "16:189",
+      "properties": {
+        "Material": "Acrylic"
+      },
+      "renderBounds": {
+        "height": 132,
+        "width": 352,
+        "x": -16,
+        "y": -8
+      },
+      "width": 320
+    },
+    "material=solid": {
+      "hash": "ddf6497fa7b8e88a4d004f76957ebb1e1d52663d1e5081f058ed0104b94ef6ca",
+      "height": 100,
+      "nodeId": "16:192",
+      "properties": {
+        "Material": "Solid"
+      },
+      "renderBounds": {
+        "height": 128,
+        "width": 352,
+        "x": -16,
+        "y": -8
+      },
+      "width": 320
+    }
+  }
+}

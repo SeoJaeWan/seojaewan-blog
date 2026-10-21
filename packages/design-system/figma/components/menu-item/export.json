@@ -1,0 +1,264 @@
+{
+  "exportedAt": "2026-10-21T00:45:29.077Z",
+  "hash": "4c46ba36fe75f70386469ffbc5ee2ca6588e1fb1b0213fd810d33afcb6e93f9b",
+  "name": "MenuItem",
+  "nodeId": "14:205",
+  "variants": {
+    "kind=default,state=disabled": {
+      "hash": "e7934c6872acb9bc734774dd1fc6f3f6963e0b5fc73ee33c330837d35e931aef",
+      "height": 32,
+      "nodeId": "14:123",
+      "properties": {
+        "Kind": "Default",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=default,state=hover": {
+      "hash": "f4d192dce8df639831c87f15625f251c0b4a21ad8858534a808e3c40d39a3289",
+      "height": 32,
+      "nodeId": "14:111",
+      "properties": {
+        "Kind": "Default",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=default,state=pressed": {
+      "hash": "97de1c8808899aa762087768bed9317893720922c4dceddf05c5f88156e4787a",
+      "height": 32,
+      "nodeId": "14:117",
+      "properties": {
+        "Kind": "Default",
+        "State": "Pressed"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=default,state=rest": {
+      "hash": "f3e876cbc1a4dc4865e5594ce29606a8ff11b14e06f10a0d9dd69028298c7919",
+      "height": 32,
+      "nodeId": "14:105",
+      "properties": {
+        "Kind": "Default",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=radio-on,state=disabled": {
+      "hash": "fbbae22adba531c6ca287242498c2fc69df50f537d779bbf3e15f21304055a9a",
+      "height": 32,
+      "nodeId": "14:200",
+      "properties": {
+        "Kind": "Radio on",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=radio-on,state=hover": {
+      "hash": "59c4dc754168513d9213a90ab984dbc5152c920dcb5c499f779b550e691f2216",
+      "height": 32,
+      "nodeId": "14:190",
+      "properties": {
+        "Kind": "Radio on",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=radio-on,state=pressed": {
+      "hash": "2cb9ea6a2e964783e04dcc9d1317a4ab10a317af20cb07c67bd3c60d5a7c16c5",
+      "height": 32,
+      "nodeId": "14:195",
+      "properties": {
+        "Kind": "Radio on",
+        "State": "Pressed"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=radio-on,state=rest": {
+      "hash": "59f3e01877793c47d3f60433871b9399035903ce99f2e1166602272c61e2a877",
+      "height": 32,
+      "nodeId": "14:185",
+      "properties": {
+        "Kind": "Radio on",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=submenu,state=disabled": {
+      "hash": "bcc60eca4ae475ad9b4bbc7e741ecff865ce8f71c4afce7adc5c324003d11e53",
+      "height": 32,
+      "nodeId": "14:153",
+      "properties": {
+        "Kind": "Submenu",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=submenu,state=hover": {
+      "hash": "dfa2d45a6d3ec17a502c4f3d72f72c59c32e689b610756965bcdfe19f75e8ead",
+      "height": 32,
+      "nodeId": "14:137",
+      "properties": {
+        "Kind": "Submenu",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=submenu,state=pressed": {
+      "hash": "9281226aaf9854a2e1f1fd0bb320a0956f90ab978be1acb36d9e9f1629c0d914",
+      "height": 32,
+      "nodeId": "14:145",
+      "properties": {
+        "Kind": "Submenu",
+        "State": "Pressed"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=submenu,state=rest": {
+      "hash": "f70a08273b3c23632bd4923ce219bedfed681e86bc908b129773e6ae31b80a04",
+      "height": 32,
+      "nodeId": "14:129",
+      "properties": {
+        "Kind": "Submenu",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=toggle-on,state=disabled": {
+      "hash": "005b84af94d51e76d7244fdb4f955572af8e8ade067507d652aa41c537c9fd84",
+      "height": 32,
+      "nodeId": "14:179",
+      "properties": {
+        "Kind": "Toggle on",
+        "State": "Disabled"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=toggle-on,state=hover": {
+      "hash": "7d12b7f0e838d7c1075546d5e874521967cf9890c610b77b4bf9ffce33fc37c8",
+      "height": 32,
+      "nodeId": "14:167",
+      "properties": {
+        "Kind": "Toggle on",
+        "State": "Hover"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=toggle-on,state=pressed": {
+      "hash": "8efda8f25a6b578ca98b26ec8e66abc7537b1316a5c15817555ed2d09be97a7a",
+      "height": 32,
+      "nodeId": "14:173",
+      "properties": {
+        "Kind": "Toggle on",
+        "State": "Pressed"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    },
+    "kind=toggle-on,state=rest": {
+      "hash": "0e3d003c7fe550aa32426937750cb1f6114e4204b76bb64713f2c17c3addb92f",
+      "height": 32,
+      "nodeId": "14:161",
+      "properties": {
+        "Kind": "Toggle on",
+        "State": "Rest"
+      },
+      "renderBounds": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "width": 240
+    }
+  }
+}
