@@ -1,0 +1,700 @@
+{
+  "components": {
+    "button": {
+      "hash": "ab4c04ff569996e00ad7f547a10d3b17a8c2804508dea185644216e736d44f88",
+      "name": "Button",
+      "nodeId": "13:62",
+      "variants": {
+        "style=accent,state=disabled": {
+          "hash": "afdbc37689fa8e8cee590725db8a1c53e364ccac22fc82ed5a7b6e6c194ed054",
+          "height": 32,
+          "nodeId": "13:14",
+          "properties": {
+            "State": "Disabled",
+            "Style": "Accent"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=accent,state=focused": {
+          "hash": "bb77b2ee6ff0e866a729fd57d4bc2e6b5e9912856f60f1eba5d41b8222cf5c1c",
+          "height": 32,
+          "nodeId": "13:18",
+          "properties": {
+            "State": "Focused",
+            "Style": "Accent"
+          },
+          "renderBounds": {
+            "height": 38,
+            "width": 126,
+            "x": -3,
+            "y": -3
+          },
+          "width": 120
+        },
+        "style=accent,state=hover": {
+          "hash": "06f9e5845b85c79507226f569555958fd3996fed82329506a5c068d97afcbf42",
+          "height": 32,
+          "nodeId": "13:6",
+          "properties": {
+            "State": "Hover",
+            "Style": "Accent"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=accent,state=pressed": {
+          "hash": "4667a45315baf5eeae414b3fee2eecfbab24fde9ccb265133e6daa331240019a",
+          "height": 32,
+          "nodeId": "13:10",
+          "properties": {
+            "State": "Pressed",
+            "Style": "Accent"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=accent,state=rest": {
+          "hash": "ead914a6d672eeb76c17a2a5e4fd78b97d492c9ef93c4f83da7c6bfa743102aa",
+          "height": 32,
+          "nodeId": "13:2",
+          "properties": {
+            "State": "Rest",
+            "Style": "Accent"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=standard,state=disabled": {
+          "hash": "be79a23f2cdcbb024ded10eb2c9c9e800403eb40b13b9f2cc324a4c1ed8bc222",
+          "height": 32,
+          "nodeId": "13:34",
+          "properties": {
+            "State": "Disabled",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=standard,state=focused": {
+          "hash": "c4931782d8c02117ce7179734c8e985d286eaf2c8452f240e6b78d2dd157a666",
+          "height": 32,
+          "nodeId": "13:38",
+          "properties": {
+            "State": "Focused",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 38,
+            "width": 126,
+            "x": -3,
+            "y": -3
+          },
+          "width": 120
+        },
+        "style=standard,state=hover": {
+          "hash": "77a2e053bba7cd92964687f4accf8d413eaa188245bc56413e2a1952d738b076",
+          "height": 32,
+          "nodeId": "13:26",
+          "properties": {
+            "State": "Hover",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=standard,state=pressed": {
+          "hash": "0c7becfb239e5980c0fff77a99aec084534af86e8277ab6331527c50dcd81382",
+          "height": 32,
+          "nodeId": "13:30",
+          "properties": {
+            "State": "Pressed",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=standard,state=rest": {
+          "hash": "3c2ba7a58564932d0e63b342d5756275b8f968bf0197619fe96b6a04ba91e0ae",
+          "height": 32,
+          "nodeId": "13:22",
+          "properties": {
+            "State": "Rest",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=subtle,state=disabled": {
+          "hash": "a39fdc416d341892b56fffb27602ce4e2b5fd18b11fe5f6a4db8400e36dcb181",
+          "height": 32,
+          "nodeId": "13:54",
+          "properties": {
+            "State": "Disabled",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=subtle,state=focused": {
+          "hash": "3a4b51a0f27cfca28bbe0459ba461b81b0639e5e054be1aa2397e760dcd0d67a",
+          "height": 32,
+          "nodeId": "13:58",
+          "properties": {
+            "State": "Focused",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 38,
+            "width": 126,
+            "x": -3,
+            "y": -3
+          },
+          "width": 120
+        },
+        "style=subtle,state=hover": {
+          "hash": "50ed1abb4295bf6e7b1c5d5bd111dd750ce4418d52e2529aa8890ca260caf4e8",
+          "height": 32,
+          "nodeId": "13:46",
+          "properties": {
+            "State": "Hover",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=subtle,state=pressed": {
+          "hash": "a1eaf56084679d03e6c19835704012390893a60a84a1e906fad3837b1bb58ea5",
+          "height": 32,
+          "nodeId": "13:50",
+          "properties": {
+            "State": "Pressed",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        },
+        "style=subtle,state=rest": {
+          "hash": "f0d04d22042661aaaa4cbb814445604a074878737d1d8257a1e9885a56395f44",
+          "height": 32,
+          "nodeId": "13:42",
+          "properties": {
+            "State": "Rest",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 120,
+            "x": 0,
+            "y": 0
+          },
+          "width": 120
+        }
+      }
+    },
+    "icon-button": {
+      "hash": "62d3678aab579fba3e1fb516b6c21ccd7a71815205f3fd487b01bf0c2f6239b3",
+      "name": "IconButton",
+      "nodeId": "13:105",
+      "variants": {
+        "style=standard,state=disabled": {
+          "hash": "6ef8acbba5625b35dcc720903919e2e1d9be1c76d9f828886c1afea864700951",
+          "height": 32,
+          "nodeId": "13:84",
+          "properties": {
+            "State": "Disabled",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=standard,state=focused": {
+          "hash": "93b34ea817768cdbf86431c68cc9b6ca3c38d0eaab4852749158d69cd1b7651c",
+          "height": 32,
+          "nodeId": "13:87",
+          "properties": {
+            "State": "Focused",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 38,
+            "width": 38,
+            "x": -3,
+            "y": -3
+          },
+          "width": 32
+        },
+        "style=standard,state=hover": {
+          "hash": "b67497e1b699c89a96a4f1a724cc7cd5a97dc417a5e485771fbe9314eb19c645",
+          "height": 32,
+          "nodeId": "13:78",
+          "properties": {
+            "State": "Hover",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=standard,state=pressed": {
+          "hash": "8f1851606be7b56cebdd10186a0c0f6c6e6a7cb415c7c94b3bfa14e51d71b3ca",
+          "height": 32,
+          "nodeId": "13:81",
+          "properties": {
+            "State": "Pressed",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=standard,state=rest": {
+          "hash": "1a26044bf80ab6e7c4bdb833da01d01235bc93507a193e524ce04a482565abda",
+          "height": 32,
+          "nodeId": "13:75",
+          "properties": {
+            "State": "Rest",
+            "Style": "Standard"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=subtle,state=disabled": {
+          "hash": "03864706f62bc7703fb3f7c666f8b6d4ec9ee36db3e83da8d10ff31e1342d419",
+          "height": 32,
+          "nodeId": "13:99",
+          "properties": {
+            "State": "Disabled",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=subtle,state=focused": {
+          "hash": "fcc3f98343f98bcfb4ac36b6aad10e8d431f8e5646ab053707118f8ac48a1651",
+          "height": 32,
+          "nodeId": "13:102",
+          "properties": {
+            "State": "Focused",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 38,
+            "width": 38,
+            "x": -3,
+            "y": -3
+          },
+          "width": 32
+        },
+        "style=subtle,state=hover": {
+          "hash": "798aff9fae3b841540f6ca81233732145e8f07d6afa574a9ec67f5bd90f15182",
+          "height": 32,
+          "nodeId": "13:93",
+          "properties": {
+            "State": "Hover",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=subtle,state=pressed": {
+          "hash": "999533f75bcb20b1b6e82d346d8d375fbf5c6a882c2348254be0ca30d70186ad",
+          "height": 32,
+          "nodeId": "13:96",
+          "properties": {
+            "State": "Pressed",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        },
+        "style=subtle,state=rest": {
+          "hash": "db3e5faaddd5e9a49e990e7e31ad0ad32697788d1fcce1fc5a188d31c28ef6fa",
+          "height": 32,
+          "nodeId": "13:90",
+          "properties": {
+            "State": "Rest",
+            "Style": "Subtle"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          "width": 32
+        }
+      }
+    },
+    "search-box": {
+      "hash": "04fb661f88ef3be54ce5afca2d67c842130773d25cb0b7774850dfdb8a0d0c35",
+      "name": "SearchBox",
+      "nodeId": "14:92",
+      "variants": {
+        "appearance=default,filled=false,state=disabled": {
+          "hash": "230ea3c1f92fb9e130912d67b522b1d9891c3973a7465c4f35f00391e1905524",
+          "height": 32,
+          "nodeId": "14:27",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "False",
+            "State": "Disabled"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=false,state=focused": {
+          "hash": "62ab04d231699b6e06e29896170ddabad89056810d8776f8090e42f6522db855",
+          "height": 32,
+          "nodeId": "14:22",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "False",
+            "State": "Focused"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=false,state=hover": {
+          "hash": "3ed9433ca384502cb4987d713bd6fd2f93fa85b8b009ba4305261b92bd2e2165",
+          "height": 32,
+          "nodeId": "14:17",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "False",
+            "State": "Hover"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=false,state=rest": {
+          "hash": "0d245d05b9cf3fd2e734f60e64835b42e7b63812a51d86e4d150af40a026d1f7",
+          "height": 32,
+          "nodeId": "14:12",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "False",
+            "State": "Rest"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=true,state=disabled": {
+          "hash": "db0f25ccf828e4edc7ce1b47d811f25760c4256670a6047a1ddebe32eafbb4e4",
+          "height": 32,
+          "nodeId": "14:47",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "True",
+            "State": "Disabled"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=true,state=focused": {
+          "hash": "f49a3648d94f0fb4db291e2b9cf8232338b43dcd0dded1b99cc59b5b08123480",
+          "height": 32,
+          "nodeId": "14:42",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "True",
+            "State": "Focused"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=true,state=hover": {
+          "hash": "e3c6bd459bffe98f7c7a8c43678ea3e72304340e6e9d90247e7fbc5702e87192",
+          "height": 32,
+          "nodeId": "14:37",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "True",
+            "State": "Hover"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=default,filled=true,state=rest": {
+          "hash": "6bd089c5806bdffb66dd4a1f1b6583c0333fd844570b464194ea73a34cc4c9cb",
+          "height": 32,
+          "nodeId": "14:32",
+          "properties": {
+            "Appearance": "Default",
+            "Filled": "True",
+            "State": "Rest"
+          },
+          "renderBounds": {
+            "height": 32,
+            "width": 240,
+            "x": 0,
+            "y": 0
+          },
+          "width": 240
+        },
+        "appearance=pill,filled=false,state=disabled": {
+          "hash": "b8299e3e5ff05eb302a20198b00ff9b3da0503197e7bd979e3028cce9b8f45ad",
+          "height": 36,
+          "nodeId": "14:67",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "False",
+            "State": "Disabled"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=false,state=focused": {
+          "hash": "99a1e867b149fefe20b2d4e2649201fdb4b1a8633becebf15ef43f9e55c2f3ef",
+          "height": 36,
+          "nodeId": "14:62",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "False",
+            "State": "Focused"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=false,state=hover": {
+          "hash": "2b55a8053b31e2fd770feff851a3149ea9c0ea8adb5ffedd1bbf5f6c93d46c7a",
+          "height": 36,
+          "nodeId": "14:57",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "False",
+            "State": "Hover"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=false,state=rest": {
+          "hash": "04e7cdc43b53eee2caa4c0e70690e4745af4af03ed31aeadbb008c6972282760",
+          "height": 36,
+          "nodeId": "14:52",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "False",
+            "State": "Rest"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=true,state=disabled": {
+          "hash": "9a416e419da395148a5cfa81d31dae24969ed40462efef29663d7e52c1f3997b",
+          "height": 36,
+          "nodeId": "14:87",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "True",
+            "State": "Disabled"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=true,state=focused": {
+          "hash": "854370acc707901ba3cf65783a8ab5db12cfeaeb77eac294a4f7a9110de03b79",
+          "height": 36,
+          "nodeId": "14:82",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "True",
+            "State": "Focused"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=true,state=hover": {
+          "hash": "7e2238f7e59267616412b068f089d143a837789006179a19fddb0b0f95bcb212",
+          "height": 36,
+          "nodeId": "14:77",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "True",
+            "State": "Hover"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        },
+        "appearance=pill,filled=true,state=rest": {
+          "hash": "d3a09adf39ae93f762f476b1191731f0245ac33952d82e4c776f6905b012d2ff",
+          "height": 36,
+          "nodeId": "14:72",
+          "properties": {
+            "Appearance": "Pill",
+            "Filled": "True",
+            "State": "Rest"
+          },
+          "renderBounds": {
+            "height": 36,
+            "width": 320,
+            "x": 0,
+            "y": 0
+          },
+          "width": 320
+        }
+      }
+    }
+  },
+  "exportedAt": "2026-10-21T00:42:12.580Z",
+  "fileKey": "XV9Y1UT5UH4tC5hSqLVipZ",
+  "scale": 1
+}
