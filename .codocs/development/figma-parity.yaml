@@ -6,47 +6,63 @@ _codocs:
 개요: |
   디자인 시스템 컴포넌트가 피그마 디자인과 같은지 자동으로 확인하는 방법이다.
   피그마가 디자인의 기준이라는 원칙을 테스트로 강제하고, 한번 맞춘 컴포넌트가 이후 변경으로 깨지지 않게 지킨다.
+
+  비교는 두 가지다. 값 비교([[피그마 일치 검사:값 비교]])가 위치·크기·여백·반경·색 토큰·글자·그림자를 숫자로 정확히 비교하고, vector 레이어는 같은 Chromium에서 그려 모양을 비교한다([[피그마 일치 검사:벡터 비교]]). 이미지 전체 픽셀 비교([[피그마 일치 검사:픽셀 비교]])는 큰 깨짐만 잡는 느슨한 안전망이다. 변형 하나는 둘 중 하나라도 실패하면 실패다.
 흐름: |
-  1. 디자인이 바뀔 때: 피그마에서 컴포넌트를 고친 뒤 전용 피그마 플러그인으로 내보낸다. 플러그인은 바뀐 컴포넌트 이미지와 토큰 JSON을 커밋해 PR을 연다.
-  2. 그 PR의 CI는 바뀐 컴포넌트를 비교한다. 코드가 아직 그대로라 실패하며, 실패한 컴포넌트가 구현해야 할 목록이 된다.
+  1. 디자인이 바뀔 때: 피그마에서 컴포넌트를 고친 뒤 전용 피그마 플러그인으로 내보낸다. 플러그인은 바뀐 컴포넌트의 폴더(이미지, 레이어 정보, vector SVG)와 토큰 JSON을 커밋해 PR을 연다.
+  2. 그 PR의 CI는 바뀐 컴포넌트를 비교한다. 코드가 아직 그대로라 실패하며, PR 댓글에 남는 실패 목록이 구현해야 할 목록이 된다.
   3. 같은 PR에서 컴포넌트 코드를 고쳐 비교를 통과시킨 뒤 병합한다. 디자인 변경과 코드 변경이 한 PR에 남는다.
-  4. 코드가 바뀔 때: 병합된 피그마 이미지는 저장소의 기준 이미지가 된다. 이후 디자인 시스템 컴포넌트를 건드리는 PR은 영향받는 컴포넌트를 기준 이미지와 비교한다. 피그마와 달라졌는데 의도한 변경이면 피그마부터 고치고 1번 흐름을 탄다.
+  4. 코드가 바뀔 때: 병합된 피그마 내보내기 자료는 저장소의 기준이 된다. 이후 디자인 시스템 컴포넌트를 건드리는 PR은 영향받는 컴포넌트를 기준과 비교한다. 피그마와 달라졌는데 의도한 변경이면 피그마부터 고치고 1번 흐름을 탄다.
 
   피그마 쪽 변경은 항상 PR로만 들어오므로, 피그마만 바뀌고 코드가 모르는 상황이 생기지 않는다. 그래서 정기적인 전체 비교는 두지 않는다.
+  컴포넌트마다 폴더가 따로라, 서로 다른 컴포넌트를 내보낸 PR은 같은 파일을 건드리지 않고 순서와 상관없이 병합할 수 있다.
 비교 범위: |
   - 컴포넌트 단위로 비교한다. 화면 단위는 비교하지 않는다([[미결 사항]]).
-  - PR에서는 `main` 대비 바뀐 파일에 영향받는 스토리만 비교한다. 플러그인이 올린 기준 이미지가 바뀐 컴포넌트도 포함한다.
+  - PR에서는 `main` 대비 바뀐 파일에 영향받는 스토리만 비교한다. 플러그인이 바꾼 컴포넌트 폴더도 포함한다.
   - 토큰·전역 스타일이 바뀌면 모든 컴포넌트에 영향을 주므로 전체를 비교한다.
 
   영향 범위는 git diff로 단순하게 고른다(`test:parity --affected`). 기준 커밋은 기준 브랜치(CI는 PR의 대상 브랜치, 로컬은 `origin/main` 또는 `main`)와의 merge-base이고, 커밋하지 않은 변경과 추적하지 않는 새 파일도 포함한다.
 
-  - 전체 비교: `src/theme.css`·`src/tokens.css`·`src/fonts.css`, `figma/tokens.json`, `.storybook/`, 패키지 `package.json`·`tsconfig.json`, 비교 스크립트(`scripts/parity/`), `pnpm-lock.yaml`, 그리고 `src/components/` 밖의 디자인 시스템 소스.
-  - 컴포넌트 비교: `src/components/<컴포넌트>/`의 파일(테스트·fixture 제외), `figma/images/<컴포넌트>/`, `figma/export.json`에서 항목이 바뀐 컴포넌트.
+  - 전체 비교: `figma/tokens.json`, `figma/figma.json`, `.storybook/`, 패키지 `package.json`·`tsconfig.json`, 비교 스크립트(`scripts/parity/`), `pnpm-lock.yaml`, 그리고 `src/components/` 밖의 디자인 시스템 소스(`src/*.css` 포함).
+  - 컴포넌트 비교: `src/components/<컴포넌트>/`의 파일(테스트·fixture 제외), `figma/components/<컴포넌트>/`의 파일(export.json, 변형 PNG, vector SVG).
   - 바뀐 컴포넌트를 상대 경로(`../menu-item/...`)로 import하는 컴포넌트도 거슬러 올라가며 함께 비교한다.
 
   한계: 의존 관계는 컴포넌트 폴더 사이의 상대 import만 따라간다. 공개 진입점을 거쳐 import하거나, CSS·자산 파일을 통해 영향을 주는 경우는 찾지 못한다. 그래서 컴포넌트 폴더 밖의 변경은 전체 비교로 처리한다. `main` 병합 뒤 전체 비교는 두지 않는다. 피그마 쪽 변경은 항상 PR로 들어오고, 넓은 영향을 주는 변경은 PR에서 이미 전체를 비교하기 때문이다.
 스토리 규칙: |
-  피그마 변형 하나를 Storybook 스토리와 args 하나로 짝짓는 규칙이다. 비교 스크립트는 이 규칙대로 스토리를 찾고, 맞지 않으면 실패한다.
+  피그마 변형 하나를 Storybook 스토리와 args 하나로 짝짓고, 피그마 레이어를 코드 요소와 짝짓는 규칙이다. 비교 스크립트는 이 규칙대로 스토리와 요소를 찾고, 맞지 않으면 실패한다.
 
+  스토리:
   - 컴포넌트마다 `src/components/<컴포넌트>/<컴포넌트>.stories.tsx`에 이름이 `Parity`인 스토리를 하나 둔다. 변형마다 스토리를 만들지 않고 args로 변형을 고른다. 변형이 늘어도 스토리 파일을 고칠 일이 적게 하기 위해서다.
-  - 피그마 변형 속성 이름은 camelCase arg 이름이 된다(`Variant` → `variant`, `Show Icon` → `showIcon`). 값은 이미지 파일 이름과 같은 규칙으로 정규화한 문자열이다(`Accent` → `accent`, `Chrome more (Mobile)` → `chrome-more-mobile`). `True`·`False`는 boolean이다.
+  - 피그마 변형 속성 이름은 camelCase arg 이름이 된다(`Variant` → `variant`, `Show Icon` → `showIcon`). 값은 변형 파일 이름과 같은 규칙으로 정규화한 문자열이다(`Accent` → `accent`, `Chrome more (Mobile)` → `chrome-more-mobile`). `True`·`False`는 boolean이다.
   - Storybook은 argTypes `options`에 없는 URL args를 조용히 버린다. 그래서 스크립트는 렌더링 뒤 스토리에 실제로 적용된 args를 확인하고, 다르면 실패한다. `Parity` 스토리의 argTypes `options`에는 피그마 변형 값을 모두 넣는다.
   - 상태 속성(`State`)도 args로 넘긴다. `Hover`·`Pressed`·`Focus`(`Hovered`·`Active`·`Focused`·`Focus visible`도 같다)는 컴포넌트에 강제로 상태를 주는 prop을 만들지 않고, 스크립트가 실제 마우스·키보드로 재현한다. Hover는 요소 가운데로 마우스를 옮기고, Pressed는 그 위에서 마우스 버튼을 누른 채 찍고, Focus는 Tab 키로 포커스를 옮긴다(`:focus-visible`이 나오게). 실제 사용자가 보는 상태와 같은 코드 경로를 비교하기 위해서다.
   - `Rest`·`Disabled`·`Selected` 같은 나머지 상태는 args로만 재현한다. 스토리가 `state` arg를 `disabled` 같은 prop으로 옮긴다. 상호작용으로 재현하는 상태 값을 받으면 Rest와 같게 그린다.
   - 비교하는 요소는 `#storybook-root`의 첫 요소다. 포털로 그리는 컴포넌트나 감싸는 요소가 필요한 스토리는 비교할 요소에 `data-parity-target`을 단다.
   - 스크립트는 `#storybook-root`를 정수 위치에 두고 폭을 피그마 노드 폭으로 정한다. 부모 폭을 채우는 컴포넌트도 피그마와 같은 폭이 된다. 요소 크기가 피그마 노드 크기와 다르면 실패한다.
+
+  레이어 짝짓기:
+  - 피그마 변형 루트는 비교 요소다. 비교 요소가 감싸는 요소이고 루트가 그 안에 있으면(예: 메뉴 팝업 안의 MenuItem 행) 루트 요소에 `data-figma-root`를 단다.
+  - 루트 아래 레이어는 `data-figma="<레이어 경로>"`를 단 요소와 짝짓는다. 레이어 경로는 export.json `layers`의 `path`이고, 보통 피그마 레이어 이름 그대로다(`label`, `icon`, `focus rect`).
+  - 짝이 반드시 있어야 하는 레이어(짝이 없으면 실패): text·vector·image 레이어 전부, 그리고 칠·선·효과·불투명도 중 하나라도 있는 frame 레이어.
+  - 짝이 없어도 되는 레이어: 칠·선·효과·불투명도가 모두 없는 frame(배치만 하는 구조용 프레임). 그 안의 자식은 각자 위치로 비교하므로 구조용 프레임이 어긋나면 자식이 실패한다. 이 규칙은 노드 속성만으로 정해지며 따로 관리하는 목록이 없다.
+  - 같은 경로의 `data-figma` 요소가 둘 이상이면 실패한다. 피그마 변형에 없는(숨긴) 레이어 경로의 요소가 화면에 보이면 실패한다. 숨긴 요소(`display: none` 등)는 짝이 없어도 된다.
+  - CSS로 그릴 수 없는 선(예: 피그마 점선)을 SVG로 그리면, 그 SVG에 선의 주인 레이어 경로를 `data-figma-stroke`로 단다. 선 색과 두께는 그 SVG에서 읽는다.
+  - 컴포넌트가 쓰는 공용 요소(예: FocusRect)는 그 요소 안에 피그마 인스턴스 이름(`focus rect`)을 단다.
 피그마 플러그인: |
   비공개 개발용 플러그인으로 만들고 `tools/figma-plugin`에 둔다([[저장소 구성:구성]]).
-  플러그인은 기준 이미지와 토큰만 내보낸다. 컴포넌트의 구조와 값(패딩, 배치, 쓰는 토큰)은 코드로 옮길 때 피그마 MCP로 읽는다.
+  플러그인은 기준 이미지, 값 비교용 레이어 정보([[피그마 일치 검사:export.json 계약]]), vector 레이어 SVG, 토큰을 내보낸다.
 
   - 컴포넌트를 일정한 배율과 배경으로 PNG로 내보낸다(`exportAsync`).
+  - 변형마다 루트와 그 아래 레이어를 읽어 `layers`로 기록하고, vector 레이어는 SVG로 내보낸다(글자는 윤곽선으로, id 속성 없이). 피그마가 마스크·클립 id에 노드 ID를 넣으므로 SVG 안의 id를 나오는 순서대로 바꿔 같은 모양이면 파일도 같게 한다.
   - Variables를 읽어 토큰 JSON으로 내보낸다. Figma REST API의 Variables 엔드포인트는 Enterprise 플랜 전용이지만, 플러그인 API는 플랜과 상관없이 Variables를 읽을 수 있다.
   - 토큰 JSON은 W3C 디자인 토큰 형식(DTCG)으로 쓴다. 토큰마다 `$value`와 `$type`을 두고, 다른 토큰을 가리키는 값은 `{color.gray.f9f9f9}`처럼 경로로 남긴다. 피그마 공식 예제 플러그인과 커뮤니티 내보내기 플러그인 대부분이 쓰는 형식이다.
   - 글자 스타일과 효과 스타일(재질, 그림자)은 Variables가 아니라 스타일이라 따로 읽어 같은 파일에 넣는다. 피그마 기본 내보내기 기능은 이런 묶음 토큰을 아직 다루지 못하고, 손으로 실행해야 해 자동화에도 맞지 않는다.
-  - 컴포넌트마다 내용 해시를 계산해 바뀐 컴포넌트만 다시 내보낸다.
+  - 컴포넌트마다 내용 해시(변형 PNG 해시 + 레이어 정보)를 계산하고, 커밋할 브랜치의 그 컴포넌트 폴더와 비교해 바뀐 파일만 커밋한다. 이미지가 같아도 레이어 정보가 바뀌면 export.json을 다시 쓴다.
+  - 내보낸 컴포넌트의 폴더만 바꾼다. 토큰은 고른 경우에만, `figma/figma.json`은 파일 키나 배율이 바뀐 경우에만 쓴다. 사라진 변형의 PNG와 더는 쓰지 않는 SVG는 그 컴포넌트 폴더에서만 지운다. 이름이 바뀐 컴포넌트(같은 nodeId, 다른 폴더 이름)는 이전 폴더를 지운다.
   - 플러그인은 사용자가 실행했을 때만 동작하므로, 피그마 작업을 마치면 내보내기를 직접 실행한다.
-  - 브랜치를 만들고 커밋해 PR을 연다. 이 저장소에만 권한이 있는 GitHub fine-grained 토큰을 플러그인 로컬 저장소에 보관한다.
-  - 이미지와 토큰 JSON은 `packages/design-system/figma/`에 두고, 내보낸 피그마 파일 버전을 함께 기록한다([[저장소 구성:디자인 시스템 패키지 구조]]).
+  - 기본은 `main`에서 새 브랜치(`chore/figma-export-<날짜>-<시각>`)를 만들고 커밋해 PR을 연다. UI의 '기존 브랜치' 칸에 브랜치 이름을 넣으면 그 브랜치 끝에서 빨리 감기로 커밋하고 PR을 새로 열지 않는다(열린 PR이 있으면 링크를 보여 준다). 바뀐 것은 그 브랜치의 파일과 비교해 고른다. 그사이 브랜치에 다른 커밋이 올라오면 빨리 감기가 실패하므로 다시 내보낸다.
+  - 이 저장소에만 권한이 있는 GitHub fine-grained 토큰과 마지막으로 쓴 기존 브랜치 이름을 플러그인 로컬 저장소에 보관한다.
+  - 내보낸 자료는 `packages/design-system/figma/`에 둔다([[저장소 구성:디자인 시스템 패키지 구조]]).
 토큰 생성: |
   `figma/tokens.json`에서 `src/tokens.css`의 `@theme` 블록을 저장소의 스크립트로 만든다. 플러그인은 JSON만 올리고 CSS는 만들지 않는다.
 
@@ -95,28 +111,32 @@ _codocs:
   - 피그마 배경 블러 값은 그대로 옮긴다. 브라우저 `blur()`와 반경 정의가 같은지는 재질을 구현할 때 확인한다.
   - 정해진 규칙이 없는 변수 묶음(예: `font/stretch/*`)이나, 서로 다른 토큰이 같은 CSS 이름이 되는 경우는 생성이 실패한다. 이름 규칙을 이 표에 먼저 정한다.
 CI 비교: |
-  CI는 저장소에 있는 피그마 이미지와, 같은 크기로 렌더링한 Storybook 스토리의 스크린샷을 pixelmatch로 비교한다.
-  이미지가 저장소에 있으므로 CI에 피그마 토큰이 필요 없다. 실패하면 차이 이미지를 남긴다.
-
-  피그마와 브라우저는 렌더링 엔진이 달라 글자와 그림자 경계 픽셀이 완전히 같을 수 없다. 허용 오차와 비교 방식(픽셀만, 또는 픽셀에 색 차이·스타일 속성 비교를 더함)은 검증을 거쳐 정한다([[미결 사항]]).
-  검증 중인 기준 세 값(`threshold`, `includeAA`, 허용 픽셀 수)은 `scripts/parity/parity-config.ts` 한곳에만 둔다.
+  CI는 저장소의 피그마 내보내기 자료와, 같은 크기로 렌더링한 Storybook 스토리를 값([[피그마 일치 검사:값 비교]]), vector 모양([[피그마 일치 검사:벡터 비교]]), 전체 픽셀([[피그마 일치 검사:픽셀 비교]])로 비교한다.
+  자료가 저장소에 있으므로 CI에 피그마 토큰이 필요 없다. 허용 오차는 `scripts/parity/parity-config.ts` 한곳에만 둔다.
 
   비교 방법:
-  - `figma/export.json`의 변형마다 `figma/images/<컴포넌트>/<변형>.png`를 기준 이미지로 쓴다. export.json에 있는데 이미지가 없거나, 이미지가 있는데 export.json에 없으면 실패한다.
+  - `figma/figma.json`과 `figma/components/<컴포넌트>/export.json`의 변형마다 같은 폴더의 `<변형>.png`를 기준 이미지로 쓴다. export.json이 가리키는 PNG·SVG가 없거나, 폴더에 export.json이 가리키지 않는 파일이 있거나, export.json 없는 폴더가 있으면 실패한다. 레이어 정보가 없거나 계약과 다른 변형은 그 변형만 실패한다.
   - Storybook을 정적으로 빌드(`storybook-static`)하고 스크립트 안의 작은 정적 서버로 띄운다. 개발 서버보다 결과가 매번 같다.
-  - Playwright Chromium에서 `deviceScaleFactor`를 export.json의 `scale`로 두고, [[피그마 일치 검사:스토리 규칙]]대로 스토리와 상태를 재현한다.
+  - Playwright Chromium에서 `deviceScaleFactor`를 figma.json의 `scale`로 두고, [[피그마 일치 검사:스토리 규칙]]대로 스토리와 상태를 재현한다. 비교 요소가 피그마 노드 크기가 될 때까지 잠시 기다린다(메뉴 팝업처럼 위치 계산이 늦는 컴포넌트).
   - 웹 폰트를 모두 받을 때까지(`document.fonts.ready`) 기다리고, 보이는 글자가 웹 폰트가 아닌 서체로 그려졌거나 웹 폰트를 받지 못했으면 실패한다. 시스템 서체로 찍힌 스크린샷은 비교할 의미가 없기 때문이다.
-  - 요소 위치에 `renderBounds`(그림자까지 포함한 영역)를 더한 영역을 투명 배경으로 찍는다. renderBounds가 소수이면 피그마처럼 왼쪽 위는 내리고 오른쪽 아래는 올려 픽셀 단위로 덮는다. 애니메이션은 끝난 상태로 찍는다.
-  - 크기가 다르면 비교하지 않고 실패한다. 크기가 같으면 pixelmatch로 비교한다.
-  - 실패한 변형은 `parity-results/<컴포넌트>/<변형>/`에 `expected.png`, `actual.png`, `diff.png`를 남기고 요약을 출력한다. CI는 이 폴더를 아티팩트로 올린다.
+  - 요소 위치에 `renderBounds`(그림자까지 포함한 영역)를 더한 영역을 투명 배경으로 찍는다. renderBounds가 소수이면 피그마처럼 왼쪽 위는 내리고 오른쪽 아래는 올려 픽셀 단위로 덮는다. 애니메이션은 끝난 상태로 찍는다. 같은 상태 그대로 값을 재고 vector 레이어를 비교한다.
+  - 결과는 `parity-results/summary.json`(변형마다 실패 메시지, 알림, 이미지, vector·전체 픽셀 비율)에 남기고, 실패한 픽셀·vector 비교는 `parity-results/<컴포넌트>/<변형>/`에 피그마·브라우저·차이 이미지를 남긴다. CI는 이 폴더를 아티팩트로 올린다.
+
+  PR 댓글:
+  - CI는 결과를 PR 댓글 하나로 남기고(숨은 표시 `<!-- figma-parity -->`), 실행할 때마다 그 댓글을 고친다. 모두 통과하면 한 줄 통과 메시지로 바꾼다. 비교한 변형이 없고 이전 댓글도 없으면 남기지 않는다.
+  - 머리말은 `피그마 일치 검사: N개 중 M개 실패`이고, 컴포넌트마다 접힌 블록(`<details>`)에 실패를 고칠 것으로 한 줄씩 쓴다. 같은 실패 줄은 변형을 묶어 한 번만 쓴다(`style=accent · state=rest, hover: root 반경 4 → 5`). 실패는 하나도 빼지 않는다.
+  - 이미지는 픽셀·vector 실패에만 피그마 | 브라우저 | 차이를 한 줄로 보여 준다. GitHub API로 댓글에 이미지를 올릴 수 없으므로 쓰인 이미지만 담은 orphan 브랜치 `parity-report/pr-<번호>`에 강제로 올리고(매번 덮어씀) `blob/<브랜치>/<경로>?raw=true` 주소로 넣는다. PR이 닫히면 그 브랜치를 지운다(`parity-report-cleanup` 워크플로).
+  - 댓글이 길이 제한(65,536자, 여유를 두어 60,000자)을 넘으면 뒤쪽 컴포넌트부터 이미지를 빼고, 그래도 넘으면 번호를 붙인 댓글(`<!-- figma-parity 2 -->`)로 이어 쓴다. 쓰지 않게 된 댓글은 지운다.
+  - 작업 권한은 `contents: write`(보고 브랜치)와 `pull-requests: write`(댓글)만 준다. 포크에서 온 PR은 쓰기 토큰이 없어 댓글을 남기지 않는다.
 
   실행: `pnpm --filter @seojaewan/design-system test:parity`. Storybook을 빌드한 뒤 비교한다.
   - `--affected [--base <브랜치>]`: [[피그마 일치 검사:비교 범위]]대로 영향받는 컴포넌트만 비교한다.
   - `--component <폴더 이름>`: 그 컴포넌트만 비교한다(여러 번 쓸 수 있다).
   - `--no-build`: 이미 빌드한 `storybook-static`을 쓴다.
+  - `--figma-dir <폴더>`: `figma/` 대신 다른 내보내기 자료로 비교한다(로컬 확인용).
   - Chromium이 없으면 `pnpm --filter @seojaewan/design-system exec playwright install chromium`으로 설치한다.
 
-  CI는 PR에서만 `Figma parity` 작업을 `--affected`로 돌린다. `figma/export.json`이 아직 없으면 설치 없이 건너뛴다.
+  CI는 PR에서만 `Figma parity` 작업을 `--affected`로 돌린다. `figma/figma.json`이 아직 없으면 설치 없이 건너뛴다.
   글자 렌더링은 운영체제마다 달라, 로컬 Windows 결과와 CI(Linux) 결과가 다를 수 있다. 기준은 CI 결과다.
 검토한 대안: |
   - Figma REST API로 CI가 매번 이미지를 받기: 이미지는 받을 수 있지만 CI에 피그마 토큰이 필요하고, 피그마만 먼저 바뀌면 모든 PR이 실패한다. Variables는 Enterprise 플랜이 아니면 읽을 수 없다.
@@ -124,3 +144,70 @@ CI 비교: |
   - 코드 기준 회귀 테스트 + 사람 리뷰(Chromatic 등 업계에서 흔한 방식): 기준이 피그마가 아니라 이전 코드라 처음 만든 화면이 피그마와 달라도 잡지 못한다.
   - 토큰도 플러그인 대신 피그마 MCP로 읽기: 플러그인이 단순해지지만, MCP는 AI 작업 세션 안에서만 쓸 수 있어 토큰 변경이 PR에 남지 않고 CI가 검사할 수 없다. 추출 코드도 MCP와 같은 플러그인 API라 정확도가 나아지지 않는다.
   - 토큰 생성에 Style Dictionary 쓰기: 토큰 JSON을 여러 플랫폼(CSS, iOS, Android) 코드로 바꾸는 업계 표준 도구다. 별칭 풀기 같은 기본기는 갖췄지만, 출력 대상이 웹 하나뿐이고 Tailwind v4 `@theme` 출력과 WinUI 이름 규칙은 어차피 직접 써야 해 고르지 않았다. 최신 DTCG 형식(2025.10) 지원도 아직 진행 중이다. 토큰이 복잡해지거나 다른 플랫폼이 생기면 다시 검토한다.
+  - 픽셀 비교만 쓰기: 처음 검증(2026-10-21)에서 정상 48개 변형이 모두 통과하는 기준으로는 패딩 +1px·반경 +1px 실수를 거의 잡지 못했다. 피그마는 글리프를 소수 위치(47.5)에 두고 Chromium은 정수에 맞추며, 반투명 칠 반올림·모서리·아이콘 안티앨리어싱·옅은 그림자 차이가 1px 실수와 섞이기 때문이다. 디자인 충실도 도구들처럼 속성 값을 비교하는 방식으로 바꿨다.
+  - 하나의 `figma/export.json`에 모든 컴포넌트 기록: 서로 다른 컴포넌트를 내보낸 PR이 같은 파일을 고쳐 충돌하므로 컴포넌트마다 폴더로 나눴다.
+export.json 계약: |
+  플러그인이 쓰고 비교 스크립트가 읽는 파일이다. 손으로 고치지 않는다.
+
+  - `figma/figma.json`: 바뀌지 않는 전역 값만 둔다. `{ "fileKey", "scale" }`. 시각은 두지 않는다.
+  - `figma/components/<컴포넌트>/export.json`: `name`, `nodeId`, `hash`, `exportedAt`, `variants`. 변형마다 `nodeId`, `properties`, `width`, `height`, `renderBounds`(그림자까지 포함한 영역), `hash`(PNG 해시), `layers`.
+  - 같은 폴더에 변형 PNG(`<변형>.png`)와 vector SVG(`<내용 SHA-256>.svg`)를 둔다. 다른 컴포넌트와 파일을 나눠 쓰지 않는다.
+  - JSON은 키를 정렬하고 숫자는 소수 넷째 자리까지 쓴다.
+
+  `layers`는 변형 루트(첫 항목, `path: ""`)와 그 아래 레이어를 문서 순서로 담는다.
+  - 보이지 않는 레이어는 자식까지 뺀다. 그룹은 레이어로 담지 않고 자식만 펼친다.
+  - `path`: 레이어 이름. 같은 이름이 둘 이상이면 이름이 겹치지 않을 때까지 조상 이름을 앞에 붙인다(`content/label`). 조상까지 같으면 `#2`를 붙인다.
+  - `kind`(노드 속성으로만 정한다):
+    - `text`: TEXT 노드.
+    - `image`: 보이는 칠이 모두 이미지인 노드.
+    - `vector`: 벡터 도형(VECTOR, BOOLEAN_OPERATION, STAR, LINE, POLYGON), 또는 자기 칠·선·효과가 없고 보이는 자손이 모두 도형인 묶음(아이콘 인스턴스, 글자를 윤곽선으로 바꾼 로고 등). 묶음 안에 글자가 하나라도 있으면 vector가 아니고, 글자는 text 레이어로, 도형은 각각 vector 레이어로 담긴다.
+    - `frame`: 나머지(프레임, 자동 배치, 따로 있는 사각형·타원, 아이콘이 아닌 인스턴스). text·vector·image 레이어는 자식을 담지 않고, frame은 자식을 따라간다.
+  - 모든 레이어: `type`(피그마 노드 종류), `x`·`y`·`width`·`height`(변형 루트 왼쪽 위 기준), 있으면 `opacity`, `absolute`(자동 배치 밖 절대 위치), `component`(인스턴스 원본 이름).
+  - frame·image: 자동 배치면 `layoutMode`·`padding`(네 변)·`itemSpacing`·`primaryAxisAlignItems`, `cornerRadius`(숫자 또는 네 모서리), `clipsContent`, `fills`·`fillStyle`, `strokes`·`strokeWeight`(숫자 또는 네 변)·`strokeAlign`·`strokeStyle`, `effects`·`effectStyle`.
+  - 칠: 단색은 `{ type: "SOLID", color: "#rrggbb[aa]"(칠 불투명도를 곱한 값), token?: "{accent-fill.default}" }`, 선형 그라데이션은 색 지점마다 `{ position, color, token? }`, 이미지는 `{ type: "IMAGE", imageHash, scaleMode, opacity }`. 일반 합성이 아니면 `blendMode`를 붙인다.
+  - 효과: 그림자는 `{ type, color, token?, offsetX, offsetY, radius, spread }`, 블러는 `{ type, radius, token? }`.
+  - text: `text`에 `characters`, `autoResize`, `alignHorizontal`, `fontFamily`(구간 서체 목록), `fontWeight`, `fontSize`, `lineHeight`(px 또는 `AUTO`), `letterSpacing`(px), `textStyle`(글자 스타일 이름 목록), 효과가 없으면 `ink`(글리프 잉크 영역, 변형 루트 기준). 구간마다 값이 다르면 목록이다. `fills`는 글자 색이다.
+  - vector: `svg`(`{ file, x, y, width, height }`, 레이어 상자 기준 SVG 영역), 자기 칠이나 안쪽 도형이 모두 같은 칠을 쓰면 그 칠을 `fills`로 둔다.
+
+  예:
+
+  ```json
+  { "path": "label", "kind": "text", "type": "TEXT", "x": 47.5, "y": 6, "width": 25, "height": 20,
+    "fills": [{ "type": "SOLID", "color": "#ffffff", "token": "{text-on-accent-fill.primary}" }],
+    "text": { "characters": "버튼", "autoResize": "WIDTH_AND_HEIGHT", "fontFamily": ["Pretendard"], "fontWeight": 400,
+              "fontSize": 14, "lineHeight": 20, "letterSpacing": 0, "textStyle": ["Hangul/Body"],
+              "ink": { "x": 48.4844, "y": 9.9531, "width": 22.6816, "height": 12.1816 } } }
+  ```
+값 비교: |
+  브라우저에서 짝지은 요소를 재고(`getBoundingClientRect`, `getComputedStyle`, 의사 요소 스타일, Chromium DevTools 프로토콜) 피그마 값과 비교한다. 실패 메시지는 `<레이어> <속성> <피그마 값> → <코드 값>`이다(예: `label x 43 → 44 (±0.5)`, `root 반경 4 → 5`, `root 채우기 accent-fill.default #005fb8 → #0060b9`).
+
+  - 위치·크기: 변형 루트 기준 상자, ±0.5px. 피그마는 자동 너비 글자의 상자 폭을 올림하므로, 자동 너비 글자는 상자의 x·폭 대신 잉크 영역으로 비교한다.
+  - 자동 배치: 안쪽 여백 네 변과 간격(가로 배치는 `column-gap`, 세로 배치는 `row-gap`)이 같아야 한다. 양 끝 맞춤(SPACE_BETWEEN)이면 간격은 비교하지 않는다.
+  - 반경: 모서리마다 같아야 한다. 반경은 짧은 변의 절반을 넘을 수 없으므로 양쪽 모두 그 값으로 줄여 비교한다(9999와 18은 높이 36에서 같다). 타원은 원형 반경이어야 한다.
+  - 칠: 토큰 별칭은 `figma/tokens.json`에서 tokens.css를 만들 때와 같은 규칙으로 실제 색으로 풀고, 보이는 단색 칠을 일반 합성한 RGBA가 계산된 배경색과 정확히 같아야 한다(8비트 채널, 둘 다 완전히 투명하면 같다). 칠이 없으면 배경도 없어야 한다. 안쪽 크기가 0이라 테두리만으로 그려지는 요소(높이가 테두리 두께인 선)는 테두리 색으로 칠한 사각형으로 본다.
+  - 선: `::before` 고리(`border-gradient-*`, `inner-border-*`), CSS border, `data-figma-stroke` SVG 중 그리는 것을 찾아 두께와 색을 비교한다. 그라데이션은 양 끝 지점의 색과 위치를 비교한다(중간 지점은 피그마 방식으로 계산해 넣은 값이다). 피그마에 선이 없으면 보이는 선도 없어야 한다.
+  - 효과: 그림자는 오프셋·블러·퍼짐·색이 같은 `box-shadow`(글자는 `text-shadow`)가 있어야 하고 남는 그림자도 없어야 한다. 배경 블러는 `backdrop-filter: blur()`, 레이어 블러는 `filter: blur()` 반경과 비교한다.
+  - 이미지: 브라우저가 실제로 받은 이미지(`img` 또는 요소·의사 요소의 `background-image`) 바이트의 SHA-1이 피그마 `imageHash`와 같아야 한다. 불투명도와 배치(TILE은 반복, FILL은 cover, FIT은 contain)도 비교한다.
+  - 재질: 재질 칠(예: `Material/Acrylic Default`)도 층마다 비교한다. 단색 층은 색 값을 비교하고 CSS로 재현하지 않는 블렌드 모드(LUMINOSITY 등)는 그 사실을 결과에 남긴다. 불투명도 0인 층은 보이지 않아 비교하지 않는다고 남긴다. 이미지 층(노이즈)은 해시·불투명도·반복을, 배경 블러와 그림자는 값을 비교한다.
+  - 글자: 글자 내용은 줄바꿈 표기만 맞추고 그대로 같아야 한다. 실제로 글자를 그린 서체(Chromium `CSS.getPlatformFontsForNode`)가 피그마 서체 목록과 같아야 하고, 크기·굵기·줄 높이·자간이 같아야 한다. 색은 글자 색(입력창이 placeholder를 보이면 `::placeholder` 색)이다.
+  - 잉크 영역: 글자 노드를 줄마다 나눠 같은 서체·크기로 8배 캔버스에 그려 글리프 가장자리(불투명도 50%)를 찾는다. 고정 너비 상자 안의 글자도 길이·정렬 차이를 잡는다. x·폭·높이는 ±0.5px, y는 ±1.25px이다.
+
+  허용 오차 근거:
+  - 글자 잉크 폭은 피그마와 Chromium이 글자 수와 상관없이 거의 같다. 2026-10-21에 피그마 Screens 페이지의 글자 44개(2~57자, 12~68px, Regular·SemiBold, 한글·라틴 혼합)를 Chromium에서 같은 방식으로 재 보니 폭 차이 최대 0.18px, 왼쪽 위치 차이 최대 0.13px였다. 길이에 비례하는 허용 오차는 필요 없다.
+  - 세로 위치만 Chromium이 서체 어센트·디센트를 정수 px로 반올림해 기준선을 놓아 최대 약 1px 다르다(12px/16px 캡션 1.03px, 14px/20px 본문 0.43px). 글자 요소 상자의 세로 위치는 ±0.5px로 따로 비교하므로 줄 높이·여백 실수는 상자 비교가 잡는다.
+  - 값(여백, 간격, 반경, 선 두께, 글자 크기, 그림자 값)은 부동소수 오차(0.01)만 허용한다.
+벡터 비교: |
+  vector 레이어는 피그마가 내보낸 SVG와 짝지은 코드 요소를 같은 Chromium에서 같은 배율·같은 소수 위치로 그려 비교한다.
+
+  - 코드 쪽은 다른 요소의 칠·선·글자·그림자만 투명하게 하고(요소는 그대로 두어 hover·pressed 상태가 바뀌지 않게 한다) 짝지은 요소만 찍는다. 피그마 쪽은 빈 페이지의 같은 좌표에 SVG를 그려 같은 영역을 찍는다.
+  - 채널(RGBA) 차이가 16을 넘는 픽셀이 넓이의 4%를 넘으면 `모양 다름`으로 실패하고, 피그마·브라우저·차이 이미지를 남긴다.
+  - 색은 피그마 도형이 한 가지 칠을 쓰고 코드 SVG 도형도 한 가지 칠을 쓰면 값으로도 비교한다.
+
+  허용 기준 근거(2026-10-21, Chromium, 배율 1): 피그마는 Fluent 아이콘의 원호를 베지어로 바꾸고 좌표를 반올림해, 같은 아이콘도 가장자리 픽셀이 조금 다르다. 같은 아이콘(open·chevron·search·checkmark)은 채널 차이 최대 45, 16을 넘는 픽셀 최대 7개(16×16의 2.7%)였다. 다른 굵기·크기의 아이콘(Open16Regular, Open20Filled, ChevronRight20Regular 등)은 16을 넘는 픽셀이 24~79개(9.4% 이상), 0.25px 이동은 48개, 선 0.2px 두껍게는 75개였다. 4%는 같은 아이콘의 최대치보다 높고 가장 작은 실제 차이의 절반 아래다. 처음에는 0px·0 기준을 시험했지만 같은 아이콘도 통과하지 못했다.
+픽셀 비교: |
+  이미지 전체를 pixelmatch로 비교하는 느슨한 안전망이다. 값 비교가 다루지 못한 큰 깨짐(요소가 통째로 빠짐, 상태 색이 통째로 다름)을 잡는다.
+
+  - `threshold` 0.1, 안티앨리어싱으로 판정된 픽셀은 뺀다(`includeAA: false`). 다른 픽셀이 이미지 넓이의 1.5%를 넘으면 실패한다.
+  - 근거: 2026-10-21 CI(Linux)에서 정상 48개 변형의 다른 픽셀 비율은 threshold 0.1에서 최대 0.90%(Button Standard Focused)였다. 같은 실행에서 글자가 빠진 SearchBox는 1.89%, 상태가 다른 버튼은 59% 이상이었다.
+  - 1px 차이(여백 +1px, 반경 +1px)와 아이콘·그림자 차이는 이 비교로 잡을 수 없어 값 비교와 벡터 비교가 맡는다.
+  - 재질 효과 변형(`Material`이 `Solid`가 아닌 변형)은 배경 블러 계산이 달라 픽셀로 비교하지 않고 값만 비교한다([[디자인 기반:재질 효과]]).

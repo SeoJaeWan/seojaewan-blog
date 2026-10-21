@@ -268,7 +268,7 @@
           "text": {
             "alignHorizontal": "LEFT",
             "autoResize": "WIDTH_AND_HEIGHT",
-            "characters": "버튼",
+            "characters": "버튼들",
             "fontFamily": [
               "Pretendard"
             ],
@@ -459,7 +459,7 @@
           "text": {
             "alignHorizontal": "LEFT",
             "autoResize": "WIDTH_AND_HEIGHT",
-            "characters": "버튼",
+            "characters": "버튼들",
             "fontFamily": [
               "Pretendard"
             ],
