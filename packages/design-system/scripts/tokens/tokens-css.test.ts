@@ -74,6 +74,14 @@ describe('토큰 생성', () => {
     expect(css).toContain('--material-backdrop-blur: --value(--backdrop-blur-*);');
   });
 
+  it('재질 층 색이 변수에 연결되어 있으면 var(--color-*)를 쓰고 변수 색의 불투명도를 층 불투명도에 곱한다', () => {
+    const block = css.slice(css.indexOf('@utility material-acrylic-bound {'));
+    expect(block).toContain(
+      "background: linear-gradient(rgb(from var(--color-acrylic-background-fill-default) r g b / 0.98), rgb(from var(--color-acrylic-background-fill-default) r g b / 0.98)), url('./assets/images/noise-acrylic.png') repeat, rgb(from var(--color-acrylic-background-fill-default) r g b);",
+    );
+    expect(block).toContain('opacity: 0.851;');
+  });
+
   it('한 요소로 그릴 수 없는 재질 층 구성(보이는 색 층)은 유틸리티를 만들지 않고 이유를 남긴다', () => {
     expect(css).not.toContain('@utility material-mica-base {');
     expect(css).toContain('/* Material/Mica Base: ');

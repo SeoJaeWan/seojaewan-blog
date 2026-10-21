@@ -205,6 +205,31 @@ export const TOKENS_FIXTURE = {
             },
           },
         },
+        'Acrylic Bound': {
+          $type: 'color',
+          $value: '{acrylic-background-fill.default}',
+          $extensions: {
+            'com.seojaewan': {
+              layers: [
+                {
+                  type: 'SOLID',
+                  color: '{acrylic-background-fill.default}',
+                  opacity: 1,
+                  blendMode: 'LUMINOSITY',
+                },
+                {
+                  type: 'IMAGE',
+                  opacity: 0.02,
+                  blendMode: 'NORMAL',
+                  imageHash: 'noise',
+                  asset: 'images/noise-acrylic.png',
+                  scaleMode: 'TILE',
+                  scalingFactor: 1,
+                },
+              ],
+            },
+          },
+        },
         'Mica Base': {
           $type: 'color',
           $value: '#f3f3f3',
