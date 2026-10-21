@@ -5,10 +5,12 @@ import {
   acrylicPaintStyle,
   aliasTo,
   bodyStyle,
+  controlBorderPaintStyle,
   fallbackPaintStyle,
   flyoutEffectStyle,
   tokensInput,
   variable,
+  wallpaperPaintStyle,
 } from './design-tokens.fixture';
 import type { JsonObject, JsonValue } from './stable-json';
 
@@ -31,7 +33,7 @@ function at(tree: JsonObject, path: string[]): JsonValue | undefined {
 
 // @codocs [[피그마 일치 검사:피그마 플러그인]]
 describe('Variables를 DTCG 토큰으로 내보낸다', () => {
-  const tokens = buildDesignTokens(tokensInput());
+  const { tokens } = buildDesignTokens(tokensInput());
 
   it('변수 이름을 /로 나눈 경로에 $type, $value, 컬렉션과 scopes 확장 필드를 둔다', () => {
     expect(at(tokens, ['color', 'gray', 'f9f9f9'])).toEqual({
@@ -118,7 +120,7 @@ describe('Variables를 DTCG 토큰으로 내보낸다', () => {
 // @codocs [[피그마 일치 검사:피그마 플러그인]]
 describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 넣는다', () => {
   it('글자 스타일은 typography이고 변수에 묶인 속성은 별칭이다', () => {
-    const tokens = buildDesignTokens(tokensInput({ textStyles: [bodyStyle] }));
+    const { tokens } = buildDesignTokens(tokensInput({ textStyles: [bodyStyle] }));
     expect(at(tokens, ['style', 'text', 'Body'])).toEqual({
       $type: 'typography',
       $value: {
@@ -132,7 +134,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 
   it('묶이지 않은 글자 속성은 직접 값(px, 숫자 굵기)이다', () => {
-    const tokens = buildDesignTokens(
+    const { tokens } = buildDesignTokens(
       tokensInput({
         textStyles: [
           {
@@ -161,7 +163,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 
   it('효과 스타일은 그림자 배열이고 흐림은 com.seojaewan 확장 필드다. 원래 이름 조각을 경로로 쓴다', () => {
-    const tokens = buildDesignTokens(tokensInput({ effectStyles: [flyoutEffectStyle] }));
+    const { tokens } = buildDesignTokens(tokensInput({ effectStyles: [flyoutEffectStyle] }));
     expect(at(tokens, ['style', 'effect', 'Surface', 'Flyout (Acrylic)'])).toEqual({
       $type: 'shadow',
       $value: [
@@ -179,7 +181,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 
   it('흐림만 있는 효과 스타일은 $value가 빈 배열이고, 안쪽 그림자는 inset이다', () => {
-    const tokens = buildDesignTokens(
+    const { tokens } = buildDesignTokens(
       tokensInput({
         effectStyles: [
           {
@@ -215,7 +217,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 
   it('보이는 단색 하나(불투명, NORMAL)인 칠 스타일은 그 색이다', () => {
-    const tokens = buildDesignTokens(tokensInput({ paintStyles: [fallbackPaintStyle] }));
+    const { tokens } = buildDesignTokens(tokensInput({ paintStyles: [fallbackPaintStyle] }));
     expect(at(tokens, ['style', 'paint', 'Material', 'Fallback', 'Acrylic Default'])).toEqual({
       $type: 'color',
       $value: '{layer-fill.default}',
@@ -223,7 +225,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
   });
 
   it('여러 층인 칠 스타일은 첫 단색을 값으로 두고 모든 층을 layers 확장 필드에 담는다', () => {
-    const tokens = buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle] }));
+    const { tokens } = buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle] }));
     expect(at(tokens, ['style', 'paint', 'Material', 'Acrylic Default'])).toEqual({
       $type: 'color',
       $value: '#fcfcfc',
@@ -246,16 +248,80 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     });
   });
 
-  it('단색이 없거나 계약에 없는 칠(그라디언트)이면 중단한다', () => {
+  it('단색 없이 그라디언트가 있는 칠 스타일은 첫 그라디언트의 색 지점을 값으로 둔 gradient 토큰이다', () => {
+    const { tokens } = buildDesignTokens(tokensInput({ paintStyles: [controlBorderPaintStyle] }));
+    expect(at(tokens, ['style', 'paint', 'Elevation', 'Control Border'])).toEqual({
+      $type: 'gradient',
+      $value: [
+        { color: '{color.black.a-14}', position: 0.9 },
+        { color: '#00000024', position: 1 },
+      ],
+      $extensions: {
+        'com.seojaewan': {
+          layers: [
+            {
+              type: 'GRADIENT_LINEAR',
+              opacity: 1,
+              blendMode: 'NORMAL',
+              gradientStops: [
+                { color: '{color.black.a-14}', position: 0.9 },
+                { color: '#00000024', position: 1 },
+              ],
+              gradientTransform: [
+                [0, 1, 0],
+                [-0.0417, 0, 0.5208],
+              ],
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it('단색이 있는 칠 스타일 안의 그라디언트 층도 같은 그라디언트 필드를 담는다', () => {
+    const [gradient] = controlBorderPaintStyle.paints;
+    const [solid] = fallbackPaintStyle.paints;
+    if (gradient === undefined || solid === undefined) {
+      throw new Error('fixture에 칠이 없다');
+    }
+    const { tokens } = buildDesignTokens(
+      tokensInput({ paintStyles: [{ name: 'Mixed', paints: [gradient, solid] }] }),
+    );
+    expect(at(tokens, ['style', 'paint', 'Mixed', '$type'])).toBe('color');
+    expect(at(tokens, ['style', 'paint', 'Mixed', '$value'])).toBe('{layer-fill.default}');
+    expect(
+      at(tokens, ['style', 'paint', 'Mixed', '$extensions', 'com.seojaewan', 'layers']),
+    ).toEqual([
+      expect.objectContaining({
+        type: 'GRADIENT_LINEAR',
+        gradientStops: [
+          { color: '{color.black.a-14}', position: 0.9 },
+          { color: '#00000024', position: 1 },
+        ],
+      }),
+      expect.objectContaining({ type: 'SOLID' }),
+    ]);
+  });
+
+  it('이미지만 있는 칠 스타일은 토큰이 아니라 넣지 않고 건너뛴 목록으로 알린다', () => {
+    const result = buildDesignTokens(tokensInput({ paintStyles: [wallpaperPaintStyle] }));
+    expect(at(result.tokens, ['style'])).toBeUndefined();
+    expect(result.skippedStyles).toEqual(['Wallpaper/Bloom']);
+  });
+
+  it('계약에 없는 칠이 보이면 중단한다', () => {
     const input = tokensInput({
       paintStyles: [
         {
-          name: 'Elevation/Control Border',
-          paints: [{ type: 'UNSUPPORTED', description: 'GRADIENT_LINEAR', visible: true }],
+          name: 'Video',
+          paints: [
+            ...fallbackPaintStyle.paints,
+            { type: 'UNSUPPORTED', description: 'VIDEO', visible: true },
+          ],
         },
       ],
     });
-    expect(() => buildDesignTokens(input)).toThrow(/GRADIENT_LINEAR/u);
+    expect(() => buildDesignTokens(input)).toThrow(/VIDEO/u);
   });
 
   it('숨긴 칠과 효과는 넣지 않는다', () => {
@@ -263,7 +329,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     if (solid === undefined) {
       throw new Error('fixture에 칠이 없다');
     }
-    const tokens = buildDesignTokens(
+    const { tokens } = buildDesignTokens(
       tokensInput({
         paintStyles: [
           {

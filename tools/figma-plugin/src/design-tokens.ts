@@ -81,10 +81,35 @@ export type ImagePaintInput = {
   scalingFactor?: number;
 };
 
+export type GradientStopInput = {
+  color: FigmaColor;
+  position: number;
+  boundVariables: Partial<Record<'color', VariableAlias>>;
+};
+
+export type GradientPaintInput = {
+  type: 'GRADIENT_LINEAR' | 'GRADIENT_RADIAL' | 'GRADIENT_ANGULAR' | 'GRADIENT_DIAMOND';
+  visible: boolean;
+  opacity: number;
+  blendMode: string;
+  gradientStops: readonly GradientStopInput[];
+  /** 2×3 아핀 변환 행렬 `[[a, b, c], [d, e, f]]` */
+  gradientTransform: readonly (readonly number[])[];
+};
+
 export type PaintInput =
-  SolidPaintInput | ImagePaintInput | (UnsupportedValue & { visible: boolean });
+  | SolidPaintInput
+  | ImagePaintInput
+  | GradientPaintInput
+  | (UnsupportedValue & { visible: boolean });
 
 export type PaintStyleInput = { name: string; paints: readonly PaintInput[] };
+
+/** 변환 결과. 토큰이 아니라서 넣지 않은 스타일(이미지만 있는 칠 스타일)을 함께 돌려준다. */
+export type DesignTokensResult = {
+  tokens: JsonObject;
+  skippedStyles: string[];
+};
 
 export type DesignTokensInput = {
   variables: readonly VariableInput[];
@@ -104,12 +129,14 @@ const fontWeights: Readonly<Record<string, number>> = { Regular: 400, SemiBold: 
 /**
  * Variables와 글자·효과·칠 스타일을 W3C 디자인 토큰(DTCG) 형식의 토큰 트리로 바꾼다.
  * 별칭은 풀지 않고 `{경로}`로 남긴다. 계약에 없는 값이 하나라도 있으면 모두 모아 중단한다.
+ * 단색도 그라디언트도 보이지 않는 칠 스타일(이미지만 있는 배경 등)은 토큰이 아니므로 넣지 않고 따로 알린다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param input 피그마에서 읽은 변수와 스타일
- * @returns tokens.json에 쓸 토큰 트리
+ * @returns tokens.json에 쓸 토큰 트리와 넣지 않은 스타일
  */
-export function buildDesignTokens(input: DesignTokensInput): JsonObject {
+export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult {
   const root: JsonObject = {};
+  const skippedStyles: string[] = [];
   const problems: string[] = [];
   const context: ConversionContext = { aliasNames: input.aliasNames, problems };
 
@@ -126,13 +153,18 @@ export function buildDesignTokens(input: DesignTokensInput): JsonObject {
     insertStyle(root, 'effect', style.name, effectStyleToken(style, context), problems);
   }
   for (const style of input.paintStyles) {
-    insertStyle(root, 'paint', style.name, paintStyleToken(style, context), problems);
+    const token = paintStyleToken(style, context);
+    if (token === null) {
+      skippedStyles.push(style.name);
+    } else {
+      insertStyle(root, 'paint', style.name, token, problems);
+    }
   }
 
   if (problems.length > 0) {
     throw new Error(`토큰을 내보낼 수 없다.\n- ${problems.join('\n- ')}`);
   }
-  return root;
+  return { tokens: root, skippedStyles };
 }
 
 /**
@@ -425,13 +457,16 @@ function shadowValue(
 }
 
 /**
- * 칠 스타일을 color 토큰으로 바꾼다. 보이는 단색 하나(불투명, NORMAL)면 그 색이고,
- * 아니면 첫 단색을 값으로 두고 모든 층을 확장 필드에 담는다.
+ * 칠 스타일을 토큰으로 바꾼다.
+ * - 보이는 단색 하나(불투명, NORMAL)면 그 색의 color 토큰이다.
+ * - 단색이 있으면 첫 단색을 값으로 둔 color 토큰이고, 모든 층을 확장 필드에 담는다.
+ * - 단색이 없고 그라디언트가 있으면 첫 그라디언트의 색 지점을 값으로 둔 gradient 토큰이다.
+ * - 단색도 그라디언트도 없으면(이미지만 있는 칠) 토큰이 아니다.
  * @param style 칠 스타일
  * @param context 별칭 이름표와 문제 목록
- * @returns color 토큰
+ * @returns 토큰, 토큰이 아닌 칠 스타일이면 null
  */
-function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject {
+function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject | null {
   const label = `칠 스타일 ${style.name}`;
   const visible = style.paints.filter((paint) => paint.visible);
   const [only] = visible;
@@ -444,6 +479,15 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
     return { $type: 'color', $value: solidColor(only, label, context) };
   }
 
+  const firstSolid = visible.find((paint) => paint.type === 'SOLID');
+  const firstGradient = visible.find(isGradient);
+  if (firstSolid === undefined && firstGradient === undefined) {
+    if (visible.some((paint) => paint.type === 'UNSUPPORTED')) {
+      context.problems.push(`${label}: 단색·그라디언트 없이 계약에 없는 칠만 있다`);
+    }
+    return null;
+  }
+
   const layers: JsonValue[] = [];
   for (const paint of visible) {
     if (paint.type === 'UNSUPPORTED') {
@@ -452,26 +496,30 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
       layers.push(paintLayer(paint, label, context));
     }
   }
-  const firstSolid = visible.find((paint) => paint.type === 'SOLID');
-  if (firstSolid === undefined) {
-    context.problems.push(`${label}: 보이는 단색 칠이 없어 $value를 정할 수 없다`);
+  const extensions = { [PROJECT_EXTENSION]: { layers } };
+  if (firstSolid !== undefined) {
+    return {
+      $type: 'color',
+      $value: solidColor(firstSolid, label, context),
+      $extensions: extensions,
+    };
   }
   return {
-    $type: 'color',
-    $value: firstSolid === undefined ? '' : solidColor(firstSolid, label, context),
-    $extensions: { [PROJECT_EXTENSION]: { layers } },
+    $type: 'gradient',
+    $value: firstGradient === undefined ? [] : gradientStops(firstGradient, label, context),
+    $extensions: extensions,
   };
 }
 
 /**
  * 칠 층 하나를 확장 필드 값으로 바꾼다. 그 칠 종류에 해당하는 필드만 담는다.
- * @param paint 단색 또는 이미지 칠
+ * @param paint 단색, 그라디언트 또는 이미지 칠
  * @param label 오류 메시지에 쓸 이름
  * @param context 별칭 이름표와 문제 목록
  * @returns 층 정보
  */
 function paintLayer(
-  paint: SolidPaintInput | ImagePaintInput,
+  paint: SolidPaintInput | ImagePaintInput | GradientPaintInput,
   label: string,
   context: ConversionContext,
 ): JsonObject {
@@ -484,6 +532,11 @@ function paintLayer(
     layer.color = solidColor(paint, label, context);
     return layer;
   }
+  if (paint.type !== 'IMAGE') {
+    layer.gradientStops = gradientStops(paint, label, context);
+    layer.gradientTransform = paint.gradientTransform.map((row) => row.map(roundNumber));
+    return layer;
+  }
   layer.imageHash = paint.imageHash;
   layer.scaleMode = paint.scaleMode;
   // scalingFactor는 TILE에서만 쓰인다.
@@ -491,6 +544,45 @@ function paintLayer(
     layer.scalingFactor = roundNumber(paint.scalingFactor);
   }
   return layer;
+}
+
+/**
+ * 그라디언트 색 지점을 DTCG gradient 값(`[{ color, position }]`)으로 바꾼다.
+ * @param paint 그라디언트 칠
+ * @param label 오류 메시지에 쓸 이름
+ * @param context 별칭 이름표와 문제 목록
+ * @returns 색 지점 목록
+ */
+function gradientStops(
+  paint: GradientPaintInput,
+  label: string,
+  context: ConversionContext,
+): JsonValue[] {
+  return paint.gradientStops.map((stop) => ({
+    color: stopColor(stop, label, context),
+    position: roundNumber(stop.position),
+  }));
+}
+
+/**
+ * 색 지점의 색을 16진수나 별칭으로 바꾼다.
+ * @param stop 그라디언트 색 지점
+ * @param label 오류 메시지에 쓸 이름
+ * @param context 별칭 이름표와 문제 목록
+ * @returns 16진수 색 또는 별칭 참조
+ */
+function stopColor(stop: GradientStopInput, label: string, context: ConversionContext): string {
+  const alias = stop.boundVariables.color;
+  return alias === undefined ? colorToHex(stop.color) : (aliasValue(alias, label, context) ?? '');
+}
+
+/**
+ * 칠이 그라디언트인지 확인한다.
+ * @param paint 칠
+ * @returns 그라디언트면 true
+ */
+function isGradient(paint: PaintInput): paint is GradientPaintInput {
+  return paint.type.startsWith('GRADIENT_');
 }
 
 /**

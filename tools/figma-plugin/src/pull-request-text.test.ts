@@ -39,8 +39,13 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
   it('PR 본문도 같은 변경 목록을 담는다', () => {
     expect(pullRequestBody(summary)).toContain('- 바뀐 컴포넌트 2개 (이미지 3개 갱신, 1개 삭제)');
   });
+});
 
-  it('브랜치 이름은 figma/export-yyyyMMdd-HHmmss다', () => {
-    expect(exportBranchName(new Date(2026, 9, 21, 9, 5, 7))).toBe('figma/export-20261021-090507');
+// @codocs [[Git 작업 규칙:브랜치]]
+describe('브랜치는 종류/짧은-설명 형식이고 종류는 커밋 종류와 같은 단어다', () => {
+  it('내보내기 브랜치 이름은 chore/figma-export-yyyyMMdd-HHmmss다', () => {
+    expect(exportBranchName(new Date(2026, 9, 21, 9, 5, 7))).toBe(
+      'chore/figma-export-20261021-090507',
+    );
   });
 });

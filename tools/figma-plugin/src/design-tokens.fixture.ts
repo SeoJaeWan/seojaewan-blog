@@ -143,6 +143,45 @@ export const fallbackPaintStyle: PaintStyleInput = {
   ],
 };
 
+export const controlBorderPaintStyle: PaintStyleInput = {
+  name: 'Elevation/Control Border',
+  paints: [
+    {
+      type: 'GRADIENT_LINEAR',
+      visible: true,
+      opacity: 1,
+      blendMode: 'NORMAL',
+      gradientStops: [
+        {
+          color: { r: 0, g: 0, b: 0, a: 0.14 },
+          position: 0.8999999761581421,
+          boundVariables: { color: aliasTo('color/black/a-14') },
+        },
+        { color: { r: 0, g: 0, b: 0, a: 0.14 }, position: 1, boundVariables: {} },
+      ],
+      gradientTransform: [
+        [0, 1, 0],
+        [-0.0416666679084301, 0, 0.5208333134651184],
+      ],
+    },
+  ],
+};
+
+export const wallpaperPaintStyle: PaintStyleInput = {
+  name: 'Wallpaper/Bloom',
+  paints: [
+    {
+      type: 'IMAGE',
+      visible: true,
+      opacity: 1,
+      blendMode: 'NORMAL',
+      imageHash: '32a4f2aead9726b13a6b06d1170070a036adac8e',
+      scaleMode: 'FILL',
+      scalingFactor: 0.5,
+    },
+  ],
+};
+
 /**
  * 테스트용 변환 입력을 만든다. 별칭 이름표는 변수 목록에서 만든다.
  * @param overrides 바꿀 항목

@@ -11,14 +11,15 @@ export type ExportSummary = {
 };
 
 /**
- * 내보내기 브랜치 이름을 만든다. 예: `figma/export-20261021-093005`
+ * 내보내기 브랜치 이름을 만든다. 종류는 커밋 종류(`chore`)와 같다. 예: `chore/figma-export-20261021-093005`
+ * @codocs [[Git 작업 규칙:브랜치]]
  * @param date 내보낸 시각(로컬 시간으로 적는다)
  * @returns 브랜치 이름
  */
 export function exportBranchName(date: Date): string {
   const day = [date.getFullYear(), date.getMonth() + 1, date.getDate()].map(pad).join('');
   const time = [date.getHours(), date.getMinutes(), date.getSeconds()].map(pad).join('');
-  return `figma/export-${day}-${time}`;
+  return `chore/figma-export-${day}-${time}`;
 }
 
 /**

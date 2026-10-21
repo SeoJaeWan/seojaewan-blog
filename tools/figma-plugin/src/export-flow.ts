@@ -89,7 +89,11 @@ export async function runExport(request: ExportRequest): Promise<string | null> 
   let tokensText: string | null = null;
   if (request.shouldExportTokens) {
     log('토큰 변환 중');
-    tokensText = stableStringify(buildDesignTokens(await readDesignTokensInput()));
+    const { tokens, skippedStyles } = buildDesignTokens(await readDesignTokensInput());
+    for (const name of skippedStyles) {
+      log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
+    }
+    tokensText = stableStringify(tokens);
     const baseTokensText = await getFileText(token, TOKENS_PATH, head.commitSha);
     if (tokensText === baseTokensText) {
       tokensText = null;

@@ -1,6 +1,7 @@
 import type {
   DesignTokensInput,
   EffectInput,
+  GradientStopInput,
   PaintInput,
   TextStyleInput,
   VariableAlias,
@@ -277,7 +278,47 @@ function paintInput(paint: Paint): PaintInput {
       scalingFactor: paint.scalingFactor,
     };
   }
+  if (
+    paint.type === 'GRADIENT_LINEAR' ||
+    paint.type === 'GRADIENT_RADIAL' ||
+    paint.type === 'GRADIENT_ANGULAR' ||
+    paint.type === 'GRADIENT_DIAMOND'
+  ) {
+    return {
+      type: paint.type,
+      visible: isVisible,
+      opacity,
+      blendMode,
+      gradientStops: paint.gradientStops.map(gradientStopInput),
+      gradientTransform: paint.gradientTransform.map((row) => [...row]),
+    };
+  }
   return { ...unsupported(paint.type), visible: isVisible };
+}
+
+/**
+ * 그라디언트 색 지점을 변환 입력으로 옮긴다.
+ * @param stop 피그마 색 지점
+ * @returns 변환 입력
+ */
+function gradientStopInput(stop: ColorStop): GradientStopInput {
+  return {
+    color: { r: stop.color.r, g: stop.color.g, b: stop.color.b, a: stop.color.a },
+    position: stop.position,
+    boundVariables: { color: alias(stop.boundVariables?.color) },
+  };
+}
+
+/**
+ * 칠 하나에 묶인 변수 별칭 목록을 모은다(단색 색, 그라디언트 색 지점).
+ * @param paint 변환 입력 칠
+ * @returns 별칭 묶음 목록
+ */
+function paintBindings(paint: PaintInput): Partial<Record<string, VariableAlias>>[] {
+  if (paint.type === 'SOLID') {
+    return [paint.boundVariables];
+  }
+  return 'gradientStops' in paint ? paint.gradientStops.map((stop) => stop.boundVariables) : [];
 }
 
 /**
@@ -302,9 +343,7 @@ async function addRemoteAliasNames(
     ...input.effectStyles.flatMap((style) =>
       style.effects.map((effect) => ('boundVariables' in effect ? effect.boundVariables : {})),
     ),
-    ...input.paintStyles.flatMap((style) =>
-      style.paints.map((paint) => (paint.type === 'SOLID' ? paint.boundVariables : {})),
-    ),
+    ...input.paintStyles.flatMap((style) => style.paints.flatMap(paintBindings)),
   ];
   for (const bound of boundSets) {
     for (const value of Object.values(bound)) {
