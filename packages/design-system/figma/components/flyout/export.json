@@ -1,38 +1,176 @@
 {
-  "exportedAt": "2026-10-21T00:45:29.077Z",
-  "hash": "986510180f1c6b35f48053e83c4a231025b96d0e345e27452e17cb3796d956b1",
+  "booleans": {},
+  "hash": "2f6f619ea48105e6212e97b2d5a045a3771241ca47e3526c28b0bf26755b003e",
   "name": "Flyout",
   "nodeId": "16:195",
   "variants": {
     "material=acrylic": {
-      "hash": "44c656627390bbab85a8515174f6a467f9149798d4a61c1d9f479a69fdf1cc8a",
-      "height": 100,
+      "cases": {},
+      "hash": "8ec4435bf605ffa3644454cc56be2be0d7d0f188dcea4d749e12c42c81f98dfa",
+      "hidden": [],
+      "layers": [
+        {
+          "effect": "Surface/Flyout (Acrylic)",
+          "fill": {
+            "style": "Material/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/16",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/16"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/flyout/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "surface-stroke/flyout"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/24",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/24"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
       "nodeId": "16:189",
       "properties": {
         "Material": "Acrylic"
-      },
-      "renderBounds": {
-        "height": 132,
-        "width": 352,
-        "x": -16,
-        "y": -8
-      },
-      "width": 320
+      }
     },
     "material=solid": {
-      "hash": "ddf6497fa7b8e88a4d004f76957ebb1e1d52663d1e5081f058ed0104b94ef6ca",
-      "height": 100,
+      "cases": {},
+      "hash": "ae477c7ba7b746105c60ec6628be16f91dfe000a0cbeade05ea5edb5006ce156",
+      "hidden": [],
+      "layers": [
+        {
+          "effect": "Elevation/Flyout",
+          "fill": {
+            "style": "Material/Fallback/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/16",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/16"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/flyout/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "surface-stroke/flyout"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/24",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/24"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
       "nodeId": "16:192",
       "properties": {
         "Material": "Solid"
-      },
-      "renderBounds": {
-        "height": 128,
-        "width": 352,
-        "x": -16,
-        "y": -8
-      },
-      "width": 320
+      }
     }
   }
 }

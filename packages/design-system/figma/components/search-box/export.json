@@ -1,280 +1,2198 @@
 {
-  "exportedAt": "2026-10-21T00:45:29.077Z",
-  "hash": "04fb661f88ef3be54ce5afca2d67c842130773d25cb0b7774850dfdb8a0d0c35",
+  "booleans": {},
+  "hash": "a699284f79044aa16ff9d8d0302945037ec50ea5aa0b9dc94473aa76c4f4591c",
   "name": "SearchBox",
   "nodeId": "14:92",
   "variants": {
     "appearance=default,filled=false,state=disabled": {
-      "hash": "230ea3c1f92fb9e130912d67b522b1d9891c3973a7465c4f35f00391e1905524",
-      "height": 32,
+      "cases": {},
+      "hash": "0ea8eeaab27b2ca8404bfe7624a3d3fdfca272290aa64e9c68136daf1f901d3e",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/default",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:27",
       "properties": {
         "Appearance": "Default",
         "Filled": "False",
         "State": "Disabled"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=false,state=focused": {
-      "hash": "62ab04d231699b6e06e29896170ddabad89056810d8776f8090e42f6522db855",
-      "height": 32,
+      "cases": {},
+      "hash": "c544dacf833886bf7f1dbb0e2719866954319eaabb9d2901168bbecaed96e9ae",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/focus-outer",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:22",
       "properties": {
         "Appearance": "Default",
         "Filled": "False",
         "State": "Focused"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=false,state=hover": {
-      "hash": "3ed9433ca384502cb4987d713bd6fd2f93fa85b8b009ba4305261b92bd2e2165",
-      "height": 32,
+      "cases": {},
+      "hash": "5e724a4b792a87d39ac5c03536323103c66c04f84786327d4f373810687184d7",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "style": "Elevation/Text Control Border"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
       "nodeId": "14:17",
       "properties": {
         "Appearance": "Default",
         "Filled": "False",
         "State": "Hover"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=false,state=rest": {
-      "hash": "0d245d05b9cf3fd2e734f60e64835b42e7b63812a51d86e4d150af40a026d1f7",
-      "height": 32,
+      "cases": {},
+      "hash": "78f2f31bff2439adc0b8ba85febd3aa364857191b2ead83df46c8ed16391f343",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "style": "Elevation/Text Control Border"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
       "nodeId": "14:12",
       "properties": {
         "Appearance": "Default",
         "Filled": "False",
         "State": "Rest"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=true,state=disabled": {
-      "hash": "db0f25ccf828e4edc7ce1b47d811f25760c4256670a6047a1ddebe32eafbb4e4",
-      "height": 32,
+      "cases": {},
+      "hash": "261abf98a7d9aa76f8d426939289bd1742b1de913e9cc678bf86e6e0770ea012",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/default",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:47",
       "properties": {
         "Appearance": "Default",
         "Filled": "True",
         "State": "Disabled"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=true,state=focused": {
-      "hash": "f49a3648d94f0fb4db291e2b9cf8232338b43dcd0dded1b99cc59b5b08123480",
-      "height": 32,
+      "cases": {},
+      "hash": "3685ea5e97e2d35dd11b3360a49ec16eaa9318cd0157f8d09bd3aa6507029d13",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/focus-outer",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:42",
       "properties": {
         "Appearance": "Default",
         "Filled": "True",
         "State": "Focused"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=true,state=hover": {
-      "hash": "e3c6bd459bffe98f7c7a8c43678ea3e72304340e6e9d90247e7fbc5702e87192",
-      "height": 32,
+      "cases": {},
+      "hash": "8a569ee89aab0d5566b31b688488009eda81bc25705de666775ab3201d734af8",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "style": "Elevation/Text Control Border"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
       "nodeId": "14:37",
       "properties": {
         "Appearance": "Default",
         "Filled": "True",
         "State": "Hover"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=default,filled=true,state=rest": {
-      "hash": "6bd089c5806bdffb66dd4a1f1b6583c0333fd844570b464194ea73a34cc4c9cb",
-      "height": 32,
+      "cases": {},
+      "hash": "ad80dc25f155801c416acea7c4484c890ad5199d297389d743346b92713f5309",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "style": "Elevation/Text Control Border"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
       "nodeId": "14:32",
       "properties": {
         "Appearance": "Default",
         "Filled": "True",
         "State": "Rest"
-      },
-      "renderBounds": {
-        "height": 32,
-        "width": 240,
-        "x": 0,
-        "y": 0
-      },
-      "width": 240
+      }
     },
     "appearance=pill,filled=false,state=disabled": {
-      "hash": "b8299e3e5ff05eb302a20198b00ff9b3da0503197e7bd979e3028cce9b8f45ad",
-      "height": 36,
+      "cases": {},
+      "hash": "570924eaa196cd28feea7aa33b938c93529d4c7d6f43db8f214cbe6770e223e8",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:67",
       "properties": {
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Disabled"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=false,state=focused": {
-      "hash": "99a1e867b149fefe20b2d4e2649201fdb4b1a8633becebf15ef43f9e55c2f3ef",
-      "height": 36,
+      "cases": {},
+      "hash": "c6ea90dea330f5e2d2813dfbf772098cfc2edb1f55d966d34cf7fd01da34c7bb",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/focus-outer",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:62",
       "properties": {
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Focused"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=false,state=hover": {
-      "hash": "2b55a8053b31e2fd770feff851a3149ea9c0ea8adb5ffedd1bbf5f6c93d46c7a",
-      "height": 36,
+      "cases": {},
+      "hash": "ecc2bfd16242e17b0c0945c5be10c4e684d2ce80a0d4b00604aca0717bd994fc",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:57",
       "properties": {
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Hover"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=false,state=rest": {
-      "hash": "04e7cdc43b53eee2caa4c0e70690e4745af4af03ed31aeadbb008c6972282760",
-      "height": 36,
+      "cases": {},
+      "hash": "b18b99cd628678544e2940d51a581e40ba5a89c9ddbfe3c20ecde54315ebb706",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:52",
       "properties": {
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Rest"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=true,state=disabled": {
-      "hash": "9a416e419da395148a5cfa81d31dae24969ed40462efef29663d7e52c1f3997b",
-      "height": 36,
+      "cases": {},
+      "hash": "5192e0cc7dfc8debde0d0dc69a1e43848403373142e36a287f33ba1fd5720cf6",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:87",
       "properties": {
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Disabled"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=true,state=focused": {
-      "hash": "854370acc707901ba3cf65783a8ab5db12cfeaeb77eac294a4f7a9110de03b79",
-      "height": 36,
+      "cases": {},
+      "hash": "905f20903ac3fd603d9dc22caa5f7df11edd77f64cb516c1c371011fb93df6cb",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/focus-outer",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
       "nodeId": "14:82",
       "properties": {
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Focused"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=true,state=hover": {
-      "hash": "7e2238f7e59267616412b068f089d143a837789006179a19fddb0b0f95bcb212",
-      "height": 36,
+      "cases": {},
+      "hash": "ffa82ec77544c151ab972916367838bb50d3080ca7936c5cad486ac281732630",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:77",
       "properties": {
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Hover"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     },
     "appearance=pill,filled=true,state=rest": {
-      "hash": "d3a09adf39ae93f762f476b1191731f0245ac33952d82e4c776f6905b012d2ff",
-      "height": 36,
+      "cases": {},
+      "hash": "65c28b367b620b10a4dce2c8994c6352166b13d6bf941548d9980609c2d072f5",
+      "hidden": [
+        "bottom border"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/search-box/height-pill",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-pill"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
       "nodeId": "14:72",
       "properties": {
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Rest"
-      },
-      "renderBounds": {
-        "height": 36,
-        "width": 320,
-        "x": 0,
-        "y": 0
-      },
-      "width": 320
+      }
     }
   }
 }
