@@ -89,16 +89,7 @@ async function main(): Promise<void> {
   const index = readJson(path.join(storybookStaticDir, 'index.json'));
 
   const server = await startStaticServer(storybookStaticDir);
-  // 임시 실험: --experiment-args="<인자>"와 --experiment-channel=<채널>로 Chromium 실행을 바꾼다.
-  const experimentArgs = argv.find((arg) => arg.startsWith('--experiment-args='));
-  const experimentChannel = argv.find((arg) => arg.startsWith('--experiment-channel='));
-  const browser = await chromium.launch({
-    args:
-      experimentArgs === undefined
-        ? [...BROWSER_ARGS]
-        : experimentArgs.slice('--experiment-args='.length).split(' ').filter(Boolean),
-    channel: experimentChannel?.slice('--experiment-channel='.length),
-  });
+  const browser = await chromium.launch({ args: [...BROWSER_ARGS] });
   const results: CaseResult[] = [];
   try {
     for (const parityCase of comparedCases) {
