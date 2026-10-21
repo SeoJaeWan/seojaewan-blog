@@ -1,5 +1,12 @@
 # @codocs [[Git 작업 규칙:Git 훅]]
 # 작업한 범위만 검사한다. 전체 검사는 CI에서 한다.
 pnpm exec lint-staged
+# lint-staged가 포맷 결과를 다시 스테이지한 뒤의 index를 기준으로 삼는다.
+staged_tree=$(git write-tree)
 node scripts/run-affected-tests.mjs
 pnpm typecheck
+# 검사가 도는 동안 다른 프로세스가 index를 바꾸면 그 파일까지 커밋되므로 멈춘다.
+if [ "$(git write-tree)" != "$staged_tree" ]; then
+  echo "pre-commit: 검사 중에 스테이지 내용이 바뀌었다. 커밋을 멈춘다." >&2
+  exit 1
+fi
