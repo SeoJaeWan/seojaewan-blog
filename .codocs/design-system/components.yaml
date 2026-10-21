@@ -13,8 +13,7 @@ _codocs:
 기본 컨트롤: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바 |
-  | FocusRect | 키보드 포커스 테두리. 버튼 등의 Focused 상태가 이 컴포넌트를 쓴다 |
+  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바. 키보드 포커스는 바깥쪽 선 한 겹으로 그린다([[디자인 기반:포커스 표현]]) |
   | SearchBox | Start 검색, 탐색기 검색 |
   | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창. 진짜 Windows처럼 진한 1px 테두리를 쓴다 |
   | Menu(MenuItem, MenuSeparator, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
