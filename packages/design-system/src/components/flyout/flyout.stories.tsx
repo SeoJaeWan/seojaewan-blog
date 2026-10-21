@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 
-import { ParityWrong } from '../parity-wrong';
 import { Flyout } from './flyout';
 
 // 피그마 Flyout의 변형 속성 값이다(정규화한 이름).
@@ -24,12 +23,9 @@ const meta = {
     material: { control: 'inline-radio', options: MATERIALS },
   },
   render: (args) => (
-    <>
-      <Flyout material={args.material}>
-        <SlotPlaceholder />
-      </Flyout>
-      <ParityWrong component="flyout" />
-    </>
+    <Flyout material={args.material}>
+      <SlotPlaceholder />
+    </Flyout>
   ),
 } satisfies Meta<ParityArgs>;
 

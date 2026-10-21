@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { ParityWrong } from '../parity-wrong';
 import { Button } from './button';
 
 // 피그마 Button의 변형 속성 값이다(정규화한 이름).
@@ -20,12 +19,9 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <>
-      <Button variant={args.style} disabled={args.state === 'disabled'}>
-        버튼
-      </Button>
-      <ParityWrong component="button" />
-    </>
+    <Button variant={args.style} disabled={args.state === 'disabled'}>
+      버튼
+    </Button>
   ),
 } satisfies Meta<ParityArgs>;
 
