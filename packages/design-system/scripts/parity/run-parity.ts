@@ -18,7 +18,7 @@ import {
 import { captureStory } from './capture-story.ts';
 import { compareImages, readPng, writePng } from './compare-images.ts';
 import type { ParityCase } from './figma-export.ts';
-import { parseFigmaExport, pixelClip } from './figma-export.ts';
+import { isComparedVariant, parseFigmaExport, pixelClip } from './figma-export.ts';
 import {
   MAX_DIFF_PIXELS,
   PIXELMATCH_THRESHOLD,
@@ -75,6 +75,13 @@ async function main(): Promise<void> {
     return;
   }
 
+  for (const skipped of cases.filter((item) => !isComparedVariant(item))) {
+    console.log(
+      `[parity] 재질 효과 변형은 비교하지 않는다: ${skipped.component}/${skipped.variant}`,
+    );
+  }
+  const comparedCases = cases.filter(isComparedVariant);
+
   if (!argv.includes(NO_BUILD_FLAG)) {
     buildStorybook();
   }
@@ -84,7 +91,7 @@ async function main(): Promise<void> {
   const browser = await chromium.launch();
   const results: CaseResult[] = [];
   try {
-    for (const parityCase of cases) {
+    for (const parityCase of comparedCases) {
       results.push(await runCase(browser, server.url, index, parityCase));
     }
   } finally {

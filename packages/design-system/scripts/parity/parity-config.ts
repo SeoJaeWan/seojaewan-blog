@@ -16,3 +16,8 @@ export const STATE_PROPERTY = 'state';
 export const PAGE_MARGIN = 64;
 // 스토리 렌더링과 서체 로딩을 기다리는 최대 시간(ms)이다.
 export const RENDER_TIMEOUT_MS = 15_000;
+
+// @codocs [[디자인 기반:재질 효과]]
+// 재질 효과를 쓰는 컴포넌트는 효과를 뺀 변형(Material=Solid)만 비교한다. 정규화한 속성 이름과 값이다.
+export const MATERIAL_PROPERTY = 'material';
+export const COMPARED_MATERIAL = 'solid';

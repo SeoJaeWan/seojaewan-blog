@@ -3,6 +3,8 @@
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
+import { COMPARED_MATERIAL, MATERIAL_PROPERTY } from './parity-config.ts';
+
 export type RenderBounds = {
   x: number;
   y: number;
@@ -211,4 +213,18 @@ function expectString(value: unknown, where: string): string {
     throw new Error(`${where}: 문자열이어야 한다.`);
   }
   return value;
+}
+
+/**
+ * 비교하는 변형인지 확인한다. 재질 속성이 있으면 효과를 뺀 단색 변형만 비교한다.
+ * 피그마 배경 블러와 브라우저 backdrop-filter는 계산 방식이 달라 픽셀로 비교할 수 없기 때문이다.
+ * @codocs [[디자인 기반:재질 효과]]
+ * @param parityCase 변형
+ * @returns 비교하면 true
+ */
+export function isComparedVariant(parityCase: Pick<ParityCase, 'properties'>): boolean {
+  return parityCase.properties.every(
+    ([name, value]) =>
+      normalizeName(name) !== MATERIAL_PROPERTY || normalizeName(value) === COMPARED_MATERIAL,
+  );
 }

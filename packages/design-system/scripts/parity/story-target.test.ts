@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-import { parseFigmaExport, pixelClip, variantFileName } from './figma-export.ts';
+import { isComparedVariant, parseFigmaExport, pixelClip, variantFileName } from './figma-export.ts';
 import { exportFixture, storybookIndexFixture } from './story-target.fixture.ts';
 import { camelCase, findParityStoryId, storyArgsParam, storyTarget } from './story-target.ts';
 
@@ -106,5 +106,24 @@ describe('피그마 이미지 이름', () => {
     const broken = structuredClone(exportFixture);
     broken.components.button.variants['variant=accent,state=rest'].properties.State = 'Hover';
     expect(() => parseFigmaExport(broken)).toThrow(/state=hover/u);
+  });
+});
+
+// @codocs [[디자인 기반:재질 효과]]
+describe('재질 효과', () => {
+  it('재질 속성이 있는 컴포넌트는 Material=Solid 변형만 비교한다', () => {
+    expect(isComparedVariant({ properties: [['Material', 'Solid']] })).toBe(true);
+    expect(isComparedVariant({ properties: [['Material', 'Acrylic']] })).toBe(false);
+  });
+
+  it('재질 속성이 없는 변형은 모두 비교한다', () => {
+    expect(
+      isComparedVariant({
+        properties: [
+          ['Style', 'Accent'],
+          ['State', 'Rest'],
+        ],
+      }),
+    ).toBe(true);
   });
 });
