@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        padding: 12px;
+        font:
+          12px/1.5 system-ui,
+          sans-serif;
+        color: var(--figma-color-text, #333);
+        background: var(--figma-color-bg, #fff);
+      }
+      label {
+        display: block;
+      }
+      fieldset {
+        margin: 0 0 12px;
+        padding: 8px;
+        border: 1px solid var(--figma-color-border, #ddd);
+        border-radius: 4px;
+      }
+      input[type='password'] {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 4px 6px;
+        border: 1px solid var(--figma-color-border, #ccc);
+        border-radius: 4px;
+        color: inherit;
+        background: transparent;
+      }
+      #components {
+        max-height: 220px;
+        overflow-y: auto;
+      }
+      .muted {
+        color: var(--figma-color-text-secondary, #888);
+      }
+      button {
+        padding: 6px 12px;
+        border: 0;
+        border-radius: 4px;
+        color: var(--figma-color-text-onbrand, #fff);
+        background: var(--figma-color-bg-brand, #0d99ff);
+      }
+      button:disabled {
+        opacity: 0.5;
+      }
+      #log {
+        height: 120px;
+        margin: 12px 0 0;
+        padding: 6px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        border: 1px solid var(--figma-color-border, #ddd);
+        border-radius: 4px;
+        font-family: ui-monospace, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <fieldset>
+      <legend>GitHub</legend>
+      <label for="token">Fine-grained 토큰 (SeoJaeWan/seojaewan-blog 전용)</label>
+      <input id="token" type="password" autocomplete="off" spellcheck="false" />
+      <p class="muted">PR 대상: SeoJaeWan/seojaewan-blog · main</p>
+    </fieldset>
+    <fieldset>
+      <legend>컴포넌트 (01 · Components)</legend>
+      <label><input id="select-all" type="checkbox" /> 모두 선택</label>
+      <div id="components" class="muted">불러오는 중…</div>
+    </fieldset>
+    <fieldset>
+      <legend>토큰</legend>
+      <label><input id="tokens" type="checkbox" checked /> tokens.json 내보내기</label>
+    </fieldset>
+    <button id="export" type="button" disabled>내보내고 PR 열기</button>
+    <p id="result"></p>
+    <div id="log" aria-live="polite"></div>
+    <!-- UI_SCRIPT -->
+  </body>
+</html>

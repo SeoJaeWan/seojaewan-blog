@@ -1,0 +1,14 @@
+{
+  "name": "seojaewan-blog figma export",
+  "id": "seojaewan-blog-figma-export",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "enablePrivatePluginApi": true,
+  "networkAccess": {
+    "allowedDomains": ["https://api.github.com"],
+    "reasoning": "Commits exported images and tokens to the repository and opens a pull request."
+  }
+}
