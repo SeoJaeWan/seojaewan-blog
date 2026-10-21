@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX, ReactNode } from 'react';
 import { useState } from 'react';
 
+import { ParityWrong } from '../parity-wrong';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
@@ -24,9 +25,12 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <OpenMenu>
-      <ParityMenuItem kind={args.kind} isDisabled={args.state === 'disabled'} />
-    </OpenMenu>
+    <>
+      <OpenMenu>
+        <ParityMenuItem kind={args.kind} isDisabled={args.state === 'disabled'} />
+      </OpenMenu>
+      <ParityWrong component="menu-item" />
+    </>
   ),
 } satisfies Meta<ParityArgs>;
 

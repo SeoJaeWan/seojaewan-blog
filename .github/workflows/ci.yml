@@ -122,6 +122,30 @@ jobs:
         if: steps.figma.outputs.present == 'true'
         run: pnpm --filter @seojaewan/design-system test:parity --affected --base origin/${{ github.base_ref }}
 
+      # 임시 검증: 일부러 틀린 버전(패딩 +1px, 다른 색 토큰, 모서리 +1px)을 비교해 결과를 모은다.
+      - name: Figma parity wrong versions
+        if: always() && steps.figma.outputs.present == 'true'
+        working-directory: packages/design-system
+        run: |
+          run_wrong() {
+            STORYBOOK_PARITY_WRONG=$1 node scripts/parity/run-parity.ts > "wrong-$1.log" 2>&1 || true
+            mkdir -p "wrong-versions/$1"
+            if [ -d parity-results ]; then cp -r parity-results/. "wrong-versions/$1/"; rm -rf parity-results; fi
+            cp "wrong-$1.log" "wrong-versions/$1/run.log"
+          }
+          run_wrong normal
+          run_wrong padding
+          run_wrong color
+          run_wrong radius
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: figma-parity-wrong-versions
+          path: packages/design-system/wrong-versions/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
