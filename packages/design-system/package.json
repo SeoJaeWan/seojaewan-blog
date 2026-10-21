@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p scripts",
     "storybook": "storybook dev --port 6006 --no-open",
     "build-storybook": "storybook build",
-    "generate:tokens": "node scripts/tokens/generate-tokens.ts"
+    "generate:tokens": "node scripts/tokens/generate-tokens.ts",
+    "test:parity": "node scripts/parity/run-parity.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

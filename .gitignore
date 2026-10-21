@@ -33,3 +33,6 @@ Thumbs.db
 # local agent settings
 .claude/settings.local.json
 .claude/worktrees/
+
+# figma parity
+parity-results/
