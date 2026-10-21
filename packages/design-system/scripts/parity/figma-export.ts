@@ -3,17 +3,6 @@
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
-import type { FigmaLayer } from './figma-layers.ts';
-import { parseLayers } from './figma-layers.ts';
-import { COMPARED_MATERIAL, MATERIAL_PROPERTY } from './parity-config.ts';
-
-export type RenderBounds = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
 export type ParityCase = {
   /** 컴포넌트 폴더 이름(kebab-case) */
   component: string;
@@ -23,21 +12,10 @@ export type ParityCase = {
   variant: string;
   /** 피그마 변형 속성. 피그마 순서를 유지한다 */
   properties: [string, string][];
-  /** 피그마 노드 크기(CSS px) */
-  width: number;
-  height: number;
-  /** 노드 왼쪽 위 기준으로 그림자까지 포함한 내보내기 영역 */
-  renderBounds: RenderBounds;
-  /** 내보낸 PNG의 배율. 브라우저 deviceScaleFactor로 쓴다 */
-  scale: number;
-  /** 변형 루트와 그 아래 레이어 정보. 첫 항목이 루트다. 읽지 못하면 빈 목록이고 layersError에 이유가 있다 */
-  layers: FigmaLayer[];
-  layersError?: string;
 };
 
 export type FigmaExport = {
   fileKey: string;
-  scale: number;
   cases: ParityCase[];
 };
 
@@ -56,7 +34,6 @@ export function parseFigmaExport(
   components: Readonly<Record<string, unknown>>,
 ): FigmaExport {
   const root = expectRecord(settings, 'figma.json');
-  const scale = expectNumber(root.scale, 'figma.json scale');
   const cases: ParityCase[] = [];
 
   for (const [component, value] of Object.entries(components)) {
@@ -81,23 +58,7 @@ export function parseFigmaExport(
       if (expectedName !== variant) {
         throw new Error(`${variantWhere}: 속성으로 만든 파일 이름은 "${expectedName}"이다.`);
       }
-      const bounds = expectRecord(item.renderBounds, `${variantWhere}.renderBounds`);
-      cases.push({
-        component,
-        componentName,
-        variant,
-        properties,
-        width: expectNumber(item.width, `${variantWhere}.width`),
-        height: expectNumber(item.height, `${variantWhere}.height`),
-        renderBounds: {
-          x: expectNumber(bounds.x, `${variantWhere}.renderBounds.x`),
-          y: expectNumber(bounds.y, `${variantWhere}.renderBounds.y`),
-          width: expectNumber(bounds.width, `${variantWhere}.renderBounds.width`),
-          height: expectNumber(bounds.height, `${variantWhere}.renderBounds.height`),
-        },
-        scale,
-        ...readLayers(item.layers, `${component}/export.json layers`),
-      });
+      cases.push({ component, componentName, variant, properties });
     }
   }
 
@@ -106,40 +67,7 @@ export function parseFigmaExport(
       ? a.variant.localeCompare(b.variant)
       : a.component.localeCompare(b.component),
   );
-  return { fileKey: expectString(root.fileKey, 'figma.json fileKey'), scale, cases };
-}
-
-export type PixelClip = {
-  /** 노드 왼쪽 위 기준 잘라낼 영역(CSS px) */
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  /** 내보낸 PNG의 픽셀 크기 */
-  pixelWidth: number;
-  pixelHeight: number;
-};
-
-/**
- * renderBounds를 PNG와 같은 픽셀 영역으로 맞춘다.
- * 피그마는 소수인 렌더 영역을 픽셀 단위로 덮도록 내보낸다: 왼쪽 위는 내림, 오른쪽 아래는 올림.
- * @param bounds 노드 기준 renderBounds(CSS px)
- * @param scale 내보내기 배율
- * @returns 잘라낼 영역과 PNG 픽셀 크기
- */
-export function pixelClip(bounds: RenderBounds, scale: number): PixelClip {
-  const left = Math.floor(bounds.x * scale);
-  const top = Math.floor(bounds.y * scale);
-  const right = Math.ceil((bounds.x + bounds.width) * scale);
-  const bottom = Math.ceil((bounds.y + bounds.height) * scale);
-  return {
-    x: left / scale,
-    y: top / scale,
-    width: (right - left) / scale,
-    height: (bottom - top) / scale,
-    pixelWidth: right - left,
-    pixelHeight: bottom - top,
-  };
+  return { fileKey: expectString(root.fileKey, 'figma.json fileKey'), cases };
 }
 
 /**
@@ -186,20 +114,6 @@ function inFileNameOrder(properties: [string, string][], variant: string): [stri
 }
 
 /**
- * 변형의 레이어 정보를 읽는다. 계약과 다르면 그 변형만 실패하도록 이유를 남긴다.
- * @param value layers 값
- * @param where 오류 메시지에 쓸 위치
- * @returns 레이어 목록, 또는 빈 목록과 이유
- */
-function readLayers(value: unknown, where: string): Pick<ParityCase, 'layers' | 'layersError'> {
-  try {
-    return { layers: parseLayers(value, where) };
-  } catch (error) {
-    return { layers: [], layersError: error instanceof Error ? error.message : String(error) };
-  }
-}
-
-/**
  * 객체인지 확인한다.
  * @param value 확인할 값
  * @param where 오류 메시지에 쓸 위치
@@ -213,19 +127,6 @@ function expectRecord(value: unknown, where: string): Record<string, unknown> {
 }
 
 /**
- * 유한한 숫자인지 확인한다.
- * @param value 확인할 값
- * @param where 오류 메시지에 쓸 위치
- * @returns 숫자
- */
-function expectNumber(value: unknown, where: string): number {
-  if (typeof value !== 'number' || !Number.isFinite(value)) {
-    throw new Error(`${where}: 숫자여야 한다.`);
-  }
-  return value;
-}
-
-/**
  * 문자열인지 확인한다.
  * @param value 확인할 값
  * @param where 오류 메시지에 쓸 위치
@@ -236,19 +137,4 @@ function expectString(value: unknown, where: string): string {
     throw new Error(`${where}: 문자열이어야 한다.`);
   }
   return value;
-}
-
-/**
- * 이미지 전체를 픽셀로 비교하는 변형인지 확인한다. 재질 속성이 있으면 효과를 뺀 단색 변형만 픽셀로 비교한다.
- * 피그마 배경 블러와 브라우저 backdrop-filter는 계산 방식이 달라 픽셀로 비교할 수 없기 때문이다.
- * 재질 변형도 값 비교(칠·이미지·블러·그림자 값)는 한다.
- * @codocs [[디자인 기반:재질 효과]]
- * @param parityCase 변형
- * @returns 픽셀로 비교하면 true
- */
-export function isPixelComparedVariant(parityCase: Pick<ParityCase, 'properties'>): boolean {
-  return parityCase.properties.every(
-    ([name, value]) =>
-      normalizeName(name) !== MATERIAL_PROPERTY || normalizeName(value) === COMPARED_MATERIAL,
-  );
 }

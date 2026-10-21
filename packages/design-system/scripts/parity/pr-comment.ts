@@ -92,7 +92,7 @@ function componentBlock(
       const files = group.files.map((file) => `${component}/${result.variant}/${file}`);
       images.push(...files);
       const cells = files.map((file) => `<img src="${options.imageUrl(file)}" height="64">`);
-      while (cells.length < 3) {
+      while (cells.length < 2) {
         cells.push('');
       }
       imageRows.push(`| ${result.variant} · ${group.label} | ${cells.join(' | ')} |`);
@@ -131,13 +131,7 @@ function paginate(
   function render(block: Block, index: number): string {
     const table =
       withImages[index] === true && block.imageRows.length > 0
-        ? [
-            '',
-            '',
-            '| 변형 · 레이어 | 피그마 | 브라우저 | 차이 |',
-            '|---|---|---|---|',
-            ...block.imageRows,
-          ].join('\n')
+        ? ['', '', '| 변형 | 피그마 | 브라우저 |', '|---|---|---|', ...block.imageRows].join('\n')
         : '';
     const closing = block.text.startsWith('<details>') ? '\n\n</details>' : '';
     return `${block.text}${table}${closing}`;

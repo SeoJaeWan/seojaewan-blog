@@ -9,13 +9,9 @@ import type {
   VariableValueInput,
 } from './design-tokens';
 import type { RenderBounds } from './export-manifest';
-import { buildLayers, vectorLayerIds } from './layer-export';
-import { exportVectorSvg, readLayerTree } from './layer-reader';
 import type { ComponentSummary } from './messages';
 import { COMPONENTS_PAGE_ID, SCALE } from './plugin-config';
-import { sha256Hex } from './sha256';
 import type { JsonObject } from './stable-json';
-import { normalizeSvgBytes } from './svg-normalize';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
 
@@ -59,7 +55,6 @@ export async function listComponents(): Promise<ComponentSummary[]> {
 /**
  * 컴포넌트(세트)의 모든 변형을 PNG로 내보낸다. 노드를 그대로 내보내 배경은 투명이다.
  * 그림자는 노드 상자 밖으로 그려지므로 노드 왼쪽 위 기준 렌더링 영역을 함께 기록한다.
- * 값 비교에 쓰는 레이어 정보(위치·크기, 자동 배치, 칠·선 토큰, 글자)와 vector 레이어 SVG도 함께 읽는다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @returns 컴포넌트 이름, ID, 변형 목록
@@ -74,30 +69,20 @@ export async function exportComponent(
   }
   const components = node.type === 'COMPONENT_SET' ? variantsOf(node) : [node];
   const variants: ExportedVariant[] = [];
-  const names = new Map<string, string | undefined>();
   for (const component of components) {
     const png = await component.exportAsync({
       format: 'PNG',
       constraint: { type: 'SCALE', value: SCALE },
     });
-    const tree = await readLayerTree(component, names);
-    const svgs = new Map<string, Uint8Array>();
-    const svgFiles = new Map<string, string>();
-    for (const id of vectorLayerIds(tree)) {
-      const svg = normalizeSvgBytes(await exportVectorSvg(id));
-      const file = `${sha256Hex(svg)}.svg`;
-      svgs.set(file, svg);
-      svgFiles.set(id, file);
-    }
     variants.push({
       nodeId: component.id,
       properties: node.type === 'COMPONENT_SET' ? { ...component.variantProperties } : {},
       width: component.width,
       height: component.height,
       renderBounds: renderBoundsOf(component),
-      layers: buildLayers(tree, svgFiles),
+      layers: [],
       png,
-      svgs,
+      svgs: new Map(),
     });
   }
   return { name: node.name, nodeId: node.id, variants };
