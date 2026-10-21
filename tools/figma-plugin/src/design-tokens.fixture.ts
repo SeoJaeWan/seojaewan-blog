@@ -106,16 +106,8 @@ export const acrylicPaintStyle: PaintStyleInput = {
       visible: true,
       opacity: 0.8500000238418579,
       blendMode: 'LUMINOSITY',
-      color: { r: 0.988, g: 0.988, b: 0.988 },
-      boundVariables: {},
-    },
-    {
-      type: 'SOLID',
-      visible: true,
-      opacity: 0,
-      blendMode: 'COLOR',
-      color: { r: 1, g: 1, b: 1 },
-      boundVariables: {},
+      color: { r: 0.976, g: 0.976, b: 0.976 },
+      boundVariables: { color: aliasTo('layer-fill/default') },
     },
     {
       type: 'IMAGE',
@@ -157,7 +149,11 @@ export const controlBorderPaintStyle: PaintStyleInput = {
           position: 0.8999999761581421,
           boundVariables: { color: aliasTo('color/black/a-14') },
         },
-        { color: { r: 0, g: 0, b: 0, a: 0.14 }, position: 1, boundVariables: {} },
+        {
+          color: { r: 0, g: 0, b: 0, a: 0.14 },
+          position: 1,
+          boundVariables: { color: aliasTo('color/black/a-14') },
+        },
       ],
       gradientTransform: [
         [0, 1, 0],

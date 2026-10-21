@@ -476,6 +476,9 @@ function shadowValue(
 function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject | null {
   const label = `칠 스타일 ${style.name}`;
   const visible = style.paints.filter((paint) => paint.visible);
+  for (const paint of visible) {
+    checkBoundColors(paint, label, context);
+  }
   const [only] = visible;
   if (
     visible.length === 1 &&
@@ -516,6 +519,30 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
     $value: firstGradient === undefined ? [] : gradientStops(firstGradient, label, context),
     $extensions: extensions,
   };
+}
+
+/**
+ * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
+ * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param paint 칠 층
+ * @param label 오류 메시지에 쓸 이름
+ * @param context 문제 목록
+ */
+function checkBoundColors(paint: PaintInput, label: string, context: ConversionContext): void {
+  if (paint.type === 'SOLID' && paint.boundVariables.color === undefined) {
+    context.problems.push(
+      `${label}: ${paint.blendMode} 단색 층의 색 ${colorToHex(paint.color)}이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
+    );
+  }
+  if (
+    isGradient(paint) &&
+    paint.gradientStops.some((stop) => stop.boundVariables.color === undefined)
+  ) {
+    context.problems.push(
+      `${label}: 그라디언트 색 지점이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
+    );
+  }
 }
 
 /**
