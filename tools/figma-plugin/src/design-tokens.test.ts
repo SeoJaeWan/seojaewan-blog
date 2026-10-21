@@ -253,7 +253,21 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     });
   });
 
-  it('칠 스타일 안의 층 색이 날값이면 막는다(재질 칠 스타일 포함)', () => {
+  it('칠 스타일 안의 NORMAL 단색 층 색이 날값이면 막는다(층이 여럿인 스타일 포함)', () => {
+    const [luminosity, ...rest] = acrylicPaintStyle.paints;
+    if (luminosity?.type !== 'SOLID') {
+      throw new Error('fixture');
+    }
+    const raw: typeof acrylicPaintStyle = {
+      name: 'Material/Raw',
+      paints: [{ ...luminosity, blendMode: 'NORMAL', boundVariables: {} }, ...rest],
+    };
+    expect(() => buildDesignTokens(tokensInput({ paintStyles: [raw] }))).toThrow(
+      'NORMAL 단색 층의 색 #f9f9f9이 변수에 연결되어 있지 않다',
+    );
+  });
+
+  it('블렌드 모드 단색 층의 날값은 결정 전까지 막지 않고 알린다(피그마 API가 연결을 못 함)', () => {
     const [luminosity, ...rest] = acrylicPaintStyle.paints;
     if (luminosity?.type !== 'SOLID') {
       throw new Error('fixture');
@@ -262,9 +276,10 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
       name: 'Material/Acrylic Default',
       paints: [{ ...luminosity, boundVariables: {} }, ...rest],
     };
-    expect(() => buildDesignTokens(tokensInput({ paintStyles: [raw] }))).toThrow(
-      'LUMINOSITY 단색 층의 색 #f9f9f9이 변수에 연결되어 있지 않다',
-    );
+    const { notices } = buildDesignTokens(tokensInput({ paintStyles: [raw] }));
+    expect(notices).toEqual([
+      expect.stringContaining('LUMINOSITY 단색 층의 색 #f9f9f9이 변수에 연결되어 있지 않다'),
+    ]);
   });
 
   it('그라디언트 색 지점이 날값이면 막는다', () => {

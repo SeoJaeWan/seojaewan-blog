@@ -1,3 +1,4 @@
+import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
 import { colorToHex, type FigmaColor } from './color';
 import type { JsonObject, JsonValue } from './stable-json';
 
@@ -109,6 +110,8 @@ export type PaintStyleInput = { name: string; paints: readonly PaintInput[] };
 export type DesignTokensResult = {
   tokens: JsonObject;
   skippedStyles: string[];
+  /** 막지 않고 알리기만 하는 문제(블렌드 층의 날값 색 등) */
+  notices: string[];
 };
 
 export type DesignTokensInput = {
@@ -140,10 +143,12 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   const root: JsonObject = {};
   const skippedStyles: string[] = [];
   const problems: string[] = [];
+  const notices: string[] = [];
   const context: ConversionContext = {
     aliasNames: input.aliasNames,
     imageAssets: input.imageAssets,
     problems,
+    notices,
   };
 
   for (const variable of input.variables) {
@@ -170,7 +175,7 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   if (problems.length > 0) {
     throw new Error(`토큰을 내보낼 수 없다.\n- ${problems.join('\n- ')}`);
   }
-  return { tokens: root, skippedStyles };
+  return { tokens: root, skippedStyles, notices };
 }
 
 /**
@@ -207,6 +212,8 @@ type ConversionContext = {
   aliasNames: Readonly<Record<string, string>>;
   imageAssets: Readonly<Record<string, string>>;
   problems: string[];
+  /** 막지 않고 알리기만 하는 문제 */
+  notices: string[];
 };
 
 /**
@@ -524,6 +531,8 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
 /**
  * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
  * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
+ * 블렌드 모드가 NORMAL이 아닌 단색 층은 피그마 API에서 변수에 연결하면 블렌드가 NORMAL로 고정되어 연결할 수 없다.
+ * 이런 층의 날값을 막을지 알림만 할지는 결정 사항 설정(`parityDecisions.paintStyleLayers`) 한곳에서 정한다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param paint 칠 층
  * @param label 오류 메시지에 쓸 이름
@@ -531,7 +540,10 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
  */
 function checkBoundColors(paint: PaintInput, label: string, context: ConversionContext): void {
   if (paint.type === 'SOLID' && paint.boundVariables.color === undefined) {
-    context.problems.push(
+    const isNoticeOnly =
+      paint.blendMode !== 'NORMAL' &&
+      parityDecisions.paintStyleLayers.rawBlendLayerColor === 'notice';
+    (isNoticeOnly ? context.notices : context.problems).push(
       `${label}: ${paint.blendMode} 단색 층의 색 ${colorToHex(paint.color)}이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
     );
   }

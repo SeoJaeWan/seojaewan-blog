@@ -12,7 +12,7 @@ export type TokensExport = {
   skippedStyles: string[];
   /** 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/noise-acrylic.png`) → 바이트(G4) */
   images: Map<string, Uint8Array>;
-  /** 쓰는 곳이 없는 변수·스타일 알림(G2, 막지 않음) */
+  /** 막지 않는 알림: 블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일(G2) */
   notices: string[];
 };
 
@@ -25,7 +25,7 @@ export type TokensExport = {
  */
 export async function exportTokensText(): Promise<TokensExport> {
   const input = await readDesignTokensInput();
-  const { tokens, skippedStyles } = buildDesignTokens(input);
+  const { tokens, skippedStyles, notices: tokenNotices } = buildDesignTokens(input);
   const assets = await readImageAssets();
   const images = new Map<string, Uint8Array>();
   for (const style of input.paintStyles) {
@@ -42,6 +42,6 @@ export async function exportTokensText(): Promise<TokensExport> {
       }
     }
   }
-  const notices = unusedNotices(await readUsageInput());
+  const notices = [...tokenNotices, ...unusedNotices(await readUsageInput())];
   return { text: stableStringify(tokens), skippedStyles: [...skippedStyles], images, notices };
 }
