@@ -38,6 +38,9 @@ describe('스타일링', () => {
     expect(mergeClassNames('border-b-focus-outer border-accent-fill-default')).toBe(
       'border-b-focus-outer border-accent-fill-default',
     );
+    expect(mergeClassNames('outline-focus-outer outline-focus-stroke-outer')).toBe(
+      'outline-focus-outer outline-focus-stroke-outer',
+    );
     expect(mergeClassNames('type-body text-text-fill-primary text-caption')).toBe(
       'type-body text-text-fill-primary text-caption',
     );

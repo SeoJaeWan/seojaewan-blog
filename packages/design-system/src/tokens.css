@@ -229,17 +229,23 @@
   --spacing-control-height: 32px;
   --spacing-control-height-large: 40px;
   --spacing-control-height-small: 24px;
+  --spacing-flyout-width: 320px;
   --spacing-icon-12: 12px;
   --spacing-icon-16: 16px;
   --spacing-icon-20: 20px;
   --spacing-icon-24: 24px;
   --spacing-icon-32: 32px;
   --spacing-icon-48: 48px;
+  --spacing-menu-item-bullet: 6px;
   --spacing-menu-item-height: 32px;
+  --spacing-menu-item-width: 240px;
   --spacing-progress-ring-size: 32px;
   --spacing-progress-ring-stroke: 3px;
   --spacing-scrollbar-thumb-hover: 6px;
   --spacing-scrollbar-thumb-rest: 2px;
+  --spacing-search-box-height-pill: 36px;
+  --spacing-search-box-width: 240px;
+  --spacing-search-box-width-pill: 320px;
   --spacing-taskbar-height: 48px;
   --spacing-taskbar-button-size: 40px;
   --spacing-taskbar-preview-thumbnail-height: 108px;
@@ -268,9 +274,13 @@
   --spacing-40: 40px;
   --spacing-48: 48px;
   --border-width-default: 1px;
+  --outline-width-default: var(--border-width-default);
   --border-width-focus-inner: 1px;
+  --outline-width-focus-inner: var(--border-width-focus-inner);
   --border-width-focus-outer: 2px;
+  --outline-width-focus-outer: var(--border-width-focus-outer);
   --border-width-indicator: 3px;
+  --outline-width-indicator: var(--border-width-indicator);
   --color-subtle-fill-disabled: var(--color-white-alpha-00);
   --color-subtle-fill-secondary: var(--color-black-alpha-09);
   --color-subtle-fill-tertiary: var(--color-black-alpha-06);
@@ -416,4 +426,48 @@
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-title-large);
   letter-spacing: 0em;
+}
+
+@utility inner-border-w-* {
+  --inner-border-width: --value(--border-width-*);
+}
+
+@utility inner-border-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--color-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
+
+@utility border-gradient-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--gradient-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
+
+@utility w-stroke-* {
+  width: --value(--border-width-*);
+}
+
+@utility h-stroke-* {
+  height: --value(--border-width-*);
 }

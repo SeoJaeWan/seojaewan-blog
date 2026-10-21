@@ -101,8 +101,112 @@ export function tokensToCss(tokens: unknown): string {
     .join('\n\n');
 
   const themeBlock = theme === '' ? '@theme static {\n}' : `@theme static {\n${theme}\n}`;
-  const blocks = [GENERATED_HEADER, themeBlock, ...utilities];
+  const blocks = [GENERATED_HEADER, themeBlock, ...utilities, ...roleUtilities];
   return `${blocks.join('\n\n')}\n`;
+}
+
+// 피그마 선·크기 역할을 토큰 이름 그대로 쓰게 하는 유틸리티다. 피그마 일치 검사의 이름 규칙과 짝이다.
+// - 안쪽 선(INSIDE, 레이아웃에 들어가지 않음): 자식 위에 ::before 고리로 그린다. 색은 inner-border-<색>,
+//   그라데이션 칠 스타일은 border-gradient-<스타일>, 두께는 inner-border-w-<선 두께>로 정한다.
+//   CSS border는 레이아웃 크기를 바꾸고 자식 아래에 그려져 이 선과 다르다.
+//   두께 클래스가 없으면 고리를 그리지 않는다(두께를 빠뜨리면 비교에서 드러나게 한다).
+//   ::before가 요소에 맞춰지도록 요소에 relative 같은 위치 지정과 쌓임 맥락(isolate)이 있어야 한다.
+// - 선 두께 토큰으로 정한 크기(예: 아래쪽 강조선의 높이): w-stroke-<선 두께>, h-stroke-<선 두께>
+const ringDeclarations = [
+  "content: '';",
+  'position: absolute;',
+  'z-index: 1;',
+  'inset: 0;',
+  'padding: var(--inner-border-width);',
+  'border-radius: inherit;',
+  'mask:',
+  '  linear-gradient(#000 0 0) content-box exclude,',
+  '  linear-gradient(#000 0 0);',
+  'pointer-events: none;',
+];
+const roleUtilities = [
+  utility('inner-border-w-*', ['--inner-border-width: --value(--border-width-*);']),
+  ringUtility('inner-border-*', '--value(--color-*)'),
+  ringUtility('border-gradient-*', '--value(--gradient-*)'),
+  utility('w-stroke-*', ['width: --value(--border-width-*);']),
+  utility('h-stroke-*', ['height: --value(--border-width-*);']),
+];
+
+/**
+ * 선언 목록으로 `@utility` 블록을 만든다.
+ * @param name 유틸리티 이름
+ * @param declarations 선언 줄
+ * @returns `@utility` 블록
+ */
+function utility(name: string, declarations: readonly string[]): string {
+  return [`@utility ${name} {`, ...declarations.map((line) => `  ${line}`), '}'].join('\n');
+}
+
+/**
+ * 안쪽 선 고리 유틸리티를 만든다.
+ * @param name 유틸리티 이름(`inner-border-*`)
+ * @param background 고리 배경 값
+ * @returns `@utility` 블록
+ */
+function ringUtility(name: string, background: string): string {
+  const lines = [
+    ...ringDeclarations.slice(0, 6),
+    `background: ${background};`,
+    ...ringDeclarations.slice(6),
+  ];
+  return utility(name, ['&::before {', ...lines.map((line) => `  ${line}`), '}']);
+}
+
+/** 글자 스타일 유틸리티가 쓰는 변수(피그마 변수 경로). 별칭이 아닌 값은 값 그대로다 */
+export type TextUtilityVariables = {
+  fontFamily: string;
+  fontSize: string;
+  fontWeight: string;
+  lineHeight: string;
+  letterSpacing: string;
+};
+
+/**
+ * 글자 스타일 필드의 참조(`{font.size.body}`)를 피그마 변수 경로(`font/size/body`)로 바꾼다.
+ * @param fields 글자 스타일 값
+ * @param key 필드 이름
+ * @returns 변수 경로. 참조가 아니면 값을 JSON으로 쓴 문자열
+ */
+function referencePath(fields: Record<string, unknown>, key: string): string {
+  const value = fields[key];
+  const match = typeof value === 'string' ? /^\{(.+)\}$/u.exec(value) : null;
+  return match?.[1] === undefined ? JSON.stringify(value) : match[1].split('.').join('/');
+}
+
+/**
+ * 글자 스타일 유틸리티(`type-*`)마다 쓰는 변수를 피그마 변수 경로로 돌려준다.
+ * 피그마 일치 검사가 글자 구간의 스타일 변수와 요소의 type-* 유틸리티 변수를 비교할 때 쓴다(D2).
+ * @codocs [[피그마 일치 검사:글자]]
+ * @param tokens figma/tokens.json을 파싱한 값
+ * @returns `type-body` → 변수 경로
+ */
+export function textUtilityVariables(tokens: unknown): Map<string, TextUtilityVariables> {
+  if (!isRecord(tokens) || !isRecord(tokens.style)) {
+    throw new TokenFormatError('(root)', '토큰 JSON에 style 묶음이 없다.');
+  }
+  const result = new Map<string, TextUtilityVariables>();
+  for (const item of flattenTokens(asGroup(tokens.style.text, 'style/text'), [])) {
+    if (item.path[0] === HANGUL_STYLE_GROUP && item.path.length > 1) {
+      continue;
+    }
+    const fields = item.token.value;
+    if (!isRecord(fields)) {
+      continue;
+    }
+    result.set(`type-${item.path.map(kebabSegment).join('-')}`, {
+      fontFamily: referencePath(fields, 'fontFamily'),
+      fontSize: referencePath(fields, 'fontSize'),
+      fontWeight: referencePath(fields, 'fontWeight'),
+      lineHeight: referencePath(fields, 'lineHeight'),
+      letterSpacing: referencePath(fields, 'letterSpacing'),
+    });
+  }
+  return result;
 }
 
 /**
@@ -225,6 +329,10 @@ function variableCss(item: FlatToken, names: ReadonlyMap<string, string>): CssVa
   }
   if (group === 'motion' && subgroup === 'easing') {
     result.push({ name: `--ease-${suffix}`, value: `var(${name})` });
+  }
+  if (group === 'stroke-width') {
+    // 바깥 선(피그마 OUTSIDE)은 outline으로 그린다. `outline-focus-outer`가 선 두께 토큰을 읽게 한다.
+    result.push({ name: `--outline-width-${tail([subgroup, ...rest])}`, value: `var(${name})` });
   }
   return result;
 }
