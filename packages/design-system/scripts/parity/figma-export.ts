@@ -96,7 +96,7 @@ export function parseFigmaExport(
           height: expectNumber(bounds.height, `${variantWhere}.renderBounds.height`),
         },
         scale,
-        ...readLayers(item.layers, `${variantWhere}.layers`),
+        ...readLayers(item.layers, `${component}/export.json layers`),
       });
     }
   }
