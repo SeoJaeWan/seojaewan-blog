@@ -10,9 +10,18 @@ export type ComponentSummary = {
 
 /** 본체 → UI */
 export type MainMessage =
-  | { type: 'init'; token: string; components: ComponentSummary[] }
+  | { type: 'init'; token: string; branch: string; components: ComponentSummary[] }
   | { type: 'log'; text: string }
-  | { type: 'done'; pullRequestUrl: string | null }
+  | {
+      type: 'done';
+      /** 바뀐 것이 없으면 null */
+      result: {
+        branch: string;
+        commitUrl: string;
+        pullRequestUrl: string | null;
+        isNewPullRequest: boolean;
+      } | null;
+    }
   | { type: 'failed'; message: string };
 
 /** UI → 본체 */
@@ -21,4 +30,6 @@ export type UiMessage = {
   token: string;
   componentIds: string[];
   shouldExportTokens: boolean;
+  /** 커밋할 기존 브랜치. 비어 있으면 새 브랜치와 PR을 만든다 */
+  branch: string;
 };

@@ -3,6 +3,7 @@ import type { ComponentSummary, MainMessage, UiMessage } from '../messages';
 // 플러그인 UI. 토큰 입력, 컴포넌트 선택, 진행 로그와 PR 링크를 보여 준다.
 
 const tokenInput = element('token', HTMLInputElement);
+const branchInput = element('branch', HTMLInputElement);
 const selectAll = element('select-all', HTMLInputElement);
 const componentList = element('components', HTMLDivElement);
 const tokensCheckbox = element('tokens', HTMLInputElement);
@@ -42,6 +43,7 @@ function handleMainMessage(message: MainMessage): void {
   switch (message.type) {
     case 'init':
       tokenInput.value = message.token;
+      branchInput.value = message.branch;
       renderComponents(message.components);
       exportButton.disabled = false;
       break;
@@ -50,18 +52,32 @@ function handleMainMessage(message: MainMessage): void {
       break;
     case 'done':
       exportButton.disabled = false;
-      if (message.pullRequestUrl === null) {
-        result.textContent = '바뀐 것이 없어 PR을 열지 않았다.';
-      } else {
-        result.replaceChildren('PR: ', link(message.pullRequestUrl));
-        appendLog('완료');
-      }
+      showResult(message.result);
       break;
     case 'failed':
       exportButton.disabled = false;
       appendLog(`실패: ${message.message}`);
       break;
   }
+}
+
+/**
+ * 내보내기 결과(커밋, PR 링크)를 보여 준다.
+ * @param done 결과. 바뀐 것이 없으면 null
+ */
+function showResult(done: Extract<MainMessage, { type: 'done' }>['result']): void {
+  if (done === null) {
+    result.textContent = '바뀐 것이 없어 커밋하지 않았다.';
+    return;
+  }
+  const parts: (string | Node)[] = [`${done.branch}: `, link(done.commitUrl, '커밋')];
+  if (done.pullRequestUrl !== null) {
+    parts.push(done.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ', link(done.pullRequestUrl));
+  } else if (!done.isNewPullRequest) {
+    parts.push(' · 이 브랜치에 열린 PR이 없다');
+  }
+  result.replaceChildren(...parts);
+  appendLog('완료');
 }
 
 /**
@@ -83,6 +99,7 @@ function handleExportClick(): void {
     token: tokenInput.value,
     componentIds,
     shouldExportTokens: tokensCheckbox.checked,
+    branch: branchInput.value,
   };
   parent.postMessage({ pluginMessage: message }, '*');
 }
@@ -139,14 +156,15 @@ function appendLog(text: string): void {
 /**
  * 새 창으로 여는 링크를 만든다.
  * @param url 주소
+ * @param text 보이는 글자. 없으면 주소
  * @returns 링크 요소
  */
-function link(url: string): HTMLAnchorElement {
+function link(url: string, text: string = url): HTMLAnchorElement {
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.target = '_blank';
   anchor.rel = 'noreferrer';
-  anchor.textContent = url;
+  anchor.textContent = text;
   return anchor;
 }
 

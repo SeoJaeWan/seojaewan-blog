@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { componentSlug, imagePath, variantSlug } from './naming';
+import { componentFilePath, componentSlug, variantSlug } from './naming';
 
 // @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
 describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다', () => {
@@ -36,9 +36,12 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
     expect(() => variantSlug({ '!!': 'A' })).toThrow();
   });
 
-  it('이미지 경로는 packages/design-system/figma/images/<컴포넌트>/<변형>.png다', () => {
-    expect(imagePath('button', 'variant=accent,state=rest')).toBe(
-      'packages/design-system/figma/images/button/variant=accent,state=rest.png',
+  it('컴포넌트 파일은 packages/design-system/figma/components/<컴포넌트>/ 아래에 둔다', () => {
+    expect(componentFilePath('button', 'variant=accent,state=rest.png')).toBe(
+      'packages/design-system/figma/components/button/variant=accent,state=rest.png',
+    );
+    expect(componentFilePath('button', 'export.json')).toBe(
+      'packages/design-system/figma/components/button/export.json',
     );
   });
 });

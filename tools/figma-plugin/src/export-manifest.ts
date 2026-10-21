@@ -1,6 +1,8 @@
-import { imagePath } from './naming';
 import { sha256Hex, utf8Encode } from './sha256';
-import type { JsonObject } from './stable-json';
+import { type JsonObject, stableStringify } from './stable-json';
+
+// 컴포넌트마다 따로 두는 export.json(figma/components/<컴포넌트>/export.json)과 그 폴더의 파일 변경을 계산한다.
+// 내보낸 컴포넌트의 폴더만 바꾸므로, 다른 컴포넌트를 내보낸 PR끼리 같은 파일을 건드리지 않는다.
 
 /** 노드 왼쪽 위를 원점으로 한 렌더링 영역. 그림자가 왼쪽·위로 나가면 x·y가 음수다. */
 export type RenderBounds = { x: number; y: number; width: number; height: number };
@@ -11,210 +13,217 @@ export type VariantEntry = {
   width: number;
   height: number;
   renderBounds: RenderBounds;
+  /** PNG 해시 */
   hash: string;
+  /** 값 비교에 쓰는 레이어 정보([[피그마 일치 검사:export.json 계약]]) */
+  layers: JsonObject[];
 };
 
-export type ComponentEntry = {
+/** figma/components/<컴포넌트>/export.json */
+export type ComponentManifest = {
   name: string;
   nodeId: string;
   hash: string;
+  exportedAt: string;
   variants: Record<string, VariantEntry>;
 };
 
-export type ExportManifest = {
-  fileKey: string;
-  exportedAt: string;
-  scale: number;
-  components: Record<string, ComponentEntry>;
-};
+/** figma/figma.json. 바뀌지 않는 전역 값만 둔다 */
+export type FigmaSettings = { fileKey: string; scale: number };
 
-/** 이번 실행에서 내보낸 컴포넌트. slug는 이미지 폴더 이름이다. */
+/** 이번에 내보낸 컴포넌트 */
 export type ExportedComponent = {
+  /** 컴포넌트 폴더 이름 */
   slug: string;
-  entry: ComponentEntry;
+  manifest: ComponentManifest;
+  /** 이번에 만든 vector SVG 파일 이름 */
+  svgFiles: readonly string[];
 };
 
-/** 커밋할 이미지 변경 */
-export type ImageChanges = {
-  /** 새로 올릴 이미지: 컴포넌트 slug, 변형 slug, 경로 */
-  uploads: { component: string; variant: string; path: string }[];
-  /** 지울 이미지 경로 */
+/** 컴포넌트 폴더 하나의 변경 */
+export type ComponentChanges = {
+  slug: string;
+  /** 올릴 PNG 변형 이름 */
+  pngUploads: string[];
+  /** 올릴 SVG 파일 이름 */
+  svgUploads: string[];
+  /** 지울 파일 이름(폴더 안) */
   deletions: string[];
-  /** 이미지가 바뀐 컴포넌트 slug */
-  changedComponents: string[];
+  /** export.json을 다시 써야 하면 그 내용, 아니면 null */
+  manifestText: string | null;
 };
+
+/** 컴포넌트 폴더 안 export.json 이름 */
+export const COMPONENT_MANIFEST_FILE = 'export.json';
 
 /**
- * 컴포넌트 해시를 계산한다. 변형 해시를 정렬해 이어 붙인 문자열의 SHA-256이다.
+ * 컴포넌트 해시를 계산한다. 변형마다 PNG 해시와 레이어 정보를 이은 값을 정렬해 이어 붙인 문자열의 SHA-256이다.
+ * 이미지가 같아도 레이어 정보가 바뀌면 해시가 바뀐다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param variantHashes 변형 PNG 해시 목록
+ * @param variants 변형마다 PNG 해시와 레이어 정보
  * @returns 컴포넌트 해시
  */
-export function componentHash(variantHashes: readonly string[]): string {
-  return sha256Hex(utf8Encode([...variantHashes].sort().join('')));
+export function componentHash(variants: readonly Pick<VariantEntry, 'hash' | 'layers'>[]): string {
+  const parts = variants.map((variant) => `${variant.hash}${stableStringify(variant.layers)}`);
+  return sha256Hex(utf8Encode(parts.sort().join('')));
 }
 
 /**
- * 기준 브랜치의 export.json과 비교해 해시가 바뀐 이미지만 올리고, 내보낸 컴포넌트에서 사라진 변형 이미지는 지운다.
- * 이름이 바뀐 컴포넌트(같은 nodeId, 다른 slug)는 이전 폴더의 이미지를 모두 지운다.
+ * 내보낸 컴포넌트 폴더 하나에서 바꿀 파일을 고른다.
+ * - PNG는 해시가 바뀌었거나 저장소에 없을 때만 올린다.
+ * - SVG는 이름이 내용 해시라 저장소에 없을 때만 올린다.
+ * - 폴더에 있지만 새 export.json이 가리키지 않는 파일(사라진 변형의 PNG, 더는 쓰지 않는 SVG)은 지운다.
+ * - export.json은 내보낸 시각을 뺀 내용이 바뀌었을 때만 다시 쓰고, 그대로면 이전 시각을 둔다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param base 기준 브랜치의 export.json(없으면 null)
  * @param exported 이번에 내보낸 컴포넌트
- * @returns 올릴 이미지와 지울 이미지
+ * @param base 커밋할 브랜치의 그 컴포넌트 export.json(없으면 null)
+ * @param existingFiles 커밋할 브랜치의 그 컴포넌트 폴더에 있는 파일 이름
+ * @returns 폴더 변경
  */
-export function planImageChanges(
-  base: ExportManifest | null,
-  exported: readonly ExportedComponent[],
-): ImageChanges {
-  const changes: ImageChanges = { uploads: [], deletions: [], changedComponents: [] };
-  const baseComponents = base?.components ?? {};
-
-  for (const { slug, entry } of exported) {
-    const previous = baseComponents[slug];
-    let hasChange = false;
-    for (const [variant, variantEntry] of Object.entries(entry.variants)) {
-      if (previous?.variants[variant]?.hash !== variantEntry.hash) {
-        changes.uploads.push({ component: slug, variant, path: imagePath(slug, variant) });
-        hasChange = true;
-      }
-    }
-    for (const variant of Object.keys(previous?.variants ?? {})) {
-      if (!(variant in entry.variants)) {
-        changes.deletions.push(imagePath(slug, variant));
-        hasChange = true;
-      }
-    }
-    for (const [oldSlug, oldEntry] of renamedFrom(baseComponents, slug, entry, exported)) {
-      for (const variant of Object.keys(oldEntry.variants)) {
-        changes.deletions.push(imagePath(oldSlug, variant));
-      }
-      hasChange = true;
-    }
-    if (hasChange) {
-      changes.changedComponents.push(slug);
-    }
-  }
-  return changes;
-}
-
-/**
- * 기준 export.json에 이번에 내보낸 컴포넌트를 덮어써 새 export.json을 만든다.
- * 이번에 내보내지 않은 컴포넌트는 이전 항목을 그대로 둔다. 이름이 바뀐 컴포넌트의 이전 항목은 없앤다.
- * @param base 기준 브랜치의 export.json(없으면 null)
- * @param exported 이번에 내보낸 컴포넌트
- * @param meta 파일 키, 내보낸 시각, 배율
- * @returns 새 export.json
- */
-export function mergeManifest(
-  base: ExportManifest | null,
-  exported: readonly ExportedComponent[],
-  meta: Omit<ExportManifest, 'components'>,
-): ExportManifest {
-  const baseComponents = base?.components ?? {};
-  const renamed = new Set(
-    exported.flatMap(({ slug, entry }) =>
-      renamedFrom(baseComponents, slug, entry, exported).map(([oldSlug]) => oldSlug),
-    ),
-  );
-  const components: Record<string, ComponentEntry> = Object.fromEntries(
-    Object.entries(baseComponents).filter(([slug]) => !renamed.has(slug)),
-  );
-  for (const { slug, entry } of exported) {
-    components[slug] = entry;
-  }
-  return { ...meta, components };
-}
-
-/**
- * export.json을 직렬화할 수 있는 JSON 객체로 바꾼다.
- * @param manifest export.json 내용
- * @returns JSON 객체
- */
-export function manifestToJson(manifest: ExportManifest): JsonObject {
-  const components: JsonObject = {};
-  for (const [slug, entry] of Object.entries(manifest.components)) {
-    const variants: JsonObject = {};
-    for (const [variant, value] of Object.entries(entry.variants)) {
-      variants[variant] = {
-        ...value,
-        properties: { ...value.properties },
-        renderBounds: { ...value.renderBounds },
-      };
-    }
-    components[slug] = { name: entry.name, nodeId: entry.nodeId, hash: entry.hash, variants };
-  }
+export function planComponentChanges(
+  exported: ExportedComponent,
+  base: ComponentManifest | null,
+  existingFiles: readonly string[],
+): ComponentChanges {
+  const existing = new Set(existingFiles);
+  const { manifest } = exported;
+  const pngUploads = Object.entries(manifest.variants)
+    .filter(
+      ([variant, entry]) =>
+        base?.variants[variant]?.hash !== entry.hash || !existing.has(pngFile(variant)),
+    )
+    .map(([variant]) => variant);
+  const svgUploads = [...new Set(exported.svgFiles)].filter((file) => !existing.has(file)).sort();
+  const wanted = new Set([
+    COMPONENT_MANIFEST_FILE,
+    ...Object.keys(manifest.variants).map(pngFile),
+    ...referencedSvgFiles(manifest),
+  ]);
+  const deletions = existingFiles.filter((file) => !wanted.has(file)).sort();
+  const isSame =
+    base !== null &&
+    stableStringify(manifestJson({ ...base, exportedAt: '' })) ===
+      stableStringify(manifestJson({ ...manifest, exportedAt: '' }));
   return {
-    fileKey: manifest.fileKey,
-    exportedAt: manifest.exportedAt,
-    scale: manifest.scale,
-    components,
+    slug: exported.slug,
+    pngUploads,
+    svgUploads,
+    deletions,
+    manifestText: isSame ? null : stableStringify(manifestJson(manifest)),
   };
 }
 
 /**
- * 저장소에 있는 export.json 문자열을 읽는다. 모양이 맞지 않는 항목은 버린다.
- * @param text export.json 내용
- * @returns export.json, 읽을 수 없으면 null
+ * 폴더 변경이 하나라도 있는지 확인한다.
+ * @param changes 폴더 변경
+ * @returns 바뀌면 true
  */
-export function parseManifest(text: string): ExportManifest | null {
+export function hasComponentChange(changes: ComponentChanges): boolean {
+  return (
+    changes.manifestText !== null ||
+    changes.pngUploads.length + changes.svgUploads.length + changes.deletions.length > 0
+  );
+}
+
+/**
+ * 이번에 내보낸 컴포넌트와 nodeId가 같지만 폴더 이름이 다른 컴포넌트(이름이 바뀐 컴포넌트)의 이전 폴더를 찾는다.
+ * 그 폴더 이름으로 이번에 함께 내보낸 컴포넌트가 있으면 이름이 바뀐 것이 아니므로 제외한다.
+ * @param exported 이번에 내보낸 컴포넌트
+ * @param otherNodeIds 커밋할 브랜치에 있는 다른 컴포넌트 폴더 이름 → nodeId
+ * @returns 지울 이전 폴더 이름
+ */
+export function renamedFolders(
+  exported: readonly ExportedComponent[],
+  otherNodeIds: ReadonlyMap<string, string>,
+): string[] {
+  const slugs = new Set(exported.map((component) => component.slug));
+  const nodeIds = new Set(exported.map((component) => component.manifest.nodeId));
+  return [...otherNodeIds]
+    .filter(([slug, nodeId]) => !slugs.has(slug) && nodeIds.has(nodeId))
+    .map(([slug]) => slug)
+    .sort();
+}
+
+/**
+ * export.json이 가리키는 SVG 파일 이름을 모은다.
+ * @param manifest 컴포넌트 export.json
+ * @returns SVG 파일 이름 집합
+ */
+export function referencedSvgFiles(manifest: ComponentManifest): Set<string> {
+  const files = new Set<string>();
+  for (const variant of Object.values(manifest.variants)) {
+    for (const layer of variant.layers) {
+      const { svg } = layer;
+      if (isRecord(svg) && typeof svg.file === 'string') {
+        files.add(svg.file);
+      }
+    }
+  }
+  return files;
+}
+
+/**
+ * 변형 PNG 파일 이름을 만든다.
+ * @param variant 변형 이름
+ * @returns `<변형>.png`
+ */
+export function pngFile(variant: string): string {
+  return `${variant}.png`;
+}
+
+/**
+ * 컴포넌트 export.json을 직렬화할 수 있는 JSON 객체로 바꾼다.
+ * @param manifest 컴포넌트 export.json
+ * @returns JSON 객체
+ */
+export function manifestJson(manifest: ComponentManifest): JsonObject {
+  const variants: JsonObject = {};
+  for (const [variant, value] of Object.entries(manifest.variants)) {
+    variants[variant] = {
+      nodeId: value.nodeId,
+      properties: { ...value.properties },
+      width: value.width,
+      height: value.height,
+      renderBounds: { ...value.renderBounds },
+      hash: value.hash,
+      layers: value.layers,
+    };
+  }
+  return {
+    name: manifest.name,
+    nodeId: manifest.nodeId,
+    hash: manifest.hash,
+    exportedAt: manifest.exportedAt,
+    variants,
+  };
+}
+
+/**
+ * figma.json 내용을 만든다.
+ * @param settings 파일 키와 배율
+ * @returns figma.json 문자열
+ */
+export function settingsText(settings: FigmaSettings): string {
+  return stableStringify({ fileKey: settings.fileKey, scale: settings.scale });
+}
+
+/**
+ * 저장소에 있는 컴포넌트 export.json 문자열을 읽는다. 모양이 맞지 않는 변형은 버린다.
+ * @param text export.json 내용
+ * @returns 컴포넌트 export.json, 읽을 수 없으면 null
+ */
+export function parseComponentManifest(text: string): ComponentManifest | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
     return null;
   }
-  if (!isRecord(parsed) || !isRecord(parsed.components)) {
-    return null;
-  }
-  const components: Record<string, ComponentEntry> = {};
-  for (const [slug, value] of Object.entries(parsed.components)) {
-    const entry = parseComponent(value);
-    if (entry !== null) {
-      components[slug] = entry;
-    }
-  }
-  return {
-    fileKey: typeof parsed.fileKey === 'string' ? parsed.fileKey : '',
-    exportedAt: typeof parsed.exportedAt === 'string' ? parsed.exportedAt : '',
-    scale: typeof parsed.scale === 'number' ? parsed.scale : 1,
-    components,
-  };
-}
-
-/**
- * 이번에 내보낸 컴포넌트와 nodeId가 같지만 slug가 다른 기준 항목(이름이 바뀐 컴포넌트)을 찾는다.
- * 그 slug로 이번에 함께 내보낸 컴포넌트가 있으면 이름이 바뀐 것이 아니므로 제외한다.
- * @param baseComponents 기준 export.json의 컴포넌트
- * @param slug 이번 slug
- * @param entry 이번 항목
- * @param exported 이번에 내보낸 컴포넌트 전체
- * @returns 이전 slug와 항목 목록
- */
-function renamedFrom(
-  baseComponents: Readonly<Record<string, ComponentEntry>>,
-  slug: string,
-  entry: ComponentEntry,
-  exported: readonly ExportedComponent[],
-): [string, ComponentEntry][] {
-  return Object.entries(baseComponents).filter(
-    ([oldSlug, oldEntry]) =>
-      oldSlug !== slug &&
-      oldEntry.nodeId === entry.nodeId &&
-      !exported.some((other) => other.slug === oldSlug),
-  );
-}
-
-/**
- * export.json의 컴포넌트 항목 하나를 읽는다.
- * @param value 읽을 값
- * @returns 컴포넌트 항목, 모양이 맞지 않으면 null
- */
-function parseComponent(value: unknown): ComponentEntry | null {
-  if (!isRecord(value) || !isRecord(value.variants)) {
+  if (!isRecord(parsed) || !isRecord(parsed.variants)) {
     return null;
   }
   const variants: Record<string, VariantEntry> = {};
-  for (const [variant, raw] of Object.entries(value.variants)) {
+  for (const [variant, raw] of Object.entries(parsed.variants)) {
     if (isRecord(raw) && typeof raw.hash === 'string') {
       variants[variant] = {
         nodeId: typeof raw.nodeId === 'string' ? raw.nodeId : '',
@@ -223,13 +232,15 @@ function parseComponent(value: unknown): ComponentEntry | null {
         height: typeof raw.height === 'number' ? raw.height : 0,
         renderBounds: parseBounds(raw.renderBounds),
         hash: raw.hash,
+        layers: Array.isArray(raw.layers) ? raw.layers.filter(isJsonObject) : [],
       };
     }
   }
   return {
-    name: typeof value.name === 'string' ? value.name : '',
-    nodeId: typeof value.nodeId === 'string' ? value.nodeId : '',
-    hash: typeof value.hash === 'string' ? value.hash : '',
+    name: typeof parsed.name === 'string' ? parsed.name : '',
+    nodeId: typeof parsed.nodeId === 'string' ? parsed.nodeId : '',
+    hash: typeof parsed.hash === 'string' ? parsed.hash : '',
+    exportedAt: typeof parsed.exportedAt === 'string' ? parsed.exportedAt : '',
     variants,
   };
 }
@@ -264,6 +275,15 @@ function parseBounds(value: unknown): RenderBounds {
     width: typeof bounds.width === 'number' ? bounds.width : 0,
     height: typeof bounds.height === 'number' ? bounds.height : 0,
   };
+}
+
+/**
+ * 값이 JSON 객체인지 확인한다.
+ * @param value 확인할 값
+ * @returns JSON 객체면 true
+ */
+function isJsonObject(value: unknown): value is JsonObject {
+  return isRecord(value);
 }
 
 /**

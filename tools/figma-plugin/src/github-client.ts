@@ -51,6 +51,40 @@ export async function getFileText(
 }
 
 /**
+ * 트리 아래 모든 파일 경로를 가져온다(하위 폴더 포함).
+ * @param token GitHub 토큰
+ * @param treeSha 트리 SHA
+ * @param prefix 이 경로로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
+ * @returns 저장소 루트 기준 파일 경로
+ */
+export async function listTreeFiles(
+  token: string,
+  treeSha: string,
+  prefix: string,
+): Promise<string[]> {
+  const tree = await request(token, 'GET', `${REPO_PATH}/git/trees/${treeSha}?recursive=1`);
+  if (tree === null || typeof tree !== 'object' || Reflect.get(tree, 'truncated') === true) {
+    throw new Error('GitHub 트리 목록이 잘려 저장소 파일을 모두 읽지 못했다.');
+  }
+  const entries: unknown = Reflect.get(tree, 'tree');
+  if (!Array.isArray(entries)) {
+    throw new Error('GitHub 응답에 tree가 없다.');
+  }
+  const files: string[] = [];
+  for (const entry of entries) {
+    const path = readOptionalString(entry, ['path']);
+    if (
+      path !== null &&
+      readOptionalString(entry, ['type']) === 'blob' &&
+      path.startsWith(prefix)
+    ) {
+      files.push(path);
+    }
+  }
+  return files;
+}
+
+/**
  * base64 내용으로 blob을 만든다.
  * @param token GitHub 토큰
  * @param base64 파일 내용(base64)
@@ -116,6 +150,37 @@ export async function createBranch(token: string, branch: string, sha: string): 
 }
 
 /**
+ * 기존 브랜치를 새 커밋으로 옮긴다. 빨리 감기(fast-forward)만 허용해, 그사이 브랜치에 다른 커밋이 올라왔으면 실패한다.
+ * @param token GitHub 토큰
+ * @param branch 브랜치 이름
+ * @param sha 새 커밋 SHA. 브랜치 끝 커밋의 자식이어야 한다
+ */
+export async function updateBranch(token: string, branch: string, sha: string): Promise<void> {
+  await request(token, 'PATCH', `${REPO_PATH}/git/refs/heads/${branch}`, { sha, force: false });
+}
+
+/**
+ * 브랜치에서 열린 PR 주소를 찾는다.
+ * @param token GitHub 토큰
+ * @param branch 머리 브랜치 이름
+ * @returns 열린 PR 주소, 없으면 null
+ */
+export async function findOpenPullRequest(token: string, branch: string): Promise<string | null> {
+  const head = encodeURIComponent(`${REPO_OWNER}:${branch}`);
+  const pulls = await request(token, 'GET', `${REPO_PATH}/pulls?state=open&head=${head}`);
+  return readOptionalString(pulls, ['0', 'html_url']);
+}
+
+/**
+ * 커밋의 GitHub 웹 주소를 만든다.
+ * @param sha 커밋 SHA
+ * @returns 커밋 주소
+ */
+export function commitUrl(sha: string): string {
+  return `https://github.com/${REPO_OWNER}/${REPO_NAME}/commit/${sha}`;
+}
+
+/**
  * PR을 연다.
  * @param token GitHub 토큰
  * @param pullRequest 제목, 본문, 머리 브랜치, 기준 브랜치
@@ -143,7 +208,7 @@ export async function createPullRequest(
  */
 async function request(
   token: string,
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'PATCH',
   path: string,
   body?: object,
 ): Promise<unknown> {

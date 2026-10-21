@@ -1,4 +1,4 @@
-import { IMAGES_DIR } from './plugin-config';
+import { COMPONENTS_DIR } from './plugin-config';
 
 /** 단독 컴포넌트(변형 없음)의 변형 이름 */
 export const DEFAULT_VARIANT = 'default';
@@ -39,13 +39,14 @@ export function variantSlug(properties: Readonly<Record<string, string>>): strin
 }
 
 /**
- * 변형 이미지의 저장소 경로를 만든다.
+ * 컴포넌트 폴더 안 파일의 저장소 경로를 만든다.
+ * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
  * @param component 컴포넌트 폴더 이름
- * @param variant 변형 파일 이름(확장자 제외)
- * @returns 저장소 루트 기준 PNG 경로
+ * @param file 폴더 안 파일 이름(예: `variant=accent,state=rest.png`, `export.json`)
+ * @returns 저장소 루트 기준 경로
  */
-export function imagePath(component: string, variant: string): string {
-  return `${IMAGES_DIR}/${component}/${variant}.png`;
+export function componentFilePath(component: string, file: string): string {
+  return `${COMPONENTS_DIR}/${component}/${file}`;
 }
 
 /**
