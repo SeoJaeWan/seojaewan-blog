@@ -5,12 +5,10 @@
  * - 굵기는 Regular(400), SemiBold(600), Bold(700)만 불러온다.
  * - 각 파일은 unicode-range로 나뉜 하위 집합이라 브라우저가 화면에 나온 글자의 파일만 받는다.
  *   Open Sans에는 한글 범위가 없어 한글은 글자마다 Pretendard로 그린다.
- * - Pretendard는 패키지 CSS가 woff 파일도 함께 가리켜 빌드에 woff가 딸려 들어간다.
- *   그래서 woff2만 가리키는 @font-face를 pretendard.css로 만들어 쓴다(scripts/fonts/generate-fonts.ts).
+ * - 패키지 CSS는 woff 대체 파일도 함께 가리켜 빌드에 woff가 딸려 들어간다.
+ *   그래서 woff2만 가리키는 @font-face를 만들어 쓴다(scripts/fonts/generate-fonts.ts).
  * - 코드 블록용 Cascadia Mono는 Regular만 쓴다.
  */
-@import '@fontsource/open-sans/400.css';
-@import '@fontsource/open-sans/600.css';
-@import '@fontsource/open-sans/700.css';
+@import './open-sans.css';
 @import './pretendard.css';
-@import '@fontsource/cascadia-mono/400.css';
+@import './cascadia-mono.css';

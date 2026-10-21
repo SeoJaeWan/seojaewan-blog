@@ -7,20 +7,16 @@ export const packageRoot = path.resolve(fileURLToPath(new URL('..', import.meta.
 
 export const figmaDir = path.join(packageRoot, 'figma');
 export const tokensJsonPath = path.join(figmaDir, 'tokens.json');
-export const exportJsonPath = path.join(figmaDir, 'export.json');
-export const figmaImagesDir = path.join(figmaDir, 'images');
+// 파일 키와 배율 같은 전역 값이다.
+export const FIGMA_SETTINGS_FILE = 'figma.json';
+// 컴포넌트마다 export.json, 변형 PNG, vector SVG를 두는 폴더 이름이다.
+export const FIGMA_COMPONENTS_FOLDER = 'components';
+export const COMPONENT_MANIFEST_FILE = 'export.json';
 
 export const tokensCssPath = path.join(packageRoot, 'src', 'tokens.css');
 export const storybookStaticDir = path.join(packageRoot, 'storybook-static');
 export const parityResultsDir = path.join(packageRoot, 'parity-results');
 
-export const pretendardCssPath = path.join(packageRoot, 'src', 'pretendard.css');
-// pretendard 패키지의 굵기별 CSS 폴더다. 생성 파일은 이 폴더의 woff2 하위 집합을 가리킨다.
-export const pretendardPackageCssDir = path.join(
-  packageRoot,
-  'node_modules',
-  'pretendard',
-  'dist',
-  'web',
-  'static',
-);
+// 웹 폰트 패키지 폴더다. generate:fonts가 이 패키지들의 CSS에서 woff2만 가리키는 CSS를 src/에 만든다.
+export const nodeModulesDir = path.join(packageRoot, 'node_modules');
+export const sourceDir = path.join(packageRoot, 'src');

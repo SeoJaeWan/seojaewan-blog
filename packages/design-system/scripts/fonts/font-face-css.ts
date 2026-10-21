@@ -1,15 +1,7 @@
 /**
- * Pretendard 패키지의 `@font-face` CSS에서 woff2 파일만 가리키는 `@font-face` 규칙을 만든다.
+ * 웹 폰트 패키지(`pretendard`, `@fontsource/*`)의 `@font-face` CSS에서 woff2 파일만 가리키는 `@font-face` 규칙을 만든다.
  * 파일을 읽거나 쓰지 않는 순수 변환이다. 파일 입출력은 generate-fonts.ts가 맡는다.
  */
-
-// 패키지 CSS의 woff2 하위 집합 폴더 이름이다. 이 폴더의 파일만 남긴다.
-const WOFF2_DIR = 'woff2-dynamic-subset';
-
-const GENERATED_HEADER = `/*
- * 이 파일은 scripts/fonts/generate-fonts.ts가 pretendard 패키지의 CSS에서 만든다. 손으로 고치지 않는다.
- * 다시 만들기: pnpm --filter @seojaewan/design-system generate:fonts
- */`;
 
 export type FontFace = {
   family: string;
@@ -27,23 +19,25 @@ export class FontCssError extends Error {
 
 /**
  * 패키지 CSS에서 `@font-face` 규칙을 읽고 woff2 파일 하나만 남긴다.
- * @param css pretendard 패키지의 `Pretendard-<굵기>.css` 내용
+ * @param css 패키지의 `@font-face` CSS 내용(예: `Pretendard-Regular.css`, `@fontsource/open-sans/400.css`)
+ * @param woff2Dir 그 CSS 기준 woff2 파일 폴더(예: `woff2-dynamic-subset`, `files`)
  * @returns 글자 범위(unicode-range)마다 하나씩인 `@font-face` 목록
  */
-export function parseFontFaces(css: string): FontFace[] {
+export function parseFontFaces(css: string, woff2Dir: string): FontFace[] {
   const blocks = [...css.matchAll(/@font-face\s*\{([^}]*)\}/gu)].map((match) => match[1] ?? '');
   if (blocks.length === 0) {
     throw new FontCssError('@font-face 규칙이 없다.');
   }
-  return blocks.map(parseFontFace);
+  return blocks.map((block) => parseFontFace(block, woff2Dir));
 }
 
 /**
  * `@font-face` 블록 하나를 읽는다.
  * @param block 중괄호 안의 선언
+ * @param woff2Dir woff2 파일 폴더
  * @returns woff2 파일 하나만 남긴 규칙
  */
-function parseFontFace(block: string): FontFace {
+function parseFontFace(block: string, woff2Dir: string): FontFace {
   const declarations = new Map(
     block
       .split(';')
@@ -52,8 +46,10 @@ function parseFontFace(block: string): FontFace {
       .map(splitDeclaration),
   );
   const src = declarations.get('src') ?? '';
-  const file = new RegExp(String.raw`url\(\./${WOFF2_DIR}/([^)]+\.woff2)\)`, 'u').exec(src)?.[1];
-  if (file === undefined) {
+  const prefix = `url(./${woff2Dir}/`;
+  const start = src.indexOf(prefix);
+  const end = start < 0 ? -1 : src.indexOf('.woff2)', start);
+  if (start < 0 || end < 0) {
     throw new FontCssError(`woff2 파일이 없는 @font-face다: ${src}`);
   }
   return {
@@ -61,7 +57,7 @@ function parseFontFace(block: string): FontFace {
     weight: required(declarations, 'font-weight'),
     style: required(declarations, 'font-style'),
     display: required(declarations, 'font-display'),
-    file,
+    file: src.slice(start + prefix.length, end + '.woff2'.length),
     unicodeRange: required(declarations, 'unicode-range'),
   };
 }
@@ -81,11 +77,20 @@ function splitDeclaration(line: string): [string, string] {
  * @codocs [[디자인 기반:서체]]
  * @param faces parseFontFaces로 읽은 규칙
  * @param fileDir woff2 파일이 있는 폴더(이 CSS 파일 기준 상대 경로)
+ * @param packageName 원본 CSS가 있는 패키지 이름(머리말에 적는다)
  * @returns 생성 파일 내용
  */
-export function fontFacesToCss(faces: readonly FontFace[], fileDir: string): string {
+export function fontFacesToCss(
+  faces: readonly FontFace[],
+  fileDir: string,
+  packageName: string,
+): string {
+  const header = `/*
+ * 이 파일은 scripts/fonts/generate-fonts.ts가 ${packageName} 패키지의 CSS에서 만든다. 손으로 고치지 않는다.
+ * 다시 만들기: pnpm --filter @seojaewan/design-system generate:fonts
+ */`;
   const rules = faces.map((face) => fontFaceRule(face, fileDir));
-  return `${GENERATED_HEADER}\n\n${rules.join('\n\n')}\n`;
+  return `${header}\n\n${rules.join('\n\n')}\n`;
 }
 
 /**
