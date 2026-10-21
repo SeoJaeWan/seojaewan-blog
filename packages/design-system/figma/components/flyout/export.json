@@ -1,12 +1,145 @@
 {
-  "exportedAt": "2026-10-21T00:45:29.077Z",
-  "hash": "986510180f1c6b35f48053e83c4a231025b96d0e345e27452e17cb3796d956b1",
+  "exportedAt": "2026-10-21T07:43:20.583Z",
+  "hash": "28ee803d3dc389a9dab86c02b58c4b2540fd0612f5b549095dfb039380b1839f",
   "name": "Flyout",
   "nodeId": "16:195",
   "variants": {
     "material=acrylic": {
       "hash": "44c656627390bbab85a8515174f6a467f9149798d4a61c1d9f479a69fdf1cc8a",
       "height": 100,
+      "layers": [
+        {
+          "cornerRadius": 8,
+          "effectStyle": "Surface/Flyout (Acrylic)",
+          "effects": [
+            {
+              "radius": 60,
+              "token": "{blur.acrylic}",
+              "type": "BACKGROUND_BLUR"
+            },
+            {
+              "color": "#00000024",
+              "offsetX": 0,
+              "offsetY": 8,
+              "radius": 16,
+              "spread": 0,
+              "type": "DROP_SHADOW"
+            }
+          ],
+          "fillStyle": "Material/Acrylic Default",
+          "fills": [
+            {
+              "blendMode": "LUMINOSITY",
+              "color": "#fcfcfcd9",
+              "type": "SOLID"
+            },
+            {
+              "blendMode": "COLOR",
+              "color": "#fcfcfc00",
+              "type": "SOLID"
+            },
+            {
+              "imageHash": "a563f96d0f0af894df83be986ec4e7a84096fd54",
+              "opacity": 0.02,
+              "scaleMode": "TILE",
+              "type": "IMAGE"
+            }
+          ],
+          "height": 100,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "VERTICAL",
+          "padding": {
+            "bottom": 16,
+            "left": 16,
+            "right": 16,
+            "top": 16
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{surface-stroke.flyout}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "height": 66,
+          "itemSpacing": 0,
+          "kind": "frame",
+          "layoutMode": "VERTICAL",
+          "padding": {
+            "bottom": 24,
+            "left": 16,
+            "right": 16,
+            "top": 24
+          },
+          "path": "Content",
+          "primaryAxisAlignItems": "CENTER",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#00000037",
+              "token": "{control-strong-stroke.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "SLOT",
+          "width": 286,
+          "x": 17,
+          "y": 17
+        },
+        {
+          "fills": [
+            {
+              "color": "#00000072",
+              "token": "{text-fill.tertiary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "콘텐츠 영역 (slot)",
+            "fontFamily": [
+              "Pretendard",
+              "Open Sans"
+            ],
+            "fontSize": 12,
+            "fontWeight": 400,
+            "ink": {
+              "height": 11.3672,
+              "width": 84.5039,
+              "x": 117.4336,
+              "y": 45.5313
+            },
+            "letterSpacing": 0,
+            "lineHeight": 16,
+            "textStyle": [
+              "Hangul/Caption",
+              "Caption"
+            ]
+          },
+          "type": "TEXT",
+          "width": 86,
+          "x": 117,
+          "y": 42
+        }
+      ],
       "nodeId": "16:189",
       "properties": {
         "Material": "Acrylic"
@@ -22,6 +155,123 @@
     "material=solid": {
       "hash": "ddf6497fa7b8e88a4d004f76957ebb1e1d52663d1e5081f058ed0104b94ef6ca",
       "height": 100,
+      "layers": [
+        {
+          "cornerRadius": 8,
+          "effectStyle": "Elevation/Flyout",
+          "effects": [
+            {
+              "color": "#00000024",
+              "offsetX": 0,
+              "offsetY": 8,
+              "radius": 16,
+              "spread": 0,
+              "type": "DROP_SHADOW"
+            }
+          ],
+          "fillStyle": "Material/Fallback/Acrylic Default",
+          "fills": [
+            {
+              "color": "#f9f9f9",
+              "token": "{acrylic-background-fill.default-fallback}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 100,
+          "itemSpacing": 8,
+          "kind": "frame",
+          "layoutMode": "VERTICAL",
+          "padding": {
+            "bottom": 16,
+            "left": 16,
+            "right": 16,
+            "top": 16
+          },
+          "path": "",
+          "primaryAxisAlignItems": "MIN",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#0000000f",
+              "token": "{surface-stroke.flyout}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "COMPONENT",
+          "width": 320,
+          "x": 0,
+          "y": 0
+        },
+        {
+          "clipsContent": true,
+          "cornerRadius": 4,
+          "height": 66,
+          "itemSpacing": 0,
+          "kind": "frame",
+          "layoutMode": "VERTICAL",
+          "padding": {
+            "bottom": 24,
+            "left": 16,
+            "right": 16,
+            "top": 24
+          },
+          "path": "Content",
+          "primaryAxisAlignItems": "CENTER",
+          "strokeAlign": "INSIDE",
+          "strokeWeight": 1,
+          "strokes": [
+            {
+              "color": "#00000037",
+              "token": "{control-strong-stroke.disabled}",
+              "type": "SOLID"
+            }
+          ],
+          "type": "SLOT",
+          "width": 286,
+          "x": 17,
+          "y": 17
+        },
+        {
+          "fills": [
+            {
+              "color": "#00000072",
+              "token": "{text-fill.tertiary}",
+              "type": "SOLID"
+            }
+          ],
+          "height": 16,
+          "kind": "text",
+          "path": "label",
+          "text": {
+            "alignHorizontal": "LEFT",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "콘텐츠 영역 (slot)",
+            "fontFamily": [
+              "Pretendard",
+              "Open Sans"
+            ],
+            "fontSize": 12,
+            "fontWeight": 400,
+            "ink": {
+              "height": 11.3672,
+              "width": 84.5039,
+              "x": 117.4336,
+              "y": 45.5313
+            },
+            "letterSpacing": 0,
+            "lineHeight": 16,
+            "textStyle": [
+              "Hangul/Caption",
+              "Caption"
+            ]
+          },
+          "type": "TEXT",
+          "width": 86,
+          "x": 117,
+          "y": 42
+        }
+      ],
       "nodeId": "16:192",
       "properties": {
         "Material": "Solid"
