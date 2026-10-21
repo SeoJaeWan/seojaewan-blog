@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "tsBuildInfoFile": "../node_modules/.cache/tsbuildinfo.scripts.json"
+  },
+  "include": ["."]
+}
