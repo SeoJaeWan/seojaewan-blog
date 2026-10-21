@@ -24,7 +24,7 @@ _codocs:
   - 컴포넌트 비교: `src/components/<컴포넌트>/`의 파일(테스트·fixture 제외), `figma/images/<컴포넌트>/`, `figma/export.json`에서 항목이 바뀐 컴포넌트.
   - 바뀐 컴포넌트를 상대 경로(`../menu-item/...`)로 import하는 컴포넌트도 거슬러 올라가며 함께 비교한다.
 
-  한계: 의존 관계는 컴포넌트 폴더 사이의 상대 import만 따라간다. 공개 진입점을 거쳐 import하거나, CSS·자산 파일을 통해 영향을 주는 경우는 찾지 못한다. 그래서 컴포넌트 폴더 밖의 변경은 전체 비교로 처리한다. `main` push에서는 전체를 비교해 PR에서 놓친 영향을 잡는다.
+  한계: 의존 관계는 컴포넌트 폴더 사이의 상대 import만 따라간다. 공개 진입점을 거쳐 import하거나, CSS·자산 파일을 통해 영향을 주는 경우는 찾지 못한다. 그래서 컴포넌트 폴더 밖의 변경은 전체 비교로 처리한다. `main` 병합 뒤 전체 비교는 두지 않는다. 피그마 쪽 변경은 항상 PR로 들어오고, 넓은 영향을 주는 변경은 PR에서 이미 전체를 비교하기 때문이다.
 스토리 규칙: |
   피그마 변형 하나를 Storybook 스토리와 args 하나로 짝짓는 규칙이다. 비교 스크립트는 이 규칙대로 스토리를 찾고, 맞지 않으면 실패한다.
 
@@ -115,7 +115,7 @@ CI 비교: |
   - `--no-build`: 이미 빌드한 `storybook-static`을 쓴다.
   - Chromium이 없으면 `pnpm --filter @seojaewan/design-system exec playwright install chromium`으로 설치한다.
 
-  CI는 `Figma parity` 작업에서 PR은 `--affected`, `main` push는 전체를 비교한다. `figma/export.json`이 아직 없으면 설치 없이 건너뛴다.
+  CI는 PR에서만 `Figma parity` 작업을 `--affected`로 돌린다. `figma/export.json`이 아직 없으면 설치 없이 건너뛴다.
   글자 렌더링은 운영체제마다 달라, 로컬 Windows 결과와 CI(Linux) 결과가 다를 수 있다. 기준은 CI 결과다.
 검토한 대안: |
   - Figma REST API로 CI가 매번 이미지를 받기: 이미지는 받을 수 있지만 CI에 피그마 토큰이 필요하고, 피그마만 먼저 바뀌면 모든 PR이 실패한다. Variables는 Enterprise 플랜이 아니면 읽을 수 없다.

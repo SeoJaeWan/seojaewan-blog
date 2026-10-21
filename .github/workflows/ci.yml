@@ -83,6 +83,8 @@ jobs:
   # 피그마 이미지와 Storybook 스크린샷을 비교한다. PR은 main 대비 영향받는 컴포넌트만, main push는 전체를 비교한다.
   figma-parity:
     name: Figma parity
+    # PR에서 영향받는 컴포넌트만 비교한다. main 병합 뒤 전체 비교는 두지 않는다
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -117,12 +119,8 @@ jobs:
         run: pnpm --filter @seojaewan/design-system exec playwright install --with-deps chromium
 
       - name: Figma parity (affected)
-        if: steps.figma.outputs.present == 'true' && github.event_name == 'pull_request'
+        if: steps.figma.outputs.present == 'true'
         run: pnpm --filter @seojaewan/design-system test:parity --affected --base origin/${{ github.base_ref }}
-
-      - name: Figma parity (all)
-        if: steps.figma.outputs.present == 'true' && github.event_name != 'pull_request'
-        run: pnpm --filter @seojaewan/design-system test:parity
 
       - uses: actions/upload-artifact@v7
         if: failure()

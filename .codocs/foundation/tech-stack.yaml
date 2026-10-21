@@ -24,7 +24,7 @@ _codocs:
   디자인 시스템과 앱 모두 Tailwind CSS v4를 쓴다.
 
   - 토큰은 `packages/design-system`의 `@theme` 한 곳에서 정의하고 앱은 그것을 가져다 쓴다.
-  - Tailwind 기본 색상·간격 팔레트는 끄고 디자인 토큰 이름으로만 쓴다.
+  - Tailwind 기본 테마 값(색상, 간격, 서체, 글자 크기, 줄 높이, 반경, 그림자, 블러, 이징)은 모두 끄고 디자인 토큰 이름으로만 쓴다. `rounded-lg`, `shadow-md`처럼 피그마에 없는 값이 섞여 들어가지 않게 하기 위해서다.
   - 임의 값(`bg-[#fff]`, `p-[13px]`)은 lint로 막는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.
   - 반투명·그림자 같은 Windows 효과는 `@utility`로 이름 있는 유틸리티를 만든다.
   - 사용처에서 넘긴 `className`은 `tailwind-merge`로 병합한다.
