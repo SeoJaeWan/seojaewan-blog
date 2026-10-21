@@ -41,6 +41,7 @@ _codocs:
   │  ├─ index.ts          # 공개 진입점
   │  ├─ theme.css         # Tailwind 설정과 손으로 쓰는 전역 스타일. fonts.css와 tokens.css를 불러온다
   │  ├─ fonts.css         # 웹 폰트(Open Sans, Pretendard, Cascadia Mono)를 패키지에서 불러온다
+  │  ├─ pretendard.css    # pretendard 패키지 CSS에서 woff2만 가리키게 생성한다. 손으로 고치지 않는다
   │  ├─ tokens.css        # figma/tokens.json에서 생성한다. 손으로 고치지 않는다
   │  └─ components/
   │     └─ button/
@@ -49,6 +50,7 @@ _codocs:
   │        └─ button.test.tsx
   ├─ scripts/             # 패키지 개발 스크립트. Node가 TypeScript를 직접 실행한다
   │  ├─ tokens/           # tokens.json → tokens.css 생성(generate:tokens)
+  │  ├─ fonts/            # pretendard 패키지 CSS → pretendard.css 생성(generate:fonts)
   │  └─ parity/           # 피그마 일치 검사(test:parity)
   ├─ parity-results/      # 일치 검사가 실패한 변형의 이미지. git에 넣지 않는다
   └─ figma/               # 피그마 플러그인이 내보내는 기준 자료. 손으로 고치지 않는다
@@ -63,6 +65,7 @@ _codocs:
   - `figma/`는 플러그인이 덮어쓰는 기준 자료라 사람이 고치는 `src/`와 나눈다. 플러그인이 쓴 모양을 그대로 두도록 Prettier 검사에서도 뺀다.
   - 이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춰 Storybook 스토리와 짝짓는다. 짝짓는 방법은 [[피그마 일치 검사:스토리 규칙]]에서 정한다.
   - 스크립트는 이 패키지의 파일만 다루므로 루트 `scripts/`가 아니라 패키지 안에 둔다. 테스트는 소스 옆에 `*.test.ts`로 둔다.
+  - `pretendard.css`는 pretendard 패키지 CSS가 woff 대체 파일까지 가리켜 빌드에 woff가 딸려 들어가는 것을 막으려고 만든다. 생성 결과가 패키지 CSS와 맞는지는 단위 테스트가 확인하므로, pretendard를 올리면 `generate:fonts`로 다시 만든다.
 의존 방향: |
   - `apps/web`은 `@seojaewan/design-system`을 공개 이름으로만 import한다. 패키지 내부 경로는 쓰지 않는다.
   - `packages/design-system`은 앱을 import하지 않는다. 블로그 도메인(Notion, 글)을 알지 못한다.

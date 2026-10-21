@@ -13,5 +13,6 @@ pnpm-lock.yaml
 
 # 생성 파일과 피그마 플러그인이 쓰는 기준 자료는 만든 도구의 모양을 그대로 둔다
 packages/design-system/src/tokens.css
+packages/design-system/src/pretendard.css
 packages/design-system/figma/
 **/parity-results/
