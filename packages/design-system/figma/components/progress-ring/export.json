@@ -1,0 +1,362 @@
+{
+  "booleans": {},
+  "hash": "301ed37d9d25dfdae4fb3e1d695b1a67e12bc365212c220d856f234b5c3c3b64",
+  "name": "ProgressRing",
+  "nodeId": "16:245",
+  "variants": {
+    "tone=accent,size=16": {
+      "cases": {},
+      "hash": "28bd76c6b1a3be0df38766eb0b56f0736d7d97e227860bc1c01e89363bd61d56",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/progress-ring/size-small",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "accent-fill/default",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:233",
+      "properties": {
+        "Size": "16",
+        "Tone": "Accent"
+      }
+    },
+    "tone=accent,size=32": {
+      "cases": {},
+      "hash": "461321f3a396ee4641a04b67f675112ff17b0c84786a1ac9c9c77a7fbe8ec8e6",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/progress-ring/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "accent-fill/default",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:235",
+      "properties": {
+        "Size": "32",
+        "Tone": "Accent"
+      }
+    },
+    "tone=accent,size=64": {
+      "cases": {},
+      "hash": "1ebed1d23be90a98a682af44e8c4e2e4201665dd545138f244ed9af8bdbfbb6a",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/progress-ring/size-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "accent-fill/default",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:237",
+      "properties": {
+        "Size": "64",
+        "Tone": "Accent"
+      }
+    },
+    "tone=on-dark,size=16": {
+      "cases": {},
+      "hash": "e4e6d8767a2a35f3aa1803edbe7c0cb88eb2ee64aa2cc02473be22fee42939a8",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/progress-ring/size-small",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "boot-screen/foreground",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:239",
+      "properties": {
+        "Size": "16",
+        "Tone": "On dark"
+      }
+    },
+    "tone=on-dark,size=32": {
+      "cases": {},
+      "hash": "19c910e506ffd5c0526b6f961f08ec8f07ec57e48d929ed897f0179ea7fe9463",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/progress-ring/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "boot-screen/foreground",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:241",
+      "properties": {
+        "Size": "32",
+        "Tone": "On dark"
+      }
+    },
+    "tone=on-dark,size=64": {
+      "cases": {},
+      "hash": "3d1acea62dee3d69488aa94a3859daece2602816e27ae6286460478aa6ec8a69",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/progress-ring/size-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "boot-screen/foreground",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:243",
+      "properties": {
+        "Size": "64",
+        "Tone": "On dark"
+      }
+    }
+  }
+}

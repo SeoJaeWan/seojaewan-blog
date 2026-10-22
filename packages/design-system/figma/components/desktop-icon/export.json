@@ -1,0 +1,2678 @@
+{
+  "booleans": {},
+  "hash": "628d7ac5547d6f79667f170888691476e04c027a02eeff486f680c8702c74649",
+  "name": "DesktopIcon",
+  "nodeId": "29:351",
+  "variants": {
+    "size=large,state=cut": {
+      "cases": {},
+      "hash": "df405672d6822e218d6d7f4d44afbe9e04efaa3f084b02f672e3e4515bd95ca0",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2165",
+      "properties": {
+        "Size": "Large",
+        "State": "Cut"
+      }
+    },
+    "size=large,state=cut-selected": {
+      "cases": {},
+      "hash": "44867779ed47b541b53d1e9a5bfcdf5e4a2965f64f13ccef1203a65b362ebba7",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2169",
+      "properties": {
+        "Size": "Large",
+        "State": "Cut selected"
+      }
+    },
+    "size=large,state=hover": {
+      "cases": {},
+      "hash": "3169944fd5a42442f5bccfa5dc0b9d2a375a26146e3e15b7aebd7ed31b824d52",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-hover"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:286",
+      "properties": {
+        "Size": "Large",
+        "State": "Hover"
+      }
+    },
+    "size=large,state=rename": {
+      "cases": {},
+      "hash": "57a56b0eb8b9f0b0077bad28e975b66cf976744d40610c4599f85fcb18c5cbdc",
+      "hidden": [
+        "label"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "rename field",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-strong-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "accent-fill/selected-text-background"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection/text",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "새 폴더",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Open Sans",
+                "start": 1,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:298",
+      "properties": {
+        "Size": "Large",
+        "State": "Rename"
+      }
+    },
+    "size=large,state=rest": {
+      "cases": {},
+      "hash": "b59869fcecf546c10aefe71a75a665eb2d8166df1d7a66c7b6ef67030a282b7a",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:282",
+      "properties": {
+        "Size": "Large",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "size=large,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "size=large,state=selected": {
+      "cases": {},
+      "hash": "7a3d870ce30157d8174d077aa662f8290e469804fb6d4965b5f7940777a98929",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:290",
+      "properties": {
+        "Size": "Large",
+        "State": "Selected"
+      }
+    },
+    "size=large,state=selected-focus": {
+      "cases": {},
+      "hash": "b73606c3c372d85bceaa41a51862c7254b05b8904f53c49cb3de1fc8916d36ec",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-large"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "desktop-icon/stroke-selected-focus"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/desktop-icon/icon-large",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/desktop-icon/icon-large"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:294",
+      "properties": {
+        "Size": "Large",
+        "State": "Selected focus"
+      }
+    },
+    "size=medium,state=cut": {
+      "cases": {},
+      "hash": "8a164c94a1c89ff505d14b955df3091d05148db9b3f6fb7b710094c876b70ae4",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2173",
+      "properties": {
+        "Size": "Medium",
+        "State": "Cut"
+      }
+    },
+    "size=medium,state=cut-selected": {
+      "cases": {},
+      "hash": "b4d625adc7a7951f375002075eaa0d5154bc6bada4fbbd2bfa028a1b205419f1",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2177",
+      "properties": {
+        "Size": "Medium",
+        "State": "Cut selected"
+      }
+    },
+    "size=medium,state=hover": {
+      "cases": {},
+      "hash": "93270425aec18c44e5a2721c035f37bf1d10668a815b91046ffcf0ae51188041",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-hover"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:309",
+      "properties": {
+        "Size": "Medium",
+        "State": "Hover"
+      }
+    },
+    "size=medium,state=rename": {
+      "cases": {},
+      "hash": "83371f2d4a1e152a26e4d069cfbdcca63ab0101c33394440061a51e439a547d9",
+      "hidden": [
+        "label"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "rename field",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-strong-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "accent-fill/selected-text-background"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection/text",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "새 폴더",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Open Sans",
+                "start": 1,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:321",
+      "properties": {
+        "Size": "Medium",
+        "State": "Rename"
+      }
+    },
+    "size=medium,state=rest": {
+      "cases": {},
+      "hash": "50257fb6192ef719fb3d3a2d4c4d953c8d584fd013ff04d8787ecde9bffb53d9",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:305",
+      "properties": {
+        "Size": "Medium",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "size=medium,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "size=medium,state=selected": {
+      "cases": {},
+      "hash": "4a502a4c32ef3018faa563927dc2ad72e2e8e4277860573fff8e8c3122776947",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:313",
+      "properties": {
+        "Size": "Medium",
+        "State": "Selected"
+      }
+    },
+    "size=medium,state=selected-focus": {
+      "cases": {},
+      "hash": "d53e685285472320b7a017cbf4c029f4e072ff42d2332d230b651d5f30b4b4a7",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-medium"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "desktop-icon/stroke-selected-focus"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:317",
+      "properties": {
+        "Size": "Medium",
+        "State": "Selected focus"
+      }
+    },
+    "size=small,state=cut": {
+      "cases": {},
+      "hash": "9ee05c8d49d351b0fc63cd328afe1363afec3f1c75a7e9bd0c6058ba01674571",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2181",
+      "properties": {
+        "Size": "Small",
+        "State": "Cut"
+      }
+    },
+    "size=small,state=cut-selected": {
+      "cases": {},
+      "hash": "c3f9f5dfe3f2d63de1b3769e8244c6b6a2be46bcb1d0083237a66ebad8f1d26c",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "opacity": "opacity/cut",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "69:2185",
+      "properties": {
+        "Size": "Small",
+        "State": "Cut selected"
+      }
+    },
+    "size=small,state=hover": {
+      "cases": {},
+      "hash": "84d654c49272689c3adfc93859f2852fb03f680ee397c4c2cb788bb36206a3dc",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-hover"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:332",
+      "properties": {
+        "Size": "Small",
+        "State": "Hover"
+      }
+    },
+    "size=small,state=rename": {
+      "cases": {},
+      "hash": "5eeb9fd59d6172038fce5559fff5cb1832dfb61a1b15310634ed08049c9d15e3",
+      "hidden": [
+        "label"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "rename field",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-strong-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "accent-fill/selected-text-background"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "rename field/selection/text",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "새 폴더",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Open Sans",
+                "start": 1,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-on-accent-fill/selected-text"
+                },
+                "fontFamily": "Pretendard",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:344",
+      "properties": {
+        "Size": "Small",
+        "State": "Rename"
+      }
+    },
+    "size=small,state=rest": {
+      "cases": {},
+      "hash": "f4dc11fefdf6487271eae7dacb6980c0b47373d9caef0cfd2b0ed912075e7235",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 2,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:328",
+      "properties": {
+        "Size": "Small",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "size=small,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "size=small,state=selected": {
+      "cases": {},
+      "hash": "19bc4e140b8d86f71e1f45b54fa2a7c839d90cfe7ccdf875e5da3a3b2ca03421",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:336",
+      "properties": {
+        "Size": "Small",
+        "State": "Selected"
+      }
+    },
+    "size=small,state=selected-focus": {
+      "cases": {},
+      "hash": "76509c6556f04e72785074611699dcd0cd22afcce3725851125d9f76dae8dbd5",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "desktop-icon/fill-selected"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/desktop-icon/width-small"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "desktop-icon/stroke-selected-focus"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "effect": "Text/Desktop label shadow",
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "desktop-icon/label"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "29:340",
+      "properties": {
+        "Size": "Small",
+        "State": "Selected focus"
+      }
+    }
+  }
+}

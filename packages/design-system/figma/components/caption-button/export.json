@@ -1,0 +1,984 @@
+{
+  "booleans": {},
+  "hash": "6ebe31e7a1a528fa696614d3e2ee488f3f3d3f015589bb24232d1c3f0928502c",
+  "name": "CaptionButton",
+  "nodeId": "18:185",
+  "variants": {
+    "type=close,state=hover": {
+      "cases": {},
+      "hash": "870848fff0e324522d3d4adde5acb46cda71fed09932928c5ac7c10dace6385e",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "caption-button/close-fill-hover"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "caption-button/close-glyph-hover",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:176",
+      "properties": {
+        "State": "Hover",
+        "Type": "Close"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=close,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=close,state=inactive": {
+      "cases": {},
+      "hash": "4bd79b77c83b5b2795faf90c6faf5241a4d357af2efc176392e38d36ed9e89af",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:182",
+      "properties": {
+        "State": "Inactive",
+        "Type": "Close"
+      }
+    },
+    "type=close,state=pressed": {
+      "cases": {},
+      "hash": "7f61e906cdd264de448fdf079f80c24e8e71772d626e7cbebb27ac8951474c17",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "caption-button/close-fill-pressed"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "caption-button/close-glyph-pressed",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:179",
+      "properties": {
+        "State": "Pressed",
+        "Type": "Close"
+      }
+    },
+    "type=close,state=rest": {
+      "cases": {},
+      "hash": "a00106be4f629c7826b4f85adcfe06521ffeacf291f54934449cc40da66348cc",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:173",
+      "properties": {
+        "State": "Rest",
+        "Type": "Close"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=close,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=maximize,state=hover": {
+      "cases": {},
+      "hash": "cf06c9d0c3df69a392fbd8f3799933301d4cd1e7101c4440a96503fa1017ded2",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_maximize_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_maximize_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:152",
+      "properties": {
+        "State": "Hover",
+        "Type": "Maximize"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=maximize,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=maximize,state=inactive": {
+      "cases": {},
+      "hash": "bc9ce70d7373ada7cc72631281dbb1ab31852e6182b9945474bca216ae8c2bf8",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_maximize_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_maximize_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:158",
+      "properties": {
+        "State": "Inactive",
+        "Type": "Maximize"
+      }
+    },
+    "type=maximize,state=pressed": {
+      "cases": {},
+      "hash": "1c1d95d51f0bfa8b417de4f34f26e81c0118d7f70809d85e4373492b3c6dabf3",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_maximize_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_maximize_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:155",
+      "properties": {
+        "State": "Pressed",
+        "Type": "Maximize"
+      }
+    },
+    "type=maximize,state=rest": {
+      "cases": {},
+      "hash": "884a14cc63655a7850736a8c546ec294878bce6a6a30aebca4a9b8e71612f1d6",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_maximize_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_maximize_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:149",
+      "properties": {
+        "State": "Rest",
+        "Type": "Maximize"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=maximize,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=minimize,state=hover": {
+      "cases": {},
+      "hash": "8247b458ecd129d6e74b2c380c53433acb911c8babb4ddf5aaf52e4b6ffa53a1",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_subtract_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_subtract_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:140",
+      "properties": {
+        "State": "Hover",
+        "Type": "Minimize"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=minimize,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=minimize,state=inactive": {
+      "cases": {},
+      "hash": "00ecb36bc2b4aa7efac9226fa491d65e8830a602e75f687ed27ed784c175f94c",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_subtract_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_subtract_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:146",
+      "properties": {
+        "State": "Inactive",
+        "Type": "Minimize"
+      }
+    },
+    "type=minimize,state=pressed": {
+      "cases": {},
+      "hash": "e668b9cb78e1a988268dc3b714061a91709cb75c0658f4daed065d01c668adfb",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_subtract_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_subtract_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:143",
+      "properties": {
+        "State": "Pressed",
+        "Type": "Minimize"
+      }
+    },
+    "type=minimize,state=rest": {
+      "cases": {},
+      "hash": "713755da5c66e8eae4c0d13531abb81997e2e1331b0e91cea9884baa8fb1b94c",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_subtract_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_subtract_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:137",
+      "properties": {
+        "State": "Rest",
+        "Type": "Minimize"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=minimize,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=restore,state=hover": {
+      "cases": {},
+      "hash": "8380a8667279a95eed2af3ae8cb901d71c6041e32bb99296597ac79dff070574",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_square_multiple_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_square_multiple_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:164",
+      "properties": {
+        "State": "Hover",
+        "Type": "Restore"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=restore,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "type=restore,state=inactive": {
+      "cases": {},
+      "hash": "35b6e69ef6846702212a4d604f1a78486f5f094d048c87925c612626e259967e",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_square_multiple_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_square_multiple_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:170",
+      "properties": {
+        "State": "Inactive",
+        "Type": "Restore"
+      }
+    },
+    "type=restore,state=pressed": {
+      "cases": {},
+      "hash": "e07531b3506b443eb6ead30ddbc79701d3a475dbda4dd9e9ab620fcbcaacde7a",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_square_multiple_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_square_multiple_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:167",
+      "properties": {
+        "State": "Pressed",
+        "Type": "Restore"
+      }
+    },
+    "type=restore,state=rest": {
+      "cases": {},
+      "hash": "a9342bbcb70f9eb7dfc1a9a7e0ca1343949a781ebf8a27d7d16ac93152ff097a",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/title-bar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/caption-button/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_square_multiple_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_square_multiple_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "glyph-icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "18:161",
+      "properties": {
+        "State": "Rest",
+        "Type": "Restore"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "type=restore,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

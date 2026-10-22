@@ -1,0 +1,975 @@
+{
+  "booleans": {},
+  "hash": "f5f013bc44a127d22087c4a8cb1649a84eca4a0ad8598ad236b8d6e9ab915bd8",
+  "name": "TaskbarButton",
+  "nodeId": "26:257",
+  "variants": {
+    "indicator=active,state=hover": {
+      "cases": {},
+      "hash": "3cd464176f8eb873fa90a60dc84d5838e173859f633e1669888e910fa3ca08f2",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-active"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:247",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=active,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "indicator=active,state=pressed": {
+      "cases": {},
+      "hash": "943b38a63dcd7fd473bbe2bdf176eaa4788f629d9cbc00d14073e63a20289d1b",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/20",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/20"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-active"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:252",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Pressed"
+      }
+    },
+    "indicator=active,state=rest": {
+      "cases": {},
+      "hash": "1f7f15ba314f1da1c9a889ceb9f16657c90ea830fb9981a2c8b857b4e776404a",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-active"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:242",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=active,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "indicator=none,state=hover": {
+      "cases": {},
+      "hash": "c45c3f4bb965373ee518bce77247629d1012366f15693ef92a2bd614a743b34e",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "26:219",
+      "properties": {
+        "Indicator": "None",
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=none,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "indicator=none,state=pressed": {
+      "cases": {},
+      "hash": "b047541cf62631366ae5f273404f2dd8fbb430fc10ab6722ca775ef1937de070",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/20",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/20"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "26:223",
+      "properties": {
+        "Indicator": "None",
+        "State": "Pressed"
+      }
+    },
+    "indicator=none,state=rest": {
+      "cases": {},
+      "hash": "45e5808bf6ed5c03e429afd8041a113b958ceaf647ed1618f5c58ea11fcce113",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "26:215",
+      "properties": {
+        "Indicator": "None",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=none,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "indicator=running,state=hover": {
+      "cases": {},
+      "hash": "a35d9a155bc07d12e103697904557e52cf00273244364161a9fd22a9d7247281",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-running"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:232",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=running,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "indicator=running,state=pressed": {
+      "cases": {},
+      "hash": "bbf1d55a326065cda58e3a9d6b5da5b179c4012fa854856b7f203b7b218dce25",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/20",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/20"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-running"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:237",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Pressed"
+      }
+    },
+    "indicator=running,state=rest": {
+      "cases": {},
+      "hash": "0fcc1ae57efc22f0d28ecbdbb21dddf0ae7c61aa3e384da917ad359b610ec433",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/taskbar-button/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/size"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/24",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/24"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "indicator",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/indicator",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/taskbar-button/indicator-running"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "26:227",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "indicator=running,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}
