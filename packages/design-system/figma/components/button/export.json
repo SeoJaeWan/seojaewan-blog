@@ -5,7 +5,7 @@
       "key": "Show icon#13:16"
     }
   },
-  "hash": "b603b83f10588b0aea0dd74c73af6e60e0772fd255e1a0b73afe6265fb76a776",
+  "hash": "2632a650e8e0a0816d956b0262d2d5968543d7c38738589d3d157eee26ffeed7",
   "name": "Button",
   "nodeId": "13:62",
   "variants": {
@@ -525,7 +525,7 @@
           ]
         }
       },
-      "hash": "490c3a992071f41bc6917a749298acdfd7cadf8915717faa3dfe6085a37be860",
+      "hash": "e7cbe9fea06fc4040dc17ee29f481b74ad30e9288c9717592337d88cc9c8cc25",
       "hidden": [
         "icon"
       ],
@@ -623,7 +623,16 @@
       "properties": {
         "State": "Hover",
         "Style": "Accent"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=accent,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "style=accent,state=pressed": {
       "cases": {
@@ -953,7 +962,7 @@
           ]
         }
       },
-      "hash": "d92803255da85d2db566e33aebfae5fbeb4b3643d8d5f89614a41f7f2e526087",
+      "hash": "ee4b816afc68d84dc5366f098829fe17cd47ae2436798ba6481ca292b193fb4e",
       "hidden": [
         "icon"
       ],
@@ -1051,7 +1060,16 @@
       "properties": {
         "State": "Rest",
         "Style": "Accent"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=accent,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "style=standard,state=disabled": {
       "cases": {
@@ -1595,7 +1613,7 @@
           ]
         }
       },
-      "hash": "4c22375b78b12e22e3c22eb13d0de47b531f5c92013a7683a5d656b4cc80b0be",
+      "hash": "6f01e0914463db4df45efdd79e3e70996eda48230c2b4a2f03083310cd9e764b",
       "hidden": [
         "icon"
       ],
@@ -1693,7 +1711,16 @@
       "properties": {
         "State": "Hover",
         "Style": "Standard"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=standard,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "style=standard,state=pressed": {
       "cases": {
@@ -2023,7 +2050,7 @@
           ]
         }
       },
-      "hash": "37e523d245bece4a24b2e5791f071961ae9661f7f27b2136845453c387ef156e",
+      "hash": "f26a3bb5d153ecc948c3c7c81a290921567e7b0064b53ca7b2cb58e9bbef139a",
       "hidden": [
         "icon"
       ],
@@ -2121,7 +2148,16 @@
       "properties": {
         "State": "Rest",
         "Style": "Standard"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=standard,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "style=subtle,state=disabled": {
       "cases": {
@@ -2626,7 +2662,7 @@
           ]
         }
       },
-      "hash": "2b7939a01aa17ca63bfa54558dce18f1f129acb89bbf38b5973348cf563a4715",
+      "hash": "7fd9a839f7db1276cfd9d34248437c4b7fb7bc09883bc825f071bfa4aa93f2ae",
       "hidden": [
         "icon"
       ],
@@ -2711,7 +2747,16 @@
       "properties": {
         "State": "Hover",
         "Style": "Subtle"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=subtle,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "style=subtle,state=pressed": {
       "cases": {
@@ -3002,7 +3047,7 @@
           ]
         }
       },
-      "hash": "61d5fb840651ca97e8894372158605cdc7408b71a5e1d985cdcc88b48e463e58",
+      "hash": "665ec0f8e8063375c7f5641dbce1ffb254fb50021f111ac0d99206c876720461",
       "hidden": [
         "icon"
       ],
@@ -3087,7 +3132,16 @@
       "properties": {
         "State": "Rest",
         "Style": "Subtle"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "style=subtle,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     }
   }
 }
