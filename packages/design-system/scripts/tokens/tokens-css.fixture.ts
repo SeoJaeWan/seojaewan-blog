@@ -45,17 +45,20 @@ export const TOKENS_FIXTURE = {
       'alpha-0a': primitive('#0000000a'),
       'alpha-0f': primitive('#0000000f'),
       'alpha-29': primitive('#00000029'),
+      'alpha-66': primitive('#00000066'),
     },
     blue: { 'dark-1': primitive('#005fb8') },
     gray: { f9f9f9: primitive('#f9f9f9'), 'fcfcfc-ad9': primitive('#fcfcfcd9') },
     red: { 'dark-1': primitive('#c42b1c') },
-    white: { solid: primitive('#ffffff') },
+    white: { solid: primitive('#ffffff'), 'alpha-14': primitive('#ffffff14') },
   },
   'text-fill': { primary: semantic('{color.black.alpha-e4}') },
   'accent-fill': { default: semantic('{color.blue.dark-1}') },
   'control-stroke': {
     default: semantic('{color.black.alpha-0f}'),
     secondary: semantic('{color.black.alpha-29}'),
+    'on-accent-default': semantic('{color.white.alpha-14}'),
+    'on-accent-secondary': semantic('{color.black.alpha-66}'),
   },
   'acrylic-background-fill': {
     default: semantic('{color.gray.fcfcfc-ad9}'),
@@ -108,14 +111,14 @@ export const TOKENS_FIXTURE = {
     },
     effect: {
       Elevation: {
-        Card: {
+        Tooltip: {
           $type: 'shadow',
           $value: [
             {
-              color: '#0000000a',
+              color: '#00000024',
               offsetX: { value: 0, unit: 'px' },
-              offsetY: { value: 2, unit: 'px' },
-              blur: { value: 4, unit: 'px' },
+              offsetY: { value: 4, unit: 'px' },
+              blur: { value: 8, unit: 'px' },
               spread: { value: 0, unit: 'px' },
               inset: false,
             },
@@ -243,11 +246,11 @@ export const TOKENS_FIXTURE = {
             },
           },
         },
-        'Text Control Border Focused': {
+        'Accent Control Border': {
           $type: 'gradient',
           $value: [
-            { color: '{control-stroke.default}', position: 0.9688 },
-            { color: '{accent-fill.default}', position: 0.9689 },
+            { color: '{control-stroke.on-accent-default}', position: 0.9067 },
+            { color: '{control-stroke.on-accent-secondary}', position: 1 },
           ],
         },
       },

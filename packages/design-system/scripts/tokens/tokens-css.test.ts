@@ -43,7 +43,7 @@ describe('토큰 생성', () => {
   });
 
   it('효과 스타일을 그림자와 배경 블러로 바꾼다', () => {
-    expect(css).toContain('--shadow-elevation-card: 0px 2px 4px 0px #0000000a;');
+    expect(css).toContain('--shadow-elevation-tooltip: 0px 4px 8px 0px #00000024;');
     expect(css).toContain(
       '--shadow-elevation-dialog: 0px 2px 21px 0px #00000026, 0px 32px 64px 0px #00000030;',
     );
@@ -104,14 +104,14 @@ describe('토큰 생성', () => {
     );
     // layers가 없으면 $value의 정지점을 위에서 아래로 칠한다.
     expect(css).toContain(
-      '--gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, ',
+      '--gradient-elevation-accent-control-border: linear-gradient(to bottom, var(--color-control-stroke-on-accent-default) 90.67%, ',
     );
   });
 
   it('투명도와 RGB가 모두 다른 정지점 사이에는 피그마처럼 투명도를 곱하지 않고 섞은 중간 정지점을 넣는다', () => {
-    // #0000000f(검정 6%) → #005fb8(강조색 100%): 중간 정지점은 RGB와 투명도를 각각 따로 섞은 값이다.
+    // #ffffff14(흰색 8%) → #00000066(검정 40%): 중간 정지점은 RGB와 투명도를 각각 따로 섞은 값이다.
     expect(css).toContain(
-      'var(--color-control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--color-accent-fill-default) 96.89%',
+      'var(--color-control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--color-control-stroke-on-accent-secondary) 100%',
     );
   });
 
