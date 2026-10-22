@@ -62,29 +62,33 @@ describe('토큰 생성', () => {
     );
   });
 
-  it('재질 유틸리티는 흐림을 ::before로, 루미너시티 층을 ::after 블렌드로 그리고 노이즈를 층 색에 섞는다', () => {
+  it('재질 칠 층(일반 섞기)을 CSS 배경 여러 겹으로 옮기고, 층 색은 변수를 쓴다', () => {
     const block = css.slice(css.indexOf('@utility material-acrylic-default {'));
-    expect(block).toContain('backdrop-filter: none !important;');
-    expect(block).toContain('backdrop-filter: blur(var(--material-backdrop-blur, 0px));');
-    expect(block).toContain(
-      "background: linear-gradient(rgb(252 252 252 / 0.98), rgb(252 252 252 / 0.98)), url('./assets/images/noise-acrylic.png') repeat, #fcfcfc;",
+    expect(block.slice(0, block.indexOf('}') + 1)).toBe(
+      [
+        '@utility material-acrylic-default {',
+        '  background-color: var(--color-acrylic-background-fill-default);',
+        "  background-image: url('./assets/images/noise-acrylic.opacity-2.png');",
+        '  background-repeat: repeat;',
+        '}',
+      ].join('\n'),
     );
-    expect(block).toContain('mix-blend-mode: luminosity;');
-    expect(block).toContain('opacity: 0.85;');
-    expect(css).toContain('--material-backdrop-blur: --value(--backdrop-blur-*);');
   });
 
-  it('재질 층 색이 변수에 연결되어 있으면 var(--color-*)를 쓰고 변수 색의 불투명도를 층 불투명도에 곱한다', () => {
-    const block = css.slice(css.indexOf('@utility material-acrylic-bound {'));
-    expect(block).toContain(
-      "background: linear-gradient(rgb(from var(--color-acrylic-background-fill-default) r g b / 0.98), rgb(from var(--color-acrylic-background-fill-default) r g b / 0.98)), url('./assets/images/noise-acrylic.png') repeat, rgb(from var(--color-acrylic-background-fill-default) r g b);",
-    );
-    expect(block).toContain('opacity: 0.851;');
-  });
-
-  it('한 요소로 그릴 수 없는 재질 층 구성(보이는 색 층)은 유틸리티를 만들지 않고 이유를 남긴다', () => {
-    expect(css).not.toContain('@utility material-mica-base {');
-    expect(css).toContain('/* Material/Mica Base: ');
+  it('블렌드 모드가 일반이 아닌 재질 층은 지원하지 않아 실패한다', () => {
+    const blended = structuredClone(TOKENS_FIXTURE) as {
+      style: { paint: Record<string, unknown> };
+    };
+    blended.style.paint.Mica = {
+      $type: 'color',
+      $value: '#f3f3f3',
+      $extensions: {
+        'com.seojaewan': {
+          layers: [{ type: 'SOLID', color: '#f3f3f3', opacity: 1, blendMode: 'LUMINOSITY' }],
+        },
+      },
+    };
+    expect(() => tokensToCss(blended)).toThrow('블렌드 모드 "LUMINOSITY" 층은 지원하지 않는다');
   });
 
   it('그라데이션 칠 스타일은 층을 옮긴 --gradient-* 배경 값이 된다', () => {

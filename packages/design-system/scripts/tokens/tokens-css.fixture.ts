@@ -186,27 +186,6 @@ export const TOKENS_FIXTURE = {
       Material: {
         'Acrylic Default': {
           $type: 'color',
-          $value: '#fcfcfc',
-          $extensions: {
-            'com.seojaewan': {
-              layers: [
-                { type: 'SOLID', color: '#fcfcfc', opacity: 0.85, blendMode: 'LUMINOSITY' },
-                { type: 'SOLID', color: '#fcfcfc', opacity: 0, blendMode: 'COLOR' },
-                {
-                  type: 'IMAGE',
-                  opacity: 0.02,
-                  blendMode: 'NORMAL',
-                  imageHash: 'noise',
-                  asset: 'images/noise-acrylic.png',
-                  scaleMode: 'TILE',
-                  scalingFactor: 1,
-                },
-              ],
-            },
-          },
-        },
-        'Acrylic Bound': {
-          $type: 'color',
           $value: '{acrylic-background-fill.default}',
           $extensions: {
             'com.seojaewan': {
@@ -215,7 +194,7 @@ export const TOKENS_FIXTURE = {
                   type: 'SOLID',
                   color: '{acrylic-background-fill.default}',
                   opacity: 1,
-                  blendMode: 'LUMINOSITY',
+                  blendMode: 'NORMAL',
                 },
                 {
                   type: 'IMAGE',
@@ -226,18 +205,6 @@ export const TOKENS_FIXTURE = {
                   scaleMode: 'TILE',
                   scalingFactor: 1,
                 },
-              ],
-            },
-          },
-        },
-        'Mica Base': {
-          $type: 'color',
-          $value: '#f3f3f3',
-          $extensions: {
-            'com.seojaewan': {
-              layers: [
-                { type: 'SOLID', color: '#f3f3f3', opacity: 1, blendMode: 'LUMINOSITY' },
-                { type: 'SOLID', color: '#f3f3f3', opacity: 0.5, blendMode: 'COLOR' },
               ],
             },
           },

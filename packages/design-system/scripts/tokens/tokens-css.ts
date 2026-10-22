@@ -2,7 +2,7 @@
  * figma/tokens.json(DTCG 형식)을 Tailwind v4 `@theme` 블록과 글자 스타일 `@utility`로 바꾼다.
  * 파일을 읽거나 쓰지 않는 순수 변환이다. 파일 입출력은 generate-tokens.ts가 맡는다.
  */
-import { FIGMA_BLEND_MODE_CSS } from '../parity/rules/class-rules.ts';
+import { imageLayerFile } from '../assets/assets-code.ts';
 
 // 피그마 Variables 이름 경로에서 웹 서체 짝을 찾는 기준이다. 한글은 이 변수의 서체로 그린다.
 const HANGUL_FAMILY_PATH = 'font/family/korean';
@@ -134,8 +134,6 @@ const roleUtilities = [
   ringUtility('border-gradient-*', '--value(--gradient-*)'),
   utility('w-stroke-*', ['width: --value(--border-width-*);']),
   utility('h-stroke-*', ['height: --value(--border-width-*);']),
-  // 재질 칠(material-*)이 배경 흐림을 ::before로 옮겨 그리도록 효과 스타일의 흐림 값을 상속되는 변수로도 둔다.
-  utility('backdrop-blur-*', ['--material-backdrop-blur: --value(--backdrop-blur-*);']),
 ];
 
 /**
@@ -165,21 +163,17 @@ function ringUtility(name: string, background: string): string {
 
 /**
  * 층이 여럿인 재질 칠 스타일(`Material/*`)을 `material-*` 유틸리티로 만든다.
- * 피그마 층(아래 → 위)은 흐린 배경 위에 루미너시티 층, 색 층, 노이즈 이미지(TILE)다. 브라우저에서 블렌드 층이
- * 흐린 배경과 섞이려면 흐림과 블렌드 층이 배경과 같은 쌓임 맥락에 있어야 한다. 그래서
- * - 요소 자신은 쌓임 맥락을 만들지 않는다(효과 스타일의 backdrop-filter도 끈다).
- * - ::before가 효과 스타일의 흐림(`--material-backdrop-blur`)으로 뒤를 흐린다.
- * - ::after가 루미너시티 층을 `mix-blend-mode`로 섞는다. 노이즈(불투명도 n, NORMAL)는 이 층 색에 n만큼 섞어 넣는다.
- *   층 색이 변수에 연결되어 있으면 `var(--color-*)`를 쓴다. 노이즈와 섞으려고 상대 색 문법으로 불투명한 색을 만들고,
- *   변수 색의 불투명도는 층 불투명도와 곱해 `opacity`에 둔다.
- * - 자식은 두 층 위에 오도록 `position: relative; z-index: 1`이다.
- * 요소에는 relative 같은 위치 지정이 있어야 하고, ::before를 쓰는 안쪽 선 유틸리티와 함께 쓸 수 없다.
- * 이 구조로 그릴 수 없는 층 구성(보이는 색 층 등)은 만들지 않고 이유를 주석으로 남긴다. 그 칠 스타일을 쓰면
- * 피그마 일치 검사가 유틸리티가 없다고 실패한다.
+ * 피그마 칠 층(아래 → 위, 모두 일반 섞기)을 CSS 배경 여러 겹으로 그대로 옮긴다.
+ * - 맨 아래 단색 층은 `background-color`, 그 위 층은 `background-image`(위 층이 먼저)다.
+ * - 단색 층 색은 연결된 변수(`var(--color-*)`)를 쓰고, 층 불투명도는 `color-mix()`로 넣는다.
+ * - 이미지 층(TILE, 배율 1)은 CSS 배경 층에 불투명도를 줄 수 없어, 자산 생성기가 불투명도를 미리 넣은
+ *   이미지(`imageLayerFile`)를 쓴다.
+ * 뒤 흐림은 효과 스타일 클래스(`backdrop-blur-*`)가 요소 자신에 준다.
+ * 블렌드 모드가 일반(NORMAL)이 아닌 층과 그 밖의 층 종류는 지원하지 않아 실패한다.
  * @codocs [[디자인 기반:재질 효과]]
  * @param item 칠 스타일 경로와 토큰
  * @param context 변수 이름과 실제 색 표
- * @returns `@utility` 블록 또는 만들지 못한 이유 주석(재질 스타일이 아니면 빈 목록)
+ * @returns `@utility` 블록(재질 스타일이 아니면 빈 목록)
  */
 function materialUtility(item: FlatToken, context: ColorContext): string[] {
   const custom = item.token.extensions['com.seojaewan'];
@@ -188,158 +182,59 @@ function materialUtility(item: FlatToken, context: ColorContext): string[] {
     return [];
   }
   const path = `style/paint/${item.path.join('/')}`;
-  const name = item.path.map(kebabSegment).join('-');
-  const plan = materialPlan(layers, context, path);
-  if (typeof plan === 'string') {
-    return [
-      `/* ${item.path.join('/')}: ${plan} material-${name.replace(/^material-/u, '')} 유틸리티를 만들지 않는다. */`,
-    ];
+  const backgrounds = layers.map((layer: unknown) => materialLayer(layer, context, path));
+  const [bottom, ...above] = backgrounds;
+  const color = bottom?.kind === 'color' ? bottom.value : 'transparent';
+  const images = (bottom?.kind === 'color' ? above : backgrounds).reverse();
+  const declarations = [`background-color: ${color};`];
+  if (images.length > 0) {
+    declarations.push(
+      `background-image: ${images.map((image) => image.value).join(', ')};`,
+      `background-repeat: ${images.map((image) => image.repeat).join(', ')};`,
+    );
   }
-  const { blend, color, opacity, noise } = plan;
-  const mixed = noise === null ? '' : opaqueColor(color, 1 - noise.opacity);
-  const base =
-    noise === null
-      ? opaqueColor(color, 1)
-      : `linear-gradient(${mixed}, ${mixed}), url('./assets/${noise.asset}') repeat, ${opaqueColor(color, 1)}`;
-  return [
-    utility(name, [
-      '-webkit-backdrop-filter: none !important;',
-      'backdrop-filter: none !important;',
-      '&::before,',
-      '&::after {',
-      "  content: '';",
-      '  position: absolute;',
-      '  inset: 0;',
-      '  border-radius: inherit;',
-      '  pointer-events: none;',
-      '}',
-      '&::before {',
-      '  -webkit-backdrop-filter: blur(var(--material-backdrop-blur, 0px));',
-      '  backdrop-filter: blur(var(--material-backdrop-blur, 0px));',
-      '}',
-      '&::after {',
-      `  background: ${base};`,
-      `  mix-blend-mode: ${blend};`,
-      `  opacity: ${formatNumber(opacity)};`,
-      '}',
-      '& > * {',
-      '  position: relative;',
-      '  z-index: 1;',
-      '}',
-    ]),
-  ];
+  return [utility(item.path.map(kebabSegment).join('-'), declarations)];
 }
 
-type MaterialPlan = {
-  /** CSS 블렌드 모드 */
-  blend: string;
-  /** 블렌드 층 색: 변수(`var(--color-*)`)나 #rrggbb */
-  color: string;
-  /** 블렌드 층 불투명도(변수 색의 불투명도를 곱한 값) */
-  opacity: number;
-  /** 노이즈 이미지 층 */
-  noise: { asset: string; opacity: number } | null;
-};
+type MaterialBackground =
+  | { kind: 'color'; value: string; repeat: 'repeat' }
+  | { kind: 'image'; value: string; repeat: 'repeat' };
 
 /**
- * 재질 칠 층을 유틸리티 구조(블렌드 층 하나 + 노이즈)로 옮길 수 있는지 본다.
- * 불투명도 0인 층은 그려지는 것이 없어 건너뛴다.
- * @param layers `com.seojaewan.layers`(아래 → 위)
+ * 재질 칠 층 하나를 CSS 배경 층으로 바꾼다.
+ * @param layer `com.seojaewan.layers`의 층
  * @param context 변수 이름과 실제 색 표
  * @param path 오류 메시지에 쓸 경로
- * @returns 옮길 내용, 또는 옮길 수 없는 이유
+ * @returns 배경 층
  */
-function materialPlan(
-  layers: readonly unknown[],
-  context: ColorContext,
-  path: string,
-): MaterialPlan | string {
-  const visible = layers.filter(
-    (layer) =>
-      !isRecord(layer) || layer.opacity === undefined || numberValue(layer.opacity, path) > 0,
-  );
-  const [first, ...rest] = visible;
-  if (!isRecord(first) || first.type !== 'SOLID') {
-    return '맨 아래 보이는 층이 단색이 아니다.';
+function materialLayer(layer: unknown, context: ColorContext, path: string): MaterialBackground {
+  if (!isRecord(layer)) {
+    throw new TokenFormatError(path, '칠 층은 객체여야 한다.');
   }
-  const blend = blendModeCss(first.blendMode);
-  if (blend === undefined || blend === 'normal') {
-    return '맨 아래 보이는 층이 블렌드 층이 아니다.';
+  if (layer.blendMode !== undefined && layer.blendMode !== 'NORMAL') {
+    throw new TokenFormatError(
+      path,
+      `블렌드 모드 ${JSON.stringify(layer.blendMode)} 층은 지원하지 않는다(일반 섞기만 CSS 배경 겹으로 옮긴다).`,
+    );
   }
-  let noise: MaterialPlan['noise'] = null;
-  for (const layer of rest) {
-    const isTileImage =
-      isRecord(layer) &&
-      layer.type === 'IMAGE' &&
-      layer.blendMode === 'NORMAL' &&
-      layer.scaleMode === 'TILE' &&
-      layer.scalingFactor === 1 &&
-      typeof layer.asset === 'string';
-    if (!isTileImage || noise !== null) {
-      return '블렌드 층 위에 노이즈 이미지(NORMAL, TILE) 말고 보이는 층이 있어 한 요소로 그릴 수 없다.';
-    }
-    noise = { asset: String(layer.asset), opacity: numberValue(layer.opacity ?? 1, path) };
+  const opacity = layer.opacity === undefined ? 1 : numberValue(layer.opacity, path);
+  if (layer.type === 'SOLID') {
+    const color = layerColor(layer.color, opacity, context.names, path);
+    return { kind: 'color', value: color, repeat: 'repeat' };
   }
-  const layerOpacity = first.opacity === undefined ? 1 : numberValue(first.opacity, path);
-  const reference = aliasReference(first.color, context.names, path);
-  if (reference === undefined) {
-    const hex = colorValue(first.color, path);
-    return { blend, color: hex.slice(0, 7), opacity: layerOpacity * hexAlpha(hex), noise };
+  if (
+    layer.type === 'IMAGE' &&
+    layer.scaleMode === 'TILE' &&
+    layer.scalingFactor === 1 &&
+    typeof layer.asset === 'string'
+  ) {
+    return {
+      kind: 'image',
+      value: `url('./assets/${imageLayerFile(layer.asset, opacity)}')`,
+      repeat: 'repeat',
+    };
   }
-  const target = String(first.color).slice(1, -1).split('.').join('/');
-  const resolved = context.colors.get(target);
-  if (resolved === undefined) {
-    throw new TokenFormatError(path, `층 색 별칭 ${String(first.color)}의 실제 색을 찾을 수 없다.`);
-  }
-  return { blend, color: reference, opacity: layerOpacity * hexAlpha(resolved), noise };
-}
-
-/**
- * 피그마 블렌드 모드를 CSS 값으로 바꾼다.
- * @param mode 피그마 블렌드 모드
- * @returns CSS 블렌드 모드(표에 없으면 undefined)
- */
-function blendModeCss(mode: unknown): string | undefined {
-  return typeof mode === 'string' && mode in FIGMA_BLEND_MODE_CSS
-    ? FIGMA_BLEND_MODE_CSS[mode as keyof typeof FIGMA_BLEND_MODE_CSS]
-    : undefined;
-}
-
-/**
- * 색의 불투명도를 바꾼다. 변수 색이면 상대 색 문법(`rgb(from var(--x) r g b / a)`)을 쓴다.
- * @param color 변수(`var(--color-*)`)나 #rrggbb
- * @param alpha 불투명도
- * @returns CSS 색
- */
-function opaqueColor(color: string, alpha: number): string {
-  if (color.startsWith('var(')) {
-    return alpha >= 1
-      ? `rgb(from ${color} r g b)`
-      : `rgb(from ${color} r g b / ${formatNumber(alpha)})`;
-  }
-  return alpha >= 1 ? color : withAlpha(color, alpha);
-}
-
-/**
- * #rrggbb[aa] 색의 불투명도를 읽는다.
- * @param color #rrggbb 또는 #rrggbbaa
- * @returns 0~1
- */
-function hexAlpha(color: string): number {
-  return color.length === 9 ? Number.parseInt(color.slice(7, 9), 16) / 255 : 1;
-}
-
-/**
- * #rrggbb 색에 불투명도를 붙인다.
- * @param color #rrggbb
- * @param alpha 불투명도
- * @returns `rgb(r g b / a)`
- */
-function withAlpha(color: string, alpha: number): string {
-  const [red, green, blue] = [1, 3, 5].map((start) =>
-    Number.parseInt(color.slice(start, start + 2), 16),
-  );
-  return `rgb(${String(red)} ${String(green)} ${String(blue)} / ${formatNumber(alpha)})`;
+  throw new TokenFormatError(path, `재질 칠에서 지원하지 않는 층 ${String(layer.type)}이다.`);
 }
 
 /** 글자 스타일 유틸리티가 쓰는 변수(피그마 변수 경로). 별칭이 아닌 값은 값 그대로다 */

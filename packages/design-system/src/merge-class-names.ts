@@ -53,9 +53,9 @@ export const TOKEN_NAMES = {
     '40',
     '48',
   ],
-  radius: ['circular', 'control', 'focus-inner', 'focus-outer', 'none', 'overlay', 'small'],
+  radius: ['circular', 'control', 'none', 'overlay', 'small'],
   text: ['body', 'body-large', 'caption', 'display', 'subtitle', 'title', 'title-large'],
-  borderWidth: ['default', 'focus-inner', 'focus-outer', 'indicator'],
+  borderWidth: ['default', 'focus-outer', 'indicator'],
 } as const;
 
 /**
