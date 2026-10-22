@@ -485,21 +485,6 @@ function paintChecks(context: LayerContext): void {
       classes: [[`${TOKEN_CLASS_PREFIXES.fill}${slug}`]],
       computed: [{ property: 'background-color', css: `var(--color-${slug})` }],
     });
-  } else if (isMaterialUtility(slug, tokens)) {
-    // 재질 칠: 루미너시티 층(::after)이 생성 유틸리티 값과 같고, 요소가 쌓임 맥락을 만들지 않아야 층이 뒤 배경과 섞인다.
-    add(context, {
-      role: '채우기',
-      figma: style,
-      classes: [[slug]],
-      computed: [
-        { property: 'background-image', pseudo: '::after', probeClass: slug },
-        { property: 'background-color', pseudo: '::after', probeClass: slug },
-        { property: 'mix-blend-mode', pseudo: '::after', probeClass: slug },
-        { property: 'opacity', pseudo: '::after', probeClass: slug },
-        { property: 'isolation', css: 'auto' },
-        { property: 'z-index', css: 'auto' },
-      ],
-    });
   } else if (tokens.utilities.has(slug)) {
     add(context, {
       role: '채우기',
@@ -749,10 +734,6 @@ function effectChecks(context: LayerContext): void {
     classes: hasShadow ? [[`${TOKEN_CLASS_PREFIXES.shadow}${slug}`]] : [],
     computed: [{ property: 'box-shadow', css: hasShadow ? `var(--shadow-${slug})` : 'none' }],
   });
-  // 재질 칠 요소는 배경 흐림을 ::before가 그린다(요소 자신의 backdrop-filter는 꺼진다).
-  const fillStyle =
-    isRecord(layer.fill) && typeof layer.fill.style === 'string' ? layer.fill.style : '';
-  const blurPseudo = isMaterialUtility(styleSlug(fillStyle), tokens) ? '::before' : undefined;
   add(context, {
     role: '효과(배경 흐림)',
     figma: layer.effect,
@@ -760,21 +741,10 @@ function effectChecks(context: LayerContext): void {
     computed: [
       {
         property: 'backdrop-filter',
-        ...(blurPseudo === undefined ? {} : { pseudo: blurPseudo }),
         css: hasBlur ? `blur(var(--backdrop-blur-${slug}))` : 'none',
       },
     ],
   });
-}
-
-/**
- * 재질 칠 유틸리티(생성기가 만든 material-*)인지 본다.
- * @param slug 칠 스타일 이름(클래스 이름)
- * @param tokens 토큰 이름 정보
- * @returns 재질 칠 유틸리티면 true
- */
-function isMaterialUtility(slug: string, tokens: TokenNames): boolean {
-  return slug.startsWith('material-') && tokens.utilities.has(slug);
 }
 
 /**

@@ -354,12 +354,12 @@ const cases: ProofCase[] = [
     shouldFail: false,
   },
   {
-    // 재질 칠의 루미너시티 층은 요소가 쌓임 맥락을 만들면 뒤 배경과 섞이지 않는다.
-    name: '재질 요소가 쌓임 맥락을 만듦(isolate)',
+    // 재질 칠 유틸리티는 그대로 두고 다른 CSS로 배경색을 덮으면 계산값 비교가 잡는다.
+    name: '재질 칠을 다른 CSS로 덮어쓰기(background-color)',
     component: 'flyout',
     resultName: 'material=acrylic',
     shouldFail: true,
-    dom: { change: overrideStyle, layer: '', arg: 'isolation:isolate' },
+    dom: { change: overrideStyle, layer: '', arg: 'background-color:white' },
   },
   {
     name: '한글 스타일 구간에 라틴 글자(서체 다름)',
