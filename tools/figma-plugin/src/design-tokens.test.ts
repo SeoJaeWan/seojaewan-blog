@@ -228,17 +228,22 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     const { tokens } = buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle] }));
     expect(at(tokens, ['style', 'paint', 'Material', 'Acrylic Default'])).toEqual({
       $type: 'color',
-      $value: '#fcfcfc',
+      $value: '{layer-fill.default}',
       $extensions: {
         'com.seojaewan': {
           layers: [
-            { type: 'SOLID', color: '#fcfcfc', opacity: 0.85, blendMode: 'LUMINOSITY' },
-            { type: 'SOLID', color: '#ffffff', opacity: 0, blendMode: 'COLOR' },
+            {
+              type: 'SOLID',
+              color: '{layer-fill.default}',
+              opacity: 0.85,
+              blendMode: 'NORMAL',
+            },
             {
               type: 'IMAGE',
               opacity: 0.02,
               blendMode: 'NORMAL',
               imageHash: 'a563f96d0f0af894df83be986ec4e7a84096fd54',
+              asset: 'images/noise-acrylic.png',
               scaleMode: 'TILE',
               scalingFactor: 1,
             },
@@ -248,13 +253,71 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     });
   });
 
+  it('칠 스타일 안의 NORMAL 단색 층 색이 날값이면 막는다(층이 여럿인 스타일 포함)', () => {
+    const [luminosity, ...rest] = acrylicPaintStyle.paints;
+    if (luminosity?.type !== 'SOLID') {
+      throw new Error('fixture');
+    }
+    const raw: typeof acrylicPaintStyle = {
+      name: 'Material/Raw',
+      paints: [{ ...luminosity, blendMode: 'NORMAL', boundVariables: {} }, ...rest],
+    };
+    expect(() => buildDesignTokens(tokensInput({ paintStyles: [raw] }))).toThrow(
+      'NORMAL 단색 층의 색 #f9f9f9이 변수에 연결되어 있지 않다',
+    );
+  });
+
+  it('블렌드 모드가 NORMAL이 아닌 층이 있는 칠 스타일은 토큰에 넣지 않고 알린다', () => {
+    const [solid, ...rest] = acrylicPaintStyle.paints;
+    if (solid?.type !== 'SOLID') {
+      throw new Error('fixture');
+    }
+    const mica: typeof acrylicPaintStyle = {
+      name: 'Material/Mica Base',
+      paints: [{ ...solid, blendMode: 'LUMINOSITY', boundVariables: {} }, ...rest],
+    };
+    const { tokens, skippedStyles, notices } = buildDesignTokens(
+      tokensInput({ paintStyles: [mica] }),
+    );
+    expect(at(tokens, ['style', 'paint', 'Material', 'Mica Base'])).toBeUndefined();
+    expect(skippedStyles).toEqual(['Material/Mica Base']);
+    expect(notices).toEqual([
+      expect.stringContaining('블렌드 모드 LUMINOSITY 층이 있어 토큰에 넣지 않는다'),
+    ]);
+  });
+
+  it('그라디언트 색 지점이 날값이면 막는다', () => {
+    const [gradient] = controlBorderPaintStyle.paints;
+    if (gradient === undefined || !('gradientStops' in gradient)) {
+      throw new Error('fixture');
+    }
+    const raw = {
+      name: 'Raw Gradient',
+      paints: [
+        {
+          ...gradient,
+          gradientStops: gradient.gradientStops.map((stop) => ({ ...stop, boundVariables: {} })),
+        },
+      ],
+    };
+    expect(() => buildDesignTokens(tokensInput({ paintStyles: [raw] }))).toThrow(
+      '그라디언트 색 지점이 변수에 연결되어 있지 않다',
+    );
+  });
+
+  it('이름 있는 이미지 자산이 아닌 이미지 칠은 막는다(G4)', () => {
+    expect(() =>
+      buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle], imageAssets: {} })),
+    ).toThrow('Foundations / Assets / Images의 자산이 아니다');
+  });
+
   it('단색 없이 그라디언트가 있는 칠 스타일은 첫 그라디언트의 색 지점을 값으로 둔 gradient 토큰이다', () => {
     const { tokens } = buildDesignTokens(tokensInput({ paintStyles: [controlBorderPaintStyle] }));
     expect(at(tokens, ['style', 'paint', 'Elevation', 'Control Border'])).toEqual({
       $type: 'gradient',
       $value: [
         { color: '{color.black.a-14}', position: 0.9 },
-        { color: '#00000024', position: 1 },
+        { color: '{color.black.a-14}', position: 1 },
       ],
       $extensions: {
         'com.seojaewan': {
@@ -265,7 +328,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
               blendMode: 'NORMAL',
               gradientStops: [
                 { color: '{color.black.a-14}', position: 0.9 },
-                { color: '#00000024', position: 1 },
+                { color: '{color.black.a-14}', position: 1 },
               ],
               gradientTransform: [
                 [0, 1, 0],
@@ -296,7 +359,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
         type: 'GRADIENT_LINEAR',
         gradientStops: [
           { color: '{color.black.a-14}', position: 0.9 },
-          { color: '#00000024', position: 1 },
+          { color: '{color.black.a-14}', position: 1 },
         ],
       }),
       expect.objectContaining({ type: 'SOLID' }),

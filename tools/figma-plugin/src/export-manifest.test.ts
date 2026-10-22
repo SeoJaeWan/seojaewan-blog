@@ -1,151 +1,151 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  type ComponentEntry,
   componentHash,
-  type ExportManifest,
-  manifestToJson,
-  mergeManifest,
-  parseManifest,
-  planImageChanges,
+  type ComponentManifest,
+  type ExportedComponent,
+  manifestText,
+  planComponentChanges,
+  readManifestHashes,
+  renamedFolders,
+  settingsText,
   type VariantEntry,
+  variantHash,
 } from './export-manifest';
-import { sha256Hex, utf8Encode } from './sha256';
-import { stableStringify } from './stable-json';
-
-const IMAGES = 'packages/design-system/figma/images';
 
 /**
- * 테스트용 변형 항목을 만든다.
- * @param hash PNG 해시
+ * 테스트용 변형 항목을 만든다. 해시는 이름 정보로 계산한다.
+ * @param state 변형 속성 State 값(값이 다르면 해시도 다르다)
+ * @param fill 루트 칠 변수 이름
  * @returns 변형 항목
  */
-function variantEntry(hash: string): VariantEntry {
+function variantEntry(state: string, fill = 'accent-fill/default'): VariantEntry {
+  const info = {
+    properties: { State: state },
+    layers: [{ path: '', type: 'COMPONENT', fill: { variable: fill } }],
+    hidden: ['icon'],
+    cases: { 'showIcon=true': { layers: [{ path: '' }, { path: 'icon' }], hidden: [] } },
+  };
+  return { nodeId: `node-${state}`, ...info, hash: variantHash(info) };
+}
+
+/**
+ * 테스트용 컴포넌트 export.json을 만든다.
+ * @param variants 변형 이름 → State 값
+ * @returns 컴포넌트 export.json
+ */
+function manifest(variants: Record<string, string>): ComponentManifest {
+  const entries = Object.fromEntries(
+    Object.entries(variants).map(([name, state]) => [name, variantEntry(state)]),
+  );
   return {
-    nodeId: `node-${hash}`,
-    properties: { State: 'Rest' },
-    width: 120,
-    height: 32,
-    renderBounds: { x: -3, y: -3, width: 126, height: 38 },
-    hash,
+    name: 'Button',
+    nodeId: '13:62',
+    hash: componentHash(Object.values(entries)),
+    booleans: { showIcon: { key: 'Show icon#13:0', defaultValue: false } },
+    variants: entries,
   };
 }
 
 /**
- * 테스트용 컴포넌트 항목을 만든다.
- * @param nodeId 컴포넌트 노드 ID
- * @param variants 변형 이름 → 해시
- * @returns 컴포넌트 항목
+ * 테스트용 내보낸 컴포넌트를 만든다.
+ * @param next 컴포넌트 export.json
+ * @returns 내보낸 컴포넌트
  */
-function componentEntry(nodeId: string, variants: Record<string, string>): ComponentEntry {
-  return {
-    name: 'Button',
-    nodeId,
-    hash: componentHash(Object.values(variants)),
-    variants: Object.fromEntries(
-      Object.entries(variants).map(([name, hash]) => [name, variantEntry(hash)]),
-    ),
-  };
+function exported(next: ComponentManifest): ExportedComponent {
+  return { slug: 'button', manifest: next };
 }
 
-const base: ExportManifest = {
-  fileKey: 'XV9Y1UT5UH4tC5hSqLVipZ',
-  exportedAt: '2026-10-01T00:00:00.000Z',
-  scale: 1,
-  components: {
-    button: componentEntry('13:62', { 'state=rest': 'aaa', 'state=hover': 'bbb' }),
-    tooltip: componentEntry('14:345', { 'type=default': 'ccc' }),
-  },
-};
+const base = manifest({ 'state=rest': 'aaa', 'state=hover': 'bbb' });
+const baseText = manifestText(base);
+const baseHashes = readManifestHashes(baseText)?.hashes ?? new Map<string, string>();
+const baseFiles = ['export.json', 'state=rest.png', 'state=hover.png'];
 
 // @codocs [[피그마 일치 검사:피그마 플러그인]]
 describe('컴포넌트마다 내용 해시를 계산해 바뀐 컴포넌트만 다시 내보낸다', () => {
-  it('컴포넌트 해시는 변형 해시를 정렬해 이은 문자열의 SHA-256이라 변형 순서와 상관없다', () => {
-    expect(componentHash(['bbb', 'aaa'])).toBe(sha256Hex(utf8Encode('aaabbb')));
-    expect(componentHash(['aaa', 'bbb'])).toBe(componentHash(['bbb', 'aaa']));
+  it('컴포넌트 해시는 변형 순서와 상관없다', () => {
+    const a = variantEntry('aaa');
+    const b = variantEntry('bbb');
+    expect(componentHash([a, b])).toBe(componentHash([b, a]));
   });
 
-  it('해시가 같은 이미지는 올리지 않고, 바뀌거나 새로 생긴 이미지만 올린다', () => {
-    const changes = planImageChanges(base, [
-      {
-        slug: 'button',
-        entry: componentEntry('13:62', {
-          'state=rest': 'aaa',
-          'state=hover': 'changed',
-          'state=pressed': 'new',
-        }),
-      },
-    ]);
-    expect(changes.uploads.map((upload) => upload.path)).toEqual([
-      `${IMAGES}/button/state=hover.png`,
-      `${IMAGES}/button/state=pressed.png`,
-    ]);
-    expect(changes.deletions).toEqual([]);
-    expect(changes.changedComponents).toEqual(['button']);
+  it('변형 해시는 이름 정보만으로 정해진다(노드 ID·PNG는 넣지 않는다)', () => {
+    const a = variantEntry('aaa');
+    expect(variantHash({ ...a, properties: { State: 'aaa' } })).toBe(a.hash);
+    expect(variantEntry('aaa').hash).not.toBe(variantEntry('bbb').hash);
   });
 
-  it('내보낸 컴포넌트에서 사라진 변형의 이미지는 지운다', () => {
-    const changes = planImageChanges(base, [
-      { slug: 'button', entry: componentEntry('13:62', { 'state=rest': 'aaa' }) },
-    ]);
-    expect(changes.uploads).toEqual([]);
-    expect(changes.deletions).toEqual([`${IMAGES}/button/state=hover.png`]);
+  it('레이어 이름 정보가 바뀌면 해시가 바뀐다', () => {
+    expect(componentHash([variantEntry('aaa')])).not.toBe(
+      componentHash([variantEntry('aaa', 'accent-fill/secondary')]),
+    );
   });
 
-  it('하나도 바뀌지 않은 컴포넌트는 바뀐 목록에 넣지 않는다', () => {
-    const changes = planImageChanges(base, [
-      { slug: 'tooltip', entry: componentEntry('14:345', { 'type=default': 'ccc' }) },
-    ]);
-    expect(changes).toEqual({ uploads: [], deletions: [], changedComponents: [] });
+  it('하나도 바뀌지 않은 컴포넌트는 파일을 건드리지 않는다', () => {
+    const changes = planComponentChanges(exported(base), baseText, baseHashes, baseFiles);
+    expect(changes).toEqual({
+      slug: 'button',
+      pngUploads: [],
+      deletions: [],
+      manifestText: null,
+    });
   });
 
-  it('기준 export.json이 없으면 모든 이미지를 올린다', () => {
-    const changes = planImageChanges(null, [
-      { slug: 'tooltip', entry: componentEntry('14:345', { 'type=default': 'ccc' }) },
-    ]);
-    expect(changes.uploads.map((upload) => upload.path)).toEqual([
-      `${IMAGES}/tooltip/type=default.png`,
-    ]);
+  it('해시가 바뀌거나 새로 생긴 이미지만 올리고, 사라진 변형의 이미지는 지운다', () => {
+    const next = manifest({ 'state=rest': 'aaa', 'state=pressed': 'ccc' });
+    const changes = planComponentChanges(exported(next), baseText, baseHashes, baseFiles);
+    expect(changes.pngUploads).toEqual(['state=pressed']);
+    expect(changes.deletions).toEqual(['state=hover.png']);
+    expect(changes.manifestText).not.toBeNull();
   });
 
-  it('이름이 바뀐 컴포넌트(같은 nodeId)는 이전 폴더의 이미지를 지우고 이전 항목을 없앤다', () => {
-    const exported = [
-      { slug: 'action-button', entry: componentEntry('13:62', { 'state=rest': 'aaa' }) },
-    ];
-    const changes = planImageChanges(base, exported);
-    expect(changes.uploads.map((upload) => upload.path)).toEqual([
-      `${IMAGES}/action-button/state=rest.png`,
-    ]);
-    expect(changes.deletions).toEqual([
-      `${IMAGES}/button/state=rest.png`,
-      `${IMAGES}/button/state=hover.png`,
-    ]);
-    const merged = mergeManifest(base, exported, base);
-    expect(Object.keys(merged.components).sort()).toEqual(['action-button', 'tooltip']);
+  it('저장소에 없는 컴포넌트는 모든 파일을 올린다', () => {
+    const changes = planComponentChanges(exported(base), null, new Map(), []);
+    expect(changes.pngUploads).toEqual(['state=rest', 'state=hover']);
+    expect(changes.manifestText).toBe(baseText);
+  });
+
+  it('이름이 바뀐 컴포넌트(같은 nodeId)의 이전 폴더만 지우고, 함께 내보낸 폴더는 지우지 않는다', () => {
+    expect(
+      renamedFolders(
+        [exported(base)],
+        new Map([
+          ['old-button', '13:62'],
+          ['menu', '1:1'],
+        ]),
+      ),
+    ).toEqual(['old-button']);
   });
 });
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
-describe('export.json에 내보낸 기준 자료를 기록한다', () => {
-  it('이번에 내보내지 않은 컴포넌트는 이전 항목을 그대로 둔다', () => {
-    const exported = [{ slug: 'button', entry: componentEntry('13:62', { 'state=rest': 'x' }) }];
-    const merged = mergeManifest(base, exported, {
-      fileKey: 'XV9Y1UT5UH4tC5hSqLVipZ',
-      exportedAt: '2026-10-21T00:00:00.000Z',
-      scale: 1,
-    });
-    expect(merged.exportedAt).toBe('2026-10-21T00:00:00.000Z');
-    expect(merged.components.tooltip).toEqual(base.components.tooltip);
-    expect(Object.keys(merged.components.button?.variants ?? {})).toEqual(['state=rest']);
+// @codocs [[피그마 일치 검사:export.json 계약]]
+describe('export.json 계약', () => {
+  it('export.json에는 내보낸 시각을 두지 않아, 같은 피그마를 다시 내보내면 내용이 같다', () => {
+    expect(baseText).not.toContain('exportedAt');
+    expect(manifestText(manifest({ 'state=rest': 'aaa', 'state=hover': 'bbb' }))).toBe(baseText);
   });
 
-  it('직렬화한 export.json을 다시 읽으면 같은 내용이다', () => {
-    const text = stableStringify(manifestToJson(base));
-    expect(parseManifest(text)).toEqual(base);
+  it('변형마다 레이어 목록, 숨긴 레이어, BOOLEAN 속성 경우를 담는다', () => {
+    const parsed: unknown = JSON.parse(baseText);
+    expect(parsed).toMatchObject({
+      booleans: { showIcon: { key: 'Show icon#13:0', defaultValue: false } },
+      variants: {
+        'state=rest': {
+          hidden: ['icon'],
+          cases: { 'showIcon=true': { hidden: [] } },
+        },
+      },
+    });
   });
 
   it('읽을 수 없는 export.json은 없는 것으로 본다', () => {
-    expect(parseManifest('not json')).toBeNull();
-    expect(parseManifest('[]')).toBeNull();
+    expect(readManifestHashes('{')).toBeNull();
+  });
+
+  it('figma.json에는 파일 키와 배율만 둔다', () => {
+    expect(JSON.parse(settingsText({ fileKey: 'abc', scale: 1 }))).toEqual({
+      fileKey: 'abc',
+      scale: 1,
+    });
   });
 });

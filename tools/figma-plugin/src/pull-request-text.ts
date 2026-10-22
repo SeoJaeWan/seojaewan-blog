@@ -1,11 +1,13 @@
 /** 커밋·PR에 적을 변경 내용 */
 export type ExportSummary = {
-  /** 이미지가 바뀐 컴포넌트 이름(피그마 이름) */
+  /** 이미지나 레이어 정보가 바뀐 컴포넌트 이름(피그마 이름) */
   changedComponents: readonly string[];
   /** 올린 이미지 수 */
   uploadCount: number;
-  /** 지운 이미지 수 */
+  /** 지운 파일 수(이미지, SVG, 이름이 바뀐 컴포넌트의 이전 폴더) */
   deletionCount: number;
+  /** 새로 올리거나 바꾼 자산 파일 수 */
+  assetUploadCount: number;
   /** tokens.json이 바뀌었는지 */
   hasTokenChange: boolean;
 };
@@ -29,11 +31,13 @@ export function exportBranchName(date: Date): string {
  * @returns 커밋 제목
  */
 export function commitSubject(summary: ExportSummary): string {
-  const hasImageChange = summary.uploadCount + summary.deletionCount > 0;
-  if (hasImageChange && summary.hasTokenChange) {
+  const hasComponentChange =
+    summary.changedComponents.length > 0 ||
+    summary.uploadCount + summary.deletionCount + summary.assetUploadCount > 0;
+  if (hasComponentChange && summary.hasTokenChange) {
     return 'chore(figma): export components and tokens';
   }
-  return hasImageChange ? 'chore(figma): export components' : 'chore(figma): export tokens';
+  return hasComponentChange ? 'chore(figma): export components' : 'chore(figma): export tokens';
 }
 
 /**
@@ -43,9 +47,11 @@ export function commitSubject(summary: ExportSummary): string {
  * @returns 커밋 본문
  */
 export function commitBody(summary: ExportSummary): string {
-  return ['피그마에서 내보낸 기준 이미지와 토큰을 갱신한다.', '', ...changeLines(summary)].join(
-    '\n',
-  );
+  return [
+    '피그마에서 내보낸 레이어 이름 정보, 변형 이미지, 자산, 토큰을 갱신한다.',
+    '',
+    ...changeLines(summary),
+  ].join('\n');
 }
 
 /**
@@ -76,10 +82,12 @@ function changeLines(summary: ExportSummary): string[] {
     summary.changedComponents.length === 0
       ? ['- 바뀐 컴포넌트 없음']
       : [
-          `- 바뀐 컴포넌트 ${summary.changedComponents.length}개 (이미지 ${summary.uploadCount}개 갱신, ${summary.deletionCount}개 삭제)`,
+          `- 바뀐 컴포넌트 ${summary.changedComponents.length}개 (이미지 ${summary.uploadCount}개 갱신, 파일 ${summary.deletionCount}개 삭제)`,
           ...summary.changedComponents.map((name) => `  - ${name}`),
         ];
-  return [...components, `- 토큰: ${summary.hasTokenChange ? '바뀜' : '바뀌지 않음'}`];
+  const assets =
+    summary.assetUploadCount > 0 ? [`- 자산 파일 ${summary.assetUploadCount}개 갱신`] : [];
+  return [...components, ...assets, `- 토큰: ${summary.hasTokenChange ? '바뀜' : '바뀌지 않음'}`];
 }
 
 /**

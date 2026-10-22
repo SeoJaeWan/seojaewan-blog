@@ -10,9 +10,26 @@ export type ComponentSummary = {
 
 /** 본체 → UI */
 export type MainMessage =
-  | { type: 'init'; token: string; components: ComponentSummary[] }
+  | { type: 'init'; token: string; branch: string; components: ComponentSummary[] }
   | { type: 'log'; text: string }
-  | { type: 'done'; pullRequestUrl: string | null }
+  /** 쓰는 곳이 없는 변수·스타일 알림(G2, 막지 않음) */
+  | { type: 'notices'; notices: string[] }
+  | {
+      type: 'done';
+      /** 커밋 결과, 바뀐 것 없음, 또는 구조 검사 위반 목록 */
+      result:
+        | {
+            kind: 'committed';
+            commit: {
+              branch: string;
+              commitUrl: string;
+              pullRequestUrl: string | null;
+              isNewPullRequest: boolean;
+            };
+          }
+        | { kind: 'unchanged' }
+        | { kind: 'blocked'; violations: { where: string; reason: string; fix: string }[] };
+    }
   | { type: 'failed'; message: string };
 
 /** UI → 본체 */
@@ -21,4 +38,6 @@ export type UiMessage = {
   token: string;
   componentIds: string[];
   shouldExportTokens: boolean;
+  /** 커밋할 기존 브랜치. 비어 있으면 새 브랜치와 PR을 만든다 */
+  branch: string;
 };

@@ -109,6 +109,8 @@ export type PaintStyleInput = { name: string; paints: readonly PaintInput[] };
 export type DesignTokensResult = {
   tokens: JsonObject;
   skippedStyles: string[];
+  /** 막지 않고 알리기만 하는 문제(블렌드 층의 날값 색 등) */
+  notices: string[];
 };
 
 export type DesignTokensInput = {
@@ -118,6 +120,8 @@ export type DesignTokensInput = {
   textStyles: readonly TextStyleInput[];
   effectStyles: readonly EffectStyleInput[];
   paintStyles: readonly PaintStyleInput[];
+  /** 이미지 해시 → 이미지 자산 파일(`images/noise-acrylic.png`). Foundations / Assets / Images의 이름 있는 자산이다(G4) */
+  imageAssets: Readonly<Record<string, string>>;
 };
 
 const FIGMA_EXTENSION = 'com.figma';
@@ -138,7 +142,13 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   const root: JsonObject = {};
   const skippedStyles: string[] = [];
   const problems: string[] = [];
-  const context: ConversionContext = { aliasNames: input.aliasNames, problems };
+  const notices: string[] = [];
+  const context: ConversionContext = {
+    aliasNames: input.aliasNames,
+    imageAssets: input.imageAssets,
+    problems,
+    notices,
+  };
 
   for (const variable of input.variables) {
     const token = variableToken(variable, context);
@@ -164,7 +174,7 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   if (problems.length > 0) {
     throw new Error(`토큰을 내보낼 수 없다.\n- ${problems.join('\n- ')}`);
   }
-  return { tokens: root, skippedStyles };
+  return { tokens: root, skippedStyles, notices };
 }
 
 /**
@@ -199,7 +209,10 @@ export function parseCubicBezier(easing: string): number[] | null {
 
 type ConversionContext = {
   aliasNames: Readonly<Record<string, string>>;
+  imageAssets: Readonly<Record<string, string>>;
   problems: string[];
+  /** 막지 않고 알리기만 하는 문제 */
+  notices: string[];
 };
 
 /**
@@ -469,6 +482,20 @@ function shadowValue(
 function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject | null {
   const label = `칠 스타일 ${style.name}`;
   const visible = style.paints.filter((paint) => paint.visible);
+  // 칠 층은 일반(NORMAL) 섞기만 코드로 옮긴다. 블렌드 층이 있는 칠 스타일은 토큰에 넣지 않고 알린다.
+  // 이 칠 스타일을 쓰는 컴포넌트는 구조 검사가 막는다.
+  const blended = visible.find(
+    (paint) => paint.type !== 'UNSUPPORTED' && paint.blendMode !== 'NORMAL',
+  );
+  if (blended !== undefined && blended.type !== 'UNSUPPORTED') {
+    context.notices.push(
+      `${label}: 블렌드 모드 ${blended.blendMode} 층이 있어 토큰에 넣지 않는다(일반 섞기만 지원). 이 칠 스타일을 쓰는 컴포넌트는 내보낼 수 없다`,
+    );
+    return null;
+  }
+  for (const paint of visible) {
+    checkBoundColors(paint, label, context);
+  }
   const [only] = visible;
   if (
     visible.length === 1 &&
@@ -512,6 +539,30 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
 }
 
 /**
+ * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
+ * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param paint 칠 층
+ * @param label 오류 메시지에 쓸 이름
+ * @param context 문제 목록
+ */
+function checkBoundColors(paint: PaintInput, label: string, context: ConversionContext): void {
+  if (paint.type === 'SOLID' && paint.boundVariables.color === undefined) {
+    context.problems.push(
+      `${label}: ${paint.blendMode} 단색 층의 색 ${colorToHex(paint.color)}이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
+    );
+  }
+  if (
+    isGradient(paint) &&
+    paint.gradientStops.some((stop) => stop.boundVariables.color === undefined)
+  ) {
+    context.problems.push(
+      `${label}: 그라디언트 색 지점이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
+    );
+  }
+}
+
+/**
  * 칠 층 하나를 확장 필드 값으로 바꾼다. 그 칠 종류에 해당하는 필드만 담는다.
  * @param paint 단색, 그라디언트 또는 이미지 칠
  * @param label 오류 메시지에 쓸 이름
@@ -538,6 +589,15 @@ function paintLayer(
     return layer;
   }
   layer.imageHash = paint.imageHash;
+  // G4: 이미지는 이름 있는 이미지 자산이어야 코드가 같은 파일을 쓴다. 이름 없는 이미지는 막는다.
+  const asset = paint.imageHash === null ? undefined : context.imageAssets[paint.imageHash];
+  if (asset === undefined) {
+    context.problems.push(
+      `${label}: 이미지(${paint.imageHash ?? '해시 없음'})가 Foundations / Assets / Images의 자산이 아니다. 이미지를 Images 묶음의 컴포넌트로 만들고 이름을 짓는다(G4)`,
+    );
+  } else {
+    layer.asset = asset;
+  }
   layer.scaleMode = paint.scaleMode;
   // scalingFactor는 TILE에서만 쓰인다.
   if (paint.scaleMode === 'TILE' && paint.scalingFactor !== undefined) {

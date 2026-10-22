@@ -28,6 +28,8 @@ _codocs:
   함수 안의 `const`는 초기값과 상관없이 camelCase다.
 
   boolean 접두사는 변수와 매개변수에만 강제한다. 컴포넌트 props와 타입 속성은 `open`, `disabled`처럼 HTML·Base UI와 같은 이름을 쓸 수 있게 검사하지 않는다.
+
+  예외: 스토리 파일(`*.stories.tsx`)에서 내보내는 모듈 최상위 `const`는 PascalCase도 쓸 수 있다(예: `export const Parity`). `export default`로 내보내는 `meta`는 camelCase 그대로다. Storybook CSF는 export 이름이 스토리 이름이 되고 PascalCase가 Storybook의 관례이기 때문이다. 스토리 파일의 다른 이름은 위 규칙을 그대로 따른다.
 함수: |
   이름 있는 함수는 `function` 선언으로 쓰고(컴포넌트 포함), 다른 함수에 넘기는 콜백은 화살표 함수로 쓴다.
   타입을 붙인 화살표 함수(`const handler: Handler = () => {}`)도 쓰지 않는다. Zustand의 `create((set) => ({ ... }))`처럼 라이브러리에 넘기는 함수는 콜백이다.

@@ -13,14 +13,13 @@ _codocs:
 기본 컨트롤: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바 |
-  | FocusRect | 키보드 포커스 테두리. 버튼 등의 Focused 상태가 이 컴포넌트를 쓴다 |
-  | SearchBox | Start 검색, 탐색기 검색 |
+  | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바. 키보드 포커스는 바깥쪽 선 한 겹으로 그린다([[디자인 기반:포커스 표현]]) |
+  | SearchBox | 작업 표시줄·Start 검색(`Appearance=Taskbar`), 탐색기 검색. Pill과 Taskbar는 밑줄이 없고, 포커스하면 돋보기가 컬러 돋보기로 바뀐다 |
   | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창. 진짜 Windows처럼 진한 1px 테두리를 쓴다 |
   | Menu(MenuItem, MenuSeparator, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
   | Tooltip | 아이콘 버튼, Taskbar, 잘못된 폴더 이름 안내 말풍선 |
   | Scrollbar, ScrollArea | Windows 11 스타일 얇은 스크롤바 |
-  | ListItem | 추천 목록, 검색 결과, 주소창 추천 |
+  | ListItem | 검색 패널 추천, 검색 결과, 주소창 추천 |
   | Flyout | 우클릭 메뉴 같은 떠 있는 패널의 공통 바탕 |
   | MessageBox | 휴지통 비우기 안내 같은 확인·알림 대화 상자 |
   | ProgressRing | 글 로딩, 재부팅 화면 |
@@ -31,8 +30,8 @@ Windows 화면 요소: |
   | Taskbar, TaskbarButton(실행 중·활성 표시) | 작업 표시줄 |
   | TaskbarPreview, TaskbarPreviewList | 작업 표시줄 창 미리보기([[작업 표시줄:창 미리보기]]) |
   | SystemTray(시계) | Taskbar 오른쪽 |
-  | StartMenu(고정됨, 모든 항목, 추천, 전원 메뉴), PinnedTile | Start |
-  | SearchPanel(입력 전, 결과, 결과 없음) | 검색 |
+  | StartMenu(검색, 고정됨, 모두의 간단히·그리드·범주 보기, 검색 결과, 전원 메뉴), PinnedTile | Start |
+  | SearchPanel(입력 전, 결과, 결과 없음. 입력칸은 없음) | 검색 |
   | DesktopIcon(hover·선택·이름 바꾸기·잘라냄) | 바탕화면, 휴지통 |
   | ExplorerTab, NavigationItem(들여쓰기 Level 0~3) | 탐색기 탭, 왼쪽 목록 |
   | FileItem(큰·보통 아이콘, 자세히, 잘라냄), ColumnHeader, DetailsHeader | 탐색기 본문 |
@@ -52,8 +51,11 @@ Screens에서 추가한 컴포넌트: |
   | SnapLayoutFlyout, SnapZone(Rest·Hover) | 최대화 버튼 hover 시 스냅 레이아웃([[창 동작:스냅]]) |
   | SnapPreview | 끌어서 스냅·Snap Assist에서 채울 영역 미리보기 |
   | SelectionMarquee | 바탕화면·탐색기에서 빈 곳을 끌어 여러 개를 고르는 사각형 |
+  | DropDownButton | Start "모두"의 보기 선택 상자(간단히·그리드·범주). 코드는 아직 없다 |
+  | SearchResults | Start 검색과 검색 패널이 함께 쓰는 검색 결과 영역. 코드는 아직 없다 |
 
   기존 컴포넌트에 더한 변형:
+  - MenuItem: `Kind=Toggle off`(체크하지 않은 토글 항목)
   - Menu: 글, 외부 링크, 휴지통, 여러 개 선택, 탐색기 폴더·글·빈 곳, 휴지통 항목(복원), 작업 표시줄 앱 버튼, Start 고정 항목, Chrome ⋮(데스크톱·모바일), 정렬 기준·새로 만들기·탐색기 보기·탐색기 정렬 하위 메뉴
   - StartMenu, SearchPanel: `Device=Mobile`(화면 폭, 높이 640, 위쪽 모서리만 둥글게)
   - WindowFrame, Flyout, TaskbarPreview: 자리 표시용 프레임을 실제 슬롯 속성으로 바꿈

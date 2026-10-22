@@ -3,11 +3,13 @@ import type { ComponentSummary, MainMessage, UiMessage } from '../messages';
 // 플러그인 UI. 토큰 입력, 컴포넌트 선택, 진행 로그와 PR 링크를 보여 준다.
 
 const tokenInput = element('token', HTMLInputElement);
+const branchInput = element('branch', HTMLInputElement);
 const selectAll = element('select-all', HTMLInputElement);
 const componentList = element('components', HTMLDivElement);
 const tokensCheckbox = element('tokens', HTMLInputElement);
 const exportButton = element('export', HTMLButtonElement);
 const result = element('result', HTMLParagraphElement);
+const noticesBox = element('notices', HTMLDivElement);
 const logArea = element('log', HTMLDivElement);
 
 window.addEventListener('message', handleWindowMessage);
@@ -42,26 +44,104 @@ function handleMainMessage(message: MainMessage): void {
   switch (message.type) {
     case 'init':
       tokenInput.value = message.token;
+      branchInput.value = message.branch;
       renderComponents(message.components);
       exportButton.disabled = false;
       break;
     case 'log':
       appendLog(message.text);
       break;
+    case 'notices':
+      showNotices(message.notices);
+      break;
     case 'done':
       exportButton.disabled = false;
-      if (message.pullRequestUrl === null) {
-        result.textContent = '바뀐 것이 없어 PR을 열지 않았다.';
-      } else {
-        result.replaceChildren('PR: ', link(message.pullRequestUrl));
-        appendLog('완료');
-      }
+      showResult(message.result);
       break;
     case 'failed':
       exportButton.disabled = false;
       appendLog(`실패: ${message.message}`);
       break;
   }
+}
+
+/**
+ * 내보내기 결과(커밋, PR 링크)를 보여 준다.
+ * @param outcome 커밋 결과, 바뀐 것 없음, 또는 위반 목록
+ */
+function showResult(outcome: Extract<MainMessage, { type: 'done' }>['result']): void {
+  if (outcome.kind === 'unchanged') {
+    result.textContent = '바뀐 것이 없어 커밋하지 않았다.';
+    return;
+  }
+  if (outcome.kind === 'blocked') {
+    showViolations(outcome.violations);
+    return;
+  }
+  const done = outcome.commit;
+  const parts: (string | Node)[] = [`${done.branch}: `, link(done.commitUrl, '커밋')];
+  if (done.pullRequestUrl !== null) {
+    parts.push(done.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ', link(done.pullRequestUrl));
+  } else if (!done.isNewPullRequest) {
+    parts.push(' · 이 브랜치에 열린 PR이 없다');
+  }
+  result.replaceChildren(...parts);
+  appendLog('완료');
+}
+
+/**
+ * 쓰는 곳이 없는 변수·스타일 알림을 보여 준다. 정리 알림이라 내보내기를 막지 않는다(G2).
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param notices 알림 문장
+ */
+function showNotices(notices: readonly string[]): void {
+  if (notices.length === 0) {
+    noticesBox.replaceChildren();
+    return;
+  }
+  const list = document.createElement('ul');
+  for (const notice of notices) {
+    const item = document.createElement('li');
+    item.textContent = notice;
+    list.append(item);
+  }
+  noticesBox.replaceChildren(
+    muted(`정리 알림 ${String(notices.length)}개(막지 않음): 쓰는 곳이 없으면 지울지 확인한다.`),
+    list,
+  );
+}
+
+/**
+ * 구조 검사 위반을 레이어 경로·이유·고칠 방법 목록으로 보여 준다. 위반이 있으면 커밋하지 않는다.
+ * @codocs [[피그마 일치 검사:구조 검사]]
+ * @param violations 위반 목록
+ */
+function showViolations(
+  violations: Extract<
+    Extract<MainMessage, { type: 'done' }>['result'],
+    { kind: 'blocked' }
+  >['violations'],
+): void {
+  const list = document.createElement('ol');
+  list.className = 'violations';
+  for (const violation of violations) {
+    const item = document.createElement('li');
+    const where = document.createElement('strong');
+    where.textContent = violation.where;
+    item.append(
+      where,
+      document.createElement('br'),
+      violation.reason,
+      document.createElement('br'),
+      muted(`고칠 방법: ${violation.fix}`),
+    );
+    list.append(item);
+  }
+  result.replaceChildren(
+    `구조 검사 위반 ${String(violations.length)}개. 고친 뒤 다시 내보낸다(커밋하지 않았다).`,
+    list,
+  );
+  appendLog('구조 검사 위반으로 커밋하지 않음');
 }
 
 /**
@@ -83,6 +163,7 @@ function handleExportClick(): void {
     token: tokenInput.value,
     componentIds,
     shouldExportTokens: tokensCheckbox.checked,
+    branch: branchInput.value,
   };
   parent.postMessage({ pluginMessage: message }, '*');
 }
@@ -139,14 +220,15 @@ function appendLog(text: string): void {
 /**
  * 새 창으로 여는 링크를 만든다.
  * @param url 주소
+ * @param text 보이는 글자. 없으면 주소
  * @returns 링크 요소
  */
-function link(url: string): HTMLAnchorElement {
+function link(url: string, text: string = url): HTMLAnchorElement {
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.target = '_blank';
   anchor.rel = 'noreferrer';
-  anchor.textContent = url;
+  anchor.textContent = text;
   return anchor;
 }
 

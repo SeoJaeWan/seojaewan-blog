@@ -76,6 +76,62 @@ const namingSyntaxRestrictions = [
   },
 ];
 
+// @codocs [[코드 작성 규칙:식별자 이름]]
+// @typescript-eslint/naming-convention 옵션이다.
+const namingConventionOptions = [
+  { selector: 'default', format: ['camelCase'], leadingUnderscore: 'allow' },
+  { selector: 'import', format: ['camelCase', 'PascalCase'] },
+  { selector: 'variable', format: ['camelCase'] },
+  // 모듈 최상위 상수. 어떤 값이 상수인지는 no-restricted-syntax가 초기값으로 판단한다.
+  {
+    selector: 'variable',
+    modifiers: ['const', 'global'],
+    format: ['camelCase', 'UPPER_CASE'],
+  },
+  // 함수 선언. 컴포넌트는 PascalCase다.
+  { selector: 'function', format: ['camelCase', 'PascalCase'] },
+  // boolean은 is·has·can·should로 시작한다. 구조 분해한 props는 HTML 속성 이름(open, disabled)을 따를 수 있어 제외한다.
+  {
+    selector: ['variable', 'parameter'],
+    types: ['boolean'],
+    format: ['PascalCase', 'UPPER_CASE'],
+    prefix: ['is', 'has', 'can', 'should', 'IS_', 'HAS_', 'CAN_', 'SHOULD_'],
+  },
+  {
+    selector: ['variable', 'parameter'],
+    modifiers: ['destructured'],
+    format: null,
+  },
+  { selector: 'typeLike', format: ['PascalCase'] },
+  {
+    selector: ['interface', 'typeAlias'],
+    format: ['PascalCase'],
+    custom: { regex: '^I[A-Z]', match: false },
+  },
+  { selector: 'typeParameter', format: ['PascalCase'] },
+  { selector: 'enumMember', format: ['PascalCase'] },
+  // 객체 리터럴 키는 외부 API·HTTP 헤더 모양을 따르므로 검사하지 않는다.
+  { selector: 'objectLiteralProperty', format: null },
+  { selector: ['typeProperty', 'objectLiteralMethod'], format: ['camelCase'] },
+  {
+    selector: ['typeProperty', 'objectLiteralProperty'],
+    modifiers: ['requiresQuotes'],
+    format: null,
+  },
+];
+
+// @codocs [[코드 작성 규칙:식별자 이름]]
+// Storybook CSF는 export 이름이 스토리 이름이 되며 PascalCase(`export const Parity`)가 관례다.
+// 스토리 파일에서 내보내는 모듈 최상위 const는 PascalCase도 쓸 수 있다(export default meta는 camelCase).
+const storyNamingConventionOptions = [
+  ...namingConventionOptions,
+  {
+    selector: 'variable',
+    modifiers: ['const', 'global', 'exported'],
+    format: ['PascalCase', 'camelCase'],
+  },
+];
+
 // @codocs [[코드 작성 규칙:export와 import]]
 // named export만 쓴다. 예외는 defaultExportFiles에서 경로 단위로 둔다.
 const defaultExportRestrictions = [
@@ -228,49 +284,7 @@ export default defineConfig(
     files: tsFiles,
     rules: {
       // @codocs [[코드 작성 규칙:식별자 이름]]
-      '@typescript-eslint/naming-convention': [
-        'error',
-        { selector: 'default', format: ['camelCase'], leadingUnderscore: 'allow' },
-        { selector: 'import', format: ['camelCase', 'PascalCase'] },
-        { selector: 'variable', format: ['camelCase'] },
-        // 모듈 최상위 상수. 어떤 값이 상수인지는 no-restricted-syntax가 초기값으로 판단한다.
-        {
-          selector: 'variable',
-          modifiers: ['const', 'global'],
-          format: ['camelCase', 'UPPER_CASE'],
-        },
-        // 함수 선언. 컴포넌트는 PascalCase다.
-        { selector: 'function', format: ['camelCase', 'PascalCase'] },
-        // boolean은 is·has·can·should로 시작한다. 구조 분해한 props는 HTML 속성 이름(open, disabled)을 따를 수 있어 제외한다.
-        {
-          selector: ['variable', 'parameter'],
-          types: ['boolean'],
-          format: ['PascalCase', 'UPPER_CASE'],
-          prefix: ['is', 'has', 'can', 'should', 'IS_', 'HAS_', 'CAN_', 'SHOULD_'],
-        },
-        {
-          selector: ['variable', 'parameter'],
-          modifiers: ['destructured'],
-          format: null,
-        },
-        { selector: 'typeLike', format: ['PascalCase'] },
-        {
-          selector: ['interface', 'typeAlias'],
-          format: ['PascalCase'],
-          custom: { regex: '^I[A-Z]', match: false },
-        },
-        { selector: 'typeParameter', format: ['PascalCase'] },
-        { selector: 'enumMember', format: ['PascalCase'] },
-        // 객체 리터럴 키는 외부 API·HTTP 헤더 모양을 따르므로 검사하지 않는다.
-        { selector: 'objectLiteralProperty', format: null },
-        { selector: ['typeProperty', 'objectLiteralMethod'], format: ['camelCase'] },
-        {
-          selector: ['typeProperty', 'objectLiteralProperty'],
-          modifiers: ['requiresQuotes'],
-          format: null,
-        },
-      ],
-
+      '@typescript-eslint/naming-convention': ['error', ...namingConventionOptions],
       // @codocs [[코드 작성 규칙:타입]]
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
@@ -519,6 +533,13 @@ export default defineConfig(
     files: ['**/*.stories.{ts,tsx}'],
     extends: [storybook.configs['flat/recommended']],
   },
+  // 경로 단위 예외: 스토리 export 이름
+  {
+    files: ['**/*.stories.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/naming-convention': ['error', ...storyNamingConventionOptions],
+    },
+  },
 
   // 경로 단위 예외: default export
   {
@@ -547,7 +568,10 @@ export default defineConfig(
   // 경로 단위 예외: 피그마 타입이 `variantProperties`를 인스턴스 기준으로 deprecated 표시하지만,
   // 컴포넌트 세트의 변형에서는 이 속성이 변형 속성을 읽는 정식 방법이다.
   {
-    files: ['tools/figma-plugin/src/figma-reader.ts'],
+    files: [
+      'tools/figma-plugin/src/figma-reader.ts',
+      'tools/figma-plugin/src/core/export-component.ts',
+    ],
     rules: {
       '@typescript-eslint/no-deprecated': 'off',
     },

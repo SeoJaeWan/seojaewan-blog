@@ -1,3 +1,4 @@
+import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -8,21 +9,12 @@ import type {
   VariableInput,
   VariableValueInput,
 } from './design-tokens';
-import type { RenderBounds } from './export-manifest';
 import type { ComponentSummary } from './messages';
-import { COMPONENTS_PAGE_ID, SCALE } from './plugin-config';
+import { assetFile } from './naming';
+import { COMPONENTS_PAGE_ID } from './plugin-config';
+import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
-
-/** 내보낸 변형 하나 */
-export type ExportedVariant = {
-  nodeId: string;
-  properties: Record<string, string>;
-  width: number;
-  height: number;
-  renderBounds: RenderBounds;
-  png: Uint8Array;
-};
 
 /**
  * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 문서 순서대로 찾는다.
@@ -45,40 +37,6 @@ export async function listComponents(): Promise<ComponentSummary[]> {
     }
   }
   return summaries;
-}
-
-/**
- * 컴포넌트(세트)의 모든 변형을 PNG로 내보낸다. 노드를 그대로 내보내 배경은 투명이다.
- * 그림자는 노드 상자 밖으로 그려지므로 노드 왼쪽 위 기준 렌더링 영역을 함께 기록한다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @returns 컴포넌트 이름, ID, 변형 목록
- */
-export async function exportComponent(
-  nodeId: string,
-): Promise<{ name: string; nodeId: string; variants: ExportedVariant[] }> {
-  await loadComponentsPage();
-  const node = await figma.getNodeByIdAsync(nodeId);
-  if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
-    throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
-  }
-  const components = node.type === 'COMPONENT_SET' ? variantsOf(node) : [node];
-  const variants: ExportedVariant[] = [];
-  for (const component of components) {
-    const png = await component.exportAsync({
-      format: 'PNG',
-      constraint: { type: 'SCALE', value: SCALE },
-    });
-    variants.push({
-      nodeId: component.id,
-      properties: node.type === 'COMPONENT_SET' ? { ...component.variantProperties } : {},
-      width: component.width,
-      height: component.height,
-      renderBounds: renderBoundsOf(component),
-      png,
-    });
-  }
-  return { name: node.name, nodeId: node.id, variants };
 }
 
 /**
@@ -112,6 +70,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
   const textStyles = await figma.getLocalTextStylesAsync();
   const effectStyles = await figma.getLocalEffectStylesAsync();
   const paintStyles = await figma.getLocalPaintStylesAsync();
+  const images = await readImageAssets();
   const input: DesignTokensInput = {
     variables: inputs,
     aliasNames,
@@ -124,16 +83,158 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
       name: style.name,
       paints: style.paints.map(paintInput),
     })),
+    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.file])),
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
 }
 
 /**
+ * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수 연결을 읽는다(G2).
+ * 페이지를 하나씩 불러와 노드를 훑으므로 파일이 크면 시간이 걸린다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @returns 사용처 계산 입력
+ */
+export async function readUsageInput(): Promise<UsageInput> {
+  const variables = await figma.variables.getLocalVariablesAsync();
+  const styles: UsageStyle[] = [];
+  const kinds = [
+    ['paint', await figma.getLocalPaintStylesAsync()],
+    ['text', await figma.getLocalTextStylesAsync()],
+    ['effect', await figma.getLocalEffectStylesAsync()],
+  ] as const;
+  for (const [kind, list] of kinds) {
+    for (const style of list) {
+      const ids = new Set<string>();
+      collectAliasIds(style.boundVariables, ids);
+      if (style.type === 'PAINT') {
+        collectAliasIds(style.paints, ids);
+      } else if (style.type === 'EFFECT') {
+        collectAliasIds(style.effects, ids);
+      }
+      styles.push({
+        id: style.id,
+        name: style.name,
+        kind,
+        consumerCount: (await style.getStyleConsumersAsync()).length,
+        variableIds: [...ids],
+      });
+    }
+  }
+  const nodeVariableIds = new Set<string>();
+  for (const page of figma.root.children) {
+    await page.loadAsync();
+    for (const node of page.findAll(() => true)) {
+      collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, nodeVariableIds);
+      for (const key of ['fills', 'strokes', 'effects'] as const) {
+        const value: unknown = key in node ? Reflect.get(node, key) : undefined;
+        if (Array.isArray(value)) {
+          collectAliasIds(value, nodeVariableIds);
+        }
+      }
+    }
+  }
+  return {
+    variables: variables.map(usageVariable),
+    styles,
+    nodeVariableIds,
+  };
+}
+
+/**
+ * 변수 하나의 별칭 대상을 읽는다.
+ * @param variable 피그마 변수
+ * @returns 사용처 계산용 변수
+ */
+function usageVariable(variable: Variable): UsageVariable {
+  const ids = new Set<string>();
+  collectAliasIds(Object.values(variable.valuesByMode), ids);
+  return { id: variable.id, name: variable.name, scopes: [...variable.scopes], aliasIds: [...ids] };
+}
+
+/**
+ * 값 안의 모든 변수 별칭(`{ type: 'VARIABLE_ALIAS', id }`) ID를 모은다.
+ * @param value 피그마 값(객체·배열 중첩 가능)
+ * @param ids 모을 곳
+ */
+function collectAliasIds(value: unknown, ids: Set<string>): void {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectAliasIds(item, ids);
+    }
+    return;
+  }
+  if (value === null || typeof value !== 'object') {
+    return;
+  }
+  const type: unknown = Reflect.get(value, 'type');
+  const id: unknown = Reflect.get(value, 'id');
+  if (type === 'VARIABLE_ALIAS' && typeof id === 'string') {
+    ids.add(id);
+    return;
+  }
+  for (const item of Object.values(value)) {
+    collectAliasIds(item, ids);
+  }
+}
+
+/** 이미지 자산 하나(G4) */
+export type ImageAsset = {
+  /** 자산 파일(`images/noise-acrylic.png`) */
+  file: string;
+  /** 자산 컴포넌트 */
+  node: ComponentNode;
+};
+
+/**
+ * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
+ * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻는다(G4).
+ * 묶음 프레임이 있는 첫 페이지만 읽는다.
+ * @codocs [[피그마 일치 검사:자산]]
+ * @returns 이미지 해시 → 자산
+ */
+export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
+  const { assetGroupPrefix, assetGroups } = parityDecisions.d6;
+  const rasterGroups = new Set(
+    Object.entries(assetGroups)
+      .filter(([, kind]) => kind === 'raster')
+      .map(([group]) => `${assetGroupPrefix}${group}`),
+  );
+  const images = new Map<string, ImageAsset>();
+  for (const page of figma.root.children) {
+    await page.loadAsync();
+    const frames = page.findAll((node) => rasterGroups.has(node.name) && 'children' in node);
+    for (const frame of frames) {
+      if (!('findAllWithCriteria' in frame)) {
+        continue;
+      }
+      const group = frame.name.slice(assetGroupPrefix.length);
+      for (const component of frame.findAllWithCriteria({ types: ['COMPONENT'] })) {
+        const fills =
+          component.fills === figma.mixed
+            ? []
+            : component.fills.filter((fill) => fill.visible !== false);
+        const [fill] = fills;
+        if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
+          images.set(fill.imageHash, {
+            file: assetFile({ group, name: component.name, kind: 'raster' }),
+            node: component,
+          });
+        }
+      }
+    }
+    if (frames.length > 0) {
+      break;
+    }
+  }
+  return images;
+}
+
+/**
  * 컴포넌트 페이지를 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
  * @returns 컴포넌트 페이지
  */
-async function loadComponentsPage(): Promise<PageNode> {
+export async function loadComponentsPage(): Promise<PageNode> {
   const page = await figma.getNodeByIdAsync(COMPONENTS_PAGE_ID);
   if (page?.type !== 'PAGE') {
     throw new Error(`컴포넌트 페이지 ${COMPONENTS_PAGE_ID}를 찾을 수 없다.`);
@@ -149,20 +250,6 @@ async function loadComponentsPage(): Promise<PageNode> {
  */
 function variantsOf(set: ComponentSetNode): ComponentNode[] {
   return set.children.filter((child): child is ComponentNode => child.type === 'COMPONENT');
-}
-
-/**
- * 노드 상자 왼쪽 위를 원점으로 한 렌더링 영역을 계산한다. 그려지는 것이 없으면 노드 상자다.
- * @param node 변형 노드
- * @returns 렌더링 영역
- */
-function renderBoundsOf(node: ComponentNode): RenderBounds {
-  const box = node.absoluteBoundingBox;
-  const render = node.absoluteRenderBounds;
-  if (box === null || render === null) {
-    return { x: 0, y: 0, width: node.width, height: node.height };
-  }
-  return { x: render.x - box.x, y: render.y - box.y, width: render.width, height: render.height };
 }
 
 /**

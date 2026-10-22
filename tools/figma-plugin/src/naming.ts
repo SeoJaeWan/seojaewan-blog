@@ -1,4 +1,4 @@
-import { IMAGES_DIR } from './plugin-config';
+import { ASSETS_DIR, COMPONENTS_DIR } from './plugin-config';
 
 /** 단독 컴포넌트(변형 없음)의 변형 이름 */
 export const DEFAULT_VARIANT = 'default';
@@ -39,13 +39,14 @@ export function variantSlug(properties: Readonly<Record<string, string>>): strin
 }
 
 /**
- * 변형 이미지의 저장소 경로를 만든다.
+ * 컴포넌트 폴더 안 파일의 저장소 경로를 만든다.
+ * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
  * @param component 컴포넌트 폴더 이름
- * @param variant 변형 파일 이름(확장자 제외)
- * @returns 저장소 루트 기준 PNG 경로
+ * @param file 폴더 안 파일 이름(예: `variant=accent,state=rest.png`, `export.json`)
+ * @returns 저장소 루트 기준 경로
  */
-export function imagePath(component: string, variant: string): string {
-  return `${IMAGES_DIR}/${component}/${variant}.png`;
+export function componentFilePath(component: string, file: string): string {
+  return `${COMPONENTS_DIR}/${component}/${file}`;
 }
 
 /**
@@ -72,4 +73,58 @@ function requireSlug(slug: string, original: string): string {
     throw new Error(`"${original}"에서 파일 이름을 만들 수 없다. 영문이나 숫자를 넣어야 한다.`);
   }
   return slug;
+}
+
+/**
+ * 자산 컴포넌트 이름이나 묶음 이름을 파일 이름 조각으로 바꾼다.
+ * 소문자로 바꾸고 `[a-z0-9_-]` 밖의 문자를 `-`로 바꾼다. 예: `ic_fluent_search_16_regular`는 그대로, `Icons`는 `icons`
+ * @codocs [[저장소 구성:디자인 시스템 패키지 구조]]
+ * @param name 자산 컴포넌트 이름이나 묶음 이름
+ * @returns 파일 이름 조각
+ */
+export function assetSlug(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/gu, '-')
+    .replace(/-+/gu, '-')
+    .replace(/^-|-$/gu, '');
+  return requireSlug(slug, name);
+}
+
+/**
+ * BOOLEAN 컴포넌트 속성 키를 React prop 이름으로 바꾼다. 키의 `#id`를 떼고 camelCase로 쓴다(D4).
+ * 예: `Show icon#13:0` → `showIcon`
+ * @codocs [[피그마 일치 검사:결정 사항]]
+ * @param key 피그마 속성 키
+ * @returns prop 이름
+ */
+export function booleanPropName(key: string): string {
+  const [first = '', ...rest] = slugPart(key.replace(/#[^#]*$/u, '')).split('-');
+  return requireSlug(
+    first + rest.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(''),
+    key,
+  );
+}
+
+/**
+ * 자산 파일 이름(`<묶음>/<자산>.<svg|png>`)을 만든다. 래스터 이미지는 PNG, 나머지는 SVG다.
+ * @codocs [[피그마 일치 검사:자산]]
+ * @param asset 자산 묶음, 이름, 처리 방식
+ * @param asset.group 묶음 이름
+ * @param asset.name 자산 컴포넌트 이름
+ * @param asset.kind 처리 방식
+ * @returns 자산 폴더 기준 파일 경로
+ */
+export function assetFile(asset: { group: string; name: string; kind: string }): string {
+  const extension = asset.kind === 'raster' ? 'png' : 'svg';
+  return `${assetSlug(asset.group)}/${assetSlug(asset.name)}.${extension}`;
+}
+
+/**
+ * 자산 파일의 저장소 경로를 만든다.
+ * @param file 자산 폴더 기준 파일 경로
+ * @returns 저장소 루트 기준 경로
+ */
+export function assetFilePath(file: string): string {
+  return `${ASSETS_DIR}/${file}`;
 }

@@ -12,6 +12,7 @@ const summary: ExportSummary = {
   changedComponents: ['Button', 'Tooltip'],
   uploadCount: 3,
   deletionCount: 1,
+  assetUploadCount: 0,
   hasTokenChange: true,
 };
 
@@ -22,9 +23,12 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
     expect(commitSubject({ ...summary, hasTokenChange: false })).toBe(
       'chore(figma): export components',
     );
-    expect(commitSubject({ ...summary, uploadCount: 0, deletionCount: 0 })).toBe(
-      'chore(figma): export tokens',
-    );
+    expect(
+      commitSubject({ ...summary, changedComponents: [], uploadCount: 0, deletionCount: 0 }),
+    ).toBe('chore(figma): export tokens');
+    expect(
+      commitSubject({ ...summary, uploadCount: 0, deletionCount: 0, hasTokenChange: false }),
+    ).toBe('chore(figma): export components');
   });
 
   it('본문에 바뀐 컴포넌트와 토큰 변경 여부를 적는다', () => {
@@ -36,8 +40,15 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
     );
   });
 
+  it('벡터 SVG가 바뀌었을 때만 그 줄을 적는다', () => {
+    expect(commitBody(summary)).not.toContain('벡터 SVG');
+    expect(commitBody({ ...summary, assetUploadCount: 2 })).toContain('- 자산 파일 2개 갱신');
+  });
+
   it('PR 본문도 같은 변경 목록을 담는다', () => {
-    expect(pullRequestBody(summary)).toContain('- 바뀐 컴포넌트 2개 (이미지 3개 갱신, 1개 삭제)');
+    expect(pullRequestBody(summary)).toContain(
+      '- 바뀐 컴포넌트 2개 (이미지 3개 갱신, 파일 1개 삭제)',
+    );
   });
 });
 
