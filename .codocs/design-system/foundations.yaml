@@ -62,15 +62,16 @@ _codocs:
 
   재질은 피그마에서 칠 스타일(`Material/*`)의 층 목록과 효과 스타일(`Surface/*`)의 배경 블러로 만든다. 층 색은 모두 색 변수에 연결한다. 보이지 않는 층(불투명도 0인 틴트 층)은 두지 않는다. Windows UI에는 다크 모드가 없어 틴트 층이 보일 일이 없기 때문이다([[디자인 기반:모드]]).
 
-  - Acrylic(Menu, Tooltip, Flyout, Scrollbar, StartMenu, Taskbar, SearchPanel 등 잠깐 떠 있는 것): 뒤에 있는 것 전부를 흐리게 한 뒤, 루미너스 층(거의 흰색)을 루미너시티 방식으로 섞고 노이즈를 얹는다. 루미너시티 섞기는 밝기만 바꾸고 색감은 뒤 배경에서 가져와, 배경화면 색이 은은하게 남는다.
-    - 코드는 칠 스타일 층에서 생성한 유틸리티(`material-acrylic-default`, `material-acrylic-base`)로 그린다. `::before`가 흐림(`backdrop-filter`)을, `::after`가 루미너스 층을 `mix-blend-mode: luminosity`로 맡고, 자식은 그 위에 놓인다. 노이즈는 의사 요소가 둘뿐이라 루미너스 층 색에 2% 섞는다(피그마는 맨 위 층). 같은 배경화면 위에서 피그마와의 차이는 채널 최대 4다.
-    - 블렌드 층은 같은 쌓임 맥락 안에서만 뒤 배경과 섞인다. 재질 요소와, 재질 요소와 배경 사이의 요소에는 쌓임 맥락을 만드는 속성(`z-index`, `isolate`, `opacity`, `transform`, `filter`)을 쓰지 않고, 겹침 순서는 HTML 순서로 정한다. 이 속성이 있으면 블렌드가 배경과 섞이지 않아 회색이 된다.
-  - Mica(WindowFrame, 앱 창의 바탕): 뒤를 흐리게 하는 것이 아니라 바탕화면 배경화면의 색감만 비친다. 실제 Windows에서 창 뒤의 다른 창은 마이카에 비치지 않는다. 그래서 코드는 블러 대신 흐린 배경화면 그림을 창 바탕에 화면 기준으로 고정해 깔고, 그 위에 루미너스 층과 컬러 층을 얹는다(요소 자체, `::before`, `::after` 세 자리). 피그마의 마이카 칠 스타일도 같은 구조로 바꾼다. 창 컴포넌트를 만들 때(컴포넌트 묶음 ②) 구현하며, 그때까지 생성기는 마이카 유틸리티를 만들지 않는다.
+  - Acrylic(Menu, Tooltip, Flyout, Scrollbar, StartMenu, Taskbar, SearchPanel 등 잠깐 떠 있는 것): 뒤에 있는 것 전부를 흐리게 하고, 반투명한 거의 흰색 층을 일반 섞기로 덮은 뒤 노이즈를 얹는다. 실제 Windows는 이 층을 루미너시티 방식으로 섞어 배경 색감을 더 남기지만, 피그마가 블렌드 칠에 변수를 연결하지 못해 일반 섞기로 단순화했다([[한계:아크릴 일반 섞기]]).
+    - 코드는 칠 스타일 층에서 생성한 유틸리티(`material-acrylic-default`, `material-acrylic-base`)로 그린다. 요소 자체의 CSS 배경 여러 겹(색 변수 + 노이즈 이미지)이고, 흐림은 효과 스타일 클래스(`backdrop-blur-*`)가 같은 요소에 건다. 의사 요소나 쌓임 순서 제약이 없다.
+    - 노이즈 층의 2% 불투명도는 CSS 배경 한 겹에 따로 줄 수 없어, 자산 생성기가 2%를 미리 입힌 이미지(`noise-acrylic.opacity-2.png`)를 만든다.
+    - 색 변수에 연결된 칠의 불투명도는 칠의 불투명도 하나만 쓴다. 피그마는 연결할 때 변수 색의 투명도를 칠 불투명도로 옮겨 오고, 그린 결과에는 칠 불투명도만 적용된다(변수 투명도와 곱하지 않는다). 생성기도 변수의 RGB에 칠 불투명도를 투명도로 쓴다.
+  - Mica(WindowFrame, 앱 창의 바탕): 뒤를 흐리게 하는 것이 아니라 바탕화면 배경화면의 색감만 비친다. 실제 Windows에서 창 뒤의 다른 창은 마이카에 비치지 않는다. 그래서 코드는 블러 대신 흐린 배경화면 그림을 창 바탕에 화면 기준으로 고정해 깔고, 그 위에 반투명 색 층을 아크릴과 같은 일반 섞기로 얹는다. 피그마의 마이카 칠 스타일(지금은 블렌드 층이 있어 토큰에서 빠지고, 쓰는 컴포넌트는 막힘)도 같은 구조로 바꾼다. 창 컴포넌트를 만들 때(컴포넌트 묶음 ②) 구현하며, 그때까지 생성기는 마이카 유틸리티를 만들지 않는다.
   - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
   - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다. 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
   - `Material/Fallback/*`는 투명 효과를 끈 단색 버전으로, 컴포넌트의 `Material=Solid` 변형에 쓴다.
 
-  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 재질 변형도 칠 스타일 이름(`material-*`)과 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`)으로 비교하고, 계산값으로 `::after` 블렌드 층(배경, 섞는 방식, 불투명도)과 요소가 쌓임 맥락을 만들지 않는지(isolation, z-index)를 확인한다. 흐린 배경 위 색감은 피그마 Foundations의 배경화면 예시와 나란히 놓고 맞췄다.
+  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 재질 변형도 칠 스타일 이름(`material-*`)과 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`)으로 비교하고, 계산값으로 배경 층(색, 노이즈 이미지)이 생성 유틸리티 값과 같은지 확인한다.
 컨트롤 테두리: |
   WinUI 컨트롤의 1px 테두리는 단색이 아니라 아래쪽 몇 픽셀만 진해지는 세로 그라데이션이다(WinUI의 `ControlElevationBorderBrush` 계열). 버튼이 살짝 떠 보이게 하는 효과라 Windows 느낌에 중요하다.
   피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
