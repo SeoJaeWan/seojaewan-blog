@@ -41,7 +41,10 @@ type MenuItemProps = MenuItemCommonProps &
         onCheckedChange?: (checked: boolean) => void;
       }
     | {
-        /** 피그마 Kind=Radio on/off. Menu.RadioGroup 안에 두며, 골라져 있으면 점을 그린다 */
+        /**
+         * 피그마 Kind=Radio on/off. Menu.RadioGroup 안에 두며, 골라져 있으면(Radio on) 점을 그린다.
+         * 골라져 있지 않으면(Radio off) 점 없이 앞 자리(base/leading)만 남겨 이름 위치를 맞춘다
+         */
         kind: 'radio';
         /** 라디오 묶음 안에서 이 항목의 값 */
         value: string;
@@ -109,7 +112,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             leading={
               <Menu.CheckboxItemIndicator className="flex">
                 <Asset
-                  data-figma="base/leading/icon"
+                  data-figma="base/leading/check"
                   name="icons/ic_fluent_checkmark_20_regular.svg"
                   className="size-icon-16"
                 />

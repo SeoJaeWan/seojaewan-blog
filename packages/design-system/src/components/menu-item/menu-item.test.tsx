@@ -71,6 +71,24 @@ describe('MenuItem', () => {
     );
   });
 
+  // @codocs [[피그마 일치 검사:짝짓기]]
+  it('켠 확인 항목은 확인 표시(base/leading/check)를, 고르지 않은 라디오 항목은 점 없이 앞 자리만 그린다', () => {
+    renderInMenu(
+      <>
+        <MenuItem kind="checkbox" label="숨김 항목" defaultChecked />
+        <Menu.RadioGroup defaultValue="name">
+          <MenuItem kind="radio" label="날짜" value="date" />
+        </Menu.RadioGroup>
+      </>,
+    );
+
+    const toggle = screen.getByRole('menuitemcheckbox', { name: '숨김 항목' });
+    expect(toggle.querySelector('[data-figma="base/leading/check"]')).not.toBeNull();
+    const radio = screen.getByRole('menuitemradio', { name: '날짜' });
+    expect(radio.querySelector('[data-figma="base/leading"]')).not.toBeNull();
+    expect(radio.querySelector('[data-figma="base/leading/bullet"]')).toBeNull();
+  });
+
   it('하위 메뉴 항목은 하위 메뉴를 가진 menuitem이다', () => {
     renderInMenu(
       <Menu.SubmenuRoot>
