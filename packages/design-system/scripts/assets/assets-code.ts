@@ -36,6 +36,22 @@ const attributeNames: Readonly<Record<string, string>> = {
 };
 
 /** SVG 요소 하나 */
+/**
+ * 이미지 칠 층이 쓰는 코드 자산 파일 이름을 정한다. 불투명도가 1보다 작으면 자산 생성기가 그 불투명도를
+ * 미리 넣은 이미지를 따로 만든다(CSS 배경 층에는 층마다 불투명도를 줄 수 없다).
+ * @codocs [[피그마 일치 검사:자산]]
+ * @param asset 자산 파일(`images/noise-acrylic.png`)
+ * @param opacity 층 불투명도
+ * @returns 코드 자산 파일(`images/noise-acrylic.opacity-2.png`)
+ */
+export function imageLayerFile(asset: string, opacity: number): string {
+  if (opacity >= 1) {
+    return asset;
+  }
+  const percent = String(Number((opacity * 100).toFixed(2)));
+  return asset.replace(/\.png$/u, `.opacity-${percent}.png`);
+}
+
 export type SvgElementData = {
   tag: string;
   attributes: Record<string, string>;
