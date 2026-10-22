@@ -134,6 +134,7 @@ _codocs:
   - 묶음은 원본 컴포넌트가 든 묶음 프레임(`group/<묶음>`)의 이름으로 정한다.
   - 플러그인은 내보내는 컴포넌트가 쓰는 자산을 `figma/assets/<묶음>/<자산>.<svg|png>`로 함께 내보낸다. SVG 안의 id는 내용으로 정해지는 이름으로 바꿔, 같은 모양이면 파일도 같게 한다.
   - 코드의 자산 파일(아이콘 SVG, 아크릴 노이즈 같은 이미지)은 손으로 복사하지 않고 이 파일에서 생성기가 만든다. 모양은 이 생성 사슬로 보장하므로 화면에서 모양을 비교하지 않는다. 아이콘 패키지(`@fluentui/react-icons`)를 따로 쓰지 않는 것도 이 때문이다. 피그마가 아이콘을 줄여 쓰거나 경로를 바꾸면 패키지 아이콘과 달라진다.
+  - 여러 색 자산(Illustrations)의 SVG는 그라데이션(`linearGradient`, `radialGradient`)을 그대로 옮긴다. `Asset` 컴포넌트는 그라데이션 ID 앞에 요소마다 다른 접두어를 붙인다. 한 화면에 같은 자산이 둘 있어도 ID가 겹치지 않게 하기 위해서다(예: 검색 포커스 돋보기 `illustrations/icon-color-search.svg`).
   - 이미지는 이미지 해시로 자산 이름을 찾는다. 컴포넌트나 칠 스타일이 이름 있는 자산에 없는 이미지를 쓰면 막는다.
   - 컴포넌트 안에 자산이 아닌 호·별·다각형·선·불리언·벡터를 직접 그리면 막는다("Foundations 자산으로 만들어 인스턴스로 쓰세요"). 완전한 원과 사각형은 CSS(`rounded-*`)로 그리므로 허용한다.
 겹쳐 놓기: |
@@ -148,6 +149,21 @@ _codocs:
      - 예: SearchBox `bottom border`는 절대 위치이고, 제약은 가로 양쪽 늘이기와 세로 아래, 거리 0이다. 높이와 색은 변수에 연결한다. 루트는 내용 자르기를 켜 둥근 끝에서 밑줄이 일자로 잘린다. 코드는 `<span data-figma="bottom border" class="absolute inset-x-0 bottom-0 h-… bg-…">`와 루트 `overflow-hidden`이다.
 
   자동 배치가 아닌 프레임 안에 자식을 두는 수동 배치는 막는다([[디자인 기반:레이아웃]]).
+상태 전환: |
+  피그마 변형 사이의 프로토타입 전환(Rest → Hover 등)을 코드의 CSS 전환과 같은 이름으로 비교한다(M1).
+
+  - 플러그인은 같은 컴포넌트 세트의 다른 변형으로 바뀌는(CHANGE_TO) 반응만 읽는다. 전환 시간과 이징은 값으로 모션 토큰 이름(`motion/duration/*`, `motion/easing/*`)을 찾는다. 피그마 반응은 변수에 연결할 수 없기 때문이다.
+    - 토큰에 없는 값은 막는다.
+    - Smart Animate·Dissolve가 아닌 전환 종류는 CSS 전환으로 옮길 수 없어 막는다.
+    - 즉시 전환은 움직임이 없어 비교하지 않는다.
+  - 비교 도구는 출발 변형과 도착 변형의 레이어를 비교해 바뀌는 역할(칠, 글자 색, 불투명도 등)을 찾고, 역할 → CSS 속성 표(`class-rules.ts`의 `transitionProperties`)로 전환할 속성을 정한다. 그다음 짝 요소에서 다음을 확인한다.
+    - `transition-property`에 그 속성이 있다.
+    - 시간·이징 클래스(`duration-faster`, `ease-fade` 등)를 쓰고, 계산값이 그 토큰 값과 같다.
+  - 도착 상태에서 잰다. CSS는 바뀐 뒤 상태의 transition 값을 쓰기 때문이다. 글자 색은 상속되므로 조상 요소의 전환도 인정한다.
+  - CSS로 부드럽게 바뀌지 않는 역할(`::before` 고리로 그리는 안쪽 선, 자산 바꿈, 배치 선택지, 글자 스타일 등)은 표에 제외로 적고 비교하지 않는다. 표에 없는 역할이 바뀌면 실패한다.
+  - 예: SearchBox Pill Rest → Focused는 배경 색이 `duration-fast ease-direct-entrance`로 바뀌어야 한다. 증명 테스트는 전환 없음, 시간 다름, 이징 다름, 바뀌는 속성 빠짐이 모두 실패하는지 확인한다.
+
+  비교하지 않는 움직임은 [[한계:애니메이션 비교 범위]]에 있다.
 구조 검사: |
   플러그인은 내보내기 전에 변형마다 구조를 검사하고, 위반이 하나라도 있으면 그 컴포넌트를 내보내지 않는다. 코드와 같은 이름으로 비교할 수 없는 구조를 디자인 단계에서 고치게 하기 위해서다.
 
@@ -209,6 +225,7 @@ _codocs:
   | G2 | 사용처 0인 변수·스타일은 알림(막지 않음) | [[피그마 일치 검사:구조 검사]] |
   | G3 | FocusRect 컴포넌트를 지우고 IconButton도 바깥쪽 선 | [[디자인 기반:포커스 표현]] |
   | G4 | 이미지는 이름 있는 이미지 자산만, 코드 이미지는 생성 | [[피그마 일치 검사:자산]] |
+  | M1 | 변형 사이 전환은 모션 토큰 이름과 전환 속성으로 비교 | [[피그마 일치 검사:상태 전환]] |
 피그마 플러그인: |
   비공개 개발용 플러그인으로 만들고 `tools/figma-plugin`에 둔다([[저장소 구성:구성]]).
 
@@ -228,7 +245,7 @@ export.json 계약: |
   플러그인이 쓰고 비교 도구가 읽는 파일이다. 손으로 고치지 않는다. 피그마 이름과 선택지만 담고, 위치 좌표나 측정값은 담지 않는다. 이름을 코드 클래스로 바꾸는 규칙은 비교 도구가 가진다([[피그마 일치 검사:비교 규칙]]).
 
   - `figma/figma.json`: 바뀌지 않는 전역 값 `{ fileKey, scale }`(PNG 배율).
-  - `figma/components/<컴포넌트>/export.json`: `name`, `nodeId`, `hash`, `booleans`(prop 이름 → 피그마 속성 키와 기본값), `variants`. 변형마다 `nodeId`, `properties`, `hash`(비교에 쓰는 이름 정보 `properties`·`layers`·`hidden`·`cases`의 해시. PNG는 넣지 않는다), `layers`, `hidden`(숨긴 레이어 경로), `cases`(BOOLEAN 경우마다 `layers`와 `hidden`, 키는 `showIcon=true` 꼴).
+  - `figma/components/<컴포넌트>/export.json`: `name`, `nodeId`, `hash`, `booleans`(prop 이름 → 피그마 속성 키와 기본값), `variants`. 변형마다 `nodeId`, `properties`, `hash`(비교에 쓰는 이름 정보 `properties`·`layers`·`hidden`·`cases`·`transitions`의 해시. PNG는 넣지 않는다), `layers`, `hidden`(숨긴 레이어 경로), `cases`(BOOLEAN 경우마다 `layers`와 `hidden`, 키는 `showIcon=true` 꼴), `transitions`(전환마다 `trigger`, `to`, `type`, `duration`·`easing` 토큰 이름. 전환이 없으면 키를 두지 않는다, [[피그마 일치 검사:상태 전환]]).
   - 같은 폴더에 변형 PNG(`<변형>.png`)를 둔다. 다른 컴포넌트와 파일을 나눠 쓰지 않는다.
   - `figma/assets/<묶음>/<자산>.<svg|png>`: 자산 파일([[피그마 일치 검사:자산]]).
   - JSON은 키를 정렬해 쓴다. 같은 내용이면 파일도 같게 하기 위해서다.

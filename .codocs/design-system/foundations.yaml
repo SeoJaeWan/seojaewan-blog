@@ -107,7 +107,7 @@ _codocs:
   |---|---|---|
   | Icons | UI 아이콘(Fluent `ic_fluent_*`) | 한 가지 색. 쓰는 곳의 색 변수로 칠한다 |
   | Shapes | 한 가지 색 특수 도형(진행 링 호, 툴팁 꼬리 등) | 한 가지 색. 쓰는 곳의 색 변수로 칠한다 |
-  | Illustrations | 여러 색 벡터(`file/*`, `app/*`, `logo/*`) | 자산 안에 둔다 |
+  | Illustrations | 여러 색 벡터(`file/*`, `app/*`, `logo/*`, Fluent 컬러 아이콘 `icon-color/*`) | 자산 안에 둔다 |
   | Images | 래스터 이미지(`avatar/*`, `wallpaper/*`, `noise/*`) | 자산 안에 둔다 |
 
   - 묶음마다 `group/<묶음>` 프레임에 넣는다. 플러그인이 이 프레임 이름으로 처리 방식을 정한다.
@@ -124,6 +124,7 @@ _codocs:
   | Chrome 앱 아이콘 | 설치된 `chrome.exe` 아이콘을 256px로 추출. Google의 상표이지만 개인 포트폴리오에서 화면을 재현하는 용도로 쓴다 |
   | Windows 로고 | 시스템 앱의 `WindowsLogo.svg`(그라데이션 로고) |
   | 외부 링크 아이콘 | Fluent UI System Icons의 `link` 컬러 아이콘 |
+  | 컬러 돋보기(`icon-color/Search`) | Fluent UI System Icons의 `search` 컬러 아이콘. 그라데이션은 칠 스타일 `Icon Color/Search`(`color/blue/dark-1` → `color/green/light-2` #78BF91)이다 |
   | Bloom 배경 | `C:\Windows\Web\Wallpaper\Windows\img0.jpg` |
   | 아크릴 노이즈 | Windows UI kit의 노이즈 이미지(256×256 PNG) |
 
@@ -158,5 +159,7 @@ _codocs:
   | Start·검색 닫기 | fast | gentle-exit | 아래로 내려가며 사라진다 |
   | 우클릭 메뉴·메시지 상자 | fast | direct-entrance | 페이드로 나타난다 |
   | hover·pressed | faster | fade | 상태 색만 바꾼다 |
+
+  컴포넌트 상태 전환(Rest → Hover 등)도 피그마 프로토타입 전환에 이 토큰을 쓰고, 일치 검사가 비교한다([[피그마 일치 검사:상태 전환]]).
 
   피그마 프로토타입은 오버레이 위치를 Plugin API로 정할 수 없어 Start·검색 패널을 화면 크기의 투명 오버레이로 띄우고 "아래에서 위로 Move in"으로 재현했다. 코드에서는 패널 자체를 `translateY`로 올린다.
