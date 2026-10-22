@@ -40,4 +40,22 @@ describe('SearchBox', () => {
     expect(screen.getByRole('searchbox', { name: '검색' })).toBeDisabled();
     expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('리액트');
   });
+
+  // @codocs [[피그마 일치 검사:짝짓기]]
+  it('기본 모양의 아래쪽 선은 포커스와 disabled일 때만 그린다', async () => {
+    const user = userEvent.setup();
+    const { container, rerender } = render(<SearchBox aria-label="검색" />);
+    const selector = '[data-figma="bottom border"]';
+
+    expect(container.querySelector(selector)).toBeNull();
+
+    await user.tab();
+    expect(container.querySelector(selector)).toHaveClass('bg-accent-fill-default');
+
+    await user.tab();
+    expect(container.querySelector(selector)).toBeNull();
+
+    rerender(<SearchBox aria-label="검색" disabled />);
+    expect(container.querySelector(selector)).toHaveClass('bg-control-stroke-default');
+  });
 });

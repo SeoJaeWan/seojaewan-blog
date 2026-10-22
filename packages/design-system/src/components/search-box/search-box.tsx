@@ -39,11 +39,11 @@ const appearanceClassNames = {
   },
 } as const satisfies Record<SearchBoxAppearance, Record<'base' | 'enabled' | 'disabled', string>>;
 
-// 아래쪽 강조선(피그마 bottom border, 양쪽 늘이기 + 아래 붙임). 기본 모양만 있다.
+// 아래쪽 강조선(피그마 bottom border, 양쪽 늘이기 + 아래 붙임). 기본 모양의 Focused·Disabled 변형에만 있다.
+// 피그마 Rest·Hover에는 이 레이어가 없으므로 그때는 요소를 그리지 않는다.
 // 포커스일 때 강조색 2px, disabled일 때 1px 회색 선이다.
 const BOTTOM_BORDER_CLASS_NAMES = {
-  enabled:
-    'hidden group-focus-within:block group-focus-within:h-stroke-focus-outer group-focus-within:bg-accent-fill-default',
+  focused: 'h-stroke-focus-outer bg-accent-fill-default',
   disabled: 'h-stroke-default bg-control-stroke-default',
 } as const;
 
@@ -65,8 +65,8 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
   } = props;
   const [isFocused, setIsFocused] = useState(false);
   const classNames = appearanceClassNames[appearance];
-  const state = isDisabled ? 'disabled' : 'enabled';
   const hasColorIcon = appearance !== 'default' && isFocused && !isDisabled;
+  const bottomBorderState = isDisabled ? 'disabled' : isFocused ? 'focused' : undefined;
   // data-figma는 피그마 SearchBox의 레이어 이름이다([[피그마 일치 검사:짝짓기]]).
   const icon = (
     <Asset
@@ -86,7 +86,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
     <div
       data-figma-root="SearchBox"
       className={mergeClassNames(
-        'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
+        'relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
         'transition-colors',
         classNames.base,
         isDisabled
@@ -116,13 +116,13 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         className="min-w-0 flex-1 truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
       />
       {appearance === 'default' && icon}
-      {appearance === 'default' && (
+      {appearance === 'default' && bottomBorderState && (
         <span
           aria-hidden
           data-figma="bottom border"
           className={mergeClassNames(
             'pointer-events-none absolute inset-x-0 bottom-0',
-            BOTTOM_BORDER_CLASS_NAMES[state],
+            BOTTOM_BORDER_CLASS_NAMES[bottomBorderState],
           )}
         />
       )}
