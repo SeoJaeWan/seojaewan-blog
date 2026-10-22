@@ -1,0 +1,360 @@
+{
+  "booleans": {},
+  "hash": "2b5a7c6e6e80fc77cb6e3f70c0e9405972f8ba7889dc6a91c295d3e8161d264a",
+  "name": "PinnedTile",
+  "nodeId": "37:521",
+  "variants": {
+    "state=hover": {
+      "cases": {},
+      "hash": "8c98bf8c6a3428da5ab859b16bdbaa8be3cda6bcfd3b2c50270a135d380693ca",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/pinned-tile/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/pinned-tile/width-default"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "File Explorer",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "37:511",
+      "properties": {
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "state=pressed": {
+      "cases": {},
+      "hash": "e41d1f1ae1d0e18304c185073f3a7b9b0473baaddf9400cdee137c32dd05e5d1",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/pinned-tile/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/pinned-tile/width-default"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "File Explorer",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "37:516",
+      "properties": {
+        "State": "Pressed"
+      }
+    },
+    "state=rest": {
+      "cases": {},
+      "hash": "bb435adfb1f9e7e2eb39ac08e4e1a60e05341c33716a1d50da092f477968624c",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/pinned-tile/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/pinned-tile/width-default"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "item icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "CENTER",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "File Explorer",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "37:506",
+      "properties": {
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

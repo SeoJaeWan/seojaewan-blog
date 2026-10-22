@@ -1,0 +1,222 @@
+{
+  "booleans": {},
+  "hash": "aab92b7255f01c09a162293bc65d9f1fa75ce93a82a1030109e505a535ba5764",
+  "name": "BootScreen",
+  "nodeId": "38:1122",
+  "variants": {
+    "device=desktop": {
+      "cases": {},
+      "hash": "836739512f3ac1f814db5e50f228fd36c87850523f89c708239e2ef0d0f55617",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "boot-screen/background"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "size/boot-screen/gap",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/boot-screen/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/boot-screen/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/logo-windows.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "logo/Windows"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "windows logo",
+          "sizing": {
+            "height": "size/boot-screen/logo",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/boot-screen/logo"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "progress ring",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/progress-ring/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "boot-screen/foreground",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "progress ring/arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "38:1106",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "cases": {},
+      "hash": "1dbedbe67786e00b33f4467859569c07dbce844a05926eed1aeb1958551de560",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "boot-screen/background"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "size/boot-screen/gap-mobile",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/boot-screen/height-mobile",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/boot-screen/width-mobile"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/logo-windows.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "logo/Windows"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "windows logo",
+          "sizing": {
+            "height": "size/boot-screen/logo-mobile",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/boot-screen/logo-mobile"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "progress ring",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/progress-ring/size",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/progress-ring/size"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "boot-screen/foreground",
+            "file": "shapes/progress-ring-arc.svg",
+            "group": "Shapes",
+            "kind": "mono",
+            "name": "progress-ring/Arc"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "progress ring/arc",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "38:1114",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
