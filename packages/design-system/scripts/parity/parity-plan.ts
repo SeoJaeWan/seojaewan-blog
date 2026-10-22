@@ -18,6 +18,7 @@ import {
 import { textUtilityVariables } from '../tokens/tokens-css.ts';
 import { parseFigmaExport } from './figma-export.ts';
 import { type TokenNames, type VariantChecks, variantChecks } from './layer-checks.ts';
+import { incomingTransitions } from './transition-checks.ts';
 
 /** 비교 항목 하나 */
 export type PlanItem = {
@@ -95,7 +96,45 @@ export function loadParityPlan(components?: readonly string[]): ParityPlan {
       });
     }
   }
+  addTransitions(items, manifests);
   return { items, fileErrors: findFileErrors(componentsDir, manifests, figmaExport.cases) };
+}
+
+/**
+ * 변형 기본 모양 항목마다 그 변형으로 들어오는 상태 전환(M1) 확인 항목을 채운다.
+ * @codocs [[피그마 일치 검사:상태 전환]]
+ * @param items 비교 항목
+ * @param manifests 컴포넌트 폴더 이름 → export.json
+ */
+function addTransitions(items: readonly PlanItem[], manifests: Record<string, unknown>): void {
+  const baseItems = items.filter((item) => item.caseKey === null);
+  for (const item of baseItems) {
+    const variants = asRecord(asRecord(manifests[item.component]).variants);
+    item.checks.transitions = incomingTransitions(item.variant, variants, (variant) =>
+      baseChecks(baseItems, item.component, variant),
+    );
+  }
+}
+
+/**
+ * 컴포넌트 변형 하나의 기본 모양 확인 항목을 찾는다.
+ * @param baseItems 기본 모양 비교 항목
+ * @param component 컴포넌트 폴더 이름
+ * @param variant 변형 이름
+ * @returns 확인 항목
+ */
+function baseChecks(
+  baseItems: readonly PlanItem[],
+  component: string,
+  variant: string,
+): VariantChecks {
+  const found = baseItems.find(
+    (candidate) => candidate.component === component && candidate.variant === variant,
+  );
+  if (found === undefined) {
+    throw new Error(`${component}: 전환 출발 변형 ${variant}이 없다.`);
+  }
+  return found.checks;
 }
 
 /**

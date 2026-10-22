@@ -34,6 +34,8 @@ type SegmentPart = { end: number; isStrong?: boolean; fontFamily?: string };
 
 const BUTTON_REST = 'style=standard,state=rest,showIcon=true';
 const BUTTON_DISABLED = 'style=standard,state=disabled';
+// 피그마 Rest → Focused 전환(Smart Animate, motion/duration/fast, motion/easing/direct-entrance)이 걸린 변형
+const PILL_FOCUSED = 'appearance=pill,filled=false,state=focused';
 
 /**
  * 레이어 요소의 클래스를 다른 클래스로 바꾼다. arg는 "기존→새것"이다.
@@ -362,6 +364,40 @@ const cases: ProofCase[] = [
     dom: { change: overrideStyle, layer: '', arg: 'background-color:white' },
   },
   {
+    name: '정상 SearchBox Pill Focused(상태 전환 포함)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
+    shouldFail: false,
+  },
+  {
+    name: '상태 전환 누락(transition-property: none)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
+    shouldFail: true,
+    dom: { change: overrideStyle, layer: '', arg: 'transition-property:none' },
+  },
+  {
+    name: '상태 전환 시간 다름(duration-fast → duration-faster)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
+    shouldFail: true,
+    dom: { change: replaceClass, layer: '', arg: 'duration-fast→duration-faster' },
+  },
+  {
+    name: '상태 전환 이징 다름(ease-direct-entrance → ease-fade)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
+    shouldFail: true,
+    dom: { change: replaceClass, layer: '', arg: 'ease-direct-entrance→ease-fade' },
+  },
+  {
+    name: '바뀌는 속성이 transition-property에 없음(opacity만 전환)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
+    shouldFail: true,
+    dom: { change: overrideStyle, layer: '', arg: 'transition-property:opacity' },
+  },
+  {
     name: '한글 스타일 구간에 라틴 글자(서체 다름)',
     component: 'button',
     resultName: BUTTON_REST,
@@ -371,7 +407,7 @@ const cases: ProofCase[] = [
   },
 ];
 
-const plan = loadParityPlan(['button', 'menu-item', 'flyout']);
+const plan = loadParityPlan(['button', 'menu-item', 'flyout', 'search-box']);
 const storybookIndex: unknown = JSON.parse(
   readFileSync(path.join(storybookStaticDir, 'index.json'), 'utf8'),
 );

@@ -1,6 +1,6 @@
 {
   "booleans": {},
-  "hash": "df9eacc9b3a7a77040e98510b540f871973f54d355a6cc47252ad6cf350b7199",
+  "hash": "691782ddee32df6d602fc44d1e2112f3a9c1fa5e7a9aa6758f8d0ffe31ee2fbf",
   "name": "SearchBox",
   "nodeId": "14:92",
   "variants": {
@@ -449,7 +449,7 @@
     },
     "appearance=default,filled=false,state=rest": {
       "cases": {},
-      "hash": "629b7f17d09f32d900016306c03bc587b22325be5a6812a7d37e15aac1b9e267",
+      "hash": "c8a3ceaab100b60feedbb50e90738babf010e41e9fd187d651c7a75e3ec0f78f",
       "hidden": [
         "bottom border"
       ],
@@ -568,7 +568,16 @@
         "Appearance": "Default",
         "Filled": "False",
         "State": "Rest"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "appearance=default,filled=false,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "appearance=default,filled=true,state=disabled": {
       "cases": {},
@@ -1015,7 +1024,7 @@
     },
     "appearance=default,filled=true,state=rest": {
       "cases": {},
-      "hash": "d60df8b800e2e743cd1a35fbdc6b841266124da671ec8d6d1a10140d937936fe",
+      "hash": "7edc7bc2ce479fc2c8164559d67f3ee5ce5cdcf96db457aa87c7e74b0949dd64",
       "hidden": [
         "bottom border"
       ],
@@ -1134,14 +1143,21 @@
         "Appearance": "Default",
         "Filled": "True",
         "State": "Rest"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "appearance=default,filled=true,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "appearance=pill,filled=false,state=disabled": {
       "cases": {},
-      "hash": "13a345312d8bf9807e391bef0d05eb7e8efa0f349f41fe30d2234dd291768668",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "36e5407d5576ae10e056a4aefbc76b2a6705f1492cfc8d9bf248b8d4e799f53e",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -1261,7 +1277,7 @@
     },
     "appearance=pill,filled=false,state=focused": {
       "cases": {},
-      "hash": "133384ad42262418e39c983b090f409b2c4ab8e365ff55b08fd105d2336739cc",
+      "hash": "40fbe529d501c885e1e4879ce1f2d191b02ea4c4f560cba9a8d6f0871d1eb56f",
       "hidden": [],
       "layers": [
         {
@@ -1314,11 +1330,11 @@
         },
         {
           "asset": {
-            "color": "text-fill/secondary",
-            "file": "icons/ic_fluent_search_16_regular.svg",
-            "group": "Icons",
-            "kind": "mono",
-            "name": "ic_fluent_search_16_regular"
+            "color": null,
+            "file": "illustrations/icon-color-search.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "icon-color/Search"
           },
           "parentLayout": "HORIZONTAL",
           "path": "icon",
@@ -1371,45 +1387,6 @@
             ]
           },
           "type": "TEXT"
-        },
-        {
-          "fill": {
-            "variable": "accent-fill/default"
-          },
-          "parentLayout": "HORIZONTAL",
-          "path": "bottom border",
-          "self": {
-            "absolute": {
-              "horizontal": {
-                "constraint": "STRETCH",
-                "distances": [
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  },
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  }
-                ]
-              },
-              "vertical": {
-                "constraint": "MAX",
-                "distances": [
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  }
-                ]
-              }
-            }
-          },
-          "sizing": {
-            "height": "stroke-width/focus-outer",
-            "horizontal": "DERIVED",
-            "vertical": "FIXED"
-          },
-          "type": "RECTANGLE"
         }
       ],
       "nodeId": "14:62",
@@ -1421,10 +1398,8 @@
     },
     "appearance=pill,filled=false,state=hover": {
       "cases": {},
-      "hash": "ddcb05d7f27b60aa06d334fdaea2ecb4eb37205d8c6a18e9cb735f291a62fa65",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "c889b962b5f48b7604771e4d025f60f1cb7a2003168a954d75ebe18ece18982d",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -1544,10 +1519,8 @@
     },
     "appearance=pill,filled=false,state=rest": {
       "cases": {},
-      "hash": "7bf38158f54e3340e690134fb643dd3340d1f3c61785e117b874bb12f2738e1d",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "978735527730b1801af05d1d6ac834c808b00d4f950aa64e1d7002135a8136fc",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -1663,14 +1636,21 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Rest"
-      }
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/fast",
+          "easing": "motion/easing/direct-entrance",
+          "to": "appearance=pill,filled=false,state=focused",
+          "trigger": "ON_CLICK",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     },
     "appearance=pill,filled=true,state=disabled": {
       "cases": {},
-      "hash": "9455183b56a9a4ec1a62a6a13de5fb50be8f9404db5a3e667df5d58940bc6a2e",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "47d631e14e55e83f145fa139612bda69b18c922211300895f8cc8f5b56e3b59e",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -1790,7 +1770,7 @@
     },
     "appearance=pill,filled=true,state=focused": {
       "cases": {},
-      "hash": "bcefe0d3d3a727d6636c2db12dcf92c6ebaa54593e8c47c4bee33835bb1150af",
+      "hash": "bf738162e64de1f63c94b21dd4be4269d4b0a51950dfb503b141acf4b2422871",
       "hidden": [],
       "layers": [
         {
@@ -1843,11 +1823,11 @@
         },
         {
           "asset": {
-            "color": "text-fill/secondary",
-            "file": "icons/ic_fluent_search_16_regular.svg",
-            "group": "Icons",
-            "kind": "mono",
-            "name": "ic_fluent_search_16_regular"
+            "color": null,
+            "file": "illustrations/icon-color-search.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "icon-color/Search"
           },
           "parentLayout": "HORIZONTAL",
           "path": "icon",
@@ -1900,45 +1880,6 @@
             ]
           },
           "type": "TEXT"
-        },
-        {
-          "fill": {
-            "variable": "accent-fill/default"
-          },
-          "parentLayout": "HORIZONTAL",
-          "path": "bottom border",
-          "self": {
-            "absolute": {
-              "horizontal": {
-                "constraint": "STRETCH",
-                "distances": [
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  },
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  }
-                ]
-              },
-              "vertical": {
-                "constraint": "MAX",
-                "distances": [
-                  {
-                    "isNegative": false,
-                    "token": "spacing/0"
-                  }
-                ]
-              }
-            }
-          },
-          "sizing": {
-            "height": "stroke-width/focus-outer",
-            "horizontal": "DERIVED",
-            "vertical": "FIXED"
-          },
-          "type": "RECTANGLE"
         }
       ],
       "nodeId": "14:82",
@@ -1950,10 +1891,8 @@
     },
     "appearance=pill,filled=true,state=hover": {
       "cases": {},
-      "hash": "de8478243178d6293466a10dab3abf0f19634f29b7b7b8ccaf9e2aa5f1867919",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "6659ce193d6ed7391727697f7e6b3509781a8a090da759b36c3ec4572ca3fc4b",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -2073,10 +2012,8 @@
     },
     "appearance=pill,filled=true,state=rest": {
       "cases": {},
-      "hash": "5d8f36bd8c30c2b0d64b0bd76e199fe9c484a54bfb0f56f90523c48cce425fb1",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "cda104b8f9f55d2f19b7d6e969992e428d18a1c0580f9063b2d378e1c6671b76",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -2192,7 +2129,1002 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/fast",
+          "easing": "motion/easing/direct-entrance",
+          "to": "appearance=pill,filled=true,state=focused",
+          "trigger": "ON_CLICK",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "appearance=taskbar,filled=false,state=disabled": {
+      "cases": {},
+      "hash": "455babf5c49961ce929aa5de843b0bd079c178d4435af990a6eb7a3d7b8f8618",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3646",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "False",
+        "State": "Disabled"
       }
+    },
+    "appearance=taskbar,filled=false,state=focused": {
+      "cases": {},
+      "hash": "5f1ba62c2acfa3323412d82c72ac5e9fdd5549a0a32d34ad042a6dead39409e2",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/icon-color-search.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "icon-color/Search"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3642",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "False",
+        "State": "Focused"
+      }
+    },
+    "appearance=taskbar,filled=false,state=hover": {
+      "cases": {},
+      "hash": "07e42d88be0769b5f6891a08b47617f046a8228cfaf09e0c2e4a967243b919cf",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3638",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "False",
+        "State": "Hover"
+      }
+    },
+    "appearance=taskbar,filled=false,state=rest": {
+      "cases": {},
+      "hash": "49fef48e4f490198ec900992d0b3472b50240350d4741eec69ea6c4add734be1",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "검색",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3634",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "False",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/fast",
+          "easing": "motion/easing/direct-entrance",
+          "to": "appearance=taskbar,filled=false,state=focused",
+          "trigger": "ON_CLICK",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "appearance=taskbar,filled=true,state=disabled": {
+      "cases": {},
+      "hash": "20f4e70e393230b771cc1376c7e066e42a8435b6062ec68b9025493669f1da4f",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3662",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "True",
+        "State": "Disabled"
+      }
+    },
+    "appearance=taskbar,filled=true,state=focused": {
+      "cases": {},
+      "hash": "4d7929d6a810583ca31fd52cff5291a2e3afaf8c78a6ab4a108ad5b660ff6787",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/icon-color-search.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "icon-color/Search"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3658",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "True",
+        "State": "Focused"
+      }
+    },
+    "appearance=taskbar,filled=true,state=hover": {
+      "cases": {},
+      "hash": "a86d45a98449060020d0c959c030f60a0431a5bca705f1eb33c4a4a25b01447a",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3654",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "True",
+        "State": "Hover"
+      }
+    },
+    "appearance=taskbar,filled=true,state=rest": {
+      "cases": {},
+      "hash": "2dc778cbecc0ffcac1d4901f665de3f09a060f7ce45eccead0c00e741c261fdb",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-box/width-taskbar"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_search_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_search_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "리액트",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "299:3650",
+      "properties": {
+        "Appearance": "Taskbar",
+        "Filled": "True",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/fast",
+          "easing": "motion/easing/direct-entrance",
+          "to": "appearance=taskbar,filled=true,state=focused",
+          "trigger": "ON_CLICK",
+          "type": "SMART_ANIMATE"
+        }
+      ]
     }
   }
 }

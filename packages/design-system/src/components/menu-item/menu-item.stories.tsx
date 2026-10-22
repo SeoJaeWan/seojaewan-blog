@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
-const KINDS = ['default', 'submenu', 'toggle-on', 'radio-on'] as const;
+const KINDS = ['default', 'submenu', 'toggle-on', 'toggle-off', 'radio-on'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
 // 피그마 예시 글자다([[피그마 일치 검사:글자]]).
 const LABEL = '열기';
@@ -68,6 +68,8 @@ function ParityMenuItem(props: ParityArgs): JSX.Element {
       );
     case 'toggle-on':
       return <MenuItem {...common} kind="checkbox" defaultChecked />;
+    case 'toggle-off':
+      return <MenuItem {...common} kind="checkbox" defaultChecked={false} />;
     case 'radio-on':
       return (
         <Menu.RadioGroup defaultValue={LABEL}>

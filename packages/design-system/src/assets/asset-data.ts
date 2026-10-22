@@ -1,6 +1,13 @@
 // 이 파일은 scripts/assets/generate-assets.ts가 figma/assets/에서 만든다. 손으로 고치지 않는다.
 // 다시 만들기: pnpm --filter @seojaewan/design-system generate:assets
 
+/** SVG 요소(그라데이션은 자식 요소를 가진다) */
+export type SvgAssetElement = {
+  readonly tag: string;
+  readonly attributes: Readonly<Record<string, string>>;
+  readonly children?: readonly SvgAssetElement[];
+};
+
 /** 피그마 자산 파일 경로(figma/assets/ 기준) → SVG 요소 */
 export const svgAssets = {
   'icons/ic_fluent_add_20_regular.svg': {
@@ -33,9 +40,16 @@ export const svgAssets = {
       { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'currentColor' } },
     ],
   },
+  'illustrations/icon-color-search.svg': {
+    viewBox: '0 0 16 16',
+    elements: [
+      { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'url(#s1)' } },
+      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '8.5', y1: '21.5', x2: '21.5', y2: '8.5', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.55', stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.9', stopColor: '#78BF91' } }, { tag: 'stop', attributes: { offset: '1', stopColor: '#78BF91' } }] }] },
+    ],
+  },
 } as const satisfies Record<
   string,
-  { viewBox: string; elements: readonly { tag: string; attributes: Readonly<Record<string, string>> }[] }
+  { viewBox: string; elements: readonly SvgAssetElement[] }
 >;
 
 /** SVG 자산 이름 */

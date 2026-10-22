@@ -133,7 +133,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
               <Menu.RadioItemIndicator className="flex">
                 <span
                   data-figma="base/leading/bullet"
-                  className="size-menu-item-bullet rounded-full bg-text-fill-primary group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary"
+                  className="size-menu-item-bullet rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary"
                 />
               </Menu.RadioItemIndicator>
             }

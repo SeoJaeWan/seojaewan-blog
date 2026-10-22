@@ -29,6 +29,7 @@ import {
   wrapClasses,
 } from './rules/class-rules.ts';
 import { parityDecisions } from './rules/decisions.ts';
+import type { TransitionCheck } from './transition-checks.ts';
 
 /** 계산값 하나. 요소(또는 의사 요소)의 속성 계산값이 css 값을 넣은 비교용 요소의 계산값과 같아야 한다 */
 export type ComputedExpectation = {
@@ -101,6 +102,8 @@ export type VariantChecks = {
   assets: AssetCheck[];
   /** 비교할 수 없는 레이어 정보(규칙 없음). 실패로 다룬다 */
   unsupported: { layer: string; message: string }[];
+  /** 이 변형으로 들어오는 상태 전환(M1). parity-plan이 채운다 */
+  transitions: TransitionCheck[];
 };
 
 // 자간 비교 허용 오차(피그마 소수 오차)
@@ -142,6 +145,7 @@ export function variantChecks(
     texts: [],
     assets: [],
     unsupported: [],
+    transitions: [],
   };
   const records = layers.filter(isRecord);
   const byPath = new Map(records.map((layer) => [stringOf(layer.path), layer]));

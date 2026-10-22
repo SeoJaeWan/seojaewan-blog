@@ -1,4 +1,5 @@
 import { parityDecisions } from '../../../../packages/design-system/scripts/parity/rules/decisions';
+import { parseCubicBezier } from '../design-tokens';
 import type {
   BooleanProperty,
   CaseEntry,
@@ -12,6 +13,7 @@ import { buildLayers, hiddenLayerPaths } from './build-layers';
 import { type CheckContext, checkVariant, type Violation } from './check-structure';
 import type { AssetData, NodeData } from './node-data';
 import { type NameCache, readNodeTree } from './read-node';
+import { bezierKey, type MotionScale, type ReactionInput, variantTransitions } from './transitions';
 
 // 컴포넌트 하나를 검사하고 export.json 내용, 변형 PNG, 아이콘 SVG를 만든다.
 // 플러그인 UI와 피그마 MCP(use_figma)가 같은 함수를 쓴다. GitHub와 UI는 모른다.
@@ -53,7 +55,68 @@ export async function readCheckContext(): Promise<CheckContext> {
       scale.set(value, [...(scale.get(value) ?? []), variable.name]);
     }
   }
-  return { spacingScale: scale };
+  return { spacingScale: scale, motionScale: await readMotionScale() };
+}
+
+/**
+ * 모션 토큰 변수(motion/duration/*, motion/easing/*)를 값으로 찾는 표를 만든다(M1).
+ * @returns 모션 토큰 값 표
+ */
+async function readMotionScale(): Promise<MotionScale> {
+  const collections = await figma.variables.getLocalVariableCollectionsAsync();
+  const defaultModes = new Map(collections.map((item) => [item.id, item.defaultModeId]));
+  const durations = new Map<number, string[]>();
+  const easings = new Map<string, string[]>();
+  for (const variable of await figma.variables.getLocalVariablesAsync()) {
+    const value = variable.valuesByMode[defaultModes.get(variable.variableCollectionId) ?? ''];
+    if (variable.name.startsWith('motion/duration/') && typeof value === 'number') {
+      const ms = Math.round(value);
+      durations.set(ms, [...(durations.get(ms) ?? []), variable.name]);
+    }
+    if (variable.name.startsWith('motion/easing/') && typeof value === 'string') {
+      const points = parseCubicBezier(value);
+      if (points !== null) {
+        const key = bezierKey(points);
+        easings.set(key, [...(easings.get(key) ?? []), variable.name]);
+      }
+    }
+  }
+  return { durations, easings };
+}
+
+/**
+ * 피그마 반응을 전환 입력으로 옮긴다.
+ * @param node 변형
+ * @returns 반응 목록
+ */
+function reactionInputs(node: ComponentNode): ReactionInput[] {
+  const inputs: ReactionInput[] = [];
+  for (const reaction of node.reactions) {
+    const actions = reaction.actions ?? (reaction.action === undefined ? [] : [reaction.action]);
+    for (const action of actions) {
+      const isNode = action.type === 'NODE';
+      const transition = isNode ? action.transition : null;
+      const easing = transition !== null && 'easing' in transition ? transition.easing : null;
+      inputs.push({
+        trigger: reaction.trigger?.type ?? 'NONE',
+        destinationId: isNode ? action.destinationId : null,
+        navigation: isNode ? action.navigation : action.type,
+        transitionType: transition === null ? null : transition.type,
+        duration: transition === null ? null : transition.duration,
+        easingType: easing === null ? null : easing.type,
+        bezier:
+          easing?.easingFunctionCubicBezier === undefined
+            ? null
+            : [
+                easing.easingFunctionCubicBezier.x1,
+                easing.easingFunctionCubicBezier.y1,
+                easing.easingFunctionCubicBezier.x2,
+                easing.easingFunctionCubicBezier.y2,
+              ],
+      });
+    }
+  }
+  return inputs;
 }
 
 /**
@@ -111,6 +174,12 @@ async function exportComponentWithHidden(
   }
   violations.push(...(await checkHiddenLayers(node.name, trees)));
 
+  const variantSlugs = new Map(
+    variants.map((variant) => [
+      variant.id,
+      variantSlug(node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {}),
+    ]),
+  );
   const entries: Record<string, VariantEntry> = {};
   const pngs = new Map<string, Uint8Array>();
   const assetNodes = new Map<string, AssetData>();
@@ -134,6 +203,16 @@ async function exportComponentWithHidden(
         };
       }
     }
+    const motion =
+      context.motionScale === undefined
+        ? { transitions: [], violations: [] }
+        : variantTransitions(
+            reactionInputs(variant),
+            variantSlugs,
+            context.motionScale,
+            `${node.name} / ${variant.name}`,
+          );
+    violations.push(...motion.violations);
     if (violations.length > 0) {
       continue;
     }
@@ -147,6 +226,7 @@ async function exportComponentWithHidden(
       layers: buildLayers(tree, context),
       hidden: hiddenLayerPaths(tree),
       cases,
+      ...(motion.transitions.length === 0 ? {} : { transitions: motion.transitions }),
     };
     entries[slug] = { nodeId: variant.id, ...info, hash: variantHash(info) };
   }

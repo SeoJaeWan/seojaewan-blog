@@ -188,3 +188,46 @@ export const blendModeClasses: Readonly<Record<string, ClassChoice>> = Object.fr
  */
 export const TOKEN_CLASS_PATTERN =
   /^(bg|text|inner-border|border-gradient|border|outline|rounded|shadow|backdrop-blur|opacity|type|p|pt|pr|pb|pl|px|py|gap|gap-x|gap-y|w|h|size|min-w|min-h|max-w|max-h|w-stroke|h-stroke|material)-/u;
+
+/**
+ * 상태 전환(M1)에서 피그마 역할(레이어 확인 항목의 역할 이름) → 전환해야 할 CSS 속성.
+ * null은 CSS로 부드럽게 바뀌지 않는 값(선택지, 자산 파일, 의사 요소 고리 등)이라 전환 대상에서 뺀다.
+ * 표에 없는 역할이 바뀌면 비교할 수 없어 실패한다(표를 넓힌다).
+ */
+export const transitionProperties: Readonly<Record<string, string | null>> = {
+  채우기: 'background-color',
+  '글자 색': 'color',
+  '자산 색': 'color',
+  불투명도: 'opacity',
+  '효과(그림자)': 'box-shadow',
+  '효과(배경 흐림)': 'backdrop-filter',
+  효과: 'box-shadow',
+  '모서리 반경': 'border-radius',
+  너비: 'width',
+  높이: 'height',
+  간격: 'column-gap',
+  '줄 간격': 'row-gap',
+  '여백(top)': 'padding-top',
+  '여백(right)': 'padding-right',
+  '여백(bottom)': 'padding-bottom',
+  '여백(left)': 'padding-left',
+  // 안쪽 선은 ::before 고리(배경 이미지·마스크)라 요소의 전환으로 부드럽게 바뀌지 않는다
+  '선 색': null,
+  '선 두께': null,
+  '선 위치': null,
+  선: null,
+  자산: null,
+  '글자 스타일': null,
+  '글자 꾸밈': null,
+  '내용 자르기': null,
+  말줄임: null,
+  '배치 방향': null,
+  '주축 정렬': null,
+  '교차축 정렬': null,
+  '자기 정렬': null,
+  '글자 정렬': null,
+  줄바꿈: null,
+  블렌드: null,
+  회전: 'rotate',
+  '절대 위치': null,
+};

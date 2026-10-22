@@ -327,6 +327,58 @@ export function inspectVariant(input: InspectInput): InspectResult {
     }
   }
 
+  // 상태 전환(M1): 이 변형으로 들어오는 전환마다, 바뀌는 속성을 전환하는 요소의 시간·이징 클래스와 계산값.
+  // CSS 전환은 바뀐 뒤 상태의 값을 쓰므로 지금(도착 변형) 상태에서 읽는다.
+  for (const transition of checks.transitions) {
+    const element = elementOf(transition.layer);
+    if (element === undefined) {
+      continue;
+    }
+    const where = `전환(${transition.from} → ${transition.trigger})`;
+    for (const role of transition.unknown) {
+      fail(
+        transition.layer,
+        `${where} 대상`,
+        role,
+        '역할 → CSS 속성 표(class-rules transitionProperties)에 없음',
+      );
+    }
+    for (const [property, role] of Object.entries(transition.properties)) {
+      const owner = transitionOwner(element, property);
+      if (owner === undefined) {
+        fail(
+          transition.layer,
+          `${where} 대상`,
+          `${role} → ${property}`,
+          `transition-property에 ${property} 없음(${computedValue(element, 'transition-property')})`,
+        );
+        continue;
+      }
+      const bases = new Set(classList(owner.element).map(baseClass));
+      for (const [label, expectation, property2, actual] of [
+        ['시간', transition.duration, 'transition-duration', owner.duration],
+        ['이징', transition.easing, 'transition-timing-function', owner.timing],
+      ] as const) {
+        const expected = expectedValue({ property: property2, css: expectation.css });
+        if (!bases.has(expectation.className)) {
+          fail(
+            transition.layer,
+            `${where} ${label}`,
+            expectation.figma,
+            `${expectation.className} 클래스 없음(${property2} ${actual}, 기대 ${expected})`,
+          );
+        } else if (actual !== expected) {
+          fail(
+            transition.layer,
+            `${where} ${label}`,
+            expectation.figma,
+            `${expectation.className} (${property2} ${actual}, 기대 ${expected})`,
+          );
+        }
+      }
+    }
+  }
+
   // 서체 확인 준비(D2): 글자마다 감싸 실제로 그린 서체를 CDP로 읽게 한다. 공백은 서체가 없어 뺀다.
   let charIndex = 0;
   for (const text of checks.texts) {
@@ -381,6 +433,69 @@ export function inspectVariant(input: InspectInput): InspectResult {
   }
 
   return { failures, fonts };
+
+  /**
+   * 속성을 전환하는 요소와 그 시간·이징을 찾는다. 요소 자신을 보고, 상속되는 글자 색은 루트까지 조상도 본다.
+   * transition-property 목록에서 그 속성이나 all의 자리를 찾아 같은 자리의 시간·이징을 쓴다.
+   * @param element 레이어 요소
+   * @param property CSS 속성
+   * @returns 전환하는 요소와 시간·이징(없으면 undefined)
+   */
+  function transitionOwner(
+    element: Element,
+    property: string,
+  ): { element: Element; duration: string; timing: string } | undefined {
+    for (let current: Element | null = element; current !== null; current = current.parentElement) {
+      const style = getComputedStyle(current);
+      const properties = style.transitionProperty.split(',').map((item) => item.trim());
+      const index = properties.findIndex((item) => item === property || item === 'all');
+      if (index !== -1) {
+        const durations = style.transitionDuration.split(',').map((item) => item.trim());
+        const timings = splitTopLevel(style.transitionTimingFunction);
+        const duration = durations[index % durations.length] ?? '';
+        if (duration !== '0s') {
+          return {
+            element: current,
+            duration: normalizeValue('transition-duration', duration),
+            timing: normalizeValue(
+              'transition-timing-function',
+              timings[index % timings.length] ?? '',
+            ),
+          };
+        }
+      }
+      if (property !== 'color' || current === root) {
+        return undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * 괄호 밖의 쉼표로 나눈다(cubic-bezier 안의 쉼표는 나누지 않는다).
+   * @param value 목록 값
+   * @returns 항목
+   */
+  function splitTopLevel(value: string): string[] {
+    const parts: string[] = [];
+    let depth = 0;
+    let current = '';
+    for (const character of value) {
+      if (character === '(') {
+        depth += 1;
+      } else if (character === ')') {
+        depth -= 1;
+      }
+      if (character === ',' && depth === 0) {
+        parts.push(current.trim());
+        current = '';
+      } else {
+        current += character;
+      }
+    }
+    parts.push(current.trim());
+    return parts;
+  }
 
   /**
    * 요소가 화면에 보이는지 본다.
