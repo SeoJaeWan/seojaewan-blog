@@ -1,0 +1,64 @@
+{
+  "booleans": {},
+  "hash": "b7b785d986b3556e75369fdc826201618366fd6751dd0785aa80536b24e2d16f",
+  "name": "NavigationPane",
+  "nodeId": "439:5773",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "f634b6176f5a657494c760e6c8965d386d35da6a53642493871ae387dd55abf1",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "items",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "439:5773",
+      "properties": {}
+    }
+  }
+}

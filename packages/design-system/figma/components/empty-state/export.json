@@ -1,0 +1,1530 @@
+{
+  "booleans": {
+    "showButton": {
+      "defaultValue": true,
+      "key": "Show button#399:8"
+    }
+  },
+  "hash": "e056d6e1ab2bb6ae9a56e710668dd82e7c6f9d99285e9af165a72c497548b79d",
+  "name": "EmptyState",
+  "nodeId": "399:5549",
+  "variants": {
+    "default": {
+      "cases": {
+        "showButton=false": {
+          "hidden": [
+            "reload"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": "spacing/16",
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "FIXED",
+                "vertical": "HUG",
+                "width": "size/empty-state/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": "text-fill/primary",
+                "file": "icons/ic_fluent_document_20_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_document_20_regular"
+              },
+              "parentLayout": "VERTICAL",
+              "path": "icon",
+              "sizing": {
+                "height": "size/icon/48",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/48"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "heading",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "seojaewan.com 페이지를 찾을 수 없음",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 14,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Subtitle"
+                  },
+                  {
+                    "end": 18,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 14,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Subtitle"
+                  },
+                  {
+                    "end": 19,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 18,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Subtitle"
+                  },
+                  {
+                    "end": 21,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 19,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Subtitle"
+                  },
+                  {
+                    "end": 22,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 21,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Subtitle"
+                  },
+                  {
+                    "end": 23,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 22,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Subtitle"
+                  },
+                  {
+                    "end": 24,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 23,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Subtitle"
+                  },
+                  {
+                    "end": 26,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 24,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/subtitle"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/semibold"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/subtitle"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Subtitle"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "message",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: seojaewan.com/posts/react-20",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 2,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 4,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 8,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 5,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 8,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 12,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 17,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 12,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 18,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 17,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 20,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 18,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 21,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 20,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 22,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 21,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 23,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 22,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 27,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 23,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 57,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 27,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "code",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "HTTP ERROR 404",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 14,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "27f99ff2ac2089b36df6bd391e84ee09e1a6992fc8fc55725c0b6dc7eeb89710",
+      "hidden": [
+        "reload/icon"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/16",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/empty-state/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_document_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_document_20_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "icon",
+          "sizing": {
+            "height": "size/icon/48",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/48"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "heading",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "seojaewan.com 페이지를 찾을 수 없음",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 14,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 18,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 14,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              },
+              {
+                "end": 19,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 18,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 21,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 19,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              },
+              {
+                "end": 22,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 21,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 23,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 22,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              },
+              {
+                "end": 24,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 23,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 26,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 24,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "message",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: seojaewan.com/posts/react-20",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 5,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 4,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 8,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 5,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 8,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 12,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 17,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 12,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 18,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 17,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 20,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 18,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 21,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 20,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 22,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 21,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 23,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 22,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 27,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 23,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 57,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 27,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "code",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "HTTP ERROR 404",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 14,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "reload",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "minWidth": "size/button/min-width",
+            "vertical": "HUG"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "style": "Elevation/Accent Control Border"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "reload/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "새로고침",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-on-accent-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "399:5549",
+      "properties": {}
+    }
+  }
+}

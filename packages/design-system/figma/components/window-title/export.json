@@ -1,0 +1,200 @@
+{
+  "booleans": {},
+  "hash": "178263d02b8d0e6e7ba7b67b7a35e6f1cf5a014acb495558c68f0d299ad89d92",
+  "name": "WindowTitle",
+  "nodeId": "395:15808",
+  "variants": {
+    "kind=preview": {
+      "cases": {},
+      "hash": "cb50c365001cd2d00ccd3538c7aef050bc62615cdc2ff3de850cc5cb04cd5b06",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/window-title/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "title",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "395:15806",
+      "properties": {
+        "Kind": "Preview"
+      }
+    },
+    "kind=window": {
+      "cases": {},
+      "hash": "81efb20c8413027ac5a18c2125ca3f0e7533baeb50d100112795674a08c33a80",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/16",
+              "right": "spacing/0",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/window-title/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/app-file-explorer.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "app/File Explorer"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "app icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "title",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "395:15798",
+      "properties": {
+        "Kind": "Window"
+      }
+    }
+  }
+}

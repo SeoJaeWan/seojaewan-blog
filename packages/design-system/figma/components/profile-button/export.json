@@ -1,0 +1,100 @@
+{
+  "booleans": {},
+  "hash": "5df42ccf605f9646d3109d33ce269e82835ce57c28c9ecb72ab8ea01a83371a9",
+  "name": "ProfileButton",
+  "nodeId": "414:5722",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "d406183596330b665580b34d3bfd6a9556da66599b68aff4c363394fc1140e02",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "images/avatar-profile-placeholder.png",
+            "group": "Images",
+            "kind": "raster",
+            "name": "avatar/Profile (PLACEHOLDER)"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "profile photo",
+          "sizing": {
+            "height": "size/profile-button/photo",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/profile-button/photo"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "profile name",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "서재완",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "414:5722",
+      "properties": {}
+    }
+  }
+}

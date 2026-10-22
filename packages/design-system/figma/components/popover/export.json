@@ -1,0 +1,842 @@
+{
+  "booleans": {},
+  "hash": "22e8eeeb5fed52cfce1f5036a832fed14438e92f63dd4a27e4330e32d3432a26",
+  "name": "Popover",
+  "nodeId": "414:5614",
+  "variants": {
+    "placement=bottom-center,state=closed": {
+      "cases": {},
+      "hash": "eb4f2dcb45e00e059b5e4181b32fd950c8efb1e0156af060d3d4d6aa0ffcc3f6",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5604",
+      "properties": {
+        "Placement": "Bottom-Center",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-center,state=open": {
+      "cases": {},
+      "hash": "4568d5a2363148857962699f6f66c6b8eb6e968c5d721119ec8a83153edfda72",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5605",
+      "properties": {
+        "Placement": "Bottom-Center",
+        "State": "Open"
+      }
+    },
+    "placement=bottom-end,state=closed": {
+      "cases": {},
+      "hash": "50e44130b2cb31bdab6f56d4001dba4205b2fe2505d1cd414c377e239d396fbe",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5606",
+      "properties": {
+        "Placement": "Bottom-End",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-end,state=open": {
+      "cases": {},
+      "hash": "1a22ec53aa07f275b9353fc31d3afa651e2d2ff5987a7196a663700f50e44ec0",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MAX",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5607",
+      "properties": {
+        "Placement": "Bottom-End",
+        "State": "Open"
+      }
+    },
+    "placement=bottom-start,state=closed": {
+      "cases": {},
+      "hash": "4e93306b59be99a5ca8e45882acdb6cc01e392fbea2dfb89a1f0185bb93185cf",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5602",
+      "properties": {
+        "Placement": "Bottom-Start",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-start,state=open": {
+      "cases": {},
+      "hash": "4e9deaa1ca1986f9ebbee5cfcd5201cb372729ed07fade6adc9d1a656be74394",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5603",
+      "properties": {
+        "Placement": "Bottom-Start",
+        "State": "Open"
+      }
+    },
+    "placement=right-start,state=closed": {
+      "cases": {},
+      "hash": "6db538189a4049305295d8cc335e5db87ad970aa019111f312b65f73875bdad7",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5612",
+      "properties": {
+        "Placement": "Right-Start",
+        "State": "Closed"
+      }
+    },
+    "placement=right-start,state=open": {
+      "cases": {},
+      "hash": "0601a13a1c9bbfb61a37b3909d3c01eeacb2118b795e8440162fcab1420a4b0e",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5613",
+      "properties": {
+        "Placement": "Right-Start",
+        "State": "Open"
+      }
+    },
+    "placement=top-center,state=closed": {
+      "cases": {},
+      "hash": "efb0dd238c7b4feff8cc00a78872202dab7662b62382ce6396126b2eaa8fe2b2",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5608",
+      "properties": {
+        "Placement": "Top-Center",
+        "State": "Closed"
+      }
+    },
+    "placement=top-center,state=open": {
+      "cases": {},
+      "hash": "111676fe80678d17e99de2aa9073dd3b35fdecbf25a538e6c0797c46dec5bb0e",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5609",
+      "properties": {
+        "Placement": "Top-Center",
+        "State": "Open"
+      }
+    },
+    "placement=top-end,state=closed": {
+      "cases": {},
+      "hash": "cb453b78f782a510b6261f1a4ea6c747400ac776d3af52518105c9bfac723a79",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5610",
+      "properties": {
+        "Placement": "Top-End",
+        "State": "Closed"
+      }
+    },
+    "placement=top-end,state=open": {
+      "cases": {},
+      "hash": "5b02b56f4fbfafd1e1c8ae386b057909cc705dd19bcb84597a6bfa764b1b4f23",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MAX",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Popup",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Trigger",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "414:5611",
+      "properties": {
+        "Placement": "Top-End",
+        "State": "Open"
+      }
+    }
+  }
+}

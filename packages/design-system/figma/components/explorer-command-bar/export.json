@@ -1,0 +1,1620 @@
+{
+  "booleans": {},
+  "hash": "72695e567770d29dd71aecd568c3bd8812db46ebaefc708d8b8fa40a419baf69",
+  "name": "ExplorerCommandBar",
+  "nodeId": "439:5757",
+  "variants": {
+    "device=desktop,mode=folder": {
+      "cases": {},
+      "hash": "d08787de87553223102a6d13d057ef30e554c573aa05eb02af0dea030b0019c0",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/explorer-command-bar/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "새로 만들기",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_add_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_add_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "새로 만들기/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "새로 만들기/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "새로 만들기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 6,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator after new",
+          "sizing": {
+            "height": "size/explorer-command-bar/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/explorer-command-bar/separator-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "cut",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_cut_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_cut_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "cut/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "paste",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_clipboard_paste_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_clipboard_paste_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "paste/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_rename_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_rename_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "delete",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_delete_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_delete_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "delete/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator after delete",
+          "sizing": {
+            "height": "size/explorer-command-bar/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/explorer-command-bar/separator-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_sort_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_sort_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "정렬",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "보기",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_grid_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_grid_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "보기/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "보기/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "439:5732",
+      "properties": {
+        "Device": "Desktop",
+        "Mode": "Folder"
+      }
+    },
+    "device=desktop,mode=recycle-bin": {
+      "cases": {},
+      "hash": "181318cc133effc1f729e2444993f065799cd59d2b2212caa64de8277f1788b0",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/explorer-command-bar/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "복원",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_counterclockwise_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_counterclockwise_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "복원/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "복원/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "복원",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "휴지통 비우기",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_delete_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_delete_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "휴지통 비우기/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "휴지통 비우기/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "휴지통 비우기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/explorer-command-bar/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/explorer-command-bar/separator-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_sort_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_sort_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "정렬/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "정렬",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "보기",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_grid_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_grid_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "보기/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "보기/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "439:5739",
+      "properties": {
+        "Device": "Desktop",
+        "Mode": "Recycle Bin"
+      }
+    },
+    "device=mobile,mode=folder": {
+      "cases": {},
+      "hash": "226fc37838da9b5709f1971cdb5a88915fb61825b54fbad33d14b5036065edee",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/explorer-command-bar/width-mobile"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "new folder",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_folder_add_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_folder_add_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "new folder/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "cut",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_cut_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_cut_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "cut/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "paste",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_clipboard_paste_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_clipboard_paste_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "paste/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_rename_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_rename_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "rename/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "delete",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_delete_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_delete_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "delete/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/explorer-command-bar/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/explorer-command-bar/separator-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "sort",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_sort_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_sort_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "sort/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "view",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_grid_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_grid_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "view/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "439:5749",
+      "properties": {
+        "Device": "Mobile",
+        "Mode": "Folder"
+      }
+    },
+    "device=mobile,mode=recycle-bin": {
+      "cases": {},
+      "hash": "afa900435e6771ea430f1e6f43e592aa384f2e5fdcb65f6b837951b22eac9116",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/explorer-command-bar/width-mobile"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "restore",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_counterclockwise_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_counterclockwise_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "restore/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "empty recycle bin",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_delete_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_delete_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "empty recycle bin/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/explorer-command-bar/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/explorer-command-bar/separator-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "sort",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_arrow_sort_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_sort_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "sort/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "view",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_grid_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_grid_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "view/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "439:5756",
+      "properties": {
+        "Device": "Mobile",
+        "Mode": "Recycle Bin"
+      }
+    }
+  }
+}

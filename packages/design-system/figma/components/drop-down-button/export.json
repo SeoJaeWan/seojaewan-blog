@@ -1,0 +1,554 @@
+{
+  "booleans": {},
+  "hash": "baab47694701973924c795a188f6991427c71e13e362e33a061c1e13627de1f8",
+  "name": "DropDownButton",
+  "nodeId": "307:22812",
+  "variants": {
+    "state=disabled": {
+      "cases": {},
+      "hash": "7177756f14d512b5e1d20d412b00cfbaf112a553f75f7610f9218ade02ae7536",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/disabled"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기: 간단히",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/disabled"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/disabled",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "chevron",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "307:22802",
+      "properties": {
+        "State": "Disabled"
+      }
+    },
+    "state=focused": {
+      "cases": {},
+      "hash": "2724c4d42422b4759c725f89787271a68a07eae52d4dc4a0d6eabd4f81c21214",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "stroke": {
+            "align": "OUTSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "focus-stroke/outer"
+            },
+            "weight": {
+              "bottom": "stroke-width/focus-outer",
+              "left": "stroke-width/focus-outer",
+              "right": "stroke-width/focus-outer",
+              "top": "stroke-width/focus-outer"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기: 간단히",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "chevron",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "307:22807",
+      "properties": {
+        "State": "Focused"
+      }
+    },
+    "state=hover": {
+      "cases": {},
+      "hash": "e2858c657cface2e349962a9a15771640e84c5ff48e476619b748c0a9eadf392",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기: 간단히",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "chevron",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "307:22792",
+      "properties": {
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "state=pressed": {
+      "cases": {},
+      "hash": "eac4c51b5a8f0038c1da91de393e3bd10f2d4a4db02fa9b875a0540d08bc5553",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기: 간단히",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "chevron",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "307:22797",
+      "properties": {
+        "State": "Pressed"
+      }
+    },
+    "state=rest": {
+      "cases": {},
+      "hash": "e72f483c7276b780aa76411e544bddd6f76bdbdc5247bd74e0eec0582a7bd9f7",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/6",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/6"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "보기: 간단히",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "chevron",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "307:22787",
+      "properties": {
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

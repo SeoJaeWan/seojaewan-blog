@@ -1,0 +1,51 @@
+{
+  "booleans": {},
+  "hash": "53d2cc398e15671e50a971000ccffc05eb28a4c6ba1554718801fa9db198d8e3",
+  "name": "SnapPreview",
+  "nodeId": "90:2737",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "c3e0ce9aaf2926260ea11018f1d87c48e83c4cb1ac46f060a66160653863a03a",
+      "hidden": [],
+      "layers": [
+        {
+          "effect": "Surface/Flyout (Acrylic)",
+          "fill": {
+            "style": "Material/Acrylic Default"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "height": "size/snap-preview/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-preview/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "surface-stroke/flyout"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        }
+      ],
+      "nodeId": "90:2737",
+      "properties": {}
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "booleans": {},
+  "hash": "c0fe772d7116df9b81f4e2c19e2e7f9f669b401a1b2fd92429502e1eda77ac17",
+  "name": "SnapZone",
+  "nodeId": "90:2711",
+  "variants": {
+    "state=hover": {
+      "cases": {},
+      "hash": "8cd2ac5ca2c5c5d8173fca46008fdd0ecc90faea01699e8daf62a3f36c617e38",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/snap-zone/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-zone/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/on-accent-default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        }
+      ],
+      "nodeId": "90:2710",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "cases": {},
+      "hash": "8f596177f4b24479e549e9210ca38dac36af7a61a6ca7094cea8eac671fb4bf8",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/snap-zone/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-zone/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        }
+      ],
+      "nodeId": "90:2709",
+      "properties": {
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

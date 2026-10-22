@@ -1,0 +1,643 @@
+{
+  "booleans": {},
+  "hash": "8352063da5f113c4d2e54c3dd7f900f50fd7ed51f67d8bde0c8be017f93fb7be",
+  "name": "BestMatchCard",
+  "nodeId": "399:15535",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "bfdbb1f9ffa56d0fb22323196e562418e16fde9ecb6b21ce4603189978b8473f",
+      "hidden": [
+        "copy link action/base/shortcut",
+        "open action/base/shortcut"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "card-background-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/16",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/24"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/best-match-card/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "preview icon",
+          "sizing": {
+            "height": "size/search-panel/preview-icon",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/search-panel/preview-icon"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "preview title",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "리액트 19 훅 정리",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              },
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 8,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 7,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              },
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 8,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Subtitle"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/subtitle"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/subtitle"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Subtitle"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "preview meta",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "글 · 2026-10-20",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 14,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 1,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "divider",
+          "sizing": {
+            "height": "stroke-width/default",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/best-match-card/divider-width"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "open action",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/menu-item/width"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "open action/base",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "open action/base/leading",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "FRAME"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_open_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_open_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "open action/base/leading/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "open action/base/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "열기",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/4",
+              "right": "spacing/4",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "copy link action",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/menu-item/width"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "copy link action/base",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "copy link action/base/leading",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "FRAME"
+        },
+        {
+          "asset": {
+            "color": "text-fill/primary",
+            "file": "icons/ic_fluent_link_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_link_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "copy link action/base/leading/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "copy link action/base/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "링크 복사",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 5,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "399:15535",
+      "properties": {}
+    }
+  }
+}

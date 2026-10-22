@@ -1,0 +1,747 @@
+{
+  "booleans": {},
+  "hash": "00ba758385153663d14256ff16c32da90eac9c186f17061ecdd2460cbe1f4c2c",
+  "name": "SnapLayoutOption",
+  "nodeId": "396:15872",
+  "variants": {
+    "layout=half": {
+      "cases": {},
+      "hash": "e8dd359d1fabebf0ac3fdb485c201fd75d4ed96977ca965c1eea6d2d6cee2899",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/snap-layout-option/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-layout-option/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "left column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "left column/zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "right column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "396:15850",
+      "properties": {
+        "Layout": "Half"
+      }
+    },
+    "layout=halfquarter": {
+      "cases": {},
+      "hash": "2d20f0f36ba80e6df9f0d425ecec4ac91abc1331443ab5ba64909f82a93abfe4",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/snap-layout-option/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-layout-option/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "left column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "left column/zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "right column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/top zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/bottom zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "396:15863",
+      "properties": {
+        "Layout": "HalfQuarter"
+      }
+    },
+    "layout=quad": {
+      "cases": {},
+      "hash": "a642247c2b351fd0ec65c238596fc7ffc6ec80f05a45e1e2ecd9feff53c543e2",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/snap-layout-option/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-layout-option/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "left column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "left column/top zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "left column/bottom zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "right column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/top zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/bottom zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "396:15871",
+      "properties": {
+        "Layout": "Quad"
+      }
+    },
+    "layout=twothirds": {
+      "cases": {},
+      "hash": "911905982be1dfa2d8178073cdcfdfb2378d9ba067e8b1b0c86ef51ab6cab7e5",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/snap-layout-option/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/snap-layout-option/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "left column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "FILL",
+            "width": "size/snap-layout-option/column-large"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "left column/zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "right column",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "FRAME"
+        },
+        {
+          "fill": {
+            "variable": "control-alt-fill/secondary"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "right column/zone",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "396:15856",
+      "properties": {
+        "Layout": "TwoThirds"
+      }
+    }
+  }
+}

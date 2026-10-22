@@ -1,0 +1,676 @@
+{
+  "booleans": {},
+  "hash": "75e66c68e2310f02540fc4f67a2180b787a4ff70bb079d7d995a806d507f9c35",
+  "name": "PostNavCard",
+  "nodeId": "399:5487",
+  "variants": {
+    "direction=next": {
+      "cases": {},
+      "hash": "af684c6e335b9cdc5a104a81ba7744b571edf4c3fd062f4e1ed6b74ba808fab4",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "card-background-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "MAX",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/post-nav-card/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "다음 글",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "post title",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "리액트 서버 컴포넌트 이해하기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 6,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 4,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 6,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 7,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 12,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 16,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 12,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "399:5486",
+      "properties": {
+        "Direction": "Next"
+      }
+    },
+    "direction=prev": {
+      "cases": {},
+      "hash": "fdd842b6d4605427d2ea1c3f05938d473178780438d1e9ee5632f8720be78062",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "card-background-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/post-nav-card/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "이전 글",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "post title",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "리액트 서버 컴포넌트 이해하기",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 6,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 4,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 7,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 6,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 7,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              },
+              {
+                "end": 12,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              },
+              {
+                "end": 16,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 12,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body Strong"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "399:5482",
+      "properties": {
+        "Direction": "Prev"
+      }
+    }
+  }
+}

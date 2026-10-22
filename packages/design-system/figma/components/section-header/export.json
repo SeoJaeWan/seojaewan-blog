@@ -1,0 +1,83 @@
+{
+  "booleans": {},
+  "hash": "331e3d52012843df1be79503757d11a3c2399a871e1efc9818f9de28ca03e155",
+  "name": "SectionHeader",
+  "nodeId": "386:13783",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "83397d368195f13dc19167b7e62172b12017bfcc45b1c29a7c649d90267c75be",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "A",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "386:13783",
+      "properties": {}
+    }
+  }
+}

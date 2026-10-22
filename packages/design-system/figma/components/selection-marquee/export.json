@@ -1,0 +1,44 @@
+{
+  "booleans": {},
+  "hash": "8e475ef0aa7211b72a687aff574338aca8a964602090784680c854bff7f576a4",
+  "name": "SelectionMarquee",
+  "nodeId": "90:2738",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "20a9e4a9228035c5699e9350734712643e0776ccc1ba56d0222d462760ae0072",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "selection-marquee/fill"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/selection-marquee/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/selection-marquee/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "selection-marquee/stroke"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        }
+      ],
+      "nodeId": "90:2738",
+      "properties": {}
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "booleans": {},
+  "hash": "9309360e6b777c9a4a6c73f43da7a80c454a6a54ef9a16d60223935e886e004f",
+  "name": "TileGrid",
+  "nodeId": "389:5073",
+  "variants": {
+    "align=center": {
+      "cases": {},
+      "hash": "20b55507299e3ef6b1241a41481e7cde1eafe06f957298b15c3f3dbc6e5b8603",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/tile-grid/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "alignContent": "AUTO",
+            "counterAlign": "MIN",
+            "counterGap": "spacing/0",
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "tiles",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "389:5072",
+      "properties": {
+        "Align": "Center"
+      }
+    },
+    "align=start": {
+      "cases": {},
+      "hash": "3fa9e677bf3fa087289519b69abbd84112132b862f699ffe902bb06a18f95e8a",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/tile-grid/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "alignContent": "AUTO",
+            "counterAlign": "MIN",
+            "counterGap": "spacing/0",
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "tiles",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "389:5071",
+      "properties": {
+        "Align": "Start"
+      }
+    }
+  }
+}

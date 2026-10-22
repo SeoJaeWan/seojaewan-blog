@@ -1,0 +1,196 @@
+{
+  "booleans": {
+    "showHeader": {
+      "defaultValue": true,
+      "key": "Show header#426:0"
+    }
+  },
+  "hash": "cde6774a1594349c81971b5f391a2674bf773053cbf63c470b49e8ddd04b8330",
+  "name": "ListGroup",
+  "nodeId": "426:5228",
+  "variants": {
+    "default": {
+      "cases": {
+        "showHeader=false": {
+          "hidden": [
+            "header"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/0",
+                  "right": "spacing/0",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "FIXED",
+                "vertical": "HUG",
+                "width": "size/list-group/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": "spacing/2",
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/0",
+                  "right": "spacing/0",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "VERTICAL",
+              "path": "items",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "SLOT"
+            }
+          ]
+        }
+      },
+      "hash": "0c5478c50f58daecde2444020d369ea7855a584bec3267659d39ac11f6e5470b",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "HUG",
+            "width": "size/list-group/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "header",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "header/label",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "A",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 1,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/semibold"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body Strong"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/2",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "items",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "SLOT"
+        }
+      ],
+      "nodeId": "426:5228",
+      "properties": {}
+    }
+  }
+}
