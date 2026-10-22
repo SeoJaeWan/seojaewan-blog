@@ -7,8 +7,18 @@
 const GENERATED_HEADER = `// 이 파일은 scripts/assets/generate-assets.ts가 figma/assets/에서 만든다. 손으로 고치지 않는다.
 // 다시 만들기: pnpm --filter @seojaewan/design-system generate:assets`;
 
-// SVG 요소 중 코드로 옮기는 것. 피그마가 내보낸 아이콘은 path만 쓴다. 다른 요소가 나오면 실패시켜 이 표를 넓힌다.
-const supportedElements = new Set(['path', 'rect', 'circle', 'ellipse']);
+// SVG 요소 중 코드로 옮기는 것. 피그마가 내보낸 한 가지 색 아이콘은 path만, 여러 색 자산은 그라데이션(defs)도 쓴다.
+// 다른 요소가 나오면 실패시켜 이 표를 넓힌다.
+const supportedElements = new Set([
+  'path',
+  'rect',
+  'circle',
+  'ellipse',
+  'defs',
+  'linearGradient',
+  'radialGradient',
+  'stop',
+]);
 
 // SVG 속성 이름 → React 속성 이름. 표에 없는 하이픈 속성은 실패시킨다.
 const attributeNames: Readonly<Record<string, string>> = {
@@ -33,6 +43,18 @@ const attributeNames: Readonly<Record<string, string>> = {
   'stroke-linecap': 'strokeLinecap',
   'stroke-linejoin': 'strokeLinejoin',
   'stroke-opacity': 'strokeOpacity',
+  id: 'id',
+  x1: 'x1',
+  y1: 'y1',
+  x2: 'x2',
+  y2: 'y2',
+  fx: 'fx',
+  fy: 'fy',
+  offset: 'offset',
+  gradientUnits: 'gradientUnits',
+  gradientTransform: 'gradientTransform',
+  'stop-color': 'stopColor',
+  'stop-opacity': 'stopOpacity',
 };
 
 /** SVG 요소 하나 */
@@ -55,6 +77,8 @@ export function imageLayerFile(asset: string, opacity: number): string {
 export type SvgElementData = {
   tag: string;
   attributes: Record<string, string>;
+  /** 자식 요소(defs, 그라데이션의 stop) */
+  children?: SvgElementData[];
 };
 
 /** SVG 자산 하나 */
@@ -81,29 +105,60 @@ export function parseSvgAsset(svg: string, file: string): SvgAssetData {
   if (viewBox === undefined) {
     throw new Error(`${file}: viewBox가 없다.`);
   }
+  const tokens = (root[2] ?? '').matchAll(/<(\/?)([a-zA-Z]+)\b([^>]*?)(\/?)>|([^<]+)/gu);
   const elements: SvgElementData[] = [];
-  let rest = (root[2] ?? '').trim();
-  while (rest !== '') {
-    const element = /^<([a-zA-Z]+)\b([^>]*?)\/>\s*/u.exec(rest);
-    if (element === null) {
-      throw new Error(`${file}: 닫는 태그가 없는 단일 요소만 옮길 수 있다(${rest.slice(0, 40)}).`);
-    }
-    const tag = element[1] ?? '';
-    if (!supportedElements.has(tag)) {
-      throw new Error(`${file}: <${tag}> 요소는 옮기지 않는다.`);
-    }
-    const attributes: Record<string, string> = {};
-    for (const [name, value] of parseAttributes(element[2] ?? '')) {
-      const reactName = attributeNames[name];
-      if (reactName === undefined) {
-        throw new Error(`${file}: <${tag}>의 ${name} 속성은 옮기지 않는다.`);
+  const stack: SvgElementData[] = [];
+  for (const token of tokens) {
+    const [, closing, tag = '', rawAttributes = '', selfClosing, textNode] = token;
+    if (textNode !== undefined) {
+      if (textNode.trim() !== '') {
+        throw new Error(`${file}: 글자 내용은 옮기지 않는다(${textNode.trim().slice(0, 40)}).`);
       }
-      attributes[reactName] = value;
+      continue;
     }
-    elements.push({ tag, attributes });
-    rest = rest.slice(element[0].length);
+    if (closing === '/') {
+      if (stack.pop()?.tag !== tag) {
+        throw new Error(`${file}: </${tag}>의 짝이 맞지 않는다.`);
+      }
+      continue;
+    }
+    const element = parseElement(tag, rawAttributes, file);
+    const parent = stack.at(-1);
+    if (parent === undefined) {
+      elements.push(element);
+    } else {
+      parent.children = [...(parent.children ?? []), element];
+    }
+    if (selfClosing !== '/') {
+      stack.push(element);
+    }
+  }
+  if (stack.length > 0) {
+    throw new Error(`${file}: <${stack.at(-1)?.tag ?? ''}>가 닫히지 않았다.`);
   }
   return { viewBox, elements };
+}
+
+/**
+ * SVG 요소 하나의 태그와 속성을 옮긴다. 표에 없는 요소와 속성은 실패한다.
+ * @param tag 태그 이름
+ * @param rawAttributes 속성 문자열
+ * @param file 오류 메시지에 쓸 자산 파일 경로
+ * @returns 요소 데이터(자식 없음)
+ */
+function parseElement(tag: string, rawAttributes: string, file: string): SvgElementData {
+  if (!supportedElements.has(tag)) {
+    throw new Error(`${file}: <${tag}> 요소는 옮기지 않는다.`);
+  }
+  const attributes: Record<string, string> = {};
+  for (const [name, value] of parseAttributes(rawAttributes)) {
+    const reactName = attributeNames[name];
+    if (reactName === undefined) {
+      throw new Error(`${file}: <${tag}>의 ${name} 속성은 옮기지 않는다.`);
+    }
+    attributes[reactName] = value;
+  }
+  return { tag, attributes };
 }
 
 /**
@@ -119,12 +174,19 @@ export function assetDataModule(assets: ReadonlyMap<string, SvgAssetData>): stri
     .join('\n');
   return `${GENERATED_HEADER}
 
+/** SVG 요소(그라데이션은 자식 요소를 가진다) */
+export type SvgAssetElement = {
+  readonly tag: string;
+  readonly attributes: Readonly<Record<string, string>>;
+  readonly children?: readonly SvgAssetElement[];
+};
+
 /** 피그마 자산 파일 경로(figma/assets/ 기준) → SVG 요소 */
 export const svgAssets = {
 ${entries}
 } as const satisfies Record<
   string,
-  { viewBox: string; elements: readonly { tag: string; attributes: Readonly<Record<string, string>> }[] }
+  { viewBox: string; elements: readonly SvgAssetElement[] }
 >;
 
 /** SVG 자산 이름 */
@@ -139,13 +201,21 @@ export type SvgAssetName = keyof typeof svgAssets;
  * @returns 객체 리터럴 항목
  */
 function assetEntry(file: string, data: SvgAssetData): string {
-  const elements = data.elements
-    .map(
-      (element) =>
-        `      { tag: '${element.tag}', attributes: ${objectLiteral(element.attributes)} },`,
-    )
-    .join('\n');
+  const elements = data.elements.map((element) => `      ${elementLiteral(element)},`).join('\n');
   return `  '${file}': {\n    viewBox: '${data.viewBox}',\n    elements: [\n${elements}\n    ],\n  },`;
+}
+
+/**
+ * SVG 요소 하나(자식 포함)를 객체 리터럴로 쓴다.
+ * @param element 요소
+ * @returns `{ tag: 'path', attributes: { ... } }`
+ */
+function elementLiteral(element: SvgElementData): string {
+  const children =
+    element.children === undefined
+      ? ''
+      : `, children: [${element.children.map((child) => elementLiteral(child)).join(', ')}]`;
+  return `{ tag: '${element.tag}', attributes: ${objectLiteral(element.attributes)}${children} }`;
 }
 
 /**
@@ -155,7 +225,7 @@ function assetEntry(file: string, data: SvgAssetData): string {
  */
 function parseAttributes(text: string): Map<string, string> {
   const attributes = new Map<string, string>();
-  for (const match of text.matchAll(/([a-zA-Z:-]+)="([^"]*)"/gu)) {
+  for (const match of text.matchAll(/([a-zA-Z][a-zA-Z0-9:-]*)="([^"]*)"/gu)) {
     const [, name = '', value = ''] = match;
     if (name !== 'xmlns') {
       attributes.set(name, value);
