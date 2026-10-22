@@ -7,36 +7,39 @@ _codocs:
   디자인 시스템이 제공하는 컴포넌트 목록이다. 피그마 01 · Components 페이지와 `packages/design-system`의 컴포넌트가 이 목록과 같다.
   [[제품 정의:첫 공개 범위]]에 필요한 것에서 뽑았고, 화면별 세부 기능을 정하면서 변형이 늘거나 줄 수 있다. 모바일 전용 변형은 피그마 Screens를 만들면서 정했다: StartMenu·SearchPanel·ExplorerContent의 `Device=Mobile`, Menu의 `Chrome more (Mobile)`([[모바일:차이]]).
 
-  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다. 피그마에서는 Rest → Hover → Pressed를 프로토타입 상호작용(Interactive components)으로 이어 두었다. 재질 효과를 쓰는 컴포넌트는 효과를 끈 단색 변형(`Material=Solid`)도 갖는다([[피그마 일치 검사]]). 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
+  컴포넌트는 상태별 변형(기본, hover, pressed, disabled, 선택)을 갖는다([[컴포넌트 목록:상태]]). 피그마에서는 Rest → Hover → Pressed를 프로토타입 상호작용(Interactive components)으로 이어 두었다. 재질 효과를 쓰는 컴포넌트는 효과를 끈 단색 변형(`Material=Solid`)도 갖는다([[피그마 일치 검사]]). 동작과 상태 관리는 담지 않는다([[디자인 시스템:범위]]).
 
-  다른 컴포넌트를 담는 자리(WindowFrame의 앱 콘텐츠·탭 표시줄, Flyout의 내용, TaskbarPreview의 축소 화면, ChromeWindow의 페이지, ExplorerContent의 항목)는 피그마 슬롯(SLOT 속성)이다. Screens는 슬롯에 다른 컴포넌트의 인스턴스를 넣어 조립하고, 코드에서는 `children` 같은 자리에 대응한다.
+  다른 컴포넌트를 담는 자리(WindowFrame의 앱 콘텐츠·탭 표시줄, Flyout의 내용, TaskbarPreview의 축소 화면, ChromeWindow의 페이지, ExplorerContent·NavigationPane의 항목, ListGroup의 항목, TileGrid의 타일, Popover의 트리거와 팝업)는 피그마 슬롯(SLOT 속성)이다. 컴포넌트나 Screens가 슬롯에 다른 컴포넌트의 인스턴스를 넣어 조립하고, 코드에서는 `children` 같은 자리에 대응한다. 컴포넌트 안에서 채운 슬롯 내용은 그 컴포넌트의 일부로 검사한다([[피그마 일치 검사:슬롯 내용]]).
+
+  나누는 기준은 [[디자인 시스템:컴포넌트 조립 규칙]]에 있다. 코드에 아직 없는 컴포넌트는 [[컴포넌트 목록:코드 반영]]에 있다.
 기본 컨트롤: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
   | Button(강조·기본·투명 변형), IconButton | 다이얼로그, 툴바. 키보드 포커스는 바깥쪽 선 한 겹으로 그린다([[디자인 기반:포커스 표현]]) |
   | SearchBox | 작업 표시줄·Start 검색(`Appearance=Taskbar`), 탐색기 검색. Pill과 Taskbar는 밑줄이 없고, 포커스하면 돋보기가 컬러 돋보기로 바뀐다 |
   | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창. 진짜 Windows처럼 진한 1px 테두리를 쓴다 |
-  | Menu(MenuItem, MenuSeparator, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴 |
-  | Tooltip | 아이콘 버튼, Taskbar, 잘못된 폴더 이름 안내 말풍선 |
-  | Scrollbar, ScrollArea | Windows 11 스타일 얇은 스크롤바 |
+  | Menu(MenuItem, MenuSeparator, 하위 메뉴, 단축키 표시) | 우클릭 메뉴, 탐색기 메뉴, 전원 메뉴. MenuItem `Kind`는 일반·Toggle on·Toggle off·Radio on·Radio off다. 라디오 항목 레이어 이름은 `radio <라벨>`이다 |
+  | Tooltip | 아이콘 버튼, Taskbar, 잘못된 폴더 이름 안내 말풍선. 말풍선 꼬리는 Shapes 자산 둘(칠, 테두리)이다 |
+  | Popover | 트리거와 팝업(메뉴, 툴팁, 플라이아웃)의 공통 틀. `Placement` × `State=Closed`·`Open`([[피그마 일치 검사:팝업]]) |
+  | Scrollbar, ScrollArea | Windows 11 스타일 얇은 스크롤바. 굵기와 기본 길이는 `size/scrollbar/*` 변수이고, 막대 길이와 위치는 실행 중에 정해진다 |
   | ListItem | 검색 패널 추천, 검색 결과, 주소창 추천 |
   | Flyout | 우클릭 메뉴 같은 떠 있는 패널의 공통 바탕 |
   | MessageBox | 휴지통 비우기 안내 같은 확인·알림 대화 상자 |
-  | ProgressRing | 글 로딩, 재부팅 화면 |
+  | ProgressRing | 글 로딩, 재부팅 화면. 호는 Shapes 자산 `progress-ring/Arc`다 |
 Windows 화면 요소: |
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | WindowFrame, CaptionButton(최소화·최대화·닫기) | 모든 앱 창 |
+  | WindowFrame, CaptionButton(최소화·최대화·닫기) | 모든 앱 창. 제목은 WindowTitle, 창 버튼은 CaptionButtonGroup 인스턴스다 |
   | Taskbar, TaskbarButton(실행 중·활성 표시) | 작업 표시줄 |
-  | TaskbarPreview, TaskbarPreviewList | 작업 표시줄 창 미리보기([[작업 표시줄:창 미리보기]]) |
+  | TaskbarPreview, TaskbarPreviewList | 작업 표시줄 창 미리보기([[작업 표시줄:창 미리보기]]). 머리글은 WindowTitle `Kind=Preview`, 닫기 버튼은 `State=Hover` 변형에만 있다. 축소 화면 슬롯은 바탕·테두리를 가진 `thumbnail frame` 안에 있다 |
   | SystemTray(시계) | Taskbar 오른쪽 |
-  | StartMenu(검색, 고정됨, 모두의 간단히·그리드·범주 보기, 검색 결과, 전원 메뉴), PinnedTile | Start |
+  | StartMenu(검색, 고정됨, 모두의 간단히·그리드·범주 보기, 검색 결과), PinnedTile | Start. 아래 줄은 StartMenuFooter이고 전원 메뉴는 PowerButton이 연다. StartMenu에는 전원 메뉴 변형이 없다 |
   | SearchPanel(입력 전, 결과, 결과 없음. 입력칸은 없음) | 검색 |
   | DesktopIcon(hover·선택·이름 바꾸기·잘라냄) | 바탕화면, 휴지통 |
-  | ExplorerTab, NavigationItem(들여쓰기 Level 0~3) | 탐색기 탭, 왼쪽 목록 |
-  | FileItem(큰·보통 아이콘, 자세히, 잘라냄), ColumnHeader, DetailsHeader | 탐색기 본문 |
-  | Breadcrumb, BreadcrumbItem | 탐색기 주소 표시줄 |
-  | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar | Chrome |
+  | ExplorerTab, NavigationItem(들여쓰기 Level 0~3) | 탐색기 탭, 왼쪽 목록. NavigationItem의 펼침 화살표는 `Chevron` 속성이고, 펼칠 것이 없는 항목(`Expand=None`)은 같은 폭의 빈 자리 `chevron space`를 둔다 |
+  | FileItem(큰·보통 아이콘, 자세히, 잘라냄), ColumnHeader, DetailsHeader | 탐색기 본문. ColumnHeader 정렬 화살표는 `Sort=None`·`Ascending`·`Descending` 변형이다 |
+  | Breadcrumb, BreadcrumbItem | 탐색기 주소 표시줄. BreadcrumbItem은 `Show separator`, Breadcrumb은 `Location icon`·`Show second crumb`·`Show third crumb` 속성을 가진다 |
+  | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar | Chrome. BrowserTab 닫기 아이콘은 `Close icon` 속성이다. Chrome 탭과 탐색기 탭(ExplorerTab)은 따로 둔다 |
   | BootScreen | 다시 시작할 때의 재부팅 화면 |
 
   Start 메뉴와 검색 패널은 Flyout이 아니라 Windows UI kit의 Shell Surface(셸 표면)를 바탕으로 한다. 실제 Windows에서도 셸 패널은 앱의 플라이아웃과 그림자·배경이 다르기 때문이다.
@@ -45,17 +48,66 @@ Screens에서 추가한 컴포넌트: |
 
   | 컴포넌트 | 쓰이는 곳 |
   |---|---|
-  | ExplorerContent(Device Desktop·Mobile × Mode Folder·Recycle Bin × View Icons·Details) | 탐색기 창 본문. 주소 표시줄(뒤로·앞으로·위로·새로 고침, Breadcrumb, SearchBox), 명령 모음, 탐색 창(NavigationItem), 항목 슬롯, 상태 표시줄 |
+  | ExplorerContent(Device Desktop·Mobile × Mode Folder·Recycle Bin × View Icons·Details) | 탐색기 창 본문. ExplorerAddressRow, ExplorerCommandBar, NavigationPane, 항목 슬롯, ExplorerStatusBar로 조립한다 |
   | ChromeWindow(State × Maximized) | Chrome 창. BrowserTabStrip + BrowserToolbar + 페이지 슬롯 |
   | ChromePage(Page 글·새 탭·검색 결과·찾을 수 없음 × Layout Wide·Narrow) | Chrome 탭 안의 페이지. 글은 본문 최대 720px, Wide는 오른쪽 고정 목차, Narrow는 접힌 목차 |
-  | SnapLayoutFlyout, SnapZone(Rest·Hover) | 최대화 버튼 hover 시 스냅 레이아웃([[창 동작:스냅]]) |
+  | SnapLayoutFlyout, SnapZone(Rest·Hover) | 최대화 버튼 hover 시 스냅 레이아웃([[창 동작:스냅]]). 칸 배치는 SnapLayoutOption 인스턴스다 |
   | SnapPreview | 끌어서 스냅·Snap Assist에서 채울 영역 미리보기 |
   | SelectionMarquee | 바탕화면·탐색기에서 빈 곳을 끌어 여러 개를 고르는 사각형 |
-  | DropDownButton | Start "모두"의 보기 선택 상자(간단히·그리드·범주). 코드는 아직 없다 |
-  | SearchResults | Start 검색과 검색 패널이 함께 쓰는 검색 결과 영역. 코드는 아직 없다 |
+  | DropDownButton | Start "모두"의 보기 선택 상자(간단히·그리드·범주) |
+  | SearchResults | Start 검색과 검색 패널이 함께 쓰는 검색 결과 영역. 최고 일치는 BestMatchCard다 |
 
   기존 컴포넌트에 더한 변형:
-  - MenuItem: `Kind=Toggle off`(체크하지 않은 토글 항목)
+  - MenuItem: `Kind=Toggle off`(체크하지 않은 토글 항목), `Kind=Radio off`(고르지 않은 라디오 항목)
   - Menu: 글, 외부 링크, 휴지통, 여러 개 선택, 탐색기 폴더·글·빈 곳, 휴지통 항목(복원), 작업 표시줄 앱 버튼, Start 고정 항목, Chrome ⋮(데스크톱·모바일), 정렬 기준·새로 만들기·탐색기 보기·탐색기 정렬 하위 메뉴
   - StartMenu, SearchPanel: `Device=Mobile`(화면 폭, 높이 640, 위쪽 모서리만 둥글게)
   - WindowFrame, Flyout, TaskbarPreview: 자리 표시용 프레임을 실제 슬롯 속성으로 바꿈
+나눠 만든 컴포넌트: |
+  두 번 이상 나오는 모양과 이름 붙일 영역을 큰 컴포넌트에서 떼어 만든 컴포넌트다([[디자인 시스템:컴포넌트 조립 규칙]]).
+
+  | 컴포넌트 | 구성 | 쓰이는 곳 |
+  |---|---|---|
+  | SectionHeader | 글자 `Label`(Body Strong) | Start 목록의 글자·범주 머리글, 검색 묶음 머리글 |
+  | SectionTitle | 제목 `Title` + `Show action` + 바꿔 끼우는 `Action` | Start 고정됨·모두 제목(보기 선택 상자), Chrome 글 목차 제목 |
+  | ListGroup | `Show header` + SectionHeader + `items` 슬롯 | Start 목록·범주·그리드, 검색 패널, 검색 결과, 주소창 추천, Chrome 검색 결과 |
+  | TileGrid(`Align=Start`·`Center`) | `tiles` 슬롯(가로, 줄바꿈) | Start 고정됨·그리드 보기, Chrome 새 탭 최신 글. 그리드 보기는 ListGroup + TileGrid다 |
+  | CaptionButtonGroup(`Maximized` × `State=Active`·`Inactive`) | `minimize button`, `maximize button` 또는 `restore button`, `close button` | WindowFrame, BrowserTabStrip |
+  | WindowTitle(`Kind=Window`·`Preview`) | 앱 아이콘 `App icon` + 제목 `Title` | WindowFrame 제목 표시줄, TaskbarPreview 머리글 |
+  | SnapLayoutOption(`Layout=Half`·`TwoThirds`·`HalfQuarter`·`Quad`) | SnapZone 칸 | SnapLayoutFlyout |
+  | TocItem(`Active`), Toc(`State=Expanded`·`Collapsed`) | 목차 항목, 목차(접힌 목차 포함) | ChromePage 글 |
+  | PostNavCard(`Direction=Prev`·`Next`) | 이전 글·다음 글 + 글 제목 `Title` | ChromePage 글 아래 |
+  | CodeBlock | `Language`, `Code` | ChromePage 글 본문 |
+  | EmptyState | 아이콘, `Heading`, `Message`, `Code`, `Show button` | ChromePage 찾을 수 없음 |
+  | BestMatchCard | `Icon`, `Title`, `Meta`, 동작 MenuItem | SearchResults 최고 일치 |
+  | ProfileButton | 프로필 사진 `Photo` + 이름 `Name` | StartMenuFooter |
+  | PowerButton(`State=Closed`·`Open`) | Popover(`Top-End`): IconButton + 전원 메뉴 | StartMenuFooter |
+  | StartMenuFooter | ProfileButton + PowerButton, 바탕과 위 테두리 | StartMenu 아래 줄 |
+  | ExplorerAddressRow(`Device`) | 뒤로·앞으로·위로·새로 고침, Breadcrumb, SearchBox | ExplorerContent |
+  | ExplorerCommandBar(`Device` × `Mode`) | 명령 버튼과 구분선 | ExplorerContent |
+  | NavigationPane | `items` 슬롯(NavigationItem) | ExplorerContent |
+  | ExplorerStatusBar(`Device`) | `Item count`, `Selection`, `Show selection`, 보기 버튼 | ExplorerContent |
+
+  중첩한 컴포넌트의 속성은 부모 컴포넌트 속성으로 올리지 못한다([[한계:피그마 API 덮어쓰기 함정]]). 그래서 WindowFrame·TaskbarPreview의 제목과 앱 아이콘, ListGroup의 머리글, ExplorerContent의 항목 수·선택 글자는 노출한 중첩 인스턴스(WindowTitle, SectionHeader, ExplorerStatusBar)의 속성으로 바꾼다. 코드도 부모 prop을 중첩 컴포넌트로 넘기는 구조로 맞춘다.
+상태: |
+  상태 변형 이름은 다음과 같다. 모든 컴포넌트가 모든 상태를 갖지는 않는다.
+
+  | 상태 | 뜻 |
+  |---|---|
+  | `Rest` | 기본 |
+  | `Hover` | 마우스를 올림 |
+  | `Pressed` | 누르는 중 |
+  | `Disabled` | 쓸 수 없음 |
+  | `Focused` | 키보드 포커스 |
+  | `Open` | 이 컴포넌트가 연 팝업이나 하위 메뉴가 열려 있음 |
+
+  - `Open`은 팝업을 여는 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)가 갖는다. 모양은 Windows 기준이다. 보통은 `Pressed`와 같은 모양이고, 작업 표시줄 앱 버튼은 `Hover` 바탕이다. MenuItem은 `Hover`와 모양이 같아도 열림 상태(`aria-expanded`)가 달라 따로 둔다.
+  - 메뉴가 열린 화면에서는 그 메뉴를 연 트리거가 `Open`이다([[피그마 일치 검사:팝업]]).
+  - `Open` 변형은 아직 피그마와 코드에 없다. 지금 피그마는 열린 트리거를 `Pressed`나 `Hover`로 그려 두었다.
+코드 반영: |
+  `packages/design-system`에는 아직 Button, MenuItem, Flyout, SearchBox와 자산 컴포넌트만 있다. 나머지는 피그마에만 있고, [[구현 순서:6단계 디자인 시스템 코드화]]의 묶음 PR에서 만든다.
+
+  피그마에서 바꿨지만 코드가 아직 따라오지 않은 것:
+  - MenuItem `Kind=Radio off`(코드 MenuItem도 고친다)
+  - 아이콘 자리의 INSTANCE_SWAP 속성(`icon`, `closeIcon`, `locationIcon`, `chevron` prop)
+  - 글자 스타일 `Body Large Link`(`type-body-large-link`)
+  - 새 크기 변수(`size/<컴포넌트>/<역할>`)

@@ -27,6 +27,7 @@ _codocs:
   - 굵기는 Regular, SemiBold, Bold만 쓴다. 피그마가 제공하는 Pretendard가 이 세 굵기뿐이고, 코드도 피그마와 같아야 하기 때문이다.
   - 두 서체 모두 SIL Open Font License이며 웹 폰트로 제공한다. 피그마, 로컬, CI, 방문자가 모두 같은 서체로 보게 해야 [[피그마 일치 검사]]가 의미가 있다.
   - 글 본문의 코드 블록만 고정폭 서체 Cascadia Mono(Microsoft, SIL Open Font License)를 쓴다. 글자 폭이 같아야 들여쓰기와 줄 맞춤이 맞기 때문이다. Windows Terminal의 기본 서체라 Windows 느낌과도 맞고, 기호를 이어 그리는 합자가 없어 입력할 문자 그대로 보인다. 코드 안의 한글은 Pretendard로 그린다. 피그마 텍스트 스타일은 `Code`와 `Hangul/Code`, 서체 변수는 `font/family/code`다.
+  - 글 본문의 링크처럼 밑줄이 있는 글자는 밑줄을 글자에 직접 넣지 않고 밑줄이 든 글자 스타일을 쓴다. `Body Large Link`·`Hangul/Body Large Link`는 `Body Large`에 밑줄을 더한 것이고, 코드는 `type-body-large-link`다. 링크 색은 칠 변수로 따로 준다.
 
   검토한 대안:
   - Segoe UI Variable: Windows 11 기본 서체지만 라이선스상 웹 폰트로 배포할 수 없다.
@@ -53,6 +54,11 @@ _codocs:
 
   - 변수를 만들기 전에 정말 고정이어야 하는지 먼저 본다. 내용에 맞춤(HUG)이나 부모 채움(FILL)이 맞으면 그쪽을 쓴다.
   - 크기 변수는 Dimension 컬렉션에 용도 이름으로 둔다: `size/icon/<숫자>`, `size/control/height`, `size/<컴포넌트>/<역할>`(예: `size/menu-item/width`, `size/search-box/width-pill`). 값이 같은 기존 변수가 있고 뜻이 맞으면 그 변수를 쓴다(예: 검색창 높이 32 → `size/control/height`).
+    - `<컴포넌트>`는 컴포넌트 이름의 kebab-case다(`ExplorerCommandBar` → `explorer-command-bar`).
+    - `<역할>`은 그 크기가 무엇인지를 쓴다(`width`, `height`, `thumb-length`, `separator-width`). 기기나 변형에 따라 값이 다르면 역할 뒤에 붙인다(`width-mobile`, `width-narrow`, `height-compact`).
+    - 값이 같아도 뜻이 다르면 따로 둔다(예: FileItem `date-width`와 `location-width`는 둘 다 180이다).
+    - 공용 이름(`size/icon/*`, `size/control/*`)은 컴포넌트 작업 중에 새로 만들지 않고, 필요하면 Foundations에서 먼저 정한다.
+  - 실행 중에 정해지는 크기(스크롤바 막대 길이, 선택 상자 크기)는 원본에 기본값 변수만 둔다([[피그마 일치 검사:겹쳐 놓기]]).
   - 코드 이름은 `size/` 뒤를 이은 `--spacing-<이름>`이고 클래스는 `w-icon-16`, `h-control-height`처럼 쓴다([[피그마 일치 검사:토큰 생성]]).
   - 컴포넌트 루트와 내부, 인스턴스 크기 덮어쓰기 모두 같은 규칙이다.
   - 절대 위치 자식의 양쪽 늘이기 축 크기는 부모에서 나오는 크기라 변수에 연결하지 않는다([[피그마 일치 검사:겹쳐 놓기]]).
@@ -66,7 +72,10 @@ _codocs:
     - 코드는 칠 스타일 층에서 생성한 유틸리티(`material-acrylic-default`, `material-acrylic-base`)로 그린다. 요소 자체의 CSS 배경 여러 겹(색 변수 + 노이즈 이미지)이고, 흐림은 효과 스타일 클래스(`backdrop-blur-*`)가 같은 요소에 건다. 의사 요소나 쌓임 순서 제약이 없다.
     - 노이즈 층의 2% 불투명도는 CSS 배경 한 겹에 따로 줄 수 없어, 자산 생성기가 2%를 미리 입힌 이미지(`noise-acrylic.opacity-2.png`)를 만든다.
     - 색 변수에 연결된 칠의 불투명도는 칠의 불투명도 하나만 쓴다. 피그마는 연결할 때 변수 색의 투명도를 칠 불투명도로 옮겨 오고, 그린 결과에는 칠 불투명도만 적용된다(변수 투명도와 곱하지 않는다). 생성기도 변수의 RGB에 칠 불투명도를 투명도로 쓴다.
-  - Mica(WindowFrame, 앱 창의 바탕): 뒤를 흐리게 하는 것이 아니라 바탕화면 배경화면의 색감만 비친다. 실제 Windows에서 창 뒤의 다른 창은 마이카에 비치지 않는다. 그래서 코드는 블러 대신 흐린 배경화면 그림을 창 바탕에 화면 기준으로 고정해 깔고, 그 위에 반투명 색 층을 아크릴과 같은 일반 섞기로 얹는다. 피그마의 마이카 칠 스타일(지금은 블렌드 층이 있어 토큰에서 빠지고, 쓰는 컴포넌트는 막힘)도 같은 구조로 바꾼다. 창 컴포넌트를 만들 때(컴포넌트 묶음 ②) 구현하며, 그때까지 생성기는 마이카 유틸리티를 만들지 않는다.
+  - Mica(WindowFrame, 앱 창의 바탕): 뒤를 흐리게 하는 것이 아니라 바탕화면 배경화면의 색감만 비친다. 실제 Windows에서 창 뒤의 다른 창은 마이카에 비치지 않는다. 그래서 코드는 블러 대신 흐린 배경화면 그림을 창 바탕에 화면 기준으로 고정해 깔고, 그 위에 반투명 색 층을 아크릴과 같은 일반 섞기로 얹는다.
+    - 피그마 `Material/Mica Base`는 일반 섞기 색 층 하나다. 색은 `mica-background-fill/base`(`#F3F3F3`, 불투명도 95%)다. 95%는 실제 Windows 마이카와 같은 배경화면 위에서 견본을 비교해 가장 가까운 값 가운데 배경화면이 조금 비치는 쪽으로 골랐다([[한계:마이카 일반 섞기]]).
+    - 코드는 이 칠 스타일 층에서 `material-mica-base` 유틸리티를 아크릴과 같은 방식으로 생성하고, 흐린 배경화면 그림은 창 컴포넌트가 깐다.
+    - 단색 버전 `Material/Fallback/Mica Base`와 WindowFrame의 `Material` 변형(Mica·Solid)을 둔다. 탭이 있는 제목 표시줄용 `Mica Base Alt` 스타일은 쓰는 곳이 없어 두지 않는다.
   - 블러 세기와 층 구성은 피그마 Foundations의 값을 따른다. 이 값은 Windows UI kit의 `Blur / Acrylic`, `Blur / Mica`, Acrylic·Mica 배경 스타일과 대조해 맞췄다.
   - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다. 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
   - `Material/Fallback/*`는 투명 효과를 끈 단색 버전으로, 컴포넌트의 `Material=Solid` 변형에 쓴다.
@@ -74,7 +83,7 @@ _codocs:
   피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 재질 변형도 칠 스타일 이름(`material-*`)과 효과 스타일 이름(`shadow-*`, `backdrop-blur-*`)으로 비교하고, 계산값으로 배경 층(색, 노이즈 이미지)이 생성 유틸리티 값과 같은지 확인한다.
 컨트롤 테두리: |
   WinUI 컨트롤의 1px 테두리는 단색이 아니라 아래쪽 몇 픽셀만 진해지는 세로 그라데이션이다(WinUI의 `ControlElevationBorderBrush` 계열). 버튼이 살짝 떠 보이게 하는 효과라 Windows 느낌에 중요하다.
-  피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
+  피그마에는 `Elevation/Control Border`, `Text Control Border`, `Accent Control Border` 칠 스타일로 두었고(쓰는 곳이 없는 스타일은 두지 않는다), 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
 
   - 토큰 생성은 이 스타일을 `--gradient-*` CSS 배경 값으로 옮긴다. 피그마 정지점 위치는 노드 높이 대비 비율이라 CSS에서도 같은 비율(`to bottom`, 90.58% 등)로 둔다. 그래서 피그마와 같은 높이의 컨트롤에서 같은 결과가 나온다.
   - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 고리 모양으로 가리고 그라데이션을 칠한다. 고리 두께는 피그마 선 두께 변수에 대응하는 `inner-border-w-<두께 토큰>`(예: `inner-border-w-default`)으로 함께 정한다. CSS `border`에는 둥근 모서리를 지키는 그라데이션을 칠할 수 없고, 배경 두 겹(`padding-box`·`border-box`) 방식은 컴포넌트 배경색과 섞여 따로 쓸 수 없기 때문이다.
@@ -106,7 +115,7 @@ _codocs:
   | 묶음 | 담는 것 | 색 |
   |---|---|---|
   | Icons | UI 아이콘(Fluent `ic_fluent_*`) | 한 가지 색. 쓰는 곳의 색 변수로 칠한다 |
-  | Shapes | 한 가지 색 특수 도형(진행 링 호, 툴팁 꼬리 등) | 한 가지 색. 쓰는 곳의 색 변수로 칠한다 |
+  | Shapes | 한 가지 색 특수 도형(진행 링 호 `progress-ring/Arc`, 툴팁 꼬리 `tooltip/Tail fill`·`tooltip/Tail border`) | 한 가지 색. 쓰는 곳의 색 변수로 칠한다. 칠과 테두리 색이 다른 도형은 칠 자산과 테두리 자산 둘로 나눠 겹쳐 쓴다 |
   | Illustrations | 여러 색 벡터(`file/*`, `app/*`, `logo/*`, Fluent 컬러 아이콘 `icon-color/*`) | 자산 안에 둔다 |
   | Images | 래스터 이미지(`avatar/*`, `wallpaper/*`, `noise/*`) | 자산 안에 둔다 |
 
@@ -130,7 +139,7 @@ _codocs:
 
   프로필 사진은 아직 임시 이미지다.
 모션: |
-  창·패널·메뉴의 움직임은 Windows 11 모션 지침(Microsoft Learn의 "Motion in Windows", "Timing and easing")의 값을 따른다. 피그마 Screens 프로토타입의 전환이 이 값을 쓰고, 6단계 이후 코드도 같은 값을 쓴다.
+  창·패널·메뉴의 움직임은 Windows 11 모션 지침(Microsoft Learn의 "Motion in Windows", "Timing and easing")의 값을 따른다. 6단계 이후 코드가 이 값을 쓴다. 피그마에서는 컴포넌트 변형 사이 전환에만 쓰고, 화면 흐름 프로토타입은 두지 않는다([[디자인 시스템:Screens]]).
   피그마에는 `Motion` Variables 컬렉션으로 두었다(코드 이름은 `--motion-...`).
 
   | 토큰 | 값 | 근거·쓰는 곳 |
@@ -160,6 +169,6 @@ _codocs:
   | 우클릭 메뉴·메시지 상자 | fast | direct-entrance | 페이드로 나타난다 |
   | hover·pressed | faster | fade | 상태 색만 바꾼다 |
 
-  컴포넌트 상태 전환(Rest → Hover 등)도 피그마 프로토타입 전환에 이 토큰을 쓰고, 일치 검사가 비교한다([[피그마 일치 검사:상태 전환]]).
+  컴포넌트 상태 전환(Rest → Hover 등)은 피그마 프로토타입 전환에 이 토큰을 쓰고, 일치 검사가 비교한다([[피그마 일치 검사:상태 전환]]).
 
-  피그마 프로토타입은 오버레이 위치를 Plugin API로 정할 수 없어 Start·검색 패널을 화면 크기의 투명 오버레이로 띄우고 "아래에서 위로 Move in"으로 재현했다. 코드에서는 패널 자체를 `translateY`로 올린다.
+  Start·검색 패널이 올라오는 움직임은 코드에서 패널 자체를 `translateY`로 올린다.
