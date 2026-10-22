@@ -1,6 +1,6 @@
 {
   "booleans": {},
-  "hash": "691782ddee32df6d602fc44d1e2112f3a9c1fa5e7a9aa6758f8d0ffe31ee2fbf",
+  "hash": "e4c43f706022c9e62aa4176288c150fba5a3f62b6065e66346eae0cbe613a043",
   "name": "SearchBox",
   "nodeId": "14:92",
   "variants": {
@@ -326,10 +326,8 @@
     },
     "appearance=default,filled=false,state=hover": {
       "cases": {},
-      "hash": "41bef31ae57e5ab1adbafe2b943cf492c2a1ea0f4919058fff2372233998f36c",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "baca9fa6ba91fa8a125fce45e798a23de17ebe100acd69988b47e695c1670caf",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -449,10 +447,8 @@
     },
     "appearance=default,filled=false,state=rest": {
       "cases": {},
-      "hash": "c8a3ceaab100b60feedbb50e90738babf010e41e9fd187d651c7a75e3ec0f78f",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "d6337b3a1db8b3d39f1a6df4fa6c5debd51e26305e6686db61f54ebbf7ab7a2f",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -901,10 +897,8 @@
     },
     "appearance=default,filled=true,state=hover": {
       "cases": {},
-      "hash": "3cb001d18c572f2c2eb966fcdf55960160a508e5a22a83022e732ddb900435dd",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "5116aed56cc691fa7c235a62df435ffff40a8c6678b029fe59079d8e6b0918fa",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,
@@ -1024,10 +1018,8 @@
     },
     "appearance=default,filled=true,state=rest": {
       "cases": {},
-      "hash": "7edc7bc2ce479fc2c8164559d67f3ee5ce5cdcf96db457aa87c7e74b0949dd64",
-      "hidden": [
-        "bottom border"
-      ],
+      "hash": "6eb5ffd2dc0b5c412a7404d85bf6f569d379b52ca7020462cd3545b0b616b632",
+      "hidden": [],
       "layers": [
         {
           "clipsContent": true,

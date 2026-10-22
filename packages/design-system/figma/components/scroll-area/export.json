@@ -1,0 +1,829 @@
+{
+  "booleans": {},
+  "hash": "e850d9a80e68895cbc54f1d231b58019d656038c5684ca4a5a94bae4e3215c96",
+  "name": "ScrollArea",
+  "nodeId": "16:182",
+  "variants": {
+    "state=hover,material=acrylic": {
+      "cases": {},
+      "hash": "10b0cb628d08b467b3683dfa60087d6b20e3f3812c2f9778b5f9f2a8ce18b284",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "layer-fill/alt"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/scroll-area/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scroll-area/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/12",
+              "right": "spacing/24",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "SLOT"
+        },
+        {
+          "effect": "Material/Acrylic",
+          "fill": {
+            "style": "Material/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/2"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "DERIVED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:162",
+      "properties": {
+        "Material": "Acrylic",
+        "State": "Hover"
+      }
+    },
+    "state=hover,material=solid": {
+      "cases": {},
+      "hash": "6381bbbcbe141285e8c41b1b608823170698657eca30270892ec7291763e8ab2",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "layer-fill/alt"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/scroll-area/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scroll-area/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/12",
+              "right": "spacing/24",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "SLOT"
+        },
+        {
+          "fill": {
+            "style": "Material/Fallback/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/2"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "DERIVED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "58:1013",
+      "properties": {
+        "Material": "Solid",
+        "State": "Hover"
+      }
+    },
+    "state=rest,material=acrylic": {
+      "cases": {},
+      "hash": "9d82a54f916334e89c8e2e4e864cd023e1a3478123261255d514720da0103248",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "layer-fill/alt"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/scroll-area/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scroll-area/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/12",
+              "right": "spacing/24",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/2"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "DERIVED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-rest"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "16:146",
+      "properties": {
+        "Material": "Acrylic",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover,material=acrylic",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "state=rest,material=solid": {
+      "cases": {},
+      "hash": "e521cd4934eb80d0e8e15757ce134e0cf15b82fe740ff9cf7ee5968d7fcd5ae6",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "layer-fill/alt"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/scroll-area/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scroll-area/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": false,
+            "paint": {
+              "variable": "card-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/12",
+              "left": "spacing/12",
+              "right": "spacing/24",
+              "top": "spacing/12"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Content",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "FILL"
+          },
+          "type": "SLOT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/2"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/4"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "horizontal": "FIXED",
+            "vertical": "DERIVED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "Scrollbar/thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-rest"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "58:996",
+      "properties": {
+        "Material": "Solid",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover,material=solid",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

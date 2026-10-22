@@ -1,0 +1,58 @@
+{
+  "booleans": {},
+  "hash": "1a1489dff074749fc9f669e10053093fc4858e21af60c775b4862afbbbc8dfef",
+  "name": "MenuSeparator",
+  "nodeId": "14:218",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "927d52648450a87ce116dc6e8c43b797665f4bc7283507bdc29b89f773dc995b",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/0",
+              "right": "spacing/0",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/menu-separator/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/menu-separator/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "divider-stroke/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "line",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "height": "stroke-width/default",
+            "horizontal": "FILL",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "14:218",
+      "properties": {}
+    }
+  }
+}

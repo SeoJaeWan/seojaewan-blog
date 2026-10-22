@@ -1,0 +1,830 @@
+{
+  "booleans": {},
+  "hash": "9970af11b8341e1783b537c3b15fadf2fc9a1f0f7af4d9790000bf5c17df3e75",
+  "name": "Scrollbar",
+  "nodeId": "16:137",
+  "variants": {
+    "orientation=horizontal,state=expanded,material=acrylic": {
+      "cases": {},
+      "hash": "fef96fcadd496f31ea9bccd2a0d66d74eda396830371089a537a4a76a6c41f0a",
+      "hidden": [],
+      "layers": [
+        {
+          "effect": "Material/Acrylic",
+          "fill": {
+            "style": "Material/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/scrollbar/thickness",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/length"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-hover",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-length"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:131",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Horizontal",
+        "State": "Expanded"
+      }
+    },
+    "orientation=horizontal,state=expanded,material=solid": {
+      "cases": {},
+      "hash": "a81078a71ce27c6b74340478cd76887fd599e65b11bff3a55382a10dbea2251e",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "style": "Material/Fallback/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/scrollbar/thickness",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/length"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-hover",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-length"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "58:877",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Horizontal",
+        "State": "Expanded"
+      }
+    },
+    "orientation=horizontal,state=rest,material=acrylic": {
+      "cases": {},
+      "hash": "c792f5e270761154d3c0613ace109022a4c77f345f0b60167b741ea04cee3949",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/scrollbar/thickness",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/length"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-rest",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-length"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "16:129",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Horizontal",
+        "State": "Rest"
+      }
+    },
+    "orientation=horizontal,state=rest,material=solid": {
+      "cases": {},
+      "hash": "3c9fd072d13b057952cc9c5025db201c98814a2aaa39f61c24c5f0034e515e52",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/scrollbar/thickness",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/length"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-rest",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-length"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "58:875",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Horizontal",
+        "State": "Rest"
+      }
+    },
+    "orientation=vertical,state=expanded,material=acrylic": {
+      "cases": {},
+      "hash": "899531a5a98f61f3609e83efa93493b341ad479451be67eb1f91a76ff2b383ef",
+      "hidden": [],
+      "layers": [
+        {
+          "effect": "Material/Acrylic",
+          "fill": {
+            "style": "Material/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/scrollbar/length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "16:123",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Vertical",
+        "State": "Expanded"
+      }
+    },
+    "orientation=vertical,state=expanded,material=solid": {
+      "cases": {},
+      "hash": "a90734cb2e972b4ab680e71869bf64d4e64d1ef860aa29f6a4004c4c3bd2a38a",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "style": "Material/Fallback/Acrylic Default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "height": "size/scrollbar/length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "arrow start",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          "type": "RECTANGLE"
+        },
+        {
+          "asset": {
+            "color": "control-strong-fill/default",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "arrow end",
+          "sizing": {
+            "height": "size/scrollbar/arrow",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/arrow"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "58:869",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Vertical",
+        "State": "Expanded"
+      }
+    },
+    "orientation=vertical,state=rest,material=acrylic": {
+      "cases": {},
+      "hash": "f2b02238fb72f1e437b4d757df75d9c16497c8ed34b6fb55ba0da43524d6a75d",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/scrollbar/length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-rest"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "16:121",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Vertical",
+        "State": "Rest"
+      }
+    },
+    "orientation=vertical,state=rest,material=solid": {
+      "cases": {},
+      "hash": "8a6fc8a2195ea2169441d06412aa9ff4b7349566c85ea3282ef6daee146a830d",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": "spacing/2",
+              "left": "spacing/2",
+              "right": "spacing/2",
+              "top": "spacing/2"
+            },
+            "primaryAlign": "SPACE_BETWEEN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/scrollbar/length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thickness"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-fill/default"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "thumb",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MIN",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/40"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/scrollbar/thumb-length",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/scrollbar/thumb-rest"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "58:867",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Vertical",
+        "State": "Rest"
+      }
+    }
+  }
+}
