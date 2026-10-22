@@ -91,6 +91,7 @@
   --color-gray-f3f3f3-a80: #f3f3f380;
   --color-gray-f3f3f3-ac2: #f3f3f3c2;
   --color-gray-f3f3f3-ae6: #f3f3f3e5;
+  --color-gray-f3f3f3-af2: #f3f3f3f2;
   --color-gray-f6f6f6-a80: #f6f6f680;
   --color-gray-f9f9f9: #f9f9f9;
   --color-gray-f9f9f9-a4d: #f9f9f94d;
@@ -183,14 +184,9 @@
   --color-layer-on-acrylic-fill-default: var(--color-white-alpha-40);
   --color-layer-on-mica-base-alt-fill-default: var(--color-white-alpha-b3);
   --color-layer-on-mica-base-alt-fill-secondary: var(--color-black-alpha-09);
-  --color-layer-on-mica-base-alt-fill-tertiary: var(--color-gray-f9f9f9);
-  --color-layer-on-mica-base-alt-fill-transparent: var(--color-black-alpha-00);
-  --color-mica-background-fill-base: var(--color-gray-f3f3f3);
-  --color-mica-background-fill-base-alt: var(--color-gray-dadada);
+  --color-mica-background-fill-base: var(--color-gray-f3f3f3-af2);
   --color-mica-background-fill-base-alt-fallback: var(--color-gray-dadada);
-  --color-mica-background-fill-base-alt-tint: var(--color-gray-dadada-a80);
   --color-mica-background-fill-base-fallback: var(--color-gray-f3f3f3);
-  --color-mica-background-fill-base-tint: var(--color-gray-f3f3f3-a80);
   --motion-delay-boot-screen: 2500ms;
   --motion-duration-fast: 167ms;
   --transition-duration-fast: var(--motion-duration-fast);
@@ -219,14 +215,77 @@
   --radius-small: 2px;
   --color-selection-marquee-fill: var(--color-explorer-blue-hover);
   --color-selection-marquee-stroke: var(--color-explorer-blue-focus);
+  --spacing-address-bar-height: 36px;
+  --spacing-address-bar-width: 640px;
+  --spacing-best-match-card-divider-width: 10px;
+  --spacing-best-match-card-width: 258px;
   --spacing-boot-screen-gap: 160px;
   --spacing-boot-screen-gap-mobile: 120px;
+  --spacing-boot-screen-height: 720px;
+  --spacing-boot-screen-height-mobile: 844px;
+  --spacing-boot-screen-logo: 120px;
+  --spacing-boot-screen-logo-mobile: 96px;
+  --spacing-boot-screen-width: 1280px;
+  --spacing-boot-screen-width-mobile: 390px;
+  --spacing-breadcrumb-width: 480px;
   --spacing-breadcrumb-item-max-width: 200px;
+  --spacing-browser-tab-height: 34px;
+  --spacing-browser-tab-separator-height: 16px;
+  --spacing-browser-tab-separator-width: 1px;
+  --spacing-browser-tab-width: 240px;
+  --spacing-browser-tab-strip-height: 41px;
+  --spacing-browser-tab-strip-width: 1000px;
+  --spacing-browser-toolbar-height: 46px;
+  --spacing-browser-toolbar-width: 1000px;
   --spacing-button-min-width: 120px;
   --spacing-caption-button-width: 46px;
+  --spacing-chrome-page-content-width: 720px;
+  --spacing-chrome-page-divider-height: 1px;
+  --spacing-chrome-page-height: 711px;
+  --spacing-chrome-page-height-narrow: 720px;
+  --spacing-chrome-page-latest-posts-width: 576px;
+  --spacing-chrome-page-top-space: 96px;
+  --spacing-chrome-page-width: 1278px;
+  --spacing-chrome-page-width-narrow: 388px;
+  --spacing-chrome-window-height: 800px;
+  --spacing-chrome-window-width: 1280px;
+  --spacing-code-block-width: 720px;
+  --spacing-column-header-width: 188px;
   --spacing-control-height: 32px;
   --spacing-control-height-large: 40px;
   --spacing-control-height-small: 24px;
+  --spacing-desktop-icon-icon-large: 96px;
+  --spacing-desktop-icon-width-large: 112px;
+  --spacing-desktop-icon-width-medium: 76px;
+  --spacing-desktop-icon-width-small: 76px;
+  --spacing-details-header-column-date-width: 188px;
+  --spacing-details-header-column-name-width: 316px;
+  --spacing-details-header-column-type-width: 148px;
+  --spacing-empty-state-width: 600px;
+  --spacing-explorer-address-row-width: 798px;
+  --spacing-explorer-address-row-width-mobile: 388px;
+  --spacing-explorer-command-bar-separator-height: 24px;
+  --spacing-explorer-command-bar-separator-width: 1px;
+  --spacing-explorer-command-bar-width: 798px;
+  --spacing-explorer-command-bar-width-mobile: 388px;
+  --spacing-explorer-content-height: 458px;
+  --spacing-explorer-content-height-mobile: 716px;
+  --spacing-explorer-content-splitter-width: 1px;
+  --spacing-explorer-content-width: 798px;
+  --spacing-explorer-content-width-mobile: 388px;
+  --spacing-explorer-status-bar-spacer-height: 1px;
+  --spacing-explorer-status-bar-width: 798px;
+  --spacing-explorer-status-bar-width-mobile: 388px;
+  --spacing-explorer-tab-width: 220px;
+  --spacing-file-item-date-width: 180px;
+  --spacing-file-item-icon-large: 96px;
+  --spacing-file-item-location-width: 180px;
+  --spacing-file-item-name-cell-height: 20px;
+  --spacing-file-item-name-cell-width: 300px;
+  --spacing-file-item-type-width: 140px;
+  --spacing-file-item-width-details: 840px;
+  --spacing-file-item-width-large: 112px;
+  --spacing-file-item-width-medium: 88px;
   --spacing-flyout-width: 320px;
   --spacing-icon-12: 12px;
   --spacing-icon-16: 16px;
@@ -234,17 +293,37 @@
   --spacing-icon-24: 24px;
   --spacing-icon-32: 32px;
   --spacing-icon-48: 48px;
+  --spacing-list-group-width: 574px;
+  --spacing-list-item-height-compact: 36px;
+  --spacing-list-item-height-two-line: 52px;
+  --spacing-list-item-width: 400px;
+  --spacing-menu-width: 250px;
   --spacing-menu-width-view-options: 104px;
   --spacing-menu-item-bullet: 6px;
   --spacing-menu-item-height: 32px;
   --spacing-menu-item-width: 240px;
+  --spacing-menu-separator-height: 4px;
+  --spacing-menu-separator-height-in-menu: 9px;
+  --spacing-menu-separator-width: 240px;
+  --spacing-message-box-width: 448px;
+  --spacing-navigation-item-width: 240px;
+  --spacing-pinned-tile-height: 84px;
   --spacing-pinned-tile-width: 95px;
+  --spacing-pinned-tile-width-default: 96px;
   --spacing-pinned-tile-width-mobile: 89px;
+  --spacing-post-nav-card-width: 354px;
+  --spacing-profile-button-photo: 32px;
   --spacing-progress-ring-size: 32px;
+  --spacing-progress-ring-size-large: 64px;
+  --spacing-progress-ring-size-small: 16px;
   --spacing-progress-ring-stroke: 3px;
   --spacing-scroll-area-height: 240px;
   --spacing-scroll-area-width: 320px;
+  --spacing-scrollbar-arrow: 8px;
+  --spacing-scrollbar-length: 200px;
+  --spacing-scrollbar-thickness: 12px;
   --spacing-scrollbar-thumb-hover: 6px;
+  --spacing-scrollbar-thumb-length: 80px;
   --spacing-scrollbar-thumb-rest: 2px;
   --spacing-search-box-height-pill: 36px;
   --spacing-search-box-width: 240px;
@@ -260,20 +339,42 @@
   --spacing-search-results-height-mobile: 465px;
   --spacing-search-results-width: 574px;
   --spacing-search-results-width-mobile: 356px;
+  --spacing-section-title-width: 574px;
+  --spacing-selection-marquee-height: 160px;
+  --spacing-selection-marquee-width: 240px;
+  --spacing-snap-layout-option-column-large: 56px;
+  --spacing-snap-layout-option-height: 56px;
+  --spacing-snap-layout-option-width: 88px;
+  --spacing-snap-preview-height: 1016px;
+  --spacing-snap-preview-width: 952px;
+  --spacing-snap-zone-height: 56px;
+  --spacing-snap-zone-width: 40px;
   --spacing-start-menu-height: 720px;
   --spacing-start-menu-height-mobile: 640px;
   --spacing-start-menu-width: 640px;
   --spacing-start-menu-width-mobile: 390px;
+  --spacing-start-menu-footer-width: 638px;
   --spacing-taskbar-height: 48px;
   --spacing-taskbar-width: 1280px;
+  --spacing-taskbar-button-indicator-active: 16px;
+  --spacing-taskbar-button-indicator-running: 6px;
   --spacing-taskbar-button-size: 40px;
   --spacing-taskbar-preview-thumbnail-height: 108px;
   --spacing-taskbar-preview-width: 208px;
+  --spacing-tile-grid-width: 574px;
   --spacing-title-bar-height: 32px;
   --spacing-title-bar-height-tabbed: 40px;
+  --spacing-toc-width: 220px;
+  --spacing-toc-item-height: 20px;
+  --spacing-tooltip-balloon-width: 300px;
+  --spacing-tooltip-max-width: 318px;
+  --spacing-tooltip-tail-height: 9px;
+  --spacing-tooltip-tail-width: 14px;
+  --spacing-window-frame-height: 500px;
+  --spacing-window-frame-width: 800px;
+  --spacing-window-title-width: 660px;
   --color-smoke-fill-default: var(--color-black-alpha-4d);
   --color-solid-background-fill-base: var(--color-gray-f3f3f3);
-  --color-solid-background-fill-base-alt: var(--color-gray-dadada);
   --color-solid-background-fill-quarternary: var(--color-white-solid);
   --color-solid-background-fill-quinary: var(--color-gray-fdfdfd);
   --color-solid-background-fill-secondary: var(--color-gray-eeeeee);
@@ -330,8 +431,6 @@
   --color-wallpaper-bloom-mid: var(--color-bloom-mid);
 
   /* Effect styles */
-  --shadow-elevation-card: 0px 2px 4px 0px #0000000a;
-  --shadow-elevation-card-hover: 0px 2px 4px 0px #0000001a;
   --shadow-elevation-dialog: 0px 2px 21px 0px #00000026, 0px 32px 64px 0px #00000030;
   --shadow-elevation-flyout: 0px 8px 16px 0px #00000024;
   --shadow-elevation-shell-surface: 0px 2px 6px 0px #00000026, 0px 9px 18px 0px #00000030;
@@ -355,15 +454,12 @@
 
   /* Paint styles */
   --gradient-elevation-accent-control-border: linear-gradient(to bottom, var(--color-control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--color-control-stroke-on-accent-secondary) 100%);
-  --gradient-elevation-circle-border: linear-gradient(to bottom, var(--color-control-stroke-default) 50.02%, var(--color-control-stroke-secondary) 95.45%);
   --gradient-elevation-control-border: linear-gradient(to bottom, var(--color-control-stroke-default) 90.58%, var(--color-control-stroke-secondary) 100%);
   --gradient-elevation-text-control-border: linear-gradient(to bottom, var(--color-control-stroke-default) 99.99%, var(--color-control-strong-fill-default) 100%);
-  --gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--color-accent-fill-default) 96.89%);
   --gradient-icon-color-search: linear-gradient(45deg, var(--color-blue-dark-1) 0%, var(--color-blue-dark-1) 55%, var(--color-green-light-2) 90%, var(--color-green-light-2) 100%);
   --color-material-fallback-acrylic-base: var(--color-acrylic-background-fill-base-fallback);
   --color-material-fallback-acrylic-default: var(--color-acrylic-background-fill-default-fallback);
   --color-material-fallback-mica-base: var(--color-mica-background-fill-base-fallback);
-  --color-material-fallback-mica-base-alt: var(--color-mica-background-fill-base-alt-fallback);
 }
 
 @utility type-body {
@@ -375,6 +471,14 @@
 }
 
 @utility type-body-large {
+  font-family: var(--font-base);
+  font-size: var(--text-body-large);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-body-large);
+  letter-spacing: 0em;
+}
+
+@utility type-body-large-link {
   font-family: var(--font-base);
   font-size: var(--text-body-large);
   font-weight: var(--font-weight-regular);
@@ -500,4 +604,8 @@
   background-color: rgb(from var(--color-acrylic-background-fill-default) r g b / 0.85);
   background-image: url('./assets/images/noise-acrylic.opacity-2.png');
   background-repeat: repeat;
+}
+
+@utility material-mica-base {
+  background-color: rgb(from var(--color-mica-background-fill-base) r g b / 0.95);
 }
