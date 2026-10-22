@@ -1,0 +1,365 @@
+{
+  "booleans": {},
+  "hash": "73d3500ddd110040630a13ec2b51b18063fb7f3dcb6d160d7a5d682a141b21a4",
+  "name": "BrowserToolbar",
+  "nodeId": "36:591",
+  "variants": {
+    "default": {
+      "cases": {},
+      "hash": "f54f9114a93dfb966b0382e388cb024a677125267577193d7b5135a3752a6dee",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "chrome/toolbar-fill"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "height": "size/browser-toolbar/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/browser-toolbar/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "back",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_arrow_left_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_left_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "back/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "forward",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_arrow_right_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_right_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "forward/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "refresh",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_arrow_clockwise_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_arrow_clockwise_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "refresh/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "chrome/omnibox-fill"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "address bar",
+          "radius": {
+            "bottomLeft": "radius/circular",
+            "bottomRight": "radius/circular",
+            "topLeft": "radius/circular",
+            "topRight": "radius/circular"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/16",
+              "right": "spacing/16",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "VERTICAL",
+          "path": "address bar/input row",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "height": "size/address-bar/height",
+            "horizontal": "FILL",
+            "vertical": "FIXED"
+          },
+          "type": "FRAME"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_info_24_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_info_24_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "address bar/input row/leading icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "address bar/input row/url",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "seojaewan.com/posts/react-19-hooks",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 34,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "subtle-fill/transparent"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/8",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/8"
+            },
+            "primaryAlign": "CENTER",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "menu (⋮)",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_more_vertical_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_more_vertical_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "menu (⋮)/icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "36:591",
+      "properties": {}
+    }
+  }
+}

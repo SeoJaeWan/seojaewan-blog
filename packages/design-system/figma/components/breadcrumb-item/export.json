@@ -1,0 +1,1453 @@
+{
+  "booleans": {
+    "showSeparator": {
+      "defaultValue": true,
+      "key": "Show separator#452:5"
+    }
+  },
+  "hash": "461ea75b9572ba18aaf7f78cc094436c44a6de96e9c8fe214099fcf490e8464c",
+  "name": "BreadcrumbItem",
+  "nodeId": "31:420",
+  "variants": {
+    "current=false,state=hover": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "c035502a00b507f3c81402e87f74613ab9e08b2ce545596787e2cd3aafc2159d",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:395",
+      "properties": {
+        "Current": "False",
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "current=false,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "current=false,state=pressed": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "subtle-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "a5c42e2ddf5d23a0f0e7fdf0d068c78cad5acb2b59097cd4f00a5b20ef35d6e4",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:400",
+      "properties": {
+        "Current": "False",
+        "State": "Pressed"
+      }
+    },
+    "current=false,state=rest": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "10ccc7fa91929fe12f6fe59254aef2df9dba457d5f98a1592c4e4a68c30624f2",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:390",
+      "properties": {
+        "Current": "False",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "current=false,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "current=true,state=hover": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "54870f54c83b8866c404f234926023ef4ffe32dcac80b84252ba2dd33d99ed7f",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:410",
+      "properties": {
+        "Current": "True",
+        "State": "Hover"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "current=true,state=pressed",
+          "trigger": "ON_PRESS",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "current=true,state=pressed": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "subtle-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "27ffc46f386ceab14cdf420c44393a06c2831ae1911627c2335e5438e8ec34ce",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "subtle-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:415",
+      "properties": {
+        "Current": "True",
+        "State": "Pressed"
+      }
+    },
+    "current=true,state=rest": {
+      "cases": {
+        "showSeparator=false": {
+          "hidden": [
+            "separator"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "595cac40d8f9a19a55d0c58a2de8397ecea001b4c7fbb1bc2149b8d6543c6380",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "31:405",
+      "properties": {
+        "Current": "True",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "current=true,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

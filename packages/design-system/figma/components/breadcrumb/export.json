@@ -1,0 +1,1829 @@
+{
+  "booleans": {
+    "showSecondCrumb": {
+      "defaultValue": true,
+      "key": "Show second crumb#452:12"
+    },
+    "showThirdCrumb": {
+      "defaultValue": true,
+      "key": "Show third crumb#452:15"
+    }
+  },
+  "hash": "ed3b4d5e2e6b5e991908a54d92ae933372ac3f0ef9fc2b77b8690949d8aaf86a",
+  "name": "Breadcrumb",
+  "nodeId": "31:454",
+  "variants": {
+    "state=editing": {
+      "cases": {
+        "showSecondCrumb=false": {
+          "hidden": [],
+          "layers": [
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "control-fill/input-active"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/breadcrumb/width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "control-stroke/default"
+                },
+                "weight": {
+                  "bottom": "stroke-width/default",
+                  "left": "stroke-width/default",
+                  "right": "stroke-width/default",
+                  "top": "stroke-width/default"
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "path",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "바탕 화면\\Blog\\React",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 2,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  },
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 16,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 5,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "fill": {
+                "variable": "accent-fill/default"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "bottom border",
+              "self": {
+                "absolute": {
+                  "horizontal": {
+                    "constraint": "STRETCH",
+                    "distances": [
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      },
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      }
+                    ]
+                  },
+                  "vertical": {
+                    "constraint": "MAX",
+                    "distances": [
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      }
+                    ]
+                  }
+                }
+              },
+              "sizing": {
+                "height": "stroke-width/focus-outer",
+                "horizontal": "DERIVED",
+                "vertical": "FIXED"
+              },
+              "type": "RECTANGLE"
+            }
+          ]
+        },
+        "showThirdCrumb=false": {
+          "hidden": [],
+          "layers": [
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "control-fill/input-active"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/breadcrumb/width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "control-stroke/default"
+                },
+                "weight": {
+                  "bottom": "stroke-width/default",
+                  "left": "stroke-width/default",
+                  "right": "stroke-width/default",
+                  "top": "stroke-width/default"
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "path",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "바탕 화면\\Blog\\React",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 2,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  },
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 16,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 5,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "fill": {
+                "variable": "accent-fill/default"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "bottom border",
+              "self": {
+                "absolute": {
+                  "horizontal": {
+                    "constraint": "STRETCH",
+                    "distances": [
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      },
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      }
+                    ]
+                  },
+                  "vertical": {
+                    "constraint": "MAX",
+                    "distances": [
+                      {
+                        "isNegative": false,
+                        "token": "spacing/0"
+                      }
+                    ]
+                  }
+                }
+              },
+              "sizing": {
+                "height": "stroke-width/focus-outer",
+                "horizontal": "DERIVED",
+                "vertical": "FIXED"
+              },
+              "type": "RECTANGLE"
+            }
+          ]
+        }
+      },
+      "hash": "b0b38c56e1dbeb7061f9b911e941510e2f6f4d3dd537c817b949682d5019899d",
+      "hidden": [],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/input-active"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/breadcrumb/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "path",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "바탕 화면\\Blog\\React",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 5,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 16,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 5,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "fill": {
+            "variable": "accent-fill/default"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "bottom border",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "STRETCH",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  },
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "stroke-width/focus-outer",
+            "horizontal": "DERIVED",
+            "vertical": "FIXED"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "31:451",
+      "properties": {
+        "State": "Editing"
+      }
+    },
+    "state=rest": {
+      "cases": {
+        "showSecondCrumb=false": {
+          "hidden": [
+            "crumb/Blog",
+            "crumb/React/separator"
+          ],
+          "layers": [
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "control-fill/default"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/4",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/breadcrumb/width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "control-stroke/default"
+                },
+                "weight": {
+                  "bottom": "stroke-width/default",
+                  "left": "stroke-width/default",
+                  "right": "stroke-width/default",
+                  "top": "stroke-width/default"
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-folder.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Folder"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "location icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_right_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "separator",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/0",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "바탕 화면",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 2,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  },
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_right_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/separator",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/React",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/React/hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/React/hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showThirdCrumb=false": {
+          "hidden": [
+            "crumb/React"
+          ],
+          "layers": [
+            {
+              "clipsContent": true,
+              "fill": {
+                "variable": "control-fill/default"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/4",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/breadcrumb/width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "control-stroke/default"
+                },
+                "weight": {
+                  "bottom": "stroke-width/default",
+                  "left": "stroke-width/default",
+                  "right": "stroke-width/default",
+                  "top": "stroke-width/default"
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-folder.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Folder"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "location icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_right_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "separator",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/0",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "바탕 화면",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 2,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  },
+                  {
+                    "end": 5,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_right_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/바탕 화면/separator",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/0",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/Blog",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/6",
+                  "right": "spacing/6",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/Blog/hit",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "horizontal": "HUG",
+                "maxWidth": "size/breadcrumb-item/max-width",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/Blog/hit/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "Blog",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_right_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "crumb/Blog/separator",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            }
+          ]
+        }
+      },
+      "hash": "44dd9b7b6c678757a866f9546af27f32d0d53594dc49df31a41d06e63577c473",
+      "hidden": [
+        "crumb/React/separator"
+      ],
+      "layers": [
+        {
+          "clipsContent": true,
+          "fill": {
+            "variable": "control-fill/default"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/breadcrumb/width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "control-stroke/default"
+            },
+            "weight": {
+              "bottom": "stroke-width/default",
+              "left": "stroke-width/default",
+              "right": "stroke-width/default",
+              "top": "stroke-width/default"
+            }
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-folder.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Folder"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "location icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/바탕 화면",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/바탕 화면/hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/바탕 화면/hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "바탕 화면",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 2,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 5,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/바탕 화면/separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/0",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/Blog",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/Blog/hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/Blog/hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "Blog",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_right_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_right_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/Blog/separator",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/React",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/6",
+              "right": "spacing/6",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/React/hit",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "horizontal": "HUG",
+            "maxWidth": "size/breadcrumb-item/max-width",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "crumb/React/hit/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 5,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:430",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}

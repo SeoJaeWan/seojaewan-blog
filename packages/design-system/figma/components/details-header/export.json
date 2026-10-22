@@ -1,0 +1,768 @@
+{
+  "booleans": {
+    "showLocation": {
+      "defaultValue": false,
+      "key": "Show location#31:7"
+    }
+  },
+  "hash": "817eb1f314337c711966c74e6866c7ad31c956c7ab1b7552857a69c56bd24677",
+  "name": "DetailsHeader",
+  "nodeId": "31:369",
+  "variants": {
+    "default": {
+      "cases": {
+        "showLocation=true": {
+          "hidden": [],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/4",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "col/이름",
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/details-header/column-name-width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "divider-stroke/default"
+                },
+                "weight": {
+                  "bottom": null,
+                  "left": null,
+                  "right": "stroke-width/default",
+                  "top": null
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "col/이름/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "이름",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "asset": {
+                "color": "text-fill/secondary",
+                "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+                "group": "Icons",
+                "kind": "mono",
+                "name": "ic_fluent_chevron_down_16_regular"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "col/이름/sort glyph",
+              "sizing": {
+                "height": "size/icon/12",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/12"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "col/수정한 날짜",
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/details-header/column-date-width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "divider-stroke/default"
+                },
+                "weight": {
+                  "bottom": null,
+                  "left": null,
+                  "right": "stroke-width/default",
+                  "top": null
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "col/수정한 날짜/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "수정한 날짜",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 3,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  },
+                  {
+                    "end": 4,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 3,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  },
+                  {
+                    "end": 6,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 4,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "col/유형",
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/details-header/column-type-width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "divider-stroke/default"
+                },
+                "weight": {
+                  "bottom": null,
+                  "left": null,
+                  "right": "stroke-width/default",
+                  "top": null
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "col/유형/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "유형",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": null,
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/0",
+                  "left": "spacing/8",
+                  "right": "spacing/8",
+                  "top": "spacing/0"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "col/위치",
+              "sizing": {
+                "height": "size/control/height",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/column-header/width"
+              },
+              "stroke": {
+                "align": "INSIDE",
+                "includedInLayout": true,
+                "paint": {
+                  "variable": "divider-stroke/default"
+                },
+                "weight": {
+                  "bottom": null,
+                  "left": null,
+                  "right": "stroke-width/default",
+                  "top": null
+                }
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "col/위치/label",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "위치",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 2,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "23d68e7aa313601df88d594cca7aa483ce1e0074d011c38a1c0c386b76335509",
+      "hidden": [
+        "col/위치"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/4",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "col/이름",
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/details-header/column-name-width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "divider-stroke/default"
+            },
+            "weight": {
+              "bottom": null,
+              "left": null,
+              "right": "stroke-width/default",
+              "top": null
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "col/이름/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "이름",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "text-fill/secondary",
+            "file": "icons/ic_fluent_chevron_down_16_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_chevron_down_16_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "col/이름/sort glyph",
+          "sizing": {
+            "height": "size/icon/12",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/12"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "col/수정한 날짜",
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/details-header/column-date-width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "divider-stroke/default"
+            },
+            "weight": {
+              "bottom": null,
+              "left": null,
+              "right": "stroke-width/default",
+              "top": null
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "col/수정한 날짜/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "수정한 날짜",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 3,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 4,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 3,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 6,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 4,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": null,
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/8",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "col/유형",
+          "sizing": {
+            "height": "size/control/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/details-header/column-type-width"
+          },
+          "stroke": {
+            "align": "INSIDE",
+            "includedInLayout": true,
+            "paint": {
+              "variable": "divider-stroke/default"
+            },
+            "weight": {
+              "bottom": null,
+              "left": null,
+              "right": "stroke-width/default",
+              "top": null
+            }
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "col/유형/label",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "유형",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 2,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:369",
+      "properties": {}
+    }
+  }
+}

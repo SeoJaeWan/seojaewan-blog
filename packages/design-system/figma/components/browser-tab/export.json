@@ -1,0 +1,631 @@
+{
+  "booleans": {},
+  "hash": "9ea00fe273858b2ad817683ad9629284dd8bbc3343593ce610b8f1e5c1eceb37",
+  "name": "BrowserTab",
+  "nodeId": "36:423",
+  "variants": {
+    "state=active": {
+      "cases": {},
+      "hash": "0c5cfac5813667248ffd726e90bc47406f5e2f7e818c6a022b1d1b337e6dcde0",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "chrome/toolbar-fill"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "height": "size/browser-tab/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/browser-tab/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "favicon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "title",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "close",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "36:392",
+      "properties": {
+        "State": "Active"
+      }
+    },
+    "state=hover": {
+      "cases": {},
+      "hash": "1cac90c515997614bf9f310aca91930504783747b95ee8761e3157467f618c1f",
+      "hidden": [],
+      "layers": [
+        {
+          "fill": {
+            "variable": "chrome/tab-fill-hover"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/overlay",
+            "bottomRight": "radius/overlay",
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "height": "size/browser-tab/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/browser-tab/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "favicon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "title",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "close",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        }
+      ],
+      "nodeId": "36:413",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "cases": {},
+      "hash": "d08fca9e3280a810e855c17c87effbb9abdd80bab1bb838f24ebeb63258726a8",
+      "hidden": [],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/8",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/0",
+              "left": "spacing/12",
+              "right": "spacing/8",
+              "top": "spacing/0"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "topLeft": "radius/overlay",
+            "topRight": "radius/overlay"
+          },
+          "sizing": {
+            "height": "size/browser-tab/height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/browser-tab/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "favicon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "parentLayout": "HORIZONTAL",
+          "path": "title",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "chrome/text-primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "asset": {
+            "color": "chrome/text-secondary",
+            "file": "icons/ic_fluent_dismiss_20_regular.svg",
+            "group": "Icons",
+            "kind": "mono",
+            "name": "ic_fluent_dismiss_20_regular"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "close",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "fill": {
+            "variable": "control-strong-stroke/disabled"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "separator",
+          "self": {
+            "absolute": {
+              "horizontal": {
+                "constraint": "MAX",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              },
+              "vertical": {
+                "constraint": "CENTER",
+                "distances": [
+                  {
+                    "isNegative": false,
+                    "token": "spacing/0"
+                  }
+                ]
+              }
+            }
+          },
+          "sizing": {
+            "height": "size/browser-tab/separator-height",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/browser-tab/separator-width"
+          },
+          "type": "RECTANGLE"
+        }
+      ],
+      "nodeId": "36:402",
+      "properties": {
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,4172 @@
+{
+  "booleans": {
+    "showSubtitle": {
+      "defaultValue": true,
+      "key": "Show subtitle#31:29"
+    },
+    "showTrailing": {
+      "defaultValue": false,
+      "key": "Show trailing#31:43"
+    }
+  },
+  "hash": "3f58507b5a0ba0fa5fc4f43c89da23a699f2e3174c2e305b64907fdf90a4f7e2",
+  "name": "ListItem",
+  "nodeId": "31:515",
+  "variants": {
+    "size=compact,state=hover": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [
+            "text/subtitle"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "571d52d6534e77935eaa4c5f808a7dff1e9de15ece977f0e942f819beffbb2fe",
+      "hidden": [
+        "text/subtitle",
+        "trailing"
+      ],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-compact",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:468",
+      "properties": {
+        "Size": "Compact",
+        "State": "Hover"
+      }
+    },
+    "size=compact,state=rest": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [
+            "text/subtitle"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "3650178d56f2fb6dc06eefd88a22fd22f7df9815624035e5e68b7ca5e45d1716",
+      "hidden": [
+        "text/subtitle",
+        "trailing"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-compact",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:461",
+      "properties": {
+        "Size": "Compact",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "size=compact,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "size=compact,state=selected": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "control-alt-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [
+            "text/subtitle"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "control-alt-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-compact",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/16",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/16"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "b7a7649761591e7b106f47fa46694d78c977f79bb40241510e6950ce64fe0e20",
+      "hidden": [
+        "text/subtitle",
+        "trailing"
+      ],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-alt-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-compact",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/16",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/16"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:475",
+      "properties": {
+        "Size": "Compact",
+        "State": "Selected"
+      }
+    },
+    "size=two-line,state=hover": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [],
+          "layers": [
+            {
+              "fill": {
+                "variable": "subtle-fill/secondary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/subtitle",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "2026-10-20",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "8f3938e42a8e83f47fcd19d771fd67fc8424c4aeffffc97b12cecca11235c149",
+      "hidden": [
+        "trailing"
+      ],
+      "layers": [
+        {
+          "fill": {
+            "variable": "subtle-fill/secondary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-two-line",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/subtitle",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "2026-10-20",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:493",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Hover"
+      }
+    },
+    "size=two-line,state=rest": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [],
+          "layers": [
+            {
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/subtitle",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "2026-10-20",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "b6bc7c3476407dde6afe560dfaae72c53b7beb6d66c92ec6052a96b925485977",
+      "hidden": [
+        "trailing"
+      ],
+      "layers": [
+        {
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-two-line",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/subtitle",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "2026-10-20",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:482",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Rest"
+      },
+      "transitions": [
+        {
+          "duration": "motion/duration/faster",
+          "easing": "motion/easing/fade",
+          "to": "size=two-line,state=hover",
+          "trigger": "ON_HOVER",
+          "type": "SMART_ANIMATE"
+        }
+      ]
+    },
+    "size=two-line,state=selected": {
+      "cases": {
+        "showSubtitle=false": {
+          "hidden": [
+            "text/subtitle",
+            "trailing"
+          ],
+          "layers": [
+            {
+              "fill": {
+                "variable": "control-alt-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        },
+        "showTrailing=true": {
+          "hidden": [],
+          "layers": [
+            {
+              "fill": {
+                "variable": "control-alt-fill/tertiary"
+              },
+              "layout": {
+                "counterAlign": "CENTER",
+                "counterGap": null,
+                "gap": "spacing/12",
+                "mode": "HORIZONTAL",
+                "padding": {
+                  "bottom": "spacing/4",
+                  "left": "spacing/12",
+                  "right": "spacing/12",
+                  "top": "spacing/4"
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": null,
+              "path": "",
+              "radius": {
+                "bottomLeft": "radius/control",
+                "bottomRight": "radius/control",
+                "topLeft": "radius/control",
+                "topRight": "radius/control"
+              },
+              "sizing": {
+                "height": "size/list-item/height-two-line",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/list-item/width"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "asset": {
+                "color": null,
+                "file": "illustrations/file-document.svg",
+                "group": "Illustrations",
+                "kind": "color",
+                "name": "file/Document"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "leading icon",
+              "sizing": {
+                "height": "size/icon/32",
+                "horizontal": "FIXED",
+                "vertical": "FIXED",
+                "width": "size/icon/32"
+              },
+              "type": "INSTANCE"
+            },
+            {
+              "clipsContent": true,
+              "layout": {
+                "counterAlign": "MIN",
+                "counterGap": null,
+                "gap": null,
+                "mode": "VERTICAL",
+                "padding": {
+                  "bottom": null,
+                  "left": null,
+                  "right": null,
+                  "top": null
+                },
+                "primaryAlign": "MIN",
+                "wrap": "NO_WRAP"
+              },
+              "parentLayout": "HORIZONTAL",
+              "path": "text",
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "type": "FRAME"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/title",
+              "self": {
+                "align": "STRETCH"
+              },
+              "sizing": {
+                "horizontal": "FILL",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "HEIGHT",
+                "characters": "React 19 훅 정리",
+                "maxLines": 1,
+                "segments": [
+                  {
+                    "end": 9,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 9,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  },
+                  {
+                    "end": 11,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 10,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Body"
+                  },
+                  {
+                    "end": 13,
+                    "fill": {
+                      "variable": "text-fill/primary"
+                    },
+                    "fontFamily": "Pretendard",
+                    "start": 11,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/body"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/body"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Hangul/Body"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "VERTICAL",
+              "path": "text/subtitle",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "2026-10-20",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 10,
+                    "fill": {
+                      "variable": "text-fill/secondary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            },
+            {
+              "parentLayout": "HORIZONTAL",
+              "path": "trailing",
+              "sizing": {
+                "horizontal": "HUG",
+                "vertical": "HUG"
+              },
+              "text": {
+                "alignHorizontal": "LEFT",
+                "alignVertical": "TOP",
+                "autoResize": "WIDTH_AND_HEIGHT",
+                "characters": "seojaewan.com/posts/react-19-hooks",
+                "maxLines": null,
+                "segments": [
+                  {
+                    "end": 34,
+                    "fill": {
+                      "variable": "text-fill/tertiary"
+                    },
+                    "fontFamily": "Open Sans",
+                    "start": 0,
+                    "style": {
+                      "fontSize": {
+                        "variable": "font/size/caption"
+                      },
+                      "fontWeight": {
+                        "variable": "font/weight/regular"
+                      },
+                      "letterSpacing": {
+                        "value": "0%"
+                      },
+                      "lineHeight": {
+                        "variable": "font/line-height/caption"
+                      }
+                    },
+                    "textDecoration": "NONE",
+                    "textStyle": "Caption"
+                  }
+                ]
+              },
+              "type": "TEXT"
+            }
+          ]
+        }
+      },
+      "hash": "8c7b0b58f5dbbb6639ea4ee010498fbfafe8b7d489a63cea7dd2a85f34baca1f",
+      "hidden": [
+        "trailing"
+      ],
+      "layers": [
+        {
+          "fill": {
+            "variable": "control-alt-fill/tertiary"
+          },
+          "layout": {
+            "counterAlign": "CENTER",
+            "counterGap": null,
+            "gap": "spacing/12",
+            "mode": "HORIZONTAL",
+            "padding": {
+              "bottom": "spacing/4",
+              "left": "spacing/12",
+              "right": "spacing/12",
+              "top": "spacing/4"
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": null,
+          "path": "",
+          "radius": {
+            "bottomLeft": "radius/control",
+            "bottomRight": "radius/control",
+            "topLeft": "radius/control",
+            "topRight": "radius/control"
+          },
+          "sizing": {
+            "height": "size/list-item/height-two-line",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/list-item/width"
+          },
+          "type": "COMPONENT"
+        },
+        {
+          "asset": {
+            "color": null,
+            "file": "illustrations/file-document.svg",
+            "group": "Illustrations",
+            "kind": "color",
+            "name": "file/Document"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "leading icon",
+          "sizing": {
+            "height": "size/icon/32",
+            "horizontal": "FIXED",
+            "vertical": "FIXED",
+            "width": "size/icon/32"
+          },
+          "type": "INSTANCE"
+        },
+        {
+          "clipsContent": true,
+          "layout": {
+            "counterAlign": "MIN",
+            "counterGap": null,
+            "gap": null,
+            "mode": "VERTICAL",
+            "padding": {
+              "bottom": null,
+              "left": null,
+              "right": null,
+              "top": null
+            },
+            "primaryAlign": "MIN",
+            "wrap": "NO_WRAP"
+          },
+          "parentLayout": "HORIZONTAL",
+          "path": "text",
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "type": "FRAME"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/title",
+          "self": {
+            "align": "STRETCH"
+          },
+          "sizing": {
+            "horizontal": "FILL",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "HEIGHT",
+            "characters": "React 19 훅 정리",
+            "maxLines": 1,
+            "segments": [
+              {
+                "end": 9,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 9,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              },
+              {
+                "end": 11,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 10,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Body"
+              },
+              {
+                "end": 13,
+                "fill": {
+                  "variable": "text-fill/primary"
+                },
+                "fontFamily": "Pretendard",
+                "start": 11,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/body"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/body"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Hangul/Body"
+              }
+            ]
+          },
+          "type": "TEXT"
+        },
+        {
+          "parentLayout": "VERTICAL",
+          "path": "text/subtitle",
+          "sizing": {
+            "horizontal": "HUG",
+            "vertical": "HUG"
+          },
+          "text": {
+            "alignHorizontal": "LEFT",
+            "alignVertical": "TOP",
+            "autoResize": "WIDTH_AND_HEIGHT",
+            "characters": "2026-10-20",
+            "maxLines": null,
+            "segments": [
+              {
+                "end": 10,
+                "fill": {
+                  "variable": "text-fill/secondary"
+                },
+                "fontFamily": "Open Sans",
+                "start": 0,
+                "style": {
+                  "fontSize": {
+                    "variable": "font/size/caption"
+                  },
+                  "fontWeight": {
+                    "variable": "font/weight/regular"
+                  },
+                  "letterSpacing": {
+                    "value": "0%"
+                  },
+                  "lineHeight": {
+                    "variable": "font/line-height/caption"
+                  }
+                },
+                "textDecoration": "NONE",
+                "textStyle": "Caption"
+              }
+            ]
+          },
+          "type": "TEXT"
+        }
+      ],
+      "nodeId": "31:504",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Selected"
+      }
+    }
+  }
+}
