@@ -25,6 +25,8 @@ export type VariantEntry = {
   hidden: string[];
   /** BOOLEAN 속성 하나를 기본값과 반대로 바꾼 경우. 키는 `<prop 이름>=<true|false>` */
   cases: Record<string, CaseEntry>;
+  /** 이 변형에서 다른 변형으로 바뀌는 프로토타입 전환(M1). 없으면 키를 두지 않는다 */
+  transitions?: JsonObject[];
 };
 
 /** BOOLEAN 컴포넌트 속성 */
@@ -69,7 +71,7 @@ export type ComponentChanges = {
 export const COMPONENT_MANIFEST_FILE = 'export.json';
 
 /**
- * 변형 해시를 계산한다. 비교에 쓰는 이름 정보(속성·레이어·숨김·경우)만 넣는다.
+ * 변형 해시를 계산한다. 비교에 쓰는 이름 정보(속성·레이어·숨김·경우·전환)만 넣는다.
  * 피그마가 내보낼 때마다 PNG 바이트가 조금씩 달라져도 해시가 흔들리지 않게 PNG는 넣지 않는다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param variant 변형 항목(해시 제외)
@@ -83,6 +85,7 @@ export function variantHash(variant: Omit<VariantEntry, 'hash' | 'nodeId'>): str
         layers: variant.layers,
         hidden: variant.hidden,
         cases: casesJson(variant.cases),
+        ...(variant.transitions === undefined ? {} : { transitions: variant.transitions }),
       }),
     ),
   );
@@ -203,6 +206,7 @@ export function manifestJson(manifest: ComponentManifest): JsonObject {
       layers: value.layers,
       hidden: value.hidden,
       cases: casesJson(value.cases),
+      ...(value.transitions === undefined ? {} : { transitions: value.transitions }),
     };
   }
   const booleans: JsonObject = {};

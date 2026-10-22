@@ -2,6 +2,7 @@ import { parityDecisions } from '../../../../packages/design-system/scripts/pari
 // 값 표만 가져와 번들을 작게 둔다(피그마 MCP 코드 길이 제한).
 import { valueGroups, values } from '../rules/figma-properties.json';
 import type { Bound, NodeData, PaintData, TextSegmentData } from './node-data';
+import type { MotionScale } from './transitions';
 
 // 내보내기 전 구조 검사. 코드와 "같은 이름"으로 비교할 수 없는 구조를 찾아, 고칠 때까지 내보내기를 막는다.
 // 값의 허용 여부는 분류표(rules/figma-properties.json)와 결정 사항(D1~D9)을 따른다.
@@ -21,6 +22,8 @@ export type Violation = {
 export type CheckContext = {
   /** 숫자 이름 간격 토큰(spacing/<숫자>)의 값 → 변수 이름 목록 */
   spacingScale: ReadonlyMap<number, readonly string[]>;
+  /** 모션 토큰 값 표(M1 전환). 없으면 전환을 읽지 않는다 */
+  motionScale?: MotionScale;
 };
 
 type ValueStatus = 'allow' | 'block' | 'style' | 'asset' | 'D1' | 'D6' | 'D7';
