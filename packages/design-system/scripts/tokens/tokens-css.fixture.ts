@@ -193,7 +193,7 @@ export const TOKENS_FIXTURE = {
                 {
                   type: 'SOLID',
                   color: '{acrylic-background-fill.default}',
-                  opacity: 1,
+                  opacity: 0.85,
                   blendMode: 'NORMAL',
                 },
                 {

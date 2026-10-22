@@ -468,13 +468,13 @@
 }
 
 @utility material-acrylic-base {
-  background-color: color-mix(in srgb, var(--color-acrylic-background-fill-base) 90%, transparent);
+  background-color: rgb(from var(--color-acrylic-background-fill-base) r g b / 0.9);
   background-image: url('./assets/images/noise-acrylic.opacity-2.png');
   background-repeat: repeat;
 }
 
 @utility material-acrylic-default {
-  background-color: color-mix(in srgb, var(--color-acrylic-background-fill-default) 85%, transparent);
+  background-color: rgb(from var(--color-acrylic-background-fill-default) r g b / 0.85);
   background-image: url('./assets/images/noise-acrylic.opacity-2.png');
   background-repeat: repeat;
 }

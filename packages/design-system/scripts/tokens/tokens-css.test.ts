@@ -67,12 +67,19 @@ describe('토큰 생성', () => {
     expect(block.slice(0, block.indexOf('}') + 1)).toBe(
       [
         '@utility material-acrylic-default {',
-        '  background-color: var(--color-acrylic-background-fill-default);',
+        '  background-color: rgb(from var(--color-acrylic-background-fill-default) r g b / 0.85);',
         "  background-image: url('./assets/images/noise-acrylic.opacity-2.png');",
         '  background-repeat: repeat;',
         '}',
       ].join('\n'),
     );
+  });
+
+  it('변수에 연결한 단색 층은 변수 색의 알파를 쓰지 않고 칠 불투명도만 쓴다(피그마와 같게)', () => {
+    // 픽스처의 acrylic-background-fill/default는 알파 0.85(#fcfcfcd9)이고 칠 불투명도도 0.85다. 곱하면 0.72가 된다.
+    const block = css.slice(css.indexOf('@utility material-acrylic-default {'));
+    expect(block).not.toContain('color-mix');
+    expect(block).toContain('r g b / 0.85)');
   });
 
   it('블렌드 모드가 일반이 아닌 재질 층은 지원하지 않아 실패한다', () => {

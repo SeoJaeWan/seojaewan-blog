@@ -219,7 +219,7 @@ function materialLayer(layer: unknown, context: ColorContext, path: string): Mat
   }
   const opacity = layer.opacity === undefined ? 1 : numberValue(layer.opacity, path);
   if (layer.type === 'SOLID') {
-    const color = layerColor(layer.color, opacity, context.names, path);
+    const color = solidLayerColor(layer.color, opacity, context.names, path);
     return { kind: 'color', value: color, repeat: 'repeat' };
   }
   if (
@@ -583,7 +583,7 @@ function layerBackground(layer: unknown, context: ColorContext, path: string): s
   }
   const opacity = layer.opacity === undefined ? 1 : numberValue(layer.opacity, path);
   if (layer.type === 'SOLID') {
-    const color = layerColor(layer.color, opacity, context.names, path);
+    const color = solidLayerColor(layer.color, opacity, context.names, path);
     return `linear-gradient(${color}, ${color})`;
   }
   if (layer.type === 'GRADIENT_LINEAR') {
@@ -836,6 +836,32 @@ function resolvedColors(variables: readonly FlatToken[]): Map<string, string> {
     }
   }
   return colors;
+}
+
+/**
+ * 단색 칠 층의 색을 만든다. 피그마에서 변수에 연결한 단색 칠은 변수 색의 알파를 쓰지 않고 칠 불투명도만 쓴다
+ * (변수를 연결할 때 칠 불투명도가 변수 알파로 채워질 뿐, 그려지는 불투명도는 칠 불투명도다. 2026-10 임시 노드로 확인:
+ * 알파 0.85 변수 + 칠 불투명도 0.5 = 날값 색 + 0.5와 같은 픽셀). 그래서 변수 색의 RGB만 쓰고 알파를 칠 불투명도로 바꾼다.
+ * @codocs [[디자인 기반:재질 효과]]
+ * @param color 16진수 색이나 별칭
+ * @param opacity 칠 불투명도(0~1)
+ * @param names 변수 경로에서 CSS 이름으로 가는 표
+ * @param path 오류 메시지에 쓸 경로
+ * @returns CSS 색
+ */
+function solidLayerColor(
+  color: unknown,
+  opacity: number,
+  names: ReadonlyMap<string, string>,
+  path: string,
+): string {
+  const reference = aliasReference(color, names, path);
+  if (reference === undefined) {
+    return layerColor(color, opacity, names, path);
+  }
+  return opacity >= 1
+    ? `rgb(from ${reference} r g b)`
+    : `rgb(from ${reference} r g b / ${formatNumber(opacity)})`;
 }
 
 /**
