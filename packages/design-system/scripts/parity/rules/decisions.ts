@@ -29,7 +29,6 @@ export type ParityDecisions = {
   d7: { allowGrid: boolean };
   d8: { requireBoundFixedSize: boolean; requireBoundRootSize: boolean };
   d9: { allowedRotations: Readonly<Record<string, string>> };
-  paintStyleLayers: { rawBlendLayerColor: 'block' | 'notice' };
 };
 
 // @codocs [[피그마 일치 검사:결정 사항]]
@@ -102,10 +101,4 @@ export const parityDecisions: ParityDecisions = {
       '-180': 'rotate-180',
     },
   },
-  /**
-   * 칠 스타일 안의 층 색은 색 변수에 연결해야 하고 날값이면 막는다. 다만 블렌드 모드가 NORMAL이 아닌 단색 층은
-   * 피그마 API에서 변수에 연결하면 블렌드가 NORMAL로 고정되어 연결할 수 없다(2026-10 확인).
-   * 이런 층의 날값을 막을지('block') 알림만 할지('notice')는 사용자 결정 대기다. 결정 전까지 알림만 한다.
-   */
-  paintStyleLayers: { rawBlendLayerColor: 'notice' },
 };

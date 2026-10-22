@@ -332,6 +332,15 @@ function checkPaintList(
     add(node, `숨긴 ${label}이 있다`, `숨긴 ${label}을 지운다.`);
   }
   if (style !== undefined) {
+    // 칠 스타일의 층은 일반(NORMAL) 섞기만 코드로 옮긴다. 블렌드 층이 있는 스타일은 토큰에도 들어가지 않는다.
+    const blended = paints.find((paint) => paint.visible && paint.blendMode !== 'NORMAL');
+    if (blended !== undefined) {
+      add(
+        node,
+        `${label} 스타일 ${style}에 블렌드 ${blended.blendMode} 층이 있다(일반 섞기만 지원)`,
+        `칠 스타일의 층을 일반(NORMAL) 섞기로 바꾸거나 다른 칠 스타일을 쓴다.`,
+      );
+    }
     return;
   }
   const visible = paints.filter((paint) => paint.visible);

@@ -105,7 +105,7 @@ export const acrylicPaintStyle: PaintStyleInput = {
       type: 'SOLID',
       visible: true,
       opacity: 0.8500000238418579,
-      blendMode: 'LUMINOSITY',
+      blendMode: 'NORMAL',
       color: { r: 0.976, g: 0.976, b: 0.976 },
       boundVariables: { color: aliasTo('layer-fill/default') },
     },

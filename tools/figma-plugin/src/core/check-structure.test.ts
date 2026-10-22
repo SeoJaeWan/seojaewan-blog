@@ -103,6 +103,18 @@ describe('구조 검사', () => {
     );
   });
 
+  it('블렌드 층이 있는 칠 스타일을 쓰면 막는다(일반 섞기만 지원)', () => {
+    expect(
+      reasonsAfter((root) => {
+        root.fillStyle = 'Material/Mica Base';
+        root.fills = [
+          { type: 'SOLID', visible: true, blendMode: 'LUMINOSITY', opacity: 1 },
+          { type: 'SOLID', visible: true, blendMode: 'COLOR', opacity: 0.5 },
+        ];
+      }),
+    ).toEqual(['칠 스타일 Material/Mica Base에 블렌드 LUMINOSITY 층이 있다(일반 섞기만 지원)']);
+  });
+
   it('그라데이션 선이 스타일에 연결되어 있지 않으면 막는다', () => {
     expect(reasonsAfter((root) => (root.strokeStyle = undefined))).toEqual([
       'GRADIENT_LINEAR 선이 스타일에 연결되어 있지 않다',

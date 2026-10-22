@@ -236,7 +236,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
               type: 'SOLID',
               color: '{layer-fill.default}',
               opacity: 0.85,
-              blendMode: 'LUMINOSITY',
+              blendMode: 'NORMAL',
             },
             {
               type: 'IMAGE',
@@ -267,18 +267,22 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     );
   });
 
-  it('블렌드 모드 단색 층의 날값은 결정 전까지 막지 않고 알린다(피그마 API가 연결을 못 함)', () => {
-    const [luminosity, ...rest] = acrylicPaintStyle.paints;
-    if (luminosity?.type !== 'SOLID') {
+  it('블렌드 모드가 NORMAL이 아닌 층이 있는 칠 스타일은 토큰에 넣지 않고 알린다', () => {
+    const [solid, ...rest] = acrylicPaintStyle.paints;
+    if (solid?.type !== 'SOLID') {
       throw new Error('fixture');
     }
-    const raw: typeof acrylicPaintStyle = {
-      name: 'Material/Acrylic Default',
-      paints: [{ ...luminosity, boundVariables: {} }, ...rest],
+    const mica: typeof acrylicPaintStyle = {
+      name: 'Material/Mica Base',
+      paints: [{ ...solid, blendMode: 'LUMINOSITY', boundVariables: {} }, ...rest],
     };
-    const { notices } = buildDesignTokens(tokensInput({ paintStyles: [raw] }));
+    const { tokens, skippedStyles, notices } = buildDesignTokens(
+      tokensInput({ paintStyles: [mica] }),
+    );
+    expect(at(tokens, ['style', 'paint', 'Material', 'Mica Base'])).toBeUndefined();
+    expect(skippedStyles).toEqual(['Material/Mica Base']);
     expect(notices).toEqual([
-      expect.stringContaining('LUMINOSITY 단색 층의 색 #f9f9f9이 변수에 연결되어 있지 않다'),
+      expect.stringContaining('블렌드 모드 LUMINOSITY 층이 있어 토큰에 넣지 않는다'),
     ]);
   });
 

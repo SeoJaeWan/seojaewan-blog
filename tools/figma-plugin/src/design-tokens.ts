@@ -1,4 +1,3 @@
-import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
 import { colorToHex, type FigmaColor } from './color';
 import type { JsonObject, JsonValue } from './stable-json';
 
@@ -483,6 +482,17 @@ function shadowValue(
 function paintStyleToken(style: PaintStyleInput, context: ConversionContext): JsonObject | null {
   const label = `칠 스타일 ${style.name}`;
   const visible = style.paints.filter((paint) => paint.visible);
+  // 칠 층은 일반(NORMAL) 섞기만 코드로 옮긴다. 블렌드 층이 있는 칠 스타일은 토큰에 넣지 않고 알린다.
+  // 이 칠 스타일을 쓰는 컴포넌트는 구조 검사가 막는다.
+  const blended = visible.find(
+    (paint) => paint.type !== 'UNSUPPORTED' && paint.blendMode !== 'NORMAL',
+  );
+  if (blended !== undefined && blended.type !== 'UNSUPPORTED') {
+    context.notices.push(
+      `${label}: 블렌드 모드 ${blended.blendMode} 층이 있어 토큰에 넣지 않는다(일반 섞기만 지원). 이 칠 스타일을 쓰는 컴포넌트는 내보낼 수 없다`,
+    );
+    return null;
+  }
   for (const paint of visible) {
     checkBoundColors(paint, label, context);
   }
@@ -531,8 +541,6 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
 /**
  * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
  * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
- * 블렌드 모드가 NORMAL이 아닌 단색 층은 피그마 API에서 변수에 연결하면 블렌드가 NORMAL로 고정되어 연결할 수 없다.
- * 이런 층의 날값을 막을지 알림만 할지는 결정 사항 설정(`parityDecisions.paintStyleLayers`) 한곳에서 정한다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param paint 칠 층
  * @param label 오류 메시지에 쓸 이름
@@ -540,10 +548,7 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
  */
 function checkBoundColors(paint: PaintInput, label: string, context: ConversionContext): void {
   if (paint.type === 'SOLID' && paint.boundVariables.color === undefined) {
-    const isNoticeOnly =
-      paint.blendMode !== 'NORMAL' &&
-      parityDecisions.paintStyleLayers.rawBlendLayerColor === 'notice';
-    (isNoticeOnly ? context.notices : context.problems).push(
+    context.problems.push(
       `${label}: ${paint.blendMode} 단색 층의 색 ${colorToHex(paint.color)}이 변수에 연결되어 있지 않다. 칠 스타일 안의 층 색도 색 변수에 연결한다`,
     );
   }
