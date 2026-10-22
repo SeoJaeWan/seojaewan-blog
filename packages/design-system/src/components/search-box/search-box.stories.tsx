@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SearchBox } from './search-box';
 
 // 피그마 SearchBox의 변형 속성 값이다(정규화한 이름).
-const APPEARANCES = ['default', 'pill'] as const;
+const APPEARANCES = ['default', 'pill', 'taskbar'] as const;
 const STATES = ['rest', 'hover', 'focused', 'disabled'] as const;
 
 type ParityArgs = {
