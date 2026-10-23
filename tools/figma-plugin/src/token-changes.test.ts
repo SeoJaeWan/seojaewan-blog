@@ -90,6 +90,9 @@ describe('바뀐 토큰과 영향받는 이름', () => {
       }),
     );
     expect(changes.changedPaths).toEqual(['spacing/12', 'spacing/16']);
+    expect(changes.addedPaths).toEqual(['spacing/16']);
+    expect(changes.removedPaths).toEqual(['spacing/12']);
+    expect(changes.modifiedPaths).toEqual([]);
     expect(tokenChanges(null, stableStringify(before)).changedPaths).toHaveLength(6);
   });
 });

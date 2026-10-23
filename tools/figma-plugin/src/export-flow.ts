@@ -1,3 +1,4 @@
+import { TokenFormatError } from '../../../packages/design-system/scripts/tokens/tokens-css';
 import type { Violation } from './core/check-structure';
 import { exportTargetCore, exportVariantImages, type TargetExport } from './core/export-component';
 import { exportTokensText, type TokensExport } from './core/export-tokens';
@@ -40,6 +41,7 @@ import {
   FILE_KEY,
   SCALE,
   SETTINGS_PATH,
+  TOKENS_CSS_PATH,
   TOKENS_PATH,
 } from './plugin-config';
 import {
@@ -73,7 +75,7 @@ type Head = { commitSha: string; treeSha: string };
 type RepoState = { head: Head; files: Map<string, string> };
 
 /** 저장소에서 읽는 파일 범위 */
-const REPO_PREFIXES = [`${FIGMA_DIR}/`] as const;
+const REPO_PREFIXES = [`${FIGMA_DIR}/`, TOKENS_CSS_PATH] as const;
 
 /** 커밋할 PR 브랜치의 상태 */
 type Target = {
@@ -131,12 +133,12 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       captureFolder: slug,
     });
   }
-  if (violations.length > 0) {
-    return { kind: 'blocked', violations };
-  }
 
   log('토큰 변환 중');
-  const tokens = await exportTokensText();
+  const tokens = await readTokens(violations);
+  if (tokens === null || violations.length > 0) {
+    return { kind: 'blocked', violations };
+  }
   for (const name of tokens.skippedStyles) {
     log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
   }
@@ -166,6 +168,28 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     commits.push(tokensCommit);
   }
   return { kind: 'done', commits, unchanged };
+}
+
+/**
+ * tokens.json과 tokens.css를 만든다. 변환 규칙에 맞지 않는 토큰이 있으면 위반으로 더하고 null을 돌려준다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param violations 위반을 더할 목록
+ * @returns 내보낸 토큰, 변환에 실패하면 null
+ */
+async function readTokens(violations: Violation[]): Promise<TokensExport | null> {
+  try {
+    return await exportTokensText();
+  } catch (error) {
+    if (!(error instanceof TokenFormatError)) {
+      throw error;
+    }
+    violations.push({
+      where: '토큰',
+      reason: `tokens.css를 만들 수 없다: ${error.message}`,
+      fix: '피그마에서 토큰 이름이나 값을 고친다. 규칙이 없는 변수 묶음·스타일 종류면 토큰 생성 규칙을 먼저 정한다.',
+    });
+    return null;
+  }
 }
 
 /**
@@ -355,8 +379,8 @@ async function targetChanges(
 }
 
 /**
- * 토큰이 main과 다르면 토큰 PR에 커밋한다. tokens.json, 토큰이 가리키는 이미지 자산, 바뀐 토큰을 쓰는 컴포넌트의
- * 변형 PNG를 담는다. 이번에 함께 내보낸 컴포넌트의 PNG는 그 컴포넌트 PR에만 넣으므로 여기서 뺀다.
+ * 토큰이 main과 다르면 토큰 PR에 커밋한다. tokens.json과 같은 변환 함수로 만든 tokens.css, 토큰이 가리키는 이미지 자산,
+ * 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG를 담아 바로 병합할 수 있게 한다. 이번에 함께 내보낸 컴포넌트의 PNG는 그 컴포넌트 PR에만 넣으므로 여기서 뺀다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param tokens 내보낸 토큰
@@ -372,7 +396,10 @@ async function commitTokens(
   exportedNames: ReadonlySet<string>,
   log: (text: string) => void,
 ): Promise<PullRequestCommit | null> {
-  const desired = new Map<string, string>([[TOKENS_PATH, await textBlob(token, tokens.text)]]);
+  const desired = new Map<string, string>([
+    [TOKENS_PATH, await textBlob(token, tokens.text)],
+    [TOKENS_CSS_PATH, await textBlob(token, tokens.css)],
+  ]);
   for (const [file, bytes] of tokens.images) {
     desired.set(assetFilePath(file), await bytesBlob(token, bytes));
   }
@@ -422,7 +449,10 @@ async function commitTokens(
     return null;
   }
   const summary = {
-    changedPaths: changes.changedPaths,
+    addedPaths: changes.addedPaths,
+    modifiedPaths: changes.modifiedPaths,
+    removedPaths: changes.removedPaths,
+    usingComponents: affected,
     refreshedComponents: refreshed,
     imageUploadCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
   };

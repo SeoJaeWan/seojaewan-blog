@@ -11,6 +11,12 @@ const ALIAS_REFERENCE = /\{([^{}]+)\}/gu;
 export type TokenChanges = {
   /** 값이나 종류가 바뀌었거나 새로 생기거나 사라진 토큰 경로(`color/blue/dark-1`, `style/text/Body`) */
   changedPaths: string[];
+  /** main에 없던 토큰 경로 */
+  addedPaths: string[];
+  /** 값이나 종류가 바뀐 토큰 경로 */
+  modifiedPaths: string[];
+  /** main에만 있는 토큰 경로(이름이 바뀌었거나 지워진 토큰) */
+  removedPaths: string[];
   /**
    * 피그마가 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
    * 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다.
@@ -51,6 +57,9 @@ export function tokenChanges(oldText: string | null, newText: string): TokenChan
   }
   return {
     changedPaths,
+    addedPaths: changedPaths.filter((path) => !before.has(path)),
+    modifiedPaths: changedPaths.filter((path) => before.has(path) && after.has(path)),
+    removedPaths: changedPaths.filter((path) => !after.has(path)),
     affectedNames: new Set([...affected].map((path) => path.replace(STYLE_GROUP, ''))),
   };
 }

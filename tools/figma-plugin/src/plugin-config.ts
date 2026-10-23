@@ -18,6 +18,8 @@ export const CAPTURES_BRANCH = 'parity-captures';
 /** 디자인 시스템 패키지의 피그마 기준 자료 폴더 */
 export const FIGMA_DIR = 'packages/design-system/figma';
 export const TOKENS_PATH = `${FIGMA_DIR}/tokens.json`;
+/** tokens.json에서 변환 함수로 만드는 생성 파일 */
+export const TOKENS_CSS_PATH = 'packages/design-system/src/tokens.css';
 /** 파일 키와 배율처럼 바뀌지 않는 전역 값 */
 export const SETTINGS_PATH = `${FIGMA_DIR}/figma.json`;
 /** 컴포넌트마다 export.json과 변형 PNG를 두는 폴더 */

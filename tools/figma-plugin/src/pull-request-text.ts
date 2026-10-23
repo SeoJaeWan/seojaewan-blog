@@ -34,9 +34,15 @@ export type CommitSummary = {
 
 /** 토큰 PR에 쓰는 내용 */
 export type TokensSummary = {
-  /** 바뀐 토큰 경로 */
-  changedPaths: readonly string[];
-  /** 바뀐 토큰을 써서 변형 이미지를 다시 내보낸 컴포넌트 이름 */
+  /** main에 없던 토큰 경로 */
+  addedPaths: readonly string[];
+  /** 값이나 종류가 바뀐 토큰 경로 */
+  modifiedPaths: readonly string[];
+  /** 이름이 바뀌었거나 지워진 토큰 경로 */
+  removedPaths: readonly string[];
+  /** 바뀐 토큰을 쓰는 컴포넌트 이름(피그마 기준) */
+  usingComponents: readonly string[];
+  /** 그중 저장소에 있어 변형 이미지를 다시 내보낸 컴포넌트 이름 */
   refreshedComponents: readonly string[];
   /** 새로 올리거나 바꾼 이미지 자산 수 */
   imageUploadCount: number;
@@ -193,14 +199,14 @@ export function tokensCommitSubject(): string {
  */
 export function tokensCommitBody(summary: TokensSummary): string {
   return [
-    '피그마에서 내보낸 토큰과, 바뀐 토큰을 쓰는 컴포넌트의 변형 이미지를 갱신한다.',
+    '피그마에서 내보낸 tokens.json과 그것으로 만든 tokens.css, 바뀐 토큰을 쓰는 컴포넌트의 변형 이미지를 갱신한다.',
     '',
     ...tokenLines(summary),
   ].join('\n');
 }
 
 /**
- * 토큰 PR의 한국어 본문을 만든다. 바뀐 토큰과 변형 이미지를 다시 내보낸 컴포넌트를 적는다.
+ * 토큰 PR의 한국어 본문을 만든다. 새로 생기거나 바뀌거나 사라진 토큰과, 그 토큰을 쓰는 컴포넌트를 적는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param summary 토큰 변경
  * @returns PR 본문(Markdown)
@@ -213,8 +219,9 @@ export function tokensPullRequestBody(summary: TokensSummary): string {
     '',
     '## 확인',
     '',
-    '- 같은 PR에서 `src/tokens.css`를 `figma/tokens.json`에 맞게 고친다.',
-    '- 컴포넌트 PR보다 먼저 병합한다.',
+    '- `src/tokens.css`는 `figma/tokens.json`에서 변환 스크립트와 같은 함수로 만들었다. 손으로 고치지 않는다.',
+    '- 토큰 이름이 바뀌거나 지워져 lint가 모르는 클래스로 실패하면, 같은 PR에서 옛 클래스를 쓰는 코드를 고친다.',
+    '- 새 토큰을 쓰는 컴포넌트 PR보다 먼저 병합한다.',
   ].join('\n');
 }
 
@@ -225,19 +232,36 @@ export function tokensPullRequestBody(summary: TokensSummary): string {
  */
 function tokenLines(summary: TokensSummary): string[] {
   const tokens = [
-    `- 바뀐 토큰 ${summary.changedPaths.length}개`,
-    ...summary.changedPaths.map((path) => `  - \`${path}\``),
+    ...pathList('새 토큰', summary.addedPaths),
+    ...pathList('값이 바뀐 토큰', summary.modifiedPaths),
+    ...pathList('이름이 바뀌었거나 지워진 토큰', summary.removedPaths),
   ];
+  const refreshed = new Set(summary.refreshedComponents);
   const components =
-    summary.refreshedComponents.length === 0
-      ? ['- 변형 이미지를 다시 내보낸 컴포넌트 없음']
+    summary.usingComponents.length === 0
+      ? ['- 바뀐 토큰을 쓰는 컴포넌트 없음']
       : [
-          `- 바뀐 토큰을 써서 변형 이미지를 다시 내보낸 컴포넌트 ${summary.refreshedComponents.length}개`,
-          ...summary.refreshedComponents.map((name) => `  - ${name}`),
+          `- 바뀐 토큰을 쓰는 컴포넌트 ${summary.usingComponents.length}개`,
+          ...summary.usingComponents.map(
+            (name) => `  - ${name}${refreshed.has(name) ? ' (변형 이미지 다시 내보냄)' : ''}`,
+          ),
         ];
   const images =
     summary.imageUploadCount > 0 ? [`- 이미지 자산 ${summary.imageUploadCount}개 갱신`] : [];
-  return [...tokens, ...components, ...images];
+  return [...(tokens.length === 0 ? ['- 바뀐 토큰 없음'] : tokens), ...components, ...images];
+}
+
+/**
+ * 토큰 경로 목록 줄을 만든다. 비어 있으면 줄을 만들지 않는다.
+ * @param label 목록 이름
+ * @param paths 토큰 경로
+ * @returns 목록 줄
+ */
+function pathList(label: string, paths: readonly string[]): string[] {
+  if (paths.length === 0) {
+    return [];
+  }
+  return [`- ${label} ${paths.length}개`, ...paths.map((path) => `  - \`${path}\``)];
 }
 
 /**
