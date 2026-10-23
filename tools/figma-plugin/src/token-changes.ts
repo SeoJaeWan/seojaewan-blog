@@ -1,0 +1,188 @@
+// main의 tokens.json과 새로 내보낸 tokens.json을 비교해 바뀐 토큰과, 그 토큰을 쓰는 컴포넌트를 찾는 순수 계산이다.
+// 토큰 값만 바뀌면 컴포넌트 export.json 해시가 그대로라 변형 PNG가 갱신되지 않는다. 그래서 토큰 PR이 바뀐 토큰을 쓰는
+// 컴포넌트의 변형 PNG를 다시 내보내는데, 그 대상을 여기서 정한다.
+
+/** 스타일 토큰이 tokens.json에서 놓이는 그룹(`style/<종류>/<스타일 이름>`) */
+const STYLE_GROUP = /^style\/(?:text|effect|paint)\//u;
+
+/** 별칭 참조(`{color.blue.dark-1}`) */
+const ALIAS_REFERENCE = /\{([^{}]+)\}/gu;
+
+/** tokens.json 비교 결과 */
+export type TokenChanges = {
+  /** 값이나 종류가 바뀌었거나 새로 생기거나 사라진 토큰 경로(`color/blue/dark-1`, `style/text/Body`) */
+  changedPaths: string[];
+  /**
+   * export.json이 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
+   * 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다.
+   */
+  affectedNames: Set<string>;
+};
+
+/**
+ * 두 tokens.json을 비교해 바뀐 토큰과 영향받는 이름을 찾는다. `$extensions`(컬렉션, 쓰임 범위)는 모습과 관계없어 비교하지 않는다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param oldText main의 tokens.json 내용(없으면 null)
+ * @param newText 새로 내보낸 tokens.json 내용
+ * @returns 바뀐 토큰 경로와 영향받는 이름
+ */
+export function tokenChanges(oldText: string | null, newText: string): TokenChanges {
+  const before = flattenTokens(oldText === null ? {} : parseJson(oldText));
+  const after = flattenTokens(parseJson(newText));
+  const paths = new Set([...before.keys(), ...after.keys()]);
+  const changedPaths = [...paths].filter((path) => before.get(path) !== after.get(path)).sort();
+
+  const references = new Map<string, Set<string>>();
+  for (const path of paths) {
+    references.set(
+      path,
+      new Set([...aliasTargets(before.get(path)), ...aliasTargets(after.get(path))]),
+    );
+  }
+  const affected = new Set(changedPaths);
+  let isGrowing = true;
+  while (isGrowing) {
+    isGrowing = false;
+    for (const [path, targets] of references) {
+      if (!affected.has(path) && [...targets].some((target) => affected.has(target))) {
+        affected.add(path);
+        isGrowing = true;
+      }
+    }
+  }
+  return {
+    changedPaths,
+    affectedNames: new Set([...affected].map((path) => path.replace(STYLE_GROUP, ''))),
+  };
+}
+
+/**
+ * 컴포넌트 export.json 가운데 이름 목록의 토큰을 하나라도 쓰는 컴포넌트를 찾는다.
+ * 칠·선·반경·크기·배치·글자 스타일·자산 색 등 어디에 쓰였든 찾도록 export.json의 모든 문자열 값을 본다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param manifests 컴포넌트 폴더 이름 → export.json 내용
+ * @param names 찾을 토큰 이름(변수 경로, 스타일 이름)
+ * @returns 그 토큰을 쓰는 컴포넌트 폴더 이름(정렬)
+ */
+export function componentsUsingTokens(
+  manifests: ReadonlyMap<string, string>,
+  names: ReadonlySet<string>,
+): string[] {
+  if (names.size === 0) {
+    return [];
+  }
+  const result: string[] = [];
+  for (const [slug, text] of manifests) {
+    let parsed: unknown;
+    try {
+      parsed = parseJson(text);
+    } catch {
+      throw new Error(`${slug}/export.json을 읽을 수 없다.`);
+    }
+    if (stringValues(parsed).some((value) => names.has(value))) {
+      result.push(slug);
+    }
+  }
+  return result.sort();
+}
+
+/**
+ * 토큰 트리를 경로 → 비교용 문자열(`$type`, `$value`)로 펼친다.
+ * @param value 토큰 트리
+ * @param prefix 지금까지의 경로
+ * @param out 결과
+ * @returns 경로(`/`로 이음) → 비교용 문자열
+ */
+function flattenTokens(
+  value: unknown,
+  prefix: readonly string[] = [],
+  out = new Map<string, string>(),
+): Map<string, string> {
+  if (!isRecord(value)) {
+    return out;
+  }
+  if ('$value' in value) {
+    out.set(prefix.join('/'), JSON.stringify([stableJson(value.$type), stableJson(value.$value)]));
+    return out;
+  }
+  for (const [key, child] of Object.entries(value)) {
+    if (!key.startsWith('$')) {
+      flattenTokens(child, [...prefix, key], out);
+    }
+  }
+  return out;
+}
+
+/**
+ * 토큰 값이 가리키는 다른 토큰 경로를 찾는다.
+ * @param text 비교용 문자열(없으면 undefined)
+ * @returns 가리키는 토큰 경로
+ */
+function aliasTargets(text: string | undefined): string[] {
+  if (text === undefined) {
+    return [];
+  }
+  return [...text.matchAll(ALIAS_REFERENCE)].map((match) => (match[1] ?? '').split('.').join('/'));
+}
+
+/**
+ * JSON 값 안의 문자열 값을 모두 모은다(키는 넣지 않는다).
+ * @param value JSON 값
+ * @returns 문자열 값
+ */
+function stringValues(value: unknown): string[] {
+  if (typeof value === 'string') {
+    return [value];
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap(stringValues);
+  }
+  return isRecord(value) ? Object.values(value).flatMap(stringValues) : [];
+}
+
+/**
+ * JSON 문자열을 읽는다.
+ * @param text JSON 문자열
+ * @returns JSON 값
+ */
+function parseJson(text: string): unknown {
+  const parsed: unknown = JSON.parse(text);
+  return parsed;
+}
+
+/**
+ * 비교할 값을 키 순서와 상관없는 문자열로 바꾼다.
+ * @param value JSON 값(없으면 undefined)
+ * @returns 키를 정렬한 JSON 문자열, 없으면 빈 문자열
+ */
+function stableJson(value: unknown): string {
+  return value === undefined ? '' : JSON.stringify(sortedKeys(value));
+}
+
+/**
+ * 객체 키를 재귀적으로 정렬한 사본을 만든다. 배열 순서는 그대로 둔다.
+ * @param value JSON 값
+ * @returns 키를 정렬한 사본
+ */
+function sortedKeys(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sortedKeys);
+  }
+  if (!isRecord(value)) {
+    return value;
+  }
+  return Object.fromEntries(
+    Object.keys(value)
+      .sort()
+      .map((key) => [key, sortedKeys(value[key])]),
+  );
+}
+
+/**
+ * 값이 배열이 아닌 객체인지 확인한다.
+ * @param value 확인할 값
+ * @returns 객체면 true
+ */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}

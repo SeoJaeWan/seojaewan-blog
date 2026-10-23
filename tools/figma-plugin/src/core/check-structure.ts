@@ -2,7 +2,6 @@ import { parityDecisions } from '../../../../packages/design-system/scripts/pari
 // 값 표만 가져와 번들을 작게 둔다(피그마 MCP 코드 길이 제한).
 import { valueGroups, values } from '../rules/figma-properties.json';
 import type { Bound, NodeData, PaintData, TextSegmentData } from './node-data';
-import type { MotionScale } from './transitions';
 
 // 내보내기 전 구조 검사. 코드와 "같은 이름"으로 비교할 수 없는 구조를 찾아, 고칠 때까지 내보내기를 막는다.
 // 값의 허용 여부는 분류표(rules/figma-properties.json)와 결정 사항(D1~D9)을 따른다.
@@ -18,14 +17,6 @@ export type Violation = {
   fix: string;
 };
 
-/** 검사에 필요한 파일 수준 정보 */
-export type CheckContext = {
-  /** 숫자 이름 간격 토큰(spacing/<숫자>)의 값 → 변수 이름 목록 */
-  spacingScale: ReadonlyMap<number, readonly string[]>;
-  /** 모션 토큰 값 표(M1 전환). 없으면 전환을 읽지 않는다 */
-  motionScale?: MotionScale;
-};
-
 type ValueStatus = 'allow' | 'block' | 'style' | 'asset' | 'D1' | 'D6' | 'D7';
 
 const valueTables: Readonly<Record<string, Readonly<Record<string, string>> | undefined>> = values;
@@ -39,10 +30,9 @@ const EPSILON = 1e-6;
  * @codocs [[피그마 일치 검사:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
- * @param context 파일 수준 정보
  * @returns 위반 목록
  */
-export function checkVariant(root: NodeData, where: string, context: CheckContext): Violation[] {
+export function checkVariant(root: NodeData, where: string): Violation[] {
   const violations: Violation[] = [];
   /**
    * 위반을 더한다.
@@ -53,7 +43,7 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
   function add(node: NodeData, reason: string, fix: string): void {
     violations.push({ where: node.path === '' ? where : `${where} / ${node.path}`, reason, fix });
   }
-  checkNode(root, true, context, add);
+  checkNode(root, true, add);
   return violations;
 }
 
@@ -63,15 +53,14 @@ type Add = (node: NodeData, reason: string, fix: string) => void;
  * 노드 하나와 그 아래를 검사한다.
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param context 파일 수준 정보
  * @param add 위반을 더하는 함수
  */
-function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+function checkNode(node: NodeData, isRoot: boolean, add: Add): void {
   if (!checkType(node, isRoot, add)) {
     return;
   }
   if (node.type === 'SLOT') {
-    checkSlot(node, isRoot, context, add);
+    checkSlot(node, isRoot, add);
     return;
   }
   checkSiblingNames(node, add);
@@ -81,7 +70,7 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   checkCorners(node, add);
   checkEffects(node, add);
   checkLayout(node, add);
-  checkChildLayout(node, context, add);
+  checkChildLayout(node, add);
   checkSizes(node, isRoot, add);
   if (node.text !== null) {
     checkText(node, add);
@@ -97,7 +86,7 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
     return;
   }
   for (const child of node.children) {
-    checkNode(child, false, context, add);
+    checkNode(child, false, add);
   }
 }
 
@@ -107,10 +96,9 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
  * @codocs [[피그마 일치 검사:구조 검사]]
  * @param node 슬롯 노드
  * @param isRoot 변형 루트인지
- * @param context 파일 수준 정보
  * @param add 위반을 더하는 함수
  */
-function checkSlot(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+function checkSlot(node: NodeData, isRoot: boolean, add: Add): void {
   if (
     hasPaint(node.fills) ||
     hasPaint(node.strokes) ||
@@ -124,7 +112,7 @@ function checkSlot(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   }
   checkCommon(node, add);
   checkLayout(node, add);
-  checkChildLayout(node, context, add);
+  checkChildLayout(node, add);
   checkSizes(node, isRoot, add);
 }
 
@@ -573,11 +561,12 @@ function requireBound(
 
 /**
  * 부모 안에서의 자기 배치를 검사한다. 절대 위치는 D1을 따른다.
+ * 절대 위치의 거리 값은 피그마가 부모 크기에서 계산하는 값이라 막지 않고 캡처 표에서 본다.
+ * @codocs [[피그마 일치 검사:겹쳐 놓기]]
  * @param node 노드
- * @param context 파일 수준 정보
  * @param add 위반을 더하는 함수
  */
-function checkChildLayout(node: NodeData, context: CheckContext, add: Add): void {
+function checkChildLayout(node: NodeData, add: Add): void {
   const { child } = node;
   if (child === null || node.parentLayoutMode === null) {
     // 부모가 자동 배치가 아니면 부모 쪽에서 수동 배치로 막는다.
@@ -612,61 +601,8 @@ function checkChildLayout(node: NodeData, context: CheckContext, add: Add): void
         `제약 ${constraint}는 막는다(D1)`,
         '제약을 왼쪽·오른쪽·양쪽·가운데 중 하나로 둔다.',
       );
-      continue;
-    }
-    for (const distance of absoluteDistances(node, axis)) {
-      if (insetToken(distance, context) === undefined) {
-        add(
-          node,
-          `절대 위치 거리 ${String(distance)}가 숫자 이름 간격 토큰 하나로 정해지지 않는다(D1)`,
-          '거리를 spacing/<숫자> 토큰 값 중 하나로 맞춘다.',
-        );
-      }
     }
   }
-}
-
-/**
- * 절대 위치 노드의 제약에 따라 코드 위치 클래스가 가질 거리를 계산한다.
- * CENTER는 가운데에서 벗어난 거리다.
- * @param node 절대 위치 노드
- * @param axis 축
- * @returns 거리 목록
- */
-export function absoluteDistances(node: NodeData, axis: 'horizontal' | 'vertical'): number[] {
-  const { child } = node;
-  if (child === null) {
-    return [];
-  }
-  const isHorizontal = axis === 'horizontal';
-  const start = isHorizontal ? child.x : child.y;
-  const size = isHorizontal ? node.width.value : node.height.value;
-  const parentSize = isHorizontal ? child.parentWidth : child.parentHeight;
-  const end = parentSize - start - size;
-  switch (child.constraints[axis]) {
-    case 'MIN':
-      return [start];
-    case 'MAX':
-      return [end];
-    case 'STRETCH':
-      return [start, end];
-    case 'CENTER':
-      return [start + size / 2 - parentSize / 2];
-    default:
-      return [];
-  }
-}
-
-/**
- * 거리 값에 맞는 숫자 이름 간격 토큰을 찾는다. 값이 같은 토큰이 여럿이면 정하지 않는다.
- * @param distance 거리(음수 가능)
- * @param context 파일 수준 정보
- * @returns 변수 이름, 없거나 여럿이면 undefined
- */
-export function insetToken(distance: number, context: CheckContext): string | undefined {
-  const rounded = Math.round(Math.abs(distance) * 1000) / 1000;
-  const names = context.spacingScale.get(rounded) ?? [];
-  return names.length === 1 ? names[0] : undefined;
 }
 
 /**
