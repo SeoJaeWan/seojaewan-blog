@@ -21,7 +21,7 @@ function utilityBlock(name: string): string {
 // @codocs [[피그마 연동:토큰 생성]]
 describe('토큰 생성', () => {
   it('변수 이름은 -- 뒤에 피그마 경로를 -로 이은 것이다', () => {
-    expect(css).toContain('  --text-fill-primary: var(--color-black-alpha-66);');
+    expect(css).toContain('  --text-fill-primary: var(--color-black-40);');
     expect(css).toContain('  --size-control-height: 32px;');
     expect(css).toContain('  --font-line-height-body: 20px;');
   });
@@ -37,11 +37,11 @@ describe('토큰 생성', () => {
   });
 
   it('별칭은 풀지 않고 var() 참조로 남긴다', () => {
-    expect(css).toContain('  --control-stroke-default: var(--color-black-alpha-0f);');
+    expect(css).toContain('  --control-stroke-default: var(--color-black-6);');
   });
 
   it('값은 CSS 형식이다(색 소문자, px, ms, 백분율 불투명도, cubic-bezier, 서체 따옴표)', () => {
-    expect(css).toContain('  --color-black-alpha-0f: #0000000f;');
+    expect(css).toContain('  --color-black-6: #0000000f;');
     expect(css).toContain('  --motion-duration-fast: 167ms;');
     expect(css).toContain('  --opacity-cut: 50%;');
     expect(css).toContain('  --motion-easing-fade: cubic-bezier(0, 0, 1, 1);');
@@ -68,6 +68,44 @@ describe('토큰 생성', () => {
         'var(--control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, ' +
         '#66666645 96.268%, #33333356 98.134%, var(--control-stroke-on-accent-secondary) 100%);',
     );
+  });
+
+  it('안쪽 그림자는 값 앞에 inset을 붙인다', () => {
+    expect(css).toContain('  --elevation-inset: inset 0px 2px 4px 0px #0000000f;');
+    expect(css).not.toContain('--elevation-flyout: inset');
+  });
+
+  it('여러 층 그림자는 층을 쉼표로 잇고 피그마의 층 순서를 지킨다', () => {
+    expect(css).toContain(
+      '  --elevation-double: 0px 32px 64px 0px #00000038, 0px 2px 4px 0px #00000024;',
+    );
+  });
+
+  it('% 자간은 글자 크기 기준 em으로, px 자간은 px 그대로 쓴다', () => {
+    expect(utilityBlock('type-body-strong')).toContain('  letter-spacing: -0.015em;');
+    expect(utilityBlock('type-caption')).toContain('  letter-spacing: 0.5px;');
+  });
+
+  it('숫자로 된 크기 이름도 --size-<숫자> 변수가 되고 w-* 클래스가 읽는다', () => {
+    expect(css).toContain('  --size-240: 240px;');
+    expect(utilityBlock('w-*')).toBe('@utility w-* {\n  width: --value(--size-*);\n}');
+  });
+
+  it('투명도가 같거나 RGB가 같은 정지점 사이에는 중간 정지점을 넣지 않는다', () => {
+    expect(css).toContain(
+      '  --border-same-alpha: linear-gradient(to bottom, var(--color-gray-200) 0%, var(--color-white) 100%);',
+    );
+    expect(css).toContain(
+      '  --border-same-rgb: linear-gradient(to bottom, var(--color-black-6) 25%, var(--color-black-40) 75%);',
+    );
+  });
+
+  it('색은 쓴 자릿수 그대로 소문자로 옮긴다(6자리는 불투명, 8자리는 투명도 포함)', () => {
+    expect(css).toContain('  --color-white: #ffffff;');
+    expect(css).toContain('  --color-blue-dark-2: #0f6cbd;');
+    expect(css).toContain('  --color-blue-dark-1-90: #0f6cbde6;');
+    expect(css).toContain('  --color-gray-500-76: #8a8a8ac2;');
+    expect(css).toContain('  --accent-fill-default: var(--color-blue-dark-1-90);');
   });
 
   it('변수에 연결한 단색 칠 스타일은 칠 불투명도를 알파로 쓰고 이미지 층은 그리지 않는다', () => {
@@ -110,7 +148,7 @@ describe('토큰 생성', () => {
     const root = css.slice(css.indexOf(':root {'), css.indexOf('@theme static {'));
     const theme = css.slice(css.indexOf('@theme static {'));
     // Primitive 색은 클래스를 만들지 않는다
-    expect(root).toContain('--color-black-alpha-0f:');
+    expect(root).toContain('--color-black-6:');
     expect(css).not.toContain('@utility bg-color-*');
     // 글자 스타일만 쓰는 서체 값
     expect(root).toContain('--font-size-body:');

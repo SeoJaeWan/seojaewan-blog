@@ -41,30 +41,41 @@ function px(value: number): Record<string, unknown> {
  * @param y 세로 거리
  * @param blur 흐림
  * @param color 색
+ * @param isInset 안쪽 그림자인지
  * @returns 그림자 층
  */
-function shadow(y: number, blur: number, color: string): Record<string, unknown> {
-  return { offsetX: px(0), offsetY: px(y), blur: px(blur), spread: px(0), color, inset: false };
+function shadow(y: number, blur: number, color: string, isInset = false): Record<string, unknown> {
+  return { offsetX: px(0), offsetY: px(y), blur: px(blur), spread: px(0), color, inset: isInset };
 }
 
 export const TOKENS_FIXTURE = {
   color: {
+    white: primitive('#ffffff'),
     black: {
-      'alpha-0f': primitive('#0000000F'),
-      'alpha-66': primitive('#00000066'),
+      '6': primitive('#0000000F'),
+      '40': primitive('#00000066'),
+      '90': primitive('#000000e6'),
     },
-    white: { 'alpha-14': primitive('#ffffff14') },
-    gray: { f9f9f9: primitive('#f9f9f9') },
+    gray: {
+      '100': { '8': primitive('#ffffff14') },
+      '200': primitive('#f9f9f9'),
+      '500': { '76': primitive('#8a8a8ac2') },
+    },
+    blue: { 'dark-1': { '90': primitive('#0F6CBDE6') }, 'dark-2': primitive('#0F6CBD') },
   },
-  'text-fill': { primary: variable('color', '{color.black.alpha-66}', ['TEXT_FILL']) },
+  'text-fill': { primary: variable('color', '{color.black.40}', ['TEXT_FILL']) },
+  'accent-fill': { default: variable('color', '{color.blue.dark-1.90}') },
   'control-stroke': {
-    default: variable('color', '{color.black.alpha-0f}', ['STROKE_COLOR']),
-    'on-accent-default': variable('color', '{color.white.alpha-14}', ['STROKE_COLOR']),
-    'on-accent-secondary': variable('color', '{color.black.alpha-66}', ['STROKE_COLOR']),
+    default: variable('color', '{color.black.6}', ['STROKE_COLOR']),
+    'on-accent-default': variable('color', '{color.gray.100.8}', ['STROKE_COLOR']),
+    'on-accent-secondary': variable('color', '{color.black.40}', ['STROKE_COLOR']),
   },
-  'acrylic-background-fill': { default: variable('color', '{color.gray.f9f9f9}') },
+  'acrylic-background-fill': { default: variable('color', '{color.gray.200}') },
   spacing: { '2': variable('dimension', px(2)), '10': variable('dimension', px(10)) },
-  size: { control: { height: variable('dimension', px(32)) } },
+  size: {
+    '240': variable('dimension', px(240)),
+    control: { height: variable('dimension', px(32)) },
+  },
   'stroke-width': { default: variable('dimension', px(1)) },
   blur: { acrylic: variable('dimension', px(60)) },
   opacity: { cut: variable('number', 50, ['OPACITY']) },
@@ -84,7 +95,14 @@ export const TOKENS_FIXTURE = {
   },
   style: {
     effect: {
-      Elevation: { Flyout: { $type: 'shadow', $value: [shadow(8, 16, '#00000024')] } },
+      Elevation: {
+        Flyout: { $type: 'shadow', $value: [shadow(8, 16, '#00000024')] },
+        Inset: { $type: 'shadow', $value: [shadow(2, 4, '#0000000f', true)] },
+        Double: {
+          $type: 'shadow',
+          $value: [shadow(32, 64, '#00000038'), shadow(2, 4, '#00000024')],
+        },
+      },
       Material: {
         Acrylic: {
           $type: 'shadow',
@@ -107,6 +125,22 @@ export const TOKENS_FIXTURE = {
           $value: [
             { color: '{control-stroke.on-accent-default}', position: 0.9067 },
             { color: '{control-stroke.on-accent-secondary}', position: 1 },
+          ],
+        },
+      },
+      Border: {
+        'Same Alpha': {
+          $type: 'gradient',
+          $value: [
+            { color: '{color.gray.200}', position: 0 },
+            { color: '{color.white}', position: 1 },
+          ],
+        },
+        'Same Rgb': {
+          $type: 'gradient',
+          $value: [
+            { color: '{color.black.6}', position: 0.25 },
+            { color: '{color.black.40}', position: 0.75 },
           ],
         },
       },
@@ -136,6 +170,26 @@ export const TOKENS_FIXTURE = {
           fontSize: '{font.size.body}',
           fontWeight: '{font.weight.regular}',
           letterSpacing: { unit: '%', value: 0 },
+          lineHeight: '{font.line-height.body}',
+        },
+      },
+      'Body Strong': {
+        $type: 'typography',
+        $value: {
+          fontFamily: '{font.family.base}',
+          fontSize: '{font.size.body}',
+          fontWeight: '{font.weight.regular}',
+          letterSpacing: { unit: '%', value: -1.5 },
+          lineHeight: '{font.line-height.body}',
+        },
+      },
+      Caption: {
+        $type: 'typography',
+        $value: {
+          fontFamily: '{font.family.base}',
+          fontSize: '{font.size.body}',
+          fontWeight: '{font.weight.regular}',
+          letterSpacing: { unit: 'px', value: 0.5 },
           lineHeight: '{font.line-height.body}',
         },
       },
