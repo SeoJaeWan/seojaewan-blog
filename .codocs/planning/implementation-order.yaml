@@ -20,39 +20,40 @@ _codocs:
 3단계 피그마 Foundations와 Components: |
   공식 Windows 11 UI Kit을 기준으로 피그마에 토큰(Variables)과 컴포넌트를 만든다.
   규칙은 [[디자인 기반]], 대상은 [[컴포넌트 목록]]을 따르고, 2단계에서 정한 기능에 필요한 상태와 변형을 포함한다.
-4단계 피그마 Verification: |
+4단계 피그마 점검: |
   피그마 디자인 시스템 자체가 제대로 만들어졌는지 확인한다. 코드와 비교하는 단계가 아니다.
   예: 컴포넌트가 Variables에 연결돼 있는지, 상태 변형이 빠짐없는지, 긴 텍스트와 폭 변화에 대응하는지.
   문제가 없다고 판단되면 다음 단계로 넘어간다.
 5단계 피그마 Screens: |
-  3단계 컴포넌트의 인스턴스로 화면별 Screens를 피그마에 만든다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  컴포넌트를 조합한 조립(02 · Patterns)과 그것으로 만든 화면(03 · Screens)을 피그마에 만든다([[디자인 시스템:조립]], [[디자인 시스템:Screens]]).
   화면을 그리면서 실제로 필요한 화면 요소가 드러나면 피그마 컴포넌트로 만들고 [[컴포넌트 목록]]을 고친다.
 
-  Screens에는 고유한 디자인 요소나 상태가 있는 화면만 둔다([[디자인 시스템:Screens]]). 동작은 화면별 기능 문서에 적고, 6단계 이후 코드(Storybook과 앱)에서 확인한다. 화면 흐름 프로토타입과 애니메이션 장면은 두지 않는다.
+  동작은 화면별 기능 문서에 적고, 6단계 이후 코드(Storybook과 앱)에서 확인한다. 화면 흐름 프로토타입과 애니메이션 장면은 두지 않는다.
 
   - 컴포넌트 상호작용: 버튼·아이콘의 hover·pressed 상태 전환(Interactive components)은 컴포넌트에 둔다.
   - 움직임의 지속 시간과 이징 값은 Windows 모션 지침에서 모션 토큰으로 만들어, 6단계 이후 코드가 쓴다([[디자인 기반:모션]]).
 6단계 디자인 시스템 코드화: |
-  피그마를 기반으로 `packages/design-system`에 foundations(토큰)와 components를 만든다. Screens에서 나온 화면 요소 컴포넌트도 포함한다.
-  기능에 쓰기 전에 먼저 [[피그마 일치 검사]]로 피그마와 비교한다. 피그마 플러그인과 CI 비교도 이 단계에서 만든다.
+  피그마를 기반으로 `packages/design-system`에 foundations(토큰)와 components를 만든다. 흐름은 [[피그마 연동]]을 따른다.
 
-  처음 만드는 컴포넌트 몇 개로 [[미결 사항:피그마 일치 검사 검증]]을 먼저 확인한다. 틀린 버전을 잡지 못하는 경우가 있으면 판정 항목을 보강하되, 1:1이 아닌 항목은 판정에 넣지 않고 캡처 표에 맡긴다. 그다음 나머지 컴포넌트로 넘어간다.
+  먼저 디자인 시스템 재구성을 마친다. 내용을 변형으로 가진 컴포넌트를 그대로 코드로 옮기면 나중에 코드까지 다시 고쳐야 하기 때문이다.
+  1. 피그마를 [[디자인 시스템:컴포넌트 조립 규칙]]과 [[디자인 시스템:조립]]의 층 구조로, 토큰을 [[디자인 기반:토큰 이름]]과 [[디자인 기반:크기 변수]]의 이름 규칙으로 맞춘다. 크기 변수 정리는 화면을 조립으로 다시 만들기 전에 한다.
+  2. 플러그인, 토큰 변환 스크립트, Stylelint, 캡처 도구와 CI를 [[피그마 연동]]대로 바꾼다.
+  3. 토큰 PR을 먼저 병합한다. 이름이 바뀐 토큰을 쓰는 코드(Button, MenuItem, Flyout, SearchBox)도 이 PR에서 고친다([[피그마 연동:PR 흐름]]).
+  4. 코드가 있는 네 컴포넌트(Button, MenuItem, Flyout, SearchBox)의 컴포넌트 PR을 처리한다.
 
-  나머지 컴포넌트는 묶음으로 나눠 차례로 옮긴다. 묶음마다 그 묶음의 컴포넌트를 플러그인으로 내보내면 컴포넌트마다 PR이 하나씩 열리고, 토큰이 바뀌었으면 토큰 PR이 따로 열린다. 코드는 각 PR에서 고친다([[피그마 일치 검사:피그마 플러그인]], [[피그마 일치 검사:경우별 흐름]]). 컴포넌트 PR과 토큰 PR은 스킬로 처리한다([[피그마 일치 검사:스킬]]). 병합은 ①부터 ⑤까지 묶음 차례로 하고, 묶음 안에서는 토큰 PR을 먼저 병합한다.
+  나머지 컴포넌트는 코드로 만들 차례가 되면 묶음마다 플러그인으로 내보낸다. 컴포넌트마다 PR이 하나씩 열리고, 토큰이 바뀌었으면 토큰 PR이 따로 열린다. PR은 스킬로 처리한다([[피그마 연동:스킬]]). 병합은 ①부터 ⑤까지 묶음 차례로 하고, 묶음 안에서는 토큰 PR을 먼저 병합한다.
 
   | 묶음 | 컴포넌트 |
   |---|---|
-  | ① 기본 컨트롤과 토큰 | 토큰 전체, IconButton, RenameField, Tooltip, ProgressRing, ListItem, DropDownButton, Menu, MenuSeparator, Popover 등 |
-  | ② 창 | WindowFrame, CaptionButton, Scrollbar, ScrollArea, MessageBox 등 |
-  | ③ 작업 표시줄·Start·검색 | Taskbar, TaskbarButton, TaskbarPreview(List), SystemTray, StartMenu, PinnedTile, SearchPanel, SearchResults 등 |
-  | ④ 탐색기·바탕화면 | DesktopIcon, SelectionMarquee, ExplorerTab, NavigationItem, FileItem, ColumnHeader, DetailsHeader, Breadcrumb, ExplorerContent와 그 영역 컴포넌트 |
-  | ⑤ Chrome·스냅·재부팅 | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar, ChromeWindow, ChromePage, Snap*, BootScreen 등 |
-
-  묶음 작업 전에 먼저 할 것:
-  1. 일치 검사 규칙 분류 점검([[미결 사항:피그마 일치 검사 규칙 분류 점검]])
-  2. 슬롯 내용 검사([[피그마 일치 검사:슬롯 내용]])를 플러그인과 비교 도구에 넣는 PR을 `main`에 병합한다.
+  | ① 기본 컨트롤 | IconButton, DropDownButton, RenameField, Separator, Popover, Tooltip, Scrollbar, ScrollArea, ListItem, SectionHeader, SectionTitle, ListGroup, TileGrid, Menu, MessageBox, ProgressRing, EmptyState, CodeBlock |
+  | ② 창 | WindowFrame, WindowTitle, CaptionButton, CaptionButtonGroup, WindowPreview |
+  | ③ 작업 표시줄·Start·검색 | Taskbar, TaskbarButton, TaskbarPreviewList, SystemTray, ShellSurface, StartMenuFooter, ProfileButton, PinnedTile, SearchResults, BestMatchCard |
+  | ④ 탐색기·바탕화면 | FileItem, FileRow, SelectionMarquee, ExplorerTab, NavigationItem, NavigationPane, ColumnHeader, DetailsHeader, Breadcrumb, BreadcrumbItem, ExplorerContent, ExplorerAddressRow, ExplorerCommandBar, ExplorerStatusBar |
+  | ⑤ Chrome·스냅·재부팅 | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar, Toc, TocItem, PostNavCard, SnapLayoutFlyout, SnapLayoutOption, SnapZone, SnapPreview, BootScreen |
 7단계 기능 구현: |
   디자인 시스템 컴포넌트를 활용해 2단계 문서의 기능을 `apps/web`에 구현한다.
+
+  피그마 조립은 기능을 구현할 때 영역마다 조립 PR로 내보내고, 앱 컴포넌트와 피그마 조립과 같은 데이터의 스토리를 만들어 캡처 표로 확인한다([[디자인 시스템:조립]], [[피그마 연동:PR 흐름]]). 조립이 쓰는 디자인 시스템 컴포넌트는 그보다 먼저 6단계 묶음에서 코드로 만든다.
 8단계 E2E: |
   핵심 사용 흐름을 E2E로 검증한다([[테스트 작성 규칙:E2E]]).
 9단계 콘텐츠와 공개: |
