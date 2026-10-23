@@ -9,6 +9,7 @@
     }
   },
   "include": [
+    ".storybook/*.ts",
     "next-env.d.ts",
     "src",
     "e2e",

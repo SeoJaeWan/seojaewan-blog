@@ -18,4 +18,5 @@ packages/design-system/src/pretendard.css
 packages/design-system/src/open-sans.css
 packages/design-system/src/cascadia-mono.css
 packages/design-system/figma/
+apps/web/figma/
 **/parity-results/
