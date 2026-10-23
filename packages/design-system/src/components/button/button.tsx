@@ -74,7 +74,7 @@ export function Button(props: ButtonProps): JSX.Element {
           className="size-icon-16"
         />
       )}
-      <span data-figma="label" className="type-body">
+      <span data-figma="label" className="text-start type-body">
         {children}
       </span>
     </BaseButton>
