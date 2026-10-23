@@ -2,8 +2,8 @@ import type { JsonObject } from '../stable-json';
 import type { Violation } from './check-structure';
 
 // M1: 컴포넌트 변형 사이의 프로토타입 전환(유무, 시간, 이징)을 이름 정보로 옮긴다.
-// 시간과 이징은 값으로 모션 토큰(motion/duration/*, motion/easing/*) 이름을 찾는다. 피그마 반응은 변수에
-// 연결할 수 없어 값으로 찾는다. 토큰에 없는 값은 막는다.
+// 피그마 반응은 변수에 연결할 수 없어 이름으로 비교할 수 없으므로, 시간(ms)과 이징(3차 베지어 네 값)을 값 그대로 내보낸다.
+// 값으로 모션 토큰 이름을 짐작하지 않는다.
 
 /** 피그마 반응 하나에서 쓰는 값만 옮긴 모양(figma-reader가 피그마 Reaction에서 만든다) */
 export type ReactionInput = {
@@ -22,14 +22,6 @@ export type ReactionInput = {
   bezier: readonly number[] | null;
 };
 
-/** 모션 토큰 값 표 */
-export type MotionScale = {
-  /** ms 값 → motion/duration/* 이름 */
-  durations: ReadonlyMap<number, readonly string[]>;
-  /** `x1,y1,x2,y2` → motion/easing/* 이름 */
-  easings: ReadonlyMap<string, readonly string[]>;
-};
-
 /** 피그마 기본 이징의 3차 베지어 제어점 */
 const presetEasings: Readonly<Record<string, readonly number[]>> = {
   LINEAR: [0, 0, 1, 1],
@@ -41,23 +33,26 @@ const presetEasings: Readonly<Record<string, readonly number[]>> = {
   EASE_IN_AND_OUT_BACK: [0.7, -0.4, 0.4, 1.4],
 };
 
+/** 스프링 이징. CSS 3차 베지어로 옮길 수 없어 이징을 null로 두고 판정하지 않는다 */
+const springEasings = new Set(['GENTLE', 'QUICK', 'BOUNCY', 'SLOW', 'CUSTOM_SPRING']);
+
 /** CSS 전환으로 옮길 수 있는 피그마 전환 종류 */
 const supportedTransitions = new Set(['SMART_ANIMATE', 'DISSOLVE']);
 
 /**
  * 변형의 반응을 전환 정보로 옮긴다. 같은 컴포넌트 세트의 다른 변형으로 바뀌는(CHANGE_TO) 반응만 담는다.
- * 시간·이징을 모션 토큰 이름으로 찾지 못하거나, CSS로 옮길 수 없는 전환 종류면 위반이다.
+ * 시간은 ms, 이징은 3차 베지어 네 값(`[x1, y1, x2, y2]`)이다. 피그마 기본 이징은 그 제어점으로 바꾸고,
+ * 스프링 이징은 베지어로 옮길 수 없어 null(판정하지 않음)로 둔다. 즉시 전환은 움직임이 없어 시간·이징 없이 담는다.
+ * CSS로 옮길 수 없는 전환 종류, 읽을 수 없는 시간·이징은 위반이다.
  * @codocs [[피그마 일치 검사:상태 전환]]
  * @param reactions 변형의 반응
  * @param variantSlugs 같은 세트의 변형 ID → 변형 파일 이름
- * @param scale 모션 토큰 값 표
  * @param where 위반 위치
  * @returns 전환 목록과 위반
  */
 export function variantTransitions(
   reactions: readonly ReactionInput[],
   variantSlugs: ReadonlyMap<string, string>,
-  scale: MotionScale,
   where: string,
 ): { transitions: JsonObject[]; violations: Violation[] } {
   const transitions: JsonObject[] = [];
@@ -83,29 +78,28 @@ export function variantTransitions(
       });
       continue;
     }
-    const duration = durationToken(reaction.duration, scale);
-    const easing = easingToken(reaction, scale);
-    if (duration === undefined) {
+    const easing = easingPoints(reaction);
+    if (reaction.duration === null) {
       violations.push({
         where: label,
-        reason: `전환 시간 ${formatMs(reaction.duration)}ms가 모션 토큰(motion/duration/*)에 없다`,
-        fix: '토큰에 있는 시간으로 바꾸거나 Foundations에 모션 시간 토큰을 추가한다.',
+        reason: '전환 시간을 읽을 수 없다',
+        fix: '전환 시간을 정한다.',
       });
     }
     if (easing === undefined) {
       violations.push({
         where: label,
-        reason: `전환 이징 ${reaction.easingType ?? '없음'}이 모션 토큰(motion/easing/*)에 없다`,
-        fix: '토큰에 있는 이징 값(3차 베지어)으로 바꾸거나 Foundations에 모션 이징 토큰을 추가한다.',
+        reason: `전환 이징 ${reaction.easingType ?? '없음'}을 3차 베지어 값으로 옮길 수 없다`,
+        fix: '기본 이징, 3차 베지어, 스프링 이징 중 하나로 정한다.',
       });
     }
-    if (duration !== undefined && easing !== undefined) {
+    if (reaction.duration !== null && easing !== undefined) {
       transitions.push({
         trigger: reaction.trigger,
         to,
         type: reaction.transitionType,
-        duration,
-        easing,
+        duration: Math.round(reaction.duration * 1000),
+        easing: easing === null ? null : [...easing],
       });
     }
   }
@@ -113,51 +107,21 @@ export function variantTransitions(
 }
 
 /**
- * 시간에 맞는 모션 시간 토큰을 찾는다. 피그마 값은 초, 토큰은 ms이고 반올림해 비교한다.
- * @param seconds 초 단위 시간
- * @param scale 모션 토큰 값 표
- * @returns 토큰 이름(하나로 정해지지 않으면 undefined)
- */
-function durationToken(seconds: number | null, scale: MotionScale): string | undefined {
-  if (seconds === null) {
-    return undefined;
-  }
-  const names = scale.durations.get(Math.round(seconds * 1000));
-  return names?.length === 1 ? names[0] : undefined;
-}
-
-/**
- * 이징에 맞는 모션 이징 토큰을 찾는다. 기본 이징은 그 제어점으로 바꿔 찾는다.
+ * 이징을 3차 베지어 제어점으로 바꾼다. 기본 이징은 그 제어점(LINEAR는 `[0, 0, 1, 1]`)이고,
+ * 부동소수 표현 차이만 없애도록 소수 넷째 자리에서 반올림한다.
  * @param reaction 반응
- * @param scale 모션 토큰 값 표
- * @returns 토큰 이름(하나로 정해지지 않으면 undefined)
+ * @returns 제어점 4개, 스프링이면 null, 옮길 수 없으면 undefined
  */
-function easingToken(reaction: ReactionInput, scale: MotionScale): string | undefined {
+function easingPoints(reaction: ReactionInput): readonly number[] | null | undefined {
+  if (springEasings.has(reaction.easingType ?? '')) {
+    return null;
+  }
   const points =
     reaction.easingType === 'CUSTOM_CUBIC_BEZIER'
       ? reaction.bezier
       : (presetEasings[reaction.easingType ?? ''] ?? null);
-  if (points === null || points.length !== 4) {
+  if (points?.length !== 4) {
     return undefined;
   }
-  const names = scale.easings.get(bezierKey(points));
-  return names?.length === 1 ? names[0] : undefined;
-}
-
-/**
- * 3차 베지어 제어점을 표 열쇠로 바꾼다(소수 넷째 자리까지).
- * @param points 제어점 4개
- * @returns `x1,y1,x2,y2`
- */
-export function bezierKey(points: readonly number[]): string {
-  return points.map((value) => String(Number(value.toFixed(4)))).join(',');
-}
-
-/**
- * 초를 ms 문자열로 쓴다.
- * @param seconds 초
- * @returns ms 문자열
- */
-function formatMs(seconds: number | null): string {
-  return seconds === null ? '없음' : String(Math.round(seconds * 1000));
+  return points.map((value) => Number(value.toFixed(4)));
 }

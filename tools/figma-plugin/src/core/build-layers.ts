@@ -1,6 +1,6 @@
 import { assetFile } from '../naming';
 import type { JsonObject, JsonValue } from '../stable-json';
-import { absoluteDistances, type CheckContext, insetToken, sizingOf } from './check-structure';
+import { sizingOf } from './check-structure';
 import type { Bound, NodeData, Sides, TextSegmentData } from './node-data';
 
 // 구조 검사를 통과한 변형을 export.json의 레이어 목록으로 바꾸는 순수 변환이다.
@@ -11,10 +11,9 @@ import type { Bound, NodeData, Sides, TextSegmentData } from './node-data';
  * 변형 루트와 그 아래 보이는 레이어를 문서 순서의 목록으로 만든다. 첫 항목이 루트다.
  * @codocs [[피그마 일치 검사:export.json 계약]]
  * @param root 변형 루트 노드 데이터(구조 검사를 통과한 것)
- * @param context 파일 수준 정보(절대 위치 거리 토큰)
  * @returns 레이어 목록
  */
-export function buildLayers(root: NodeData, context: CheckContext): JsonObject[] {
+export function buildLayers(root: NodeData): JsonObject[] {
   const layers: JsonObject[] = [];
   /**
    * 노드와 그 아래를 목록에 더한다.
@@ -22,7 +21,7 @@ export function buildLayers(root: NodeData, context: CheckContext): JsonObject[]
    * @param isRoot 변형 루트인지
    */
   function visit(node: NodeData, isRoot: boolean): void {
-    layers.push(layerOf(node, isRoot, context));
+    layers.push(layerOf(node, isRoot));
     if (node.asset !== null || node.type === 'SLOT') {
       return;
     }
@@ -59,10 +58,9 @@ export function hiddenLayerPaths(root: NodeData): string[] {
  * 노드 하나를 레이어 항목으로 만든다.
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param context 파일 수준 정보
  * @returns 레이어 항목
  */
-function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonObject {
+function layerOf(node: NodeData, isRoot: boolean): JsonObject {
   const layer: JsonObject = {
     path: node.path,
     type: node.type,
@@ -78,7 +76,7 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
       file: assetFile(node.asset),
       color: node.asset.colorVariable ?? null,
     };
-    addSelf(layer, node, context);
+    addSelf(layer, node);
     return layer;
   }
   if (node.type === 'SLOT') {
@@ -87,7 +85,7 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
     if (layout !== null) {
       layer.layout = layout;
     }
-    addSelf(layer, node, context);
+    addSelf(layer, node);
     return layer;
   }
   if (node.opacity.variable !== undefined) {
@@ -133,7 +131,7 @@ function layerOf(node: NodeData, isRoot: boolean, context: CheckContext): JsonOb
   if (layout !== null) {
     layer.layout = layout;
   }
-  addSelf(layer, node, context);
+  addSelf(layer, node);
   if (node.text !== null) {
     const { text } = node;
     layer.text = {
@@ -179,11 +177,12 @@ function layoutJson(node: NodeData): JsonObject | null {
 
 /**
  * 자동 배치 부모 안에서의 자기 배치(정렬, 늘이기, 절대 위치)를 더한다.
+ * 절대 위치는 축마다 제약만 담는다. 거리 값은 판정하지 않고 캡처 표에서 본다(D1).
+ * @codocs [[피그마 일치 검사:겹쳐 놓기]]
  * @param layer 레이어 항목
  * @param node 노드
- * @param context 파일 수준 정보
  */
-function addSelf(layer: JsonObject, node: NodeData, context: CheckContext): void {
+function addSelf(layer: JsonObject, node: NodeData): void {
   const { child } = node;
   if (child === null || node.parentLayoutMode === null) {
     return;
@@ -195,13 +194,7 @@ function addSelf(layer: JsonObject, node: NodeData, context: CheckContext): void
   if (child.positioning === 'ABSOLUTE') {
     const absolute: JsonObject = {};
     for (const axis of ['horizontal', 'vertical'] as const) {
-      absolute[axis] = {
-        constraint: child.constraints[axis],
-        distances: absoluteDistances(node, axis).map((distance) => ({
-          token: insetToken(distance, context) ?? null,
-          isNegative: distance < 0,
-        })),
-      };
+      absolute[axis] = { constraint: child.constraints[axis] };
     }
     self.absolute = absolute;
   }

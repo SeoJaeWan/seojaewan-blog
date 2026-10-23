@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
@@ -27,7 +27,7 @@ for (const item of plan.items) {
 }
 
 /**
- * 비교 항목 하나를 실행하고 결과 파일과 PR 댓글용 이미지를 남긴다.
+ * 비교 항목 하나를 실행하고 결과 파일을 남긴다. 캡처 표 이미지는 판정이 통과한 뒤 capture.spec.ts가 만든다.
  * @param page Playwright 페이지
  * @param item 비교 항목
  * @returns 실패 목록
@@ -40,16 +40,9 @@ async function runItem(page: Page, item: PlanItem): Promise<ParityFailure[]> {
     variant: item.resultName,
     failures: [],
     notes: [],
-    images: [],
   };
   const opened = await openItem(page, item, storybookIndex);
   if (opened.ok) {
-    copyFileSync(item.figmaImage, path.join(outputDir, 'figma.png'));
-    await opened.target.screenshot({
-      path: path.join(outputDir, 'browser.png'),
-      animations: 'disabled',
-    });
-    result.images.push({ label: item.resultName, files: ['figma.png', 'browser.png'] });
     result.failures.push(...(await inspectItem(page, item)));
   } else {
     result.failures.push(...opened.failures);

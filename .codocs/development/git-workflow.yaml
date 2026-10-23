@@ -11,6 +11,7 @@ _codocs:
 브랜치: |
   `종류/짧은-설명` 형식이다. 예: `feat/taskbar-pin`, `fix/window-drag`, `chore/setup-monorepo`
   종류는 커밋 종류와 같은 단어를 쓴다.
+  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 컴포넌트마다 `feat/figma-<컴포넌트>`, 토큰은 `feat/figma-tokens`. 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 일치 검사:피그마 플러그인]]).
 커밋: |
   - 제목은 영어로, Conventional Commits 형식을 따른다. 예: `feat(design-system): add Button component`
   - 본문은 한국어로 쓴다. 무엇을 왜 바꿨는지 적는다.
@@ -34,7 +35,8 @@ CI: |
   - 전체 lint, 타입 검사, 단위·컴포넌트 테스트
   - Next.js 빌드와 Storybook 빌드
   - E2E
-  - 피그마 일치 검사. PR에서만 영향받는 컴포넌트를 비교하고 결과를 PR 댓글로 남긴다. `main` push에서는 돌리지 않는다([[피그마 일치 검사:비교 범위]], [[피그마 일치 검사:CI 비교]]).
+  - 자산 생성 확인(`generate:assets --check`).
+  - 피그마 일치 검사. 일반 CI와 나눈 워크플로(`figma-parity.yml`)다. PR(초안 포함)에서 바뀐 파일로 영향 범위를 정하고, 범위가 있을 때만 판정하고 캡처 표를 PR 댓글로 남긴다. `main` push에서는 판정하지 않고 영향받은 컴포넌트를 캡처해 `parity-captures` 브랜치에 저장한다([[피그마 일치 검사:비교 범위]], [[피그마 일치 검사:CI 비교]]).
 
   빌드는 Vercel 미리보기 배포에서도 만들어지지만, Vercel 연결 여부와 상관없이 깨진 빌드를 PR에서 바로 잡기 위해 CI에서도 빌드한다. Storybook 빌드는 디자인 시스템 카탈로그가 깨지지 않았는지 확인한다.
   브랜치 보호를 걸 수 없어 CI 실패가 병합을 막지 않는다. CI가 통과한 PR만 병합한다.

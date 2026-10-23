@@ -1,6 +1,7 @@
 /*
- * 이 파일은 scripts/tokens/generate-tokens.ts가 figma/tokens.json에서 만든다. 손으로 고치지 않는다.
- * 다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens
+ * 이 파일은 사람이나 에이전트가 figma/tokens.json(과 피그마)을 보고 직접 쓴다. 생성기는 없다.
+ * 이름과 값이 tokens.json과 맞는지는 토큰 값 비교(scripts/parity/token-values.ts)가 확인한다.
+ * @codocs [[피그마 일치 검사:토큰 작성]]
  */
 
 @theme static {

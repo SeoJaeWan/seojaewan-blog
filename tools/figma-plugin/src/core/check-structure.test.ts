@@ -1,17 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildLayers, hiddenLayerPaths } from './build-layers';
-import { type CheckContext, checkVariant } from './check-structure';
+import { checkVariant } from './check-structure';
 import type { NodeData } from './node-data';
 import { buttonRoot, node, segment } from './node-data.fixture';
-
-const context: CheckContext = {
-  spacingScale: new Map([
-    [0, ['spacing/0']],
-    [2, ['spacing/2']],
-    [4, ['spacing/4']],
-  ]),
-};
 
 /**
  * 루트를 바꿔 검사하고 위반 이유만 돌려준다.
@@ -21,7 +13,7 @@ const context: CheckContext = {
 function reasonsAfter(change: (root: NodeData) => void): string[] {
   const root = buttonRoot();
   change(root);
-  return checkVariant(root, 'Button / Rest', context).map((violation) => violation.reason);
+  return checkVariant(root, 'Button / Rest').map((violation) => violation.reason);
 }
 
 /**
@@ -72,7 +64,7 @@ describe('구조 검사', () => {
   it('위반에는 레이어 경로·이유·고칠 방법이 있다', () => {
     const root = buttonRoot();
     root.fills = [{ type: 'SOLID', visible: true, blendMode: 'NORMAL', opacity: 1 }];
-    expect(checkVariant(root, 'Button / Rest', context)).toEqual([
+    expect(checkVariant(root, 'Button / Rest')).toEqual([
       {
         where: 'Button / Rest',
         reason: '단색 칠이 색 변수에 연결되어 있지 않다',
@@ -149,14 +141,13 @@ describe('구조 검사', () => {
     ).toContain('자동 배치가 아닌 프레임이 자식을 담고 있다(수동 배치, D1)');
   });
 
-  it('절대 위치 거리는 숫자 이름 간격 토큰 하나로 정해져야 하고, SCALE 제약은 막는다(D1)', () => {
+  it('절대 위치는 SCALE 제약만 막고 거리 값은 막지 않는다(D1)', () => {
     /**
      * 절대 위치 자식을 더해 검사한다.
-     * @param x 부모 기준 x
      * @param horizontal 가로 제약
      * @returns 위반 이유
      */
-    function absolute(x: number, horizontal: string): string[] {
+    function absolute(horizontal: string): string[] {
       return reasonsAfter((root) => {
         root.children.push(
           node({
@@ -170,19 +161,15 @@ describe('구조 검사', () => {
               sizingVertical: 'FIXED',
               positioning: 'ABSOLUTE',
               constraints: { horizontal, vertical: 'MIN' },
-              x,
-              y: 2,
             },
           }),
         );
       });
     }
-    expect(absolute(2, 'MIN')).toEqual([]);
-    expect(absolute(-2, 'MIN')).toEqual([]);
-    expect(absolute(3, 'MIN')).toEqual([
-      '절대 위치 거리 3가 숫자 이름 간격 토큰 하나로 정해지지 않는다(D1)',
-    ]);
-    expect(absolute(2, 'SCALE')).toEqual(['제약 SCALE는 막는다(D1)']);
+    for (const horizontal of ['MIN', 'MAX', 'STRETCH', 'CENTER']) {
+      expect(absolute(horizontal)).toEqual([]);
+    }
+    expect(absolute('SCALE')).toEqual(['제약 SCALE는 막는다(D1)']);
   });
 
   it('GRID 자동 배치를 막는다(D7)', () => {
@@ -339,7 +326,7 @@ describe('구조 검사', () => {
 // @codocs [[피그마 일치 검사:export.json 계약]]
 describe('레이어 목록', () => {
   it('레이어마다 역할별 변수·스타일 이름과 자동 배치 선택지를 남기고 좌표는 남기지 않는다', () => {
-    const [root, text] = buildLayers(buttonRoot(), context);
+    const [root, text] = buildLayers(buttonRoot());
     expect(root).toEqual({
       path: '',
       type: 'COMPONENT',
@@ -398,7 +385,7 @@ describe('레이어 목록', () => {
     const content = slot();
     content.children = [label(buttonRoot())];
     root.children.push(content);
-    const layers = buildLayers(root, context);
+    const layers = buildLayers(root);
     const slotLayer = must(layers.find((layer) => layer.path === 'Content'));
     expect(Object.keys(slotLayer).sort()).toEqual([
       'layout',
@@ -413,9 +400,30 @@ describe('레이어 목록', () => {
     ).toBe(false);
   });
 
+  it('절대 위치는 축마다 제약만 남기고 거리는 남기지 않는다(D1)', () => {
+    const root = buttonRoot();
+    root.children.push(
+      node({
+        path: 'bottom border',
+        type: 'RECTANGLE',
+        child: {
+          ...must(label(root).child),
+          sizingHorizontal: 'FIXED',
+          sizingVertical: 'FIXED',
+          positioning: 'ABSOLUTE',
+          constraints: { horizontal: 'STRETCH', vertical: 'MAX' },
+        },
+      }),
+    );
+    const border = must(buildLayers(root).find((layer) => layer.path === 'bottom border'));
+    expect(border.self).toEqual({
+      absolute: { horizontal: { constraint: 'STRETCH' }, vertical: { constraint: 'MAX' } },
+    });
+  });
+
   it('숨긴 레이어는 목록에 넣지 않고 경로만 남긴다(D4)', () => {
     const root = buttonRoot();
-    expect(buildLayers(root, context).map((layer) => layer.path)).toEqual(['', 'label']);
+    expect(buildLayers(root).map((layer) => layer.path)).toEqual(['', 'label']);
     expect(hiddenLayerPaths(root)).toEqual(['icon']);
   });
 });

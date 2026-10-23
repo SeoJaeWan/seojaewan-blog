@@ -133,7 +133,7 @@ async function readNode(
     data.layout = await layoutData(node, bound, names);
   }
   if (parent !== null) {
-    data.child = childLayout(node, parent);
+    data.child = childLayout(node);
   }
   if (node.type === 'TEXT') {
     data.text = await textData(node, names);
@@ -395,10 +395,9 @@ async function layoutData(
 /**
  * 부모 안에서의 자기 배치를 읽는다.
  * @param node 노드
- * @param parent 부모
  * @returns 자기 배치 데이터
  */
-function childLayout(node: SceneNode, parent: BaseNode & ChildrenMixin): ChildLayoutData {
+function childLayout(node: SceneNode): ChildLayoutData {
   const hasLayoutChild = 'layoutSizingHorizontal' in node;
   return {
     sizingHorizontal: hasLayoutChild ? node.layoutSizingHorizontal : 'FIXED',
@@ -410,10 +409,6 @@ function childLayout(node: SceneNode, parent: BaseNode & ChildrenMixin): ChildLa
       'constraints' in node
         ? { horizontal: node.constraints.horizontal, vertical: node.constraints.vertical }
         : { horizontal: 'MIN', vertical: 'MIN' },
-    x: node.x,
-    y: node.y,
-    parentWidth: 'width' in parent && typeof parent.width === 'number' ? parent.width : 0,
-    parentHeight: 'height' in parent && typeof parent.height === 'number' ? parent.height : 0,
   };
 }
 

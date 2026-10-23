@@ -1,12 +1,16 @@
-import type { ComponentSummary, MainMessage, UiMessage } from '../messages';
+import type {
+  ComponentSummary,
+  ExportOutcome,
+  MainMessage,
+  PullRequestCommit,
+  UiMessage,
+} from '../messages';
 
 // 플러그인 UI. 토큰 입력, 컴포넌트 선택, 진행 로그와 PR 링크를 보여 준다.
 
 const tokenInput = element('token', HTMLInputElement);
-const branchInput = element('branch', HTMLInputElement);
 const selectAll = element('select-all', HTMLInputElement);
 const componentList = element('components', HTMLDivElement);
-const tokensCheckbox = element('tokens', HTMLInputElement);
 const exportButton = element('export', HTMLButtonElement);
 const result = element('result', HTMLParagraphElement);
 const noticesBox = element('notices', HTMLDivElement);
@@ -44,7 +48,6 @@ function handleMainMessage(message: MainMessage): void {
   switch (message.type) {
     case 'init':
       tokenInput.value = message.token;
-      branchInput.value = message.branch;
       renderComponents(message.components);
       exportButton.disabled = false;
       break;
@@ -66,27 +69,49 @@ function handleMainMessage(message: MainMessage): void {
 }
 
 /**
- * 내보내기 결과(커밋, PR 링크)를 보여 준다.
- * @param outcome 커밋 결과, 바뀐 것 없음, 또는 위반 목록
+ * 내보내기 결과(PR마다 커밋과 PR 링크)를 보여 준다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param outcome PR별 커밋 결과, 또는 위반 목록
  */
-function showResult(outcome: Extract<MainMessage, { type: 'done' }>['result']): void {
-  if (outcome.kind === 'unchanged') {
-    result.textContent = '바뀐 것이 없어 커밋하지 않았다.';
-    return;
-  }
+function showResult(outcome: ExportOutcome): void {
   if (outcome.kind === 'blocked') {
     showViolations(outcome.violations);
     return;
   }
-  const done = outcome.commit;
-  const parts: (string | Node)[] = [`${done.branch}: `, link(done.commitUrl, '커밋')];
-  if (done.pullRequestUrl !== null) {
-    parts.push(done.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ', link(done.pullRequestUrl));
-  } else if (!done.isNewPullRequest) {
-    parts.push(' · 이 브랜치에 열린 PR이 없다');
+  const list = document.createElement('ul');
+  for (const commit of outcome.commits) {
+    list.append(commitItem(commit));
   }
-  result.replaceChildren(...parts);
+  const unchanged =
+    outcome.unchanged.length === 0
+      ? []
+      : [muted(`바뀐 것이 없어 커밋하지 않음: ${outcome.unchanged.join(', ')}`)];
+  if (outcome.commits.length === 0) {
+    result.replaceChildren('바뀐 것이 없어 커밋하지 않았다.');
+  } else {
+    result.replaceChildren(
+      `PR ${String(outcome.commits.length)}개에 커밋했다.`,
+      list,
+      ...unchanged,
+    );
+  }
   appendLog('완료');
+}
+
+/**
+ * PR 하나의 커밋 결과 줄을 만든다.
+ * @param commit 커밋 결과
+ * @returns 목록 항목
+ */
+function commitItem(commit: PullRequestCommit): HTMLLIElement {
+  const item = document.createElement('li');
+  item.append(
+    `${commit.target} (${commit.branch}): `,
+    link(commit.commitUrl, '커밋'),
+    commit.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ',
+    link(commit.pullRequestUrl),
+  );
+  return item;
 }
 
 /**
@@ -117,10 +142,7 @@ function showNotices(notices: readonly string[]): void {
  * @param violations 위반 목록
  */
 function showViolations(
-  violations: Extract<
-    Extract<MainMessage, { type: 'done' }>['result'],
-    { kind: 'blocked' }
-  >['violations'],
+  violations: Extract<ExportOutcome, { kind: 'blocked' }>['violations'],
 ): void {
   const list = document.createElement('ol');
   list.className = 'violations';
@@ -145,16 +167,12 @@ function showViolations(
 }
 
 /**
- * 고른 컴포넌트로 내보내기를 요청한다.
+ * 고른 컴포넌트로 내보내기를 요청한다. 토큰은 고르지 않아도 늘 읽어 main과 비교한다.
  */
 function handleExportClick(): void {
   const componentIds = componentCheckboxes()
     .filter((checkbox) => checkbox.checked)
     .map((checkbox) => checkbox.value);
-  if (componentIds.length === 0 && !tokensCheckbox.checked) {
-    appendLog('내보낼 컴포넌트나 토큰을 고른다.');
-    return;
-  }
   exportButton.disabled = true;
   result.textContent = '';
   logArea.textContent = '';
@@ -162,8 +180,6 @@ function handleExportClick(): void {
     type: 'export',
     token: tokenInput.value,
     componentIds,
-    shouldExportTokens: tokensCheckbox.checked,
-    branch: branchInput.value,
   };
   parent.postMessage({ pluginMessage: message }, '*');
 }

@@ -1,5 +1,5 @@
 import type { Violation } from './core/check-structure';
-import { exportComponentCore, readCheckContext } from './core/export-component';
+import { exportComponentCore } from './core/export-component';
 import { manifestText, pngFile, settingsText } from './export-manifest';
 import { listComponents, loadComponentsPage } from './figma-reader';
 import { assetFilePath, componentFilePath } from './naming';
@@ -53,14 +53,13 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
     componentFolders: [],
     files: [],
   };
-  const context = await readCheckContext();
   const files: McpFile[] = [];
   for (const name of options.components) {
     const summary = all.find((component) => component.name === name);
     if (summary === undefined) {
       throw new Error(`컴포넌트 ${name}를 찾을 수 없다.`);
     }
-    const outcome = await exportComponentCore(summary.id, context, SCALE);
+    const outcome = await exportComponentCore(summary.id, SCALE);
     if (!outcome.ok) {
       result.violations.push(...outcome.violations);
       continue;

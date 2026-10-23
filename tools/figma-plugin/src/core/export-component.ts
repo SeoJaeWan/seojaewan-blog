@@ -1,5 +1,4 @@
 import { parityDecisions } from '../../../../packages/design-system/scripts/parity/rules/decisions';
-import { parseCubicBezier } from '../design-tokens';
 import type {
   BooleanProperty,
   CaseEntry,
@@ -10,10 +9,10 @@ import { componentHash, variantHash } from '../export-manifest';
 import { assetFile, booleanPropName, componentSlug, variantSlug } from '../naming';
 import { monoColorSvg, normalizeSvgBytes } from '../svg-normalize';
 import { buildLayers, hiddenLayerPaths } from './build-layers';
-import { type CheckContext, checkVariant, type Violation } from './check-structure';
+import { checkVariant, type Violation } from './check-structure';
 import type { AssetData, NodeData } from './node-data';
 import { type NameCache, readNodeTree } from './read-node';
-import { bezierKey, type MotionScale, type ReactionInput, variantTransitions } from './transitions';
+import { type ReactionInput, variantTransitions } from './transitions';
 
 // 컴포넌트 하나를 검사하고 export.json 내용, 변형 PNG, 아이콘 SVG를 만든다.
 // 플러그인 UI와 피그마 MCP(use_figma)가 같은 함수를 쓴다. GitHub와 UI는 모른다.
@@ -32,57 +31,8 @@ export type ComponentExport = {
 export type ComponentOutcome =
   { ok: true; component: ComponentExport } | { ok: false; name: string; violations: Violation[] };
 
-// 숫자 이름 간격 토큰을 찾는 패턴이다(D1).
-const insetTokenPattern = new RegExp(parityDecisions.d1.insetTokenPattern, 'u');
 // 임시 인스턴스를 두는 위치. 캔버스의 다른 노드와 겹치지 않게 멀리 둔다.
 const TEMPORARY_OFFSET = -100_000;
-
-/**
- * 파일의 숫자 이름 간격 토큰(spacing/<숫자>)을 값별로 모은다(D1 절대 위치 거리 이름 찾기).
- * @codocs [[피그마 일치 검사:결정 사항]]
- * @returns 검사 정보
- */
-export async function readCheckContext(): Promise<CheckContext> {
-  const collections = await figma.variables.getLocalVariableCollectionsAsync();
-  const defaultModes = new Map(collections.map((item) => [item.id, item.defaultModeId]));
-  const scale = new Map<number, string[]>();
-  for (const variable of await figma.variables.getLocalVariablesAsync('FLOAT')) {
-    if (!insetTokenPattern.test(variable.name)) {
-      continue;
-    }
-    const value = variable.valuesByMode[defaultModes.get(variable.variableCollectionId) ?? ''];
-    if (typeof value === 'number') {
-      scale.set(value, [...(scale.get(value) ?? []), variable.name]);
-    }
-  }
-  return { spacingScale: scale, motionScale: await readMotionScale() };
-}
-
-/**
- * 모션 토큰 변수(motion/duration/*, motion/easing/*)를 값으로 찾는 표를 만든다(M1).
- * @returns 모션 토큰 값 표
- */
-async function readMotionScale(): Promise<MotionScale> {
-  const collections = await figma.variables.getLocalVariableCollectionsAsync();
-  const defaultModes = new Map(collections.map((item) => [item.id, item.defaultModeId]));
-  const durations = new Map<number, string[]>();
-  const easings = new Map<string, string[]>();
-  for (const variable of await figma.variables.getLocalVariablesAsync()) {
-    const value = variable.valuesByMode[defaultModes.get(variable.variableCollectionId) ?? ''];
-    if (variable.name.startsWith('motion/duration/') && typeof value === 'number') {
-      const ms = Math.round(value);
-      durations.set(ms, [...(durations.get(ms) ?? []), variable.name]);
-    }
-    if (variable.name.startsWith('motion/easing/') && typeof value === 'string') {
-      const points = parseCubicBezier(value);
-      if (points !== null) {
-        const key = bezierKey(points);
-        easings.set(key, [...(easings.get(key) ?? []), variable.name]);
-      }
-    }
-  }
-  return { durations, easings };
-}
 
 /**
  * 피그마 반응을 전환 입력으로 옮긴다.
@@ -123,13 +73,11 @@ function reactionInputs(node: ComponentNode): ReactionInput[] {
  * 컴포넌트(세트)를 검사하고 내보낸다. 위반이 하나라도 있으면 파일을 만들지 않고 위반 목록을 돌려준다.
  * @codocs [[피그마 일치 검사:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @param context 검사 정보
  * @param scale PNG 배율
  * @returns 내보낸 컴포넌트, 또는 위반 목록
  */
 export async function exportComponentCore(
   nodeId: string,
-  context: CheckContext,
   scale: number,
 ): Promise<ComponentOutcome> {
   // 인스턴스 안의 숨긴 레이어도 읽어야 숨김 목록(D4)이 맞다. 실행 환경마다 기본값이 달라(피그마 MCP는 true)
@@ -137,7 +85,7 @@ export async function exportComponentCore(
   const shouldSkipInvisible = figma.skipInvisibleInstanceChildren;
   figma.skipInvisibleInstanceChildren = false;
   try {
-    return await exportComponentWithHidden(nodeId, context, scale);
+    return await exportComponentWithHidden(nodeId, scale);
   } finally {
     figma.skipInvisibleInstanceChildren = shouldSkipInvisible;
   }
@@ -146,15 +94,10 @@ export async function exportComponentCore(
 /**
  * exportComponentCore의 본문이다. 인스턴스 안의 숨긴 레이어를 읽는 상태에서 실행한다.
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
- * @param context 검사 정보
  * @param scale PNG 배율
  * @returns 내보낸 컴포넌트, 또는 위반 목록
  */
-async function exportComponentWithHidden(
-  nodeId: string,
-  context: CheckContext,
-  scale: number,
-): Promise<ComponentOutcome> {
+async function exportComponentWithHidden(nodeId: string, scale: number): Promise<ComponentOutcome> {
   const node = await figma.getNodeByIdAsync(nodeId);
   if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
     throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
@@ -170,7 +113,7 @@ async function exportComponentWithHidden(
   for (const variant of variants) {
     const tree = await readNodeTree(variant, names);
     trees.set(variant, tree);
-    violations.push(...checkVariant(tree, `${node.name} / ${variant.name}`, context));
+    violations.push(...checkVariant(tree, `${node.name} / ${variant.name}`));
   }
   violations.push(...(await checkHiddenLayers(node.name, trees)));
 
@@ -195,23 +138,19 @@ async function exportComponentWithHidden(
         const isEnabled = !property.defaultValue;
         const caseTree = await readBooleanCase(variant, property.key, isEnabled, names);
         const where = `${node.name} / ${variant.name} / ${prop}=${String(isEnabled)}`;
-        violations.push(...checkVariant(caseTree, where, context));
+        violations.push(...checkVariant(caseTree, where));
         collectAssets(caseTree, assetNodes);
         cases[`${prop}=${String(isEnabled)}`] = {
-          layers: buildLayers(caseTree, context),
+          layers: buildLayers(caseTree),
           hidden: hiddenLayerPaths(caseTree),
         };
       }
     }
-    const motion =
-      context.motionScale === undefined
-        ? { transitions: [], violations: [] }
-        : variantTransitions(
-            reactionInputs(variant),
-            variantSlugs,
-            context.motionScale,
-            `${node.name} / ${variant.name}`,
-          );
+    const motion = variantTransitions(
+      reactionInputs(variant),
+      variantSlugs,
+      `${node.name} / ${variant.name}`,
+    );
     violations.push(...motion.violations);
     if (violations.length > 0) {
       continue;
@@ -223,7 +162,7 @@ async function exportComponentWithHidden(
     pngs.set(slug, png);
     const info = {
       properties: node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {},
-      layers: buildLayers(tree, context),
+      layers: buildLayers(tree),
       hidden: hiddenLayerPaths(tree),
       cases,
       ...(motion.transitions.length === 0 ? {} : { transitions: motion.transitions }),
@@ -253,6 +192,41 @@ async function exportComponentWithHidden(
       assets,
     },
   };
+}
+
+/**
+ * 컴포넌트(세트)의 변형 PNG만 다시 내보낸다. 토큰 값만 바뀌어 export.json 해시는 그대로이고 모습만 달라진 컴포넌트에 쓴다.
+ * 구조 검사와 레이어 정보는 다시 만들지 않는다.
+ * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
+ * @param variants 내보낼 변형 이름(저장소에 있는 변형)
+ * @param scale PNG 배율
+ * @returns 변형 이름 → PNG, 노드를 찾지 못하면 null
+ */
+export async function exportVariantImages(
+  nodeId: string,
+  variants: ReadonlySet<string>,
+  scale: number,
+): Promise<Map<string, Uint8Array> | null> {
+  const node = await figma.getNodeByIdAsync(nodeId);
+  if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
+    return null;
+  }
+  const components =
+    node.type === 'COMPONENT_SET'
+      ? node.children.filter((child): child is ComponentNode => child.type === 'COMPONENT')
+      : [node];
+  const pngs = new Map<string, Uint8Array>();
+  for (const variant of components) {
+    const slug = variantSlug(node.type === 'COMPONENT_SET' ? { ...variant.variantProperties } : {});
+    if (variants.has(slug)) {
+      pngs.set(
+        slug,
+        await variant.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: scale } }),
+      );
+    }
+  }
+  return pngs;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { runExport } from './export-flow';
 import { listComponents } from './figma-reader';
 import type { MainMessage, UiMessage } from './messages';
-import { BRANCH_STORAGE_KEY, TOKEN_STORAGE_KEY } from './plugin-config';
+import { TOKEN_STORAGE_KEY } from './plugin-config';
 
 // 플러그인 본체 진입점. UI를 띄우고 메시지를 받아 내보내기를 실행한다.
 
@@ -10,18 +10,12 @@ figma.ui.on('message', handleMessage);
 start().catch(reportFailure);
 
 /**
- * 저장한 토큰·기존 브랜치와 컴포넌트 목록을 UI에 보낸다.
+ * 저장한 토큰과 컴포넌트 목록을 UI에 보낸다.
  */
 async function start(): Promise<void> {
   const stored: unknown = await figma.clientStorage.getAsync(TOKEN_STORAGE_KEY);
-  const branch: unknown = await figma.clientStorage.getAsync(BRANCH_STORAGE_KEY);
   const components = await listComponents();
-  post({
-    type: 'init',
-    token: typeof stored === 'string' ? stored : '',
-    branch: typeof branch === 'string' ? branch : '',
-    components,
-  });
+  post({ type: 'init', token: typeof stored === 'string' ? stored : '', components });
 }
 
 /**
@@ -36,7 +30,7 @@ function handleMessage(message: unknown): void {
 }
 
 /**
- * 토큰과 기존 브랜치를 저장하고 내보내기를 실행한 뒤 결과를 UI에 알린다.
+ * 토큰을 저장하고 내보내기를 실행한 뒤 결과를 UI에 알린다.
  * @param message 내보내기 요청
  */
 async function exportFromUi(message: UiMessage): Promise<void> {
@@ -45,12 +39,9 @@ async function exportFromUi(message: UiMessage): Promise<void> {
     throw new Error('GitHub 토큰을 입력해야 한다.');
   }
   await figma.clientStorage.setAsync(TOKEN_STORAGE_KEY, token);
-  await figma.clientStorage.setAsync(BRANCH_STORAGE_KEY, message.branch.trim());
   const result = await runExport({
     token,
     componentIds: message.componentIds,
-    shouldExportTokens: message.shouldExportTokens,
-    branch: message.branch,
     log: (text) => {
       post({ type: 'log', text });
     },
@@ -89,14 +80,10 @@ function isExportMessage(message: unknown): message is UiMessage {
   const type: unknown = Reflect.get(message, 'type');
   const token: unknown = Reflect.get(message, 'token');
   const ids: unknown = Reflect.get(message, 'componentIds');
-  const shouldExportTokens: unknown = Reflect.get(message, 'shouldExportTokens');
-  const branch: unknown = Reflect.get(message, 'branch');
   return (
-    typeof branch === 'string' &&
     type === 'export' &&
     typeof token === 'string' &&
     Array.isArray(ids) &&
-    ids.every((id) => typeof id === 'string') &&
-    typeof shouldExportTokens === 'boolean'
+    ids.every((id) => typeof id === 'string')
   );
 }

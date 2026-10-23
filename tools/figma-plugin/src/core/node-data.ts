@@ -98,11 +98,6 @@ export type ChildLayoutData = {
   layoutGrow: number;
   positioning: string;
   constraints: { horizontal: string; vertical: string };
-  /** 부모 기준 위치와 크기(절대 위치 거리 계산용) */
-  x: number;
-  y: number;
-  parentWidth: number;
-  parentHeight: number;
 };
 
 /** 자산 묶음의 처리 방식(D6). mono: 한 가지 색(SVG, 색은 currentColor), color: 여러 색 SVG, raster: 래스터 이미지 */

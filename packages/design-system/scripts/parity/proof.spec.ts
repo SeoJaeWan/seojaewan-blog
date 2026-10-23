@@ -2,14 +2,15 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page, test } from '@playwright/test';
 
-import { parityResultsDir, storybookStaticDir } from '../package-paths.ts';
-import type { SegmentCheck, TextCheck, VariantChecks } from './layer-checks.ts';
+import { parityResultsDir, storybookStaticDir, tokensJsonPath } from '../package-paths.ts';
+import { cssNamesOf, expectedOfVariable, readFigmaTokens } from './figma-tokens.ts';
+import type { ElementCheck, SegmentCheck, TextCheck, VariantChecks } from './layer-checks.ts';
 import { FIGMA_LAYER_ATTRIBUTE, FIGMA_ROOT_ATTRIBUTE } from './parity-config.ts';
 import { loadParityPlan, type PlanItem } from './parity-plan.ts';
 import { inspectItem, openItem } from './parity-runner.ts';
 
 // @codocs [[피그마 일치 검사:비교 규칙]]
-// 비교 도구가 틀린 코드를 실제로 잡는지 확인한다. 정상 컴포넌트를 연 뒤 화면(DOM)이나 피그마 쪽 확인 항목을
+// 비교 도구가 틀린 코드를 실제로 잡는지 확인한다. 정상 컴포넌트를 연 뒤 화면(DOM, CSS)이나 피그마 쪽 확인 항목을
 // 일부러 틀리게 바꾸고, 틀린 버전은 모두 실패하고 정상 버전(대조군)은 통과해야 한다.
 // 실행: pnpm --filter @seojaewan/design-system test:parity-proof (Storybook 빌드 필요)
 
@@ -33,12 +34,19 @@ type ProofCase = {
 type SegmentPart = { end: number; isStrong?: boolean; fontFamily?: string };
 
 const BUTTON_REST = 'style=standard,state=rest,showIcon=true';
+const BUTTON_ACCENT = 'style=accent,state=rest';
 const BUTTON_DISABLED = 'style=standard,state=disabled';
+const MENU_ITEM_REST = 'kind=default,state=rest';
+const FLYOUT_ACRYLIC = 'material=acrylic';
 // 피그마 Rest → Focused 전환(Smart Animate, motion/duration/fast, motion/easing/direct-entrance)이 걸린 변형
 const PILL_FOCUSED = 'appearance=pill,filled=false,state=focused';
+// 강조 구간의 굵기 변수
+const SEMIBOLD = 'font/weight/semibold';
+
+const tokens = readFigmaTokens(JSON.parse(readFileSync(tokensJsonPath, 'utf8')));
 
 /**
- * 레이어 요소의 클래스를 다른 클래스로 바꾼다. arg는 "기존→새것"이다.
+ * 레이어 요소의 클래스를 다른 클래스로 바꾼다. arg는 "기존→새것"이고, 새것은 공백으로 나눠 여럿을 쓸 수 있다.
  * 상태 접두어가 붙은 것까지 모두 바꾼다(코드에서 그 토큰 이름을 다른 이름으로 쓴 경우).
  * @param input 루트 선택자, 레이어(빈 이름이면 루트), 인자
  */
@@ -56,7 +64,9 @@ function replaceClass(input: DomInput): void {
     throw new Error(`클래스가 없다: ${from}`);
   }
   for (const old of matches) {
-    element.classList.replace(old, `${old.slice(0, old.length - from.length)}${to}`);
+    const prefix = old.slice(0, old.length - from.length);
+    element.classList.remove(old);
+    element.classList.add(...to.split(' ').map((name) => `${prefix}${name}`));
   }
 }
 
@@ -121,6 +131,16 @@ function overrideStyle(input: DomInput): void {
 }
 
 /**
+ * 문서에 전역 스타일시트를 더한다(레이어 밖 규칙이라 유틸리티를 덮는다). arg는 CSS 글자다.
+ * @param input 인자
+ */
+function addGlobalStyle(input: DomInput): void {
+  const style = document.createElement('style');
+  style.textContent = input.arg;
+  document.head.append(style);
+}
+
+/**
  * 버튼 label 글자를 여러 구간으로 바꾼 확인 항목을 만든다(피그마에서 구간을 나눈 글자를 흉내 낸다).
  * @param characters 글자 내용
  * @param parts 구간 끝 위치와 모양
@@ -174,13 +194,24 @@ function strongSegment(segment: SegmentCheck): SegmentCheck {
   return {
     ...segment,
     textStyle: 'Body Strong',
-    typeClasses: ['type-body-strong'],
-    styleFigma: 'font/size/body, font/line-height/body, font/weight/semibold, 0%',
-    styleComputed: segment.styleComputed.map((expectation) =>
-      expectation.property === 'font-weight'
-        ? { ...expectation, css: 'var(--font-weight-semibold)' }
-        : expectation,
-    ),
+    checks: segment.checks.map(semiboldCheck),
+  };
+}
+
+/**
+ * 글자 굵기 확인 항목을 semibold 변수로 바꾼다. 다른 항목은 그대로 둔다.
+ * @param check 구간 확인 항목
+ * @returns 바꾼 확인 항목
+ */
+function semiboldCheck(check: ElementCheck): ElementCheck {
+  if (check.property !== 'font-weight') {
+    return check;
+  }
+  return {
+    ...check,
+    figma: SEMIBOLD,
+    variables: cssNamesOf(tokens, SEMIBOLD),
+    expected: expectedOfVariable(tokens, SEMIBOLD),
   };
 }
 
@@ -188,16 +219,24 @@ const emphasis = labelSegments('버튼 강조', [{ end: 3 }, { end: 5, isStrong:
 
 const cases: ProofCase[] = [
   { name: '정상 Button', component: 'button', resultName: BUTTON_REST, shouldFail: false },
+  { name: '정상 Button accent', component: 'button', resultName: BUTTON_ACCENT, shouldFail: false },
   {
     name: '정상 Button disabled',
     component: 'button',
     resultName: BUTTON_DISABLED,
     shouldFail: false,
   },
+  { name: '정상 MenuItem', component: 'menu-item', resultName: MENU_ITEM_REST, shouldFail: false },
   {
-    name: '정상 MenuItem',
-    component: 'menu-item',
-    resultName: 'kind=default,state=rest',
+    name: '정상 Flyout 아크릴',
+    component: 'flyout',
+    resultName: FLYOUT_ACRYLIC,
+    shouldFail: false,
+  },
+  {
+    name: '정상 SearchBox Pill Focused(상태 전환 포함)',
+    component: 'search-box',
+    resultName: PILL_FOCUSED,
     shouldFail: false,
   },
   {
@@ -221,56 +260,34 @@ const cases: ProofCase[] = [
     dom: { change: setInnerHtml, layer: 'label', arg: '버튼OK' },
   },
   {
-    name: '배경↔선 토큰 바꿈(배경)',
+    name: '같은 토큰을 다른 유틸리티로 씀(px-12 → pl-12 pr-12)',
     component: 'button',
-    resultName: BUTTON_DISABLED,
-    shouldFail: true,
-    dom: {
-      change: replaceClass,
-      layer: '',
-      arg: 'bg-control-fill-disabled→bg-control-stroke-default',
-    },
+    resultName: BUTTON_REST,
+    shouldFail: false,
+    dom: { change: replaceClass, layer: '', arg: 'px-12→pl-12 pr-12' },
   },
   {
-    name: '배경↔선 토큰 바꿈(선)',
-    component: 'button',
-    resultName: BUTTON_DISABLED,
-    shouldFail: true,
-    dom: {
-      change: replaceClass,
-      layer: '',
-      arg: 'inner-border-control-stroke-default→inner-border-control-fill-disabled',
-    },
-  },
-  {
-    // 다른 상태(active:)에 같은 이름이 남아 이름 확인은 통과하고, 계산값 확인이 잡아야 한다.
-    name: '적용 중인 상태의 클래스만 틀림(data-disabled:inner-border-*)',
-    component: 'button',
-    resultName: BUTTON_DISABLED,
-    shouldFail: true,
-    dom: {
-      change: replaceClass,
-      layer: '',
-      arg: 'data-disabled:inner-border-control-stroke-default→data-disabled:inner-border-control-fill-disabled',
-    },
-  },
-  {
-    name: '다른 토큰(채우기 default → secondary)',
+    name: '이웃 상태의 색 토큰(채우기 default → disabled)',
     component: 'button',
     resultName: BUTTON_REST,
     shouldFail: true,
     dom: {
       change: replaceClass,
       layer: '',
-      arg: 'bg-control-fill-default→bg-control-fill-secondary',
+      arg: 'bg-control-fill-default→bg-control-fill-disabled',
     },
   },
   {
-    name: '정렬 클래스 틀림(justify-center → justify-start)',
+    // 값이 같은 다른 토큰은 계산값으로는 잡지 못하고 이름 비교가 잡는다.
+    name: '값이 같은 다른 토큰(accent-fill/default → accent-text-fill/tertiary)',
     component: 'button',
-    resultName: BUTTON_REST,
+    resultName: BUTTON_ACCENT,
     shouldFail: true,
-    dom: { change: replaceClass, layer: '', arg: 'justify-center→justify-start' },
+    dom: {
+      change: overrideStyle,
+      layer: '',
+      arg: 'background-color:var(--color-accent-text-fill-tertiary)',
+    },
   },
   {
     name: '여백 토큰 틀림(px-12 → px-16)',
@@ -280,31 +297,54 @@ const cases: ProofCase[] = [
     dom: { change: replaceClass, layer: '', arg: 'px-12→px-16' },
   },
   {
-    name: '강조 구간 빠짐',
+    name: '주축 정렬 틀림(justify-center → justify-start)',
     component: 'button',
     resultName: BUTTON_REST,
     shouldFail: true,
-    checks: emphasis,
-    dom: { change: setInnerHtml, layer: 'label', arg: '버튼 강조' },
+    dom: { change: replaceClass, layer: '', arg: 'justify-center→justify-start' },
   },
   {
-    name: '강조 구간 위치 틀림',
+    name: '전역 CSS로 덮어쓰기(button { background: white })',
     component: 'button',
     resultName: BUTTON_REST,
     shouldFail: true,
-    checks: emphasis,
+    dom: { change: addGlobalStyle, layer: '', arg: 'button { background: white; }' },
+  },
+  {
+    name: '인라인 스타일로 덮어쓰기(같은 클래스, padding-left)',
+    component: 'button',
+    resultName: BUTTON_REST,
+    shouldFail: true,
+    dom: { change: overrideStyle, layer: '', arg: 'padding-left:20px' },
+  },
+  {
+    name: '아이콘 다른 자산',
+    component: 'button',
+    resultName: BUTTON_REST,
+    shouldFail: true,
     dom: {
-      change: setInnerHtml,
-      layer: 'label',
-      arg: '<strong class="type-body-strong">버튼</strong> 강조',
+      change: setAttribute,
+      layer: 'icon',
+      arg: 'data-asset=icons/ic_fluent_search_16_regular.svg',
     },
   },
   {
-    name: '글자 하나 다름(버튼 → 버툰)',
+    name: '글자 하나 더함(버튼 → 버튼!)',
     component: 'button',
     resultName: BUTTON_REST,
     shouldFail: true,
-    dom: { change: setInnerHtml, layer: 'label', arg: '버툰' },
+    dom: { change: setInnerHtml, layer: 'label', arg: '버튼!' },
+  },
+  {
+    name: '숨긴 레이어가 보임(MenuItem shortcut)',
+    component: 'menu-item',
+    resultName: MENU_ITEM_REST,
+    shouldFail: true,
+    dom: {
+      change: appendHtml,
+      layer: 'base',
+      arg: '<span data-figma="base/shortcut">Ctrl+O</span>',
+    },
   },
   {
     name: '표시 빠짐(icon의 data-figma 없음)',
@@ -321,60 +361,38 @@ const cases: ProofCase[] = [
     dom: { change: appendHtml, layer: '', arg: '<span class="bg-accent-fill-default"></span>' },
   },
   {
-    name: '숨긴 레이어가 보임(MenuItem shortcut)',
-    component: 'menu-item',
-    resultName: 'kind=default,state=rest',
+    name: '표시 없는 요소에 덮여 보이지 않는 토큰 클래스(bg-accent-fill-default bg-transparent)',
+    component: 'button',
+    resultName: BUTTON_REST,
     shouldFail: true,
     dom: {
       change: appendHtml,
-      layer: 'base',
-      arg: '<span data-figma="base/shortcut">Ctrl+O</span>',
+      layer: '',
+      arg: '<span class="bg-accent-fill-default bg-transparent"></span>',
     },
   },
   {
-    name: '아이콘 다른 이름',
+    // 값과 닿는 토큰은 같지만, 기대한 이름 앞에 Tailwind 내부 변수가 아닌 사용자 속성을 거친다.
+    name: '다른 사용자 속성을 거친 변수 사슬(--color-my-button)',
     component: 'button',
-    resultName: BUTTON_REST,
+    resultName: BUTTON_ACCENT,
     shouldFail: true,
     dom: {
-      change: setAttribute,
-      layer: 'icon',
-      arg: 'data-asset=icons/ic_fluent_search_16_regular.svg',
+      change: addGlobalStyle,
+      layer: '',
+      arg: 'button { --color-my-button: var(--color-accent-fill-default); background-color: var(--color-my-button); }',
     },
   },
   {
-    name: '다른 CSS로 덮어쓰기(같은 클래스, 인라인 padding-left)',
-    component: 'button',
-    resultName: BUTTON_REST,
-    shouldFail: true,
-    dom: { change: overrideStyle, layer: '', arg: 'padding-left:20px' },
-  },
-  {
-    name: '정상 Flyout 아크릴',
+    name: '다른 배경 흐림(material-mica)',
     component: 'flyout',
-    resultName: 'material=acrylic',
-    shouldFail: false,
-  },
-  {
-    // 재질 칠 유틸리티는 그대로 두고 다른 CSS로 배경색을 덮으면 계산값 비교가 잡는다.
-    name: '재질 칠을 다른 CSS로 덮어쓰기(background-color)',
-    component: 'flyout',
-    resultName: 'material=acrylic',
+    resultName: FLYOUT_ACRYLIC,
     shouldFail: true,
-    dom: { change: overrideStyle, layer: '', arg: 'background-color:white' },
-  },
-  {
-    name: '정상 SearchBox Pill Focused(상태 전환 포함)',
-    component: 'search-box',
-    resultName: PILL_FOCUSED,
-    shouldFail: false,
-  },
-  {
-    name: '상태 전환 누락(transition-property: none)',
-    component: 'search-box',
-    resultName: PILL_FOCUSED,
-    shouldFail: true,
-    dom: { change: overrideStyle, layer: '', arg: 'transition-property:none' },
+    dom: {
+      change: overrideStyle,
+      layer: '',
+      arg: 'backdrop-filter:blur(var(--backdrop-blur-material-mica))',
+    },
   },
   {
     name: '상태 전환 시간 다름(duration-fast → duration-faster)',
@@ -404,6 +422,14 @@ const cases: ProofCase[] = [
     shouldFail: true,
     checks: labelSegments('버튼OK', [{ end: 4 }]),
     dom: { change: setInnerHtml, layer: 'label', arg: '버튼OK' },
+  },
+  {
+    name: '강조 구간 빠짐',
+    component: 'button',
+    resultName: BUTTON_REST,
+    shouldFail: true,
+    checks: emphasis,
+    dom: { change: setInnerHtml, layer: 'label', arg: '버튼 강조' },
   },
 ];
 

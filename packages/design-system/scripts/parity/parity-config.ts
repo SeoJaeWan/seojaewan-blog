@@ -20,3 +20,9 @@ export const PARITY_PORT = 6107;
 export const SELECTION_FILE = 'selection.json';
 // 변형 결과 폴더(parity-results/<컴포넌트>/<변형>/)에 남기는 결과 파일 이름이다.
 export const RESULT_FILE = 'result.json';
+
+// @codocs [[피그마 일치 검사:판정 항목]]
+// 판정 중에 요소에 임시로 붙이는 번호 속성이다. CDP로 이긴 선언을 읽을 요소를 찾을 때 쓴다.
+export const PARITY_NODE_ATTRIBUTE = 'data-parity-node';
+// 서체를 확인하려고 글자 하나씩 감싼 span에 붙이는 번호 속성이다.
+export const PARITY_CHAR_ATTRIBUTE = 'data-parity-char';

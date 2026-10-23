@@ -1,42 +1,52 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-import { type TokenNames, variantChecks } from './layer-checks.ts';
+import { readFigmaTokens } from './figma-tokens.ts';
+import { type PropertyCheck, variantChecks } from './layer-checks.ts';
 
-const tokens: TokenNames = {
-  variables: new Set([
-    '--color-accent-fill-default',
-    '--color-text-fill-primary',
-    '--spacing-6',
-    '--spacing-8',
-    '--spacing-12',
-    '--spacing-icon-16',
-    '--radius-control',
-  ]),
-  utilities: new Set(['type-body']),
-  textUtilities: new Map([
-    [
-      'type-body',
-      {
-        fontFamily: 'font/family/base',
-        fontSize: 'font/size/body',
-        fontWeight: 'font/weight/regular',
-        lineHeight: 'font/line-height/body',
-        letterSpacing: '{"unit":"%","value":0}',
+const tokens = readFigmaTokens({
+  color: {
+    blue: { 'dark-1': { $type: 'color', $value: '#005fb8' } },
+    gray: { '1a': { $type: 'color', $value: '#1a1a1a' } },
+  },
+  'accent-fill': { default: { $type: 'color', $value: '{color.blue.dark-1}' } },
+  'text-fill': { primary: { $type: 'color', $value: '{color.gray.1a}' } },
+  spacing: {
+    '6': { $type: 'dimension', $value: { unit: 'px', value: 6 } },
+    '8': { $type: 'dimension', $value: { unit: 'px', value: 8 } },
+    '12': { $type: 'dimension', $value: { unit: 'px', value: 12 } },
+  },
+  size: { icon: { '16': { $type: 'dimension', $value: { unit: 'px', value: 16 } } } },
+  radius: { control: { $type: 'dimension', $value: { unit: 'px', value: 4 } } },
+  opacity: { cut: { $type: 'number', $value: 50 } },
+  font: {
+    size: { body: { $type: 'dimension', $value: { unit: 'px', value: 14 } } },
+    'line-height': { body: { $type: 'dimension', $value: { unit: 'px', value: 20 } } },
+    weight: { regular: { $type: 'fontWeight', $value: 400 } },
+  },
+  style: {
+    effect: {
+      Surface: {
+        'Flyout (Acrylic)': {
+          $type: 'shadow',
+          $value: [
+            {
+              color: '#00000024',
+              offsetX: { unit: 'px', value: 0 },
+              offsetY: { unit: 'px', value: 8 },
+              blur: { unit: 'px', value: 16 },
+              spread: { unit: 'px', value: 0 },
+              inset: false,
+            },
+          ],
+          $extensions: { 'com.seojaewan': { backgroundBlur: '{blur.acrylic}' } },
+        },
       },
-    ],
-    [
-      'type-title',
-      {
-        fontFamily: 'font/family/base',
-        fontSize: 'font/size/body',
-        fontWeight: 'font/weight/regular',
-        lineHeight: 'font/line-height/body',
-        letterSpacing: '{"unit":"%","value":-0.5}',
-      },
-    ],
-  ]),
-};
+    },
+    paint: {},
+    text: {},
+  },
+});
 
 const root = {
   path: '',
@@ -77,9 +87,6 @@ const label = {
   text: {
     characters: '버튼',
     alignHorizontal: 'LEFT',
-    alignVertical: 'TOP',
-    autoResize: 'WIDTH_AND_HEIGHT',
-    maxLines: null,
     segments: [
       {
         start: 0,
@@ -92,7 +99,7 @@ const label = {
           fontSize: { variable: 'font/size/body' },
           fontWeight: { variable: 'font/weight/regular' },
           lineHeight: { variable: 'font/line-height/body' },
-          letterSpacing: { value: '0%' },
+          letterSpacing: { value: '2%' },
         },
       },
     ],
@@ -100,75 +107,152 @@ const label = {
 };
 
 /**
- * 역할의 클래스 후보를 찾는다.
+ * 레이어의 역할 확인 항목을 찾는다.
  * @param layers 레이어 목록
  * @param layer 레이어 경로
  * @param role 역할
- * @returns 클래스 후보(없으면 undefined)
+ * @returns 확인 항목(없으면 undefined)
  */
-function classesOf(layers: readonly unknown[], layer: string, role: string): unknown {
+function checkOf(
+  layers: readonly unknown[],
+  layer: string,
+  role: string,
+): PropertyCheck | undefined {
   return variantChecks(layers, [], tokens).checks.find(
     (check) => check.layer === layer && check.role === role,
-  )?.classes;
+  );
 }
 
-// @codocs [[피그마 일치 검사:비교 규칙]]
+// @codocs [[피그마 일치 검사:판정 항목]]
 describe('레이어 확인 항목', () => {
-  it('변수 이름으로 역할마다 클래스 이름을 정한다', () => {
-    const layers = [root];
-    expect(classesOf(layers, '', '채우기')).toEqual([['bg-accent-fill-default']]);
-    expect(classesOf(layers, '', '여백(right)')).toEqual([['pr-12', 'px-12', 'p-12']]);
-    expect(classesOf(layers, '', '간격')).toEqual([['gap-8', 'gap-x-8']]);
-    expect(classesOf(layers, '', '주축 정렬')).toEqual([['justify-center']]);
+  it('변수가 있는 속성은 이름(CSS 변수)과 값(tokens.json 값 변환)을 모두 본다', () => {
+    expect(checkOf([root], '', '채우기')).toEqual({
+      layer: '',
+      role: '채우기',
+      figma: 'accent-fill/default',
+      property: 'background-color',
+      variables: ['--color-accent-fill-default'],
+      expected: { kind: 'color', rgba: [0, 95, 184, 255] },
+    });
+    expect(checkOf([root], '', '여백(right)')).toMatchObject({
+      property: 'padding-right',
+      variables: ['--spacing-12'],
+      expected: { kind: 'length', px: 12 },
+    });
+    expect(checkOf([root], '', '간격')).toMatchObject({ property: 'column-gap' });
   });
 
-  it('자산은 파일 이름과 색 클래스를 확인한다', () => {
+  it('선택지는 같은 뜻의 CSS 값 목록으로 대응시킨다', () => {
+    expect(checkOf([root], '', '주축 정렬')?.expected).toEqual({
+      kind: 'keywords',
+      values: ['center'],
+    });
+    expect(checkOf([root], '', '자동 배치')?.expected).toEqual({
+      kind: 'keywords',
+      values: ['flex', 'inline-flex'],
+    });
+  });
+
+  it('피그마에 값이 없으면 코드도 없어야 한다(선, 효과, 불투명도)', () => {
+    expect(checkOf([root], '', '바깥 선')?.expected).toEqual({
+      kind: 'keywords',
+      values: ['none'],
+    });
+    expect(checkOf([root], '', '효과(배경 흐림)')?.expected).toEqual({
+      kind: 'keywords',
+      values: ['none'],
+    });
+    expect(checkOf([root], '', '불투명도')?.expected).toEqual({ kind: 'number', value: 1 });
+  });
+
+  it('효과 스타일은 배경 흐림만 이름으로 보고 그림자는 판정하지 않는다', () => {
+    const flyout = { ...root, effect: 'Surface/Flyout (Acrylic)' };
+    const properties = variantChecks([flyout], [], tokens).checks.map((check) => check.property);
+    expect(properties).not.toContain('box-shadow');
+    expect(checkOf([flyout], '', '효과(배경 흐림)')).toMatchObject({
+      property: 'backdrop-filter',
+      variables: ['--backdrop-blur-surface-flyout-acrylic'],
+    });
+  });
+
+  it('불투명도 변수는 0–100 값을 ÷100으로 바꾼다', () => {
+    expect(checkOf([{ ...root, opacity: 'opacity/cut' }], '', '불투명도')).toMatchObject({
+      variables: ['--opacity-cut'],
+      expected: { kind: 'number', value: 0.5 },
+    });
+  });
+
+  it('회전은 피그마 회전이 0인 레이어도 0°로 본다', () => {
+    expect(checkOf([root], '', '회전')).toMatchObject({
+      property: 'rotate|transform',
+      expected: { kind: 'angle', deg: 0 },
+    });
+    expect(checkOf([{ ...root, rotation: -90 }], '', '회전')).toMatchObject({
+      expected: { kind: 'angle', deg: 90 },
+    });
+  });
+
+  it('절대 위치(위치 방식, 붙는 변, 거리)는 판정하지 않는다', () => {
+    const border = {
+      path: 'bottom border',
+      type: 'FRAME',
+      self: {
+        absolute: { horizontal: { constraint: 'STRETCH' }, vertical: { constraint: 'MAX' } },
+      },
+    };
+    const checks = variantChecks([root, border], [], tokens);
+    expect(checks.unsupported).toEqual([]);
+    const properties = checks.checks
+      .filter((check) => check.layer === 'bottom border')
+      .map((check) => check.property);
+    for (const property of ['position', 'left', 'right', 'top', 'bottom']) {
+      expect(properties).not.toContain(property);
+    }
+  });
+
+  it('자산은 파일과 글자 색(이름 + 값)을 본다', () => {
     const checks = variantChecks([root, icon], [], tokens);
     expect(checks.assets).toEqual([
       {
         layer: 'icon',
         file: 'icons/add.svg',
         color: {
+          role: '자산 색',
           figma: 'text-fill/primary',
-          classes: ['text-text-fill-primary'],
-          css: 'var(--color-text-fill-primary)',
+          property: 'color',
+          variables: ['--color-text-fill-primary'],
+          expected: { kind: 'color', rgba: [26, 26, 26, 255] },
+          inherited: true,
         },
       },
     ]);
-    expect(classesOf([root, icon], 'icon', '너비')).toEqual([['w-icon-16', 'size-icon-16']]);
+    expect(checkOf([root, icon], 'icon', '너비')).toMatchObject({
+      property: 'width',
+      variables: ['--spacing-icon-16'],
+    });
   });
 
-  it('글자 스타일은 이름이 아니라 연결 변수로 type-* 유틸리티를 찾는다(D2)', () => {
+  it('글자 구간은 서체와 크기·굵기·줄 높이 변수, % 자간을 px로 바꾼 값을 본다(D2)', () => {
     const [text] = variantChecks([root, label], [], tokens).texts;
     expect(text?.characters).toBe('버튼');
-    expect(text?.segments[0]?.typeClasses).toEqual(['type-body']);
-    expect(text?.segments[0]?.fontFamily).toBe('Pretendard');
-  });
-
-  it('0이 아닌 자간도 값과 단위가 같으면 type-* 유틸리티와 일치한다', () => {
-    /**
-     * 자간만 바꾼 label 레이어를 만든다.
-     * @param value 피그마 자간
-     * @returns 레이어
-     */
-    function withSpacing(value: string): unknown {
-      const [segment] = label.text.segments;
-      return {
-        ...label,
-        text: {
-          ...label.text,
-          segments: [{ ...segment, style: { ...segment?.style, letterSpacing: { value } } }],
-        },
-      };
-    }
-    const tight = variantChecks([root, withSpacing('-0.5000000149%')], [], tokens).texts[0];
-    expect(tight?.segments[0]?.typeClasses).toEqual(['type-title']);
-    expect(tight?.segments[0]?.styleComputed).toContainEqual({
-      property: 'letter-spacing',
-      css: '-0.005em',
+    const [segment] = text?.segments ?? [];
+    expect(segment?.fontFamily).toBe('Pretendard');
+    expect(segment?.checks.map((check) => check.property)).toEqual([
+      'color',
+      'font-size',
+      'font-weight',
+      'line-height',
+      'letter-spacing',
+      'text-decoration-line',
+    ]);
+    expect(segment?.checks.find((check) => check.property === 'line-height')?.variables).toEqual([
+      '--leading-body',
+      '--text-body--line-height',
+    ]);
+    expect(segment?.checks.find((check) => check.property === 'letter-spacing')?.expected).toEqual({
+      kind: 'length',
+      px: 0.28,
     });
-    const other = variantChecks([root, withSpacing('-0.4%')], [], tokens).texts[0];
-    expect(other?.segments[0]?.typeClasses).toEqual([]);
   });
 
   it('숨긴 레이어는 그대로 넘긴다(D4)', () => {
@@ -176,8 +260,11 @@ describe('레이어 확인 항목', () => {
   });
 
   it('변수에 연결되지 않은 값은 비교할 수 없음으로 남긴다', () => {
-    const unbound = { ...root, fill: { value: '#ffffff' } };
-    const checks = variantChecks([unbound], [], tokens);
-    expect(checks.unsupported.map((item) => item.layer)).toEqual(['']);
+    const unbound = {
+      ...icon,
+      sizing: { horizontal: 'FIXED', vertical: 'HUG', width: { value: 16 } },
+    };
+    const checks = variantChecks([root, unbound], [], tokens);
+    expect(checks.unsupported.map((item) => item.layer)).toEqual(['icon']);
   });
 });

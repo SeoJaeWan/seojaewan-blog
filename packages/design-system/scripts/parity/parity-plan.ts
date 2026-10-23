@@ -11,13 +11,11 @@ import {
   FIGMA_COMPONENTS_FOLDER,
   FIGMA_SETTINGS_FILE,
   figmaDir,
-  sourceDir,
-  tokensCssPath,
   tokensJsonPath,
 } from '../package-paths.ts';
-import { textUtilityVariables } from '../tokens/tokens-css.ts';
 import { parseFigmaExport } from './figma-export.ts';
-import { type TokenNames, type VariantChecks, variantChecks } from './layer-checks.ts';
+import { type FigmaTokens, readFigmaTokens, tokenCssNames } from './figma-tokens.ts';
+import { type VariantChecks, variantChecks } from './layer-checks.ts';
 import { incomingTransitions } from './transition-checks.ts';
 
 /** 비교 항목 하나 */
@@ -34,6 +32,8 @@ export type PlanItem = {
   /** BOOLEAN 경우의 스토리 arg */
   booleanArg: { name: string; value: boolean } | null;
   checks: VariantChecks;
+  /** 디자인 토큰 CSS 이름(표시 없는 요소 검사에 쓴다) */
+  tokenNames: ReadonlySet<string>;
   /** 피그마 변형 PNG 경로 */
   figmaImage: string;
 };
@@ -59,7 +59,8 @@ export function loadParityPlan(components?: readonly string[]): ParityPlan {
   const componentsDir = path.join(figmaDir, FIGMA_COMPONENTS_FOLDER);
   const manifests = readManifests(componentsDir);
   const figmaExport = parseFigmaExport(readJson(settingsPath), manifests);
-  const tokens = tokenNames();
+  const tokens = readFigmaTokens(readJson(tokensJsonPath));
+  const tokenNames = tokenCssNames(tokens);
   const items: PlanItem[] = [];
   for (const parityCase of figmaExport.cases) {
     if (components !== undefined && !components.includes(parityCase.component)) {
@@ -76,6 +77,7 @@ export function loadParityPlan(components?: readonly string[]): ParityPlan {
       resultName: parityCase.variant,
       booleanArg: null,
       checks: variantChecks(asArray(entry.layers), asStrings(entry.hidden), tokens),
+      tokenNames,
       figmaImage,
     });
     for (const [caseKey, value] of Object.entries(asRecord(entry.cases))) {
@@ -92,11 +94,12 @@ export function loadParityPlan(components?: readonly string[]): ParityPlan {
         resultName: `${parityCase.variant},${caseKey}`,
         booleanArg: { name, value: flag === 'true' },
         checks: variantChecks(asArray(caseEntry.layers), asStrings(caseEntry.hidden), tokens),
+        tokenNames,
         figmaImage,
       });
     }
   }
-  addTransitions(items, manifests);
+  addTransitions(items, manifests, tokens);
   return { items, fileErrors: findFileErrors(componentsDir, manifests, figmaExport.cases) };
 }
 
@@ -105,13 +108,21 @@ export function loadParityPlan(components?: readonly string[]): ParityPlan {
  * @codocs [[피그마 일치 검사:상태 전환]]
  * @param items 비교 항목
  * @param manifests 컴포넌트 폴더 이름 → export.json
+ * @param tokens tokens.json 토큰 표
  */
-function addTransitions(items: readonly PlanItem[], manifests: Record<string, unknown>): void {
+function addTransitions(
+  items: readonly PlanItem[],
+  manifests: Record<string, unknown>,
+  tokens: FigmaTokens,
+): void {
   const baseItems = items.filter((item) => item.caseKey === null);
   for (const item of baseItems) {
     const variants = asRecord(asRecord(manifests[item.component]).variants);
-    item.checks.transitions = incomingTransitions(item.variant, variants, (variant) =>
-      baseChecks(baseItems, item.component, variant),
+    item.checks.transitions = incomingTransitions(
+      item.variant,
+      variants,
+      (variant) => baseChecks(baseItems, item.component, variant),
+      tokens,
     );
   }
 }
@@ -135,24 +146,6 @@ function baseChecks(
     throw new Error(`${component}: 전환 출발 변형 ${variant}이 없다.`);
   }
   return found.checks;
-}
-
-/**
- * tokens.css·theme.css의 변수와 유틸리티 이름, 글자 스타일 유틸리티 변수를 읽는다.
- * @returns 토큰 이름 정보
- */
-function tokenNames(): TokenNames {
-  const css = [tokensCssPath, path.join(sourceDir, 'theme.css')]
-    .filter((file) => existsSync(file))
-    .map((file) => readFileSync(file, 'utf8'))
-    .join('\n');
-  const variables = new Set(
-    [...css.matchAll(/(--[a-z0-9-]+)\s*:/gu)].map((match) => match[1] ?? ''),
-  );
-  const utilities = new Set(
-    [...css.matchAll(/@utility\s+([a-z0-9-]+)\s*\{/gu)].map((match) => match[1] ?? ''),
-  );
-  return { variables, utilities, textUtilities: textUtilityVariables(readJson(tokensJsonPath)) };
 }
 
 /**

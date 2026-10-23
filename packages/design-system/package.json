@@ -14,7 +14,6 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p scripts",
     "storybook": "storybook dev --port 6006 --no-open",
     "build-storybook": "storybook build",
-    "generate:tokens": "node scripts/tokens/generate-tokens.ts",
     "generate:fonts": "node scripts/fonts/generate-fonts.ts",
     "generate:assets": "node scripts/assets/generate-assets.ts",
     "test:parity": "node scripts/parity/run-parity.ts",

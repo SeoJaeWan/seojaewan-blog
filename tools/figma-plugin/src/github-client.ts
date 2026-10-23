@@ -184,16 +184,107 @@ export async function updateBranch(token: string, branch: string, sha: string): 
   await request(token, 'PATCH', `${REPO_PATH}/git/refs/heads/${branch}`, { sha, force: false });
 }
 
+/** 열린 PR */
+export type OpenPullRequest = { url: string; number: number };
+
 /**
- * 브랜치에서 열린 PR 주소를 찾는다.
+ * 브랜치에서 열린 PR을 찾는다.
  * @param token GitHub 토큰
  * @param branch 머리 브랜치 이름
- * @returns 열린 PR 주소, 없으면 null
+ * @returns 열린 PR 주소와 번호, 없으면 null
  */
-export async function findOpenPullRequest(token: string, branch: string): Promise<string | null> {
+export async function findOpenPullRequest(
+  token: string,
+  branch: string,
+): Promise<OpenPullRequest | null> {
   const head = encodeURIComponent(`${REPO_OWNER}:${branch}`);
   const pulls = await request(token, 'GET', `${REPO_PATH}/pulls?state=open&head=${head}`);
-  return readOptionalString(pulls, ['0', 'html_url']);
+  const url = readOptionalString(pulls, ['0', 'html_url']);
+  const number = readOptionalNumber(pulls, ['0', 'number']);
+  return url === null || number === null ? null : { url, number };
+}
+
+/**
+ * 브랜치가 있으면 끝 커밋 SHA를 가져온다.
+ * @param token GitHub 토큰
+ * @param branch 브랜치 이름
+ * @returns 끝 커밋 SHA, 브랜치가 없으면 null
+ */
+export async function findBranchCommit(token: string, branch: string): Promise<string | null> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}/git/ref/heads/${branch}`, {
+    method: 'GET',
+    headers: headers(token),
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(
+      `GitHub ${branch} 브랜치 읽기 실패 (${response.status} ${response.statusText})`,
+    );
+  }
+  const ref: unknown = await response.json();
+  return readString(ref, ['object', 'sha']);
+}
+
+/**
+ * 열린 PR이 없는 기존 브랜치를 새 커밋으로 옮긴다. 빨리 감기가 아니어도 옮긴다(병합했거나 닫은 PR의 브랜치를 다시 쓸 때).
+ * @param token GitHub 토큰
+ * @param branch 브랜치 이름
+ * @param sha 새 커밋 SHA
+ */
+export async function resetBranch(token: string, branch: string, sha: string): Promise<void> {
+  await request(token, 'PATCH', `${REPO_PATH}/git/refs/heads/${branch}`, { sha, force: true });
+}
+
+/**
+ * 열린 PR의 본문을 바꾼다.
+ * @param token GitHub 토큰
+ * @param number PR 번호
+ * @param body 새 본문
+ */
+export async function updatePullRequestBody(
+  token: string,
+  number: number,
+  body: string,
+): Promise<void> {
+  await request(token, 'PATCH', `${REPO_PATH}/pulls/${String(number)}`, { body });
+}
+
+/**
+ * 폴더 안 파일 이름을 가져온다.
+ * @param token GitHub 토큰
+ * @param path 저장소 경로(폴더)
+ * @param ref 브랜치나 커밋 SHA
+ * @returns 파일 이름, 브랜치나 폴더가 없으면 null
+ */
+export async function listDirectory(
+  token: string,
+  path: string,
+  ref: string,
+): Promise<string[] | null> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
+    method: 'GET',
+    headers: headers(token),
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`GitHub ${path} 목록 읽기 실패 (${response.status} ${response.statusText})`);
+  }
+  const entries: unknown = await response.json();
+  if (!Array.isArray(entries)) {
+    return null;
+  }
+  const names: string[] = [];
+  for (const entry of entries) {
+    const name = readOptionalString(entry, ['name']);
+    if (name !== null && readOptionalString(entry, ['type']) === 'file') {
+      names.push(name);
+    }
+  }
+  return names;
 }
 
 /**
@@ -294,4 +385,22 @@ function readOptionalString(value: unknown, path: readonly string[]): string | n
     current = next;
   }
   return typeof current === 'string' ? current : null;
+}
+
+/**
+ * 응답 JSON에서 숫자 필드를 읽는다.
+ * @param value 응답 JSON
+ * @param path 필드 경로
+ * @returns 숫자 값, 없으면 null
+ */
+function readOptionalNumber(value: unknown, path: readonly string[]): number | null {
+  let current = value;
+  for (const key of path) {
+    if (current === null || typeof current !== 'object' || !(key in current)) {
+      return null;
+    }
+    const next: unknown = Reflect.get(current, key);
+    current = next;
+  }
+  return typeof current === 'number' ? current : null;
 }
