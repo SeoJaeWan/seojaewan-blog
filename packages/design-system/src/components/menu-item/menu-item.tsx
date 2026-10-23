@@ -50,7 +50,7 @@ type MenuItemProps = MenuItemCommonProps &
 
 // 행(피그마 MenuItem 루트). 위아래 2·좌우 4 들여 쓴 강조 영역(base)을 담는다.
 const ROW_CLASS_NAME =
-  'group flex w-menu-item-width items-center justify-start px-4 py-2 outline-none select-none cursor-default';
+  'group flex w-240 items-center justify-start px-4 py-2 outline-none select-none cursor-default';
 
 // 강조 영역(피그마 base)과 상태 색이다. 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다.
 // 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
@@ -116,7 +116,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.RadioItemIndicator className="flex">
-                <span className="size-menu-item-bullet rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
+                <span className="size-6 rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
               </Menu.RadioItemIndicator>
             }
           />

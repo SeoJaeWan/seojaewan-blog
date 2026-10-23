@@ -22,18 +22,18 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
 // default는 Rest→Hover(motion/duration/faster, fade), pill·taskbar는 Rest→Focused(fast, direct-entrance)다.
 const appearanceClassNames = {
   default: {
-    base: 'w-search-box-width h-control-height rounded-control py-6 pr-8 pl-12 duration-faster ease-fade',
+    base: 'w-240 h-control-height rounded-control py-6 pr-8 pl-12 duration-faster ease-fade',
     enabled:
       'not-focus-within:border-gradient-elevation-text-control-border focus-within:inner-border-control-stroke-default',
     disabled: 'inner-border-control-stroke-default',
   },
   pill: {
-    base: 'w-search-box-width-pill h-search-box-height-pill rounded-circular px-16 py-8 inner-border-control-stroke-default duration-fast ease-direct-entrance',
+    base: 'w-320 h-36 rounded-circular px-16 py-8 inner-border-control-stroke-default duration-fast ease-direct-entrance',
     enabled: '',
     disabled: '',
   },
   taskbar: {
-    base: 'w-search-box-width-taskbar h-control-height rounded-circular px-16 py-6 inner-border-control-stroke-default duration-fast ease-direct-entrance',
+    base: 'w-220 h-control-height rounded-circular px-16 py-6 inner-border-control-stroke-default duration-fast ease-direct-entrance',
     enabled: '',
     disabled: '',
   },
