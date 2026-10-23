@@ -48,6 +48,6 @@ describe('스타일링', () => {
       'px-16 bg-accent-fill-default',
     );
     expect(mergeClassNames('rounded-control', 'rounded-circular')).toBe('rounded-circular');
-    expect(mergeClassNames('w-flyout-width', 'w-menu-item-width')).toBe('w-menu-item-width');
+    expect(mergeClassNames('w-320', 'w-240')).toBe('w-240');
   });
 });

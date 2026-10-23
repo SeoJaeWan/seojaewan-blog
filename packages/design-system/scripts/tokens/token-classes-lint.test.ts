@@ -102,7 +102,7 @@ describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-default text-text-fill-primary w-flyout-width border-default type-body surface-flyout-acrylic material-acrylic-default duration-fast ease-fade p-12 rounded-control',
+        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic material-acrylic-default duration-fast ease-fade p-12 rounded-control',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([]);

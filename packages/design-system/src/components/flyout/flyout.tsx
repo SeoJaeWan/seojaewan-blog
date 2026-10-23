@@ -27,7 +27,7 @@ export function Flyout(props: FlyoutProps): JSX.Element {
     <div
       {...divProps}
       className={mergeClassNames(
-        'relative flex w-flyout-width flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout p-16',
+        'relative flex w-320 flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout p-16',
         materialClassNames[material],
         className,
       )}
