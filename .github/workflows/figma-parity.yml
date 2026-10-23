@@ -1,9 +1,10 @@
-# @codocs [[피그마 일치 검사:CI 비교]]
-# 피그마 일치 검사. PR(초안 포함)에서는 바뀐 파일로 비교 범위를 정하고(0단계), 범위가 있을 때만
-# 토큰·자산 확인(1), 판정(2), 캡처(3)를 하고 결과를 PR 댓글 하나로 남긴다.
-# main push에서는 판정하지 않고 범위 안 컴포넌트를 캡처해 parity-captures 브랜치에 덮어쓴다.
-# 이 파일이 바뀌면 비교 범위는 전체이고 증명 테스트도 돈다(affected-components.ts의 PARITY_WORKFLOW_FILE).
-# CI는 PR 브랜치에 커밋하지 않는다. tokens.css나 코드 자산이 맞지 않으면 실패만 한다.
+# @codocs [[피그마 연동:CI]]
+# 피그마 캡처 표. PR(초안 포함)에서는 바뀐 파일로 캡처 범위를 정하고(0단계), 범위가 있을 때만
+# 컴포넌트·조립이 쓰는 Storybook을 정적으로 빌드하고(1) 캡처해 `피그마 | 코드 | 차이` 표를 PR 댓글 하나로 남긴다(2).
+# 판정하지 않는다. 사람이 표를 보고 병합한다. 토큰·자산 생성 확인은 일반 CI(ci.yml)의 검사 작업에서 돈다.
+# main push에서는 범위 안 대상을 캡처해 parity-captures 브랜치에 덮어쓴다.
+# 이 파일이나 tools/figma-parity/가 바뀌면 캡처 범위는 전체다.
+# CI는 PR 브랜치에 커밋하지 않는다.
 name: Figma parity
 
 on:
@@ -36,12 +37,12 @@ jobs:
       REPOSITORY: ${{ github.repository }}
       SERVER: ${{ github.server_url }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
-      # 포크에서 온 PR은 쓰기 토큰이 없어 판정만 하고 라벨·댓글·캡처를 남기지 않는다
+      # 포크에서 온 PR은 쓰기 토큰이 없어 캡처하지 않는다
       CAN_WRITE: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
     steps:
       - uses: actions/checkout@v7
         with:
-          # 비교 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다
+          # 캡처 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다
           fetch-depth: 0
 
       - uses: actions/setup-node@v7
@@ -62,14 +63,16 @@ jobs:
           else
             base="HEAD^1"
           fi
-          range=$(node packages/design-system/scripts/parity/run-parity.ts --print-range --base "$base")
-          echo "비교 범위($base 기준): $range"
-          components=$(jq -r '.components | join(" ")' <<< "$range")
+          range=$(node tools/figma-parity/src/run-capture.ts --print-range --base "$base")
+          echo "캡처 범위($base 기준): $range"
+          targets=$(jq -r '.targets | join(" ")' <<< "$range")
           {
-            if [ -n "$components" ]; then echo "has-range=true"; else echo "has-range=false"; fi
-            echo "proof=$(jq -r '.proof' <<< "$range")"
-            echo "component-args=$(jq -r '[.components[] | "--component " + .] | join(" ")' <<< "$range")"
+            if [ -n "$targets" ]; then echo "has-range=true"; else echo "has-range=false"; fi
+            echo "target-args=$(jq -r '[.targets[] | "--target " + .] | join(" ")' <<< "$range")"
           } >> "$GITHUB_OUTPUT"
+          if [ "$CAN_WRITE" != true ] && [ -n "$targets" ]; then
+            echo "포크에서 온 PR이라 쓰기 토큰이 없어 캡처하지 않는다."
+          fi
 
       # 라벨은 실행 조건이 아니라 결과 표시다. 범위가 사라지면 뗀다
       - name: Label
@@ -79,116 +82,69 @@ jobs:
         run: |
           if [ "$HAS_RANGE" = true ]; then
             gh label create figma --repo "$REPOSITORY" --color 1abcfe \
-              --description "피그마 일치 검사 범위가 있다" > /dev/null 2>&1 || true
+              --description "피그마 캡처 범위가 있다" > /dev/null 2>&1 || true
             gh api "repos/$REPOSITORY/issues/$PR_NUMBER/labels" -f "labels[]=figma" > /dev/null
           else
             gh api -X DELETE "repos/$REPOSITORY/issues/$PR_NUMBER/labels/figma" > /dev/null 2>&1 || true
           fi
 
       - uses: pnpm/action-setup@v6
-        if: steps.range.outputs.has-range == 'true'
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
 
       - uses: actions/setup-node@v7
-        if: steps.range.outputs.has-range == 'true'
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         with:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - if: steps.range.outputs.has-range == 'true'
+      - if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         run: pnpm install --frozen-lockfile
 
-      # 1. 토큰·자산 확인: 토큰 값 비교와 코드 자산 재생성 확인. 실패하면 막고 캡처하지 않는다
-      - name: Tokens and assets
-        id: inputs
-        if: github.event_name == 'pull_request' && steps.range.outputs.has-range == 'true'
-        continue-on-error: true
-        working-directory: packages/design-system
-        run: |
-          pnpm exec vitest run scripts/parity/token-values.test.ts
-          pnpm run generate:assets --check
-
       - name: Install Playwright browsers
-        if: steps.range.outputs.has-range == 'true'
-        run: pnpm --filter @seojaewan/design-system exec playwright install --with-deps chromium
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
 
-      # 2. 판정: Storybook을 정적으로 빌드하고 범위 안 컴포넌트를 판정한다
-      - name: Figma parity
-        id: judge
-        if: github.event_name == 'pull_request' && steps.range.outputs.has-range == 'true'
-        continue-on-error: true
-        working-directory: packages/design-system
-        env:
-          COMPONENT_ARGS: ${{ steps.range.outputs.component-args }}
-        run: |
-          # shellcheck disable=SC2086 # 컴포넌트 폴더 이름([a-z0-9-])마다 --component 인자로 나눈다
-          node scripts/parity/run-parity.ts $COMPONENT_ARGS
-
-      # 비교 도구 자체 확인: scripts/parity/나 이 워크플로가 바뀔 때만 돈다
-      - name: Figma parity proof
-        id: proof
-        if: github.event_name == 'pull_request' && steps.range.outputs.proof == 'true'
-        continue-on-error: true
-        working-directory: packages/design-system
-        run: |
-          if [ ! -f storybook-static/index.json ]; then pnpm run build-storybook --quiet; fi
-          pnpm run test:parity-proof
-
-      # 3. 캡처: PR에서는 1·2(와 증명 테스트)가 통과했을 때만, main에서는 판정 없이 찍는다
+      # 1·2. 빌드와 캡처: 범위에 컴포넌트가 있으면 디자인 시스템 Storybook을, 조립이 있으면 앱 Storybook을
+      # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다
       - name: Capture
         id: capture
-        if: >-
-          steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true' &&
-          (github.event_name == 'push' ||
-          (steps.inputs.outcome == 'success' && steps.judge.outcome == 'success' && steps.proof.outcome != 'failure'))
-        working-directory: packages/design-system
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        continue-on-error: true
         env:
-          COMPONENT_ARGS: ${{ steps.range.outputs.component-args }}
+          TARGET_ARGS: ${{ steps.range.outputs.target-args }}
         run: |
-          build_flag=""
-          if [ "$EVENT" = pull_request ]; then build_flag="--no-build"; fi
-          # shellcheck disable=SC2086 # 컴포넌트 폴더 이름([a-z0-9-])마다 --component 인자로 나눈다
-          node scripts/parity/run-parity.ts --capture $build_flag $COMPONENT_ARGS
+          # shellcheck disable=SC2086 # 대상 이름([a-z0-9/-])마다 --target 인자로 나눈다
+          node tools/figma-parity/src/run-capture.ts $TARGET_ARGS
 
       - name: Comment results on PR
         if: >-
           always() && github.event_name == 'pull_request' && env.CAN_WRITE == 'true' &&
           steps.range.outputs.has-range == 'true'
-        working-directory: packages/design-system
         env:
           RUN_ID: ${{ github.run_id }}
-          INPUTS_OUTCOME: ${{ steps.inputs.outcome }}
-          PROOF_OUTCOME: ${{ steps.proof.outcome }}
         run: |
-          skipped=""
-          if [ "$INPUTS_OUTCOME" != success ]; then
-            skipped="토큰·자산 확인(토큰 값 비교, generate:assets --check)이 통과하지 않았다"
-          elif [ "$PROOF_OUTCOME" = failure ]; then
-            skipped="증명 테스트(test:parity-proof)가 실패했다"
-          fi
           gh auth setup-git
-          node scripts/parity/post-pr-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
-            --run-id "$RUN_ID" --pr "$PR_NUMBER" --capture-skipped "$skipped"
+          node tools/figma-parity/src/post-pr-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
+            --run-id "$RUN_ID" --pr "$PR_NUMBER"
 
-      # main: 캡처한 변형을 parity-captures/<컴포넌트>/<변형>.png에 덮어쓴다(플러그인 PR 본문의 "현재 구현")
+      # main: 캡처한 변형을 parity-captures/<컴포넌트>/<변형>.png와
+      # parity-captures/patterns/<영역>/<이름>/<변형>.png에 덮어쓴다(플러그인 PR 본문의 "현재 구현")
       - name: Publish captures
         if: >-
           github.event_name == 'push' && !cancelled() &&
           (steps.capture.outcome == 'success' || steps.capture.outcome == 'failure')
-        working-directory: packages/design-system
         run: |
           gh auth setup-git
-          node scripts/parity/publish-captures.ts --repository "$REPOSITORY" --server "$SERVER" --sha "$GITHUB_SHA"
+          node tools/figma-parity/src/publish-captures.ts --repository "$REPOSITORY" --server "$SERVER" --sha "$GITHUB_SHA"
 
       - uses: actions/upload-artifact@v7
         if: always() && steps.range.outputs.has-range == 'true'
         with:
           name: figma-parity-results
-          path: packages/design-system/parity-results/
+          path: tools/figma-parity/parity-results/
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Fail when parity failed
-        if: >-
-          steps.inputs.outcome == 'failure' || steps.judge.outcome == 'failure' ||
-          steps.proof.outcome == 'failure'
+      - name: Fail when capture failed
+        if: steps.capture.outcome == 'failure'
         run: exit 1

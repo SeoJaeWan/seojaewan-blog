@@ -30,7 +30,7 @@ const meta = {
       defaultValue={args.filled ? '리액트' : undefined}
       disabled={args.state === 'disabled'}
       // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
-      // 커서를 끝으로 옮겨 선택을 푼다(비교 스크립트는 커서를 숨기고 찍는다).
+      // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
       onFocus={(event) => {
         const end = event.currentTarget.value.length;
         event.currentTarget.setSelectionRange(end, end);
@@ -43,6 +43,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 일치 검사:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Focused는 비교 스크립트가 마우스·키보드로 재현한다.
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나를 args 하나로 고른다. Hover·Focused는 캡처 도구가 마우스·키보드로 재현한다.
 export const Parity: Story = {};

@@ -16,7 +16,7 @@ const meta = {
     material: { control: 'inline-radio', options: MATERIALS },
   },
   render: (args) => (
-    // 슬롯 안 내용은 쓰는 쪽이 정하므로 비교하지 않는다(G1). 피그마 예시 글자를 그대로 둔다.
+    // 슬롯 안 내용은 쓰는 쪽이 정한다. 피그마 예시 글자를 그대로 둔다.
     <Flyout material={args.material}>
       <span className="type-caption text-text-fill-tertiary">콘텐츠 영역 (slot)</span>
     </Flyout>
@@ -27,6 +27,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 일치 검사:스토리 규칙]]
+// @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};

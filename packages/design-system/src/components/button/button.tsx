@@ -57,8 +57,6 @@ export function Button(props: ButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}
-      // @codocs [[피그마 일치 검사:짝짓기]] 피그마 Button 변형 루트와 짝짓는다.
-      data-figma-root="Button"
       className={mergeClassNames(
         'relative isolate inline-flex min-w-button-min-width items-center justify-center gap-8 rounded-control px-12 py-6 whitespace-nowrap select-none',
         'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
@@ -67,16 +65,8 @@ export function Button(props: ButtonProps): JSX.Element {
         className,
       )}
     >
-      {hasIcon && (
-        <Asset
-          data-figma="icon"
-          name="icons/ic_fluent_add_20_regular.svg"
-          className="size-icon-16"
-        />
-      )}
-      <span data-figma="label" className="text-start type-body">
-        {children}
-      </span>
+      {hasIcon && <Asset name="icons/ic_fluent_add_20_regular.svg" className="size-icon-16" />}
+      <span className="text-start type-body">{children}</span>
     </BaseButton>
   );
 }

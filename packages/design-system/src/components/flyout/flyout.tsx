@@ -18,7 +18,6 @@ const materialClassNames = {
 /**
  * 떠 있는 패널의 공통 바탕(피그마 Flyout)을 그린다. 내용은 children 자리(피그마 Content 슬롯)에 넣는다.
  * 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
- * 슬롯은 내용을 담는 자리라 슬롯 자체의 배치만 피그마와 맞춘다(G1).
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @param props
  */
@@ -27,18 +26,13 @@ export function Flyout(props: FlyoutProps): JSX.Element {
   return (
     <div
       {...divProps}
-      // @codocs [[피그마 일치 검사:짝짓기]] 피그마 Flyout 변형 루트와 짝짓는다.
-      data-figma-root="Flyout"
       className={mergeClassNames(
         'relative flex w-flyout-width flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout p-16',
         materialClassNames[material],
         className,
       )}
     >
-      <div
-        data-figma="Content"
-        className="flex flex-col items-center justify-center self-stretch px-16 py-24"
-      >
+      <div className="flex flex-col items-center justify-center self-stretch px-16 py-24">
         {children}
       </div>
     </div>

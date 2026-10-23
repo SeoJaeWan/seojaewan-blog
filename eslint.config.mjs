@@ -59,7 +59,12 @@ const misreadTokenClasses = themeVariableNames.filter((name) =>
 );
 
 // 도구가 이름을 정하거나 process.env를 직접 읽어야 하는 파일.
-const configFiles = ['**/*.config.{ts,mjs,js,cjs}', '**/.storybook/**', 'scripts/**'];
+const configFiles = [
+  '**/*.config.{ts,mjs,js,cjs}',
+  '**/.storybook/**',
+  'scripts/**',
+  'tools/figma-parity/src/**',
+];
 
 // @codocs [[코드 작성 규칙:식별자 이름]]
 // 상수는 모듈 최상위에서 리터럴이나 `as const`로 초기화한 const다. 그 밖의 값은 camelCase다.

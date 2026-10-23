@@ -8,7 +8,7 @@ import { assetDataModule, parseSvgAsset, type SvgAssetData } from './assets-code
 
 /**
  * figma/assets/에서 만들어야 할 코드 자산 파일과 내용을 계산한다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @returns 쓸 파일의 절대 경로 → 내용
  */
 export function expectedAssetFiles(): Map<string, Buffer> {

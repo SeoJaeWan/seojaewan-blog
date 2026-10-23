@@ -45,7 +45,7 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
-      # @codocs [[피그마 일치 검사:자산]]
+      # @codocs [[피그마 연동:자산]]
       # 코드 자산(src/assets/)이 figma/assets/에서 다시 만든 결과와 같은지 확인한다. CI는 고치지 않고 실패만 한다
       - name: Generated assets check
         run: pnpm --filter @seojaewan/design-system generate:assets --check
@@ -58,6 +58,7 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # 디자인 시스템 카탈로그와 앱 조립 스토리
       - name: Build Storybook
         run: pnpm build:storybook
 

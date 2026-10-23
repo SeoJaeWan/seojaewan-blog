@@ -16,16 +16,13 @@
     "build-storybook": "storybook build",
     "generate:fonts": "node scripts/fonts/generate-fonts.ts",
     "generate:assets": "node scripts/assets/generate-assets.ts",
-    "generate:tokens": "node scripts/tokens/generate-tokens.ts",
-    "test:parity": "node scripts/parity/run-parity.ts",
-    "test:parity-proof": "playwright test -c scripts/parity/playwright.config.ts proof.spec.ts"
+    "generate:tokens": "node scripts/tokens/generate-tokens.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1",
     "@storybook/react-vite": "10.6.2",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/dom": "10.4.2",

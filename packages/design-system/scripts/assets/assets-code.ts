@@ -74,7 +74,7 @@ export type SvgAssetData = {
 /**
  * 피그마가 내보낸 SVG를 요소 데이터로 바꾼다.
  * 루트 svg 아래 지원하는 요소만 한 단계로 있어야 한다. 그 밖의 구조는 코드로 옮길 수 없어 실패한다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param svg SVG 문서 문자열
  * @param file 오류 메시지에 쓸 자산 파일 경로
  * @returns viewBox와 요소 목록
@@ -147,7 +147,7 @@ function parseElement(tag: string, rawAttributes: string, file: string): SvgElem
 
 /**
  * 자산 데이터 모듈(src/assets/asset-data.ts)의 내용을 만든다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param assets 자산 파일 경로(`icons/ic_fluent_add_20_regular.svg`) → SVG 데이터
  * @returns TypeScript 모듈 문자열
  */

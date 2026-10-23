@@ -75,28 +75,18 @@ const SECONDARY_TEXT_CLASS_NAME =
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = mergeClassNames(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
-  // @codocs [[피그마 일치 검사:짝짓기]] 행이 피그마 MenuItem 변형 루트다.
-  const rootProps = { 'data-figma-root': 'MenuItem' };
   const icon =
-    props.icon === undefined ? undefined : (
-      <Asset data-figma="base/leading/icon" name={props.icon} className="size-icon-16" />
-    );
+    props.icon === undefined ? undefined : <Asset name={props.icon} className="size-icon-16" />;
   switch (props.kind) {
     case 'submenu':
       return (
-        <Menu.SubmenuTrigger
-          {...rootProps}
-          className={className}
-          disabled={isDisabled}
-          label={props.label}
-        >
+        <Menu.SubmenuTrigger className={className} disabled={isDisabled} label={props.label}>
           <MenuItemContent {...props} leading={icon} />
         </Menu.SubmenuTrigger>
       );
     case 'checkbox':
       return (
         <Menu.CheckboxItem
-          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -108,11 +98,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.CheckboxItemIndicator className="flex">
-                <Asset
-                  data-figma="base/leading/icon"
-                  name="icons/ic_fluent_checkmark_20_regular.svg"
-                  className="size-icon-16"
-                />
+                <Asset name="icons/ic_fluent_checkmark_20_regular.svg" className="size-icon-16" />
               </Menu.CheckboxItemIndicator>
             }
           />
@@ -121,7 +107,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     case 'radio':
       return (
         <Menu.RadioItem
-          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -131,10 +116,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.RadioItemIndicator className="flex">
-                <span
-                  data-figma="base/leading/bullet"
-                  className="size-menu-item-bullet rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary"
-                />
+                <span className="size-menu-item-bullet rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
               </Menu.RadioItemIndicator>
             }
           />
@@ -144,7 +126,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     case undefined:
       return (
         <Menu.Item
-          {...rootProps}
           className={className}
           disabled={isDisabled}
           label={props.label}
@@ -165,34 +146,24 @@ type MenuItemContentProps = MenuItemCommonProps & {
 
 /**
  * 강조 영역과 그 안의 아이콘·이름·단축키·꺾쇠를 그린다.
- * data-figma는 피그마 MenuItem의 레이어 경로다([[피그마 일치 검사:짝짓기]]).
  * @param props
  */
 function MenuItemContent(props: MenuItemContentProps): JSX.Element {
   return (
-    <span data-figma="base" className={baseClassName}>
+    <span className={baseClassName}>
       {props.leading !== undefined && (
-        <span
-          data-figma="base/leading"
-          className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0"
-        >
+        <span className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0">
           {props.leading}
         </span>
       )}
-      <span data-figma="base/label" className="min-w-0 flex-1 truncate type-body">
-        {props.label}
-      </span>
+      <span className="min-w-0 flex-1 truncate type-body">{props.label}</span>
       {props.shortcut !== undefined && (
-        <span
-          data-figma="base/shortcut"
-          className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}
-        >
+        <span className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}>
           {props.shortcut}
         </span>
       )}
       {props.kind === 'submenu' && (
         <Asset
-          data-figma="base/chevron"
           name="icons/ic_fluent_chevron_right_16_regular.svg"
           className={mergeClassNames('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
         />
