@@ -30,6 +30,7 @@ _codocs:
   이름:
   - CSS 변수 이름은 `--`에 피그마 경로를 `-`로 이은 것이다. 스타일도 같다. 소문자로 바꾸고, 공백과 괄호는 `-`로 바꾸고, 이어진 `-`는 하나로 줄인다. 예: `color/gray/100` → `--color-gray-100`, `text-fill/primary` → `--text-fill-primary`, `size/icon/16` → `--size-icon-16`, `Surface/Flyout (Acrylic)` → `--surface-flyout-acrylic`.
   - 서로 다른 토큰이 같은 CSS 이름이 되면 생성이 실패한다. 피그마에서 이름을 고친다.
+  - 이름이 다른 변수가 속한 그룹의 이름이기도 한 변수(`color/white`와 `color/white/70`)는 그 그룹의 `$root` 토큰(`color.white.$root`)으로 내보내고, 별칭은 `{color.white.$root}`로 쓴다. CSS 이름은 그룹 이름 그대로(`--color-white`)다.
   - 클래스는 `@theme`의 변수와 `@utility`로 만든다. `@utility <접두어>-*` 안에서 `--value(--<이름공간>-*)`로 변수를 고른다. 이름공간은 피그마 경로의 첫 마디다.
     - 값 종류 이름공간(`spacing`, `size`, `radius`, `stroke-width`, `opacity`, `font/*`, `motion/*`)은 클래스에서 이름공간을 빼고 나머지만 쓴다.
     - 색과 스타일은 이름 전체를 쓴다. 묶음 이름(`text-fill`, `accent-fill`, `elevation`)이 쓰임을 나타내기 때문이다.

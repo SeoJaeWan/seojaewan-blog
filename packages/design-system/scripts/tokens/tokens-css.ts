@@ -23,6 +23,8 @@ const PRIMITIVE_COLLECTION = 'Primitive';
 // 배경 흐림이 있는 효과 스타일은 그림자와 배경 흐림을 이 접미사의 변수 둘로 나눈다.
 const SHADOW_SUFFIX = 'shadow';
 const BACKDROP_BLUR_SUFFIX = 'backdrop-blur';
+// 그룹 자신의 토큰을 담는 DTCG 예약 이름이다. CSS 이름에는 들어가지 않는다.
+const ROOT_TOKEN = '$root';
 
 // Tailwind 기본 테마 중 토큰이 채우는 이름공간이다. 지운 뒤에 토큰을 정의해야 토큰이 남는다.
 const CLEARED_NAMESPACES = [
@@ -79,8 +81,10 @@ type NamespaceUtility = {
 
 /** 펼친 토큰 하나 */
 type FlatToken = {
-  /** 피그마 경로 조각 */
+  /** 피그마 경로 조각. 그룹의 `$root` 토큰이면 `$root`를 뺀 그룹 경로다. */
   path: string[];
+  /** 그룹의 `$root` 토큰인지. 별칭은 `{a.b.$root}`로 가리킨다. */
+  isRoot: boolean;
   type: string;
   value: unknown;
   extensions: Record<string, unknown>;
@@ -141,7 +145,7 @@ export function tokensJsonToCss(json: unknown): string {
   const { style, ...groups } = json;
   const variableTokens = flattenTokens(groups, [], undefined);
   const context: Context = {
-    variables: new Map(variableTokens.map((token) => [token.path.join('/'), token])),
+    variables: new Map(variableTokens.map((token) => [variableKey(token), token])),
   };
   const styles = isRecord(style) ? style : {};
   const paints = flattenTokens(asGroup(styles.paint, 'style/paint'), [], undefined);
@@ -1028,7 +1032,19 @@ function hexOf(channels: readonly number[]): string {
 }
 
 /**
+ * 변수 표에서 토큰을 찾는 키를 만든다. `$root` 토큰은 별칭 경로와 같게 `a/b/$root`다.
+ * @param token 변수 토큰
+ * @returns 키
+ */
+function variableKey(token: FlatToken): string {
+  return [...token.path, ...(token.isRoot ? [ROOT_TOKEN] : [])].join('/');
+}
+
+/**
  * 토큰 트리를 펼친다. `$type`은 묶음에서 물려받는다(DTCG).
+ * 묶음의 `$root` 자식은 묶음 자신의 토큰이라 CSS 이름이 묶음 경로와 같다.
+ * `$value`와 자식이 함께 있는 객체는 DTCG에서 쓸 수 없어 실패한다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param group 묶음
  * @param prefix 경로 앞부분
  * @param inheritedType 물려받은 `$type`
@@ -1042,22 +1058,33 @@ function flattenTokens(
   const groupType = typeof group.$type === 'string' ? group.$type : inheritedType;
   const tokens: FlatToken[] = [];
   for (const [key, child] of Object.entries(group)) {
-    if (key.startsWith('$') || !isRecord(child)) {
+    const isRoot = key === ROOT_TOKEN;
+    if ((key.startsWith('$') && !isRoot) || !isRecord(child)) {
       continue;
     }
-    const path = [...prefix, key];
+    const path = isRoot ? [...prefix] : [...prefix, key];
     if ('$value' in child) {
+      if (Object.keys(child).some((name) => !name.startsWith('$'))) {
+        throw new TokenFormatError(
+          path.join('/'),
+          '$value와 자식 토큰이 함께 있다. 그룹 자신의 토큰은 $root에 둔다.',
+        );
+      }
       const type = typeof child.$type === 'string' ? child.$type : groupType;
       if (type === undefined) {
         throw new TokenFormatError(path.join('/'), '$type이 없다.');
       }
       tokens.push({
         path,
+        isRoot,
         type,
         value: child.$value,
         extensions: isRecord(child.$extensions) ? child.$extensions : {},
       });
       continue;
+    }
+    if (isRoot) {
+      throw new TokenFormatError(path.join('/'), '$root는 $value가 있는 토큰이어야 한다.');
     }
     tokens.push(...flattenTokens(child, path, groupType));
   }

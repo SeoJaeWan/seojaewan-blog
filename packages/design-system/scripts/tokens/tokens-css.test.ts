@@ -218,6 +218,66 @@ describe('토큰 생성', () => {
   });
 });
 
+// @codocs [[피그마 연동:토큰 생성]]
+describe('그룹과 이름이 같은 변수', () => {
+  const white = { $type: 'color', $value: '#ffffff' };
+  const white70 = { $type: 'color', $value: '#ffffffb3' };
+  const alias = { $type: 'color', $value: '{color.white.$root}' };
+
+  it('$root 토큰의 CSS 이름은 그룹 경로이고 root 조각이 없다', () => {
+    const output = tokensJsonToCss({ color: { white: { $root: white } } });
+    expect(output).toContain('  --color-white: #ffffff;');
+    expect(output).not.toContain('--color-white-root');
+  });
+
+  it('같은 그룹의 자식 토큰은 그룹 이름 뒤에 자기 이름을 잇는다', () => {
+    const output = tokensJsonToCss({ color: { white: { $root: white, '70': white70 } } });
+    expect(output).toContain('  --color-white: #ffffff;');
+    expect(output).toContain('  --color-white-70: #ffffffb3;');
+  });
+
+  it('$root를 가리키는 별칭은 그룹 이름의 var()가 된다', () => {
+    const output = tokensJsonToCss({
+      color: { white: { $root: white, '70': white70 } },
+      'text-fill': { primary: alias },
+    });
+    expect(output).toContain('  --text-fill-primary: var(--color-white);');
+  });
+
+  it('입력 순서가 달라도 결과가 같다', () => {
+    const forward = tokensJsonToCss({
+      color: { white: { $root: white, '70': white70 } },
+      'text-fill': { primary: alias },
+    });
+    const backward = tokensJsonToCss({
+      'text-fill': { primary: alias },
+      color: { white: { '70': white70, $root: white } },
+    });
+    expect(backward).toBe(forward);
+  });
+
+  it('$root 없이 그룹 경로를 가리키는 별칭은 실패한다', () => {
+    expect(() =>
+      tokensJsonToCss({
+        color: { white: { $root: white } },
+        a: { b: { $type: 'color', $value: '{color.white}' } },
+      }),
+    ).toThrow(TokenFormatError);
+  });
+
+  it('$value와 자식 토큰이 함께 있는 객체는 실패한다', () => {
+    expect(() => tokensJsonToCss({ color: { white: { ...white, '70': white70 } } })).toThrow(
+      TokenFormatError,
+    );
+  });
+
+  it('그룹 이름과 같은 CSS 이름이 둘이면 실패한다', () => {
+    expect(() =>
+      tokensJsonToCss({ color: { white: { $root: white } }, 'color-white': white70 }),
+    ).toThrow(TokenFormatError);
+  });
+});
+
 // @codocs [[피그마 연동:토큰 검사]]
 describe('토큰 검사', () => {
   it('커밋된 src/tokens.css가 figma/tokens.json에서 만든 결과와 같다', () => {
