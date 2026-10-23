@@ -1,61 +1,23 @@
 import type { CDPSession, Locator, Page } from '@playwright/test';
 
-import type { VariantChecks } from './layer-checks.ts';
-import { type FontProbe, type InspectResult, inspectVariant } from './page-checks.ts';
-import { FIGMA_LAYER_ATTRIBUTE, FIGMA_ROOT_ATTRIBUTE } from './parity-config.ts';
+import { describeExpected, type Expected, matchesExpected, parseShadow } from './css-values.ts';
+import { DeclarationReader, tokenDeclarations, type Winner } from './declarations.ts';
+import type { ElementCheck, VariantChecks } from './layer-checks.ts';
+import { type CollectResult, collectVariant, type FontProbe } from './page-checks.ts';
+import {
+  FIGMA_LAYER_ATTRIBUTE,
+  FIGMA_ROOT_ATTRIBUTE,
+  PARITY_CHAR_ATTRIBUTE,
+  PARITY_NODE_ATTRIBUTE,
+} from './parity-config.ts';
 import type { PlanItem } from './parity-plan.ts';
 import type { ParityFailure } from './parity-summary.ts';
-import { TOKEN_CLASS_PATTERN } from './rules/class-rules.ts';
 import { openStory } from './story-page.ts';
 import { findParityStoryId, storyTarget } from './story-target.ts';
 
 // 비교 항목 하나를 브라우저에서 확인하는 단계(스토리 열기, 상태 재현, 확인)다.
 // parity.spec.ts(실제 비교)와 proof.spec.ts(틀린 버전이 실패하는지 확인)가 함께 쓴다.
-
-// 실패 메시지에서 역할 클래스를 고를 때 쓰는 접두어. 긴 것부터 맞춘다.
-const rolePrefixes = [
-  'inner-border-w-',
-  'inner-border-',
-  'border-gradient-',
-  'backdrop-blur-',
-  'mix-blend-',
-  'w-stroke-',
-  'h-stroke-',
-  'outline-',
-  'border-',
-  'rounded-',
-  'shadow-',
-  'opacity-',
-  'justify-',
-  'overflow-',
-  'items-',
-  'self-',
-  'gap-x-',
-  'gap-y-',
-  'gap-',
-  'min-w-',
-  'max-w-',
-  'min-h-',
-  'max-h-',
-  'inset-',
-  'size-',
-  'type-',
-  'flex-',
-  'bg-',
-  'pt-',
-  'pr-',
-  'pb-',
-  'pl-',
-  'px-',
-  'py-',
-  'p-',
-  'w-',
-  'h-',
-  'left-',
-  'right-',
-  'top-',
-  'bottom-',
-];
+// 브라우저 안에서는 요소를 찾고 계산값을 모으고(page-checks.ts), 이긴 선언은 CDP로 읽어(declarations.ts) 여기서 판정한다.
 
 /** 스토리를 연 결과 */
 export type OpenedItem = { ok: true; target: Locator } | { ok: false; failures: ParityFailure[] };
@@ -113,17 +75,268 @@ export async function inspectItem(
     layer: unsupported.layer,
     message: `${unsupported.layer || '(루트)'} 비교할 수 없음: ${unsupported.message}`,
   }));
-  const inspected: InspectResult = await page.evaluate(inspectVariant, {
+  const collected: CollectResult = await page.evaluate(collectVariant, {
     checks,
     layerAttribute: FIGMA_LAYER_ATTRIBUTE,
     rootAttribute: FIGMA_ROOT_ATTRIBUTE,
     rootName: item.componentName,
-    tokenClassPattern: TOKEN_CLASS_PATTERN.source,
-    rolePrefixes: rolePrefixes,
+    nodeAttribute: PARITY_NODE_ATTRIBUTE,
+    charAttribute: PARITY_CHAR_ATTRIBUTE,
   });
-  failures.push(...inspected.failures);
-  failures.push(...(await fontFailures(page, inspected.fonts)));
+  failures.push(...collected.failures);
+  const reader = await DeclarationReader.open(page, PARITY_NODE_ATTRIBUTE);
+  try {
+    failures.push(...(await judgeCollected(reader, checks, collected, item.tokenNames)));
+  } finally {
+    await reader.close();
+  }
+  failures.push(...(await fontFailures(page, collected.fonts)));
   return failures;
+}
+
+/**
+ * 모은 계산값과 CDP로 읽은 이긴 선언으로 확인 항목을 판정한다.
+ * @codocs [[피그마 일치 검사:판정 항목]]
+ * @param reader 이긴 선언 읽기 도구
+ * @param checks 확인 항목
+ * @param collected 브라우저에서 모은 값
+ * @param tokenNames 디자인 토큰 CSS 이름
+ * @returns 실패 목록
+ */
+async function judgeCollected(
+  reader: DeclarationReader,
+  checks: VariantChecks,
+  collected: CollectResult,
+  tokenNames: ReadonlySet<string>,
+): Promise<ParityFailure[]> {
+  const failures: ParityFailure[] = [];
+  for (const [index, check] of checks.checks.entries()) {
+    const read = collected.checks[index];
+    if (read !== undefined && read.node >= 0) {
+      failures.push(...(await judgeCheck(reader, check.layer, check, read.node, read.computed)));
+    }
+  }
+  for (const entry of collected.segments) {
+    const text = checks.texts[entry.text];
+    const segment = text?.segments[entry.segment];
+    if (text === undefined || segment === undefined) {
+      continue;
+    }
+    for (const [index, check] of segment.checks.entries()) {
+      // placeholder 글자의 색과 꾸밈은 의사 요소가 정한다(page-checks.ts와 같다).
+      const isPseudo = check.property === 'color' || check.property === 'text-decoration-line';
+      const pseudo = entry.pseudo !== null && isPseudo ? entry.pseudo : undefined;
+      const computed = entry.computed[index] ?? '';
+      failures.push(
+        ...(await judgeCheck(reader, text.layer, { ...check, pseudo }, entry.node, computed)),
+      );
+    }
+  }
+  for (const [index, asset] of checks.assets.entries()) {
+    const read = collected.assets[index];
+    if (read === undefined || read.node < 0) {
+      continue;
+    }
+    if (read.file !== asset.file) {
+      failures.push(failure(asset.layer, '자산', asset.file, read.file ?? 'data-asset 없음'));
+    }
+    if (asset.color !== null) {
+      failures.push(
+        ...(await judgeCheck(reader, asset.layer, asset.color, read.node, read.computed)),
+      );
+    }
+  }
+  failures.push(...transitionFailures(checks, collected));
+  failures.push(...(await unmarkedFailures(reader, collected, tokenNames)));
+  return failures;
+}
+
+/**
+ * 확인 항목 하나를 판정한다. 이름은 이긴 선언의 변수 사슬, 값·대응은 계산값, 변 선언은 auto가 아닌 이긴 선언으로 본다.
+ * @codocs [[피그마 일치 검사:판정 항목]]
+ * @param reader 이긴 선언 읽기 도구
+ * @param layer 레이어 경로
+ * @param check 확인 항목
+ * @param node 요소 번호
+ * @param computed 계산값
+ * @returns 실패 목록
+ */
+async function judgeCheck(
+  reader: DeclarationReader,
+  layer: string,
+  check: ElementCheck,
+  node: number,
+  computed: string,
+): Promise<ParityFailure[]> {
+  const failures: ParityFailure[] = [];
+  const options = { inherited: check.inherited, pseudo: check.pseudo };
+  if (check.variables !== undefined) {
+    const { winner, names } = await reader.read(node, check.property, options);
+    if (!check.variables.some((name) => names.has(name))) {
+      failures.push(failure(layer, check.role, check.figma, declarationText(winner)));
+    }
+  }
+  if (check.declared === true) {
+    const { winner } = await reader.read(node, check.property, options);
+    if (winner === null || winner.value.trim() === 'auto') {
+      failures.push(
+        failure(layer, check.role, check.figma, `${check.property} ${declarationText(winner)}`),
+      );
+    }
+  }
+  if (check.expected !== undefined) {
+    const value = normalizeComputed(check.property, computed);
+    if (!matchesExpected(check.expected, value)) {
+      failures.push(
+        failure(
+          layer,
+          check.role,
+          check.figma,
+          valueText(check.property, computed, check.expected),
+        ),
+      );
+    }
+  }
+  return failures;
+}
+
+/**
+ * 상태 전환을 판정한다. 바뀌는 속성을 전환하는 요소가 있고, 그 시간·이징이 피그마 값과 같아야 한다.
+ * @codocs [[피그마 일치 검사:상태 전환]]
+ * @param checks 확인 항목
+ * @param collected 브라우저에서 모은 값
+ * @returns 실패 목록
+ */
+function transitionFailures(checks: VariantChecks, collected: CollectResult): ParityFailure[] {
+  const failures: ParityFailure[] = [];
+  for (const read of collected.transitions) {
+    const transition = checks.transitions[read.transition];
+    if (transition === undefined) {
+      continue;
+    }
+    const role = `상태 전환(${transition.from} → ${transition.properties[read.property] ?? read.property})`;
+    if (read.owner === null) {
+      failures.push(
+        failure(
+          transition.layer,
+          role,
+          `${read.property} 전환`,
+          `transition-property ${read.listed}`,
+        ),
+      );
+      continue;
+    }
+    const duration: Expected = { kind: 'ms', value: transition.duration };
+    if (!matchesExpected(duration, read.owner.duration)) {
+      failures.push(
+        failure(
+          transition.layer,
+          `${role} 시간`,
+          describeExpected(duration),
+          valueText('transition-duration', read.owner.duration, duration),
+        ),
+      );
+    }
+    if (transition.easing !== null) {
+      const easing: Expected = { kind: 'bezier', points: transition.easing };
+      if (!matchesExpected(easing, read.owner.timing)) {
+        failures.push(
+          failure(
+            transition.layer,
+            `${role} 이징`,
+            describeExpected(easing),
+            valueText('transition-timing-function', read.owner.timing, easing),
+          ),
+        );
+      }
+    }
+  }
+  return failures;
+}
+
+/**
+ * 표시(`data-figma`) 없는 요소가 피그마에 없는 모양을 그리는지 본다. 자기 클래스 규칙의 선언이 디자인 토큰에 닿거나
+ * 그림자가 있으면 실패다.
+ * @codocs [[피그마 일치 검사:짝짓기]]
+ * @param reader 이긴 선언 읽기 도구
+ * @param collected 브라우저에서 모은 값
+ * @param tokenNames 디자인 토큰 CSS 이름
+ * @returns 실패 목록
+ */
+async function unmarkedFailures(
+  reader: DeclarationReader,
+  collected: CollectResult,
+  tokenNames: ReadonlySet<string>,
+): Promise<ParityFailure[]> {
+  const failures: ParityFailure[] = [];
+  for (const element of collected.unmarked) {
+    const matched = await reader.matched(element.node);
+    const declarations = matched === null ? [] : tokenDeclarations(matched, tokenNames);
+    if (declarations.length > 0) {
+      failures.push(
+        failure(
+          element.owner,
+          '표시 없는 요소',
+          `${FIGMA_LAYER_ATTRIBUTE} 표시`,
+          `${element.label} ${declarations.join('; ')}`,
+        ),
+      );
+    }
+    const shadow = parseShadow(element.boxShadow);
+    if (shadow === null || shadow.length > 0) {
+      failures.push(
+        failure(
+          element.owner,
+          '표시 없는 요소',
+          '그림자 없음',
+          `${element.label} box-shadow ${element.boxShadow}`,
+        ),
+      );
+    }
+  }
+  return failures;
+}
+
+/**
+ * 계산값을 비교 모양으로 바꾼다. `letter-spacing: normal`은 0px이다.
+ * @param property CSS 속성
+ * @param computed 계산값
+ * @returns 비교할 값
+ */
+function normalizeComputed(property: string, computed: string): string {
+  return property === 'letter-spacing' && computed.trim() === 'normal' ? '0px' : computed;
+}
+
+/**
+ * 실패 메시지에 쓸 이긴 선언 표기.
+ * @param winner 이긴 선언
+ * @returns `이름: 값`, 없으면 `선언 없음`
+ */
+function declarationText(winner: Winner | null): string {
+  return winner === null ? '선언 없음' : `${winner.name}: ${winner.value}`;
+}
+
+/**
+ * 실패 메시지에 쓸 계산값 표기.
+ * @param property CSS 속성
+ * @param computed 계산값
+ * @param expected 기대값
+ * @returns `<속성> <계산값> (기대 <기대값>)`
+ */
+function valueText(property: string, computed: string, expected: Expected): string {
+  return `${property} ${computed || '(읽지 못함)'} (기대 ${describeExpected(expected)})`;
+}
+
+/**
+ * 실패를 "<레이어> <역할>: 피그마 <피그마> → 코드 <코드>" 형식으로 만든다.
+ * @param layer 레이어 경로(루트는 빈 문자열)
+ * @param role 역할
+ * @param figma 피그마 쪽 이름이나 값
+ * @param code 코드에서 찾은 것
+ * @returns 실패
+ */
+function failure(layer: string, role: string, figma: string, code: string): ParityFailure {
+  return { layer, message: `${layer || '(루트)'} ${role}: 피그마 ${figma} → 코드 ${code}` };
 }
 
 /**
@@ -148,10 +361,14 @@ async function fontFailures(page: Page, probes: readonly FontProbe[]): Promise<P
     if (families.length === 1 && sameFamily(families[0] ?? '', probe.expected)) {
       continue;
     }
-    failures.push({
-      layer: probe.layer,
-      message: `${probe.layer || '(루트)'} 서체 "${probe.character}": 피그마 ${probe.expected} → 코드 ${families.join(', ') || '읽지 못함'}`,
-    });
+    failures.push(
+      failure(
+        probe.layer,
+        `서체 "${probe.character}"`,
+        probe.expected,
+        families.join(', ') || '읽지 못함',
+      ),
+    );
   }
   await session.detach();
   return failures;
@@ -172,7 +389,7 @@ async function platformFamilies(
   if (probe.index >= 0) {
     const { nodeId } = await session.send('DOM.querySelector', {
       nodeId: documentId,
-      selector: `[data-parity-char="${String(probe.index)}"]`,
+      selector: `[${PARITY_CHAR_ATTRIBUTE}="${String(probe.index)}"]`,
     });
     const { fonts } = await session.send('CSS.getPlatformFontsForNode', { nodeId });
     return fonts.map((font) => font.familyName);

@@ -1,20 +1,10 @@
-import { variableName } from '../tokens/tokens-css.ts';
+import { expectedOfVariable, type FigmaTokens } from './figma-tokens.ts';
 import type { VariantChecks } from './layer-checks.ts';
-import { transitionProperties } from './rules/class-rules.ts';
+import { TRANSITION_ROLES } from './rules/one-to-one.ts';
 
-// M1: 피그마 변형 사이 프로토타입 전환을 코드의 CSS 전환과 비교할 확인 항목으로 바꾼다.
-// 두 변형의 레이어 확인 항목을 비교해 바뀌는 역할을 찾고, 역할 → CSS 속성 표(class-rules.ts)로 전환할 속성을 정한다.
+// 피그마 변형 사이 프로토타입 전환을 코드의 CSS 전환과 값으로 비교할 확인 항목으로 바꾼다.
+// 두 변형의 확인 항목을 비교해 바뀌는 역할을 찾고, 그 역할의 CSS 속성이 전환되는지와 시간·이징 값을 본다.
 // CSS 전환은 바뀐 뒤 상태의 transition 값을 쓰므로, 도착 변형의 상태에서 확인한다.
-
-/** 토큰 하나(시간 또는 이징)의 기대값 */
-export type MotionExpectation = {
-  /** 피그마 모션 토큰 이름(`motion/duration/fast`) */
-  figma: string;
-  /** 코드 클래스(`duration-fast`) */
-  className: string;
-  /** 기대 계산값을 만들 CSS 값(`var(--motion-duration-fast)`) */
-  css: string;
-};
 
 /** 레이어 하나의 들어오는 전환 확인 항목 */
 export type TransitionCheck = {
@@ -25,12 +15,10 @@ export type TransitionCheck = {
   layer: string;
   /** 전환해야 할 CSS 속성 → 그 속성을 바꾸는 피그마 역할 */
   properties: Record<string, string>;
-  /** 바뀌지만 CSS로 부드럽게 바뀌지 않아 뺀 역할 */
-  skipped: string[];
-  /** 역할 → CSS 속성 표에 없는 역할(비교할 수 없어 실패) */
-  unknown: string[];
-  duration: MotionExpectation;
-  easing: MotionExpectation;
+  /** 피그마 전환 시간(ms) */
+  duration: number;
+  /** 피그마 이징 베지어 값. 스프링 이징이면 null(판정하지 않는다) */
+  easing: readonly [number, number, number, number] | null;
 };
 
 /** export.json 변형의 transitions 항목 */
@@ -38,59 +26,40 @@ type TransitionEntry = {
   to: string;
   trigger: string;
   type: string;
-  duration?: string;
-  easing?: string;
+  /** ms. 예전 내보내기는 모션 토큰 이름이다 */
+  duration?: number | string;
+  /** 베지어 네 값. 예전 내보내기는 모션 토큰 이름이다 */
+  easing?: readonly number[] | string | null;
 };
 
 /**
  * 도착 변형으로 들어오는 전환마다, 레이어별로 전환해야 할 CSS 속성과 시간·이징 기대값을 만든다.
- * 즉시 전환(INSTANT)은 움직임이 없어 비교하지 않는다.
+ * 즉시 전환(시간 없음)은 움직임이 없어 비교하지 않는다.
  * @codocs [[피그마 일치 검사:상태 전환]]
  * @param target 도착 변형 이름
  * @param variants 변형 이름 → export.json 변형 항목
  * @param checksOf 변형 이름 → 레이어 확인 항목
+ * @param tokens tokens.json 토큰 표(예전 내보내기의 모션 토큰 이름을 값으로 풀 때 쓴다)
  * @returns 전환 확인 항목
  */
 export function incomingTransitions(
   target: string,
   variants: Readonly<Record<string, unknown>>,
   checksOf: (variant: string) => VariantChecks,
+  tokens: FigmaTokens,
 ): TransitionCheck[] {
   const result: TransitionCheck[] = [];
   for (const [from, entry] of Object.entries(variants)) {
     for (const transition of transitionsOf(entry)) {
-      if (
-        transition.to !== target ||
-        transition.duration === undefined ||
-        transition.easing === undefined
-      ) {
+      if (transition.to !== target || transition.duration === undefined) {
         continue;
       }
-      const changes = changedRoles(checksOf(from), checksOf(target));
-      for (const [layer, roles] of changes) {
-        const check: TransitionCheck = {
-          from,
-          trigger: transition.trigger,
-          layer,
-          properties: {},
-          skipped: [],
-          unknown: [],
-          duration: motionExpectation(transition.duration, 'duration'),
-          easing: motionExpectation(transition.easing, 'ease'),
-        };
-        // 자산 파일이 바뀌면(다른 자산으로 바꿈) 색도 함께 바뀌는 것이라 색 전환을 따로 보지 않는다.
-        const isAssetSwap = roles.includes('자산');
-        for (const role of roles) {
-          const property = isAssetSwap && role === '자산 색' ? null : transitionProperty(role);
-          if (property === undefined) {
-            check.unknown.push(role);
-          } else if (property === null) {
-            check.skipped.push(role);
-          } else {
-            check.properties[property] = role;
-          }
+      const duration = durationOf(transition.duration, tokens);
+      const easing = easingOf(transition.easing, tokens);
+      for (const [layer, properties] of changedProperties(checksOf(from), checksOf(target))) {
+        if (Object.keys(properties).length > 0) {
+          result.push({ from, trigger: transition.trigger, layer, properties, duration, easing });
         }
-        result.push(check);
       }
     }
   }
@@ -98,102 +67,130 @@ export function incomingTransitions(
 }
 
 /**
- * 두 변형의 레이어 확인 항목에서 값(피그마 이름)이 다른 역할을 레이어별로 모은다.
+ * 두 변형의 확인 항목에서 피그마 값이 다르고 전환해야 하는 역할을 레이어별로 모은다.
  * @param from 출발 변형 확인 항목
  * @param to 도착 변형 확인 항목
- * @returns 레이어 경로 → 바뀌는 역할
+ * @returns 레이어 경로 → CSS 속성 → 역할
  */
-export function changedRoles(from: VariantChecks, to: VariantChecks): Map<string, string[]> {
+export function changedProperties(
+  from: VariantChecks,
+  to: VariantChecks,
+): Map<string, Record<string, string>> {
   const before = roleValues(from);
   const after = roleValues(to);
-  const changes = new Map<string, string[]>();
-  for (const key of new Set([...before.keys(), ...after.keys()])) {
-    if (before.get(key) === after.get(key)) {
+  const changes = new Map<string, Record<string, string>>();
+  for (const [key, entry] of after) {
+    const previous = before.get(key);
+    if (previous?.figma === entry.figma || !to.layers.includes(entry.layer)) {
       continue;
     }
-    const [layer = '', role = ''] = key.split('\u0000');
-    if (!to.layers.includes(layer)) {
+    // 자산 파일이 바뀌면(다른 자산으로 바꿈) 색도 함께 바뀌는 것이라 색 전환을 따로 보지 않는다.
+    const isSwapped =
+      before.get(`${entry.layer}\u0000자산`)?.figma !==
+      after.get(`${entry.layer}\u0000자산`)?.figma;
+    if (entry.role === '자산 색' && isSwapped) {
       continue;
     }
-    changes.set(layer, [...new Set([...(changes.get(layer) ?? []), role])]);
+    if (
+      !TRANSITION_ROLES.some((role) => entry.role === role || entry.role.startsWith(`${role}(`))
+    ) {
+      continue;
+    }
+    changes.set(entry.layer, { ...changes.get(entry.layer), [entry.property]: entry.role });
   }
   return changes;
 }
 
+type RoleValue = { layer: string; role: string; property: string; figma: string };
+
 /**
- * 레이어 확인 항목을 `레이어\0역할` → 피그마 이름 표로 펼친다. 글자 구간과 자산도 담는다.
- * @param checks 레이어 확인 항목
+ * 확인 항목을 `레이어\0역할` → 피그마 값 표로 펼친다. 글자 구간과 자산도 담는다.
+ * @param checks 확인 항목
  * @returns 표
  */
-function roleValues(checks: VariantChecks): Map<string, string> {
-  const values = new Map<string, string>();
+function roleValues(checks: VariantChecks): Map<string, RoleValue> {
+  const values = new Map<string, RoleValue>();
   for (const check of checks.checks) {
-    putRoleValue(values, check.layer, check.role, check.figma);
+    putRole(values, check.layer, check.role, check.property, check.figma);
   }
   for (const asset of checks.assets) {
-    putRoleValue(values, asset.layer, '자산', asset.file);
-    putRoleValue(values, asset.layer, '자산 색', asset.color?.figma ?? '');
+    putRole(values, asset.layer, '자산', 'data-asset', asset.file);
+    putRole(values, asset.layer, '자산 색', 'color', asset.color?.figma ?? '');
   }
   for (const text of checks.texts) {
     for (const segment of text.segments) {
-      putRoleValue(values, text.layer, '글자 색', segment.fill?.figma ?? '');
-      putRoleValue(values, text.layer, '글자 스타일', segment.textStyle);
+      for (const check of segment.checks) {
+        putRole(values, text.layer, check.role, check.property, check.figma);
+      }
     }
   }
   return values;
 }
 
 /**
- * 역할 값 하나를 표에 더한다. 같은 역할이 여럿이면(글자 구간 등) 값을 이어 붙인다.
+ * 표에 역할 값을 더한다. 같은 레이어·역할이 여럿이면(변마다 등) 값을 `|`로 잇는다.
  * @param values 표
  * @param layer 레이어 경로
  * @param role 역할
- * @param value 피그마 이름
+ * @param property CSS 속성
+ * @param figma 피그마 값
  */
-function putRoleValue(
-  values: Map<string, string>,
+function putRole(
+  values: Map<string, RoleValue>,
   layer: string,
   role: string,
-  value: string,
+  property: string,
+  figma: string,
 ): void {
   const key = `${layer}\u0000${role}`;
-  values.set(key, values.has(key) ? `${values.get(key) ?? ''}|${value}` : value);
+  const previous = values.get(key);
+  values.set(key, {
+    layer,
+    role,
+    property,
+    figma: previous === undefined ? figma : `${previous.figma}|${figma}`,
+  });
 }
 
 /**
- * 역할에 맞는 CSS 전환 속성을 찾는다.
- * @param role 역할 이름(구간·방향 꼬리 포함)
- * @returns CSS 속성, 전환하지 않는 역할이면 null, 표에 없으면 undefined
+ * 전환 시간을 ms로 읽는다. 예전 내보내기의 모션 토큰 이름은 tokens.json 값으로 푼다.
+ * @param value export.json의 duration
+ * @param tokens 토큰 표
+ * @returns ms
  */
-function transitionProperty(role: string): string | null | undefined {
-  if (role in transitionProperties) {
-    return transitionProperties[role];
+function durationOf(value: number | string, tokens: FigmaTokens): number {
+  if (typeof value === 'number') {
+    return value;
   }
-  if (role.startsWith('모서리 반경')) {
-    return transitionProperties['모서리 반경'];
+  const expected = expectedOfVariable(tokens, value);
+  if (expected.kind !== 'ms') {
+    throw new Error(`전환 시간 ${value}은 시간 토큰이 아니다.`);
   }
-  if (role.startsWith('절대 위치')) {
-    return transitionProperties['절대 위치'];
-  }
-  if (role.endsWith(' 채우기') || role.endsWith(' 내용 맞춤')) {
+  return expected.value;
+}
+
+/**
+ * 이징을 베지어 값으로 읽는다. 예전 내보내기의 모션 토큰 이름은 tokens.json 값으로 푼다.
+ * @param value export.json의 easing
+ * @param tokens 토큰 표
+ * @returns 베지어 값, 없거나 스프링이면 null
+ */
+function easingOf(
+  value: TransitionEntry['easing'],
+  tokens: FigmaTokens,
+): readonly [number, number, number, number] | null {
+  if (value === undefined || value === null) {
     return null;
   }
-  return undefined;
-}
-
-/**
- * 모션 토큰 이름으로 클래스와 기대 CSS 값을 만든다.
- * @param token `motion/duration/fast`, `motion/easing/fade`
- * @param prefix 클래스 접두어(`duration`, `ease`)
- * @returns 기대값
- */
-function motionExpectation(token: string, prefix: 'duration' | 'ease'): MotionExpectation {
-  const segments = token.split('/');
-  return {
-    figma: token,
-    className: `${prefix}-${segments.at(-1) ?? ''}`,
-    css: `var(${variableName(segments)})`,
-  };
+  if (typeof value === 'string') {
+    const expected = expectedOfVariable(tokens, value);
+    if (expected.kind !== 'bezier') {
+      throw new Error(`전환 이징 ${value}은 이징 토큰이 아니다.`);
+    }
+    return expected.points;
+  }
+  const [x1 = 0, y1 = 0, x2 = 0, y2 = 0] = value;
+  return [x1, y1, x2, y2];
 }
 
 /**
