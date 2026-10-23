@@ -127,7 +127,7 @@ export function assetSlug(name: string): string {
 
 /**
  * 자산 파일 이름(`<묶음>/<자산>.<svg|png>`)을 만든다. 래스터 이미지는 PNG, 나머지는 SVG다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param asset 자산 묶음, 이름, 처리 방식
  * @param asset.group 묶음 이름
  * @param asset.name 자산 컴포넌트 이름

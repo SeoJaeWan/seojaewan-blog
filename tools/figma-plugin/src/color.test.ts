@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { colorToHex } from './color';
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:피그마 플러그인]]
 describe('토큰 색은 소문자 16진수로 쓴다', () => {
   it('불투명 색은 #rrggbb다', () => {
     expect(colorToHex({ r: 1, g: 1, b: 1 })).toBe('#ffffff');

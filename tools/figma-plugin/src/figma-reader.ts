@@ -286,7 +286,7 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
 
 /** 이미지 자산 하나 */
 export type ImageAsset = {
-  /** 자산 파일(`images/noise-acrylic.png`) */
+  /** 자산 파일(`images/<자산>.png`) */
   file: string;
   /** 자산 컴포넌트 */
   node: ComponentNode;

@@ -57,7 +57,7 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
   });
 });
 
-// @codocs [[피그마 일치 검사:자산]]
+// @codocs [[피그마 연동:자산]]
 describe('자산 파일', () => {
   it('자산은 figma/assets/<묶음>/<이름>에 두고, 래스터만 PNG다', () => {
     expect(assetFile({ group: 'Icons', name: 'ic_fluent_add_20_regular', kind: 'mono' })).toBe(
