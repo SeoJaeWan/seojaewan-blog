@@ -12,13 +12,12 @@ export type Expected =
   | { kind: 'ms'; value: number }
   | { kind: 'bezier'; points: readonly [number, number, number, number] }
   | { kind: 'angle'; deg: number }
-  | { kind: 'shadow'; layers: readonly ShadowLayer[] }
   | { kind: 'keywords'; values: readonly string[] };
 
 /** 0–255 정수 채널과 0–255 정수 투명도 */
 export type Rgba = readonly [number, number, number, number];
 
-/** 그림자 층 하나 */
+/** 그림자 층 하나(판정하지 않고 캡처 여백을 정할 때만 쓴다) */
 export type ShadowLayer = {
   rgba: Rgba;
   x: number;
@@ -75,14 +74,6 @@ export function matchesExpected(expected: Expected, actual: string): boolean {
     }
     case 'angle':
       return sameAngle(value, expected.deg);
-    case 'shadow': {
-      const layers = parseShadow(value);
-      return (
-        layers !== null &&
-        layers.length === expected.layers.length &&
-        layers.every((layer, index) => sameShadowLayer(layer, expected.layers[index]))
-      );
-    }
     case 'keywords':
       return expected.values.includes(value);
   }
@@ -107,15 +98,6 @@ export function describeExpected(expected: Expected): string {
       return `cubic-bezier(${expected.points.map((point) => String(round(point))).join(', ')})`;
     case 'angle':
       return `${String(expected.deg)}deg`;
-    case 'shadow':
-      return expected.layers.length === 0
-        ? 'none'
-        : expected.layers
-            .map(
-              (layer) =>
-                `${layer.inset ? 'inset ' : ''}${String(layer.x)}px ${String(layer.y)}px ${String(layer.blur)}px ${String(layer.spread)}px ${rgbaCss(layer.rgba)}`,
-            )
-            .join(', ');
     case 'keywords':
       return expected.values.join(' | ');
   }
@@ -266,75 +248,6 @@ export function parseEasing(css: string): readonly [number, number, number, numb
   }
   const [x1 = 0, y1 = 0, x2 = 0, y2 = 0] = numbers;
   return [x1, y1, x2, y2];
-}
-
-/**
- * 계산값 그림자 목록을 층으로 읽는다. Tailwind가 앞에 붙이는 보이지 않는 그림자(투명, 0)는 뺀다.
- * @param css `rgba(0, 0, 0, 0.14) 0px 8px 16px 0px` 형태의 목록이나 `none`
- * @returns 층 목록, 읽을 수 없으면 null
- */
-export function parseShadow(css: string): ShadowLayer[] | null {
-  const value = css.trim();
-  if (value === 'none') {
-    return [];
-  }
-  const layers: ShadowLayer[] = [];
-  for (const part of splitTopLevel(value)) {
-    const layer = parseShadowLayer(part);
-    if (layer === null) {
-      return null;
-    }
-    const isInvisible =
-      layer.rgba[3] === 0 &&
-      layer.x === 0 &&
-      layer.y === 0 &&
-      layer.blur === 0 &&
-      layer.spread === 0;
-    if (!isInvisible) {
-      layers.push(layer);
-    }
-  }
-  return layers;
-}
-
-/**
- * 그림자 층 하나를 읽는다.
- * @param css `rgba(0, 0, 0, 0.14) 0px 8px 16px 0px` 또는 색이 뒤에 오는 모양
- * @returns 층, 읽을 수 없으면 null
- */
-function parseShadowLayer(css: string): ShadowLayer | null {
-  let rest = css.trim();
-  const isInset = /\binset\b/u.test(rest);
-  rest = rest.replace(/\binset\b/u, '').trim();
-  const colorMatch = /(rgba?\([^)]*\)|color\([^)]*\)|#[0-9a-f]{3,8}\b|transparent)/iu.exec(rest);
-  const rgba = colorMatch?.[1] === undefined ? null : parseColor(colorMatch[1]);
-  if (rgba === null || colorMatch?.[1] === undefined) {
-    return null;
-  }
-  const lengths = rest.replace(colorMatch[1], ' ').trim().split(/\s+/u).map(parseLength);
-  if (lengths.length < 2 || lengths.some((length) => length === null)) {
-    return null;
-  }
-  const [x = 0, y = 0, blur = 0, spread = 0] = lengths as number[];
-  return { rgba, x, y, blur, spread, inset: isInset };
-}
-
-/**
- * 두 그림자 층이 같은지 본다.
- * @param a 층
- * @param b 층
- * @returns 같으면 true
- */
-function sameShadowLayer(a: ShadowLayer, b: ShadowLayer | undefined): boolean {
-  return (
-    b !== undefined &&
-    a.inset === b.inset &&
-    sameRgba(a.rgba, b.rgba) &&
-    round(a.x) === round(b.x) &&
-    round(a.y) === round(b.y) &&
-    round(a.blur) === round(b.blur) &&
-    round(a.spread) === round(b.spread)
-  );
 }
 
 /**

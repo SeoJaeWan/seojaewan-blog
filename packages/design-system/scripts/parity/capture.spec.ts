@@ -121,7 +121,7 @@ function rootShadowExtents(item: PlanItem, figmaTokens: FigmaTokens | undefined)
   const layers = field(variants, 'layers');
   const effect = field(Array.isArray(layers) ? (layers as unknown[])[0] : undefined, 'effect');
   const shadow = typeof effect === 'string' ? figmaTokens?.effects.get(effect)?.shadow : undefined;
-  return shadow?.expected.kind === 'shadow' ? shadowExtents(shadow.expected.layers) : noExtents;
+  return shadow === undefined || shadow === null ? noExtents : shadowExtents(shadow.layers);
 }
 
 /**

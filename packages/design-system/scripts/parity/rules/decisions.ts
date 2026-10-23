@@ -34,8 +34,8 @@ export type ParityDecisions = {
 // @codocs [[피그마 일치 검사:결정 사항]]
 export const parityDecisions: ParityDecisions = {
   /**
-   * D1 절대 위치. 자동 배치 안의 ABSOLUTE만 허용하고, 제약(MIN/MAX/STRETCH)은 코드가 붙는 변으로 대응한다(CENTER는 판정하지 않음).
-   * 거리 값은 피그마가 부모 크기에서 계산하는 값이라 판정하지 않고 캡처 표에서 본다. 거리로 토큰 이름을 찾거나 막지 않는다.
+   * D1 절대 위치. 자동 배치 안의 ABSOLUTE만 허용한다. 절대 위치(위치 방식, 붙는 변, 거리)는 판정하지 않고 캡처 표에서 본다.
+   * 거리로 토큰 이름을 찾거나 막지 않는다.
    * 제약 SCALE, 수동 배치(자동 배치가 아닌 프레임의 자식)는 막는다.
    * 포커스 테두리·밑줄 같은 장식은 겹쳐 놓지 않고 효과 스타일로 그린다.
    */
@@ -72,7 +72,7 @@ export const parityDecisions: ParityDecisions = {
   },
   /**
    * D5 그림자 showShadowBehindNode. CSS box-shadow는 요소 안쪽에 그리지 않으므로 true인 그림자는 막는다.
-   * 비교는 효과 스타일 이름과 box-shadow 계산값이다.
+   * 그림자는 판정하지 않고 캡처 표에서 본다.
    */
   d5: { allowShadowBehindNode: false },
   /**

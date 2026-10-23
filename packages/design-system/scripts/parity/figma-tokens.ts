@@ -30,8 +30,8 @@ export type PaintStyle =
 /** 효과 스타일 */
 export type EffectStyle = {
   name: string;
-  /** 그림자 층(없으면 null)과 CSS 이름 */
-  shadow: { cssName: string; expected: Expected } | null;
+  /** 그림자 층(없으면 null)과 CSS 이름. 판정하지 않고 캡처 여백과 표시 없는 요소의 토큰 이름에 쓴다 */
+  shadow: { cssName: string; layers: ShadowLayer[] } | null;
   /** 배경 흐림 CSS 이름(없으면 null) */
   backdropBlur: string | null;
   /** 레이어 흐림 CSS 이름(없으면 null) */
@@ -286,10 +286,7 @@ function effectStyle(token: FigmaToken, tokens: FigmaTokens): EffectStyle {
         ? null
         : {
             cssName: names.shadow,
-            expected: {
-              kind: 'shadow',
-              layers: layers.map((layer: unknown) => shadowLayer(layer, tokens, token.path)),
-            },
+            layers: layers.map((layer: unknown) => shadowLayer(layer, tokens, token.path)),
           },
     backdropBlur:
       isRecord(custom) && custom.backgroundBlur !== undefined ? names.backdropBlur : null,
@@ -298,7 +295,7 @@ function effectStyle(token: FigmaToken, tokens: FigmaTokens): EffectStyle {
 }
 
 /**
- * 그림자 층 하나를 기대값으로 바꾼다. 별칭은 풀어 쓴다.
+ * 그림자 층 하나를 읽는다. 별칭은 풀어 쓴다.
  * @param layer `{color, offsetX, offsetY, blur, spread, inset}`
  * @param tokens 토큰 표
  * @param where 오류 메시지에 쓸 위치

@@ -9,7 +9,7 @@
 import type { CDPSession, Page } from '@playwright/test';
 
 /** 선언 하나 */
-export type Declaration = { name: string; value: string; important: boolean };
+export type Declaration = { name: string; value: string };
 
 /** 규칙(또는 인라인 스타일) 하나 */
 export type StyleBlock = {
@@ -51,6 +51,9 @@ export type LookupOptions = {
 /** 변수 참조 하나 */
 export type VarReference = { name: string; fallback: string | null };
 
+// Tailwind가 유틸리티 안에서 쓰는 내부 변수의 접두어. 이름 비교에서 이 변수만 거쳐 갈 수 있다.
+const TAILWIND_PREFIX = '--tw-';
+
 // 상속되는 속성이다. 자기 선언이 없거나 `inherit`이면 조상의 선언이 값을 정한다.
 const inheritedProperties = new Set([
   'color',
@@ -83,7 +86,6 @@ const CORNER_LOGICAL = {
 const boxShorthands = new Set([
   'padding',
   'margin',
-  'inset',
   'border-width',
   'border-style',
   'border-color',
@@ -91,7 +93,7 @@ const boxShorthands = new Set([
 ]);
 
 // 값 하나나 둘로 시작·끝 두 변을 정하는 단축 속성
-const PAIR_SHORTHANDS = /^(padding|margin|inset|border)-(inline|block)(-width|-style|-color)?$/u;
+const PAIR_SHORTHANDS = /^(padding|margin|border)-(inline|block)(-width|-style|-color)?$/u;
 
 /**
  * 롱핸드 하나를 정할 수 있는 선언 이름을 모두 구한다(자신, 단축 속성, 논리 속성). 왼쪽에서 오른쪽 가로 쓰기로 본다.
@@ -131,11 +133,6 @@ export function settersOf(property: string): string[] {
     );
     return setters;
   }
-  if (property in SIDE_LOGICAL) {
-    const [logical, axis] = SIDE_LOGICAL[property as keyof typeof SIDE_LOGICAL];
-    setters.push(`inset-${logical}`, `inset-${axis}`, 'inset');
-    return setters;
-  }
   const others: Readonly<Record<string, readonly string[]>> = {
     'column-gap': ['gap'],
     'row-gap': ['gap'],
@@ -170,7 +167,7 @@ export function settersOf(property: string): string[] {
 }
 
 /**
- * 단계 하나(요소 하나)에서 속성을 정한 선언을 고른다. 마지막 선언이 이기고, `!important`는 일반 선언보다 이긴다.
+ * 단계 하나(요소 하나)에서 속성을 정한 선언을 고른다. 마지막 선언이 이긴다.
  * @param level 요소 하나의 규칙
  * @param setters 그 속성을 정할 수 있는 선언 이름
  * @returns 이긴 선언(단계 번호는 0), 없으면 null
@@ -180,9 +177,6 @@ export function winnerInLevel(level: StyleLevel, setters: readonly string[]): Wi
   for (const block of level) {
     for (const declaration of block.declarations) {
       if (!setters.includes(declaration.name)) {
-        continue;
-      }
-      if (winner?.important === true && !declaration.important) {
         continue;
       }
       winner = { ...declaration, source: block.source, origin: block.origin, level: 0 };
@@ -207,7 +201,7 @@ export function findWinner(
   const setters = settersOf(property);
   for (const [index, level] of matched.levels.entries()) {
     const winner = winnerInLevel(level, setters);
-    const isInheriting = winner === null || /^(inherit|unset)$/u.test(stripImportant(winner.value));
+    const isInheriting = winner === null || /^(inherit|unset)$/u.test(winner.value.trim());
     if (!isInheriting) {
       return { ...winner, level: index };
     }
@@ -227,7 +221,7 @@ export function findWinner(
  * @returns 롱핸드에 해당하는 값
  */
 export function shorthandPart(declaration: string, property: string, value: string): string {
-  const parts = splitWhitespace(stripImportant(value));
+  const parts = splitWhitespace(value.trim());
   if (declaration === 'gap') {
     return (property === 'column-gap' ? parts[1] : undefined) ?? parts[0] ?? value;
   }
@@ -317,7 +311,7 @@ export function customProperty(matched: MatchedLevels, level: number, name: stri
   const canInherit = matched.registrations.get(name)?.inherits ?? true;
   for (let index = level; index < matched.levels.length; index += 1) {
     const winner = winnerInLevel(matched.levels[index] ?? [], [name]);
-    if (winner !== null && stripImportant(winner.value) !== 'inherit') {
+    if (winner !== null && winner.value.trim() !== 'inherit') {
       return { ...winner, level: index };
     }
     if (!canInherit) {
@@ -357,7 +351,7 @@ export function variablesReached(
       }
       seen.add(key);
       const found = customProperty(matched, current, reference.name);
-      const isDefined = found !== null && stripImportant(found.value) !== 'initial';
+      const isDefined = found !== null && found.value.trim() !== 'initial';
       if (isDefined) {
         visit(found.level, found.value);
         continue;
@@ -372,6 +366,59 @@ export function variablesReached(
   }
   visit(level, value);
   return names;
+}
+
+/**
+ * 값이 기대한 변수 이름에 닿는지 본다. 기대한 이름까지 가는 길에는 Tailwind 내부 변수(`--tw-*`)만 거칠 수 있다.
+ * 다른 사용자 속성(`--color-my-button`)을 거치면 그 길은 닿지 않은 것이다. 정의가 없는 사용자 속성은 등록한 초기값,
+ * 그것도 없으면 대체값으로 이어 간다. 기대한 이름에 닿으면 그 정의(`--color-blue-dark-1` 등)는 따라가지 않는다.
+ * @codocs [[피그마 일치 검사:판정 항목]]
+ * @param matched 요소에 맞는 규칙 전체
+ * @param level 값이 선언된 단계
+ * @param value CSS 값
+ * @param expected 기대한 변수 이름 후보
+ * @returns 닿으면 true
+ */
+export function reachesVariable(
+  matched: MatchedLevels,
+  level: number,
+  value: string,
+  expected: readonly string[],
+): boolean {
+  const seen = new Set<string>();
+  /**
+   * 값 하나를 풀며 기대한 이름을 찾는다.
+   * @param current 단계
+   * @param text 값
+   * @returns 닿으면 true
+   */
+  function visit(current: number, text: string): boolean {
+    for (const reference of parseVarReferences(text)) {
+      if (expected.includes(reference.name)) {
+        return true;
+      }
+      const key = `${String(current)}\u0000${reference.name}`;
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      const found = customProperty(matched, current, reference.name);
+      const isDefined = found !== null && found.value.trim() !== 'initial';
+      if (isDefined) {
+        if (reference.name.startsWith(TAILWIND_PREFIX) && visit(found.level, found.value)) {
+          return true;
+        }
+        continue;
+      }
+      const initial = matched.registrations.get(reference.name)?.initialValue ?? null;
+      const next = initial ?? reference.fallback;
+      if (next !== null && visit(current, next)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return visit(level, value);
 }
 
 /**
@@ -411,15 +458,6 @@ export function isInheritedProperty(property: string): boolean {
 }
 
 /**
- * 값 끝의 `!important`를 뗀다(CDP는 일부 선언 값에 붙여 준다).
- * @param value 선언 값
- * @returns `!important`를 뗀 값
- */
-function stripImportant(value: string): string {
-  return value.replace(/\s*!important\s*$/u, '').trim();
-}
-
-/**
  * 괄호 밖의 공백으로 값을 나눈다.
  * @param value CSS 값
  * @returns 항목
@@ -454,7 +492,6 @@ function splitWhitespace(value: string): string[] {
 type CdpProperty = {
   name: string;
   value: string;
-  important?: boolean;
   disabled?: boolean;
   parsedOk?: boolean;
   range?: unknown;
@@ -563,11 +600,7 @@ function declarationsOf(style: CdpStyle): Declaration[] {
  * @returns 선언
  */
 function declarationOf(property: CdpProperty): Declaration {
-  return {
-    name: property.name,
-    value: stripImportant(property.value),
-    important: property.important === true || /!important\s*$/u.test(property.value),
-  };
+  return { name: property.name, value: property.value };
 }
 
 /**
@@ -628,21 +661,23 @@ export class DeclarationReader {
   }
 
   /**
-   * 속성을 정한 선언과 그 선언에서 닿는 변수 이름을 읽는다.
+   * 속성을 정한 선언을 읽고, 그 선언이 기대한 변수 이름에 닿는지 본다.
    * @codocs [[피그마 일치 검사:판정 항목]]
    * @param node 요소 번호
    * @param property CSS 롱핸드
+   * @param variables 기대한 변수 이름 후보
    * @param options 상속, 의사 요소
-   * @returns 이긴 선언(없으면 null)과 닿은 변수 이름
+   * @returns 이긴 선언(없으면 null)과 닿았는지
    */
   async read(
     node: number,
     property: string,
+    variables: readonly string[],
     options: LookupOptions = {},
-  ): Promise<{ winner: Winner | null; names: Set<string> }> {
+  ): Promise<{ winner: Winner | null; isReached: boolean }> {
     const matched = await this.matched(node, options.pseudo);
     if (matched === null) {
-      return { winner: null, names: new Set() };
+      return { winner: null, isReached: false };
     }
     const winner = findWinner(
       matched,
@@ -650,10 +685,10 @@ export class DeclarationReader {
       options.inherited ?? isInheritedProperty(property),
     );
     if (winner === null) {
-      return { winner, names: new Set() };
+      return { winner, isReached: false };
     }
     const value = shorthandPart(winner.name, property, winner.value);
-    return { winner, names: variablesReached(matched, winner.level, value) };
+    return { winner, isReached: reachesVariable(matched, winner.level, value, variables) };
   }
 
   /**

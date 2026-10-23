@@ -361,18 +361,27 @@ const cases: ProofCase[] = [
     dom: { change: appendHtml, layer: '', arg: '<span class="bg-accent-fill-default"></span>' },
   },
   {
-    name: '표시 없는 요소에 그림자',
+    name: '표시 없는 요소에 덮여 보이지 않는 토큰 클래스(bg-accent-fill-default bg-transparent)',
     component: 'button',
     resultName: BUTTON_REST,
     shouldFail: true,
-    dom: { change: appendHtml, layer: '', arg: '<span class="shadow-elevation-flyout"></span>' },
+    dom: {
+      change: appendHtml,
+      layer: '',
+      arg: '<span class="bg-accent-fill-default bg-transparent"></span>',
+    },
   },
   {
-    name: '다른 그림자(Elevation/Dialog 값)',
-    component: 'flyout',
-    resultName: FLYOUT_ACRYLIC,
+    // 값과 닿는 토큰은 같지만, 기대한 이름 앞에 Tailwind 내부 변수가 아닌 사용자 속성을 거친다.
+    name: '다른 사용자 속성을 거친 변수 사슬(--color-my-button)',
+    component: 'button',
+    resultName: BUTTON_ACCENT,
     shouldFail: true,
-    dom: { change: overrideStyle, layer: '', arg: 'box-shadow:var(--shadow-elevation-dialog)' },
+    dom: {
+      change: addGlobalStyle,
+      layer: '',
+      arg: 'button { --color-my-button: var(--color-accent-fill-default); background-color: var(--color-my-button); }',
+    },
   },
   {
     name: '다른 배경 흐림(material-mica)',

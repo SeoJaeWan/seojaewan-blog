@@ -1,6 +1,6 @@
 import type { CDPSession, Locator, Page } from '@playwright/test';
 
-import { describeExpected, type Expected, matchesExpected, parseShadow } from './css-values.ts';
+import { describeExpected, type Expected, matchesExpected } from './css-values.ts';
 import { DeclarationReader, tokenDeclarations, type Winner } from './declarations.ts';
 import type { ElementCheck, VariantChecks } from './layer-checks.ts';
 import { type CollectResult, collectVariant, type FontProbe } from './page-checks.ts';
@@ -152,7 +152,7 @@ async function judgeCollected(
 }
 
 /**
- * 확인 항목 하나를 판정한다. 이름은 이긴 선언의 변수 사슬, 값·대응은 계산값, 변 선언은 auto가 아닌 이긴 선언으로 본다.
+ * 확인 항목 하나를 판정한다. 이름은 이긴 선언의 변수 사슬, 값·대응은 계산값으로 본다.
  * @codocs [[피그마 일치 검사:판정 항목]]
  * @param reader 이긴 선언 읽기 도구
  * @param layer 레이어 경로
@@ -171,17 +171,9 @@ async function judgeCheck(
   const failures: ParityFailure[] = [];
   const options = { inherited: check.inherited, pseudo: check.pseudo };
   if (check.variables !== undefined) {
-    const { winner, names } = await reader.read(node, check.property, options);
-    if (!check.variables.some((name) => names.has(name))) {
+    const { winner, isReached } = await reader.read(node, check.property, check.variables, options);
+    if (!isReached) {
       failures.push(failure(layer, check.role, check.figma, declarationText(winner)));
-    }
-  }
-  if (check.declared === true) {
-    const { winner } = await reader.read(node, check.property, options);
-    if (winner === null || winner.value.trim() === 'auto') {
-      failures.push(
-        failure(layer, check.role, check.figma, `${check.property} ${declarationText(winner)}`),
-      );
     }
   }
   if (check.expected !== undefined) {
@@ -255,8 +247,8 @@ function transitionFailures(checks: VariantChecks, collected: CollectResult): Pa
 }
 
 /**
- * 표시(`data-figma`) 없는 요소가 피그마에 없는 모양을 그리는지 본다. 자기 클래스 규칙의 선언이 디자인 토큰에 닿거나
- * 그림자가 있으면 실패다.
+ * 표시(`data-figma`) 없는 요소가 피그마에 없는 모양을 그리는지 본다. 자기 클래스 규칙의 선언 중 하나라도 디자인 토큰에
+ * 닿으면, 다른 선언에 덮여 화면에 보이지 않아도 실패다.
  * @codocs [[피그마 일치 검사:짝짓기]]
  * @param reader 이긴 선언 읽기 도구
  * @param collected 브라우저에서 모은 값
@@ -279,17 +271,6 @@ async function unmarkedFailures(
           '표시 없는 요소',
           `${FIGMA_LAYER_ATTRIBUTE} 표시`,
           `${element.label} ${declarations.join('; ')}`,
-        ),
-      );
-    }
-    const shadow = parseShadow(element.boxShadow);
-    if (shadow === null || shadow.length > 0) {
-      failures.push(
-        failure(
-          element.owner,
-          '표시 없는 요소',
-          '그림자 없음',
-          `${element.label} box-shadow ${element.boxShadow}`,
         ),
       );
     }

@@ -67,7 +67,6 @@ export type UnmarkedElement = {
   owner: string;
   /** 메시지용 태그와 클래스 */
   label: string;
-  boxShadow: string;
 };
 
 export type CollectResult = {
@@ -302,7 +301,6 @@ export function collectVariant(input: CollectInput): CollectResult {
       node: nodeOf(element),
       owner: owner?.getAttribute(layerAttribute) ?? '',
       label: `<${element.tagName.toLowerCase()} class="${element.getAttribute('class') ?? ''}">`,
-      boxShadow: getComputedStyle(element).boxShadow,
     });
   }
 

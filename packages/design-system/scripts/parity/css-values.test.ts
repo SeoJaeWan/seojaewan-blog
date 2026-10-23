@@ -1,13 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-import {
-  describeExpected,
-  matchesExpected,
-  parseColor,
-  parseHex,
-  parseShadow,
-} from './css-values.ts';
+import { describeExpected, matchesExpected, parseColor, parseHex } from './css-values.ts';
 
 // @codocs [[피그마 일치 검사:판정 항목]]
 describe('값 변환', () => {
@@ -59,20 +53,7 @@ describe('값 변환', () => {
       true,
     );
     expect(matchesExpected({ kind: 'angle', deg: 90 }, 'none|none')).toBe(false);
-  });
-
-  it('그림자는 보이지 않는 Tailwind 층을 빼고 층마다 비교한다', () => {
-    const value = 'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.14) 0px 8px 16px 0px';
-    expect(parseShadow(value)).toEqual([
-      { rgba: [0, 0, 0, 36], x: 0, y: 8, blur: 16, spread: 0, inset: false },
-    ]);
-    const expected = {
-      kind: 'shadow',
-      layers: [{ rgba: [0, 0, 0, 36], x: 0, y: 8, blur: 16, spread: 0, inset: false }],
-    } as const;
-    expect(matchesExpected(expected, value)).toBe(true);
-    expect(matchesExpected(expected, 'none')).toBe(false);
-    expect(matchesExpected({ kind: 'shadow', layers: [] }, 'none')).toBe(true);
+    expect(matchesExpected({ kind: 'angle', deg: 90 }, '-90deg|none')).toBe(false);
   });
 
   it('대응은 같은 뜻의 값 중 하나면 같다', () => {

@@ -158,16 +158,17 @@ describe('레이어 확인 항목', () => {
       kind: 'keywords',
       values: ['none'],
     });
-    expect(checkOf([root], '', '효과(그림자)')?.expected).toEqual({ kind: 'shadow', layers: [] });
+    expect(checkOf([root], '', '효과(배경 흐림)')?.expected).toEqual({
+      kind: 'keywords',
+      values: ['none'],
+    });
     expect(checkOf([root], '', '불투명도')?.expected).toEqual({ kind: 'number', value: 1 });
   });
 
-  it('그림자는 효과 스타일 값으로, 배경 흐림은 이름으로 본다', () => {
+  it('효과 스타일은 배경 흐림만 이름으로 보고 그림자는 판정하지 않는다', () => {
     const flyout = { ...root, effect: 'Surface/Flyout (Acrylic)' };
-    expect(checkOf([flyout], '', '효과(그림자)')?.expected).toEqual({
-      kind: 'shadow',
-      layers: [{ rgba: [0, 0, 0, 36], x: 0, y: 8, blur: 16, spread: 0, inset: false }],
-    });
+    const properties = variantChecks([flyout], [], tokens).checks.map((check) => check.property);
+    expect(properties).not.toContain('box-shadow');
     expect(checkOf([flyout], '', '효과(배경 흐림)')).toMatchObject({
       property: 'backdrop-filter',
       variables: ['--backdrop-blur-surface-flyout-acrylic'],
@@ -181,7 +182,7 @@ describe('레이어 확인 항목', () => {
     });
   });
 
-  it('절대 위치 제약은 붙는 변에 선언이 있는지로 본다(STRETCH는 두 변)', () => {
+  it('절대 위치(위치 방식, 붙는 변, 거리)는 판정하지 않는다', () => {
     const border = {
       path: 'bottom border',
       type: 'FRAME',
@@ -189,10 +190,14 @@ describe('레이어 확인 항목', () => {
         absolute: { horizontal: { constraint: 'STRETCH' }, vertical: { constraint: 'MAX' } },
       },
     };
-    const checks = variantChecks([root, border], [], tokens).checks.filter(
-      (check) => check.declared === true,
-    );
-    expect(checks.map((check) => check.property)).toEqual(['left', 'right', 'bottom']);
+    const checks = variantChecks([root, border], [], tokens);
+    expect(checks.unsupported).toEqual([]);
+    const properties = checks.checks
+      .filter((check) => check.layer === 'bottom border')
+      .map((check) => check.property);
+    for (const property of ['position', 'left', 'right', 'top', 'bottom']) {
+      expect(properties).not.toContain(property);
+    }
   });
 
   it('자산은 파일과 글자 색(이름 + 값)을 본다', () => {

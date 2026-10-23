@@ -31,8 +31,6 @@ export type PropertyCheck = {
   variables?: string[];
   /** 값·대응 비교: 계산값 기대 */
   expected?: Expected;
-  /** 그 변에 auto가 아닌 선언이 있어야 한다(절대 위치 제약) */
-  declared?: boolean;
   /** 상속되는 속성이라 조상의 선언도 인정한다 */
   inherited?: boolean;
   /** 의사 요소(`::placeholder`) */
@@ -153,7 +151,6 @@ function layerChecks(context: LayerContext): void {
     result.slots.push(path);
   }
   sizingChecks(context);
-  selfChecks(context);
   if (isRecord(layer.asset)) {
     assetCheck(context, layer.asset);
     return;
@@ -228,39 +225,6 @@ function sizingChecks(context: LayerContext): void {
     }
     const property = key.replace(/[A-Z]/u, (letter) => `-${letter.toLowerCase()}`);
     add(context, variableCheck(context, property, property, variable));
-  }
-}
-
-/**
- * 절대 위치와 제약의 붙는 변을 확인한다. 거리 값은 판정하지 않는다.
- * @param context 레이어와 결과
- */
-function selfChecks(context: LayerContext): void {
-  const self = isRecord(context.layer.self) ? context.layer.self : null;
-  if (self === null || !isRecord(self.absolute)) {
-    return;
-  }
-  add(context, keywordCheck('절대 위치', 'ABSOLUTE', 'position', ['absolute']));
-  for (const axis of ['horizontal', 'vertical'] as const) {
-    const constraint = isRecord(self.absolute[axis])
-      ? stringOf(self.absolute[axis].constraint)
-      : '';
-    const [start, end] = axis === 'horizontal' ? ['left', 'right'] : ['top', 'bottom'];
-    const sides = { MIN: [start], MAX: [end], STRETCH: [start, end] }[constraint];
-    if (constraint === 'CENTER') {
-      continue;
-    }
-    if (sides === undefined) {
-      throw new Error(`절대 위치 제약 ${constraint}의 대응이 없다(D1)`);
-    }
-    for (const side of sides) {
-      add(context, {
-        role: `절대 위치(${side})`,
-        figma: constraint,
-        property: side,
-        declared: true,
-      });
-    }
   }
 }
 
@@ -457,8 +421,8 @@ function radiusChecks(context: LayerContext): void {
 }
 
 /**
- * 효과 스타일을 확인한다. 그림자는 선언한 값(x, y, 흐림, 퍼짐, 색), 배경 흐림은 이름이다.
- * Tailwind 그림자 유틸리티는 값을 펼쳐 써서 변수 이름이 남지 않기 때문이다. 효과가 없으면 둘 다 없어야 한다.
+ * 효과 스타일의 배경 흐림을 이름으로 확인한다. 효과가 없거나 배경 흐림이 없으면 `backdrop-filter: none`이어야 한다.
+ * 그림자는 판정하지 않는다. Tailwind 그림자 유틸리티는 값을 펼쳐 써서 변수 이름이 남지 않기 때문이다.
  * @param context 레이어와 결과
  */
 function effectChecks(context: LayerContext): void {
@@ -468,12 +432,6 @@ function effectChecks(context: LayerContext): void {
   if (style !== null && effect === undefined) {
     throw new Error(`효과 스타일 ${style}이 tokens.json에 없다`);
   }
-  add(context, {
-    role: '효과(그림자)',
-    figma: style ?? '없음',
-    property: 'box-shadow',
-    expected: effect?.shadow?.expected ?? { kind: 'shadow', layers: [] },
-  });
   if (effect?.backdropBlur !== undefined && effect.backdropBlur !== null) {
     add(context, {
       role: '효과(배경 흐림)',

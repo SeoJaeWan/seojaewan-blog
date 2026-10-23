@@ -5,6 +5,7 @@ import {
   findWinner,
   type MatchedLevels,
   parseVarReferences,
+  reachesVariable,
   type Registration,
   settersOf,
   shorthandPart,
@@ -17,7 +18,7 @@ import {
 /**
  * 규칙 블록 하나를 만든다.
  * @param source 선택자
- * @param declarations `이름: 값` 목록(끝에 `!`를 붙이면 !important)
+ * @param declarations `이름: 값` 목록
  * @param origin 출처
  * @returns 규칙 블록
  */
@@ -27,13 +28,7 @@ function block(source: string, declarations: string[], origin = 'regular'): Styl
     origin,
     declarations: declarations.map((text) => {
       const [name = '', ...rest] = text.split(':');
-      const value = rest.join(':').trim();
-      const isImportant = value.endsWith('!');
-      return {
-        name,
-        value: isImportant ? value.slice(0, -1).trim() : value,
-        important: isImportant,
-      };
+      return { name, value: rest.join(':').trim() };
     }),
   };
 }
@@ -76,19 +71,16 @@ describe('이긴 선언 읽기', () => {
       'border-radius',
     ]);
     expect(settersOf('column-gap')).toContain('gap');
-    expect(settersOf('bottom')).toEqual(['bottom', 'inset-block-end', 'inset-block', 'inset']);
     expect(settersOf('background-color')).toContain('background');
   });
 
-  it('우선순위가 낮은 것부터 온 규칙에서 마지막 선언이 이기고, 인라인과 !important를 따른다', () => {
+  it('우선순위가 낮은 것부터 온 규칙에서 마지막 선언이 이기고, 인라인 스타일이 마지막이다', () => {
     const utilities = block('.px-12', ['padding-inline: var(--spacing-12)']);
     const inline = block('style=""', ['padding-left: 20px'], 'inline');
     expect(findWinner(matchedOf([[utilities]]), 'padding-left', false)?.value).toBe(
       'var(--spacing-12)',
     );
     expect(findWinner(matchedOf([[utilities, inline]]), 'padding-left', false)?.value).toBe('20px');
-    const important = block('.x', ['padding-left: 4px !']);
-    expect(findWinner(matchedOf([[important, inline]]), 'padding-left', false)?.value).toBe('4px');
   });
 
   it('상속되는 속성은 자기 선언이 없거나 inherit이면 가까운 조상의 선언을 본다', () => {
@@ -177,6 +169,57 @@ describe('이긴 선언 읽기', () => {
   });
 });
 
+// @codocs [[피그마 일치 검사:판정 항목]]
+describe('이름 비교의 변수 사슬', () => {
+  const expected = ['--color-accent-fill-default'];
+
+  it('이긴 선언이 기대한 이름을 바로 가리키면 닿는다(그 정의는 따라가지 않는다)', () => {
+    const matched = matchedOf([[], [theme]]);
+    expect(reachesVariable(matched, 0, 'var(--color-accent-fill-default)', expected)).toBe(true);
+  });
+
+  it('Tailwind 내부 변수(--tw-*)는 거쳐 갈 수 있다', () => {
+    const utility = block('.backdrop-blur-x', [
+      '--tw-backdrop-blur: blur(var(--backdrop-blur-surface-flyout-acrylic))',
+    ]);
+    const matched = matchedOf([[utility], [theme]], {
+      '--tw-backdrop-blur': { inherits: false, initialValue: null },
+    });
+    expect(
+      reachesVariable(matched, 0, 'var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)', [
+        '--backdrop-blur-surface-flyout-acrylic',
+      ]),
+    ).toBe(true);
+  });
+
+  it('기대한 이름이 아닌 다른 사용자 속성을 거치면 닿지 않는다', () => {
+    const own = block('.my-button', [
+      '--color-my-button: var(--color-accent-fill-default)',
+      'background-color: var(--color-my-button)',
+    ]);
+    const matched = matchedOf([[own], [theme]]);
+    expect(reachesVariable(matched, 0, 'var(--color-my-button)', expected)).toBe(false);
+  });
+
+  it('값이 같은 다른 토큰은 닿지 않는다', () => {
+    const matched = matchedOf([[], [theme]]);
+    expect(reachesVariable(matched, 0, 'var(--color-accent-text-fill-tertiary)', expected)).toBe(
+      false,
+    );
+  });
+
+  it('정의가 없으면 등록한 초기값, 그것도 없으면 대체값으로 이어 간다', () => {
+    const matched = matchedOf([[], [theme]], {
+      '--tw-x': { inherits: false, initialValue: 'var(--color-accent-fill-default)' },
+    });
+    expect(reachesVariable(matched, 0, 'var(--tw-x)', expected)).toBe(true);
+    expect(
+      reachesVariable(matched, 0, 'var(--missing, var(--color-accent-fill-default))', expected),
+    ).toBe(true);
+    expect(reachesVariable(matched, 0, 'var(--missing, white)', expected)).toBe(false);
+  });
+});
+
 // @codocs [[피그마 일치 검사:짝짓기]]
 describe('표시 없는 요소의 토큰 선언', () => {
   it('자기 클래스 규칙의 선언이 디자인 토큰에 닿으면 찾는다', () => {
@@ -186,6 +229,17 @@ describe('표시 없는 요소의 토큰 선언', () => {
       block('*, ::before', ['border: 0 solid']),
       block('span', ['color: var(--color-accent-fill-default)']),
       block('div', ['color: var(--color-accent-fill-default)'], 'user-agent'),
+    ];
+    expect(tokenDeclarations(matchedOf([own, [theme]]), tokenNames)).toEqual([
+      'background-color: var(--color-accent-fill-default)',
+    ]);
+  });
+
+  it('다른 선언에 덮여 보이지 않는 토큰 선언도 찾는다', () => {
+    const tokenNames = new Set(['--color-accent-fill-default']);
+    const own = [
+      block('.bg-accent-fill-default', ['background-color: var(--color-accent-fill-default)']),
+      block('.bg-transparent', ['background-color: transparent']),
     ];
     expect(tokenDeclarations(matchedOf([own, [theme]]), tokenNames)).toEqual([
       'background-color: var(--color-accent-fill-default)',
