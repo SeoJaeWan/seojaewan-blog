@@ -31,7 +31,7 @@ import {
   updatePullRequestBody,
 } from './github-client';
 import type { ExportOutcome, PullRequestCommit } from './messages';
-import { assetFilePath, componentSlug } from './naming';
+import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
 import {
   ASSETS_DIR,
   BASE_BRANCH,
@@ -39,6 +39,7 @@ import {
   COMPONENTS_DIR,
   FIGMA_DIR,
   FILE_KEY,
+  PATTERNS_DIR,
   SCALE,
   SETTINGS_PATH,
   TOKENS_CSS_PATH,
@@ -48,6 +49,9 @@ import {
   componentBranchName,
   componentCommitSubject,
   componentPullRequestBody,
+  patternBranchName,
+  patternPullRequestBody,
+  patternsCommitSubject,
   type TargetChanges,
   targetCommitBody,
   TOKENS_BRANCH,
@@ -61,8 +65,10 @@ import { parentFolder, planTree } from './tree-changes';
 
 export type ExportRequest = {
   token: string;
-  /** 내보낼 컴포넌트. 비어 있으면 토큰만 확인한다 */
+  /** 내보낼 컴포넌트. 조립과 함께 비어 있으면 토큰만 확인한다 */
   componentIds: readonly string[];
+  /** 내보낼 조립 */
+  patternIds: readonly string[];
   log: (text: string) => void;
   /** 쓰는 곳이 없는 변수·스타일 알림(막지 않음)을 UI에 보여 준다 */
   notify: (notices: string[]) => void;
@@ -75,7 +81,7 @@ type Head = { commitSha: string; treeSha: string };
 type RepoState = { head: Head; files: Map<string, string> };
 
 /** 저장소에서 읽는 파일 범위 */
-const REPO_PREFIXES = [`${FIGMA_DIR}/`, TOKENS_CSS_PATH] as const;
+const REPO_PREFIXES = [`${FIGMA_DIR}/`, TOKENS_CSS_PATH, `${PATTERNS_DIR}/`] as const;
 
 /** 커밋할 PR 브랜치의 상태 */
 type Target = {
@@ -95,13 +101,17 @@ type PlacedTarget = {
   captureFolder: string;
 };
 
+/** 내보낸 조립 하나와 영역 */
+type PlacedPattern = PlacedTarget & { area: string };
+
 /**
- * 고른 컴포넌트를 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에 커밋한다.
+ * 고른 컴포넌트와 조립을 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에,
+ * 조립은 영역마다 고정 브랜치(`feat/figma-patterns-<영역>`)의 PR에 커밋한다.
  * 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
- * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만 바꾼다. 토큰은 늘 읽어 main의 tokens.json과 비교하고,
- * 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
+ * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만 바꾼다.
+ * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
  * @codocs [[피그마 연동:피그마 플러그인]]
- * @param request 토큰, 고른 컴포넌트, 진행 로그
+ * @param request 토큰, 고른 컴포넌트와 조립, 진행 로그
  * @returns PR별 커밋 결과, 또는 위반 목록
  */
 export async function runExport(request: ExportRequest): Promise<ExportOutcome> {
@@ -133,6 +143,38 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       captureFolder: slug,
     });
   }
+  const patterns: PlacedPattern[] = [];
+  for (const id of request.patternIds) {
+    const outcome = await exportTargetCore(id, SCALE, context);
+    const name = outcome.ok ? outcome.target.manifest.name : outcome.name;
+    const place = patternPlace(name);
+    if (place === null) {
+      violations.push({
+        where: name,
+        reason: '조립 이름이 `영역/이름` 꼴이 아니라 폴더를 정할 수 없다',
+        fix: '조립 이름을 `영역/이름`(예: `Menu/Folder`)으로 바꾼다.',
+      });
+    }
+    if (!outcome.ok) {
+      log(`${name}: 위반 ${String(outcome.violations.length)}개`);
+      violations.push(...outcome.violations);
+      continue;
+    }
+    if (place === null) {
+      continue;
+    }
+    const folder = patternFolder(place);
+    if (patterns.some((other) => other.folder === folder)) {
+      throw new Error(`조립 폴더 "${folder}"가 겹친다.`);
+    }
+    log(`${name}: 변형 ${String(outcome.target.pngs.size)}개 내보냄`);
+    patterns.push({
+      exported: outcome.target,
+      folder,
+      captureFolder: `patterns/${place.area}/${place.name}`,
+      area: place.area,
+    });
+  }
 
   log('토큰 변환 중');
   const tokens = await readTokens(violations);
@@ -153,6 +195,15 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     const commit = await commitComponent(token, component, main, log);
     if (commit === null) {
       unchanged.push(component.exported.manifest.name);
+    } else {
+      commits.push(commit);
+    }
+  }
+  for (const area of [...new Set(patterns.map((pattern) => pattern.area))]) {
+    const group = patterns.filter((pattern) => pattern.area === area);
+    const commit = await commitPatterns(token, area, group, main, log);
+    if (commit === null) {
+      unchanged.push(...group.map((pattern) => pattern.exported.manifest.name));
     } else {
       commits.push(commit);
     }
@@ -263,6 +314,59 @@ async function commitComponent(
     subject,
     message,
     body: componentPullRequestBody(branch, changes, renamed),
+    log,
+  });
+}
+
+/**
+ * 한 영역의 조립을 그 영역의 조립 PR에 커밋한다. 조립 폴더마다 export.json과 모든 변형 PNG를 새로 쓰고,
+ * 사라진 변형의 파일과 이름이 바뀐 이전 폴더를 지우고, 쓰는 자산을 담는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param token GitHub 토큰
+ * @param area 영역 폴더 이름
+ * @param patterns 이번에 내보낸 그 영역의 조립
+ * @param main main 상태
+ * @param log 진행 로그
+ * @returns 커밋 결과, 바뀐 것이 없으면 null
+ */
+async function commitPatterns(
+  token: string,
+  area: string,
+  patterns: readonly PlacedPattern[],
+  main: RepoState,
+  log: (text: string) => void,
+): Promise<PullRequestCommit | null> {
+  const branch = patternBranchName(area);
+  const target = await readTarget(token, branch, main);
+  log(
+    `${area} 조립: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`,
+  );
+
+  const desired = await targetBlobs(token, patterns, log);
+  const renamed = await renamedOldFolders(token, main, `${PATTERNS_DIR}/${area}`, patterns);
+  const owned = [...patterns.map((pattern) => pattern.folder), ...renamed];
+  const plan = planTree(desired, target.state.files, owned);
+  const names = patterns.map((pattern) => pattern.exported.manifest.name);
+  if (plan.entries.length === 0) {
+    log(`${area} 조립: 바뀐 것이 없어 커밋하지 않는다.`);
+    return null;
+  }
+
+  const subject = patternsCommitSubject(area);
+  const message = `${subject}\n\n${targetCommitBody(names, {
+    changedCount: plan.changed.length,
+    deletedCount: plan.deleted.length,
+    assetCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
+  })}`;
+  const changes: TargetChanges[] = [];
+  for (const pattern of patterns) {
+    changes.push(await targetChanges(token, pattern, desired, main));
+  }
+  return commitToPullRequest(token, target, plan.entries, {
+    target: `${area} 조립`,
+    subject,
+    message,
+    body: patternPullRequestBody(branch, area, changes, renamed),
     log,
   });
 }

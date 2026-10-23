@@ -1,5 +1,5 @@
 import { runExport } from './export-flow';
-import { listComponents } from './figma-reader';
+import { listComponents, listPatterns } from './figma-reader';
 import type { MainMessage, UiMessage } from './messages';
 import { TOKEN_STORAGE_KEY } from './plugin-config';
 
@@ -15,7 +15,8 @@ start().catch(reportFailure);
 async function start(): Promise<void> {
   const stored: unknown = await figma.clientStorage.getAsync(TOKEN_STORAGE_KEY);
   const components = await listComponents();
-  post({ type: 'init', token: typeof stored === 'string' ? stored : '', components });
+  const patterns = await listPatterns();
+  post({ type: 'init', token: typeof stored === 'string' ? stored : '', components, patterns });
 }
 
 /**
@@ -42,6 +43,7 @@ async function exportFromUi(message: UiMessage): Promise<void> {
   const result = await runExport({
     token,
     componentIds: message.componentIds,
+    patternIds: message.patternIds,
     log: (text) => {
       post({ type: 'log', text });
     },
@@ -79,11 +81,18 @@ function isExportMessage(message: unknown): message is UiMessage {
   }
   const type: unknown = Reflect.get(message, 'type');
   const token: unknown = Reflect.get(message, 'token');
-  const ids: unknown = Reflect.get(message, 'componentIds');
+  const componentIds: unknown = Reflect.get(message, 'componentIds');
+  const patternIds: unknown = Reflect.get(message, 'patternIds');
   return (
-    type === 'export' &&
-    typeof token === 'string' &&
-    Array.isArray(ids) &&
-    ids.every((id) => typeof id === 'string')
+    type === 'export' && typeof token === 'string' && isIdList(componentIds) && isIdList(patternIds)
   );
+}
+
+/**
+ * 값이 노드 ID 목록인지 확인한다.
+ * @param value 확인할 값
+ * @returns 문자열 배열이면 true
+ */
+function isIdList(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((id) => typeof id === 'string');
 }

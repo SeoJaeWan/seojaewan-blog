@@ -1,10 +1,14 @@
 import { pngFile } from './export-manifest';
 import { CAPTURES_BRANCH, REPO_NAME, REPO_OWNER } from './plugin-config';
 
-// 플러그인이 여는 브랜치 이름과 커밋·PR 글을 만든다. 컴포넌트 하나마다 PR 하나, 토큰은 따로 PR 하나다.
+// 플러그인이 여는 브랜치 이름과 커밋·PR 글을 만든다. 컴포넌트 하나마다 PR 하나, 조립은 영역마다 PR 하나,
+// 토큰은 따로 PR 하나다.
 
 /** 토큰 PR 브랜치. 이름이 고정이라 다시 내보내면 열린 PR을 이어 쓴다 */
 export const TOKENS_BRANCH = 'feat/figma-tokens';
+
+/** 조립 PR 브랜치 앞부분. 뒤에 영역 폴더 이름이 붙는다 */
+const PATTERNS_BRANCH_PREFIX = 'feat/figma-patterns-';
 
 /** PR 하나에 담긴 대상 하나의 변경(main 기준) */
 export type TargetChanges = {
@@ -61,7 +65,32 @@ export function componentBranchName(slug: string): string {
       `컴포넌트 폴더 이름 "${slug}"는 토큰 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
     );
   }
+  if (branch.startsWith(PATTERNS_BRANCH_PREFIX)) {
+    throw new Error(
+      `컴포넌트 폴더 이름 "${slug}"는 조립 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
+    );
+  }
   return branch;
+}
+
+/**
+ * 조립 PR 브랜치 이름을 만든다. 영역마다 고정이다. 예: `feat/figma-patterns-menu`
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param area 영역 폴더 이름
+ * @returns 브랜치 이름
+ */
+export function patternBranchName(area: string): string {
+  return `${PATTERNS_BRANCH_PREFIX}${area}`;
+}
+
+/**
+ * 조립 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
+ * @codocs [[Git 작업 규칙:커밋]]
+ * @param area 영역 폴더 이름
+ * @returns 커밋 제목
+ */
+export function patternsCommitSubject(area: string): string {
+  return `feat(figma): export ${area} patterns`;
 }
 
 /**
@@ -121,6 +150,42 @@ export function componentPullRequestBody(
     '',
     '- `피그마` 열이 구현할 모습이다. 이 PR에서 코드와 `Parity` 스토리를 고치고, CI 캡처 표를 보고 병합한다.',
     `- 토큰 PR(\`${TOKENS_BRANCH}\`)이 열려 있으면 그것을 먼저 병합하고 이 PR에 \`main\`을 받아 온다.`,
+  ].join('\n');
+}
+
+/**
+ * 조립 PR의 한국어 본문을 만든다. 조립마다 바뀐 변형 목록과, 영역 전체의 `피그마 | 현재 구현` 표를 담는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param branch PR 브랜치
+ * @param area 영역 폴더 이름
+ * @param targets 이번에 내보낸 조립과 main 기준 변경
+ * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
+ * @returns PR 본문(Markdown)
+ */
+export function patternPullRequestBody(
+  branch: string,
+  area: string,
+  targets: readonly TargetChanges[],
+  renamedFolders: readonly string[],
+): string {
+  return [
+    '## 변경',
+    '',
+    `- 영역: \`${area}\``,
+    ...targets.flatMap((target) => [
+      `- 조립: ${target.name}`,
+      ...changeLines(target).map((line) => `  ${line}`),
+    ]),
+    ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
+    '',
+    '## 피그마와 현재 구현',
+    '',
+    ...variantTable(branch, targets),
+    '',
+    '## 확인',
+    '',
+    '- `피그마` 열이 구현할 모습이다. 앱(`apps/web` `features/`)의 조립 컴포넌트와 `Patterns/<조립 이름>` 스토리를 만들고, CI 캡처 표를 보고 병합한다.',
+    '- 쓰는 토큰·컴포넌트 PR이 열려 있으면 그것을 먼저 병합하고 이 PR에 `main`을 받아 온다.',
   ].join('\n');
 }
 

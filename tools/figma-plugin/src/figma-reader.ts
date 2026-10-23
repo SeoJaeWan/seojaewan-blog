@@ -12,7 +12,7 @@ import type {
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
 import { assetFile } from './naming';
-import { COMPONENTS_PAGE_ID } from './plugin-config';
+import { COMPONENTS_PAGE_ID, PATTERNS_PAGE_ID } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
@@ -22,7 +22,24 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
-  const page = await loadComponentsPage();
+  return listPageComponents(await loadPage(COMPONENTS_PAGE_ID));
+}
+
+/**
+ * "02 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 문서 순서대로 찾는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @returns 조립 목록
+ */
+export async function listPatterns(): Promise<ComponentSummary[]> {
+  return listPageComponents(await loadPage(PATTERNS_PAGE_ID));
+}
+
+/**
+ * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾는다.
+ * @param page 불러온 페이지
+ * @returns 컴포넌트 목록
+ */
+function listPageComponents(page: PageNode): ComponentSummary[] {
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
   for (const node of nodes) {
@@ -328,13 +345,14 @@ export async function readCheckContext(): Promise<CheckContext> {
 }
 
 /**
- * 컴포넌트 페이지를 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
- * @returns 컴포넌트 페이지
+ * 페이지를 ID로 찾아 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
+ * @param pageId 페이지 ID
+ * @returns 불러온 페이지
  */
-export async function loadComponentsPage(): Promise<PageNode> {
-  const page = await figma.getNodeByIdAsync(COMPONENTS_PAGE_ID);
+export async function loadPage(pageId: string): Promise<PageNode> {
+  const page = await figma.getNodeByIdAsync(pageId);
   if (page?.type !== 'PAGE') {
-    throw new Error(`컴포넌트 페이지 ${COMPONENTS_PAGE_ID}를 찾을 수 없다.`);
+    throw new Error(`페이지 ${pageId}를 찾을 수 없다.`);
   }
   await page.loadAsync();
   return page;

@@ -1,4 +1,4 @@
-import { ASSETS_DIR, COMPONENTS_DIR } from './plugin-config';
+import { ASSETS_DIR, COMPONENTS_DIR, PATTERNS_DIR } from './plugin-config';
 
 /** 단독 컴포넌트(변형 없음)의 변형 이름 */
 export const DEFAULT_VARIANT = 'default';
@@ -47,6 +47,40 @@ export function variantSlug(properties: Readonly<Record<string, string>>): strin
  */
 export function componentFilePath(component: string, file: string): string {
   return `${COMPONENTS_DIR}/${component}/${file}`;
+}
+
+/** 조립의 영역과 이름(폴더 이름) */
+export type PatternPlace = { area: string; name: string };
+
+/**
+ * 조립 이름(`영역/이름`)을 폴더 이름(kebab-case)으로 바꾼다. 예: `Menu/ViewSubmenu` → `menu`, `view-submenu`
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param name 피그마 조립 이름
+ * @returns 영역과 이름 폴더, `영역/이름` 꼴이 아니면 null
+ */
+export function patternPlace(name: string): PatternPlace | null {
+  const parts = name.split('/').map((part) => part.trim());
+  const [area, rest] = parts;
+  if (
+    parts.length !== 2 ||
+    area === undefined ||
+    rest === undefined ||
+    area === '' ||
+    rest === ''
+  ) {
+    return null;
+  }
+  return { area: componentSlug(area), name: componentSlug(rest) };
+}
+
+/**
+ * 조립 폴더의 저장소 경로를 만든다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param place 조립의 영역과 이름
+ * @returns `apps/web/figma/patterns/<영역>/<이름>`
+ */
+export function patternFolder(place: PatternPlace): string {
+  return `${PATTERNS_DIR}/${place.area}/${place.name}`;
 }
 
 /**

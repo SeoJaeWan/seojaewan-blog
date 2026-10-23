@@ -4,6 +4,9 @@ import {
   componentBranchName,
   componentCommitSubject,
   componentPullRequestBody,
+  patternBranchName,
+  patternPullRequestBody,
+  patternsCommitSubject,
   type TargetChanges,
   targetCommitBody,
   TOKENS_BRANCH,
@@ -27,6 +30,7 @@ describe('커밋 제목은 영어 Conventional Commits, 본문은 한국어다',
   it('컴포넌트 PR과 토큰 PR의 제목은 브랜치 종류와 같은 feat다', () => {
     expect(componentCommitSubject('search-box')).toBe('feat(figma): export search-box component');
     expect(tokensCommitSubject()).toBe('feat(figma): export tokens');
+    expect(patternsCommitSubject('menu')).toBe('feat(figma): export menu patterns');
   });
 
   it('커밋 본문에 이번 커밋의 변경 수를 적고, 자산은 바뀐 경우에만 적는다', () => {
@@ -59,8 +63,13 @@ describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이�
     expect(TOKENS_BRANCH).toBe('feat/figma-tokens');
   });
 
-  it('토큰 브랜치와 겹치는 컴포넌트 이름은 막는다', () => {
+  it('조립은 영역마다 feat/figma-patterns-<영역>이다', () => {
+    expect(patternBranchName('menu')).toBe('feat/figma-patterns-menu');
+  });
+
+  it('토큰·조립 브랜치와 겹치는 컴포넌트 이름은 막는다', () => {
     expect(() => componentBranchName('tokens')).toThrow('토큰 PR 브랜치와 겹친다');
+    expect(() => componentBranchName('patterns-menu')).toThrow('조립 PR 브랜치와 겹친다');
   });
 });
 
@@ -126,5 +135,35 @@ describe('PR 본문의 피그마 | 현재 구현 표', () => {
     });
     expect(body).toContain('- 바뀐 토큰을 쓰는 컴포넌트 없음');
     expect(body).not.toContain('이미지 자산');
+  });
+
+  it('조립 PR 본문은 조립마다 변경을 적고, 표의 변형 앞에 조립 이름을 붙인다', () => {
+    /**
+     * 조립 하나의 변경을 만든다.
+     * @param name 조립 이름(영역 뒤)
+     * @returns 변경
+     */
+    function folder(name: string): TargetChanges {
+      return {
+        name: `Menu/${name}`,
+        folder: `apps/web/figma/patterns/menu/${name.toLowerCase()}`,
+        captureFolder: `patterns/menu/${name.toLowerCase()}`,
+        changedVariants: ['default'],
+        removedVariants: [],
+        capturedVariants: new Set(name === 'Folder' ? ['default'] : []),
+      };
+    }
+    const body = patternPullRequestBody(
+      'feat/figma-patterns-menu',
+      'menu',
+      [folder('Folder'), folder('Desktop')],
+      [],
+    );
+    expect(body).toContain('- 영역: `menu`');
+    expect(body).toContain('- 조립: Menu/Folder\n  - 새로 생기거나 PNG가 바뀐 변형 1개');
+    expect(body).toContain(
+      '| `Menu/Folder / default` | ![default](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-patterns-menu/apps/web/figma/patterns/menu/folder/default.png?raw=true) | ![default](https://github.com/SeoJaeWan/seojaewan-blog/blob/parity-captures/patterns/menu/folder/default.png?raw=true) |',
+    );
+    expect(body).toContain('| `Menu/Desktop / default` |');
   });
 });

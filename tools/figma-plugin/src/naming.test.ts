@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { assetFile, assetFilePath, componentFilePath, componentSlug, variantSlug } from './naming';
+import {
+  assetFile,
+  assetFilePath,
+  componentFilePath,
+  componentSlug,
+  patternFolder,
+  patternPlace,
+  variantSlug,
+} from './naming';
 import { utf8Encode } from './sha256';
 import { utf8Decode } from './svg-normalize';
 import { monoColorSvg } from './svg-normalize';
@@ -69,5 +77,22 @@ describe('자산 파일', () => {
     expect(utf8Decode(monoColorSvg(utf8Encode(svg)))).toBe(
       '<svg><path fill="currentColor" d="M0"/><rect fill="none"/></svg>',
     );
+  });
+});
+
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('조립 폴더', () => {
+  it('조립 이름 `영역/이름`을 apps/web/figma/patterns/<영역>/<이름>으로 둔다', () => {
+    const place = patternPlace('Menu/ViewSubmenu');
+    expect(place).toEqual({ area: 'menu', name: 'view-submenu' });
+    expect(place === null ? null : patternFolder(place)).toBe(
+      'apps/web/figma/patterns/menu/view-submenu',
+    );
+  });
+
+  it('`영역/이름` 꼴이 아닌 이름은 폴더를 정할 수 없다', () => {
+    expect(patternPlace('Folder')).toBeNull();
+    expect(patternPlace('Menu/Folder/Open')).toBeNull();
+    expect(patternPlace('Menu/')).toBeNull();
   });
 });

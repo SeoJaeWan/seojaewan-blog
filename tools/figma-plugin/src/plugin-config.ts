@@ -6,6 +6,9 @@ export const FILE_KEY = 'XV9Y1UT5UH4tC5hSqLVipZ';
 /** 컴포넌트가 있는 "01 · Components" 페이지 */
 export const COMPONENTS_PAGE_ID = '1:2';
 
+/** 조립이 있는 "02 · Patterns" 페이지. 이름은 바뀔 수 있어 ID로 찾는다 */
+export const PATTERNS_PAGE_ID = '517:16130';
+
 /** PNG 내보내기 배율. figma.json에 함께 기록한다. */
 export const SCALE = 1;
 
@@ -24,6 +27,9 @@ export const TOKENS_CSS_PATH = 'packages/design-system/src/tokens.css';
 export const SETTINGS_PATH = `${FIGMA_DIR}/figma.json`;
 /** 컴포넌트마다 export.json과 변형 PNG를 두는 폴더 */
 export const COMPONENTS_DIR = `${FIGMA_DIR}/components`;
+
+/** 조립마다 `<영역>/<이름>/`에 export.json과 변형 PNG를 두는 폴더(앱) */
+export const PATTERNS_DIR = 'apps/web/figma/patterns';
 
 /** GitHub 토큰을 보관하는 figma.clientStorage 키 */
 export const TOKEN_STORAGE_KEY = 'github-token';
