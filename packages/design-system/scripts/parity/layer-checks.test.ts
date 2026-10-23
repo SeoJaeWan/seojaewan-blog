@@ -182,6 +182,16 @@ describe('레이어 확인 항목', () => {
     });
   });
 
+  it('회전은 피그마 회전이 0인 레이어도 0°로 본다', () => {
+    expect(checkOf([root], '', '회전')).toMatchObject({
+      property: 'rotate|transform',
+      expected: { kind: 'angle', deg: 0 },
+    });
+    expect(checkOf([{ ...root, rotation: -90 }], '', '회전')).toMatchObject({
+      expected: { kind: 'angle', deg: 90 },
+    });
+  });
+
   it('절대 위치(위치 방식, 붙는 변, 거리)는 판정하지 않는다', () => {
     const border = {
       path: 'bottom border',

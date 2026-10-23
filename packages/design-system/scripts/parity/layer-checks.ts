@@ -460,19 +460,18 @@ function miscChecks(context: LayerContext): void {
       expected: { kind: 'number', value: 1 },
     });
   }
+  // 회전이 0인 레이어도 확인해야 코드만 돌린 경우를 잡는다.
   const rotation = typeof layer.rotation === 'number' ? layer.rotation : 0;
-  if (rotation !== 0) {
-    if (!(String(rotation) in parityDecisions.d9.allowedRotations)) {
-      throw new Error(`회전 ${String(rotation)}°는 대응이 없다(D9)`);
-    }
-    // 피그마 각도는 반시계 방향이 양수다. CSS는 시계 방향이 양수다.
-    add(context, {
-      role: '회전',
-      figma: `${String(rotation)}°`,
-      property: 'rotate|transform',
-      expected: { kind: 'angle', deg: -rotation },
-    });
+  if (!(String(rotation) in parityDecisions.d9.allowedRotations)) {
+    throw new Error(`회전 ${String(rotation)}°는 대응이 없다(D9)`);
   }
+  // 피그마 각도는 반시계 방향이 양수다. CSS는 시계 방향이 양수다.
+  add(context, {
+    role: '회전',
+    figma: `${String(rotation)}°`,
+    property: 'rotate|transform',
+    expected: { kind: 'angle', deg: rotation === 0 ? 0 : -rotation },
+  });
   if (isRecord(layer.layout)) {
     const isClipped = layer.clipsContent === true;
     add(
