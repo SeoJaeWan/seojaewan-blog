@@ -3,6 +3,9 @@ import type { TreeEntry } from './github-client';
 // 커밋할 브랜치의 파일(경로 → blob SHA)과 이번에 쓸 파일을 비교해 트리 변경을 정한다.
 // 같은 내용은 같은 blob SHA라, SHA가 다른 파일만 바꾸면 바뀐 것이 없을 때 커밋도 생기지 않는다.
 
+/** 트리 만들기 요청 하나에 넣는 최대 항목 수 */
+export const TREE_CHUNK_SIZE = 100;
+
 /** 트리 변경 계획 */
 export type TreePlan = {
   /** 트리 항목(바뀐 파일과 지울 파일) */
@@ -52,4 +55,20 @@ export function planTree(
 export function parentFolder(path: string): string {
   const index = path.lastIndexOf('/');
   return index < 0 ? '' : path.slice(0, index);
+}
+
+/**
+ * 트리 항목을 정해진 수씩 나눈다. 큰 트리를 한 번에 만들면 GitHub가 422로 거절하므로,
+ * 나눈 묶음마다 앞 트리를 기준으로 트리를 이어 만든다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param entries 트리 항목
+ * @param size 묶음 하나의 최대 항목 수
+ * @returns 나눈 묶음(항목이 없으면 빈 배열)
+ */
+export function treeChunks<T>(entries: readonly T[], size: number = TREE_CHUNK_SIZE): T[][] {
+  const result: T[][] = [];
+  for (let start = 0; start < entries.length; start += size) {
+    result.push(entries.slice(start, start + size));
+  }
+  return result;
 }

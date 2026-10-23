@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { planTree } from './tree-changes';
+import { planTree, treeChunks } from './tree-changes';
 
 const current = new Map([
   ['components/button/export.json', 'a'],
@@ -41,5 +41,13 @@ describe('브랜치와 내용이 다른 파일만 바꾸고, 맡은 폴더의 �
     const plan = planTree(new Map(), current, ['components/button']);
     expect(plan.deleted).not.toContain('components/menu/export.json');
     expect(plan.deleted).not.toContain('assets/icons/add.svg');
+  });
+});
+
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('큰 트리는 나눠 만든다', () => {
+  it('항목을 정해진 수씩 순서대로 나눈다', () => {
+    expect(treeChunks([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+    expect(treeChunks([], 2)).toEqual([]);
   });
 });
