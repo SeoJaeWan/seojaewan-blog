@@ -34,7 +34,6 @@
  * | `outline-*` | outline-width | `--stroke-width-*` |
  * | `outline-<색 묶음>-*` | outline-color | `--<색 묶음>-*` |
  * | `shadow-elevation-*` | box-shadow | `--elevation-*` |
- * | `shadow-text-*` | box-shadow | `--text-*` |
  * | `size-*` | width, height | `--size-*` |
  * | `text-<색 묶음>-*` | color | `--<색 묶음>-*` |
  * | `w-*` | width | `--size-*` |
@@ -48,7 +47,7 @@
  * | `<효과 스타일>`(배경 흐림이 있는 것) | box-shadow, backdrop-filter | `--<효과 스타일>-shadow`, `-backdrop-blur` |
  * | `material-<재질>` | background-color, backdrop-filter | `Material/*` 칠·효과 스타일 |
  *
- * 색 묶음: accent-fill, accent-text-fill, acrylic-background-fill, boot-screen, caption-button, card-background-fill, card-stroke, chrome, control-alt-fill, control-fill, control-on-image-fill, control-solid-fill, control-stroke, control-strong-fill, control-strong-stroke, desktop-icon, divider-stroke, file-item, focus-stroke, layer-fill, layer-on-acrylic-fill, layer-on-mica-base-alt-fill, material, mica-background-fill, selection-marquee, smoke-fill, solid-background-fill, subtle-fill, surface-stroke, system-fill, text-fill, text-on-accent-fill, wallpaper
+ * 색 묶음: accent-fill, accent-text-fill, acrylic-background-fill, boot-screen, caption-button, card-background-fill, card-stroke, chrome, control-alt-fill, control-fill, control-stroke, control-strong-fill, control-strong-stroke, divider-stroke, file-item, focus-stroke, layer-fill, layer-on-mica-base-alt-fill, material, mica-background-fill, selection-marquee, solid-background-fill, subtle-fill, surface-stroke, system-fill, text-fill, text-on-accent-fill
  */
 
 @theme {
@@ -69,78 +68,54 @@
 }
 
 :root {
-  --color-black-alpha-0a: #0000000a;
-  --color-black-alpha-0f: #0000000f;
-  --color-black-alpha-00: #00000000;
-  --color-black-alpha-4d: #0000004d;
-  --color-black-alpha-5c: #0000005c;
-  --color-black-alpha-06: #00000006;
-  --color-black-alpha-09: #0000000a;
-  --color-black-alpha-9e: #0000009b;
-  --color-black-alpha-14: #00000014;
-  --color-black-alpha-18: #00000018;
-  --color-black-alpha-29: #00000029;
-  --color-black-alpha-37: #00000037;
-  --color-black-alpha-51: #00000051;
-  --color-black-alpha-66: #00000066;
-  --color-black-alpha-72: #00000072;
-  --color-black-alpha-e4: #000000e4;
-  --color-black-solid: #000000;
-  --color-bloom-deep: #1a4a8c;
-  --color-bloom-light: #9ec5f8;
-  --color-bloom-mid: #3a7bd5;
+  --color-black: #000000;
+  --color-black-2: #00000006;
+  --color-black-4: #0000000a;
+  --color-black-6: #0000000f;
+  --color-black-8: #00000014;
+  --color-black-9: #00000018;
+  --color-black-16: #00000029;
+  --color-black-22: #00000037;
+  --color-black-36: #0000005c;
+  --color-black-40: #00000066;
+  --color-black-45: #00000072;
+  --color-black-61: #0000009b;
+  --color-black-90: #000000e4;
   --color-blue-base: #0078d4;
   --color-blue-dark-1: #005fb8;
-  --color-blue-dark-1-acc: #005fb8cc;
-  --color-blue-dark-1-ae6: #005fb8e5;
+  --color-blue-dark-1-80: #005fb8cc;
+  --color-blue-dark-1-90: #005fb8e5;
   --color-blue-dark-2: #003e92;
-  --color-blue-dark-3: #001a68;
-  --color-blue-light-1: #0093f9;
-  --color-blue-light-2: #60cdff;
-  --color-blue-light-3: #99ebff;
-  --color-chrome-blue-container: #d3e3fd;
   --color-chrome-blue-primary: #0b57d0;
   --color-chrome-gray-frame: #dfe3e7;
   --color-chrome-gray-omnibox: #e9eef6;
+  --color-chrome-gray-omnibox-hover: #e0e5ed;
   --color-chrome-gray-on-surface: #1f1f1f;
   --color-chrome-gray-on-surface-variant: #474747;
   --color-explorer-blue-focus: #99d1ff;
   --color-explorer-blue-hover: #e5f3ff;
   --color-explorer-blue-selected: #cce8ff;
-  --color-gray-8a8a8a: #8a8a8a;
-  --color-gray-757575-a66: #75757566;
-  --color-gray-dadada: #dadada;
-  --color-gray-dadada-a80: #dadada80;
-  --color-gray-ebebeb: #ebebeb;
-  --color-gray-eeeeee: #eeeeee;
-  --color-gray-f3f3f3: #f3f3f3;
-  --color-gray-f3f3f3-a00: #f3f3f300;
-  --color-gray-f3f3f3-a80: #f3f3f380;
-  --color-gray-f3f3f3-ac2: #f3f3f3c2;
-  --color-gray-f3f3f3-ae6: #f3f3f3e5;
-  --color-gray-f6f6f6-a80: #f6f6f680;
-  --color-gray-f9f9f9: #f9f9f9;
-  --color-gray-f9f9f9-a4d: #f9f9f94d;
-  --color-gray-f9f9f9-a80: #f9f9f980;
-  --color-gray-fcfcfc-a00: #fcfcfc00;
-  --color-gray-fcfcfc-ad9: #fcfcfcd9;
-  --color-gray-fdfdfd: #fdfdfd;
-  --color-green-dark-1: #0f7b0f;
+  --color-gray-200-85: #fcfcfcd9;
+  --color-gray-300: #f9f9f9;
+  --color-gray-300-30: #f9f9f94d;
+  --color-gray-300-50: #f9f9f980;
+  --color-gray-400-50: #f6f6f680;
+  --color-gray-500: #f3f3f3;
+  --color-gray-500-90: #f3f3f3e5;
+  --color-gray-500-95: #f3f3f3f2;
+  --color-gray-800: #dadada;
+  --color-gray-1000-40: #75757566;
   --color-green-light-2: #78bf91;
-  --color-green-light-3: #dff6dd;
   --color-red-dark-1: #c42b1c;
-  --color-red-dark-1-ae6: #c42b1ce5;
-  --color-red-light-3: #fde7e9;
-  --color-white-alpha-00: #ffffff00;
-  --color-white-alpha-14: #ffffff14;
-  --color-white-alpha-26: #ffffff26;
-  --color-white-alpha-40: #ffffff40;
-  --color-white-alpha-80: #ffffff80;
-  --color-white-alpha-b3: #ffffffb2;
-  --color-white-alpha-c9: #ffffffc9;
-  --color-white-solid: #ffffff;
+  --color-red-dark-1-90: #c42b1ce5;
+  --color-white: #ffffff;
+  --color-white-0: #ffffff00;
+  --color-white-8: #ffffff14;
+  --color-white-15: #ffffff26;
+  --color-white-25: #ffffff40;
+  --color-white-50: #ffffff80;
+  --color-white-70: #ffffffb2;
   --color-yellow-dark-1: #9d5d00;
-  --color-yellow-light-3: #fff4ce;
   --font-family-base: 'Open Sans';
   --font-family-code: 'Cascadia Mono';
   --font-family-korean: 'Pretendard';
@@ -167,7 +142,6 @@
   --surface-flyout-acrylic-shadow: 0px 8px 16px 0px #00000024;
   --surface-shell-acrylic-backdrop-blur: var(--blur-acrylic);
   --surface-shell-acrylic-shadow: 0px 2px 6px 0px #00000026, 0px 9px 18px 0px #00000030;
-  --surface-taskbar-acrylic-backdrop-blur: var(--blur-acrylic);
   --surface-tooltip-acrylic-backdrop-blur: var(--blur-acrylic);
   --surface-tooltip-acrylic-shadow: 0px 4px 8px 0px #00000024;
   --surface-window-active-mica-backdrop-blur: var(--blur-mica);
@@ -178,114 +152,87 @@
 
 @theme static {
   --accent-fill-default: var(--color-blue-dark-1);
-  --accent-fill-disabled: var(--color-black-alpha-37);
-  --accent-fill-secondary: var(--color-blue-dark-1-ae6);
+  --accent-fill-disabled: var(--color-black-22);
+  --accent-fill-secondary: var(--color-blue-dark-1-90);
   --accent-fill-selected-text-background: var(--color-blue-base);
-  --accent-fill-tertiary: var(--color-blue-dark-1-acc);
-  --accent-text-fill-disabled: var(--color-black-alpha-5c);
+  --accent-fill-tertiary: var(--color-blue-dark-1-80);
   --accent-text-fill-primary: var(--color-blue-dark-2);
-  --accent-text-fill-secondary: var(--color-blue-dark-3);
-  --accent-text-fill-tertiary: var(--color-blue-dark-1);
-  --acrylic-background-fill-base: var(--color-gray-f3f3f3-ae6);
-  --acrylic-background-fill-base-fallback: var(--color-gray-f3f3f3);
-  --acrylic-background-fill-base-tint: var(--color-gray-f3f3f3-a00);
-  --acrylic-background-fill-default: var(--color-gray-fcfcfc-ad9);
-  --acrylic-background-fill-default-fallback: var(--color-gray-f9f9f9);
-  --acrylic-background-fill-default-tint: var(--color-gray-fcfcfc-a00);
+  --acrylic-background-fill-base: var(--color-gray-500-90);
+  --acrylic-background-fill-base-fallback: var(--color-gray-500);
+  --acrylic-background-fill-default: var(--color-gray-200-85);
+  --acrylic-background-fill-default-fallback: var(--color-gray-300);
   --blur-acrylic: 60px;
   --blur-mica: 240px;
-  --boot-screen-background: var(--color-black-solid);
-  --boot-screen-foreground: var(--color-white-solid);
+  --boot-screen-background: var(--color-black);
+  --boot-screen-foreground: var(--color-white);
   --caption-button-close-fill-hover: var(--color-red-dark-1);
-  --caption-button-close-fill-pressed: var(--color-red-dark-1-ae6);
-  --caption-button-close-glyph-hover: var(--color-white-solid);
-  --caption-button-close-glyph-pressed: var(--color-white-alpha-b3);
-  --card-background-fill-default: var(--color-white-alpha-b3);
-  --card-background-fill-secondary: var(--color-gray-f6f6f6-a80);
-  --card-background-fill-tertiary: var(--color-white-solid);
-  --card-stroke-default: var(--color-black-alpha-0f);
-  --card-stroke-default-solid: var(--color-gray-ebebeb);
+  --caption-button-close-fill-pressed: var(--color-red-dark-1-90);
+  --caption-button-close-glyph-hover: var(--color-white);
+  --caption-button-close-glyph-pressed: var(--color-white-70);
+  --card-background-fill-default: var(--color-white-70);
+  --card-background-fill-secondary: var(--color-gray-400-50);
+  --card-stroke-default: var(--color-black-6);
   --chrome-frame-fill: var(--color-chrome-gray-frame);
   --chrome-omnibox-fill: var(--color-chrome-gray-omnibox);
+  --chrome-omnibox-fill-hover: var(--color-chrome-gray-omnibox-hover);
   --chrome-omnibox-stroke-focus: var(--color-chrome-blue-primary);
-  --chrome-page-fill: var(--color-white-solid);
-  --chrome-suggestion-fill-selected: var(--color-chrome-blue-container);
-  --chrome-tab-fill-hover: var(--color-white-alpha-80);
+  --chrome-page-fill: var(--color-white);
+  --chrome-tab-fill-hover: var(--color-white-50);
+  --chrome-tab-separator: var(--color-black-22);
   --chrome-text-primary: var(--color-chrome-gray-on-surface);
   --chrome-text-secondary: var(--color-chrome-gray-on-surface-variant);
-  --chrome-toolbar-fill: var(--color-white-solid);
-  --control-alt-fill-disabled: var(--color-white-alpha-00);
-  --control-alt-fill-quarternary: var(--color-black-alpha-18);
-  --control-alt-fill-secondary: var(--color-black-alpha-06);
-  --control-alt-fill-tertiary: var(--color-black-alpha-0f);
-  --control-alt-fill-transparent: var(--color-white-alpha-00);
-  --control-fill-default: var(--color-white-alpha-b3);
-  --control-fill-disabled: var(--color-gray-f9f9f9-a4d);
-  --control-fill-input-active: var(--color-white-solid);
-  --control-fill-quarternary: var(--color-gray-f3f3f3-ac2);
-  --control-fill-secondary: var(--color-gray-f9f9f9-a80);
-  --control-fill-tertiary: var(--color-gray-f9f9f9-a4d);
-  --control-fill-transparent: var(--color-white-alpha-00);
-  --control-on-image-fill-default: var(--color-white-alpha-c9);
-  --control-on-image-fill-disabled: var(--color-white-alpha-00);
-  --control-on-image-fill-secondary: var(--color-gray-f3f3f3);
-  --control-on-image-fill-tertiary: var(--color-gray-ebebeb);
-  --control-solid-fill-default: var(--color-white-solid);
-  --control-stroke-default: var(--color-black-alpha-0f);
-  --control-stroke-on-accent-default: var(--color-white-alpha-14);
-  --control-stroke-on-accent-disabled: var(--color-black-alpha-0f);
-  --control-stroke-on-accent-secondary: var(--color-black-alpha-66);
-  --control-stroke-on-accent-tertiary: var(--color-black-alpha-37);
-  --control-stroke-secondary: var(--color-black-alpha-29);
-  --control-strong-fill-default: var(--color-black-alpha-72);
-  --control-strong-fill-disabled: var(--color-black-alpha-51);
-  --control-strong-stroke-default: var(--color-black-alpha-9e);
-  --control-strong-stroke-disabled: var(--color-black-alpha-37);
-  --desktop-icon-fill-hover: var(--color-white-alpha-26);
-  --desktop-icon-fill-selected: var(--color-white-alpha-40);
-  --desktop-icon-label: var(--color-white-solid);
-  --desktop-icon-stroke-selected-focus: var(--color-white-alpha-80);
-  --divider-stroke-default: var(--color-black-alpha-14);
+  --chrome-toolbar-fill: var(--color-white);
+  --control-alt-fill-quarternary: var(--color-black-9);
+  --control-alt-fill-secondary: var(--color-black-2);
+  --control-alt-fill-tertiary: var(--color-black-6);
+  --control-fill-default: var(--color-white-70);
+  --control-fill-disabled: var(--color-gray-300-30);
+  --control-fill-input-active: var(--color-white);
+  --control-fill-secondary: var(--color-gray-300-50);
+  --control-fill-tertiary: var(--color-gray-300-30);
+  --control-stroke-default: var(--color-black-6);
+  --control-stroke-on-accent-default: var(--color-white-8);
+  --control-stroke-on-accent-secondary: var(--color-black-40);
+  --control-stroke-secondary: var(--color-black-16);
+  --control-strong-fill-default: var(--color-black-45);
+  --control-strong-stroke-default: var(--color-black-61);
+  --control-strong-stroke-disabled: var(--color-black-22);
+  --divider-stroke-default: var(--color-black-8);
   --elevation-accent-control-border: linear-gradient(to bottom, var(--control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, #66666645 96.268%, #33333356 98.134%, var(--control-stroke-on-accent-secondary) 100%);
-  --elevation-card: 0px 2px 4px 0px #0000000a;
-  --elevation-card-hover: 0px 2px 4px 0px #0000001a;
-  --elevation-circle-border: linear-gradient(to bottom, var(--control-stroke-default) 50.02%, var(--control-stroke-secondary) 95.45%);
   --elevation-control-border: linear-gradient(to bottom, var(--control-stroke-default) 90.58%, var(--control-stroke-secondary) 100%);
+  --elevation-desktop-label: 0px 1px 2px 0px #00000099;
   --elevation-dialog: 0px 2px 21px 0px #00000026, 0px 32px 64px 0px #00000030;
   --elevation-flyout: 0px 8px 16px 0px #00000024;
   --elevation-shell-surface: 0px 2px 6px 0px #00000026, 0px 9px 18px 0px #00000030;
   --elevation-text-control-border: linear-gradient(to bottom, var(--control-stroke-default) 99.99%, var(--control-strong-fill-default) 100%);
-  --elevation-text-control-border-focused: linear-gradient(to bottom, var(--control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--accent-fill-default) 96.89%);
   --elevation-tooltip: 0px 4px 8px 0px #00000024;
   --elevation-window-active: 0px 2px 21px 0px #00000038, 0px 32px 64px 0px #00000047;
   --elevation-window-inactive: 0px 2px 10.67px 0px #00000026, 0px 16px 32px 0px #00000030;
-  --file-item-fill-hover: var(--color-explorer-blue-hover);
-  --file-item-fill-selected: var(--color-explorer-blue-selected);
-  --file-item-stroke-selected-focus: var(--color-explorer-blue-focus);
-  --focus-stroke-outer: var(--color-black-alpha-e4);
+  --file-item-desktop-fill-hover: var(--color-white-15);
+  --file-item-desktop-fill-selected: var(--color-white-25);
+  --file-item-desktop-label: var(--color-white);
+  --file-item-desktop-stroke-selected-focus: var(--color-white-50);
+  --file-item-explorer-fill-hover: var(--color-explorer-blue-hover);
+  --file-item-explorer-fill-selected: var(--color-explorer-blue-selected);
+  --file-item-explorer-stroke-selected-focus: var(--color-explorer-blue-focus);
+  --focus-stroke-outer: var(--color-black-90);
   --font-weight-bold: 700;
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
   --icon-color-search: linear-gradient(to bottom, var(--color-blue-dark-1) 0%, var(--color-blue-dark-1) 55%, var(--color-green-light-2) 90%, var(--color-green-light-2) 100%);
-  --layer-fill-alt: var(--color-white-solid);
-  --layer-fill-default: var(--color-white-alpha-80);
-  --layer-on-acrylic-fill-default: var(--color-white-alpha-40);
-  --layer-on-mica-base-alt-fill-default: var(--color-white-alpha-b3);
-  --layer-on-mica-base-alt-fill-secondary: var(--color-black-alpha-09);
-  --layer-on-mica-base-alt-fill-tertiary: var(--color-gray-f9f9f9);
-  --layer-on-mica-base-alt-fill-transparent: var(--color-black-alpha-00);
+  --layer-fill-alt: var(--color-white);
+  --layer-fill-default: var(--color-white-50);
+  --layer-on-mica-base-alt-fill-default: var(--color-white-70);
+  --layer-on-mica-base-alt-fill-secondary: var(--color-black-4);
   --material-acrylic-base: rgb(from var(--acrylic-background-fill-base) r g b / 0.9);
   --material-acrylic-default: rgb(from var(--acrylic-background-fill-default) r g b / 0.85);
   --material-fallback-acrylic-base: var(--acrylic-background-fill-base-fallback);
   --material-fallback-acrylic-default: var(--acrylic-background-fill-default-fallback);
   --material-fallback-mica-base: var(--mica-background-fill-base-fallback);
-  --material-fallback-mica-base-alt: var(--mica-background-fill-base-alt-fallback);
-  --mica-background-fill-base: var(--color-gray-f3f3f3);
-  --mica-background-fill-base-alt: var(--color-gray-dadada);
-  --mica-background-fill-base-alt-fallback: var(--color-gray-dadada);
-  --mica-background-fill-base-alt-tint: var(--color-gray-dadada-a80);
-  --mica-background-fill-base-fallback: var(--color-gray-f3f3f3);
-  --mica-background-fill-base-tint: var(--color-gray-f3f3f3-a80);
+  --material-mica-base: rgb(from var(--mica-background-fill-base) r g b / 0.95);
+  --mica-background-fill-base: var(--color-gray-500-95);
+  --mica-background-fill-base-alt-fallback: var(--color-gray-800);
+  --mica-background-fill-base-fallback: var(--color-gray-500);
   --motion-delay-boot-screen: 2500ms;
   --motion-duration-fast: 167ms;
   --motion-duration-faster: 83ms;
@@ -304,66 +251,98 @@
   --radius-small: 2px;
   --selection-marquee-fill: var(--color-explorer-blue-hover);
   --selection-marquee-stroke: var(--color-explorer-blue-focus);
-  --size-boot-screen-gap: 160px;
-  --size-boot-screen-gap-mobile: 120px;
-  --size-breadcrumb-item-max-width: 200px;
-  --size-button-min-width: 120px;
-  --size-caption-button-width: 46px;
+  --size-1: 1px;
+  --size-2: 2px;
+  --size-6: 6px;
+  --size-8: 8px;
+  --size-9: 9px;
+  --size-12: 12px;
+  --size-14: 14px;
+  --size-16: 16px;
+  --size-20: 20px;
+  --size-24: 24px;
+  --size-32: 32px;
+  --size-34: 34px;
+  --size-36: 36px;
+  --size-40: 40px;
+  --size-46: 46px;
+  --size-48: 48px;
+  --size-52: 52px;
+  --size-56: 56px;
+  --size-64: 64px;
+  --size-76: 76px;
+  --size-80: 80px;
+  --size-84: 84px;
+  --size-88: 88px;
+  --size-89: 89px;
+  --size-95: 95px;
+  --size-96: 96px;
+  --size-104: 104px;
+  --size-108: 108px;
+  --size-112: 112px;
+  --size-120: 120px;
+  --size-140: 140px;
+  --size-148: 148px;
+  --size-160: 160px;
+  --size-180: 180px;
+  --size-188: 188px;
+  --size-200: 200px;
+  --size-208: 208px;
+  --size-220: 220px;
+  --size-240: 240px;
+  --size-250: 250px;
+  --size-258: 258px;
+  --size-300: 300px;
+  --size-316: 316px;
+  --size-318: 318px;
+  --size-320: 320px;
+  --size-354: 354px;
+  --size-356: 356px;
+  --size-388: 388px;
+  --size-390: 390px;
+  --size-400: 400px;
+  --size-448: 448px;
+  --size-458: 458px;
+  --size-465: 465px;
+  --size-480: 480px;
+  --size-489: 489px;
+  --size-500: 500px;
+  --size-522: 522px;
+  --size-545: 545px;
+  --size-569: 569px;
+  --size-574: 574px;
+  --size-576: 576px;
+  --size-600: 600px;
+  --size-638: 638px;
+  --size-640: 640px;
+  --size-654: 654px;
+  --size-660: 660px;
+  --size-711: 711px;
+  --size-716: 716px;
+  --size-720: 720px;
+  --size-796: 796px;
+  --size-798: 798px;
+  --size-800: 800px;
+  --size-840: 840px;
+  --size-844: 844px;
+  --size-952: 952px;
+  --size-1000: 1000px;
+  --size-1016: 1016px;
+  --size-1024: 1024px;
+  --size-1080: 1080px;
+  --size-1278: 1278px;
+  --size-1280: 1280px;
+  --size-1920: 1920px;
   --size-control-height: 32px;
-  --size-control-height-large: 40px;
-  --size-control-height-small: 24px;
-  --size-flyout-width: 320px;
   --size-icon-12: 12px;
   --size-icon-16: 16px;
   --size-icon-20: 20px;
   --size-icon-24: 24px;
   --size-icon-32: 32px;
   --size-icon-48: 48px;
-  --size-menu-item-bullet: 6px;
-  --size-menu-item-height: 32px;
-  --size-menu-item-width: 240px;
-  --size-menu-width-view-options: 104px;
-  --size-pinned-tile-width: 95px;
-  --size-pinned-tile-width-mobile: 89px;
-  --size-progress-ring-size: 32px;
-  --size-progress-ring-stroke: 3px;
-  --size-scroll-area-height: 240px;
-  --size-scroll-area-width: 320px;
-  --size-scrollbar-thumb-hover: 6px;
-  --size-scrollbar-thumb-rest: 2px;
-  --size-search-box-height-pill: 36px;
-  --size-search-box-width: 240px;
-  --size-search-box-width-pill: 320px;
-  --size-search-box-width-taskbar: 220px;
-  --size-search-panel-height: 720px;
-  --size-search-panel-height-mobile: 640px;
-  --size-search-panel-preview-icon: 64px;
-  --size-search-panel-result-list-width: 300px;
-  --size-search-panel-width: 640px;
-  --size-search-panel-width-mobile: 390px;
-  --size-search-results-height: 545px;
-  --size-search-results-height-mobile: 465px;
-  --size-search-results-width: 574px;
-  --size-search-results-width-mobile: 356px;
-  --size-start-menu-height: 720px;
-  --size-start-menu-height-mobile: 640px;
-  --size-start-menu-width: 640px;
-  --size-start-menu-width-mobile: 390px;
-  --size-taskbar-button-size: 40px;
-  --size-taskbar-height: 48px;
-  --size-taskbar-preview-thumbnail-height: 108px;
-  --size-taskbar-preview-width: 208px;
-  --size-taskbar-width: 1280px;
-  --size-title-bar-height: 32px;
-  --size-title-bar-height-tabbed: 40px;
-  --smoke-fill-default: var(--color-black-alpha-4d);
-  --solid-background-fill-base: var(--color-gray-f3f3f3);
-  --solid-background-fill-base-alt: var(--color-gray-dadada);
-  --solid-background-fill-quarternary: var(--color-white-solid);
-  --solid-background-fill-quinary: var(--color-gray-fdfdfd);
-  --solid-background-fill-secondary: var(--color-gray-eeeeee);
-  --solid-background-fill-senary: var(--color-white-solid);
-  --solid-background-fill-tertiary: var(--color-gray-f9f9f9);
+  --solid-background-fill-base: var(--color-gray-500);
+  --solid-background-fill-quarternary: var(--color-white);
+  --solid-background-fill-tertiary: var(--color-gray-300);
   --spacing-0: 0px;
   --spacing-2: 2px;
   --spacing-4: 4px;
@@ -380,37 +359,22 @@
   --stroke-width-default: 1px;
   --stroke-width-focus-outer: 2px;
   --stroke-width-indicator: 3px;
-  --subtle-fill-disabled: var(--color-white-alpha-00);
-  --subtle-fill-secondary: var(--color-black-alpha-09);
-  --subtle-fill-tertiary: var(--color-black-alpha-06);
-  --subtle-fill-transparent: var(--color-white-alpha-00);
-  --surface-stroke-default: var(--color-gray-757575-a66);
-  --surface-stroke-flyout: var(--color-black-alpha-0f);
-  --system-fill-attention: var(--color-blue-dark-1);
-  --system-fill-attention-background: var(--color-gray-f6f6f6-a80);
+  --subtle-fill-disabled: var(--color-white-0);
+  --subtle-fill-secondary: var(--color-black-4);
+  --subtle-fill-tertiary: var(--color-black-2);
+  --subtle-fill-transparent: var(--color-white-0);
+  --surface-stroke-default: var(--color-gray-1000-40);
+  --surface-stroke-flyout: var(--color-black-6);
+  --system-fill-attention-background: var(--color-gray-400-50);
   --system-fill-caution: var(--color-yellow-dark-1);
-  --system-fill-caution-background: var(--color-yellow-light-3);
-  --system-fill-critical: var(--color-red-dark-1);
-  --system-fill-critical-background: var(--color-red-light-3);
-  --system-fill-neutral: var(--color-black-alpha-72);
-  --system-fill-neutral-background: var(--color-black-alpha-06);
-  --system-fill-solid-neutral: var(--color-gray-8a8a8a);
-  --system-fill-solid-neutral-background: var(--color-gray-f3f3f3);
-  --system-fill-success: var(--color-green-dark-1);
-  --system-fill-success-background: var(--color-green-light-3);
-  --text-desktop-label-shadow: 0px 1px 2px 0px #00000099;
-  --text-fill-disabled: var(--color-black-alpha-5c);
-  --text-fill-inverse: var(--color-white-solid);
-  --text-fill-primary: var(--color-black-alpha-e4);
-  --text-fill-secondary: var(--color-black-alpha-9e);
-  --text-fill-tertiary: var(--color-black-alpha-72);
-  --text-on-accent-fill-disabled: var(--color-white-solid);
-  --text-on-accent-fill-primary: var(--color-white-solid);
-  --text-on-accent-fill-secondary: var(--color-white-alpha-b3);
-  --text-on-accent-fill-selected-text: var(--color-white-solid);
-  --wallpaper-bloom-deep: var(--color-bloom-deep);
-  --wallpaper-bloom-light: var(--color-bloom-light);
-  --wallpaper-bloom-mid: var(--color-bloom-mid);
+  --text-fill-disabled: var(--color-black-36);
+  --text-fill-primary: var(--color-black-90);
+  --text-fill-secondary: var(--color-black-61);
+  --text-fill-tertiary: var(--color-black-45);
+  --text-on-accent-fill-disabled: var(--color-white);
+  --text-on-accent-fill-primary: var(--color-white);
+  --text-on-accent-fill-secondary: var(--color-white-70);
+  --text-on-accent-fill-selected-text: var(--color-white);
 }
 
 @utility bg-accent-fill-* {
@@ -453,14 +417,6 @@
   background-color: --value(--control-fill-*);
 }
 
-@utility bg-control-on-image-fill-* {
-  background-color: --value(--control-on-image-fill-*);
-}
-
-@utility bg-control-solid-fill-* {
-  background-color: --value(--control-solid-fill-*);
-}
-
 @utility bg-control-stroke-* {
   background-color: --value(--control-stroke-*);
 }
@@ -471,10 +427,6 @@
 
 @utility bg-control-strong-stroke-* {
   background-color: --value(--control-strong-stroke-*);
-}
-
-@utility bg-desktop-icon-* {
-  background-color: --value(--desktop-icon-*);
 }
 
 @utility bg-divider-stroke-* {
@@ -501,10 +453,6 @@
   background-color: --value(--layer-fill-*);
 }
 
-@utility bg-layer-on-acrylic-fill-* {
-  background-color: --value(--layer-on-acrylic-fill-*);
-}
-
 @utility bg-layer-on-mica-base-alt-fill-* {
   background-color: --value(--layer-on-mica-base-alt-fill-*);
 }
@@ -519,10 +467,6 @@
 
 @utility bg-selection-marquee-* {
   background-color: --value(--selection-marquee-*);
-}
-
-@utility bg-smoke-fill-* {
-  background-color: --value(--smoke-fill-*);
 }
 
 @utility bg-solid-background-fill-* {
@@ -547,10 +491,6 @@
 
 @utility bg-text-on-accent-fill-* {
   background-color: --value(--text-on-accent-fill-*);
-}
-
-@utility bg-wallpaper-* {
-  background-color: --value(--wallpaper-*);
 }
 
 @utility border-* {
@@ -603,14 +543,6 @@
   border-color: --value(--control-fill-*);
 }
 
-@utility border-control-on-image-fill-* {
-  border-color: --value(--control-on-image-fill-*);
-}
-
-@utility border-control-solid-fill-* {
-  border-color: --value(--control-solid-fill-*);
-}
-
 @utility border-control-stroke-* {
   border-color: --value(--control-stroke-*);
 }
@@ -621,10 +553,6 @@
 
 @utility border-control-strong-stroke-* {
   border-color: --value(--control-strong-stroke-*);
-}
-
-@utility border-desktop-icon-* {
-  border-color: --value(--desktop-icon-*);
 }
 
 @utility border-divider-stroke-* {
@@ -680,10 +608,6 @@
   border-color: --value(--layer-fill-*);
 }
 
-@utility border-layer-on-acrylic-fill-* {
-  border-color: --value(--layer-on-acrylic-fill-*);
-}
-
 @utility border-layer-on-mica-base-alt-fill-* {
   border-color: --value(--layer-on-mica-base-alt-fill-*);
 }
@@ -703,10 +627,6 @@
 
 @utility border-selection-marquee-* {
   border-color: --value(--selection-marquee-*);
-}
-
-@utility border-smoke-fill-* {
-  border-color: --value(--smoke-fill-*);
 }
 
 @utility border-solid-background-fill-* {
@@ -736,10 +656,6 @@
 
 @utility border-text-on-accent-fill-* {
   border-color: --value(--text-on-accent-fill-*);
-}
-
-@utility border-wallpaper-* {
-  border-color: --value(--wallpaper-*);
 }
 
 @utility border-x-* {
@@ -934,38 +850,6 @@
   }
 }
 
-@utility inner-border-control-on-image-fill-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--control-on-image-fill-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
-@utility inner-border-control-solid-fill-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--control-solid-fill-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
 @utility inner-border-control-stroke-* {
   &::before {
     content: '';
@@ -1007,22 +891,6 @@
     padding: var(--inner-border-width);
     border-radius: inherit;
     background: --value(--control-strong-stroke-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
-@utility inner-border-desktop-icon-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--desktop-icon-*);
     mask:
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
@@ -1094,22 +962,6 @@
   }
 }
 
-@utility inner-border-layer-on-acrylic-fill-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--layer-on-acrylic-fill-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
 @utility inner-border-layer-on-mica-base-alt-fill-* {
   &::before {
     content: '';
@@ -1167,22 +1019,6 @@
     padding: var(--inner-border-width);
     border-radius: inherit;
     background: --value(--selection-marquee-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
-@utility inner-border-smoke-fill-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--smoke-fill-*);
     mask:
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
@@ -1290,22 +1126,6 @@
   --inner-border-width: --value(--stroke-width-*);
 }
 
-@utility inner-border-wallpaper-* {
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    padding: var(--inner-border-width);
-    border-radius: inherit;
-    background: --value(--wallpaper-*);
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    pointer-events: none;
-  }
-}
-
 @utility max-h-* {
   max-height: --value(--size-*);
 }
@@ -1367,14 +1187,6 @@
   outline-color: --value(--control-fill-*);
 }
 
-@utility outline-control-on-image-fill-* {
-  outline-color: --value(--control-on-image-fill-*);
-}
-
-@utility outline-control-solid-fill-* {
-  outline-color: --value(--control-solid-fill-*);
-}
-
 @utility outline-control-stroke-* {
   outline-color: --value(--control-stroke-*);
 }
@@ -1385,10 +1197,6 @@
 
 @utility outline-control-strong-stroke-* {
   outline-color: --value(--control-strong-stroke-*);
-}
-
-@utility outline-desktop-icon-* {
-  outline-color: --value(--desktop-icon-*);
 }
 
 @utility outline-divider-stroke-* {
@@ -1407,10 +1215,6 @@
   outline-color: --value(--layer-fill-*);
 }
 
-@utility outline-layer-on-acrylic-fill-* {
-  outline-color: --value(--layer-on-acrylic-fill-*);
-}
-
 @utility outline-layer-on-mica-base-alt-fill-* {
   outline-color: --value(--layer-on-mica-base-alt-fill-*);
 }
@@ -1425,10 +1229,6 @@
 
 @utility outline-selection-marquee-* {
   outline-color: --value(--selection-marquee-*);
-}
-
-@utility outline-smoke-fill-* {
-  outline-color: --value(--smoke-fill-*);
 }
 
 @utility outline-solid-background-fill-* {
@@ -1455,16 +1255,8 @@
   outline-color: --value(--text-on-accent-fill-*);
 }
 
-@utility outline-wallpaper-* {
-  outline-color: --value(--wallpaper-*);
-}
-
 @utility shadow-elevation-* {
   box-shadow: --value(--elevation-*);
-}
-
-@utility shadow-text-* {
-  box-shadow: --value(--text-*);
 }
 
 @utility size-* {
@@ -1512,14 +1304,6 @@
   color: --value(--control-fill-*);
 }
 
-@utility text-control-on-image-fill-* {
-  color: --value(--control-on-image-fill-*);
-}
-
-@utility text-control-solid-fill-* {
-  color: --value(--control-solid-fill-*);
-}
-
 @utility text-control-stroke-* {
   color: --value(--control-stroke-*);
 }
@@ -1530,10 +1314,6 @@
 
 @utility text-control-strong-stroke-* {
   color: --value(--control-strong-stroke-*);
-}
-
-@utility text-desktop-icon-* {
-  color: --value(--desktop-icon-*);
 }
 
 @utility text-divider-stroke-* {
@@ -1552,10 +1332,6 @@
   color: --value(--layer-fill-*);
 }
 
-@utility text-layer-on-acrylic-fill-* {
-  color: --value(--layer-on-acrylic-fill-*);
-}
-
 @utility text-layer-on-mica-base-alt-fill-* {
   color: --value(--layer-on-mica-base-alt-fill-*);
 }
@@ -1570,10 +1346,6 @@
 
 @utility text-selection-marquee-* {
   color: --value(--selection-marquee-*);
-}
-
-@utility text-smoke-fill-* {
-  color: --value(--smoke-fill-*);
 }
 
 @utility text-solid-background-fill-* {
@@ -1600,10 +1372,6 @@
   color: --value(--text-on-accent-fill-*);
 }
 
-@utility text-wallpaper-* {
-  color: --value(--wallpaper-*);
-}
-
 @utility w-* {
   width: --value(--size-*);
 }
@@ -1621,6 +1389,14 @@
 }
 
 @utility type-body-large {
+  font-family: var(--font-family-base), var(--font-family-korean);
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-body-large);
+  letter-spacing: 0em;
+}
+
+@utility type-body-large-link {
   font-family: var(--font-family-base), var(--font-family-korean);
   font-size: var(--font-size-body-large);
   font-weight: var(--font-weight-regular);
@@ -1714,11 +1490,6 @@
   backdrop-filter: blur(var(--surface-shell-acrylic-backdrop-blur));
 }
 
-@utility surface-taskbar-acrylic {
-  -webkit-backdrop-filter: blur(var(--surface-taskbar-acrylic-backdrop-blur));
-  backdrop-filter: blur(var(--surface-taskbar-acrylic-backdrop-blur));
-}
-
 @utility surface-tooltip-acrylic {
   box-shadow: var(--surface-tooltip-acrylic-shadow);
   -webkit-backdrop-filter: blur(var(--surface-tooltip-acrylic-backdrop-blur));
@@ -1747,4 +1518,10 @@
   background-color: var(--material-acrylic-default);
   -webkit-backdrop-filter: blur(var(--material-acrylic-backdrop-blur));
   backdrop-filter: blur(var(--material-acrylic-backdrop-blur));
+}
+
+@utility material-mica-base {
+  background-color: var(--material-mica-base);
+  -webkit-backdrop-filter: blur(var(--material-mica-backdrop-blur));
+  backdrop-filter: blur(var(--material-mica-backdrop-blur));
 }
