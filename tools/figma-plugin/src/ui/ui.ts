@@ -1,12 +1,18 @@
-import type { ComponentSummary, MainMessage, UiMessage } from '../messages';
+import type {
+  ComponentSummary,
+  ExportOutcome,
+  MainMessage,
+  PullRequestCommit,
+  UiMessage,
+} from '../messages';
 
-// 플러그인 UI. 토큰 입력, 컴포넌트 선택, 진행 로그와 PR 링크를 보여 준다.
+// 플러그인 UI. 토큰 입력, 컴포넌트·조립 선택, 진행 로그와 PR 링크를 보여 준다.
 
 const tokenInput = element('token', HTMLInputElement);
-const branchInput = element('branch', HTMLInputElement);
 const selectAll = element('select-all', HTMLInputElement);
 const componentList = element('components', HTMLDivElement);
-const tokensCheckbox = element('tokens', HTMLInputElement);
+const selectAllPatterns = element('select-all-patterns', HTMLInputElement);
+const patternList = element('patterns', HTMLDivElement);
 const exportButton = element('export', HTMLButtonElement);
 const result = element('result', HTMLParagraphElement);
 const noticesBox = element('notices', HTMLDivElement);
@@ -14,6 +20,7 @@ const logArea = element('log', HTMLDivElement);
 
 window.addEventListener('message', handleWindowMessage);
 selectAll.addEventListener('change', handleSelectAllChange);
+selectAllPatterns.addEventListener('change', handleSelectAllPatternsChange);
 exportButton.addEventListener('click', handleExportClick);
 
 /**
@@ -31,8 +38,17 @@ function handleWindowMessage(event: MessageEvent<{ pluginMessage?: MainMessage }
  * "모두 선택"에 맞춰 컴포넌트 체크박스를 모두 켜거나 끈다.
  */
 function handleSelectAllChange(): void {
-  for (const checkbox of componentCheckboxes()) {
+  for (const checkbox of checkboxes(componentList)) {
     checkbox.checked = selectAll.checked;
+  }
+}
+
+/**
+ * 조립 "모두 선택"에 맞춰 조립 체크박스를 모두 켜거나 끈다.
+ */
+function handleSelectAllPatternsChange(): void {
+  for (const checkbox of checkboxes(patternList)) {
+    checkbox.checked = selectAllPatterns.checked;
   }
 }
 
@@ -44,8 +60,8 @@ function handleMainMessage(message: MainMessage): void {
   switch (message.type) {
     case 'init':
       tokenInput.value = message.token;
-      branchInput.value = message.branch;
-      renderComponents(message.components);
+      renderList(componentList, message.components);
+      renderList(patternList, message.patterns);
       exportButton.disabled = false;
       break;
     case 'log':
@@ -66,32 +82,54 @@ function handleMainMessage(message: MainMessage): void {
 }
 
 /**
- * 내보내기 결과(커밋, PR 링크)를 보여 준다.
- * @param outcome 커밋 결과, 바뀐 것 없음, 또는 위반 목록
+ * 내보내기 결과(PR마다 커밋과 PR 링크)를 보여 준다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param outcome PR별 커밋 결과, 또는 위반 목록
  */
-function showResult(outcome: Extract<MainMessage, { type: 'done' }>['result']): void {
-  if (outcome.kind === 'unchanged') {
-    result.textContent = '바뀐 것이 없어 커밋하지 않았다.';
-    return;
-  }
+function showResult(outcome: ExportOutcome): void {
   if (outcome.kind === 'blocked') {
     showViolations(outcome.violations);
     return;
   }
-  const done = outcome.commit;
-  const parts: (string | Node)[] = [`${done.branch}: `, link(done.commitUrl, '커밋')];
-  if (done.pullRequestUrl !== null) {
-    parts.push(done.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ', link(done.pullRequestUrl));
-  } else if (!done.isNewPullRequest) {
-    parts.push(' · 이 브랜치에 열린 PR이 없다');
+  const list = document.createElement('ul');
+  for (const commit of outcome.commits) {
+    list.append(commitItem(commit));
   }
-  result.replaceChildren(...parts);
+  const unchanged =
+    outcome.unchanged.length === 0
+      ? []
+      : [muted(`바뀐 것이 없어 커밋하지 않음: ${outcome.unchanged.join(', ')}`)];
+  if (outcome.commits.length === 0) {
+    result.replaceChildren('바뀐 것이 없어 커밋하지 않았다.');
+  } else {
+    result.replaceChildren(
+      `PR ${String(outcome.commits.length)}개에 커밋했다.`,
+      list,
+      ...unchanged,
+    );
+  }
   appendLog('완료');
 }
 
 /**
- * 쓰는 곳이 없는 변수·스타일 알림을 보여 준다. 정리 알림이라 내보내기를 막지 않는다(G2).
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * PR 하나의 커밋 결과 줄을 만든다.
+ * @param commit 커밋 결과
+ * @returns 목록 항목
+ */
+function commitItem(commit: PullRequestCommit): HTMLLIElement {
+  const item = document.createElement('li');
+  item.append(
+    `${commit.target} (${commit.branch}): `,
+    link(commit.commitUrl, '커밋'),
+    commit.isNewPullRequest ? ' · 새 PR: ' : ' · 열린 PR: ',
+    link(commit.pullRequestUrl),
+  );
+  return item;
+}
+
+/**
+ * 쓰는 곳이 없는 변수·스타일 알림을 보여 준다. 정리 알림이라 내보내기를 막지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
  * @param notices 알림 문장
  */
 function showNotices(notices: readonly string[]): void {
@@ -112,15 +150,12 @@ function showNotices(notices: readonly string[]): void {
 }
 
 /**
- * 구조 검사 위반을 레이어 경로·이유·고칠 방법 목록으로 보여 준다. 위반이 있으면 커밋하지 않는다.
- * @codocs [[피그마 일치 검사:구조 검사]]
+ * 구조 검사 위반을 레이어 경로·이유·고칠 방법 목록으로 한 번에 보여 준다. 위반이 있으면 커밋하지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
  * @param violations 위반 목록
  */
 function showViolations(
-  violations: Extract<
-    Extract<MainMessage, { type: 'done' }>['result'],
-    { kind: 'blocked' }
-  >['violations'],
+  violations: Extract<ExportOutcome, { kind: 'blocked' }>['violations'],
 ): void {
   const list = document.createElement('ol');
   list.className = 'violations';
@@ -145,67 +180,73 @@ function showViolations(
 }
 
 /**
- * 고른 컴포넌트로 내보내기를 요청한다.
+ * 고른 컴포넌트와 조립으로 내보내기를 요청한다. 토큰은 고르지 않아도 늘 읽어 main과 비교한다.
  */
 function handleExportClick(): void {
-  const componentIds = componentCheckboxes()
-    .filter((checkbox) => checkbox.checked)
-    .map((checkbox) => checkbox.value);
-  if (componentIds.length === 0 && !tokensCheckbox.checked) {
-    appendLog('내보낼 컴포넌트나 토큰을 고른다.');
-    return;
-  }
   exportButton.disabled = true;
   result.textContent = '';
   logArea.textContent = '';
   const message: UiMessage = {
     type: 'export',
     token: tokenInput.value,
-    componentIds,
-    shouldExportTokens: tokensCheckbox.checked,
-    branch: branchInput.value,
+    componentIds: checkedIds(componentList),
+    patternIds: checkedIds(patternList),
   };
   parent.postMessage({ pluginMessage: message }, '*');
 }
 
 /**
- * 컴포넌트 체크박스 목록을 그린다.
- * @param components 컴포넌트 목록
+ * 목록에서 켠 체크박스의 노드 ID를 모은다.
+ * @param list 체크박스 목록
+ * @returns 노드 ID
  */
-function renderComponents(components: readonly ComponentSummary[]): void {
-  componentList.classList.remove('muted');
-  componentList.replaceChildren(...components.map(componentLabel));
+function checkedIds(list: HTMLDivElement): string[] {
+  return checkboxes(list)
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => checkbox.value);
 }
 
 /**
- * 컴포넌트 하나의 체크박스와 이름을 만든다.
- * @param component 컴포넌트
+ * 컴포넌트나 조립 체크박스 목록을 그린다.
+ * @param list 그릴 곳
+ * @param items 컴포넌트나 조립 목록
+ */
+function renderList(list: HTMLDivElement, items: readonly ComponentSummary[]): void {
+  list.classList.remove('muted');
+  list.replaceChildren(...items.map(itemLabel));
+}
+
+/**
+ * 컴포넌트나 조립 하나의 체크박스와 이름을 만든다.
+ * @param item 컴포넌트나 조립
  * @returns 체크박스를 담은 label
  */
-function componentLabel(component: ComponentSummary): HTMLLabelElement {
+function itemLabel(item: ComponentSummary): HTMLLabelElement {
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
-  checkbox.value = component.id;
-  checkbox.addEventListener('change', handleComponentChange);
+  checkbox.value = item.id;
+  checkbox.addEventListener('change', handleItemChange);
   const label = document.createElement('label');
-  const detail = component.kind === 'COMPONENT_SET' ? `변형 ${component.variantCount}개` : '단독';
-  label.append(checkbox, ` ${component.name} `, muted(`(${detail})`));
+  const detail = item.kind === 'COMPONENT_SET' ? `변형 ${item.variantCount}개` : '단독';
+  label.append(checkbox, ` ${item.name} `, muted(`(${detail})`));
   return label;
 }
 
 /**
- * 컴포넌트를 하나라도 끄면 "모두 선택"을 끈다.
+ * 항목을 하나라도 끄면 그 목록의 "모두 선택"을 끈다.
  */
-function handleComponentChange(): void {
-  selectAll.checked = componentCheckboxes().every((checkbox) => checkbox.checked);
+function handleItemChange(): void {
+  selectAll.checked = checkboxes(componentList).every((checkbox) => checkbox.checked);
+  selectAllPatterns.checked = checkboxes(patternList).every((checkbox) => checkbox.checked);
 }
 
 /**
- * 컴포넌트 체크박스를 모두 찾는다.
+ * 목록의 체크박스를 모두 찾는다.
+ * @param list 체크박스 목록
  * @returns 체크박스 목록
  */
-function componentCheckboxes(): HTMLInputElement[] {
-  return Array.from(componentList.querySelectorAll('input[type="checkbox"]'));
+function checkboxes(list: HTMLDivElement): HTMLInputElement[] {
+  return Array.from(list.querySelectorAll('input[type="checkbox"]'));
 }
 
 /**

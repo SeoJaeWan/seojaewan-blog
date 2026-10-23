@@ -21,8 +21,7 @@
         border: 1px solid var(--figma-color-border, #ddd);
         border-radius: 4px;
       }
-      input[type='password'],
-      input[type='text'] {
+      input[type='password'] {
         box-sizing: border-box;
         width: 100%;
         padding: 4px 6px;
@@ -31,8 +30,9 @@
         color: inherit;
         background: transparent;
       }
-      #components {
-        max-height: 220px;
+      #components,
+      #patterns {
+        max-height: 160px;
         overflow-y: auto;
       }
       .muted {
@@ -74,17 +74,10 @@
       <legend>GitHub</legend>
       <label for="token">Fine-grained 토큰 (SeoJaeWan/seojaewan-blog 전용)</label>
       <input id="token" type="password" autocomplete="off" spellcheck="false" />
-      <label for="branch">기존 브랜치 (비우면 main에서 새 브랜치와 PR)</label>
-      <input
-        id="branch"
-        type="text"
-        autocomplete="off"
-        spellcheck="false"
-        placeholder="예: chore/figma-export-20261021-094531"
-      />
       <p class="muted">
-        저장소: SeoJaeWan/seojaewan-blog · 기존 브랜치를 쓰면 그 브랜치 끝에 커밋하고 PR을 새로 열지
-        않는다.
+        저장소: SeoJaeWan/seojaewan-blog · 컴포넌트마다 PR 하나(feat/figma-&lt;컴포넌트&gt;), 조립은
+        영역마다 PR 하나(feat/figma-patterns-&lt;영역&gt;)를 열고, 열린 PR이 있으면 그 브랜치에
+        이어서 커밋한다. 내보내는 것은 변형 이름과 변형 PNG, 쓰는 자산이다.
       </p>
     </fieldset>
     <fieldset>
@@ -93,9 +86,14 @@
       <div id="components" class="muted">불러오는 중…</div>
     </fieldset>
     <fieldset>
-      <legend>토큰</legend>
-      <label><input id="tokens" type="checkbox" checked /> tokens.json 내보내기</label>
+      <legend>조립 (02 · Patterns)</legend>
+      <label><input id="select-all-patterns" type="checkbox" /> 모두 선택</label>
+      <div id="patterns" class="muted">불러오는 중…</div>
     </fieldset>
+    <p class="muted">
+      토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 tokens.json과 그것으로 만든 tokens.css를
+      토큰 PR(feat/figma-tokens)에 따로 열거나 갱신한다. 아무것도 고르지 않으면 토큰만 확인한다.
+    </p>
     <button id="export" type="button" disabled>내보내고 커밋</button>
     <p id="result"></p>
     <div id="notices"></div>

@@ -1,0 +1,150 @@
+# @codocs [[피그마 연동:CI]]
+# 피그마 캡처 표. PR(초안 포함)에서는 바뀐 파일로 캡처 범위를 정하고(0단계), 범위가 있을 때만
+# 컴포넌트·조립이 쓰는 Storybook을 정적으로 빌드하고(1) 캡처해 `피그마 | 코드 | 차이` 표를 PR 댓글 하나로 남긴다(2).
+# 판정하지 않는다. 사람이 표를 보고 병합한다. 토큰·자산 생성 확인은 일반 CI(ci.yml)의 검사 작업에서 돈다.
+# main push에서는 범위 안 대상을 캡처해 parity-captures 브랜치에 덮어쓴다.
+# 이 파일이나 tools/figma-parity/가 바뀌면 캡처 범위는 전체다.
+# CI는 PR 브랜치에 커밋하지 않는다.
+name: Figma parity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  # PR은 새 커밋이 오면 이전 실행을 멈춘다. main은 커밋마다 캡처할 범위가 달라 멈추지 않는다.
+  group: figma-parity-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions: {}
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+
+jobs:
+  figma-parity:
+    name: Figma parity
+    runs-on: ubuntu-latest
+    permissions:
+      # 댓글 이미지(parity-report/pr-<번호>)와 main 캡처(parity-captures)를 브랜치에 올린다
+      contents: write
+      # 결과 댓글과 figma 라벨을 남기고 고친다
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      EVENT: ${{ github.event_name }}
+      REPOSITORY: ${{ github.repository }}
+      SERVER: ${{ github.server_url }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      # 포크에서 온 PR은 쓰기 토큰이 없어 캡처하지 않는다
+      CAN_WRITE: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # 캡처 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # 0. 범위: git diff만으로 정한다. 의존성 설치, Chromium 설치, Storybook 빌드 전에 한다
+      - name: Affected range
+        id: range
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            base="origin/$BASE_REF"
+          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            base="$BEFORE"
+          else
+            base="HEAD^1"
+          fi
+          range=$(node tools/figma-parity/src/run-capture.ts --print-range --base "$base")
+          echo "캡처 범위($base 기준): $range"
+          targets=$(jq -r '.targets | join(" ")' <<< "$range")
+          {
+            if [ -n "$targets" ]; then echo "has-range=true"; else echo "has-range=false"; fi
+            echo "target-args=$(jq -r '[.targets[] | "--target " + .] | join(" ")' <<< "$range")"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$CAN_WRITE" != true ] && [ -n "$targets" ]; then
+            echo "포크에서 온 PR이라 쓰기 토큰이 없어 캡처하지 않는다."
+          fi
+
+      # 라벨은 실행 조건이 아니라 결과 표시다. 범위가 사라지면 뗀다
+      - name: Label
+        if: github.event_name == 'pull_request' && env.CAN_WRITE == 'true'
+        env:
+          HAS_RANGE: ${{ steps.range.outputs.has-range }}
+        run: |
+          if [ "$HAS_RANGE" = true ]; then
+            gh label create figma --repo "$REPOSITORY" --color 1abcfe \
+              --description "피그마 캡처 범위가 있다" > /dev/null 2>&1 || true
+            gh api "repos/$REPOSITORY/issues/$PR_NUMBER/labels" -f "labels[]=figma" > /dev/null
+          else
+            gh api -X DELETE "repos/$REPOSITORY/issues/$PR_NUMBER/labels/figma" > /dev/null 2>&1 || true
+          fi
+
+      - uses: pnpm/action-setup@v6
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+
+      - uses: actions/setup-node@v7
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
+
+      # 1·2. 빌드와 캡처: 범위에 컴포넌트가 있으면 디자인 시스템 Storybook을, 조립이 있으면 앱 Storybook을
+      # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다
+      - name: Capture
+        id: capture
+        if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
+        continue-on-error: true
+        env:
+          TARGET_ARGS: ${{ steps.range.outputs.target-args }}
+        run: |
+          # shellcheck disable=SC2086 # 대상 이름([a-z0-9/-])마다 --target 인자로 나눈다
+          node tools/figma-parity/src/run-capture.ts $TARGET_ARGS
+
+      - name: Comment results on PR
+        if: >-
+          always() && github.event_name == 'pull_request' && env.CAN_WRITE == 'true' &&
+          steps.range.outputs.has-range == 'true'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh auth setup-git
+          node tools/figma-parity/src/post-pr-comment.ts --repository "$REPOSITORY" --server "$SERVER" \
+            --run-id "$RUN_ID" --pr "$PR_NUMBER"
+
+      # main: 캡처한 변형을 parity-captures/<컴포넌트>/<변형>.png와
+      # parity-captures/patterns/<영역>/<이름>/<변형>.png에 덮어쓴다(플러그인 PR 본문의 "현재 구현")
+      - name: Publish captures
+        if: >-
+          github.event_name == 'push' && !cancelled() &&
+          (steps.capture.outcome == 'success' || steps.capture.outcome == 'failure')
+        run: |
+          gh auth setup-git
+          node tools/figma-parity/src/publish-captures.ts --repository "$REPOSITORY" --server "$SERVER" --sha "$GITHUB_SHA"
+
+      - uses: actions/upload-artifact@v7
+        if: always() && steps.range.outputs.has-range == 'true'
+        with:
+          name: figma-parity-results
+          path: tools/figma-parity/parity-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Fail when capture failed
+        if: steps.capture.outcome == 'failure'
+        run: exit 1

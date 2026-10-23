@@ -13,7 +13,7 @@ main();
 
 /**
  * 피그마 자산에서 코드 자산을 만들거나, 만든 결과와 같은지 확인한다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  */
 function main(): void {
   const isCheck = process.argv.includes(CHECK_FLAG);

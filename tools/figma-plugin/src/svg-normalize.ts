@@ -5,7 +5,7 @@ import { utf8Encode } from './sha256';
 
 /**
  * SVG 안의 id를 나오는 순서대로 `s1`, `s2`…로 바꾸고, 그 id를 가리키는 `url(#…)`·`href="#…"`도 함께 바꾼다.
- * @codocs [[피그마 일치 검사:export.json 계약]]
+ * @codocs [[피그마 연동:자산]]
  * @param svg SVG 문자열
  * @returns id를 바꾼 SVG 문자열
  */
@@ -50,10 +50,10 @@ export function normalizeSvgBytes(bytes: Uint8Array): Uint8Array {
 }
 
 /**
- * 한 가지 색 자산 SVG의 칠·선 색을 currentColor로 바꾸고 색 불투명도 속성을 지운다(D6).
+ * 한 가지 색 자산 SVG의 칠·선 색을 currentColor로 바꾸고 색 불투명도 속성을 지운다.
  * 색과 투명도는 코드의 글자 색 클래스(색 토큰)가 정한다. 색 토큰의 투명도가 SVG에 한 번 더 곱해지지 않게 불투명도도 지운다.
  * `fill="none"`처럼 칠하지 않는 값은 그대로 둔다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param bytes SVG 바이트
  * @returns 바꾼 SVG 바이트
  */

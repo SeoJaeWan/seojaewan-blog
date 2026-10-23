@@ -1,4 +1,4 @@
-import { ASSETS_DIR, COMPONENTS_DIR } from './plugin-config';
+import { ASSETS_DIR, COMPONENTS_DIR, PATTERNS_DIR } from './plugin-config';
 
 /** 단독 컴포넌트(변형 없음)의 변형 이름 */
 export const DEFAULT_VARIANT = 'default';
@@ -49,6 +49,40 @@ export function componentFilePath(component: string, file: string): string {
   return `${COMPONENTS_DIR}/${component}/${file}`;
 }
 
+/** 조립의 영역과 이름(폴더 이름) */
+export type PatternPlace = { area: string; name: string };
+
+/**
+ * 조립 이름(`영역/이름`)을 폴더 이름(kebab-case)으로 바꾼다. 예: `Menu/ViewSubmenu` → `menu`, `view-submenu`
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param name 피그마 조립 이름
+ * @returns 영역과 이름 폴더, `영역/이름` 꼴이 아니면 null
+ */
+export function patternPlace(name: string): PatternPlace | null {
+  const parts = name.split('/').map((part) => part.trim());
+  const [area, rest] = parts;
+  if (
+    parts.length !== 2 ||
+    area === undefined ||
+    rest === undefined ||
+    area === '' ||
+    rest === ''
+  ) {
+    return null;
+  }
+  return { area: componentSlug(area), name: componentSlug(rest) };
+}
+
+/**
+ * 조립 폴더의 저장소 경로를 만든다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param place 조립의 영역과 이름
+ * @returns `apps/web/figma/patterns/<영역>/<이름>`
+ */
+export function patternFolder(place: PatternPlace): string {
+  return `${PATTERNS_DIR}/${place.area}/${place.name}`;
+}
+
 /**
  * 소문자로 바꾸고 `[a-z0-9-]` 밖의 문자(공백 포함)를 `-`로 바꾼 뒤, 겹친 `-`를 합치고 양끝 `-`를 없앤다.
  * @param text 바꿀 문자열
@@ -92,23 +126,8 @@ export function assetSlug(name: string): string {
 }
 
 /**
- * BOOLEAN 컴포넌트 속성 키를 React prop 이름으로 바꾼다. 키의 `#id`를 떼고 camelCase로 쓴다(D4).
- * 예: `Show icon#13:0` → `showIcon`
- * @codocs [[피그마 일치 검사:결정 사항]]
- * @param key 피그마 속성 키
- * @returns prop 이름
- */
-export function booleanPropName(key: string): string {
-  const [first = '', ...rest] = slugPart(key.replace(/#[^#]*$/u, '')).split('-');
-  return requireSlug(
-    first + rest.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(''),
-    key,
-  );
-}
-
-/**
  * 자산 파일 이름(`<묶음>/<자산>.<svg|png>`)을 만든다. 래스터 이미지는 PNG, 나머지는 SVG다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param asset 자산 묶음, 이름, 처리 방식
  * @param asset.group 묶음 이름
  * @param asset.name 자산 컴포넌트 이름

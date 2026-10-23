@@ -67,10 +67,8 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
   const classNames = appearanceClassNames[appearance];
   const state = isDisabled ? 'disabled' : 'enabled';
   const hasColorIcon = appearance !== 'default' && isFocused && !isDisabled;
-  // data-figma는 피그마 SearchBox의 레이어 이름이다([[피그마 일치 검사:짝짓기]]).
   const icon = (
     <Asset
-      data-figma="icon"
       name={
         hasColorIcon
           ? 'illustrations/icon-color-search.svg'
@@ -84,7 +82,6 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
   );
   return (
     <div
-      data-figma-root="SearchBox"
       className={mergeClassNames(
         'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
         'transition-colors',
@@ -103,7 +100,6 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         {...inputProps}
         type="text"
         role="searchbox"
-        data-figma="label"
         disabled={isDisabled}
         onFocus={(event) => {
           setIsFocused(true);
@@ -119,7 +115,6 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
       {appearance === 'default' && (
         <span
           aria-hidden
-          data-figma="bottom border"
           className={mergeClassNames(
             'pointer-events-none absolute inset-x-0 bottom-0',
             BOTTOM_BORDER_CLASS_NAMES[state],

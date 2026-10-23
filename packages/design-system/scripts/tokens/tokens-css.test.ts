@@ -1,273 +1,287 @@
 // @vitest-environment node
-import { existsSync, readFileSync } from 'node:fs';
-import path from 'node:path';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import { tokensCssPath, tokensJsonPath } from '../package-paths.ts';
 import { TOKENS_FIXTURE } from './tokens-css.fixture.ts';
-import { TokenFormatError, tokensToCss, variableName } from './tokens-css.ts';
+import { naturalCompare, TokenFormatError, tokensJsonToCss } from './tokens-css.ts';
 
-const css = tokensToCss(TOKENS_FIXTURE);
+const css = tokensJsonToCss(TOKENS_FIXTURE);
 
-// @codocs [[피그마 일치 검사:토큰 생성]]
+/**
+ * 생성 결과에서 `@utility` 블록 하나를 꺼낸다.
+ * @param name 유틸리티 이름
+ * @returns 블록 글자
+ */
+function utilityBlock(name: string): string {
+  const start = css.indexOf(`@utility ${name} {`);
+  return start === -1 ? '' : css.slice(start, css.indexOf('\n}', start) + 2);
+}
+
+// @codocs [[피그마 연동:토큰 생성]]
 describe('토큰 생성', () => {
-  it('WinUI 경로 이름을 Tailwind 이름공간 이름으로 바꾼다', () => {
-    expect(variableName(['text-fill', 'primary'])).toBe('--color-text-fill-primary');
-    expect(variableName(['color', 'gray', 'f9f9f9'])).toBe('--color-gray-f9f9f9');
-    expect(variableName(['spacing', '12'])).toBe('--spacing-12');
-    expect(variableName(['size', 'control', 'height'])).toBe('--spacing-control-height');
-    expect(variableName(['radius', 'control'])).toBe('--radius-control');
-    expect(variableName(['stroke-width', 'default'])).toBe('--border-width-default');
-    expect(variableName(['font', 'size', 'body'])).toBe('--text-body');
-    expect(variableName(['font', 'line-height', 'body'])).toBe('--leading-body');
-    expect(variableName(['font', 'weight', 'semibold'])).toBe('--font-weight-semibold');
-    expect(variableName(['font', 'family', 'code'])).toBe('--font-code');
+  it('변수 이름은 -- 뒤에 피그마 경로를 -로 이은 것이다', () => {
+    expect(css).toContain('  --text-fill-primary: var(--color-black-40);');
+    expect(css).toContain('  --size-control-height: 32px;');
+    expect(css).toContain('  --font-line-height-body: 20px;');
   });
 
-  it('별칭은 실제 값으로 풀지 않고 var() 참조로 남긴다', () => {
-    expect(css).toContain('--color-text-fill-primary: var(--color-black-alpha-e4);');
-    expect(css).toContain('--color-caption-button-close-fill-hover: var(--color-red-dark-1);');
+  it('스타일 이름도 스타일 경로를 같은 방식으로 잇고 공백은 -, 괄호는 뺀다', () => {
+    expect(css).toContain('  --elevation-flyout: 0px 8px 16px 0px #00000024;');
   });
 
-  it('리터럴 값을 CSS 값으로 바꾼다', () => {
-    expect(css).toContain('--color-black-alpha-e4: #000000e4;');
-    expect(css).toContain('--spacing-4: 4px;');
-    expect(css).toContain('--radius-circular: 9999px;');
-    expect(css).toContain('--opacity-cut: 50%;');
-    expect(css).toContain('--font-weight-semibold: 600;');
+  it('배경 흐림이 있는 효과 스타일은 -shadow와 -backdrop-blur 변수로 나눈다', () => {
+    expect(css).toContain('  --surface-flyout-acrylic-shadow: 0px 8px 16px 0px #00000024;');
+    expect(css).toContain('  --surface-flyout-acrylic-backdrop-blur: var(--blur-acrylic);');
+    expect(css).toContain('  --material-acrylic-backdrop-blur: var(--blur-acrylic);');
   });
 
-  it('글자 크기와 같은 이름의 줄 높이를 text 유틸리티에 함께 묶는다', () => {
-    expect(css).toContain('--text-body: 14px;');
-    expect(css).toContain('--text-body--line-height: var(--leading-body);');
+  it('별칭은 풀지 않고 var() 참조로 남긴다', () => {
+    expect(css).toContain('  --control-stroke-default: var(--color-black-6);');
   });
 
-  it('효과 스타일을 그림자와 배경 블러로 바꾼다', () => {
-    expect(css).toContain('--shadow-elevation-card: 0px 2px 4px 0px #0000000a;');
+  it('값은 CSS 형식이다(색 소문자, px, ms, 백분율 불투명도, cubic-bezier, 서체 따옴표)', () => {
+    expect(css).toContain('  --color-black-6: #0000000f;');
+    expect(css).toContain('  --motion-duration-fast: 167ms;');
+    expect(css).toContain('  --opacity-cut: 50%;');
+    expect(css).toContain('  --motion-easing-fade: cubic-bezier(0, 0, 1, 1);');
+    expect(css).toContain('  --motion-scale-enter: 0.96;');
+    expect(css).toContain("  --font-family-base: 'Open Sans';");
+  });
+
+  it('Tailwind 기본값 지우기가 토큰 정의보다 앞에 있다', () => {
+    const clearing = css.indexOf('--color-*: initial;');
+    expect(clearing).toBeGreaterThan(-1);
+    expect(clearing).toBeLessThan(css.indexOf(':root {'));
+    expect(clearing).toBeLessThan(css.indexOf('@theme static {'));
+  });
+
+  it('기본 서체는 Body 글자 스타일의 서체에 한글 서체를 이어 붙인다', () => {
     expect(css).toContain(
-      '--shadow-elevation-dialog: 0px 2px 21px 0px #00000026, 0px 32px 64px 0px #00000030;',
-    );
-    expect(css).toContain('--shadow-surface-flyout-acrylic: 0px 8px 16px 0px #00000024;');
-    expect(css).toContain('--backdrop-blur-surface-flyout-acrylic: var(--blur-acrylic);');
-    expect(css).toContain('--backdrop-blur-material-acrylic: 60px;');
-    expect(css).not.toContain('--shadow-material-acrylic');
-    expect(css).toContain('--text-shadow-desktop-label-shadow: 0px 1px 2px #00000099;');
-  });
-
-  it('층이 여럿인 재질 칠 스타일은 변수가 아니라 material-* 유틸리티로 만든다', () => {
-    expect(css).not.toContain('--color-material-acrylic-default');
-    expect(css).toContain('@utility material-acrylic-default {');
-    expect(css).toContain(
-      '--color-material-fallback-acrylic-default: var(--color-acrylic-background-fill-default-fallback);',
+      '  --default-font-family: var(--font-family-base), var(--font-family-korean);',
     );
   });
 
-  it('재질 칠 층(일반 섞기)을 CSS 배경 여러 겹으로 옮기고, 층 색은 변수를 쓴다', () => {
-    const block = css.slice(css.indexOf('@utility material-acrylic-default {'));
-    expect(block.slice(0, block.indexOf('}') + 1)).toBe(
+  it('그라데이션은 위에서 아래로 정지점 위치와 함께 쓰고, 투명도와 RGB가 모두 다른 정지점 사이에 중간 정지점을 넣는다', () => {
+    expect(css).toContain(
+      '  --elevation-accent-control-border: linear-gradient(to bottom, ' +
+        'var(--control-stroke-on-accent-default) 90.67%, #cccccc24 92.536%, #99999935 94.402%, ' +
+        '#66666645 96.268%, #33333356 98.134%, var(--control-stroke-on-accent-secondary) 100%);',
+    );
+  });
+
+  it('안쪽 그림자는 값 앞에 inset을 붙인다', () => {
+    expect(css).toContain('  --elevation-inset: inset 0px 2px 4px 0px #0000000f;');
+    expect(css).not.toContain('--elevation-flyout: inset');
+  });
+
+  it('여러 층 그림자는 층을 쉼표로 잇고 피그마의 층 순서를 지킨다', () => {
+    expect(css).toContain(
+      '  --elevation-double: 0px 32px 64px 0px #00000038, 0px 2px 4px 0px #00000024;',
+    );
+  });
+
+  it('% 자간은 글자 크기 기준 em으로, px 자간은 px 그대로 쓴다', () => {
+    expect(utilityBlock('type-body-strong')).toContain('  letter-spacing: -0.015em;');
+    expect(utilityBlock('type-caption')).toContain('  letter-spacing: 0.5px;');
+  });
+
+  it('숫자로 된 크기 이름도 --size-<숫자> 변수가 되고 w-* 클래스가 읽는다', () => {
+    expect(css).toContain('  --size-240: 240px;');
+    expect(utilityBlock('w-*')).toBe('@utility w-* {\n  width: --value(--size-*);\n}');
+  });
+
+  it('투명도가 같거나 RGB가 같은 정지점 사이에는 중간 정지점을 넣지 않는다', () => {
+    expect(css).toContain(
+      '  --border-same-alpha: linear-gradient(to bottom, var(--color-gray-200) 0%, var(--color-white) 100%);',
+    );
+    expect(css).toContain(
+      '  --border-same-rgb: linear-gradient(to bottom, var(--color-black-6) 25%, var(--color-black-40) 75%);',
+    );
+  });
+
+  it('색은 쓴 자릿수 그대로 소문자로 옮긴다(6자리는 불투명, 8자리는 투명도 포함)', () => {
+    expect(css).toContain('  --color-white: #ffffff;');
+    expect(css).toContain('  --color-blue-dark-2: #0f6cbd;');
+    expect(css).toContain('  --color-blue-dark-1-90: #0f6cbde6;');
+    expect(css).toContain('  --color-gray-500-76: #8a8a8ac2;');
+    expect(css).toContain('  --accent-fill-default: var(--color-blue-dark-1-90);');
+  });
+
+  it('변수에 연결한 단색 칠 스타일은 칠 불투명도를 알파로 쓰고 이미지 층은 그리지 않는다', () => {
+    expect(css).toContain(
+      '  --material-acrylic-default: rgb(from var(--acrylic-background-fill-default) r g b / 0.85);',
+    );
+    expect(css).toContain(
+      '  --material-fallback-acrylic-default: var(--acrylic-background-fill-default);',
+    );
+    expect(css).not.toContain('noise');
+  });
+
+  it('재질은 반투명 바탕색과 짝인 Material 효과 스타일의 배경 흐림을 함께 정한다', () => {
+    expect(utilityBlock('material-acrylic-default')).toBe(
       [
         '@utility material-acrylic-default {',
-        '  background-color: rgb(from var(--color-acrylic-background-fill-default) r g b / 0.85);',
-        "  background-image: url('./assets/images/noise-acrylic.opacity-2.png');",
-        '  background-repeat: repeat;',
+        '  background-color: var(--material-acrylic-default);',
+        '  -webkit-backdrop-filter: blur(var(--material-acrylic-backdrop-blur));',
+        '  backdrop-filter: blur(var(--material-acrylic-backdrop-blur));',
         '}',
       ].join('\n'),
     );
+    expect(utilityBlock('material-fallback-acrylic-default')).toBe('');
   });
 
-  it('변수에 연결한 단색 층은 변수 색의 알파를 쓰지 않고 칠 불투명도만 쓴다(피그마와 같게)', () => {
-    // 픽스처의 acrylic-background-fill/default는 알파 0.85(#fcfcfcd9)이고 칠 불투명도도 0.85다. 곱하면 0.72가 된다.
-    const block = css.slice(css.indexOf('@utility material-acrylic-default {'));
-    expect(block).not.toContain('color-mix');
-    expect(block).toContain('r g b / 0.85)');
+  it('배경 흐림이 있는 효과 스타일은 그림자와 배경 흐림을 정하는 스타일 이름의 유틸리티가 된다', () => {
+    expect(utilityBlock('surface-flyout-acrylic')).toBe(
+      [
+        '@utility surface-flyout-acrylic {',
+        '  box-shadow: var(--surface-flyout-acrylic-shadow);',
+        '  -webkit-backdrop-filter: blur(var(--surface-flyout-acrylic-backdrop-blur));',
+        '  backdrop-filter: blur(var(--surface-flyout-acrylic-backdrop-blur));',
+        '}',
+      ].join('\n'),
+    );
+    expect(utilityBlock('elevation-flyout')).toBe('');
   });
 
-  it('블렌드 모드가 일반이 아닌 재질 층은 지원하지 않아 실패한다', () => {
-    const blended = structuredClone(TOKENS_FIXTURE) as {
-      style: { paint: Record<string, unknown> };
+  it('유틸리티가 읽는 변수만 @theme에 두고 나머지는 :root에 둔다', () => {
+    const root = css.slice(css.indexOf(':root {'), css.indexOf('@theme static {'));
+    const theme = css.slice(css.indexOf('@theme static {'));
+    // Primitive 색은 클래스를 만들지 않는다
+    expect(root).toContain('--color-black-6:');
+    expect(css).not.toContain('@utility bg-color-*');
+    // 글자 스타일만 쓰는 서체 값
+    expect(root).toContain('--font-size-body:');
+    expect(root).toContain('--surface-flyout-acrylic-backdrop-blur:');
+    expect(theme).toContain('--text-fill-primary:');
+    expect(theme).toContain('--spacing-2:');
+    expect(theme).toContain('--font-weight-regular:');
+  });
+
+  it('글자 스타일은 변수로 서체·크기·굵기·줄 높이·자간을 정하는 type-* 유틸리티가 되고 Hangul 스타일은 서체 목록에 합친다', () => {
+    expect(utilityBlock('type-body')).toBe(
+      [
+        '@utility type-body {',
+        '  font-family: var(--font-family-base), var(--font-family-korean);',
+        '  font-size: var(--font-size-body);',
+        '  font-weight: var(--font-weight-regular);',
+        '  line-height: var(--font-line-height-body);',
+        '  letter-spacing: 0em;',
+        '}',
+      ].join('\n'),
+    );
+    expect(css).not.toContain('type-hangul');
+  });
+
+  it('스타일이 아닌 클래스는 이름공간을 빼고, 색은 토큰 이름 전체를 쓴다', () => {
+    expect(utilityBlock('w-*')).toBe('@utility w-* {\n  width: --value(--size-*);\n}');
+    expect(utilityBlock('bg-text-fill-*')).toBe(
+      '@utility bg-text-fill-* {\n  background-color: --value(--text-fill-*);\n}',
+    );
+  });
+
+  it('클래스는 이름공간마다 --value()로 토큰을 읽는 @utility다', () => {
+    expect(utilityBlock('border-*')).toContain('border-width: --value(--stroke-width-*);');
+    expect(utilityBlock('duration-*')).toContain(
+      'transition-duration: --value(--motion-duration-*);',
+    );
+    expect(utilityBlock('ease-*')).toContain(
+      'transition-timing-function: --value(--motion-easing-*);',
+    );
+    expect(utilityBlock('shadow-elevation-*')).toContain('box-shadow: --value(--elevation-*);');
+    expect(utilityBlock('border-gradient-elevation-*')).toContain(
+      'background: --value(--elevation-*);',
+    );
+  });
+
+  it('변수는 이름 순(숫자는 크기 순)이고 같은 입력이면 같은 결과다', () => {
+    expect(css.indexOf('--spacing-2:')).toBeLessThan(css.indexOf('--spacing-10:'));
+    expect(tokensJsonToCss(structuredClone(TOKENS_FIXTURE))).toBe(css);
+    expect(['b-10', 'b-2', 'a'].sort(naturalCompare)).toEqual(['a', 'b-2', 'b-10']);
+  });
+
+  it('CSS 이름이 겹치면 실패한다', () => {
+    const json = {
+      a: { b: { $type: 'color', $value: '#000000' } },
+      'a-b': { $type: 'color', $value: '#ffffff' },
     };
-    blended.style.paint.Mica = {
-      $type: 'color',
-      $value: '#f3f3f3',
-      $extensions: {
-        'com.seojaewan': {
-          layers: [{ type: 'SOLID', color: '#f3f3f3', opacity: 1, blendMode: 'LUMINOSITY' }],
-        },
-      },
-    };
-    expect(() => tokensToCss(blended)).toThrow('블렌드 모드 "LUMINOSITY" 층은 지원하지 않는다');
+    expect(() => tokensJsonToCss(json)).toThrow(TokenFormatError);
   });
 
-  it('그라데이션 칠 스타일은 층을 옮긴 --gradient-* 배경 값이 된다', () => {
-    expect(css).toContain(
-      '--gradient-elevation-control-border: linear-gradient(to bottom, var(--color-control-stroke-default) 90.58%, var(--color-control-stroke-secondary) 100%);',
+  it('변환 규칙이 없는 $type이나 없는 별칭은 실패한다', () => {
+    expect(() => tokensJsonToCss({ a: { $type: 'strokeStyle', $value: 'solid' } })).toThrow(
+      TokenFormatError,
     );
-    // layers가 없으면 $value의 정지점을 위에서 아래로 칠한다.
-    expect(css).toContain(
-      '--gradient-elevation-text-control-border-focused: linear-gradient(to bottom, var(--color-control-stroke-default) 96.88%, ',
+    expect(() => tokensJsonToCss({ a: { $type: 'color', $value: '{missing.token}' } })).toThrow(
+      TokenFormatError,
     );
   });
+});
 
-  it('투명도와 RGB가 모두 다른 정지점 사이에는 피그마처럼 투명도를 곱하지 않고 섞은 중간 정지점을 넣는다', () => {
-    // #0000000f(검정 6%) → #005fb8(강조색 100%): 중간 정지점은 RGB와 투명도를 각각 따로 섞은 값이다.
-    expect(css).toContain(
-      'var(--color-control-stroke-default) 96.88%, #0013253f 96.882%, #00264a6f 96.884%, #00396e9f 96.886%, #004c93cf 96.888%, var(--color-accent-fill-default) 96.89%',
-    );
+// @codocs [[피그마 연동:토큰 생성]]
+describe('그룹과 이름이 같은 변수', () => {
+  const white = { $type: 'color', $value: '#ffffff' };
+  const white70 = { $type: 'color', $value: '#ffffffb3' };
+  const alias = { $type: 'color', $value: '{color.white.$root}' };
+
+  it('$root 토큰의 CSS 이름은 그룹 경로이고 root 조각이 없다', () => {
+    const output = tokensJsonToCss({ color: { white: { $root: white } } });
+    expect(output).toContain('  --color-white: #ffffff;');
+    expect(output).not.toContain('--color-white-root');
   });
 
-  it('RGB가 같은 정지점 사이(투명도만 다름)는 CSS와 결과가 같으므로 중간 정지점을 넣지 않는다', () => {
-    expect(css).toContain(
-      'linear-gradient(to bottom, var(--color-control-stroke-default) 90.58%, var(--color-control-stroke-secondary) 100%)',
-    );
+  it('같은 그룹의 자식 토큰은 그룹 이름 뒤에 자기 이름을 잇는다', () => {
+    const output = tokensJsonToCss({ color: { white: { $root: white, '70': white70 } } });
+    expect(output).toContain('  --color-white: #ffffff;');
+    expect(output).toContain('  --color-white-70: #ffffffb3;');
   });
 
-  it('그라데이션 방향은 gradientTransform에서 구한다', () => {
-    /**
-     * 그라데이션 층 하나뿐인 칠 스타일로 CSS를 만든다.
-     * @param gradientTransform 피그마 변환 행렬
-     * @param opacity 층 불투명도
-     * @returns 만든 CSS
-     */
-    function gradientCss(gradientTransform: number[][], opacity = 1): string {
-      const stops = [
-        { color: '#000000', position: 0 },
-        { color: '#ffffff', position: 1 },
-      ];
-      return tokensToCss({
-        style: {
-          paint: {
-            G: {
-              $type: 'gradient',
-              $value: stops,
-              $extensions: {
-                'com.seojaewan': {
-                  layers: [
-                    { type: 'GRADIENT_LINEAR', gradientStops: stops, gradientTransform, opacity },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      });
-    }
-    expect(
-      gradientCss([
-        [1, 0, 0],
-        [0, 1, 0],
-      ]),
-    ).toContain('--gradient-g: linear-gradient(to right, #000000 0%, #ffffff 100%);');
-    expect(
-      gradientCss([
-        [0, -1, 1],
-        [1, 0, 0],
-      ]),
-    ).toContain('--gradient-g: linear-gradient(to top, #000000 0%, #ffffff 100%);');
-    expect(
-      gradientCss(
-        [
-          [1, 0, 0],
-          [0, 1, 0],
-        ],
-        0.5,
-      ),
-    ).toContain('color-mix(in srgb, #000000 50%, transparent) 0%');
+  it('$root를 가리키는 별칭은 그룹 이름의 var()가 된다', () => {
+    const output = tokensJsonToCss({
+      color: { white: { $root: white, '70': white70 } },
+      'text-fill': { primary: alias },
+    });
+    expect(output).toContain('  --text-fill-primary: var(--color-white);');
   });
 
-  it('모든 토큰을 @theme 블록 하나에 담는다', () => {
-    expect(css.match(/@theme/gu)).toHaveLength(1);
+  it('입력 순서가 달라도 결과가 같다', () => {
+    const forward = tokensJsonToCss({
+      color: { white: { $root: white, '70': white70 } },
+      'text-fill': { primary: alias },
+    });
+    const backward = tokensJsonToCss({
+      'text-fill': { primary: alias },
+      color: { white: { '70': white70, $root: white } },
+    });
+    expect(backward).toBe(forward);
   });
 
-  it('없는 변수를 가리키는 별칭은 실패한다', () => {
+  it('$root 없이 그룹 경로를 가리키는 별칭은 실패한다', () => {
     expect(() =>
-      tokensToCss({ 'text-fill': { primary: { $type: 'color', $value: '{color.none}' } } }),
-    ).toThrow(TokenFormatError);
-  });
-
-  it('이름 규칙이 없는 서체 변수는 실패한다', () => {
-    expect(() =>
-      tokensToCss({ font: { stretch: { body: { $type: 'number', $value: 1 } } } }),
-    ).toThrow(TokenFormatError);
-  });
-
-  it('서로 다른 토큰이 같은 CSS 이름이 되면 실패한다', () => {
-    expect(() =>
-      tokensToCss({
-        size: { '4': { $type: 'dimension', $value: { value: 4, unit: 'px' } } },
-        spacing: { '4': { $type: 'dimension', $value: { value: 4, unit: 'px' } } },
+      tokensJsonToCss({
+        color: { white: { $root: white } },
+        a: { b: { $type: 'color', $value: '{color.white}' } },
       }),
     ).toThrow(TokenFormatError);
   });
 
-  it('src/tokens.css가 figma/tokens.json과 맞다', () => {
-    if (!existsSync(tokensJsonPath)) {
-      // 플러그인이 아직 토큰을 내보내지 않았다. 커밋된 tokens.css를 그대로 쓴다.
-      return;
-    }
-    const tokens: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
-    expect(readFileSync(tokensCssPath, 'utf8'), path.basename(tokensCssPath)).toBe(
-      tokensToCss(tokens),
+  it('$value와 자식 토큰이 함께 있는 객체는 실패한다', () => {
+    expect(() => tokensJsonToCss({ color: { white: { ...white, '70': white70 } } })).toThrow(
+      TokenFormatError,
     );
   });
-});
 
-// @codocs [[디자인 기반:모션]]
-describe('모션 토큰', () => {
-  it('Motion 변수는 --motion-* 이름으로 만든다', () => {
-    expect(css).toContain('--motion-duration-fast: 167ms;');
-    expect(css).toContain('--motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);');
-    expect(css).toContain('--motion-scale-window-enter: 0.96;');
-  });
-
-  it('지속 시간과 이징은 Tailwind 유틸리티 이름으로도 참조한다', () => {
-    expect(css).toContain('--transition-duration-fast: var(--motion-duration-fast);');
-    expect(css).toContain('--ease-direct-entrance: var(--motion-easing-direct-entrance);');
-    expect(css).toContain('--ease-fade: var(--motion-easing-fade);');
+  it('그룹 이름과 같은 CSS 이름이 둘이면 실패한다', () => {
+    expect(() =>
+      tokensJsonToCss({ color: { white: { $root: white } }, 'color-white': white70 }),
+    ).toThrow(TokenFormatError);
   });
 });
 
-// @codocs [[디자인 기반:서체]]
-describe('서체', () => {
-  it('라틴 서체 변수에는 한글 서체를 이어 붙인다', () => {
-    expect(css).toContain("--font-base: 'Open Sans', var(--font-korean);");
-    expect(css).toContain("--font-code: 'Cascadia Mono', var(--font-korean);");
-    expect(css).toContain("--font-korean: 'Pretendard';");
-  });
-
-  it('글자 스타일마다 type-* 유틸리티를 만든다', () => {
-    expect(css).toContain(`@utility type-body-strong {
-  font-family: var(--font-base);
-  font-size: var(--text-body);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--leading-body);
-  letter-spacing: 0em;
-}`);
-    expect(css).toContain('@utility type-code {\n  font-family: var(--font-code);');
-  });
-
-  it('Hangul 글자 스타일은 따로 만들지 않는다', () => {
-    expect(css).not.toContain('type-hangul');
-  });
-
-  it('Hangul 글자 스타일이 짝인 라틴 스타일과 크기가 다르면 실패한다', () => {
-    const fields = {
-      fontFamily: '{font.family.korean}',
-      fontWeight: 400,
-      fontSize: { value: 14, unit: 'px' },
-      lineHeight: { value: 20, unit: 'px' },
-      letterSpacing: { value: 0, unit: '%' },
-    };
-    const tokens = {
-      font: { family: { korean: { $type: 'fontFamily', $value: 'Pretendard' } } },
-      style: {
-        text: {
-          Body: { $type: 'typography', $value: fields },
-          Hangul: { Body: { $type: 'typography', $value: fields } },
-        },
-      },
-    };
-    expect(() => tokensToCss(tokens)).not.toThrow();
-    tokens.style.text.Hangul.Body.$value = { ...fields, fontSize: { value: 15, unit: 'px' } };
-    expect(() => tokensToCss(tokens)).toThrow(TokenFormatError);
+// @codocs [[피그마 연동:토큰 검사]]
+describe('토큰 검사', () => {
+  it('커밋된 src/tokens.css가 figma/tokens.json에서 만든 결과와 같다', () => {
+    const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
+    expect(readFileSync(tokensCssPath, 'utf8')).toBe(tokensJsonToCss(json));
   });
 });

@@ -1,29 +1,7 @@
 /*
  * 디자인 시스템 전역 스타일의 진입점이다. 앱과 Storybook이 이 파일을 불러온다.
- * 토큰 값은 figma/tokens.json에서 만든 tokens.css 한 곳에만 있다. 여기에는 손으로 쓰는 부분만 둔다.
+ * 토큰(`@theme`)과 토큰 유틸리티(`@utility`)는 figma/tokens.json에서 만든 tokens.css 한 곳에만 있다.
+ * 여기에는 손으로 쓰는 전역 스타일만 둔다.
  */
 @import './fonts.css';
-
-/*
- * @codocs [[기술 스택:스타일링]]
- * Tailwind 기본 팔레트를 끄고 디자인 토큰 이름으로만 쓰게 한다.
- * 토큰이 채우는 이름공간의 기본값을 지운다. 지운 뒤에 tokens.css를 불러와야 토큰이 남는다.
- */
-@theme {
-  --color-*: initial;
-  --spacing: initial;
-  --spacing-*: initial;
-  --font-*: initial;
-  --text-*: initial;
-  --leading-*: initial;
-  --radius-*: initial;
-  --shadow-*: initial;
-  --blur-*: initial;
-  --ease-*: initial;
-
-  /* @codocs [[디자인 기반:서체]] 기본 서체는 토큰의 서체 목록(라틴 + 한글)을 따른다. */
-  --default-font-family: var(--font-base);
-  --default-mono-font-family: var(--font-code);
-}
-
 @import './tokens.css';

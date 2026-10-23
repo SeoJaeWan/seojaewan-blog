@@ -23,10 +23,11 @@ const input: UsageInput = {
     { id: 's2', name: 'Focus/Ring', kind: 'effect', consumerCount: 0, variableIds: ['blur'] },
   ],
   nodeVariableIds: new Set(),
+  nodeStyleIds: new Set(),
 };
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
-describe('쓰는 곳이 없는 변수·스타일 알림(G2)', () => {
+// @codocs [[피그마 연동:구조 검사]]
+describe('쓰는 곳이 없는 변수·스타일 알림(막지 않음)', () => {
   it('쓰는 곳이 없는 스타일과 변수를 알리고, 별칭으로 이어진 변수는 쓰는 것으로 본다', () => {
     expect(unusedNotices(input)).toEqual([
       '효과 스타일 Focus/Ring: 쓰는 곳이 없다',
@@ -46,5 +47,11 @@ describe('쓰는 곳이 없는 변수·스타일 알림(G2)', () => {
 
   it('코드에서만 쓰는 변수(범위 없음)는 알리지 않는다', () => {
     expect(unusedNotices(input).some((notice) => notice.includes('motion'))).toBe(false);
+  });
+
+  it('글자 일부 구간에만 입힌 스타일은 쓰는 것으로 보고, 그 스타일의 변수도 쓰는 것으로 본다', () => {
+    const notices = unusedNotices({ ...input, nodeStyleIds: new Set(['s2']) });
+    expect(notices).not.toContain('효과 스타일 Focus/Ring: 쓰는 곳이 없다');
+    expect(notices).not.toContain('변수 blur/acrylic: 쓰는 곳이 없다');
   });
 });

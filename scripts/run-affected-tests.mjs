@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 // 바뀐 파일에 영향받는 테스트만 실행한다(`vitest related`).
 // import 관계로 연결되지 않는 설정·전역 파일이 바뀌면 전체 테스트를 실행한다.
 const GLOBAL_FILE_PATTERN =
-  /(^|\/)(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig(\.[\w-]+)?\.json|vitest\.(config|setup)\.[cm]?[jt]s|eslint\.config\.[cm]?js|theme\.css|globals\.css|preview\.css)$/u;
+  /(^|\/)(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig(\.[\w-]+)?\.json|vitest\.(config|setup)\.[cm]?[jt]s|eslint\.config\.[cm]?js|theme\.css|tokens\.(css|json)|globals\.css|preview\.css)$/u;
 const SOURCE_FILE_PATTERN = /\.(ts|tsx|js|mjs|cjs)$/u;
 
 const stagedFiles = execFileSync(

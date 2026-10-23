@@ -58,22 +58,6 @@ const attributeNames: Readonly<Record<string, string>> = {
 };
 
 /** SVG 요소 하나 */
-/**
- * 이미지 칠 층이 쓰는 코드 자산 파일 이름을 정한다. 불투명도가 1보다 작으면 자산 생성기가 그 불투명도를
- * 미리 넣은 이미지를 따로 만든다(CSS 배경 층에는 층마다 불투명도를 줄 수 없다).
- * @codocs [[피그마 일치 검사:자산]]
- * @param asset 자산 파일(`images/noise-acrylic.png`)
- * @param opacity 층 불투명도
- * @returns 코드 자산 파일(`images/noise-acrylic.opacity-2.png`)
- */
-export function imageLayerFile(asset: string, opacity: number): string {
-  if (opacity >= 1) {
-    return asset;
-  }
-  const percent = String(Number((opacity * 100).toFixed(2)));
-  return asset.replace(/\.png$/u, `.opacity-${percent}.png`);
-}
-
 export type SvgElementData = {
   tag: string;
   attributes: Record<string, string>;
@@ -90,7 +74,7 @@ export type SvgAssetData = {
 /**
  * 피그마가 내보낸 SVG를 요소 데이터로 바꾼다.
  * 루트 svg 아래 지원하는 요소만 한 단계로 있어야 한다. 그 밖의 구조는 코드로 옮길 수 없어 실패한다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param svg SVG 문서 문자열
  * @param file 오류 메시지에 쓸 자산 파일 경로
  * @returns viewBox와 요소 목록
@@ -163,7 +147,7 @@ function parseElement(tag: string, rawAttributes: string, file: string): SvgElem
 
 /**
  * 자산 데이터 모듈(src/assets/asset-data.ts)의 내용을 만든다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param assets 자산 파일 경로(`icons/ic_fluent_add_20_regular.svg`) → SVG 데이터
  * @returns TypeScript 모듈 문자열
  */

@@ -1,4 +1,5 @@
 import { REPO_NAME, REPO_OWNER } from './plugin-config';
+import { treeChunks } from './tree-changes';
 
 // GitHub REST API 호출. 피그마 샌드박스의 fetch를 쓴다(manifest의 allowedDomains에 api.github.com).
 // 토큰은 요청 헤더에만 넣고 로그나 오류 메시지에 남기지 않는다.
@@ -6,8 +7,8 @@ import { REPO_NAME, REPO_OWNER } from './plugin-config';
 const API_ROOT = 'https://api.github.com';
 const REPO_PATH = `/repos/${REPO_OWNER}/${REPO_NAME}`;
 
-/** 트리에 넣을 파일 변경. sha가 null이면 파일을 지운다. */
-export type TreeEntry = { path: string; sha: string | null } | { path: string; content: string };
+/** 트리에 넣을 파일 변경. 내용은 미리 올린 blob이고, sha가 null이면 파일을 지운다. */
+export type TreeEntry = { path: string; sha: string | null };
 
 /**
  * 브랜치 끝 커밋과 그 트리의 SHA를 가져온다.
@@ -76,17 +77,17 @@ export async function getFileBytes(
 }
 
 /**
- * 트리 아래 모든 파일 경로를 가져온다(하위 폴더 포함).
+ * 트리 아래 파일 경로와 blob SHA를 가져온다(하위 폴더 포함).
  * @param token GitHub 토큰
  * @param treeSha 트리 SHA
- * @param prefix 이 경로로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
- * @returns 저장소 루트 기준 파일 경로
+ * @param prefixes 이 경로 가운데 하나로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
+ * @returns 저장소 루트 기준 파일 경로 → blob SHA
  */
 export async function listTreeFiles(
   token: string,
   treeSha: string,
-  prefix: string,
-): Promise<string[]> {
+  prefixes: readonly string[],
+): Promise<Map<string, string>> {
   const tree = await request(token, 'GET', `${REPO_PATH}/git/trees/${treeSha}?recursive=1`);
   if (tree === null || typeof tree !== 'object' || Reflect.get(tree, 'truncated') === true) {
     throw new Error('GitHub 트리 목록이 잘려 저장소 파일을 모두 읽지 못했다.');
@@ -95,15 +96,17 @@ export async function listTreeFiles(
   if (!Array.isArray(entries)) {
     throw new Error('GitHub 응답에 tree가 없다.');
   }
-  const files: string[] = [];
+  const files = new Map<string, string>();
   for (const entry of entries) {
     const path = readOptionalString(entry, ['path']);
+    const sha = readOptionalString(entry, ['sha']);
     if (
       path !== null &&
+      sha !== null &&
       readOptionalString(entry, ['type']) === 'blob' &&
-      path.startsWith(prefix)
+      prefixes.some((prefix) => path.startsWith(prefix))
     ) {
-      files.push(path);
+      files.set(path, sha);
     }
   }
   return files;
@@ -124,7 +127,9 @@ export async function createBlob(token: string, base64: string): Promise<string>
 }
 
 /**
- * 기준 트리에 파일 변경을 얹은 새 트리를 만든다.
+ * 기준 트리에 파일 변경을 얹은 새 트리를 만든다. 항목이 많으면 나눠서 앞 트리 위에 이어 만든다.
+ * 한 번에 큰 트리를 보내면 GitHub가 422로 거절하기 때문이다. 커밋은 마지막 트리로 하나만 만든다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param baseTree 기준 트리 SHA
  * @param entries 파일 변경
@@ -135,11 +140,15 @@ export async function createTree(
   baseTree: string,
   entries: readonly TreeEntry[],
 ): Promise<string> {
-  const tree = await request(token, 'POST', `${REPO_PATH}/git/trees`, {
-    base_tree: baseTree,
-    tree: entries.map((entry) => ({ ...entry, mode: '100644', type: 'blob' })),
-  });
-  return readString(tree, ['sha']);
+  let tree = baseTree;
+  for (const chunk of treeChunks(entries)) {
+    const created = await request(token, 'POST', `${REPO_PATH}/git/trees`, {
+      base_tree: tree,
+      tree: chunk.map((entry) => ({ ...entry, mode: '100644', type: 'blob' })),
+    });
+    tree = readString(created, ['sha']);
+  }
+  return tree;
 }
 
 /**
@@ -184,16 +193,107 @@ export async function updateBranch(token: string, branch: string, sha: string): 
   await request(token, 'PATCH', `${REPO_PATH}/git/refs/heads/${branch}`, { sha, force: false });
 }
 
+/** 열린 PR */
+export type OpenPullRequest = { url: string; number: number };
+
 /**
- * 브랜치에서 열린 PR 주소를 찾는다.
+ * 브랜치에서 열린 PR을 찾는다.
  * @param token GitHub 토큰
  * @param branch 머리 브랜치 이름
- * @returns 열린 PR 주소, 없으면 null
+ * @returns 열린 PR 주소와 번호, 없으면 null
  */
-export async function findOpenPullRequest(token: string, branch: string): Promise<string | null> {
+export async function findOpenPullRequest(
+  token: string,
+  branch: string,
+): Promise<OpenPullRequest | null> {
   const head = encodeURIComponent(`${REPO_OWNER}:${branch}`);
   const pulls = await request(token, 'GET', `${REPO_PATH}/pulls?state=open&head=${head}`);
-  return readOptionalString(pulls, ['0', 'html_url']);
+  const url = readOptionalString(pulls, ['0', 'html_url']);
+  const number = readOptionalNumber(pulls, ['0', 'number']);
+  return url === null || number === null ? null : { url, number };
+}
+
+/**
+ * 브랜치가 있으면 끝 커밋 SHA를 가져온다.
+ * @param token GitHub 토큰
+ * @param branch 브랜치 이름
+ * @returns 끝 커밋 SHA, 브랜치가 없으면 null
+ */
+export async function findBranchCommit(token: string, branch: string): Promise<string | null> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}/git/ref/heads/${branch}`, {
+    method: 'GET',
+    headers: headers(token),
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(
+      `GitHub ${branch} 브랜치 읽기 실패 (${response.status} ${response.statusText})`,
+    );
+  }
+  const ref: unknown = await response.json();
+  return readString(ref, ['object', 'sha']);
+}
+
+/**
+ * 열린 PR이 없는 기존 브랜치를 새 커밋으로 옮긴다. 빨리 감기가 아니어도 옮긴다(병합했거나 닫은 PR의 브랜치를 다시 쓸 때).
+ * @param token GitHub 토큰
+ * @param branch 브랜치 이름
+ * @param sha 새 커밋 SHA
+ */
+export async function resetBranch(token: string, branch: string, sha: string): Promise<void> {
+  await request(token, 'PATCH', `${REPO_PATH}/git/refs/heads/${branch}`, { sha, force: true });
+}
+
+/**
+ * 열린 PR의 본문을 바꾼다.
+ * @param token GitHub 토큰
+ * @param number PR 번호
+ * @param body 새 본문
+ */
+export async function updatePullRequestBody(
+  token: string,
+  number: number,
+  body: string,
+): Promise<void> {
+  await request(token, 'PATCH', `${REPO_PATH}/pulls/${String(number)}`, { body });
+}
+
+/**
+ * 폴더 안 파일 이름을 가져온다.
+ * @param token GitHub 토큰
+ * @param path 저장소 경로(폴더)
+ * @param ref 브랜치나 커밋 SHA
+ * @returns 파일 이름, 브랜치나 폴더가 없으면 null
+ */
+export async function listDirectory(
+  token: string,
+  path: string,
+  ref: string,
+): Promise<string[] | null> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
+    method: 'GET',
+    headers: headers(token),
+  });
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`GitHub ${path} 목록 읽기 실패 (${response.status} ${response.statusText})`);
+  }
+  const entries: unknown = await response.json();
+  if (!Array.isArray(entries)) {
+    return null;
+  }
+  const names: string[] = [];
+  for (const entry of entries) {
+    const name = readOptionalString(entry, ['name']);
+    if (name !== null && readOptionalString(entry, ['type']) === 'file') {
+      names.push(name);
+    }
+  }
+  return names;
 }
 
 /**
@@ -294,4 +394,22 @@ function readOptionalString(value: unknown, path: readonly string[]): string | n
     current = next;
   }
   return typeof current === 'string' ? current : null;
+}
+
+/**
+ * 응답 JSON에서 숫자 필드를 읽는다.
+ * @param value 응답 JSON
+ * @param path 필드 경로
+ * @returns 숫자 값, 없으면 null
+ */
+function readOptionalNumber(value: unknown, path: readonly string[]): number | null {
+  let current = value;
+  for (const key of path) {
+    if (current === null || typeof current !== 'object' || !(key in current)) {
+      return null;
+    }
+    const next: unknown = Reflect.get(current, key);
+    current = next;
+  }
+  return typeof current === 'number' ? current : null;
 }

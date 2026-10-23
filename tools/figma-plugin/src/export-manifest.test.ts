@@ -1,145 +1,51 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  componentHash,
-  type ComponentManifest,
-  type ExportedComponent,
+  type ExportManifest,
+  manifestFiles,
   manifestText,
-  planComponentChanges,
-  readManifestHashes,
+  readManifestNodeId,
   renamedFolders,
   settingsText,
-  type VariantEntry,
-  variantHash,
 } from './export-manifest';
 
-/**
- * 테스트용 변형 항목을 만든다. 해시는 이름 정보로 계산한다.
- * @param state 변형 속성 State 값(값이 다르면 해시도 다르다)
- * @param fill 루트 칠 변수 이름
- * @returns 변형 항목
- */
-function variantEntry(state: string, fill = 'accent-fill/default'): VariantEntry {
-  const info = {
-    properties: { State: state },
-    layers: [{ path: '', type: 'COMPONENT', fill: { variable: fill } }],
-    hidden: ['icon'],
-    cases: { 'showIcon=true': { layers: [{ path: '' }, { path: 'icon' }], hidden: [] } },
-  };
-  return { nodeId: `node-${state}`, ...info, hash: variantHash(info) };
-}
+const manifest: ExportManifest = {
+  name: 'Button',
+  nodeId: '13:62',
+  variants: {
+    'style=accent,state=rest': {
+      nodeId: '13:1',
+      properties: { Style: 'Accent', State: 'Rest' },
+    },
+    'style=accent,state=hover': {
+      nodeId: '13:2',
+      properties: { Style: 'Accent', State: 'Hover' },
+    },
+  },
+};
 
-/**
- * 테스트용 컴포넌트 export.json을 만든다.
- * @param variants 변형 이름 → State 값
- * @returns 컴포넌트 export.json
- */
-function manifest(variants: Record<string, string>): ComponentManifest {
-  const entries = Object.fromEntries(
-    Object.entries(variants).map(([name, state]) => [name, variantEntry(state)]),
-  );
-  return {
-    name: 'Button',
-    nodeId: '13:62',
-    hash: componentHash(Object.values(entries)),
-    booleans: { showIcon: { key: 'Show icon#13:0', defaultValue: false } },
-    variants: entries,
-  };
-}
-
-/**
- * 테스트용 내보낸 컴포넌트를 만든다.
- * @param next 컴포넌트 export.json
- * @returns 내보낸 컴포넌트
- */
-function exported(next: ComponentManifest): ExportedComponent {
-  return { slug: 'button', manifest: next };
-}
-
-const base = manifest({ 'state=rest': 'aaa', 'state=hover': 'bbb' });
-const baseText = manifestText(base);
-const baseHashes = readManifestHashes(baseText)?.hashes ?? new Map<string, string>();
-const baseFiles = ['export.json', 'state=rest.png', 'state=hover.png'];
-
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
-describe('컴포넌트마다 내용 해시를 계산해 바뀐 컴포넌트만 다시 내보낸다', () => {
-  it('컴포넌트 해시는 변형 순서와 상관없다', () => {
-    const a = variantEntry('aaa');
-    const b = variantEntry('bbb');
-    expect(componentHash([a, b])).toBe(componentHash([b, a]));
-  });
-
-  it('변형 해시는 이름 정보만으로 정해진다(노드 ID·PNG는 넣지 않는다)', () => {
-    const a = variantEntry('aaa');
-    expect(variantHash({ ...a, properties: { State: 'aaa' } })).toBe(a.hash);
-    expect(variantEntry('aaa').hash).not.toBe(variantEntry('bbb').hash);
-  });
-
-  it('레이어 이름 정보가 바뀌면 해시가 바뀐다', () => {
-    expect(componentHash([variantEntry('aaa')])).not.toBe(
-      componentHash([variantEntry('aaa', 'accent-fill/secondary')]),
-    );
-  });
-
-  it('하나도 바뀌지 않은 컴포넌트는 파일을 건드리지 않는다', () => {
-    const changes = planComponentChanges(exported(base), baseText, baseHashes, baseFiles);
-    expect(changes).toEqual({
-      slug: 'button',
-      pngUploads: [],
-      deletions: [],
-      manifestText: null,
-    });
-  });
-
-  it('해시가 바뀌거나 새로 생긴 이미지만 올리고, 사라진 변형의 이미지는 지운다', () => {
-    const next = manifest({ 'state=rest': 'aaa', 'state=pressed': 'ccc' });
-    const changes = planComponentChanges(exported(next), baseText, baseHashes, baseFiles);
-    expect(changes.pngUploads).toEqual(['state=pressed']);
-    expect(changes.deletions).toEqual(['state=hover.png']);
-    expect(changes.manifestText).not.toBeNull();
-  });
-
-  it('저장소에 없는 컴포넌트는 모든 파일을 올린다', () => {
-    const changes = planComponentChanges(exported(base), null, new Map(), []);
-    expect(changes.pngUploads).toEqual(['state=rest', 'state=hover']);
-    expect(changes.manifestText).toBe(baseText);
-  });
-
-  it('이름이 바뀐 컴포넌트(같은 nodeId)의 이전 폴더만 지우고, 함께 내보낸 폴더는 지우지 않는다', () => {
-    expect(
-      renamedFolders(
-        [exported(base)],
-        new Map([
-          ['old-button', '13:62'],
-          ['menu', '1:1'],
-        ]),
-      ),
-    ).toEqual(['old-button']);
-  });
-});
-
-// @codocs [[피그마 일치 검사:export.json 계약]]
-describe('export.json 계약', () => {
-  it('export.json에는 내보낸 시각을 두지 않아, 같은 피그마를 다시 내보내면 내용이 같다', () => {
-    expect(baseText).not.toContain('exportedAt');
-    expect(manifestText(manifest({ 'state=rest': 'aaa', 'state=hover': 'bbb' }))).toBe(baseText);
-  });
-
-  it('변형마다 레이어 목록, 숨긴 레이어, BOOLEAN 속성 경우를 담는다', () => {
-    const parsed: unknown = JSON.parse(baseText);
-    expect(parsed).toMatchObject({
-      booleans: { showIcon: { key: 'Show icon#13:0', defaultValue: false } },
+// @codocs [[피그마 연동:스토리 규칙]]
+describe('export.json은 변형을 스토리와 짝짓는 데 필요한 것만 담는다', () => {
+  it('이름, nodeId, 변형 파일 이름마다 변형 nodeId와 속성만 둔다', () => {
+    expect(JSON.parse(manifestText(manifest))).toEqual({
+      name: 'Button',
+      nodeId: '13:62',
       variants: {
-        'state=rest': {
-          hidden: ['icon'],
-          cases: { 'showIcon=true': { hidden: [] } },
+        'style=accent,state=hover': {
+          nodeId: '13:2',
+          properties: { State: 'Hover', Style: 'Accent' },
+        },
+        'style=accent,state=rest': {
+          nodeId: '13:1',
+          properties: { State: 'Rest', Style: 'Accent' },
         },
       },
     });
   });
 
-  it('읽을 수 없는 export.json은 없는 것으로 본다', () => {
-    expect(readManifestHashes('{')).toBeNull();
+  it('내보낸 시각을 두지 않아, 같은 피그마를 다시 내보내면 내용이 같다', () => {
+    expect(manifestText(manifest)).not.toContain('exportedAt');
+    expect(manifestText(structuredClone(manifest))).toBe(manifestText(manifest));
   });
 
   it('figma.json에는 파일 키와 배율만 둔다', () => {
@@ -147,5 +53,44 @@ describe('export.json 계약', () => {
       fileKey: 'abc',
       scale: 1,
     });
+  });
+});
+
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('다시 내보내면 그 대상 폴더만 새로 쓴다', () => {
+  it('폴더에는 export.json과 변형 PNG만 있어야 한다', () => {
+    expect(manifestFiles(manifest)).toEqual([
+      'export.json',
+      'style=accent,state=rest.png',
+      'style=accent,state=hover.png',
+    ]);
+  });
+
+  it('nodeId가 같고 폴더가 다른 폴더는 이름이 바뀐 대상의 이전 폴더다', () => {
+    const renamed = renamedFolders(
+      [{ folder: 'components/button', nodeId: '13:62' }],
+      new Map([
+        ['components/old-button', '13:62'],
+        ['components/menu', '1:1'],
+      ]),
+    );
+    expect([...renamed]).toEqual([['components/old-button', 'components/button']]);
+  });
+
+  it('함께 내보낸 폴더는 이전 폴더로 보지 않는다', () => {
+    expect(
+      renamedFolders(
+        [
+          { folder: 'components/button', nodeId: '13:62' },
+          { folder: 'components/old-button', nodeId: '9:9' },
+        ],
+        new Map([['components/old-button', '13:62']]),
+      ).size,
+    ).toBe(0);
+  });
+
+  it('읽을 수 없는 export.json은 nodeId가 없는 것으로 본다', () => {
+    expect(readManifestNodeId('{')).toBeNull();
+    expect(readManifestNodeId(manifestText(manifest))).toBe('13:62');
   });
 });

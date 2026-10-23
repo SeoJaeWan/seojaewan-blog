@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { sha256Hex, utf8Encode } from './sha256';
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:피그마 플러그인]]
 describe('컴포넌트마다 내용 해시를 계산한다', () => {
   it('SHA-256 표준 예제 값과 같다', () => {
     expect(sha256Hex(new Uint8Array())).toBe(

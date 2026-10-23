@@ -1,4 +1,5 @@
-import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
+import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
+import type { CheckContext } from './core/check-structure';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -11,7 +12,7 @@ import type {
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
 import { assetFile } from './naming';
-import { COMPONENTS_PAGE_ID } from './plugin-config';
+import { COMPONENTS_PAGE_ID, PATTERNS_PAGE_ID } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
@@ -21,7 +22,24 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
-  const page = await loadComponentsPage();
+  return listPageComponents(await loadPage(COMPONENTS_PAGE_ID));
+}
+
+/**
+ * "02 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 문서 순서대로 찾는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @returns 조립 목록
+ */
+export async function listPatterns(): Promise<ComponentSummary[]> {
+  return listPageComponents(await loadPage(PATTERNS_PAGE_ID));
+}
+
+/**
+ * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾는다.
+ * @param page 불러온 페이지
+ * @returns 컴포넌트 목록
+ */
+function listPageComponents(page: PageNode): ComponentSummary[] {
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
   for (const node of nodes) {
@@ -90,9 +108,10 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
 }
 
 /**
- * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수 연결을 읽는다(G2).
+ * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수·스타일 연결을 읽는다.
+ * 글자 일부 구간에만 입힌 글자·칠 스타일은 스타일 사용처(getStyleConsumersAsync)에 나오지 않아 구간에서 따로 읽는다.
  * 페이지를 하나씩 불러와 노드를 훑으므로 파일이 크면 시간이 걸린다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:구조 검사]]
  * @returns 사용처 계산 입력
  */
 export async function readUsageInput(): Promise<UsageInput> {
@@ -121,24 +140,111 @@ export async function readUsageInput(): Promise<UsageInput> {
       });
     }
   }
-  const nodeVariableIds = new Set<string>();
+  const usage: NodeUsage = { variableIds: new Set(), styleIds: new Set() };
   for (const page of figma.root.children) {
     await page.loadAsync();
     for (const node of page.findAll(() => true)) {
-      collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, nodeVariableIds);
-      for (const key of ['fills', 'strokes', 'effects'] as const) {
-        const value: unknown = key in node ? Reflect.get(node, key) : undefined;
-        if (Array.isArray(value)) {
-          collectAliasIds(value, nodeVariableIds);
-        }
-      }
+      collectNodeUsage(node, usage);
     }
   }
   return {
     variables: variables.map(usageVariable),
     styles,
-    nodeVariableIds,
+    nodeVariableIds: usage.variableIds,
+    nodeStyleIds: usage.styleIds,
   };
+}
+
+/** 컴포넌트 하나가 쓰는 토큰 */
+export type ComponentTokenUsage = {
+  id: string;
+  name: string;
+  /** 연결된 변수 이름과 스타일 이름 */
+  tokens: Set<string>;
+};
+
+/**
+ * "01 · Components" 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
+ * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @returns 컴포넌트마다 쓰는 토큰 이름
+ */
+export async function readComponentTokenUsage(): Promise<ComponentTokenUsage[]> {
+  const variableNames = new Map<string, string | undefined>();
+  const styleNames = new Map<string, string | undefined>();
+  const result: ComponentTokenUsage[] = [];
+  for (const summary of await listComponents()) {
+    const node = await figma.getNodeByIdAsync(summary.id);
+    if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
+      continue;
+    }
+    const usage: NodeUsage = { variableIds: new Set(), styleIds: new Set() };
+    for (const item of [node, ...node.findAll(() => true)]) {
+      collectNodeUsage(item, usage);
+    }
+    const tokens = new Set<string>();
+    for (const id of usage.variableIds) {
+      if (!variableNames.has(id)) {
+        variableNames.set(id, (await figma.variables.getVariableByIdAsync(id))?.name);
+      }
+      const name = variableNames.get(id);
+      if (name !== undefined) {
+        tokens.add(name);
+      }
+    }
+    for (const id of usage.styleIds) {
+      if (!styleNames.has(id)) {
+        styleNames.set(id, (await figma.getStyleByIdAsync(id))?.name);
+      }
+      const name = styleNames.get(id);
+      if (name !== undefined) {
+        tokens.add(name);
+      }
+    }
+    result.push({ id: summary.id, name: summary.name, tokens });
+  }
+  return result;
+}
+
+/** 노드가 쓰는 변수 ID와 스타일 ID */
+export type NodeUsage = { variableIds: Set<string>; styleIds: Set<string> };
+
+/**
+ * 노드 하나에 연결된 변수와 스타일을 모은다. 칠·선·효과 안의 연결과, 글자 일부 구간에만 입힌 글자·칠 스타일과 변수도 모은다.
+ * @param node 노드
+ * @param usage 모을 곳
+ */
+export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
+  collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, usage.variableIds);
+  for (const key of ['fills', 'strokes', 'effects'] as const) {
+    const value: unknown = key in node ? Reflect.get(node, key) : undefined;
+    if (Array.isArray(value)) {
+      collectAliasIds(value, usage.variableIds);
+    }
+  }
+  for (const key of ['fillStyleId', 'strokeStyleId', 'effectStyleId', 'textStyleId'] as const) {
+    const id: unknown = key in node ? Reflect.get(node, key) : undefined;
+    if (typeof id === 'string' && id !== '') {
+      usage.styleIds.add(id);
+    }
+  }
+  if (node.type !== 'TEXT') {
+    return;
+  }
+  for (const segment of node.getStyledTextSegments([
+    'textStyleId',
+    'fillStyleId',
+    'fills',
+    'boundVariables',
+  ])) {
+    for (const id of [segment.textStyleId, segment.fillStyleId]) {
+      if (id !== '') {
+        usage.styleIds.add(id);
+      }
+    }
+    collectAliasIds(segment.fills, usage.variableIds);
+    collectAliasIds(segment.boundVariables, usage.variableIds);
+  }
 }
 
 /**
@@ -178,9 +284,9 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
   }
 }
 
-/** 이미지 자산 하나(G4) */
+/** 이미지 자산 하나 */
 export type ImageAsset = {
-  /** 자산 파일(`images/noise-acrylic.png`) */
+  /** 자산 파일(`images/<자산>.png`) */
   file: string;
   /** 자산 컴포넌트 */
   node: ComponentNode;
@@ -188,17 +294,16 @@ export type ImageAsset = {
 
 /**
  * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
- * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻는다(G4).
- * 묶음 프레임이 있는 첫 페이지만 읽는다.
- * @codocs [[피그마 일치 검사:자산]]
+ * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
+ * 구조 검사는 이 표에 없는 이미지를 막는다. 묶음 프레임이 있는 첫 페이지만 읽는다.
+ * @codocs [[피그마 연동:자산]]
  * @returns 이미지 해시 → 자산
  */
 export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
-  const { assetGroupPrefix, assetGroups } = parityDecisions.d6;
   const rasterGroups = new Set(
-    Object.entries(assetGroups)
+    Object.entries(ASSET_GROUPS)
       .filter(([, kind]) => kind === 'raster')
-      .map(([group]) => `${assetGroupPrefix}${group}`),
+      .map(([group]) => `${ASSET_GROUP_PREFIX}${group}`),
   );
   const images = new Map<string, ImageAsset>();
   for (const page of figma.root.children) {
@@ -208,7 +313,7 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
       if (!('findAllWithCriteria' in frame)) {
         continue;
       }
-      const group = frame.name.slice(assetGroupPrefix.length);
+      const group = frame.name.slice(ASSET_GROUP_PREFIX.length);
       for (const component of frame.findAllWithCriteria({ types: ['COMPONENT'] })) {
         const fills =
           component.fills === figma.mixed
@@ -231,13 +336,23 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
 }
 
 /**
- * 컴포넌트 페이지를 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
- * @returns 컴포넌트 페이지
+ * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시)를 읽는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @returns 검사 정보
  */
-export async function loadComponentsPage(): Promise<PageNode> {
-  const page = await figma.getNodeByIdAsync(COMPONENTS_PAGE_ID);
+export async function readCheckContext(): Promise<CheckContext> {
+  return { imageHashes: new Set((await readImageAssets()).keys()) };
+}
+
+/**
+ * 페이지를 ID로 찾아 불러온다. `documentAccess: dynamic-page`라 페이지 내용을 먼저 불러와야 한다.
+ * @param pageId 페이지 ID
+ * @returns 불러온 페이지
+ */
+export async function loadPage(pageId: string): Promise<PageNode> {
+  const page = await figma.getNodeByIdAsync(pageId);
   if (page?.type !== 'PAGE') {
-    throw new Error(`컴포넌트 페이지 ${COMPONENTS_PAGE_ID}를 찾을 수 없다.`);
+    throw new Error(`페이지 ${pageId}를 찾을 수 없다.`);
   }
   await page.loadAsync();
   return page;

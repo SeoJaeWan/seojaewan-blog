@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+@import '@seojaewan/design-system/theme.css';
+
+/* 앱과 디자인 시스템 소스의 클래스를 읽는다(src/app/globals.css와 같다). */
+@source '../src';
+@source '../../../packages/design-system/src';

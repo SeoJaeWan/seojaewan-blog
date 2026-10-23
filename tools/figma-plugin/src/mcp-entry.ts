@@ -1,9 +1,11 @@
 import type { Violation } from './core/check-structure';
-import { exportComponentCore, readCheckContext } from './core/export-component';
-import { manifestText, pngFile, settingsText } from './export-manifest';
-import { listComponents, loadComponentsPage } from './figma-reader';
-import { assetFilePath, componentFilePath } from './naming';
-import { FILE_KEY, SCALE, SETTINGS_PATH } from './plugin-config';
+import type { TargetExport } from './core/export-component';
+import { exportTargetCore } from './core/export-component';
+import { MANIFEST_FILE, manifestText, pngFile, settingsText } from './export-manifest';
+import { listComponents, listPatterns, readCheckContext } from './figma-reader';
+import type { ComponentSummary } from './messages';
+import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
+import { COMPONENTS_DIR, FILE_KEY, SCALE, SETTINGS_PATH } from './plugin-config';
 import { sha256Hex, utf8Encode } from './sha256';
 
 // 피그마 MCP(use_figma)에서 실행하는 진입점. 플러그인과 같은 검사·내보내기 코드로 저장소에 쓸 파일을 만든다.
@@ -23,8 +25,10 @@ export type McpFile = {
 };
 
 export type McpExportOptions = {
-  /** 내보낼 컴포넌트(세트) 이름. 비우면 파일 쓰기 없이 컴포넌트 목록만 돌려준다 */
+  /** 내보낼 컴포넌트(세트) 이름 */
   components: string[];
+  /** 내보낼 조립 이름(`영역/이름`) */
+  patterns?: string[];
   /** true면 검사만 하고 파일 내용은 돌려주지 않는다 */
   checkOnly?: boolean;
 };
@@ -32,48 +36,52 @@ export type McpExportOptions = {
 export type McpExportResult = {
   fileKey: string | undefined;
   violations: Violation[];
-  /** 내보낸 컴포넌트 폴더 이름 */
-  componentFolders: string[];
+  /** 내보낸 대상 폴더(저장소 경로) */
+  folders: string[];
   files: McpFile[];
 };
 
 /**
- * 고른 컴포넌트를 플러그인과 같은 규칙으로 검사하고 내보낼 파일을 만든다.
+ * 고른 컴포넌트와 조립을 플러그인과 같은 규칙으로 검사하고 내보낼 파일을 만든다.
  * 위반이 하나라도 있으면 파일을 돌려주지 않는다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param options 내보낼 컴포넌트
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param options 내보낼 컴포넌트와 조립
  * @returns 위반 목록과 파일
  */
 export async function runMcpExport(options: McpExportOptions): Promise<McpExportResult> {
-  await loadComponentsPage();
-  const all = await listComponents();
   const result: McpExportResult = {
     fileKey: figma.fileKey,
     violations: [],
-    componentFolders: [],
+    folders: [],
     files: [],
   };
-  const context = await readCheckContext();
   const files: McpFile[] = [];
-  for (const name of options.components) {
-    const summary = all.find((component) => component.name === name);
-    if (summary === undefined) {
-      throw new Error(`컴포넌트 ${name}를 찾을 수 없다.`);
-    }
-    const outcome = await exportComponentCore(summary.id, context, SCALE);
+  const context = await readCheckContext();
+  const targets = [
+    ...pick(await listComponents(), options.components).map((id) => ({ id, isPattern: false })),
+    ...pick(await listPatterns(), options.patterns ?? []).map((id) => ({ id, isPattern: true })),
+  ];
+  for (const { id, isPattern } of targets) {
+    const outcome = await exportTargetCore(id, SCALE, context);
     if (!outcome.ok) {
       result.violations.push(...outcome.violations);
       continue;
     }
-    const { component } = outcome;
-    result.componentFolders.push(component.slug);
-    files.push(
-      textFile(componentFilePath(component.slug, 'export.json'), manifestText(component.manifest)),
-    );
-    for (const [variant, png] of component.pngs) {
-      files.push(binaryFile(componentFilePath(component.slug, pngFile(variant)), png));
+    const folder = targetFolder(outcome.target, isPattern);
+    if (folder === null) {
+      result.violations.push({
+        where: outcome.target.manifest.name,
+        reason: '조립 이름이 `영역/이름` 꼴이 아니라 폴더를 정할 수 없다',
+        fix: '조립 이름을 `영역/이름`(예: `Menu/Folder`)으로 바꾼다.',
+      });
+      continue;
     }
-    for (const [file, bytes] of component.assets) {
+    result.folders.push(folder);
+    files.push(textFile(`${folder}/${MANIFEST_FILE}`, manifestText(outcome.target.manifest)));
+    for (const [variant, png] of outcome.target.pngs) {
+      files.push(binaryFile(`${folder}/${pngFile(variant)}`, png));
+    }
+    for (const [file, bytes] of outcome.target.assets) {
       if (!files.some((item) => item.path === assetFilePath(file))) {
         files.push(binaryFile(assetFilePath(file), bytes));
       }
@@ -86,6 +94,38 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
     result.files = files;
   }
   return result;
+}
+
+/**
+ * 이름으로 컴포넌트나 조립을 찾는다.
+ * @param all 페이지의 컴포넌트나 조립
+ * @param names 찾을 이름
+ * @returns 노드 ID
+ */
+function pick(all: readonly ComponentSummary[], names: readonly string[]): string[] {
+  const ids: string[] = [];
+  for (const name of names) {
+    const found = all.find((item) => item.name === name);
+    if (found === undefined) {
+      throw new Error(`${name}를 찾을 수 없다.`);
+    }
+    ids.push(found.id);
+  }
+  return ids;
+}
+
+/**
+ * 내보낸 대상의 저장소 폴더를 정한다.
+ * @param target 내보낸 대상
+ * @param isPattern 조립이면 true
+ * @returns 폴더, 조립 이름이 `영역/이름` 꼴이 아니면 null
+ */
+function targetFolder(target: TargetExport, isPattern: boolean): string | null {
+  if (!isPattern) {
+    return `${COMPONENTS_DIR}/${componentSlug(target.manifest.name)}`;
+  }
+  const place = patternPlace(target.manifest.name);
+  return place === null ? null : patternFolder(place);
 }
 
 /**

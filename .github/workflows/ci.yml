@@ -45,9 +45,20 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
+      # @codocs [[피그마 연동:자산]]
+      # 코드 자산(src/assets/)이 figma/assets/에서 다시 만든 결과와 같은지 확인한다. CI는 고치지 않고 실패만 한다
+      - name: Generated assets check
+        run: pnpm --filter @seojaewan/design-system generate:assets --check
+
+      # @codocs [[피그마 연동:토큰 검사]]
+      # src/tokens.css가 figma/tokens.json에서 다시 만든 결과와 같은지 확인한다. CI는 고치지 않고 실패만 한다
+      - name: Generated tokens check
+        run: pnpm --filter @seojaewan/design-system generate:tokens --check
+
       - name: Build
         run: pnpm build
 
+      # 디자인 시스템 카탈로그와 앱 조립 스토리
       - name: Build Storybook
         run: pnpm build:storybook
 
@@ -78,86 +89,3 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report/
           retention-days: 7
-
-  # @codocs [[피그마 일치 검사:CI 비교]]
-  # PR에서 main 대비 영향받는 컴포넌트가 피그마 레이어와 같은 변수·스타일 이름(클래스)을 쓰는지 비교하고,
-  # 결과를 PR 댓글 하나로 남긴다. 비교 도구가 틀린 코드를 잡는지도 함께 확인한다.
-  figma-parity:
-    name: Figma parity
-    # PR에서 영향받는 컴포넌트만 비교한다. main 병합 뒤 전체 비교는 두지 않는다
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      # 댓글 이미지를 parity-report/pr-<번호> 브랜치에 올린다
-      contents: write
-      # 결과 댓글을 남기고 고친다
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          # 비교 범위를 정하려면 기준 브랜치와의 merge-base가 필요하다
-          fetch-depth: 0
-
-      - name: Check Figma export
-        id: figma
-        run: |
-          if [ -f packages/design-system/figma/figma.json ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "figma/figma.json이 아직 없어 피그마 일치 검사를 건너뛴다."
-          fi
-
-      - uses: pnpm/action-setup@v6
-        if: steps.figma.outputs.present == 'true'
-
-      - uses: actions/setup-node@v7
-        if: steps.figma.outputs.present == 'true'
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - if: steps.figma.outputs.present == 'true'
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        if: steps.figma.outputs.present == 'true'
-        run: pnpm --filter @seojaewan/design-system exec playwright install --with-deps chromium
-
-      - name: Figma parity (affected)
-        id: parity
-        if: steps.figma.outputs.present == 'true'
-        continue-on-error: true
-        run: pnpm --filter @seojaewan/design-system test:parity --affected --base origin/${{ github.base_ref }}
-
-      # 비교 도구 자체 확인: 일부러 틀린 코드는 모두 실패하고 대조군은 통과해야 한다
-      - name: Figma parity proof
-        id: proof
-        if: steps.figma.outputs.present == 'true'
-        continue-on-error: true
-        working-directory: packages/design-system
-        run: |
-          if [ ! -f storybook-static/index.json ]; then pnpm run build-storybook --quiet; fi
-          pnpm run test:parity-proof
-
-      # 포크에서 온 PR은 쓰기 토큰이 없어 댓글을 남기지 않는다
-      - name: Comment results on PR
-        if: always() && steps.figma.outputs.present == 'true' && github.event.pull_request.head.repo.full_name == github.repository
-        working-directory: packages/design-system
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh auth setup-git
-          node scripts/parity/post-pr-comment.ts --repository "${{ github.repository }}" --server "${{ github.server_url }}" --run-id "${{ github.run_id }}" --pr "${{ github.event.pull_request.number }}"
-
-      - uses: actions/upload-artifact@v7
-        if: always() && steps.figma.outputs.present == 'true'
-        with:
-          name: figma-parity-results
-          path: packages/design-system/parity-results/
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: Fail when parity failed
-        if: steps.parity.outcome == 'failure' || steps.proof.outcome == 'failure'
-        run: exit 1
