@@ -1,5 +1,5 @@
-# @codocs [[피그마 일치 검사:CI 비교]]
-# PR이 닫히면 피그마 일치 검사 댓글 이미지를 올린 브랜치(parity-report/pr-<번호>)를 지운다.
+# @codocs [[피그마 연동:CI]]
+# PR이 닫히면 피그마 캡처 표 댓글 이미지를 올린 브랜치(parity-report/pr-<번호>)를 지운다.
 name: Parity report cleanup
 
 on:

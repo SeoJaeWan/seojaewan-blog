@@ -23,12 +23,9 @@ function tokenNames(namespace: string): string[] {
 describe('스타일링', () => {
   it('className 병합이 아는 토큰 이름이 tokens.css와 같다', () => {
     expect([...TOKEN_NAMES.spacing].sort()).toEqual(tokenNames('spacing'));
+    expect([...TOKEN_NAMES.size].sort()).toEqual(tokenNames('size'));
     expect([...TOKEN_NAMES.radius].sort()).toEqual(tokenNames('radius'));
-    // --text-shadow-*는 글자 크기가 아니라 글자 그림자다.
-    expect([...TOKEN_NAMES.text].sort()).toEqual(
-      tokenNames('text').filter((name) => !name.startsWith('shadow-')),
-    );
-    expect([...TOKEN_NAMES.borderWidth].sort()).toEqual(tokenNames('border-width'));
+    expect([...TOKEN_NAMES.strokeWidth].sort()).toEqual(tokenNames('stroke-width'));
   });
 
   it('토큰 두께 클래스와 색 클래스를 서로 다른 속성으로 보고 둘 다 남긴다', () => {
@@ -41,8 +38,8 @@ describe('스타일링', () => {
     expect(mergeClassNames('outline-focus-outer outline-focus-stroke-outer')).toBe(
       'outline-focus-outer outline-focus-stroke-outer',
     );
-    expect(mergeClassNames('type-body text-text-fill-primary text-caption')).toBe(
-      'type-body text-text-fill-primary text-caption',
+    expect(mergeClassNames('type-body text-text-fill-primary')).toBe(
+      'type-body text-text-fill-primary',
     );
   });
 
@@ -51,5 +48,6 @@ describe('스타일링', () => {
       'px-16 bg-accent-fill-default',
     );
     expect(mergeClassNames('rounded-control', 'rounded-circular')).toBe('rounded-circular');
+    expect(mergeClassNames('w-flyout-width', 'w-menu-item-width')).toBe('w-menu-item-width');
   });
 });

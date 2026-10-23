@@ -29,7 +29,7 @@ description: 피그마 플러그인이 연 컴포넌트 PR(`feat/figma-<컴포�
    - 컴포넌트 PR: `src/components/<컴포넌트>/`에 코드와 `Parity` 스토리를 만들거나 고친다.
    - 조립 PR: 그 영역의 기능 폴더에 앱 컴포넌트와 피그마 조립과 같은 데이터의 스토리를 만든다.
    - 값은 토큰 클래스로만 쓴다(@codocs [[피그마 연동:토큰 생성]]의 이름 규칙).
-6. 캡처 도구를 로컬에서 돌려 변형마다 `피그마 | 코드 | 차이`를 본다(@codocs [[피그마 연동:CI]]). 차이 그림에서 엔진 차이가 아닌 차이가 보이면 5로 돌아가 고친다. 스토리 짝을 찾지 못한 변형이 없어야 한다.
+6. 캡처 도구를 로컬에서 돌려 변형마다 `피그마 | 코드 | 차이`를 본다(@codocs [[피그마 연동:CI]]). `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더나 조립 이름>`(예: `--target button`, `--target Menu/Folder`)을 실행하면 Storybook을 빌드하고 `tools/figma-parity/parity-results/<대상>/<변형>/`에 `figma.png`, `code.png`, `diff.png`를 남긴다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 차이 그림에서 엔진 차이가 아닌 차이가 보이면 5로 돌아가 고친다. 스토리 짝을 찾지 못한 변형이 없어야 한다.
 7. 피그마 그림과 맞추려면 캡처 도구나 `figma/`를 바꿔야 할 것 같으면 멈추고, 어느 변형이 왜 그런지 보고한다.
 8. `pnpm lint`, `pnpm typecheck`, `pnpm test`를 통과시킨다.
 9. 커밋하고 푸시한다. 커밋 규칙은 @codocs [[Git 작업 규칙:커밋]]을 따른다. PR 브랜치에 이어서 커밋하고 병합하지 않는다.

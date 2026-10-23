@@ -31,7 +31,7 @@ function at(tree: JsonObject, path: string[]): JsonValue | undefined {
   return current;
 }
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:토큰 생성]]
 describe('Variables를 DTCG 토큰으로 내보낸다', () => {
   const { tokens } = buildDesignTokens(tokensInput());
 
@@ -117,7 +117,7 @@ describe('Variables를 DTCG 토큰으로 내보낸다', () => {
   });
 });
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:토큰 생성]]
 describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 넣는다', () => {
   it('글자 스타일은 typography이고 변수에 묶인 속성은 별칭이다', () => {
     const { tokens } = buildDesignTokens(tokensInput({ textStyles: [bodyStyle] }));
@@ -305,7 +305,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     );
   });
 
-  it('이름 있는 이미지 자산이 아닌 이미지 칠은 막는다(G4)', () => {
+  it('이름 있는 이미지 자산이 아닌 이미지 칠은 막는다', () => {
     expect(() =>
       buildDesignTokens(tokensInput({ paintStyles: [acrylicPaintStyle], imageAssets: {} })),
     ).toThrow('Foundations / Assets / Images의 자산이 아니다');

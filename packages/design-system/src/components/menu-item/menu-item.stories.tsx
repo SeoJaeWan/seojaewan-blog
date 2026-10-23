@@ -8,7 +8,7 @@ import { MenuItem } from './menu-item';
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
 const KINDS = ['default', 'submenu', 'toggle-on', 'toggle-off', 'radio-on'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
-// 피그마 예시 글자다([[피그마 일치 검사:글자]]).
+// 피그마 예시 글자다([[피그마 연동:스토리 규칙]]).
 const LABEL = '열기';
 const SHORTCUT = 'Ctrl+O';
 
@@ -41,8 +41,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 일치 검사:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 비교 스크립트가 마우스로 재현한다.
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
 // MenuItem은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 항목 하나만 담는다.
 export const Parity: Story = {};
 
@@ -92,7 +92,10 @@ function OpenMenu(props: { children: ReactNode }): JSX.Element {
         <Menu.Root open modal={false}>
           <Menu.Portal container={anchor}>
             <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
-              <Menu.Popup className="outline-none">{props.children}</Menu.Popup>
+              {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
+              <Menu.Popup data-parity-target className="outline-none">
+                {props.children}
+              </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>
         </Menu.Root>

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -40,8 +41,30 @@ const defaultExportFiles = [
   '**/*.stories.{ts,tsx}',
 ];
 
+// @codocs [[피그마 연동:토큰 사용 강제]]
+// 토큰 변수 이름은 피그마 경로 그대로라 Tailwind 기본 이름공간에 들어가는 것이 있다. 그러면 Tailwind 기본 유틸리티가
+// 뜻하지 않은 클래스를 만들고(`--text-fill-primary` → 글자 크기 `text-fill-primary`, `--stroke-width-default` →
+// 선 색 `stroke-width-default`) no-unknown-classes가 막지 못한다. tokens.css의 @theme 변수 중 이 이름공간의 것은
+// 변수 이름 그대로인 클래스를 막는다.
+const misreadNamespaces = ['text', 'stroke-width'];
+const themeVariableNames = [
+  ...(
+    readFileSync(`${rootDir}/packages/design-system/src/tokens.css`, 'utf8')
+      .split('@theme static {')[1]
+      ?.split('\n}')[0] ?? ''
+  ).matchAll(/^\s+--([a-z0-9-]+):/gmu),
+].map((match) => match[1]);
+const misreadTokenClasses = themeVariableNames.filter((name) =>
+  misreadNamespaces.some((namespace) => name.startsWith(`${namespace}-`)),
+);
+
 // 도구가 이름을 정하거나 process.env를 직접 읽어야 하는 파일.
-const configFiles = ['**/*.config.{ts,mjs,js,cjs}', '**/.storybook/**', 'scripts/**'];
+const configFiles = [
+  '**/*.config.{ts,mjs,js,cjs}',
+  '**/.storybook/**',
+  'scripts/**',
+  'tools/figma-parity/src/**',
+];
 
 // @codocs [[코드 작성 규칙:식별자 이름]]
 // 상수는 모듈 최상위에서 리터럴이나 `as const`로 초기화한 const다. 그 밖의 값은 camelCase다.
@@ -394,6 +417,15 @@ export default defineConfig(
               message:
                 'Tailwind 임의 값("$0")은 쓰지 않는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.',
             },
+            ...(misreadTokenClasses.length === 0
+              ? []
+              : [
+                  {
+                    pattern: `(^|:)(${misreadTokenClasses.join('|')})(\\/[^:]*)?$`,
+                    message:
+                      '"$0"은 Tailwind 기본 유틸리티가 토큰을 다른 속성으로 읽은 클래스다. 토큰 클래스(tokens.css 머리 주석의 표)를 쓴다.',
+                  },
+                ]),
           ],
         },
       ],

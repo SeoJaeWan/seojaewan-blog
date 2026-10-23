@@ -7,20 +7,8 @@ import { extendTailwindMerge } from 'tailwind-merge';
  * 이름 목록은 tokens.css와 같아야 하며 merge-class-names.test.ts가 확인한다.
  */
 export const TOKEN_NAMES = {
-  spacing: [
-    '0',
-    '10',
-    '12',
-    '16',
-    '2',
-    '20',
-    '24',
-    '32',
-    '4',
-    '40',
-    '48',
-    '6',
-    '8',
+  spacing: ['0', '10', '12', '16', '2', '20', '24', '32', '4', '40', '48', '6', '8'],
+  size: [
     'boot-screen-gap',
     'boot-screen-gap-mobile',
     'breadcrumb-item-max-width',
@@ -75,8 +63,7 @@ export const TOKEN_NAMES = {
     'title-bar-height-tabbed',
   ],
   radius: ['circular', 'control', 'none', 'overlay', 'small'],
-  text: ['body', 'body-large', 'caption', 'display', 'subtitle', 'title', 'title-large'],
-  borderWidth: ['default', 'focus-outer', 'indicator'],
+  strokeWidth: ['default', 'focus-outer', 'indicator'],
 } as const;
 
 /**
@@ -87,24 +74,24 @@ export const TOKEN_NAMES = {
 export const mergeClassNames = extendTailwindMerge({
   override: {
     theme: {
-      spacing: [...TOKEN_NAMES.spacing],
+      // 크기 유틸리티(`w-*`, `h-*`, `size-*`)는 간격과 크기 토큰을 모두 읽는다.
+      spacing: [...TOKEN_NAMES.spacing, ...TOKEN_NAMES.size],
       radius: [...TOKEN_NAMES.radius],
-      text: [...TOKEN_NAMES.text],
     },
   },
   extend: {
     classGroups: {
-      'border-w': [{ border: [...TOKEN_NAMES.borderWidth] }],
-      'border-w-x': [{ 'border-x': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-y': [{ 'border-y': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-t': [{ 'border-t': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-r': [{ 'border-r': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-b': [{ 'border-b': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-l': [{ 'border-l': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-s': [{ 'border-s': [...TOKEN_NAMES.borderWidth] }],
-      'border-w-e': [{ 'border-e': [...TOKEN_NAMES.borderWidth] }],
+      'border-w': [{ border: [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-x': [{ 'border-x': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-y': [{ 'border-y': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-t': [{ 'border-t': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-r': [{ 'border-r': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-b': [{ 'border-b': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-l': [{ 'border-l': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-s': [{ 'border-s': [...TOKEN_NAMES.strokeWidth] }],
+      'border-w-e': [{ 'border-e': [...TOKEN_NAMES.strokeWidth] }],
       // 바깥 선(outline) 두께도 선 두께 토큰을 쓴다(outline-focus-outer는 두께, outline-focus-stroke-outer는 색).
-      'outline-w': [{ outline: [...TOKEN_NAMES.borderWidth] }],
+      'outline-w': [{ outline: [...TOKEN_NAMES.strokeWidth] }],
     },
   },
 });

@@ -3,9 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   assetFile,
   assetFilePath,
-  booleanPropName,
   componentFilePath,
   componentSlug,
+  patternFolder,
+  patternPlace,
   variantSlug,
 } from './naming';
 import { utf8Encode } from './sha256';
@@ -56,7 +57,7 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
   });
 });
 
-// @codocs [[피그마 일치 검사:자산]]
+// @codocs [[피그마 연동:자산]]
 describe('자산 파일', () => {
   it('자산은 figma/assets/<묶음>/<이름>에 두고, 래스터만 PNG다', () => {
     expect(assetFile({ group: 'Icons', name: 'ic_fluent_add_20_regular', kind: 'mono' })).toBe(
@@ -79,10 +80,19 @@ describe('자산 파일', () => {
   });
 });
 
-// @codocs [[피그마 일치 검사:결정 사항]]
-describe('BOOLEAN 컴포넌트 속성 이름(D4)', () => {
-  it('속성 키의 #id를 떼고 camelCase로 바꾼 것이 React prop 이름이다', () => {
-    expect(booleanPropName('Show icon#13:16')).toBe('showIcon');
-    expect(booleanPropName('Show shortcut#14:34')).toBe('showShortcut');
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('조립 폴더', () => {
+  it('조립 이름 `영역/이름`을 apps/web/figma/patterns/<영역>/<이름>으로 둔다', () => {
+    const place = patternPlace('Menu/ViewSubmenu');
+    expect(place).toEqual({ area: 'menu', name: 'view-submenu' });
+    expect(place === null ? null : patternFolder(place)).toBe(
+      'apps/web/figma/patterns/menu/view-submenu',
+    );
+  });
+
+  it('`영역/이름` 꼴이 아닌 이름은 폴더를 정할 수 없다', () => {
+    expect(patternPlace('Folder')).toBeNull();
+    expect(patternPlace('Menu/Folder/Open')).toBeNull();
+    expect(patternPlace('Menu/')).toBeNull();
   });
 });

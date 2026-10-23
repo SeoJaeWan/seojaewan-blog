@@ -22,7 +22,7 @@ const meta = {
     showIcon: { control: 'boolean' },
   },
   render: (args) => (
-    // 글자는 피그마 예시 글자와 같아야 한다([[피그마 일치 검사:글자]]).
+    // 글자는 피그마 예시 글자와 같아야 한다([[피그마 연동:스토리 규칙]]).
     <Button variant={args.style} disabled={args.state === 'disabled'} showIcon={args.showIcon}>
       버튼
     </Button>
@@ -33,6 +33,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 일치 검사:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed·Focused는 비교 스크립트가 마우스·키보드로 재현한다.
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed·Focused는 캡처 도구가 마우스·키보드로 재현한다.
 export const Parity: Story = {};

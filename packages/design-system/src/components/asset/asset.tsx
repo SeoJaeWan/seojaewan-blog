@@ -11,8 +11,7 @@ type AssetProps = Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'children'> & {
  * 피그마 Foundations / Assets의 SVG 자산을 그린다. 요소는 generate:assets가 피그마 자산 파일에서 만든다.
  * 한 가지 색 자산은 currentColor로 그리므로 색은 글자 색 클래스(`text-*`)로 정하고, 크기는 크기 클래스로 정한다.
  * 여러 색 자산의 그라데이션 ID는 한 화면에 같은 자산이 여럿 있어도 겹치지 않게 요소마다 다른 접두어를 붙인다.
- * 피그마 일치 검사는 data-asset 값으로 같은 자산인지 확인한다.
- * @codocs [[피그마 일치 검사:자산]]
+ * @codocs [[피그마 연동:자산]]
  * @param props
  */
 export function Asset(props: AssetProps): JSX.Element {
@@ -20,7 +19,7 @@ export function Asset(props: AssetProps): JSX.Element {
   const asset = svgAssets[name];
   const prefix = `asset${useId().replace(/[^a-zA-Z0-9]/gu, '')}`;
   return (
-    <svg aria-hidden fill="none" {...svgProps} data-asset={name} viewBox={asset.viewBox}>
+    <svg aria-hidden fill="none" {...svgProps} viewBox={asset.viewBox}>
       {asset.elements.map((element, index) => renderElement(element, index, prefix))}
     </svg>
   );

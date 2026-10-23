@@ -120,7 +120,7 @@ export type DesignTokensInput = {
   textStyles: readonly TextStyleInput[];
   effectStyles: readonly EffectStyleInput[];
   paintStyles: readonly PaintStyleInput[];
-  /** 이미지 해시 → 이미지 자산 파일(`images/noise-acrylic.png`). Foundations / Assets / Images의 이름 있는 자산이다(G4) */
+  /** 이미지 해시 → 이미지 자산 파일(`images/<자산>.png`). Foundations / Assets / Images의 이름 있는 자산이다 */
   imageAssets: Readonly<Record<string, string>>;
 };
 
@@ -134,7 +134,7 @@ const fontWeights: Readonly<Record<string, number>> = { Regular: 400, SemiBold: 
  * Variables와 글자·효과·칠 스타일을 W3C 디자인 토큰(DTCG) 형식의 토큰 트리로 바꾼다.
  * 별칭은 풀지 않고 `{경로}`로 남긴다. 계약에 없는 값이 하나라도 있으면 모두 모아 중단한다.
  * 단색도 그라디언트도 보이지 않는 칠 스타일(이미지만 있는 배경 등)은 토큰이 아니므로 넣지 않고 따로 알린다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param input 피그마에서 읽은 변수와 스타일
  * @returns tokens.json에 쓸 토큰 트리와 넣지 않은 스타일
  */
@@ -541,7 +541,7 @@ function paintStyleToken(style: PaintStyleInput, context: ConversionContext): Js
 /**
  * 칠 스타일 안의 단색 층과 그라디언트 색 지점이 색 변수에 연결되어 있는지 본다. 날값이면 막는다.
  * 재질 칠 스타일처럼 층이 여럿인 스타일도 같다. 코드는 연결된 변수 이름으로 색을 쓴다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param paint 칠 층
  * @param label 오류 메시지에 쓸 이름
  * @param context 문제 목록
@@ -589,11 +589,11 @@ function paintLayer(
     return layer;
   }
   layer.imageHash = paint.imageHash;
-  // G4: 이미지는 이름 있는 이미지 자산이어야 코드가 같은 파일을 쓴다. 이름 없는 이미지는 막는다.
+  // 이미지는 이름 있는 이미지 자산이어야 코드가 같은 파일을 쓴다. 이름 없는 이미지는 막는다.
   const asset = paint.imageHash === null ? undefined : context.imageAssets[paint.imageHash];
   if (asset === undefined) {
     context.problems.push(
-      `${label}: 이미지(${paint.imageHash ?? '해시 없음'})가 Foundations / Assets / Images의 자산이 아니다. 이미지를 Images 묶음의 컴포넌트로 만들고 이름을 짓는다(G4)`,
+      `${label}: 이미지(${paint.imageHash ?? '해시 없음'})가 Foundations / Assets / Images의 자산이 아니다. 이미지를 Images 묶음의 컴포넌트로 만들고 이름을 짓는다`,
     );
   } else {
     layer.asset = asset;

@@ -1,4 +1,5 @@
 import { REPO_NAME, REPO_OWNER } from './plugin-config';
+import { treeChunks } from './tree-changes';
 
 // GitHub REST API 호출. 피그마 샌드박스의 fetch를 쓴다(manifest의 allowedDomains에 api.github.com).
 // 토큰은 요청 헤더에만 넣고 로그나 오류 메시지에 남기지 않는다.
@@ -6,8 +7,8 @@ import { REPO_NAME, REPO_OWNER } from './plugin-config';
 const API_ROOT = 'https://api.github.com';
 const REPO_PATH = `/repos/${REPO_OWNER}/${REPO_NAME}`;
 
-/** 트리에 넣을 파일 변경. sha가 null이면 파일을 지운다. */
-export type TreeEntry = { path: string; sha: string | null } | { path: string; content: string };
+/** 트리에 넣을 파일 변경. 내용은 미리 올린 blob이고, sha가 null이면 파일을 지운다. */
+export type TreeEntry = { path: string; sha: string | null };
 
 /**
  * 브랜치 끝 커밋과 그 트리의 SHA를 가져온다.
@@ -76,17 +77,17 @@ export async function getFileBytes(
 }
 
 /**
- * 트리 아래 모든 파일 경로를 가져온다(하위 폴더 포함).
+ * 트리 아래 파일 경로와 blob SHA를 가져온다(하위 폴더 포함).
  * @param token GitHub 토큰
  * @param treeSha 트리 SHA
- * @param prefix 이 경로로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
- * @returns 저장소 루트 기준 파일 경로
+ * @param prefixes 이 경로 가운데 하나로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
+ * @returns 저장소 루트 기준 파일 경로 → blob SHA
  */
 export async function listTreeFiles(
   token: string,
   treeSha: string,
-  prefix: string,
-): Promise<string[]> {
+  prefixes: readonly string[],
+): Promise<Map<string, string>> {
   const tree = await request(token, 'GET', `${REPO_PATH}/git/trees/${treeSha}?recursive=1`);
   if (tree === null || typeof tree !== 'object' || Reflect.get(tree, 'truncated') === true) {
     throw new Error('GitHub 트리 목록이 잘려 저장소 파일을 모두 읽지 못했다.');
@@ -95,15 +96,17 @@ export async function listTreeFiles(
   if (!Array.isArray(entries)) {
     throw new Error('GitHub 응답에 tree가 없다.');
   }
-  const files: string[] = [];
+  const files = new Map<string, string>();
   for (const entry of entries) {
     const path = readOptionalString(entry, ['path']);
+    const sha = readOptionalString(entry, ['sha']);
     if (
       path !== null &&
+      sha !== null &&
       readOptionalString(entry, ['type']) === 'blob' &&
-      path.startsWith(prefix)
+      prefixes.some((prefix) => path.startsWith(prefix))
     ) {
-      files.push(path);
+      files.set(path, sha);
     }
   }
   return files;
@@ -124,7 +127,9 @@ export async function createBlob(token: string, base64: string): Promise<string>
 }
 
 /**
- * 기준 트리에 파일 변경을 얹은 새 트리를 만든다.
+ * 기준 트리에 파일 변경을 얹은 새 트리를 만든다. 항목이 많으면 나눠서 앞 트리 위에 이어 만든다.
+ * 한 번에 큰 트리를 보내면 GitHub가 422로 거절하기 때문이다. 커밋은 마지막 트리로 하나만 만든다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param baseTree 기준 트리 SHA
  * @param entries 파일 변경
@@ -135,11 +140,15 @@ export async function createTree(
   baseTree: string,
   entries: readonly TreeEntry[],
 ): Promise<string> {
-  const tree = await request(token, 'POST', `${REPO_PATH}/git/trees`, {
-    base_tree: baseTree,
-    tree: entries.map((entry) => ({ ...entry, mode: '100644', type: 'blob' })),
-  });
-  return readString(tree, ['sha']);
+  let tree = baseTree;
+  for (const chunk of treeChunks(entries)) {
+    const created = await request(token, 'POST', `${REPO_PATH}/git/trees`, {
+      base_tree: tree,
+      tree: chunk.map((entry) => ({ ...entry, mode: '100644', type: 'blob' })),
+    });
+    tree = readString(created, ['sha']);
+  }
+  return tree;
 }
 
 /**

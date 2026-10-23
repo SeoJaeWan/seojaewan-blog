@@ -11,7 +11,7 @@ const SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="
 <path d="M8 1L15 15H1Z" fill="currentColor" fill-rule="evenodd"/>
 </svg>`;
 
-// @codocs [[피그마 일치 검사:자산]]
+// @codocs [[피그마 연동:자산]]
 describe('자산 생성', () => {
   it('SVG의 viewBox와 요소를 React 속성 이름으로 옮긴다', () => {
     const data = parseSvgAsset(SVG, 'icons/test.svg');
