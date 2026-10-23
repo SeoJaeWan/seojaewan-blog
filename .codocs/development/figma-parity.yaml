@@ -9,7 +9,7 @@ _codocs:
 
   확인은 두 층으로 나눈다.
   - 자동 판정: 피그마에서 설정한 값과 코드에서 설정한 값이 같은지 기계가 판정한다. 렌더링 결과가 아니라 입력값만, 피그마와 CSS의 뜻이 1:1인 속성만 비교한다. 허용 오차와 컴포넌트별 예외가 없다([[피그마 일치 검사:비교 규칙]]).
-  - 사람 확인: 1:1로 옮길 수 없는 것(크기 방식, 안쪽 선, 재질, 줄바꿈 결과, 위치)은 판정하지 않고, 피그마와 코드를 같은 조건으로 캡처한 표를 PR 댓글로 남겨 사람이 본다([[피그마 일치 검사:캡처 표]]).
+  - 사람 확인: 1:1로 옮길 수 없거나 빠짐없이 비교할 수 없는 것(크기 방식, 안쪽 선, 재질, 그림자, 줄바꿈 결과, 위치)은 판정하지 않고, 피그마와 코드를 같은 조건으로 캡처한 표를 PR 댓글로 남겨 사람이 본다([[피그마 일치 검사:캡처 표]]).
 
   그림을 기계로 비교하지 않는다. 두 렌더링 엔진의 차이 때문에 정상과 실수를 가를 기준을 세울 수 없었다. 시험하고 내려놓은 방법은 [[피그마 일치 검사:검토한 대안]]에, 쉬운 설명은 [[비교 원리]]에 있다.
 
@@ -47,8 +47,8 @@ _codocs:
 
   상태(Hover, Pressed, Focused 등)는 [[피그마 일치 검사:스토리 규칙]]대로 실제 상호작용으로 재현한 상태에서 잰다.
 판정 항목: |
-  기계가 판정하는 항목의 전체 목록이다. 이 목록에 없는 피그마 속성은 판정하지 않는다.
-  항목은 [[피그마 일치 검사:비교 규칙]]의 기준(렌더링 결과가 아닌 입력값, 피그마와 CSS의 뜻이 1:1)을 모두 만족할 때만 더한다. 만족하지 못하면 "판정하지 않는 것"에 이유와 함께 적는다.
+  기계가 판정하는 항목의 전체 목록이다. 이 목록에 없는 피그마 속성과 CSS 속성은 판정하지 않는다.
+  항목은 [[피그마 일치 검사:비교 규칙]]의 기준(렌더링 결과가 아닌 입력값, 피그마와 CSS의 뜻이 1:1)을 모두 만족하고, 값이 같다·이름이 같다·정해진 1:1 대응 중 하나로 빠짐없이 비교할 수 있을 때만 더한다. 일부만 확인할 수 있거나 다른 CSS 방법으로 같은 결과를 만들어 피해 갈 수 있으면 판정하지 않고 "판정하지 않는 것"에 이유와 함께 적는다(캡처 표에서 사람이 본다).
 
   비교 방식:
   - 이름: 피그마가 연결한 변수·스타일 이름 ↔ 그 CSS 속성을 정한(이긴) 선언이 참조하는 변수 이름. 이름은 [[피그마 일치 검사:토큰 작성]]의 이름 규칙으로 바꾼다.
@@ -56,83 +56,174 @@ _codocs:
   - 대응: 피그마 선택지 ↔ 같은 뜻의 CSS 값. 같은 뜻의 CSS 값이 여럿이면(`flex-start`와 `start`) 모두 적는다.
   - 일치: 문자열이나 파일이 같다.
 
+  판정 순서(요소 하나의 속성 하나):
+  1. 피그마 쪽: `export.json` 레이어의 칸(예: `fill.variable`)에서 변수·스타일 경로나 선택지를 읽는다. 변수면 `tokens.json`에서 별칭을 끝까지 따라가 값을 얻는다.
+  2. 기대 이름: 경로를 이름 규칙으로 CSS 변수 이름 후보로 바꾼다(`accent-fill/default` → `--color-accent-fill-default`). 후보가 여럿인 변수가 있다(`font/line-height/body` → `--leading-body`, `--text-body--line-height`). 후보 중 하나에 닿으면 된다.
+  3. 기대 값: 값을 아래 "값 변환"으로 CSS 계산값 모양으로 바꾼다(`#005fb8` → `rgb(0, 95, 184)`).
+  4. 요소: [[피그마 일치 검사:짝짓기]]로 레이어와 짝지은 요소를 찾는다.
+  5. 이름 읽기: CDP `CSS.getMatchedStylesForNode`로 그 요소에 맞는 규칙을 읽고, 아래 "이긴 선언 읽기"대로 이긴 선언과 변수 사슬을 본다.
+  6. 값 읽기: 브라우저 `getComputedStyle(요소)`(의사 요소면 `getComputedStyle(요소, '::placeholder')`)의 그 속성 값을 읽는다.
+  7. 결과: 비교 방식마다 아래 통과 조건을 모두 만족하면 통과, 하나라도 어긋나면 실패 줄을 남긴다.
+     - 이름: 이긴 선언이 기대 이름 후보 중 하나에 닿는다.
+     - 값: 계산값을 같은 모양으로 바꿔 기대 값과 같다.
+     - 대응: 계산값이 같은 뜻의 CSS 값 목록에 있다.
+     - 일치: 문자열이나 파일이 같다.
+
+  실패 줄 형식:
+  - 이름: `<레이어> <역할>: 피그마 <변수·스타일> → 코드 <이긴 선언 이름: 값>`(선언이 없으면 `선언 없음`)
+  - 값·대응: `<레이어> <역할>: 피그마 <변수·스타일·선택지> → 코드 <속성> <계산값> (기대 <기대값>)`
+  - 루트 레이어는 `(루트)`로 쓴다.
+
   이긴 선언 읽기:
-  CDP `CSS.getMatchedStylesForNode`는 요소에 맞는 규칙을 우선순위가 낮은 것부터(레이어 순서, 선택자 우선순위, 소스 순서) 돌려준다. 그 속성을 정하는 마지막 선언이 이긴 선언이고, 인라인 스타일이 있으면 그것이 이긴다.
-  - 단축 속성: `var()`가 든 단축 속성(`padding-inline: var(--spacing-12)`)을 펼친 롱핸드는 값이 비어 있다. 같은 규칙의 단축 선언을 읽는다.
-  - 상속: 상속되는 속성(`color`, 글자 속성)은 자기 선언이 없으면 가까운 조상부터 이긴 선언을 찾는다.
+  CDP `CSS.getMatchedStylesForNode`는 요소에 맞는 규칙을 우선순위가 낮은 것부터(레이어 순서, 선택자 우선순위, 소스 순서) 돌려주고 인라인 스타일을 마지막에 준다. 그 속성을 정할 수 있는 선언 가운데 마지막 것이 이긴 선언이다. `!important`는 쓰지 않으므로 따로 다루지 않는다.
+
+  | 규칙 | 예 |
+  |---|---|
+  | 단축 속성과 논리 속성도 그 롱핸드를 정한다. 논리 속성은 왼쪽에서 오른쪽 가로 쓰기로 읽는다 | `px-12`가 만든 `padding-inline: var(--spacing-12)`는 `padding-left`와 `padding-right`를 정한다. `rounded-control`의 `border-radius: var(--radius-control)`은 네 모서리를 정한다 |
+  | 값이 여럿인 단축 속성은 그 변·모서리의 값만 쓴다(1개: 모두, 2개: 위아래·좌우, 3개: 위·좌우·아래, 4개: 위·오른쪽·아래·왼쪽) | `padding: var(--spacing-6) var(--spacing-12)`에서 `padding-left`는 `var(--spacing-12)`, `padding-top`은 `var(--spacing-6)` |
+  | 소스 범위가 없는 선언은 무시한다. CDP가 단축 속성을 펼쳐 덧붙인 롱핸드다 | `padding-inline: var(--spacing-12)`와 함께 오는 빈 `padding-inline-start`는 읽지 않고 `padding-inline`을 읽는다 |
+  | 상속되는 속성(`color`, `font-family`, `font-size`, `font-weight`, `font-style`, `line-height`, `letter-spacing`, `text-align`)은 자기 선언이 없거나 값이 `inherit`·`unset`이면 가까운 조상부터 올라가며 이긴 선언을 찾는다 | `label` 요소에 글자 색 선언이 없고 루트 `<button class="text-text-on-accent-fill-primary">`에 있으면 루트의 `color: var(--color-text-on-accent-fill-primary)`가 이긴 선언이다 |
+  | `::placeholder` 글자의 색(`color`)과 꾸밈(`text-decoration-line`)은 입력 요소 안의 브라우저 내부 placeholder 요소에서 읽는다. 크기·굵기·줄 높이·자간은 입력 요소 자신에서 읽는다 | SearchBox의 비어 있는 `<input>`은 `placeholder:text-text-fill-secondary`의 선언을 내부 placeholder 요소에서 읽는다 |
+  | 변수 사슬은 기대 이름에 닿을 때까지 따라간다. 기대 이름 앞에는 Tailwind 내부 변수(`--tw-*`)만 거칠 수 있다. 기대 이름에 닿으면 그 정의는 따라가지 않는다 | 아래 표 |
+  | 정의가 없는 변수는 `@property`의 `initial-value`, 그것도 없으면 `var()` 대체값으로 이어 간다. `@property`의 `inherits: false`인 변수는 조상의 정의를 보지 않는다 | `var(--tw-backdrop-blur,)`는 요소의 `--tw-backdrop-blur` 정의를 읽는다. 정의가 없고 `initial-value`도 없으면 빈 대체값이라 아무 이름에도 닿지 않는다 |
+
+  변수 사슬 예(기대 이름 `--color-accent-fill-default`, Button `Style=Accent` 루트의 `background-color`):
+
+  | 코드 | 이긴 선언과 사슬 | 결과 |
+  |---|---|---|
+  | `bg-accent-fill-default` | `background-color: var(--color-accent-fill-default)` → 기대 이름 | 통과(그 뒤 `--color-blue-dark-1`은 보지 않음) |
+  | Flyout `backdrop-blur-surface-flyout-acrylic`(기대 `--backdrop-blur-surface-flyout-acrylic`) | `backdrop-filter: var(--tw-backdrop-blur,) …` → `--tw-backdrop-blur: blur(var(--backdrop-blur-surface-flyout-acrylic))` → 기대 이름 | 통과(`--tw-*`만 거침) |
+  | `button { --color-my-button: var(--color-accent-fill-default); background-color: var(--color-my-button) }` | `background-color: var(--color-my-button)` → `--color-my-button`은 `--tw-*`도 기대 이름도 아님 | 실패(계산값은 같아도 이름 실패) |
 
   값 변환:
   판단이 아니라 단위 변환이다. 변환마다 방법은 하나다.
 
   | 피그마 값(`tokens.json`, `export.json`) | CSS 값 | 변환 | 예 |
   |---|---|---|---|
-  | 색 `#RRGGBB`·`#RRGGBBAA` | `rgb()`·`rgba()` | 채널마다 16진수를 0–255 정수로. 투명도는 `AA`(없으면 `FF`)와 계산값 투명도 ×255의 반올림을 비교 | `#005fb8` → `rgb(0, 95, 184)` |
+  | 색 `#RRGGBB`·`#RRGGBBAA` | `rgb()`·`rgba()`·`color(srgb …)` | 채널마다 16진수를 0–255 정수로. 투명도는 `AA`(없으면 `FF`)와 계산값 투명도 ×255의 반올림을 비교 | `#005fb8` → `rgb(0, 95, 184)` |
+  | 완전히 투명한 색(투명도 0) | 투명도 0인 색 | 두 쪽 모두 투명도가 0이면 채널은 보지 않고 같다 | 칠 없음(`rgba(0, 0, 0, 0)`) ↔ `rgba(255, 255, 255, 0)` 같음 |
   | 길이 `{unit: px, value}` | px | 그대로. 부동소수 표현 차이만 없애도록 소수 셋째 자리에서 반올림 | `spacing/12` 12 → `12px` |
   | 불투명도 변수(0–100) | `opacity`(0–1) | ÷100 | `opacity/cut` 50 → `0.5` |
-  | 자간 PERCENT·PIXELS | `letter-spacing`(px) | PERCENT는 글자 크기 × 값 ÷ 100, PIXELS는 그대로 | 글자 14px, 2% → `0.28px` |
-  | 줄 높이 PIXELS·PERCENT | `line-height`(px) | PIXELS는 그대로, PERCENT는 글자 크기 × 값 ÷ 100 | `font/line-height/body` 20 → `20px` |
-  | 글자 굵기 | `font-weight` | 그대로 | 600 → `600` |
+  | 자간 PERCENT·PIXELS | `letter-spacing`(px) | PERCENT는 글자 크기 × 값 ÷ 100, PIXELS는 그대로. 계산값 `normal`은 `0px`로 본다 | 글자 14px, 2% → `0.28px`. `0%` → `0px` ↔ 계산값 `normal` 같음 |
+  | 줄 높이 PIXELS | `line-height`(px) | 그대로 | `font/line-height/body` 20 → `20px` |
+  | 글자 굵기 | `font-weight` | 그대로 | `font/weight/regular` 400 → `400` |
   | 시간 `{unit: ms, value}` | `transition-duration` | 계산값(초) ×1000과 비교 | `motion/duration/faster` 83 → `0.083s` |
-  | 이징 베지어 `[x1, y1, x2, y2]` | `transition-timing-function` | `cubic-bezier()` 네 값 | `motion/easing/fade` `[0, 0, 1, 1]` → `cubic-bezier(0, 0, 1, 1)` |
+  | 이징 베지어 `[x1, y1, x2, y2]` | `transition-timing-function` | `cubic-bezier()` 네 값. 계산값이 CSS 이징 이름이면 그 베지어 값으로 바꾼다(`linear` = `0, 0, 1, 1`, `ease` = `0.25, 0.1, 0.25, 1`, `ease-in` = `0.42, 0, 1, 1`, `ease-out` = `0, 0, 0.58, 1`, `ease-in-out` = `0.42, 0, 0.58, 1`) | `motion/easing/fade` `[0, 0, 1, 1]` → `cubic-bezier(0, 0, 1, 1)`, 계산값 `linear`도 같음 |
   | 이징 이름(LINEAR, EASE_IN, EASE_OUT, EASE_IN_AND_OUT, *_BACK) | `transition-timing-function` | 피그마가 정한 베지어 값(대응표) | EASE_IN → `cubic-bezier(0.42, 0, 1, 1)` |
-  | 회전(도, 반시계 양수) | `transform` 행렬 | 90° 배수만. 같은 각도의 행렬 | -90 → `matrix(0, 1, -1, 0, 0, 0)` |
+  | 회전(도, 반시계 양수, 90° 배수) | `rotate` + `transform` | 부호를 바꿔 시계 방향 양수로. 계산값 `rotate` 각도와 `transform` 행렬 각도(`atan2(b, a)`)를 더해 0–359로 맞춰 비교 | -90 → 90°. `rotate: 90deg` 또는 `matrix(0, 1, -1, 0, 0, 0)` |
 
-  컴포넌트 판정(요소마다):
+  컴포넌트 판정(속성마다):
+  아래 표가 비교 도구(`layer-checks.ts`, `page-checks.ts`, `parity-runner.ts`)가 보는 CSS 속성 전부다. 예는 이 저장소의 Button, MenuItem, Flyout, SearchBox 내보내기 값이고, 네 컴포넌트에 쓰는 곳이 없는 항목은 그렇게 적는다. "피그마" 열은 `export.json` 칸 → `tokens.json` 값이고, "읽는 곳"은 짝지은 요소다.
 
-  | 분류 | 피그마 | CSS | 비교 |
-  |---|---|---|---|
-  | 칠(단색) | 칠 색 변수 | `background-color` | 이름 + 값 |
-  | 칠(그라데이션 칠 스타일) | 칠 스타일 | `background-image` | 이름 |
-  | 칠 없음 | 없음 | `background-color` 투명, `background-image: none` | 값 |
-  | 글자 색 | 구간 칠 색 변수 | `color` | 이름 + 값 |
-  | 한 가지 색 자산의 색 | 자산 색 변수 | `color` | 이름 + 값 |
-  | 바깥 선 | OUTSIDE 선의 색·두께 변수 | `outline-color`, `outline-width`, `outline-style: solid`, `outline-offset: 0` | 이름 + 값 |
-  | 레이아웃에 포함한 안쪽 선 | INSIDE + 선을 레이아웃에 포함, 색·변별 두께 변수 | `border-*-color`, `border-*-width`, `border-*-style: solid` | 이름 + 값 |
-  | 바깥 선·레이아웃 선 없음 | 없음 | `outline-style: none`, `border-*-width: 0` | 값 |
-  | 반경 | 모서리별 반경 변수(없으면 0) | `border-*-radius` | 이름 + 값 |
-  | 효과(그림자) | 효과 스타일 | `box-shadow` | 이름 |
-  | 효과(배경 흐림) | 효과 스타일 | `backdrop-filter` | 이름 |
-  | 효과 없음 | 없음 | `box-shadow: none`, `backdrop-filter: none` | 값 |
-  | 불투명도 | 노드 불투명도 변수 | `opacity` | 이름 + 값 |
-  | 여백 | 변별 여백 변수 | `padding-*` | 이름 + 값 |
-  | 간격 | 간격 변수(SPACE_BETWEEN이면 없음), 줄바꿈이면 줄 간격 변수 | `column-gap`·`row-gap`(방향에 따라) | 이름 + 값 |
-  | 고정 크기 | FIXED 축의 크기 변수 | `width`·`height`(`box-sizing: border-box`) | 이름 + 값 |
-  | 최소·최대 크기 | 최소·최대 크기 변수 | `min-*`, `max-*` | 이름 + 값 |
-  | 자동 배치 | 방향 HORIZONTAL·VERTICAL | `display: flex`·`inline-flex`, `flex-direction: row`·`column` | 대응 |
-  | 주축 정렬 | MIN·CENTER·MAX·SPACE_BETWEEN | `justify-content`: `normal`·`flex-start`·`start` / `center` / `flex-end`·`end` / `space-between` | 대응 |
-  | 교차축 정렬 | MIN·CENTER·MAX·BASELINE | `align-items`: `flex-start`·`start` / `center` / `flex-end`·`end` / `baseline` | 대응 |
-  | 줄바꿈 | WRAP·NO_WRAP | `flex-wrap: wrap`·`nowrap` | 대응 |
-  | 내용 자르기 | 켬·끔 | `overflow`: `hidden`·`clip` / `visible` | 대응 |
-  | 절대 위치 | ABSOLUTE | `position: absolute` | 대응 |
-  | 절대 위치 제약의 붙는 변 | 축마다 MIN·MAX·STRETCH | 그 축에서 값이 `auto`가 아닌 변(`left`, `right`, 둘 다) | 대응 |
-  | 회전 | 90° 배수 | `transform` | 값 |
-  | 글자 가로 정렬 | LEFT·CENTER·RIGHT·JUSTIFIED | `text-align`: `start`·`left` / `center` / `right` / `justify` | 대응 |
-  | 글자 꾸밈 | NONE·UNDERLINE·STRIKETHROUGH | `text-decoration-line` | 대응 |
-  | 글자 크기·굵기·자간 | 구간 글자 스타일의 변수 | `font-size`, `font-weight`, `letter-spacing` | 이름 + 값 |
-  | 줄 높이 | 구간 글자 스타일의 변수(PIXELS·PERCENT) | `line-height` | 이름 + 값 |
-  | 서체 | 구간 서체 이름 | 글자마다 실제로 그린 서체(CDP), 공백 제외 | 일치 |
-  | 글자 내용 | 글자 | `textContent` | 일치 |
-  | 레이어 | 보이는 레이어 경로 | `data-figma`가 그 경로인 요소가 하나 | 일치 |
-  | 숨긴 레이어 | 숨긴 레이어 경로 | 그 요소가 보이지 않음 | 일치 |
-  | 자산 | 자산 파일 | `data-asset` | 일치 |
-  | 팝업 배치 | `Placement` 변형(`Bottom-Start` 등) | 팝업 요소의 `data-side`, `data-align` | 대응 |
-  | 상태 전환 | 바뀌는 역할(위 표에서 이름 + 값인 칠, 글자 색, 불투명도, 반경, 여백, 간격, 고정 크기, 바깥 선) | `transition-property`에 그 속성 | 대응 |
-  | 상태 전환 시간·이징 | 전환 시간, 이징 | `transition-duration`, `transition-timing-function` | 값 |
+  색:
 
-  토큰 값 비교(`tokens.css`의 `@theme`):
+  | CSS 속성 | 피그마 | 비교 | 기대 이름·값 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | `background-color` | `fill.variable` → 색 값, 또는 `fill.style`(단색 칠 스타일) → 색 값 | 이름 + 값 | `--color-<경로>`(칠 스타일은 `--color-<스타일>`), `rgb()` | 레이어 요소 | Button Accent 루트 `accent-fill/default` → `#005fb8` → `--color-accent-fill-default`, `rgb(0, 95, 184)` |
+  | `background-color` | `fill` 없음 | 값 | 투명 | 레이어 요소 | MenuItem 루트 칠 없음 → `rgba(0, 0, 0, 0)` |
+  | `color`(글자) | 구간 `fill.variable` → 색 값 | 이름 + 값 | `--color-<경로>`, `rgb()` | 구간 글자를 직접 담은 요소(상속), placeholder면 의사 요소 | Button Accent `label` `text-on-accent-fill/primary` → `#ffffff` → `--color-text-on-accent-fill-primary`, `rgb(255, 255, 255)` |
+  | `color`(자산) | 한 가지 색 자산 `asset.color` → 색 값 | 이름 + 값 | `--color-<경로>`, `rgb()` | 자산 요소(상속) | Button `icon` `text-on-accent-fill/primary` → `rgb(255, 255, 255)` |
+  | `outline-color` | OUTSIDE `stroke.paint.variable` → 색 값 | 이름 + 값 | `--color-<경로>`, `rgba()` | 레이어 요소 | Button Focused 루트 `focus-stroke/outer` → `--color-focus-stroke-outer`, `rgba(0, 0, 0, 0.894)` |
+  | `border-top-color`, `border-right-color`, `border-bottom-color`, `border-left-color` | 레이아웃에 포함한 INSIDE `stroke.paint.variable` → 색 값 | 이름 + 값(변마다) | `--color-<경로>`, `rgba()` | 레이어 요소 | Flyout 루트 `surface-stroke/flyout` → `--color-surface-stroke-flyout`, `rgba(0, 0, 0, 0.059)` |
 
-  | 토큰 | 비교 |
-  |---|---|
-  | 색 변수, 단색 칠 스타일 | 값 |
-  | 간격, 크기, 반경, 선 두께, 블러 변수 | 값(px) |
-  | 불투명도 변수 | 값(÷100) |
-  | 글자 크기·줄 높이·자간·굵기 변수 | 값 |
-  | 서체 변수 | 첫 서체 이름 일치 |
-  | 모션 시간, 이징 변수 | 값(ms, `cubic-bezier`) |
-  | 별칭 | 가리키는 변수 이름 일치 |
-  | 그라데이션 칠 스타일, 재질 칠 스타일, 효과 스타일 | 변수나 `@utility`가 있는지만 |
-  | 글자 스타일 | 같은 이름의 `type-*` `@utility`가 있는지만 |
-  | 양쪽 비교 | `tokens.json`에만 있거나 `@theme`에만 있는 토큰은 실패 |
+  길이:
+
+  | CSS 속성 | 피그마 | 비교 | 기대 이름·값 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | `width`, `height` | `sizing.horizontal`·`vertical`이 FIXED일 때 `sizing.width`·`height` 변수 → 길이 | 이름 + 값 | `--spacing-<size 뒤 경로>`, px | 레이어 요소 | Flyout 루트 `size/flyout/width` → `--spacing-flyout-width`, `320px`. MenuItem `base/leading` `size/icon/16` → `--spacing-icon-16`, `16px` |
+  | `min-width`, `max-width`, `min-height`, `max-height` | `sizing.minWidth`·`maxWidth`·`minHeight`·`maxHeight` 변수 → 길이 | 이름 + 값 | `--spacing-<size 뒤 경로>`, px | 레이어 요소 | Button 루트 `size/button/min-width` → `--spacing-button-min-width`, `120px` |
+  | `padding-top`, `padding-right`, `padding-bottom`, `padding-left` | `layout.padding.top`·`right`·`bottom`·`left` 변수 → 길이 | 이름 + 값(변마다) | `--spacing-<경로>`, px | 레이어 요소 | Button 루트 `padding-left` `spacing/12` → `--spacing-12`, `12px`. `padding-top` `spacing/6` → `--spacing-6`, `6px` |
+  | `column-gap`, `row-gap` | `layout.gap`(HORIZONTAL이면 `column-gap`, VERTICAL이면 `row-gap`), `layout.counterGap`(반대 축) 변수 → 길이 | 이름 + 값 | `--spacing-<경로>`, px | 레이어 요소 | MenuItem `base` `spacing/12` → `column-gap` `--spacing-12`, `12px` |
+  | `border-top-left-radius`, `border-top-right-radius`, `border-bottom-right-radius`, `border-bottom-left-radius` | `radius.topLeft`·`topRight`·`bottomRight`·`bottomLeft` 변수 → 길이 | 이름 + 값(모서리마다) | `--radius-<경로>`, px | 레이어 요소(원 ELLIPSE는 보지 않음) | Button 루트 `radius/control` → `--radius-control`, `4px` |
+  | 같은 네 모서리 | 반경 변수 없음 | 값 | `0px` | 레이어 요소 | MenuItem 루트 → `0px` |
+  | `outline-width` | OUTSIDE `stroke.weight` 변수(네 변이 같아야 한다) → 길이 | 이름 + 값 | `--border-width-<경로>`·`--outline-width-<경로>`, px | 레이어 요소 | Button Focused 루트 `stroke-width/focus-outer` → `--outline-width-focus-outer`, `2px` |
+  | `outline-offset` | OUTSIDE 선 | 값 | `0px` | 레이어 요소 | Button Focused 루트 → `0px` |
+  | `border-top-width`, `border-right-width`, `border-bottom-width`, `border-left-width` | 레이아웃에 포함한 INSIDE `stroke.weight.top`·`right`·`bottom`·`left` 변수 → 길이 | 이름 + 값(변마다) | `--border-width-<경로>`, px | 레이어 요소 | Flyout 루트 `stroke-width/default` → `--border-width-default`, `1px` |
+  | 같은 네 변 | 레이아웃에 포함한 INSIDE 선이 아님(선 없음, OUTSIDE, 포함하지 않은 INSIDE, CENTER) | 값 | `0px` | 레이어 요소 | Button 루트(포함하지 않은 INSIDE 선) → `0px` |
+
+  선 모양, 효과, 불투명도, 회전, 자르기:
+
+  | CSS 속성 | 피그마 | 비교 | 기대 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | `outline-style` | OUTSIDE 선 있음 / 없음 | 대응 | `solid` / `none` | 레이어 요소 | Button Focused 루트 → `solid`, Rest 루트 → `none` |
+  | `border-top-style`, `border-right-style`, `border-bottom-style`, `border-left-style` | 레이아웃에 포함한 INSIDE 선 | 대응(변마다) | `solid` | 레이어 요소 | Flyout 루트 → `solid` |
+  | `background-image` | `fill.style`이 그라데이션 칠 스타일 | 이름 | `--gradient-<스타일>` | 레이어 요소 | 네 컴포넌트에 쓰는 곳 없음. `Elevation/Control Border`를 칠로 쓰면 `--gradient-elevation-control-border` |
+  | `background-image` | `fill` 없음 | 대응 | `none` | 레이어 요소 | MenuItem 루트 → `none` |
+  | `backdrop-filter` | `effect` 스타일에 배경 흐림이 있음 | 이름 | `--backdrop-blur-<스타일>` | 레이어 요소 | Flyout 루트 `Surface/Flyout (Acrylic)` → `--backdrop-blur-surface-flyout-acrylic` |
+  | `backdrop-filter` | `effect` 없음, 또는 배경 흐림이 없는 효과 스타일 | 대응 | `none` | 레이어 요소 | Button 루트 → `none` |
+  | `opacity` | `opacity` 변수 → 0–100 숫자 | 이름 + 값 | `--opacity-<경로>`, ÷100 | 레이어 요소 | 네 컴포넌트에 쓰는 곳 없음. `opacity/cut` 50 → `--opacity-cut`, `0.5` |
+  | `opacity` | `opacity` 없음 | 값 | `1` | 레이어 요소 | Button 루트 → `1` |
+  | `rotate`·`transform`(함께) | `rotation`이 0이 아닐 때(90° 배수) | 값(각도) | 부호를 바꾼 각도 | 레이어 요소 | 아래 예 9 |
+  | `overflow-x` | 자동 배치 레이어의 `clipsContent` 켬 / 끔 | 대응 | `hidden`·`clip` / `visible` | 레이어 요소 | Button 루트 끔 → `visible` |
+
+  자동 배치(자동 배치 레이어만):
+
+  | CSS 속성 | 피그마 | 비교 | 기대 | 예 |
+  |---|---|---|---|---|
+  | `display` | `layout.mode` HORIZONTAL·VERTICAL | 대응 | `flex`·`inline-flex` | Button 루트 → `inline-flex` 통과 |
+  | `flex-direction` | `layout.mode` HORIZONTAL / VERTICAL | 대응 | `row` / `column` | Button 루트 HORIZONTAL → `row` |
+  | `justify-content` | `layout.primaryAlign` MIN / CENTER / MAX / SPACE_BETWEEN | 대응 | `normal`·`flex-start`·`start` / `center` / `flex-end`·`end` / `space-between` | Button 루트 CENTER → `center` |
+  | `align-items` | `layout.counterAlign` MIN / CENTER / MAX / BASELINE | 대응 | `flex-start`·`start` / `center` / `flex-end`·`end` / `baseline` | Button 루트 CENTER → `center` |
+  | `flex-wrap` | `layout.wrap` WRAP / NO_WRAP | 대응 | `wrap` / `nowrap` | Button 루트 NO_WRAP → `nowrap` |
+
+  글자:
+
+  | 확인 | 피그마 | 비교 | 기대 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | `text-align` | `text.alignHorizontal` LEFT / CENTER / RIGHT / JUSTIFIED | 대응 | `start`·`left` / `center` / `right` / `justify` | 글자 레이어 요소(상속) | Button `label` LEFT → `start` |
+  | `font-size` | 구간 `style.fontSize.variable` → 길이 | 이름 + 값 | `--text-<경로>`, px | 구간 글자를 담은 요소(상속) | `font/size/body` 14 → `--text-body`, `14px` |
+  | `font-weight` | 구간 `style.fontWeight.variable` → 숫자 | 이름 + 값 | `--font-weight-<경로>`, 숫자 | 같음 | `font/weight/regular` 400 → `--font-weight-regular`, `400` |
+  | `line-height` | 구간 `style.lineHeight.variable` → 길이 | 이름 + 값 | `--leading-<경로>`·`--text-<경로>--line-height`, px | 같음 | `font/line-height/body` 20 → `--leading-body`, `20px` |
+  | `letter-spacing` | 구간 `style.letterSpacing.variable` → 길이 | 이름 + 값 | `--tracking-<경로>`, px | 같음 | 쓰는 곳 없음 |
+  | `letter-spacing` | 구간 `style.letterSpacing.value`(%·px) | 값 | %는 글자 크기 × 값 ÷ 100 | 같음 | Button `label` `0%` → `0px`, 계산값 `normal` 통과 |
+  | `color` | 구간 `fill.variable` | 이름 + 값 | 위 색 표 | 같음 | 위 색 표 |
+  | `text-decoration-line` | 구간 `textDecoration` NONE / UNDERLINE / STRIKETHROUGH | 대응 | `none` / `underline` / `line-through` | 같음(placeholder면 의사 요소) | Button `label` NONE → `none` |
+  | 글자 내용 | `text.characters` | 일치 | 같은 문자열 | 요소의 `textContent`, 입력 요소는 값(비었으면 `placeholder`) | Button `label` `버튼` |
+  | 서체 | 구간 `fontFamily` | 일치 | 글자마다 그 구간의 서체 | 글자를 하나씩 임시로 감싼 요소의 CDP `CSS.getPlatformFontsForNode`. 공백 문자는 뺀다. 서체가 하나이고, 소문자·공백 제거 후 피그마 이름으로 시작해야 한다(`Pretendard SemiBold` ↔ `Pretendard` 통과) | `버`·`튼` → `Pretendard` |
+
+  구간을 담은 요소: 글자 레이어 요소 안의 텍스트 노드를 앞에서부터 읽어, 구간 범위의 글자를 직접 담은 요소(텍스트 노드의 부모)마다 위 항목을 본다. 입력 요소는 요소 자신이다.
+
+  상태 전환(도착 변형에서, [[피그마 일치 검사:상태 전환]]):
+
+  | 확인 | 피그마 | 비교 | 기대 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | `transition-property` | 출발·도착 변형에서 바뀌는 역할(칠, 글자 색, 자산 색, 불투명도, 모서리 반경, 여백, 간격, 줄 간격, 너비, 높이, 바깥 선 색, 바깥 선 두께)의 CSS 속성 | 대응 | 목록에 그 속성, `all`, 또는 그 속성을 담는 단축 이름(`padding`, `border-radius`, `gap`, `outline`, `background`)이 있고 같은 자리의 시간이 `0s`가 아님 | 레이어 요소. 글자 색은 루트까지 조상도 | SearchBox Pill Rest → Focused에서 바뀌는 속성마다 |
+  | `transition-duration` | 전환 `duration`(ms, 모션 변수 경로면 `tokens.json` 값) | 값 | 같은 ms | 위에서 찾은 요소의 같은 자리 | `motion/duration/fast` 167 → `0.167s` |
+  | `transition-timing-function` | 전환 `easing` 베지어(모션 변수 경로면 `tokens.json` 값, 스프링이면 보지 않음) | 값 | 같은 네 값 | 같음 | `motion/easing/direct-entrance` `[0, 0, 0, 1]` → `cubic-bezier(0, 0, 0, 1)` |
+
+  레이어와 자산:
+
+  | 확인 | 피그마 | 비교 | 기대 | 읽는 곳 | 예 |
+  |---|---|---|---|---|---|
+  | 루트 | 컴포넌트 이름 | 일치 | `data-figma-root="<컴포넌트 이름>"` 요소가 하나 | 문서 | `data-figma-root="Button"` 하나 |
+  | 레이어 | `layers[].path` | 일치 | 루트 안에서 `data-figma="<경로>"` 요소가 하나 | 루트 안(슬롯 안쪽 제외) | `label` 요소 하나 |
+  | 피그마에 없는 표시 | `layers`·`hidden`에 없는 경로 | 일치 | 그 `data-figma` 요소가 없음 | 같음 | `data-figma="badge"`가 있으면 실패 |
+  | 숨긴 레이어 | `hidden[]` | 일치 | 그 요소가 없거나 보이지 않음(`checkVisibility`와 상자 수) | 같음 | Button 기본 경우의 `icon` |
+  | 자산 | `asset.file` | 일치 | 요소의 `data-asset`이 같은 파일 경로 | 자산 레이어 요소 | `icons/ic_fluent_add_20_regular.svg` |
+  | 표시 없는 요소 | — | 이름 | 디자인 토큰 이름에 닿는 클래스 선언이 없음([[피그마 일치 검사:짝짓기]]) | 표시 없는 요소 | `<span class="bg-accent-fill-default">` 실패 |
+
+  팝업 배치(`Placement` ↔ 팝업 요소의 `data-side`·`data-align`)는 [[피그마 일치 검사:팝업]]에서 정한 대응이지만, 비교 도구는 아직 보지 않는다.
+
+  토큰 값 비교(`tokens.css`의 `@theme`, 토큰마다):
+
+  | 토큰(`tokens.json` `$type`) | CSS 이름 | 비교 | 변환·조건 | 예 |
+  |---|---|---|---|---|
+  | 별칭(값이 `{경로}`인 모든 변수) | 이름 규칙 | 일치 | 값이 정확히 `var(<가리키는 변수 이름>)` | `accent-fill/default` = `{color.blue.dark-1}` → `--color-accent-fill-default: var(--color-blue-dark-1)` |
+  | `color` | `--color-*` 등 | 값 | `tokens.css` 값의 `var()`를 `@theme` 안에서 끝까지 풀고 색 변환으로 비교 | `color/blue/dark-1` `#005fb8` → `--color-blue-dark-1: #005fb8` |
+  | `dimension`(간격, 크기, 반경, 선 두께, 흐림, 글자 크기, 줄 높이, 자간) | `--spacing-*`, `--radius-*`, `--border-width-*`, `--blur-*`, `--text-*`, `--leading-*`, `--tracking-*` | 값 | px | `radius/control` 4 → `--radius-control: 4px` |
+  | `number`(불투명도) | `--opacity-*` | 값 | ÷100, `tokens.css`의 `%`는 ÷100으로 읽음 | `opacity/cut` 50 → `--opacity-cut: 50%` |
+  | `number`(그 밖) | `--motion-*` 등 | 값 | 그대로 | `motion/scale/window-enter` 0.96 → `0.96` |
+  | `fontWeight` | `--font-weight-*` | 값 | 그대로 | `font/weight/regular` 400 → `400` |
+  | `fontFamily` | `--font-*` | 일치 | 첫 서체 이름(따옴표 제외) | `font/family/korean` `Pretendard` → `--font-korean: "Pretendard", …` |
+  | `duration` | `--motion-*` | 값 | ms(`tokens.css`는 ms나 s) | `motion/duration/faster` 83 → `83ms` |
+  | `cubicBezier` | `--motion-*` | 값 | `cubic-bezier()` 네 값 | `motion/easing/fade` → `cubic-bezier(0, 0, 1, 1)` |
+  | 덧붙는 이름(줄 높이 `--text-*--line-height`, 시간 `--transition-duration-*`, 이징 `--ease-*`, 선 두께 `--outline-width-*`) | 이름 규칙 | 일치 | 값이 정확히 `var(<변수 자신의 이름>)` | `--text-body--line-height: var(--leading-body)` |
+  | 칠 스타일 `color`(단색) | `--color-<스타일>` | 값, 별칭이면 일치 | 색 변환 | — |
+  | 칠 스타일 `gradient` | `--gradient-<스타일>` | 있는지만 | — | `--gradient-elevation-accent-control-border` |
+  | 칠 스타일(재질, 층 여럿) | `@utility <스타일>` | 있는지만 | — | `@utility material-acrylic-default` |
+  | 효과 스타일 `shadow` | `--shadow-<스타일>`·`--text-shadow-*`, 배경 흐림 `--backdrop-blur-<스타일>`, 레이어 흐림 `--blur-<스타일>` | 있는지만 | — | `--backdrop-blur-surface-flyout-acrylic` |
+  | 글자 스타일 `typography` | `@utility type-<스타일>` | 있는지만 | 한글 스타일은 짝인 라틴 스타일의 유틸리티 | `@utility type-body` |
+  | 양쪽 비교 | — | 일치 | `tokens.json`에만 있거나 `@theme`에만 있는 이름은 실패 | `--color-my-blue: #0000ff;` 실패 |
 
   비교 예시:
   비교 방식마다 하나씩, 피그마가 내보낸 것 → 비교 도구가 만든 기대 → 코드 → 브라우저에서 읽은 것 순서로 보인다. 예는 Button `Style=Accent, State=Rest`와 Flyout `Material=Acrylic` 변형이다.
@@ -160,25 +251,27 @@ _codocs:
   |---|---|---|
   | 이웃 상태의 색 `bg-accent-fill-secondary`를 씀 | 선언 `var(--color-accent-fill-secondary)`, 계산값 `rgba(0, 95, 184, 0.898)` | 이름과 값이 달라 실패 |
   | `tokens.css`에 `--color-blue-dark-1: #005fb9`로 잘못 씀 | 선언은 맞고 계산값 `rgb(0, 95, 185)` | 값이 달라 실패 |
-  | 전역 CSS가 `button { background: white }`로 덮음 | 이긴 선언이 `white` | 이름이 달라 실패 |
+  | 전역 CSS가 `button { background: white }`로 덮음 | 이긴 선언이 `background: white` | 이름이 달라 실패 |
+  | `--color-my-button: var(--color-accent-fill-default)`를 거쳐 씀 | 선언 `var(--color-my-button)`, 계산값 `rgb(0, 95, 184)` | `--tw-*`가 아닌 변수를 거쳐 이름 실패 |
 
-  PR 댓글의 실패 줄: `(루트) · 채우기 · 피그마 accent-fill/default · 코드 accent-fill-secondary`
+  PR 댓글의 실패 줄(이웃 상태의 색):
+  - `(루트) 채우기: 피그마 accent-fill/default → 코드 background-color: var(--color-accent-fill-secondary)`
+  - `(루트) 채우기: 피그마 accent-fill/default → 코드 background-color rgba(0, 95, 184, 0.898) (기대 rgb(0, 95, 184))`
 
-  예 2. 효과 — 이름만
+  예 2. 배경 흐림 — 이름
 
-  피그마가 내보낸 것: Flyout `export.json` 루트 레이어 `"effect": "Surface/Flyout (Acrylic)"`
+  피그마가 내보낸 것: Flyout `export.json` 루트 레이어 `"effect": "Surface/Flyout (Acrylic)"`. 이 효과 스타일에는 그림자와 배경 흐림이 있다.
 
-  비교 도구가 만든 기대: `box-shadow` 선언이 `--shadow-surface-flyout-acrylic`을, `backdrop-filter` 선언이 `--backdrop-blur-surface-flyout-acrylic`을 참조
+  비교 도구가 만든 기대: `backdrop-filter` 선언이 `--backdrop-blur-surface-flyout-acrylic`에 닿는다. 그림자는 판정하지 않는다.
 
   코드: `<div className="shadow-surface-flyout-acrylic backdrop-blur-surface-flyout-acrylic …">`
 
   | 확인 | 기대 | 브라우저에서 읽은 것 | 결과 |
   |---|---|---|---|
-  | 그림자 이름 | `--shadow-surface-flyout-acrylic` | 선언 `var(--shadow-surface-flyout-acrylic)` | 통과 |
-  | 흐림 이름 | `--backdrop-blur-surface-flyout-acrylic` | 선언 `blur(var(--backdrop-blur-surface-flyout-acrylic))` | 통과 |
-  | 그림자·흐림 값 | 보지 않음 | — | 캡처 표에서 사람이 봄 |
+  | 흐림 이름 | `--backdrop-blur-surface-flyout-acrylic` | 선언 `backdrop-filter: var(--tw-backdrop-blur,) …`, `--tw-backdrop-blur: blur(var(--backdrop-blur-surface-flyout-acrylic))` | 통과 |
+  | 흐림 값, 그림자 | 보지 않음 | — | 캡처 표에서 사람이 봄 |
 
-  실패하는 경우: 다른 효과 `shadow-elevation-flyout`을 씀 → 선언이 `var(--shadow-elevation-flyout)`라 실패. 효과 클래스를 빼먹음 → 선언이 없어(`none`) 실패.
+  실패하는 경우: 다른 흐림 `backdrop-blur-material-mica`를 씀 → 선언이 `--backdrop-blur-material-mica`에 닿아 실패(`(루트) 효과(배경 흐림): 피그마 Surface/Flyout (Acrylic) → 코드 backdrop-filter: blur(var(--backdrop-blur-material-mica))`). 흐림 클래스를 빼먹음 → 이긴 선언이 없어(`선언 없음`) 실패. 효과가 없는 Button에 흐림 클래스를 씀 → 계산값이 `none`이 아니라 실패.
 
   예 3. 전환 — 값(변수 없음)
 
@@ -238,7 +331,7 @@ _codocs:
   | 기본 | `data-figma="label"` 요소 하나, `icon` 요소는 보이지 않음 | `label` 하나, `icon` 없음 | 통과 |
   | `showIcon=true` | `label`, `icon` 요소가 하나씩 | 둘 다 하나씩 | 통과 |
 
-  실패하는 경우: 아이콘을 항상 그림 → 기본 경우에 숨긴 레이어 `icon`이 보여 실패. `data-figma="label"`을 빼먹음 → `label`의 짝이 없어 실패. 피그마에 없는 그림자를 `data-figma` 없는 요소에 줌 → 표시 없이 토큰을 쓴 요소라 실패.
+  실패하는 경우: 아이콘을 항상 그림 → 기본 경우에 숨긴 레이어 `icon`이 보여 실패. `data-figma="label"`을 빼먹음 → `label`의 짝이 없어 실패. 피그마에 없는 배경을 `data-figma` 없는 요소에 줌(`<span class="bg-accent-fill-default">`) → 표시 없이 토큰을 쓴 요소라 실패.
 
   예 7. 자산 — 일치
 
@@ -260,8 +353,23 @@ _codocs:
   | `accent-fill/default` = `{color.blue.dark-1}` | `--color-accent-fill-default`가 `--color-blue-dark-1`을 가리킴 | `var(--color-blue-dark-1)` | 통과 |
   | 같음 | 같음 | `#005fb8`(값으로 풀어 씀) | 가리키는 이름이 없어 실패 |
   | `opacity/cut` = 50 | 값 `0.5` | `--opacity-cut: 50%;` | 통과 |
-  | 효과 스타일 `Surface/Flyout (Acrylic)` | `--shadow-surface-flyout-acrylic`이 있음 | 있음(값은 보지 않음) | 통과 |
+  | 효과 스타일 `Surface/Flyout (Acrylic)` | `--shadow-surface-flyout-acrylic`, `--backdrop-blur-surface-flyout-acrylic`이 있음 | 있음(값은 보지 않음) | 통과 |
   | 없음 | — | `--color-my-blue: #0000ff;` | `tokens.json`에 없는 토큰이라 실패 |
+
+  예 9. 회전 — 값(각도)
+
+  피그마가 내보낸 것: 레이어 `"rotation": -90`(피그마는 반시계 방향이 양수라 시계 방향 90° 회전이다)
+
+  비교 도구가 만든 기대: 시계 방향 90°. 계산값 `rotate` 각도와 `transform` 행렬 각도를 더한 값이 90°(0–359로 맞춤)
+
+  | 코드 | 브라우저에서 읽은 것(`rotate`, `transform`) | 결과 |
+  |---|---|---|
+  | `rotate-90` | `rotate: 90deg`, `transform: none` → 90° | 통과 |
+  | `transform: rotate(90deg)` | `rotate: none`, `transform: matrix(0, 1, -1, 0, 0, 0)` → 90° | 통과 |
+  | `-rotate-90` | `rotate: -90deg` → 270° | 실패 |
+  | 회전 클래스를 빼먹음 | `none`, `none` → 0° | 실패 |
+
+  피그마 회전이 0이면 회전 항목을 만들지 않는다.
 
   판정하지 않는 것:
 
@@ -270,11 +378,13 @@ _codocs:
   | 크기 방식 HUG·FILL, 자기 정렬 STRETCH | CSS에 같은 개념이 없어 여러 선언을 조합해 흉내 내야 한다 |
   | 레이아웃에 포함하지 않은 안쪽 선, 가운데 선 | CSS에 레이아웃을 차지하지 않는 안쪽 선이 없다. `::before` 고리는 구현 방식의 선택이다 |
   | 원(ELLIPSE) | `border-radius: 50%`와 완전히 둥근 모서리 중 무엇으로 그릴지가 선택이다 |
-  | 그라데이션·그림자·배경 흐림의 값과 모습 | 정지점 섞는 방식과 흐림 계산이 엔진마다 다르다. 이름만 판정한다 |
+  | 그림자(`box-shadow`) | Tailwind `shadow-*` 유틸리티는 그림자 값을 펼쳐 써서 선언에 토큰 이름이 남지 않는다. 값으로만 판정하면 변수가 있는 속성은 이름과 값을 함께 본다는 규칙의 예외가 된다 |
+  | 그라데이션·배경 흐림의 값과 모습 | 정지점 섞는 방식과 흐림 계산이 엔진마다 다르다. 이름만 판정한다 |
   | 재질 칠 스타일 | 층을 어떻게 겹칠지가 선택이다([[디자인 기반:재질 효과]]) |
   | 블렌드 모드 | 이름은 같아도 섞이는 대상(쌓임 맥락)이 달라 결과가 다르다 |
   | 줄 높이 AUTO, 글자 자동 크기, 말줄임, 최대 줄 수, 줄바꿈 결과 | 서체 측정에 따른 렌더링 결과다 |
-  | 절대 위치 거리, CENTER 제약, 팝업의 실제 위치, FIXED가 아닌 너비·높이 | 위치·크기 측정값이다 |
+  | 절대 위치(위치 방식, 붙는 변, 거리) | 어느 변에 붙는지는 `transform` 같은 다른 방법으로도 표현할 수 있어 완전히 판정할 수 없다. 거리는 부모 크기에서 나오는 측정값이다 |
+  | 팝업의 실제 위치, FIXED가 아닌 너비·높이 | 위치·크기 측정값이다 |
   | 스프링 이징, 키프레임 애니메이션, 움직임 중간 모습 | CSS 전환에 같은 값이 없거나 엔진마다 다르게 그린다([[한계:애니메이션 비교 범위]]) |
   | 판정하지 않는 역할의 상태 전환(안쪽 선 색, 자산 바꿈, 배치 선택지 등) | 위 표의 판정 항목이 아니다 |
 짝짓기: |
@@ -285,7 +395,10 @@ _codocs:
   - 다음은 실패다.
     - 피그마 레이어에 짝 요소가 없다.
     - 같은 레이어 경로를 단 요소가 둘 이상이다.
-    - 디자인 토큰을 참조하는 선언이 적용된(이긴) 요소인데 `data-figma`가 없다. 피그마에 없는 모양을 코드가 그리는 경우를 잡는다.
+    - `data-figma`가 없는 요소에 걸린 클래스 선언 중 하나라도 디자인 토큰 이름에 닿는다(다른 선언에 덮여 화면에 보이지 않아도 실패). 글자 안 구간 요소, 자산 안쪽, 슬롯 내용은 뺀다. 피그마에 없는 모양을 코드가 그리는 경우를 잡는다.
+      - 읽는 법: 요소 자신에게 맞는 규칙 가운데 출처가 일반 스타일시트이고 선택자에 클래스(`.`)가 있는 규칙의 선언을 모두 보고, `var()` 사슬을 끝까지 따라가 닿는 이름에 디자인 토큰의 CSS 이름(변수, 칠 스타일, 효과 스타일)이 있는지 본다.
+      - 예: Button 루트 안에 `<span class="bg-accent-fill-default bg-transparent">`를 넣으면 화면의 배경은 투명이지만 `.bg-accent-fill-default`의 `background-color: var(--color-accent-fill-default)`가 토큰에 닿아 실패한다. 실패 줄은 `(루트) 표시 없는 요소: 피그마 data-figma 표시 → 코드 <span class="bg-accent-fill-default bg-transparent"> background-color: var(--color-accent-fill-default)`이다.
+      - 통과하는 예: 글자 레이어 `label` 안의 `<strong class="type-body-strong">`(글자 안 구간 요소), `data-asset` 요소 안의 SVG 요소(자산 안쪽).
   - 칠·선·효과가 없는 레이어(배치만 하는 구조용 프레임)는 짝 요소가 없어도 된다. 다만 그 자리의 코드 요소가 여백·간격 같은 토큰 클래스를 쓰면 위 규칙대로 표시가 있어야 한다.
   - 레이어는 실제 요소로 그린다. `::before`·`::after`에는 `data-figma`를 달 수 없기 때문이다(예: SearchBox `bottom border`는 `<span>`이다). `@utility`가 안에서 의사 요소를 쓰는 것(`border-gradient-*`, `inner-border-*`)은 레이어가 아니라 그 요소의 선이라 괜찮다.
   - 글자 구간을 나누는 안쪽 요소(`<strong>` 등)에는 표시가 필요 없다([[피그마 일치 검사:글자]]).
@@ -358,8 +471,8 @@ _codocs:
   1. 장식: 포커스 테두리처럼 컴포넌트 모양에 딸린 장식은 겹쳐 놓은 레이어로 그리지 않고 그 레이어의 선이나 효과 스타일로 표현한다. 버튼 포커스는 바깥쪽 선 한 겹이다([[디자인 기반:포커스 표현]]).
   2. 실행 중에 정해지는 값: 창과 바탕화면 아이콘의 위치, 선택 상자(SelectionMarquee)의 위치와 크기, 스크롤바 막대의 위치와 길이는 컴포넌트 비교 대상이 아니다. 앱 코드가 실행 중에 정한다. 컴포넌트 원본에는 기본값만 크기 변수로 두고(예: `size/scrollbar/thumb-length`, `size/selection-marquee/width`), Screens의 인스턴스는 그 값을 덮어써도 된다. 스크롤바 막대 길이는 Screens에서도 덮어쓰지 않는다.
   3. 진짜 겹침(배지, 검색창 밑줄 등): 자동 배치 안의 절대 위치(ABSOLUTE) 자식만 허용한다.
-     - 제약(constraints)은 코드가 어느 변에 붙는지로 판정한다. 왼쪽·위(MIN)는 `left`·`top`, 오른쪽·아래(MAX)는 `right`·`bottom`, 양쪽 늘이기(STRETCH)는 두 변이다. 가운데(CENTER)는 판정하지 않는다. 비례(SCALE)는 대응이 없어 막는다.
-     - 거리 값은 피그마가 부모 크기에서 계산하는 값이라 판정하지 않고 캡처 표에서 본다. 플러그인은 거리 값으로 토큰 이름을 찾지 않고, 거리 값을 막지도 않는다.
+     - 절대 위치(위치 방식, 붙는 변, 거리)는 판정하지 않고 캡처 표에서 본다([[피그마 일치 검사:판정 항목]]). 어느 변에 붙는지는 `transform` 같은 다른 방법으로도 표현할 수 있어 완전히 판정할 수 없고, 거리는 피그마가 부모 크기에서 계산하는 값이다.
+     - 피그마에서는 제약(constraints)으로 붙는 변을 정한다. 왼쪽·위(MIN), 오른쪽·아래(MAX), 양쪽 늘이기(STRETCH), 가운데(CENTER)를 쓰고, 비례(SCALE)는 막는다. 플러그인은 거리 값으로 토큰 이름을 찾지 않고, 거리 값을 막지도 않는다.
      - 양쪽 늘이기 축의 크기는 제약에서 나오는 크기라 고정 크기 변수 검사([[디자인 기반:크기 변수]])에서 뺀다. 피그마는 이 크기를 FIXED로 읽으므로, 플러그인이 제약 값으로 기계적으로 판단한다.
      - 예: SearchBox `bottom border`는 절대 위치이고, 제약은 가로 양쪽 늘이기와 세로 아래, 거리 0이다. 높이와 색은 변수에 연결한다. 루트는 내용 자르기를 켜 둥근 끝에서 밑줄이 일자로 잘린다. 코드는 `<span data-figma="bottom border" class="absolute inset-x-0 bottom-0 h-… bg-…">`와 루트 `overflow-hidden`이다.
   4. 트리거에 붙는 팝업: 메뉴·툴팁·플라이아웃처럼 버튼 옆에 뜨는 것은 좌표가 아니라 [[피그마 일치 검사:팝업]]의 배치 이름으로 판정하고, 실제 위치와 간격은 캡처 표에서 본다.
@@ -644,7 +757,7 @@ CI 비교: |
   - 토큰 이름을 바꾸거나 지울 때 한 번에 하면, 토큰 PR은 옛 이름을 쓰는 `main` 코드 때문에, 컴포넌트 PR은 새 이름이 없어서 어느 쪽도 통과할 수 없다. 그래서 새 이름을 먼저 더하고(옛 이름 유지), 컴포넌트를 옮기고, 아무도 쓰지 않게 된 옛 이름을 지운다. 지울 시점은 플러그인의 사용처 0 알림으로 안다. 토큰 PR이 사라진 토큰을 쓰는 컴포넌트를 찾으면 "먼저 옮기세요"라고 실패한다.
   - 코드만 바뀐 PR은 영향받는 컴포넌트의 판정과 캡처 표를 받는다. 피그마 열은 저장소의 변형 PNG다.
 캡처 표: |
-  판정에 넣지 않은 것(크기 방식, 안쪽 선, 재질, 줄바꿈, 위치)을 사람이 확인하는 자료다. 그림을 기계로 비교하지 않는다. 엔진 차이 때문에 기준값을 세울 수 없고, 기준값을 사람이 정하면 그것도 주관이기 때문이다.
+  판정에 넣지 않은 것(크기 방식, 안쪽 선, 재질, 그림자, 줄바꿈, 위치)을 사람이 확인하는 자료다. 그림을 기계로 비교하지 않는다. 엔진 차이 때문에 기준값을 세울 수 없고, 기준값을 사람이 정하면 그것도 주관이기 때문이다.
 
   - 행은 변형과 상태, BOOLEAN 경우다. 열은 `피그마 | 코드`다.
   - 플러그인 PR 본문은 `피그마 | 현재 구현`이다. 현재 구현은 `parity-captures` 브랜치의 캡처이고, 처음 구현하는 컴포넌트는 빈칸이다. 이 표가 구현할 내용이다.

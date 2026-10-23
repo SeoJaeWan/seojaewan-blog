@@ -70,7 +70,7 @@ _codocs:
   - 노이즈 질감은 Windows UI kit의 노이즈 이미지(256×256 PNG)를 그대로 쓴다. 피그마에서는 Images 자산 `noise/Acrylic`으로 두고([[디자인 기반:자산]]), `Material/Acrylic Default`·`Material/Acrylic Base` 스타일의 맨 위 층(바둑판 반복, 불투명도 2%)에 같은 이미지를 넣었다. `Material/Fallback/*` 단색 스타일에는 넣지 않는다. 노이즈 이미지 파일은 손으로 복사하지 않고 자산 생성기가 만든다([[피그마 일치 검사:자산]]).
   - `Material/Fallback/*`는 투명 효과를 끈 단색 버전으로, 컴포넌트의 `Material=Solid` 변형에 쓴다.
 
-  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 효과 스타일(배경 흐림, 그림자)을 이름으로 판정하고, 값과 모습은 캡처 표에서 본다. 재질 칠 스타일은 그리는 방식 자체가 결정이라 판정하지 않고 캡처 표에서 본다([[한계:번역 규칙 영역의 사람 확인]]).
+  피그마 배경 블러와 브라우저 `backdrop-filter`는 계산 방식이 달라 그림으로는 비교할 수 없다. 피그마 일치 검사는 효과 스타일의 배경 흐림을 이름으로 판정하고, 그림자와 흐림의 값·모습은 캡처 표에서 본다. 재질 칠 스타일은 그리는 방식 자체가 결정이라 판정하지 않고 캡처 표에서 본다([[한계:번역 규칙 영역의 사람 확인]]).
 컨트롤 테두리: |
   WinUI 컨트롤의 1px 테두리는 단색이 아니라 아래쪽 몇 픽셀만 진해지는 세로 그라데이션이다(WinUI의 `ControlElevationBorderBrush` 계열). 버튼이 살짝 떠 보이게 하는 효과라 Windows 느낌에 중요하다.
   피그마에는 `Elevation/Control Border`, `Circle Border`, `Text Control Border`, `Text Control Border Focused`, `Accent Control Border` 칠 스타일로 두었고, 정지점 색은 Semantic 색 토큰(`control-stroke/*` 등)에 묶여 있다.
@@ -92,7 +92,7 @@ _codocs:
 
   - Windows 11과 같게, 반투명 표면(Acrylic 플라이아웃·메뉴·툴팁) 안쪽에 그림자가 비치지 않게 한다. CSS `box-shadow`도 요소 안쪽에는 그림자를 그리지 않으므로 피그마와 코드가 같아진다.
   - 효과 스타일 14개의 이 옵션을 모두 껐다. 반투명 표면 안쪽이 조금 맑아지고 바깥 그림자 모양은 그대로다.
-  - 켠 그림자는 플러그인이 막는다. 비교는 효과 스타일 이름(`shadow-<스타일>`)과 `box-shadow` 계산값이다([[피그마 일치 검사:비교 규칙]]).
+  - 켠 그림자는 플러그인이 막는다. 그림자는 판정하지 않고 캡처 표에서 본다. Tailwind `shadow-*` 유틸리티는 값을 펼쳐 써서 토큰 이름이 남지 않기 때문이다([[피그마 일치 검사:판정 항목]]).
 회전: |
   회전은 90° 배수(90°, -90°, 180°)만 쓴다. 아이콘 화살표 방향을 맞출 때(Scrollbar 화살표, NavigationItem 쉐브론, ColumnHeader 정렬 화살표) 쓴다.
 
