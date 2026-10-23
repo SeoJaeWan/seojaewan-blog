@@ -1,7 +1,7 @@
 import type { Violation } from './core/check-structure';
 import { exportTargetCore } from './core/export-component';
 import { MANIFEST_FILE, manifestText, pngFile, settingsText } from './export-manifest';
-import { listComponents, loadComponentsPage } from './figma-reader';
+import { listComponents, loadComponentsPage, readCheckContext } from './figma-reader';
 import { assetFilePath, componentFilePath, componentSlug } from './naming';
 import { FILE_KEY, SCALE, SETTINGS_PATH } from './plugin-config';
 import { sha256Hex, utf8Encode } from './sha256';
@@ -54,12 +54,13 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
     files: [],
   };
   const files: McpFile[] = [];
+  const context = await readCheckContext();
   for (const name of options.components) {
     const summary = all.find((component) => component.name === name);
     if (summary === undefined) {
       throw new Error(`컴포넌트 ${name}를 찾을 수 없다.`);
     }
-    const outcome = await exportTargetCore(summary.id, SCALE);
+    const outcome = await exportTargetCore(summary.id, SCALE, context);
     if (!outcome.ok) {
       result.violations.push(...outcome.violations);
       continue;

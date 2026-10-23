@@ -1,4 +1,5 @@
-import { parityDecisions } from '../../../packages/design-system/scripts/parity/rules/decisions';
+import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
+import type { CheckContext } from './core/check-structure';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -270,7 +271,7 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
   }
 }
 
-/** 이미지 자산 하나(G4) */
+/** 이미지 자산 하나 */
 export type ImageAsset = {
   /** 자산 파일(`images/noise-acrylic.png`) */
   file: string;
@@ -280,17 +281,16 @@ export type ImageAsset = {
 
 /**
  * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
- * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻는다(G4).
- * 묶음 프레임이 있는 첫 페이지만 읽는다.
- * @codocs [[피그마 일치 검사:자산]]
+ * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
+ * 구조 검사는 이 표에 없는 이미지를 막는다. 묶음 프레임이 있는 첫 페이지만 읽는다.
+ * @codocs [[피그마 연동:자산]]
  * @returns 이미지 해시 → 자산
  */
 export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
-  const { assetGroupPrefix, assetGroups } = parityDecisions.d6;
   const rasterGroups = new Set(
-    Object.entries(assetGroups)
+    Object.entries(ASSET_GROUPS)
       .filter(([, kind]) => kind === 'raster')
-      .map(([group]) => `${assetGroupPrefix}${group}`),
+      .map(([group]) => `${ASSET_GROUP_PREFIX}${group}`),
   );
   const images = new Map<string, ImageAsset>();
   for (const page of figma.root.children) {
@@ -300,7 +300,7 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
       if (!('findAllWithCriteria' in frame)) {
         continue;
       }
-      const group = frame.name.slice(assetGroupPrefix.length);
+      const group = frame.name.slice(ASSET_GROUP_PREFIX.length);
       for (const component of frame.findAllWithCriteria({ types: ['COMPONENT'] })) {
         const fills =
           component.fills === figma.mixed
@@ -320,6 +320,15 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
     }
   }
   return images;
+}
+
+/**
+ * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시)를 읽는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @returns 검사 정보
+ */
+export async function readCheckContext(): Promise<CheckContext> {
+  return { imageHashes: new Set((await readImageAssets()).keys()) };
 }
 
 /**

@@ -1,7 +1,7 @@
 import type { ExportManifest, VariantEntry } from '../export-manifest';
 import { assetFile, variantSlug } from '../naming';
 import { monoColorSvg, normalizeSvgBytes } from '../svg-normalize';
-import { checkVariant, type Violation } from './check-structure';
+import { type CheckContext, checkVariant, type Violation } from './check-structure';
 import type { AssetData, NodeData } from './node-data';
 import { type NameCache, readNodeTree } from './read-node';
 
@@ -26,9 +26,14 @@ export type TargetOutcome =
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
+ * @param context 구조 검사에 쓰는 파일 정보
  * @returns 내보낸 대상, 또는 위반 목록
  */
-export async function exportTargetCore(nodeId: string, scale: number): Promise<TargetOutcome> {
+export async function exportTargetCore(
+  nodeId: string,
+  scale: number,
+  context: CheckContext,
+): Promise<TargetOutcome> {
   const node = await findComponent(nodeId);
   if (node === null) {
     throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
@@ -40,7 +45,7 @@ export async function exportTargetCore(nodeId: string, scale: number): Promise<T
   const nodes = new Map<string, ComponentNode>();
   for (const variant of variantsOf(node)) {
     const tree = await readNodeTree(variant, names);
-    violations.push(...checkVariant(tree, `${node.name} / ${variant.name}`));
+    violations.push(...checkVariant(tree, `${node.name} / ${variant.name}`, context));
     collectAssets(tree, assetNodes);
     const properties = propertiesOf(node, variant);
     const slug = variantSlug(properties);
@@ -161,7 +166,7 @@ function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
 }
 
 /**
- * 자산 원본 컴포넌트를 파일로 내보낸다(D6).
+ * 자산 원본 컴포넌트를 파일로 내보낸다.
  * 한 가지 색 자산은 SVG의 색을 currentColor로 바꾸고(색은 코드의 글자 색 클래스가 정한다),
  * 여러 색 자산은 SVG 그대로, 래스터 이미지는 PNG(배율 1)로 내보낸다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
  * @codocs [[피그마 연동:자산]]
@@ -183,7 +188,7 @@ async function exportAsset(asset: AssetData): Promise<Uint8Array> {
 }
 
 /**
- * 이미지 자산(G4)의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
+ * 이미지 자산의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
  * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다.
  * @codocs [[피그마 연동:자산]]
  * @param node 자산 컴포넌트

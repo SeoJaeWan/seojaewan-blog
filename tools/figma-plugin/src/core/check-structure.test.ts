@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { checkVariant } from './check-structure';
 import type { NodeData } from './node-data';
-import { buttonRoot, node, segment } from './node-data.fixture';
+import { buttonRoot, node, segment, solid } from './node-data.fixture';
+
+const context = { imageHashes: new Set(['wallpaper-hash']) };
 
 /**
  * 루트를 바꿔 검사하고 위반 이유만 돌려준다.
@@ -12,7 +14,7 @@ import { buttonRoot, node, segment } from './node-data.fixture';
 function reasonsAfter(change: (root: NodeData) => void): string[] {
   const root = buttonRoot();
   change(root);
-  return checkVariant(root, 'Button / Rest').map((violation) => violation.reason);
+  return checkVariant(root, 'Button / Rest', context).map((violation) => violation.reason);
 }
 
 /**
@@ -33,37 +35,38 @@ function must<T>(value: T | null | undefined): T {
  * @returns 첫 자식
  */
 function label(root: NodeData): NodeData {
-  const [first] = root.children;
-  if (first === undefined) {
-    throw new Error('label이 없다');
-  }
-  return first;
+  return must(root.children[0]);
 }
 
 /**
- * Flyout Content를 본뜬 슬롯을 만든다.
- * @returns 슬롯 노드
+ * 크기 변수에 연결한 고정 크기 자식을 만든다.
+ * @param overrides 바꿀 값
+ * @returns 노드 데이터
  */
-function slot(): NodeData {
-  const root = buttonRoot();
+function fixedChild(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'type'>): NodeData {
   return node({
-    path: 'Content',
-    type: 'SLOT',
-    layout: { ...must(root.layout), primaryAlign: 'MIN', counterAlign: 'MIN' },
-    child: { ...must(label(root).child), sizingHorizontal: 'FILL' },
+    width: { value: 16, variable: 'size/icon/16' },
+    height: { value: 16, variable: 'size/icon/16' },
+    child: {
+      sizingHorizontal: 'FIXED',
+      sizingVertical: 'FIXED',
+      positioning: 'AUTO',
+      constraints: { horizontal: 'MIN', vertical: 'MIN' },
+    },
+    ...overrides,
   });
 }
 
-// @codocs [[피그마 일치 검사:구조 검사]]
-describe('구조 검사', () => {
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', () => {
   it('변수·스타일에 연결된 정상 구조는 위반이 없다', () => {
     expect(reasonsAfter(() => undefined)).toEqual([]);
   });
 
   it('위반에는 레이어 경로·이유·고칠 방법이 있다', () => {
     const root = buttonRoot();
-    root.fills = [{ type: 'SOLID', visible: true, blendMode: 'NORMAL', opacity: 1 }];
-    expect(checkVariant(root, 'Button / Rest')).toEqual([
+    root.fills = [solid()];
+    expect(checkVariant(root, 'Button / Rest', context)).toEqual([
       {
         where: 'Button / Rest',
         reason: '단색 칠이 색 변수에 연결되어 있지 않다',
@@ -72,242 +75,92 @@ describe('구조 검사', () => {
     ]);
   });
 
-  it('연결 안 된 여백·간격·반경·선 두께·불투명도를 막는다', () => {
+  it('한 변형의 위반을 모두 한 번에 돌려준다', () => {
     const reasons = reasonsAfter((root) => {
-      if (root.layout !== null) {
-        root.layout.padding.left = { value: 12 };
-        root.layout.itemSpacing = { value: 8 };
-      }
-      root.children.push(node({ path: 'extra', type: 'RECTANGLE' }));
+      must(root.layout).padding.left = { value: 12 };
+      must(root.layout).itemSpacing = { value: 8 };
+      root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
       root.radius = { ...must(root.radius), topLeft: { value: 4 } };
       root.strokeWeight = { ...must(root.strokeWeight), top: { value: 1 } };
       root.opacity = { value: 0.5 };
     });
-    expect(reasons).toEqual(
-      expect.arrayContaining([
-        '여백(left) 12가 변수에 연결되어 있지 않다',
-        '간격 8가 변수에 연결되어 있지 않다',
-        '반경(topLeft) 4가 변수에 연결되어 있지 않다',
-        '선 두께(top) 1가 변수에 연결되어 있지 않다',
-        '불투명도 0.5가 변수에 연결되어 있지 않다',
-      ]),
-    );
-  });
-
-  it('블렌드 층이 있는 칠 스타일을 쓰면 막는다(일반 섞기만 지원)', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.fillStyle = 'Material/Mica Base';
-        root.fills = [
-          { type: 'SOLID', visible: true, blendMode: 'LUMINOSITY', opacity: 1 },
-          { type: 'SOLID', visible: true, blendMode: 'COLOR', opacity: 0.5 },
-        ];
-      }),
-    ).toEqual(['칠 스타일 Material/Mica Base에 블렌드 LUMINOSITY 층이 있다(일반 섞기만 지원)']);
-  });
-
-  it('그라데이션 선이 스타일에 연결되어 있지 않으면 막는다', () => {
-    expect(reasonsAfter((root) => (root.strokeStyle = undefined))).toEqual([
-      'GRADIENT_LINEAR 선이 스타일에 연결되어 있지 않다',
+    expect(reasons).toEqual([
+      '불투명도 0.5가 변수에 연결되어 있지 않다',
+      '선 두께(top) 1가 변수에 연결되어 있지 않다',
+      '반경(topLeft) 4가 변수에 연결되어 있지 않다',
+      '여백(left) 12가 변수에 연결되어 있지 않다',
+      '간격 8가 변수에 연결되어 있지 않다',
     ]);
   });
 
-  it('효과는 효과 스타일이어야 하고, 투명한 부분 뒤 그림자는 막는다(D5)', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.effects = [
-          { type: 'DROP_SHADOW', visible: true, blendMode: 'NORMAL', showShadowBehindNode: true },
-        ];
-      }),
-    ).toEqual([
-      '효과가 효과 스타일에 연결되어 있지 않다',
-      '그림자 "투명한 부분 뒤에도 표시"는 막는다(D5)',
-    ]);
-  });
-
-  it('수동 배치(자동 배치가 아닌 프레임에 자식)를 막는다(D1)', () => {
-    expect(
-      reasonsAfter((root) => {
-        root.children.push(
-          node({
-            path: 'box',
-            type: 'FRAME',
-            layout: { ...must(root.layout), mode: 'NONE' },
-            children: [node({ path: 'box/dot', type: 'RECTANGLE', parentLayoutMode: null })],
-          }),
-        );
-      }),
-    ).toContain('자동 배치가 아닌 프레임이 자식을 담고 있다(수동 배치, D1)');
-  });
-
-  it('절대 위치는 SCALE 제약만 막고 거리 값은 막지 않는다(D1)', () => {
-    /**
-     * 절대 위치 자식을 더해 검사한다.
-     * @param horizontal 가로 제약
-     * @returns 위반 이유
-     */
-    function absolute(horizontal: string): string[] {
-      return reasonsAfter((root) => {
-        root.children.push(
-          node({
-            path: 'badge',
-            type: 'RECTANGLE',
-            width: { value: 4, variable: 'size/badge' },
-            height: { value: 4, variable: 'size/badge' },
-            child: {
-              ...must(label(root).child),
-              sizingHorizontal: 'FIXED',
-              sizingVertical: 'FIXED',
-              positioning: 'ABSOLUTE',
-              constraints: { horizontal, vertical: 'MIN' },
-            },
-          }),
-        );
-      });
-    }
-    for (const horizontal of ['MIN', 'MAX', 'STRETCH', 'CENTER']) {
-      expect(absolute(horizontal)).toEqual([]);
-    }
-    expect(absolute('SCALE')).toEqual(['제약 SCALE는 막는다(D1)']);
-  });
-
-  it('GRID 자동 배치를 막는다(D7)', () => {
-    expect(reasonsAfter((root) => (must(root.layout).mode = 'GRID'))).toEqual([
-      'GRID 자동 배치는 막는다(D7)',
-    ]);
-  });
-
-  it('고정 크기는 루트와 안쪽 모두 크기 변수에 연결해야 한다(D8)', () => {
+  it('고정 크기는 루트와 안쪽 모두 크기 변수에 연결해야 한다', () => {
     expect(
       reasonsAfter((root) => {
         must(root.layout).primarySizing = 'FIXED';
-        must(label(root).text).autoResize = 'NONE';
+        root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } }));
       }),
     ).toEqual([
-      '고정 너비 120가 크기 변수에 연결되어 있지 않다(D8)',
-      '고정 너비 16가 크기 변수에 연결되어 있지 않다(D8)',
-      '고정 높이 16가 크기 변수에 연결되어 있지 않다(D8)',
+      '고정 너비 120가 크기 변수에 연결되어 있지 않다',
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
     ]);
   });
 
-  it('회전은 90° 배수만 허용한다(D9)', () => {
-    expect(reasonsAfter((root) => (label(root).rotation = 90))).toEqual([]);
-    expect(reasonsAfter((root) => (label(root).rotation = 45))).toEqual([
-      '회전 45°는 90° 배수가 아니다(D9)',
-    ]);
-  });
-
-  it('직접 그린 벡터와 호·별을 막고, 완전한 원은 허용한다(D6)', () => {
-    expect(reasonsAfter((root) => root.children.push(node({ path: 'v', type: 'VECTOR' })))).toEqual(
-      ['VECTOR를 컴포넌트 안에 직접 그렸다'],
-    );
-    /**
-     * 타원 자식을 더해 검사한다.
-     * @param isFull 완전한 원인지
-     * @returns 위반 이유
-     */
-    function circle(isFull: boolean): string[] {
-      return reasonsAfter((root) =>
-        root.children.push(
-          node({
-            path: 'dot',
-            type: 'ELLIPSE',
-            isFullEllipse: isFull,
-            width: { value: 6, variable: 'size/dot' },
-            height: { value: 6, variable: 'size/dot' },
-            child: {
-              ...must(label(root).child),
-              sizingHorizontal: 'FIXED',
-              sizingVertical: 'FIXED',
-            },
-          }),
-        ),
-      );
-    }
-    expect(circle(true)).toEqual([]);
-    expect(circle(false)).toEqual(['ELLIPSE(호·별·다각형·선)는 막는다(D6)']);
-  });
-
-  it('점선·마스크·스무딩처럼 이름으로 비교할 수 없는 값을 막는다', () => {
+  it('그라데이션과 이미지는 칠 스타일로만, 효과는 효과 스타일로만 쓴다', () => {
     expect(
       reasonsAfter((root) => {
-        root.dashPattern = [4, 4];
-        root.isMask = true;
-        root.cornerSmoothing = 0.6;
+        root.strokeStyle = undefined;
+        root.effects = [{ type: 'DROP_SHADOW', visible: true, blendMode: 'NORMAL' }];
       }),
     ).toEqual([
-      '마스크 레이어는 지원하지 않는다',
-      '점선 패턴은 지원하지 않는다',
-      '모서리 스무딩은 지원하지 않는다',
+      'GRADIENT_LINEAR 선이 스타일에 연결되어 있지 않다',
+      '효과가 효과 스타일에 연결되어 있지 않다',
     ]);
   });
 
-  it('분류표에 없는 값을 만나면 막는다', () => {
-    expect(reasonsAfter((root) => (must(root.layout).primaryAlign = 'SPACE_DIAGONAL'))).toEqual([
-      'primaryAxisAlignItems=SPACE_DIAGONAL는 분류표에 없는 값이다',
-    ]);
-    expect(
-      reasonsAfter((root) => root.children.push(node({ path: 'x', type: 'HOLOGRAM' }))),
-    ).toEqual(['노드 종류 HOLOGRAM는 분류표에 없다']);
-  });
-
-  it('글자 구간은 글자 스타일이 있어야 하고, 스타일 덮어쓰기와 대체 글꼴을 막는다', () => {
+  it('글자 구간은 글자 스타일에 연결해야 하고 스타일을 덮어쓰면 막는다', () => {
     expect(
       reasonsAfter((root) => {
-        const text = must(label(root).text);
-        text.hasMissingFont = true;
-        text.segments = [
-          segment({ textStyle: undefined, styleFields: undefined }),
-          segment({ overrides: ['TEXT_DECORATION'], textDecoration: 'UNDERLINE' }),
+        must(label(root).text).segments = [
+          segment({ textStyle: undefined }),
+          segment({ overrides: ['TEXT_DECORATION'] }),
         ];
       }),
     ).toEqual([
-      '글꼴이 없어 대체 글꼴로 그려진다',
       '"버튼" 구간에 글자 스타일이 없다',
       '"버튼" 구간이 글자 스타일을 덮어썼다(TEXT_DECORATION)',
     ]);
   });
 
-  it('슬롯은 칠·선·효과를 막고 간격은 변수에 연결해야 한다(G1)', () => {
-    expect(reasonsAfter((root) => root.children.push(slot()))).toEqual([]);
-    const painted = reasonsAfter((root) => {
-      const content = slot();
-      content.fills = [
-        { type: 'SOLID', visible: true, blendMode: 'NORMAL', opacity: 1, variable: 'x/y' },
-      ];
-      root.children.push(content);
-    });
-    expect(painted).toEqual(['슬롯에 칠·선·효과가 있다(G1)']);
-    const unboundGap = reasonsAfter((root) => {
-      const content = slot();
-      content.layout = { ...must(content.layout), itemSpacing: { value: 8 } };
-      root.children.push(content);
-    });
-    expect(unboundGap).toEqual(['간격 8가 변수에 연결되어 있지 않다']);
-  });
-
-  it('형제 레이어 이름이 겹치면 짝지을 수 없어 막는다', () => {
+  it('토큰 클래스로 쓸 수 없는 값(90° 배수가 아닌 회전, 비례 제약)을 막는다', () => {
+    expect(reasonsAfter((root) => (label(root).rotation = 180))).toEqual([]);
+    expect(reasonsAfter((root) => (label(root).rotation = 45))).toEqual([
+      '회전 45°는 90° 배수가 아니라 토큰 클래스로 쓸 수 없다',
+    ]);
     expect(
-      reasonsAfter((root) =>
-        root.hiddenChildren.push({ path: 'label', visibleProperty: undefined }),
-      ),
-    ).toEqual(['자식 레이어 경로 "label"가 겹친다']);
+      reasonsAfter((root) => {
+        root.children.push(
+          fixedChild({
+            path: 'badge',
+            type: 'RECTANGLE',
+            child: {
+              sizingHorizontal: 'FIXED',
+              sizingVertical: 'FIXED',
+              positioning: 'ABSOLUTE',
+              constraints: { horizontal: 'SCALE', vertical: 'MIN' },
+            },
+          }),
+        );
+      }),
+    ).toEqual(['비례 제약(SCALE)은 토큰 클래스로 쓸 수 없다']);
   });
 
-  it('한 가지 색 자산의 색이 변수 하나로 정해지지 않으면 막는다(D6)', () => {
+  it('한 가지 색 자산의 색이 색 변수 하나로 정해지지 않으면 막는다', () => {
     expect(
       reasonsAfter((root) =>
         root.children.push(
-          node({
+          fixedChild({
             path: 'add icon',
             type: 'INSTANCE',
-            width: { value: 16, variable: 'size/icon/16' },
-            height: { value: 16, variable: 'size/icon/16' },
-            child: {
-              ...must(label(root).child),
-              sizingHorizontal: 'FIXED',
-              sizingVertical: 'FIXED',
-            },
             asset: {
               name: 'ic_fluent_add_20_regular',
               mainComponentId: '1:1',
@@ -319,5 +172,123 @@ describe('구조 검사', () => {
         ),
       ),
     ).toEqual(['자산 Icons/ic_fluent_add_20_regular: 한 가지 색 자산인데 색이 여럿이다']);
+  });
+
+  it('슬롯은 채운 내용까지 같은 규칙으로 검사한다', () => {
+    const slot = node({
+      path: 'Content',
+      type: 'SLOT',
+      layout: { ...must(buttonRoot().layout), itemSpacing: { value: 8 } },
+      children: [
+        node({ path: 'Content/a', type: 'FRAME' }),
+        node({ path: 'Content/b', type: 'FRAME', fills: [solid()] }),
+      ],
+    });
+    expect(reasonsAfter((root) => root.children.push(slot))).toEqual([
+      '간격 8가 변수에 연결되어 있지 않다',
+      '단색 칠이 색 변수에 연결되어 있지 않다',
+    ]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
+  it('노이즈·텍스처·점진 블러 효과, 블렌드 효과, 투명한 부분 뒤 그림자를 막는다', () => {
+    expect(
+      reasonsAfter((root) => {
+        root.effectStyle = 'Elevation/Flyout';
+        root.effects = [
+          { type: 'NOISE', visible: true, blendMode: 'NORMAL' },
+          { type: 'TEXTURE', visible: true, blendMode: 'NORMAL' },
+          { type: 'BACKGROUND_BLUR', visible: true, blendMode: 'NORMAL', blurType: 'PROGRESSIVE' },
+          { type: 'DROP_SHADOW', visible: true, blendMode: 'MULTIPLY', showShadowBehindNode: true },
+        ];
+      }),
+    ).toEqual([
+      '효과 NOISE는 CSS로 그릴 수 없다',
+      '효과 TEXTURE는 CSS로 그릴 수 없다',
+      '흐림 PROGRESSIVE는 CSS로 그릴 수 없다',
+      '효과에 블렌드 MULTIPLY가 들어 있다(CSS로 그릴 수 없다)',
+      '그림자 "투명한 부분 뒤에도 표시"는 CSS로 그릴 수 없다',
+    ]);
+  });
+
+  it('블렌드가 들어간 칠은 칠 스타일 안에 있어도 막는다', () => {
+    expect(
+      reasonsAfter((root) => {
+        root.fillStyle = 'Material/Mica Base';
+        root.fills = [{ type: 'SOLID', visible: true, blendMode: 'LUMINOSITY' }];
+      }),
+    ).toEqual(['칠에 블렌드 LUMINOSITY가 들어 있다(CSS로 그릴 수 없다)']);
+  });
+
+  it('점선, 가변 두께 선, 모서리 스무딩, 마스크를 막는다', () => {
+    expect(
+      reasonsAfter((root) => {
+        root.dashPattern = [4, 4];
+        root.variableWidthStroke = true;
+        root.cornerSmoothing = 0.6;
+        root.isMask = true;
+      }),
+    ).toEqual([
+      '마스크는 CSS로 그릴 수 없다',
+      '점선은 CSS로 같게 그릴 수 없다',
+      '가변 두께·브러시 선은 CSS로 그릴 수 없다',
+      '모서리 스무딩은 CSS로 그릴 수 없다',
+    ]);
+  });
+
+  it('자산이 아닌 벡터·호를 막고 완전한 원은 허용한다', () => {
+    expect(
+      reasonsAfter((root) => root.children.push(fixedChild({ path: 'v', type: 'VECTOR' }))),
+    ).toEqual(['VECTOR는 CSS로 그릴 수 없는 모양이다']);
+    expect(
+      reasonsAfter((root) =>
+        root.children.push(fixedChild({ path: 'dot', type: 'ELLIPSE', isFullEllipse: true })),
+      ),
+    ).toEqual([]);
+    expect(
+      reasonsAfter((root) =>
+        root.children.push(fixedChild({ path: 'arc', type: 'ELLIPSE', isFullEllipse: false })),
+      ),
+    ).toEqual(['호는 CSS로 그릴 수 없는 모양이다']);
+  });
+
+  it('이름 있는 이미지 자산에 없는 이미지를 막는다', () => {
+    /**
+     * 이미지 칠 스타일을 입힌 자식을 더해 검사한다.
+     * @param imageHash 이미지 해시
+     * @returns 위반 이유
+     */
+    function image(imageHash: string): string[] {
+      return reasonsAfter((root) =>
+        root.children.push(
+          fixedChild({
+            path: 'wallpaper',
+            type: 'RECTANGLE',
+            fillStyle: 'Wallpaper',
+            fills: [{ type: 'IMAGE', visible: true, blendMode: 'NORMAL', imageHash }],
+          }),
+        ),
+      );
+    }
+    expect(image('wallpaper-hash')).toEqual([]);
+    expect(image('pasted-hash')).toEqual(['칠의 이미지가 이름 있는 이미지 자산에 없다']);
+  });
+
+  it('빠진 글꼴과 OpenType 기능을 막는다', () => {
+    expect(
+      reasonsAfter((root) => {
+        const text = must(label(root).text);
+        text.hasMissingFont = true;
+        text.segments = [segment({ hasOpenTypeFeatures: true })];
+      }),
+    ).toEqual(['글꼴이 없어 대체 글꼴로 그려진다', '"버튼" 구간에 OpenType 기능이 켜져 있다']);
+  });
+
+  it('CSS로 그리지 않는 노드 종류를 막는다', () => {
+    expect(
+      reasonsAfter((root) => root.children.push(node({ path: 'x', type: 'TEXT_PATH' }))),
+    ).toEqual(['노드 종류 TEXT_PATH는 CSS로 그릴 수 없다']);
   });
 });

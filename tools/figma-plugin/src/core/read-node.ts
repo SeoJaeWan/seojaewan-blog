@@ -1,4 +1,4 @@
-import { parityDecisions } from '../../../../packages/design-system/scripts/parity/rules/decisions';
+import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './asset-groups';
 import type {
   AssetData,
   AssetKind,
@@ -12,7 +12,6 @@ import type {
   Sides,
   TextData,
   TextSegmentData,
-  TextStyleFields,
 } from './node-data';
 
 // 피그마 노드를 node-data.ts의 순수 데이터로 읽는다. 변수·스타일은 이름으로 바꿔 둔다.
@@ -21,14 +20,14 @@ import type {
 /** 변수·스타일 ID → 이름 캐시 */
 export type NameCache = Map<string, string | undefined>;
 
-// 회전·크기 비교에 쓰는 소수 오차다.
+// 호 각도 비교에 쓰는 소수 오차다.
 const EPSILON = 1e-6;
 
 /**
- * 변형 루트와 그 아래 보이는 노드를 읽는다. 숨긴 노드는 읽지 않고 경로만 남긴다
- * (숨긴 노드는 자동 배치 크기 같은 값을 잘못 돌려주기 때문이다).
- * 자산 인스턴스(Foundations 자산 묶음의 컴포넌트)는 안쪽을 읽지 않고 이름·묶음·색만 읽는다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * 변형 루트와 그 아래 보이는 노드를 읽는다. 숨긴 노드는 그리지 않으므로 읽지 않는다.
+ * 슬롯은 안쪽(조립이 채운 내용)까지 읽는다. 자산 인스턴스(Foundations 자산 묶음의 컴포넌트)는 안쪽을 읽지 않고
+ * 이름·묶음·색만 읽는다.
+ * @codocs [[피그마 연동:구조 검사]]
  * @param node 변형 루트
  * @param names 변수·스타일 이름 캐시
  * @returns 노드 데이터
@@ -65,11 +64,8 @@ async function readNode(
       value: 'opacity' in node ? node.opacity : 1,
       variable: await variableName(bound.opacity, names),
     },
-    blendMode: 'blendMode' in node ? node.blendMode : 'PASS_THROUGH',
     rotation: 'rotation' in node ? node.rotation : 0,
-    hasSkewOrFlip: hasSkewOrFlip(node),
     isMask: 'isMask' in node ? node.isMask : false,
-    explicitModeCount: Object.keys(node.explicitVariableModes).length,
     width: { value: node.width, variable: await variableName(bound.width, names) },
     height: { value: node.height, variable: await variableName(bound.height, names) },
     minWidth: await optionalBound('minWidth' in node ? node.minWidth : null, bound.minWidth, names),
@@ -91,14 +87,12 @@ async function readNode(
     complexStroke: false,
     cornerSmoothing: 'cornerSmoothing' in node ? node.cornerSmoothing : 0,
     effects: null,
-    clipsContent: 'clipsContent' in node ? node.clipsContent : null,
     layout: null,
     child: null,
     text: null,
     asset: null,
     isFullEllipse: node.type === 'ELLIPSE' ? isFullEllipse(node) : null,
     children: [],
-    hiddenChildren: [],
   };
 
   if ('fills' in node) {
@@ -108,12 +102,7 @@ async function readNode(
   if ('strokes' in node) {
     data.strokes = await paintsData(node.strokes, names);
     data.strokeStyle = await styleName(node.strokeStyleId, names);
-    data.strokeAlign = node.strokeAlign;
     data.strokeWeight = await strokeWeights(node, bound, names);
-    data.strokeJoin =
-      'strokeJoin' in node && typeof node.strokeJoin === 'string' ? node.strokeJoin : undefined;
-    data.strokeCap =
-      'strokeCap' in node && typeof node.strokeCap === 'string' ? node.strokeCap : undefined;
     if ('variableWidthStrokeProperties' in node) {
       const profile = node.variableWidthStrokeProperties;
       data.variableWidthStroke = profile !== null && profile.widthProfile !== 'UNIFORM';
@@ -145,21 +134,12 @@ async function readNode(
       return data;
     }
   }
-  // G1: 슬롯은 내용을 담는 자리라 슬롯 자체의 배치만 비교한다. 안쪽 내용은 쓰는 쪽이 정한다.
-  if (node.type === 'SLOT') {
-    return data;
-  }
   if ('children' in node) {
     for (const child of node.children) {
-      const childPath = path === '' ? child.name : `${path}/${child.name}`;
-      if (!child.visible) {
-        data.hiddenChildren.push({
-          path: childPath,
-          visibleProperty: child.componentPropertyReferences?.visible,
-        });
-        continue;
+      if (child.visible) {
+        const childPath = path === '' ? child.name : `${path}/${child.name}`;
+        data.children.push(await readNode(child, childPath, node, names));
       }
-      data.children.push(await readNode(child, childPath, node, names));
     }
   }
   return data;
@@ -191,21 +171,6 @@ function parentLayoutMode(parent: (BaseNode & ChildrenMixin) | null): string | n
     return null;
   }
   return parent.layoutMode;
-}
-
-/**
- * 회전 밖의 변환(뒤집기·기울이기)이 있는지 확인한다.
- * @param node 노드
- * @returns 있으면 true
- */
-function hasSkewOrFlip(node: SceneNode): boolean {
-  if (!('relativeTransform' in node)) {
-    return false;
-  }
-  const [[a, c], [b, d]] = node.relativeTransform;
-  const determinant = a * d - b * c;
-  const isOrthogonal = Math.abs(a * c + b * d) < EPSILON;
-  return determinant < 0 || !isOrthogonal || Math.abs(Math.abs(determinant) - 1) > EPSILON;
 }
 
 /**
@@ -251,9 +216,9 @@ async function paintsData(paints: readonly Paint[], names: NameCache): Promise<P
       type: paint.type,
       visible: paint.visible ?? true,
       blendMode: paint.blendMode ?? 'NORMAL',
-      opacity: 'opacity' in paint ? (paint.opacity ?? 1) : 1,
       variable:
         paint.type === 'SOLID' ? await variableName(paint.boundVariables?.color, names) : undefined,
+      imageHash: paint.type === 'IMAGE' ? paint.imageHash : undefined,
     });
   }
   return result;
@@ -372,8 +337,6 @@ async function layoutData(
     mode: node.layoutMode,
     wrap: node.layoutWrap,
     primaryAlign: node.primaryAxisAlignItems,
-    counterAlign: node.counterAxisAlignItems,
-    alignContent: node.counterAxisAlignContent,
     primarySizing: node.primaryAxisSizingMode,
     counterSizing: node.counterAxisSizingMode,
     padding: {
@@ -387,8 +350,6 @@ async function layoutData(
       node.counterAxisSpacing === null
         ? null
         : await value(node.counterAxisSpacing, 'counterAxisSpacing'),
-    itemReverseZIndex: node.itemReverseZIndex,
-    strokesIncludedInLayout: node.strokesIncludedInLayout,
   };
 }
 
@@ -402,8 +363,6 @@ function childLayout(node: SceneNode): ChildLayoutData {
   return {
     sizingHorizontal: hasLayoutChild ? node.layoutSizingHorizontal : 'FIXED',
     sizingVertical: hasLayoutChild ? node.layoutSizingVertical : 'FIXED',
-    layoutAlign: 'layoutAlign' in node ? node.layoutAlign : 'INHERIT',
-    layoutGrow: 'layoutGrow' in node ? node.layoutGrow : 0,
     positioning: 'layoutPositioning' in node ? node.layoutPositioning : 'AUTO',
     constraints:
       'constraints' in node
@@ -422,108 +381,26 @@ async function textData(node: TextNode, names: NameCache): Promise<TextData> {
   await loadFonts(node);
   const segments: TextSegmentData[] = [];
   for (const segment of node.getStyledTextSegments([
-    'fontName',
     'textStyleId',
     'fills',
     'fillStyleId',
-    'textDecoration',
-    'textCase',
-    'textWrapStyle',
-    'paragraphIndent',
-    'paragraphSpacing',
-    'listSpacing',
-    'indentation',
-    'listOptions',
     'openTypeFeatures',
     'textStyleOverrides',
-    'textDecorationStyle',
-    'textDecorationOffset',
-    'textDecorationThickness',
-    'textDecorationColor',
-    'textDecorationSkipInk',
   ])) {
-    const textStyle = await styleName(segment.textStyleId, names);
     segments.push({
       characters: segment.characters,
-      start: segment.start,
-      end: segment.end,
-      fontFamily: segment.fontName.family,
-      fontStyle: segment.fontName.style,
-      textStyle,
-      styleFields:
-        segment.textStyleId === '' ? undefined : await textStyleFields(segment.textStyleId, names),
+      textStyle: await styleName(segment.textStyleId, names),
       overrides: segment.textStyleOverrides.map((override) => override.type),
       fills: await paintsData(segment.fills, names),
       fillStyle: await styleName(segment.fillStyleId, names),
-      textDecoration: segment.textDecoration,
-      textCase: segment.textCase,
-      textWrapStyle: segment.textWrapStyle,
-      paragraphIndent: segment.paragraphIndent,
-      paragraphSpacing: segment.paragraphSpacing,
-      listSpacing: segment.listSpacing,
-      indentation: segment.indentation,
-      listType: segment.listOptions.type,
       hasOpenTypeFeatures: Object.values(segment.openTypeFeatures).some(Boolean),
-      hasDecorationDetails:
-        (segment.textDecorationStyle ?? 'SOLID') !== 'SOLID' ||
-        (segment.textDecorationOffset ?? { unit: 'AUTO' }).unit !== 'AUTO' ||
-        (segment.textDecorationThickness ?? { unit: 'AUTO' }).unit !== 'AUTO' ||
-        (segment.textDecorationColor ?? { value: 'AUTO' }).value !== 'AUTO' ||
-        segment.textDecorationSkipInk === false,
     });
   }
-  return {
-    characters: node.characters,
-    autoResize: node.textAutoResize,
-    alignHorizontal: node.textAlignHorizontal,
-    alignVertical: node.textAlignVertical,
-    truncation: node.textTruncation,
-    maxLines: node.maxLines,
-    leadingTrim: node.leadingTrim === figma.mixed ? 'MIXED' : node.leadingTrim,
-    hasMissingFont: node.hasMissingFont,
-    hangingPunctuation: node.hangingPunctuation,
-    hangingList: node.hangingList,
-    segments,
-  };
+  return { autoResize: node.textAutoResize, hasMissingFont: node.hasMissingFont, segments };
 }
 
 /**
- * 글자 스타일이 묶는 크기·줄 높이·굵기·자간을 변수 이름(연결이 없으면 값)으로 읽는다.
- * @param styleId 글자 스타일 ID
- * @param names 이름 캐시
- * @returns 스타일 값, 스타일을 찾지 못하면 undefined
- */
-async function textStyleFields(
-  styleId: string,
-  names: NameCache,
-): Promise<TextStyleFields | undefined> {
-  const style = await figma.getStyleByIdAsync(styleId);
-  if (style === null || style.type !== 'TEXT') {
-    return undefined;
-  }
-  const bound = style.boundVariables ?? {};
-  return {
-    fontSize: { value: style.fontSize, variable: await variableName(bound.fontSize, names) },
-    lineHeight: {
-      value:
-        style.lineHeight.unit === 'AUTO'
-          ? 'AUTO'
-          : `${String(style.lineHeight.value)}${style.lineHeight.unit === 'PIXELS' ? 'px' : '%'}`,
-      variable: await variableName(bound.lineHeight, names),
-    },
-    fontWeight: {
-      value: style.fontName.style,
-      variable: await variableName(bound.fontWeight ?? bound.fontStyle, names),
-    },
-    letterSpacing: {
-      value: `${String(style.letterSpacing.value)}${style.letterSpacing.unit === 'PIXELS' ? 'px' : '%'}`,
-      variable: await variableName(bound.letterSpacing, names),
-    },
-  };
-}
-
-/**
- * Foundations 자산 컴포넌트의 인스턴스인지 확인하고 이름·묶음·색을 읽는다(D6).
+ * Foundations 자산 컴포넌트의 인스턴스인지 확인하고 이름·묶음·색을 읽는다.
  * 원본 컴포넌트를 담은 프레임 중 자산 묶음(`group/Icons`, `group/Shapes`, `group/Illustrations`, `group/Images`)이 있으면 자산이고,
  * 그 묶음이 처리 방식을 정한다. 안쪽 모양은 비교하지 않는다(자산 파일이 생성 사슬로 보장한다).
  * @param node 인스턴스
@@ -535,15 +412,16 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
   if (main === null) {
     return null;
   }
-  const groups: Readonly<Record<string, AssetKind>> = parityDecisions.d6.assetGroups;
+  const groups: Readonly<Record<string, AssetKind>> = ASSET_GROUPS;
   let group: string | undefined;
   for (
     let parent = main.parent;
     parent !== null && parent.type !== 'PAGE';
     parent = parent.parent
   ) {
-    const prefix = parityDecisions.d6.assetGroupPrefix;
-    const name = parent.name.startsWith(prefix) ? parent.name.slice(prefix.length) : '';
+    const name = parent.name.startsWith(ASSET_GROUP_PREFIX)
+      ? parent.name.slice(ASSET_GROUP_PREFIX.length)
+      : '';
     if (name in groups) {
       group = name;
       break;
@@ -554,7 +432,6 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
     return null;
   }
   const problems: string[] = [];
-  let colorVariable: string | undefined;
   if (kind === 'mono') {
     const colors = new Set<string | undefined>();
     for (const shape of node.findAll(() => true)) {
@@ -584,11 +461,9 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
           ? '한 가지 색 자산인데 색이 여럿이다'
           : '한 가지 색 자산의 색이 색 변수에 연결되어 있지 않다',
       );
-    } else {
-      colorVariable = color;
     }
   }
-  return { name: main.name, mainComponentId: main.id, group, kind, colorVariable, problems };
+  return { name: main.name, mainComponentId: main.id, group, kind, problems };
 }
 
 /**

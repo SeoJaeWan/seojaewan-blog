@@ -10,7 +10,7 @@ import {
   renamedFolders,
   settingsText,
 } from './export-manifest';
-import { readComponentTokenUsage } from './figma-reader';
+import { readCheckContext, readComponentTokenUsage } from './figma-reader';
 import {
   commitUrl,
   createBlob,
@@ -109,10 +109,11 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   }
 
   log('구조 검사 중');
+  const context = await readCheckContext();
   const components: PlacedTarget[] = [];
   const violations: Violation[] = [];
   for (const id of request.componentIds) {
-    const outcome = await exportTargetCore(id, SCALE);
+    const outcome = await exportTargetCore(id, SCALE, context);
     if (!outcome.ok) {
       log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
       violations.push(...outcome.violations);
