@@ -4,12 +4,19 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { parityResultsDir } from '../package-paths.ts';
-import type { ParitySummary } from './parity-summary.ts';
-import { SUMMARY_FILE } from './parity-summary.ts';
-import { markerIndex, renderComments } from './pr-comment.ts';
+import {
+  CAPTURES_FILE,
+  type CaptureSummary,
+  type ParitySummary,
+  SUMMARY_FILE,
+} from './parity-summary.ts';
+import { type CaptureSection, markerIndex, renderComments } from './pr-comment.ts';
 
 // CI에서 실행한다:
 //   node scripts/parity/post-pr-comment.ts --repository <owner/repo> --server <https://github.com> --run-id <id> --pr <번호>
+//                                          [--capture-skipped <이유>]
+// 판정 결과(summary.json) 아래에, 판정이 통과했으면 캡처 표(captures.json)를 둔다.
+// --capture-skipped는 판정은 통과했지만 캡처하지 않은 이유(토큰·자산 확인 실패 등)를 캡처 표 자리에 쓴다.
 // gh CLI가 GH_TOKEN으로 GitHub API를 부르고, git push도 gh가 설정한 자격 증명(gh auth setup-git)을 쓴다.
 // 댓글에 쓰는 이미지는 orphan 브랜치 parity-report/pr-<번호>에 올리고(매번 덮어씀), 댓글은 숨은 표시로 찾아 고친다.
 
@@ -32,11 +39,15 @@ function main(): void {
   const summary = parseSummary(readFileSync(summaryPath, 'utf8'));
   const branch = `${REPORT_BRANCH_PREFIX}${env.pr}`;
   const runUrl = `${env.server}/${env.repository}/actions/runs/${env.runId}`;
-  const { bodies, images } = renderComments(summary, {
-    runUrl,
-    imageUrl: (file) =>
-      `${env.server}/${env.repository}/blob/${branch}/${file.split('/').map(encodeURIComponent).join('/')}?raw=true`,
-  });
+  const { bodies, images } = renderComments(
+    summary,
+    {
+      runUrl,
+      imageUrl: (file) =>
+        `${env.server}/${env.repository}/blob/${branch}/${file.split('/').map(encodeURIComponent).join('/')}?raw=true`,
+    },
+    captureSection(),
+  );
 
   const existing = listComments();
   if (summary.total === 0 && existing.length === 0) {
@@ -65,6 +76,23 @@ function main(): void {
     gh(['api', '-X', 'DELETE', `repos/${env.repository}/issues/comments/${comment.id}`]);
   }
   console.log(`[parity] PR 댓글 ${bodies.length}개를 남겼다(이미지 ${images.length}개).`);
+}
+
+/**
+ * 캡처 표 자리에 넣을 것을 정한다. 캡처하지 않은 이유가 있으면 그것을, 없으면 captures.json을 쓴다.
+ * @codocs [[피그마 일치 검사:캡처 표]]
+ * @returns 캡처 표, 또는 캡처하지 않은 이유. 둘 다 없으면 undefined
+ */
+function captureSection(): CaptureSection | undefined {
+  if (env.captureSkipped !== undefined) {
+    return { kind: 'skipped', reason: env.captureSkipped };
+  }
+  const capturesPath = path.join(parityResultsDir, CAPTURES_FILE);
+  if (!existsSync(capturesPath)) {
+    return undefined;
+  }
+  const captures = JSON.parse(readFileSync(capturesPath, 'utf8')) as CaptureSummary;
+  return { kind: 'table', captures };
 }
 
 /**
@@ -177,13 +205,14 @@ function isSummary(value: unknown): value is ParitySummary {
 /**
  * 명령줄 인자를 읽는다.
  * @param argv 명령줄 인자
- * @returns 저장소, GitHub 주소, 실행 ID, PR 번호
+ * @returns 저장소, GitHub 주소, 실행 ID, PR 번호, 캡처하지 않은 이유
  */
 function readArgs(argv: readonly string[]): {
   repository: string;
   server: string;
   runId: string;
   pr: string;
+  captureSkipped: string | undefined;
 } {
   /**
    * `--이름 값` 인자를 읽는다. 없으면 실패한다.
@@ -198,10 +227,21 @@ function readArgs(argv: readonly string[]): {
     }
     return value;
   }
+  /**
+   * `--이름 값` 인자를 읽는다. 없거나 비었으면 undefined다.
+   * @param name 인자 이름
+   * @returns 값
+   */
+  function optional(name: string): string | undefined {
+    const index = argv.indexOf(`--${name}`);
+    const value = index >= 0 ? argv[index + 1] : undefined;
+    return value === undefined || value === '' ? undefined : value;
+  }
   return {
     repository: read('repository'),
     server: read('server'),
     runId: read('run-id'),
     pr: read('pr'),
+    captureSkipped: optional('capture-skipped'),
   };
 }
