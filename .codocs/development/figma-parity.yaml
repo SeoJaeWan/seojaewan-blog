@@ -153,7 +153,7 @@ _codocs:
   | `backdrop-filter` | `effect` 없음, 또는 배경 흐림이 없는 효과 스타일 | 대응 | `none` | 레이어 요소 | Button 루트 → `none` |
   | `opacity` | `opacity` 변수 → 0–100 숫자 | 이름 + 값 | `--opacity-<경로>`, ÷100 | 레이어 요소 | 네 컴포넌트에 쓰는 곳 없음. `opacity/cut` 50 → `--opacity-cut`, `0.5` |
   | `opacity` | `opacity` 없음 | 값 | `1` | 레이어 요소 | Button 루트 → `1` |
-  | `rotate`·`transform`(함께) | `rotation`이 0이 아닐 때(90° 배수) | 값(각도) | 부호를 바꾼 각도 | 레이어 요소 | 아래 예 9 |
+  | `rotate`·`transform`(함께) | `rotation`(0 또는 90° 배수, 없으면 0) | 값(각도) | 부호를 바꾼 각도 | 레이어 요소 | 아래 예 9. Button 루트 0° → `none`, `none` → 0° |
   | `overflow-x` | 자동 배치 레이어의 `clipsContent` 켬 / 끔 | 대응 | `hidden`·`clip` / `visible` | 레이어 요소 | Button 루트 끔 → `visible` |
 
   자동 배치(자동 배치 레이어만):
@@ -369,7 +369,7 @@ _codocs:
   | `-rotate-90` | `rotate: -90deg` → 270° | 실패 |
   | 회전 클래스를 빼먹음 | `none`, `none` → 0° | 실패 |
 
-  피그마 회전이 0이면 회전 항목을 만들지 않는다.
+  피그마 회전이 0인 레이어도 확인한다. 피그마는 0°인데 코드에 `rotate-90`을 붙이면 `rotate: 90deg` → 90°라 실패한다.
 
   판정하지 않는 것:
 
