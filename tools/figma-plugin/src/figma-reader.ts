@@ -91,9 +91,10 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
 }
 
 /**
- * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수 연결을 읽는다(G2).
+ * 쓰는 곳이 없는 변수·스타일을 찾으려고 변수 별칭, 스타일 사용처, 모든 페이지 노드의 변수·스타일 연결을 읽는다.
+ * 글자 일부 구간에만 입힌 글자·칠 스타일은 스타일 사용처(getStyleConsumersAsync)에 나오지 않아 구간에서 따로 읽는다.
  * 페이지를 하나씩 불러와 노드를 훑으므로 파일이 크면 시간이 걸린다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:구조 검사]]
  * @returns 사용처 계산 입력
  */
 export async function readUsageInput(): Promise<UsageInput> {
@@ -122,23 +123,18 @@ export async function readUsageInput(): Promise<UsageInput> {
       });
     }
   }
-  const nodeVariableIds = new Set<string>();
+  const usage: NodeUsage = { variableIds: new Set(), styleIds: new Set() };
   for (const page of figma.root.children) {
     await page.loadAsync();
     for (const node of page.findAll(() => true)) {
-      collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, nodeVariableIds);
-      for (const key of ['fills', 'strokes', 'effects'] as const) {
-        const value: unknown = key in node ? Reflect.get(node, key) : undefined;
-        if (Array.isArray(value)) {
-          collectAliasIds(value, nodeVariableIds);
-        }
-      }
+      collectNodeUsage(node, usage);
     }
   }
   return {
     variables: variables.map(usageVariable),
     styles,
-    nodeVariableIds,
+    nodeVariableIds: usage.variableIds,
+    nodeStyleIds: usage.styleIds,
   };
 }
 
