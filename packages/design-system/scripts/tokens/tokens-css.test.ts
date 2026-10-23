@@ -9,7 +9,7 @@ import { TokenFormatError, tokensToCss, variableName } from './tokens-css.ts';
 
 const css = tokensToCss(TOKENS_FIXTURE);
 
-// @codocs [[피그마 일치 검사:토큰 생성]]
+// @codocs [[피그마 일치 검사:토큰 작성]]
 describe('토큰 생성', () => {
   it('WinUI 경로 이름을 Tailwind 이름공간 이름으로 바꾼다', () => {
     expect(variableName(['text-fill', 'primary'])).toBe('--color-text-fill-primary');

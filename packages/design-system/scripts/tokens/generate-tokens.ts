@@ -11,7 +11,7 @@ main();
 
 /**
  * figma/tokens.json에서 src/tokens.css를 만들거나, 만든 결과와 같은지 확인한다.
- * @codocs [[피그마 일치 검사:토큰 생성]]
+ * @codocs [[피그마 일치 검사:토큰 작성]]
  */
 function main(): void {
   const isCheck = process.argv.includes(CHECK_FLAG);

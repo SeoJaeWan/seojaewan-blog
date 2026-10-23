@@ -54,7 +54,7 @@ export class TokenFormatError extends Error {
 
 /**
  * 토큰 JSON을 `src/tokens.css` 내용으로 바꾼다.
- * @codocs [[피그마 일치 검사:토큰 생성]]
+ * @codocs [[피그마 일치 검사:토큰 작성]]
  * @param tokens figma/tokens.json을 파싱한 값
  * @returns 단 하나의 `@theme static` 블록과 글자 스타일 유틸리티를 담은 CSS
  */
@@ -690,7 +690,7 @@ const INTERPOLATION_STOPS = 4;
  * 정지점 목록을 `linear-gradient()`로 바꾼다.
  * 피그마는 정지점 사이 색을 투명도와 따로(투명도를 곱하지 않고) 섞고, CSS는 투명도를 곱한 값으로 섞는다.
  * 투명도가 다른 두 정지점 사이에는 피그마 방식으로 계산한 중간 정지점을 넣어 같은 색이 나오게 한다.
- * @codocs [[피그마 일치 검사:토큰 생성]]
+ * @codocs [[피그마 일치 검사:토큰 작성]]
  * @param axis 방향과 위치 변환
  * @param stops `[{color, position}]`
  * @param opacity 층 불투명도
