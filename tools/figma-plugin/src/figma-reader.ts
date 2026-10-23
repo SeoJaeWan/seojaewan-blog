@@ -141,6 +141,98 @@ export async function readUsageInput(): Promise<UsageInput> {
   };
 }
 
+/** 컴포넌트 하나가 쓰는 토큰 */
+export type ComponentTokenUsage = {
+  id: string;
+  name: string;
+  /** 연결된 변수 이름과 스타일 이름 */
+  tokens: Set<string>;
+};
+
+/**
+ * "01 · Components" 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
+ * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @returns 컴포넌트마다 쓰는 토큰 이름
+ */
+export async function readComponentTokenUsage(): Promise<ComponentTokenUsage[]> {
+  const variableNames = new Map<string, string | undefined>();
+  const styleNames = new Map<string, string | undefined>();
+  const result: ComponentTokenUsage[] = [];
+  for (const summary of await listComponents()) {
+    const node = await figma.getNodeByIdAsync(summary.id);
+    if (node === null || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) {
+      continue;
+    }
+    const usage: NodeUsage = { variableIds: new Set(), styleIds: new Set() };
+    for (const item of [node, ...node.findAll(() => true)]) {
+      collectNodeUsage(item, usage);
+    }
+    const tokens = new Set<string>();
+    for (const id of usage.variableIds) {
+      if (!variableNames.has(id)) {
+        variableNames.set(id, (await figma.variables.getVariableByIdAsync(id))?.name);
+      }
+      const name = variableNames.get(id);
+      if (name !== undefined) {
+        tokens.add(name);
+      }
+    }
+    for (const id of usage.styleIds) {
+      if (!styleNames.has(id)) {
+        styleNames.set(id, (await figma.getStyleByIdAsync(id))?.name);
+      }
+      const name = styleNames.get(id);
+      if (name !== undefined) {
+        tokens.add(name);
+      }
+    }
+    result.push({ id: summary.id, name: summary.name, tokens });
+  }
+  return result;
+}
+
+/** 노드가 쓰는 변수 ID와 스타일 ID */
+export type NodeUsage = { variableIds: Set<string>; styleIds: Set<string> };
+
+/**
+ * 노드 하나에 연결된 변수와 스타일을 모은다. 칠·선·효과 안의 연결과, 글자 일부 구간에만 입힌 글자·칠 스타일과 변수도 모은다.
+ * @param node 노드
+ * @param usage 모을 곳
+ */
+export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
+  collectAliasIds('boundVariables' in node ? node.boundVariables : undefined, usage.variableIds);
+  for (const key of ['fills', 'strokes', 'effects'] as const) {
+    const value: unknown = key in node ? Reflect.get(node, key) : undefined;
+    if (Array.isArray(value)) {
+      collectAliasIds(value, usage.variableIds);
+    }
+  }
+  for (const key of ['fillStyleId', 'strokeStyleId', 'effectStyleId', 'textStyleId'] as const) {
+    const id: unknown = key in node ? Reflect.get(node, key) : undefined;
+    if (typeof id === 'string' && id !== '') {
+      usage.styleIds.add(id);
+    }
+  }
+  if (node.type !== 'TEXT') {
+    return;
+  }
+  for (const segment of node.getStyledTextSegments([
+    'textStyleId',
+    'fillStyleId',
+    'fills',
+    'boundVariables',
+  ])) {
+    for (const id of [segment.textStyleId, segment.fillStyleId]) {
+      if (id !== '') {
+        usage.styleIds.add(id);
+      }
+    }
+    collectAliasIds(segment.fills, usage.variableIds);
+    collectAliasIds(segment.boundVariables, usage.variableIds);
+  }
+}
+
 /**
  * 변수 하나의 별칭 대상을 읽는다.
  * @param variable 피그마 변수

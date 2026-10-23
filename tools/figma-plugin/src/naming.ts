@@ -92,21 +92,6 @@ export function assetSlug(name: string): string {
 }
 
 /**
- * BOOLEAN 컴포넌트 속성 키를 React prop 이름으로 바꾼다. 키의 `#id`를 떼고 camelCase로 쓴다(D4).
- * 예: `Show icon#13:0` → `showIcon`
- * @codocs [[피그마 일치 검사:결정 사항]]
- * @param key 피그마 속성 키
- * @returns prop 이름
- */
-export function booleanPropName(key: string): string {
-  const [first = '', ...rest] = slugPart(key.replace(/#[^#]*$/u, '')).split('-');
-  return requireSlug(
-    first + rest.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(''),
-    key,
-  );
-}
-
-/**
  * 자산 파일 이름(`<묶음>/<자산>.<svg|png>`)을 만든다. 래스터 이미지는 PNG, 나머지는 SVG다.
  * @codocs [[피그마 일치 검사:자산]]
  * @param asset 자산 묶음, 이름, 처리 방식

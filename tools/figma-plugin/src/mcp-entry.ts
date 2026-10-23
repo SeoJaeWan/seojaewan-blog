@@ -1,8 +1,8 @@
 import type { Violation } from './core/check-structure';
-import { exportComponentCore } from './core/export-component';
-import { manifestText, pngFile, settingsText } from './export-manifest';
+import { exportTargetCore } from './core/export-component';
+import { MANIFEST_FILE, manifestText, pngFile, settingsText } from './export-manifest';
 import { listComponents, loadComponentsPage } from './figma-reader';
-import { assetFilePath, componentFilePath } from './naming';
+import { assetFilePath, componentFilePath, componentSlug } from './naming';
 import { FILE_KEY, SCALE, SETTINGS_PATH } from './plugin-config';
 import { sha256Hex, utf8Encode } from './sha256';
 
@@ -40,7 +40,7 @@ export type McpExportResult = {
 /**
  * 고른 컴포넌트를 플러그인과 같은 규칙으로 검사하고 내보낼 파일을 만든다.
  * 위반이 하나라도 있으면 파일을 돌려주지 않는다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param options 내보낼 컴포넌트
  * @returns 위반 목록과 파일
  */
@@ -59,20 +59,19 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
     if (summary === undefined) {
       throw new Error(`컴포넌트 ${name}를 찾을 수 없다.`);
     }
-    const outcome = await exportComponentCore(summary.id, SCALE);
+    const outcome = await exportTargetCore(summary.id, SCALE);
     if (!outcome.ok) {
       result.violations.push(...outcome.violations);
       continue;
     }
-    const { component } = outcome;
-    result.componentFolders.push(component.slug);
-    files.push(
-      textFile(componentFilePath(component.slug, 'export.json'), manifestText(component.manifest)),
-    );
-    for (const [variant, png] of component.pngs) {
-      files.push(binaryFile(componentFilePath(component.slug, pngFile(variant)), png));
+    const { target } = outcome;
+    const slug = componentSlug(target.manifest.name);
+    result.componentFolders.push(slug);
+    files.push(textFile(componentFilePath(slug, MANIFEST_FILE), manifestText(target.manifest)));
+    for (const [variant, png] of target.pngs) {
+      files.push(binaryFile(componentFilePath(slug, pngFile(variant)), png));
     }
-    for (const [file, bytes] of component.assets) {
+    for (const [file, bytes] of target.assets) {
       if (!files.some((item) => item.path === assetFilePath(file))) {
         files.push(binaryFile(assetFilePath(file), bytes));
       }

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildLayers, hiddenLayerPaths } from './build-layers';
 import { checkVariant } from './check-structure';
 import type { NodeData } from './node-data';
 import { buttonRoot, node, segment } from './node-data.fixture';
@@ -320,110 +319,5 @@ describe('구조 검사', () => {
         ),
       ),
     ).toEqual(['자산 Icons/ic_fluent_add_20_regular: 한 가지 색 자산인데 색이 여럿이다']);
-  });
-});
-
-// @codocs [[피그마 일치 검사:export.json 계약]]
-describe('레이어 목록', () => {
-  it('레이어마다 역할별 변수·스타일 이름과 자동 배치 선택지를 남기고 좌표는 남기지 않는다', () => {
-    const [root, text] = buildLayers(buttonRoot());
-    expect(root).toEqual({
-      path: '',
-      type: 'COMPONENT',
-      parentLayout: null,
-      sizing: { horizontal: 'HUG', vertical: 'HUG', minWidth: 'size/button/min-width' },
-      fill: { variable: 'accent-fill/default' },
-      stroke: {
-        paint: { style: 'Elevation/Accent Control Border' },
-        align: 'INSIDE',
-        includedInLayout: false,
-        weight: {
-          top: 'stroke-width/default',
-          right: 'stroke-width/default',
-          bottom: 'stroke-width/default',
-          left: 'stroke-width/default',
-        },
-      },
-      radius: {
-        topLeft: 'radius/control',
-        topRight: 'radius/control',
-        bottomRight: 'radius/control',
-        bottomLeft: 'radius/control',
-      },
-      layout: {
-        mode: 'HORIZONTAL',
-        wrap: 'NO_WRAP',
-        primaryAlign: 'CENTER',
-        counterAlign: 'CENTER',
-        padding: { top: 'spacing/6', right: 'spacing/12', bottom: 'spacing/6', left: 'spacing/12' },
-        gap: null,
-        counterGap: null,
-      },
-    });
-    expect(text).toMatchObject({
-      path: 'label',
-      text: {
-        characters: '버튼',
-        autoResize: 'WIDTH_AND_HEIGHT',
-        segments: [
-          {
-            start: 0,
-            end: 2,
-            fontFamily: 'Pretendard',
-            textStyle: 'Hangul/Body',
-            style: { fontSize: { variable: 'font/size/body' }, letterSpacing: { value: '0%' } },
-            fill: { variable: 'text-on-accent-fill/primary' },
-          },
-        ],
-      },
-    });
-    expect(JSON.stringify(text)).not.toMatch(/"x"|"y"/u);
-  });
-
-  it('슬롯은 자기 배치만 남기고 안쪽 내용은 남기지 않는다(G1)', () => {
-    const root = buttonRoot();
-    const content = slot();
-    content.children = [label(buttonRoot())];
-    root.children.push(content);
-    const layers = buildLayers(root);
-    const slotLayer = must(layers.find((layer) => layer.path === 'Content'));
-    expect(Object.keys(slotLayer).sort()).toEqual([
-      'layout',
-      'parentLayout',
-      'path',
-      'sizing',
-      'type',
-    ]);
-    expect(must(slotLayer.layout)).toMatchObject({ gap: 'spacing/8' });
-    expect(
-      layers.some((layer) => typeof layer.path === 'string' && layer.path.startsWith('Content/')),
-    ).toBe(false);
-  });
-
-  it('절대 위치는 축마다 제약만 남기고 거리는 남기지 않는다(D1)', () => {
-    const root = buttonRoot();
-    root.children.push(
-      node({
-        path: 'bottom border',
-        type: 'RECTANGLE',
-        child: {
-          ...must(label(root).child),
-          sizingHorizontal: 'FIXED',
-          sizingVertical: 'FIXED',
-          positioning: 'ABSOLUTE',
-          constraints: { horizontal: 'STRETCH', vertical: 'MAX' },
-        },
-      }),
-    );
-    const border = must(buildLayers(root).find((layer) => layer.path === 'bottom border'));
-    expect(border.self).toEqual({
-      absolute: { horizontal: { constraint: 'STRETCH' }, vertical: { constraint: 'MAX' } },
-    });
-  });
-
-  it('숨긴 레이어는 목록에 넣지 않고 경로만 남긴다(D4)', () => {
-    const root = buttonRoot();
-    expect(buildLayers(root).map((layer) => layer.path)).toEqual(['', 'label']);
-    expect(hiddenLayerPaths(root)).toEqual(['icon']);
   });
 });

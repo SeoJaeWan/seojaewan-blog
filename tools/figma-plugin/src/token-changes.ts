@@ -1,6 +1,5 @@
 // main의 tokens.json과 새로 내보낸 tokens.json을 비교해 바뀐 토큰과, 그 토큰을 쓰는 컴포넌트를 찾는 순수 계산이다.
-// 토큰 값만 바뀌면 컴포넌트 export.json 해시가 그대로라 변형 PNG가 갱신되지 않는다. 그래서 토큰 PR이 바뀐 토큰을 쓰는
-// 컴포넌트의 변형 PNG를 다시 내보내는데, 그 대상을 여기서 정한다.
+// 토큰 PR은 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG를 다시 내보내는데, 그 대상을 여기서 정한다.
 
 /** 스타일 토큰이 tokens.json에서 놓이는 그룹(`style/<종류>/<스타일 이름>`) */
 const STYLE_GROUP = /^style\/(?:text|effect|paint)\//u;
@@ -13,7 +12,7 @@ export type TokenChanges = {
   /** 값이나 종류가 바뀌었거나 새로 생기거나 사라진 토큰 경로(`color/blue/dark-1`, `style/text/Body`) */
   changedPaths: string[];
   /**
-   * export.json이 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
+   * 피그마가 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
    * 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다.
    */
   affectedNames: Set<string>;
@@ -21,7 +20,7 @@ export type TokenChanges = {
 
 /**
  * 두 tokens.json을 비교해 바뀐 토큰과 영향받는 이름을 찾는다. `$extensions`(컬렉션, 쓰임 범위)는 모습과 관계없어 비교하지 않는다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param oldText main의 tokens.json 내용(없으면 null)
  * @param newText 새로 내보낸 tokens.json 내용
  * @returns 바뀐 토큰 경로와 영향받는 이름
@@ -57,33 +56,21 @@ export function tokenChanges(oldText: string | null, newText: string): TokenChan
 }
 
 /**
- * 컴포넌트 export.json 가운데 이름 목록의 토큰을 하나라도 쓰는 컴포넌트를 찾는다.
- * 칠·선·반경·크기·배치·글자 스타일·자산 색 등 어디에 쓰였든 찾도록 export.json의 모든 문자열 값을 본다.
- * @codocs [[피그마 일치 검사:피그마 플러그인]]
- * @param manifests 컴포넌트 폴더 이름 → export.json 내용
- * @param names 찾을 토큰 이름(변수 경로, 스타일 이름)
- * @returns 그 토큰을 쓰는 컴포넌트 폴더 이름(정렬)
+ * 쓰는 토큰 이름 목록 가운데 하나라도 바뀐 토큰을 쓰는 컴포넌트를 찾는다.
+ * 쓰는 토큰은 피그마에서 컴포넌트의 모든 레이어(인스턴스 안쪽 포함)에 연결된 변수와 스타일 이름이다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param usages 컴포넌트 이름 → 쓰는 토큰 이름(변수 경로, 스타일 이름)
+ * @param names 찾을 토큰 이름
+ * @returns 그 토큰을 쓰는 컴포넌트 이름(정렬)
  */
 export function componentsUsingTokens(
-  manifests: ReadonlyMap<string, string>,
+  usages: ReadonlyMap<string, ReadonlySet<string>>,
   names: ReadonlySet<string>,
 ): string[] {
-  if (names.size === 0) {
-    return [];
-  }
-  const result: string[] = [];
-  for (const [slug, text] of manifests) {
-    let parsed: unknown;
-    try {
-      parsed = parseJson(text);
-    } catch {
-      throw new Error(`${slug}/export.json을 읽을 수 없다.`);
-    }
-    if (stringValues(parsed).some((value) => names.has(value))) {
-      result.push(slug);
-    }
-  }
-  return result.sort();
+  return [...usages]
+    .filter(([, used]) => [...used].some((name) => names.has(name)))
+    .map(([component]) => component)
+    .sort();
 }
 
 /**
@@ -123,21 +110,6 @@ function aliasTargets(text: string | undefined): string[] {
     return [];
   }
   return [...text.matchAll(ALIAS_REFERENCE)].map((match) => (match[1] ?? '').split('.').join('/'));
-}
-
-/**
- * JSON 값 안의 문자열 값을 모두 모은다(키는 넣지 않는다).
- * @param value JSON 값
- * @returns 문자열 값
- */
-function stringValues(value: unknown): string[] {
-  if (typeof value === 'string') {
-    return [value];
-  }
-  if (Array.isArray(value)) {
-    return value.flatMap(stringValues);
-  }
-  return isRecord(value) ? Object.values(value).flatMap(stringValues) : [];
 }
 
 /**

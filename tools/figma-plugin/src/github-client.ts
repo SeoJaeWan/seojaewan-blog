@@ -76,17 +76,17 @@ export async function getFileBytes(
 }
 
 /**
- * 트리 아래 모든 파일 경로를 가져온다(하위 폴더 포함).
+ * 트리 아래 파일 경로와 blob SHA를 가져온다(하위 폴더 포함).
  * @param token GitHub 토큰
  * @param treeSha 트리 SHA
- * @param prefix 이 경로로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
- * @returns 저장소 루트 기준 파일 경로
+ * @param prefixes 이 경로 가운데 하나로 시작하는 파일만 남긴다(예: `packages/design-system/figma/`)
+ * @returns 저장소 루트 기준 파일 경로 → blob SHA
  */
 export async function listTreeFiles(
   token: string,
   treeSha: string,
-  prefix: string,
-): Promise<string[]> {
+  prefixes: readonly string[],
+): Promise<Map<string, string>> {
   const tree = await request(token, 'GET', `${REPO_PATH}/git/trees/${treeSha}?recursive=1`);
   if (tree === null || typeof tree !== 'object' || Reflect.get(tree, 'truncated') === true) {
     throw new Error('GitHub 트리 목록이 잘려 저장소 파일을 모두 읽지 못했다.');
@@ -95,15 +95,17 @@ export async function listTreeFiles(
   if (!Array.isArray(entries)) {
     throw new Error('GitHub 응답에 tree가 없다.');
   }
-  const files: string[] = [];
+  const files = new Map<string, string>();
   for (const entry of entries) {
     const path = readOptionalString(entry, ['path']);
+    const sha = readOptionalString(entry, ['sha']);
     if (
       path !== null &&
+      sha !== null &&
       readOptionalString(entry, ['type']) === 'blob' &&
-      path.startsWith(prefix)
+      prefixes.some((prefix) => path.startsWith(prefix))
     ) {
-      files.push(path);
+      files.set(path, sha);
     }
   }
   return files;

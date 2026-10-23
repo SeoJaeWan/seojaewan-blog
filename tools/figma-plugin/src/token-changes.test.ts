@@ -38,7 +38,7 @@ function after(change: (tokens: JsonObject) => void): string {
   return stableStringify(copy);
 }
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:피그마 플러그인]]
 describe('바뀐 토큰과 영향받는 이름', () => {
   it('같으면 바뀐 것이 없다. 쓰임 범위($extensions)만 바뀐 것도 바뀐 것이 아니다', () => {
     const text = stableStringify(before);
@@ -71,7 +71,7 @@ describe('바뀐 토큰과 영향받는 이름', () => {
     ]);
   });
 
-  it('스타일은 export.json이 부르는 스타일 이름으로 바꾼다', () => {
+  it('스타일은 피그마 스타일 이름으로 바꾼다', () => {
     const changes = tokenChanges(
       stableStringify(before),
       after((tokens) => {
@@ -94,43 +94,22 @@ describe('바뀐 토큰과 영향받는 이름', () => {
   });
 });
 
-// @codocs [[피그마 일치 검사:피그마 플러그인]]
+// @codocs [[피그마 연동:피그마 플러그인]]
 describe('바뀐 토큰을 쓰는 컴포넌트', () => {
-  const manifests = new Map([
-    [
-      'button',
-      stableStringify({
-        variants: {
-          'state=rest': {
-            layers: [
-              { path: '', fill: { variable: 'accent-fill/default' } },
-              { path: 'label', text: { segments: [{ textStyle: 'Hangul/Body' }] } },
-            ],
-          },
-        },
-      }),
-    ],
-    [
-      'flyout',
-      stableStringify({
-        variants: { default: { layers: [{ path: '', layout: { gap: 'spacing/16' } }] } },
-      }),
-    ],
+  const usages = new Map([
+    ['Button', new Set(['accent-fill/default', 'Hangul/Body'])],
+    ['Flyout', new Set(['spacing/16'])],
   ]);
 
-  it('export.json 어디에든 그 이름을 쓰면 영향받는다', () => {
-    expect(componentsUsingTokens(manifests, new Set(['accent-fill/default']))).toEqual(['button']);
-    expect(componentsUsingTokens(manifests, new Set(['Hangul/Body', 'spacing/16']))).toEqual([
-      'button',
-      'flyout',
+  it('바뀐 토큰 이름을 하나라도 쓰면 영향받는다', () => {
+    expect(componentsUsingTokens(usages, new Set(['accent-fill/default']))).toEqual(['Button']);
+    expect(componentsUsingTokens(usages, new Set(['Hangul/Body', 'spacing/16']))).toEqual([
+      'Button',
+      'Flyout',
     ]);
   });
 
   it('이름 일부만 같은 것은 쓰는 것이 아니다', () => {
-    expect(componentsUsingTokens(manifests, new Set(['spacing/1']))).toEqual([]);
-  });
-
-  it('키(변형 이름 등)는 보지 않는다', () => {
-    expect(componentsUsingTokens(manifests, new Set(['state=rest']))).toEqual([]);
+    expect(componentsUsingTokens(usages, new Set(['spacing/1']))).toEqual([]);
   });
 });

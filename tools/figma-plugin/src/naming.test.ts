@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  assetFile,
-  assetFilePath,
-  booleanPropName,
-  componentFilePath,
-  componentSlug,
-  variantSlug,
-} from './naming';
+import { assetFile, assetFilePath, componentFilePath, componentSlug, variantSlug } from './naming';
 import { utf8Encode } from './sha256';
 import { utf8Decode } from './svg-normalize';
 import { monoColorSvg } from './svg-normalize';
@@ -76,13 +69,5 @@ describe('자산 파일', () => {
     expect(utf8Decode(monoColorSvg(utf8Encode(svg)))).toBe(
       '<svg><path fill="currentColor" d="M0"/><rect fill="none"/></svg>',
     );
-  });
-});
-
-// @codocs [[피그마 일치 검사:결정 사항]]
-describe('BOOLEAN 컴포넌트 속성 이름(D4)', () => {
-  it('속성 키의 #id를 떼고 camelCase로 바꾼 것이 React prop 이름이다', () => {
-    expect(booleanPropName('Show icon#13:16')).toBe('showIcon');
-    expect(booleanPropName('Show shortcut#14:34')).toBe('showShortcut');
   });
 });
