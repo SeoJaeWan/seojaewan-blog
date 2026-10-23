@@ -11,8 +11,7 @@ type FlyoutProps = ComponentProps<'div'> & {
 
 // 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다.
 const materialClassNames = {
-  acrylic:
-    'material-acrylic-default shadow-surface-flyout-acrylic backdrop-blur-surface-flyout-acrylic',
+  acrylic: 'material-acrylic-default surface-flyout-acrylic',
   solid: 'bg-material-fallback-acrylic-default shadow-elevation-flyout',
 } as const satisfies Record<FlyoutMaterial, string>;
 
