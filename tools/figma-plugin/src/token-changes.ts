@@ -102,7 +102,10 @@ function flattenTokens(
     return out;
   }
   for (const [key, child] of Object.entries(value)) {
-    if (!key.startsWith('$')) {
+    if (key === '$root') {
+      // 그룹 자신의 토큰은 피그마에서 그룹과 같은 이름의 변수다.
+      flattenTokens(child, prefix, out);
+    } else if (!key.startsWith('$')) {
       flattenTokens(child, [...prefix, key], out);
     }
   }
@@ -118,7 +121,19 @@ function aliasTargets(text: string | undefined): string[] {
   if (text === undefined) {
     return [];
   }
-  return [...text.matchAll(ALIAS_REFERENCE)].map((match) => (match[1] ?? '').split('.').join('/'));
+  return [...text.matchAll(ALIAS_REFERENCE)].map((match) => aliasTargetPath(match[1] ?? ''));
+}
+
+/**
+ * 별칭 참조 안의 경로를 토큰 경로로 바꾼다. `$root`는 그룹과 같은 이름의 변수이므로 뺀다.
+ * @param reference 중괄호 안의 경로(`color.white.$root`)
+ * @returns `/`로 이은 경로(`color/white`)
+ */
+function aliasTargetPath(reference: string): string {
+  return reference
+    .replace(/\.\$root$/u, '')
+    .split('.')
+    .join('/');
 }
 
 /**

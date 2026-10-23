@@ -127,6 +127,8 @@ export type DesignTokensInput = {
 const FIGMA_EXTENSION = 'com.figma';
 const PROJECT_EXTENSION = 'com.seojaewan';
 const NUMBER_PRECISION = 10_000;
+/** 그룹 자신의 토큰을 담는 DTCG 예약 이름 */
+const ROOT_TOKEN = '$root';
 
 const fontWeights: Readonly<Record<string, number>> = { Regular: 400, SemiBold: 600, Bold: 700 };
 
@@ -145,6 +147,10 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
   const notices: string[] = [];
   const context: ConversionContext = {
     aliasNames: input.aliasNames,
+    groupNames: groupNamesOf([
+      ...input.variables.map((item) => item.name),
+      ...Object.values(input.aliasNames),
+    ]),
     imageAssets: input.imageAssets,
     problems,
     notices,
@@ -179,11 +185,31 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
 
 /**
  * 변수 이름을 DTCG 별칭 참조로 바꾼다. 예: `color/gray/f9f9f9` → `{color.gray.f9f9f9}`
+ * 이름이 그룹의 이름이기도 하면(`color/white`와 `color/white/70`) 변수는 그룹의 `$root` 토큰이라 `{color.white.$root}`로 쓴다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param name 가리키는 변수 이름
+ * @param isGroupName 그 이름이 다른 변수 이름의 앞부분이기도 한지
  * @returns 별칭 참조 문자열
  */
-export function aliasReference(name: string): string {
-  return `{${name.split('/').join('.')}}`;
+export function aliasReference(name: string, isGroupName = false): string {
+  const path = name.split('/');
+  return `{${(isGroupName ? [...path, ROOT_TOKEN] : path).join('.')}}`;
+}
+
+/**
+ * 변수 이름들에서 다른 이름의 앞부분(그룹)이 되는 이름을 모은다.
+ * @param names 변수 이름
+ * @returns 그룹 이름 집합(`/`로 이음)
+ */
+function groupNamesOf(names: readonly string[]): ReadonlySet<string> {
+  const groups = new Set<string>();
+  for (const name of names) {
+    const path = name.split('/');
+    for (let length = 1; length < path.length; length += 1) {
+      groups.add(path.slice(0, length).join('/'));
+    }
+  }
+  return groups;
 }
 
 /**
@@ -209,6 +235,8 @@ export function parseCubicBezier(easing: string): number[] | null {
 
 type ConversionContext = {
   aliasNames: Readonly<Record<string, string>>;
+  /** 다른 변수 이름의 앞부분이기도 한 변수 이름. 이 변수는 그룹의 `$root` 토큰이다. */
+  groupNames: ReadonlySet<string>;
   imageAssets: Readonly<Record<string, string>>;
   problems: string[];
   /** 막지 않고 알리기만 하는 문제 */
@@ -707,7 +735,7 @@ function aliasValue(
     context.problems.push(`${label}: 별칭이 가리키는 변수 ${alias.id}를 찾을 수 없다`);
     return null;
   }
-  return aliasReference(name);
+  return aliasReference(name, context.groupNames.has(name));
 }
 
 /**
@@ -729,7 +757,9 @@ function insertStyle(
 }
 
 /**
- * 경로를 따라 그룹을 만들고 토큰을 넣는다. 경로가 겹치거나 DTCG에서 쓸 수 없는 이름이면 문제로 남긴다.
+ * 경로를 따라 그룹을 만들고 토큰을 넣는다. 이름이 그룹의 이름이기도 한 토큰은 그 그룹의 `$root`에 둔다.
+ * 같은 경로의 토큰이 둘이거나 DTCG에서 쓸 수 없는 이름이면 문제로 남긴다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param root 토큰 트리
  * @param path 그룹 경로와 토큰 이름
  * @param token 넣을 토큰
@@ -758,16 +788,21 @@ function insertToken(
     } else if (isGroup(child)) {
       group = child;
     } else {
-      problems.push(`${label}: 경로가 다른 토큰과 겹친다`);
-      return;
+      // 먼저 들어간 토큰의 이름이 그룹의 이름이 되었다. 토큰을 그룹의 $root로 옮긴다.
+      const promoted: JsonObject = { [ROOT_TOKEN]: child };
+      group[segment] = promoted;
+      group = promoted;
     }
   }
   const last = path[path.length - 1] ?? '';
-  if (last in group) {
-    problems.push(`${label}: 같은 경로에 이미 토큰이나 그룹이 있다`);
-    return;
+  const existing = group[last];
+  if (existing === undefined) {
+    group[last] = token;
+  } else if (isGroup(existing) && !(ROOT_TOKEN in existing)) {
+    existing[ROOT_TOKEN] = token;
+  } else {
+    problems.push(`${label}: 같은 경로에 이미 토큰이 있다`);
   }
-  group[last] = token;
 }
 
 /**

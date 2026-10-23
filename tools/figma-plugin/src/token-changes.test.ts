@@ -95,6 +95,20 @@ describe('바뀐 토큰과 영향받는 이름', () => {
     expect(changes.modifiedPaths).toEqual([]);
     expect(tokenChanges(null, stableStringify(before)).changedPaths).toHaveLength(6);
   });
+
+  it('그룹의 $root 토큰은 그룹과 같은 이름의 변수이고 $root를 가리키는 별칭도 그 변수를 따라간다', () => {
+    const rooted: JsonObject = {
+      color: { white: { $root: token('color', '#ffffff'), '70': token('color', '#ffffffb3') } },
+      'text-fill': { primary: token('color', '{color.white.$root}') },
+    };
+    const changed = structuredClone(rooted);
+    changed.color = {
+      white: { $root: token('color', '#fefefe'), '70': token('color', '#ffffffb3') },
+    };
+    const changes = tokenChanges(stableStringify(rooted), stableStringify(changed));
+    expect(changes.changedPaths).toEqual(['color/white']);
+    expect([...changes.affectedNames].sort()).toEqual(['color/white', 'text-fill/primary']);
+  });
 });
 
 // @codocs [[피그마 연동:피그마 플러그인]]

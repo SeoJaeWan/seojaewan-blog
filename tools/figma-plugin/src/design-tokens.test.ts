@@ -109,11 +109,49 @@ describe('Variables를 DTCG 토큰으로 내보낸다', () => {
     expect(() => buildDesignTokens(input)).toThrow(/missing/u);
   });
 
-  it('경로가 다른 토큰과 겹치면 중단한다', () => {
+  it('같은 경로의 변수가 둘이면 중단한다', () => {
     const input = tokensInput({
-      variables: [variable('size/icon', 'FLOAT', 16), variable('size/icon/large', 'FLOAT', 24)],
+      variables: [variable('size/icon', 'FLOAT', 16), variable('size/icon', 'FLOAT', 24)],
     });
-    expect(() => buildDesignTokens(input)).toThrow(/겹친다/u);
+    expect(() => buildDesignTokens(input)).toThrow(/size\/icon: 같은 경로/u);
+  });
+
+  it('이름이 그룹의 이름이기도 한 변수는 그 그룹의 $root 토큰이다(그룹이 먼저여도 나중이어도)', () => {
+    const white = variable('color/white', 'COLOR', { r: 1, g: 1, b: 1, a: 1 });
+    const white70 = variable('color/white/70', 'COLOR', { r: 1, g: 1, b: 1, a: 0.7 });
+    const rootFirst = buildDesignTokens(tokensInput({ variables: [white, white70] })).tokens;
+    const childFirst = buildDesignTokens(tokensInput({ variables: [white70, white] })).tokens;
+    expect(at(rootFirst, ['color', 'white', '$root', '$value'])).toBe('#ffffff');
+    expect(at(rootFirst, ['color', 'white', '70', '$value'])).toBe('#ffffffb3');
+    expect(at(childFirst, ['color', 'white', '$root', '$value'])).toBe('#ffffff');
+    expect(at(childFirst, ['color', 'white', '70', '$value'])).toBe('#ffffffb3');
+    expect(at(rootFirst, ['color', 'white', '$value'])).toBeUndefined();
+  });
+
+  it('그룹의 $root 토큰을 가리키는 별칭은 {경로.$root}다', () => {
+    const input = tokensInput({
+      variables: [
+        variable('color/blue/dark-1', 'COLOR', { r: 0, g: 0, b: 1, a: 1 }),
+        variable('color/blue/dark-1/90', 'COLOR', { r: 0, g: 0, b: 1, a: 0.9 }),
+        variable('text-fill/accent', 'COLOR', aliasTo('color/blue/dark-1'), 'Semantic'),
+        variable('text-fill/soft', 'COLOR', aliasTo('color/blue/dark-1/90'), 'Semantic'),
+      ],
+    });
+    const { tokens } = buildDesignTokens(input);
+    expect(at(tokens, ['text-fill', 'accent', '$value'])).toBe('{color.blue.dark-1.$root}');
+    expect(at(tokens, ['text-fill', 'soft', '$value'])).toBe('{color.blue.dark-1.90}');
+    expect(aliasReference('color/white', true)).toBe('{color.white.$root}');
+  });
+
+  it('$root에 이미 토큰이 있는 그룹에 같은 이름의 변수가 또 오면 중단한다', () => {
+    const input = tokensInput({
+      variables: [
+        variable('color/white', 'COLOR', { r: 1, g: 1, b: 1, a: 1 }),
+        variable('color/white/70', 'COLOR', { r: 1, g: 1, b: 1, a: 0.7 }),
+        variable('color/white', 'COLOR', { r: 0, g: 0, b: 0, a: 1 }),
+      ],
+    });
+    expect(() => buildDesignTokens(input)).toThrow(/color\/white: 같은 경로/u);
   });
 });
 
