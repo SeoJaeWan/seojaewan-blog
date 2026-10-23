@@ -1,4 +1,5 @@
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './asset-groups';
+import { type Bindings, inheritedBindings, sourceLayerId } from './bindings';
 import type {
   AssetData,
   AssetKind,
@@ -20,7 +21,7 @@ import type {
 /** 변수·스타일 ID → 이름 캐시 */
 export type NameCache = Map<string, string | undefined>;
 
-// 호 각도 비교에 쓰는 소수 오차다.
+// 호 각도와 크기 비교에 쓰는 소수 오차다.
 const EPSILON = 1e-6;
 
 /**
@@ -53,7 +54,7 @@ async function readNode(
   parent: (BaseNode & ChildrenMixin) | null,
   names: NameCache,
 ): Promise<NodeData> {
-  const bound = boundVariables(node);
+  const bound = await boundVariables(node);
   const data: NodeData = {
     id: node.id,
     name: node.name,
@@ -146,16 +147,60 @@ async function readNode(
 }
 
 /**
- * 노드의 변수 연결 표를 읽는다.
+ * 노드의 변수 연결 표를 읽는다. 인스턴스 교체 속성으로 바꿔 끼운 인스턴스는 바꾸기 전 레이어의 연결을 물려받는다.
+ * @codocs [[피그마 연동:구조 검사]]
  * @param node 노드
  * @returns 필드 이름 → 변수 별칭
  */
-function boundVariables(node: SceneNode): Partial<Record<string, VariableAlias>> {
+async function boundVariables(node: SceneNode): Promise<Partial<Record<string, VariableAlias>>> {
+  let bindings = bindingIds(node);
+  const sourceId =
+    node.type === 'INSTANCE' && node.componentPropertyReferences?.mainComponent !== undefined
+      ? sourceLayerId(node.id)
+      : null;
+  const source = sourceId === null ? null : await figma.getNodeByIdAsync(sourceId);
+  if (source !== null && source.type === 'INSTANCE') {
+    bindings = inheritedBindings(bindings, bindingIds(source), (field) =>
+      isSameNumber(node, source, field),
+    );
+  }
   const result: Partial<Record<string, VariableAlias>> = {};
+  for (const [field, id] of Object.entries(bindings)) {
+    if (id !== undefined) {
+      result[field] = { type: 'VARIABLE_ALIAS', id };
+    }
+  }
+  return result;
+}
+
+/**
+ * 두 노드의 숫자 필드 값이 같은지 확인한다.
+ * @param node 노드
+ * @param source 비교할 노드
+ * @param field 필드 이름
+ * @returns 둘 다 숫자이고 같으면 true
+ */
+function isSameNumber(node: SceneNode, source: SceneNode, field: string): boolean {
+  const value: unknown = Reflect.get(node, field);
+  const original: unknown = Reflect.get(source, field);
+  return (
+    typeof value === 'number' &&
+    typeof original === 'number' &&
+    Math.abs(value - original) < EPSILON
+  );
+}
+
+/**
+ * 노드 자신에 연결된 변수 ID를 필드마다 읽는다(칠·선처럼 목록인 필드는 뺀다).
+ * @param node 노드
+ * @returns 필드 이름 → 변수 ID
+ */
+function bindingIds(node: SceneNode): Bindings {
+  const result: Bindings = {};
   for (const [field, value] of Object.entries(node.boundVariables ?? {})) {
     const id: unknown = typeof value === 'object' ? Reflect.get(value, 'id') : undefined;
     if (typeof id === 'string') {
-      result[field] = { type: 'VARIABLE_ALIAS', id };
+      result[field] = id;
     }
   }
   return result;
