@@ -45,7 +45,7 @@ Windows 화면 요소: |
   | SnapZone | 스냅 레이아웃의 칸 하나 |
   | SnapPreview | 끌어서 스냅·Snap Assist에서 채울 영역 미리보기 |
   | SelectionMarquee | 빈 곳을 끌어 여러 개를 고르는 사각형 |
-  | Taskbar | 작업 표시줄 |
+  | Taskbar | 작업 표시줄의 재질 바탕과 자리(가운데·오른쪽). 시작 버튼·검색·앱 버튼·시계는 Taskbar/Default 조립이 채운다 |
   | TaskbarButton | 작업 표시줄의 앱 버튼 |
   | TaskbarPreviewList | 작업 표시줄 창 미리보기를 담는 패널 |
   | SystemTray | 작업 표시줄 오른쪽의 시계 영역 |
