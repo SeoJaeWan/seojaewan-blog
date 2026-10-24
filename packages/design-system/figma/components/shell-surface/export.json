@@ -3,6 +3,12 @@
   "nodeId": "509:5938",
   "variants": {
     "material=acrylic,device=desktop": {
+      "node": {
+        "height": 720,
+        "width": 640,
+        "x": 18,
+        "y": 9
+      },
       "nodeId": "509:5926",
       "properties": {
         "Device": "Desktop",
@@ -10,6 +16,12 @@
       }
     },
     "material=acrylic,device=mobile": {
+      "node": {
+        "height": 640,
+        "width": 390,
+        "x": 18,
+        "y": 9
+      },
       "nodeId": "509:5928",
       "properties": {
         "Device": "Mobile",
@@ -17,6 +29,12 @@
       }
     },
     "material=solid,device=desktop": {
+      "node": {
+        "height": 720,
+        "width": 640,
+        "x": 18,
+        "y": 9
+      },
       "nodeId": "509:5930",
       "properties": {
         "Device": "Desktop",
@@ -24,6 +42,12 @@
       }
     },
     "material=solid,device=mobile": {
+      "node": {
+        "height": 640,
+        "width": 390,
+        "x": 18,
+        "y": 9
+      },
       "nodeId": "509:5932",
       "properties": {
         "Device": "Mobile",
