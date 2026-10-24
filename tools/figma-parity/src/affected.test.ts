@@ -182,7 +182,7 @@ describe('캡처 범위', () => {
     for (const file of [
       'packages/design-system/figma/figma.json',
       'packages/design-system/src/theme.css',
-      'packages/design-system/src/merge-class-names.ts',
+      'packages/design-system/src/cn.ts',
       'packages/design-system/.storybook/preview.ts',
       'apps/web/.storybook/preview.css',
       'pnpm-lock.yaml',
