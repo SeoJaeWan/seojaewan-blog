@@ -3,12 +3,24 @@
   "nodeId": "90:2711",
   "variants": {
     "state=hover": {
+      "node": {
+        "height": 56,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "90:2710",
       "properties": {
         "State": "Hover"
       }
     },
     "state=rest": {
+      "node": {
+        "height": 56,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "90:2709",
       "properties": {
         "State": "Rest"
