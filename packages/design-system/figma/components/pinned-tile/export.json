@@ -3,18 +3,36 @@
   "nodeId": "37:521",
   "variants": {
     "state=hover": {
+      "node": {
+        "height": 84,
+        "width": 95,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "37:511",
       "properties": {
         "State": "Hover"
       }
     },
     "state=pressed": {
+      "node": {
+        "height": 84,
+        "width": 95,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "37:516",
       "properties": {
         "State": "Pressed"
       }
     },
     "state=rest": {
+      "node": {
+        "height": 84,
+        "width": 95,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "37:506",
       "properties": {
         "State": "Rest"
