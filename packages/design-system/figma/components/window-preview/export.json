@@ -1,0 +1,18 @@
+{
+  "name": "WindowPreview",
+  "nodeId": "70:1426",
+  "variants": {
+    "state=hover": {
+      "nodeId": "70:1415",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "nodeId": "70:1404",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
