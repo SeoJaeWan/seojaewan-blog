@@ -2,6 +2,7 @@
 export * from './components/asset/asset';
 export * from './components/button/button';
 export * from './components/caption-button/caption-button';
+export * from './components/caption-button-group/caption-button-group';
 export * from './components/code-block/code-block';
 export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
