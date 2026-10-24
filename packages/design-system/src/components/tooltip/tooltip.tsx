@@ -77,7 +77,7 @@ export function Tooltip(props: TooltipProps): JSX.Element {
       role="tooltip"
       {...divProps}
       className={cn(
-        'inline-flex px-8 py-6 whitespace-nowrap type-caption text-text-fill-primary',
+        'inline-flex px-8 py-6 type-caption whitespace-nowrap text-text-fill-primary',
         SURFACE_CLASS_NAME,
         materialClassNames[material],
         className,
