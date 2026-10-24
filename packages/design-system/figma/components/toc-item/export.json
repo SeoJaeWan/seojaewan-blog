@@ -3,12 +3,24 @@
   "nodeId": "398:5460",
   "variants": {
     "active=false": {
+      "node": {
+        "height": 20,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "398:5459",
       "properties": {
         "Active": "False"
       }
     },
     "active=true": {
+      "node": {
+        "height": 20,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "398:5455",
       "properties": {
         "Active": "True"
