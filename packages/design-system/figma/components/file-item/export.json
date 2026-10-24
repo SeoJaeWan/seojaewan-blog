@@ -3,6 +3,12 @@
   "nodeId": "29:527",
   "variants": {
     "surface=desktop,view=large,state=cut": {
+      "node": {
+        "height": 122,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2165",
       "properties": {
         "State": "Cut",
@@ -11,6 +17,12 @@
       }
     },
     "surface=desktop,view=large,state=cut-selected": {
+      "node": {
+        "height": 122,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2169",
       "properties": {
         "State": "Cut selected",
@@ -19,6 +31,12 @@
       }
     },
     "surface=desktop,view=large,state=hover": {
+      "node": {
+        "height": 122,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:286",
       "properties": {
         "State": "Hover",
@@ -27,6 +45,12 @@
       }
     },
     "surface=desktop,view=large,state=rename": {
+      "node": {
+        "height": 128,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:298",
       "properties": {
         "State": "Rename",
@@ -35,6 +59,12 @@
       }
     },
     "surface=desktop,view=large,state=rest": {
+      "node": {
+        "height": 122,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:282",
       "properties": {
         "State": "Rest",
@@ -43,6 +73,12 @@
       }
     },
     "surface=desktop,view=large,state=selected": {
+      "node": {
+        "height": 122,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:290",
       "properties": {
         "State": "Selected",
@@ -51,6 +87,12 @@
       }
     },
     "surface=desktop,view=large,state=selected-focus": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:294",
       "properties": {
         "State": "Selected focus",
@@ -59,6 +101,12 @@
       }
     },
     "surface=desktop,view=medium,state=cut": {
+      "node": {
+        "height": 74,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2173",
       "properties": {
         "State": "Cut",
@@ -67,6 +115,12 @@
       }
     },
     "surface=desktop,view=medium,state=cut-selected": {
+      "node": {
+        "height": 74,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2177",
       "properties": {
         "State": "Cut selected",
@@ -75,6 +129,12 @@
       }
     },
     "surface=desktop,view=medium,state=hover": {
+      "node": {
+        "height": 74,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:309",
       "properties": {
         "State": "Hover",
@@ -83,6 +143,12 @@
       }
     },
     "surface=desktop,view=medium,state=rename": {
+      "node": {
+        "height": 80,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:321",
       "properties": {
         "State": "Rename",
@@ -91,6 +157,12 @@
       }
     },
     "surface=desktop,view=medium,state=rest": {
+      "node": {
+        "height": 74,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:305",
       "properties": {
         "State": "Rest",
@@ -99,6 +171,12 @@
       }
     },
     "surface=desktop,view=medium,state=selected": {
+      "node": {
+        "height": 74,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:313",
       "properties": {
         "State": "Selected",
@@ -107,6 +185,12 @@
       }
     },
     "surface=desktop,view=medium,state=selected-focus": {
+      "node": {
+        "height": 76,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:317",
       "properties": {
         "State": "Selected focus",
@@ -115,6 +199,12 @@
       }
     },
     "surface=desktop,view=small,state=cut": {
+      "node": {
+        "height": 58,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2181",
       "properties": {
         "State": "Cut",
@@ -123,6 +213,12 @@
       }
     },
     "surface=desktop,view=small,state=cut-selected": {
+      "node": {
+        "height": 58,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2185",
       "properties": {
         "State": "Cut selected",
@@ -131,6 +227,12 @@
       }
     },
     "surface=desktop,view=small,state=hover": {
+      "node": {
+        "height": 58,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:332",
       "properties": {
         "State": "Hover",
@@ -139,6 +241,12 @@
       }
     },
     "surface=desktop,view=small,state=rename": {
+      "node": {
+        "height": 64,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:344",
       "properties": {
         "State": "Rename",
@@ -147,6 +255,12 @@
       }
     },
     "surface=desktop,view=small,state=rest": {
+      "node": {
+        "height": 58,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:328",
       "properties": {
         "State": "Rest",
@@ -155,6 +269,12 @@
       }
     },
     "surface=desktop,view=small,state=selected": {
+      "node": {
+        "height": 58,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:336",
       "properties": {
         "State": "Selected",
@@ -163,6 +283,12 @@
       }
     },
     "surface=desktop,view=small,state=selected-focus": {
+      "node": {
+        "height": 60,
+        "width": 76,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:340",
       "properties": {
         "State": "Selected focus",
@@ -171,6 +297,12 @@
       }
     },
     "surface=explorer,view=large,state=cut": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2133",
       "properties": {
         "State": "Cut",
@@ -179,6 +311,12 @@
       }
     },
     "surface=explorer,view=large,state=cut-selected": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2137",
       "properties": {
         "State": "Cut selected",
@@ -187,6 +325,12 @@
       }
     },
     "surface=explorer,view=large,state=hover": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:442",
       "properties": {
         "State": "Hover",
@@ -195,6 +339,12 @@
       }
     },
     "surface=explorer,view=large,state=rename": {
+      "node": {
+        "height": 130,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:454",
       "properties": {
         "State": "Rename",
@@ -203,6 +353,12 @@
       }
     },
     "surface=explorer,view=large,state=rest": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:438",
       "properties": {
         "State": "Rest",
@@ -211,6 +367,12 @@
       }
     },
     "surface=explorer,view=large,state=selected": {
+      "node": {
+        "height": 124,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:446",
       "properties": {
         "State": "Selected",
@@ -219,6 +381,12 @@
       }
     },
     "surface=explorer,view=large,state=selected-focus": {
+      "node": {
+        "height": 126,
+        "width": 112,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:450",
       "properties": {
         "State": "Selected focus",
@@ -227,6 +395,12 @@
       }
     },
     "surface=explorer,view=medium,state=cut": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2141",
       "properties": {
         "State": "Cut",
@@ -235,6 +409,12 @@
       }
     },
     "surface=explorer,view=medium,state=cut-selected": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2145",
       "properties": {
         "State": "Cut selected",
@@ -243,6 +423,12 @@
       }
     },
     "surface=explorer,view=medium,state=hover": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:465",
       "properties": {
         "State": "Hover",
@@ -251,6 +437,12 @@
       }
     },
     "surface=explorer,view=medium,state=rename": {
+      "node": {
+        "height": 82,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:477",
       "properties": {
         "State": "Rename",
@@ -259,6 +451,12 @@
       }
     },
     "surface=explorer,view=medium,state=rest": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:461",
       "properties": {
         "State": "Rest",
@@ -267,6 +465,12 @@
       }
     },
     "surface=explorer,view=medium,state=selected": {
+      "node": {
+        "height": 76,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:469",
       "properties": {
         "State": "Selected",
@@ -275,6 +479,12 @@
       }
     },
     "surface=explorer,view=medium,state=selected-focus": {
+      "node": {
+        "height": 78,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:473",
       "properties": {
         "State": "Selected focus",
