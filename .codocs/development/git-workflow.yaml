@@ -8,6 +8,7 @@ _codocs:
 작업 단위: |
   작업은 PR 단위로 관리한다. GitHub Issues나 Jira는 쓰지 않는다.
   모든 변경은 PR로 `main`에 들어간다.
+  PR 본문과 PR 댓글에도 AI 도구가 붙이는 생성 표시(`Generated with ...`)와 세션 링크를 넣지 않는다.
 브랜치: |
   `종류/짧은-설명` 형식이다. 예: `feat/taskbar-pin`, `fix/window-drag`, `chore/setup-monorepo`
   종류는 커밋 종류와 같은 단어를 쓴다.
@@ -16,6 +17,7 @@ _codocs:
   - 제목은 영어로, Conventional Commits 형식을 따른다. 예: `feat(design-system): add Button component`
   - 본문은 한국어로 쓴다. 무엇을 왜 바꿨는지 적는다.
   - commitlint가 형식을 검사한다.
+  - 커밋 작성자는 저장소 주인 계정(`Ing-yeo_Developer <52366178+SeoJaeWan@users.noreply.github.com>`)으로 한다. AI가 만든 커밋도 같다. AI 도구가 붙이는 공동 작성자·세션 표시(`Co-Authored-By`, `Claude-Session` 등)는 넣지 않는다.
   - 커밋은 하나마다 의미 있는 단위여야 한다. 작업 중에 생긴 잔손질 커밋(오타 수정, wip)은 PR을 올리기 전에 정리한다. 병합할 때 커밋이 그대로 남기 때문이다.
 병합: |
   일반 merge commit으로 병합한다. Squash merge는 쓰지 않는다.
