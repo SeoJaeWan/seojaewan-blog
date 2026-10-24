@@ -3,6 +3,12 @@
   "nodeId": "26:257",
   "variants": {
     "indicator=active,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:247",
       "properties": {
         "Indicator": "Active",
@@ -10,6 +16,12 @@
       }
     },
     "indicator=active,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:252",
       "properties": {
         "Indicator": "Active",
@@ -17,6 +29,12 @@
       }
     },
     "indicator=active,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:242",
       "properties": {
         "Indicator": "Active",
@@ -24,6 +42,12 @@
       }
     },
     "indicator=none,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:219",
       "properties": {
         "Indicator": "None",
@@ -31,6 +55,12 @@
       }
     },
     "indicator=none,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:223",
       "properties": {
         "Indicator": "None",
@@ -38,6 +68,12 @@
       }
     },
     "indicator=none,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:215",
       "properties": {
         "Indicator": "None",
@@ -45,6 +81,12 @@
       }
     },
     "indicator=running,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:232",
       "properties": {
         "Indicator": "Running",
@@ -52,6 +94,12 @@
       }
     },
     "indicator=running,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:237",
       "properties": {
         "Indicator": "Running",
@@ -59,6 +107,12 @@
       }
     },
     "indicator=running,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:227",
       "properties": {
         "Indicator": "Running",
