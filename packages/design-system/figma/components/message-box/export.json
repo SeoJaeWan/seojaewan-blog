@@ -1,0 +1,18 @@
+{
+  "name": "MessageBox",
+  "nodeId": "16:226",
+  "variants": {
+    "buttons=one": {
+      "nodeId": "16:202",
+      "properties": {
+        "Buttons": "One"
+      }
+    },
+    "buttons=two": {
+      "nodeId": "16:212",
+      "properties": {
+        "Buttons": "Two"
+      }
+    }
+  }
+}
