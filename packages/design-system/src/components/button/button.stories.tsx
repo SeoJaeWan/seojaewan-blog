@@ -9,23 +9,29 @@ const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focused'] as const;
 type ParityArgs = {
   style: (typeof STYLES)[number];
   state: (typeof STATES)[number];
+  /** 피그마 TEXT 속성 Label */
+  label: string;
   /** 피그마 BOOLEAN 속성 Show icon */
   showIcon: boolean;
 };
 
 const meta = {
   title: 'Components/Button',
-  args: { style: 'accent', state: 'rest', showIcon: false },
+  // 글자는 피그마 Label 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  args: { style: 'accent', state: 'rest', label: '버튼', showIcon: false },
   argTypes: {
     style: { control: 'inline-radio', options: STYLES },
     state: { control: 'inline-radio', options: STATES },
+    label: { control: 'text' },
     showIcon: { control: 'boolean' },
   },
   render: (args) => (
-    // 글자는 피그마 예시 글자와 같아야 한다([[피그마 연동:스토리 규칙]]).
-    <Button variant={args.style} disabled={args.state === 'disabled'} showIcon={args.showIcon}>
-      버튼
-    </Button>
+    <Button
+      variant={args.style}
+      label={args.label}
+      disabled={args.state === 'disabled'}
+      showIcon={args.showIcon}
+    />
   ),
 } satisfies Meta<ParityArgs>;
 

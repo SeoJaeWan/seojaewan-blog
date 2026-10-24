@@ -7,14 +7,14 @@ import { Button } from './button';
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 describe('Button', () => {
   it('글자를 접근성 이름으로 갖는 버튼이다', () => {
-    render(<Button variant="accent">저장</Button>);
+    render(<Button variant="accent" label="저장" />);
     expect(screen.getByRole('button', { name: '저장' })).toBeInTheDocument();
   });
 
   it('누르거나 키보드로 실행하면 onClick을 부른다', async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();
-    render(<Button onClick={handleClick}>저장</Button>);
+    render(<Button onClick={handleClick} label="저장" />);
 
     await user.tab();
     expect(screen.getByRole('button', { name: '저장' })).toHaveFocus();
@@ -27,11 +27,7 @@ describe('Button', () => {
   it('disabled면 누를 수 없고 Tab 포커스도 받지 않는다', async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();
-    render(
-      <Button disabled onClick={handleClick}>
-        저장
-      </Button>,
-    );
+    render(<Button disabled onClick={handleClick} label="저장" />);
 
     await user.click(screen.getByRole('button', { name: '저장' }));
     await user.tab();
@@ -42,7 +38,7 @@ describe('Button', () => {
   });
 
   it('포커스 사각형은 보조 기술에 읽히지 않는다', () => {
-    render(<Button>저장</Button>);
+    render(<Button label="저장" />);
     expect(screen.getByRole('button')).toHaveAccessibleName('저장');
   });
 });
