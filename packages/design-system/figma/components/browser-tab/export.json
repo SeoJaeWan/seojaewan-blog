@@ -1,0 +1,24 @@
+{
+  "name": "BrowserTab",
+  "nodeId": "36:423",
+  "variants": {
+    "state=active": {
+      "nodeId": "36:392",
+      "properties": {
+        "State": "Active"
+      }
+    },
+    "state=hover": {
+      "nodeId": "36:413",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "nodeId": "36:402",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
