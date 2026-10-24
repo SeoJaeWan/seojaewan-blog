@@ -1,0 +1,27 @@
+{
+  "name": "Tooltip",
+  "nodeId": "14:345",
+  "variants": {
+    "type=balloon,material=solid": {
+      "nodeId": "14:339",
+      "properties": {
+        "Material": "Solid",
+        "Type": "Balloon"
+      }
+    },
+    "type=default,material=acrylic": {
+      "nodeId": "14:337",
+      "properties": {
+        "Material": "Acrylic",
+        "Type": "Default"
+      }
+    },
+    "type=default,material=solid": {
+      "nodeId": "58:883",
+      "properties": {
+        "Material": "Solid",
+        "Type": "Default"
+      }
+    }
+  }
+}
