@@ -6,10 +6,10 @@ import { useState } from 'react';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
-const KINDS = ['default', 'submenu', 'toggle-on', 'toggle-off', 'radio-on'] as const;
+const KINDS = ['default', 'submenu', 'toggle-on', 'toggle-off', 'radio-on', 'radio-off'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
 // 피그마 예시 글자다([[피그마 연동:스토리 규칙]]).
-const LABEL = '열기';
+const LABEL = '메뉴 항목';
 const SHORTCUT = 'Ctrl+O';
 
 type ParityArgs = {
@@ -73,6 +73,13 @@ function ParityMenuItem(props: ParityArgs): JSX.Element {
     case 'radio-on':
       return (
         <Menu.RadioGroup defaultValue={LABEL}>
+          <MenuItem {...common} kind="radio" value={LABEL} />
+        </Menu.RadioGroup>
+      );
+    case 'radio-off':
+      // 묶음의 값이 이 항목과 달라 골라지지 않은 라디오 항목이다.
+      return (
+        <Menu.RadioGroup defaultValue="">
           <MenuItem {...common} kind="radio" value={LABEL} />
         </Menu.RadioGroup>
       );
