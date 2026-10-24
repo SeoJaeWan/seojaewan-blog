@@ -3,6 +3,12 @@
   "nodeId": "14:345",
   "variants": {
     "type=balloon,material=solid": {
+      "node": {
+        "height": 42,
+        "width": 300,
+        "x": 8,
+        "y": 12
+      },
       "nodeId": "14:339",
       "properties": {
         "Material": "Solid",
@@ -10,6 +16,12 @@
       }
     },
     "type=default,material=acrylic": {
+      "node": {
+        "height": 30,
+        "width": 50,
+        "x": 8,
+        "y": 4
+      },
       "nodeId": "14:337",
       "properties": {
         "Material": "Acrylic",
@@ -17,6 +29,12 @@
       }
     },
     "type=default,material=solid": {
+      "node": {
+        "height": 30,
+        "width": 50,
+        "x": 8,
+        "y": 4
+      },
       "nodeId": "58:883",
       "properties": {
         "Material": "Solid",
