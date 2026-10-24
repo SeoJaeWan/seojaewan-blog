@@ -1,0 +1,294 @@
+{
+  "name": "NavigationItem",
+  "nodeId": "29:427",
+  "variants": {
+    "expand=collapsed,state=hover,level=0": {
+      "nodeId": "29:392",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "0",
+        "State": "Hover"
+      }
+    },
+    "expand=collapsed,state=hover,level=1": {
+      "nodeId": "56:1102",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "1",
+        "State": "Hover"
+      }
+    },
+    "expand=collapsed,state=hover,level=2": {
+      "nodeId": "56:1107",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "2",
+        "State": "Hover"
+      }
+    },
+    "expand=collapsed,state=hover,level=3": {
+      "nodeId": "56:1112",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "3",
+        "State": "Hover"
+      }
+    },
+    "expand=collapsed,state=rest,level=0": {
+      "nodeId": "29:385",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "0",
+        "State": "Rest"
+      }
+    },
+    "expand=collapsed,state=rest,level=1": {
+      "nodeId": "56:1087",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "1",
+        "State": "Rest"
+      }
+    },
+    "expand=collapsed,state=rest,level=2": {
+      "nodeId": "56:1092",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "2",
+        "State": "Rest"
+      }
+    },
+    "expand=collapsed,state=rest,level=3": {
+      "nodeId": "56:1097",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "3",
+        "State": "Rest"
+      }
+    },
+    "expand=collapsed,state=selected,level=0": {
+      "nodeId": "29:399",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "0",
+        "State": "Selected"
+      }
+    },
+    "expand=collapsed,state=selected,level=1": {
+      "nodeId": "56:1117",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "1",
+        "State": "Selected"
+      }
+    },
+    "expand=collapsed,state=selected,level=2": {
+      "nodeId": "56:1122",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "2",
+        "State": "Selected"
+      }
+    },
+    "expand=collapsed,state=selected,level=3": {
+      "nodeId": "56:1127",
+      "properties": {
+        "Expand": "Collapsed",
+        "Level": "3",
+        "State": "Selected"
+      }
+    },
+    "expand=expanded,state=hover,level=0": {
+      "nodeId": "29:413",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "0",
+        "State": "Hover"
+      }
+    },
+    "expand=expanded,state=hover,level=1": {
+      "nodeId": "56:1147",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "1",
+        "State": "Hover"
+      }
+    },
+    "expand=expanded,state=hover,level=2": {
+      "nodeId": "56:1152",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "2",
+        "State": "Hover"
+      }
+    },
+    "expand=expanded,state=hover,level=3": {
+      "nodeId": "56:1157",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "3",
+        "State": "Hover"
+      }
+    },
+    "expand=expanded,state=rest,level=0": {
+      "nodeId": "29:406",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "0",
+        "State": "Rest"
+      }
+    },
+    "expand=expanded,state=rest,level=1": {
+      "nodeId": "56:1132",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "1",
+        "State": "Rest"
+      }
+    },
+    "expand=expanded,state=rest,level=2": {
+      "nodeId": "56:1137",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "2",
+        "State": "Rest"
+      }
+    },
+    "expand=expanded,state=rest,level=3": {
+      "nodeId": "56:1142",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "3",
+        "State": "Rest"
+      }
+    },
+    "expand=expanded,state=selected,level=0": {
+      "nodeId": "29:420",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "0",
+        "State": "Selected"
+      }
+    },
+    "expand=expanded,state=selected,level=1": {
+      "nodeId": "56:1162",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "1",
+        "State": "Selected"
+      }
+    },
+    "expand=expanded,state=selected,level=2": {
+      "nodeId": "56:1167",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "2",
+        "State": "Selected"
+      }
+    },
+    "expand=expanded,state=selected,level=3": {
+      "nodeId": "56:1172",
+      "properties": {
+        "Expand": "Expanded",
+        "Level": "3",
+        "State": "Selected"
+      }
+    },
+    "expand=none,state=hover,level=0": {
+      "nodeId": "29:371",
+      "properties": {
+        "Expand": "None",
+        "Level": "0",
+        "State": "Hover"
+      }
+    },
+    "expand=none,state=hover,level=1": {
+      "nodeId": "56:1057",
+      "properties": {
+        "Expand": "None",
+        "Level": "1",
+        "State": "Hover"
+      }
+    },
+    "expand=none,state=hover,level=2": {
+      "nodeId": "56:1062",
+      "properties": {
+        "Expand": "None",
+        "Level": "2",
+        "State": "Hover"
+      }
+    },
+    "expand=none,state=hover,level=3": {
+      "nodeId": "56:1067",
+      "properties": {
+        "Expand": "None",
+        "Level": "3",
+        "State": "Hover"
+      }
+    },
+    "expand=none,state=rest,level=0": {
+      "nodeId": "29:364",
+      "properties": {
+        "Expand": "None",
+        "Level": "0",
+        "State": "Rest"
+      }
+    },
+    "expand=none,state=rest,level=1": {
+      "nodeId": "56:1042",
+      "properties": {
+        "Expand": "None",
+        "Level": "1",
+        "State": "Rest"
+      }
+    },
+    "expand=none,state=rest,level=2": {
+      "nodeId": "56:1047",
+      "properties": {
+        "Expand": "None",
+        "Level": "2",
+        "State": "Rest"
+      }
+    },
+    "expand=none,state=rest,level=3": {
+      "nodeId": "56:1052",
+      "properties": {
+        "Expand": "None",
+        "Level": "3",
+        "State": "Rest"
+      }
+    },
+    "expand=none,state=selected,level=0": {
+      "nodeId": "29:378",
+      "properties": {
+        "Expand": "None",
+        "Level": "0",
+        "State": "Selected"
+      }
+    },
+    "expand=none,state=selected,level=1": {
+      "nodeId": "56:1072",
+      "properties": {
+        "Expand": "None",
+        "Level": "1",
+        "State": "Selected"
+      }
+    },
+    "expand=none,state=selected,level=2": {
+      "nodeId": "56:1077",
+      "properties": {
+        "Expand": "None",
+        "Level": "2",
+        "State": "Selected"
+      }
+    },
+    "expand=none,state=selected,level=3": {
+      "nodeId": "56:1082",
+      "properties": {
+        "Expand": "None",
+        "Level": "3",
+        "State": "Selected"
+      }
+    }
+  }
+}
