@@ -96,15 +96,69 @@ export function shadowExtents(layers: readonly ShadowLayer[]): Extents {
 }
 
 /**
- * 피그마와 코드에 함께 쓸 여백을 정한다. 그림자가 잘리지 않을 만큼 넓힌다.
+ * 피그마와 코드에 함께 쓸 여백을 정한다. 그림자와 노드 밖으로 나온 자식이 잘리지 않을 만큼 넓힌다.
  * @codocs [[피그마 연동:캡처 표]]
- * @param extents 그림자가 나가는 폭
+ * @param extents 노드 둘레로 나가는 폭(코드의 그림자, 코드의 노드 밖 자식, 피그마 PNG의 노드 밖 부분 등)
  * @returns 여백(CSS px, 정수)
  */
-export function captureMargin(extents: Extents): number {
+export function captureMargin(...extents: Extents[]): number {
   return Math.ceil(
-    Math.max(CAPTURE_MARGIN, extents.left, extents.right, extents.top, extents.bottom),
+    Math.max(
+      CAPTURE_MARGIN,
+      ...extents.flatMap((item) => [item.left, item.right, item.top, item.bottom]),
+    ),
   );
+}
+
+/**
+ * 피그마 PNG 안에서 변형 노드가 놓인 자리를 정한다. 플러그인이 적은 노드 위치가 있으면 그대로 쓴다.
+ * 없는 예전 내보내기는 코드 루트 그림자의 폭만큼 PNG가 넓다고 보고 짐작한다. 짐작한 폭이 PNG보다 크면 PNG 전체를 노드로 본다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param png 피그마 PNG의 크기(CSS px, 배율로 나눈 값)
+ * @param node export.json의 PNG 안 노드 위치(배율 1의 px)
+ * @param fallback 노드 위치가 없을 때 쓸 코드 루트 그림자의 폭
+ * @returns PNG 안 노드 둘레로 나간 폭과 노드 크기
+ */
+export function figmaNodeLayout(
+  png: Size,
+  node: Rect | null,
+  fallback: Extents,
+): { extents: Extents; size: Size } {
+  if (node !== null) {
+    return {
+      extents: {
+        left: node.x,
+        top: node.y,
+        right: png.width - node.x - node.width,
+        bottom: png.height - node.y - node.height,
+      },
+      size: { width: node.width, height: node.height },
+    };
+  }
+  const canFit =
+    png.width - fallback.left - fallback.right > 0 &&
+    png.height - fallback.top - fallback.bottom > 0;
+  const extents = canFit ? fallback : noExtents;
+  return {
+    extents,
+    size: {
+      width: png.width - extents.left - extents.right,
+      height: png.height - extents.top - extents.bottom,
+    },
+  };
+}
+
+/**
+ * 피그마 그림과 코드 그림을 같은 크기로 만들 캔버스 크기를 정한다. 노드 크기가 다르면 큰 쪽에 맞춘다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param sizes 그림 크기(CSS px)
+ * @returns 캔버스 크기(CSS px, 정수)
+ */
+export function commonCanvas(...sizes: Size[]): Size {
+  return {
+    width: Math.ceil(Math.max(...sizes.map((size) => size.width))),
+    height: Math.ceil(Math.max(...sizes.map((size) => size.height))),
+  };
 }
 
 /**
@@ -201,42 +255,96 @@ export async function readRenderExtents(target: Locator): Promise<Extents> {
 }
 
 /**
- * 피그마 변형 PNG를 여백을 둔 배경 위에 놓는다. PNG는 `scale` 배율로, 그림자가 나가는 만큼 넓혀 내보냈으므로
- * 그 폭을 빼 변형 노드가 코드 캡처의 캡처 대상과 같은 자리(여백만큼 안쪽)에 오게 한다.
+ * 캡처 대상의 자식이 테두리 상자 밖으로 나가는 폭을 읽는다(절대 위치로 위에 겹친 꼬리 등). 여백이 이것을 자르지 않게 하는 데 쓴다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param target 캡처 대상
+ * @returns 방향마다 나가는 폭
+ */
+export async function readOverflowExtents(target: Locator): Promise<Extents> {
+  return target.evaluate(
+    /**
+     * 브라우저에서 자식 요소들의 테두리 상자를 모아 캡처 대상 밖으로 나간 폭을 구한다.
+     * @param element 캡처 대상
+     * @returns 방향마다 나가는 폭
+     */
+    (element) => {
+      const root = element.getBoundingClientRect();
+      const extents = { left: 0, right: 0, top: 0, bottom: 0 };
+      for (const child of element.querySelectorAll('*')) {
+        const rect = child.getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) {
+          continue;
+        }
+        extents.left = Math.max(extents.left, root.left - rect.left);
+        extents.right = Math.max(extents.right, rect.right - root.right);
+        extents.top = Math.max(extents.top, root.top - rect.top);
+        extents.bottom = Math.max(extents.bottom, rect.bottom - root.bottom);
+      }
+      return extents;
+    },
+  );
+}
+
+/**
+ * 피그마 변형 PNG를 여백을 둔 배경 위에 놓는다. PNG는 `scale` 배율로, 그림자와 노드 밖 자식만큼 넓혀 내보냈으므로
+ * 그 폭(PNG 안 노드 위치)을 빼 변형 노드가 코드 캡처의 캡처 대상과 같은 자리(여백만큼 안쪽)에 오게 한다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param page 같은 배율로 연 페이지(이 페이지의 브라우저 맥락에서 합성한다)
  * @param png 피그마 변형 PNG(배경 투명)
- * @param options 배율, 배경색, 그림자가 나가는 폭, 여백
+ * @param options 배율, 배경색, PNG 안 노드 둘레로 나간 폭, 여백, 캔버스 크기
  * @param options.scale figma.json의 배율
  * @param options.background 배경색
- * @param options.extents 그림자가 나가는 폭
+ * @param options.extents PNG 안 노드 둘레로 나간 폭(figmaNodeLayout 결과)
  * @param options.margin 여백
+ * @param options.canvas 캔버스 크기(코드 그림과 같은 크기)
  * @returns 합성한 PNG
  */
 export async function captureFigma(
   page: Page,
   png: Buffer,
-  options: { scale: number; background: string; extents: Extents; margin: number },
+  options: { scale: number; background: string; extents: Extents; margin: number; canvas: Size },
 ): Promise<Buffer> {
   const size = pngSize(png);
   const width = size.width / options.scale;
   const height = size.height / options.scale;
-  const canFit =
-    width - options.extents.left - options.extents.right > 0 &&
-    height - options.extents.top - options.extents.bottom > 0;
-  const extents = canFit ? options.extents : noExtents;
-  const nodeWidth = width - extents.left - extents.right;
-  const nodeHeight = height - extents.top - extents.bottom;
   return compose(
     page,
     png,
-    { x: options.margin - extents.left, y: options.margin - extents.top, width, height },
     {
-      width: Math.ceil(nodeWidth + options.margin * 2),
-      height: Math.ceil(nodeHeight + options.margin * 2),
+      x: options.margin - options.extents.left,
+      y: options.margin - options.extents.top,
+      width,
+      height,
     },
+    options.canvas,
     options.background,
   );
+}
+
+/**
+ * 그림을 같은 크기의 캔버스로 넓힌다. 왼쪽 위(노드 자리)는 그대로 두고 남는 곳을 배경색으로 채운다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param page 같은 배율로 연 페이지
+ * @param png 그림
+ * @param scale 배율
+ * @param canvas 캔버스 크기(CSS px)
+ * @param background 배경색
+ * @returns 넓힌 PNG. 이미 같은 크기면 그대로다
+ */
+export async function fitCanvas(
+  page: Page,
+  png: Buffer,
+  scale: number,
+  canvas: Size,
+  background: string,
+): Promise<Buffer> {
+  const size = pngSize(png);
+  const width = size.width / scale;
+  const height = size.height / scale;
+  if (width === canvas.width && height === canvas.height) {
+    return png;
+  }
+  return compose(page, png, { x: 0, y: 0, width, height }, canvas, background);
 }
 
 /**
