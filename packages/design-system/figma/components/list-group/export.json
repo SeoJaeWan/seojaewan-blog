@@ -1,0 +1,16 @@
+{
+  "name": "ListGroup",
+  "nodeId": "426:5228",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 108,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "426:5228",
+      "properties": {}
+    }
+  }
+}
