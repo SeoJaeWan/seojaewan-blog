@@ -1,5 +1,5 @@
 /**
- * 피그마 플러그인이 쓴 export.json의 변형 이름과 속성을 읽는다.
+ * 피그마 플러그인이 쓴 export.json의 변형 이름, 속성, PNG 안 노드 위치를 읽는다.
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
@@ -9,7 +9,12 @@ export type VariantEntry = {
   variant: string;
   /** 피그마 변형 속성. 피그마 순서를 유지한다 */
   properties: [string, string][];
+  /** 변형 PNG 안 노드 위치(배율 1의 px). 노드 위치가 없는 예전 내보내기는 null이다 */
+  node: NodeBox | null;
 };
+
+/** 변형 PNG 안에서 노드가 놓인 자리(배율 1의 px) */
+export type NodeBox = { x: number; y: number; width: number; height: number };
 
 /** export.json을 읽은 결과 */
 export type TargetManifest = {
@@ -22,8 +27,9 @@ export type TargetManifest = {
 export const DEFAULT_VARIANT = 'default';
 
 /**
- * export.json을 검증하고 변형 목록으로 바꾼다. 이름, 변형 이름, 변형 속성만 읽는다.
+ * export.json을 검증하고 변형 목록으로 바꾼다. 이름, 변형 이름, 변형 속성, PNG 안 노드 위치만 읽는다.
  * @codocs [[피그마 연동:스토리 규칙]]
+ * @codocs [[피그마 연동:캡처 표]]
  * @param value export.json을 파싱한 값
  * @param where 오류 메시지에 쓸 위치
  * @returns 이름과 변형 이름순 변형 목록
@@ -50,7 +56,8 @@ export function parseManifest(value: unknown, where: string): TargetManifest {
     if (expectedName !== variant) {
       throw new Error(`${variantWhere}: 속성으로 만든 파일 이름은 "${expectedName}"이다.`);
     }
-    variants.push({ variant, properties });
+    const node = item.node === undefined ? null : parseNodeBox(item.node, `${variantWhere}.node`);
+    variants.push({ variant, properties, node });
   }
   variants.sort((a, b) => a.variant.localeCompare(b.variant));
   return { name, variants };
@@ -97,6 +104,39 @@ function inFileNameOrder(properties: [string, string][], variant: string): [stri
     properties.filter(([property]) => normalizeName(property) === name),
   );
   return ordered.length === properties.length ? ordered : properties;
+}
+
+/**
+ * PNG 안 노드 위치를 읽는다. 크기는 0보다 커야 한다.
+ * @param value export.json의 node 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 노드 위치와 크기
+ */
+function parseNodeBox(value: unknown, where: string): NodeBox {
+  const entry = expectRecord(value, where);
+  const box = {
+    x: expectNumber(entry.x, `${where}.x`),
+    y: expectNumber(entry.y, `${where}.y`),
+    width: expectNumber(entry.width, `${where}.width`),
+    height: expectNumber(entry.height, `${where}.height`),
+  };
+  if (box.width <= 0 || box.height <= 0) {
+    throw new Error(`${where}: 크기는 0보다 커야 한다.`);
+  }
+  return box;
+}
+
+/**
+ * 유한한 숫자인지 확인한다.
+ * @param value 확인할 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 숫자
+ */
+function expectNumber(value: unknown, where: string): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`${where}: 숫자여야 한다.`);
+  }
+  return value;
 }
 
 /**
