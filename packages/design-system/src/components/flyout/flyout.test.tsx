@@ -18,4 +18,9 @@ describe('Flyout', () => {
     render(<Flyout role="dialog" aria-label="정렬 기준" material="solid" />);
     expect(screen.getByRole('dialog', { name: '정렬 기준' })).toBeInTheDocument();
   });
+
+  it('padding으로 바탕의 여백을 고른다', () => {
+    render(<Flyout role="menu" aria-label="메뉴" padding="compact" />);
+    expect(screen.getByRole('menu', { name: '메뉴' })).toHaveClass('py-2');
+  });
 });

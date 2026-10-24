@@ -4,21 +4,24 @@ import { Flyout } from './flyout';
 
 // 피그마 Flyout의 변형 속성 값이다(정규화한 이름).
 const MATERIALS = ['acrylic', 'solid'] as const;
+const PADDINGS = ['compact', 'default'] as const;
 
 type ParityArgs = {
   material: (typeof MATERIALS)[number];
+  padding: (typeof PADDINGS)[number];
 };
 
 const meta = {
   title: 'Components/Flyout',
-  args: { material: 'solid' },
+  args: { material: 'acrylic', padding: 'default' },
   argTypes: {
     material: { control: 'inline-radio', options: MATERIALS },
+    padding: { control: 'inline-radio', options: PADDINGS },
   },
   render: (args) => (
-    // 슬롯 안 내용은 쓰는 쪽이 정한다. 피그마 예시 글자를 그대로 둔다.
-    <Flyout material={args.material}>
-      <span className="type-caption text-text-fill-tertiary">콘텐츠 영역 (slot)</span>
+    // 컴포넌트의 Content 슬롯은 언제나 비어 있다. 피그마는 빈 슬롯을 높이 16px로 그리므로 같은 높이의 빈 자리를 둔다.
+    <Flyout material={args.material} padding={args.padding}>
+      <div className="h-16" />
     </Flyout>
   ),
 } satisfies Meta<ParityArgs>;
