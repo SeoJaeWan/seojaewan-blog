@@ -26,3 +26,4 @@ export * from './components/taskbar/taskbar';
 export * from './components/taskbar-button/taskbar-button';
 export * from './components/tile-grid/tile-grid';
 export * from './components/tooltip/tooltip';
+export * from './components/window-title/window-title';
