@@ -93,7 +93,7 @@ describe('export.json', () => {
     expect(variantFileName([])).toBe('default');
   });
 
-  it('이름과 변형 목록을 읽고, 이름순으로 정렬된 속성도 변형 파일 이름 순서로 읽는다', () => {
+  it('이름과 변형 목록(PNG 안 노드 위치 포함, 없으면 null)을 읽고, 이름순으로 정렬된 속성도 변형 파일 이름 순서로 읽는다', () => {
     const sorted = structuredClone(manifestFixture);
     sorted.variants['style=accent,state=rest'].properties = { State: 'Rest', Style: 'Accent' };
     const manifest = parseManifest(sorted, 'export.json');
@@ -105,6 +105,7 @@ describe('export.json', () => {
           ['Style', 'Accent'],
           ['State', 'Hover'],
         ],
+        node: null,
       },
       {
         variant: 'style=accent,state=rest',
@@ -112,8 +113,15 @@ describe('export.json', () => {
           ['Style', 'Accent'],
           ['State', 'Rest'],
         ],
+        node: { x: 8, y: 4, width: 120, height: 32 },
       },
     ]);
+  });
+
+  it('PNG 안 노드 위치가 숫자가 아니거나 크기가 0이면 실패한다', () => {
+    const broken = structuredClone(manifestFixture);
+    broken.variants['style=accent,state=rest'].node.width = 0;
+    expect(() => parseManifest(broken, 'export.json')).toThrow(/node: 크기/u);
   });
 
   it('속성과 변형 파일 이름이 어긋나면 실패한다', () => {
