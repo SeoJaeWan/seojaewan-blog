@@ -3,12 +3,24 @@
   "nodeId": "439:5700",
   "variants": {
     "device=desktop": {
+      "node": {
+        "height": 44,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "439:5694",
       "properties": {
         "Device": "Desktop"
       }
     },
     "device=mobile": {
+      "node": {
+        "height": 44,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "439:5699",
       "properties": {
         "Device": "Mobile"
