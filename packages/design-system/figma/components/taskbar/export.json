@@ -3,6 +3,12 @@
   "nodeId": "26:353",
   "variants": {
     "search=box,material=acrylic": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:281",
       "properties": {
         "Material": "Acrylic",
@@ -10,6 +16,12 @@
       }
     },
     "search=box,material=solid": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "26:317",
       "properties": {
         "Material": "Solid",
@@ -17,6 +29,12 @@
       }
     },
     "search=button,material=acrylic": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:20585",
       "properties": {
         "Material": "Acrylic",
@@ -24,6 +42,12 @@
       }
     },
     "search=button,material=solid": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:20592",
       "properties": {
         "Material": "Solid",
