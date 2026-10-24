@@ -30,6 +30,7 @@ export * from './components/section-title/section-title';
 export * from './components/selection-marquee/selection-marquee';
 export * from './components/separator/separator';
 export * from './components/shell-surface/shell-surface';
+export * from './components/snap-zone/snap-zone';
 export * from './components/start-menu-footer/start-menu-footer';
 export * from './components/system-tray/system-tray';
 export * from './components/taskbar/taskbar';
