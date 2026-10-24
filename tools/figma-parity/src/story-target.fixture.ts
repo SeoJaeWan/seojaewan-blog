@@ -7,6 +7,7 @@ export const manifestFixture = {
     'style=accent,state=rest': {
       nodeId: '13:70',
       properties: { Style: 'Accent', State: 'Rest' },
+      node: { x: 8, y: 4, width: 120, height: 32 },
     },
     'style=accent,state=hover': {
       nodeId: '13:71',
