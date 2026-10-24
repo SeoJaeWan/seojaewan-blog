@@ -6,6 +6,7 @@ export * from './components/caption-button-group/caption-button-group';
 export * from './components/code-block/code-block';
 export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
+export * from './components/explorer-status-bar/explorer-status-bar';
 export * from './components/explorer-tab/explorer-tab';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
