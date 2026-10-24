@@ -1,0 +1,16 @@
+{
+  "name": "EmptyState",
+  "nodeId": "399:5549",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 208,
+        "width": 600,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "399:5549",
+      "properties": {}
+    }
+  }
+}
