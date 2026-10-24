@@ -31,18 +31,27 @@ const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
  * 클래스를 쓴 컴포넌트를 검사해 규칙 하나의 오류를 모은다.
  * @param className 검사할 클래스
  * @param ruleId 모을 규칙
+ * @param isCnArgument true면 `className` 속성 대신 `cn()` 인자로 넘긴다
  * @returns 오류 메시지
  */
-async function lintClassErrors(className: string, ruleId: string): Promise<string[]> {
+async function lintClassErrors(
+  className: string,
+  ruleId: string,
+  isCnArgument = false,
+): Promise<string[]> {
   const eslint = new ESLint({ cwd: repositoryRoot });
+  const element = isCnArgument
+    ? `<div className={cn('${className}')} />`
+    : `<div className="${className}" />`;
   const source = [
     "import type { JSX } from 'react';",
+    "import { cn } from '../../cn';",
     '',
     '/**',
     ' * 검사용 요소를 그린다.',
     ' */',
     'export function LintProbe(): JSX.Element {',
-    `  return <div className="${className}" />;`,
+    `  return ${element};`,
     '}',
     '',
   ].join('\n');
@@ -120,6 +129,12 @@ describe('토큰 사용 강제', () => {
       'Unknown class detected: type-missing',
       'Unknown class detected: surface-missing',
     ]);
+  }, 60_000);
+
+  it('cn 인자 안의 토큰에 없는 클래스도 lint가 막는다', async () => {
+    await expect(
+      lintClassErrors('bg-accent-fill-missing w-320', UNKNOWN_CLASS_RULE, true),
+    ).resolves.toEqual(['Unknown class detected: bg-accent-fill-missing']);
   }, 60_000);
 
   it('Tailwind 기본 유틸리티가 토큰 변수를 다른 속성으로 읽은 클래스는 lint가 막는다', async () => {
