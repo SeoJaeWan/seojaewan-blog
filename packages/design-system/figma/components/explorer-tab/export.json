@@ -1,0 +1,42 @@
+{
+  "name": "ExplorerTab",
+  "nodeId": "18:367",
+  "variants": {
+    "state=hover": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "18:361",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "18:355",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=selected": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "18:349",
+      "properties": {
+        "State": "Selected"
+      }
+    }
+  }
+}

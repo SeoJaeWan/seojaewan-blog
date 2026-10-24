@@ -42,10 +42,24 @@ function px(value: number): Record<string, unknown> {
  * @param blur 흐림
  * @param color 색
  * @param isInset 안쪽 그림자인지
+ * @param spread 퍼짐
  * @returns 그림자 층
  */
-function shadow(y: number, blur: number, color: string, isInset = false): Record<string, unknown> {
-  return { offsetX: px(0), offsetY: px(y), blur: px(blur), spread: px(0), color, inset: isInset };
+function shadow(
+  y: number,
+  blur: number,
+  color: string,
+  isInset = false,
+  spread = 0,
+): Record<string, unknown> {
+  return {
+    offsetX: px(0),
+    offsetY: px(y),
+    blur: px(blur),
+    spread: px(spread),
+    color,
+    inset: isInset,
+  };
 }
 
 export const TOKENS_FIXTURE = {
@@ -97,6 +111,10 @@ export const TOKENS_FIXTURE = {
     effect: {
       Elevation: {
         Flyout: { $type: 'shadow', $value: [shadow(8, 16, '#00000024')] },
+        Spread: {
+          $type: 'shadow',
+          $value: [shadow(2, 4, '#00000024'), shadow(4, 8, '#00000024', false, 2)],
+        },
         Inset: { $type: 'shadow', $value: [shadow(2, 4, '#0000000f', true)] },
         Double: {
           $type: 'shadow',
