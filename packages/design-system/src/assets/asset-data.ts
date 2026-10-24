@@ -76,6 +76,12 @@ export const svgAssets = {
       { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'currentColor' } },
     ],
   },
+  'icons/ic_fluent_search_20_regular.svg': {
+    viewBox: '0 0 20 20',
+    elements: [
+      { tag: 'path', attributes: { d: 'M13.73 14.44C12.59 15.41 11.12 16 9.5 16C5.91 16 3 13.09 3 9.5C3 5.91 5.91 3 9.5 3C13.09 3 16 5.91 16 9.5C16 11.12 15.41 12.59 14.44 13.73L17.85 17.15C18.05 17.34 18.05 17.66 17.85 17.85C17.68 18.03 17.41 18.05 17.22 17.91L17.15 17.85L13.73 14.44ZM13.02 13.73C13.28 13.51 13.51 13.28 13.73 13.02C14.52 12.07 15 10.84 15 9.5C15 6.46 12.54 4 9.5 4C6.46 4 4 6.46 4 9.5C4 12.54 6.46 15 9.5 15C10.84 15 12.07 14.52 13.02 13.73Z', fill: 'currentColor' } },
+    ],
+  },
   'icons/ic_fluent_subtract_20_regular.svg': {
     viewBox: '0 0 20 20',
     elements: [
@@ -99,6 +105,13 @@ export const svgAssets = {
     elements: [
       { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'url(#s1)' } },
       { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '8.5', y1: '21.5', x2: '21.5', y2: '8.5', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.55', stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.9', stopColor: '#78BF91' } }, { tag: 'stop', attributes: { offset: '1', stopColor: '#78BF91' } }] }] },
+    ],
+  },
+  'illustrations/logo-windows.svg': {
+    viewBox: '0 0 48 48',
+    elements: [
+      { tag: 'path', attributes: { d: 'M22.3333 42.3333H5.66667C4.74619 42.3333 4 41.587 4 40.6667V24H22.3333V42.3333ZM42.3333 40.6667C42.3333 41.587 41.587 42.3333 40.6667 42.3333H24V24H42.3333V40.6667ZM22.3333 22.3333H4V5.66667C4 4.74619 4.74619 4 5.66667 4H22.3333V22.3333ZM40.6667 4C41.587 4 42.3333 4.74619 42.3333 5.66667V22.3333H24V4H40.6667Z', fill: 'url(#s1)' } },
+      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '9.80863', y1: '4', x2: '34.7834', y2: '42.3333', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#4DD2FF' } }, { tag: 'stop', attributes: { offset: '0.75', stopColor: '#0078D4' } }] }] },
     ],
   },
   'shapes/progress-ring-arc.svg': {
