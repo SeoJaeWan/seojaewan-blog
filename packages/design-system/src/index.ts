@@ -12,4 +12,5 @@ export * from './components/progress-ring/progress-ring';
 export * from './components/scroll-area/scroll-area';
 export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
+export * from './components/taskbar-button/taskbar-button';
 export * from './components/tooltip/tooltip';
