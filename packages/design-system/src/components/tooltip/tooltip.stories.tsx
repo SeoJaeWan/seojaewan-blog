@@ -6,7 +6,7 @@ import { Tooltip } from './tooltip';
 const TYPES = ['default', 'balloon'] as const;
 const MATERIALS = ['acrylic', 'solid'] as const;
 // 피그마 글자 속성의 기본값이다([[피그마 연동:스토리 규칙]]).
-const TEXT = {
+const texts = {
   default: '도움말',
   balloon: '메시지 내용',
 } as const satisfies Record<(typeof TYPES)[number], string>;
@@ -23,7 +23,7 @@ const meta = {
     type: { control: 'inline-radio', options: TYPES },
     material: { control: 'inline-radio', options: MATERIALS },
   },
-  render: (args) => <Tooltip type={args.type} material={args.material} text={TEXT[args.type]} />,
+  render: (args) => <Tooltip type={args.type} material={args.material} text={texts[args.type]} />,
 } satisfies Meta<ParityArgs>;
 
 export default meta;
