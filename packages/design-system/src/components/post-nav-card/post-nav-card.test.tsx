@@ -22,6 +22,11 @@ describe('PostNavCard', () => {
     expect(container.firstChild).toHaveClass('items-end');
   });
 
+  it('next는 mobile이면 왼쪽 정렬이다', () => {
+    const { container } = render(<PostNavCard direction="next" device="mobile" />);
+    expect(container.firstChild).toHaveClass('items-start');
+  });
+
   it('title로 제목을 바꾼다', () => {
     render(<PostNavCard title="다른 글" />);
     expect(screen.getByText('다른 글')).toBeInTheDocument();

@@ -8,7 +8,7 @@ const DEVICES = ['desktop', 'mobile'] as const;
 
 type ParityArgs = {
   direction: (typeof DIRECTIONS)[number];
-  /** 피그마 Device 변형. 두 값의 모양이 같아 컴포넌트는 받지 않는다 */
+  /** 피그마 Device 변형 */
   device: (typeof DEVICES)[number];
   /** 피그마 TEXT 속성 Title */
   title: string;
@@ -25,7 +25,7 @@ const meta = {
   render: (args) => (
     // PostNavCard는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(354)로 감싼다.
     <div className="w-354">
-      <PostNavCard direction={args.direction} title={args.title} />
+      <PostNavCard direction={args.direction} device={args.device} title={args.title} />
     </div>
   ),
 } satisfies Meta<ParityArgs>;
