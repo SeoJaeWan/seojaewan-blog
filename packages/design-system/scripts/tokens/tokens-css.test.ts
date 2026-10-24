@@ -180,6 +180,32 @@ describe('토큰 생성', () => {
     );
   });
 
+  it('그림자만 있는 효과 스타일은 퍼짐 없는 text-shadow 변수와 text-shadow-* 클래스도 만든다', () => {
+    expect(css).toContain('  --shadow-text-elevation-flyout: 0px 8px 16px #00000024;');
+    expect(css).toContain(
+      '  --shadow-text-elevation-double: 0px 32px 64px #00000038, 0px 2px 4px #00000024;',
+    );
+    expect(utilityBlock('text-shadow-elevation-*')).toBe(
+      '@utility text-shadow-elevation-* {\n  text-shadow: --value(--shadow-text-elevation-*);\n}',
+    );
+    expect(css).toContain(
+      ' * | `text-shadow-elevation-*` | text-shadow | `--shadow-text-elevation-*` |',
+    );
+  });
+
+  it('퍼짐이 0이 아니거나 안쪽 그림자인 층이 있으면 text-shadow를 만들지 않는다', () => {
+    expect(css).toContain('  --elevation-spread: ');
+    expect(css).not.toContain('--shadow-text-elevation-spread');
+    expect(css).toContain('  --elevation-inset: ');
+    expect(css).not.toContain('--shadow-text-elevation-inset');
+  });
+
+  it('배경 흐림이 있는 효과 스타일은 text-shadow를 만들지 않는다', () => {
+    expect(css).not.toContain('--shadow-text-surface');
+    expect(css).not.toContain('--shadow-text-material');
+    expect(utilityBlock('text-shadow-elevation-*')).not.toContain('surface');
+  });
+
   it('클래스는 이름공간마다 --value()로 토큰을 읽는 @utility다', () => {
     expect(utilityBlock('border-*')).toContain('border-width: --value(--stroke-width-*);');
     expect(utilityBlock('duration-*')).toContain(
