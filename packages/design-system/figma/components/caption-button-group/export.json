@@ -1,0 +1,48 @@
+{
+  "name": "CaptionButtonGroup",
+  "nodeId": "393:15736",
+  "variants": {
+    "placement=maximized,state=active": {
+      "nodeId": "393:15725",
+      "properties": {
+        "Placement": "Maximized",
+        "State": "Active"
+      }
+    },
+    "placement=maximized,state=inactive": {
+      "nodeId": "393:15735",
+      "properties": {
+        "Placement": "Maximized",
+        "State": "Inactive"
+      }
+    },
+    "placement=normal,state=active": {
+      "nodeId": "393:15720",
+      "properties": {
+        "Placement": "Normal",
+        "State": "Active"
+      }
+    },
+    "placement=normal,state=inactive": {
+      "nodeId": "393:15730",
+      "properties": {
+        "Placement": "Normal",
+        "State": "Inactive"
+      }
+    },
+    "placement=snapped,state=active": {
+      "nodeId": "605:1493",
+      "properties": {
+        "Placement": "Snapped",
+        "State": "Active"
+      }
+    },
+    "placement=snapped,state=inactive": {
+      "nodeId": "605:1497",
+      "properties": {
+        "Placement": "Snapped",
+        "State": "Inactive"
+      }
+    }
+  }
+}
