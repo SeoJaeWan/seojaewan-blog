@@ -3,6 +3,12 @@
   "nodeId": "36:591",
   "variants": {
     "default": {
+      "node": {
+        "height": 46,
+        "width": 1000,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "36:591",
       "properties": {}
     }
