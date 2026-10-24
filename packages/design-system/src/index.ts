@@ -34,6 +34,7 @@ export * from './components/section-title/section-title';
 export * from './components/selection-marquee/selection-marquee';
 export * from './components/separator/separator';
 export * from './components/shell-surface/shell-surface';
+export * from './components/snap-layout-flyout/snap-layout-flyout';
 export * from './components/snap-layout-option/snap-layout-option';
 export * from './components/snap-zone/snap-zone';
 export * from './components/start-menu-footer/start-menu-footer';
