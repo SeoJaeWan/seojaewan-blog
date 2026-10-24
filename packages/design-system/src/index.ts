@@ -18,4 +18,5 @@ export * from './components/separator/separator';
 export * from './components/system-tray/system-tray';
 export * from './components/taskbar/taskbar';
 export * from './components/taskbar-button/taskbar-button';
+export * from './components/tile-grid/tile-grid';
 export * from './components/tooltip/tooltip';
