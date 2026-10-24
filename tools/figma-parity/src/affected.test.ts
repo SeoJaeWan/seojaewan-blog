@@ -101,6 +101,13 @@ describe('캡처 범위', () => {
     ).toEqual({ components: [], patterns: [] });
   });
 
+  it('공개 진입점(src/index.ts)만 바뀌면 범위가 없다', () => {
+    expect(scope(['packages/design-system/src/index.ts'])).toEqual({
+      components: [],
+      patterns: [],
+    });
+  });
+
   it('컴포넌트 코드가 바뀌면 그 컴포넌트, 그것을 담는 컴포넌트, 그것을 쓰는 조립이다', () => {
     expect(scope(['packages/design-system/src/components/asset/asset.tsx'])).toEqual({
       components: ['asset', 'button', 'menu-item'],
