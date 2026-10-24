@@ -24,6 +24,7 @@ export * from './components/section-header/section-header';
 export * from './components/section-title/section-title';
 export * from './components/separator/separator';
 export * from './components/shell-surface/shell-surface';
+export * from './components/start-menu-footer/start-menu-footer';
 export * from './components/system-tray/system-tray';
 export * from './components/taskbar/taskbar';
 export * from './components/taskbar-button/taskbar-button';

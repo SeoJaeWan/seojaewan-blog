@@ -1,0 +1,16 @@
+{
+  "name": "StartMenuFooter",
+  "nodeId": "414:5792",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 133,
+        "width": 638,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "414:5792",
+      "properties": {}
+    }
+  }
+}
