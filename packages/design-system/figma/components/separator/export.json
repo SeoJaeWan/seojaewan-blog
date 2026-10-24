@@ -1,0 +1,30 @@
+{
+  "name": "Separator",
+  "nodeId": "509:5923",
+  "variants": {
+    "orientation=horizontal": {
+      "node": {
+        "height": 1,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "509:5917",
+      "properties": {
+        "Orientation": "Horizontal"
+      }
+    },
+    "orientation=vertical": {
+      "node": {
+        "height": 16,
+        "width": 1,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "509:5918",
+      "properties": {
+        "Orientation": "Vertical"
+      }
+    }
+  }
+}
