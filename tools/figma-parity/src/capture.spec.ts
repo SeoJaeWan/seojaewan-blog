@@ -6,7 +6,12 @@ import {
   captureCode,
   captureFigma,
   captureMargin,
+  commonCanvas,
   diffImage,
+  figmaNodeLayout,
+  fitCanvas,
+  pngSize,
+  readOverflowExtents,
   readRenderExtents,
 } from './capture.ts';
 import { storybookStaticDir } from './paths.ts';
@@ -125,26 +130,42 @@ async function captureVariant(
     if (!opened.ok) {
       throw new Error(opened.message);
     }
-    const extents = await readRenderExtents(opened.target);
-    const margin = captureMargin(extents);
-    const code = await captureCode(page, opened.target, margin);
-    writeFileSync(path.join(outputDir, CODE_CAPTURE_FILE), code.png);
-    row.code = relative(CODE_CAPTURE_FILE);
     const figmaPng = figmaImagePath(target, variant.variant);
     if (!existsSync(figmaPng)) {
       throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
     }
-    const figma = await captureFigma(page, readFileSync(figmaPng), {
+    const figmaSource = readFileSync(figmaPng);
+    const sourceSize = pngSize(figmaSource);
+    // 피그마 PNG 안 노드 위치는 export.json에서 읽고, 없으면 코드 루트 그림자의 폭으로 짐작한다.
+    const extents = await readRenderExtents(opened.target);
+    const layout = figmaNodeLayout(
+      { width: sourceSize.width / scale, height: sourceSize.height / scale },
+      variant.node,
+      extents,
+    );
+    const margin = captureMargin(extents, await readOverflowExtents(opened.target), layout.extents);
+    const code = await captureCode(page, opened.target, margin);
+    const codeSize = pngSize(code.png);
+    // 두 그림을 같은 크기로 만든다. 노드 크기가 다르면 큰 쪽에 맞춘다.
+    const canvas = commonCanvas(
+      { width: codeSize.width / scale, height: codeSize.height / scale },
+      { width: layout.size.width + margin * 2, height: layout.size.height + margin * 2 },
+    );
+    const codePng = await fitCanvas(page, code.png, scale, canvas, code.background);
+    writeFileSync(path.join(outputDir, CODE_CAPTURE_FILE), codePng);
+    row.code = relative(CODE_CAPTURE_FILE);
+    const figma = await captureFigma(page, figmaSource, {
       scale,
       background: code.background,
-      extents,
+      extents: layout.extents,
       margin,
+      canvas,
     });
     writeFileSync(path.join(outputDir, FIGMA_CAPTURE_FILE), figma);
     row.figma = relative(FIGMA_CAPTURE_FILE);
     writeFileSync(
       path.join(outputDir, DIFF_CAPTURE_FILE),
-      await diffImage(page, figma, code.png, code.background),
+      await diffImage(page, figma, codePng, code.background),
     );
     row.diff = relative(DIFF_CAPTURE_FILE);
   } catch (error) {
