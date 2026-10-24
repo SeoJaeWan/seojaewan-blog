@@ -27,7 +27,7 @@ const meta = {
       appearance={args.appearance}
       aria-label="검색"
       placeholder="검색"
-      defaultValue={args.filled ? '리액트' : undefined}
+      defaultValue={args.filled ? '검색어' : undefined}
       disabled={args.state === 'disabled'}
       // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
       // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
