@@ -1,6 +1,6 @@
 import type { ComponentProps, JSX } from 'react';
 
-import { mergeClassNames } from '../../merge-class-names';
+import { cn } from '../../cn';
 
 export type FlyoutMaterial = 'acrylic' | 'solid';
 
@@ -43,7 +43,7 @@ export function Flyout(props: FlyoutProps): JSX.Element {
   return (
     <div
       {...divProps}
-      className={mergeClassNames(
+      className={cn(
         'relative flex flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout',
         materialClassNames[material],
         paddingClassName.root,

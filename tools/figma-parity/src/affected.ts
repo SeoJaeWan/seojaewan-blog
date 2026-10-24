@@ -59,6 +59,8 @@ const NON_RENDERING_FILE_PATTERN = /\.(test|fixture)\.tsx?$/u;
 const COMPONENT_FILE_PATTERN = /^src\/components\/([^/]+)\//u;
 const FIGMA_COMPONENT_PATTERN = /^figma\/components\/([^/]+)\//u;
 const FIGMA_ASSET_PATTERN = /^figma\/assets\/(.+)$/u;
+// 공개 진입점이다. 컴포넌트 파일을 다시 내보내기만 하므로 그리는 모습에 영향이 없다.
+const ENTRY_FILE = 'src/index.ts';
 const ASSET_DATA_FILE = 'src/assets/asset-data.ts';
 const SOURCE_ASSET_PATTERN = /^src\/assets\/(.+)$/u;
 const tokenFiles = new Set(['figma/tokens.json', 'src/tokens.css']);
@@ -160,6 +162,9 @@ function fileScope(file: string, inputs: AffectedInputs): FileScope {
  * @returns 범위
  */
 function designSystemScope(file: string, relative: string, inputs: AffectedInputs): FileScope {
+  if (relative === ENTRY_FILE) {
+    return { kind: 'none' };
+  }
   const component = COMPONENT_FILE_PATTERN.exec(relative)?.[1];
   if (component !== undefined) {
     return { kind: 'some', components: [component] };
