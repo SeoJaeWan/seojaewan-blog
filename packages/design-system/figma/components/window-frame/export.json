@@ -3,6 +3,12 @@
   "nodeId": "18:338",
   "variants": {
     "title-bar=custom,state=active,placement=maximized,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "509:16182",
       "properties": {
         "Material": "Chrome",
@@ -12,6 +18,12 @@
       }
     },
     "title-bar=custom,state=active,placement=maximized,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:290",
       "properties": {
         "Material": "Mica",
@@ -21,6 +33,12 @@
       }
     },
     "title-bar=custom,state=active,placement=maximized,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:1651",
       "properties": {
         "Material": "Solid",
@@ -30,6 +48,12 @@
       }
     },
     "title-bar=custom,state=active,placement=normal,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 64,
+        "y": 32
+      },
       "nodeId": "509:16166",
       "properties": {
         "Material": "Chrome",
@@ -39,6 +63,12 @@
       }
     },
     "title-bar=custom,state=active,placement=normal,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 20,
+        "y": 32
+      },
       "nodeId": "18:274",
       "properties": {
         "Material": "Mica",
@@ -48,6 +78,12 @@
       }
     },
     "title-bar=custom,state=active,placement=normal,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 64,
+        "y": 32
+      },
       "nodeId": "58:1635",
       "properties": {
         "Material": "Solid",
@@ -57,6 +93,12 @@
       }
     },
     "title-bar=custom,state=active,placement=snapped,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1761",
       "properties": {
         "Material": "Chrome",
@@ -66,6 +108,12 @@
       }
     },
     "title-bar=custom,state=active,placement=snapped,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1565",
       "properties": {
         "Material": "Mica",
@@ -75,6 +123,12 @@
       }
     },
     "title-bar=custom,state=active,placement=snapped,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1663",
       "properties": {
         "Material": "Solid",
@@ -84,6 +138,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=maximized,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "509:16214",
       "properties": {
         "Material": "Chrome",
@@ -93,6 +153,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=maximized,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:322",
       "properties": {
         "Material": "Mica",
@@ -102,6 +168,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=maximized,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:1683",
       "properties": {
         "Material": "Solid",
@@ -111,6 +183,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=normal,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 32,
+        "y": 16
+      },
       "nodeId": "509:16198",
       "properties": {
         "Material": "Chrome",
@@ -120,6 +198,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=normal,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 20,
+        "y": 16
+      },
       "nodeId": "18:306",
       "properties": {
         "Material": "Mica",
@@ -129,6 +213,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=normal,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 32,
+        "y": 16
+      },
       "nodeId": "58:1667",
       "properties": {
         "Material": "Solid",
@@ -138,6 +228,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=snapped,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1784",
       "properties": {
         "Material": "Chrome",
@@ -147,6 +243,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=snapped,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1588",
       "properties": {
         "Material": "Mica",
@@ -156,6 +258,12 @@
       }
     },
     "title-bar=custom,state=inactive,placement=snapped,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1686",
       "properties": {
         "Material": "Solid",
@@ -165,6 +273,12 @@
       }
     },
     "title-bar=default,state=active,placement=maximized,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "509:16112",
       "properties": {
         "Material": "Chrome",
@@ -174,6 +288,12 @@
       }
     },
     "title-bar=default,state=active,placement=maximized,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:217",
       "properties": {
         "Material": "Mica",
@@ -183,6 +303,12 @@
       }
     },
     "title-bar=default,state=active,placement=maximized,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:1581",
       "properties": {
         "Material": "Solid",
@@ -192,6 +318,12 @@
       }
     },
     "title-bar=default,state=active,placement=normal,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 64,
+        "y": 20
+      },
       "nodeId": "509:16094",
       "properties": {
         "Material": "Chrome",
@@ -201,6 +333,12 @@
       }
     },
     "title-bar=default,state=active,placement=normal,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 20,
+        "y": 20
+      },
       "nodeId": "18:198",
       "properties": {
         "Material": "Mica",
@@ -210,6 +348,12 @@
       }
     },
     "title-bar=default,state=active,placement=normal,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 64,
+        "y": 20
+      },
       "nodeId": "58:1563",
       "properties": {
         "Material": "Solid",
@@ -219,6 +363,12 @@
       }
     },
     "title-bar=default,state=active,placement=snapped,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1709",
       "properties": {
         "Material": "Chrome",
@@ -228,6 +378,12 @@
       }
     },
     "title-bar=default,state=active,placement=snapped,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1501",
       "properties": {
         "Material": "Mica",
@@ -237,6 +393,12 @@
       }
     },
     "title-bar=default,state=active,placement=snapped,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1611",
       "properties": {
         "Material": "Solid",
@@ -246,6 +408,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=maximized,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "509:16148",
       "properties": {
         "Material": "Chrome",
@@ -255,6 +423,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=maximized,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:255",
       "properties": {
         "Material": "Mica",
@@ -264,6 +438,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=maximized,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:1617",
       "properties": {
         "Material": "Solid",
@@ -273,6 +453,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=normal,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 32,
+        "y": 16
+      },
       "nodeId": "509:16130",
       "properties": {
         "Material": "Chrome",
@@ -282,6 +468,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=normal,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 20,
+        "y": 16
+      },
       "nodeId": "18:236",
       "properties": {
         "Material": "Mica",
@@ -291,6 +483,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=normal,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 32,
+        "y": 16
+      },
       "nodeId": "58:1599",
       "properties": {
         "Material": "Solid",
@@ -300,6 +498,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=snapped,material=chrome": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1735",
       "properties": {
         "Material": "Chrome",
@@ -309,6 +513,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=snapped,material=mica": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1533",
       "properties": {
         "Material": "Mica",
@@ -318,6 +528,12 @@
       }
     },
     "title-bar=default,state=inactive,placement=snapped,material=solid": {
+      "node": {
+        "height": 500,
+        "width": 800,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "605:1637",
       "properties": {
         "Material": "Solid",
