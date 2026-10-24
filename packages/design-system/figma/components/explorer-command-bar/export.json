@@ -1,0 +1,10 @@
+{
+  "name": "ExplorerCommandBar",
+  "nodeId": "439:5732",
+  "variants": {
+    "default": {
+      "nodeId": "439:5732",
+      "properties": {}
+    }
+  }
+}
