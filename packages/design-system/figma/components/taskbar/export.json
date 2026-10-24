@@ -1,0 +1,34 @@
+{
+  "name": "Taskbar",
+  "nodeId": "26:353",
+  "variants": {
+    "search=box,material=acrylic": {
+      "nodeId": "26:281",
+      "properties": {
+        "Material": "Acrylic",
+        "Search": "Box"
+      }
+    },
+    "search=box,material=solid": {
+      "nodeId": "26:317",
+      "properties": {
+        "Material": "Solid",
+        "Search": "Box"
+      }
+    },
+    "search=button,material=acrylic": {
+      "nodeId": "299:20585",
+      "properties": {
+        "Material": "Acrylic",
+        "Search": "Button"
+      }
+    },
+    "search=button,material=solid": {
+      "nodeId": "299:20592",
+      "properties": {
+        "Material": "Solid",
+        "Search": "Button"
+      }
+    }
+  }
+}
