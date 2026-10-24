@@ -1,0 +1,30 @@
+{
+  "name": "SnapLayoutOption",
+  "nodeId": "396:15872",
+  "variants": {
+    "layout=half": {
+      "nodeId": "396:15850",
+      "properties": {
+        "Layout": "Half"
+      }
+    },
+    "layout=halfquarter": {
+      "nodeId": "396:15863",
+      "properties": {
+        "Layout": "HalfQuarter"
+      }
+    },
+    "layout=quad": {
+      "nodeId": "396:15871",
+      "properties": {
+        "Layout": "Quad"
+      }
+    },
+    "layout=twothirds": {
+      "nodeId": "396:15856",
+      "properties": {
+        "Layout": "TwoThirds"
+      }
+    }
+  }
+}
