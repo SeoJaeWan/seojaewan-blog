@@ -1,0 +1,18 @@
+{
+  "name": "TileGrid",
+  "nodeId": "389:5073",
+  "variants": {
+    "align=center": {
+      "nodeId": "389:5072",
+      "properties": {
+        "Align": "Center"
+      }
+    },
+    "align=start": {
+      "nodeId": "389:5071",
+      "properties": {
+        "Align": "Start"
+      }
+    }
+  }
+}
