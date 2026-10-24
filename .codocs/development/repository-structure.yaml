@@ -45,7 +45,7 @@ _codocs:
   ```
   packages/design-system/
   ├─ src/
-  │  ├─ index.ts          # 공개 진입점
+  │  ├─ index.ts          # 공개 진입점. 컴포넌트 파일을 `export *`로 다시 내보낸다
   │  ├─ theme.css         # 손으로 쓰는 전역 스타일. fonts.css와 tokens.css를 불러온다
   │  ├─ fonts.css         # 웹 폰트(Open Sans, Pretendard, Cascadia Mono) CSS를 불러온다
   │  ├─ open-sans.css     # 웹 폰트 패키지 CSS에서 woff2만 가리키게 생성한다. 손으로 고치지 않는다
