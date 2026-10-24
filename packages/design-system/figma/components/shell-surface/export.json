@@ -1,0 +1,34 @@
+{
+  "name": "ShellSurface",
+  "nodeId": "509:5938",
+  "variants": {
+    "material=acrylic,device=desktop": {
+      "nodeId": "509:5926",
+      "properties": {
+        "Device": "Desktop",
+        "Material": "Acrylic"
+      }
+    },
+    "material=acrylic,device=mobile": {
+      "nodeId": "509:5928",
+      "properties": {
+        "Device": "Mobile",
+        "Material": "Acrylic"
+      }
+    },
+    "material=solid,device=desktop": {
+      "nodeId": "509:5930",
+      "properties": {
+        "Device": "Desktop",
+        "Material": "Solid"
+      }
+    },
+    "material=solid,device=mobile": {
+      "nodeId": "509:5932",
+      "properties": {
+        "Device": "Mobile",
+        "Material": "Solid"
+      }
+    }
+  }
+}
