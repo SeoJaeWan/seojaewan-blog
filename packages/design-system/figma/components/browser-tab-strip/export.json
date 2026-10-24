@@ -1,0 +1,10 @@
+{
+  "name": "BrowserTabStrip",
+  "nodeId": "36:431",
+  "variants": {
+    "default": {
+      "nodeId": "36:431",
+      "properties": {}
+    }
+  }
+}
