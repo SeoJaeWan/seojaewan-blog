@@ -1,0 +1,286 @@
+{
+  "name": "FileItem",
+  "nodeId": "29:527",
+  "variants": {
+    "surface=desktop,view=large,state=cut": {
+      "nodeId": "69:2165",
+      "properties": {
+        "State": "Cut",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=cut-selected": {
+      "nodeId": "69:2169",
+      "properties": {
+        "State": "Cut selected",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=hover": {
+      "nodeId": "29:286",
+      "properties": {
+        "State": "Hover",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=rename": {
+      "nodeId": "29:298",
+      "properties": {
+        "State": "Rename",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=rest": {
+      "nodeId": "29:282",
+      "properties": {
+        "State": "Rest",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=selected": {
+      "nodeId": "29:290",
+      "properties": {
+        "State": "Selected",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=large,state=selected-focus": {
+      "nodeId": "29:294",
+      "properties": {
+        "State": "Selected focus",
+        "Surface": "Desktop",
+        "View": "Large"
+      }
+    },
+    "surface=desktop,view=medium,state=cut": {
+      "nodeId": "69:2173",
+      "properties": {
+        "State": "Cut",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=cut-selected": {
+      "nodeId": "69:2177",
+      "properties": {
+        "State": "Cut selected",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=hover": {
+      "nodeId": "29:309",
+      "properties": {
+        "State": "Hover",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=rename": {
+      "nodeId": "29:321",
+      "properties": {
+        "State": "Rename",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=rest": {
+      "nodeId": "29:305",
+      "properties": {
+        "State": "Rest",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=selected": {
+      "nodeId": "29:313",
+      "properties": {
+        "State": "Selected",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=medium,state=selected-focus": {
+      "nodeId": "29:317",
+      "properties": {
+        "State": "Selected focus",
+        "Surface": "Desktop",
+        "View": "Medium"
+      }
+    },
+    "surface=desktop,view=small,state=cut": {
+      "nodeId": "69:2181",
+      "properties": {
+        "State": "Cut",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=cut-selected": {
+      "nodeId": "69:2185",
+      "properties": {
+        "State": "Cut selected",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=hover": {
+      "nodeId": "29:332",
+      "properties": {
+        "State": "Hover",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=rename": {
+      "nodeId": "29:344",
+      "properties": {
+        "State": "Rename",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=rest": {
+      "nodeId": "29:328",
+      "properties": {
+        "State": "Rest",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=selected": {
+      "nodeId": "29:336",
+      "properties": {
+        "State": "Selected",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=desktop,view=small,state=selected-focus": {
+      "nodeId": "29:340",
+      "properties": {
+        "State": "Selected focus",
+        "Surface": "Desktop",
+        "View": "Small"
+      }
+    },
+    "surface=explorer,view=large,state=cut": {
+      "nodeId": "69:2133",
+      "properties": {
+        "State": "Cut",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=cut-selected": {
+      "nodeId": "69:2137",
+      "properties": {
+        "State": "Cut selected",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=hover": {
+      "nodeId": "29:442",
+      "properties": {
+        "State": "Hover",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=rename": {
+      "nodeId": "29:454",
+      "properties": {
+        "State": "Rename",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=rest": {
+      "nodeId": "29:438",
+      "properties": {
+        "State": "Rest",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=selected": {
+      "nodeId": "29:446",
+      "properties": {
+        "State": "Selected",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=large,state=selected-focus": {
+      "nodeId": "29:450",
+      "properties": {
+        "State": "Selected focus",
+        "Surface": "Explorer",
+        "View": "Large"
+      }
+    },
+    "surface=explorer,view=medium,state=cut": {
+      "nodeId": "69:2141",
+      "properties": {
+        "State": "Cut",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=cut-selected": {
+      "nodeId": "69:2145",
+      "properties": {
+        "State": "Cut selected",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=hover": {
+      "nodeId": "29:465",
+      "properties": {
+        "State": "Hover",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=rename": {
+      "nodeId": "29:477",
+      "properties": {
+        "State": "Rename",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=rest": {
+      "nodeId": "29:461",
+      "properties": {
+        "State": "Rest",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=selected": {
+      "nodeId": "29:469",
+      "properties": {
+        "State": "Selected",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    },
+    "surface=explorer,view=medium,state=selected-focus": {
+      "nodeId": "29:473",
+      "properties": {
+        "State": "Selected focus",
+        "Surface": "Explorer",
+        "View": "Medium"
+      }
+    }
+  }
+}
