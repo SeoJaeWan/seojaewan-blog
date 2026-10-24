@@ -3,6 +3,12 @@
   "nodeId": "414:5614",
   "variants": {
     "placement=bottom-center,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5604",
       "properties": {
         "Placement": "Bottom-Center",
@@ -10,6 +16,12 @@
       }
     },
     "placement=bottom-center,state=open": {
+      "node": {
+        "height": 106,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5605",
       "properties": {
         "Placement": "Bottom-Center",
@@ -17,6 +29,12 @@
       }
     },
     "placement=bottom-end,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5606",
       "properties": {
         "Placement": "Bottom-End",
@@ -24,6 +42,12 @@
       }
     },
     "placement=bottom-end,state=open": {
+      "node": {
+        "height": 106,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5607",
       "properties": {
         "Placement": "Bottom-End",
@@ -31,6 +55,12 @@
       }
     },
     "placement=bottom-start,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5602",
       "properties": {
         "Placement": "Bottom-Start",
@@ -38,6 +68,12 @@
       }
     },
     "placement=bottom-start,state=open": {
+      "node": {
+        "height": 106,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5603",
       "properties": {
         "Placement": "Bottom-Start",
@@ -45,6 +81,12 @@
       }
     },
     "placement=right-start,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5612",
       "properties": {
         "Placement": "Right-Start",
@@ -52,6 +94,12 @@
       }
     },
     "placement=right-start,state=open": {
+      "node": {
+        "height": 70,
+        "width": 374,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5613",
       "properties": {
         "Placement": "Right-Start",
@@ -59,6 +107,12 @@
       }
     },
     "placement=top-center,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5608",
       "properties": {
         "Placement": "Top-Center",
@@ -66,6 +120,12 @@
       }
     },
     "placement=top-center,state=open": {
+      "node": {
+        "height": 106,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5609",
       "properties": {
         "Placement": "Top-Center",
@@ -73,6 +133,12 @@
       }
     },
     "placement=top-end,state=closed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5610",
       "properties": {
         "Placement": "Top-End",
@@ -80,6 +146,12 @@
       }
     },
     "placement=top-end,state=open": {
+      "node": {
+        "height": 106,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "414:5611",
       "properties": {
         "Placement": "Top-End",
