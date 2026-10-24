@@ -1,0 +1,34 @@
+{
+  "name": "ScrollArea",
+  "nodeId": "16:182",
+  "variants": {
+    "state=hover,material=acrylic": {
+      "nodeId": "16:162",
+      "properties": {
+        "Material": "Acrylic",
+        "State": "Hover"
+      }
+    },
+    "state=hover,material=solid": {
+      "nodeId": "58:1013",
+      "properties": {
+        "Material": "Solid",
+        "State": "Hover"
+      }
+    },
+    "state=rest,material=acrylic": {
+      "nodeId": "16:146",
+      "properties": {
+        "Material": "Acrylic",
+        "State": "Rest"
+      }
+    },
+    "state=rest,material=solid": {
+      "nodeId": "58:996",
+      "properties": {
+        "Material": "Solid",
+        "State": "Rest"
+      }
+    }
+  }
+}
