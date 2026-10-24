@@ -1,0 +1,48 @@
+{
+  "name": "FileRow",
+  "nodeId": "514:15135",
+  "variants": {
+    "state=cut": {
+      "nodeId": "69:2149",
+      "properties": {
+        "State": "Cut"
+      }
+    },
+    "state=cut-selected": {
+      "nodeId": "69:2157",
+      "properties": {
+        "State": "Cut selected"
+      }
+    },
+    "state=hover": {
+      "nodeId": "29:492",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rename": {
+      "nodeId": "29:516",
+      "properties": {
+        "State": "Rename"
+      }
+    },
+    "state=rest": {
+      "nodeId": "29:484",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=selected": {
+      "nodeId": "29:500",
+      "properties": {
+        "State": "Selected"
+      }
+    },
+    "state=selected-focus": {
+      "nodeId": "29:508",
+      "properties": {
+        "State": "Selected focus"
+      }
+    }
+  }
+}
