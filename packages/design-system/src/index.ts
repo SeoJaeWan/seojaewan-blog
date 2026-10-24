@@ -2,5 +2,6 @@
 export * from './components/asset/asset';
 export * from './components/button/button';
 export * from './components/flyout/flyout';
+export * from './components/icon-button/icon-button';
 export * from './components/menu-item/menu-item';
 export * from './components/search-box/search-box';
