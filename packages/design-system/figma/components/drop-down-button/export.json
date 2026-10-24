@@ -1,0 +1,36 @@
+{
+  "name": "DropDownButton",
+  "nodeId": "307:22812",
+  "variants": {
+    "state=disabled": {
+      "nodeId": "307:22802",
+      "properties": {
+        "State": "Disabled"
+      }
+    },
+    "state=focused": {
+      "nodeId": "307:22807",
+      "properties": {
+        "State": "Focused"
+      }
+    },
+    "state=hover": {
+      "nodeId": "307:22792",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=pressed": {
+      "nodeId": "307:22797",
+      "properties": {
+        "State": "Pressed"
+      }
+    },
+    "state=rest": {
+      "nodeId": "307:22787",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
