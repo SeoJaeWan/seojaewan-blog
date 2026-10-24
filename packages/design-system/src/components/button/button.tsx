@@ -2,7 +2,7 @@ import { Button as BaseButton } from '@base-ui/react/button';
 import type { ComponentProps, JSX } from 'react';
 
 import type { SvgAssetName } from '../../assets/asset-data';
-import { mergeClassNames } from '../../merge-class-names';
+import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 export type ButtonVariant = 'accent' | 'standard' | 'subtle';
@@ -63,7 +63,7 @@ export function Button(props: ButtonProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}
-      className={mergeClassNames(
+      className={cn(
         'relative isolate inline-flex min-w-120 items-center justify-center gap-8 rounded-control px-12 py-6 whitespace-nowrap select-none',
         'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         'transition-colors duration-faster ease-fade',
