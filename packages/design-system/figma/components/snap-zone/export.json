@@ -1,0 +1,18 @@
+{
+  "name": "SnapZone",
+  "nodeId": "90:2711",
+  "variants": {
+    "state=hover": {
+      "nodeId": "90:2710",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "nodeId": "90:2709",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
