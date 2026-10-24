@@ -3,24 +3,48 @@
   "nodeId": "396:15872",
   "variants": {
     "layout=half": {
+      "node": {
+        "height": 56,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "396:15850",
       "properties": {
         "Layout": "Half"
       }
     },
     "layout=halfquarter": {
+      "node": {
+        "height": 56,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "396:15863",
       "properties": {
         "Layout": "HalfQuarter"
       }
     },
     "layout=quad": {
+      "node": {
+        "height": 56,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "396:15871",
       "properties": {
         "Layout": "Quad"
       }
     },
     "layout=twothirds": {
+      "node": {
+        "height": 56,
+        "width": 88,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "396:15856",
       "properties": {
         "Layout": "TwoThirds"
