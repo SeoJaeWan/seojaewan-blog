@@ -1,0 +1,62 @@
+{
+  "name": "CaptionButton",
+  "nodeId": "18:185",
+  "variants": {
+    "kind=close,state=hover": {
+      "nodeId": "18:176",
+      "properties": {
+        "Kind": "Close",
+        "State": "Hover"
+      }
+    },
+    "kind=close,state=inactive": {
+      "nodeId": "18:182",
+      "properties": {
+        "Kind": "Close",
+        "State": "Inactive"
+      }
+    },
+    "kind=close,state=pressed": {
+      "nodeId": "18:179",
+      "properties": {
+        "Kind": "Close",
+        "State": "Pressed"
+      }
+    },
+    "kind=close,state=rest": {
+      "nodeId": "18:173",
+      "properties": {
+        "Kind": "Close",
+        "State": "Rest"
+      }
+    },
+    "kind=default,state=hover": {
+      "nodeId": "18:140",
+      "properties": {
+        "Kind": "Default",
+        "State": "Hover"
+      }
+    },
+    "kind=default,state=inactive": {
+      "nodeId": "18:146",
+      "properties": {
+        "Kind": "Default",
+        "State": "Inactive"
+      }
+    },
+    "kind=default,state=pressed": {
+      "nodeId": "18:143",
+      "properties": {
+        "Kind": "Default",
+        "State": "Pressed"
+      }
+    },
+    "kind=default,state=rest": {
+      "nodeId": "18:137",
+      "properties": {
+        "Kind": "Default",
+        "State": "Rest"
+      }
+    }
+  }
+}
