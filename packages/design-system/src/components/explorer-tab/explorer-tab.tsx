@@ -1,14 +1,13 @@
-import type { ComponentProps, JSX, MouseEvent } from 'react';
+import type { ComponentProps, JSX, MouseEvent, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-// 폴더 아이콘 이미지 자산이다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
-const folderIcon = new URL('../../assets/images/file-folder.png', import.meta.url).href;
-
 type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   /** 피그마 State=Selected. 지금 고른 탭이면 바탕을 깐다 */
   selected?: boolean;
+  /** 탭 앞 16px 폴더 아이콘이다. 탭마다 다르므로 필수다(피그마 ExplorerTab에는 아직 교체 속성이 없다) */
+  icon: ReactNode;
   /** 피그마 TEXT 속성 Title. 탭에 보일 폴더 이름이다 */
   title?: string;
   /** 닫기 버튼의 접근성 이름 */
@@ -21,11 +20,13 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 탐색기 제목 표시줄의 폴더 탭(피그마 ExplorerTab)을 그린다. 크기는 Windows가 정한 220×32로 고정한다.
  * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
  */
 export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
   const {
     selected: isSelected = false,
+    icon,
     title = '폴더 이름',
     closeLabel = '탭 닫기',
     onClose,
@@ -46,7 +47,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         className,
       )}
     >
-      <img src={folderIcon} alt="" className="size-icon-16 shrink-0 object-contain" />
+      <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>
       <span className="min-w-0 flex-1 truncate type-caption text-text-fill-primary">{title}</span>
       <button
         type="button"
