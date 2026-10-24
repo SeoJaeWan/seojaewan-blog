@@ -1,5 +1,6 @@
 // @seojaewan/design-system 공개 진입점이다.
 export * from './components/asset/asset';
+export * from './components/best-match-card/best-match-card';
 export * from './components/button/button';
 export * from './components/caption-button/caption-button';
 export * from './components/caption-button-group/caption-button-group';
