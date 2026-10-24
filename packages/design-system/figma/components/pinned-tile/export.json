@@ -1,0 +1,24 @@
+{
+  "name": "PinnedTile",
+  "nodeId": "37:521",
+  "variants": {
+    "state=hover": {
+      "nodeId": "37:511",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=pressed": {
+      "nodeId": "37:516",
+      "properties": {
+        "State": "Pressed"
+      }
+    },
+    "state=rest": {
+      "nodeId": "37:506",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
