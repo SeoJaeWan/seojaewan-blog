@@ -1,0 +1,10 @@
+{
+  "name": "DetailsHeader",
+  "nodeId": "31:369",
+  "variants": {
+    "default": {
+      "nodeId": "31:369",
+      "properties": {}
+    }
+  }
+}
