@@ -6,6 +6,13 @@ import { SearchBox } from './search-box';
 const APPEARANCES = ['default', 'pill', 'taskbar'] as const;
 const STATES = ['rest', 'hover', 'focused', 'disabled'] as const;
 
+// SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 모양별로 감싼다.
+const previewWidthClassNames = {
+  default: 'w-240',
+  pill: 'w-320',
+  taskbar: 'w-220',
+} as const satisfies Record<(typeof APPEARANCES)[number], string>;
+
 type ParityArgs = {
   appearance: (typeof APPEARANCES)[number];
   filled: boolean;
@@ -21,21 +28,24 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <SearchBox
-      // 입력값을 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
-      key={String(args.filled)}
-      appearance={args.appearance}
-      aria-label="검색"
-      placeholder="검색"
-      defaultValue={args.filled ? '리액트' : undefined}
-      disabled={args.state === 'disabled'}
-      // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
-      // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
-      onFocus={(event) => {
-        const end = event.currentTarget.value.length;
-        event.currentTarget.setSelectionRange(end, end);
-      }}
-    />
+    // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. SearchBox와 같은 크기라 찍히는 범위가 같다.
+    <div className={previewWidthClassNames[args.appearance]}>
+      <SearchBox
+        // 입력값을 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
+        key={String(args.filled)}
+        appearance={args.appearance}
+        aria-label="검색"
+        placeholder="검색"
+        defaultValue={args.filled ? '검색어' : undefined}
+        disabled={args.state === 'disabled'}
+        // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
+        // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
+        onFocus={(event) => {
+          const end = event.currentTarget.value.length;
+          event.currentTarget.setSelectionRange(end, end);
+        }}
+      />
+    </div>
   ),
 } satisfies Meta<ParityArgs>;
 
