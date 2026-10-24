@@ -1,0 +1,76 @@
+{
+  "name": "IconButton",
+  "nodeId": "13:105",
+  "variants": {
+    "style=standard,state=disabled": {
+      "nodeId": "13:84",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Standard"
+      }
+    },
+    "style=standard,state=focused": {
+      "nodeId": "13:87",
+      "properties": {
+        "State": "Focused",
+        "Style": "Standard"
+      }
+    },
+    "style=standard,state=hover": {
+      "nodeId": "13:78",
+      "properties": {
+        "State": "Hover",
+        "Style": "Standard"
+      }
+    },
+    "style=standard,state=pressed": {
+      "nodeId": "13:81",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Standard"
+      }
+    },
+    "style=standard,state=rest": {
+      "nodeId": "13:75",
+      "properties": {
+        "State": "Rest",
+        "Style": "Standard"
+      }
+    },
+    "style=subtle,state=disabled": {
+      "nodeId": "13:99",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Subtle"
+      }
+    },
+    "style=subtle,state=focused": {
+      "nodeId": "13:102",
+      "properties": {
+        "State": "Focused",
+        "Style": "Subtle"
+      }
+    },
+    "style=subtle,state=hover": {
+      "nodeId": "13:93",
+      "properties": {
+        "State": "Hover",
+        "Style": "Subtle"
+      }
+    },
+    "style=subtle,state=pressed": {
+      "nodeId": "13:96",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Subtle"
+      }
+    },
+    "style=subtle,state=rest": {
+      "nodeId": "13:90",
+      "properties": {
+        "State": "Rest",
+        "Style": "Subtle"
+      }
+    }
+  }
+}
