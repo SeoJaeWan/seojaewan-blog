@@ -45,8 +45,9 @@ const defaultExportFiles = [
 // 토큰 변수 이름은 피그마 경로 그대로라 Tailwind 기본 이름공간에 들어가는 것이 있다. 그러면 Tailwind 기본 유틸리티가
 // 뜻하지 않은 클래스를 만들고(`--text-fill-primary` → 글자 크기 `text-fill-primary`, `--stroke-width-default` →
 // 선 색 `stroke-width-default`) no-unknown-classes가 막지 못한다. tokens.css의 @theme 변수 중 이 이름공간의 것은
-// 변수 이름 그대로인 클래스를 막는다.
-const misreadNamespaces = ['text', 'stroke-width'];
+// 변수 이름 그대로인 클래스를 막는다. text-shadow 값 변수(`--shadow-text-*`)는 Tailwind `shadow-*`가 box-shadow로
+// 읽는 이름이라 `shadow-text-*` 클래스를 함께 만든다(text-shadow는 `text-shadow-*`로 쓴다).
+const misreadNamespaces = ['text', 'stroke-width', 'shadow-text'];
 const themeVariableNames = [
   ...(
     readFileSync(`${rootDir}/packages/design-system/src/tokens.css`, 'utf8')
