@@ -1,0 +1,48 @@
+{
+  "name": "ProgressRing",
+  "nodeId": "16:245",
+  "variants": {
+    "tone=accent,size=16": {
+      "nodeId": "16:233",
+      "properties": {
+        "Size": "16",
+        "Tone": "Accent"
+      }
+    },
+    "tone=accent,size=32": {
+      "nodeId": "16:235",
+      "properties": {
+        "Size": "32",
+        "Tone": "Accent"
+      }
+    },
+    "tone=accent,size=64": {
+      "nodeId": "16:237",
+      "properties": {
+        "Size": "64",
+        "Tone": "Accent"
+      }
+    },
+    "tone=on-dark,size=16": {
+      "nodeId": "16:239",
+      "properties": {
+        "Size": "16",
+        "Tone": "On dark"
+      }
+    },
+    "tone=on-dark,size=32": {
+      "nodeId": "16:241",
+      "properties": {
+        "Size": "32",
+        "Tone": "On dark"
+      }
+    },
+    "tone=on-dark,size=64": {
+      "nodeId": "16:243",
+      "properties": {
+        "Size": "64",
+        "Tone": "On dark"
+      }
+    }
+  }
+}

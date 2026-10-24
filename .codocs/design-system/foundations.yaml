@@ -35,6 +35,7 @@ _codocs:
   - 글 본문의 코드 블록만 고정폭 서체 Cascadia Mono(Microsoft, SIL Open Font License)를 쓴다. 글자 폭이 같아야 들여쓰기와 줄 맞춤이 맞기 때문이다. Windows Terminal의 기본 서체라 Windows 느낌과도 맞고, 기호를 이어 그리는 합자가 없어 입력할 문자 그대로 보인다. 코드 안의 한글은 Pretendard로 그린다. 피그마 텍스트 스타일은 `Code`와 `Hangul/Code`, 서체 변수는 `font/family/code`다.
   - 글자 스타일은 두 벌이다. 라틴 스타일(`Body`, `Body Strong` 등)과 같은 이름의 한글 스타일(`Hangul/Body` 등)이다. 피그마는 서체에 없는 글자를 다른 서체로 대신 그리지 못하기 때문이다([[한계:한글 글자 스타일 두 벌]]). 두 벌은 같은 크기·굵기·줄 높이·자간 변수에 연결하고, 코드는 `type-*` 하나로 쓴다.
   - 글 본문의 링크처럼 밑줄이 있는 글자는 밑줄을 글자에 직접 넣지 않고 밑줄이 든 글자 스타일을 쓴다. `Body Large Link`·`Hangul/Body Large Link`는 `Body Large`에 밑줄을 더한 것이고, 코드는 `type-body-large-link`다. 링크 색은 칠 변수로 따로 준다.
+  - Chromium은 서체의 위·아래 높이를 정수로 반올림한 뒤 줄 안의 기준선을 정한다. 그래서 피그마보다 1px 위에 그려지는 글자 스타일이 생긴다(Caption, Subtitle, Title Large). Open Sans `@font-face`에 `ascent-override: 104.7%`와 `descent-override: 26.05%`를 주어 모든 글자 스타일의 기준선을 피그마와 맞춘다. 한글도 줄의 기준선을 첫 서체인 Open Sans에서 받으므로 Pretendard는 덮어쓰지 않는다. 글자 스타일의 크기나 줄 높이가 바뀌어도 이 값이 맞는지는 테스트가 지킨다.
 
   검토한 대안:
   - Segoe UI Variable: Windows 11 기본 서체지만 라이선스상 웹 폰트로 배포할 수 없다.
