@@ -18,6 +18,7 @@ export * from './components/menu/menu';
 export * from './components/menu-item/menu-item';
 export * from './components/message-box/message-box';
 export * from './components/navigation-item/navigation-item';
+export * from './components/navigation-pane/navigation-pane';
 export * from './components/pinned-tile/pinned-tile';
 export * from './components/popover/popover';
 export * from './components/progress-ring/progress-ring';
