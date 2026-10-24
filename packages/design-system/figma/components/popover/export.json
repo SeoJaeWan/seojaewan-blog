@@ -1,0 +1,90 @@
+{
+  "name": "Popover",
+  "nodeId": "414:5614",
+  "variants": {
+    "placement=bottom-center,state=closed": {
+      "nodeId": "414:5604",
+      "properties": {
+        "Placement": "Bottom-Center",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-center,state=open": {
+      "nodeId": "414:5605",
+      "properties": {
+        "Placement": "Bottom-Center",
+        "State": "Open"
+      }
+    },
+    "placement=bottom-end,state=closed": {
+      "nodeId": "414:5606",
+      "properties": {
+        "Placement": "Bottom-End",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-end,state=open": {
+      "nodeId": "414:5607",
+      "properties": {
+        "Placement": "Bottom-End",
+        "State": "Open"
+      }
+    },
+    "placement=bottom-start,state=closed": {
+      "nodeId": "414:5602",
+      "properties": {
+        "Placement": "Bottom-Start",
+        "State": "Closed"
+      }
+    },
+    "placement=bottom-start,state=open": {
+      "nodeId": "414:5603",
+      "properties": {
+        "Placement": "Bottom-Start",
+        "State": "Open"
+      }
+    },
+    "placement=right-start,state=closed": {
+      "nodeId": "414:5612",
+      "properties": {
+        "Placement": "Right-Start",
+        "State": "Closed"
+      }
+    },
+    "placement=right-start,state=open": {
+      "nodeId": "414:5613",
+      "properties": {
+        "Placement": "Right-Start",
+        "State": "Open"
+      }
+    },
+    "placement=top-center,state=closed": {
+      "nodeId": "414:5608",
+      "properties": {
+        "Placement": "Top-Center",
+        "State": "Closed"
+      }
+    },
+    "placement=top-center,state=open": {
+      "nodeId": "414:5609",
+      "properties": {
+        "Placement": "Top-Center",
+        "State": "Open"
+      }
+    },
+    "placement=top-end,state=closed": {
+      "nodeId": "414:5610",
+      "properties": {
+        "Placement": "Top-End",
+        "State": "Closed"
+      }
+    },
+    "placement=top-end,state=open": {
+      "nodeId": "414:5611",
+      "properties": {
+        "Placement": "Top-End",
+        "State": "Open"
+      }
+    }
+  }
+}
