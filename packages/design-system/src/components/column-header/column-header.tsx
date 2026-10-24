@@ -39,7 +39,7 @@ export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
           className={cn(
-            'size-icon-12 shrink-0 text-text-fill-primary',
+            'size-icon-12 shrink-0 text-text-fill-secondary',
             sort === 'ascending' && 'rotate-180',
           )}
         />
