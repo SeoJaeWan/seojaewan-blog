@@ -1,7 +1,7 @@
 import { Input } from '@base-ui/react/input';
 import { type ComponentProps, type JSX, useState } from 'react';
 
-import { mergeClassNames } from '../../merge-class-names';
+import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 export type SearchBoxAppearance = 'default' | 'pill' | 'taskbar';
@@ -74,7 +74,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
           ? 'illustrations/icon-color-search.svg'
           : 'icons/ic_fluent_search_16_regular.svg'
       }
-      className={mergeClassNames(
+      className={cn(
         'size-icon-16 shrink-0',
         isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
       )}
@@ -82,7 +82,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
   );
   return (
     <div
-      className={mergeClassNames(
+      className={cn(
         'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
         'transition-colors',
         classNames.base,
@@ -115,7 +115,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
       {appearance === 'default' && (
         <span
           aria-hidden
-          className={mergeClassNames(
+          className={cn(
             'pointer-events-none absolute inset-x-0 bottom-0',
             BOTTOM_BORDER_CLASS_NAMES[state],
           )}
