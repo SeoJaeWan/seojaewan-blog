@@ -5,6 +5,7 @@ export * from './components/caption-button/caption-button';
 export * from './components/caption-button-group/caption-button-group';
 export * from './components/code-block/code-block';
 export * from './components/column-header/column-header';
+export * from './components/details-header/details-header';
 export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
 export * from './components/explorer-tab/explorer-tab';
