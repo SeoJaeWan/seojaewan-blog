@@ -3,12 +3,24 @@
   "nodeId": "389:5073",
   "variants": {
     "align=center": {
+      "node": {
+        "height": 100,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "389:5072",
       "properties": {
         "Align": "Center"
       }
     },
     "align=start": {
+      "node": {
+        "height": 100,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "389:5071",
       "properties": {
         "Align": "Start"
