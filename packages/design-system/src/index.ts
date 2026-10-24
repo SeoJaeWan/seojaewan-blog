@@ -7,6 +7,7 @@ export * from './components/empty-state/empty-state';
 export * from './components/explorer-tab/explorer-tab';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
+export * from './components/list-group/list-group';
 export * from './components/menu/menu';
 export * from './components/menu-item/menu-item';
 export * from './components/message-box/message-box';
