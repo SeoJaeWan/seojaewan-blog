@@ -22,6 +22,12 @@ export const svgAssets = {
       { tag: 'path', attributes: { d: 'M3.37 10.17C3.19 9.96 2.87 9.94 2.67 10.13C2.46 10.31 2.44 10.63 2.63 10.83L6.63 15.33C6.82 15.55 7.15 15.56 7.35 15.35L17.85 4.85C18.05 4.66 18.05 4.34 17.85 4.15C17.66 3.95 17.34 3.95 17.15 4.15L7.02 14.27L3.37 10.17Z', fill: 'currentColor' } },
     ],
   },
+  'icons/ic_fluent_chevron_down_16_regular.svg': {
+    viewBox: '0 0 16 16',
+    elements: [
+      { tag: 'path', attributes: { d: 'M3.15 5.65C3.34 5.45 3.66 5.45 3.85 5.65L8 9.79L12.15 5.65C12.34 5.45 12.66 5.45 12.85 5.65C13.05 5.84 13.05 6.16 12.85 6.35L8.35 10.85C8.16 11.05 7.84 11.05 7.65 10.85L3.15 6.35C2.95 6.16 2.95 5.84 3.15 5.65Z', fill: 'currentColor' } },
+    ],
+  },
   'icons/ic_fluent_chevron_right_16_regular.svg': {
     viewBox: '0 0 16 16',
     elements: [
