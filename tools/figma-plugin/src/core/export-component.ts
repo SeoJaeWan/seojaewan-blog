@@ -1,4 +1,4 @@
-import type { ExportManifest, VariantEntry } from '../export-manifest';
+import { type ExportManifest, nodeBox, type VariantEntry } from '../export-manifest';
 import { assetFile, variantSlug } from '../naming';
 import { monoColorSvg, normalizeSvgBytes } from '../svg-normalize';
 import { type CheckContext, checkVariant, type Violation } from './check-structure';
@@ -22,7 +22,7 @@ export type TargetOutcome =
 
 /**
  * 컴포넌트(세트)를 변형마다 구조 검사하고 내보낸다. 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
- * 내보내는 것은 변형 이름과 속성, 변형 PNG, 쓰는 자산 파일이다. 레이어 정보는 내보내지 않는다.
+ * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일이다. 레이어 정보는 내보내지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
@@ -52,7 +52,15 @@ export async function exportTargetCore(
     if (slug in variants) {
       throw new Error(`${node.name}: 변형 파일 이름 "${slug}"가 겹친다.`);
     }
-    variants[slug] = { nodeId: variant.id, properties };
+    const box = variant.absoluteBoundingBox;
+    if (box === null) {
+      throw new Error(`${node.name} / ${variant.name}: 노드 상자를 읽을 수 없다.`);
+    }
+    variants[slug] = {
+      nodeId: variant.id,
+      properties,
+      node: nodeBox(box, variant.absoluteRenderBounds),
+    };
     nodes.set(slug, variant);
   }
   if (violations.length > 0) {
