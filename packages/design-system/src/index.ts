@@ -19,6 +19,7 @@ export * from './components/scroll-area/scroll-area';
 export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
 export * from './components/section-header/section-header';
+export * from './components/section-title/section-title';
 export * from './components/separator/separator';
 export * from './components/system-tray/system-tray';
 export * from './components/taskbar/taskbar';
