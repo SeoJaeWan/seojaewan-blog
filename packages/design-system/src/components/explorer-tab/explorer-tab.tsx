@@ -56,7 +56,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-icon-16 shrink-0 items-center justify-center text-text-fill-primary"
+        className="inline-flex size-icon-16 shrink-0 items-center justify-center text-text-fill-secondary"
       >
         <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-icon-16" />
       </button>
