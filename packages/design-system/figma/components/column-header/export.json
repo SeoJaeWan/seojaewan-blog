@@ -1,0 +1,48 @@
+{
+  "name": "ColumnHeader",
+  "nodeId": "31:359",
+  "variants": {
+    "sort=ascending,state=hover": {
+      "nodeId": "31:347",
+      "properties": {
+        "Sort": "Ascending",
+        "State": "Hover"
+      }
+    },
+    "sort=ascending,state=rest": {
+      "nodeId": "31:343",
+      "properties": {
+        "Sort": "Ascending",
+        "State": "Rest"
+      }
+    },
+    "sort=descending,state=hover": {
+      "nodeId": "31:355",
+      "properties": {
+        "Sort": "Descending",
+        "State": "Hover"
+      }
+    },
+    "sort=descending,state=rest": {
+      "nodeId": "31:351",
+      "properties": {
+        "Sort": "Descending",
+        "State": "Rest"
+      }
+    },
+    "sort=none,state=hover": {
+      "nodeId": "31:339",
+      "properties": {
+        "Sort": "None",
+        "State": "Hover"
+      }
+    },
+    "sort=none,state=rest": {
+      "nodeId": "31:335",
+      "properties": {
+        "Sort": "None",
+        "State": "Rest"
+      }
+    }
+  }
+}
