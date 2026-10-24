@@ -3,6 +3,7 @@ export * from './components/asset/asset';
 export * from './components/button/button';
 export * from './components/caption-button/caption-button';
 export * from './components/drop-down-button/drop-down-button';
+export * from './components/empty-state/empty-state';
 export * from './components/explorer-tab/explorer-tab';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
