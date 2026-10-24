@@ -3,6 +3,12 @@
   "nodeId": "31:420",
   "variants": {
     "current=false,state=hover": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:395",
       "properties": {
         "Current": "False",
@@ -10,6 +16,12 @@
       }
     },
     "current=false,state=pressed": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:400",
       "properties": {
         "Current": "False",
@@ -17,6 +29,12 @@
       }
     },
     "current=false,state=rest": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:390",
       "properties": {
         "Current": "False",
@@ -24,6 +42,12 @@
       }
     },
     "current=true,state=hover": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:410",
       "properties": {
         "Current": "True",
@@ -31,6 +55,12 @@
       }
     },
     "current=true,state=pressed": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:415",
       "properties": {
         "Current": "True",
@@ -38,6 +68,12 @@
       }
     },
     "current=true,state=rest": {
+      "node": {
+        "height": 24,
+        "width": 73,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "31:405",
       "properties": {
         "Current": "True",
