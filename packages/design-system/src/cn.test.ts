@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import { mergeClassNames, TOKEN_NAMES } from './merge-class-names';
+import { cn, TOKEN_NAMES } from './cn';
 
 const tokensCss = readFileSync(new URL('tokens.css', import.meta.url), 'utf8');
 
@@ -29,25 +29,23 @@ describe('스타일링', () => {
   });
 
   it('토큰 두께 클래스와 색 클래스를 서로 다른 속성으로 보고 둘 다 남긴다', () => {
-    expect(mergeClassNames('border-focus-outer border-focus-stroke-outer')).toBe(
+    expect(cn('border-focus-outer border-focus-stroke-outer')).toBe(
       'border-focus-outer border-focus-stroke-outer',
     );
-    expect(mergeClassNames('border-b-focus-outer border-accent-fill-default')).toBe(
+    expect(cn('border-b-focus-outer border-accent-fill-default')).toBe(
       'border-b-focus-outer border-accent-fill-default',
     );
-    expect(mergeClassNames('outline-focus-outer outline-focus-stroke-outer')).toBe(
+    expect(cn('outline-focus-outer outline-focus-stroke-outer')).toBe(
       'outline-focus-outer outline-focus-stroke-outer',
     );
-    expect(mergeClassNames('type-body text-text-fill-primary')).toBe(
-      'type-body text-text-fill-primary',
-    );
+    expect(cn('type-body text-text-fill-primary')).toBe('type-body text-text-fill-primary');
   });
 
   it('사용처의 className이 같은 속성의 기본 클래스를 덮어쓴다', () => {
-    expect(mergeClassNames('px-12 bg-control-fill-default', 'px-16 bg-accent-fill-default')).toBe(
+    expect(cn('px-12 bg-control-fill-default', 'px-16 bg-accent-fill-default')).toBe(
       'px-16 bg-accent-fill-default',
     );
-    expect(mergeClassNames('rounded-control', 'rounded-circular')).toBe('rounded-circular');
-    expect(mergeClassNames('w-320', 'w-240')).toBe('w-240');
+    expect(cn('rounded-control', 'rounded-circular')).toBe('rounded-circular');
+    expect(cn('w-320', 'w-240')).toBe('w-240');
   });
 });

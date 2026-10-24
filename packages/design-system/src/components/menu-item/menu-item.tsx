@@ -2,7 +2,7 @@ import { Menu } from '@base-ui/react/menu';
 import type { JSX, ReactNode } from 'react';
 
 import type { SvgAssetName } from '../../assets/asset-data';
-import { mergeClassNames } from '../../merge-class-names';
+import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 type MenuItemCommonProps = {
@@ -73,7 +73,7 @@ const SECONDARY_TEXT_CLASS_NAME =
  * @param props
  */
 export function MenuItem(props: MenuItemProps): JSX.Element {
-  const className = mergeClassNames(ROW_CLASS_NAME, props.className);
+  const className = cn(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
   const icon =
     props.icon === undefined ? undefined : <Asset name={props.icon} className="size-icon-16" />;
@@ -158,14 +158,14 @@ function MenuItemContent(props: MenuItemContentProps): JSX.Element {
       )}
       <span className="min-w-0 flex-1 truncate type-body">{props.label}</span>
       {props.shortcut !== undefined && (
-        <span className={mergeClassNames('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}>
+        <span className={cn('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}>
           {props.shortcut}
         </span>
       )}
       {props.kind === 'submenu' && (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
-          className={mergeClassNames('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
+          className={cn('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
         />
       )}
     </span>
