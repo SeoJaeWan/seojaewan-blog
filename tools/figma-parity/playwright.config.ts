@@ -14,7 +14,8 @@ export default defineConfig({
   use: {
     ...devices['Desktop Chrome'],
     // 글꼴 힌팅은 글자 폭을 정수로 반올림하고 획을 픽셀에 맞춰, 같은 글꼴이어도 피그마와 글자 폭·모양이 달라진다.
+    // 서브픽셀(LCD) 글자 렌더링도 끈다. 피그마 PNG는 회색조 안티앨리어싱이라 색 번짐이 차이로 보이기 때문이다.
     // @codocs [[피그마 연동:캡처 표]]
-    launchOptions: { args: ['--font-render-hinting=none'] },
+    launchOptions: { args: ['--font-render-hinting=none', '--disable-lcd-text'] },
   },
 });

@@ -68,6 +68,17 @@ describe('서체', () => {
     expect(weights('open-sans.css')).toEqual(['400', '600', '700']);
     expect(weights('cascadia-mono.css')).toEqual(['400']);
   });
+
+  it('Open Sans의 모든 @font-face에 서체 높이 덮어쓰기가 있고 다른 서체에는 없다', () => {
+    const openSans = readFileSync(path.join(sourceDir, 'open-sans.css'), 'utf8');
+    const count = (openSans.match(/@font-face/gu) ?? []).length;
+    expect(count).toBeGreaterThan(0);
+    expect((openSans.match(/ascent-override: 104.7%;/gu) ?? []).length).toBe(count);
+    expect((openSans.match(/descent-override: 26.05%;/gu) ?? []).length).toBe(count);
+    for (const output of ['pretendard.css', 'cascadia-mono.css']) {
+      expect(readFileSync(path.join(sourceDir, output), 'utf8')).not.toContain('-override');
+    }
+  });
 });
 
 /**

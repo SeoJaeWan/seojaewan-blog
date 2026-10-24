@@ -78,18 +78,20 @@ function splitDeclaration(line: string): [string, string] {
  * @param faces parseFontFaces로 읽은 규칙
  * @param fileDir woff2 파일이 있는 폴더(이 CSS 파일 기준 상대 경로)
  * @param packageName 원본 CSS가 있는 패키지 이름(머리말에 적는다)
+ * @param extraDescriptors 모든 규칙에 더할 선언(예: `ascent-override: 104.7%`)
  * @returns 생성 파일 내용
  */
 export function fontFacesToCss(
   faces: readonly FontFace[],
   fileDir: string,
   packageName: string,
+  extraDescriptors: readonly string[] = [],
 ): string {
   const header = `/*
  * 이 파일은 scripts/fonts/generate-fonts.ts가 ${packageName} 패키지의 CSS에서 만든다. 손으로 고치지 않는다.
  * 다시 만들기: pnpm --filter @seojaewan/design-system generate:fonts
  */`;
-  const rules = faces.map((face) => fontFaceRule(face, fileDir));
+  const rules = faces.map((face) => fontFaceRule(face, fileDir, extraDescriptors));
   return `${header}\n\n${rules.join('\n\n')}\n`;
 }
 
@@ -97,16 +99,27 @@ export function fontFacesToCss(
  * `@font-face` 규칙 하나를 쓴다.
  * @param face 규칙
  * @param fileDir woff2 파일 폴더
+ * @param extraDescriptors 더할 선언
  * @returns CSS 규칙
  */
-function fontFaceRule(face: FontFace, fileDir: string): string {
+function fontFaceRule(
+  face: FontFace,
+  fileDir: string,
+  extraDescriptors: readonly string[],
+): string {
+  const extra = extraDescriptors
+    .map(
+      (declaration) => `
+  ${declaration};`,
+    )
+    .join('');
   return `@font-face {
   font-family: ${face.family};
   font-style: ${face.style};
   font-display: ${face.display};
   font-weight: ${face.weight};
   src: url(${fileDir}/${face.file}) format('woff2');
-  unicode-range: ${face.unicodeRange};
+  unicode-range: ${face.unicodeRange};${extra}
 }`;
 }
 
