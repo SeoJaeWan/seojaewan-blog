@@ -1,0 +1,18 @@
+{
+  "name": "ExplorerAddressRow",
+  "nodeId": "439:5700",
+  "variants": {
+    "device=desktop": {
+      "nodeId": "439:5694",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "nodeId": "439:5699",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
