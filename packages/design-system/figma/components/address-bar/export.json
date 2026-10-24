@@ -1,0 +1,30 @@
+{
+  "name": "AddressBar",
+  "nodeId": "36:582",
+  "variants": {
+    "state=focused": {
+      "nodeId": "36:526",
+      "properties": {
+        "State": "Focused"
+      }
+    },
+    "state=hover": {
+      "nodeId": "36:521",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "nodeId": "36:516",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=suggesting": {
+      "nodeId": "36:532",
+      "properties": {
+        "State": "Suggesting"
+      }
+    }
+  }
+}
