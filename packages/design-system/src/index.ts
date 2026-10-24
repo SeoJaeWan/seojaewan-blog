@@ -36,6 +36,7 @@ export * from './components/separator/separator';
 export * from './components/shell-surface/shell-surface';
 export * from './components/snap-layout-flyout/snap-layout-flyout';
 export * from './components/snap-layout-option/snap-layout-option';
+export * from './components/snap-preview/snap-preview';
 export * from './components/snap-zone/snap-zone';
 export * from './components/start-menu-footer/start-menu-footer';
 export * from './components/system-tray/system-tray';
