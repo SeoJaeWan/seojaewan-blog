@@ -1,0 +1,34 @@
+{
+  "name": "PostNavCard",
+  "nodeId": "399:5487",
+  "variants": {
+    "direction=next,device=desktop": {
+      "nodeId": "399:5486",
+      "properties": {
+        "Device": "Desktop",
+        "Direction": "Next"
+      }
+    },
+    "direction=next,device=mobile": {
+      "nodeId": "606:871",
+      "properties": {
+        "Device": "Mobile",
+        "Direction": "Next"
+      }
+    },
+    "direction=prev,device=desktop": {
+      "nodeId": "399:5482",
+      "properties": {
+        "Device": "Desktop",
+        "Direction": "Prev"
+      }
+    },
+    "direction=prev,device=mobile": {
+      "nodeId": "606:868",
+      "properties": {
+        "Device": "Mobile",
+        "Direction": "Prev"
+      }
+    }
+  }
+}
