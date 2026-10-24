@@ -1,0 +1,30 @@
+{
+  "name": "SystemTray",
+  "nodeId": "26:274",
+  "variants": {
+    "state=hover": {
+      "node": {
+        "height": 40,
+        "width": 47,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:271",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 40,
+        "width": 45,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:268",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}
