@@ -13,5 +13,8 @@ export default defineConfig({
   outputDir: 'node_modules/.cache/playwright-test-results',
   use: {
     ...devices['Desktop Chrome'],
+    // 글꼴 힌팅은 글자 폭을 정수로 반올림하고 획을 픽셀에 맞춰, 같은 글꼴이어도 피그마와 글자 폭·모양이 달라진다.
+    // @codocs [[피그마 연동:캡처 표]]
+    launchOptions: { args: ['--font-render-hinting=none'] },
   },
 });
