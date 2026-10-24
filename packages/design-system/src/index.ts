@@ -23,6 +23,7 @@ export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
 export * from './components/section-header/section-header';
 export * from './components/section-title/section-title';
+export * from './components/selection-marquee/selection-marquee';
 export * from './components/separator/separator';
 export * from './components/shell-surface/shell-surface';
 export * from './components/start-menu-footer/start-menu-footer';
