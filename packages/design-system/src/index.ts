@@ -5,6 +5,7 @@ export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
 export * from './components/menu/menu';
 export * from './components/menu-item/menu-item';
+export * from './components/message-box/message-box';
 export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
 export * from './components/tooltip/tooltip';
