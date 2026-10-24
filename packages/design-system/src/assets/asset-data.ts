@@ -28,6 +28,12 @@ export const svgAssets = {
       { tag: 'path', attributes: { d: 'M3.15 5.65C3.34 5.45 3.66 5.45 3.85 5.65L8 9.79L12.15 5.65C12.34 5.45 12.66 5.45 12.85 5.65C13.05 5.84 13.05 6.16 12.85 6.35L8.35 10.85C8.16 11.05 7.84 11.05 7.65 10.85L3.15 6.35C2.95 6.16 2.95 5.84 3.15 5.65Z', fill: 'currentColor' } },
     ],
   },
+  'icons/ic_fluent_chevron_down_20_regular.svg': {
+    viewBox: '0 0 20 20',
+    elements: [
+      { tag: 'path', attributes: { d: 'M15.85 7.65C16.05 7.84 16.05 8.16 15.86 8.35L10.39 13.84C10.18 14.05 9.83 14.05 9.61 13.84L4.15 8.35C3.95 8.16 3.95 7.84 4.15 7.65C4.34 7.45 4.66 7.45 4.85 7.65L10 12.81L15.15 7.65C15.34 7.45 15.66 7.45 15.85 7.65Z', fill: 'currentColor' } },
+    ],
+  },
   'icons/ic_fluent_chevron_right_16_regular.svg': {
     viewBox: '0 0 16 16',
     elements: [
