@@ -3,42 +3,84 @@
   "nodeId": "514:15135",
   "variants": {
     "state=cut": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2149",
       "properties": {
         "State": "Cut"
       }
     },
     "state=cut-selected": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "69:2157",
       "properties": {
         "State": "Cut selected"
       }
     },
     "state=hover": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:492",
       "properties": {
         "State": "Hover"
       }
     },
     "state=rename": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:516",
       "properties": {
         "State": "Rename"
       }
     },
     "state=rest": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:484",
       "properties": {
         "State": "Rest"
       }
     },
     "state=selected": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:500",
       "properties": {
         "State": "Selected"
       }
     },
     "state=selected-focus": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "29:508",
       "properties": {
         "State": "Selected focus"
