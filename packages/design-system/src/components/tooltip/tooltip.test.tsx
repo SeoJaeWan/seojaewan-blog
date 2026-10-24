@@ -16,7 +16,7 @@ describe('Tooltip', () => {
   });
 
   it('balloon은 글자 앞에 아이콘을 그리고 id 같은 div 속성을 넘긴다', () => {
-    render(<Tooltip type="balloon" text="메시지 내용" id="tip" />);
+    render(<Tooltip type="balloon" message="메시지 내용" id="tip" />);
     const tooltip = screen.getByRole('tooltip');
     expect(tooltip).toHaveAttribute('id', 'tip');
     expect(tooltip).toHaveTextContent('메시지 내용');
