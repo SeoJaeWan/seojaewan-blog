@@ -1,0 +1,70 @@
+{
+  "name": "Scrollbar",
+  "nodeId": "16:137",
+  "variants": {
+    "orientation=horizontal,state=expanded,material=acrylic": {
+      "nodeId": "16:131",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Horizontal",
+        "State": "Expanded"
+      }
+    },
+    "orientation=horizontal,state=expanded,material=solid": {
+      "nodeId": "58:877",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Horizontal",
+        "State": "Expanded"
+      }
+    },
+    "orientation=horizontal,state=rest,material=acrylic": {
+      "nodeId": "16:129",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Horizontal",
+        "State": "Rest"
+      }
+    },
+    "orientation=horizontal,state=rest,material=solid": {
+      "nodeId": "58:875",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Horizontal",
+        "State": "Rest"
+      }
+    },
+    "orientation=vertical,state=expanded,material=acrylic": {
+      "nodeId": "16:123",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Vertical",
+        "State": "Expanded"
+      }
+    },
+    "orientation=vertical,state=expanded,material=solid": {
+      "nodeId": "58:869",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Vertical",
+        "State": "Expanded"
+      }
+    },
+    "orientation=vertical,state=rest,material=acrylic": {
+      "nodeId": "16:121",
+      "properties": {
+        "Material": "Acrylic",
+        "Orientation": "Vertical",
+        "State": "Rest"
+      }
+    },
+    "orientation=vertical,state=rest,material=solid": {
+      "nodeId": "58:867",
+      "properties": {
+        "Material": "Solid",
+        "Orientation": "Vertical",
+        "State": "Rest"
+      }
+    }
+  }
+}

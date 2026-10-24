@@ -111,7 +111,7 @@ describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic material-acrylic-default duration-fast ease-fade p-12 rounded-control',
+        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default duration-fast ease-fade p-12 rounded-control',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([]);
@@ -135,6 +135,13 @@ describe('토큰 사용 강제', () => {
     await expect(
       lintClassErrors('bg-accent-fill-missing w-320', UNKNOWN_CLASS_RULE, true),
     ).resolves.toEqual(['Unknown class detected: bg-accent-fill-missing']);
+  }, 60_000);
+
+  it('text-shadow 값 변수를 box-shadow로 읽은 shadow-text-* 클래스는 lint가 막는다', async () => {
+    const className = 'shadow-text-elevation-desktop-label';
+    expect(tokensCss).toContain('--shadow-text-elevation-desktop-label:');
+    await expect(lintClassErrors(className, RESTRICTED_CLASS_RULE)).resolves.toHaveLength(1);
+    await expect(lintClassErrors(className, UNKNOWN_CLASS_RULE)).resolves.toEqual([]);
   }, 60_000);
 
   it('Tailwind 기본 유틸리티가 토큰 변수를 다른 속성으로 읽은 클래스는 lint가 막는다', async () => {
