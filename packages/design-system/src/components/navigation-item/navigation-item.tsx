@@ -3,9 +3,6 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-// 폴더 아이콘 이미지 자산이다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
-const folderIcon = new URL('../../assets/images/file-folder.png', import.meta.url).href;
-
 // 피그마 Level별 들여쓰기(indent) 너비다. 한 단계가 16px이다.
 const INDENT_CLASS_NAMES = ['', 'w-16', 'w-32', 'w-48'] as const;
 
@@ -18,8 +15,8 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   selected?: boolean;
   /** 피그마 TEXT 속성 Label. 항목 이름이다 */
   label?: string;
-  /** 피그마 INSTANCE_SWAP 속성 Item icon. 이름 앞 16px 아이콘이며 기본은 폴더다 */
-  icon?: ReactNode;
+  /** 피그마 INSTANCE_SWAP 속성 Item icon. 이름 앞 16px 아이콘이다. 항목마다 다르므로 필수다 */
+  icon: ReactNode;
   /** 피그마 INSTANCE_SWAP 속성 Chevron. expand가 none이 아닐 때 보이는 꺾쇠이며 기본은 꺾쇠 자산이다 */
   chevron?: ReactNode;
 };
@@ -28,6 +25,7 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * 탐색기 NavigationPane의 폴더 트리 항목(피그마 NavigationItem)을 그린다.
  * 너비는 쓰는 곳이 정한다(피그마 원본은 240). Rest·Hover·Selected 모양은 selected와 CSS hover로 바꾼다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
+ * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
  */
 export function NavigationItem(props: NavigationItemProps): JSX.Element {
@@ -36,7 +34,7 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
     expand = 'none',
     selected: isSelected = false,
     label = '항목 이름',
-    icon = <img src={folderIcon} alt="" className="size-icon-16 object-contain" />,
+    icon,
     chevron,
     className,
     ...divProps

@@ -26,7 +26,7 @@ describe('Taskbar', () => {
   it('children 자리(Apps 슬롯)에 앱 버튼을 넣는다', () => {
     render(
       <Taskbar>
-        <TaskbarButton label="파일 탐색기" indicator="active" />
+        <TaskbarButton label="파일 탐색기" icon={<svg />} indicator="active" />
       </Taskbar>,
     );
     expect(screen.getByRole('button', { name: '파일 탐색기' })).toBeInTheDocument();
