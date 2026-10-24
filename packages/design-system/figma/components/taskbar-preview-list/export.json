@@ -1,0 +1,30 @@
+{
+  "name": "TaskbarPreviewList",
+  "nodeId": "70:1593",
+  "variants": {
+    "material=acrylic": {
+      "node": {
+        "height": 174,
+        "width": 218,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "70:1435",
+      "properties": {
+        "Material": "Acrylic"
+      }
+    },
+    "material=solid": {
+      "node": {
+        "height": 174,
+        "width": 218,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "70:1515",
+      "properties": {
+        "Material": "Solid"
+      }
+    }
+  }
+}
