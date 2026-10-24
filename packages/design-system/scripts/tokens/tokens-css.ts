@@ -23,6 +23,10 @@ const PRIMITIVE_COLLECTION = 'Primitive';
 // 배경 흐림이 있는 효과 스타일은 그림자와 배경 흐림을 이 접미사의 변수 둘로 나눈다.
 const SHADOW_SUFFIX = 'shadow';
 const BACKDROP_BLUR_SUFFIX = 'backdrop-blur';
+// 그림자만 있는 효과 스타일의 text-shadow 값 변수 앞에 붙이는 이름이다(`--shadow-text-elevation-flyout`).
+// `--text-*`는 Tailwind 글자 크기 이름공간이고 ESLint가 그 이름 그대로인 클래스를 막으며,
+// `--<묶음>-*`는 box-shadow 변수와 같은 이름공간이라 `shadow-<묶음>-*`가 읽어 버린다. 그래서 둘 다 피한다.
+const TEXT_SHADOW_PREFIX = 'shadow-text';
 // 그룹 자신의 토큰을 담는 DTCG 예약 이름이다. CSS 이름에는 들어가지 않는다.
 const ROOT_TOKEN = '$root';
 
@@ -174,6 +178,13 @@ export function tokensJsonToCss(json: unknown): string {
         .filter((token) => !hasBackgroundBlur(token) && shadowLayers(token).length > 0)
         .map(groupOf),
     ),
+    uniqueSorted(
+      effects
+        .filter(
+          (token) => !hasBackgroundBlur(token) && textShadowValue(token, context) !== undefined,
+        )
+        .map(groupOf),
+    ),
   );
   // 유틸리티가 읽는 이름공간의 변수만 @theme에 둔다. 나머지는 :root에 두어 Tailwind 기본 유틸리티가
   // 이름이 겹치는 변수로 뜻하지 않은 클래스(예: --font-size-body → font-size-body)를 만들지 않게 한다.
@@ -257,6 +268,7 @@ function groupOf(token: FlatToken): string {
  * @param colorGroups 색 변수·단색 칠 스타일 묶음
  * @param gradientGroups 그라데이션 칠 스타일 묶음
  * @param shadowGroups 그림자가 있는 효과 스타일 묶음
+ * @param textShadowGroups text-shadow로도 쓸 수 있는 효과 스타일 묶음
  * @returns `[이름공간, 유틸리티]` 목록(정렬)
  */
 function namespaceUtilities(
@@ -264,6 +276,7 @@ function namespaceUtilities(
   colorGroups: readonly string[],
   gradientGroups: readonly string[],
   shadowGroups: readonly string[],
+  textShadowGroups: readonly string[],
 ): [string, NamespaceUtility][] {
   const result: [string, NamespaceUtility][] = [];
   /**
@@ -308,6 +321,15 @@ function namespaceUtilities(
         prefix: `shadow-${group}`,
         css: 'box-shadow',
         declarations: (value) => [`box-shadow: ${value};`],
+      },
+    ]);
+  }
+  for (const group of textShadowGroups) {
+    add(`--${TEXT_SHADOW_PREFIX}-${group}`, [
+      {
+        prefix: `text-shadow-${group}`,
+        css: 'text-shadow',
+        declarations: (value) => [`text-shadow: ${value};`],
       },
     ]);
   }
@@ -607,12 +629,21 @@ function rawValue(token: FlatToken, source: string): string {
  * @returns CSS 변수
  */
 function effectVariables(token: FlatToken, context: Context): CssVariable[] {
-  const source = `style/effect/${token.path.join('/')}`;
+  const source = effectSource(token);
   const layers = shadowLayers(token);
   const shadow = layers.map((layer) => shadowValue(layer, context, source)).join(', ');
   const blur = backgroundBlur(token, context, source);
   if (blur === undefined) {
-    return layers.length === 0 ? [] : [{ name: cssName(token.path), value: shadow, source }];
+    if (layers.length === 0) {
+      return [];
+    }
+    const textShadow = textShadowValue(token, context);
+    return [
+      { name: cssName(token.path), value: shadow, source },
+      ...(textShadow === undefined
+        ? []
+        : [{ name: cssName([TEXT_SHADOW_PREFIX, ...token.path]), value: textShadow, source }]),
+    ];
   }
   return [
     ...(layers.length === 0
@@ -625,6 +656,54 @@ function effectVariables(token: FlatToken, context: Context): CssVariable[] {
       isRootOnly: true,
     },
   ];
+}
+
+/**
+ * 효과 스타일 오류 메시지에 쓸 경로를 만든다.
+ * @param token 효과 스타일
+ * @returns `style/effect/Elevation/Flyout`
+ */
+function effectSource(token: FlatToken): string {
+  return `style/effect/${token.path.join('/')}`;
+}
+
+/**
+ * 그림자만 있는 효과 스타일을 `text-shadow` 값(`<x> <y> <blur> <color>`)으로 바꾼다.
+ * text-shadow에는 퍼짐과 안쪽 그림자가 없어서, 퍼짐이 0이 아니거나 안쪽 그림자인 층이 있으면 만들지 않는다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param token 효과 스타일
+ * @param context 변환 표
+ * @returns `0px 1px 2px #00000099`, 만들 수 없으면 undefined
+ */
+function textShadowValue(token: FlatToken, context: Context): string | undefined {
+  const source = effectSource(token);
+  const layers = shadowLayers(token);
+  if (layers.length === 0 || !layers.every((layer) => isTextShadowLayer(layer, context, source))) {
+    return undefined;
+  }
+  return layers
+    .map((layer) => {
+      const [x, y, blur, , color] = shadowParts(layer, context, source);
+      return [x, y, blur, color].join(' ');
+    })
+    .join(', ');
+}
+
+/**
+ * 그림자 층을 text-shadow로 옮길 수 있는지 확인한다. 퍼짐이 0이고 안쪽 그림자가 아니어야 한다.
+ * @param layer 그림자 층
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns 옮길 수 있으면 true
+ */
+function isTextShadowLayer(layer: unknown, context: Context, source: string): boolean {
+  if (!isRecord(layer) || layer.inset === true) {
+    return false;
+  }
+  aliasReference(layer.spread, context, source);
+  const target = aliasPath(layer.spread);
+  const spread = target === undefined ? layer.spread : context.variables.get(target)?.value;
+  return isRecord(spread) && spread.value === 0;
 }
 
 /**
@@ -664,7 +743,7 @@ function hasBackgroundBlur(token: FlatToken): boolean {
 function shadowLayers(token: FlatToken): unknown[] {
   if (token.type !== 'shadow') {
     throw new TokenFormatError(
-      `style/effect/${token.path.join('/')}`,
+      effectSource(token),
       `효과 스타일의 $type은 shadow여야 한다(${token.type}).`,
     );
   }
@@ -944,6 +1023,22 @@ function interpolatedStops(from: ParsedStop, to: ParsedStop): string[] {
  * @returns `0px 2px 4px 0px #0000000a`
  */
 function shadowValue(layer: unknown, context: Context, source: string): string {
+  const parts = shadowParts(layer, context, source);
+  return isRecord(layer) && layer.inset === true ? `inset ${parts.join(' ')}` : parts.join(' ');
+}
+
+/**
+ * 그림자 층 하나의 값을 CSS로 바꾼다.
+ * @param layer `{offsetX, offsetY, blur, spread, color, inset}`
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns `[x, y, blur, spread, color]` CSS 값
+ */
+function shadowParts(
+  layer: unknown,
+  context: Context,
+  source: string,
+): [string, string, string, string, string] {
   if (!isRecord(layer)) {
     throw new TokenFormatError(source, '그림자 층은 객체여야 한다.');
   }
@@ -957,8 +1052,7 @@ function shadowValue(layer: unknown, context: Context, source: string): string {
     return aliasReference(raw, context, source) ?? unitValue(raw, source);
   }
   const color = aliasReference(layer.color, context, source) ?? colorValue(layer.color, source);
-  const parts = [length('offsetX'), length('offsetY'), length('blur'), length('spread'), color];
-  return layer.inset === true ? `inset ${parts.join(' ')}` : parts.join(' ');
+  return [length('offsetX'), length('offsetY'), length('blur'), length('spread'), color];
 }
 
 /**

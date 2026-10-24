@@ -1,0 +1,16 @@
+{
+  "name": "DetailsHeader",
+  "nodeId": "31:369",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 32,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:369",
+      "properties": {}
+    }
+  }
+}
