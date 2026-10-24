@@ -4,3 +4,4 @@ export * from './components/button/button';
 export * from './components/flyout/flyout';
 export * from './components/menu-item/menu-item';
 export * from './components/search-box/search-box';
+export * from './components/tooltip/tooltip';
