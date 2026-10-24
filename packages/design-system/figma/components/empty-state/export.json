@@ -1,0 +1,10 @@
+{
+  "name": "EmptyState",
+  "nodeId": "399:5549",
+  "variants": {
+    "default": {
+      "nodeId": "399:5549",
+      "properties": {}
+    }
+  }
+}
