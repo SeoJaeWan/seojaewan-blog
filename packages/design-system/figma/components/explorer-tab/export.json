@@ -1,0 +1,24 @@
+{
+  "name": "ExplorerTab",
+  "nodeId": "18:367",
+  "variants": {
+    "state=hover": {
+      "nodeId": "18:361",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "nodeId": "18:355",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=selected": {
+      "nodeId": "18:349",
+      "properties": {
+        "State": "Selected"
+      }
+    }
+  }
+}
