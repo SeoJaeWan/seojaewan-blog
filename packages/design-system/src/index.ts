@@ -20,6 +20,7 @@ export * from './components/message-box/message-box';
 export * from './components/navigation-item/navigation-item';
 export * from './components/pinned-tile/pinned-tile';
 export * from './components/popover/popover';
+export * from './components/post-nav-card/post-nav-card';
 export * from './components/progress-ring/progress-ring';
 export * from './components/rename-field/rename-field';
 export * from './components/scroll-area/scroll-area';
