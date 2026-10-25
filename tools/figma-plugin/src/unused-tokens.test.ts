@@ -45,6 +45,19 @@ describe('쓰는 곳이 없는 변수·스타일 알림(막지 않음)', () => {
     expect(notices).not.toContain('변수 focus-stroke/inner: 쓰는 곳이 없다');
   });
 
+  it('키프레임 이징으로만 쓰이는 변수는 알리지 않는다', () => {
+    const withEasing: UsageInput = {
+      ...input,
+      variables: [
+        ...input.variables,
+        { id: 'ease', name: 'motion/easing/standard', scopes: ['ALL_SCOPES'], aliasIds: [] },
+      ],
+    };
+    expect(unusedNotices(withEasing)).toContain('변수 motion/easing/standard: 쓰는 곳이 없다');
+    const notices = unusedNotices({ ...withEasing, nodeVariableIds: new Set(['ease']) });
+    expect(notices).not.toContain('변수 motion/easing/standard: 쓰는 곳이 없다');
+  });
+
   it('코드에서만 쓰는 변수(범위 없음)는 알리지 않는다', () => {
     expect(unusedNotices(input).some((notice) => notice.includes('motion'))).toBe(false);
   });
