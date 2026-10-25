@@ -17,7 +17,7 @@ const meta = {
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
   },
-  render: () => <SnapZone />,
+  render: () => <SnapZone label="왼쪽 절반" />,
 } satisfies Meta<ParityArgs>;
 
 export default meta;
