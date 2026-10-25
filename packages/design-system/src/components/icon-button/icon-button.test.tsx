@@ -11,6 +11,15 @@ describe('IconButton', () => {
     expect(screen.getByRole('button', { name: '더 보기' })).toBeInTheDocument();
   });
 
+  it.each([
+    ['standard', 'text-text-fill-primary'],
+    ['subtle', 'text-text-fill-primary'],
+    ['chrome', 'text-chrome-text-secondary'],
+  ] as const)('%s 변형은 %s 글자색 클래스를 갖는다', (variant, textClass) => {
+    render(<IconButton variant={variant} label="더 보기" />);
+    expect(screen.getByRole('button', { name: '더 보기' })).toHaveClass(textClass);
+  });
+
   it('누르거나 키보드로 실행하면 onClick을 부른다', async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();

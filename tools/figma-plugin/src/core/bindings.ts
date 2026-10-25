@@ -38,3 +38,63 @@ export function sourceLayerId(id: string): string | null {
   const parts = id.split(';');
   return parts.length > 1 ? (parts.at(-1) ?? null) : null;
 }
+
+/**
+ * 인스턴스가 덮어쓴 안쪽 레이어에 해당하는, 그 인스턴스의 원본 컴포넌트 안 레이어 ID를 구한다.
+ * 안쪽 레이어 ID `I<인스턴스 ID>;<나머지>`(인스턴스 ID가 이미 `I`로 시작하면 `<인스턴스 ID>;<나머지>`)에서 인스턴스 ID를 떼면 원본 컴포넌트 기준 ID가 된다
+ * (나머지가 `;`로 이어지면 원본 안 인스턴스의 안쪽 레이어라 앞에 `I`를 붙인다).
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param instanceId 덮어쓴 인스턴스 ID
+ * @param layerId 덮어쓴 레이어 ID
+ * @returns 원본 컴포넌트 안 레이어 ID. 그 인스턴스 안쪽 레이어가 아니면 null
+ */
+export function overrideSourceId(instanceId: string, layerId: string): string | null {
+  const prefix = instanceId.startsWith('I') ? `${instanceId};` : `I${instanceId};`;
+  if (!layerId.startsWith(prefix)) {
+    return null;
+  }
+  const rest = layerId.slice(prefix.length);
+  return rest.includes(';') ? `I${rest}` : rest;
+}
+
+/** 변수 연결을 비교할 기준 레이어 */
+export type BindingBase =
+  { kind: 'outer' } | { kind: 'swapped'; swappedId: string; sourceId: string | null };
+
+/**
+ * 덮어쓴 레이어의 변수 연결을 비교할 기준을 정한다.
+ * 변형 고르기·인스턴스 교체로 원본 컴포넌트가 바뀐 안쪽 인스턴스(`swappedIds`)와 그 안쪽 레이어는
+ * 원래 자리의 원본이 아니라 바꿔 끼운 새 원본 컴포넌트와 비교한다(`sourceId`가 null이면 새 원본 컴포넌트 자신).
+ * 품은 교체 인스턴스가 여럿이면 가장 안쪽 것을 쓴다. 바깥 인스턴스 자신의 교체는 이미 새 원본으로 읽으므로 따지지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param instanceId 덮어쓰기를 가진 바깥 인스턴스 ID
+ * @param layerId 덮어쓴 레이어 ID
+ * @param swappedIds 원본 컴포넌트를 바꾼 덮어쓰기 레이어 ID들
+ * @returns 비교 기준
+ */
+export function bindingBase(
+  instanceId: string,
+  layerId: string,
+  swappedIds: readonly string[],
+): BindingBase {
+  let swappedId: string | null = null;
+  for (const id of swappedIds) {
+    if (id === instanceId) {
+      continue;
+    }
+    if (
+      (layerId === id || layerId.startsWith(`${id};`)) &&
+      (swappedId === null || id.length > swappedId.length)
+    ) {
+      swappedId = id;
+    }
+  }
+  if (swappedId === null) {
+    return { kind: 'outer' };
+  }
+  return {
+    kind: 'swapped',
+    swappedId,
+    sourceId: layerId === swappedId ? null : overrideSourceId(swappedId, layerId),
+  };
+}

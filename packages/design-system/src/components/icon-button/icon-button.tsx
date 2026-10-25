@@ -5,10 +5,10 @@ import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-export type IconButtonVariant = 'standard' | 'subtle';
+export type IconButtonVariant = 'standard' | 'subtle' | 'chrome';
 
 type IconButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Style. standard는 기본 버튼, subtle은 배경 없는 버튼이다 */
+  /** 피그마 Style. standard는 기본 버튼, subtle은 배경 없는 버튼, chrome은 Chrome 도구 모음용으로 아이콘 색이 chrome/text-secondary다 */
   variant?: IconButtonVariant;
   /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
@@ -32,6 +32,12 @@ const variantClassNames = {
     'bg-subtle-fill-transparent text-text-fill-primary',
     'hover:not-data-disabled:bg-subtle-fill-secondary',
     'active:not-data-disabled:bg-subtle-fill-tertiary active:not-data-disabled:text-text-fill-secondary',
+    'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+  ],
+  chrome: [
+    'bg-subtle-fill-transparent text-chrome-text-secondary',
+    'hover:not-data-disabled:bg-subtle-fill-secondary',
+    'active:not-data-disabled:bg-subtle-fill-tertiary',
     'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
   ],
 } as const satisfies Record<IconButtonVariant, readonly string[]>;
