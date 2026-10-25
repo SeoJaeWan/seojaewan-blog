@@ -1,0 +1,84 @@
+{
+  "name": "Search/Body",
+  "nodeId": "557:4078",
+  "variants": {
+    "view=before-typing,device=desktop": {
+      "node": {
+        "height": 654,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:3521",
+      "properties": {
+        "Device": "Desktop",
+        "View": "Before typing"
+      }
+    },
+    "view=before-typing,device=mobile": {
+      "node": {
+        "height": 522,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:3791",
+      "properties": {
+        "Device": "Mobile",
+        "View": "Before typing"
+      }
+    },
+    "view=no-results,device=desktop": {
+      "node": {
+        "height": 654,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:3789",
+      "properties": {
+        "Device": "Desktop",
+        "View": "No results"
+      }
+    },
+    "view=no-results,device=mobile": {
+      "node": {
+        "height": 522,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:4076",
+      "properties": {
+        "Device": "Mobile",
+        "View": "No results"
+      }
+    },
+    "view=results,device=desktop": {
+      "node": {
+        "height": 654,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:3605",
+      "properties": {
+        "Device": "Desktop",
+        "View": "Results"
+      }
+    },
+    "view=results,device=mobile": {
+      "node": {
+        "height": 522,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "557:3900",
+      "properties": {
+        "Device": "Mobile",
+        "View": "Results"
+      }
+    }
+  }
+}
