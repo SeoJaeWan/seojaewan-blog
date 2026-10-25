@@ -20,6 +20,13 @@ describe('RenameField', () => {
     expect(input.selectionEnd).toBe('문서'.length);
   });
 
+  it('shouldSelectOnMount가 false면 포커스만 받고 선택하지 않는다', () => {
+    render(<RenameField aria-label="이름 바꾸기" text="문서" shouldSelectOnMount={false} />);
+    const input = screen.getByRole<HTMLInputElement>('textbox', { name: '이름 바꾸기' });
+    expect(input).toHaveFocus();
+    expect(input.selectionStart).toBe(input.selectionEnd);
+  });
+
   it('입력하면 선택된 이름을 바꾸고 onChange를 부른다', async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();
