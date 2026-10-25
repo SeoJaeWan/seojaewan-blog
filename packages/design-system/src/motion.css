@@ -297,6 +297,29 @@
 }
 
 /*
+ * 재부팅 화면 사라짐(견본 motion-boot-screen-exit). BootScreen 전체가 투명도 1 → 0으로 페이드하며 처음 상태의 바탕화면을 드러낸다.
+ * 견본의 호 회전·트림 트랙은 안의 ProgressRing이 이미 가진 motion-progress-ring과 같은 값이라 여기서 다시 만들지 않는다.
+ * 실행 중 값은 없다. 앱이 다시 시작을 마칠 때 BootScreen에 붙이고, 애니메이션이 끝날 때까지 화면에 남긴다.
+ * 끝 모습(투명도 0)을 빠질 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-boot-screen-exit {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-boot-screen-exit {
+  animation-name: motion-boot-screen-exit;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -311,7 +334,8 @@
   .motion-panel-enter,
   .motion-panel-exit,
   .motion-flyout-enter,
-  .motion-boot-screen-enter {
+  .motion-boot-screen-enter,
+  .motion-boot-screen-exit {
     animation: none;
   }
 }
