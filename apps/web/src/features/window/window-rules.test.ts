@@ -1,16 +1,24 @@
 import { describe, expect, it } from 'vitest';
 
-import type { WindowState, WindowWorkArea } from './window-rules';
+import type { OpenWindow, WindowState, WindowWorkArea } from './window-rules';
 import {
   closeWindow,
   focusWindow,
   getFrontWindowId,
+  getRemainingSnapZones,
+  getSnapFlip,
+  getSnapZoneRect,
   getTaskbarAppAction,
   getTaskbarAppIndicator,
+  getWindowRect,
   INITIAL_WINDOW_STATE,
+  maximizeWindow,
   minimizeWindow,
   openWindow,
+  restoreFromMaximize,
   restoreWindow,
+  snapWindow,
+  toggleMaximizeWindow,
 } from './window-rules';
 
 const WORK_AREA = { width: 1920, height: 1032 } as const;
@@ -135,5 +143,161 @@ describe('작업 표시줄:앱 버튼', () => {
       'running',
     );
     expect(getTaskbarAppIndicator(INITIAL_WINDOW_STATE, 'chrome')).toBe('none');
+  });
+});
+
+/**
+ * 상태에서 창 하나를 꺼낸다. 없으면 시험을 실패시킨다.
+ * @param state 상태
+ * @param id 창 id
+ * @returns 창
+ */
+function getWindow(state: WindowState, id: string): OpenWindow {
+  const target = state.windows[id];
+  if (target === undefined) {
+    throw new Error(`창 ${id}가 없다`);
+  }
+  return target;
+}
+
+// @codocs [[창 동작:창 조작]]
+describe('창 동작:창 조작 (최대화)', () => {
+  it('최대화하면 작업 영역을 채우고, 이전 크기로 복원하면 원래 크기와 위치로 돌아간다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const id = ids[0] ?? '';
+    const before = state.windows[id];
+    const maximized = maximizeWindow(state, id);
+    expect(maximized.windows[id]?.placement).toBe('maximized');
+    expect(getWindowRect(getWindow(maximized, id), WORK_AREA)).toEqual({
+      x: 0,
+      y: 0,
+      width: 1920,
+      height: 1032,
+    });
+    const restored = restoreFromMaximize(maximized, id);
+    expect(restored.windows[id]).toEqual(before);
+  });
+
+  it('제목 표시줄 더블클릭은 최대화와 복원을 번갈아 한다', () => {
+    const { state, ids } = openAll(['chrome']);
+    const id = ids[0] ?? '';
+    const once = toggleMaximizeWindow(state, id);
+    expect(once.windows[id]?.placement).toBe('maximized');
+    expect(toggleMaximizeWindow(once, id).windows[id]?.placement).toBe('normal');
+  });
+
+  it('스냅한 창을 최대화했다가 복원하면 바로 앞 모습(스냅 칸)으로 돌아간다', () => {
+    const { state, ids } = openAll(['chrome']);
+    const id = ids[0] ?? '';
+    const zone = { layout: 'half', index: 1 } as const;
+    const restored = restoreFromMaximize(maximizeWindow(snapWindow(state, id, zone), id), id);
+    expect(restored.windows[id]).toMatchObject({ placement: 'snapped', snapZone: zone });
+  });
+});
+
+// @codocs [[창 동작:스냅]]
+describe('창 동작:스냅', () => {
+  const area = { width: 1920, height: 1032 };
+
+  it('반반은 작업 영역을 좌우 절반으로 나눈다', () => {
+    expect(getSnapZoneRect({ layout: 'half', index: 0 }, area)).toEqual({
+      x: 0,
+      y: 0,
+      width: 960,
+      height: 1032,
+    });
+    expect(getSnapZoneRect({ layout: 'half', index: 1 }, area)).toEqual({
+      x: 960,
+      y: 0,
+      width: 960,
+      height: 1032,
+    });
+  });
+
+  it('2:1은 왼쪽 3분의 2와 오른쪽 3분의 1이다', () => {
+    expect(getSnapZoneRect({ layout: 'twothirds', index: 0 }, area)).toMatchObject({
+      x: 0,
+      width: 1280,
+    });
+    expect(getSnapZoneRect({ layout: 'twothirds', index: 1 }, area)).toMatchObject({
+      x: 1280,
+      width: 640,
+    });
+  });
+
+  it('반 + 4분의 1 두 칸은 왼쪽 절반과 오른쪽 위·아래다', () => {
+    expect(getSnapZoneRect({ layout: 'halfquarter', index: 0 }, area)).toEqual({
+      x: 0,
+      y: 0,
+      width: 960,
+      height: 1032,
+    });
+    expect(getSnapZoneRect({ layout: 'halfquarter', index: 1 }, area)).toEqual({
+      x: 960,
+      y: 0,
+      width: 960,
+      height: 516,
+    });
+    expect(getSnapZoneRect({ layout: 'halfquarter', index: 2 }, area)).toEqual({
+      x: 960,
+      y: 516,
+      width: 960,
+      height: 516,
+    });
+  });
+
+  it('4분할은 왼쪽 위·아래, 오른쪽 위·아래 순서이고, 나눠 떨어지지 않는 1px은 오른쪽·아래 칸이 갖는다', () => {
+    const odd = { width: 1001, height: 701 };
+    const rects = [0, 1, 2, 3].map((index) => getSnapZoneRect({ layout: 'quad', index }, odd));
+    expect(rects).toEqual([
+      { x: 0, y: 0, width: 501, height: 351 },
+      { x: 0, y: 351, width: 501, height: 350 },
+      { x: 501, y: 0, width: 500, height: 351 },
+      { x: 501, y: 351, width: 500, height: 350 },
+    ]);
+  });
+
+  it('칸을 채우면 남은 칸을 칸 번호 순서로 제안한다', () => {
+    expect(getRemainingSnapZones({ layout: 'quad', index: 1 }).map((zone) => zone.index)).toEqual([
+      0, 2, 3,
+    ]);
+    expect(getRemainingSnapZones({ layout: 'half', index: 0 })).toEqual([
+      { layout: 'half', index: 1 },
+    ]);
+  });
+
+  it('스냅하면 칸을 채우고 맨 앞으로 오며, 떠 있을 때의 자리는 지킨다', () => {
+    const { state, ids } = openAll(['chrome', 'file-explorer']);
+    const id = ids[0] ?? '';
+    const snapped = snapWindow(minimizeWindow(state, id), id, { layout: 'half', index: 0 });
+    expect(snapped.windows[id]).toMatchObject({
+      placement: 'snapped',
+      isMinimized: false,
+      bounds: state.windows[id]?.bounds,
+    });
+    expect(getFrontWindowId(snapped)).toBe(id);
+    expect(getWindowRect(getWindow(snapped, id), area)).toEqual(
+      getSnapZoneRect({ layout: 'half', index: 0 }, area),
+    );
+  });
+});
+
+// @codocs [[디자인 기반:모션 클래스]]
+describe('디자인 기반:모션 클래스 (FLIP)', () => {
+  it('시작 이동은 원점(가운데) 기준 두 자리의 중심 차이, 시작 배율은 크기 비율이다', () => {
+    const from = { x: 448, y: 196, width: 1024, height: 640 };
+    const to = { x: 0, y: 0, width: 1920, height: 1032 };
+    expect(getSnapFlip(from, to)).toEqual({
+      x: 960 - 960,
+      y: 516 - 516,
+      scaleX: 1024 / 1920,
+      scaleY: 640 / 1032,
+    });
+    expect(getSnapFlip(to, { x: 960, y: 0, width: 960, height: 1032 })).toEqual({
+      x: 960 - 1440,
+      y: 0,
+      scaleX: 2,
+      scaleY: 1,
+    });
   });
 });

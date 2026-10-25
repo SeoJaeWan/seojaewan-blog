@@ -8,10 +8,12 @@ import {
   getTaskbarAppAction,
   getTaskbarAppIndicator,
   getThumbnailScale,
+  getWindowRect,
   useWindowStore,
   WindowThumbnail,
 } from '@/features/window/window';
 import { useDevice } from '@/shared/viewport/use-device';
+import { useWorkArea } from '@/shared/viewport/use-work-area';
 
 import { getAppWindowTitle, renderAppWindow } from './app-windows';
 import { useOpenApp } from './use-open-app';
@@ -40,6 +42,7 @@ export function WorkspaceTaskbarApps(): JSX.Element {
   const close = useWindowStore((state) => state.close);
   const openApp = useOpenApp();
   const device = useDevice();
+  const workArea = useWorkArea();
   const [previewApp, setPreviewApp] = useState<WindowApp | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const state = { windows, order, lastSerial: 0 };
@@ -132,7 +135,8 @@ export function WorkspaceTaskbarApps(): JSX.Element {
    * @returns WindowThumbnail
    */
   function renderThumbnail(target: OpenWindow): JSX.Element {
-    const size = target.bounds;
+    // 최대화·스냅한 창은 화면에서 차지한 크기 그대로 줄인다.
+    const size = workArea === null ? target.bounds : getWindowRect(target, workArea);
     return (
       <WindowThumbnail
         width={size.width}

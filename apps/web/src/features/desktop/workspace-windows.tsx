@@ -1,5 +1,6 @@
 import type { JSX, ReactNode } from 'react';
 
+import { renderTaskbarAppIcon } from '@/features/taskbar/taskbar';
 import type { OpenWindow, WindowFrameControls } from '@/features/window/window';
 import { WindowLayer } from '@/features/window/window';
 import { useDevice } from '@/shared/viewport/use-device';
@@ -21,5 +22,20 @@ export function WorkspaceWindows(): JSX.Element {
   function renderWindow(target: OpenWindow, controls: WindowFrameControls): ReactNode {
     return renderAppWindow(target, controls, device);
   }
-  return <WindowLayer renderWindow={renderWindow} getWindowTitle={getAppWindowTitle} />;
+  return (
+    <WindowLayer
+      renderWindow={renderWindow}
+      getWindowTitle={getAppWindowTitle}
+      renderWindowIcon={renderWindowIcon}
+    />
+  );
+}
+
+/**
+ * 창 앱 아이콘을 그린다. Snap Assist 카드 머리글에 쓴다.
+ * @param target 열린 창
+ * @returns 앱 아이콘
+ */
+function renderWindowIcon(target: OpenWindow): ReactNode {
+  return renderTaskbarAppIcon(target.app);
 }
