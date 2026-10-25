@@ -18,6 +18,10 @@ const STORY_RENDERED_SCRIPT = `(() => {
   return body.contains('sb-show-main') && hasChild && (phase === undefined || phase === 'completed' || phase === 'finished' || phase === 'played');
 })()`;
 
+// 캡처할 때 움직임을 모두 끄는 스타일이다.
+const DISABLE_MOTION_CSS =
+  '*, *::before, *::after { animation: none !important; transition: none !important; }';
+
 export type StoryPageResult = { ok: true; target: Locator } | { ok: false; message: string };
 
 /**
@@ -40,6 +44,7 @@ export async function openStory(
   // Storybook은 iframe.html에 id·viewMode·args를 주면 그 스토리 하나만 그린다(URL args는 `key:value;key:!true`).
   const query = new URLSearchParams({ id: storyId, viewMode: 'story', args: storyArgsParam(args) });
   await page.goto(`${storybookUrl}/iframe.html?${query.toString()}`);
+  await disableMotion(page);
 
   const renderError = await waitForStory(page, storyId, args);
   if (renderError !== undefined) {
@@ -56,6 +61,16 @@ export async function openStory(
   }
   await finishTransitions(page);
   return { ok: true, target };
+}
+
+/**
+ * 모든 CSS 애니메이션과 전환을 끈다. 동작 줄이기만으로는 ProgressRing이 계속 돌기 때문이다.
+ * 전환이 꺼지면 Hover·Pressed 상태는 마우스 동작 직후 바로 끝 모습이 된다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param page 스토리 페이지
+ */
+async function disableMotion(page: Page): Promise<void> {
+  await page.addStyleTag({ content: DISABLE_MOTION_CSS });
 }
 
 /**
