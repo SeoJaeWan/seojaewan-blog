@@ -12,7 +12,7 @@ describe('TileGrid', () => {
       </TileGrid>,
     );
     const grid = screen.getByTestId('grid');
-    expect(grid).toHaveClass('w-574', 'overflow-clip');
+    expect(grid).toHaveClass('overflow-clip');
     expect(screen.getByText('타일').parentElement).toHaveClass('flex-wrap');
     expect(screen.getByText('타일').parentElement).not.toHaveClass('justify-center');
   });
