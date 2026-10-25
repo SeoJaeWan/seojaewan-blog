@@ -14,6 +14,8 @@ const PATTERNS_BRANCH_PREFIX = 'feat/figma-patterns-';
 
 /** 애니메이션 PR 브랜치 앞부분. 뒤에 견본 이름이 붙는다 */
 const MOTION_BRANCH_PREFIX = 'feat/figma-motion-';
+/** 브랜치 이름에서 빼는 견본 이름 앞부분 */
+const MOTION_NAME_PREFIX_PATTERN = /^motion-/u;
 
 /** PR 하나에 담긴 대상 하나의 변경(main 기준) */
 export type TargetChanges = {
@@ -349,15 +351,15 @@ function blobRoot(branch: string): string {
 }
 
 /**
- * 애니메이션 PR 브랜치 이름을 만든다. 견본마다 고정이다. `<이름>`은 견본 이름(`figma/motions/<이름>.json`의 이름) 그대로다.
- * 예: `motion-progress-ring` → `feat/figma-motion-motion-progress-ring`
+ * 애니메이션 PR 브랜치 이름을 만든다. 견본마다 고정이다. 견본 이름에서 앞의 `motion-`을 뺀 이름을 붙인다
+ * (json 파일 이름은 견본 이름 그대로다). 예: `motion-progress-ring` → `feat/figma-motion-progress-ring`
  * @codocs [[Git 작업 규칙:브랜치]]
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param name 견본 이름
  * @returns 브랜치 이름
  */
 export function motionBranchName(name: string): string {
-  return `${MOTION_BRANCH_PREFIX}${name}`;
+  return `${MOTION_BRANCH_PREFIX}${name.replace(MOTION_NAME_PREFIX_PATTERN, '')}`;
 }
 
 /**

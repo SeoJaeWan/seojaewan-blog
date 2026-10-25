@@ -72,8 +72,8 @@ describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이�
     expect(patternBranchName('menu')).toBe('feat/figma-patterns-menu');
   });
 
-  it('애니메이션은 견본마다 feat/figma-motion-<견본 이름>이다', () => {
-    expect(motionBranchName('motion-progress-ring')).toBe('feat/figma-motion-motion-progress-ring');
+  it('애니메이션은 견본마다 feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>이다', () => {
+    expect(motionBranchName('motion-progress-ring')).toBe('feat/figma-motion-progress-ring');
   });
 
   it('토큰·조립·애니메이션 브랜치와 겹치는 컴포넌트 이름은 막는다', () => {

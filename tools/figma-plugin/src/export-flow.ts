@@ -116,7 +116,7 @@ type PlacedPattern = PlacedTarget & { area: string };
 /**
  * 고른 컴포넌트·조립·애니메이션을 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에,
  * 조립은 영역마다 고정 브랜치(`feat/figma-patterns-<영역>`)의 PR에, 애니메이션은 견본마다 고정 브랜치
- * (`feat/figma-motion-<이름>`)의 PR에 커밋한다. 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
+ * (`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)의 PR에 커밋한다. 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
  * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만,
  * 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 토큰만 고르면 토큰만 내보낸다.
  * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
@@ -294,7 +294,7 @@ async function exportMotions(
 }
 
 /**
- * 애니메이션 견본 하나를 그 견본의 PR(`feat/figma-motion-<이름>`)에 커밋한다. `figma/motions/<이름>.json`만 바꾼다.
+ * 애니메이션 견본 하나를 그 견본의 PR(`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)에 커밋한다. `figma/motions/<이름>.json`만 바꾼다.
  * 브랜치와 내용이 같으면 커밋하지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param token GitHub 토큰
