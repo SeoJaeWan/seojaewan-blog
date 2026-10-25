@@ -1,0 +1,30 @@
+{
+  "name": "Taskbar/AppMenu",
+  "nodeId": "564:7290",
+  "variants": {
+    "state=closed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:7239",
+      "properties": {
+        "State": "Closed"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 121,
+        "y": 123
+      },
+      "nodeId": "564:7249",
+      "properties": {
+        "State": "Open"
+      }
+    }
+  }
+}

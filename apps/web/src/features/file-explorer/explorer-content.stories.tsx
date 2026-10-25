@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
+import { FOLDER_LOCATION_ICON } from '@/shared/story-data/explorer';
+
 import { ExplorerContent } from './explorer-content';
-import { EMPTY_SLOT_SIZE, FOLDER_LOCATION_ICON, STATUS_BAR_TEXT } from './story-data';
+import { EMPTY_SLOT_SIZE, STATUS_BAR_TEXT } from './story-data';
 
 // 피그마 Explorer/Content의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;

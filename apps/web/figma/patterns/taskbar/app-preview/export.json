@@ -1,0 +1,30 @@
+{
+  "name": "Taskbar/AppPreview",
+  "nodeId": "564:9885",
+  "variants": {
+    "state=closed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:9201",
+      "properties": {
+        "State": "Closed"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 213,
+        "y": 187
+      },
+      "nodeId": "564:9211",
+      "properties": {
+        "State": "Open"
+      }
+    }
+  }
+}
