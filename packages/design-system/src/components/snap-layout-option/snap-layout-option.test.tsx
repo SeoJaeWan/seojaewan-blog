@@ -49,4 +49,9 @@ describe('SnapLayoutOption', () => {
     await user.click(screen.getByRole('button', { name: '왼쪽 절반' }));
     expect(handleSelectZone.mock.calls).toEqual([[2], [0]]);
   });
+
+  it('칸 묶음은 레이아웃 이름을 가진 group이다. 같은 이름의 칸이 여러 레이아웃에 있어 구별한다', () => {
+    render(<SnapLayoutOption layout="halfquarter" />);
+    expect(screen.getByRole('group', { name: '절반과 4분의 1 두 칸' })).toBeInTheDocument();
+  });
 });

@@ -11,7 +11,12 @@ export type {
   WindowApp,
   WindowPlacement,
 } from './window-rules';
-export { getAppWindows, getTaskbarAppAction, getTaskbarAppIndicator } from './window-rules';
+export {
+  getAppWindows,
+  getTaskbarAppAction,
+  getTaskbarAppIndicator,
+  getWindowRect,
+} from './window-rules';
 export { useWindowStore } from './window-store';
 export { WindowThumbnail } from './window-thumbnail';
 export type { RenderWindow, WindowFrameControls } from './window-view';

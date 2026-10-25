@@ -16,8 +16,30 @@ export type WindowBounds = {
   height: number;
 };
 
-/** 창 배치. 최대화·스냅은 다음 단계에서 붙인다 */
+/** 창 배치. normal은 떠 있는 창, maximized는 작업 영역을 채운 창, snapped는 스냅 칸을 채운 창이다 */
 export type WindowPlacement = 'normal' | 'maximized' | 'snapped';
+
+/** 스냅 레이아웃 종류. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할이다(디자인 시스템 `SnapLayoutOption`과 같은 이름) */
+export type SnapLayout = 'half' | 'twothirds' | 'halfquarter' | 'quad';
+
+/**
+ * 스냅 칸 하나. 칸 번호는 왼쪽 열 위에서 아래, 오른쪽 열 위에서 아래 순서의 0부터다
+ * (디자인 시스템 `SnapLayoutOption`의 칸 번호와 같다).
+ */
+export type SnapZone = {
+  /** 레이아웃 */
+  layout: SnapLayout;
+  /** 칸 번호 */
+  index: number;
+};
+
+/** 최대화하기 바로 앞의 모습. 이전 크기로 복원하면 이 모습으로 돌아간다 */
+export type WindowRestorePoint = {
+  /** 배치 */
+  placement: Exclude<WindowPlacement, 'maximized'>;
+  /** 스냅해 있었으면 그 칸 */
+  snapZone: SnapZone | null;
+};
 
 /** 열린 창 하나 */
 export type OpenWindow = {
@@ -27,10 +49,14 @@ export type OpenWindow = {
   app: WindowApp;
   /** 연 차례(1부터). 화면에 그리는 DOM 순서를 고정하는 데 쓴다 */
   serial: number;
-  /** 떠 있을 때의 자리 */
+  /** 떠 있을 때(placement normal)의 자리. 최대화·스냅해도 지우지 않아 떠 있는 창으로 돌아갈 때 쓴다 */
   bounds: WindowBounds;
   /** 배치 */
   placement: WindowPlacement;
+  /** 스냅한 칸. placement가 snapped일 때만 있다 */
+  snapZone: SnapZone | null;
+  /** 최대화하기 바로 앞의 모습. placement가 maximized일 때만 있다 */
+  previous: WindowRestorePoint | null;
   /** 최소화됐는지 */
   isMinimized: boolean;
 };
@@ -126,6 +152,8 @@ export function openWindow(
     serial,
     bounds: { ...position, width, height },
     placement: 'normal',
+    snapZone: null,
+    previous: null,
     isMinimized: false,
   };
   return {
@@ -273,6 +301,214 @@ export function getTaskbarAppIndicator(state: WindowState, app: WindowApp): Task
     return 'active';
   }
   return getAppWindows(state, app).length > 0 ? 'running' : 'none';
+}
+
+/**
+ * 창을 최대화한다. 바로 앞 모습(떠 있는 창 또는 스냅 칸)을 기억해 이전 크기로 복원할 때 돌아간다.
+ * 이미 최대화한 창은 그대로 둔다.
+ * @codocs [[창 동작:창 조작]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @returns 새 상태
+ */
+export function maximizeWindow(state: WindowState, id: string): WindowState {
+  const target = state.windows[id];
+  if (target === undefined || target.placement === 'maximized') {
+    return state;
+  }
+  return replaceWindow(state, {
+    ...target,
+    placement: 'maximized',
+    snapZone: null,
+    previous: { placement: target.placement, snapZone: target.snapZone },
+  });
+}
+
+/**
+ * 최대화한 창을 이전 크기로 복원한다. 최대화하기 바로 앞 모습으로 돌아간다. 스냅한 창을 최대화했다면 그 스냅 칸으로 돌아간다.
+ * 최대화하지 않은 창은 그대로 둔다.
+ * @codocs [[창 동작:창 조작]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @returns 새 상태
+ */
+export function restoreFromMaximize(state: WindowState, id: string): WindowState {
+  const target = state.windows[id];
+  if (target === undefined || target.placement !== 'maximized') {
+    return state;
+  }
+  const restorePoint = target.previous ?? { placement: 'normal', snapZone: null };
+  return replaceWindow(state, {
+    ...target,
+    placement: restorePoint.placement,
+    snapZone: restorePoint.snapZone,
+    previous: null,
+  });
+}
+
+/**
+ * 최대화한 창은 이전 크기로 복원하고, 아니면 최대화한다(제목 표시줄 더블클릭).
+ * @codocs [[창 동작:창 조작]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @returns 새 상태
+ */
+export function toggleMaximizeWindow(state: WindowState, id: string): WindowState {
+  return state.windows[id]?.placement === 'maximized'
+    ? restoreFromMaximize(state, id)
+    : maximizeWindow(state, id);
+}
+
+/**
+ * 창을 스냅 칸에 맞춘다. 떠 있을 때의 자리(`bounds`)는 그대로 두어, 나중에 끌어서 떼면 스냅하기 전 크기로 돌아갈 수 있다.
+ * Snap Assist에서 고른 창도 이 함수로 칸을 채우므로, 최소화된 창은 복원하고 맨 앞으로 가져온다.
+ * @codocs [[창 동작:스냅]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @param zone 채울 칸
+ * @returns 새 상태
+ */
+export function snapWindow(state: WindowState, id: string, zone: SnapZone): WindowState {
+  const target = state.windows[id];
+  if (target === undefined) {
+    return state;
+  }
+  return {
+    ...replaceWindow(state, {
+      ...target,
+      placement: 'snapped',
+      snapZone: zone,
+      previous: null,
+      isMinimized: false,
+    }),
+    order: moveToEnd(state.order, id),
+  };
+}
+
+// 레이아웃마다 왼쪽 열이 차지하는 너비 비율이다.
+const snapLeftColumnRatios = {
+  half: 1 / 2,
+  twothirds: 2 / 3,
+  halfquarter: 1 / 2,
+  quad: 1 / 2,
+} as const satisfies Record<SnapLayout, number>;
+
+/** 칸 하나의 자리. 열(0 왼쪽, 1 오른쪽), 열 안의 줄(0 위, 1 아래), 열을 나눈 줄 수다 */
+type SnapCell = { column: 0 | 1; row: 0 | 1; rows: 1 | 2 };
+
+// 레이아웃마다 칸 번호 순서(왼쪽 열 위에서 아래, 오른쪽 열 위에서 아래)의 칸 자리다.
+const snapCells = {
+  half: [
+    { column: 0, row: 0, rows: 1 },
+    { column: 1, row: 0, rows: 1 },
+  ],
+  twothirds: [
+    { column: 0, row: 0, rows: 1 },
+    { column: 1, row: 0, rows: 1 },
+  ],
+  halfquarter: [
+    { column: 0, row: 0, rows: 1 },
+    { column: 1, row: 0, rows: 2 },
+    { column: 1, row: 1, rows: 2 },
+  ],
+  quad: [
+    { column: 0, row: 0, rows: 2 },
+    { column: 0, row: 1, rows: 2 },
+    { column: 1, row: 0, rows: 2 },
+    { column: 1, row: 1, rows: 2 },
+  ],
+} as const satisfies Record<SnapLayout, readonly SnapCell[]>;
+
+/**
+ * 스냅 칸이 작업 영역에서 차지하는 자리를 구한다. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할의 네 레이아웃이다.
+ * 칸은 빈틈 없이 작업 영역을 나누고, 나눠 떨어지지 않는 1px은 오른쪽·아래 칸이 갖는다.
+ * 없는 칸 번호면 작업 영역 전체를 돌려준다.
+ * @codocs [[창 동작:스냅]]
+ * @param zone 칸
+ * @param workArea 작업 영역 크기
+ * @returns 칸 자리
+ */
+export function getSnapZoneRect(zone: SnapZone, workArea: WindowWorkArea): WindowBounds {
+  const cell: SnapCell | undefined = snapCells[zone.layout][zone.index];
+  if (cell === undefined) {
+    return { x: 0, y: 0, width: workArea.width, height: workArea.height };
+  }
+  const leftWidth = Math.round(workArea.width * snapLeftColumnRatios[zone.layout]);
+  const topHeight = cell.rows === 1 ? workArea.height : Math.round(workArea.height / 2);
+  return {
+    x: cell.column === 0 ? 0 : leftWidth,
+    y: cell.row === 0 ? 0 : topHeight,
+    width: cell.column === 0 ? leftWidth : workArea.width - leftWidth,
+    height: cell.row === 0 ? topHeight : workArea.height - topHeight,
+  };
+}
+
+/**
+ * 한 칸을 채운 뒤 남은 칸을 칸 번호 순서로 구한다. Snap Assist가 이 차례대로 한 칸씩 제안한다.
+ * @codocs [[창 동작:스냅]]
+ * @param zone 채운 칸
+ * @returns 남은 칸들
+ */
+export function getRemainingSnapZones(zone: SnapZone): SnapZone[] {
+  return snapCells[zone.layout]
+    .map((_cell, index) => ({ layout: zone.layout, index }))
+    .filter((item) => item.index !== zone.index);
+}
+
+/**
+ * 창이 지금 화면에서 차지하는 자리를 구한다. 떠 있으면 `bounds`, 최대화면 작업 영역 전체, 스냅이면 그 칸이다.
+ * @codocs [[창 동작:스냅]]
+ * @param window 창
+ * @param workArea 작업 영역 크기
+ * @returns 창 자리
+ */
+export function getWindowRect(window: OpenWindow, workArea: WindowWorkArea): WindowBounds {
+  if (window.placement === 'maximized') {
+    return { x: 0, y: 0, width: workArea.width, height: workArea.height };
+  }
+  if (window.placement === 'snapped' && window.snapZone !== null) {
+    return getSnapZoneRect(window.snapZone, workArea);
+  }
+  return window.bounds;
+}
+
+/** 최대화·복원·스냅 FLIP의 시작 값. 새 자리에서 이전 자리로 되돌리는 이동(px)과 배율이다 */
+export type SnapFlip = {
+  /** 가로 이동 */
+  x: number;
+  /** 세로 이동 */
+  y: number;
+  /** 가로 배율 */
+  scaleX: number;
+  /** 세로 배율 */
+  scaleY: number;
+};
+
+/**
+ * 최대화·복원·스냅 모션(`motion-window-snap`)의 시작 값을 구한다(FLIP). 창을 새 자리로 바로 옮긴 뒤 이 값으로 이전 자리·크기에
+ * 맞추면, 클래스가 이동 0·배율 1로 되돌린다. 원점이 가운데라 이동은 두 자리의 중심 차이, 배율은 크기 비율이다.
+ * @codocs [[디자인 기반:모션 클래스]]
+ * @param from 이전 자리
+ * @param to 새 자리
+ * @returns 시작 이동과 배율
+ */
+export function getSnapFlip(from: WindowBounds, to: WindowBounds): SnapFlip {
+  return {
+    x: from.x + from.width / 2 - (to.x + to.width / 2),
+    y: from.y + from.height / 2 - (to.y + to.height / 2),
+    scaleX: to.width > 0 ? from.width / to.width : 1,
+    scaleY: to.height > 0 ? from.height / to.height : 1,
+  };
+}
+
+/**
+ * 창 하나를 바꾼 상태를 만든다.
+ * @param state 지금 상태
+ * @param window 바꾼 창
+ * @returns 새 상태
+ */
+function replaceWindow(state: WindowState, window: OpenWindow): WindowState {
+  return { ...state, windows: { ...state.windows, [window.id]: window } };
 }
 
 /**
