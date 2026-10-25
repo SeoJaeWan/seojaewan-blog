@@ -24,14 +24,14 @@ export const PATTERN_TITLE_PREFIX = 'Patterns/';
 // 상호작용으로 재현하는 상태 속성 이름(정규화한 이름)이다.
 const STATE_PROPERTY = 'state';
 
-// 상태 값마다 브라우저에서 재현할 상호작용이다. 여기에 없는 값(rest, disabled, selected 등)은 args로만 넘긴다.
+// 상태 값마다 브라우저에서 재현할 상호작용이다. 여기에 없는 값(rest, disabled, selected, active 등)은 args로만 넘긴다.
+// Active는 누르는 중이 아니라 활성 창·지금 고른 탭이라 args로 재현한다(@codocs [[컴포넌트 목록:상태]]).
 const interactionByState = new Map<string, Interaction>([
   ['hover', 'hover'],
   ['hovered', 'hover'],
   ['pointer-over', 'hover'],
   ['pressed', 'pressed'],
   ['pressed-down', 'pressed'],
-  ['active', 'pressed'],
   ['focus', 'focus'],
   ['focused', 'focus'],
   ['focus-visible', 'focus'],
