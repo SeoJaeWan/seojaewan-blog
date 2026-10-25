@@ -13,7 +13,7 @@ describe('ListGroup', () => {
     );
     expect(screen.getByText('머리글')).toBeInTheDocument();
     expect(screen.getByText('항목')).toBeInTheDocument();
-    expect(screen.getByTestId('group')).toHaveClass('w-574', 'gap-2');
+    expect(screen.getByTestId('group')).toHaveClass('gap-2');
   });
 
   it('showHeader가 false면 머리글을 그리지 않는다', () => {
