@@ -1,6 +1,6 @@
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
 import type { CheckContext, SizeVariable } from './core/check-structure';
-import { defaultFloatValue } from './core/read-motion';
+import { defaultFloatValue, isMotionApiError } from './core/read-motion';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -228,6 +228,7 @@ export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
       collectAliasIds(value, usage.variableIds);
     }
   }
+  collectKeyframeVariableIds(node, usage.variableIds);
   for (const key of ['fillStyleId', 'strokeStyleId', 'effectStyleId', 'textStyleId'] as const) {
     const id: unknown = key in node ? Reflect.get(node, key) : undefined;
     if (typeof id === 'string' && id !== '') {
@@ -250,6 +251,26 @@ export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
     }
     collectAliasIds(segment.fills, usage.variableIds);
     collectAliasIds(segment.boundVariables, usage.variableIds);
+  }
+}
+
+/**
+ * 노드의 키프레임 트랙(`manualKeyframeTracks`)에서 키프레임 이징이 연결한 변수(EASING 변수 별칭)를 모은다.
+ * 효과·칠 등 다른 트랙 안의 같은 모양도 함께 센다. 모션 API를 쓸 수 없는 계정이면 건너뛴다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @param ids 모을 곳
+ */
+function collectKeyframeVariableIds(node: SceneNode, ids: Set<string>): void {
+  if (!('manualKeyframeTracks' in node)) {
+    return;
+  }
+  try {
+    collectAliasIds(node.manualKeyframeTracks, ids);
+  } catch (error) {
+    if (!isMotionApiError(error)) {
+      throw error;
+    }
   }
 }
 
