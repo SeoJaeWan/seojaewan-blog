@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 import { cn } from '../../cn';
-import { Scrollbar, type ScrollbarMaterial } from '../scrollbar/scrollbar';
+import { Scrollbar, type ScrollbarMaterial } from './scrollbar';
 
 export type ScrollAreaMaterial = ScrollbarMaterial;
 
