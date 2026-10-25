@@ -25,7 +25,7 @@ const meta = {
     device: { control: 'inline-radio', options: DEVICES },
   },
   // 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯의 미리보기 크기만 칠 없는 빈 요소로 채운다.
-  // 상태 줄 글자는 피그마 ExplorerContent가 안쪽 ExplorerStatusBar에 넣어 둔 값이다.
+  // 상태 줄 글자는 넘기지 않아 안쪽 ExplorerStatusBar의 피그마 기본값(항목 개수, 선택 정보)을 쓴다.
   render: (args) => (
     <ExplorerContent
       device={args.device}
@@ -34,8 +34,6 @@ const meta = {
       path={<div className="shrink-0" style={{ width: 100, height: 100 }} />}
       commands={<div className="w-full" style={{ height: 32 }} />}
       navigation={<div className="shrink-0" style={{ width: 240, height: 192 }} />}
-      itemCount="항목 6개"
-      selection="1개 항목 선택함"
     />
   ),
 } satisfies Meta<ParityArgs>;
