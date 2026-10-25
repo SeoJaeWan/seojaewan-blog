@@ -31,7 +31,7 @@ type BrowserToolbarProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 /**
  * Chrome 이동 버튼과 주소창 줄(피그마 BrowserToolbar)을 그린다. Chrome 창의 탭 줄 아래에 쓴다.
- * 뒤로·앞으로·새로고침·더보기는 IconButton(`variant="subtle"`), 주소창은 AddressBar 인스턴스다.
+ * 뒤로·앞으로·새로고침·더보기는 IconButton(`variant="chrome"`), 주소창은 AddressBar 인스턴스다.
  * 여러 곳에서 같은 방식으로 쓰는 컴포넌트라 고정 부품의 동작(버튼 클릭, 주소 입력값)만 prop으로 연다.
  * 너비는 갖지 않는다. 피그마 원본 너비 1000은 미리보기 크기로만 두고, 쓰는 곳이 `className`으로 정한다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
@@ -59,25 +59,25 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
       className={cn('flex h-46 items-center gap-4 bg-chrome-toolbar-fill px-8', className)}
     >
       <IconButton
-        variant="subtle"
+        variant="chrome"
         label={backLabel}
         icon="icons/ic_fluent_arrow_left_20_regular.svg"
         onClick={handleBack}
-        className="shrink-0 text-chrome-text-secondary"
+        className="shrink-0"
       />
       <IconButton
-        variant="subtle"
+        variant="chrome"
         label={forwardLabel}
         icon="icons/ic_fluent_arrow_right_20_regular.svg"
         onClick={handleForward}
-        className="shrink-0 text-chrome-text-secondary"
+        className="shrink-0"
       />
       <IconButton
-        variant="subtle"
+        variant="chrome"
         label={refreshLabel}
         icon="icons/ic_fluent_arrow_clockwise_20_regular.svg"
         onClick={handleRefresh}
-        className="shrink-0 text-chrome-text-secondary"
+        className="shrink-0"
       />
       <AddressBar
         aria-label={addressLabel}
@@ -86,11 +86,11 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
         className="min-w-0 flex-1"
       />
       <IconButton
-        variant="subtle"
+        variant="chrome"
         label={menuLabel}
         icon="icons/ic_fluent_more_vertical_20_regular.svg"
         onClick={handleMenu}
-        className="shrink-0 text-chrome-text-secondary"
+        className="shrink-0"
       />
     </div>
   );
