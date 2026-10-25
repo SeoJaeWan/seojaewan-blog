@@ -62,7 +62,7 @@ export function IconButton(props: IconButtonProps): JSX.Element {
       className={cn(
         'relative isolate inline-flex size-control-height items-center justify-center rounded-control select-none',
         'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         ...variantClassNames[variant],
         className,
       )}

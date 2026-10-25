@@ -382,7 +382,19 @@ function variableValue(value: VariableValue): VariableValueInput {
   if ('r' in value && 'g' in value && 'b' in value) {
     return { r: value.r, g: value.g, b: value.b, a: 'a' in value ? value.a : 1 };
   }
-  return unsupported('색·숫자·문자열·별칭이 아닌 값');
+  // EASING 변수 값(MotionEasing). 플러그인 API 문서에 없는 기능이라 모양을 하나씩 확인한다.
+  if ('type' in value && typeof value.type === 'string') {
+    const curve =
+      'easingFunctionCubicBezier' in value ? value.easingFunctionCubicBezier : undefined;
+    return {
+      type: 'EASING',
+      easingType: value.type,
+      ...(curve === undefined
+        ? {}
+        : { cubicBezier: { x1: curve.x1, y1: curve.y1, x2: curve.x2, y2: curve.y2 } }),
+    };
+  }
+  return unsupported('색·숫자·문자열·별칭·이징이 아닌 값');
 }
 
 /**

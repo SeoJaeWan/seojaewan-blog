@@ -58,7 +58,17 @@ export const variables: VariableInput[] = [
   variable('font/size/body', 'FLOAT', 14, 'Typography'),
   variable('font/line-height/body', 'FLOAT', 20, 'Typography'),
   variable('motion/easing/point-to-point', 'STRING', 'cubic-bezier(0.55, 0.55, 0, 1)', 'Motion'),
-  variable('motion/easing/fade', 'STRING', 'linear', 'Motion'),
+  variable(
+    'motion/easing/direct-entrance',
+    'EASING',
+    {
+      type: 'EASING',
+      easingType: 'CUSTOM_CUBIC_BEZIER',
+      cubicBezier: { x1: 0, y1: 0, x2: 0, y2: 1 },
+    },
+    'Motion',
+  ),
+  variable('motion/easing/fade', 'EASING', { type: 'EASING', easingType: 'LINEAR' }, 'Motion'),
 ];
 
 export const bodyStyle: TextStyleInput = {

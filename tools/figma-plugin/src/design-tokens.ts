@@ -9,14 +9,22 @@ export type VariableAlias = { type: 'VARIABLE_ALIAS'; id: string };
 /** 계약에 없는 피그마 값. 변환하면 중단 사유로 보고한다. */
 export type UnsupportedValue = { type: 'UNSUPPORTED'; description: string };
 
+/** 피그마 `EASING` 변수 값. 곡선(`CUSTOM_CUBIC_BEZIER`)이면 제어점 네 숫자를 함께 담는다. */
+export type EasingValue = {
+  type: 'EASING';
+  /** 피그마 이징 종류(`LINEAR`, `CUSTOM_CUBIC_BEZIER`, 스프링 등) */
+  easingType: string;
+  cubicBezier?: { x1: number; y1: number; x2: number; y2: number };
+};
+
 export type VariableValueInput =
-  boolean | number | string | FigmaColor | VariableAlias | UnsupportedValue;
+  boolean | number | string | FigmaColor | VariableAlias | EasingValue | UnsupportedValue;
 
 export type VariableInput = {
   id: string;
   name: string;
   collection: string;
-  /** 피그마 변수 타입. COLOR·FLOAT·STRING 밖의 타입(BOOLEAN 등)은 계약에 없다. */
+  /** 피그마 변수 타입. COLOR·FLOAT·STRING·EASING 밖의 타입(BOOLEAN 등)은 계약에 없다. */
   resolvedType: string;
   scopes: readonly string[];
   /** 컬렉션 기본 모드의 값 */
@@ -323,6 +331,14 @@ function variableType(
     }
     return 'dimension';
   }
+  // 이징은 피그마가 곡선으로 재생하는 EASING 변수가 기준이고, 옮기는 동안 남은 STRING 변수도 읽는다.
+  if (variable.resolvedType === 'EASING') {
+    if (name.startsWith('motion/easing/')) {
+      return 'cubicBezier';
+    }
+    context.problems.push(`${label}: 이 이름의 ${variable.resolvedType} 변수는 계약에 없다`);
+    return null;
+  }
   if (variable.resolvedType !== 'STRING') {
     context.problems.push(`${label}: ${variable.resolvedType} 변수는 계약에 없다`);
     return null;
@@ -346,7 +362,13 @@ function variableType(
  * @param value 변수 값
  * @returns `$value`, 타입과 값이 맞지 않으면 null
  */
-function literalValue(type: string, value: boolean | number | string | FigmaColor): JsonValue {
+function literalValue(
+  type: string,
+  value: boolean | number | string | FigmaColor | EasingValue,
+): JsonValue {
+  if (isEasing(value)) {
+    return type === 'cubicBezier' ? easingCubicBezier(value) : null;
+  }
   if (type === 'color') {
     return typeof value === 'object' ? colorToHex(value) : null;
   }
@@ -369,6 +391,23 @@ function literalValue(type: string, value: boolean | number | string | FigmaColo
     return fontWeights[value] ?? null;
   }
   return type === 'cubicBezier' ? parseCubicBezier(value) : null;
+}
+
+/**
+ * `EASING` 변수 값을 베지어 네 숫자로 바꾼다. 직선은 문자열 `linear`와 같은 `[0, 0, 1, 1]`이다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param easing 이징 변수 값
+ * @returns `[x1, y1, x2, y2]`, 곡선·직선이 아니면(스프링 등) null
+ */
+function easingCubicBezier(easing: EasingValue): number[] | null {
+  if (easing.easingType === 'LINEAR') {
+    return [0, 0, 1, 1];
+  }
+  const curve = easing.cubicBezier;
+  if (easing.easingType !== 'CUSTOM_CUBIC_BEZIER' || curve === undefined) {
+    return null;
+  }
+  return [curve.x1, curve.y1, curve.x2, curve.y2].map(roundNumber);
 }
 
 /**
@@ -823,6 +862,15 @@ function isGroup(value: JsonValue): value is JsonObject {
  */
 function isAlias(value: VariableValueInput): value is VariableAlias {
   return typeof value === 'object' && 'type' in value && value.type === 'VARIABLE_ALIAS';
+}
+
+/**
+ * 변수 값이 `EASING` 변수 값인지 확인한다.
+ * @param value 변수 값
+ * @returns 이징 값이면 true
+ */
+function isEasing(value: VariableValueInput): value is EasingValue {
+  return typeof value === 'object' && 'type' in value && value.type === 'EASING';
 }
 
 /**

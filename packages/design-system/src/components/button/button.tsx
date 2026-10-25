@@ -66,7 +66,7 @@ export function Button(props: ButtonProps): JSX.Element {
       className={cn(
         'relative isolate inline-flex min-w-120 items-center justify-center gap-8 rounded-control px-12 py-6 whitespace-nowrap select-none',
         'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         ...variantClassNames[variant],
         className,
       )}

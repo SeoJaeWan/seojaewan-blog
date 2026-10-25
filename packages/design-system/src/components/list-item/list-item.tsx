@@ -63,7 +63,7 @@ export function ListItem(props: ListItemProps): JSX.Element {
       className={cn(
         'flex items-center gap-12 rounded-control px-12 py-4 select-none',
         isTwoLine ? 'h-52' : 'h-36',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         isSelected
           ? 'bg-control-alt-fill-tertiary'
           : 'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',

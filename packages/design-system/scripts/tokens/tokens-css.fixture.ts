@@ -95,7 +95,10 @@ export const TOKENS_FIXTURE = {
   opacity: { cut: variable('number', 50, ['OPACITY']) },
   motion: {
     duration: { fast: variable('duration', { unit: 'ms', value: 167 }) },
-    easing: { fade: variable('cubicBezier', [0, 0, 1, 1]) },
+    easing: {
+      'direct-entrance': variable('cubicBezier', [0, 0, 0, 1]),
+      fade: variable('cubicBezier', [0, 0, 1, 1]),
+    },
     scale: { enter: variable('number', 0.9599999785) },
   },
   font: {
