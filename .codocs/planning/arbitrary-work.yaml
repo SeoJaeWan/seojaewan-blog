@@ -100,6 +100,8 @@ _codocs:
   | #208 스냅(병합) | `normalBounds` 없이 `bounds`를 떠 있을 때의 자리로 지키고, 그리는 자리는 `getWindowRect`. FLIP 클래스는 처음 바뀔 때 classList로 붙임(마운트 때 변수 없이 재생 방지). 배치가 바뀔 때만 재생 |
   | #208 | 스냅 선택지는 Base UI Popover 포털 + hover 열기(창 `overflow-clip`에 잘려서). 등장 모션 없음(모션 표에 없음). DS `SnapLayoutOption`에 레이아웃 group 이름(반반 / 3분의 2와 3분의 1 / 절반과 4분의 1 두 칸 / 4분할) |
   | #208 | Snap Assist: 제안은 최근 맨 앞 창부터, 최소화된 창도 넣고 고르면 복원, 카드 닫기 버튼은 그 창을 닫음. 이름 dialog "Snap Assist", 팝업 "스냅 레이아웃". 문서 [[창 동작:스냅]]에 두 줄 추가(남은 칸 순서대로 제안, 스냅 창 최대화 → 복원은 스냅 칸으로) |
+  | #209 다시 시작(병합) | 단계 이동 규칙은 `workspace-store.ts` 동작에 두고(idle → covering → showing → revealing, 차례 아닌 호출 무시) `RestartScreen`은 효과에서 부른다. start-menu는 desktop을 import할 수 없어 `onRestart` prop으로 받는다 |
+  | #209 | 남은 것: 재부팅 화면이 보이는 동안 아래 바탕화면에 `inert`가 없음(키보드 포커스가 갈 수 있음), 다시 시작한 뒤 포커스 위치 미정. `persist` 저장소는 아직 없어 등록 방식만 둠 |
 작업 환경: |
   저장소 밖, 클라우드 컨테이너에서만 바꾼 것이다.
 
