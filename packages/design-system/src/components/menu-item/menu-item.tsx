@@ -4,12 +4,16 @@ import type { JSX, ReactNode } from 'react';
 import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
+import { ImageAsset, type ImageAssetName } from '../image-asset/image-asset';
 
 type MenuItemCommonProps = {
   /** 항목 이름. 길면 한 줄로 말줄임한다 */
   label: string;
-  /** 이름 앞 16px 아이콘(피그마 Show icon). 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다 */
-  icon?: SvgAssetName;
+  /**
+   * 이름 앞 16px 아이콘(피그마 Show icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
+   * 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
+   */
+  icon?: SvgAssetName | ImageAssetName;
   /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Show shortcut) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
@@ -75,8 +79,7 @@ const SECONDARY_TEXT_CLASS_NAME =
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = cn(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
-  const icon =
-    props.icon === undefined ? undefined : <Asset name={props.icon} className="size-icon-16" />;
+  const icon = props.icon === undefined ? undefined : <MenuItemIcon name={props.icon} />;
   switch (props.kind) {
     case 'submenu':
       return (
@@ -135,6 +138,27 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         </Menu.Item>
       );
   }
+}
+
+/**
+ * 아이콘 자리의 자산을 그린다. 래스터 자산(`images/*`)은 ImageAsset, 나머지는 SVG Asset으로 그린다.
+ * @param props
+ * @param props.name 자산 이름
+ */
+function MenuItemIcon(props: { name: SvgAssetName | ImageAssetName }): JSX.Element {
+  if (isImageAssetName(props.name)) {
+    return <ImageAsset name={props.name} className="size-icon-16 object-contain" />;
+  }
+  return <Asset name={props.name} className="size-icon-16" />;
+}
+
+/**
+ * 자산 이름이 래스터 자산인지 본다.
+ * @param name 자산 이름
+ * @returns 래스터 자산이면 true
+ */
+function isImageAssetName(name: SvgAssetName | ImageAssetName): name is ImageAssetName {
+  return name.startsWith('images/');
 }
 
 type MenuItemContentProps = MenuItemCommonProps & {
