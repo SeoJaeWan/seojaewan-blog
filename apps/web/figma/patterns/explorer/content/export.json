@@ -1,0 +1,30 @@
+{
+  "name": "Explorer/Content",
+  "nodeId": "87:2595",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 458,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "87:2208",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 716,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "87:2477",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}

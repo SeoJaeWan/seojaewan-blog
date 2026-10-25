@@ -95,4 +95,18 @@ describe('MenuItem', () => {
     expect(item).toHaveAttribute('aria-disabled', 'true');
     expect(handleClick).not.toHaveBeenCalled();
   });
+
+  it('래스터 자산 아이콘은 이미지로, SVG 아이콘은 svg로 그린다', () => {
+    renderInMenu(
+      <>
+        <MenuItem label="파일 탐색기" icon="images/app-file-explorer.png" />
+        <MenuItem label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+      </>,
+    );
+
+    const appItem = screen.getByRole('menuitem', { name: '파일 탐색기' });
+    const openItem = screen.getByRole('menuitem', { name: '열기' });
+    expect(appItem.querySelector('img')).not.toBeNull();
+    expect(openItem.querySelector('svg')).not.toBeNull();
+  });
 });
