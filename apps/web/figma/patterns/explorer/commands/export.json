@@ -1,0 +1,58 @@
+{
+  "name": "Explorer/Commands",
+  "nodeId": "574:7634",
+  "variants": {
+    "location=folder,device=desktop": {
+      "node": {
+        "height": 32,
+        "width": 421,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "574:7532",
+      "properties": {
+        "Device": "Desktop",
+        "Location": "Folder"
+      }
+    },
+    "location=folder,device=mobile": {
+      "node": {
+        "height": 32,
+        "width": 253,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "574:7589",
+      "properties": {
+        "Device": "Mobile",
+        "Location": "Folder"
+      }
+    },
+    "location=recycle-bin,device=desktop": {
+      "node": {
+        "height": 32,
+        "width": 361,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "574:7559",
+      "properties": {
+        "Device": "Desktop",
+        "Location": "Recycle Bin"
+      }
+    },
+    "location=recycle-bin,device=mobile": {
+      "node": {
+        "height": 32,
+        "width": 145,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "574:7612",
+      "properties": {
+        "Device": "Mobile",
+        "Location": "Recycle Bin"
+      }
+    }
+  }
+}
