@@ -1,0 +1,30 @@
+{
+  "name": "Search/Panel",
+  "nodeId": "557:16283",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 720,
+        "width": 640,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "557:16028",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 640,
+        "width": 390,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "557:16174",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
