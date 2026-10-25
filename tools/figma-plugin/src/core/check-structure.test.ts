@@ -655,3 +655,57 @@ describe('구조 검사: 줄인 인스턴스', () => {
     ]);
   });
 });
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () => {
+  function frameWith(
+    sizing: 'AUTO' | 'FIXED',
+    child: Partial<NonNullable<NodeData['child']>> = {},
+    parentLayoutMode: NodeData['parentLayoutMode'] = null,
+  ): NodeData {
+    return node({
+      path: 'box',
+      type: 'FRAME',
+      parentLayoutMode,
+      width: { value: 208 },
+      height: { value: 164 },
+      layout: { ...must(buttonRoot().layout), primarySizing: sizing, counterSizing: sizing },
+      child: {
+        sizingHorizontal: 'FIXED',
+        sizingVertical: 'FIXED',
+        positioning: 'AUTO',
+        constraints: { horizontal: 'MIN', vertical: 'MIN' },
+        ...child,
+      },
+    });
+  }
+
+  it('부모가 자동 배치가 아니어도 자기 자동 배치가 내용 맞춤이면 위반이 없다', () => {
+    expect(reasonsAfter((root) => root.children.push(frameWith('AUTO')))).toEqual([]);
+  });
+
+  it('부모가 자동 배치가 아니고 자기 자동 배치가 고정이면 여전히 위반이다', () => {
+    expect(reasonsAfter((root) => root.children.push(frameWith('FIXED')))).toEqual([
+      '고정 너비 208가 크기 변수에 연결되어 있지 않다',
+      '고정 높이 164가 크기 변수에 연결되어 있지 않다',
+    ]);
+  });
+
+  it('절대 위치 자식도 자기 자동 배치가 내용 맞춤이면 위반이 없다', () => {
+    expect(
+      reasonsAfter((root) =>
+        root.children.push(frameWith('AUTO', { positioning: 'ABSOLUTE' }, 'HORIZONTAL')),
+      ),
+    ).toEqual([]);
+  });
+
+  it('양쪽 늘이기 축은 자기 자동 배치와 상관없이 부모가 정한 크기로 본다', () => {
+    expect(
+      reasonsAfter((root) =>
+        root.children.push(
+          frameWith('FIXED', { constraints: { horizontal: 'STRETCH', vertical: 'MIN' } }),
+        ),
+      ),
+    ).toEqual(['고정 높이 164가 크기 변수에 연결되어 있지 않다']);
+  });
+});
