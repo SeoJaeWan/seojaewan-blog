@@ -36,7 +36,7 @@ const CONTAINER_CLASS_NAMES = {
 /**
  * Chrome 주소창(피그마 AddressBar)을 그린다. BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.
  * 입력과 접근성은 Base UI Input이 맡는다. 접근성 이름은 `aria-label`이나 label 요소로 붙인다.
- * 포커스를 받으면 주소 전체를 선택한다. 피그마 Focused의 흰 글자는 실제 글자 선택(`::selection`)이다.
+ * 포커스를 받으면 주소 전체를 선택한다. 피그마 Focused의 주소 글자 모습은 실제 글자 선택(`::selection`)이다.
  * 추천 목록은 조립이 Popover로 붙이고, 열려 있는 동안 `suggesting`을 켠다.
  * 너비는 갖지 않고 쓰는 곳이 정한다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
@@ -109,7 +109,7 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
           onMouseUp={handleMouseUp}
           className={cn(
             'min-w-0 flex-1 truncate type-body text-chrome-text-primary outline-none',
-            'selection:bg-accent-fill-selected-text-background selection:text-text-on-accent-fill-selected-text',
+            'selection:bg-chrome-omnibox-selection-background selection:text-chrome-omnibox-selection-text',
           )}
         />
       </div>
