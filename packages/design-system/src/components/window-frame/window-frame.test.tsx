@@ -80,4 +80,67 @@ describe('WindowFrame', () => {
     const { container } = render(<WindowFrame appIcon={null} className="h-500 w-800" />);
     expect(container.firstChild).toHaveClass('h-500', 'w-800', 'flex');
   });
+
+  it('showMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다', () => {
+    render(<WindowFrame appIcon={null} showMaximize={false} />);
+    expect(screen.queryByRole('button', { name: '최대화' })).not.toBeInTheDocument();
+  });
+
+  it('maximizeSlot을 기본 최대화 버튼 대신 그린다', () => {
+    render(<WindowFrame appIcon={null} maximizeSlot={<button type="button">스냅</button>} />);
+    expect(screen.getByRole('button', { name: '스냅' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '최대화' })).not.toBeInTheDocument();
+  });
+
+  it('제목 표시줄을 더블클릭하면 onTitleBarDoubleClick을 부른다', async () => {
+    const user = userEvent.setup();
+    const handleDoubleClick = vi.fn();
+    render(
+      <WindowFrame appIcon={null} title="파일 탐색기" onTitleBarDoubleClick={handleDoubleClick} />,
+    );
+    await user.dblClick(screen.getByText('파일 탐색기'));
+    expect(handleDoubleClick).toHaveBeenCalledOnce();
+  });
+
+  it('custom 제목 표시줄 내용 위 더블클릭도 부른다', async () => {
+    const user = userEvent.setup();
+    const handleDoubleClick = vi.fn();
+    render(
+      <WindowFrame
+        titleBar="custom"
+        titleBarContent={<i data-testid="tabs" />}
+        onTitleBarDoubleClick={handleDoubleClick}
+      />,
+    );
+    await user.dblClick(screen.getByTestId('tabs'));
+    expect(handleDoubleClick).toHaveBeenCalledOnce();
+  });
+
+  it('창 버튼 위 더블클릭은 무시한다', async () => {
+    const user = userEvent.setup();
+    const handleDoubleClick = vi.fn();
+    const handleMaximize = vi.fn();
+    render(
+      <WindowFrame
+        appIcon={null}
+        onMaximize={handleMaximize}
+        onTitleBarDoubleClick={handleDoubleClick}
+      />,
+    );
+    await user.dblClick(screen.getByRole('button', { name: '최대화' }));
+    expect(handleDoubleClick).not.toHaveBeenCalled();
+    expect(handleMaximize).toHaveBeenCalledTimes(2);
+  });
+
+  it('내용 자리를 더블클릭해도 부르지 않는다', async () => {
+    const user = userEvent.setup();
+    const handleDoubleClick = vi.fn();
+    render(
+      <WindowFrame appIcon={null} onTitleBarDoubleClick={handleDoubleClick}>
+        <p>내용</p>
+      </WindowFrame>,
+    );
+    await user.dblClick(screen.getByText('내용'));
+    expect(handleDoubleClick).not.toHaveBeenCalled();
+  });
 });

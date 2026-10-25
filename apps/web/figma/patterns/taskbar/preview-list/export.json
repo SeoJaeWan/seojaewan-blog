@@ -1,0 +1,42 @@
+{
+  "name": "Taskbar/PreviewList",
+  "nodeId": "564:9200",
+  "variants": {
+    "count=1": {
+      "node": {
+        "height": 174,
+        "width": 218,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "564:7315",
+      "properties": {
+        "Count": "1"
+      }
+    },
+    "count=2": {
+      "node": {
+        "height": 174,
+        "width": 430,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "564:7629",
+      "properties": {
+        "Count": "2"
+      }
+    },
+    "count=3": {
+      "node": {
+        "height": 174,
+        "width": 642,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "564:8257",
+      "properties": {
+        "Count": "3"
+      }
+    }
+  }
+}

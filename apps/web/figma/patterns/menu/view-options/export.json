@@ -1,0 +1,16 @@
+{
+  "name": "Menu/ViewOptions",
+  "nodeId": "518:6772",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 102,
+        "width": 104,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6772",
+      "properties": {}
+    }
+  }
+}

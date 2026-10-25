@@ -1,9 +1,15 @@
 import type { ComponentProps, JSX } from 'react';
 
 import { cn } from '../../cn';
-import { SnapLayoutOption } from '../snap-layout-option/snap-layout-option';
+import {
+  SnapLayoutOption,
+  type SnapLayoutOptionLayout,
+} from '../snap-layout-option/snap-layout-option';
 
-type SnapLayoutFlyoutProps = Omit<ComponentProps<'div'>, 'children'>;
+type SnapLayoutFlyoutProps = Omit<ComponentProps<'div'>, 'children'> & {
+  /** 칸을 골랐을 때. 어느 레이아웃의 몇 번째 칸인지 넘긴다(칸 번호는 SnapLayoutOption과 같다) */
+  onSelectZone?: (layout: SnapLayoutOptionLayout, index: number) => void;
+};
 
 /**
  * 최대화 버튼에 마우스를 올리면 뜨는 스냅 레이아웃 선택지(피그마 SnapLayoutFlyout)를 그린다.
@@ -13,7 +19,7 @@ type SnapLayoutFlyoutProps = Omit<ComponentProps<'div'>, 'children'>;
  * @param props
  */
 export function SnapLayoutFlyout(props: SnapLayoutFlyoutProps): JSX.Element {
-  const { className, ...divProps } = props;
+  const { onSelectZone: handleSelectZone, className, ...divProps } = props;
   return (
     <div
       {...divProps}
@@ -23,10 +29,16 @@ export function SnapLayoutFlyout(props: SnapLayoutFlyoutProps): JSX.Element {
         className,
       )}
     >
-      <SnapLayoutOption layout="half" />
-      <SnapLayoutOption layout="twothirds" />
-      <SnapLayoutOption layout="halfquarter" />
-      <SnapLayoutOption layout="quad" />
+      <SnapLayoutOption layout="half" onSelectZone={(index) => handleSelectZone?.('half', index)} />
+      <SnapLayoutOption
+        layout="twothirds"
+        onSelectZone={(index) => handleSelectZone?.('twothirds', index)}
+      />
+      <SnapLayoutOption
+        layout="halfquarter"
+        onSelectZone={(index) => handleSelectZone?.('halfquarter', index)}
+      />
+      <SnapLayoutOption layout="quad" onSelectZone={(index) => handleSelectZone?.('quad', index)} />
     </div>
   );
 }

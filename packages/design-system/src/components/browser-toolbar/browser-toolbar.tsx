@@ -9,6 +9,10 @@ type BrowserToolbarProps = Omit<ComponentProps<'div'>, 'children'> & {
   url?: string;
   /** 주소 입력값이 바뀔 때 부른다(AddressBar 입력창의 `onValueChange`) */
   onUrlChange?: (value: string) => void;
+  /** 앞으로 버튼을 그린다. 모바일 Chrome 창은 피그마 인스턴스에서 이 레이어를 숨겨 끈다(⋮ 메뉴로 옮긴다) */
+  showForward?: boolean;
+  /** 새로고침 버튼을 그린다. 모바일 Chrome 창은 피그마 인스턴스에서 이 레이어를 숨겨 끈다(⋮ 메뉴로 옮긴다) */
+  showRefresh?: boolean;
   /** 뒤로 버튼의 접근성 이름 */
   backLabel?: string;
   /** 앞으로 버튼의 접근성 이름 */
@@ -41,6 +45,8 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
   const {
     url,
     onUrlChange: handleUrlChange,
+    showForward: isForwardShown = true,
+    showRefresh: isRefreshShown = true,
     backLabel = '뒤로',
     forwardLabel = '앞으로',
     refreshLabel = '새로고침',
@@ -65,20 +71,24 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
         onClick={handleBack}
         className="shrink-0"
       />
-      <IconButton
-        variant="chrome"
-        label={forwardLabel}
-        icon="icons/ic_fluent_arrow_right_20_regular.svg"
-        onClick={handleForward}
-        className="shrink-0"
-      />
-      <IconButton
-        variant="chrome"
-        label={refreshLabel}
-        icon="icons/ic_fluent_arrow_clockwise_20_regular.svg"
-        onClick={handleRefresh}
-        className="shrink-0"
-      />
+      {isForwardShown && (
+        <IconButton
+          variant="chrome"
+          label={forwardLabel}
+          icon="icons/ic_fluent_arrow_right_20_regular.svg"
+          onClick={handleForward}
+          className="shrink-0"
+        />
+      )}
+      {isRefreshShown && (
+        <IconButton
+          variant="chrome"
+          label={refreshLabel}
+          icon="icons/ic_fluent_arrow_clockwise_20_regular.svg"
+          onClick={handleRefresh}
+          className="shrink-0"
+        />
+      )}
       <AddressBar
         aria-label={addressLabel}
         url={url}

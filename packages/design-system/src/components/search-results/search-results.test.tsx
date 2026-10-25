@@ -45,6 +45,8 @@ describe('SearchResults', () => {
       </SearchResults>,
     );
     expect(screen.getByText('결과')).toBeInTheDocument();
+    // 결과 묶음 사이 간격은 데스크톱과 같은 2다.
+    expect(screen.getByText('결과').parentElement).toHaveClass('gap-2');
     // 내용이 넘치지 않으면 스크롤바는 보이지 않는다(자리만 남는다).
     expect(screen.getByTestId('root').querySelector('[aria-hidden="true"]')).toHaveClass(
       'invisible',

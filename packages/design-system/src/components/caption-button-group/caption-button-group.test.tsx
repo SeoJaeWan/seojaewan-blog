@@ -57,4 +57,34 @@ describe('CaptionButtonGroup', () => {
 
     expect(handleRestore).toHaveBeenCalledTimes(1);
   });
+
+  it('showMaximize가 false면 최대화·복원 버튼을 그리지 않는다', () => {
+    render(<CaptionButtonGroup placement="maximized" showMaximize={false} />);
+    expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual([
+      '최소화',
+      '닫기',
+    ]);
+  });
+
+  it('maximizeSlot은 normal에서 기본 최대화 버튼 대신 그려진다', () => {
+    render(<CaptionButtonGroup maximizeSlot={<button type="button">스냅</button>} />);
+    expect(
+      screen.getAllByRole('button').map((b) => b.textContent || b.getAttribute('aria-label')),
+    ).toEqual(['최소화', '스냅', '닫기']);
+  });
+
+  it('maximizeSlot은 snapped에서도 쓰고, maximized에서는 복원 버튼이 이긴다', () => {
+    const slot = <button type="button">스냅</button>;
+    const { rerender } = render(<CaptionButtonGroup placement="snapped" maximizeSlot={slot} />);
+    expect(screen.getByRole('button', { name: '스냅' })).toBeInTheDocument();
+
+    rerender(<CaptionButtonGroup placement="maximized" maximizeSlot={slot} />);
+    expect(screen.queryByRole('button', { name: '스냅' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '이전 크기로 복원' })).toBeInTheDocument();
+  });
+
+  it('showMaximize가 false면 maximizeSlot도 그리지 않는다', () => {
+    render(<CaptionButtonGroup showMaximize={false} maximizeSlot={<i data-testid="slot" />} />);
+    expect(screen.queryByTestId('slot')).not.toBeInTheDocument();
+  });
 });

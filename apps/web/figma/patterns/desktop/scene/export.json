@@ -1,0 +1,30 @@
+{
+  "name": "Desktop/Scene",
+  "nodeId": "567:4783",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 1080,
+        "width": 1920,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "567:4689",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 844,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "567:4737",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
