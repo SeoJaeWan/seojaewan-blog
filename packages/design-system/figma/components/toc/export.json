@@ -1,0 +1,30 @@
+{
+  "name": "Toc",
+  "nodeId": "398:5502",
+  "variants": {
+    "state=collapsed": {
+      "node": {
+        "height": 38,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "398:5500",
+      "properties": {
+        "State": "Collapsed"
+      }
+    },
+    "state=expanded": {
+      "node": {
+        "height": 132,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "398:5496",
+      "properties": {
+        "State": "Expanded"
+      }
+    }
+  }
+}
