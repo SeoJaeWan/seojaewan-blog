@@ -22,6 +22,8 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   onUp?: () => void;
   /** 새로고침 버튼을 눌렀을 때. desktop만 보인다 */
   onRefresh?: () => void;
+  /** 검색 상자의 안내 글자. desktop만 보인다. 탐색기 창은 `<현재 폴더> 검색`처럼 덮어쓴다 */
+  searchPlaceholder?: string;
   /** 검색 상자에 입력할 때. desktop만 보인다 */
   onSearchChange?: (value: string) => void;
   /** 검색 버튼을 눌렀을 때. mobile만 보인다 */
@@ -43,6 +45,7 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
     onForward: handleForward,
     onUp: handleUp,
     onRefresh: handleRefresh,
+    searchPlaceholder = '검색',
     onSearchChange: handleSearchChange,
     onSearch: handleSearch,
     className,
@@ -85,7 +88,7 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
       {isDesktop ? (
         <SearchBox
           aria-label="검색"
-          placeholder="검색"
+          placeholder={searchPlaceholder}
           className="w-240 shrink-0"
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleSearchChange?.(event.target.value)
