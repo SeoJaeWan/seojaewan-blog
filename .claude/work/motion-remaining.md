@@ -74,7 +74,20 @@ GitHub ruleset `main: CI 통과 필수`의 필수 검사는 다섯 개다: `Lint
 
 ## 2. 조립 PR 처리 (1번 다음, 3번 전에)
 
-사용자가 피그마 조립을 전부 내보내 영역마다 조립 PR(`feat/figma-patterns-<영역>`)을 연다. Start는 이미 열린 **#177**에 이어서 커밋된다.
+사용자가 피그마 조립을 전부 내보내 영역마다 조립 PR(`feat/figma-patterns-<영역>`)을 열었다.
+
+| PR   | 브랜치                         | 영역                                                                   |
+| ---- | ------------------------------ | ---------------------------------------------------------------------- |
+| #177 | `feat/figma-patterns-start`    | Start(글자 목록 `Start/JumpList`, `Start/Body`의 `View=JumpList` 포함) |
+| #194 | `feat/figma-patterns-menu`     | 메뉴                                                                   |
+| #195 | `feat/figma-patterns-chrome`   | Chrome                                                                 |
+| #196 | `feat/figma-patterns-search`   | 검색                                                                   |
+| #197 | `feat/figma-patterns-window`   | 창(Snap Assist 포함)                                                   |
+| #198 | `feat/figma-patterns-taskbar`  | 작업 표시줄(창 미리보기 포함)                                          |
+| #199 | `feat/figma-patterns-desktop`  | 바탕화면                                                               |
+| #200 | `feat/figma-patterns-explorer` | 탐색기                                                                 |
+
+창 축소 화면(작업 표시줄 창 미리보기, Snap Assist)은 실제 창 조립을 CSS `scale`로 줄여 그린다([[디자인 시스템:조립]]). 다른 영역의 조립(창 등)을 쓰는 조립은 그 조립이 먼저 코드에 있어야 하니, 쓰이는 쪽(예: 창, 메뉴)부터 처리한다.
 
 - 스킬 `figma-component-pr`로 영역마다 처리한다. 앱(`apps/web`의 `features/`)에 조립 컴포넌트와 피그마 조립과 같은 데이터의 스토리를 만들고 캡처 표로 확인한다([[디자인 시스템:조립]], [[피그마 연동:스토리 규칙]]).
 - 지금 앱에는 `features/`와 앱 Storybook 조립 스토리가 아직 없다. 첫 조립 PR 하나를 먼저 처리해 공통 틀(폴더 구조, 공통 데이터, 앱 Storybook 설정)을 잡은 뒤 나머지를 처리하면 충돌이 적다.
