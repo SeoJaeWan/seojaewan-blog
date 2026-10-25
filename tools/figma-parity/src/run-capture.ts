@@ -1,8 +1,9 @@
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 import { type AffectedSelection, type PatternCode, selectAffected } from './affected.ts';
+import { changedFilesSince, gitShow } from './git-files.ts';
 import {
   COMPONENTS_SOURCE_DIR,
   defaultResultsDir,
@@ -38,7 +39,6 @@ const NO_BUILD_FLAG = '--no-build';
 const TARGET_FLAG = '--target';
 const OUT_FLAG = '--out';
 const PRINT_RANGE_FLAG = '--print-range';
-const DEFAULT_BASES = ['origin/main', 'main'] as const;
 const SOURCE_FILE_PATTERN = /\.(ts|tsx)$/u;
 const NON_RENDERING_FILE_PATTERN = /\.(test|fixture)\.tsx?$/u;
 
@@ -147,15 +147,9 @@ function selectTargets(
  */
 function affectedSelection(argv: readonly string[], targets: readonly Target[]): AffectedSelection {
   const baseIndex = argv.indexOf(BASE_FLAG);
-  const base = baseIndex >= 0 ? argv[baseIndex + 1] : DEFAULT_BASES.find(hasRef);
-  if (base === undefined) {
-    throw new Error(`비교 기준 브랜치를 찾지 못했다. ${BASE_FLAG} <ref>로 정한다.`);
-  }
-  const mergeBase = git(['merge-base', base, 'HEAD']).trim();
-  const changedFiles = [
-    ...git(['diff', '--name-only', '--no-renames', '-z', mergeBase]).split('\0'),
-    ...git(['ls-files', '--others', '--exclude-standard', '--full-name', '-z']).split('\0'),
-  ].filter(Boolean);
+  const { mergeBase, files: changedFiles } = changedFilesSince(
+    baseIndex >= 0 ? argv[baseIndex + 1] : undefined,
+  );
   return selectAffected({
     changedFiles,
     componentSources: readComponentSources(),
@@ -385,50 +379,4 @@ function run(
     throw new Error(`${options.failure}가 실패했다.`);
   }
   return status;
-}
-
-/**
- * git 명령을 실행한다.
- * @param args 인자
- * @returns 표준 출력
- */
-function git(args: readonly string[]): string {
-  return execFileSync('git', args, {
-    cwd: repoRoot,
-    encoding: 'utf8',
-    maxBuffer: 64 * 1024 * 1024,
-  });
-}
-
-/**
- * 커밋의 파일 내용을 읽는다.
- * @param commit 커밋
- * @param file 저장소 기준 경로
- * @returns 내용. 그 커밋에 파일이 없으면 undefined
- */
-function gitShow(commit: string, file: string): string | undefined {
-  try {
-    return execFileSync('git', ['show', `${commit}:${file}`], {
-      cwd: repoRoot,
-      encoding: 'utf8',
-      maxBuffer: 64 * 1024 * 1024,
-      stdio: ['ignore', 'pipe', 'ignore'],
-    });
-  } catch {
-    return undefined;
-  }
-}
-
-/**
- * git 참조가 있는지 본다.
- * @param ref 참조
- * @returns 있으면 true
- */
-function hasRef(ref: string): boolean {
-  try {
-    git(['rev-parse', '--verify', '--quiet', ref]);
-    return true;
-  } catch {
-    return false;
-  }
 }

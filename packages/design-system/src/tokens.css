@@ -141,11 +141,13 @@
   --motion-duration-fast: 167ms;
   --motion-duration-faster: 83ms;
   --motion-duration-normal: 250ms;
+  --motion-duration-progress-ring: 2000ms;
   --motion-duration-slow: 333ms;
   --motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);
   --motion-easing-fade: linear;
   --motion-easing-gentle-exit: cubic-bezier(1, 0, 1, 1);
   --motion-easing-point-to-point: cubic-bezier(0.55, 0.55, 0, 1);
+  --motion-easing-progress-ring: cubic-bezier(0.167, 0.167, 0.833, 0.833);
   --motion-scale-window-enter: 0.96;
   --motion-scale-window-minimize: 0.12;
   --surface-flyout-acrylic-backdrop-blur: var(--blur-acrylic);
