@@ -4,7 +4,14 @@ import { checkVariant } from './check-structure';
 import type { NodeData } from './node-data';
 import { buttonRoot, node, segment, solid } from './node-data.fixture';
 
-const context = { imageHashes: new Set(['wallpaper-hash']) };
+const context = {
+  imageHashes: new Set(['wallpaper-hash']),
+  sizeVariables: [
+    { name: 'size/16', value: 16 },
+    { name: 'size/32', value: 32 },
+    { name: 'size/64', value: 64 },
+  ],
+};
 
 /**
  * 루트를 바꿔 검사하고 위반 이유만 돌려준다.
@@ -663,6 +670,46 @@ describe('구조 검사: 줄인 인스턴스', () => {
         (violation) => violation.reason,
       ),
     ).toEqual(['단색 칠이 색 변수에 연결되어 있지 않다']);
+  });
+
+  /**
+   * 고정 크기 배율 인스턴스(진행 링 호 자산처럼 선 두께까지 함께 바뀌는 확대·축소)를 만든다.
+   * @param size 배율을 곱한 너비·높이(px)
+   * @param scaleFactor 배율
+   * @returns 인스턴스 노드 데이터
+   */
+  function scaledArc(size: number, scaleFactor: number): NodeData {
+    const arc = instance('ring/arc', 'progress-ring/Arc', [], [], scaleFactor);
+    arc.width = { value: size };
+    arc.height = { value: size };
+    arc.child = {
+      sizingHorizontal: 'FIXED',
+      sizingVertical: 'FIXED',
+      positioning: 'AUTO',
+      constraints: { horizontal: 'MIN', vertical: 'MIN' },
+    };
+    return arc;
+  }
+
+  it('배율 인스턴스의 고정 크기는 변수 연결 대신 크기 변수 값과 같은지 본다', () => {
+    expect(checkWith(scaledArc(16, 0.5))).toEqual([]);
+    expect(checkWith(scaledArc(64.000001, 2))).toEqual([]);
+  });
+
+  it('배율 인스턴스의 고정 크기가 어느 크기 변수 값과도 같지 않으면 가까운 값과 함께 막는다', () => {
+    const violations = checkWith(scaledArc(20, 0.625));
+    expect(violations.map((violation) => violation.reason)).toEqual([
+      '배율 0.625 인스턴스의 고정 너비 20가 Dimension 크기 변수(size/*) 값 가운데 어느 것과도 같지 않다',
+      '배율 0.625 인스턴스의 고정 높이 20가 Dimension 크기 변수(size/*) 값 가운데 어느 것과도 같지 않다',
+    ]);
+    expect(violations[0]?.fix).toContain('size/16 16, size/32 32, size/64 64');
+  });
+
+  it('배율이 1인 노드의 고정 크기는 지금처럼 크기 변수에 연결해야 한다', () => {
+    expect(checkWith(scaledArc(16, 1)).map((violation) => violation.reason)).toEqual([
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
+    ]);
   });
 
   it('줄인 인스턴스 자체는 계속 검사한다', () => {

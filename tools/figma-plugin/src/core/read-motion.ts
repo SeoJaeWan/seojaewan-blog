@@ -108,7 +108,8 @@ export async function readMotionVariables(): Promise<MotionVariable[]> {
     result.push({
       name: variable.name,
       resolvedType: variable.resolvedType,
-      value: variable.resolvedType === 'FLOAT' ? await floatValue(variable, collections) : null,
+      value:
+        variable.resolvedType === 'FLOAT' ? await defaultFloatValue(variable, collections) : null,
     });
   }
   return result.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
@@ -405,12 +406,12 @@ function motionValue(value: KeyframeValue): MotionValue | null {
 }
 
 /**
- * FLOAT 변수의 기본 모드 값을 별칭까지 풀어 읽는다.
+ * FLOAT 변수의 기본 모드 값을 별칭까지 풀어 읽는다. 모션 변수와 크기 변수(구조 검사)가 함께 쓴다.
  * @param variable 변수
  * @param collections 컬렉션 ID → 컬렉션
  * @returns 값, 풀지 못하면 null
  */
-async function floatValue(
+export async function defaultFloatValue(
   variable: Variable,
   collections: ReadonlyMap<string, VariableCollection>,
 ): Promise<number | null> {
