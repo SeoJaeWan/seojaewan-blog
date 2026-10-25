@@ -45,6 +45,11 @@ _codocs:
   | #194 | DS `MenuItem`의 `icon`이 `images/*` png 자산도 받게 했다(`Menu/TaskbarApp` 첫 항목이 앱 로고) |
   | #194 | 피그마를 따랐지만 확인이 필요한 곳: `Menu/SortSubmenu`·`ExplorerSortSubmenu`·`ExplorerViewSubmenu`의 라디오 항목이 모두 골라진 모습(피그마 실수로 보임, 그대로 그리려고 항목마다 `RadioGroup`을 따로 둠), ChromeMore의 "확대/축소" 아이콘이 돋보기, StartTile의 "시작 화면에서 고정 해제"가 고정과 같은 pin 아이콘 |
   | #194 | 캡처 표의 남은 차이: 단축키 글자 가장자리(1px 이하, 엔진 차이) |
+  | #196 검색(병합) | `SearchBody`(view 셋 × device)와 `SearchPanel`을 `features/start-menu/`에 만들었다. 결과 데이터는 최고 일치 하나와 종류별 배열(`folders`, `posts`, `links`). 최고 일치 줄은 피그마대로 늘 `selected`(방향키 이동은 기능 구현 때) |
+  | #196 | 모바일 패널의 SearchBox는 패널 부품으로 보고 `SearchPanel`이 직접 그린다. Search/Body는 쓰는 쪽이 넣는다 |
+  | #196 | DS 손질: `ListGroup`에 머리글 `label` prop과 항목 간격 `gap-2`, `SearchResults` 모바일 묶음 간격 `gap-2`, `MenuItem`에 `standalone` prop(Base UI `Menu.Root` 밖에서 같은 모양의 버튼으로 그림. 검색 카드의 열기·링크 복사 동작용) |
+  | #196 | 패널 여백 32가 피그마 노드에 따라 변수 없이 나와 `p-32` 토큰 클래스를 썼다. 피그마 변수 연결 확인 필요 |
+  | #196 | 캡처 표의 남은 차이: 모바일 결과 스크롤바 막대 길이(피그마는 고정 미리보기, 코드는 실제 내용 높이), 카드 글자 1px(기준선 한계) |
 
   확인된 도구 문제(고치지 않음): 캡처 도구(`tools/figma-parity/src/run-capture.ts`의 `designSystemExports()`)가 디자인 시스템 `index.ts`의 `export *`를 읽지 못해, 디자인 시스템 컴포넌트만 바뀐 PR에서 그 컴포넌트를 쓰는 조립이 캡처 범위에 들어가지 않는다.
 모션 클래스 붙이기: |
