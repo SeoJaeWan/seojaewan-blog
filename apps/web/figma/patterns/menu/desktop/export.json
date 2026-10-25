@@ -1,0 +1,42 @@
+{
+  "name": "Menu/Desktop",
+  "nodeId": "578:5069",
+  "variants": {
+    "submenu=none": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6055",
+      "properties": {
+        "Submenu": "None"
+      }
+    },
+    "submenu=sort": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "578:4955",
+      "properties": {
+        "Submenu": "Sort"
+      }
+    },
+    "submenu=view": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "578:4825",
+      "properties": {
+        "Submenu": "View"
+      }
+    }
+  }
+}

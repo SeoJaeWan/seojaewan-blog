@@ -31,6 +31,18 @@ describe('SearchBox', () => {
     expect(screen.getByRole('searchbox', { name: '검색' })).toHaveFocus();
   });
 
+  // @codocs [[검색:입력칸]]
+  it('pill·taskbar는 회색·컬러 돋보기를 겹쳐 두고, disabled면 회색 돋보기만 둔다', () => {
+    const { container, rerender } = render(<SearchBox appearance="pill" aria-label="검색" />);
+    expect(container.querySelectorAll('svg')).toHaveLength(2);
+
+    rerender(<SearchBox appearance="pill" aria-label="검색" disabled />);
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+
+    rerender(<SearchBox aria-label="검색" />);
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+  });
+
   it('disabled면 입력할 수 없다', async () => {
     const user = userEvent.setup();
     render(<SearchBox aria-label="검색" disabled defaultValue="리액트" />);

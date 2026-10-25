@@ -3,6 +3,12 @@
   "nodeId": "14:92",
   "variants": {
     "appearance=default,filled=false,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:27",
       "properties": {
         "Appearance": "Default",
@@ -11,6 +17,12 @@
       }
     },
     "appearance=default,filled=false,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:22",
       "properties": {
         "Appearance": "Default",
@@ -19,6 +31,12 @@
       }
     },
     "appearance=default,filled=false,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:17",
       "properties": {
         "Appearance": "Default",
@@ -27,6 +45,12 @@
       }
     },
     "appearance=default,filled=false,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:12",
       "properties": {
         "Appearance": "Default",
@@ -35,6 +59,12 @@
       }
     },
     "appearance=default,filled=true,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:47",
       "properties": {
         "Appearance": "Default",
@@ -43,6 +73,12 @@
       }
     },
     "appearance=default,filled=true,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:42",
       "properties": {
         "Appearance": "Default",
@@ -51,6 +87,12 @@
       }
     },
     "appearance=default,filled=true,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:37",
       "properties": {
         "Appearance": "Default",
@@ -59,6 +101,12 @@
       }
     },
     "appearance=default,filled=true,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:32",
       "properties": {
         "Appearance": "Default",
@@ -67,6 +115,12 @@
       }
     },
     "appearance=pill,filled=false,state=disabled": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:67",
       "properties": {
         "Appearance": "Pill",
@@ -75,6 +129,12 @@
       }
     },
     "appearance=pill,filled=false,state=focused": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:62",
       "properties": {
         "Appearance": "Pill",
@@ -83,6 +143,12 @@
       }
     },
     "appearance=pill,filled=false,state=hover": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:57",
       "properties": {
         "Appearance": "Pill",
@@ -91,6 +157,12 @@
       }
     },
     "appearance=pill,filled=false,state=rest": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:52",
       "properties": {
         "Appearance": "Pill",
@@ -99,6 +171,12 @@
       }
     },
     "appearance=pill,filled=true,state=disabled": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:87",
       "properties": {
         "Appearance": "Pill",
@@ -107,6 +185,12 @@
       }
     },
     "appearance=pill,filled=true,state=focused": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:82",
       "properties": {
         "Appearance": "Pill",
@@ -115,6 +199,12 @@
       }
     },
     "appearance=pill,filled=true,state=hover": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:77",
       "properties": {
         "Appearance": "Pill",
@@ -123,6 +213,12 @@
       }
     },
     "appearance=pill,filled=true,state=rest": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "14:72",
       "properties": {
         "Appearance": "Pill",
@@ -131,6 +227,12 @@
       }
     },
     "appearance=taskbar,filled=false,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3646",
       "properties": {
         "Appearance": "Taskbar",
@@ -139,6 +241,12 @@
       }
     },
     "appearance=taskbar,filled=false,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3642",
       "properties": {
         "Appearance": "Taskbar",
@@ -147,6 +255,12 @@
       }
     },
     "appearance=taskbar,filled=false,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3638",
       "properties": {
         "Appearance": "Taskbar",
@@ -155,6 +269,12 @@
       }
     },
     "appearance=taskbar,filled=false,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3634",
       "properties": {
         "Appearance": "Taskbar",
@@ -163,6 +283,12 @@
       }
     },
     "appearance=taskbar,filled=true,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3662",
       "properties": {
         "Appearance": "Taskbar",
@@ -171,6 +297,12 @@
       }
     },
     "appearance=taskbar,filled=true,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3658",
       "properties": {
         "Appearance": "Taskbar",
@@ -179,6 +311,12 @@
       }
     },
     "appearance=taskbar,filled=true,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3654",
       "properties": {
         "Appearance": "Taskbar",
@@ -187,6 +325,12 @@
       }
     },
     "appearance=taskbar,filled=true,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 220,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "299:3650",
       "properties": {
         "Appearance": "Taskbar",
