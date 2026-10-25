@@ -20,14 +20,7 @@ export type FontSource = {
   woff2Dir: string;
   /** 쓰는 굵기의 CSS 파일 */
   files: readonly string[];
-  /** 모든 `@font-face`에 더할 선언 */
-  descriptors?: readonly string[];
 };
-
-// @codocs [[디자인 기반:서체]]
-// Open Sans 서체 높이 덮어쓰기. 줄 안 글자 위치를 피그마와 맞춘다.
-const OPEN_SANS_ASCENT_OVERRIDE = '104.7%';
-const OPEN_SANS_DESCENT_OVERRIDE = '26.05%';
 
 // @codocs [[디자인 기반:서체]]
 // 굵기는 Regular·SemiBold·Bold만 쓰고(피그마가 제공하는 Pretendard 굵기와 같다), 코드 블록 서체는 Regular만 쓴다.
@@ -45,10 +38,6 @@ export const fontSources: readonly FontSource[] = [
     cssDir: '@fontsource/open-sans',
     woff2Dir: 'files',
     files: ['400.css', '600.css', '700.css'],
-    descriptors: [
-      `ascent-override: ${OPEN_SANS_ASCENT_OVERRIDE}`,
-      `descent-override: ${OPEN_SANS_DESCENT_OVERRIDE}`,
-    ],
   },
   {
     output: 'cascadia-mono.css',
@@ -106,5 +95,5 @@ export function fontSourceCss(source: FontSource): string {
     .relative(sourceDir, path.join(cssDir, source.woff2Dir))
     .split(path.sep)
     .join('/');
-  return fontFacesToCss(faces, fileDir, source.packageName, source.descriptors);
+  return fontFacesToCss(faces, fileDir, source.packageName);
 }
