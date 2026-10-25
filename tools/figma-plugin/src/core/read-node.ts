@@ -590,25 +590,11 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
   if (main === null) {
     return null;
   }
-  const groups: Readonly<Record<string, AssetKind>> = ASSET_GROUPS;
-  let group: string | undefined;
-  for (
-    let parent = main.parent;
-    parent !== null && parent.type !== 'PAGE';
-    parent = parent.parent
-  ) {
-    const name = parent.name.startsWith(ASSET_GROUP_PREFIX)
-      ? parent.name.slice(ASSET_GROUP_PREFIX.length)
-      : '';
-    if (name in groups) {
-      group = name;
-      break;
-    }
-  }
-  const kind = group === undefined ? undefined : groups[group];
-  if (group === undefined || kind === undefined) {
+  const found = assetGroupOf(main);
+  if (found === null) {
     return null;
   }
+  const { group, kind } = found;
   const problems: string[] = [];
   if (kind === 'mono') {
     const colors = new Set<string | undefined>();
@@ -642,6 +628,30 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
     }
   }
   return { name: main.name, mainComponentId: main.id, group, kind, problems };
+}
+
+/**
+ * 원본 컴포넌트가 든 자산 묶음(`group/<묶음>` 프레임)을 찾는다. 그 묶음이 처리 방식을 정한다.
+ * @codocs [[피그마 연동:자산]]
+ * @param main 원본 컴포넌트
+ * @returns 묶음 이름과 처리 방식, 자산 묶음 밖이면 null
+ */
+export function assetGroupOf(main: ComponentNode): { group: string; kind: AssetKind } | null {
+  const groups: Readonly<Partial<Record<string, AssetKind>>> = ASSET_GROUPS;
+  for (
+    let parent = main.parent;
+    parent !== null && parent.type !== 'PAGE';
+    parent = parent.parent
+  ) {
+    const name = parent.name.startsWith(ASSET_GROUP_PREFIX)
+      ? parent.name.slice(ASSET_GROUP_PREFIX.length)
+      : '';
+    const kind = Object.keys(groups).includes(name) ? groups[name] : undefined;
+    if (kind !== undefined) {
+      return { group: name, kind };
+    }
+  }
+  return null;
 }
 
 /**
