@@ -8,12 +8,12 @@ import {
 } from 'react';
 
 import { cn } from '../../cn';
-import { Scrollbar, type ScrollbarMaterial } from '../scrollbar/scrollbar';
+import { Scrollbar, type ScrollbarMaterial } from './scrollbar';
 
 export type ScrollAreaMaterial = ScrollbarMaterial;
 
 type ScrollAreaProps = ComponentProps<'div'> & {
-  /** 피그마 Material(안쪽 Scrollbar의 Material). 마우스를 올려 펼친 스크롤바 바탕의 재질이다 */
+  /** 안쪽 Scrollbar의 Material. 마우스를 올려 펼친 스크롤바 바탕의 재질이다 */
   material?: ScrollAreaMaterial;
 };
 
@@ -46,9 +46,9 @@ export function scrollThumb(
 }
 
 /**
- * 스크롤바를 가진 스크롤 영역(피그마 ScrollArea)을 그린다. 내용은 children 자리(피그마 Content 슬롯)에 넣는다.
- * 브라우저 스크롤바는 숨기고, 내용이 넘칠 때만 세로 Scrollbar를 오른쪽에 겹쳐 그린다. 마우스를 올리면 펼친다(피그마 State=Hover).
- * 크기는 쓰는 곳이 정한다(피그마 원본 320×240은 미리보기 크기다).
+ * 넘치는 내용을 스크롤하게 하는 동작 도구다. 자기 모양(바탕, 테두리, 반경, 안쪽 여백)은 없다.
+ * 브라우저 스크롤바는 숨기고, 내용이 넘칠 때만 세로 Scrollbar를 오른쪽에 겹쳐 그린다. 마우스를 올리면 펼친다.
+ * 크기와 바깥 모양은 쓰는 곳이 className과 children으로 정한다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @param props
  */
@@ -75,7 +75,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
   }
 
   /**
-   * 마우스가 들어오면 스크롤바를 펼친다(피그마 State=Hover).
+   * 마우스가 들어오면 스크롤바를 펼친다.
    * @param event 포인터 이벤트
    */
   function handlePointerEnter(event: PointerEvent<HTMLDivElement>): void {
@@ -122,18 +122,13 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
       {...divProps}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
-      className={cn(
-        // 피그마 테두리는 안쪽 선이라 레이아웃에 들어가지 않는다. ::before 고리(inner-border-*)로 그린다.
-        'relative isolate flex flex-col overflow-hidden rounded-control bg-layer-fill-alt',
-        'inner-border-card-stroke-default inner-border-w-default',
-        className,
-      )}
+      className={cn('relative isolate flex flex-col overflow-hidden', className)}
     >
-      {/* 피그마 Content 슬롯. 오른쪽 여백(spacing/24)은 스크롤바 자리다. 브라우저 스크롤바는 그 자리를 차지하지 않게 숨긴다. */}
+      {/* 브라우저 스크롤바는 자리를 차지하지 않게 숨긴다. 겹쳐 그린 Scrollbar가 대신한다. */}
       <div
         ref={viewportRef}
         onScroll={handleMeasure}
-        className="flex flex-1 flex-col gap-8 overflow-y-auto pt-12 pr-24 pb-12 pl-12"
+        className="flex flex-1 flex-col overflow-y-auto"
         style={{ scrollbarWidth: 'none' }}
       >
         {children}
@@ -147,7 +142,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
         material={material}
         thumbOffset={thumb?.offset}
         thumbLength={thumb?.length}
-        // 피그마 절대 위치: 오른쪽 거리 spacing/2, 위아래 거리 spacing/4로 세로 양쪽 늘이기다.
+        // 오른쪽 거리 spacing/2, 위아래 거리 spacing/4로 세로 양쪽을 늘여 겹친다.
         className={cn('absolute top-4 right-2 bottom-4', !thumb && 'invisible')}
       />
     </div>

@@ -1,8 +1,9 @@
 import type { Bound, NodeData, PaintData } from './node-data';
 
-// 내보내기 전 구조 검사. 두 가지만 막는다.
+// 내보내기 전 구조 검사. 세 가지만 막는다.
 // 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값 포함)
 // 2. CSS로 그릴 수 없는 피그마 기능
+// 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
 
 /** 위반 하나 */
@@ -51,11 +52,16 @@ const STROKE_TYPES = ['SOLID', 'GRADIENT_LINEAR'] as const;
 // CSS로 그리는 효과 종류. 효과는 효과 스타일로만 쓴다.
 const EFFECT_TYPES = ['DROP_SHADOW', 'INNER_SHADOW', 'LAYER_BLUR', 'BACKGROUND_BLUR'] as const;
 
+// 한글 음절·자모(호환 자모·확장 자모 포함) 범위
+const HANGUL_PATTERN = /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD7B0-\uD7FF]/u;
+// 한글을 그리는 글꼴
+const HANGUL_FONT_FAMILY = 'Pretendard';
+
 const BIND_FIX = '변수에 연결한다.';
 
 /**
  * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
- * 막는 것은 변수·스타일에 연결되지 않은 시각 값과 CSS로 그릴 수 없는 기능 두 가지다.
+ * 막는 것은 변수·스타일에 연결되지 않은 시각 값, CSS로 그릴 수 없는 기능, 인스턴스 모양의 직접 덮어쓰기 세 가지다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
@@ -74,11 +80,184 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
     violations.push({ where: node.path === '' ? where : `${where} / ${node.path}`, reason, fix });
   }
   checkNode(root, true, context, add);
+  checkInstanceOverrides(root, add);
   return violations;
 }
 
+// 인스턴스에서 직접 덮어쓰면 막는 모양 필드(`NodeChangeProperty`) → 메시지 이름
+const appearanceFields: Readonly<Record<string, string>> = {
+  fills: '칠',
+  strokes: '선',
+  strokeWeight: '선 두께',
+  // 피그마 타입 정의의 철자 그대로다(strokeTopWeight가 아니다).
+  stokeTopWeight: '선 두께',
+  strokeTopWeight: '선 두께',
+  strokeRightWeight: '선 두께',
+  strokeBottomWeight: '선 두께',
+  strokeLeftWeight: '선 두께',
+  effects: '효과',
+  opacity: '불투명도',
+  fillStyleId: '칠 스타일',
+  strokeStyleId: '선 스타일',
+  effectStyleId: '효과 스타일',
+};
+
+// 변수 연결(`boundVariables`)을 바꿨을 때 막는 모양 필드 → 메시지 이름
+const appearanceBindings: Readonly<Record<string, string>> = {
+  fills: '칠 변수',
+  strokes: '선 변수',
+  strokeWeight: '선 두께 변수',
+  strokeTopWeight: '선 두께 변수',
+  strokeRightWeight: '선 두께 변수',
+  strokeBottomWeight: '선 두께 변수',
+  strokeLeftWeight: '선 두께 변수',
+  effects: '효과 변수',
+  opacity: '불투명도 변수',
+};
+
+// 자산 인스턴스에서 막지 않는 색 필드(`fields`와 `boundVariables.<필드>` 표기)
+const assetColorFields: ReadonlySet<string> = new Set([
+  'fills',
+  'strokes',
+  'fillStyleId',
+  'strokeStyleId',
+  'boundVariables.fills',
+  'boundVariables.strokes',
+]);
+
 /**
- * 노드 하나와 그 아래를 검사한다.
+ * 레이어 ID가 자산 인스턴스의 안쪽 레이어인지 확인한다(자산 ID 뒤에 `;`로 이어진다).
+ * @param id 레이어 ID
+ * @param assetIds 자산 인스턴스 ID
+ * @returns 안쪽이면 true
+ */
+function isInsideAsset(id: string, assetIds: ReadonlySet<string>): boolean {
+  for (const assetId of assetIds) {
+    if (id.startsWith(`${assetId};`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/** 덮어쓰기를 검사할 수 있는 레이어 */
+type OverrideTarget = {
+  node: NodeData;
+  /** 이 레이어를 정의한 원본 컴포넌트(자신이나 가장 가까운 바깥 인스턴스의 원본) */
+  component: string;
+};
+
+/**
+ * 인스턴스 모양의 직접 덮어쓰기를 막는다. 변형 안 모든 인스턴스(중첩 포함)의 덮어쓰기를 모아,
+ * 칠·선·선 두께·효과·불투명도와 그 스타일·변수 연결을 바꾼 레이어를 알린다.
+ * 원본이 속성으로 연 것(글자, 표시 여부, 인스턴스 교체, 변형 선택)과 크기·배치는 막지 않는다.
+ * 예외로 막지 않는 것:
+ * - 자산 인스턴스의 색 덮어쓰기(어디에 놓였든). 자산 안쪽 레이어의 덮어쓰기는 모두, 자산 인스턴스 자체는 칠·선과 그 스타일·변수 연결만 허용한다.
+ *   색은 쓰는 곳이 정하고, 토큰에 없는 색은 구조 검사 1번(자산의 색 변수 연결)이 막는다.
+ * - 직접 놓은 인스턴스 전체의 불투명도(`opacity`와 그 변수 연결). 안쪽 레이어나 다른 인스턴스 안에 든 인스턴스의 불투명도는 막는다.
+ * 숨긴 레이어와 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param root 변형 루트 노드 데이터
+ * @param add 위반을 더하는 함수
+ */
+function checkInstanceOverrides(root: NodeData, add: Add): void {
+  const targets = new Map<string, OverrideTarget>();
+  const fieldsById = new Map<string, Set<string>>();
+  // 자산 인스턴스 ID. 자산은 안쪽 레이어를 읽지 않으므로 ID 접두어(`<자산 ID>;`)로 안쪽 덮어쓰기를 알아본다.
+  const assetIds = new Set<string>();
+  /**
+   * 레이어를 모으고 인스턴스의 덮어쓰기를 합친다. 같은 덮어쓰기를 바깥·안쪽 인스턴스가 함께 알려 줄 수 있어 합친다.
+   * @param node 노드
+   * @param component 바깥 인스턴스의 원본 컴포넌트, 없으면 null
+   */
+  function collect(node: NodeData, component: string | null): void {
+    const { instance } = node;
+    const owner = instance?.component ?? component;
+    if (owner !== null) {
+      targets.set(node.id, { node, component: owner });
+    }
+    if (node.asset !== null) {
+      assetIds.add(node.id);
+    }
+    if (instance === null) {
+      for (const child of node.children) {
+        collect(child, component);
+      }
+      return;
+    }
+    const isScaled = Math.abs(instance.scaleFactor - 1) > EPSILON;
+    for (const override of instance.overrides) {
+      if (isScaled && override.id !== node.id) {
+        continue;
+      }
+      // 직접 놓은 인스턴스 전체의 불투명도는 쓰는 곳이 정한다.
+      const isOwnOpacity = override.id === node.id && component === null;
+      const fields = fieldsById.get(override.id) ?? new Set<string>();
+      for (const field of override.fields) {
+        if (appearanceFields[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
+          fields.add(field);
+        }
+      }
+      for (const field of override.changedBindings) {
+        if (appearanceBindings[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
+          fields.add(`boundVariables.${field}`);
+        }
+      }
+      fieldsById.set(override.id, fields);
+    }
+    if (!isScaled) {
+      for (const child of node.children) {
+        collect(child, instance.component);
+      }
+    }
+  }
+  collect(root, null);
+  for (const [id, fields] of fieldsById) {
+    const target = targets.get(id);
+    if (target === undefined || fields.size === 0 || isInsideAsset(id, assetIds)) {
+      continue;
+    }
+    if (assetIds.has(id)) {
+      for (const field of [...fields]) {
+        if (assetColorFields.has(field)) {
+          fields.delete(field);
+        }
+      }
+      if (fields.size === 0) {
+        continue;
+      }
+    }
+    const names = [...fields].sort();
+    const labels = [
+      ...new Set(
+        names.map((field) =>
+          field.startsWith('boundVariables.')
+            ? appearanceBindings[field.slice('boundVariables.'.length)]
+            : appearanceFields[field],
+        ),
+      ),
+    ].filter((label) => label !== undefined);
+    const list = labels.join('·');
+    add(
+      target.node,
+      `인스턴스의 ${list}${objectParticle(list)} 직접 바꿨다(${names.join(', ')})`,
+      `덮어쓰기를 되돌리고, ${target.component}에 변형이나 속성을 열어 그것을 고른다.`,
+    );
+  }
+}
+
+/**
+ * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다.
+ * @param word 낱말
+ * @returns 받침이 있으면 '을', 없으면 '를'
+ */
+function objectParticle(word: string): string {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  return code >= 0 && code < 11172 && code % 28 !== 0 ? '을' : '를';
+}
+
+/**
+ * 노드 하나와 그 아래를 검사한다. 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 건너뛴다.
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param context 이름 있는 이미지 자산
@@ -113,6 +292,10 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   checkLayout(node, add);
   if (node.text !== null) {
     checkText(node, context, add);
+  }
+  // 줄인 인스턴스는 자기만 검사한다. 안쪽은 따로 검사받는 조립이고, 줄인 값은 CSS `scale`로 만들어진다.
+  if (node.instance !== null && Math.abs(node.instance.scaleFactor - 1) > EPSILON) {
+    return;
   }
   for (const child of node.children) {
     checkNode(child, false, context, add);
@@ -377,7 +560,22 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
 }
 
 /**
- * 노드의 가로·세로 크기 방식을 정한다. 루트는 자동 배치 축 크기 방식, 자식은 layoutSizing, 글자는 자동 크기를 따른다.
+ * 노드 자신의 자동 배치가 정하는 가로·세로 크기 방식을 돌려준다. 자동 배치가 없으면 둘 다 FIXED다.
+ * @param node 노드
+ * @returns 가로·세로 크기 방식(FIXED, HUG)
+ */
+function ownSizing(node: NodeData): { horizontal: string; vertical: string } {
+  if (node.layout === null || node.layout.mode === 'NONE') {
+    return { horizontal: 'FIXED', vertical: 'FIXED' };
+  }
+  const isRow = node.layout.mode === 'HORIZONTAL';
+  const primary = node.layout.primarySizing === 'AUTO' ? 'HUG' : 'FIXED';
+  const counter = node.layout.counterSizing === 'AUTO' ? 'HUG' : 'FIXED';
+  return { horizontal: isRow ? primary : counter, vertical: isRow ? counter : primary };
+}
+
+/**
+ * 노드의 가로·세로 크기 방식을 정한다. 루트와 부모 자동 배치에서 크기를 받지 않는 노드는 자기 자동 배치 축 크기 방식, 자동 배치 안의 자식은 layoutSizing, 글자는 자동 크기를 따른다.
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @returns 가로·세로 크기 방식(FIXED, HUG, FILL, DERIVED)
@@ -388,21 +586,19 @@ export function sizingOf(
 ): { horizontal: string; vertical: string } {
   let horizontal = 'FIXED';
   let vertical = 'FIXED';
+  const own = ownSizing(node);
   if (isRoot) {
-    if (node.layout !== null && node.layout.mode !== 'NONE') {
-      const isRow = node.layout.mode === 'HORIZONTAL';
-      const primary = node.layout.primarySizing === 'AUTO' ? 'HUG' : 'FIXED';
-      const counter = node.layout.counterSizing === 'AUTO' ? 'HUG' : 'FIXED';
-      horizontal = isRow ? primary : counter;
-      vertical = isRow ? counter : primary;
-    }
+    horizontal = own.horizontal;
+    vertical = own.vertical;
   } else if (node.child !== null) {
     if (node.parentLayoutMode !== null && node.child.positioning !== 'ABSOLUTE') {
       horizontal = node.child.sizingHorizontal;
       vertical = node.child.sizingVertical;
     } else {
-      horizontal = node.child.constraints.horizontal === 'STRETCH' ? 'DERIVED' : 'FIXED';
-      vertical = node.child.constraints.vertical === 'STRETCH' ? 'DERIVED' : 'FIXED';
+      // 부모 자동 배치에서 크기를 받지 않는 노드는 루트처럼 자기 자동 배치의 내용 맞춤 축을 HUG로 본다.
+      // 양쪽 늘이기(STRETCH) 축은 내용 맞춤이어도 크기를 부모 제약이 정하므로 DERIVED가 먼저다.
+      horizontal = node.child.constraints.horizontal === 'STRETCH' ? 'DERIVED' : own.horizontal;
+      vertical = node.child.constraints.vertical === 'STRETCH' ? 'DERIVED' : own.vertical;
     }
   }
   if (node.text !== null) {
@@ -417,7 +613,7 @@ export function sizingOf(
 }
 
 /**
- * 글자 노드를 검사한다. 구간마다 글자 스타일 연결과 덮어쓰기, 글자 칠, OpenType 기능을 보고, 빠진 글꼴을 막는다.
+ * 글자 노드를 검사한다. 구간마다 글자 스타일 연결과 덮어쓰기, 글자 칠, OpenType 기능을 보고, 빠진 글꼴과 한글을 Pretendard가 아닌 글꼴로 그리는 구간을 막는다.
  * @param node 글자 노드
  * @param context 이름 있는 이미지 자산
  * @param add 위반을 더하는 함수
@@ -432,6 +628,14 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
   }
   for (const segment of text.segments) {
     const label = `"${segment.characters.slice(0, 12)}" 구간`;
+    // hasMissingFont가 false여도 피그마가 한글을 알 수 없는 대체 글꼴로 그리는 경우가 있어 구간 글꼴로 막는다.
+    if (HANGUL_PATTERN.test(segment.characters) && segment.fontFamily !== HANGUL_FONT_FAMILY) {
+      add(
+        node,
+        `${label}에 한글이 있는데 글꼴이 ${segment.fontFamily ?? '알 수 없음'}라 대체 글꼴로 그려질 수 있다`,
+        `한글 구간에 Hangul 글자 스타일(${HANGUL_FONT_FAMILY})을 입힌다.`,
+      );
+    }
     if (segment.textStyle === undefined) {
       add(node, `${label}에 글자 스타일이 없다`, '구간을 글자 스타일에 연결한다.');
     }

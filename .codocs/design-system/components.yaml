@@ -21,8 +21,7 @@ _codocs:
   | Popover | 트리거와 그 옆에 뜨는 팝업의 틀([[디자인 시스템:팝업]]) |
   | Tooltip | 짧은 안내 말풍선 |
   | Flyout | 떠 있는 패널의 공통 바탕 |
-  | Scrollbar | Windows 11 스타일 얇은 스크롤바 |
-  | ScrollArea | 스크롤바를 가진 스크롤 영역 |
+  | Scrollbar | Windows 11 스타일 얇은 스크롤바. 넘치는 영역의 오른쪽에 겹쳐 놓는다. 코드에서는 브라우저 스크롤바를 숨기고 Scrollbar를 겹쳐 그리는 동작 도구로 감싼다. |
   | ListItem | 추천, 검색 결과, 주소창 추천의 목록 항목 한 줄 |
   | SectionHeader | 목록 묶음의 머리글 |
   | SectionTitle | 영역 제목과 그 옆의 동작 |
