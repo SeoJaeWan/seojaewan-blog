@@ -1,0 +1,115 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": null,
+  "name": "motion-start-jump-list-exit",
+  "nodeId": "758:441",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 1,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/fade",
+          "offset": 1,
+          "time": 167,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "Start/JumpList",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/JumpList",
+      "property": "OPACITY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 167,
+          "value": {
+            "x": 1.15,
+            "y": 1.15
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "Start/JumpList",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "Start/JumpList",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/fade",
+          "offset": 1,
+          "time": 167,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "list",
+      "nodeKind": "layer",
+      "operation": "SET",
+      "path": "list",
+      "property": "OPACITY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=758-441"
+}
