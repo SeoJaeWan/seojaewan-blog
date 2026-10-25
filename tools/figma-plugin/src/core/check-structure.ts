@@ -560,7 +560,22 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
 }
 
 /**
- * 노드의 가로·세로 크기 방식을 정한다. 루트는 자동 배치 축 크기 방식, 자식은 layoutSizing, 글자는 자동 크기를 따른다.
+ * 노드 자신의 자동 배치가 정하는 가로·세로 크기 방식을 돌려준다. 자동 배치가 없으면 둘 다 FIXED다.
+ * @param node 노드
+ * @returns 가로·세로 크기 방식(FIXED, HUG)
+ */
+function ownSizing(node: NodeData): { horizontal: string; vertical: string } {
+  if (node.layout === null || node.layout.mode === 'NONE') {
+    return { horizontal: 'FIXED', vertical: 'FIXED' };
+  }
+  const isRow = node.layout.mode === 'HORIZONTAL';
+  const primary = node.layout.primarySizing === 'AUTO' ? 'HUG' : 'FIXED';
+  const counter = node.layout.counterSizing === 'AUTO' ? 'HUG' : 'FIXED';
+  return { horizontal: isRow ? primary : counter, vertical: isRow ? counter : primary };
+}
+
+/**
+ * 노드의 가로·세로 크기 방식을 정한다. 루트와 부모 자동 배치에서 크기를 받지 않는 노드는 자기 자동 배치 축 크기 방식, 자동 배치 안의 자식은 layoutSizing, 글자는 자동 크기를 따른다.
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @returns 가로·세로 크기 방식(FIXED, HUG, FILL, DERIVED)
@@ -571,21 +586,19 @@ export function sizingOf(
 ): { horizontal: string; vertical: string } {
   let horizontal = 'FIXED';
   let vertical = 'FIXED';
+  const own = ownSizing(node);
   if (isRoot) {
-    if (node.layout !== null && node.layout.mode !== 'NONE') {
-      const isRow = node.layout.mode === 'HORIZONTAL';
-      const primary = node.layout.primarySizing === 'AUTO' ? 'HUG' : 'FIXED';
-      const counter = node.layout.counterSizing === 'AUTO' ? 'HUG' : 'FIXED';
-      horizontal = isRow ? primary : counter;
-      vertical = isRow ? counter : primary;
-    }
+    horizontal = own.horizontal;
+    vertical = own.vertical;
   } else if (node.child !== null) {
     if (node.parentLayoutMode !== null && node.child.positioning !== 'ABSOLUTE') {
       horizontal = node.child.sizingHorizontal;
       vertical = node.child.sizingVertical;
     } else {
-      horizontal = node.child.constraints.horizontal === 'STRETCH' ? 'DERIVED' : 'FIXED';
-      vertical = node.child.constraints.vertical === 'STRETCH' ? 'DERIVED' : 'FIXED';
+      // 부모 자동 배치에서 크기를 받지 않는 노드는 루트처럼 자기 자동 배치의 내용 맞춤 축을 HUG로 본다.
+      // 양쪽 늘이기(STRETCH) 축은 내용 맞춤이어도 크기를 부모 제약이 정하므로 DERIVED가 먼저다.
+      horizontal = node.child.constraints.horizontal === 'STRETCH' ? 'DERIVED' : own.horizontal;
+      vertical = node.child.constraints.vertical === 'STRETCH' ? 'DERIVED' : own.vertical;
     }
   }
   if (node.text !== null) {
