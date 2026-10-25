@@ -8,6 +8,8 @@ type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
   showHeader?: boolean;
   /** 머리글(피그마 `header` SectionHeader 인스턴스)의 Label. 쓰는 곳마다 묶음 이름이 다르다 */
   label?: string;
+  /** 머리글을 눌렀을 때. 넘기면 머리글이 버튼이 된다(SectionHeader에 넘긴다) */
+  onHeaderClick?: () => void;
   /** 피그마 `items` 슬롯. 목록 항목을 세로로 넣는다 */
   children?: ReactNode;
 };
@@ -19,10 +21,19 @@ type ListGroupProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @param props
  */
 export function ListGroup(props: ListGroupProps): JSX.Element {
-  const { showHeader: hasHeader = true, label, children, className, ...divProps } = props;
+  const {
+    showHeader: hasHeader = true,
+    label,
+    onHeaderClick: handleHeaderClick,
+    children,
+    className,
+    ...divProps
+  } = props;
   return (
     <div {...divProps} className={cn('flex flex-col items-start gap-2', className)}>
-      {hasHeader && <SectionHeader label={label} className="shrink-0" />}
+      {hasHeader && (
+        <SectionHeader label={label} onClick={handleHeaderClick} className="shrink-0" />
+      )}
       <div className="flex w-full shrink-0 flex-col gap-2">{children}</div>
     </div>
   );
