@@ -16,6 +16,10 @@ export const FIGMA_SETTINGS_PATH = `${DESIGN_SYSTEM_DIR}/figma/figma.json`;
 export const FIGMA_COMPONENTS_DIR = `${DESIGN_SYSTEM_DIR}/figma/components`;
 export const FIGMA_PATTERNS_DIR = `${WEB_DIR}/figma/patterns`;
 export const MANIFEST_FILE = 'export.json';
+/** 애니메이션 견본마다 `<이름>.json`이 있는 폴더(모션 시간 검사) */
+export const FIGMA_MOTIONS_DIR = `${DESIGN_SYSTEM_DIR}/figma/motions`;
+/** 토큰 값을 읽는 tokens.json(모션 시간 검사) */
+export const FIGMA_TOKENS_PATH = `${DESIGN_SYSTEM_DIR}/figma/tokens.json`;
 
 /** 컴포넌트 소스 폴더(저장소 기준) */
 export const COMPONENTS_SOURCE_DIR = `${DESIGN_SYSTEM_DIR}/src/components`;
