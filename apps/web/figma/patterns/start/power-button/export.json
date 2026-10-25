@@ -1,0 +1,30 @@
+{
+  "name": "Start/PowerButton",
+  "nodeId": "554:5190",
+  "variants": {
+    "state=closed": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "554:5157",
+      "properties": {
+        "State": "Closed"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 234,
+        "y": 50
+      },
+      "nodeId": "554:5166",
+      "properties": {
+        "State": "Open"
+      }
+    }
+  }
+}

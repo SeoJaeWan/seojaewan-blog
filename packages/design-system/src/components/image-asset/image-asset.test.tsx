@@ -19,8 +19,10 @@ describe('ImageAsset', () => {
     const files = readdirSync(path.resolve(import.meta.dirname, '../../assets/images')).sort();
     const names = files.map((file) => `images/${file}`);
     const known: readonly ImageAssetName[] = [
+      'images/app-chrome.png',
       'images/app-file-explorer.png',
       'images/avatar-profile-placeholder.png',
+      'images/avatar-profile.png',
       'images/file-document.png',
       'images/file-folder.png',
     ];

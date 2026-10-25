@@ -3,10 +3,13 @@ import type { ComponentProps, JSX } from 'react';
 // generate:assets가 figma/assets/images/에서 src/assets/images/로 복사한 래스터 자산의 파일 주소다.
 // Vite와 Next.js가 `new URL(…, import.meta.url)`을 빌드 결과의 파일 주소로 바꿔 주도록 경로를 글자 그대로 쓴다.
 const IMAGE_ASSET_URLS = {
+  'images/app-chrome.png': new URL('../../assets/images/app-chrome.png', import.meta.url).href,
   'images/app-file-explorer.png': new URL(
     '../../assets/images/app-file-explorer.png',
     import.meta.url,
   ).href,
+  'images/avatar-profile.png': new URL('../../assets/images/avatar-profile.png', import.meta.url)
+    .href,
   'images/avatar-profile-placeholder.png': new URL(
     '../../assets/images/avatar-profile-placeholder.png',
     import.meta.url,

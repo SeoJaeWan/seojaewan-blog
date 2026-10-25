@@ -1,13 +1,8 @@
-import type { JSX, ReactNode } from 'react';
+import type { JSX } from 'react';
 
-import {
-  Asset,
-  ImageAsset,
-  ListGroup,
-  ListItem,
-  MenuItem,
-  SearchResults,
-} from '@seojaewan/design-system';
+import { ListGroup, ListItem, MenuItem, SearchResults } from '@seojaewan/design-system';
+
+import { renderItemIcon } from './item-icon';
 
 /** 검색 대상의 종류. 폴더, 글, 외부 링크다 */
 export type SearchItemKind = 'folder' | 'post' | 'link';
@@ -95,22 +90,6 @@ function joinClassNames(base: string, className: string | undefined): string {
 }
 
 /**
- * 종류별 아이콘(피그마 file/Folder, file/Document, file/Link)을 그린다. 크기는 담는 자리가 정한다.
- * @param kind 항목 종류
- * @returns 아이콘
- */
-function renderKindIcon(kind: SearchItemKind): ReactNode {
-  switch (kind) {
-    case 'folder':
-      return <ImageAsset name="images/file-folder.png" className="size-full object-contain" />;
-    case 'post':
-      return <ImageAsset name="images/file-document.png" className="size-full object-contain" />;
-    case 'link':
-      return <Asset name="illustrations/file-link.svg" className="size-full" />;
-  }
-}
-
-/**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
  * 결과 화면은 SearchResults에 최고 일치 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
  * 고르기·열기·링크 복사 동작은 기능을 구현할 때 붙인다.
@@ -137,7 +116,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                   <ListItem
                     key={`${item.kind}-${item.title}`}
                     title={item.title}
-                    icon={renderKindIcon(item.kind)}
+                    icon={renderItemIcon({ kind: item.kind })}
                     className="w-full"
                   />
                 ),
@@ -157,7 +136,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                   size="two-line"
                   title={post.title}
                   subtitle={post.date}
-                  icon={renderKindIcon('post')}
+                  icon={renderItemIcon({ kind: 'post' })}
                   className="w-full"
                 />
               ),
@@ -204,7 +183,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     <SearchResults
       device={device}
       className={className}
-      icon={renderKindIcon(bestMatch.kind)}
+      icon={renderItemIcon({ kind: bestMatch.kind })}
       title={bestMatch.title}
       meta={bestMatch.date === undefined ? kindLabel : `${kindLabel} · ${bestMatch.date}`}
       actions={
@@ -222,7 +201,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           size="two-line"
           title={bestMatch.title}
           subtitle={kindLabel}
-          icon={renderKindIcon(bestMatch.kind)}
+          icon={renderItemIcon({ kind: bestMatch.kind })}
           className="w-full"
         />
       </ListGroup>
@@ -246,7 +225,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
                   <ListItem
                     key={title}
                     title={title}
-                    icon={renderKindIcon(group.kind)}
+                    icon={renderItemIcon({ kind: group.kind })}
                     className="w-full"
                   />
                 ),
