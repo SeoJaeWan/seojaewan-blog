@@ -57,5 +57,6 @@ export * from './components/tile-grid/tile-grid';
 export * from './components/toc/toc';
 export * from './components/toc-item/toc-item';
 export * from './components/tooltip/tooltip';
+export * from './components/window-frame/window-frame';
 export * from './components/window-preview/window-preview';
 export * from './components/window-title/window-title';
