@@ -13,7 +13,14 @@ export type { SearchPanelDevice } from './search-panel';
 export { SearchPanel } from './search-panel';
 export type { StartAllView, StartBodyDevice, StartItem, StartItemGroup } from './start-body';
 export { StartBody } from './start-body';
-export { JUMP_LIST_LETTERS, StartJumpList } from './start-jump-list';
+export { StartJumpList } from './start-jump-list';
+export type { JumpListLetter } from './start-letter-rules';
+export {
+  getAvailableLetters,
+  getStartLetter,
+  groupByStartLetter,
+  JUMP_LIST_LETTERS,
+} from './start-letter-rules';
 export { StartMenuLayer } from './start-menu-layer';
 export type { StartMenuPanelDevice } from './start-menu-panel';
 export { StartMenuPanel } from './start-menu-panel';
