@@ -1,0 +1,84 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": null,
+  "name": "motion-window-open",
+  "nodeId": "758:8",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 250,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "OPACITY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 0.96,
+            "y": 0.96
+          },
+          "valueToken": "motion/scale/window-enter"
+        },
+        {
+          "easing": "motion/easing/direct-entrance",
+          "offset": 1,
+          "time": 250,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "SCALE_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=758-8"
+}
