@@ -3,9 +3,6 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 import { RenameField } from '../rename-field/rename-field';
 
-// 기본 아이콘(폴더) 이미지 자산이다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
-const folderIcon = new URL('../../assets/images/file-folder.png', import.meta.url).href;
-
 type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Surface. 바탕화면(기본)이나 탐색기 */
   surface?: 'desktop' | 'explorer';
@@ -13,15 +10,15 @@ type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   view?: 'large' | 'medium' | 'small';
   /** 피그마 TEXT 속성 Name. 항목 이름이다 */
   name?: string;
-  /** 피그마 INSTANCE_SWAP 속성 Icon. 없으면 폴더 아이콘을 그린다. 크기는 View가 정한 칸에 맞춘다 */
-  icon?: ReactNode;
+  /** 피그마 INSTANCE_SWAP 속성 Icon. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다. 크기는 View가 정한 칸에 맞춘다 */
+  icon: ReactNode;
   /** 피그마 State=Selected. 선택된 항목이면 바탕을 깔고 이름을 모두 보인다 */
   selected?: boolean;
   /** 피그마 State=Selected focus. 선택된 채 포커스를 받으면 선을 그린다(selected와 함께 쓴다) */
   focused?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 항목이면 아이콘과 이름을 흐리게 그린다 */
   cut?: boolean;
-  /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그린다 */
+  /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그린다. 탐색기에서는 선택 바탕을 함께 깐다 */
   renaming?: boolean;
 };
 
@@ -62,7 +59,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
         'flex flex-col items-center rounded-control select-none',
         isDesktop ? 'gap-2 px-2 py-4' : 'gap-4 p-4',
         WIDTHS[surface][view],
-        isSelected
+        isSelected || (isRenaming && !isDesktop)
           ? isDesktop
             ? 'bg-file-item-desktop-fill-selected'
             : 'bg-file-item-explorer-fill-selected'
@@ -79,17 +76,17 @@ export function FileItem(props: FileItemProps): JSX.Element {
       )}
     >
       <div className={cn('flex shrink-0 items-center justify-center', ICON_SIZES[view], dim)}>
-        {icon ?? <img src={folderIcon} alt="" className="size-full object-contain" />}
+        {icon}
       </div>
       {isRenaming ? (
         <RenameField text={name} />
       ) : (
         <span
-          // 글자 그림자 유틸리티가 없어 토큰 변수(--elevation-desktop-label)를 인라인 스타일로 참조한다.
-          style={isDesktop ? { textShadow: 'var(--elevation-desktop-label)' } : undefined}
           className={cn(
             'w-full text-center type-caption wrap-break-word',
-            isDesktop ? 'text-file-item-desktop-label' : 'text-text-fill-primary',
+            isDesktop
+              ? 'text-file-item-desktop-label text-shadow-elevation-desktop-label'
+              : 'text-text-fill-primary',
             isSelected ? undefined : 'line-clamp-2',
             dim,
           )}

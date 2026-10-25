@@ -3,6 +3,9 @@ import { type JSX, type ReactNode, useLayoutEffect } from 'react';
 
 import { FileItem } from './file-item';
 
+// 피그마 FileItem 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
+const folderIcon = new URL('../../assets/images/file-folder.png', import.meta.url).href;
+
 // 피그마 FileItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
 const SURFACES = ['desktop', 'explorer'] as const;
 const VIEWS = ['large', 'medium', 'small'] as const;
@@ -61,8 +64,8 @@ const meta = {
       <FileItem
         surface={args.surface}
         view={args.view}
-        // 피그마의 Rename 변형은 이름 바꾸기 상자가 Name 속성과 이어져 있지 않아 기본 글자(이름)를 보인다.
-        name={args.state === 'rename' ? '이름' : args.name}
+        name={args.name}
+        icon={<img src={folderIcon} alt="" className="size-full object-contain" />}
         selected={['selected', 'selected-focus', 'cut-selected'].includes(args.state)}
         focused={args.state === 'selected-focus'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
