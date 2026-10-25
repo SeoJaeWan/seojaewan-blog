@@ -55,6 +55,7 @@ export function node(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'typ
     },
     text: null,
     asset: null,
+    instance: null,
     isFullEllipse: null,
     children: [],
     ...overrides,
