@@ -2,6 +2,7 @@
 
 import type { JSX } from 'react';
 
+import { StartMenuLayer, useStartMenuStore } from '@/features/start-menu/start-menu';
 import { TaskbarDefault, useClock } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/viewport/use-device';
 
@@ -22,8 +23,8 @@ const ICON_OPEN_GESTURES = { desktop: 'double-click', mobile: 'click' } as const
  * 앱 화면 전체(작업 공간)를 그린다. 화면을 꽉 채우는 바탕화면(`Desktop/Scene`) 위에 아래에서부터 차례로
  * 배경화면·아이콘, 창 층, 패널 층(Start·검색), 작업 표시줄을 쌓는다. 작업 표시줄이 맨 위라 패널은 그 뒤에서 올라온다.
  * 시계와 화면 방식은 기기에 따라 달라, 서버 HTML과 수화 첫 렌더는 빈 시계·데스크톱 방식으로 그리고 마운트 뒤에 바꾼다.
- * 창 층은 창 저장소의 열린 창을 그리고, 작업 표시줄 앱 버튼과 바탕화면 `Blog` 폴더가 창을 연다. 패널은 자리만 둔다.
- * 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
+ * 창 층은 창 저장소의 열린 창을 그리고, 작업 표시줄 앱 버튼과 바탕화면 `Blog` 폴더, Start 항목이 창을 연다.
+ * Start 버튼과 검색칸은 패널 층(Start·검색 패널)을 열고 닫는다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
  * @codocs [[작업 표시줄:구성]]
  * @codocs [[창 동작:열기 규칙]]
  * @codocs [[모바일:차이]]
@@ -44,6 +45,29 @@ export function Workspace(): JSX.Element {
     }
   }
 
+  const openPanel = useStartMenuStore((state) => state.openPanel);
+  const toggleStart = useStartMenuStore((state) => state.toggleStart);
+  const openSearch = useStartMenuStore((state) => state.openSearch);
+  const toggleSearch = useStartMenuStore((state) => state.toggleSearch);
+
+  /**
+   * Start 메뉴에서 앱 항목을 열면 그 앱 창을 연다. Start 메뉴는 패널 층이 닫는다.
+   * @param app 연 앱
+   */
+  function handleOpenApp(app: Parameters<typeof openApp>[0]): void {
+    openApp(app);
+  }
+
+  /** Start 버튼을 누르면 Start 메뉴를 열거나 닫는다. */
+  function handleStartClick(): void {
+    toggleStart();
+  }
+
+  /** 좁은 화면의 검색 버튼을 누르면 검색 패널을 열거나 닫는다. */
+  function handleSearchClick(): void {
+    toggleSearch();
+  }
+
   return (
     <main aria-label="바탕화면" className="fixed inset-0 overflow-hidden">
       <DesktopScene
@@ -56,6 +80,12 @@ export function Workspace(): JSX.Element {
             search={TASKBAR_SEARCHES[device]}
             time={clock?.time ?? ''}
             date={clock?.date ?? ''}
+            isStartOpen={openPanel === 'start'}
+            onStartClick={handleStartClick}
+            // 포커스한 채 패널을 닫았다가(Esc) 다시 누르면 포커스가 바뀌지 않으므로 클릭에도 연다
+            searchBoxProps={{ onFocus: openSearch, onClick: openSearch }}
+            isSearchOpen={openPanel === 'search'}
+            onSearchClick={handleSearchClick}
             apps={<WorkspaceTaskbarApps />}
           />
         }
@@ -63,7 +93,9 @@ export function Workspace(): JSX.Element {
         {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
         <WorkspaceWindows />
         {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
-        <div data-layer="panels" className="pointer-events-none absolute inset-0" />
+        <div data-layer="panels" className="pointer-events-none absolute inset-0">
+          <StartMenuLayer device={device} onOpenApp={handleOpenApp} />
+        </div>
       </DesktopScene>
     </main>
   );

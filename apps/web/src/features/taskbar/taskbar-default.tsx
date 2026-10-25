@@ -34,6 +34,8 @@ type TaskbarDefaultProps = {
  * 화면 아래 작업 표시줄(피그마 조립 `Taskbar/Default`)을 그린다. Taskbar 가운데 자리에 Start 버튼, 검색, 앱 버튼 자리를 두고
  * 오른쪽 자리에 시계(SystemTray)를 둔다. 앱 버튼은 앱마다 메뉴·미리보기를 품으므로 쓰는 쪽이 넣는다.
  * 동작은 쓰는 곳이 prop으로 넣는다(Start 버튼 클릭, 검색칸 포커스, 시계 글자). prop을 주지 않으면 피그마 조립 모습 그대로다.
+ * Start 버튼과 검색칸·검색 버튼에는 `data-panel-trigger`를 단다. 패널 층이 바깥 클릭으로 볼 때 이 둘을 빼기 위해서다
+ * (누르면 패널을 열고 닫는 버튼이라 바깥 클릭으로 닫으면 다시 열려 버린다).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[작업 표시줄:구성]]
  * @param props
@@ -55,21 +57,26 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
       center={
         <>
           <TaskbarButton
+            data-panel-trigger
             label="시작"
             aria-expanded={isStartOpen}
             onClick={props.onStartClick}
             icon={<Asset name="illustrations/logo-windows.svg" className="size-full" />}
           />
           {search === 'box' ? (
-            <SearchBox
-              {...searchBoxProps}
-              appearance="taskbar"
-              placeholder="검색"
-              aria-label="검색"
-              className="w-220 shrink-0"
-            />
+            // 돋보기 자리를 눌러도 검색칸으로 보도록 상자 전체를 감싼다. contents라 배치는 바뀌지 않는다
+            <div data-panel-trigger className="contents">
+              <SearchBox
+                {...searchBoxProps}
+                appearance="taskbar"
+                placeholder="검색"
+                aria-label="검색"
+                className="w-220 shrink-0"
+              />
+            </div>
           ) : (
             <TaskbarButton
+              data-panel-trigger
               label="검색"
               aria-expanded={isSearchOpen}
               onClick={props.onSearchClick}

@@ -50,6 +50,8 @@ type StartBodyProps = StartBodyCommonProps &
         pinned: readonly StartItem[];
         /** 모두 목록의 묶음 */
         groups: readonly StartItemGroup[];
+        /** 항목 칸(고정됨, 그리드 보기)을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
+        onItemOpen?: (item: StartItem) => void;
       }
     | {
         /** 피그마 View=JumpList. 모두 제목 줄과 글자 격자를 보인다 */
@@ -100,6 +102,7 @@ function joinClassNames(base: string, className: string | undefined): string {
  * Start 메뉴 안의 본문(피그마 조립 `Start/Body`)을 그린다. 고정됨과 모두 목록(간단히·그리드·범주), 글자 격자, 검색 결과 중 하나다.
  * 간단히·그리드 목록에는 `data-jump-list="list"`를 달아, 글자 격자가 열리고 닫히는 움직임을 기능을 구현할 때 붙일 수 있게 한다.
  * 스크롤바는 피그마처럼 막대 기본 위치로 그린다. 스크롤과 막대 위치, 보기 바꾸기, 글자로 이동하기는 기능을 구현할 때 붙인다.
+ * 항목 칸을 누르면 `onItemOpen`으로 알린다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:고정됨]]
  * @codocs [[Start 메뉴:모두]]
@@ -149,14 +152,14 @@ export function StartBody(props: StartBodyProps): JSX.Element {
                 /**
                  * 고정 항목 칸 하나를 그린다.
                  * @param item 고정 항목
-                 * @returns PinnedTile
+                 * @returns StartTile
                  */
                 (item) => (
-                  <PinnedTile
+                  <StartTile
                     key={item.title}
-                    label={item.title}
-                    icon={renderItemIcon(item)}
+                    item={item}
                     className={tileClassName}
+                    onItemOpen={props.onItemOpen}
                   />
                 ),
               )}
@@ -167,7 +170,12 @@ export function StartBody(props: StartBodyProps): JSX.Element {
               action={<DropDownButton label={viewLabels[props.view]} />}
               className="w-full shrink-0"
             />
-            <StartAllList view={props.view} groups={props.groups} tileClassName={tileClassName} />
+            <StartAllList
+              view={props.view}
+              groups={props.groups}
+              tileClassName={tileClassName}
+              onItemOpen={props.onItemOpen}
+            />
           </div>
           <Scrollbar className={scrollbarClassNames[device]} />
         </div>
@@ -183,6 +191,8 @@ type StartAllListProps = {
   groups: readonly StartItemGroup[];
   /** 그리드 보기의 항목 칸 너비 클래스 */
   tileClassName: string | undefined;
+  /** 그리드 보기의 항목 칸을 눌렀을 때 부른다 */
+  onItemOpen?: (item: StartItem) => void;
 };
 
 /**
@@ -209,14 +219,14 @@ function StartAllList(props: StartAllListProps): JSX.Element {
                   /**
                    * 항목 칸 하나를 그린다.
                    * @param item 항목
-                   * @returns PinnedTile
+                   * @returns StartTile
                    */
                   (item) => (
-                    <PinnedTile
+                    <StartTile
                       key={item.title}
-                      label={item.title}
-                      icon={renderItemIcon(item)}
+                      item={item}
                       className={tileClassName}
+                      onItemOpen={props.onItemOpen}
                     />
                   ),
                 )}
@@ -242,5 +252,36 @@ function StartAllList(props: StartAllListProps): JSX.Element {
         ),
       )}
     </div>
+  );
+}
+
+type StartTileProps = {
+  /** 항목 */
+  item: StartItem;
+  /** 칸 너비 클래스 */
+  className: string | undefined;
+  /** 칸을 눌렀을 때 부른다 */
+  onItemOpen?: (item: StartItem) => void;
+};
+
+/**
+ * 항목 칸 하나(PinnedTile)를 그린다. 누르면 그 항목으로 `onItemOpen`을 부른다.
+ * @param props
+ */
+function StartTile(props: StartTileProps): JSX.Element {
+  const { item, className } = props;
+
+  /** 칸을 누르면 쓰는 곳에 항목을 알린다. */
+  function handleClick(): void {
+    props.onItemOpen?.(item);
+  }
+
+  return (
+    <PinnedTile
+      label={item.title}
+      icon={renderItemIcon(item)}
+      className={className}
+      onClick={handleClick}
+    />
   );
 }
