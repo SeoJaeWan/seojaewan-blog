@@ -152,7 +152,8 @@ async function readTracks(node: SceneNode, path: string, sample: MotionSampleDat
   if (!node.visible) {
     return;
   }
-  const fields = animatedFields(node.animations);
+  // 슬롯(SLOT) 노드처럼 animations 속성이 없는 노드는 트랙이 없는 것으로 보고 자식으로만 내려간다.
+  const fields = 'animations' in node ? animatedFields(node.animations) : [];
   if (fields.length > 0) {
     const identity = await nodeIdentity(node);
     for (const field of fields) {

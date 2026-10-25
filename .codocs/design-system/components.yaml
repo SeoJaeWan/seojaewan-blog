@@ -50,6 +50,7 @@ Windows 화면 요소: |
   | SystemTray | 작업 표시줄 오른쪽의 시계 영역 |
   | ShellSurface | Start와 검색 패널의 공통 바탕 |
   | StartMenuFooter | Start 아래 줄 |
+  | JumpListLetter | Start 모두 목록 글자 격자의 글자 칸 |
   | ProfileButton | 프로필 사진과 이름 버튼 |
   | PinnedTile | Start 고정 앱과 새 탭 최신 글의 타일 |
   | SearchResults | Start 검색과 검색 패널이 함께 쓰는 검색 결과 영역 |
