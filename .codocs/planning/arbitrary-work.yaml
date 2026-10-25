@@ -34,6 +34,12 @@ _codocs:
   | #200 | `ExplorerAddressRow` 모바일 검색 아이콘을 피그마 원본대로 16 → 20으로 고쳤다 |
   | #200 | `ExplorerCommands`의 글자 버튼에 `min-w-0`(피그마 인스턴스가 최소 너비 120을 지움). 정렬·보기·새로 만들기는 피그마에서 메뉴를 품지 않은 일반 버튼이라 메뉴는 기능 구현 때 붙인다 |
   | #200 | 캡처 표의 남은 차이: 글자 버튼 너비 소수점 차이(피그마는 정수로 올림)로 1~3px 밀림, 상태 줄 글자 1px(글자 기준선 한계) |
+  | #195 Chrome(병합) | `Chrome/Page`는 피그마 변형이 화면 넷(Post, New tab, Search results, Not found) × wide·narrow라, 컴포넌트 하나(`ChromePage`)에 `page`별 props(discriminated union)로 만들었다 |
+  | #195 | 글 본문은 `children` 자리로 두고, 스토리에서만 문단·제목·링크·`CodeBlock`으로 피그마와 같은 글을 그린다. `content/`는 만들지 않았다 |
+  | #195 | 좁은 창 목차는 접힌 모습(제목만)만 그린다. 펼치기는 기능 구현 때 붙인다. 본문 루트에 `overflow-y-auto`, wide에 `px-16`을 두었다 |
+  | #195 | 디자인 시스템 `Toc`의 항목 자리에 피그마와 같은 `flex-col gap-8`을 넣었다(없어서 항목이 붙어 그려졌다) |
+  | #195 | 캡처 표의 남은 차이: 한글 제목 가장자리(피그마는 Pretendard 글자 스타일, 코드는 Open Sans 다음 Pretendard 순서), 링크 밑줄 위치·두께(엔진 차이) |
+  | #195 | 피그마 검색 결과의 주소가 두 줄 모두 `react-19-hooks`라 그대로 옮겼다(피그마 쪽 오타일 수 있음) |
 
   확인된 도구 문제(고치지 않음): 캡처 도구(`tools/figma-parity/src/run-capture.ts`의 `designSystemExports()`)가 디자인 시스템 `index.ts`의 `export *`를 읽지 못해, 디자인 시스템 컴포넌트만 바뀐 PR에서 그 컴포넌트를 쓰는 조립이 캡처 범위에 들어가지 않는다.
 모션 클래스 붙이기: |
