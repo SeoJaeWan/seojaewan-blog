@@ -109,4 +109,20 @@ describe('MenuItem', () => {
     expect(appItem.querySelector('img')).not.toBeNull();
     expect(openItem.querySelector('svg')).not.toBeNull();
   });
+
+  it('standalone 항목은 메뉴 없이 버튼으로 그리고, 누르면 onClick을 부른다', async () => {
+    const user = userEvent.setup();
+    const handleClick = vi.fn();
+    render(
+      <MenuItem
+        standalone
+        label="열기"
+        icon="icons/ic_fluent_open_20_regular.svg"
+        onClick={handleClick}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: '열기' }));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
 });

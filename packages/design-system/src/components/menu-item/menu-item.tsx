@@ -27,6 +27,11 @@ type MenuItemProps = MenuItemCommonProps &
     | {
         /** 피그마 Kind=Default. 누르면 onClick을 부르고 메뉴를 닫는다 */
         kind?: 'default';
+        /**
+         * 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼 Base UI 메뉴가 없는 곳에서
+         * 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
+         */
+        standalone?: boolean;
         /** 항목을 골랐을 때 호출 */
         onClick?: () => void;
       }
@@ -65,6 +70,10 @@ const baseClassName = [
   'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
   'group-data-disabled:text-text-fill-disabled',
 ].join(' ');
+
+// 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
+const STANDALONE_BASE_CLASS_NAME =
+  'group-enabled:group-hover:bg-subtle-fill-secondary group-focus-visible:bg-subtle-fill-secondary group-enabled:group-active:bg-subtle-fill-tertiary group-enabled:group-active:text-text-fill-secondary';
 
 // 단축키·꺾쇠처럼 흐린 글자 색이다.
 const SECONDARY_TEXT_CLASS_NAME =
@@ -127,6 +136,19 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       );
     case 'default':
     case undefined:
+      if (props.standalone === true) {
+        return (
+          <button
+            type="button"
+            className={cn(className, 'text-left')}
+            disabled={isDisabled}
+            data-disabled={isDisabled ? '' : undefined}
+            onClick={props.onClick}
+          >
+            <MenuItemContent {...props} leading={icon} baseClassName={STANDALONE_BASE_CLASS_NAME} />
+          </button>
+        );
+      }
       return (
         <Menu.Item
           className={className}
@@ -166,6 +188,8 @@ type MenuItemContentProps = MenuItemCommonProps & {
   leading: ReactNode;
   /** 항목 종류 */
   kind?: 'default' | 'submenu' | 'checkbox' | 'radio';
+  /** 강조 영역에 덧붙일 상태 클래스 */
+  baseClassName?: string;
 };
 
 /**
@@ -174,7 +198,7 @@ type MenuItemContentProps = MenuItemCommonProps & {
  */
 function MenuItemContent(props: MenuItemContentProps): JSX.Element {
   return (
-    <span className={baseClassName}>
+    <span className={cn(baseClassName, props.baseClassName)}>
       {props.leading !== undefined && (
         <span className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0">
           {props.leading}
