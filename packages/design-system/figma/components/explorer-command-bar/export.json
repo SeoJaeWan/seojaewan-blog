@@ -1,0 +1,16 @@
+{
+  "name": "ExplorerCommandBar",
+  "nodeId": "439:5732",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 48,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "439:5732",
+      "properties": {}
+    }
+  }
+}

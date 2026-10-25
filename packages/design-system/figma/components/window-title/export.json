@@ -1,0 +1,30 @@
+{
+  "name": "WindowTitle",
+  "nodeId": "395:15808",
+  "variants": {
+    "kind=preview": {
+      "node": {
+        "height": 16,
+        "width": 660,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "395:15806",
+      "properties": {
+        "Kind": "Preview"
+      }
+    },
+    "kind=window": {
+      "node": {
+        "height": 32,
+        "width": 660,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "395:15798",
+      "properties": {
+        "Kind": "Window"
+      }
+    }
+  }
+}
