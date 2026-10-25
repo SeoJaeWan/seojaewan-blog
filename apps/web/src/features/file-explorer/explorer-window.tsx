@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { ExplorerTab, IconButton, ImageAsset, WindowFrame } from '@seojaewan/design-system';
 
@@ -12,7 +12,20 @@ export type ExplorerWindowTab = {
   selected?: boolean;
 };
 
-type ExplorerWindowProps = {
+// 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
+type WindowFrameControlProps = Pick<
+  ComponentProps<typeof WindowFrame>,
+  | 'inactive'
+  | 'placement'
+  | 'onMinimize'
+  | 'onMaximize'
+  | 'onRestore'
+  | 'onClose'
+  | 'maximizeSlot'
+  | 'onTitleBarDoubleClick'
+>;
+
+type ExplorerWindowProps = WindowFrameControlProps & {
   /** 피그마 Device. desktop은 탭이 있는 떠 있는 창, mobile은 탭 대신 제목 표시줄만 있는 전체화면 창이다 */
   device?: ExplorerWindowDevice;
   /** 열린 탭. desktop은 제목 표시줄에 모두 그리고, mobile은 고른 탭의 제목만 제목 표시줄에 보인다 */
@@ -32,18 +45,20 @@ const explorerAppIcon = (
 /**
  * 탐색기 창(피그마 조립 `Window/Explorer`)을 그린다. WindowFrame(마이카 재질) 위에 desktop은 폴더 탭·새 탭 버튼과
  * 창 버튼, mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 그 아래에 탭 내용 자리를 둔다.
- * 모바일은 늘 전체화면이라 최대화 버튼을 뺀다. 창 이동·크기 조절·스냅, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
+ * 모바일은 늘 전체화면이라 최대화 버튼을 뺀다. 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)은 WindowFrame에 그대로 넘긴다.
+ * 창 이동·크기 조절, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[모바일:차이]]
  * @param props
  */
 export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
-  const { device = 'desktop', tabs, children, className } = props;
+  const { device = 'desktop', tabs, children, className, ...frameProps } = props;
   if (device === 'mobile') {
     const selectedTab = tabs.find((tab) => tab.selected === true) ?? tabs[0];
     return (
       <WindowFrame
+        {...frameProps}
         placement="maximized"
         showMaximize={false}
         appIcon={explorerAppIcon}
@@ -56,6 +71,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
   }
   return (
     <WindowFrame
+      {...frameProps}
       titleBar="custom"
       titleBarContent={
         <>
