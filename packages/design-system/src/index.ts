@@ -15,6 +15,7 @@ export * from './components/explorer-command-bar/explorer-command-bar';
 export * from './components/explorer-status-bar/explorer-status-bar';
 export * from './components/explorer-tab/explorer-tab';
 export * from './components/file-item/file-item';
+export * from './components/file-row/file-row';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
 export * from './components/list-group/list-group';
