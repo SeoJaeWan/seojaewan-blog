@@ -1,0 +1,54 @@
+{
+  "name": "AddressBar",
+  "nodeId": "36:582",
+  "variants": {
+    "state=focused": {
+      "node": {
+        "height": 40,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "36:526",
+      "properties": {
+        "State": "Focused"
+      }
+    },
+    "state=hover": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "36:521",
+      "properties": {
+        "State": "Hover"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "36:516",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=suggesting": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "36:532",
+      "properties": {
+        "State": "Suggesting"
+      }
+    }
+  }
+}

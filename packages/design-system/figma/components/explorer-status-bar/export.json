@@ -1,0 +1,30 @@
+{
+  "name": "ExplorerStatusBar",
+  "nodeId": "439:5874",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 36,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "439:5868",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 20,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "439:5873",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
