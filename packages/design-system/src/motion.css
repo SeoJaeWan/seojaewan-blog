@@ -26,6 +26,23 @@
 }
 
 /*
+ * 검색 돋보기(pill·taskbar)의 회색 ↔ 컬러 전환이다. 두 돋보기를 겹쳐 두고 투명도만 바꾼다.
+ * 들어갈 때(상자에 마우스를 올리거나 포커스) faster·fade로 페이드하고, 나올 때는 바로 바뀐다.
+ * transition은 바뀐 뒤 상태의 설정을 쓰므로 기본 상태는 전환 속성이 없고(바로 바뀜),
+ * 상자(group)가 hover·focus-within일 때만 투명도를 전환한다.
+ * 바뀐 뒤의 투명도는 컴포넌트가 group-hover·group-focus-within으로 가진다.
+ */
+@utility motion-search-icon-state {
+  transition-property: none;
+  transition-duration: var(--motion-duration-faster);
+  transition-timing-function: var(--motion-easing-fade);
+
+  &:where(:is(.group:hover, .group:focus-within) *) {
+    transition-property: opacity;
+  }
+}
+
+/*
  * ProgressRing 호 회전 + 경로 트림(견본 motion-progress-ring). 클래스는 Asset의 svg에 붙이고 안의 호 경로를 움직인다.
  * 트림은 자산의 pathLength="1" 기준으로 dasharray(<끝-시작> 1)·dashoffset(-<시작>)으로, 회전은 피그마 부호를 뒤집어 옮긴다.
  * 세 트랙의 시간·구간 위치·이징 토큰이 같아 키프레임 하나로 묶는다. 정지 모습(트림 끝 0.46·색·크기)은 자산과 컴포넌트가 갖는다.
@@ -62,10 +79,118 @@
 }
 
 /*
+ * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.96 → 1, 투명도 0 → 1로 나타난다.
+ * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 열 때(data-starting-style 자리) 붙인다.
+ */
+@keyframes motion-window-open {
+  0% {
+    opacity: 0;
+    scale: var(--motion-scale-window-enter);
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@utility motion-window-open {
+  animation-name: motion-window-open;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 창 닫기(견본 motion-window-close). WindowFrame 전체가 배율 1 → 0.96, 투명도 1 → 0으로 사라진다(Direct exit).
+ * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 닫을 때(data-ending-style 자리) 붙이고,
+ * 애니메이션이 끝날 때까지 화면에 남긴다. 끝 모습(투명도 0)을 빠질 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-close {
+  0% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: var(--motion-scale-window-enter);
+  }
+}
+
+@utility motion-window-close {
+  animation-name: motion-window-close;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 창 최소화(견본 motion-window-minimize). WindowFrame 전체가 작업 표시줄 앱 버튼 쪽으로 옮겨 가며
+ * 배율 1 → 0.12, 투명도 1 → 0으로 사라진다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 도착 위치(창 자리에서 작업 표시줄 앱 버튼까지의 거리)는 실행 중 값이라 앱이
+ * --motion-window-taskbar-offset-x·-y로 넘긴다. 작업 표시줄에서 복원(motion-window-restore)도 같은 변수를 출발 위치로 쓴다.
+ * 끝 모습(투명도 0)을 최소화 상태로 바뀔 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-minimize {
+  0% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  100% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+}
+
+@utility motion-window-minimize {
+  animation-name: motion-window-minimize;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * 작업 표시줄에서 복원(견본 motion-window-restore). 최소화의 반대로, WindowFrame 전체가 작업 표시줄 앱 버튼 자리에서
+ * 배율 0.12 → 1, 투명도 0 → 1로 커지며 제자리로 나타난다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 출발 위치는 실행 중 값이라 최소화와 같은 --motion-window-taskbar-offset-x·-y를 앱이 넘긴다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-restore {
+  0% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-window-restore {
+  animation-name: motion-window-restore;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[디자인 기반:모션 클래스]]).
  */
 @media (prefers-reduced-motion: reduce) {
-  /* 지금 있는 클래스는 상태 색 전환과 ProgressRing 회전이라 모두 그대로 두는 대상이다. */
+  .motion-window-open,
+  .motion-window-close,
+  .motion-window-minimize,
+  .motion-window-restore {
+    animation: none;
+  }
 }

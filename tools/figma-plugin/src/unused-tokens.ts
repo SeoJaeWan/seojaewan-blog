@@ -25,7 +25,7 @@ export type UsageStyle = {
 export type UsageInput = {
   variables: readonly UsageVariable[];
   styles: readonly UsageStyle[];
-  /** 노드(모든 페이지)에 연결된 변수 ID. 글자 구간의 연결도 넣는다 */
+  /** 노드(모든 페이지)에 연결된 변수 ID. 글자 구간의 연결과 키프레임 이징(EASING 변수 별칭)도 넣는다 */
   nodeVariableIds: ReadonlySet<string>;
   /** 노드(모든 페이지)에 입힌 스타일 ID. 글자 일부 구간에만 입힌 스타일도 넣는다 */
   nodeStyleIds: ReadonlySet<string>;
