@@ -16,6 +16,7 @@ export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
 export * from './components/explorer-address-row/explorer-address-row';
 export * from './components/explorer-command-bar/explorer-command-bar';
+export * from './components/explorer-content/explorer-content';
 export * from './components/explorer-status-bar/explorer-status-bar';
 export * from './components/explorer-tab/explorer-tab';
 export * from './components/file-item/file-item';
