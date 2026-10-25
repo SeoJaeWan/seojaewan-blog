@@ -1,0 +1,30 @@
+{
+  "name": "BootScreen",
+  "nodeId": "38:1122",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 720,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "38:1106",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 844,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "38:1114",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
