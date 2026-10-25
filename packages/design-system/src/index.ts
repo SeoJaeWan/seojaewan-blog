@@ -1,4 +1,5 @@
 // @seojaewan/design-system 공개 진입점이다.
+export * from './components/address-bar/address-bar';
 export * from './components/asset/asset';
 export * from './components/boot-screen/boot-screen';
 export * from './components/breadcrumb-item/breadcrumb-item';
@@ -13,6 +14,7 @@ export * from './components/empty-state/empty-state';
 export * from './components/explorer-command-bar/explorer-command-bar';
 export * from './components/explorer-status-bar/explorer-status-bar';
 export * from './components/explorer-tab/explorer-tab';
+export * from './components/file-item/file-item';
 export * from './components/file-row/file-row';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
@@ -48,3 +50,4 @@ export * from './components/tile-grid/tile-grid';
 export * from './components/toc/toc';
 export * from './components/toc-item/toc-item';
 export * from './components/tooltip/tooltip';
+export * from './components/window-title/window-title';
