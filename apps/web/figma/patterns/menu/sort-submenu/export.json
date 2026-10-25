@@ -1,0 +1,16 @@
+{
+  "name": "Menu/SortSubmenu",
+  "nodeId": "518:6663",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 102,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6663",
+      "properties": {}
+    }
+  }
+}

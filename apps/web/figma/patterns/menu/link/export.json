@@ -1,0 +1,16 @@
+{
+  "name": "Menu/Link",
+  "nodeId": "518:6207",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6207",
+      "properties": {}
+    }
+  }
+}

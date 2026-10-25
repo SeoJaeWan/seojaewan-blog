@@ -1,0 +1,30 @@
+{
+  "name": "Window/Chrome",
+  "nodeId": "564:7107",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 800,
+        "width": 1280,
+        "x": 20,
+        "y": 20
+      },
+      "nodeId": "564:6969",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 796,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:7105",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
