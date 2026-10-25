@@ -9,12 +9,12 @@ _codocs:
 구성: |
   - `apps/web`: Next.js 블로그 앱. 피그마 조립에 대응하는 앱 컴포넌트와 그 스토리를 담는 Storybook도 있다([[저장소 구성:앱 폴더 구조]]).
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
-  - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
+  - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
   - `tools/figma-parity`: 피그마 그림과 Storybook 스토리를 캡처해 캡처 표와 PR 댓글을 만드는 도구([[피그마 연동:CI]]). 디자인 시스템과 앱의 Storybook을 함께 다루므로 어느 한 패키지에 두지 않는다.
   - `tools/`의 도구는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다.
   - `.codocs`: 기획·정책·컨벤션 문서
   - `.claude/skills`: 피그마 플러그인 PR을 처리하는 스킬처럼 반복 작업의 절차. 규칙은 옮겨 적지 않고 `.codocs`를 가리킨다([[피그마 연동:스킬]]).
-  - `stylelint.config.mjs`: CSS lint 설정. 토큰 정의를 `tokens.css`에만 허락한다([[피그마 연동:토큰 사용 강제]]).
+  - `stylelint.config.mjs`: CSS lint 설정. 토큰 정의를 `tokens.css`에만, `@keyframes`와 `motion-*` 클래스 정의를 `motion.css`에만 허락한다([[피그마 연동:토큰 사용 강제]], [[기술 스택:스타일링]]).
   - `AGENTS.md`: AI 에이전트가 작업 전에 codocs 문서를 확인하고 codocs MCP로 찾고 고치도록 안내한다. 프로젝트 지식을 여기에 복제하지 않는다.
 앱 폴더 구조: |
   `apps/web/src`는 기능별로 나눈다. 기능이 일곱 개나 되어, 역할별(`components/`, `stores/`) 폴더에 모두 섞으면 폴더마다 파일이 쌓이고 한 기능을 고칠 때 여러 폴더를 오가야 하기 때문이다.
@@ -52,6 +52,7 @@ _codocs:
   │  ├─ pretendard.css    # 같다
   │  ├─ cascadia-mono.css # 같다
   │  ├─ tokens.css        # figma/tokens.json에서 생성한 토큰과 @utility. 손으로 고치지 않는다
+  │  ├─ motion.css        # 손으로 쓰는 motion-* 클래스와 키프레임
   │  ├─ assets/           # figma/assets/에서 생성한 자산 데이터와 이미지. 손으로 고치지 않는다
   │  └─ components/
   │     └─ button/
@@ -68,6 +69,8 @@ _codocs:
      ├─ components/
      │  └─ button/
      │     └─ style=accent,state=rest.png
+     ├─ motions/
+     │  └─ motion-progress-ring.json
      └─ assets/
         └─ icons/
            └─ ic_fluent_search_16_regular.svg
@@ -75,7 +78,7 @@ _codocs:
 
   - 컴포넌트는 폴더 하나에 하나씩 두고 코드, 스토리, 테스트를 함께 둔다.
   - `figma/`는 플러그인이 덮어쓰는 기준 자료라 사람이 고치는 `src/`와 나눈다. 플러그인이 쓴 모양을 그대로 두도록 Prettier 검사에서도 뺀다.
-  - 피그마 그림은 컴포넌트마다 `figma/components/<컴포넌트>/` 폴더로 나눈다. 다른 컴포넌트를 내보낸 PR끼리 같은 파일을 건드리지 않게 하기 위해서다. 자산은 묶음마다 `figma/assets/<묶음>/`에 둔다.
+  - 피그마 그림은 컴포넌트마다 `figma/components/<컴포넌트>/` 폴더로 나눈다. 다른 컴포넌트를 내보낸 PR끼리 같은 파일을 건드리지 않게 하기 위해서다. 자산은 묶음마다 `figma/assets/<묶음>/`에, 애니메이션은 견본마다 `figma/motions/<이름>.json`에 둔다.
   - 변형 파일 이름은 피그마 변형 이름과 1:1로 맞춰 Storybook 스토리와 짝짓는다([[피그마 연동:스토리 규칙]]).
   - 생성 파일(웹 폰트 CSS, `tokens.css`, `src/assets/`)은 손으로 고치지 않는다. 원본(`figma/`, 웹 폰트 패키지)을 바꾸고 다시 생성한다. 생성 결과가 원본과 맞는지는 CI가 다시 생성해 확인한다.
   - 스크립트는 이 패키지의 파일만 다루므로 루트 `scripts/`가 아니라 패키지 안에 둔다. 테스트는 소스 옆에 `*.test.ts`로 둔다.

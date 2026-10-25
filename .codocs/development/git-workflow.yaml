@@ -12,7 +12,7 @@ _codocs:
 브랜치: |
   `종류/짧은-설명` 형식이다. 예: `feat/taskbar-pin`, `fix/window-drag`, `chore/setup-monorepo`
   종류는 커밋 종류와 같은 단어를 쓴다.
-  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 토큰은 `feat/figma-tokens`, 컴포넌트마다 `feat/figma-<컴포넌트>`, 조립은 영역마다 `feat/figma-patterns-<영역>`. 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 연동:피그마 플러그인]]).
+  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 토큰은 `feat/figma-tokens`, 컴포넌트마다 `feat/figma-<컴포넌트>`, 조립은 영역마다 `feat/figma-patterns-<영역>`, 애니메이션은 견본마다 `feat/figma-motion-<이름>`. 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 연동:피그마 플러그인]]).
 커밋: |
   - 제목은 영어로, Conventional Commits 형식을 따른다. 예: `feat(design-system): add Button component`
   - 본문은 한국어로 쓴다. 무엇을 왜 바꿨는지 적는다.
@@ -32,15 +32,17 @@ Git 훅: |
 
   커밋마다 전체 검사를 돌리면 AI가 커밋을 자주 만들 때마다 기다려야 하므로, 전체 검사는 CI에 둔다.
 CI: |
-  PR과 `main` push마다 GitHub Actions에서 실행한다.
+  PR과 `main` push마다 GitHub Actions에서 실행한다. 워크플로를 나누는 기준과 각 워크플로가 도는 범위는 [[피그마 연동:CI]]에 있다.
 
-  - 검사 작업(`ci.yml`): 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, 단위·컴포넌트 테스트, 자산 생성 확인(`generate:assets --check`), 토큰 생성 확인(`tokens.json`이나 `tokens.css`가 바뀌었을 때 `generate:tokens --check`), Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
+  - 검사 작업(`ci.yml`): 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, 단위·컴포넌트 테스트, Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
   - E2E 작업(`ci.yml`)
+  - 생성 검사(`figma-generated.yml`): 토큰 생성 확인(`generate:tokens --check`)과 자산 생성 확인(`generate:assets --check`)
   - 피그마 캡처(`figma-parity.yml`): 일반 CI와 나눈 워크플로다. PR(초안 포함)에서 바뀐 파일로 캡처 범위를 정하고, 범위가 있을 때만 캡처 표를 PR 댓글로 남긴다. `main` push에서는 영향받은 컴포넌트와 조립을 캡처해 `parity-captures` 브랜치에 저장한다([[피그마 연동:캡처 범위]], [[피그마 연동:CI]]).
+  - 모션 시간 검사(`motion-check.yml`): 바뀐 모션 클래스의 시간·이징·지연·반복 횟수를 내보낸 자료와 비교한다([[피그마 연동:모션]]).
 
   빌드는 Vercel 미리보기 배포에서도 만들어지지만, Vercel 연결 여부와 상관없이 깨진 빌드를 PR에서 바로 잡기 위해 CI에서도 빌드한다. Storybook 빌드는 디자인 시스템 카탈로그와 앱 조립 스토리가 깨지지 않았는지 확인한다.
 
-  GitHub ruleset(`main: CI 통과 필수`)이 기본 브랜치(`main`)에 세 작업(`Lint, typecheck, test, build`, `E2E`, `Figma parity`)의 통과를 요구해, CI가 통과하지 않은 PR은 병합할 수 없다.
+  GitHub ruleset(`main: CI 통과 필수`)이 기본 브랜치(`main`)에 다섯 작업(`Lint, typecheck, test, build`, `E2E`, `Figma generated`, `Figma parity`, `Motion check`)의 통과를 요구해, CI가 통과하지 않은 PR은 병합할 수 없다.
   - 관리자 우회는 두지 않는다. `main`에 직접 push하는 커밋도 같은 검사를 통과해야 한다.
-  - `Figma parity`는 캡처 범위가 없으면 통과로 끝나므로, 빌드나 캡처가 깨졌을 때만 병합을 막는다.
+  - `Figma generated`, `Figma parity`, `Motion check`는 늘 시작해 검사할 범위가 없으면 통과로 끝나므로([[피그마 연동:CI]]), 생성 파일이 어긋났거나 빌드·캡처·모션 검사가 깨졌을 때만 병합을 막는다.
   - 최신 `main` 기준 재검사(strict)는 요구하지 않는다. `main`이 바뀔 때마다 PR 브랜치를 갱신해야 하기 때문이다.
