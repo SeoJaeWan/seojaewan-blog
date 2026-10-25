@@ -21,6 +21,7 @@ export * from './components/file-row/file-row';
 export * from './components/flyout/flyout';
 export * from './components/icon-button/icon-button';
 export * from './components/list-group/list-group';
+export * from './components/list-item/list-item';
 export * from './components/menu/menu';
 export * from './components/menu-item/menu-item';
 export * from './components/message-box/message-box';
