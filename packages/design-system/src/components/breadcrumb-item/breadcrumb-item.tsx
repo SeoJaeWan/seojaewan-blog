@@ -34,7 +34,7 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
         className={cn(
           'flex max-w-200 items-start overflow-clip rounded-control px-6 py-4 select-none',
           'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary active:bg-subtle-fill-tertiary',
-          'transition-colors duration-faster ease-fade',
+          'motion-control-state',
         )}
       >
         <span className="min-w-px flex-1 truncate type-caption text-text-fill-primary">

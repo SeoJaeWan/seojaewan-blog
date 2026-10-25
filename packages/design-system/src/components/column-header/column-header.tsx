@@ -28,7 +28,7 @@ export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
       className={cn(
         'flex h-control-height items-center gap-4 border-r-default border-divider-stroke-default px-8 select-none',
         'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         className,
       )}
     >

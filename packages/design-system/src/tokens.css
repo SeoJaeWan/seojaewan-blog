@@ -3,7 +3,7 @@
  * 다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens
  *
  * CSS 이름은 `--` + 피그마 경로를 `-`로 이은 것이다(스타일은 스타일 이름 경로).
- * 유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값 등)는 :root에 둔다.
+ * 유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.
  *
  * | 클래스 | CSS | 변수 |
  * |---|---|---|
@@ -20,9 +20,6 @@
  * | `border-t-*` | border-top-width | `--stroke-width-*` |
  * | `border-x-*` | border-inline-width | `--stroke-width-*` |
  * | `border-y-*` | border-block-width | `--stroke-width-*` |
- * | `delay-*` | transition-delay | `--motion-delay-*` |
- * | `duration-*` | transition-duration | `--motion-duration-*` |
- * | `ease-*` | transition-timing-function | `--motion-easing-*` |
  * | `h-*` | height | `--size-*` |
  * | `h-stroke-*` | height | `--stroke-width-*` |
  * | `inner-border-<색 묶음>-*` | 안쪽 선 고리(색) | `--<색 묶음>-*` |
@@ -62,6 +59,7 @@
   --shadow-*: initial;
   --blur-*: initial;
   --ease-*: initial;
+  --animate-*: initial;
 
   /* 기본 서체는 글자 스타일 Body·Code의 서체(라틴 + 한글)를 따른다. */
   --default-font-family: var(--font-family-base), var(--font-family-korean);
@@ -139,6 +137,15 @@
   --font-size-title-large: 40px;
   --material-acrylic-backdrop-blur: var(--blur-acrylic);
   --material-mica-backdrop-blur: var(--blur-mica);
+  --motion-delay-boot-screen: 2500ms;
+  --motion-duration-fast: 167ms;
+  --motion-duration-faster: 83ms;
+  --motion-duration-normal: 250ms;
+  --motion-duration-slow: 333ms;
+  --motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);
+  --motion-easing-fade: linear;
+  --motion-easing-gentle-exit: cubic-bezier(1, 0, 1, 1);
+  --motion-easing-point-to-point: cubic-bezier(0.55, 0.55, 0, 1);
   --motion-scale-window-enter: 0.96;
   --motion-scale-window-minimize: 0.12;
   --surface-flyout-acrylic-backdrop-blur: var(--blur-acrylic);
@@ -238,15 +245,6 @@
   --mica-background-fill-base: var(--color-gray-500-95);
   --mica-background-fill-base-alt-fallback: var(--color-gray-800);
   --mica-background-fill-base-fallback: var(--color-gray-500);
-  --motion-delay-boot-screen: 2500ms;
-  --motion-duration-fast: 167ms;
-  --motion-duration-faster: 83ms;
-  --motion-duration-normal: 250ms;
-  --motion-duration-slow: 333ms;
-  --motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);
-  --motion-easing-fade: cubic-bezier(0, 0, 1, 1);
-  --motion-easing-gentle-exit: cubic-bezier(1, 0, 1, 1);
-  --motion-easing-point-to-point: cubic-bezier(0.55, 0.55, 0, 1);
   --opacity-cut: 50%;
   --opacity-drag-ghost: 60%;
   --radius-circular: 9999px;
@@ -679,20 +677,6 @@
 @utility border-y-* {
   border-style: var(--tw-border-style, solid);
   border-block-width: --value(--stroke-width-*);
-}
-
-@utility delay-* {
-  transition-delay: --value(--motion-delay-*);
-}
-
-@utility duration-* {
-  --tw-duration: --value(--motion-duration-*);
-  transition-duration: --value(--motion-duration-*);
-}
-
-@utility ease-* {
-  --tw-ease: --value(--motion-easing-*);
-  transition-timing-function: --value(--motion-easing-*);
 }
 
 @utility h-* {

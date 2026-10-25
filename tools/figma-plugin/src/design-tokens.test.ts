@@ -82,13 +82,34 @@ describe('Variables를 DTCG 토큰으로 내보낸다', () => {
     expect(at(tokens, ['font', 'weight', 'bold', '$value'])).toBe(700);
   });
 
-  it('motion/easing은 cubic-bezier 네 숫자이고 linear는 [0,0,1,1]이다', () => {
+  it('motion/easing EASING 변수는 곡선이면 제어점 네 숫자, 직선(LINEAR)이면 [0,0,1,1]인 cubicBezier다', () => {
+    expect(at(tokens, ['motion', 'easing', 'direct-entrance'])).toMatchObject({
+      $type: 'cubicBezier',
+      $value: [0, 0, 0, 1],
+    });
+    expect(at(tokens, ['motion', 'easing', 'fade'])).toMatchObject({
+      $type: 'cubicBezier',
+      $value: [0, 0, 1, 1],
+    });
+  });
+
+  it('motion/easing STRING 변수도 cubic-bezier 네 숫자이고 linear는 [0,0,1,1]이다', () => {
     expect(at(tokens, ['motion', 'easing', 'point-to-point'])).toMatchObject({
       $type: 'cubicBezier',
       $value: [0.55, 0.55, 0, 1],
     });
-    expect(at(tokens, ['motion', 'easing', 'fade', '$value'])).toEqual([0, 0, 1, 1]);
+    expect(parseCubicBezier('linear')).toEqual([0, 0, 1, 1]);
     expect(parseCubicBezier('ease-in')).toBeNull();
+  });
+
+  it('곡선·직선이 아닌 EASING 값(스프링 등)과 motion/easing 밖의 EASING 변수는 모아 중단한다', () => {
+    const input = tokensInput({
+      variables: [
+        variable('motion/easing/bouncy', 'EASING', { type: 'EASING', easingType: 'BOUNCY' }),
+        variable('easing/other', 'EASING', { type: 'EASING', easingType: 'LINEAR' }),
+      ],
+    });
+    expect(() => buildDesignTokens(input)).toThrow(/motion\/easing\/bouncy[\s\S]*easing\/other/u);
   });
 
   it('계약에 없는 굵기, STRING, BOOLEAN 변수는 모두 모아 중단한다', () => {

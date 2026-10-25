@@ -15,6 +15,7 @@ const componentFile = path.join(packageRoot, 'src', 'components', 'button', 'but
 const UNKNOWN_CLASS_RULE = 'better-tailwindcss/no-unknown-classes';
 const RESTRICTED_CLASS_RULE = 'better-tailwindcss/no-restricted-classes';
 const tokensCss = readFileSync(tokensCssPath, 'utf8');
+const motionCss = readFileSync(path.join(packageRoot, 'src', 'motion.css'), 'utf8');
 
 // 이름공간이 Tailwind 기본 이름공간과 같아 Tailwind 기본 유틸리티로 쓰는 토큰이다(값 종류 토큰은 클래스에서
 // 이름공간을 뺀다). 이름공간마다 그 유틸리티가 정해야 하는 CSS 속성이다.
@@ -111,10 +112,35 @@ describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default duration-fast ease-fade p-12 rounded-control',
+        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default p-12 rounded-control',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([]);
+  }, 60_000);
+
+  it('motion.css의 @utility가 만든 motion-* 클래스는 lint가 알고 막지 않는다', async () => {
+    const classes = [...motionCss.matchAll(/^@utility (motion-[a-z0-9-]+) \{/gmu)].map(
+      (match) => match[1] ?? '',
+    );
+    expect(classes).toContain('motion-control-state');
+    const className = classes.map((name) => `hover:${name} ${name}`).join(' ');
+    await expect(lintClassErrors(className, UNKNOWN_CLASS_RULE)).resolves.toEqual([]);
+    await expect(lintClassErrors(className, RESTRICTED_CLASS_RULE)).resolves.toEqual([]);
+  }, 60_000);
+
+  it('duration-·ease-·delay-·transition·animate-로 시작하는 클래스는 motion-* 클래스를 쓰라고 lint가 막는다', async () => {
+    const classes = [
+      'duration-150',
+      'ease-linear',
+      'delay-100',
+      'transition',
+      'transition-colors',
+      'hover:transition-opacity',
+      'animate-spin',
+    ];
+    const errors = await lintClassErrors(classes.join(' '), RESTRICTED_CLASS_RULE, true);
+    expect(errors).toHaveLength(classes.length);
+    expect(errors.every((message) => message.includes('motion-*'))).toBe(true);
   }, 60_000);
 
   it('토큰에 없는 이름의 클래스는 lint가 막는다', async () => {

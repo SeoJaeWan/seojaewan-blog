@@ -1,0 +1,35 @@
+/*
+ * 움직임을 이름 붙은 motion-* 클래스로 둔다. 손으로 쓰는 파일이다.
+ * 컴포넌트와 앱은 이 클래스만 붙이고 duration-*·ease-*·transition-* 같은 클래스를 직접 쓰지 않는다.
+ *
+ * @codocs [[디자인 기반:모션 클래스]]
+ * - 어떤 움직임이 있고 이름이 무엇인지는 [[디자인 기반:모션]]의 동작별 표가 정한다.
+ * - 상태 전환(hover·pressed·focus) 클래스는 transition 설정(속성·시간·이징)만 갖고, 바뀐 뒤의 값은 컴포넌트가 가진다.
+ * - 시간·이징·배율은 tokens.css의 var(--motion-*)로 쓴다. 토큰 값은 피그마 Motion 변수에서 만들어진다.
+ * - @keyframes와 motion-* 클래스(@utility)는 이 파일에서만 정의한다(stylelint.config.mjs).
+ */
+
+/* 상태 전환에서 바뀌는 색 속성이다. Tailwind transition-colors와 같은 목록이다. */
+@utility motion-control-state {
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-duration: var(--motion-duration-faster);
+  transition-timing-function: var(--motion-easing-fade);
+}
+
+/* 검색 상자 pill·taskbar의 Rest→Focused 전환이다. 피그마 프로토타입 전환과 같이 fast, direct-entrance다. */
+@utility motion-search-box-focus-state {
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-duration: var(--motion-duration-fast);
+  transition-timing-function: var(--motion-easing-direct-entrance);
+}
+
+/*
+ * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
+ * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
+ * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ */
+@media (prefers-reduced-motion: reduce) {
+  /* 지금 있는 클래스는 모두 상태 색 전환이라 그대로 두는 대상이다. */
+}

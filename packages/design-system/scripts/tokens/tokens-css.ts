@@ -15,6 +15,8 @@ const DEFAULT_MONO_TEXT_STYLE = 'Code';
 const NUMBER_PRECISION = 4;
 // 투명도와 RGB가 모두 다른 두 정지점 사이에 넣는 중간 정지점 수다.
 const INTERPOLATION_STOPS = 4;
+// 직선 이징(피그마 LINEAR)의 베지어 제어점이다. CSS에는 `linear`로 쓴다.
+const LINEAR_BEZIER = '0,0,1,1';
 // 플러그인이 붙이는 확장 필드 이름이다.
 const FIGMA_EXTENSION = 'com.figma';
 const SEOJAEWAN_EXTENSION = 'com.seojaewan';
@@ -42,6 +44,7 @@ const CLEARED_NAMESPACES = [
   '--shadow-*',
   '--blur-*',
   '--ease-*',
+  '--animate-*',
 ] as const;
 
 // 피그마 경로 이름공간이 Tailwind 기본 이름공간과 같아 Tailwind 기본 유틸리티가 그대로 읽는 것이다.
@@ -339,33 +342,7 @@ function namespaceUtilities(
   if (hasNamespace('--stroke-width')) {
     add('--stroke-width', strokeWidthUtilities);
   }
-  if (hasNamespace('--motion-duration')) {
-    add('--motion-duration', [
-      {
-        prefix: 'duration',
-        css: 'transition-duration',
-        declarations: (value) => [`--tw-duration: ${value};`, `transition-duration: ${value};`],
-      },
-    ]);
-  }
-  if (hasNamespace('--motion-delay')) {
-    add('--motion-delay', [
-      {
-        prefix: 'delay',
-        css: 'transition-delay',
-        declarations: (value) => [`transition-delay: ${value};`],
-      },
-    ]);
-  }
-  if (hasNamespace('--motion-easing')) {
-    add('--motion-easing', [
-      {
-        prefix: 'ease',
-        css: 'transition-timing-function',
-        declarations: (value) => [`--tw-ease: ${value};`, `transition-timing-function: ${value};`],
-      },
-    ]);
-  }
+  // motion/* 변수로는 유틸리티를 만들지 않는다. motion.css의 motion-* 클래스가 var()로 쓴다(:root에 남는다).
   return result.sort(([, a], [, b]) => naturalCompare(a.prefix, b.prefix));
 }
 
@@ -510,7 +487,7 @@ function header(
     '다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens',
     '',
     'CSS 이름은 `--` + 피그마 경로를 `-`로 이은 것이다(스타일은 스타일 이름 경로).',
-    '유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값 등)는 :root에 둔다.',
+    '유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.',
     '',
     '| 클래스 | CSS | 변수 |',
     '|---|---|---|',
@@ -1277,16 +1254,21 @@ function colorValue(value: unknown, source: string): string {
 }
 
 /**
- * 베지어 값을 `cubic-bezier()`로 바꾼다.
+ * 베지어 값을 `cubic-bezier()`로 바꾼다. 직선(피그마 LINEAR, `[0, 0, 1, 1]`)은 `linear`다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param value `[x1, y1, x2, y2]`
  * @param source 오류 메시지에 쓸 경로
- * @returns `cubic-bezier(0, 0, 0, 1)`
+ * @returns `cubic-bezier(0, 0, 0, 1)`, `linear`
  */
 function easingValue(value: unknown, source: string): string {
   if (!Array.isArray(value) || value.length !== 4) {
     throw new TokenFormatError(source, '베지어 값은 숫자 네 개여야 한다.');
   }
-  return `cubic-bezier(${value.map((n: unknown) => formatNumber(numberValue(n, source))).join(', ')})`;
+  const numbers = value.map((n: unknown) => formatNumber(numberValue(n, source)));
+  if (numbers.join(',') === LINEAR_BEZIER) {
+    return 'linear';
+  }
+  return `cubic-bezier(${numbers.join(', ')})`;
 }
 
 /**

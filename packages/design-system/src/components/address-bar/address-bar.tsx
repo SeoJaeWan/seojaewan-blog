@@ -82,7 +82,7 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
   return (
     <div
       className={cn(
-        'flex flex-col transition-colors',
+        'flex flex-col motion-control-state',
         isSuggesting ? CONTAINER_CLASS_NAMES.suggesting : CONTAINER_CLASS_NAMES.rest,
         className,
       )}

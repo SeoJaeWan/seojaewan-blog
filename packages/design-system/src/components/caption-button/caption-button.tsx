@@ -55,7 +55,7 @@ export function CaptionButton(props: CaptionButtonProps): JSX.Element {
       aria-label={label}
       className={cn(
         'inline-flex h-32 w-46 items-center justify-center select-none',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         isInactive ? 'text-text-fill-disabled' : 'text-text-fill-primary',
         ...kindClassNames[kind],
         className,

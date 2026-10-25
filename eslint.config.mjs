@@ -418,6 +418,14 @@ export default defineConfig(
               message:
                 'Tailwind 임의 값("$0")은 쓰지 않는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.',
             },
+            // @codocs [[피그마 연동:토큰 사용 강제]]
+            // 움직임은 motion.css의 motion-* 클래스로만 준다. Tailwind 기본 유틸리티는 토큰 없이도 움직임을 만든다
+            // (`duration-150`은 숫자를 그대로 ms로 쓴다).
+            {
+              pattern: '(^|:)(transition(-[^:]*)?|(duration|ease|delay|animate)-[^:]*)$',
+              message:
+                '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]] 표).',
+            },
             ...(misreadTokenClasses.length === 0
               ? []
               : [

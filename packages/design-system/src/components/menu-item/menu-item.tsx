@@ -56,7 +56,7 @@ const ROW_CLASS_NAME =
 // 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
 const baseClassName = [
   'flex flex-1 items-center justify-start gap-12 self-stretch overflow-hidden rounded-control px-12 py-4',
-  'bg-subtle-fill-transparent text-text-fill-primary transition-colors duration-faster ease-fade',
+  'bg-subtle-fill-transparent text-text-fill-primary motion-control-state',
   'group-data-highlighted:bg-subtle-fill-secondary group-data-popup-open:bg-subtle-fill-secondary',
   'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
   'group-data-disabled:text-text-fill-disabled',
@@ -116,7 +116,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.RadioItemIndicator className="flex">
-                <span className="size-6 rounded-full bg-text-fill-primary transition-colors duration-faster ease-fade group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
+                <span className="size-6 rounded-full bg-text-fill-primary motion-control-state group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
               </Menu.RadioItemIndicator>
             }
           />

@@ -26,7 +26,7 @@ export function PinnedTile(props: PinnedTileProps): JSX.Element {
       {...buttonProps}
       className={cn(
         'inline-flex h-84 w-95 flex-col items-center justify-center gap-8 rounded-control border-default px-4 py-8 select-none',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         'border-transparent bg-subtle-fill-transparent',
         'hover:border-control-stroke-default hover:bg-control-fill-secondary',
         'active:border-transparent active:bg-control-fill-tertiary',

@@ -44,9 +44,13 @@ describe('토큰 생성', () => {
     expect(css).toContain('  --color-black-6: #0000000f;');
     expect(css).toContain('  --motion-duration-fast: 167ms;');
     expect(css).toContain('  --opacity-cut: 50%;');
-    expect(css).toContain('  --motion-easing-fade: cubic-bezier(0, 0, 1, 1);');
+    expect(css).toContain('  --motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);');
     expect(css).toContain('  --motion-scale-enter: 0.96;');
     expect(css).toContain("  --font-family-base: 'Open Sans';");
+  });
+
+  it('직선 이징([0, 0, 1, 1], 피그마 LINEAR)은 linear다', () => {
+    expect(css).toContain('  --motion-easing-fade: linear;');
   });
 
   it('Tailwind 기본값 지우기가 토큰 정의보다 앞에 있다', () => {
@@ -54,6 +58,21 @@ describe('토큰 생성', () => {
     expect(clearing).toBeGreaterThan(-1);
     expect(clearing).toBeLessThan(css.indexOf(':root {'));
     expect(clearing).toBeLessThan(css.indexOf('@theme static {'));
+  });
+
+  it('Tailwind 기본 이징과 애니메이션(animate-spin 등)도 지운다', () => {
+    const clearing = css.slice(css.indexOf('@theme {'), css.indexOf(':root {'));
+    expect(clearing).toContain('  --ease-*: initial;');
+    expect(clearing).toContain('  --animate-*: initial;');
+  });
+
+  it('motion/* 변수는 유틸리티 없이 :root에 두고 motion.css가 var()로 쓴다', () => {
+    const root = css.slice(css.indexOf(':root {'), css.indexOf('@theme static {'));
+    expect(root).toContain('  --motion-duration-fast: 167ms;');
+    expect(root).toContain('  --motion-easing-fade: linear;');
+    expect(root).toContain('  --motion-scale-enter: 0.96;');
+    expect(css).not.toMatch(/@utility (duration|ease|delay)-\*/u);
+    expect(css).not.toContain('--value(--motion-');
   });
 
   it('기본 서체는 Body 글자 스타일의 서체에 한글 서체를 이어 붙인다', () => {
@@ -208,12 +227,6 @@ describe('토큰 생성', () => {
 
   it('클래스는 이름공간마다 --value()로 토큰을 읽는 @utility다', () => {
     expect(utilityBlock('border-*')).toContain('border-width: --value(--stroke-width-*);');
-    expect(utilityBlock('duration-*')).toContain(
-      'transition-duration: --value(--motion-duration-*);',
-    );
-    expect(utilityBlock('ease-*')).toContain(
-      'transition-timing-function: --value(--motion-easing-*);',
-    );
     expect(utilityBlock('shadow-elevation-*')).toContain('box-shadow: --value(--elevation-*);');
     expect(utilityBlock('border-gradient-elevation-*')).toContain(
       'background: --value(--elevation-*);',
