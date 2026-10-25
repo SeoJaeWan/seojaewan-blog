@@ -1,5 +1,11 @@
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './asset-groups';
-import { type Bindings, inheritedBindings, overrideSourceId, sourceLayerId } from './bindings';
+import {
+  bindingBase,
+  type Bindings,
+  inheritedBindings,
+  overrideSourceId,
+  sourceLayerId,
+} from './bindings';
 import type {
   AssetData,
   AssetKind,
@@ -167,20 +173,89 @@ async function instanceData(node: InstanceNode): Promise<InstanceData> {
         ? main.parent.name
         : main.name;
   const overrides: OverrideData[] = [];
+  const swappedIds = await swappedInstanceIds(node);
   for (const override of node.overrides) {
     const fields: string[] = [...override.overriddenFields];
     let changedBindings: string[] = [];
     if (fields.includes('boundVariables') && main !== null) {
-      const sourceId = override.id === node.id ? main.id : overrideSourceId(node.id, override.id);
-      const [layer, source] = await Promise.all([
-        figma.getNodeByIdAsync(override.id),
-        sourceId === null ? null : figma.getNodeByIdAsync(sourceId),
-      ]);
-      changedBindings = differentBindings(layer, source);
+      changedBindings = await changedBindingsOf(node, main, override.id, swappedIds);
     }
     overrides.push({ id: override.id, fields, changedBindings });
   }
   return { component, scaleFactor: node.scaleFactor, overrides };
+}
+
+/**
+ * 원본 컴포넌트를 바꿔 끼운(변형 고르기·인스턴스 교체) 안쪽 인스턴스의 ID를 구한다.
+ * 덮어쓴 인스턴스 레이어의 원본 컴포넌트를 원래 자리(바깥 인스턴스의 원본 컴포넌트 안 같은 위치)의 원본과 비교한다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 바깥 인스턴스
+ * @returns 바꿔 끼운 안쪽 인스턴스 ID 목록
+ */
+async function swappedInstanceIds(node: InstanceNode): Promise<string[]> {
+  const result: string[] = [];
+  for (const override of node.overrides) {
+    const sourceId = override.id === node.id ? null : overrideSourceId(node.id, override.id);
+    if (sourceId === null) {
+      continue;
+    }
+    const [layer, source] = await Promise.all([
+      figma.getNodeByIdAsync(override.id),
+      figma.getNodeByIdAsync(sourceId),
+    ]);
+    if (layer?.type === 'INSTANCE' && source?.type === 'INSTANCE') {
+      const [own, original] = await Promise.all([
+        layer.getMainComponentAsync(),
+        source.getMainComponentAsync(),
+      ]);
+      if (own !== null && original !== null && own.id !== original.id) {
+        result.push(override.id);
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ * 덮어쓴 레이어의 변수 연결이 바뀐 필드를 구한다.
+ * 변형 고르기·인스턴스 교체로 원본 컴포넌트가 바뀐 안쪽 인스턴스와 그 안쪽 레이어는 원래 자리의 원본이 아니라
+ * 바꿔 끼운 새 원본 컴포넌트와 비교한다. 원래 자리와 비교하면 원본이 속성으로 연 변형 고르기가 직접 덮어쓴 것으로 잡힌다.
+ * 기준을 구할 수 없으면 비교하지 않는다. 오탐으로 정상 작업을 막는 것보다 놓치는 쪽이 낫다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 덮어쓰기를 가진 바깥 인스턴스
+ * @param main 바깥 인스턴스의 원본 컴포넌트
+ * @param layerId 덮어쓴 레이어 ID
+ * @param swappedIds 원본 컴포넌트를 바꾼 덮어쓰기 레이어 ID들
+ * @returns 연결이 다른 필드 이름
+ */
+async function changedBindingsOf(
+  node: InstanceNode,
+  main: ComponentNode,
+  layerId: string,
+  swappedIds: readonly string[],
+): Promise<string[]> {
+  const base = bindingBase(node.id, layerId, swappedIds);
+  let baseMainId = main.id;
+  let sourceId: string | null = layerId === node.id ? null : overrideSourceId(node.id, layerId);
+  if (base.kind === 'swapped') {
+    const swapped = await figma.getNodeByIdAsync(base.swappedId);
+    const swappedMain =
+      swapped !== null && swapped.type === 'INSTANCE'
+        ? await swapped.getMainComponentAsync()
+        : null;
+    if (swappedMain === null) {
+      return [];
+    }
+    baseMainId = swappedMain.id;
+    sourceId = base.sourceId;
+  } else if (layerId !== node.id && sourceId === null) {
+    return [];
+  }
+  const [layer, source] = await Promise.all([
+    figma.getNodeByIdAsync(layerId),
+    figma.getNodeByIdAsync(sourceId ?? baseMainId),
+  ]);
+  return differentBindings(layer, source);
 }
 
 /**

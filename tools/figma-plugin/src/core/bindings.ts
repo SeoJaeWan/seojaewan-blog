@@ -56,3 +56,45 @@ export function overrideSourceId(instanceId: string, layerId: string): string | 
   const rest = layerId.slice(prefix.length);
   return rest.includes(';') ? `I${rest}` : rest;
 }
+
+/** 변수 연결을 비교할 기준 레이어 */
+export type BindingBase =
+  { kind: 'outer' } | { kind: 'swapped'; swappedId: string; sourceId: string | null };
+
+/**
+ * 덮어쓴 레이어의 변수 연결을 비교할 기준을 정한다.
+ * 변형 고르기·인스턴스 교체로 원본 컴포넌트가 바뀐 안쪽 인스턴스(`swappedIds`)와 그 안쪽 레이어는
+ * 원래 자리의 원본이 아니라 바꿔 끼운 새 원본 컴포넌트와 비교한다(`sourceId`가 null이면 새 원본 컴포넌트 자신).
+ * 품은 교체 인스턴스가 여럿이면 가장 안쪽 것을 쓴다. 바깥 인스턴스 자신의 교체는 이미 새 원본으로 읽으므로 따지지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param instanceId 덮어쓰기를 가진 바깥 인스턴스 ID
+ * @param layerId 덮어쓴 레이어 ID
+ * @param swappedIds 원본 컴포넌트를 바꾼 덮어쓰기 레이어 ID들
+ * @returns 비교 기준
+ */
+export function bindingBase(
+  instanceId: string,
+  layerId: string,
+  swappedIds: readonly string[],
+): BindingBase {
+  let swappedId: string | null = null;
+  for (const id of swappedIds) {
+    if (id === instanceId) {
+      continue;
+    }
+    if (
+      (layerId === id || layerId.startsWith(`${id};`)) &&
+      (swappedId === null || id.length > swappedId.length)
+    ) {
+      swappedId = id;
+    }
+  }
+  if (swappedId === null) {
+    return { kind: 'outer' };
+  }
+  return {
+    kind: 'swapped',
+    swappedId,
+    sourceId: layerId === swappedId ? null : overrideSourceId(swappedId, layerId),
+  };
+}
