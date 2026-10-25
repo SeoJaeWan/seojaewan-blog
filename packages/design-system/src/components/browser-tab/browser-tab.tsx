@@ -40,7 +40,7 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
       aria-selected={isActive}
       className={cn(
         'group relative flex h-34 w-240 items-center gap-8 py-0 pr-8 pl-12 select-none',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         isActive
           ? 'rounded-t-overlay bg-chrome-toolbar-fill'
           : 'rounded-t-overlay bg-transparent hover:rounded-overlay hover:bg-chrome-tab-fill-hover',

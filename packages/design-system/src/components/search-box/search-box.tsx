@@ -18,22 +18,22 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
 
 // 모양별 바깥 상자다. Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾼다.
 // 안쪽 선은 피그마 안쪽 선처럼 ::before 고리(border-gradient-*, inner-border-*)로 그린다.
-// 상태 전환(M1)은 피그마 프로토타입 전환과 같은 시간·이징 토큰을 쓴다:
-// default는 Rest→Hover(motion/duration/faster, fade), pill·taskbar는 Rest→Focused(fast, direct-entrance)다.
+// 상태 전환은 피그마 프로토타입 전환과 같은 모션 클래스를 쓴다:
+// default는 Rest→Hover(motion-control-state), pill·taskbar는 Rest→Focused(motion-search-box-focus-state)다.
 const appearanceClassNames = {
   default: {
-    base: 'h-control-height rounded-control py-6 pr-8 pl-12 duration-faster ease-fade',
+    base: 'h-control-height rounded-control py-6 pr-8 pl-12 motion-control-state',
     enabled:
       'not-focus-within:border-gradient-elevation-text-control-border focus-within:inner-border-control-stroke-default',
     disabled: 'inner-border-control-stroke-default',
   },
   pill: {
-    base: 'h-36 rounded-circular px-16 py-8 inner-border-control-stroke-default duration-fast ease-direct-entrance',
+    base: 'h-36 rounded-circular px-16 py-8 inner-border-control-stroke-default motion-search-box-focus-state',
     enabled: '',
     disabled: '',
   },
   taskbar: {
-    base: 'h-control-height rounded-circular px-16 py-6 inner-border-control-stroke-default duration-fast ease-direct-entrance',
+    base: 'h-control-height rounded-circular px-16 py-6 inner-border-control-stroke-default motion-search-box-focus-state',
     enabled: '',
     disabled: '',
   },
@@ -84,7 +84,6 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
     <div
       className={cn(
         'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
-        'transition-colors',
         classNames.base,
         isDisabled
           ? ['bg-control-fill-disabled', classNames.disabled]

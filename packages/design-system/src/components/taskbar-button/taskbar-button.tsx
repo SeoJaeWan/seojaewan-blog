@@ -44,7 +44,7 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
       aria-label={label}
       className={cn(
         'group relative inline-flex size-40 items-center justify-center rounded-control border-default select-none',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         'border-transparent hover:border-control-stroke-default active:border-control-stroke-default',
         surfaceClassNames[indicator],
         indicator === 'active' && 'border-control-stroke-default',

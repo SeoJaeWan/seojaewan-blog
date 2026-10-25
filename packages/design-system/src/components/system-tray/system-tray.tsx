@@ -23,7 +23,7 @@ export function SystemTray(props: SystemTrayProps): JSX.Element {
       className={cn(
         'flex h-40 flex-col items-end justify-center rounded-control px-12 select-none',
         'type-caption text-text-fill-primary',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         'hover:border-default hover:border-control-stroke-default hover:bg-control-fill-default',
         className,
       )}

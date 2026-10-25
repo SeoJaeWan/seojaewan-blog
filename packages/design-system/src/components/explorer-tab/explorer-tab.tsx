@@ -40,7 +40,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       aria-selected={isSelected}
       className={cn(
         'flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         isSelected
           ? 'bg-layer-on-mica-base-alt-fill-default'
           : 'bg-subtle-fill-transparent hover:bg-layer-on-mica-base-alt-fill-secondary',

@@ -1,7 +1,9 @@
 /*
  * 디자인 시스템 전역 스타일의 진입점이다. 앱과 Storybook이 이 파일을 불러온다.
  * 토큰(`@theme`)과 토큰 유틸리티(`@utility`)는 figma/tokens.json에서 만든 tokens.css 한 곳에만 있다.
+ * 움직임 클래스(motion-*)와 @keyframes는 손으로 쓰는 motion.css에만 있다.
  * 여기에는 손으로 쓰는 전역 스타일만 둔다.
  */
 @import './fonts.css';
 @import './tokens.css';
+@import './motion.css';

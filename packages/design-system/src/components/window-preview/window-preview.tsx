@@ -42,7 +42,7 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
       className={cn(
         'group flex w-208 flex-col gap-8 rounded-control p-8 select-none',
         'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         className,
       )}
     >

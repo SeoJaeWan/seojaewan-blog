@@ -54,7 +54,7 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
       className={cn(
         'flex h-control-height items-center gap-4 rounded-control py-0 select-none',
         level === 0 ? 'px-8' : 'pr-8 pl-4',
-        'transition-colors duration-faster ease-fade',
+        'motion-control-state',
         isSelected
           ? 'bg-control-alt-fill-tertiary'
           : 'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',

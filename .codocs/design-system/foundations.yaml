@@ -153,14 +153,15 @@ _codocs:
 
   프로필 사진은 아직 임시 이미지다.
 모션: |
-  창·패널·메뉴의 움직임은 Windows 11 모션 지침(Microsoft Learn의 "Motion in Windows", "Timing and easing")의 값을 따른다. 6단계 이후 코드가 이 값을 쓴다. 피그마에서는 컴포넌트 변형 사이 전환에만 쓰고, 화면 흐름 프로토타입은 두지 않는다([[디자인 시스템:Screens]]).
-  피그마에는 `Motion` Variables 컬렉션으로 두었다(코드 이름은 `--motion-...`).
+  창·패널·메뉴의 움직임은 Windows 11 모션 지침(Microsoft Learn의 "Motion in Windows", "Timing and easing")의 값을 따른다.
+  값은 피그마 `Motion` Variables 컬렉션에 두고(코드 이름은 `--motion-...`), 움직임의 구성은 아래 동작별 표와 피그마 견본([[디자인 기반:모션 견본]])이 기준이다. 코드는 이 값과 구성으로 `motion.css`의 모션 클래스를 만든다([[디자인 기반:모션 클래스]]).
+  피그마에 화면 흐름 프로토타입(화면을 오가는 연결, 화면 사이 열기·닫기 장면)은 두지 않는다([[디자인 시스템:Screens]]). Motion 섹션의 견본은 화면 흐름이 아니라 모션 클래스 하나의 기준이라 이와 다르다.
 
   | 토큰 | 값 | 근거·쓰는 곳 |
   |---|---|---|
-  | `motion/duration/faster` | 83ms | WinUI `ControlFasterAnimationDuration`. hover·pressed 상태 전환, 투명도만 바꾸는 페이드, 새로 고침 깜빡임 |
-  | `motion/duration/fast` | 167ms | WinUI `ControlFastAnimationDuration`. 우클릭 메뉴·플라이아웃·메시지 상자 등장, 창 닫기, Start 안의 화면 전환(모든 항목·자세히) |
-  | `motion/duration/normal` | 250ms | WinUI `ControlNormalAnimationDuration`. 창 열기, Start·검색 패널 올라오기, 최대화·복원·스냅 |
+  | `motion/duration/faster` | 83ms | WinUI `ControlFasterAnimationDuration`. hover·pressed 상태 전환, 투명도만 바꾸는 페이드(검색 돋보기 등), 새로 고침 깜빡임 |
+  | `motion/duration/fast` | 167ms | WinUI `ControlFastAnimationDuration`. 우클릭 메뉴·플라이아웃·메시지 상자 등장, 창 닫기, Start 글자 목록 열기·닫기, 재부팅 화면 나타남 |
+  | `motion/duration/normal` | 250ms | WinUI `ControlNormalAnimationDuration`. 창 열기, Start·검색 패널 올라오기, 최대화·복원·스냅, 재부팅 화면 사라짐 |
   | `motion/duration/slow` | 333ms | Windows 모션 표의 가장 긴 단계. 창 최소화·작업 표시줄에서 복원(이동 거리가 큰 동작) |
   | `motion/easing/direct-entrance` | `cubic-bezier(0, 0, 0, 1)` | Fast Out, Slow In. 들어오는 요소(창 열기, 패널·메뉴 등장)와 Direct exit(창 닫기, 항상 페이드 아웃과 함께) |
   | `motion/easing/point-to-point` | `cubic-bezier(0.55, 0.55, 0, 1)` | 이미 화면에 있는 요소의 위치·크기 변화(최대화·복원, 스냅, 최소화·복원) |
@@ -169,20 +170,78 @@ _codocs:
   | `motion/scale/window-enter` | 0.96 | 창이 열릴 때 시작 배율·닫힐 때 끝 배율. 투명도 0 ↔ 1과 함께. Windows 11 화면을 보고 맞춘 근사값이다 |
   | `motion/scale/window-minimize` | 0.12 | 최소화할 때 창이 작업 표시줄 앱 버튼 위치로 줄어드는 끝 배율(복원할 때 시작 배율). 투명도도 0으로 |
   | `motion/delay/boot-screen` | 2500ms | 다시 시작할 때 재부팅 화면을 보여주는 시간 |
+  | `motion/duration/progress-ring` | WinUI ProgressRing Lottie 애니메이션 한 주기의 길이 | ProgressRing 호가 한 주기(회전 + 트림)를 도는 시간. 견본 키프레임 트랙 길이가 이 값과 같아야 한다([[피그마 연동:모션]]) |
+
+  이징 변수는 피그마 `EASING` 타입이라 피그마가 키프레임을 그 곡선으로 재생한다. CSS 값으로 옮기는 규칙은 [[피그마 연동:토큰 생성]]에 있다.
 
   동작별 조합:
 
-  | 동작 | 지속 시간 | 이징 | 내용 |
-  |---|---|---|---|
-  | 창 열기 | normal | direct-entrance | 배율 0.96 → 1, 투명도 0 → 1 |
-  | 창 닫기 | fast | direct-entrance | 배율 1 → 0.96, 투명도 1 → 0 |
-  | 최소화 / 복원 | slow | point-to-point | 작업 표시줄 앱 버튼 쪽으로 줄며 사라짐 / 그 반대 |
-  | 최대화·복원·스냅 | normal | point-to-point | 위치와 크기를 이어서 바꾼다 |
-  | Start·검색 열기 | normal | direct-entrance | 화면 아래에서 미끄러져 올라온다. 작업 표시줄 플라이아웃은 모두 같은 방향으로 올라오고 내려간다 |
-  | Start·검색 닫기 | fast | gentle-exit | 아래로 내려가며 사라진다 |
-  | 우클릭 메뉴·메시지 상자 | fast | direct-entrance | 페이드로 나타난다 |
-  | hover·pressed | faster | fade | 상태 색만 바꾼다 |
+  | 동작 | 클래스 | 지속 시간 | 이징 | 내용 | 실행 중 값 |
+  |---|---|---|---|---|---|
+  | 창 열기 | `motion-window-open` | normal | direct-entrance | 배율 0.96 → 1, 투명도 0 → 1 | 없음 |
+  | 창 닫기 | `motion-window-close` | fast | direct-entrance | 배율 1 → 0.96, 투명도 1 → 0 | 없음 |
+  | 최소화 | `motion-window-minimize` | slow | point-to-point | 작업 표시줄 앱 버튼 쪽으로 줄며 사라진다 | 도착 위치(작업 표시줄 앱 버튼) |
+  | 작업 표시줄에서 복원 | `motion-window-restore` | slow | point-to-point | 최소화의 반대. 앱 버튼 위치에서 커지며 나타난다 | 출발 위치(작업 표시줄 앱 버튼) |
+  | 최대화·복원·스냅 | `motion-window-snap` | normal | point-to-point | 위치와 크기를 이어서 바꾼다(FLIP, [[디자인 기반:모션 클래스]]) | 이전 위치·크기 |
+  | Start·검색 열기 | `motion-panel-enter` | normal | direct-entrance | 화면 아래에서 미끄러져 올라온다. 작업 표시줄 플라이아웃은 모두 같은 방향으로 올라오고 내려간다 | 없음 |
+  | Start·검색 닫기 | `motion-panel-exit` | fast | gentle-exit | 아래로 내려가며 사라진다 | 없음 |
+  | 우클릭 메뉴·메시지 상자 | `motion-flyout-enter` | fast | direct-entrance | 페이드로 나타난다 | 없음 |
+  | Start 글자 목록 열기 | `motion-start-jump-list-enter` | fast | direct-entrance, 투명도는 fade | 글자 격자가 조금 큰 배율에서 1로 줄며 페이드 인한다. 목록은 같은 시간 동안 페이드 아웃한다 | 없음 |
+  | Start 글자 목록 닫기 | `motion-start-jump-list-exit` | fast | direct-entrance, 투명도는 fade | 글자 격자가 1에서 큰 배율로 커지며 페이드 아웃한다. 고른 글자로 이동한 목록은 같은 시간 동안 페이드 인한다 | 없음 |
+  | 재부팅 화면 나타남 | `motion-boot-screen-enter` | fast | fade | 지금 화면 전체를 덮으며 페이드 인한다 | 없음 |
+  | 재부팅 화면 사라짐 | `motion-boot-screen-exit` | normal | fade | 페이드 아웃하며 처음 상태의 바탕화면이 보인다 | 없음 |
+  | ProgressRing 회전 | `motion-progress-ring` | progress-ring | 견본의 키프레임(구간마다 `motion/easing/*`) | 호가 돌며 길이가 늘고 준다(회전 + 경로 트림). 계속 반복한다([[디자인 기반:모션 견본]]) | 없음 |
+  | hover·pressed | `motion-control-state` | faster | fade | 상태 색만 바꾼다 | 없음 |
+  | 검색 상자 포커스(pill·taskbar 모양) | `motion-search-box-focus-state` | fast | direct-entrance | Rest → Focused 상태 색과 테두리를 바꾼다 | 없음 |
+  | 검색 돋보기 | `motion-search-icon-state` | 들어갈 때 faster, 나올 때 즉시 | fade | 회색·컬러 돋보기를 겹쳐 투명도만 바꾼다([[검색:입력칸]]) | 없음 |
 
-  컴포넌트 상태 전환(Rest → Hover 등)은 피그마 변형 사이 프로토타입 전환에 이 토큰 값을 쓰고, 코드는 같은 모션 토큰 클래스(`duration-*`, `ease-*`)를 쓴다.
+  글자 목록의 시작 배율(약 1.1~1.2)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).
+
+  컴포넌트 상태 전환(Rest → Hover 등, 검색 돋보기 포함)은 피그마 변형 사이 프로토타입 전환에 이 토큰 값을 쓰고, 코드는 `motion-control-state` 같은 상태 전환 모션 클래스를 쓴다.
 
   Start·검색 패널이 올라오는 움직임은 코드에서 패널 자체를 `translateY`로 올린다.
+모션 클래스: |
+  모든 움직임은 디자인 시스템 패키지의 `src/motion.css`(손으로 쓰는 파일)에 이름 붙은 `motion-*` 클래스로 두고, 컴포넌트와 앱은 클래스만 붙인다. 어떤 움직임이 있는지는 [[디자인 기반:모션]]의 동작별 표가 정한다.
+  컴포넌트에서 `duration-*`·`ease-*`를 직접 쓰지 않는다. 움직임을 한 곳에서 관리해 피그마 견본과 맞추기 위해서다. `@keyframes`와 `motion-*` 클래스를 어디서 정의할 수 있는지는 [[기술 스택:스타일링]]에 있다.
+
+  클래스는 두 종류다.
+  - 상태 전환(hover·pressed·focus): transition 설정(속성·시간·이징)만 갖는다. 바뀐 뒤의 값(색 등)은 컴포넌트가 가진다. 예: `motion-control-state`. 나올 때 즉시처럼 들어갈 때와 나올 때가 다른 전환도 클래스 안에서 처리한다.
+  - 그 밖의 움직임(등장·퇴장·이동·반복): 키프레임과 그것을 실행하는 animation을 한 클래스에 둔다. 예: `motion-window-open`, `motion-progress-ring`.
+
+  값:
+  - 시간·이징·배율처럼 토큰이 있는 값은 클래스 안에서 `var(--motion-*)`로 쓴다. 토큰 값은 피그마 변수에서 자동으로 만들어지고, 키프레임의 구성은 기준을 보고 손으로 옮긴다([[피그마 연동:모션]]).
+  - 실행 중에 정해지는 값(최소화 도착 위치, 최대화·스냅의 이전 위치·크기)은 앱이 CSS 변수로 넘기고 키프레임이 그 변수를 쓴다. 어느 값이 실행 중 값인지는 [[디자인 기반:모션]] 표의 "실행 중 값" 열에 적는다. 피그마 설명에는 쓰임만 적기 때문이다([[디자인 시스템:피그마 파일]]).
+
+  최대화·복원·스냅은 FLIP 방식이다.
+  1. 이전 위치·크기를 잰다.
+  2. 창을 바로 새 상태로 바꾼다.
+  3. transform으로 이전 자리·크기에 맞춘다.
+  4. transform을 없애는 애니메이션을 재생한다.
+
+  배치 계산이 한 번뿐이라 부드럽고, 피그마 키프레임에 너비·높이 항목이 없어 배율·이동으로만 표현할 수 있기 때문이다. 움직이는 동안 내용이 잠깐 늘어나 보인다([[한계:최대화·스냅 중 내용 늘어남]]).
+
+  사라지는 요소(창 닫기, 패널·메뉴 닫기):
+  - 저장소에서는 바로 지우고, 화면에서만 애니메이션이 끝날 때까지 남긴다. 그래서 "맨 앞 창을 닫으면 최근 창이 앞으로" 같은 규칙([[창 동작:창 조작]])이 바로 적용된다.
+  - 앱의 공통 훅(예: `usePresence`)이 Base UI처럼 `data-starting-style`·`data-ending-style`을 붙이고, `element.getAnimations()`가 모두 끝나면 요소를 뺀다. 기다릴 애니메이션이 없거나 `getAnimations`가 없는 환경(jsdom)이면 바로 뺀다.
+  - Base UI 팝업(메뉴·툴팁·플라이아웃·메시지 상자)도 같은 data 속성으로 같은 클래스를 쓴다.
+  - 창이 열리는 도중에 닫으면 닫기 애니메이션이 처음부터 시작된다([[한계:열리는 도중 닫기]]).
+
+  창을 드래그하거나 크기 조절하는 동안에는 움직임을 끈다.
+
+  동작 줄이기(`prefers-reduced-motion: reduce`)는 `motion.css` 한 곳에서 처리한다. Windows의 "애니메이션 효과"를 끈 것과 같다.
+  - 움직임 없이 바로 바뀌는 것: 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환
+  - 그대로 두는 것: hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전(진행 정보라서), 재부팅 화면을 보여주는 시간(`motion/delay/boot-screen`. 보여 주는 시간이라서)
+모션 견본: |
+  피그마 00 · Foundations 페이지의 Motion 섹션에 모션 클래스마다 견본 프레임을 하나씩 둔다. 견본 프레임 이름은 클래스 이름(`motion-window-open`)과 같고, 견본마다 각자의 타임라인을 가진다.
+  모션 클래스는 토큰·자산처럼 여러 컴포넌트가 함께 쓰는 기반이라 Foundations에 둔다. 견본은 화면 흐름이 아니라 모션 클래스 하나의 기준이다([[디자인 시스템:Screens]]).
+
+  - 요소 전체가 움직이는 것(창·패널·메뉴): 견본 안에 실제 컴포넌트 인스턴스를 놓고 인스턴스 전체에 키프레임을 건다.
+  - 안쪽이 움직이는 것(ProgressRing의 호): 키프레임을 자산 원본(`progress-ring/Arc`)에 건다. 원본 키프레임은 모든 인스턴스로 이어지고, 인스턴스 안쪽 레이어에는 키프레임을 걸 수 없기 때문이다. 견본 `motion-progress-ring`에는 ProgressRing 인스턴스만 놓는다.
+  - hover·pressed·focus 전환은 Motion 섹션이 아니라 컴포넌트 변형 사이 전환에 둔다([[디자인 기반:모션]]).
+  - 실행 중 값이 들어간 움직임은 대표값으로 만든다. 예: 최소화 견본에는 작업 표시줄 버튼 자리를 두고 그 위치로 줄어드는 대표 움직임을 보여 준다.
+  - 키프레임의 시간·지연·이징을 넣는 방법과 내보낼 때의 검사는 [[피그마 연동:모션]]을 따른다.
+
+  ProgressRing의 호:
+  - 호 자산 `progress-ring/Arc`는 끝점을 잇지 않은 열린 원 경로(선, 둥근 끝)로 그리고, 회전(`ROTATION`)과 경로 트림(`PATH_TRIM_START`·`PATH_TRIM_END`) 키프레임을 건다. 닫힌 도형과 점선에는 트림을 쓸 수 없기 때문이다.
+  - 값은 WinUI ProgressRing의 Lottie 애니메이션(회전 + 트림)에서 가져온다.
+  - 키프레임 기본값(baseValue)은 멈춘 호 모습으로 둔다. 피그마 PNG에는 기본값이 찍히므로, 애니메이션을 끈 코드 그림과 같아야 캡처 표가 의미가 있다([[피그마 연동:캡처 표]]).

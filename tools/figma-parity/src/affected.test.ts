@@ -185,6 +185,43 @@ describe('캡처 범위', () => {
     ).toBe(`${tokensCss}(바뀐 토큰을 정하지 못함)`);
   });
 
+  it('모션 CSS, 모션 스토리, 피그마 모션 자료만 바뀌면 범위가 없다', () => {
+    const motionStory = "export default { title: 'Motion/ProgressRing' };";
+    const empty = { components: [], patterns: [] };
+    expect(scope(['packages/design-system/src/motion.css'])).toEqual(empty);
+    expect(scope(['packages/design-system/figma/motions/motion-progress-ring.json'])).toEqual(
+      empty,
+    );
+    // 컴포넌트 폴더 안이든 밖이든 제목이 Motion/이면 범위가 없다
+    for (const file of [
+      'packages/design-system/src/motion/progress-ring.stories.tsx',
+      'packages/design-system/src/components/progress-ring/progress-ring-motion.stories.tsx',
+    ]) {
+      expect(scope([file], { [file]: { before: undefined, after: motionStory } }), file).toEqual(
+        empty,
+      );
+    }
+    // 지운 모션 스토리는 기준 커밋 내용으로 알아본다
+    const removed = 'packages/design-system/src/motion/removed.stories.tsx';
+    expect(scope([removed], { [removed]: { before: motionStory, after: undefined } })).toEqual(
+      empty,
+    );
+  });
+
+  it('모션 스토리가 아닌 스토리는 원래 규칙을 따른다', () => {
+    const story = 'packages/design-system/src/components/button/button.stories.tsx';
+    const other = "export default { title: 'Button' };";
+    expect(scope([story], { [story]: { before: undefined, after: other } })).toEqual({
+      components: ['button'],
+      patterns: [],
+    });
+    const outside = 'packages/design-system/src/misc/misc.stories.tsx';
+    const misc = "export default { title: 'Misc' };";
+    expect(typeof scope([outside], { [outside]: { before: undefined, after: misc } })).toBe(
+      'string',
+    );
+  });
+
   it('전역 스타일·설정, 컴포넌트 폴더 밖의 디자인 시스템 소스, 캡처 도구가 바뀌면 전체다', () => {
     for (const file of [
       'packages/design-system/figma/figma.json',
