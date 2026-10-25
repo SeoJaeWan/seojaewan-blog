@@ -19,23 +19,14 @@ export type Violation = {
 
 type Add = (node: NodeData, reason: string, fix: string) => void;
 
-/** 크기 변수 하나(이름과 기본 모드 값) */
-export type SizeVariable = { name: string; value: number };
-
 /** 검사에 쓰는 파일 정보 */
 export type CheckContext = {
   /** 이름 있는 이미지 자산(Foundations `group/Images`)의 이미지 해시 */
   imageHashes: ReadonlySet<string>;
-  /** Dimension 컬렉션의 크기 변수(`size/*`). 배율 인스턴스의 고정 크기를 값으로 대조한다 */
-  sizeVariables: readonly SizeVariable[];
 };
 
 // 반올림 오차로 본 값의 차이다.
 const EPSILON = 1e-6;
-// 배율 인스턴스 크기와 크기 변수 값을 같다고 보는 차이(px)다. 배율 곱셈의 소수 오차를 허용한다.
-const SIZE_TOLERANCE = 0.01;
-// 배율 인스턴스 크기가 맞지 않을 때 메시지에 보여 주는 가까운 크기 변수 수다.
-const NEAREST_SIZE_COUNT = 3;
 // 자산이 아니면 막는 모양(호가 아닌 완전한 원과 사각형만 CSS로 그린다)
 const SHAPE_TYPES = ['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'LINE', 'ELLIPSE'] as const;
 // CSS로 그리는 노드 종류
@@ -278,7 +269,7 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
     return;
   }
   checkCommon(node, add);
-  checkSizes(node, isRoot, context, add);
+  checkSizes(node, isRoot, add);
   if (node.asset !== null) {
     for (const problem of node.asset.problems) {
       add(
@@ -533,33 +524,16 @@ function checkLayout(node: NodeData, add: Add): void {
 /**
  * 고정 크기와 최소·최대 크기가 변수에 연결됐는지 검사한다.
  * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
- * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 변수 연결 대신 크기 변수 값 가운데 하나와 같은지 본다.
- * 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 1로 되돌려, 선 두께까지 함께 바뀌는 확대·축소를 쓸 수 없기 때문이다.
+ * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
+ * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param context 크기 변수
  * @param add 위반을 더하는 함수
  */
-function checkSizes(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
-  if (node.instance !== null && Math.abs(node.instance.scaleFactor - 1) > EPSILON) {
-    const { scaleFactor } = node.instance;
-    for (const [label, axis, bound] of [
-      ['너비', horizontal, node.width],
-      ['높이', vertical, node.height],
-    ] as const) {
-      if (axis === 'FIXED') {
-        checkScaledSize(
-          node,
-          `배율 ${String(scaleFactor)} 인스턴스의 고정 ${label}`,
-          bound.value,
-          context,
-          add,
-        );
-      }
-    }
-  } else {
+  if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
     checkFixedSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [
@@ -576,40 +550,6 @@ function checkSizes(node: NodeData, isRoot: boolean, context: CheckContext, add:
       );
     }
   }
-}
-
-/**
- * 배율 인스턴스의 고정 크기가 크기 변수 값 가운데 하나와 같은지 본다(작은 소수 오차 허용). 아니면 위반을 더한다.
- * @codocs [[피그마 연동:구조 검사]]
- * @param node 노드
- * @param label 메시지에 쓸 이름(`배율 0.5 인스턴스의 고정 너비`)
- * @param value 크기(px)
- * @param context 크기 변수
- * @param add 위반을 더하는 함수
- */
-function checkScaledSize(
-  node: NodeData,
-  label: string,
-  value: number,
-  context: CheckContext,
-  add: Add,
-): void {
-  if (
-    context.sizeVariables.some((variable) => Math.abs(variable.value - value) <= SIZE_TOLERANCE)
-  ) {
-    return;
-  }
-  const nearest = [...context.sizeVariables]
-    .sort((a, b) => Math.abs(a.value - value) - Math.abs(b.value - value))
-    .slice(0, NEAREST_SIZE_COUNT)
-    .map((variable) => `${variable.name} ${String(variable.value)}`);
-  add(
-    node,
-    `${label} ${String(value)}가 Dimension 크기 변수(size/*) 값 가운데 어느 것과도 같지 않다`,
-    nearest.length === 0
-      ? 'Dimension 컬렉션에 이 크기의 size 변수를 먼저 더한다.'
-      : `배율이나 원본 크기를 조정해 크기를 size 변수 값(가까운 값: ${nearest.join(', ')})에 맞추거나, 필요한 크기의 size 변수를 먼저 더한다. 배율 인스턴스의 크기는 변수에 연결하지 않는다(피그마가 배율을 되돌린다).`,
-  );
 }
 
 /**
