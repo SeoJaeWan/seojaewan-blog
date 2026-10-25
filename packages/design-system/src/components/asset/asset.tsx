@@ -26,7 +26,7 @@ export function Asset(props: AssetProps): JSX.Element {
 }
 
 /**
- * 자산 요소 하나(자식 포함)를 그린다. `id`와 `url(#id)` 참조에 접두어를 붙인다.
+ * 자산 요소 하나(자식 포함)를 그린다. `id`와 `url(#id)`·`href="#id"` 참조에 접두어를 붙인다.
  * @param element 자산 요소
  * @param key React key
  * @param prefix ID 접두어
@@ -35,10 +35,13 @@ export function Asset(props: AssetProps): JSX.Element {
 function renderElement(element: SvgAssetElement, key: number, prefix: string): ReactNode {
   const attributes: Record<string, string> = {};
   for (const [name, value] of Object.entries(element.attributes)) {
-    attributes[name] =
-      name === 'id'
-        ? `${prefix}-${value}`
-        : value.replace(/url\(#([^)]+)\)/gu, `url(#${prefix}-$1)`);
+    if (name === 'id') {
+      attributes[name] = `${prefix}-${value}`;
+    } else if ((name === 'href' || name === 'xlinkHref') && value.startsWith('#')) {
+      attributes[name] = `#${prefix}-${value.slice(1)}`;
+    } else {
+      attributes[name] = value.replace(/url\(#([^)]+)\)/gu, `url(#${prefix}-$1)`);
+    }
   }
   const children = element.children?.map((child, index) => renderElement(child, index, prefix));
   return createElement(element.tag, { key, ...attributes }, children);

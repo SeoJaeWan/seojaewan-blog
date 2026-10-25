@@ -7,55 +7,42 @@
 const GENERATED_HEADER = `// 이 파일은 scripts/assets/generate-assets.ts가 figma/assets/에서 만든다. 손으로 고치지 않는다.
 // 다시 만들기: pnpm --filter @seojaewan/design-system generate:assets`;
 
-// SVG 요소 중 코드로 옮기는 것. 피그마가 내보낸 한 가지 색 아이콘은 path만, 여러 색 자산은 그라데이션(defs)도 쓴다.
-// 다른 요소가 나오면 실패시켜 이 표를 넓힌다.
-const supportedElements = new Set([
-  'path',
-  'rect',
-  'circle',
-  'ellipse',
-  'defs',
-  'linearGradient',
-  'radialGradient',
-  'stop',
-]);
-
-// SVG 속성 이름 → React 속성 이름. 표에 없는 하이픈 속성은 실패시킨다.
-const attributeNames: Readonly<Record<string, string>> = {
-  d: 'd',
-  x: 'x',
-  y: 'y',
-  width: 'width',
-  height: 'height',
-  rx: 'rx',
-  ry: 'ry',
-  cx: 'cx',
-  cy: 'cy',
-  r: 'r',
-  fill: 'fill',
-  stroke: 'stroke',
-  opacity: 'opacity',
-  transform: 'transform',
-  'fill-rule': 'fillRule',
-  'clip-rule': 'clipRule',
-  'fill-opacity': 'fillOpacity',
-  'stroke-width': 'strokeWidth',
-  'stroke-linecap': 'strokeLinecap',
-  'stroke-linejoin': 'strokeLinejoin',
-  'stroke-opacity': 'strokeOpacity',
-  id: 'id',
-  x1: 'x1',
-  y1: 'y1',
-  x2: 'x2',
-  y2: 'y2',
-  fx: 'fx',
-  fy: 'fy',
-  offset: 'offset',
-  gradientUnits: 'gradientUnits',
-  gradientTransform: 'gradientTransform',
-  'stop-color': 'stopColor',
-  'stop-opacity': 'stopOpacity',
+// 입력은 피그마가 내보낸 정적 SVG이고 CI가 다시 만들어 바이트를 비교하므로, 요소와 속성은 표로 막지 않고 규칙으로 옮긴다.
+// @codocs [[피그마 연동:자산]]
+// 이름공간 속성의 React 이름. React가 SVG 이름과 다른 이름을 쓰는 속성이다(하이픈 규칙으로는 만들 수 없다).
+const namespacedAttributeNames: Readonly<Record<string, string>> = {
+  'xlink:href': 'xlinkHref',
+  'xlink:title': 'xlinkTitle',
+  'xlink:show': 'xlinkShow',
+  'xlink:actuate': 'xlinkActuate',
+  'xlink:arcrole': 'xlinkArcrole',
+  'xlink:role': 'xlinkRole',
+  'xlink:type': 'xlinkType',
+  'xml:lang': 'xmlLang',
+  'xml:space': 'xmlSpace',
+  'xml:base': 'xmlBase',
+  class: 'className',
 };
+
+/**
+ * SVG 속성 이름을 React 속성 이름으로 바꾼다. 하이픈 이름은 낙타 표기로(`stroke-dasharray` → `strokeDasharray`),
+ * 하이픈 없는 이름은 그대로 둔다. `data-*`와 `aria-*`는 React도 하이픈 그대로 쓴다.
+ * @param name SVG 속성 이름
+ * @returns React 속성 이름. 옮길 수 없는 이름공간 속성이면 undefined
+ */
+function reactAttributeName(name: string): string | undefined {
+  const namespaced = namespacedAttributeNames[name];
+  if (namespaced !== undefined) {
+    return namespaced;
+  }
+  if (name.includes(':')) {
+    return undefined;
+  }
+  if (name.startsWith('data-') || name.startsWith('aria-')) {
+    return name;
+  }
+  return name.replace(/-([a-z])/gu, (_, letter: string) => letter.toUpperCase());
+}
 
 /** SVG 요소 하나 */
 export type SvgElementData = {
@@ -73,7 +60,7 @@ export type SvgAssetData = {
 
 /**
  * 피그마가 내보낸 SVG를 요소 데이터로 바꾼다.
- * 루트 svg 아래 지원하는 요소만 한 단계로 있어야 한다. 그 밖의 구조는 코드로 옮길 수 없어 실패한다.
+ * 루트 svg 아래 요소를 중첩 그대로 옮긴다. 글자 내용과 React에 그대로 넘길 수 없는 속성은 실패한다.
  * @codocs [[피그마 연동:자산]]
  * @param svg SVG 문서 문자열
  * @param file 오류 메시지에 쓸 자산 파일 경로
@@ -89,11 +76,12 @@ export function parseSvgAsset(svg: string, file: string): SvgAssetData {
   if (viewBox === undefined) {
     throw new Error(`${file}: viewBox가 없다.`);
   }
-  const tokens = (root[2] ?? '').matchAll(/<(\/?)([a-zA-Z]+)\b([^>]*?)(\/?)>|([^<]+)/gu);
+  const tokens = (root[2] ?? '').matchAll(/<(\/?)([a-zA-Z][a-zA-Z0-9]*)\b([^>]*?)(\/?)>|([^<]+)/gu);
   const elements: SvgElementData[] = [];
   const stack: SvgElementData[] = [];
   for (const token of tokens) {
     const [, closing, tag = '', rawAttributes = '', selfClosing, textNode] = token;
+    // 피그마는 글자를 윤곽선으로 내보내므로 글자 내용이 나오면 내보내기가 잘못된 것이다.
     if (textNode !== undefined) {
       if (textNode.trim() !== '') {
         throw new Error(`${file}: 글자 내용은 옮기지 않는다(${textNode.trim().slice(0, 40)}).`);
@@ -124,21 +112,26 @@ export function parseSvgAsset(svg: string, file: string): SvgAssetData {
 }
 
 /**
- * SVG 요소 하나의 태그와 속성을 옮긴다. 표에 없는 요소와 속성은 실패한다.
+ * SVG 요소 하나의 태그와 속성을 옮긴다. 태그는 그대로 두고 속성 이름만 React 이름으로 바꾼다.
  * @param tag 태그 이름
  * @param rawAttributes 속성 문자열
  * @param file 오류 메시지에 쓸 자산 파일 경로
  * @returns 요소 데이터(자식 없음)
  */
 function parseElement(tag: string, rawAttributes: string, file: string): SvgElementData {
-  if (!supportedElements.has(tag)) {
-    throw new Error(`${file}: <${tag}> 요소는 옮기지 않는다.`);
-  }
   const attributes: Record<string, string> = {};
   for (const [name, value] of parseAttributes(rawAttributes)) {
-    const reactName = attributeNames[name];
+    // React는 style을 객체로만 받아 문자열을 그대로 넘기면 깨진다.
+    if (name === 'style') {
+      throw new Error(
+        `${file}: <${tag}>의 style 속성은 옮길 수 없다. React가 문자열 style을 받지 않는다(${value.slice(0, 40)}).`,
+      );
+    }
+    const reactName = reactAttributeName(name);
     if (reactName === undefined) {
-      throw new Error(`${file}: <${tag}>의 ${name} 속성은 옮기지 않는다.`);
+      throw new Error(
+        `${file}: <${tag}>의 ${name} 속성은 옮길 수 없다. 이름공간 속성은 namespacedAttributeNames에 더한다.`,
+      );
     }
     attributes[reactName] = value;
   }
@@ -211,7 +204,7 @@ function parseAttributes(text: string): Map<string, string> {
   const attributes = new Map<string, string>();
   for (const match of text.matchAll(/([a-zA-Z][a-zA-Z0-9:-]*)="([^"]*)"/gu)) {
     const [, name = '', value = ''] = match;
-    if (name !== 'xmlns') {
+    if (name !== 'xmlns' && !name.startsWith('xmlns:')) {
       attributes.set(name, value);
     }
   }
