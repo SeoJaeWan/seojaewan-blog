@@ -24,6 +24,19 @@ describe('WindowTitle', () => {
     expect(container.firstChild).toHaveClass('gap-8', 'p-0');
   });
 
+  it('inactive면 제목 글자를 흐리게 그린다', () => {
+    const { rerender } = render(<WindowTitle appIcon={null} />);
+    expect(screen.getByText('창 제목')).toHaveClass('text-text-fill-primary');
+
+    rerender(<WindowTitle appIcon={null} inactive />);
+    expect(screen.getByText('창 제목')).toHaveClass('text-text-fill-tertiary');
+  });
+
+  it('icon 자리는 아이콘 크기 토큰을 쓴다', () => {
+    render(<WindowTitle appIcon={<i data-testid="icon" />} />);
+    expect(screen.getByTestId('icon').parentElement).toHaveClass('size-icon-16');
+  });
+
   it('className은 바깥 배치에 합쳐진다', () => {
     const { container } = render(<WindowTitle appIcon={null} className="w-240" />);
     expect(container.firstChild).toHaveClass('w-240', 'flex');
