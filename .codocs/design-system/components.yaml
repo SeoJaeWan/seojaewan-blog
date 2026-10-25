@@ -63,7 +63,6 @@ Windows 화면 요소: |
   | NavigationPane | 탐색기 왼쪽 목록 |
   | Breadcrumb | 탐색기 주소 표시줄의 경로 |
   | BreadcrumbItem | 경로의 칸 하나 |
-  | ExplorerContent | 탐색기 창 본문 |
   | ExplorerAddressRow | 탐색기의 이동 버튼, 경로, 검색 줄 |
   | ExplorerCommandBar | 탐색기 명령 모음 |
   | ExplorerStatusBar | 탐색기 상태 표시줄 |

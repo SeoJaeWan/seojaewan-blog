@@ -48,7 +48,7 @@ _codocs:
   | ① 기본 컨트롤 | IconButton, DropDownButton, RenameField, Separator, Popover, Tooltip, Scrollbar, ListItem, SectionHeader, SectionTitle, ListGroup, TileGrid, Menu, MessageBox, ProgressRing, EmptyState, CodeBlock |
   | ② 창 | WindowFrame, WindowTitle, CaptionButton, CaptionButtonGroup, WindowPreview |
   | ③ 작업 표시줄·Start·검색 | Taskbar, TaskbarButton, TaskbarPreviewList, SystemTray, ShellSurface, StartMenuFooter, ProfileButton, PinnedTile, SearchResults, BestMatchCard |
-  | ④ 탐색기·바탕화면 | FileItem, FileRow, SelectionMarquee, ExplorerTab, NavigationItem, NavigationPane, ColumnHeader, DetailsHeader, Breadcrumb, BreadcrumbItem, ExplorerContent, ExplorerAddressRow, ExplorerCommandBar, ExplorerStatusBar |
+  | ④ 탐색기·바탕화면 | FileItem, FileRow, SelectionMarquee, ExplorerTab, NavigationItem, NavigationPane, ColumnHeader, DetailsHeader, Breadcrumb, BreadcrumbItem, ExplorerAddressRow, ExplorerCommandBar, ExplorerStatusBar |
   | ⑤ Chrome·스냅·재부팅 | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar, Toc, TocItem, PostNavCard, SnapLayoutFlyout, SnapLayoutOption, SnapZone, SnapPreview, BootScreen |
 7단계 기능 구현: |
   디자인 시스템 컴포넌트를 활용해 2단계 문서의 기능을 `apps/web`에 구현한다.
