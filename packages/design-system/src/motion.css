@@ -154,6 +154,33 @@
 }
 
 /*
+ * 작업 표시줄에서 복원(견본 motion-window-restore). 최소화의 반대로, WindowFrame 전체가 작업 표시줄 앱 버튼 자리에서
+ * 배율 0.12 → 1, 투명도 0 → 1로 커지며 제자리로 나타난다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 출발 위치는 실행 중 값이라 최소화와 같은 --motion-window-taskbar-offset-x·-y를 앱이 넘긴다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-restore {
+  0% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-window-restore {
+  animation-name: motion-window-restore;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -162,7 +189,8 @@
 @media (prefers-reduced-motion: reduce) {
   .motion-window-open,
   .motion-window-close,
-  .motion-window-minimize {
+  .motion-window-minimize,
+  .motion-window-restore {
     animation: none;
   }
 }
