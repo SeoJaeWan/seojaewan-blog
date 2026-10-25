@@ -1,0 +1,30 @@
+{
+  "name": "Start/Menu",
+  "nodeId": "555:15070",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 720,
+        "width": 640,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "555:14448",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 640,
+        "width": 390,
+        "x": 18,
+        "y": 9
+      },
+      "nodeId": "555:14759",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}

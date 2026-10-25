@@ -10,6 +10,8 @@ type CaptionButtonGroupProps = {
   placement?: CaptionButtonGroupPlacement;
   /** 피그마 State=Inactive. 창이 활성 상태가 아니면 버튼 아이콘을 흐리게 그린다 */
   inactive?: boolean;
+  /** 최대화(또는 복원) 버튼을 그린다. 늘 전체화면인 모바일 창은 피그마 인스턴스에서 이 버튼 레이어를 숨겨 끈다 */
+  showMaximize?: boolean;
   /** 최소화 버튼을 눌렀을 때 */
   onMinimize?: () => void;
   /** 최대화 버튼을 눌렀을 때(placement가 normal, snapped일 때) */
@@ -32,6 +34,7 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
   const {
     placement = 'normal',
     inactive: isInactive = false,
+    showMaximize: isMaximizeShown = true,
     onMinimize: handleMinimize,
     onMaximize: handleMaximize,
     onRestore: handleRestore,
@@ -42,7 +45,7 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
   return (
     <div className={cn('flex items-start', className)}>
       <CaptionButton label="최소화" inactive={isInactive} onClick={handleMinimize} />
-      {isMaximized ? (
+      {!isMaximizeShown ? null : isMaximized ? (
         <CaptionButton
           label="이전 크기로 복원"
           icon="icons/ic_fluent_square_multiple_20_regular.svg"

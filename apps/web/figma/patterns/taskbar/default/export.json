@@ -1,0 +1,30 @@
+{
+  "name": "Taskbar/Default",
+  "nodeId": "564:7238",
+  "variants": {
+    "search=box": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:7182",
+      "properties": {
+        "Search": "Box"
+      }
+    },
+    "search=button": {
+      "node": {
+        "height": 48,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:7210",
+      "properties": {
+        "Search": "Button"
+      }
+    }
+  }
+}

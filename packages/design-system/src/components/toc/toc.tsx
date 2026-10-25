@@ -41,7 +41,8 @@ export function Toc(props: TocProps): JSX.Element {
   return (
     <div {...divProps} className={cn('flex flex-col items-start gap-8 pt-4', className)}>
       <SectionTitle title={title} className="w-full shrink-0" />
-      <div className="w-full shrink-0">{children}</div>
+      {/* 피그마 Items 슬롯의 배치(세로, 간격 spacing/8)다 */}
+      <div className="flex w-full shrink-0 flex-col items-start gap-8">{children}</div>
     </div>
   );
 }

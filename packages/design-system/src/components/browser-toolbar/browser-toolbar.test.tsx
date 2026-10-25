@@ -53,4 +53,11 @@ describe('BrowserToolbar', () => {
     // 포커스를 받으면 주소 전체가 선택되므로 입력한 글자가 처음 값을 대신한다.
     expect(handleUrlChange.mock.lastCall?.[0]).toBe('/a');
   });
+
+  it('showForward·showRefresh가 false면 앞으로·새로고침 버튼을 그리지 않는다', () => {
+    render(<BrowserToolbar showForward={false} showRefresh={false} />);
+    expect(screen.queryByRole('button', { name: '앞으로' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '새로고침' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
+  });
 });

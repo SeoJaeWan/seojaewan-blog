@@ -1,0 +1,136 @@
+{
+  "name": "Start/Body",
+  "nodeId": "554:13695",
+  "variants": {
+    "view=category,device=desktop": {
+      "node": {
+        "height": 569,
+        "width": 574,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:13095",
+      "properties": {
+        "Device": "Desktop",
+        "View": "Category"
+      }
+    },
+    "view=category,device=mobile": {
+      "node": {
+        "height": 489,
+        "width": 356,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:13489",
+      "properties": {
+        "Device": "Mobile",
+        "View": "Category"
+      }
+    },
+    "view=grid,device=desktop": {
+      "node": {
+        "height": 569,
+        "width": 574,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:12990",
+      "properties": {
+        "Device": "Desktop",
+        "View": "Grid"
+      }
+    },
+    "view=grid,device=mobile": {
+      "node": {
+        "height": 489,
+        "width": 356,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:13384",
+      "properties": {
+        "Device": "Mobile",
+        "View": "Grid"
+      }
+    },
+    "view=jumplist,device=desktop": {
+      "node": {
+        "height": 569,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "755:5384",
+      "properties": {
+        "Device": "Desktop",
+        "View": "JumpList"
+      }
+    },
+    "view=jumplist,device=mobile": {
+      "node": {
+        "height": 489,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "755:5561",
+      "properties": {
+        "Device": "Mobile",
+        "View": "JumpList"
+      }
+    },
+    "view=list,device=desktop": {
+      "node": {
+        "height": 569,
+        "width": 574,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:12903",
+      "properties": {
+        "Device": "Desktop",
+        "View": "List"
+      }
+    },
+    "view=list,device=mobile": {
+      "node": {
+        "height": 489,
+        "width": 356,
+        "x": 0,
+        "y": 36
+      },
+      "nodeId": "554:13297",
+      "properties": {
+        "Device": "Mobile",
+        "View": "List"
+      }
+    },
+    "view=results,device=desktop": {
+      "node": {
+        "height": 569,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "554:13172",
+      "properties": {
+        "Device": "Desktop",
+        "View": "Results"
+      }
+    },
+    "view=results,device=mobile": {
+      "node": {
+        "height": 489,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "554:13566",
+      "properties": {
+        "Device": "Mobile",
+        "View": "Results"
+      }
+    }
+  }
+}

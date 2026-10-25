@@ -56,4 +56,12 @@ describe('ExplorerAddressRow', () => {
     await user.click(screen.getByRole('button', { name: '검색' }));
     expect(handleSearch).toHaveBeenCalledTimes(1);
   });
+
+  it('searchPlaceholder로 검색 상자의 안내 글자를 바꾼다', () => {
+    render(<ExplorerAddressRow locationIcon={<span />} searchPlaceholder="Blog 검색" />);
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveAttribute(
+      'placeholder',
+      'Blog 검색',
+    );
+  });
 });

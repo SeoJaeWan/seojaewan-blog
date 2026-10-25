@@ -46,7 +46,7 @@ export function SearchResults(props: SearchResultsProps): JSX.Element {
           <BestMatchCard icon={icon} title={title} meta={meta} className="w-full">
             {actions}
           </BestMatchCard>
-          <div className="w-full shrink-0">{children}</div>
+          <div className="flex w-full shrink-0 flex-col gap-2">{children}</div>
         </div>
       </ScrollArea>
     );

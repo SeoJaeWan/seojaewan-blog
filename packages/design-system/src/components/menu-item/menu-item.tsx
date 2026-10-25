@@ -4,12 +4,16 @@ import type { JSX, ReactNode } from 'react';
 import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
+import { ImageAsset, type ImageAssetName } from '../image-asset/image-asset';
 
 type MenuItemCommonProps = {
   /** 항목 이름. 길면 한 줄로 말줄임한다 */
   label: string;
-  /** 이름 앞 16px 아이콘(피그마 Show icon). 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다 */
-  icon?: SvgAssetName;
+  /**
+   * 이름 앞 16px 아이콘(피그마 Show icon). SVG 아이콘이나 앱 로고 같은 래스터 자산(`images/*`)을 넣는다.
+   * 확인·라디오 항목은 아이콘 자리에 선택 표시를 그린다
+   */
+  icon?: SvgAssetName | ImageAssetName;
   /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Show shortcut) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
@@ -23,6 +27,11 @@ type MenuItemProps = MenuItemCommonProps &
     | {
         /** 피그마 Kind=Default. 누르면 onClick을 부르고 메뉴를 닫는다 */
         kind?: 'default';
+        /**
+         * 메뉴 밖에 홀로 둔다. 검색 최고 일치 카드(BestMatchCard)의 동작 목록처럼 Base UI 메뉴가 없는 곳에서
+         * 같은 모양의 버튼으로 그리고, 강조는 hover·focus-visible로 한다
+         */
+        standalone?: boolean;
         /** 항목을 골랐을 때 호출 */
         onClick?: () => void;
       }
@@ -62,6 +71,10 @@ const baseClassName = [
   'group-data-disabled:text-text-fill-disabled',
 ].join(' ');
 
+// 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
+const STANDALONE_BASE_CLASS_NAME =
+  'group-enabled:group-hover:bg-subtle-fill-secondary group-focus-visible:bg-subtle-fill-secondary group-enabled:group-active:bg-subtle-fill-tertiary group-enabled:group-active:text-text-fill-secondary';
+
 // 단축키·꺾쇠처럼 흐린 글자 색이다.
 const SECONDARY_TEXT_CLASS_NAME =
   'text-text-fill-secondary group-data-disabled:text-text-fill-disabled';
@@ -75,8 +88,7 @@ const SECONDARY_TEXT_CLASS_NAME =
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = cn(ROW_CLASS_NAME, props.className);
   const isDisabled = props.disabled ?? false;
-  const icon =
-    props.icon === undefined ? undefined : <Asset name={props.icon} className="size-icon-16" />;
+  const icon = props.icon === undefined ? undefined : <MenuItemIcon name={props.icon} />;
   switch (props.kind) {
     case 'submenu':
       return (
@@ -124,6 +136,19 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       );
     case 'default':
     case undefined:
+      if (props.standalone === true) {
+        return (
+          <button
+            type="button"
+            className={cn(className, 'text-left')}
+            disabled={isDisabled}
+            data-disabled={isDisabled ? '' : undefined}
+            onClick={props.onClick}
+          >
+            <MenuItemContent {...props} leading={icon} baseClassName={STANDALONE_BASE_CLASS_NAME} />
+          </button>
+        );
+      }
       return (
         <Menu.Item
           className={className}
@@ -137,11 +162,34 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   }
 }
 
+/**
+ * 아이콘 자리의 자산을 그린다. 래스터 자산(`images/*`)은 ImageAsset, 나머지는 SVG Asset으로 그린다.
+ * @param props
+ * @param props.name 자산 이름
+ */
+function MenuItemIcon(props: { name: SvgAssetName | ImageAssetName }): JSX.Element {
+  if (isImageAssetName(props.name)) {
+    return <ImageAsset name={props.name} className="size-icon-16 object-contain" />;
+  }
+  return <Asset name={props.name} className="size-icon-16" />;
+}
+
+/**
+ * 자산 이름이 래스터 자산인지 본다.
+ * @param name 자산 이름
+ * @returns 래스터 자산이면 true
+ */
+function isImageAssetName(name: SvgAssetName | ImageAssetName): name is ImageAssetName {
+  return name.startsWith('images/');
+}
+
 type MenuItemContentProps = MenuItemCommonProps & {
   /** 이름 앞 16px 자리(피그마 base/leading)에 그릴 내용. 확인·라디오 항목은 항상 자리를 둔다 */
   leading: ReactNode;
   /** 항목 종류 */
   kind?: 'default' | 'submenu' | 'checkbox' | 'radio';
+  /** 강조 영역에 덧붙일 상태 클래스 */
+  baseClassName?: string;
 };
 
 /**
@@ -150,7 +198,7 @@ type MenuItemContentProps = MenuItemCommonProps & {
  */
 function MenuItemContent(props: MenuItemContentProps): JSX.Element {
   return (
-    <span className={baseClassName}>
+    <span className={cn(baseClassName, props.baseClassName)}>
       {props.leading !== undefined && (
         <span className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0">
           {props.leading}

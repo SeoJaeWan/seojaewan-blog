@@ -1,0 +1,62 @@
+{
+  "name": "Window/Explorer",
+  "nodeId": "564:6954",
+  "variants": {
+    "device=desktop,folder=blog,selection=none": {
+      "node": {
+        "height": 640,
+        "width": 1024,
+        "x": 64,
+        "y": 20
+      },
+      "nodeId": "576:4465",
+      "properties": {
+        "Device": "Desktop",
+        "Folder": "Blog",
+        "Selection": "None"
+      }
+    },
+    "device=desktop,folder=blog,selection=single": {
+      "node": {
+        "height": 640,
+        "width": 1024,
+        "x": 20,
+        "y": 20
+      },
+      "nodeId": "564:6951",
+      "properties": {
+        "Device": "Desktop",
+        "Folder": "Blog",
+        "Selection": "Single"
+      }
+    },
+    "device=desktop,folder=react,selection=none": {
+      "node": {
+        "height": 640,
+        "width": 1024,
+        "x": 64,
+        "y": 20
+      },
+      "nodeId": "576:4775",
+      "properties": {
+        "Device": "Desktop",
+        "Folder": "React",
+        "Selection": "None"
+      }
+    },
+    "device=mobile,folder=blog,selection=none": {
+      "node": {
+        "height": 796,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "564:6952",
+      "properties": {
+        "Device": "Mobile",
+        "Folder": "Blog",
+        "Selection": "None"
+      }
+    }
+  }
+}

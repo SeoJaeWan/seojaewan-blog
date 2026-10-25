@@ -1,0 +1,16 @@
+{
+  "name": "Menu/ExplorerPost",
+  "nodeId": "518:6375",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 207,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6375",
+      "properties": {}
+    }
+  }
+}

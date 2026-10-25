@@ -17,6 +17,8 @@ type WindowFrameCommonProps = Omit<ComponentProps<'div'>, 'children' | 'title'> 
   placement?: WindowFramePlacement;
   /** 피그마 Material. mica는 창 재질, solid는 투명 효과를 끈 단색, chrome은 Chrome 창 틀 색이다 */
   material?: WindowFrameMaterial;
+  /** 최대화(또는 복원) 버튼을 그린다(CaptionButtonGroup에 넘긴다). 늘 전체화면인 모바일 창은 끈다 */
+  showMaximize?: boolean;
   /** 최소화 버튼을 눌렀을 때 */
   onMinimize?: () => void;
   /** 최대화 버튼을 눌렀을 때(placement가 normal, snapped일 때) */
@@ -90,6 +92,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
     inactive: isInactive = false,
     placement = 'normal',
     material = 'mica',
+    showMaximize: isMaximizeShown = true,
     onMinimize: handleMinimize,
     onMaximize: handleMaximize,
     onRestore: handleRestore,
@@ -131,6 +134,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
         <CaptionButtonGroup
           placement={placement}
           inactive={isInactive}
+          showMaximize={isMaximizeShown}
           onMinimize={handleMinimize}
           onMaximize={handleMaximize}
           onRestore={handleRestore}
