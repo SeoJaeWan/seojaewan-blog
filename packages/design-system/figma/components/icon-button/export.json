@@ -2,7 +2,78 @@
   "name": "IconButton",
   "nodeId": "13:105",
   "variants": {
+    "style=chrome,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:8260",
+      "properties": {
+        "State": "Disabled",
+        "Style": "Chrome"
+      }
+    },
+    "style=chrome,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 2,
+        "y": 2
+      },
+      "nodeId": "704:8263",
+      "properties": {
+        "State": "Focused",
+        "Style": "Chrome"
+      }
+    },
+    "style=chrome,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:8254",
+      "properties": {
+        "State": "Hover",
+        "Style": "Chrome"
+      }
+    },
+    "style=chrome,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:8257",
+      "properties": {
+        "State": "Pressed",
+        "Style": "Chrome"
+      }
+    },
+    "style=chrome,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:8251",
+      "properties": {
+        "State": "Rest",
+        "Style": "Chrome"
+      }
+    },
     "style=standard,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:84",
       "properties": {
         "State": "Disabled",
@@ -10,6 +81,12 @@
       }
     },
     "style=standard,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 2,
+        "y": 2
+      },
       "nodeId": "13:87",
       "properties": {
         "State": "Focused",
@@ -17,6 +94,12 @@
       }
     },
     "style=standard,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:78",
       "properties": {
         "State": "Hover",
@@ -24,6 +107,12 @@
       }
     },
     "style=standard,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:81",
       "properties": {
         "State": "Pressed",
@@ -31,6 +120,12 @@
       }
     },
     "style=standard,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:75",
       "properties": {
         "State": "Rest",
@@ -38,6 +133,12 @@
       }
     },
     "style=subtle,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:99",
       "properties": {
         "State": "Disabled",
@@ -45,6 +146,12 @@
       }
     },
     "style=subtle,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 2,
+        "y": 2
+      },
       "nodeId": "13:102",
       "properties": {
         "State": "Focused",
@@ -52,6 +159,12 @@
       }
     },
     "style=subtle,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:93",
       "properties": {
         "State": "Hover",
@@ -59,6 +172,12 @@
       }
     },
     "style=subtle,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:96",
       "properties": {
         "State": "Pressed",
@@ -66,6 +185,12 @@
       }
     },
     "style=subtle,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:90",
       "properties": {
         "State": "Rest",
