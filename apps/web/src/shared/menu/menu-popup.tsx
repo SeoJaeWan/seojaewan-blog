@@ -76,13 +76,15 @@ type MenuPopupProps = MenuPanelProps &
  * 메뉴 조립(피그마 `Menu/*`)을 그린다. 우클릭 메뉴, Chrome ⋮ 메뉴, 전원 메뉴처럼 구조가 같은 메뉴를 항목 데이터만 바꿔 그린다.
  * Base UI Menu의 팝업(`Menu.Popup`)이라 키보드 조작과 접근성은 Base UI가 맡고, 쓰는 곳이 `Menu.Root`·`Menu.Positioner`로
  * 열고 닫기와 위치를 정한다. 나머지 속성은 팝업 요소에 준다.
+ * 열 때 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
+ * @codocs [[디자인 기반:모션 클래스]]
  * @param props
  */
 export function MenuPopup(props: MenuPopupProps): JSX.Element {
   const { items, className, itemClassName, ...popupProps } = props;
   return (
-    <BaseMenu.Popup {...popupProps} className="outline-none">
+    <BaseMenu.Popup {...popupProps} className="motion-flyout-enter outline-none">
       <MenuPanel items={items} className={className} itemClassName={itemClassName} />
     </BaseMenu.Popup>
   );
