@@ -13,8 +13,8 @@ type MenuButtonProps = Pick<
   open?: boolean;
   /** 피그마 Popover Placement의 쪽. 트리거의 위(top)나 아래(bottom)에 붙는다 */
   side?: 'top' | 'bottom';
-  /** 피그마 Popover Placement의 끝 맞춤. 트리거의 시작(start)이나 끝(end)에 맞춘다 */
-  align?: 'start' | 'end';
+  /** 피그마 Popover Placement의 끝 맞춤. 트리거의 시작(start)·가운데(center)·끝(end)에 맞춘다 */
+  align?: 'start' | 'center' | 'end';
 };
 
 // 피그마 Popover의 트리거와 팝업 사이 간격(spacing/4)이다.
