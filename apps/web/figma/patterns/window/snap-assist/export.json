@@ -1,0 +1,16 @@
+{
+  "name": "Window/SnapAssist",
+  "nodeId": "566:13925",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 1016,
+        "width": 952,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "566:13925",
+      "properties": {}
+    }
+  }
+}
