@@ -482,6 +482,7 @@ async function textData(node: TextNode, names: NameCache): Promise<TextData> {
   await loadFonts(node);
   const segments: TextSegmentData[] = [];
   for (const segment of node.getStyledTextSegments([
+    'fontName',
     'textStyleId',
     'fills',
     'fillStyleId',
@@ -490,6 +491,7 @@ async function textData(node: TextNode, names: NameCache): Promise<TextData> {
   ])) {
     segments.push({
       characters: segment.characters,
+      fontFamily: segment.fontName.family,
       textStyle: await styleName(segment.textStyleId, names),
       overrides: segment.textStyleOverrides.map((override) => override.type),
       fills: await paintsData(segment.fills, names),

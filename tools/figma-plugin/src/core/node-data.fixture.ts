@@ -70,6 +70,7 @@ export function node(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'typ
 export function segment(overrides: Partial<TextSegmentData> = {}): TextSegmentData {
   return {
     characters: '버튼',
+    fontFamily: 'Pretendard',
     textStyle: 'Hangul/Body',
     overrides: [],
     fills: [solid('text-on-accent-fill/primary')],

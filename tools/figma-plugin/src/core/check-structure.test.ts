@@ -286,6 +286,30 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     ).toEqual(['글꼴이 없어 대체 글꼴로 그려진다', '"버튼" 구간에 OpenType 기능이 켜져 있다']);
   });
 
+  it('한글이 든 구간의 글꼴이 Pretendard가 아니면 hasMissingFont가 false여도 막는다', () => {
+    expect(
+      reasonsAfter((root) => {
+        must(label(root).text).segments = [segment({ fontFamily: 'Open Sans' })];
+      }),
+    ).toEqual(['"버튼" 구간에 한글이 있는데 글꼴이 Open Sans라 대체 글꼴로 그려질 수 있다']);
+    expect(
+      reasonsAfter((root) => {
+        must(label(root).text).segments = [segment({ characters: 'ㄱ', fontFamily: undefined })];
+      }),
+    ).toHaveLength(1);
+  });
+
+  it('한글이 없는 구간은 글꼴과 상관없이, 한글 구간은 Pretendard면 허용한다', () => {
+    expect(
+      reasonsAfter((root) => {
+        must(label(root).text).segments = [
+          segment({ characters: 'OK 123', fontFamily: 'Open Sans', textStyle: 'Body' }),
+          segment({ characters: '확인', fontFamily: 'Pretendard' }),
+        ];
+      }),
+    ).toEqual([]);
+  });
+
   it('CSS로 그리지 않는 노드 종류를 막는다', () => {
     expect(
       reasonsAfter((root) => root.children.push(node({ path: 'x', type: 'TEXT_PATH' }))),
@@ -510,19 +534,45 @@ describe('구조 검사: 자산 인스턴스 안쪽의 덮어쓰기', () => {
     );
   });
 
-  it('다른 인스턴스 안에 든 자산의 안쪽 덮어쓰기는 막고, 그 안쪽 컴포넌트에 열라고 알린다', () => {
+  it('다른 인스턴스 안에 든 자산의 안쪽 덮어쓰기도 막지 않는다', () => {
     const button = instance(
       'button',
       'IconButton',
-      [{ id: 'button/icon;vector', fields: ['fills'] }],
-      [assetInstance('button/icon')],
+      [{ id: 'button/icon;vector', fields: ['fills', 'strokes', 'opacity'] }],
+      [assetInstance('button/icon', [{ id: 'button/icon;vector', fields: ['fills'] }])],
     );
-    expect(checkWith(button)).toEqual([
-      {
-        where: 'Menu/Folder / Default / button/icon',
-        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
-        fix: '덮어쓰기를 되돌리고, IconButton에 변형이나 속성을 열어 그것을 고른다.',
-      },
+    expect(checkWith(button)).toEqual([]);
+  });
+
+  it('다른 인스턴스 안에 든 자산 인스턴스의 색 덮어쓰기는 막지 않고 다른 모양은 막는다', () => {
+    /**
+     * 자산 인스턴스의 지정한 필드를 덮어쓴 IconButton을 만든다.
+     * @param fields 덮어쓴 필드
+     * @returns 노드 데이터
+     */
+    function button(fields: string[]): NodeData {
+      return instance(
+        'button',
+        'IconButton',
+        [{ id: 'button/icon', fields }],
+        [assetInstance('button/icon')],
+      );
+    }
+    expect(checkWith(button(['fills', 'strokes', 'fillStyleId']))).toEqual([]);
+    expect(checkWith(button(['fills', 'effects'])).map((violation) => violation.reason)).toEqual([
+      '인스턴스의 효과를 직접 바꿨다(effects)',
+    ]);
+  });
+
+  it('자산이 아닌 컴포넌트 인스턴스의 칠 덮어쓰기는 계속 막는다', () => {
+    const button = instance(
+      'button',
+      'IconButton',
+      [{ id: 'button/label', fields: ['fills'] }],
+      [instance('button/label', 'Label', [])],
+    );
+    expect(checkWith(button).map((violation) => violation.where)).toEqual([
+      'Menu/Folder / Default / button/label',
     ]);
   });
 });
