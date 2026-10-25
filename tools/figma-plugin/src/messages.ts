@@ -8,9 +8,12 @@ export type ComponentSummary = {
   variantCount: number;
 };
 
-/** PR 하나에 한 커밋(컴포넌트·조립·토큰 PR) */
+/** UI 목록에 보이는 애니메이션 견본 */
+export type MotionSummary = { id: string; name: string };
+
+/** PR 하나에 한 커밋(컴포넌트·조립·애니메이션·토큰 PR) */
 export type PullRequestCommit = {
-  /** 컴포넌트 이름, 조립 PR이면 `<영역> 조립`, 토큰 PR이면 `토큰` */
+  /** 컴포넌트 이름, 조립 PR이면 `<영역> 조립`, 애니메이션 PR이면 견본 이름, 토큰 PR이면 `토큰` */
   target: string;
   /** 커밋한 브랜치 */
   branch: string;
@@ -35,9 +38,17 @@ export type ExportOutcome =
 
 /** 본체 → UI */
 export type MainMessage =
-  | { type: 'init'; token: string; components: ComponentSummary[]; patterns: ComponentSummary[] }
+  | {
+      type: 'init';
+      token: string;
+      components: ComponentSummary[];
+      patterns: ComponentSummary[];
+      motions: MotionSummary[];
+      /** 모션 API를 쓸 수 없어 애니메이션을 내보낼 수 없으면 그 안내. 쓸 수 있으면 null */
+      motionUnavailable: string | null;
+    }
   | { type: 'log'; text: string }
-  /** 쓰는 곳이 없는 변수·스타일 알림(막지 않음) */
+  /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 건너뛴 애니메이션 등) */
   | { type: 'notices'; notices: string[] }
   | { type: 'done'; result: ExportOutcome }
   | { type: 'failed'; message: string };
@@ -46,8 +57,12 @@ export type MainMessage =
 export type UiMessage = {
   type: 'export';
   token: string;
-  /** 내보낼 컴포넌트. 조립과 함께 비어 있으면 토큰만 확인한다 */
+  /** 토큰을 내보낼 대상으로 골랐는지. 다른 대상을 내보낼 때는 고르지 않아도 토큰을 비교한다 */
+  tokens: boolean;
+  /** 내보낼 컴포넌트 */
   componentIds: string[];
   /** 내보낼 조립 */
   patternIds: string[];
+  /** 내보낼 애니메이션 견본 */
+  motionIds: string[];
 };

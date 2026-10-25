@@ -1,4 +1,6 @@
+import type { MotionValue } from './core/motion-data';
 import { pngFile } from './export-manifest';
+import { type MotionExport, type MotionTime, roundMs, roundValue } from './motion-file';
 import { CAPTURES_BRANCH, REPO_NAME, REPO_OWNER } from './plugin-config';
 
 // 플러그인이 여는 브랜치 이름과 커밋·PR 글을 만든다. 컴포넌트 하나마다 PR 하나, 조립은 영역마다 PR 하나,
@@ -9,6 +11,11 @@ export const TOKENS_BRANCH = 'feat/figma-tokens';
 
 /** 조립 PR 브랜치 앞부분. 뒤에 영역 폴더 이름이 붙는다 */
 const PATTERNS_BRANCH_PREFIX = 'feat/figma-patterns-';
+
+/** 애니메이션 PR 브랜치 앞부분. 뒤에 견본 이름이 붙는다 */
+const MOTION_BRANCH_PREFIX = 'feat/figma-motion-';
+/** 브랜치 이름에서 빼는 견본 이름 앞부분 */
+const MOTION_NAME_PREFIX_PATTERN = /^motion-/u;
 
 /** PR 하나에 담긴 대상 하나의 변경(main 기준) */
 export type TargetChanges = {
@@ -68,6 +75,11 @@ export function componentBranchName(slug: string): string {
   if (branch.startsWith(PATTERNS_BRANCH_PREFIX)) {
     throw new Error(
       `컴포넌트 폴더 이름 "${slug}"는 조립 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
+    );
+  }
+  if (branch.startsWith(MOTION_BRANCH_PREFIX)) {
+    throw new Error(
+      `컴포넌트 폴더 이름 "${slug}"는 애니메이션 PR 브랜치와 겹친다. 컴포넌트 이름을 바꾼다.`,
     );
   }
   return branch;
@@ -336,4 +348,173 @@ function pathList(label: string, paths: readonly string[]): string[] {
  */
 function blobRoot(branch: string): string {
   return `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${branch}`;
+}
+
+/**
+ * 애니메이션 PR 브랜치 이름을 만든다. 견본마다 고정이다. 견본 이름에서 앞의 `motion-`을 뺀 이름을 붙인다
+ * (json 파일 이름은 견본 이름 그대로다). 예: `motion-progress-ring` → `feat/figma-motion-progress-ring`
+ * @codocs [[Git 작업 규칙:브랜치]]
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param name 견본 이름
+ * @returns 브랜치 이름
+ */
+export function motionBranchName(name: string): string {
+  return `${MOTION_BRANCH_PREFIX}${name.replace(MOTION_NAME_PREFIX_PATTERN, '')}`;
+}
+
+/**
+ * 애니메이션 PR의 영어 커밋 제목을 만든다. PR 제목도 같다.
+ * @codocs [[Git 작업 규칙:커밋]]
+ * @param name 견본 이름
+ * @returns 커밋 제목
+ */
+export function motionCommitSubject(name: string): string {
+  return `feat(figma): export ${name} motion`;
+}
+
+/**
+ * 애니메이션 PR 커밋의 한국어 본문을 만든다.
+ * @codocs [[Git 작업 규칙:커밋]]
+ * @param motion 내보낸 모션
+ * @returns 커밋 본문
+ */
+export function motionCommitBody(motion: MotionExport): string {
+  return [
+    `피그마 Motion 섹션의 견본 ${motion.name}에서 키프레임과 토큰 짝을 내보낸다.`,
+    '',
+    `- 트랙 ${String(motion.tracks.length)}개, 전체 길이 ${timeText(motion.duration)}`,
+  ].join('\n');
+}
+
+/**
+ * 애니메이션 PR의 한국어 본문을 만든다. 피그마 견본 링크, 키프레임 표, 토큰 짝 표를 담는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[피그마 연동:모션]]
+ * @param motion 내보낸 모션
+ * @returns PR 본문(Markdown)
+ */
+export function motionPullRequestBody(motion: MotionExport): string {
+  return [
+    '## 변경',
+    '',
+    `- 견본: [${motion.name}](${motion.url})`,
+    `- 자료: \`packages/design-system/figma/motions/${motion.name}.json\``,
+    `- 전체 길이 ${timeText(motion.duration)}, 시작 지연 ${timeText(motion.delay)}`,
+    '- 반복: 피그마에서 읽을 수 없어 자료에 담지 않았다. 디자인 기반 문서의 모션 표를 본다.',
+    '',
+    '## 키프레임',
+    '',
+    '| 노드 | 항목 | 시간 | 값 | 이징 | 값 토큰 |',
+    '|---|---|---|---|---|---|',
+    ...motion.tracks.flatMap(keyframeRows),
+    '',
+    '## 토큰 짝',
+    '',
+    '구현할 때 짝은 `var()`로 쓰고, 짝이 없는 값은 그대로 옮긴다.',
+    '',
+    '| 쓰는 곳 | 값 | 토큰 |',
+    '|---|---|---|',
+    ...tokenPairRows(motion),
+    '',
+    '## 확인',
+    '',
+    `- 피그마 견본과 \`Motion/${motion.name}\` 모션 스토리를 나란히 보고 키프레임 모양을 확인한다.`,
+    '- 시간·이징·지연·반복 횟수는 모션 검사(`motion-check.yml`)가 모션 스토리에서 읽어 이 자료와 비교한다.',
+    `- 새 모션 토큰이 필요하면 토큰 PR(\`${TOKENS_BRANCH}\`), 키프레임이 걸린 자산이 컴포넌트 PR로 들어오면 그 PR을 먼저 병합한다.`,
+  ].join('\n');
+}
+
+/**
+ * 트랙 하나의 키프레임 표 줄을 만든다.
+ * @param track 트랙
+ * @returns 표 줄
+ */
+function keyframeRows(track: MotionExport['tracks'][number]): string[] {
+  return track.keyframes.map(
+    (keyframe) =>
+      `| ${track.node} | \`${track.property}\` | ${msText(keyframe.time)} | ${valueText(keyframe.value)} | ${codeOrDash(keyframe.easing)} | ${codeOrDash(keyframe.valueToken)} |`,
+  );
+}
+
+/**
+ * 토큰 짝 표의 줄을 만든다. 같은 줄은 한 번만 쓴다.
+ * @param motion 내보낸 모션
+ * @returns 표 줄
+ */
+function tokenPairRows(motion: MotionExport): string[] {
+  const rows: string[] = [];
+  /**
+   * 줄을 더한다. 이미 있으면 더하지 않는다.
+   * @param where 쓰는 곳
+   * @param value 값
+   * @param token 토큰
+   */
+  function add(where: string, value: string, token: string): void {
+    const row = `| ${where} | ${value} | \`${token}\` |`;
+    if (!rows.includes(row)) {
+      rows.push(row);
+    }
+  }
+  for (const track of motion.tracks) {
+    const where = `${track.node} \`${track.property}\``;
+    if (track.duration.token !== null) {
+      add(`${where} 트랙 길이`, msText(track.duration.ms), track.duration.token);
+    }
+    if (track.delay.token !== null) {
+      add(`${where} 시작 지연`, msText(track.delay.ms), track.delay.token);
+    }
+    for (const keyframe of track.keyframes) {
+      if (keyframe.easing !== null) {
+        add(`${where} 이징`, '곡선', keyframe.easing);
+      }
+      if (keyframe.valueToken !== null) {
+        add(`${where} 값`, valueText(keyframe.value), keyframe.valueToken);
+      }
+    }
+  }
+  return rows.length === 0 ? ['| 없음 | | |'] : rows;
+}
+
+/**
+ * 시간 값과 토큰을 글로 만든다.
+ * @param time 시간 값
+ * @returns `250ms(motion/duration/normal)` 꼴
+ */
+function timeText(time: MotionTime): string {
+  return time.token === null ? msText(time.ms) : `${msText(time.ms)}(\`${time.token}\`)`;
+}
+
+/**
+ * ms 값을 글로 만든다.
+ * @param ms 시간
+ * @returns `250ms`
+ */
+function msText(ms: number): string {
+  return `${String(roundMs(ms))}ms`;
+}
+
+/**
+ * 키프레임 값을 표에 쓸 글로 만든다.
+ * @param value 키프레임 값
+ * @returns `0.96`, `x 0.96, y 0.96` 꼴
+ */
+function valueText(value: MotionValue): string {
+  if (typeof value === 'number') {
+    return String(roundValue(value));
+  }
+  if (typeof value !== 'object') {
+    return String(value);
+  }
+  return Object.entries(value)
+    .map(([key, item]) => `${key} ${String(roundValue(item))}`)
+    .join(', ');
+}
+
+/**
+ * 값이 있으면 코드 글꼴로, 없으면 `-`로 쓴다.
+ * @param value 값
+ * @returns 표 칸
+ */
+function codeOrDash(value: string | null): string {
+  return value === null ? '-' : `\`${value}\``;
 }

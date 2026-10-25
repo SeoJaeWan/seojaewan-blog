@@ -36,3 +36,6 @@ export const TOKEN_STORAGE_KEY = 'github-token';
 
 /** 자산(아이콘·도형·일러스트·이미지)을 묶음별로 두는 폴더 */
 export const ASSETS_DIR = `${FIGMA_DIR}/assets`;
+
+/** 애니메이션 견본마다 `<이름>.json`을 두는 폴더 */
+export const MOTIONS_DIR = `${FIGMA_DIR}/motions`;

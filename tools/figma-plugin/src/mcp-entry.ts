@@ -1,11 +1,13 @@
 import type { Violation } from './core/check-structure';
 import type { TargetExport } from './core/export-component';
 import { exportTargetCore } from './core/export-component';
+import { exportMotionCore } from './core/export-motion';
+import { listMotionSamples, readMotionVariables } from './core/read-motion';
 import { MANIFEST_FILE, manifestText, pngFile, settingsText } from './export-manifest';
 import { listComponents, listPatterns, readCheckContext } from './figma-reader';
 import type { ComponentSummary } from './messages';
 import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
-import { COMPONENTS_DIR, FILE_KEY, SCALE, SETTINGS_PATH } from './plugin-config';
+import { COMPONENTS_DIR, FILE_KEY, MOTIONS_DIR, SCALE, SETTINGS_PATH } from './plugin-config';
 import { sha256Hex, utf8Encode } from './sha256';
 
 // 피그마 MCP(use_figma)에서 실행하는 진입점. 플러그인과 같은 검사·내보내기 코드로 저장소에 쓸 파일을 만든다.
@@ -29,6 +31,8 @@ export type McpExportOptions = {
   components: string[];
   /** 내보낼 조립 이름(`영역/이름`) */
   patterns?: string[];
+  /** 내보낼 애니메이션 견본 이름(`motion-progress-ring`) */
+  motions?: string[];
   /** true면 검사만 하고 파일 내용은 돌려주지 않는다 */
   checkOnly?: boolean;
 };
@@ -36,22 +40,25 @@ export type McpExportOptions = {
 export type McpExportResult = {
   fileKey: string | undefined;
   violations: Violation[];
+  /** 막지 않는 알림(같은 값 변수가 여럿인 모션 짝 등) */
+  notices: string[];
   /** 내보낸 대상 폴더(저장소 경로) */
   folders: string[];
   files: McpFile[];
 };
 
 /**
- * 고른 컴포넌트와 조립을 플러그인과 같은 규칙으로 검사하고 내보낼 파일을 만든다.
+ * 고른 컴포넌트·조립·애니메이션을 플러그인과 같은 규칙으로 검사하고 내보낼 파일을 만든다.
  * 위반이 하나라도 있으면 파일을 돌려주지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
- * @param options 내보낼 컴포넌트와 조립
+ * @param options 내보낼 컴포넌트·조립·애니메이션
  * @returns 위반 목록과 파일
  */
 export async function runMcpExport(options: McpExportOptions): Promise<McpExportResult> {
   const result: McpExportResult = {
     fileKey: figma.fileKey,
     violations: [],
+    notices: [],
     folders: [],
     files: [],
   };
@@ -87,6 +94,19 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
       }
     }
   }
+  const motionNames = options.motions ?? [];
+  if (motionNames.length > 0) {
+    const variables = await readMotionVariables();
+    for (const id of pick(await listMotionSamples(), motionNames)) {
+      const outcome = await exportMotionCore(id, variables, FILE_KEY);
+      if (!outcome.ok) {
+        result.violations.push(...outcome.violations);
+        continue;
+      }
+      result.notices.push(...outcome.motion.result.notices);
+      files.push(textFile(`${MOTIONS_DIR}/${outcome.motion.name}.json`, outcome.motion.text));
+    }
+  }
   if (options.components.length > 0) {
     files.push(textFile(SETTINGS_PATH, settingsText({ fileKey: FILE_KEY, scale: SCALE })));
   }
@@ -102,7 +122,10 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
  * @param names 찾을 이름
  * @returns 노드 ID
  */
-function pick(all: readonly ComponentSummary[], names: readonly string[]): string[] {
+function pick(
+  all: readonly Pick<ComponentSummary, 'id' | 'name'>[],
+  names: readonly string[],
+): string[] {
   const ids: string[] = [];
   for (const name of names) {
     const found = all.find((item) => item.name === name);
