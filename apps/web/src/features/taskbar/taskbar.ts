@@ -7,3 +7,5 @@ export type { TaskbarDefaultSearch } from './taskbar-default';
 export { TaskbarDefault } from './taskbar-default';
 export type { TaskbarWindowPreview } from './taskbar-window-preview-list';
 export { TaskbarWindowPreviewList } from './taskbar-window-preview-list';
+export type { Clock } from './use-clock';
+export { useClock } from './use-clock';
