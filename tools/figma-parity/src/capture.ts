@@ -5,6 +5,12 @@ import type { Locator, Page } from '@playwright/test';
 
 // 캡처 대상(피그마는 변형 노드) 둘레에 두는 가장 작은 여백(CSS px)이다. 그림자가 이보다 넓으면 그만큼 넓힌다.
 export const CAPTURE_MARGIN = 24;
+// 화면보다 큰 대상을 찍을 때 피그마 PNG 크기에 더하는 화면 여유분(CSS px)이다.
+// - 코드 그림은 노드 둘레에 여백(24px 이상)을 두므로 그림자 없는 피그마 PNG보다 방향마다 최대 2 × 24px 크다.
+// - Storybook 기본 배치는 스토리 루트에 16px 안쪽 여백을 둔다. padded는 대상을 오른쪽 아래로 16px 밀어 반대쪽 여백과
+//   그림자가 그만큼 화면 끝에 가까워지고, centered는 이 여백이 양쪽에 붙는다.
+// 대상이 어느 쪽으로 치우쳐도 반대쪽이 잘리지 않게 두 가지를 양쪽 모두 더해 2 × (24 + 16) = 80px를 둔다.
+export const VIEWPORT_SLACK = 80;
 // 배경이 투명하면 브라우저가 칠하는 기본 배경이다.
 const DEFAULT_BACKGROUND = 'rgb(255, 255, 255)';
 const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
@@ -162,7 +168,23 @@ export function commonCanvas(...sizes: Size[]): Size {
 }
 
 /**
+ * 스토리를 열 화면 크기를 정한다. 기본 화면(Playwright 기기 설정)에 피그마 PNG와 여유분이 들어가면 그대로 두고,
+ * 들어가지 않는 방향만 피그마 PNG 크기에 여유분을 더한 만큼 키운다. 작은 대상은 화면이 그대로라 캡처가 바뀌지 않는다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param figma 피그마 PNG의 크기(CSS px, 배율로 나눈 값. 노드와 그 둘레로 나간 부분)
+ * @param viewport 기본 화면 크기
+ * @returns 스토리를 열 화면 크기(CSS px, 정수)
+ */
+export function captureViewport(figma: Size, viewport: Size): Size {
+  return {
+    width: Math.max(viewport.width, Math.ceil(figma.width + VIEWPORT_SLACK)),
+    height: Math.max(viewport.height, Math.ceil(figma.height + VIEWPORT_SLACK)),
+  };
+}
+
+/**
  * 캡처 대상의 테두리 상자에 여백을 더한 영역을 정한다. 화면 밖으로 나가는 부분은 찍지 않고 배경으로 채운다.
+ * 화면보다 큰 대상은 스토리를 열기 전에 화면을 키워 두므로(captureViewport) 화면 밖으로 나가는 곳은 페이지 왼쪽·위 바깥뿐이다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param box 캡처 대상의 테두리 상자
  * @param margin 여백

@@ -1,0 +1,123 @@
+{
+  "name": "TaskbarButton",
+  "nodeId": "26:257",
+  "variants": {
+    "indicator=active,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:247",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Hover"
+      }
+    },
+    "indicator=active,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:252",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Pressed"
+      }
+    },
+    "indicator=active,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:242",
+      "properties": {
+        "Indicator": "Active",
+        "State": "Rest"
+      }
+    },
+    "indicator=none,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:219",
+      "properties": {
+        "Indicator": "None",
+        "State": "Hover"
+      }
+    },
+    "indicator=none,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:223",
+      "properties": {
+        "Indicator": "None",
+        "State": "Pressed"
+      }
+    },
+    "indicator=none,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:215",
+      "properties": {
+        "Indicator": "None",
+        "State": "Rest"
+      }
+    },
+    "indicator=running,state=hover": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:232",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Hover"
+      }
+    },
+    "indicator=running,state=pressed": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:237",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Pressed"
+      }
+    },
+    "indicator=running,state=rest": {
+      "node": {
+        "height": 40,
+        "width": 40,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:227",
+      "properties": {
+        "Indicator": "Running",
+        "State": "Rest"
+      }
+    }
+  }
+}
