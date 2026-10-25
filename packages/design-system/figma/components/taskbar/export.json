@@ -1,0 +1,30 @@
+{
+  "name": "Taskbar",
+  "nodeId": "26:353",
+  "variants": {
+    "material=acrylic": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:281",
+      "properties": {
+        "Material": "Acrylic"
+      }
+    },
+    "material=solid": {
+      "node": {
+        "height": 48,
+        "width": 1280,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "26:317",
+      "properties": {
+        "Material": "Solid"
+      }
+    }
+  }
+}

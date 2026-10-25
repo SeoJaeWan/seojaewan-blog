@@ -1,0 +1,84 @@
+{
+  "name": "ListItem",
+  "nodeId": "31:515",
+  "variants": {
+    "size=compact,state=hover": {
+      "node": {
+        "height": 36,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:468",
+      "properties": {
+        "Size": "Compact",
+        "State": "Hover"
+      }
+    },
+    "size=compact,state=rest": {
+      "node": {
+        "height": 36,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:461",
+      "properties": {
+        "Size": "Compact",
+        "State": "Rest"
+      }
+    },
+    "size=compact,state=selected": {
+      "node": {
+        "height": 36,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:475",
+      "properties": {
+        "Size": "Compact",
+        "State": "Selected"
+      }
+    },
+    "size=two-line,state=hover": {
+      "node": {
+        "height": 52,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:493",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Hover"
+      }
+    },
+    "size=two-line,state=rest": {
+      "node": {
+        "height": 52,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:482",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Rest"
+      }
+    },
+    "size=two-line,state=selected": {
+      "node": {
+        "height": 52,
+        "width": 400,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:504",
+      "properties": {
+        "Size": "Two-line",
+        "State": "Selected"
+      }
+    }
+  }
+}

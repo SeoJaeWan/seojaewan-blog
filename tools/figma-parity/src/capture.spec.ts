@@ -6,6 +6,7 @@ import {
   captureCode,
   captureFigma,
   captureMargin,
+  captureViewport,
   commonCanvas,
   diffImage,
   figmaNodeLayout,
@@ -125,17 +126,29 @@ async function captureVariant(
     if (!story.ok) {
       throw new Error(story.message);
     }
-    const { args, interaction } = storyTarget(variant.properties);
-    const opened = await openStory(page, storybook.server.url, story.id, args, interaction);
-    if (!opened.ok) {
-      throw new Error(opened.message);
-    }
     const figmaPng = figmaImagePath(target, variant.variant);
     if (!existsSync(figmaPng)) {
       throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
     }
     const figmaSource = readFileSync(figmaPng);
     const sourceSize = pngSize(figmaSource);
+    // 화면보다 큰 대상은 화면을 피그마 PNG 크기에 맞춰 키운다. 배치와 상태 재현이 바뀐 화면에서 일어나도록
+    // 스토리를 열기 전에 바꾼다(Playwright 문서도 페이지를 열기 전에 화면 크기를 정하라고 한다).
+    const viewport = page.viewportSize();
+    if (viewport !== null) {
+      const wanted = captureViewport(
+        { width: sourceSize.width / scale, height: sourceSize.height / scale },
+        viewport,
+      );
+      if (wanted.width !== viewport.width || wanted.height !== viewport.height) {
+        await page.setViewportSize(wanted);
+      }
+    }
+    const { args, interaction } = storyTarget(variant.properties);
+    const opened = await openStory(page, storybook.server.url, story.id, args, interaction);
+    if (!opened.ok) {
+      throw new Error(opened.message);
+    }
     // 피그마 PNG 안 노드 위치는 export.json에서 읽고, 없으면 코드 루트 그림자의 폭으로 짐작한다.
     const extents = await readRenderExtents(opened.target);
     const layout = figmaNodeLayout(

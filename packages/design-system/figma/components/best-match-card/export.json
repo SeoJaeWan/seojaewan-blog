@@ -1,0 +1,16 @@
+{
+  "name": "BestMatchCard",
+  "nodeId": "399:15535",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 283,
+        "width": 258,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "399:15535",
+      "properties": {}
+    }
+  }
+}

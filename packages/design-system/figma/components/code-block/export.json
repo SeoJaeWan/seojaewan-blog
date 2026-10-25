@@ -1,0 +1,16 @@
+{
+  "name": "CodeBlock",
+  "nodeId": "399:5519",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 82,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "399:5519",
+      "properties": {}
+    }
+  }
+}
