@@ -64,6 +64,8 @@ const ENTRY_FILE = 'src/index.ts';
 // 모션 CSS와 피그마 모션 자료다. 캡처할 때 움직임을 모두 끄므로 캡처 그림이 바뀌지 않는다.
 const MOTION_CSS_FILE = 'src/motion.css';
 const FIGMA_MOTION_PATTERN = /^figma\/motions\//u;
+// 모션 스토리 도우미 폴더다. 모션 스토리만 쓰므로 캡처 그림에 영향이 없다.
+const MOTION_STORY_DIR = 'src/motion-story/';
 // 모션 스토리는 제목이 `Motion/`으로 시작하는 스토리 파일이다. 파일 위치는 따지지 않는다.
 const STORY_FILE_PATTERN = /\.stories\.tsx?$/u;
 const MOTION_STORY_TITLE_PATTERN = /\btitle:\s*['"`]Motion\//u;
@@ -171,7 +173,11 @@ function designSystemScope(file: string, relative: string, inputs: AffectedInput
   if (relative === ENTRY_FILE) {
     return { kind: 'none' };
   }
-  if (relative === MOTION_CSS_FILE || FIGMA_MOTION_PATTERN.test(relative)) {
+  if (
+    relative === MOTION_CSS_FILE ||
+    FIGMA_MOTION_PATTERN.test(relative) ||
+    relative.startsWith(MOTION_STORY_DIR)
+  ) {
     return { kind: 'none' };
   }
   if (STORY_FILE_PATTERN.test(relative)) {

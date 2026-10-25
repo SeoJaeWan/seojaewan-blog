@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
+import { checkMotionSample } from './core/check-motion';
+import { motionVariables, windowOpenSample } from './core/motion-data.fixture';
 import {
   componentBranchName,
   componentCommitSubject,
   componentPullRequestBody,
+  motionBranchName,
+  motionCommitSubject,
+  motionPullRequestBody,
   patternBranchName,
   patternPullRequestBody,
   patternsCommitSubject,
@@ -67,9 +72,34 @@ describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이�
     expect(patternBranchName('menu')).toBe('feat/figma-patterns-menu');
   });
 
-  it('토큰·조립 브랜치와 겹치는 컴포넌트 이름은 막는다', () => {
+  it('애니메이션은 견본마다 feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>이다', () => {
+    expect(motionBranchName('motion-progress-ring')).toBe('feat/figma-motion-progress-ring');
+  });
+
+  it('토큰·조립·애니메이션 브랜치와 겹치는 컴포넌트 이름은 막는다', () => {
     expect(() => componentBranchName('tokens')).toThrow('토큰 PR 브랜치와 겹친다');
     expect(() => componentBranchName('patterns-menu')).toThrow('조립 PR 브랜치와 겹친다');
+    expect(() => componentBranchName('motion-ring')).toThrow('애니메이션 PR 브랜치와 겹친다');
+  });
+
+  it('애니메이션 PR 본문은 피그마 견본 링크, 키프레임 표, 토큰 짝 표를 담는다', () => {
+    const result = checkMotionSample(windowOpenSample(), motionVariables, 'KEY');
+    if (!result.ok) {
+      throw new Error('견본이 검사를 통과해야 한다');
+    }
+    const body = motionPullRequestBody(result.motion);
+    expect(motionCommitSubject('motion-window-open')).toBe(
+      'feat(figma): export motion-window-open motion',
+    );
+    expect(body).toContain(
+      '- 견본: [motion-window-open](https://www.figma.com/design/KEY?node-id=12-34)',
+    );
+    expect(body).toContain('| 노드 | 항목 | 시간 | 값 | 이징 | 값 토큰 |');
+    expect(body).toContain(
+      '| Window | `SCALE_XY` | 0ms | x 0.96, y 0.96 | - | `motion/scale/window-enter` |',
+    );
+    expect(body).toContain('| Window `OPACITY` 트랙 길이 | 250ms | `motion/duration/normal` |');
+    expect(body).toContain('| Window `OPACITY` 이징 | 곡선 | `motion/easing/fade` |');
   });
 });
 

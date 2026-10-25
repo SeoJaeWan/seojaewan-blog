@@ -185,10 +185,11 @@ describe('캡처 범위', () => {
     ).toBe(`${tokensCss}(바뀐 토큰을 정하지 못함)`);
   });
 
-  it('모션 CSS, 모션 스토리, 피그마 모션 자료만 바뀌면 범위가 없다', () => {
+  it('모션 CSS, 모션 스토리, 모션 스토리 도우미, 피그마 모션 자료만 바뀌면 범위가 없다', () => {
     const motionStory = "export default { title: 'Motion/ProgressRing' };";
     const empty = { components: [], patterns: [] };
     expect(scope(['packages/design-system/src/motion.css'])).toEqual(empty);
+    expect(scope(['packages/design-system/src/motion-story/motion-preview.tsx'])).toEqual(empty);
     expect(scope(['packages/design-system/figma/motions/motion-progress-ring.json'])).toEqual(
       empty,
     );

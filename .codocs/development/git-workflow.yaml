@@ -12,7 +12,7 @@ _codocs:
 브랜치: |
   `종류/짧은-설명` 형식이다. 예: `feat/taskbar-pin`, `fix/window-drag`, `chore/setup-monorepo`
   종류는 커밋 종류와 같은 단어를 쓴다.
-  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 토큰은 `feat/figma-tokens`, 컴포넌트마다 `feat/figma-<컴포넌트>`, 조립은 영역마다 `feat/figma-patterns-<영역>`, 애니메이션은 견본마다 `feat/figma-motion-<이름>`. 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 연동:피그마 플러그인]]).
+  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 토큰은 `feat/figma-tokens`, 컴포넌트마다 `feat/figma-<컴포넌트>`, 조립은 영역마다 `feat/figma-patterns-<영역>`, 애니메이션은 견본마다 `feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`(예: `motion-progress-ring` → `feat/figma-motion-progress-ring`). 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 연동:피그마 플러그인]]).
 커밋: |
   - 제목은 영어로, Conventional Commits 형식을 따른다. 예: `feat(design-system): add Button component`
   - 본문은 한국어로 쓴다. 무엇을 왜 바꿨는지 적는다.

@@ -69,7 +69,7 @@ export function storyArgsParam(args: Readonly<Record<string, StoryArgValue>>): s
 }
 
 /** Storybook index.json의 스토리 항목 */
-type IndexEntry = { id: string; title: string; name: string; importPath: string };
+export type IndexEntry = { id: string; title: string; name: string; importPath: string };
 
 /**
  * Storybook index.json에서 대상과 짝인 스토리 ID를 찾는다.
@@ -118,7 +118,7 @@ export function findStoryId(
  * @param index index.json을 파싱한 값
  * @returns 스토리 항목
  */
-function storyEntries(index: unknown): IndexEntry[] {
+export function storyEntries(index: unknown): IndexEntry[] {
   const entries: unknown =
     typeof index === 'object' && index !== null ? Reflect.get(index, 'entries') : undefined;
   if (typeof entries !== 'object' || entries === null) {

@@ -3,6 +3,12 @@
   "nodeId": "16:245",
   "variants": {
     "tone=accent,size=16": {
+      "node": {
+        "height": 16,
+        "width": 16,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:233",
       "properties": {
         "Size": "16",
@@ -10,6 +16,12 @@
       }
     },
     "tone=accent,size=32": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:235",
       "properties": {
         "Size": "32",
@@ -17,6 +29,12 @@
       }
     },
     "tone=accent,size=64": {
+      "node": {
+        "height": 64,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:237",
       "properties": {
         "Size": "64",
@@ -24,6 +42,12 @@
       }
     },
     "tone=on-dark,size=16": {
+      "node": {
+        "height": 16,
+        "width": 16,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:239",
       "properties": {
         "Size": "16",
@@ -31,6 +55,12 @@
       }
     },
     "tone=on-dark,size=32": {
+      "node": {
+        "height": 32,
+        "width": 32,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:241",
       "properties": {
         "Size": "32",
@@ -38,6 +68,12 @@
       }
     },
     "tone=on-dark,size=64": {
+      "node": {
+        "height": 64,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:243",
       "properties": {
         "Size": "64",

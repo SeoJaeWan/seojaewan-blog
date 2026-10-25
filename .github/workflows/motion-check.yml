@@ -1,0 +1,88 @@
+# @codocs [[피그마 연동:CI]]
+# 모션 시간 검사([[피그마 연동:모션]]). 바뀐 모션 클래스의 `Motion/<이름>` 스토리를 정적 빌드한 디자인 시스템
+# Storybook에서 열고 getAnimations()로 시간·이징·지연·반복 횟수를 읽어 figma/motions/<이름>.json의 토큰 짝과 비교한다.
+# on: paths를 쓰지 않고 늘 시작해, 첫 단계에서 git diff로 범위를 본다. 해당이 없으면 의존성 설치 없이 통과로 끝난다
+# (필수 검사가 "대기 중"에 걸리지 않게 하기 위해서다).
+# 범위: 바뀐 figma/motions/*.json, motion.css를 바뀌기 전·후로 읽어 내용이 달라진 motion-* 클래스,
+# 바뀐 --motion-* 토큰을 쓰는 클래스, 바뀐 모션 스토리. json이 없는 클래스(상태 전환 등)는 검사하지 않는다.
+# 이 워크플로, 모션 검사 도구, 모션 스토리 도우미가 바뀌면 json이 있는 모든 견본을 검사한다.
+name: Motion check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: motion-check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+
+jobs:
+  motion-check:
+    # ruleset의 필수 검사 이름과 같아야 한다
+    name: Motion check
+    runs-on: ubuntu-latest
+    env:
+      EVENT: ${{ github.event_name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # 바뀐 파일을 보려면 기준 브랜치와의 merge-base가 필요하다
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # 범위: git diff와 파일 내용만으로 정한다. 의존성 설치, Chromium 설치, Storybook 빌드 전에 한다
+      - name: Affected range
+        id: range
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            base="origin/$BASE_REF"
+          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            base="$BEFORE"
+          else
+            base="HEAD^1"
+          fi
+          range=$(node tools/figma-parity/src/run-motion-check.ts --print-range --base "$base")
+          echo "모션 검사 범위($base 기준): $range"
+          motions=$(jq -r '.motions | join(" ")' <<< "$range")
+          {
+            if [ -n "$motions" ]; then echo "has-range=true"; else echo "has-range=false"; fi
+            echo "motion-args=$(jq -r '[.motions[] | "--motion " + .] | join(" ")' <<< "$range")"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: pnpm/action-setup@v6
+        if: steps.range.outputs.has-range == 'true'
+
+      - uses: actions/setup-node@v7
+        if: steps.range.outputs.has-range == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - if: steps.range.outputs.has-range == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        if: steps.range.outputs.has-range == 'true'
+        run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
+
+      # 디자인 시스템 Storybook을 정적으로 빌드하고 범위 안 견본의 모션 스토리를 검사한다
+      - name: Motion check
+        if: steps.range.outputs.has-range == 'true'
+        env:
+          MOTION_ARGS: ${{ steps.range.outputs.motion-args }}
+        run: |
+          # shellcheck disable=SC2086 # 견본 이름(motion-[a-z0-9-])마다 --motion 인자로 나눈다
+          node tools/figma-parity/src/run-motion-check.ts $MOTION_ARGS

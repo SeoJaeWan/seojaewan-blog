@@ -2,17 +2,21 @@ import type {
   ComponentSummary,
   ExportOutcome,
   MainMessage,
+  MotionSummary,
   PullRequestCommit,
   UiMessage,
 } from '../messages';
 
-// 플러그인 UI. 토큰 입력, 컴포넌트·조립 선택, 진행 로그와 PR 링크를 보여 준다.
+// 플러그인 UI. GitHub 토큰 입력, 내보낼 대상(토큰·컴포넌트·조립·애니메이션) 선택, 진행 로그와 PR 링크를 보여 준다.
 
 const tokenInput = element('token', HTMLInputElement);
+const tokensCheckbox = element('tokens', HTMLInputElement);
 const selectAll = element('select-all', HTMLInputElement);
 const componentList = element('components', HTMLDivElement);
 const selectAllPatterns = element('select-all-patterns', HTMLInputElement);
 const patternList = element('patterns', HTMLDivElement);
+const selectAllMotions = element('select-all-motions', HTMLInputElement);
+const motionList = element('motions', HTMLDivElement);
 const exportButton = element('export', HTMLButtonElement);
 const result = element('result', HTMLParagraphElement);
 const noticesBox = element('notices', HTMLDivElement);
@@ -21,6 +25,8 @@ const logArea = element('log', HTMLDivElement);
 window.addEventListener('message', handleWindowMessage);
 selectAll.addEventListener('change', handleSelectAllChange);
 selectAllPatterns.addEventListener('change', handleSelectAllPatternsChange);
+selectAllMotions.addEventListener('change', handleSelectAllMotionsChange);
+tokensCheckbox.addEventListener('change', handleItemChange);
 exportButton.addEventListener('click', handleExportClick);
 
 /**
@@ -41,6 +47,7 @@ function handleSelectAllChange(): void {
   for (const checkbox of checkboxes(componentList)) {
     checkbox.checked = selectAll.checked;
   }
+  updateExportButton();
 }
 
 /**
@@ -50,6 +57,17 @@ function handleSelectAllPatternsChange(): void {
   for (const checkbox of checkboxes(patternList)) {
     checkbox.checked = selectAllPatterns.checked;
   }
+  updateExportButton();
+}
+
+/**
+ * 애니메이션 "모두 선택"에 맞춰 견본 체크박스를 모두 켜거나 끈다.
+ */
+function handleSelectAllMotionsChange(): void {
+  for (const checkbox of checkboxes(motionList)) {
+    checkbox.checked = selectAllMotions.checked;
+  }
+  updateExportButton();
 }
 
 /**
@@ -62,7 +80,8 @@ function handleMainMessage(message: MainMessage): void {
       tokenInput.value = message.token;
       renderList(componentList, message.components);
       renderList(patternList, message.patterns);
-      exportButton.disabled = false;
+      renderMotions(message.motions, message.motionUnavailable);
+      updateExportButton();
       break;
     case 'log':
       appendLog(message.text);
@@ -71,11 +90,11 @@ function handleMainMessage(message: MainMessage): void {
       showNotices(message.notices);
       break;
     case 'done':
-      exportButton.disabled = false;
+      updateExportButton();
       showResult(message.result);
       break;
     case 'failed':
-      exportButton.disabled = false;
+      updateExportButton();
       appendLog(`실패: ${message.message}`);
       break;
   }
@@ -180,7 +199,8 @@ function showViolations(
 }
 
 /**
- * 고른 컴포넌트와 조립으로 내보내기를 요청한다. 토큰은 고르지 않아도 늘 읽어 main과 비교한다.
+ * 고른 대상으로 내보내기를 요청한다. 토큰은 고르지 않아도 다른 대상을 내보낼 때 늘 읽어 main과 비교한다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  */
 function handleExportClick(): void {
   exportButton.disabled = true;
@@ -189,8 +209,10 @@ function handleExportClick(): void {
   const message: UiMessage = {
     type: 'export',
     token: tokenInput.value,
+    tokens: tokensCheckbox.checked,
     componentIds: checkedIds(componentList),
     patternIds: checkedIds(patternList),
+    motionIds: checkedIds(motionList),
   };
   parent.postMessage({ pluginMessage: message }, '*');
 }
@@ -217,6 +239,52 @@ function renderList(list: HTMLDivElement, items: readonly ComponentSummary[]): v
 }
 
 /**
+ * 애니메이션 견본 체크박스 목록을 그린다. 모션 API를 쓸 수 없는 계정이면 안내만 보여 준다.
+ * @param items 견본 목록
+ * @param unavailable 쓸 수 없을 때의 안내, 쓸 수 있으면 null
+ */
+function renderMotions(items: readonly MotionSummary[], unavailable: string | null): void {
+  if (unavailable !== null) {
+    selectAllMotions.disabled = true;
+    motionList.replaceChildren(unavailable);
+    return;
+  }
+  if (items.length === 0) {
+    motionList.replaceChildren('Motion 섹션에 motion-으로 시작하는 견본 프레임이 없다.');
+    return;
+  }
+  motionList.classList.remove('muted');
+  motionList.replaceChildren(...items.map(motionLabel));
+}
+
+/**
+ * 애니메이션 견본 하나의 체크박스와 이름을 만든다.
+ * @param item 견본
+ * @returns 체크박스를 담은 label
+ */
+function motionLabel(item: MotionSummary): HTMLLabelElement {
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.value = item.id;
+  checkbox.addEventListener('change', handleItemChange);
+  const label = document.createElement('label');
+  label.append(checkbox, ` ${item.name}`);
+  return label;
+}
+
+/**
+ * 고른 대상이 하나라도 있을 때만 내보내기 버튼을 켠다.
+ */
+function updateExportButton(): void {
+  exportButton.disabled = ![
+    tokensCheckbox,
+    ...checkboxes(componentList),
+    ...checkboxes(patternList),
+    ...checkboxes(motionList),
+  ].some((checkbox) => checkbox.checked);
+}
+
+/**
  * 컴포넌트나 조립 하나의 체크박스와 이름을 만든다.
  * @param item 컴포넌트나 조립
  * @returns 체크박스를 담은 label
@@ -233,11 +301,15 @@ function itemLabel(item: ComponentSummary): HTMLLabelElement {
 }
 
 /**
- * 항목을 하나라도 끄면 그 목록의 "모두 선택"을 끈다.
+ * 항목을 하나라도 끄면 그 목록의 "모두 선택"을 끄고, 내보내기 버튼 상태를 맞춘다.
  */
 function handleItemChange(): void {
   selectAll.checked = checkboxes(componentList).every((checkbox) => checkbox.checked);
   selectAllPatterns.checked = checkboxes(patternList).every((checkbox) => checkbox.checked);
+  selectAllMotions.checked =
+    checkboxes(motionList).length > 0 &&
+    checkboxes(motionList).every((checkbox) => checkbox.checked);
+  updateExportButton();
 }
 
 /**

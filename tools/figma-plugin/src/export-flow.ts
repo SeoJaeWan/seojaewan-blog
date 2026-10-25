@@ -1,7 +1,9 @@
 import { TokenFormatError } from '../../../packages/design-system/scripts/tokens/tokens-css';
 import type { Violation } from './core/check-structure';
 import { exportTargetCore, exportVariantImages, type TargetExport } from './core/export-component';
+import { exportMotionCore, type MotionFileExport } from './core/export-motion';
 import { exportTokensText, type TokensExport } from './core/export-tokens';
+import { isMotionApiError, readMotionVariables } from './core/read-motion';
 import {
   MANIFEST_FILE,
   manifestFiles,
@@ -39,6 +41,7 @@ import {
   COMPONENTS_DIR,
   FIGMA_DIR,
   FILE_KEY,
+  MOTIONS_DIR,
   PATTERNS_DIR,
   SCALE,
   SETTINGS_PATH,
@@ -49,6 +52,10 @@ import {
   componentBranchName,
   componentCommitSubject,
   componentPullRequestBody,
+  motionBranchName,
+  motionCommitBody,
+  motionCommitSubject,
+  motionPullRequestBody,
   patternBranchName,
   patternPullRequestBody,
   patternsCommitSubject,
@@ -65,12 +72,14 @@ import { parentFolder, planTree } from './tree-changes';
 
 export type ExportRequest = {
   token: string;
-  /** 내보낼 컴포넌트. 조립과 함께 비어 있으면 토큰만 확인한다 */
+  /** 내보낼 컴포넌트. 조립·애니메이션과 함께 비어 있으면 토큰만 내보낸다 */
   componentIds: readonly string[];
   /** 내보낼 조립 */
   patternIds: readonly string[];
+  /** 내보낼 애니메이션 견본 */
+  motionIds: readonly string[];
   log: (text: string) => void;
-  /** 쓰는 곳이 없는 변수·스타일 알림(막지 않음)을 UI에 보여 준다 */
+  /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 같은 값 변수가 여럿인 모션 짝, 건너뛴 애니메이션)을 UI에 보여 준다 */
   notify: (notices: string[]) => void;
 };
 
@@ -105,10 +114,11 @@ type PlacedTarget = {
 type PlacedPattern = PlacedTarget & { area: string };
 
 /**
- * 고른 컴포넌트와 조립을 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에,
- * 조립은 영역마다 고정 브랜치(`feat/figma-patterns-<영역>`)의 PR에 커밋한다.
- * 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
- * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만 바꾼다.
+ * 고른 컴포넌트·조립·애니메이션을 구조 검사한 뒤, 컴포넌트마다 고정 브랜치(`feat/figma-<컴포넌트>`)의 PR에,
+ * 조립은 영역마다 고정 브랜치(`feat/figma-patterns-<영역>`)의 PR에, 애니메이션은 견본마다 고정 브랜치
+ * (`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)의 PR에 커밋한다. 위반이 하나라도 있으면 아무것도 커밋하지 않는다.
+ * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만,
+ * 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 토큰만 고르면 토큰만 내보낸다.
  * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param request 토큰, 고른 컴포넌트와 조립, 진행 로그
@@ -176,15 +186,19 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     });
   }
 
+  const motionNotices: string[] = [];
+  const motions = await exportMotions(request.motionIds, violations, motionNotices, log);
+
   log('토큰 변환 중');
   const tokens = await readTokens(violations);
   if (tokens === null || violations.length > 0) {
+    request.notify(motionNotices);
     return { kind: 'blocked', violations };
   }
   for (const name of tokens.skippedStyles) {
     log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
   }
-  request.notify(tokens.notices);
+  request.notify([...motionNotices, ...tokens.notices]);
 
   log(`${BASE_BRANCH} 브랜치의 기준 자료를 읽는 중`);
   const main = await readRepoState(token, BASE_BRANCH);
@@ -208,6 +222,14 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       commits.push(commit);
     }
   }
+  for (const motion of motions) {
+    const commit = await commitMotion(token, motion, main, log);
+    if (commit === null) {
+      unchanged.push(motion.name);
+    } else {
+      commits.push(commit);
+    }
+  }
   const tokensCommit = await commitTokens(
     token,
     tokens,
@@ -219,6 +241,95 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     commits.push(tokensCommit);
   }
   return { kind: 'done', commits, unchanged };
+}
+
+/**
+ * 고른 애니메이션 견본을 모션 검사하고 json 내용을 만든다. 위반은 목록에 더한다.
+ * 모션 API를 쓸 수 없는 계정이면 애니메이션만 건너뛰고 알림을 남긴다(다른 대상은 그대로 내보낸다).
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[피그마 연동:모션]]
+ * @param ids 견본 프레임 ID
+ * @param violations 위반을 더할 목록
+ * @param notices 알림을 더할 목록
+ * @param log 진행 로그
+ * @returns 검사를 통과한 모션
+ */
+async function exportMotions(
+  ids: readonly string[],
+  violations: Violation[],
+  notices: string[],
+  log: (text: string) => void,
+): Promise<MotionFileExport[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+  log('모션 검사 중');
+  const motions: MotionFileExport[] = [];
+  try {
+    const variables = await readMotionVariables();
+    for (const id of ids) {
+      const outcome = await exportMotionCore(id, variables, FILE_KEY);
+      if (!outcome.ok) {
+        log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
+        violations.push(...outcome.violations);
+        continue;
+      }
+      const { motion } = outcome;
+      if (motions.some((other) => other.name === motion.name)) {
+        throw new Error(`애니메이션 견본 이름 "${motion.name}"가 겹친다.`);
+      }
+      log(`${motion.name}: 트랙 ${String(motion.result.motion.tracks.length)}개 내보냄`);
+      notices.push(...motion.result.notices);
+      motions.push(motion);
+    }
+  } catch (error) {
+    if (!isMotionApiError(error)) {
+      throw error;
+    }
+    log('모션 API를 쓸 수 없어 애니메이션 내보내기를 건너뛴다.');
+    notices.push('이 계정은 피그마 모션 API를 쓸 수 없어 애니메이션을 내보내지 않았다.');
+    return [];
+  }
+  return motions;
+}
+
+/**
+ * 애니메이션 견본 하나를 그 견본의 PR(`feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`)에 커밋한다. `figma/motions/<이름>.json`만 바꾼다.
+ * 브랜치와 내용이 같으면 커밋하지 않는다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param token GitHub 토큰
+ * @param motion 내보낸 모션
+ * @param main main 상태
+ * @param log 진행 로그
+ * @returns 커밋 결과, 바뀐 것이 없으면 null
+ */
+async function commitMotion(
+  token: string,
+  motion: MotionFileExport,
+  main: RepoState,
+  log: (text: string) => void,
+): Promise<PullRequestCommit | null> {
+  const branch = motionBranchName(motion.name);
+  const target = await readTarget(token, branch, main);
+  log(
+    `${motion.name}: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`,
+  );
+  const desired = new Map([
+    [`${MOTIONS_DIR}/${motion.name}.json`, await textBlob(token, motion.text)],
+  ]);
+  const plan = planTree(desired, target.state.files, []);
+  if (plan.entries.length === 0) {
+    log(`${motion.name}: 바뀐 것이 없어 커밋하지 않는다.`);
+    return null;
+  }
+  const subject = motionCommitSubject(motion.name);
+  return commitToPullRequest(token, target, plan.entries, {
+    target: motion.name,
+    subject,
+    message: `${subject}\n\n${motionCommitBody(motion.result.motion)}`,
+    body: motionPullRequestBody(motion.result.motion),
+    log,
+  });
 }
 
 /**
