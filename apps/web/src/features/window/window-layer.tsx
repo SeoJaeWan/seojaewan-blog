@@ -1,10 +1,12 @@
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { useState } from 'react';
 
 import { useDevice } from '@/shared/viewport/use-device';
+import { useWorkArea } from '@/shared/viewport/use-work-area';
 
-import type { OpenWindow, WindowState } from './window-rules';
-import { getFrontWindowId } from './window-rules';
+import type { OpenWindow, SnapZone, WindowState } from './window-rules';
+import { getFrontWindowId, getRemainingSnapZones } from './window-rules';
+import { WindowSnapAssist } from './window-snap-assist';
 import { useWindowStore } from './window-store';
 import type { RenderWindow } from './window-view';
 import { WindowView } from './window-view';
@@ -14,6 +16,16 @@ type WindowLayerProps = {
   renderWindow: RenderWindow;
   /** 창 제목을 정한다. 창 영역의 접근성 이름이 된다 */
   getWindowTitle: (window: OpenWindow) => string;
+  /** 창 앱 아이콘(16px)을 그린다. Snap Assist 카드에 쓴다 */
+  renderWindowIcon: (window: OpenWindow) => ReactNode;
+};
+
+/** 스냅한 뒤 남은 칸을 다른 창으로 채우는 제안(Snap Assist)의 진행 */
+type SnapAssistProgress = {
+  /** 아직 채우지 않은 칸. 앞에서부터 하나씩 제안한다 */
+  zones: readonly SnapZone[];
+  /** 이번 레이아웃에 이미 놓은 창. 제안에서 뺀다 */
+  placedIds: readonly string[];
 };
 
 /** 저장소에서 지웠지만 닫히는 애니메이션 동안 화면에 남긴 창 */
@@ -31,17 +43,24 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 닫히는 애니메이션이 끝날 때까지만 화면에 남긴다. 그래서 저장소에서는 바로 지워져 "맨 앞 창을 닫으면 최근 창이 앞으로"가
  * 바로 적용된다. 최소화된 채 닫힌 창은 이미 보이지 않으므로 남기지 않는다.
  * DOM 순서는 연 차례로 고정하고 쌓는 차례는 z-index로 준다. 창을 앞으로 가져올 때 요소를 옮기면 모션 클래스가 다시 재생되기 때문이다.
+ * 스냅 레이아웃으로 창 하나를 스냅하면 남은 칸에 다른 창을 제안한다(Snap Assist). 남은 칸이 여럿이면 칸 번호 순서로 하나씩 제안하고,
+ * 제안할 다른 창이 없으면(열린 창이 하나뿐이면) 보여 주지 않는다.
  * 층 자체는 빈 곳의 클릭을 아래(바탕화면 아이콘)로 넘기고, 창만 클릭을 받는다. 층은 쌓임 맥락을 따로 만들어(`isolate`)
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
  * @codocs [[디자인 기반:모션 클래스]]
  * @codocs [[창 동작:창 조작]]
+ * @codocs [[창 동작:스냅]]
  * @param props
  */
 export function WindowLayer(props: WindowLayerProps): JSX.Element {
-  const { renderWindow, getWindowTitle } = props;
+  const { renderWindow, getWindowTitle, renderWindowIcon } = props;
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
+  const snap = useWindowStore((state) => state.snap);
+  const close = useWindowStore((state) => state.close);
   const device = useDevice();
+  const workArea = useWorkArea();
+  const [snapAssist, setSnapAssist] = useState<SnapAssistProgress | null>(null);
   const [leaving, setLeaving] = useState<readonly LeavingWindow[]>([]);
   const [previous, setPrevious] = useState<WindowSnapshot>({ windows, order });
 
@@ -68,6 +87,50 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
     setLeaving((items) => items.filter((item) => item.window.id !== id));
   }
 
+  /**
+   * 스냅 레이아웃으로 창을 스냅하면 그 레이아웃의 남은 칸에 Snap Assist를 띄운다.
+   * @param id 스냅한 창
+   * @param zone 채운 칸
+   */
+  function handleSnap(id: string, zone: SnapZone): void {
+    setSnapAssist({ zones: getRemainingSnapZones(zone), placedIds: [id] });
+  }
+
+  // 남은 칸과 제안할 창(이번에 놓지 않은 창, 최근에 맨 앞이었던 차례)이 있을 때만 Snap Assist를 보인다.
+  const assistZone = device === 'desktop' ? snapAssist?.zones[0] : undefined;
+  const assistWindows =
+    snapAssist === null
+      ? []
+      : [...order]
+          .reverse()
+          .filter((id) => !snapAssist.placedIds.includes(id))
+          .flatMap((id) => windows[id] ?? []);
+
+  /**
+   * Snap Assist에서 창을 고르면 그 창이 남은 칸을 채우고, 다음 남은 칸으로 넘어간다.
+   * @param id 고른 창
+   */
+  function handleAssistSelect(id: string): void {
+    if (snapAssist === null || assistZone === undefined) {
+      return;
+    }
+    snap(id, assistZone);
+    setSnapAssist({ zones: snapAssist.zones.slice(1), placedIds: [...snapAssist.placedIds, id] });
+  }
+
+  /**
+   * Snap Assist 카드의 닫기 버튼을 누르면 그 창을 닫는다.
+   * @param id 창 id
+   */
+  function handleAssistClose(id: string): void {
+    close(id);
+  }
+
+  /** Esc나 빈 곳을 누르면 Snap Assist를 닫는다. */
+  function handleAssistDismiss(): void {
+    setSnapAssist(null);
+  }
+
   return (
     <div data-layer="windows" className="pointer-events-none absolute inset-0 isolate">
       {entries.map(
@@ -85,10 +148,26 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
             active={!entry.isClosing && entry.window.id === frontId}
             zIndex={stack.indexOf(entry.window.id) + 1}
             device={device}
+            workArea={workArea}
             renderWindow={renderWindow}
             onExitComplete={handleExitComplete}
+            onSnap={handleSnap}
           />
         ),
+      )}
+      {assistZone !== undefined && workArea !== null && assistWindows.length > 0 && (
+        <WindowSnapAssist
+          zone={assistZone}
+          windows={assistWindows}
+          workArea={workArea}
+          zIndex={stack.length + 1}
+          renderWindow={renderWindow}
+          getWindowTitle={getWindowTitle}
+          renderWindowIcon={renderWindowIcon}
+          onSelect={handleAssistSelect}
+          onCloseWindow={handleAssistClose}
+          onDismiss={handleAssistDismiss}
+        />
       )}
     </div>
   );

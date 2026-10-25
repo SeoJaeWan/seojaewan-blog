@@ -20,6 +20,14 @@ const zoneLabels = {
   quad: ['왼쪽 위 4분의 1', '왼쪽 아래 4분의 1', '오른쪽 위 4분의 1', '오른쪽 아래 4분의 1'],
 } as const satisfies Record<SnapLayoutOptionLayout, readonly string[]>;
 
+// 레이아웃마다 붙이는 접근성 이름이다. 같은 이름의 칸(예: "왼쪽 절반")이 여러 레이아웃에 있어 칸을 묶음 이름으로 구별한다.
+const layoutLabels = {
+  half: '반반',
+  twothirds: '3분의 2와 3분의 1',
+  halfquarter: '절반과 4분의 1 두 칸',
+  quad: '4분할',
+} as const satisfies Record<SnapLayoutOptionLayout, string>;
+
 // SnapZone은 고정 크기를 가지므로, 열 안에서 남는 자리를 채우도록 크기를 덮어쓴다.
 const ZONE_CLASS = 'h-auto min-h-0 w-full flex-1';
 
@@ -50,7 +58,12 @@ export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
   }
   const rightStart = isLeftSplit ? 2 : 1;
   return (
-    <div {...divProps} className={cn('flex h-56 w-88 gap-4 overflow-clip', className)}>
+    <div
+      role="group"
+      aria-label={layoutLabels[layout]}
+      {...divProps}
+      className={cn('flex h-56 w-88 gap-4 overflow-clip', className)}
+    >
       <div
         className={cn(
           'flex h-full min-w-0 flex-col gap-4 overflow-clip',

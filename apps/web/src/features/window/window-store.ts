@@ -1,14 +1,30 @@
 import { create } from 'zustand';
 
-import type { WindowApp, WindowState, WindowWorkArea } from './window-rules';
+import type { SnapZone, WindowApp, WindowState, WindowWorkArea } from './window-rules';
 import {
   closeWindow,
   focusWindow,
   INITIAL_WINDOW_STATE,
+  maximizeWindow,
   minimizeWindow,
   openWindow,
+  restoreFromMaximize,
   restoreWindow,
+  snapWindow,
+  toggleMaximizeWindow,
 } from './window-rules';
+
+/**
+ * 창을 끌거나 크기를 조절하는 중인지. 그동안에는 최대화·스냅 모션을 끈다([[디자인 기반:모션 클래스]]).
+ * 끌기와 크기 조절은 아직 없어 늘 null이다. 그 기능을 붙일 때 이 값을 바꾼다.
+ */
+export type WindowInteraction = 'drag' | 'resize' | null;
+
+/** 저장소에만 있는 화면 상태 */
+type WindowUiState = {
+  /** 끌기·크기 조절 중인지 */
+  interaction: WindowInteraction;
+};
 
 /** 창 저장소의 조작 */
 type WindowActions = {
@@ -22,6 +38,14 @@ type WindowActions = {
   minimize: (id: string) => void;
   /** 창을 복원하고 맨 앞으로 가져온다 */
   restore: (id: string) => void;
+  /** 창을 최대화한다 */
+  maximize: (id: string) => void;
+  /** 최대화한 창을 바로 앞 모습으로 복원한다 */
+  restoreFromMaximize: (id: string) => void;
+  /** 최대화했으면 복원하고, 아니면 최대화한다(제목 표시줄 더블클릭) */
+  toggleMaximize: (id: string) => void;
+  /** 창을 스냅 칸에 맞추고 맨 앞으로 가져온다 */
+  snap: (id: string, zone: SnapZone) => void;
   /** 창을 모두 닫은 처음 상태로 돌린다(다시 시작) */
   reset: () => void;
 };
@@ -32,7 +56,7 @@ type WindowActions = {
  * @codocs [[기술 스택:상태 관리]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
  */
-export const useWindowStore = create<WindowState & WindowActions>()(
+export const useWindowStore = create<WindowState & WindowUiState & WindowActions>()(
   /**
    * 처음 상태와 조작을 만든다.
    * @param set 상태를 바꾸는 함수
@@ -41,6 +65,7 @@ export const useWindowStore = create<WindowState & WindowActions>()(
    */
   (set, get) => ({
     ...INITIAL_WINDOW_STATE,
+    interaction: null,
     open: (app, workArea) => {
       const result = openWindow(get(), app, workArea);
       set(result.state);
@@ -58,8 +83,20 @@ export const useWindowStore = create<WindowState & WindowActions>()(
     restore: (id) => {
       set((state) => restoreWindow(state, id));
     },
+    maximize: (id) => {
+      set((state) => maximizeWindow(state, id));
+    },
+    restoreFromMaximize: (id) => {
+      set((state) => restoreFromMaximize(state, id));
+    },
+    toggleMaximize: (id) => {
+      set((state) => toggleMaximizeWindow(state, id));
+    },
+    snap: (id, zone) => {
+      set((state) => snapWindow(state, id, zone));
+    },
     reset: () => {
-      set(INITIAL_WINDOW_STATE);
+      set({ ...INITIAL_WINDOW_STATE, interaction: null });
     },
   }),
 );
