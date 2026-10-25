@@ -1,0 +1,16 @@
+{
+  "name": "Menu/StartTile",
+  "nodeId": "518:6534",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6534",
+      "properties": {}
+    }
+  }
+}

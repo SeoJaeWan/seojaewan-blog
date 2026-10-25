@@ -1,0 +1,16 @@
+{
+  "name": "Menu/ChromeMoreMobile",
+  "nodeId": "518:6610",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 175,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6610",
+      "properties": {}
+    }
+  }
+}

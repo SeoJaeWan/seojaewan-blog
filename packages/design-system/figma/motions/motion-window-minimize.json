@@ -1,0 +1,121 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 333,
+    "token": "motion/duration/slow"
+  },
+  "iterations": null,
+  "name": "motion-window-minimize",
+  "nodeId": "758:73",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 1,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": 0,
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "OPACITY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": 0.12,
+            "y": 0.12
+          },
+          "valueToken": "motion/scale/window-minimize"
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": -380,
+            "y": 294
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=758-73"
+}

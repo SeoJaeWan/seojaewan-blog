@@ -1,0 +1,42 @@
+{
+  "name": "Menu/ExplorerEmpty",
+  "nodeId": "578:5326",
+  "variants": {
+    "submenu=none": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6437",
+      "properties": {
+        "Submenu": "None"
+      }
+    },
+    "submenu=sort": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "578:5184",
+      "properties": {
+        "Submenu": "Sort"
+      }
+    },
+    "submenu=view": {
+      "node": {
+        "height": 143,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "578:5070",
+      "properties": {
+        "Submenu": "View"
+      }
+    }
+  }
+}

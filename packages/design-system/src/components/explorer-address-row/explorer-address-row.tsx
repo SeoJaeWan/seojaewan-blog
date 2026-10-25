@@ -95,7 +95,7 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
         <IconButton
           variant="subtle"
           label="검색"
-          icon="icons/ic_fluent_search_16_regular.svg"
+          icon="icons/ic_fluent_search_20_regular.svg"
           onClick={handleSearch}
         />
       )}

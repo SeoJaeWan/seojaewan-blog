@@ -1,0 +1,16 @@
+{
+  "name": "Menu/Power",
+  "nodeId": "518:6141",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 38,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "518:6141",
+      "properties": {}
+    }
+  }
+}
