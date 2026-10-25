@@ -38,6 +38,14 @@ describe('스토리 규칙', () => {
     });
   });
 
+  // @codocs [[컴포넌트 목록:상태]]
+  it('Active는 누르는 중이 아니라 활성 창·지금 고른 탭이라 args로만 재현한다', () => {
+    expect(storyTarget([['State', 'Active']])).toEqual({
+      args: { state: 'active' },
+      interaction: 'none',
+    });
+  });
+
   it('컴포넌트는 그 컴포넌트 스토리 파일의 Parity 스토리와 짝짓는다', () => {
     expect(
       findStoryId(storybookIndexFixture, { id: 'button', kind: 'component', name: 'Button' }),

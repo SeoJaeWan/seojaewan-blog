@@ -1,0 +1,30 @@
+{
+  "name": "RenameField",
+  "nodeId": "692:8253",
+  "variants": {
+    "state=rest": {
+      "node": {
+        "height": 22,
+        "width": 31,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "692:8250",
+      "properties": {
+        "State": "Rest"
+      }
+    },
+    "state=selected": {
+      "node": {
+        "height": 22,
+        "width": 31,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "29:276",
+      "properties": {
+        "State": "Selected"
+      }
+    }
+  }
+}
