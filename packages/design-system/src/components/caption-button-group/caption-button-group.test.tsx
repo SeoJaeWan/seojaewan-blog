@@ -57,4 +57,12 @@ describe('CaptionButtonGroup', () => {
 
     expect(handleRestore).toHaveBeenCalledTimes(1);
   });
+
+  it('showMaximize가 false면 최대화·복원 버튼을 그리지 않는다', () => {
+    render(<CaptionButtonGroup placement="maximized" showMaximize={false} />);
+    expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual([
+      '최소화',
+      '닫기',
+    ]);
+  });
 });

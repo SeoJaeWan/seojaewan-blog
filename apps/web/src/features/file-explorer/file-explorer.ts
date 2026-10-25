@@ -3,3 +3,5 @@ export type { ExplorerCommandsDevice, ExplorerCommandsLocation } from './explore
 export { ExplorerCommands } from './explorer-commands';
 export type { ExplorerContentDevice } from './explorer-content';
 export { ExplorerContent } from './explorer-content';
+export type { ExplorerWindowDevice, ExplorerWindowTab } from './explorer-window';
+export { ExplorerWindow } from './explorer-window';

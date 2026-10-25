@@ -25,6 +25,7 @@ describe('ImageAsset', () => {
       'images/avatar-profile.png',
       'images/file-document.png',
       'images/file-folder.png',
+      'images/file-recycle-bin-full.png',
     ];
     expect(names).toEqual(known);
   });

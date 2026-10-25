@@ -80,4 +80,9 @@ describe('WindowFrame', () => {
     const { container } = render(<WindowFrame appIcon={null} className="h-500 w-800" />);
     expect(container.firstChild).toHaveClass('h-500', 'w-800', 'flex');
   });
+
+  it('showMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다', () => {
+    render(<WindowFrame appIcon={null} showMaximize={false} />);
+    expect(screen.queryByRole('button', { name: '최대화' })).not.toBeInTheDocument();
+  });
 });

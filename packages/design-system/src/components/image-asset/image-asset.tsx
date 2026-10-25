@@ -17,6 +17,10 @@ const IMAGE_ASSET_URLS = {
   'images/file-document.png': new URL('../../assets/images/file-document.png', import.meta.url)
     .href,
   'images/file-folder.png': new URL('../../assets/images/file-folder.png', import.meta.url).href,
+  'images/file-recycle-bin-full.png': new URL(
+    '../../assets/images/file-recycle-bin-full.png',
+    import.meta.url,
+  ).href,
 } as const;
 
 /** 래스터 자산 이름(figma/assets/ 기준, 예: `images/file-folder.png`) */
