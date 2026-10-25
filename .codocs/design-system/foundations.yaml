@@ -192,6 +192,7 @@ _codocs:
   | 재부팅 화면 사라짐 | `motion-boot-screen-exit` | normal | fade | 페이드 아웃하며 처음 상태의 바탕화면이 보인다 | 없음 |
   | ProgressRing 회전 | `motion-progress-ring` | progress-ring | 견본의 키프레임(구간마다 `motion/easing/*`) | 호가 돌며 길이가 늘고 준다(회전 + 경로 트림). 계속 반복한다([[디자인 기반:모션 견본]]) | 없음 |
   | hover·pressed | `motion-control-state` | faster | fade | 상태 색만 바꾼다 | 없음 |
+  | 검색 상자 포커스(pill·taskbar 모양) | `motion-search-box-focus-state` | fast | direct-entrance | Rest → Focused 상태 색과 테두리를 바꾼다 | 없음 |
   | 검색 돋보기 | `motion-search-icon-state` | 들어갈 때 faster, 나올 때 즉시 | fade | 회색·컬러 돋보기를 겹쳐 투명도만 바꾼다([[검색:입력칸]]) | 없음 |
 
   글자 목록의 시작 배율(약 1.1~1.2)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).

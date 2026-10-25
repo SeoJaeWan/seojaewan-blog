@@ -288,8 +288,7 @@ CI: |
   | 배율·투명도·회전 등 | 숫자 | `motion/*` 변수 값과 같으면(예: 0.96 = `motion/scale/window-enter`) 막지 않고, 내보낸 자료와 PR 본문에 짝을 적는다. 구현할 때 짝은 `var()`로 쓴다 |
   | 그 밖의 숫자(링의 트림 0.7, 회전 -720°, 중간 키프레임 위치, 이동 거리) | 숫자 | 구성이라 검사하지 않고 그대로 옮긴다. 이동(`TRANSLATION`)은 실행 중 값이거나 구성이라 검사하지 않는다 |
 
-  - 키프레임 이징은 변수 연결(`VariableAlias`)을 지원하고, `EASING` 타입 변수에 곡선(`{ type: 'CUSTOM_CUBIC_BEZIER', easingFunctionCubicBezier: {...} }`)을 넣으면 피그마가 그 곡선으로 재생한다. 문자열 변수는 연결은 되지만 피그마가 해석하지 못해 직선으로 재생하므로 쓰지 않는다. 이미 있는 문자열 변수는 타입을 바꿀 수 없어 `motion/easing/*` 넷을 `EASING` 타입으로 새로 만든다.
-  - `EASING` 타입은 플러그인 API 타입 문서에 없는 기능이다([[한계:문서화되지 않은 EASING 타입]]).
+  - 키프레임 이징은 변수 연결(`VariableAlias`)을 지원하고, 피그마 변수 타입 `EASING`(플러그인 API 타입 `VariableResolvedDataType`) 변수에 곡선(`{ type: 'CUSTOM_CUBIC_BEZIER', easingFunctionCubicBezier: {...} }`)을 넣으면 피그마가 그 곡선으로 재생한다. 문자열 변수는 연결은 되지만 피그마가 해석하지 못해 직선으로 재생하므로 쓰지 않는다. 이미 있는 문자열 변수는 타입을 바꿀 수 없어 `motion/easing/*` 넷을 `EASING` 타입으로 새로 만든다.
 
   내보내는 자료는 `figma/motions/<이름>.json`(이름은 견본 이름)이다.
   - 키프레임이 걸린 노드: 견본 안 인스턴스면 컴포넌트 이름, 자산 원본이면 자산 이름
