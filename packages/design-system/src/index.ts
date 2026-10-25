@@ -1,6 +1,7 @@
 // @seojaewan/design-system 공개 진입점이다.
 export * from './components/address-bar/address-bar';
 export * from './components/asset/asset';
+export * from './components/best-match-card/best-match-card';
 export * from './components/boot-screen/boot-screen';
 export * from './components/breadcrumb/breadcrumb';
 export * from './components/breadcrumb-item/breadcrumb-item';
