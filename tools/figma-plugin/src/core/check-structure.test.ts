@@ -429,6 +429,24 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
     ).toEqual([]);
   });
 
+  it('변형을 바꿔 끼운 인스턴스가 새 원본과 같은 변수면 막지 않고, 다른 변수로 덮어쓰면 막는다', () => {
+    function outer(changedBindings: string[]): NodeData {
+      return instance(
+        'zone',
+        'SnapZone',
+        [
+          { id: 'zone/swapped', fields: ['mainComponent'] },
+          { id: 'zone/swapped/rect', fields: ['boundVariables'], changedBindings },
+        ],
+        [node({ path: 'zone/swapped/rect', type: 'RECTANGLE' })],
+      );
+    }
+    expect(checkWith(outer([]))).toEqual([]);
+    expect(checkWith(outer(['fills', 'strokes'])).map((violation) => violation.reason)).toEqual([
+      '인스턴스의 칠 변수·선 변수를 직접 바꿨다(boundVariables.fills, boundVariables.strokes)',
+    ]);
+  });
+
   it('원본이 속성으로 연 것과 크기·배치 덮어쓰기는 막지 않는다', () => {
     expect(
       checkWith(
