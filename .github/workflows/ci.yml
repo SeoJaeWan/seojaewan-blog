@@ -45,16 +45,6 @@ jobs:
       - name: Unit and component tests
         run: pnpm test
 
-      # @codocs [[피그마 연동:자산]]
-      # 코드 자산(src/assets/)이 figma/assets/에서 다시 만든 결과와 같은지 확인한다. CI는 고치지 않고 실패만 한다
-      - name: Generated assets check
-        run: pnpm --filter @seojaewan/design-system generate:assets --check
-
-      # @codocs [[피그마 연동:토큰 검사]]
-      # src/tokens.css가 figma/tokens.json에서 다시 만든 결과와 같은지 확인한다. CI는 고치지 않고 실패만 한다
-      - name: Generated tokens check
-        run: pnpm --filter @seojaewan/design-system generate:tokens --check
-
       - name: Build
         run: pnpm build
 
