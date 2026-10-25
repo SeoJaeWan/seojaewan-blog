@@ -373,6 +373,58 @@
 }
 
 /*
+ * Start 글자 목록 닫기(견본 motion-start-jump-list-exit). 열기의 반대로, 글자 격자가 배율 1 → 1.15로 커지며 페이드 아웃하고,
+ * 같은 시간 동안 고른 글자로 이동한 앱 목록(견본의 list 레이어)이 페이드 인한다. 클래스 하나로 두고 data 약속은 열기와 같다
+ * (클래스는 격자와 목록을 감싼 요소, 격자에 data-jump-list="grid", 목록에 data-jump-list="list").
+ * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.15는 토큰이 아닌 견본 숫자다.
+ * 사라진 격자가 끝 모습(투명)으로 남도록 fill-mode는 both다.
+ */
+@keyframes motion-start-jump-list-exit-grid-scale {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: 1.15;
+  }
+}
+
+@keyframes motion-start-jump-list-exit-grid-fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes motion-start-jump-list-exit-list-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-start-jump-list-exit {
+  & [data-jump-list='grid'] {
+    animation:
+      motion-start-jump-list-exit-grid-scale var(--motion-duration-fast)
+        var(--motion-easing-direct-entrance) both,
+      motion-start-jump-list-exit-grid-fade var(--motion-duration-fast) var(--motion-easing-fade)
+        both;
+  }
+
+  & [data-jump-list='list'] {
+    animation: motion-start-jump-list-exit-list-fade var(--motion-duration-fast)
+      var(--motion-easing-fade) both;
+  }
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -389,7 +441,8 @@
   .motion-flyout-enter,
   .motion-boot-screen-enter,
   .motion-boot-screen-exit,
-  .motion-start-jump-list-enter [data-jump-list] {
+  .motion-start-jump-list-enter [data-jump-list],
+  .motion-start-jump-list-exit [data-jump-list] {
     animation: none;
   }
 }
