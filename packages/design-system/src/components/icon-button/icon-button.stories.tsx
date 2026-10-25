@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconButton } from './icon-button';
 
 // 피그마 IconButton의 변형 속성 값이다(정규화한 이름).
-const STYLES = ['standard', 'subtle'] as const;
+const STYLES = ['standard', 'subtle', 'chrome'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focused'] as const;
 
 type ParityArgs = {
