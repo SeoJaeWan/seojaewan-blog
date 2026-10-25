@@ -29,6 +29,8 @@ export type Corners<T> = { topLeft: T; topRight: T; bottomRight: T; bottomLeft: 
 
 export type TextSegmentData = {
   characters: string;
+  /** 구간 글꼴 패밀리(`fontName.family`). 읽지 못했으면 undefined */
+  fontFamily?: string;
   /** 글자 스타일 이름. 없으면 undefined */
   textStyle?: string;
   /** 글자 스타일을 덮어쓴 항목 */
