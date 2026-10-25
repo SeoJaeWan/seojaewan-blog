@@ -1,0 +1,30 @@
+{
+  "name": "Start/ViewMenu",
+  "nodeId": "558:2444",
+  "variants": {
+    "state=closed": {
+      "node": {
+        "height": 32,
+        "width": 116,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "558:2402",
+      "properties": {
+        "State": "Closed"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 32,
+        "width": 116,
+        "x": 4,
+        "y": 0
+      },
+      "nodeId": "558:2411",
+      "properties": {
+        "State": "Open"
+      }
+    }
+  }
+}
