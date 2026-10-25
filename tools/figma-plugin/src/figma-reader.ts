@@ -1,6 +1,6 @@
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
-import type { CheckContext, SizeVariable } from './core/check-structure';
-import { defaultFloatValue } from './core/read-motion';
+import type { CheckContext } from './core/check-structure';
+import { isMotionApiError } from './core/read-motion';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -17,11 +17,6 @@ import { COMPONENTS_PAGE_ID, PATTERNS_PAGE_ID } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
-
-/** 크기 변수가 있는 컬렉션 이름 */
-const SIZE_COLLECTION = 'Dimension';
-/** 크기 변수 이름 앞부분 */
-const SIZE_PREFIX = 'size/';
 
 /**
  * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 문서 순서대로 찾는다.
@@ -228,6 +223,7 @@ export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
       collectAliasIds(value, usage.variableIds);
     }
   }
+  collectKeyframeVariableIds(node, usage.variableIds);
   for (const key of ['fillStyleId', 'strokeStyleId', 'effectStyleId', 'textStyleId'] as const) {
     const id: unknown = key in node ? Reflect.get(node, key) : undefined;
     if (typeof id === 'string' && id !== '') {
@@ -250,6 +246,26 @@ export function collectNodeUsage(node: SceneNode, usage: NodeUsage): void {
     }
     collectAliasIds(segment.fills, usage.variableIds);
     collectAliasIds(segment.boundVariables, usage.variableIds);
+  }
+}
+
+/**
+ * 노드의 키프레임 트랙(`manualKeyframeTracks`)에서 키프레임 이징이 연결한 변수(EASING 변수 별칭)를 모은다.
+ * 효과·칠 등 다른 트랙 안의 같은 모양도 함께 센다. 모션 API를 쓸 수 없는 계정이면 건너뛴다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @param ids 모을 곳
+ */
+function collectKeyframeVariableIds(node: SceneNode, ids: Set<string>): void {
+  if (!('manualKeyframeTracks' in node)) {
+    return;
+  }
+  try {
+    collectAliasIds(node.manualKeyframeTracks, ids);
+  } catch (error) {
+    if (!isMotionApiError(error)) {
+      throw error;
+    }
   }
 }
 
@@ -342,41 +358,14 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
 }
 
 /**
- * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시, Dimension 컬렉션의 크기 변수 값)를 읽는다.
+ * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시)를 읽는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @returns 검사 정보
  */
 export async function readCheckContext(): Promise<CheckContext> {
   return {
     imageHashes: new Set((await readImageAssets()).keys()),
-    sizeVariables: await readSizeVariables(),
   };
-}
-
-/**
- * Dimension 컬렉션의 크기 변수(`size/*`)와 기본 모드 값(별칭을 푼 값)을 읽는다.
- * @codocs [[피그마 연동:구조 검사]]
- * @returns 크기 변수
- */
-async function readSizeVariables(): Promise<SizeVariable[]> {
-  const collections = new Map(
-    (await figma.variables.getLocalVariableCollectionsAsync()).map((collection) => [
-      collection.id,
-      collection,
-    ]),
-  );
-  const sizes: SizeVariable[] = [];
-  for (const variable of await figma.variables.getLocalVariablesAsync('FLOAT')) {
-    const collection = collections.get(variable.variableCollectionId);
-    if (collection?.name !== SIZE_COLLECTION || !variable.name.startsWith(SIZE_PREFIX)) {
-      continue;
-    }
-    const value = await defaultFloatValue(variable, collections);
-    if (value !== null) {
-      sizes.push({ name: variable.name, value });
-    }
-  }
-  return sizes;
 }
 
 /**

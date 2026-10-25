@@ -6,11 +6,6 @@ import { buttonRoot, node, segment, solid } from './node-data.fixture';
 
 const context = {
   imageHashes: new Set(['wallpaper-hash']),
-  sizeVariables: [
-    { name: 'size/16', value: 16 },
-    { name: 'size/32', value: 32 },
-    { name: 'size/64', value: 64 },
-  ],
 };
 
 /**
@@ -691,18 +686,10 @@ describe('구조 검사: 줄인 인스턴스', () => {
     return arc;
   }
 
-  it('배율 인스턴스의 고정 크기는 변수 연결 대신 크기 변수 값과 같은지 본다', () => {
+  it('배율 인스턴스 자체의 고정 크기는 토큰 값이 아니어도 검사하지 않는다', () => {
     expect(checkWith(scaledArc(16, 0.5))).toEqual([]);
-    expect(checkWith(scaledArc(64.000001, 2))).toEqual([]);
-  });
-
-  it('배율 인스턴스의 고정 크기가 어느 크기 변수 값과도 같지 않으면 가까운 값과 함께 막는다', () => {
-    const violations = checkWith(scaledArc(20, 0.625));
-    expect(violations.map((violation) => violation.reason)).toEqual([
-      '배율 0.625 인스턴스의 고정 너비 20가 Dimension 크기 변수(size/*) 값 가운데 어느 것과도 같지 않다',
-      '배율 0.625 인스턴스의 고정 높이 20가 Dimension 크기 변수(size/*) 값 가운데 어느 것과도 같지 않다',
-    ]);
-    expect(violations[0]?.fix).toContain('size/16 16, size/32 32, size/64 64');
+    expect(checkWith(scaledArc(134.4, 0.131))).toEqual([]);
+    expect(checkWith(scaledArc(172.8, 0.135))).toEqual([]);
   });
 
   it('배율이 1인 노드의 고정 크기는 지금처럼 크기 변수에 연결해야 한다', () => {

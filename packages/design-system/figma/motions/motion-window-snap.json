@@ -1,0 +1,115 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": null,
+  "name": "motion-window-snap",
+  "nodeId": "758:131",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0.6,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "SCALE_X"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0.7,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "SCALE_Y"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 250,
+        "token": "motion/duration/normal"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 120,
+            "y": 60
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 250,
+          "value": {
+            "x": 0,
+            "y": 0
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "WindowFrame",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "WindowFrame",
+      "property": "TRANSLATION_XY"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=758-131"
+}
