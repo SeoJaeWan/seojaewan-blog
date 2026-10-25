@@ -23,15 +23,15 @@ type StartMenuLayerProps = {
   device: Device;
   /** Start에서 앱 항목을 열었을 때 부른다. 창을 여는 일은 쓰는 곳(작업 공간)이 한다 */
   onOpenApp?: (app: StartApp) => void;
+  /** 전원 메뉴의 `다시 시작`을 눌렀을 때 부른다. 메뉴와 Start는 패널 층이 닫고, 다시 시작은 쓰는 곳(작업 공간)이 한다 */
+  onRestart?: () => void;
 };
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';
 
-// 전원 메뉴 항목(피그마 `Menu/Power`). `다시 시작` 동작은 그 기능을 구현할 때 붙인다.
-const powerMenuItems = [
-  { label: '다시 시작', icon: 'icons/ic_fluent_arrow_clockwise_20_regular.svg' },
-] as const satisfies readonly MenuPopupEntry[];
+// 전원 메뉴의 `다시 시작` 아이콘(피그마 `Menu/Power`)이다.
+const RESTART_ICON = 'icons/ic_fluent_arrow_clockwise_20_regular.svg';
 
 // 검색 입력칸의 안내 글자(피그마 Start/Menu, Search/Panel `Device=Mobile`).
 const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
@@ -45,10 +45,11 @@ const EMPTY_SEARCH_ITEMS = [] as const;
  * 문서 끝에 포털되지만 React 트리로는 패널 안이라 바깥으로 보지 않는다. 전원 메뉴가 열려 있을 때 Esc는 메뉴만 닫는다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
+ * @codocs [[작업 공간:다시 시작]]
  * @param props
  */
 export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
-  const { device, onOpenApp } = props;
+  const { device, onOpenApp, onRestart } = props;
   const openPanel = useStartMenuStore((state) => state.openPanel);
   const isPowerMenuOpen = useStartMenuStore((state) => state.isPowerMenuOpen);
   const close = useStartMenuStore((state) => state.close);
@@ -110,6 +111,17 @@ export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
   function handlePowerMenuOpenChange(isMenuOpen: boolean): void {
     setPowerMenuOpen(isMenuOpen);
   }
+
+  /** 전원 메뉴의 `다시 시작`을 고르면 메뉴와 Start를 닫고 다시 시작한다. */
+  function handleRestartClick(): void {
+    close();
+    onRestart?.();
+  }
+
+  // 전원 메뉴 항목(피그마 `Menu/Power`). 절전과 시스템 종료는 두지 않는다([[작업 공간:다시 시작]]).
+  const powerMenuItems: readonly MenuPopupEntry[] = [
+    { label: '다시 시작', icon: RESTART_ICON, onClick: handleRestartClick },
+  ];
 
   /**
    * Start 패널을 그린다.

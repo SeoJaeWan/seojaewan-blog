@@ -19,7 +19,7 @@ type StartPowerButtonProps = {
 /**
  * Start 아래 줄의 전원 버튼과 전원 메뉴(피그마 조립 `Start/PowerButton`)를 그린다.
  * 버튼은 Subtle IconButton, 메뉴는 버튼 위 끝 맞춤(피그마 Popover `Top-End`)으로 연다.
- * 열고 닫기는 Base UI 메뉴가 `onOpenChange`로 알리고 쓰는 곳이 `open`을 바꾼다. `다시 시작` 동작은 기능을 구현할 때 붙인다.
+ * 열고 닫기는 Base UI 메뉴가 `onOpenChange`로 알리고 쓰는 곳이 `open`을 바꾼다. 항목의 동작은 쓰는 곳이 `menuItems`로 준다.
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[Start 메뉴:구성]]
  * @param props
