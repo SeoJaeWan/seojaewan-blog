@@ -16,4 +16,10 @@ describe('ProgressRing', () => {
     expect(root).toHaveClass('size-64', 'text-boot-screen-foreground');
     expect(root?.querySelector('svg')).toHaveClass('size-64');
   });
+
+  // @codocs [[피그마 연동:PR 흐름]]
+  it('늘 도는 호라 호 자산에 링 모션 클래스를 붙인다', () => {
+    const { container } = render(<ProgressRing />);
+    expect(container.querySelector('svg')).toHaveClass('motion-progress-ring');
+  });
 });

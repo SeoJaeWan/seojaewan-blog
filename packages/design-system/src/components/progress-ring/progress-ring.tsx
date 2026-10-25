@@ -46,7 +46,11 @@ export function ProgressRing(props: ProgressRingProps): JSX.Element {
         className,
       )}
     >
-      <Asset name="shapes/progress-ring-arc.svg" className={sizeClassNames[size]} />
+      {/* 늘 붙는 움직임이라 컴포넌트가 모션 클래스를 붙인다(@codocs [[피그마 연동:PR 흐름]]). */}
+      <Asset
+        name="shapes/progress-ring-arc.svg"
+        className={cn(sizeClassNames[size], 'motion-progress-ring')}
+      />
     </div>
   );
 }
