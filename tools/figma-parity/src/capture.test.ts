@@ -3,12 +3,14 @@ import { describe, expect, it } from 'vitest';
 import {
   captureMargin,
   captureRegion,
+  captureViewport,
   commonCanvas,
   figmaNodeLayout,
   outlineExtents,
   parseBoxShadow,
   pngSize,
   shadowExtents,
+  VIEWPORT_SLACK,
 } from './capture.ts';
 
 // @codocs [[피그마 연동:캡처 표]]
@@ -33,6 +35,24 @@ describe('캡처 영역', () => {
       canvas: { width: 148, height: 88 },
       clip: { x: 0, y: 676, width: 134, height: 44 },
       offset: { x: 14, y: 0 },
+    });
+  });
+
+  it('피그마 PNG와 여유분이 기본 화면에 들어가면 화면 크기를 그대로 둔다', () => {
+    expect(captureViewport({ width: 400, height: 120 }, { width: 1280, height: 720 })).toEqual({
+      width: 1280,
+      height: 720,
+    });
+  });
+
+  it('기본 화면에 들어가지 않는 방향만 피그마 PNG 크기에 여유분을 더한 만큼 키운다', () => {
+    expect(captureViewport({ width: 390, height: 844 }, { width: 1280, height: 720 })).toEqual({
+      width: 1280,
+      height: 844 + VIEWPORT_SLACK,
+    });
+    expect(captureViewport({ width: 1280.5, height: 720 }, { width: 1280, height: 720 })).toEqual({
+      width: Math.ceil(1280.5 + VIEWPORT_SLACK),
+      height: 720 + VIEWPORT_SLACK,
     });
   });
 

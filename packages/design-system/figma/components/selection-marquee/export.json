@@ -1,0 +1,16 @@
+{
+  "name": "SelectionMarquee",
+  "nodeId": "90:2738",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 160,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "90:2738",
+      "properties": {}
+    }
+  }
+}
