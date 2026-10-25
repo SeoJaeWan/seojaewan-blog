@@ -14,7 +14,14 @@ type StatusBarProps = ComponentProps<typeof ExplorerStatusBar>;
 
 type ExplorerContentProps = Pick<
   AddressRowProps,
-  'locationIcon' | 'onBack' | 'onForward' | 'onUp' | 'onRefresh' | 'onSearchChange' | 'onSearch'
+  | 'locationIcon'
+  | 'searchPlaceholder'
+  | 'onBack'
+  | 'onForward'
+  | 'onUp'
+  | 'onRefresh'
+  | 'onSearchChange'
+  | 'onSearch'
 > &
   Pick<
     StatusBarProps,
@@ -44,6 +51,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
   const {
     device = 'desktop',
     locationIcon,
+    searchPlaceholder,
     path,
     commands,
     navigation,
@@ -71,6 +79,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
       <ExplorerAddressRow
         device={device}
         locationIcon={locationIcon}
+        searchPlaceholder={searchPlaceholder}
         onBack={handleBack}
         onForward={handleForward}
         onUp={handleUp}

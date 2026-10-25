@@ -8,3 +8,5 @@ export type {
   ChromePageTocItem,
 } from './chrome-page';
 export { ChromePage } from './chrome-page';
+export type { ChromeWindowDevice, ChromeWindowTab } from './chrome-window';
+export { ChromeWindow } from './chrome-window';
