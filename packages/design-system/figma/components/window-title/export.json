@@ -2,7 +2,7 @@
   "name": "WindowTitle",
   "nodeId": "395:15808",
   "variants": {
-    "kind=preview": {
+    "kind=preview,state=active": {
       "node": {
         "height": 16,
         "width": 660,
@@ -11,10 +11,24 @@
       },
       "nodeId": "395:15806",
       "properties": {
-        "Kind": "Preview"
+        "Kind": "Preview",
+        "State": "Active"
       }
     },
-    "kind=window": {
+    "kind=preview,state=inactive": {
+      "node": {
+        "height": 16,
+        "width": 660,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:5236",
+      "properties": {
+        "Kind": "Preview",
+        "State": "Inactive"
+      }
+    },
+    "kind=window,state=active": {
       "node": {
         "height": 32,
         "width": 660,
@@ -23,7 +37,21 @@
       },
       "nodeId": "395:15798",
       "properties": {
-        "Kind": "Window"
+        "Kind": "Window",
+        "State": "Active"
+      }
+    },
+    "kind=window,state=inactive": {
+      "node": {
+        "height": 32,
+        "width": 660,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "704:5233",
+      "properties": {
+        "Kind": "Window",
+        "State": "Inactive"
       }
     }
   }

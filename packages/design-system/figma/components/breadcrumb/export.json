@@ -1,0 +1,30 @@
+{
+  "name": "Breadcrumb",
+  "nodeId": "31:454",
+  "variants": {
+    "state=editing": {
+      "node": {
+        "height": 32,
+        "width": 480,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:451",
+      "properties": {
+        "State": "Editing"
+      }
+    },
+    "state=rest": {
+      "node": {
+        "height": 32,
+        "width": 480,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "31:430",
+      "properties": {
+        "State": "Rest"
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@ type WindowTitleProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   appIcon: ReactNode;
   /** 피그마 Title 속성. 창 제목 글자다 */
   title?: string;
-  /** 창이 활성 상태가 아님. 피그마 WindowFrame `State=Inactive`가 제목 글자 색을 흐리게 덮어쓴 것을 옮긴다 */
+  /** 피그마 State=Inactive. 창이 활성 상태가 아니면 제목 글자를 흐리게 그린다 */
   inactive?: boolean;
 };
 
@@ -40,7 +40,9 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
       {...divProps}
       className={cn('flex items-center overflow-clip', kindClassNames[kind], className)}
     >
-      <span className="inline-flex size-16 shrink-0 items-center justify-center">{appIcon}</span>
+      <span className="inline-flex size-icon-16 shrink-0 items-center justify-center">
+        {appIcon}
+      </span>
       <p
         className={cn(
           'min-w-px flex-1 truncate type-caption',
