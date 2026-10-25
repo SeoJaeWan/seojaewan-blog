@@ -188,8 +188,8 @@ _codocs:
   | Start·검색 열기 | `motion-panel-enter` | normal | direct-entrance | 화면 아래에서 미끄러져 올라온다. 작업 표시줄 플라이아웃은 모두 같은 방향으로 올라오고 내려간다 | 없음 |
   | Start·검색 닫기 | `motion-panel-exit` | fast | gentle-exit | 아래로 내려가며 사라진다 | 없음 |
   | 우클릭 메뉴·메시지 상자 | `motion-flyout-enter` | fast | direct-entrance | 페이드로 나타난다 | 없음 |
-  | Start 글자 목록 열기 | `motion-start-jump-list-enter` | fast | direct-entrance, 투명도는 fade | 글자 격자가 조금 큰 배율에서 1로 줄며 페이드 인한다. 목록은 같은 시간 동안 페이드 아웃한다 | 없음 |
-  | Start 글자 목록 닫기 | `motion-start-jump-list-exit` | fast | direct-entrance, 투명도는 fade | 글자 격자가 1에서 큰 배율로 커지며 페이드 아웃한다. 고른 글자로 이동한 목록은 같은 시간 동안 페이드 인한다 | 없음 |
+  | Start 글자 목록 열기 | `motion-start-jump-list-enter` | fast | direct-entrance, 투명도는 fade | 글자 격자가 배율 1.15에서 1로 줄며 페이드 인한다. 목록은 같은 시간 동안 페이드 아웃한다 | 없음 |
+  | Start 글자 목록 닫기 | `motion-start-jump-list-exit` | fast | direct-entrance, 투명도는 fade | 글자 격자가 1에서 배율 1.15로 커지며 페이드 아웃한다. 고른 글자로 이동한 목록은 같은 시간 동안 페이드 인한다 | 없음 |
   | 재부팅 화면 나타남 | `motion-boot-screen-enter` | fast | fade | 지금 화면 전체를 덮으며 페이드 인한다 | 없음 |
   | 재부팅 화면 사라짐 | `motion-boot-screen-exit` | normal | fade | 페이드 아웃하며 처음 상태의 바탕화면이 보인다 | 없음 |
   | ProgressRing 회전 | `motion-progress-ring` | progress-ring | progress-ring | 호가 돌며 길이가 늘고 준다(회전 + 경로 트림). 계속 반복한다([[디자인 기반:모션 견본]]) | 없음 |
@@ -197,7 +197,7 @@ _codocs:
   | 검색 상자 포커스(pill·taskbar 모양) | `motion-search-box-focus-state` | fast | direct-entrance | Rest → Focused 상태 색과 테두리를 바꾼다 | 없음 |
   | 검색 돋보기 | `motion-search-icon-state` | 들어갈 때 faster, 나올 때 즉시 | fade | 회색·컬러 돋보기를 겹쳐 투명도만 바꾼다([[검색:입력칸]]) | 없음 |
 
-  글자 목록의 시작 배율(약 1.1~1.2)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).
+  글자 목록의 시작 배율(1.15)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).
 
   컴포넌트 상태 전환(Rest → Hover 등, 검색 돋보기 포함)은 피그마 변형 사이 프로토타입 전환에 이 토큰 값을 쓰고, 코드는 `motion-control-state` 같은 상태 전환 모션 클래스를 쓴다.
 
