@@ -367,7 +367,7 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
     ]);
   });
 
-  it('선·선 두께·효과·불투명도와 스타일 덮어쓰기를 한 레이어에 모아 알린다', () => {
+  it('선·선 두께·효과와 스타일 덮어쓰기를 한 레이어에 모아 알린다', () => {
     const reasons = checkWith(
       instance('item', 'MenuItem', [
         {
@@ -377,7 +377,6 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
             'strokeWeight',
             'stokeTopWeight',
             'effects',
-            'opacity',
             'fillStyleId',
             'strokeStyleId',
             'effectStyleId',
@@ -386,17 +385,17 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
       ]),
     ).map((violation) => violation.reason);
     expect(reasons).toEqual([
-      '인스턴스의 효과 스타일·효과·칠 스타일·불투명도·선 두께·선 스타일·선을 직접 바꿨다(effectStyleId, effects, fillStyleId, opacity, stokeTopWeight, strokeStyleId, strokeWeight, strokes)',
+      '인스턴스의 효과 스타일·효과·칠 스타일·선 두께·선 스타일·선을 직접 바꿨다(effectStyleId, effects, fillStyleId, stokeTopWeight, strokeStyleId, strokeWeight, strokes)',
     ]);
   });
 
   it('모양 필드의 변수 연결을 바꾸면 막고, 크기 변수 연결은 막지 않는다', () => {
     const reasons = checkWith(
       instance('item', 'MenuItem', [
-        { id: 'item', fields: ['boundVariables'], changedBindings: ['opacity', 'width'] },
+        { id: 'item', fields: ['boundVariables'], changedBindings: ['fills', 'width'] },
       ]),
     ).map((violation) => violation.reason);
-    expect(reasons).toEqual(['인스턴스의 불투명도 변수를 직접 바꿨다(boundVariables.opacity)']);
+    expect(reasons).toEqual(['인스턴스의 칠 변수를 직접 바꿨다(boundVariables.fills)']);
     expect(
       checkWith(
         instance('item', 'MenuItem', [
@@ -474,6 +473,135 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
     ).map((violation) => `${violation.where}: ${violation.reason}`);
     expect(reasons).toEqual([
       'Menu/Folder / Default / window/preview: 인스턴스의 불투명도를 직접 바꿨다(opacity)',
+    ]);
+  });
+});
+
+/**
+ * 자산(아이콘) 인스턴스 노드를 만든다. 자산 인스턴스는 안쪽 레이어를 읽지 않는다.
+ * @param path 레이어 경로
+ * @param overrides 이 인스턴스가 직접 덮어쓴 레이어(ID는 경로 뒤에 `;`로 이은 안쪽 레이어)
+ * @returns 자산 인스턴스 노드 데이터
+ */
+function assetInstance(path: string, overrides: { id: string; fields: string[] }[] = []): NodeData {
+  return fixedChild({
+    path,
+    type: 'INSTANCE',
+    asset: {
+      name: 'ic_fluent_add_20_regular',
+      mainComponentId: '1:1',
+      group: 'Icons',
+      kind: 'mono',
+      problems: [],
+    },
+    instance: {
+      component: 'ic_fluent_add_20_regular',
+      scaleFactor: 1,
+      overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
+    },
+  });
+}
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 자산 인스턴스 안쪽의 덮어쓰기', () => {
+  it('검사 대상이 직접 놓은 자산 인스턴스의 안쪽 덮어쓰기는 막지 않는다', () => {
+    expect(checkWith(assetInstance('icon', [{ id: 'icon;vector', fields: ['fills'] }]))).toEqual(
+      [],
+    );
+  });
+
+  it('다른 인스턴스 안에 든 자산의 안쪽 덮어쓰기는 막고, 그 안쪽 컴포넌트에 열라고 알린다', () => {
+    const button = instance(
+      'button',
+      'IconButton',
+      [{ id: 'button/icon;vector', fields: ['fills'] }],
+      [assetInstance('button/icon')],
+    );
+    expect(checkWith(button)).toEqual([
+      {
+        where: 'Menu/Folder / Default / button/icon',
+        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
+        fix: '덮어쓰기를 되돌리고, IconButton에 변형이나 속성을 열어 그것을 고른다.',
+      },
+    ]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 인스턴스 전체의 불투명도', () => {
+  it('직접 놓은 인스턴스 전체의 불투명도와 그 변수 연결은 막지 않는다', () => {
+    expect(
+      checkWith(
+        instance('folder', 'FileIcon', [
+          {
+            id: 'folder',
+            fields: ['opacity', 'boundVariables'],
+            changedBindings: ['opacity'],
+          },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('직접 놓은 인스턴스 안쪽 레이어의 불투명도는 계속 막는다', () => {
+    expect(
+      checkWith(
+        instance(
+          'folder',
+          'FileIcon',
+          [{ id: 'folder/body', fields: ['opacity'] }],
+          [node({ path: 'folder/body', type: 'FRAME' })],
+        ),
+      ).map((violation) => violation.reason),
+    ).toEqual(['인스턴스의 불투명도를 직접 바꿨다(opacity)']);
+  });
+
+  it('다른 인스턴스 안에 든 인스턴스 전체의 불투명도를 바깥에서 바꾸면 막는다', () => {
+    const violations = checkWith(
+      instance(
+        'menu',
+        'Menu',
+        [{ id: 'menu/item', fields: ['opacity'] }],
+        [instance('menu/item', 'MenuItem', [])],
+      ),
+    );
+    expect(violations).toEqual([
+      {
+        where: 'Menu/Folder / Default / menu/item',
+        reason: '인스턴스의 불투명도를 직접 바꿨다(opacity)',
+        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+      },
+    ]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 줄인 인스턴스', () => {
+  /**
+   * 칠이 변수에 연결되지 않은 자식을 만든다.
+   * @returns 자식 노드 데이터
+   */
+  function unlinkedChild(): NodeData {
+    return node({ path: 'window/title', type: 'FRAME', fills: [solid()] });
+  }
+
+  it('줄인 인스턴스의 안쪽은 변수 미연결 값을 건너뛴다', () => {
+    expect(checkWith(instance('window', 'Window', [], [unlinkedChild()], 0.135))).toEqual([]);
+  });
+
+  it('줄이지 않은 인스턴스의 안쪽은 변수 미연결 값을 막는다', () => {
+    expect(
+      checkWith(instance('window', 'Window', [], [unlinkedChild()])).map(
+        (violation) => violation.reason,
+      ),
+    ).toEqual(['단색 칠이 색 변수에 연결되어 있지 않다']);
+  });
+
+  it('줄인 인스턴스 자체는 계속 검사한다', () => {
+    const scaled = instance('window', 'Window', [], [], 0.135);
+    scaled.fills = [solid()];
+    expect(checkWith(scaled).map((violation) => violation.reason)).toEqual([
+      '단색 칠이 색 변수에 연결되어 있지 않다',
     ]);
   });
 });

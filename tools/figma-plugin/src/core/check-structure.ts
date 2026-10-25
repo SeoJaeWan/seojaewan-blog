@@ -121,7 +121,10 @@ type OverrideTarget = {
  * 인스턴스 모양의 직접 덮어쓰기를 막는다. 변형 안 모든 인스턴스(중첩 포함)의 덮어쓰기를 모아,
  * 칠·선·선 두께·효과·불투명도와 그 스타일·변수 연결을 바꾼 레이어를 알린다.
  * 원본이 속성으로 연 것(글자, 표시 여부, 인스턴스 교체, 변형 선택)과 크기·배치는 막지 않는다.
- * 숨긴 레이어와 자산 인스턴스의 안쪽(색은 쓰는 곳이 정한다), 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
+ * 예외로 막지 않는 것:
+ * - 검사 대상이 직접 놓은 자산 인스턴스의 안쪽 덮어쓰기(색은 쓰는 곳이 정한다). 다른 인스턴스 안에 든 자산의 안쪽 덮어쓰기는 막는다.
+ * - 직접 놓은 인스턴스 전체의 불투명도(`opacity`와 그 변수 연결). 안쪽 레이어나 다른 인스턴스 안에 든 인스턴스의 불투명도는 막는다.
+ * 숨긴 레이어와 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param add 위반을 더하는 함수
@@ -129,6 +132,8 @@ type OverrideTarget = {
 function checkInstanceOverrides(root: NodeData, add: Add): void {
   const targets = new Map<string, OverrideTarget>();
   const fieldsById = new Map<string, Set<string>>();
+  // 다른 인스턴스 안에 든 자산 인스턴스. 자산은 안쪽 레이어를 읽지 않아 그 안쪽 덮어쓰기는 이 인스턴스의 것으로 알린다.
+  const nestedAssets: OverrideTarget[] = [];
   /**
    * 레이어를 모으고 인스턴스의 덮어쓰기를 합친다. 같은 덮어쓰기를 바깥·안쪽 인스턴스가 함께 알려 줄 수 있어 합친다.
    * @param node 노드
@@ -139,6 +144,9 @@ function checkInstanceOverrides(root: NodeData, add: Add): void {
     const owner = instance?.component ?? component;
     if (owner !== null) {
       targets.set(node.id, { node, component: owner });
+    }
+    if (node.asset !== null && component !== null) {
+      nestedAssets.push({ node, component });
     }
     if (instance === null) {
       for (const child of node.children) {
@@ -151,14 +159,16 @@ function checkInstanceOverrides(root: NodeData, add: Add): void {
       if (isScaled && override.id !== node.id) {
         continue;
       }
+      // 직접 놓은 인스턴스 전체의 불투명도는 쓰는 곳이 정한다.
+      const isOwnOpacity = override.id === node.id && component === null;
       const fields = fieldsById.get(override.id) ?? new Set<string>();
       for (const field of override.fields) {
-        if (appearanceFields[field] !== undefined) {
+        if (appearanceFields[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
           fields.add(field);
         }
       }
       for (const field of override.changedBindings) {
-        if (appearanceBindings[field] !== undefined) {
+        if (appearanceBindings[field] !== undefined && !(isOwnOpacity && field === 'opacity')) {
           fields.add(`boundVariables.${field}`);
         }
       }
@@ -172,7 +182,8 @@ function checkInstanceOverrides(root: NodeData, add: Add): void {
   }
   collect(root, null);
   for (const [id, fields] of fieldsById) {
-    const target = targets.get(id);
+    const target =
+      targets.get(id) ?? nestedAssets.find((asset) => id.startsWith(`${asset.node.id};`));
     if (target === undefined || fields.size === 0) {
       continue;
     }
@@ -206,7 +217,7 @@ function objectParticle(word: string): string {
 }
 
 /**
- * 노드 하나와 그 아래를 검사한다.
+ * 노드 하나와 그 아래를 검사한다. 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 건너뛴다.
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param context 이름 있는 이미지 자산
@@ -241,6 +252,10 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   checkLayout(node, add);
   if (node.text !== null) {
     checkText(node, context, add);
+  }
+  // 줄인 인스턴스는 자기만 검사한다. 안쪽은 따로 검사받는 조립이고, 줄인 값은 CSS `scale`로 만들어진다.
+  if (node.instance !== null && Math.abs(node.instance.scaleFactor - 1) > EPSILON) {
+    return;
   }
   for (const child of node.children) {
     checkNode(child, false, context, add);
