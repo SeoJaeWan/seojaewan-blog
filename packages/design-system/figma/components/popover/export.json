@@ -17,8 +17,8 @@
     },
     "placement=bottom-center,state=open": {
       "node": {
-        "height": 106,
-        "width": 250,
+        "height": 32,
+        "width": 120,
         "x": 0,
         "y": 0
       },
@@ -43,8 +43,8 @@
     },
     "placement=bottom-end,state=open": {
       "node": {
-        "height": 106,
-        "width": 250,
+        "height": 32,
+        "width": 120,
         "x": 0,
         "y": 0
       },
@@ -69,8 +69,8 @@
     },
     "placement=bottom-start,state=open": {
       "node": {
-        "height": 106,
-        "width": 250,
+        "height": 32,
+        "width": 120,
         "x": 0,
         "y": 0
       },
@@ -95,8 +95,8 @@
     },
     "placement=right-start,state=open": {
       "node": {
-        "height": 70,
-        "width": 374,
+        "height": 32,
+        "width": 120,
         "x": 0,
         "y": 0
       },
@@ -121,10 +121,10 @@
     },
     "placement=top-center,state=open": {
       "node": {
-        "height": 106,
-        "width": 250,
+        "height": 32,
+        "width": 120,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "nodeId": "414:5609",
       "properties": {
@@ -147,10 +147,10 @@
     },
     "placement=top-end,state=open": {
       "node": {
-        "height": 106,
-        "width": 250,
+        "height": 32,
+        "width": 120,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "nodeId": "414:5611",
       "properties": {
