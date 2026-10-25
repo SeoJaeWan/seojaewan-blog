@@ -41,6 +41,7 @@ export * from './components/rename-field/rename-field';
 export * from './components/scrollbar/scroll-area';
 export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
+export * from './components/search-results/search-results';
 export * from './components/section-header/section-header';
 export * from './components/section-title/section-title';
 export * from './components/selection-marquee/selection-marquee';

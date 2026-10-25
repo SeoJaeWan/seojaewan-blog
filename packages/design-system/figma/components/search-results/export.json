@@ -1,0 +1,30 @@
+{
+  "name": "SearchResults",
+  "nodeId": "313:4782",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 545,
+        "width": 574,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "313:4562",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 465,
+        "width": 356,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "313:4683",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}
