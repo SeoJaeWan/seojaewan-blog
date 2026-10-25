@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import {
   BrowserTab,
@@ -18,7 +18,20 @@ export type ChromeWindowTab = {
   active?: boolean;
 };
 
-type ChromeWindowProps = {
+// 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
+type WindowFrameControlProps = Pick<
+  ComponentProps<typeof WindowFrame>,
+  | 'inactive'
+  | 'placement'
+  | 'onMinimize'
+  | 'onMaximize'
+  | 'onRestore'
+  | 'onClose'
+  | 'maximizeSlot'
+  | 'onTitleBarDoubleClick'
+>;
+
+type ChromeWindowProps = WindowFrameControlProps & {
   /** 피그마 Device. desktop은 탭 줄이 있는 떠 있는 창, mobile은 탭 대신 제목 표시줄만 있는 전체화면 창이다 */
   device?: ChromeWindowDevice;
   /** 열린 탭. desktop은 탭 줄에 모두 그리고, mobile은 고른 탭의 제목만 제목 표시줄에 보인다 */
@@ -43,13 +56,13 @@ const chromeAppIcon = (
  * Chrome 창(피그마 조립 `Window/Chrome`)을 그린다. WindowFrame(Chrome 재질) 위에 desktop은 탭 줄과 창 버튼,
  * mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 도구 모음(BrowserToolbar) 아래에 탭 내용 자리를 둔다.
  * 모바일은 늘 전체화면이라 최대화 버튼과 도구 모음의 앞으로·새로고침을 뺀다.
- * 창 이동·크기 조절·스냅, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
+ * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)은 WindowFrame에 그대로 넘긴다. 창 이동·크기 조절, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[모바일:차이]]
  * @param props
  */
 export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
-  const { device = 'desktop', tabs, url, children, className } = props;
+  const { device = 'desktop', tabs, url, children, className, ...frameProps } = props;
   const isDesktop = device === 'desktop';
   const toolbar = (
     <BrowserToolbar
@@ -63,6 +76,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     const activeTab = tabs.find((tab) => tab.active === true) ?? tabs[0];
     return (
       <WindowFrame
+        {...frameProps}
         material="chrome"
         placement="maximized"
         showMaximize={false}
@@ -77,6 +91,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
   }
   return (
     <WindowFrame
+      {...frameProps}
       titleBar="custom"
       material="chrome"
       titleBarContent={

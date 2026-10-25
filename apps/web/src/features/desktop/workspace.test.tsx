@@ -1,11 +1,22 @@
 import { render, screen, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderToString } from 'react-dom/server';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useStartMenuStore } from '@/features/start-menu/start-menu';
+import { useWindowStore } from '@/features/window/window';
 
 import { Workspace } from './workspace';
+
+beforeEach(() => {
+  useWindowStore.getState().reset();
+});
+
+/** 바탕화면의 Blog 폴더 아이콘을 더블클릭한다. 아이콘은 창보다 앞(DOM 순서)에 있다. */
+async function openBlogFolder(): Promise<void> {
+  const [icon] = screen.getAllByText('Blog');
+  await userEvent.dblClick(icon ?? document.body);
+}
 
 // @codocs [[바탕화면:표시하는 항목]]
 describe('바탕화면:표시하는 항목', () => {
@@ -31,6 +42,56 @@ describe('작업 표시줄:시계', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+// @codocs [[작업 표시줄:앱 버튼]]
+describe('작업 표시줄:앱 버튼', () => {
+  it('열린 창이 없을 때 누르면 탐색기는 Blog 폴더로 연다', async () => {
+    render(<Workspace />);
+    await userEvent.click(screen.getByRole('button', { name: '파일 탐색기' }));
+    const region = screen.getByRole('region', { name: 'Blog - 파일 탐색기' });
+    expect(within(region).getAllByText('Blog').length).toBeGreaterThan(0);
+  });
+
+  it('창이 1개이고 맨 앞이면 최소화하고, 다시 누르면 복원한다', async () => {
+    render(<Workspace />);
+    const button = screen.getByRole('button', { name: 'Chrome' });
+    await userEvent.click(button);
+    expect(screen.getByRole('region', { name: '새 탭 - Chrome' })).toBeInTheDocument();
+    await userEvent.click(button);
+    expect(screen.queryByRole('region', { name: '새 탭 - Chrome' })).not.toBeInTheDocument();
+    await userEvent.click(button);
+    expect(screen.getByRole('region', { name: '새 탭 - Chrome' })).toBeInTheDocument();
+  });
+});
+
+// @codocs [[작업 표시줄:창 미리보기]]
+describe('작업 표시줄:창 미리보기', () => {
+  it('창이 여러 개일 때 누르면 미리보기를 띄우고, 고른 창을 맨 앞으로 가져온다', async () => {
+    render(<Workspace />);
+    await openBlogFolder();
+    await openBlogFolder();
+    const [first] = screen.getAllByRole('region', { name: 'Blog - 파일 탐색기' });
+    expect(first).toHaveAttribute('data-window-state', 'inactive');
+    await userEvent.click(screen.getByRole('button', { name: '파일 탐색기' }));
+    const previews = screen.getAllByRole('button', { name: 'Blog - 파일 탐색기' });
+    expect(previews).toHaveLength(2);
+    await userEvent.click(previews[0] ?? document.body);
+    expect(first).toHaveAttribute('data-window-state', 'active');
+    expect(screen.queryAllByRole('button', { name: 'Blog - 파일 탐색기' })).toHaveLength(0);
+  });
+
+  it('미리보기의 닫기 버튼을 누르면 그 창을 닫는다', async () => {
+    render(<Workspace />);
+    await openBlogFolder();
+    await openBlogFolder();
+    await userEvent.click(screen.getByRole('button', { name: '파일 탐색기' }));
+    const [preview] = screen.getAllByRole('button', { name: 'Blog - 파일 탐색기' });
+    await userEvent.click(
+      within(preview ?? document.body).getByRole('button', { name: '창 닫기' }),
+    );
+    expect(screen.getAllByRole('region', { name: 'Blog - 파일 탐색기' })).toHaveLength(1);
   });
 });
 
@@ -155,3 +216,14 @@ describe('검색:결과 화면', () => {
 function getStartPanel(): HTMLElement {
   return screen.getByRole('dialog', { name: '시작' });
 }
+
+// @codocs [[Start 메뉴:열기와 닫기]]
+describe('Start 메뉴:항목 열기', () => {
+  it('Start 메뉴에서 앱 항목을 열면 그 앱 창이 열리고 Start 메뉴는 닫힌다', async () => {
+    render(<Workspace />);
+    await userEvent.click(screen.getByRole('button', { name: '시작' }));
+    await userEvent.click(within(getStartPanel()).getByRole('button', { name: 'File Explorer' }));
+    expect(screen.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeInTheDocument();
+    expect(queryStartPanel()).not.toBeInTheDocument();
+  });
+});

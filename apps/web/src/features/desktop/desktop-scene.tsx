@@ -31,6 +31,10 @@ type DesktopSceneProps = {
   children?: ReactNode;
   /** 피그마 Taskbar/Default 인스턴스 자리. `TaskbarDefault`를 넣는다 */
   taskbar: ReactNode;
+  /** 아이콘을 열었을 때 부른다. 데스크톱은 더블클릭, 모바일은 탭(클릭)으로 연다(`iconOpenGesture`) */
+  onIconOpen?: (icon: DesktopIcon) => void;
+  /** 아이콘을 여는 동작. 데스크톱은 double-click, 모바일은 click이다 */
+  iconOpenGesture?: 'double-click' | 'click';
   /** 바깥 배치 클래스. 크기는 쓰는 곳(화면)이 정한다 */
   className?: string;
 };
@@ -67,14 +71,24 @@ function renderDesktopIcon(icon: DesktopIcon): ReactNode {
 /**
  * 바탕화면 한 장(피그마 조립 `Desktop/Scene`)을 그린다. 화면을 꽉 채우는 배경화면(Bloom) 위에 아이콘 자리와 창 자리를 두고,
  * 맨 아래에 작업 표시줄 자리를 둔다. 아이콘은 열 우선 격자 순서로 채우고, 한 열이 차면 다음 열로 넘어간다.
+ * 아이콘을 열면(데스크톱은 더블클릭, 모바일은 탭) `onIconOpen`으로 알린다.
  * 아이콘 선택·드래그·격자 칸 지정, 우클릭 메뉴 같은 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
+ * @codocs [[모바일:차이]]
  * @codocs [[바탕화면:아이콘 배치]]
  * @codocs [[바탕화면:배경화면]]
  * @param props
  */
 export function DesktopScene(props: DesktopSceneProps): JSX.Element {
-  const { icons, iconView = 'medium', children, taskbar, className } = props;
+  const {
+    icons,
+    iconView = 'medium',
+    children,
+    taskbar,
+    onIconOpen,
+    iconOpenGesture = 'double-click',
+    className,
+  } = props;
   return (
     <div className={['relative flex flex-col overflow-clip', className].filter(Boolean).join(' ')}>
       {/* 배경화면은 맨 아래에 깔고, 뒤에 오는 자리(relative)가 그 위에 그려진다 */}
@@ -90,16 +104,28 @@ export function DesktopScene(props: DesktopSceneProps): JSX.Element {
              * @param icon 바탕화면 아이콘
              * @returns FileItem
              */
-            (icon) => (
-              <FileItem
-                key={icon.id}
-                surface="desktop"
-                view={iconView}
-                name={icon.name}
-                icon={renderDesktopIcon(icon)}
-                selected={icon.selected}
-              />
-            ),
+            (icon) => {
+              /** 아이콘을 열면 쓰는 곳에 알린다. */
+              function handleOpen(): void {
+                onIconOpen?.(icon);
+              }
+              const hasOpen = onIconOpen !== undefined;
+              const handleDoubleClick =
+                hasOpen && iconOpenGesture === 'double-click' ? handleOpen : undefined;
+              const handleClick = hasOpen && iconOpenGesture === 'click' ? handleOpen : undefined;
+              return (
+                <FileItem
+                  key={icon.id}
+                  surface="desktop"
+                  view={iconView}
+                  name={icon.name}
+                  icon={renderDesktopIcon(icon)}
+                  selected={icon.selected}
+                  onDoubleClick={handleDoubleClick}
+                  onClick={handleClick}
+                />
+              );
+            },
           )}
         </div>
         {children}
