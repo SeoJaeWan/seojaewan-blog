@@ -1,0 +1,16 @@
+{
+  "name": "Chrome/AddressSuggestions",
+  "nodeId": "543:14685",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 36,
+        "width": 640,
+        "x": 0,
+        "y": 8
+      },
+      "nodeId": "543:14685",
+      "properties": {}
+    }
+  }
+}
