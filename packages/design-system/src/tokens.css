@@ -120,7 +120,6 @@
   --font-family-base: 'Open Sans';
   --font-family-code: 'Cascadia Mono';
   --font-family-korean: 'Pretendard';
-  --font-family-latin: 'Open Sans';
   --font-line-height-body: 20px;
   --font-line-height-body-large: 24px;
   --font-line-height-caption: 16px;
@@ -248,7 +247,7 @@
   --mica-background-fill-base-alt-fallback: var(--color-gray-800);
   --mica-background-fill-base-fallback: var(--color-gray-500);
   --opacity-cut: 50%;
-  --opacity-drag-ghost: 60%;
+  --opacity-drag-ghost: 60;
   --radius-circular: 9999px;
   --radius-control: 4px;
   --radius-none: 0px;
