@@ -28,13 +28,14 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    // 컴포넌트는 슬롯을 채우지 않는다. 피그마는 빈 Trigger 슬롯을 120×32, 빈 Popup 슬롯을 250×70의 칠 없는 자리로 그리므로
-    // 칠 없는 빈 자리를 둔다. 높이 70의 크기 토큰이 없어 Popup 자리 높이는 64로 둔다(칠이 없어 그림에는 나오지 않는다).
+    // 컴포넌트는 슬롯을 채우지 않는다. 피그마는 빈 Trigger 슬롯을 120×32의 칠 없는 자리로 그리고, 빈 Popup 슬롯은
+    // 트리거 쪽 바깥에 붙인 두께 size/4의 자리(위·아래는 트리거 너비 × 4, 오른쪽은 4 × 트리거 높이)로 그린다. 칠 없는 빈 자리를 둔다.
+    // 코드의 팝업 상자는 이 자리에 간격(spacing/4)만큼 띄워 놓이므로 그림에는 나오지 않는다.
     <Popover
       placement={args.placement}
       open={args.state === 'open'}
       trigger={<div className="h-32 w-120" />}
-      popup={<div className="h-64 w-250" />}
+      popup={<div className={args.placement === 'right-start' ? 'h-32 w-4' : 'h-4 w-120'} />}
     />
   ),
 } satisfies Meta<ParityArgs>;

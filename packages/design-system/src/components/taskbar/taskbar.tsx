@@ -1,20 +1,16 @@
-import type { ComponentProps, JSX } from 'react';
+import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
-import { Asset } from '../asset/asset';
-import { SearchBox } from '../search-box/search-box';
-import { SystemTray } from '../system-tray/system-tray';
-import { TaskbarButton } from '../taskbar-button/taskbar-button';
-
-export type TaskbarSearch = 'box' | 'button';
 
 export type TaskbarMaterial = 'acrylic' | 'solid';
 
-type TaskbarProps = ComponentProps<'div'> & {
-  /** 피그마 Search. box는 Start 옆 검색 상자, button은 돋보기 버튼이다 */
-  search?: TaskbarSearch;
+type TaskbarProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Material. acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
   material?: TaskbarMaterial;
+  /** 피그마 Center 슬롯. 시작 버튼·검색·앱 버튼을 넣는다 */
+  center?: ReactNode;
+  /** 피그마 Right 슬롯. SystemTray를 넣는다 */
+  right?: ReactNode;
 };
 
 // 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 배경 흐림)다.
@@ -24,15 +20,16 @@ const materialClassNames = {
 } as const satisfies Record<TaskbarMaterial, string>;
 
 /**
- * 화면 아래 작업 표시줄(피그마 Taskbar)을 그린다. 가운데에 Start·검색·앱 버튼, 오른쪽에 SystemTray를 둔다.
- * 고정되거나 실행 중인 앱의 TaskbarButton은 children 자리(피그마 Apps 슬롯)에 넣는다.
+ * 화면 아래 작업 표시줄(피그마 Taskbar)의 재질 바탕과 자리를 그린다.
+ * 가운데(center)와 오른쪽(right) 자리만 열고, 시작 버튼·검색·앱 버튼·SystemTray는 조립(Taskbar/Default)이 채운다.
+ * 자리가 둘이라 children 하나가 아닌 이름 있는 ReactNode prop으로 연다.
  * 높이는 Windows가 정한 48로 고정하고, 너비는 쓰는 곳이 정한다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props
  */
 export function Taskbar(props: TaskbarProps): JSX.Element {
-  const { search = 'box', material = 'acrylic', className, children, ...divProps } = props;
+  const { material = 'acrylic', center, right, className, ...divProps } = props;
   return (
     <div
       {...divProps}
@@ -47,30 +44,11 @@ export function Taskbar(props: TaskbarProps): JSX.Element {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-stroke-default bg-card-stroke-default"
       />
-      <div className="h-full min-w-0 flex-1" />
-      <div className="flex shrink-0 items-center gap-4">
-        <TaskbarButton
-          label="시작"
-          icon={<Asset name="illustrations/logo-windows.svg" className="size-full" />}
-        />
-        {search === 'box' ? (
-          <SearchBox appearance="taskbar" aria-label="검색" placeholder="검색" className="w-220" />
-        ) : (
-          <TaskbarButton
-            label="검색"
-            icon={
-              <Asset
-                name="icons/ic_fluent_search_20_regular.svg"
-                className="size-full text-text-fill-primary"
-              />
-            }
-          />
-        )}
-        {/* 피그마 Apps 슬롯이다. 비어 있어도 버튼 하나 자리(40)를 차지한다. */}
-        <div className="flex h-40 min-w-40 items-end gap-4">{children}</div>
-      </div>
+      {/* 피그마 left space다. Right와 같은 너비를 차지해 Center를 가운데에 둔다. */}
+      <div aria-hidden className="h-full min-w-0 flex-1" />
+      <div className="flex h-40 shrink-0 items-center gap-4">{center}</div>
       <div className="flex h-full min-w-0 flex-1 items-center justify-end overflow-hidden">
-        <SystemTray />
+        {right}
       </div>
     </div>
   );
