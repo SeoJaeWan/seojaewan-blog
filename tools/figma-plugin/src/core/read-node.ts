@@ -1,5 +1,5 @@
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './asset-groups';
-import { type Bindings, inheritedBindings, sourceLayerId } from './bindings';
+import { type Bindings, inheritedBindings, overrideSourceId, sourceLayerId } from './bindings';
 import type {
   AssetData,
   AssetKind,
@@ -7,8 +7,10 @@ import type {
   ChildLayoutData,
   Corners,
   EffectData,
+  InstanceData,
   LayoutData,
   NodeData,
+  OverrideData,
   PaintData,
   Sides,
   TextData,
@@ -92,6 +94,7 @@ async function readNode(
     child: null,
     text: null,
     asset: null,
+    instance: null,
     isFullEllipse: node.type === 'ELLIPSE' ? isFullEllipse(node) : null,
     children: [],
   };
@@ -129,6 +132,7 @@ async function readNode(
     data.text = await textData(node, names);
   }
   if (node.type === 'INSTANCE') {
+    data.instance = await instanceData(node);
     const asset = await assetData(node, names);
     if (asset !== null) {
       data.asset = asset;
@@ -144,6 +148,58 @@ async function readNode(
     }
   }
   return data;
+}
+
+/**
+ * 인스턴스의 원본 컴포넌트 이름, 배율, 직접 덮어쓴 필드(`InstanceNode.overrides`)를 읽는다.
+ * `boundVariables`를 덮어쓴 레이어는 원본 컴포넌트 안 같은 레이어와 변수 연결을 비교해 어느 필드가 바뀌었는지 적는다.
+ * 피그마는 `boundVariables` 하나로만 알려 주기 때문이다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 인스턴스
+ * @returns 인스턴스 정보
+ */
+async function instanceData(node: InstanceNode): Promise<InstanceData> {
+  const main = await node.getMainComponentAsync();
+  const component =
+    main === null
+      ? node.name
+      : main.parent?.type === 'COMPONENT_SET'
+        ? main.parent.name
+        : main.name;
+  const overrides: OverrideData[] = [];
+  for (const override of node.overrides) {
+    const fields: string[] = [...override.overriddenFields];
+    let changedBindings: string[] = [];
+    if (fields.includes('boundVariables') && main !== null) {
+      const sourceId = override.id === node.id ? main.id : overrideSourceId(node.id, override.id);
+      const [layer, source] = await Promise.all([
+        figma.getNodeByIdAsync(override.id),
+        sourceId === null ? null : figma.getNodeByIdAsync(sourceId),
+      ]);
+      changedBindings = differentBindings(layer, source);
+    }
+    overrides.push({ id: override.id, fields, changedBindings });
+  }
+  return { component, scaleFactor: node.scaleFactor, overrides };
+}
+
+/**
+ * 두 레이어의 변수 연결을 필드마다 비교한다.
+ * @param layer 덮어쓴 레이어
+ * @param source 원본 컴포넌트 안 같은 레이어
+ * @returns 연결이 다른 필드 이름. 어느 한쪽을 찾지 못하면 빈 목록
+ */
+function differentBindings(layer: BaseNode | null, source: BaseNode | null): string[] {
+  if (layer === null || source === null || !('boundVariables' in layer)) {
+    return [];
+  }
+  const own: Record<string, unknown> = layer.boundVariables ?? {};
+  const original: Record<string, unknown> =
+    'boundVariables' in source ? (source.boundVariables ?? {}) : {};
+  const fields = new Set([...Object.keys(own), ...Object.keys(original)]);
+  return [...fields].filter(
+    (field) => JSON.stringify(own[field] ?? null) !== JSON.stringify(original[field] ?? null),
+  );
 }
 
 /**

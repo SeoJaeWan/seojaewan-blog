@@ -292,3 +292,188 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     ).toEqual(['노드 종류 TEXT_PATH는 CSS로 그릴 수 없다']);
   });
 });
+
+/**
+ * 덮어쓰기가 있는 인스턴스 노드를 만든다. 노드 ID는 경로다.
+ * @param path 레이어 경로
+ * @param component 원본 컴포넌트 이름
+ * @param overrides 덮어쓴 레이어(ID는 경로)
+ * @param children 자식
+ * @param scaleFactor 크기 배율
+ * @returns 인스턴스 노드 데이터
+ */
+function instance(
+  path: string,
+  component: string,
+  overrides: { id: string; fields: string[]; changedBindings?: string[] }[],
+  children: NodeData[] = [],
+  scaleFactor = 1,
+): NodeData {
+  return node({
+    path,
+    type: 'INSTANCE',
+    instance: {
+      component,
+      scaleFactor,
+      overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
+    },
+    children,
+  });
+}
+
+/**
+ * 글자 자식을 만든다.
+ * @param path 레이어 경로
+ * @returns 글자 노드 데이터
+ */
+function textChild(path: string): NodeData {
+  return node({
+    path,
+    type: 'TEXT',
+    fills: 'mixed',
+    text: { autoResize: 'WIDTH_AND_HEIGHT', hasMissingFont: false, segments: [segment()] },
+  });
+}
+
+/**
+ * 인스턴스를 자식으로 둔 루트를 검사한다.
+ * @param child 루트에 넣을 인스턴스
+ * @returns 위반 목록
+ */
+function checkWith(child: NodeData): ReturnType<typeof checkVariant> {
+  const root = buttonRoot();
+  root.children = [child];
+  return checkVariant(root, 'Menu/Folder / Default', context);
+}
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
+  it('인스턴스 안 레이어의 칠을 덮어쓰면 위치·이유·고칠 방법을 알린다', () => {
+    expect(
+      checkWith(
+        instance(
+          'item',
+          'MenuItem',
+          [{ id: 'item/label', fields: ['fills', 'characters'] }],
+          [textChild('item/label')],
+        ),
+      ),
+    ).toEqual([
+      {
+        where: 'Menu/Folder / Default / item/label',
+        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
+        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+      },
+    ]);
+  });
+
+  it('선·선 두께·효과·불투명도와 스타일 덮어쓰기를 한 레이어에 모아 알린다', () => {
+    const reasons = checkWith(
+      instance('item', 'MenuItem', [
+        {
+          id: 'item',
+          fields: [
+            'strokes',
+            'strokeWeight',
+            'stokeTopWeight',
+            'effects',
+            'opacity',
+            'fillStyleId',
+            'strokeStyleId',
+            'effectStyleId',
+          ],
+        },
+      ]),
+    ).map((violation) => violation.reason);
+    expect(reasons).toEqual([
+      '인스턴스의 효과 스타일·효과·칠 스타일·불투명도·선 두께·선 스타일·선을 직접 바꿨다(effectStyleId, effects, fillStyleId, opacity, stokeTopWeight, strokeStyleId, strokeWeight, strokes)',
+    ]);
+  });
+
+  it('모양 필드의 변수 연결을 바꾸면 막고, 크기 변수 연결은 막지 않는다', () => {
+    const reasons = checkWith(
+      instance('item', 'MenuItem', [
+        { id: 'item', fields: ['boundVariables'], changedBindings: ['opacity', 'width'] },
+      ]),
+    ).map((violation) => violation.reason);
+    expect(reasons).toEqual(['인스턴스의 불투명도 변수를 직접 바꿨다(boundVariables.opacity)']);
+    expect(
+      checkWith(
+        instance('item', 'MenuItem', [
+          { id: 'item', fields: ['boundVariables', 'width'], changedBindings: ['width'] },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('원본이 속성으로 연 것과 크기·배치 덮어쓰기는 막지 않는다', () => {
+    expect(
+      checkWith(
+        instance(
+          'item',
+          'MenuItem',
+          [
+            { id: 'item', fields: ['componentProperties', 'width', 'height', 'layoutGrow'] },
+            { id: 'item/label', fields: ['characters', 'visible', 'name', 'textStyleId'] },
+          ],
+          [textChild('item/label')],
+        ),
+      ),
+    ).toEqual([]);
+  });
+
+  it('중첩 인스턴스의 덮어쓰기는 그 레이어를 정의한 원본 컴포넌트로 알리고, 겹친 보고는 하나로 합친다', () => {
+    const violations = checkWith(
+      instance(
+        'menu',
+        'Menu',
+        [{ id: 'menu/item/label', fields: ['fills'] }],
+        [
+          instance(
+            'menu/item',
+            'MenuItem',
+            [{ id: 'menu/item/label', fields: ['fills'] }],
+            [textChild('menu/item/label')],
+          ),
+        ],
+      ),
+    );
+    expect(violations).toEqual([
+      {
+        where: 'Menu/Folder / Default / menu/item/label',
+        reason: '인스턴스의 칠을 직접 바꿨다(fills)',
+        fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+      },
+    ]);
+  });
+
+  it('숨긴 레이어(읽지 않은 레이어)의 덮어쓰기는 보지 않는다', () => {
+    expect(
+      checkWith(instance('item', 'MenuItem', [{ id: 'item/hidden', fields: ['fills'] }])),
+    ).toEqual([]);
+  });
+
+  it('줄인 인스턴스는 자기 덮어쓰기만 보고 안쪽은 건너뛴다', () => {
+    const scaled = instance(
+      'window/preview',
+      'Window',
+      [
+        { id: 'window/preview', fields: ['opacity'] },
+        { id: 'window/preview/title', fields: ['fills'] },
+      ],
+      [textChild('window/preview/title')],
+      0.135,
+    );
+    const reasons = checkWith(
+      instance(
+        'window',
+        'SnapAssist',
+        [{ id: 'window/preview/title', fields: ['fills'] }],
+        [scaled],
+      ),
+    ).map((violation) => `${violation.where}: ${violation.reason}`);
+    expect(reasons).toEqual([
+      'Menu/Folder / Default / window/preview: 인스턴스의 불투명도를 직접 바꿨다(opacity)',
+    ]);
+  });
+});

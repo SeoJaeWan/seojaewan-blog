@@ -38,3 +38,21 @@ export function sourceLayerId(id: string): string | null {
   const parts = id.split(';');
   return parts.length > 1 ? (parts.at(-1) ?? null) : null;
 }
+
+/**
+ * 인스턴스가 덮어쓴 안쪽 레이어에 해당하는, 그 인스턴스의 원본 컴포넌트 안 레이어 ID를 구한다.
+ * 안쪽 레이어 ID `I<인스턴스 ID>;<나머지>`(인스턴스 ID가 이미 `I`로 시작하면 `<인스턴스 ID>;<나머지>`)에서 인스턴스 ID를 떼면 원본 컴포넌트 기준 ID가 된다
+ * (나머지가 `;`로 이어지면 원본 안 인스턴스의 안쪽 레이어라 앞에 `I`를 붙인다).
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param instanceId 덮어쓴 인스턴스 ID
+ * @param layerId 덮어쓴 레이어 ID
+ * @returns 원본 컴포넌트 안 레이어 ID. 그 인스턴스 안쪽 레이어가 아니면 null
+ */
+export function overrideSourceId(instanceId: string, layerId: string): string | null {
+  const prefix = instanceId.startsWith('I') ? `${instanceId};` : `I${instanceId};`;
+  if (!layerId.startsWith(prefix)) {
+    return null;
+  }
+  const rest = layerId.slice(prefix.length);
+  return rest.includes(';') ? `I${rest}` : rest;
+}

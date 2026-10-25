@@ -1,8 +1,9 @@
 import type { Bound, NodeData, PaintData } from './node-data';
 
-// 내보내기 전 구조 검사. 두 가지만 막는다.
+// 내보내기 전 구조 검사. 세 가지만 막는다.
 // 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값 포함)
 // 2. CSS로 그릴 수 없는 피그마 기능
+// 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
 
 /** 위반 하나 */
@@ -55,7 +56,7 @@ const BIND_FIX = '변수에 연결한다.';
 
 /**
  * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
- * 막는 것은 변수·스타일에 연결되지 않은 시각 값과 CSS로 그릴 수 없는 기능 두 가지다.
+ * 막는 것은 변수·스타일에 연결되지 않은 시각 값, CSS로 그릴 수 없는 기능, 인스턴스 모양의 직접 덮어쓰기 세 가지다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
@@ -74,7 +75,134 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
     violations.push({ where: node.path === '' ? where : `${where} / ${node.path}`, reason, fix });
   }
   checkNode(root, true, context, add);
+  checkInstanceOverrides(root, add);
   return violations;
+}
+
+// 인스턴스에서 직접 덮어쓰면 막는 모양 필드(`NodeChangeProperty`) → 메시지 이름
+const appearanceFields: Readonly<Record<string, string>> = {
+  fills: '칠',
+  strokes: '선',
+  strokeWeight: '선 두께',
+  // 피그마 타입 정의의 철자 그대로다(strokeTopWeight가 아니다).
+  stokeTopWeight: '선 두께',
+  strokeTopWeight: '선 두께',
+  strokeRightWeight: '선 두께',
+  strokeBottomWeight: '선 두께',
+  strokeLeftWeight: '선 두께',
+  effects: '효과',
+  opacity: '불투명도',
+  fillStyleId: '칠 스타일',
+  strokeStyleId: '선 스타일',
+  effectStyleId: '효과 스타일',
+};
+
+// 변수 연결(`boundVariables`)을 바꿨을 때 막는 모양 필드 → 메시지 이름
+const appearanceBindings: Readonly<Record<string, string>> = {
+  fills: '칠 변수',
+  strokes: '선 변수',
+  strokeWeight: '선 두께 변수',
+  strokeTopWeight: '선 두께 변수',
+  strokeRightWeight: '선 두께 변수',
+  strokeBottomWeight: '선 두께 변수',
+  strokeLeftWeight: '선 두께 변수',
+  effects: '효과 변수',
+  opacity: '불투명도 변수',
+};
+
+/** 덮어쓰기를 검사할 수 있는 레이어 */
+type OverrideTarget = {
+  node: NodeData;
+  /** 이 레이어를 정의한 원본 컴포넌트(자신이나 가장 가까운 바깥 인스턴스의 원본) */
+  component: string;
+};
+
+/**
+ * 인스턴스 모양의 직접 덮어쓰기를 막는다. 변형 안 모든 인스턴스(중첩 포함)의 덮어쓰기를 모아,
+ * 칠·선·선 두께·효과·불투명도와 그 스타일·변수 연결을 바꾼 레이어를 알린다.
+ * 원본이 속성으로 연 것(글자, 표시 여부, 인스턴스 교체, 변형 선택)과 크기·배치는 막지 않는다.
+ * 숨긴 레이어와 자산 인스턴스의 안쪽(색은 쓰는 곳이 정한다), 줄인 인스턴스(`scaleFactor`가 1이 아님)의 안쪽은 보지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param root 변형 루트 노드 데이터
+ * @param add 위반을 더하는 함수
+ */
+function checkInstanceOverrides(root: NodeData, add: Add): void {
+  const targets = new Map<string, OverrideTarget>();
+  const fieldsById = new Map<string, Set<string>>();
+  /**
+   * 레이어를 모으고 인스턴스의 덮어쓰기를 합친다. 같은 덮어쓰기를 바깥·안쪽 인스턴스가 함께 알려 줄 수 있어 합친다.
+   * @param node 노드
+   * @param component 바깥 인스턴스의 원본 컴포넌트, 없으면 null
+   */
+  function collect(node: NodeData, component: string | null): void {
+    const { instance } = node;
+    const owner = instance?.component ?? component;
+    if (owner !== null) {
+      targets.set(node.id, { node, component: owner });
+    }
+    if (instance === null) {
+      for (const child of node.children) {
+        collect(child, component);
+      }
+      return;
+    }
+    const isScaled = Math.abs(instance.scaleFactor - 1) > EPSILON;
+    for (const override of instance.overrides) {
+      if (isScaled && override.id !== node.id) {
+        continue;
+      }
+      const fields = fieldsById.get(override.id) ?? new Set<string>();
+      for (const field of override.fields) {
+        if (appearanceFields[field] !== undefined) {
+          fields.add(field);
+        }
+      }
+      for (const field of override.changedBindings) {
+        if (appearanceBindings[field] !== undefined) {
+          fields.add(`boundVariables.${field}`);
+        }
+      }
+      fieldsById.set(override.id, fields);
+    }
+    if (!isScaled) {
+      for (const child of node.children) {
+        collect(child, instance.component);
+      }
+    }
+  }
+  collect(root, null);
+  for (const [id, fields] of fieldsById) {
+    const target = targets.get(id);
+    if (target === undefined || fields.size === 0) {
+      continue;
+    }
+    const names = [...fields].sort();
+    const labels = [
+      ...new Set(
+        names.map((field) =>
+          field.startsWith('boundVariables.')
+            ? appearanceBindings[field.slice('boundVariables.'.length)]
+            : appearanceFields[field],
+        ),
+      ),
+    ].filter((label) => label !== undefined);
+    const list = labels.join('·');
+    add(
+      target.node,
+      `인스턴스의 ${list}${objectParticle(list)} 직접 바꿨다(${names.join(', ')})`,
+      `덮어쓰기를 되돌리고, ${target.component}에 변형이나 속성을 열어 그것을 고른다.`,
+    );
+  }
+}
+
+/**
+ * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다.
+ * @param word 낱말
+ * @returns 받침이 있으면 '을', 없으면 '를'
+ */
+function objectParticle(word: string): string {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  return code >= 0 && code < 11172 && code % 28 !== 0 ? '을' : '를';
 }
 
 /**
