@@ -1,0 +1,110 @@
+{
+  "name": "Chrome/Page",
+  "nodeId": "89:2650",
+  "variants": {
+    "page=new-tab,layout=narrow": {
+      "node": {
+        "height": 720,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2551",
+      "properties": {
+        "Layout": "Narrow",
+        "Page": "New tab"
+      }
+    },
+    "page=new-tab,layout=wide": {
+      "node": {
+        "height": 711,
+        "width": 1278,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2512",
+      "properties": {
+        "Layout": "Wide",
+        "Page": "New tab"
+      }
+    },
+    "page=not-found,layout=narrow": {
+      "node": {
+        "height": 720,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2639",
+      "properties": {
+        "Layout": "Narrow",
+        "Page": "Not found"
+      }
+    },
+    "page=not-found,layout=wide": {
+      "node": {
+        "height": 711,
+        "width": 1278,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2627",
+      "properties": {
+        "Layout": "Wide",
+        "Page": "Not found"
+      }
+    },
+    "page=post,layout=narrow": {
+      "node": {
+        "height": 720,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2483",
+      "properties": {
+        "Layout": "Narrow",
+        "Page": "Post"
+      }
+    },
+    "page=post,layout=wide": {
+      "node": {
+        "height": 711,
+        "width": 1278,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2444",
+      "properties": {
+        "Layout": "Wide",
+        "Page": "Post"
+      }
+    },
+    "page=search-results,layout=narrow": {
+      "node": {
+        "height": 720,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2608",
+      "properties": {
+        "Layout": "Narrow",
+        "Page": "Search results"
+      }
+    },
+    "page=search-results,layout=wide": {
+      "node": {
+        "height": 711,
+        "width": 1278,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "89:2589",
+      "properties": {
+        "Layout": "Wide",
+        "Page": "Search results"
+      }
+    }
+  }
+}
