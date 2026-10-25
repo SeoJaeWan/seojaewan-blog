@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, ReactNode } from 'react';
+import type { ComponentProps, JSX, MouseEvent, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { CaptionButtonGroup } from '../caption-button-group/caption-button-group';
@@ -27,6 +27,10 @@ type WindowFrameCommonProps = Omit<ComponentProps<'div'>, 'children' | 'title'> 
   onRestore?: () => void;
   /** 닫기 버튼을 눌렀을 때 */
   onClose?: () => void;
+  /** 최대화(또는 복원) 버튼 자리에 그릴 것(CaptionButtonGroup에 넘긴다). placement가 maximized가 아닐 때 기본 최대화 버튼 대신 그린다 */
+  maximizeSlot?: ReactNode;
+  /** 제목 표시줄을 더블클릭했을 때. 창 버튼 위에서 한 더블클릭은 부르지 않는다 */
+  onTitleBarDoubleClick?: () => void;
   /** 피그마 `Content` 슬롯. 앱 내용이 채운다 */
   children?: ReactNode;
 };
@@ -97,12 +101,25 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
     onMaximize: handleMaximize,
     onRestore: handleRestore,
     onClose: handleClose,
+    maximizeSlot,
+    onTitleBarDoubleClick: handleTitleBarDoubleClick,
     className,
     children,
     ...divProps
   } = props;
   const isFloating = placement === 'normal';
   const isCustom = titleBar === 'custom';
+  // 창 버튼(스냅 레이아웃 칸 포함, 포털로 그려도 React 이벤트는 올라온다) 위의 더블클릭은 제목 표시줄 동작이 아니다.
+  /**
+   * 제목 표시줄 더블클릭을 받아, 창 버튼 위가 아닐 때만 콜백을 부른다.
+   * @param event 더블클릭 이벤트
+   */
+  function handleTitleBarDoubleClickEvent(event: MouseEvent<HTMLDivElement>): void {
+    if (event.target instanceof Element && event.target.closest('button') !== null) {
+      return;
+    }
+    handleTitleBarDoubleClick?.();
+  }
   return (
     <div
       {...divProps}
@@ -117,6 +134,9 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
       )}
     >
       <div
+        onDoubleClick={
+          handleTitleBarDoubleClick === undefined ? undefined : handleTitleBarDoubleClickEvent
+        }
         className={cn('flex w-full shrink-0 items-start overflow-clip', isCustom ? 'h-40' : 'h-32')}
       >
         {isCustom ? (
@@ -138,6 +158,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           onMinimize={handleMinimize}
           onMaximize={handleMaximize}
           onRestore={handleRestore}
+          maximizeSlot={maximizeSlot}
           onClose={handleClose}
           className="shrink-0"
         />

@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { CaptionButton } from '../caption-button/caption-button';
@@ -18,6 +18,8 @@ type CaptionButtonGroupProps = {
   onMaximize?: () => void;
   /** 이전 크기로 복원 버튼을 눌렀을 때(placement가 maximized일 때) */
   onRestore?: () => void;
+  /** 기본 최대화 버튼 대신 그릴 것(placement가 normal, snapped일 때). 최대화 버튼에 마우스를 올리면 스냅 레이아웃을 여는 조립처럼 앱이 버튼을 바꿔 끼운다. 이때 onMaximize는 쓰이지 않는다 */
+  maximizeSlot?: ReactNode;
   /** 닫기 버튼을 눌렀을 때 */
   onClose?: () => void;
   /** 바깥 배치용 클래스 */
@@ -38,6 +40,7 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
     onMinimize: handleMinimize,
     onMaximize: handleMaximize,
     onRestore: handleRestore,
+    maximizeSlot,
     onClose: handleClose,
     className,
   } = props;
@@ -52,6 +55,8 @@ export function CaptionButtonGroup(props: CaptionButtonGroupProps): JSX.Element 
           inactive={isInactive}
           onClick={handleRestore}
         />
+      ) : maximizeSlot !== undefined ? (
+        maximizeSlot
       ) : (
         <CaptionButton
           label="최대화"
