@@ -88,7 +88,9 @@
   --color-blue-dark-1-90: #005fb8e5;
   --color-blue-dark-2: #003e92;
   --color-chrome-blue-primary: #0b57d0;
+  --color-chrome-blue-tonal-container: #d3e3fd;
   --color-chrome-gray-frame: #dfe3e7;
+  --color-chrome-gray-grey-900: #202124;
   --color-chrome-gray-omnibox: #e9eef6;
   --color-chrome-gray-omnibox-hover: #e0e5ed;
   --color-chrome-gray-on-surface: #1f1f1f;
@@ -176,6 +178,8 @@
   --chrome-frame-fill: var(--color-chrome-gray-frame);
   --chrome-omnibox-fill: var(--color-chrome-gray-omnibox);
   --chrome-omnibox-fill-hover: var(--color-chrome-gray-omnibox-hover);
+  --chrome-omnibox-selection-background: var(--color-chrome-blue-tonal-container);
+  --chrome-omnibox-selection-text: var(--color-chrome-gray-grey-900);
   --chrome-omnibox-stroke-focus: var(--color-chrome-blue-primary);
   --chrome-page-fill: var(--color-white);
   --chrome-tab-fill-hover: var(--color-white-50);
@@ -261,6 +265,7 @@
   --shadow-text-elevation-window-inactive: 0px 2px 10.67px #00000026, 0px 16px 32px #00000030;
   --size-1: 1px;
   --size-2: 2px;
+  --size-4: 4px;
   --size-6: 6px;
   --size-8: 8px;
   --size-9: 9px;
