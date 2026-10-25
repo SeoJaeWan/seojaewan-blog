@@ -126,6 +126,34 @@
 }
 
 /*
+ * 창 최소화(견본 motion-window-minimize). WindowFrame 전체가 작업 표시줄 앱 버튼 쪽으로 옮겨 가며
+ * 배율 1 → 0.12, 투명도 1 → 0으로 사라진다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 도착 위치(창 자리에서 작업 표시줄 앱 버튼까지의 거리)는 실행 중 값이라 앱이
+ * --motion-window-taskbar-offset-x·-y로 넘긴다. 작업 표시줄에서 복원(motion-window-restore)도 같은 변수를 출발 위치로 쓴다.
+ * 끝 모습(투명도 0)을 최소화 상태로 바뀔 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-minimize {
+  0% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  100% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+}
+
+@utility motion-window-minimize {
+  animation-name: motion-window-minimize;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
@@ -133,7 +161,8 @@
  */
 @media (prefers-reduced-motion: reduce) {
   .motion-window-open,
-  .motion-window-close {
+  .motion-window-close,
+  .motion-window-minimize {
     animation: none;
   }
 }
