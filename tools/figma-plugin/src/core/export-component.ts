@@ -1,8 +1,11 @@
 import { type ExportManifest, nodeBox, type VariantEntry } from '../export-manifest';
 import { assetFile, variantSlug } from '../naming';
-import { monoColorSvg, normalizeSvgBytes } from '../svg-normalize';
+import { utf8Encode } from '../sha256';
+import { monoColorSvg, normalizeSvgBytes, utf8Decode } from '../svg-normalize';
+import { relativeTransform, trimmedPathSvg, type TrimmedVector } from '../svg-trim';
 import { type CheckContext, checkVariant, type Violation } from './check-structure';
 import type { AssetData, NodeData } from './node-data';
+import { isMotionApiError } from './read-motion';
 import { type NameCache, readNodeTree } from './read-node';
 
 // 컴포넌트나 조립 하나를 검사하고 export.json 내용, 변형 PNG, 쓰는 자산 파일을 만든다.
@@ -177,7 +180,10 @@ function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
  * 자산 원본 컴포넌트를 파일로 내보낸다.
  * 한 가지 색 자산은 SVG의 색을 currentColor로 바꾸고(색은 코드의 글자 색 클래스가 정한다),
  * 여러 색 자산은 SVG 그대로, 래스터 이미지는 PNG(배율 1)로 내보낸다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
+ * 경로 트림이 걸린 벡터는 벡터 경로와 트림 기본값으로 `pathLength="1"`·`stroke-dasharray` 요소를 직접 만든다.
+ * 트림이 없는 자산은 피그마가 내보낸 SVG를 그대로 쓴다.
  * @codocs [[피그마 연동:자산]]
+ * @codocs [[피그마 연동:모션]]
  * @param asset 자산
  * @returns 파일 내용
  */
@@ -189,10 +195,87 @@ async function exportAsset(asset: AssetData): Promise<Uint8Array> {
   if (asset.kind === 'raster') {
     return rasterBytes(node);
   }
-  const svg = normalizeSvgBytes(
+  const exported = normalizeSvgBytes(
     await node.exportAsync({ format: 'SVG', svgOutlineText: true, svgIdAttribute: false }),
   );
+  const trims = trimmedVectors(node);
+  const svg =
+    trims.length === 0
+      ? exported
+      : utf8Encode(trimmedPathSvg(utf8Decode(exported), asset.name, trims));
   return asset.kind === 'mono' ? monoColorSvg(svg) : svg;
+}
+
+/**
+ * 자산 컴포넌트 안에서 경로 트림 키프레임(PATH_TRIM_START·PATH_TRIM_END)이 걸린 레이어를 읽는다.
+ * 경로는 벡터의 `vectorPaths`(트림 전 전체), 위치는 두 노드의 `absoluteTransform`, 보이는 범위는 트랙의 기본값(baseValue)이다.
+ * 트랙이 없는 쪽은 트림이 없는 값(시작 0, 끝 1)이다.
+ * @codocs [[피그마 연동:모션]]
+ * @param component 자산 컴포넌트
+ * @returns 트림 레이어
+ */
+function trimmedVectors(component: ComponentNode): TrimmedVector[] {
+  let nodes: SceneNode[];
+  try {
+    nodes = component.findAll((node) => {
+      const tracks = trimTracks(node);
+      return tracks.start !== undefined || tracks.end !== undefined;
+    });
+  } catch (error) {
+    if (isMotionApiError(error)) {
+      throw new Error(
+        `자산 ${component.name}: 모션 API를 쓸 수 없어 경로 트림을 확인할 수 없다. 모션 기능을 쓸 수 있는 계정으로 내보낸다.`,
+      );
+    }
+    throw error;
+  }
+  return nodes.map((node) => trimmedVector(component, node));
+}
+
+/**
+ * 트림 레이어 하나를 순수 데이터로 옮긴다.
+ * @param component 자산 컴포넌트
+ * @param node 트림 레이어
+ * @returns 트림 벡터
+ */
+function trimmedVector(component: ComponentNode, node: SceneNode): TrimmedVector {
+  const tracks = trimTracks(node);
+  return {
+    name: node.name,
+    paths: node.type === 'VECTOR' ? node.vectorPaths.map((path) => path.data) : null,
+    transform: relativeTransform(component.absoluteTransform, node.absoluteTransform),
+    start: trimBase(tracks.start, 0),
+    end: trimBase(tracks.end, 1),
+  };
+}
+
+/**
+ * 노드의 경로 트림 트랙을 꺼낸다.
+ * @param node 노드
+ * @returns 시작·끝 트랙(없으면 undefined)
+ */
+function trimTracks(node: SceneNode): {
+  start: ManualKeyframeBinding | undefined;
+  end: ManualKeyframeBinding | undefined;
+} {
+  if (!('manualKeyframeTracks' in node)) {
+    return { start: undefined, end: undefined };
+  }
+  const tracks = node.manualKeyframeTracks;
+  return { start: tracks.PATH_TRIM_START, end: tracks.PATH_TRIM_END };
+}
+
+/**
+ * 트림 트랙의 기본값을 읽는다.
+ * @param track 트림 트랙
+ * @param fallback 트랙이 없을 때의 값
+ * @returns 기본값, 숫자가 아니면 null
+ */
+function trimBase(track: ManualKeyframeBinding | undefined, fallback: number): number | null {
+  if (track === undefined) {
+    return fallback;
+  }
+  return track.baseValue.type === 'FLOAT' ? track.baseValue.value : null;
 }
 
 /**
