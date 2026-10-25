@@ -26,6 +26,23 @@
 }
 
 /*
+ * 검색 돋보기(pill·taskbar)의 회색 ↔ 컬러 전환이다. 두 돋보기를 겹쳐 두고 투명도만 바꾼다.
+ * 들어갈 때(상자에 마우스를 올리거나 포커스) faster·fade로 페이드하고, 나올 때는 바로 바뀐다.
+ * transition은 바뀐 뒤 상태의 설정을 쓰므로 기본 상태는 전환 속성이 없고(바로 바뀜),
+ * 상자(group)가 hover·focus-within일 때만 투명도를 전환한다.
+ * 바뀐 뒤의 투명도는 컴포넌트가 group-hover·group-focus-within으로 가진다.
+ */
+@utility motion-search-icon-state {
+  transition-property: none;
+  transition-duration: var(--motion-duration-faster);
+  transition-timing-function: var(--motion-easing-fade);
+
+  &:where(:is(.group:hover, .group:focus-within) *) {
+    transition-property: opacity;
+  }
+}
+
+/*
  * ProgressRing 호 회전 + 경로 트림(견본 motion-progress-ring). 클래스는 Asset의 svg에 붙이고 안의 호 경로를 움직인다.
  * 트림은 자산의 pathLength="1" 기준으로 dasharray(<끝-시작> 1)·dashoffset(-<시작>)으로, 회전은 피그마 부호를 뒤집어 옮긴다.
  * 세 트랙의 시간·구간 위치·이징 토큰이 같아 키프레임 하나로 묶는다. 정지 모습(트림 끝 0.46·색·크기)은 자산과 컴포넌트가 갖는다.
@@ -62,10 +79,317 @@
 }
 
 /*
+ * 창 열기(견본 motion-window-open). WindowFrame 전체가 배율 0.96 → 1, 투명도 0 → 1로 나타난다.
+ * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 열 때(data-starting-style 자리) 붙인다.
+ */
+@keyframes motion-window-open {
+  0% {
+    opacity: 0;
+    scale: var(--motion-scale-window-enter);
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@utility motion-window-open {
+  animation-name: motion-window-open;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 창 닫기(견본 motion-window-close). WindowFrame 전체가 배율 1 → 0.96, 투명도 1 → 0으로 사라진다(Direct exit).
+ * 두 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. 앱이 창을 닫을 때(data-ending-style 자리) 붙이고,
+ * 애니메이션이 끝날 때까지 화면에 남긴다. 끝 모습(투명도 0)을 빠질 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-close {
+  0% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: var(--motion-scale-window-enter);
+  }
+}
+
+@utility motion-window-close {
+  animation-name: motion-window-close;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 창 최소화(견본 motion-window-minimize). WindowFrame 전체가 작업 표시줄 앱 버튼 쪽으로 옮겨 가며
+ * 배율 1 → 0.12, 투명도 1 → 0으로 사라진다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 도착 위치(창 자리에서 작업 표시줄 앱 버튼까지의 거리)는 실행 중 값이라 앱이
+ * --motion-window-taskbar-offset-x·-y로 넘긴다. 작업 표시줄에서 복원(motion-window-restore)도 같은 변수를 출발 위치로 쓴다.
+ * 끝 모습(투명도 0)을 최소화 상태로 바뀔 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-minimize {
+  0% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+
+  100% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+}
+
+@utility motion-window-minimize {
+  animation-name: motion-window-minimize;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * 작업 표시줄에서 복원(견본 motion-window-restore). 최소화의 반대로, WindowFrame 전체가 작업 표시줄 앱 버튼 자리에서
+ * 배율 0.12 → 1, 투명도 0 → 1로 커지며 제자리로 나타난다. 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다.
+ * 출발 위치는 실행 중 값이라 최소화와 같은 --motion-window-taskbar-offset-x·-y를 앱이 넘긴다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-restore {
+  0% {
+    opacity: 0;
+    scale: var(--motion-scale-window-minimize);
+    translate: var(--motion-window-taskbar-offset-x) var(--motion-window-taskbar-offset-y);
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-window-restore {
+  animation-name: motion-window-restore;
+  animation-duration: var(--motion-duration-slow);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * 창 최대화·복원·스냅(견본 motion-window-snap). 위치와 크기를 이어서 바꾸는 FLIP 애니메이션이다([[디자인 기반:모션 클래스]]).
+ * 앱이 새 상태로 바꾼 뒤 이전 위치·크기에 맞춘 값을 CSS 변수로 넘기면, 클래스는 그 값에서 이동 0·배율 1로 되돌린다.
+ * 시작 이동은 --motion-window-snap-from-x·-y, 시작 배율은 --motion-window-snap-from-scale-x·-y다(실행 중 값).
+ * 세 트랙의 시간·이징 토큰이 같아 키프레임 하나로 묶는다. transform-origin은 다른 창 클래스처럼 기본값(가운데)이라
+ * 앱은 이전 위치·크기를 맞추는 FLIP 계산을 이 원점 기준으로 해야 한다.
+ * 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-window-snap {
+  0% {
+    scale: var(--motion-window-snap-from-scale-x) var(--motion-window-snap-from-scale-y);
+    translate: var(--motion-window-snap-from-x) var(--motion-window-snap-from-y);
+  }
+
+  100% {
+    scale: 1 1;
+    translate: 0 0;
+  }
+}
+
+@utility motion-window-snap {
+  animation-name: motion-window-snap;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-point-to-point);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start·검색 패널 열기(견본 motion-panel-enter). ShellSurface가 화면 아래에서 제자리로 미끄러져 올라온다.
+ * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 키프레임은 px 대신 요소 자기 높이(translate 100%)로 써서
+ * 실제 패널 높이가 달라도(모바일 640 등) 화면 아래로 빠졌다가 올라오게 한다(견본에서는 720과 같다).
+ * 앱이 패널을 열 때(data-starting-style 자리) 붙인다. 시작 모습을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-panel-enter {
+  0% {
+    translate: 0 100%;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@utility motion-panel-enter {
+  animation-name: motion-panel-enter;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start·검색 패널 닫기(견본 motion-panel-exit). 패널 열기의 반대로, ShellSurface가 제자리에서 화면 아래로 미끄러져 내려간다.
+ * 견본의 720은 견본 패널 높이이고 실행 중 값은 없다. 열기처럼 px 대신 요소 자기 높이(translate 100%)로 쓴다.
+ * 앱이 패널을 닫을 때(data-ending-style 자리) 붙인다. 사라진 모습을 끝난 뒤에도 유지하도록 fill-mode는 both다(창 닫기처럼).
+ */
+@keyframes motion-panel-exit {
+  0% {
+    translate: 0 0;
+  }
+
+  100% {
+    translate: 0 100%;
+  }
+}
+
+@utility motion-panel-exit {
+  animation-name: motion-panel-exit;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-gentle-exit);
+  animation-fill-mode: both;
+}
+
+/*
+ * 우클릭 메뉴·메시지 상자 열기(견본 motion-flyout-enter). Flyout 전체가 투명도 0 → 1로 페이드하며 나타난다.
+ * 크기나 위치는 움직이지 않고 실행 중 값도 없다. 앱이 메뉴·메시지 상자를 열 때(Base UI 팝업의 data-starting-style 자리) 붙인다.
+ * 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-flyout-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-flyout-enter {
+  animation-name: motion-flyout-enter;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-direct-entrance);
+  animation-fill-mode: both;
+}
+
+/*
+ * 재부팅 화면 나타남(견본 motion-boot-screen-enter). BootScreen 전체가 투명도 0 → 1로 페이드하며 화면을 덮는다.
+ * 견본의 호 회전·트림 트랙은 안의 ProgressRing이 이미 가진 motion-progress-ring과 같은 값이라 여기서 다시 만들지 않는다.
+ * 실행 중 값은 없다. 앱이 다시 시작할 때 BootScreen에 붙인다. 시작 모습(투명도 0)을 재생 전에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-boot-screen-enter {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility motion-boot-screen-enter {
+  animation-name: motion-boot-screen-enter;
+  animation-duration: var(--motion-duration-fast);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-fill-mode: both;
+}
+
+/*
+ * 재부팅 화면 사라짐(견본 motion-boot-screen-exit). BootScreen 전체가 투명도 1 → 0으로 페이드하며 처음 상태의 바탕화면을 드러낸다.
+ * 견본의 호 회전·트림 트랙은 안의 ProgressRing이 이미 가진 motion-progress-ring과 같은 값이라 여기서 다시 만들지 않는다.
+ * 실행 중 값은 없다. 앱이 다시 시작을 마칠 때 BootScreen에 붙이고, 애니메이션이 끝날 때까지 화면에 남긴다.
+ * 끝 모습(투명도 0)을 빠질 때까지 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-boot-screen-exit {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-boot-screen-exit {
+  animation-name: motion-boot-screen-exit;
+  animation-duration: var(--motion-duration-normal);
+  animation-timing-function: var(--motion-easing-fade);
+  animation-fill-mode: both;
+}
+
+/*
+ * Start 글자 목록 열기(견본 motion-start-jump-list-enter). 글자 격자가 배율 1.15 → 1로 줄며 페이드 인하고,
+ * 같은 시간 동안 앱 목록(견본의 list 레이어)이 페이드 아웃한다. 격자와 목록이 한 움직임이라 클래스 하나로 둔다.
+ * 앱이 지킬 약속: 클래스는 격자와 목록을 함께 감싼 요소에 붙이고, 안의 글자 격자에 data-jump-list="grid",
+ * 앱 목록에 data-jump-list="list"를 둔다(닫기 motion-start-jump-list-exit도 같다).
+ * 격자의 배율(direct-entrance)과 투명도(fade)는 이징이 달라 animation을 쉼표로 나눈다. 1.15는 토큰이 아닌 견본 숫자다.
+ * 시작·끝 모습을 재생 전후에도 유지하도록 fill-mode는 both다.
+ */
+@keyframes motion-start-jump-list-enter-grid-scale {
+  0% {
+    scale: 1.15;
+  }
+
+  100% {
+    scale: 1;
+  }
+}
+
+@keyframes motion-start-jump-list-enter-grid-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-start-jump-list-enter-list-fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility motion-start-jump-list-enter {
+  & [data-jump-list='grid'] {
+    animation:
+      motion-start-jump-list-enter-grid-scale var(--motion-duration-fast)
+        var(--motion-easing-direct-entrance) both,
+      motion-start-jump-list-enter-grid-fade var(--motion-duration-fast) var(--motion-easing-fade)
+        both;
+  }
+
+  & [data-jump-list='list'] {
+    animation: motion-start-jump-list-enter-list-fade var(--motion-duration-fast)
+      var(--motion-easing-fade) both;
+  }
+}
+
+/*
  * 동작 줄이기(Windows "애니메이션 효과" 끔)는 이 블록 한 곳에서 처리한다.
  * 창·패널·메뉴·글자 목록의 등장·퇴장, 최소화·최대화·스냅, 재부팅 화면 전환은 여기서 움직임 없이 바로 바꾼다.
  * hover·pressed 색 전환, 검색 돋보기 페이드, ProgressRing 회전, 재부팅 화면을 보여주는 시간은 그대로 둔다.
+ * 애니메이션을 없애면 사라지는 요소는 기다릴 애니메이션이 없어 바로 빠진다([[디자인 기반:모션 클래스]]).
  */
 @media (prefers-reduced-motion: reduce) {
-  /* 지금 있는 클래스는 상태 색 전환과 ProgressRing 회전이라 모두 그대로 두는 대상이다. */
+  .motion-window-open,
+  .motion-window-close,
+  .motion-window-minimize,
+  .motion-window-restore,
+  .motion-window-snap,
+  .motion-panel-enter,
+  .motion-panel-exit,
+  .motion-flyout-enter,
+  .motion-boot-screen-enter,
+  .motion-boot-screen-exit,
+  .motion-start-jump-list-enter [data-jump-list] {
+    animation: none;
+  }
 }

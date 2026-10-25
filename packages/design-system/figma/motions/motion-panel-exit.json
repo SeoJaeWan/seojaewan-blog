@@ -1,0 +1,47 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 167,
+    "token": "motion/duration/fast"
+  },
+  "iterations": null,
+  "name": "motion-panel-exit",
+  "nodeId": "758:180",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 167,
+        "token": "motion/duration/fast"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/gentle-exit",
+          "offset": 1,
+          "time": 167,
+          "value": 720,
+          "valueToken": null
+        }
+      ],
+      "node": "ShellSurface",
+      "nodeKind": "component",
+      "operation": "SET",
+      "path": "ShellSurface",
+      "property": "TRANSLATION_Y"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=758-180"
+}
