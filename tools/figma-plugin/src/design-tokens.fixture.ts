@@ -202,8 +202,8 @@ export function tokensInput(overrides: Partial<DesignTokensInput> = {}): DesignT
     effectStyles: [],
     paintStyles: [],
     imageAssets: {
-      a563f96d0f0af894df83be986ec4e7a84096fd54: 'images/noise-acrylic.png',
-      '32a4f2aead9726b13a6b06d1170070a036adac8e': 'images/wallpaper-bloom.png',
+      a563f96d0f0af894df83be986ec4e7a84096fd54: 'images/noise-acrylic',
+      '32a4f2aead9726b13a6b06d1170070a036adac8e': 'images/wallpaper-bloom',
     },
     ...overrides,
   };

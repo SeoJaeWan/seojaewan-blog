@@ -12,7 +12,7 @@ import type {
   VariableValueInput,
 } from './design-tokens';
 import type { ComponentSummary } from './messages';
-import { assetFile } from './naming';
+import { assetName } from './naming';
 import { COMPONENTS_PAGE_ID, PATTERNS_PAGE_ID } from './plugin-config';
 import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
@@ -102,7 +102,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
       name: style.name,
       paints: style.paints.map(paintInput),
     })),
-    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.file])),
+    imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.name])),
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
@@ -308,15 +308,15 @@ function collectAliasIds(value: unknown, ids: Set<string>): void {
 
 /** 이미지 자산 하나 */
 export type ImageAsset = {
-  /** 자산 파일(`images/<자산>.png`) */
-  file: string;
+  /** 자산 이름(`images/<자산>`, 확장자 없음) */
+  name: string;
   /** 자산 컴포넌트 */
   node: ComponentNode;
 };
 
 /**
  * Foundations / Assets의 이미지 묶음(`group/Images`)에서 이미지 칠 하나만 가진 컴포넌트를 찾아
- * 이미지 해시 → 자산 파일 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
+ * 이미지 해시 → 자산 표를 만든다. 토큰의 이미지 칠은 이 표로 자산 이름을 얻고,
  * 구조 검사는 이 표에 없는 이미지를 막는다. 묶음 프레임이 있는 첫 페이지만 읽는다.
  * @codocs [[피그마 연동:자산]]
  * @returns 이미지 해시 → 자산
@@ -344,7 +344,7 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
         const [fill] = fills;
         if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
           images.set(fill.imageHash, {
-            file: assetFile({ group, name: component.name, kind: 'raster' }),
+            name: assetName({ group, name: component.name }),
             node: component,
           });
         }

@@ -126,17 +126,26 @@ export function assetSlug(name: string): string {
 }
 
 /**
- * 자산 파일 이름(`<묶음>/<자산>.<svg|png>`)을 만든다. 래스터 이미지는 PNG, 나머지는 SVG다.
+ * 자산 이름(`<묶음>/<자산>`)을 만든다. 확장자는 넣지 않는다. 코드와 tokens.json이 이 이름으로 자산을 찾는다.
  * @codocs [[피그마 연동:자산]]
- * @param asset 자산 묶음, 이름, 처리 방식
+ * @param asset 자산 묶음과 이름
  * @param asset.group 묶음 이름
  * @param asset.name 자산 컴포넌트 이름
- * @param asset.kind 처리 방식
+ * @returns 자산 폴더 기준 이름(예: `images/avatar-profile`)
+ */
+export function assetName(asset: { group: string; name: string }): string {
+  return `${assetSlug(asset.group)}/${assetSlug(asset.name)}`;
+}
+
+/**
+ * 자산 파일 이름(`<묶음>/<자산>.<확장자>`)을 만든다. 벡터 자산은 SVG, 래스터 자산은 내보낸 바이트의 실제 형식이다.
+ * @codocs [[피그마 연동:자산]]
+ * @param name 자산 이름(`assetName`)
+ * @param extension 확장자(`svg`, `png`, `jpg` 등)
  * @returns 자산 폴더 기준 파일 경로
  */
-export function assetFile(asset: { group: string; name: string; kind: string }): string {
-  const extension = asset.kind === 'raster' ? 'png' : 'svg';
-  return `${assetSlug(asset.group)}/${assetSlug(asset.name)}.${extension}`;
+export function assetFile(name: string, extension: string): string {
+  return `${name}.${extension}`;
 }
 
 /**

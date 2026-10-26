@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   assetFile,
   assetFilePath,
+  assetName,
   componentFilePath,
   componentSlug,
   patternFolder,
@@ -59,16 +60,19 @@ describe('이미지 파일 이름은 피그마 변형 이름과 1:1로 맞춘다
 
 // @codocs [[피그마 연동:자산]]
 describe('자산 파일', () => {
-  it('자산은 figma/assets/<묶음>/<이름>에 두고, 래스터만 PNG다', () => {
-    expect(assetFile({ group: 'Icons', name: 'ic_fluent_add_20_regular', kind: 'mono' })).toBe(
+  it('자산은 figma/assets/<묶음>/<이름>에 두고, 확장자는 내보낸 형식이다', () => {
+    expect(assetName({ group: 'Icons', name: 'ic_fluent_add_20_regular' })).toBe(
+      'icons/ic_fluent_add_20_regular',
+    );
+    expect(assetName({ group: 'Illustrations', name: 'file/Folder' })).toBe(
+      'illustrations/file-folder',
+    );
+    expect(assetName({ group: 'Images', name: 'wallpaper/Bloom' })).toBe('images/wallpaper-bloom');
+    expect(assetFile('icons/ic_fluent_add_20_regular', 'svg')).toBe(
       'icons/ic_fluent_add_20_regular.svg',
     );
-    expect(assetFile({ group: 'Illustrations', name: 'file/Folder', kind: 'color' })).toBe(
-      'illustrations/file-folder.svg',
-    );
-    expect(assetFile({ group: 'Images', name: 'avatar/Profile', kind: 'raster' })).toBe(
-      'images/avatar-profile.png',
-    );
+    expect(assetFile('images/wallpaper-bloom', 'jpg')).toBe('images/wallpaper-bloom.jpg');
+    expect(assetFile('images/avatar-profile', 'png')).toBe('images/avatar-profile.png');
     expect(assetFilePath('icons/a.svg')).toBe('packages/design-system/figma/assets/icons/a.svg');
   });
 

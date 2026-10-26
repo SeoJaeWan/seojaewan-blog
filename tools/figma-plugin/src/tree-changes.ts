@@ -1,4 +1,5 @@
 import type { TreeEntry } from './github-client';
+import { ASSETS_DIR } from './plugin-config';
 
 // 커밋할 브랜치의 파일(경로 → blob SHA)과 이번에 쓸 파일을 비교해 트리 변경을 정한다.
 // 같은 내용은 같은 blob SHA라, SHA가 다른 파일만 바꾸면 바뀐 것이 없을 때 커밋도 생기지 않는다.
@@ -19,6 +20,8 @@ export type TreePlan = {
 /**
  * 쓸 파일 가운데 브랜치와 SHA가 다른 것만 바꾸고, 맡은 폴더 바로 아래에 있지만 쓸 파일에 없는 파일은 지운다.
  * 맡은 폴더 밖의 파일은 지우지 않는다(다른 대상의 파일을 건드리지 않는다).
+ * 다만 쓸 자산 파일과 확장자만 다른 자산 파일은 지운다. 래스터 자산의 원본 형식이 바뀐 것이라(예: PNG → JPEG)
+ * 두 파일을 함께 두면 코드 자산이 하나로 정해지지 않는다([[피그마 연동:자산]]).
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param desired 쓸 파일 경로 → blob SHA
  * @param current 커밋할 브랜치의 파일 경로 → blob SHA
@@ -34,8 +37,14 @@ export function planTree(
     .filter(([path, sha]) => current.get(path) !== sha)
     .map(([path]) => path)
     .sort();
+  const desiredAssets = new Set([...desired.keys()].filter(isAssetPath).map(withoutExtension));
   const deleted = [...current.keys()]
-    .filter((path) => !desired.has(path) && ownedFolders.includes(parentFolder(path)))
+    .filter(
+      (path) =>
+        !desired.has(path) &&
+        (ownedFolders.includes(parentFolder(path)) ||
+          (isAssetPath(path) && desiredAssets.has(withoutExtension(path)))),
+    )
     .sort();
   return {
     entries: [
@@ -71,4 +80,23 @@ export function treeChunks<T>(entries: readonly T[], size: number = TREE_CHUNK_S
     result.push(entries.slice(start, start + size));
   }
   return result;
+}
+
+/**
+ * 자산 폴더(`figma/assets/`) 아래 파일인지 본다.
+ * @param path 파일 경로
+ * @returns 자산 파일이면 true
+ */
+function isAssetPath(path: string): boolean {
+  return path.startsWith(`${ASSETS_DIR}/`);
+}
+
+/**
+ * 파일 경로에서 확장자를 뗀다.
+ * @param path 파일 경로
+ * @returns 확장자 없는 경로
+ */
+function withoutExtension(path: string): string {
+  const dot = path.lastIndexOf('.');
+  return dot > path.lastIndexOf('/') ? path.slice(0, dot) : path;
 }

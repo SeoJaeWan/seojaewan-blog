@@ -42,6 +42,17 @@ describe('브랜치와 내용이 다른 파일만 바꾸고, 맡은 폴더의 �
     expect(plan.deleted).not.toContain('components/menu/export.json');
     expect(plan.deleted).not.toContain('assets/icons/add.svg');
   });
+
+  it('래스터 자산의 원본 형식이 바뀌면 확장자만 다른 예전 자산 파일을 지운다', () => {
+    const images = 'packages/design-system/figma/assets/images';
+    const branch = new Map([
+      [`${images}/wallpaper-bloom.png`, 'a'],
+      [`${images}/file-folder.png`, 'b'],
+    ]);
+    const plan = planTree(new Map([[`${images}/wallpaper-bloom.jpg`, 'c']]), branch, []);
+    expect(plan.changed).toEqual([`${images}/wallpaper-bloom.jpg`]);
+    expect(plan.deleted).toEqual([`${images}/wallpaper-bloom.png`]);
+  });
 });
 
 // @codocs [[피그마 연동:피그마 플러그인]]
