@@ -6,8 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WindowFrame } from '@seojaewan/design-system';
 
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
-import type { OpenWindow } from '@/shared/utils/window-rules/window-rules';
+import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import { getSnapFlip, getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 import { WindowLayer } from './window-layer';

@@ -6,8 +6,12 @@ import { WindowView } from '@/features/window/components/window-view/window-view
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import type { RenderWindow } from '@/shared/utils/window-rules/window-rules';
-import type { OpenWindow, SnapZone, WindowState } from '@/shared/utils/window-rules/window-rules';
+import type {
+  OpenWindow,
+  RenderWindow,
+  SnapZone,
+  WindowState,
+} from '@/shared/utils/window-rules/window-rules';
 import { getFrontWindowId, getRemainingSnapZones } from '@/shared/utils/window-rules/window-rules';
 
 type WindowLayerProps = {

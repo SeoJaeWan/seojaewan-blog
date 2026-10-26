@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 import { SnapAssist } from '@/features/window/components/snap-assist/snap-assist';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { getThumbnailScale } from '@/shared/utils/window-geometry/window-geometry';
-import type { RenderWindow } from '@/shared/utils/window-rules/window-rules';
 import type {
   OpenWindow,
+  RenderWindow,
   SnapZone,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
