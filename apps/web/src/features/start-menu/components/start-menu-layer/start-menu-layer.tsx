@@ -4,7 +4,9 @@ import { type JSX, type ReactNode, useEffect, useRef } from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import type { StartApp } from '@/features/start-menu/components/item-icon/item-icon';
+import { usePanelStore } from '@/core/panels/panels';
+import { useOpenApp } from '@/core/window/window';
+import { useWorkspaceStore } from '@/core/workspace/workspace';
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import { SearchPanel } from '@/features/start-menu/components/search-panel/search-panel';
 import type { StartItem } from '@/features/start-menu/components/start-body/start-body';
@@ -16,19 +18,10 @@ import {
   startAppGroups,
   startPinnedApps,
 } from '@/features/start-menu/data/start-apps/start-apps';
-import { useStartMenuStore } from '@/features/start-menu/stores/start-menu-store/start-menu-store';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import type { Device } from '@/shared/hooks/use-device/use-device';
+import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
-
-type StartMenuLayerProps = {
-  /** 화면 방식. 모바일은 패널이 화면 폭을 채우고 작업 표시줄 바로 위에 붙는다 */
-  device: Device;
-  /** Start에서 앱 항목을 열었을 때 부른다. 창을 여는 일은 쓰는 곳(작업 공간)이 한다 */
-  onOpenApp?: (app: StartApp) => void;
-  /** 전원 메뉴의 `다시 시작`을 눌렀을 때 부른다. 메뉴와 Start는 패널 층이 닫고, 다시 시작은 쓰는 곳(작업 공간)이 한다 */
-  onRestart?: () => void;
-};
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';
@@ -43,20 +36,24 @@ const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
 const EMPTY_SEARCH_ITEMS = [] as const;
 
 /**
- * 패널 층(Start 메뉴와 검색 패널)을 그린다. 열린 패널은 저장소(`useStartMenuStore`)가 정하고 둘 중 하나만 열린다.
+ * 패널 층(Start 메뉴와 검색 패널)을 그린다. 열린 패널은 패널 저장소(`usePanelStore`)가 정하고 둘 중 하나만 열린다.
+ * 모바일은 패널이 화면 폭을 채우고 작업 표시줄 바로 위에 붙는다.
+ * Start에서 앱 항목을 열면 창 저장소로 그 앱 창을 열고, 전원 메뉴의 `다시 시작`을 고르면 작업 공간 저장소로 다시 시작한다.
  * 열려 있는 동안 Esc를 누르거나 바깥(Start 버튼과 작업 표시줄 검색칸은 빼고)을 누르면 닫는다. 패널 안에서 연 전원 메뉴는
  * 문서 끝에 포털되지만 React 트리로는 패널 안이라 바깥으로 보지 않는다. 전원 메뉴가 열려 있을 때 Esc는 메뉴만 닫는다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
  * @codocs [[작업 공간:다시 시작]]
- * @param props
+ * @returns 패널 층
  */
-export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
-  const { device, onOpenApp, onRestart } = props;
-  const openPanel = useStartMenuStore((state) => state.openPanel);
-  const isPowerMenuOpen = useStartMenuStore((state) => state.isPowerMenuOpen);
-  const close = useStartMenuStore((state) => state.close);
-  const setPowerMenuOpen = useStartMenuStore((state) => state.setPowerMenuOpen);
+export function StartMenuLayer(): JSX.Element {
+  const device = useDevice();
+  const openApp = useOpenApp();
+  const restart = useWorkspaceStore((state) => state.restart);
+  const openPanel = usePanelStore((state) => state.openPanel);
+  const isPowerMenuOpen = usePanelStore((state) => state.isPowerMenuOpen);
+  const close = usePanelStore((state) => state.close);
+  const setPowerMenuOpen = usePanelStore((state) => state.setPowerMenuOpen);
   // 이번 pointerdown이 패널 안(포털된 메뉴 포함)에서 일어났는지. React 이벤트가 문서 리스너보다 먼저 돌아 표시한다.
   const isPointerInsideRef = useRef(false);
   const isOpen = openPanel !== null;
@@ -75,7 +72,7 @@ export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
        * @param event 키 이벤트
        */
       function handleKeyDown(event: KeyboardEvent): void {
-        if (event.key !== 'Escape' || useStartMenuStore.getState().isPowerMenuOpen) {
+        if (event.key !== 'Escape' || usePanelStore.getState().isPowerMenuOpen) {
           return;
         }
         close();
@@ -118,7 +115,7 @@ export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
   /** 전원 메뉴의 `다시 시작`을 고르면 메뉴와 Start를 닫고 다시 시작한다. */
   function handleRestartClick(): void {
     close();
-    onRestart?.();
+    restart();
   }
 
   // 전원 메뉴 항목(피그마 `Menu/Power`). 절전과 시스템 종료는 두지 않는다([[작업 공간:다시 시작]]).
@@ -188,13 +185,13 @@ export function StartMenuLayer(props: StartMenuLayerProps): JSX.Element {
   }
 
   /**
-   * Start 항목을 연다. 앱이면 쓰는 곳에 알리고, 항목을 열면 Start는 닫힌다.
+   * Start 항목을 연다. 앱이면 그 앱 창을 열고, 항목을 열면 Start는 닫힌다.
    * @param item 연 항목
    */
   function handleItemOpen(item: StartItem): void {
     close();
     if (item.kind === 'app') {
-      onOpenApp?.(item.app);
+      openApp(item.app);
     }
   }
 

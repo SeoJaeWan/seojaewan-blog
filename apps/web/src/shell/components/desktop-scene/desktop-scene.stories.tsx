@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { DesktopIcons } from '@/features/desktop/desktop';
 import { TaskbarAppButton, TaskbarDefault } from '@/features/taskbar/taskbar';
 import { TASKBAR_CLOCK } from '@/shared/stories/taskbar/taskbar';
 
@@ -32,7 +33,7 @@ const meta = {
   render: (args) => (
     <DesktopScene
       className={SIZE_CLASS_NAMES[args.device]}
-      icons={SCENE_ICONS}
+      icons={<DesktopIcons icons={SCENE_ICONS} />}
       taskbar={
         <TaskbarDefault
           search={TASKBAR_SEARCHES[args.device]}

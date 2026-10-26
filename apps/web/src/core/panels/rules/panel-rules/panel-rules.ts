@@ -2,7 +2,7 @@
 export type OpenPanel = 'start' | 'search' | null;
 
 /** Start·검색 패널과 전원 메뉴의 열림 상태 */
-export type StartMenuState = {
+export type PanelState = {
   /** 열린 패널. 없으면 null이다 */
   openPanel: OpenPanel;
   /** Start 아래 줄의 전원 메뉴가 열렸는지 */
@@ -10,7 +10,7 @@ export type StartMenuState = {
 };
 
 /** 처음 상태. 패널과 전원 메뉴가 모두 닫혀 있다 */
-export const initialStartMenuState: StartMenuState = {
+export const initialPanelState: PanelState = {
   openPanel: null,
   isPowerMenuOpen: false,
 };
@@ -22,7 +22,7 @@ export const initialStartMenuState: StartMenuState = {
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
-export function toggleStartPanel(state: StartMenuState): StartMenuState {
+export function toggleStartPanel(state: PanelState): PanelState {
   return state.openPanel === 'start'
     ? closePanels()
     : { openPanel: 'start', isPowerMenuOpen: false };
@@ -34,7 +34,7 @@ export function toggleStartPanel(state: StartMenuState): StartMenuState {
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
-export function openSearchPanel(state: StartMenuState): StartMenuState {
+export function openSearchPanel(state: PanelState): PanelState {
   return state.openPanel === 'search' ? state : { openPanel: 'search', isPowerMenuOpen: false };
 }
 
@@ -44,7 +44,7 @@ export function openSearchPanel(state: StartMenuState): StartMenuState {
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
-export function toggleSearchPanel(state: StartMenuState): StartMenuState {
+export function toggleSearchPanel(state: PanelState): PanelState {
   return state.openPanel === 'search' ? closePanels() : openSearchPanel(state);
 }
 
@@ -54,6 +54,6 @@ export function toggleSearchPanel(state: StartMenuState): StartMenuState {
  * @codocs [[검색:결과 화면]]
  * @returns 닫힌 상태
  */
-export function closePanels(): StartMenuState {
-  return initialStartMenuState;
+export function closePanels(): PanelState {
+  return initialPanelState;
 }

@@ -3,8 +3,8 @@ import { userEvent } from '@testing-library/user-event';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { usePanelStore } from '@/core/panels/panels';
 import { useWindowStore } from '@/core/window/window';
-import { useStartMenuStore } from '@/features/start-menu/start-menu';
 
 import { Shell } from './shell';
 
@@ -114,7 +114,7 @@ function querySearchPanel(): HTMLElement | null {
 // @codocs [[Start 메뉴:열기와 닫기]]
 describe('Start 메뉴:열기와 닫기', () => {
   afterEach(() => {
-    useStartMenuStore.getState().reset();
+    usePanelStore.getState().reset();
   });
 
   it('Start 버튼을 누르면 Start 메뉴가 열리고, 다시 누르면 닫힌다', async () => {
@@ -173,7 +173,7 @@ describe('Start 메뉴:열기와 닫기', () => {
 // @codocs [[검색:개요]]
 describe('검색:개요', () => {
   afterEach(() => {
-    useStartMenuStore.getState().reset();
+    usePanelStore.getState().reset();
   });
 
   it('작업 표시줄 검색칸에 포커스하면 검색 패널이 열린다. Start가 열려 있었으면 닫힌다', async () => {
@@ -189,7 +189,7 @@ describe('검색:개요', () => {
 // @codocs [[검색:결과 화면]]
 describe('검색:결과 화면', () => {
   afterEach(() => {
-    useStartMenuStore.getState().reset();
+    usePanelStore.getState().reset();
   });
 
   it('Esc를 누르면 닫힌다', async () => {

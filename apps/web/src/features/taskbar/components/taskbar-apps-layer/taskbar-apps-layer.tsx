@@ -1,21 +1,21 @@
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { OpenWindow, WindowApp } from '@/core/window/window';
+import type { OpenWindow, RenderWindow, WindowApp } from '@/core/window/window';
 import {
   getAppWindows,
   getTaskbarAppAction,
   getTaskbarAppIndicator,
   getThumbnailScale,
   getWindowRect,
+  useOpenApp,
   useWindowStore,
   WindowThumbnail,
 } from '@/core/window/window';
-import { TaskbarAppPreview, TaskbarWindowPreviewList } from '@/features/taskbar/taskbar';
+import { TaskbarAppPreview } from '@/features/taskbar/components/taskbar-app-preview/taskbar-app-preview';
+import { TaskbarWindowPreviewList } from '@/features/taskbar/components/taskbar-window-preview-list/taskbar-window-preview-list';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
-import { getAppWindowTitle, renderAppWindow } from '@/shell/components/app-windows/app-windows';
-import { useOpenApp } from '@/shell/hooks/use-open-app/use-open-app';
 
 /** 작업 표시줄에 처음 고정된 앱 */
 const PINNED_APPS = ['file-explorer', 'chrome'] as const;
@@ -23,17 +23,26 @@ const PINNED_APPS = ['file-explorer', 'chrome'] as const;
 /** 창 미리보기 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
 const PREVIEW_THUMBNAIL_BOX = { width: 192, height: 108 } as const;
 
+export type TaskbarAppsLayerProps = {
+  /** 앱 창을 그린다. 미리보기 축소 화면 안에 쓴다. 앱마다 다른 창 조립은 쓰는 곳(앱 등록표)이 고른다 */
+  renderWindow: RenderWindow;
+  /** 창 제목을 정한다. 미리보기 제목이 된다 */
+  getWindowTitle: (window: OpenWindow) => string;
+};
+
 /**
- * 작업 표시줄의 앱 버튼들을 그리고 창 저장소에 잇는다.
+ * 작업 표시줄의 앱 버튼들을 그리고 창 저장소에 잇는 층이다.
  * - 아래 표시는 맨 앞 창이 이 앱이면 active, 열린 창이 있으면 running이다.
  * - 버튼을 누르면 열린 창 수와 순서에 따라 새로 열기, 최소화, 복원, 창 미리보기 목록 열기 가운데 하나를 한다.
  * - 미리보기 목록은 실제 창을 `WindowThumbnail`로 줄여 보여 주고, 고르면 그 창을 맨 앞으로, 닫기를 누르면 그 창을 닫는다.
- *   바깥을 누르거나 Esc를 누르면 닫힌다.
+ *   바깥을 누르거나 Esc를 누르면 닫힌다. 축소 화면 안의 창 내용과 제목은 앱을 아는 쓰는 곳이 `renderWindow`·`getWindowTitle`로 넘긴다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @codocs [[작업 표시줄:창 미리보기]]
+ * @param props
  * @returns 앱 버튼들
  */
-export function ShellTaskbarApps(): JSX.Element {
+export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
+  const { renderWindow, getWindowTitle } = props;
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
   const minimize = useWindowStore((state) => state.minimize);
@@ -142,17 +151,13 @@ export function ShellTaskbarApps(): JSX.Element {
         height={size.height}
         scale={getThumbnailScale(size, PREVIEW_THUMBNAIL_BOX)}
       >
-        {renderAppWindow(
-          target,
-          {
-            inactive: false,
-            placement: device === 'mobile' ? 'maximized' : target.placement,
-            onMinimize: ignoreControl,
-            onClose: ignoreControl,
-            className: 'size-full',
-          },
-          device,
-        )}
+        {renderWindow(target, {
+          inactive: false,
+          placement: device === 'mobile' ? 'maximized' : target.placement,
+          onMinimize: ignoreControl,
+          onClose: ignoreControl,
+          className: 'size-full',
+        })}
       </WindowThumbnail>
     );
   }
@@ -176,7 +181,7 @@ export function ShellTaskbarApps(): JSX.Element {
        */
       (target) => ({
         id: target.id,
-        title: getAppWindowTitle(target),
+        title: getWindowTitle(target),
         thumbnail: renderThumbnail(target),
       }),
     );

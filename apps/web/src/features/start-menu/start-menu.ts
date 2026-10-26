@@ -31,5 +31,3 @@ export {
   groupByStartLetter,
   JUMP_LIST_LETTERS,
 } from './rules/start-letter-rules/start-letter-rules';
-export type { OpenPanel } from './rules/start-menu-rules/start-menu-rules';
-export { useStartMenuStore } from './stores/start-menu-store/start-menu-store';

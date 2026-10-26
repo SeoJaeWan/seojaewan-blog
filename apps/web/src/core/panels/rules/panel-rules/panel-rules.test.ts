@@ -2,19 +2,19 @@ import { describe, expect, it } from 'vitest';
 
 import {
   closePanels,
-  initialStartMenuState,
+  initialPanelState,
   openSearchPanel,
-  type StartMenuState,
+  type PanelState,
   toggleSearchPanel,
   toggleStartPanel,
-} from './start-menu-rules';
+} from './panel-rules';
 
-const startOpenWithPowerMenu: StartMenuState = { openPanel: 'start', isPowerMenuOpen: true };
+const startOpenWithPowerMenu: PanelState = { openPanel: 'start', isPowerMenuOpen: true };
 
 // @codocs [[Start 메뉴:열기와 닫기]]
 describe('Start 메뉴:열기와 닫기', () => {
   it('Start 버튼을 누르면 열리고, 다시 누르면 전원 메뉴와 함께 닫힌다', () => {
-    expect(toggleStartPanel(initialStartMenuState).openPanel).toBe('start');
+    expect(toggleStartPanel(initialPanelState).openPanel).toBe('start');
     expect(toggleStartPanel(startOpenWithPowerMenu)).toEqual(closePanels());
   });
 
@@ -38,7 +38,7 @@ describe('검색:개요', () => {
 // @codocs [[모바일:차이]]
 describe('모바일:차이', () => {
   it('좁은 화면의 검색 버튼을 누르면 검색 패널이 열리고, 다시 누르면 닫힌다', () => {
-    const opened = toggleSearchPanel(initialStartMenuState);
+    const opened = toggleSearchPanel(initialPanelState);
     expect(opened.openPanel).toBe('search');
     expect(toggleSearchPanel(opened).openPanel).toBeNull();
   });
