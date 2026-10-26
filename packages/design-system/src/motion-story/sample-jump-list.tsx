@@ -42,6 +42,8 @@ type SampleJumpListProps = {
  * 견본의 `Start/JumpList` 조립은 앱에 있어 여기서는 TileGrid + JumpListLetter로 글자 격자를,
  * ListItem 몇 개로 견본의 `list` 레이어(앱 목록)를 그린다. 격자는 목록 위에 겹친다.
  * 모션 클래스는 둘을 감싼 요소에 걸고, 격자에 data-jump-list="grid", 목록에 data-jump-list="list"를 둔다(motion.css의 약속).
+ * 격자와 목록이 모두 투명도를 움직이므로, 키프레임 값 검사가 json 트랙과 짝짓도록 data-motion-node에 json의 노드 이름
+ * (`Start/JumpList`, `list`)을 단다.
  * @codocs [[피그마 연동:모션]]
  * @param props 견본 글자 목록 속성
  * @returns 견본 글자 격자와 목록
@@ -50,10 +52,14 @@ export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
   const { motionClassName } = props;
   return (
     <div className={cn('relative h-600 w-400 overflow-hidden', motionClassName)}>
-      <div data-jump-list="list" className="flex flex-col">
+      <div data-jump-list="list" data-motion-node="list" className="flex flex-col">
         {listItems.map((item) => renderListItem(item))}
       </div>
-      <div data-jump-list="grid" className="absolute inset-0 flex justify-center">
+      <div
+        data-jump-list="grid"
+        data-motion-node="Start/JumpList"
+        className="absolute inset-0 flex justify-center"
+      >
         <TileGrid align="center" className="w-200">
           {letters.map((letter) => renderLetter(letter))}
         </TileGrid>

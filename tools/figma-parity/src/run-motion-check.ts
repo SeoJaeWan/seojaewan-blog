@@ -1,14 +1,22 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 
 import { changedFilesSince, gitShow } from './git-files.ts';
-import { selectMotions } from './motion-scope.ts';
+import { MOTION_STORY_DIR, selectMotions } from './motion-scope.ts';
 import { MOTION_SELECTION_ENV } from './motion-spec.ts';
-import { FIGMA_MOTIONS_DIR, fromRepo, repoRoot, STORYBOOK_PACKAGES, toolRoot } from './paths.ts';
+import {
+  FIGMA_MOTIONS_DIR,
+  fromRepo,
+  motionResultsDir,
+  repoRoot,
+  STORYBOOK_PACKAGES,
+  toolRoot,
+} from './paths.ts';
 
 // 사용법: node src/run-motion-check.ts [--print-range] [--base <ref>] [--motion <이름>]... [--no-build]
-// 모션 시간 검사를 한다. json이 있는 견본(모션 클래스)의 `Motion/<이름>` 스토리를 정적 빌드한 디자인 시스템
-// Storybook에서 열고 getAnimations()로 시간·이징·지연·반복 횟수를 읽어 json의 토큰 짝과 비교한다.
+// 모션 검사를 한다. json이 있는 견본(모션 클래스)의 `Motion/<이름>` 스토리를 정적 빌드한 디자인 시스템
+// Storybook에서 열고 getAnimations()로 시간·이징·지연·반복 횟수를 읽어 json의 토큰 짝과 비교하고(시간 검사),
+// 키프레임 값을 json 키프레임 값과 비교한다(키프레임 값 검사). 결과는 parity-results/motion/<이름>.json에 남는다.
 // --print-range: 기준 브랜치와 비교해 바뀐 파일로 범위를 정하고 JSON 한 줄(`{ motions, reasons }`)만 출력한다.
 //                의존성 설치·빌드 없이 돈다.
 // --motion: 검사할 견본을 이름으로 고른다. 없으면 json이 있는 모든 견본이다.
@@ -35,6 +43,7 @@ function main(): void {
     const scope = selectMotions({
       changedFiles: files,
       motionNames: new Set(names),
+      motionStoryFiles: motionStoryFiles(),
       readChange: (file) => ({
         before: gitShow(mergeBase, file),
         after: existsSync(fromRepo(file)) ? readFileSync(fromRepo(file), 'utf8') : undefined,
@@ -65,11 +74,32 @@ function main(): void {
       },
     );
   }
+  // 지난 실행의 견본 결과가 PR 댓글에 섞이지 않게 비운다.
+  rmSync(motionResultsDir, { recursive: true, force: true });
   const status = run('pnpm', ['exec', 'playwright', 'test', '-c', 'playwright.motion.config.ts'], {
     cwd: toolRoot,
     env: { [MOTION_SELECTION_ENV]: JSON.stringify(selected) },
   });
   process.exitCode = status;
+}
+
+/**
+ * 모션 스토리 폴더의 지금 파일을 읽는다(테스트 파일 제외).
+ * @returns 저장소 기준 경로 → 내용
+ */
+function motionStoryFiles(): Map<string, string> {
+  const dir = fromRepo(MOTION_STORY_DIR);
+  if (!existsSync(dir)) {
+    return new Map();
+  }
+  return new Map(
+    readdirSync(dir)
+      .filter((file) => /\.tsx?$/u.test(file) && !/\.(test|fixture)\.tsx?$/u.test(file))
+      .map((file): [string, string] => [
+        `${MOTION_STORY_DIR}${file}`,
+        readFileSync(fromRepo(`${MOTION_STORY_DIR}${file}`), 'utf8'),
+      ]),
+  );
 }
 
 /**

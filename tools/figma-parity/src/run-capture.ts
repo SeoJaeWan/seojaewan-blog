@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import path from 'node:path';
 
 import { type AffectedSelection, type PatternCode, selectAffected } from './affected.ts';
+import { designSystemExports, usedComponents } from './design-system-exports.ts';
 import { changedFilesSince, gitShow } from './git-files.ts';
 import {
   COMPONENTS_SOURCE_DIR,
@@ -191,7 +192,9 @@ function readComponentSources(): Map<string, string[]> {
  * @returns 조립 이름 → 조립 코드
  */
 function readPatternCode(): Map<string, PatternCode> {
-  const exported = designSystemExports();
+  const exported = designSystemExports(fromRepo(DESIGN_SYSTEM_INDEX), (file) =>
+    existsSync(file) ? readFileSync(file, 'utf8') : undefined,
+  );
   const patterns = new Map<string, PatternCode>();
   for (const story of listSources(fromRepo(WEB_SOURCE_DIR)).filter((file) =>
     file.endsWith('.stories.tsx'),
@@ -204,19 +207,7 @@ function readPatternCode(): Map<string, PatternCode> {
     }
     const files = importClosure(story);
     const sources = [...files].map((file) => readFileSync(file, 'utf8'));
-    const components = new Set<string>();
-    for (const source of sources) {
-      for (const match of source.matchAll(
-        /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"]@seojaewan\/design-system['"]/gu,
-      )) {
-        for (const name of (match[1] ?? '').split(',').map((part) => part.trim())) {
-          const component = exported.get(name.replace(/^type\s+/u, ''));
-          if (component !== undefined) {
-            components.add(component);
-          }
-        }
-      }
-    }
+    const components = usedComponents(sources, exported);
     patterns.set(title, {
       files: new Set(
         [...files].map((file) => path.relative(repoRoot, file).split(path.sep).join('/')),
@@ -261,28 +252,6 @@ function importClosure(entry: string): Set<string> {
     }
   }
   return found;
-}
-
-/**
- * 디자인 시스템 공개 진입점에서 이름 → 컴포넌트 폴더 표를 만든다.
- * @returns 공개 이름 → 컴포넌트 폴더 이름
- */
-function designSystemExports(): Map<string, string> {
-  const names = new Map<string, string>();
-  const index = fromRepo(DESIGN_SYSTEM_INDEX);
-  if (!existsSync(index)) {
-    return names;
-  }
-  for (const match of readFileSync(index, 'utf8').matchAll(
-    /export\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"]\.\/components\/([^/'"]+)\//gu,
-  )) {
-    for (const name of (match[1] ?? '').split(',').map((part) => part.trim())) {
-      if (name !== '') {
-        names.set(name, match[2] ?? '');
-      }
-    }
-  }
-  return names;
 }
 
 /**
