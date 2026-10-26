@@ -2,7 +2,7 @@ import type {
   StartItem,
   StartItemGroup,
 } from '@/features/start-menu/components/start-body/start-body';
-import { groupByStartLetter } from '@/features/start-menu/rules/start-letter-rules/start-letter-rules';
+import { groupByStartLetter } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 
 /**
  * Start 고정됨에 처음 고정된 앱(File Explorer, Chrome). 폴더·글·외부 링크는 콘텐츠를 불러올 때 더한다.

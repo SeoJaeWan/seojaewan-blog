@@ -24,10 +24,10 @@ export type { StartMenuPanelDevice } from './components/start-menu-panel/start-m
 export { StartMenuPanel } from './components/start-menu-panel/start-menu-panel';
 export { StartPowerButton } from './components/start-power-button/start-power-button';
 export { StartViewMenu } from './components/start-view-menu/start-view-menu';
-export type { JumpListLetter } from './rules/start-letter-rules/start-letter-rules';
+export type { JumpListLetter } from './utils/start-letter-rules/start-letter-rules';
 export {
   getAvailableLetters,
   getStartLetter,
   groupByStartLetter,
   JUMP_LIST_LETTERS,
-} from './rules/start-letter-rules/start-letter-rules';
+} from './utils/start-letter-rules/start-letter-rules';
