@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import { BrowserTab } from '../browser-tab/browser-tab';
 import { BrowserTabStrip } from './browser-tab-strip';
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
@@ -13,6 +14,18 @@ describe('BrowserTabStrip', () => {
       </BrowserTabStrip>,
     );
     expect(screen.getByText('탭 자리')).toBeInTheDocument();
+  });
+
+  it('Tabs 슬롯의 탭 여럿을 가로로 나란히 놓는다', () => {
+    render(
+      <BrowserTabStrip>
+        <BrowserTab favicon={null} title="첫째" />
+        <BrowserTab favicon={null} title="둘째" />
+      </BrowserTabStrip>,
+    );
+    const slot = screen.getByRole('tab', { name: /첫째/ }).parentElement;
+    expect(slot).toHaveClass('flex');
+    expect(slot).not.toHaveClass('flex-col');
   });
 
   it('새 탭 버튼을 누르면 onNewTab을 부른다', async () => {
