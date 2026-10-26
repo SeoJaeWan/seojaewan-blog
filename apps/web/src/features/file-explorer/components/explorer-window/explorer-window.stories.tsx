@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { ExplorerWindowStory } from '@/shared/stories/explorer-window-story/explorer-window-story';
+import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
+import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
+import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
+
+import { ExplorerWindow } from './explorer-window';
 
 // 피그마 Window/Explorer의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
@@ -26,7 +30,31 @@ const meta = {
     folder: { control: 'inline-radio', options: FOLDERS },
     selection: { control: 'inline-radio', options: SELECTIONS },
   },
-  render: (args) => <ExplorerWindowStory {...args} className={SIZE_CLASS_NAMES[args.device]} />,
+  render: (args) => {
+    const parts = getExplorerWindowParts(args);
+    return (
+      <ExplorerWindow
+        device={args.device}
+        tabs={[{ title: parts.tabTitle, selected: true }]}
+        className={SIZE_CLASS_NAMES[args.device]}
+      >
+        <ExplorerContent
+          device={args.device}
+          className="min-h-0 w-full flex-1"
+          locationIcon={parts.locationIcon}
+          searchPlaceholder={parts.searchPlaceholder}
+          path={parts.path}
+          commands={<ExplorerCommands device={args.device} />}
+          navigation={parts.navigation}
+          itemCount={parts.itemCount}
+          selection={parts.selection}
+          showSelection={parts.showSelection}
+        >
+          {parts.items}
+        </ExplorerContent>
+      </ExplorerWindow>
+    );
+  },
 } satisfies Meta<ParityArgs>;
 
 export default meta;
