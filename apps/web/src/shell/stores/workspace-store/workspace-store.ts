@@ -1,6 +1,6 @@
 import { create, type StoreApi } from 'zustand';
 
-import { resetWorkspaceStores } from '@/features/desktop/rules/restart/restart';
+import { resetWorkspaceStores } from '@/shell/rules/restart/restart';
 
 /**
  * 다시 시작 단계.
@@ -28,7 +28,7 @@ export type WorkspaceStore = {
 };
 
 /**
- * 다시 시작의 진행을 담는 저장소. 다시 마운트하는 데스크톱 하위 트리 바깥(작업 공간 최상위와 재부팅 화면)이 읽어,
+ * 다시 시작의 진행을 담는 저장소. 다시 마운트하는 데스크톱 하위 트리 바깥(shell 최상위와 재부팅 화면)이 읽어,
  * 다시 마운트한 뒤에도 남는다. 다시 시작으로 지우는 대상이 아니고 브라우저에 저장하지도 않는다.
  * @codocs [[작업 공간:다시 시작]]
  * @codocs [[기술 스택:상태 관리]]

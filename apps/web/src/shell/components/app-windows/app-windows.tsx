@@ -33,7 +33,7 @@ export function getAppWindowTitle(window: OpenWindow): string {
 }
 
 /**
- * 열린 창의 앱 창 조립을 고른다. 창 층(`core/window`)은 앱을 모르므로 바탕화면이 이 함수를 넘긴다.
+ * 열린 창의 앱 창 조립을 고른다. 창 층(`core/window`)은 앱을 모르므로 shell이 이 함수를 넘긴다(앱 등록표).
  * 앱을 처음 열 때 탐색기는 `Blog` 폴더, Chrome은 새 탭 페이지를 보여 준다. 글과 폴더 내용은 콘텐츠를 붙일 때 채운다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @codocs [[Chrome:새 탭 페이지]]

@@ -2,18 +2,15 @@ import type { JSX, ReactNode } from 'react';
 
 import type { OpenWindow, WindowFrameControls } from '@/core/window/window';
 import { WindowLayer } from '@/core/window/window';
-import {
-  getAppWindowTitle,
-  renderAppWindow,
-} from '@/features/desktop/components/app-windows/app-windows';
 import { renderTaskbarAppIcon } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { getAppWindowTitle, renderAppWindow } from '@/shell/components/app-windows/app-windows';
 
 /**
  * 작업 공간의 창 층을 그린다. 창 층(`core/window`)은 앱을 모르므로 앱별 창 조립을 고르는 함수를 넘긴다.
  * @returns 창 층
  */
-export function WorkspaceWindows(): JSX.Element {
+export function ShellWindows(): JSX.Element {
   const device = useDevice();
   /**
    * 열린 창의 앱 창 조립을 그린다.
