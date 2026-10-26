@@ -176,7 +176,7 @@ _codocs:
   - `shared/` 안은 종류(`components`, `hooks`, `utils`, `stores`, `stories`) 사이에 방향을 두지 않고 서로 자유롭게 import하며, 순환 import만 막는다. 공용 훅이 저장소를 감싸는 일이 흔하고, 방향보다 순환이 실제 위험이기 때문이다.
   - `tools/`의 도구는 패키지의 공개 코드와 빌드 결과(Storybook 정적 빌드)만 쓰고, 다른 패키지는 `tools/`를 import하지 않는다. 플러그인은 토큰 변환 함수(`packages/design-system/scripts/tokens/`)를 함께 묶어 쓴다.
 
-  `eslint-plugin-boundaries`가 강제한다.
+  `eslint-plugin-boundaries`가 강제한다. 순환 import는 `eslint-plugin-import-x`의 `no-cycle`이 `apps/web/src/shared`에서 강제한다(적용 범위를 앱 전체로 넓히면 lint 시간이 길어져 `shared/`만 건다). 타입만 가져오는 `import type`은 검사하지 않는다.
 패키지 관리: |
   - Node는 24로 고정한다(`engines`, `.nvmrc`, `engine-strict`).
   - pnpm 버전은 `packageManager` 필드로 고정한다.

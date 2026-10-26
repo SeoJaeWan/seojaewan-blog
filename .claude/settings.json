@@ -11,8 +11,6 @@
     "GIT_COMMITTER_EMAIL": "52366178+SeoJaeWan@users.noreply.github.com"
   },
   "permissions": {
-    "allow": [
-      "mcp__Figma"
-    ]
+    "allow": ["mcp__Figma"]
   }
 }
