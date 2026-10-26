@@ -3,9 +3,11 @@ import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier/flat';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
+import { importX } from 'eslint-plugin-import-x';
 import jsdoc from 'eslint-plugin-jsdoc';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -619,6 +621,26 @@ export default defineConfig(
           ],
         },
       ],
+    },
+  },
+
+  // 순환 import를 막는다. 적용 범위는 `apps/web/src/shared`다.
+  {
+    files: [`${WEB_SRC}/shared/**/*.{ts,tsx}`],
+    plugins: { 'import-x': importX },
+    settings: {
+      'import-x/extensions': ['.ts', '.tsx'],
+      'import-x/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx'] },
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
+          project: ['apps/web/tsconfig.json'],
+        }),
+      ],
+    },
+    rules: {
+      'import-x/no-cycle': 'error',
     },
   },
 
