@@ -493,6 +493,12 @@ export default defineConfig(
           capture: ['featureName'],
           partialMatch: false,
         },
+        {
+          type: 'web-core',
+          pattern: `${WEB_SRC}/core/*`,
+          capture: ['featureName'],
+          partialMatch: false,
+        },
         { type: 'web-content', pattern: `${WEB_SRC}/content`, partialMatch: false },
         { type: 'web-shared', pattern: `${WEB_SRC}/shared`, partialMatch: false },
         { type: 'web-root', pattern: WEB_SRC, partialMatch: false },
@@ -509,7 +515,14 @@ export default defineConfig(
               disallow: {
                 to: {
                   element: {
-                    type: ['web-app', 'web-feature', 'web-content', 'web-shared', 'web-root'],
+                    type: [
+                      'web-app',
+                      'web-feature',
+                      'web-core',
+                      'web-content',
+                      'web-shared',
+                      'web-root',
+                    ],
                   },
                 },
               },
@@ -528,41 +541,43 @@ export default defineConfig(
               },
             },
             {
-              from: { element: { type: 'web-feature' } },
+              from: { element: { type: ['web-feature', 'web-core'] } },
               disallow: { to: { element: { type: 'web-app' } } },
-              message: '`features/`는 `app/`을 import하지 않는다.',
+              message: '`features/`와 `core/`는 `app/`을 import하지 않는다.',
             },
             {
-              from: { element: { type: 'web-feature' } },
-              disallow: { to: { element: { type: 'web-feature' } } },
+              from: { element: { type: ['web-feature', 'web-core'] } },
+              disallow: { to: { element: { type: ['web-feature', 'web-core'] } } },
               message:
-                '다른 기능은 공개 진입점(`features/{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
+                '다른 기능은 공개 진입점(`{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
             },
-            {
-              from: { element: { type: 'web-feature' } },
-              allow: {
-                to: {
-                  element: {
-                    type: 'web-feature',
-                    captured: { featureName: '{{from.element.captured.featureName}}' },
+            ...['web-feature', 'web-core'].flatMap((type) => [
+              {
+                from: { element: { type } },
+                allow: {
+                  to: {
+                    element: {
+                      type,
+                      captured: { featureName: '{{from.element.captured.featureName}}' },
+                    },
                   },
                 },
               },
-            },
-            {
-              from: { element: { type: 'web-feature' } },
-              allow: {
-                to: {
-                  element: {
-                    type: 'web-feature',
-                    fileInternalPath: [
-                      '{{to.element.captured.featureName}}.ts',
-                      '{{to.element.captured.featureName}}.tsx',
-                    ],
+              {
+                from: { element: { type: ['web-feature', 'web-core'] } },
+                allow: {
+                  to: {
+                    element: {
+                      type,
+                      fileInternalPath: [
+                        '{{to.element.captured.featureName}}.ts',
+                        '{{to.element.captured.featureName}}.tsx',
+                      ],
+                    },
                   },
                 },
               },
-            },
+            ]),
           ],
         },
       ],
