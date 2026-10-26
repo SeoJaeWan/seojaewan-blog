@@ -19,7 +19,7 @@ const rootDir = import.meta.dirname;
 const tsFiles = ['**/*.{ts,tsx}'];
 const WEB_SRC = 'apps/web/src';
 const DESIGN_SYSTEM = 'packages/design-system';
-// 앱 `shared/`의 종류. 종류마다 boundaries 요소가 되어 종류 사이의 import 방향을 막는다.
+// 앱 `shared/`의 종류. 종류마다 boundaries 요소가 된다.
 const sharedKinds = ['components', 'hooks', 'utils', 'stores', 'stories'];
 const sharedTypes = sharedKinds.map((kind) => `web-shared-${kind}`);
 // 종류 폴더 밖에 둔 `shared/` 파일도 층 방향은 지키도록 `web-shared`로 묶는다.
@@ -478,7 +478,7 @@ export default defineConfig(
 
   // @codocs [[저장소 구성:의존 방향]]
   // 앱 층은 `app → shell → features → shared` 방향으로만 import한다. 기능끼리는 import하지 않는다.
-  // `shared/` 안은 `components → hooks → utils`, `stores → utils` 방향이고, `stories`는 `shared/` 안 무엇이든 쓴다.
+  // `shared/` 안은 종류 사이에 방향 제한 없이 서로 import한다.
   // 뒤에 오는 정책이 앞의 정책보다 우선한다.
   {
     files: [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/**/*.{ts,tsx}`],
@@ -615,55 +615,6 @@ export default defineConfig(
               disallow: { to: { element: { type: 'web-feature' } } },
               message:
                 '`shared/`는 `features/`를 import하지 않는다(`app → shell → features → shared`).',
-            },
-
-            // `shared/` 안의 방향: `components → hooks → utils`, `stores → utils`. `stories`는 무엇이든 쓴다.
-            {
-              from: { element: { type: 'web-shared-utils' } },
-              disallow: {
-                to: {
-                  element: {
-                    type: [
-                      'web-shared-components',
-                      'web-shared-hooks',
-                      'web-shared-stores',
-                      'web-shared-stories',
-                    ],
-                  },
-                },
-              },
-              message:
-                '`shared/utils`는 순수 함수라 `shared/`의 다른 종류(`{{to.element.type}}`)를 import하지 않는다.',
-            },
-            {
-              from: { element: { type: 'web-shared-hooks' } },
-              disallow: {
-                to: {
-                  element: {
-                    type: ['web-shared-components', 'web-shared-stores', 'web-shared-stories'],
-                  },
-                },
-              },
-              message:
-                '`shared/hooks`는 `shared/hooks`·`shared/utils`만 import한다(`components → hooks → utils`). 저장소가 필요하면 쓰는 쪽이 넘긴다.',
-            },
-            {
-              from: { element: { type: 'web-shared-components' } },
-              disallow: { to: { element: { type: ['web-shared-stores', 'web-shared-stories'] } } },
-              message:
-                '`shared/components`는 공용 UI라 `shared/stores`·`shared/stories`를 import하지 않는다(`components → hooks → utils`).',
-            },
-            {
-              from: { element: { type: 'web-shared-stores' } },
-              disallow: {
-                to: {
-                  element: {
-                    type: ['web-shared-components', 'web-shared-hooks', 'web-shared-stories'],
-                  },
-                },
-              },
-              message:
-                '`shared/stores`는 `shared/stores`·`shared/utils`만 import한다(`stores → utils`).',
             },
           ],
         },
