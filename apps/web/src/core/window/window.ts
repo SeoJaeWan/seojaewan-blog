@@ -5,6 +5,7 @@ export { SnapLayoutMenu } from './components/snap-layout-menu/snap-layout-menu';
 export { WindowLayer } from './components/window-layer/window-layer';
 export { WindowThumbnail } from './components/window-thumbnail/window-thumbnail';
 export type { RenderWindow, WindowFrameControls } from './components/window-view/window-view';
+export { useOpenApp } from './hooks/use-open-app/use-open-app';
 export { getThumbnailScale } from './rules/window-geometry/window-geometry';
 export type {
   OpenWindow,

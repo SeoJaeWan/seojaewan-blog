@@ -2,6 +2,7 @@
 
 import type { JSX } from 'react';
 
+import { useOpenApp } from '@/core/window/window';
 import { useWorkspaceStore } from '@/core/workspace/workspace';
 import type { DesktopIcon } from '@/features/desktop/desktop';
 import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/desktop';
@@ -12,7 +13,6 @@ import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
 import { ShellTaskbarApps } from '@/shell/components/shell-taskbar-apps/shell-taskbar-apps';
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
-import { useOpenApp } from '@/shell/hooks/use-open-app/use-open-app';
 
 // 좁은 화면은 작업 표시줄에 검색 입력칸 대신 검색 버튼을 둔다(피그마 Taskbar/Default Search).
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;

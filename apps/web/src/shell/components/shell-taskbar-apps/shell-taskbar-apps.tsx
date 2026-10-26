@@ -8,6 +8,7 @@ import {
   getTaskbarAppIndicator,
   getThumbnailScale,
   getWindowRect,
+  useOpenApp,
   useWindowStore,
   WindowThumbnail,
 } from '@/core/window/window';
@@ -15,7 +16,6 @@ import { TaskbarAppPreview, TaskbarWindowPreviewList } from '@/features/taskbar/
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { getAppWindowTitle, renderAppWindow } from '@/shell/components/app-windows/app-windows';
-import { useOpenApp } from '@/shell/hooks/use-open-app/use-open-app';
 
 /** 작업 표시줄에 처음 고정된 앱 */
 const PINNED_APPS = ['file-explorer', 'chrome'] as const;
