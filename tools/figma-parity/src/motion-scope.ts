@@ -38,6 +38,9 @@ const WHOLE_SCOPE_FILES = [
   'tools/figma-parity/playwright.motion.config.ts',
   'tools/figma-parity/src/run-motion-check.ts',
   'tools/figma-parity/src/static-server.ts',
+  // 모션 검사 댓글이 쓰는 공용 댓글 도구다
+  'tools/figma-parity/src/pr-comment.ts',
+  'tools/figma-parity/src/github-comments.ts',
   /^tools\/figma-parity\/src\/motion-[^/]+\.ts$/u,
   'packages/design-system/src/motion-story/motion-preview.tsx',
 ] as const;
