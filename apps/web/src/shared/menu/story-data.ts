@@ -22,7 +22,7 @@ const ICON = {
   folderAdd: 'icons/ic_fluent_folder_add_20_regular.svg',
   paste: 'icons/ic_fluent_clipboard_paste_20_regular.svg',
   dismiss: 'icons/ic_fluent_dismiss_20_regular.svg',
-  fileExplorer: 'images/app-file-explorer.png',
+  fileExplorer: 'images/app-file-explorer',
 } as const;
 
 const SEPARATOR = { kind: 'separator' } as const;

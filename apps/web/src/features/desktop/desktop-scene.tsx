@@ -52,17 +52,15 @@ function renderDesktopIcon(icon: DesktopIcon): ReactNode {
       return (
         <ImageAsset
           name={
-            icon.full === true
-              ? 'images/file-recycle-bin-full.png'
-              : 'images/file-recycle-bin-empty.png'
+            icon.full === true ? 'images/file-recycle-bin-full' : 'images/file-recycle-bin-empty'
           }
           className="size-full object-contain"
         />
       );
     case 'folder':
-      return <ImageAsset name="images/file-folder.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
     case 'post':
-      return <ImageAsset name="images/file-document.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
     case 'link':
       return <Asset name="illustrations/file-link.svg" className="size-full" />;
   }
@@ -93,7 +91,7 @@ export function DesktopScene(props: DesktopSceneProps): JSX.Element {
     <div className={['relative flex flex-col overflow-clip', className].filter(Boolean).join(' ')}>
       {/* 배경화면은 맨 아래에 깔고, 뒤에 오는 자리(relative)가 그 위에 그려진다 */}
       <ImageAsset
-        name="images/wallpaper-bloom.png"
+        name="images/wallpaper-bloom"
         className="absolute inset-0 size-full object-cover"
       />
       <div className="relative min-h-0 flex-1">

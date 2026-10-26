@@ -7,8 +7,8 @@ export type TaskbarAppId = 'file-explorer' | 'chrome';
 
 // 앱마다 버튼 아이콘(피그마 app/* 인스턴스)과 접근성 이름이다.
 const taskbarApps = {
-  'file-explorer': { label: '파일 탐색기', icon: 'images/app-file-explorer.png' },
-  chrome: { label: 'Chrome', icon: 'images/app-chrome.png' },
+  'file-explorer': { label: '파일 탐색기', icon: 'images/app-file-explorer' },
+  chrome: { label: 'Chrome', icon: 'images/app-chrome' },
 } as const satisfies Record<TaskbarAppId, { label: string; icon: string }>;
 
 /**

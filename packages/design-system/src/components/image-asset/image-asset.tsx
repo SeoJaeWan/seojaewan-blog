@@ -1,39 +1,37 @@
 import type { ComponentProps, JSX } from 'react';
 
-// generate:assets가 figma/assets/images/에서 src/assets/images/로 복사한 래스터 자산의 파일 주소다.
+// generate:assets가 figma/assets/images/의 원본(PNG·JPEG 등)에서 src/assets/images/에 만든 WebP의 파일 주소다.
+// 자산 이름에는 확장자를 넣지 않는다. 피그마 원본의 형식(확장자)이 바뀌어도 쓰는 곳은 그대로다.
 // Vite와 Next.js가 `new URL(…, import.meta.url)`을 빌드 결과의 파일 주소로 바꿔 주도록 경로를 글자 그대로 쓴다.
+// @codocs [[피그마 연동:자산]]
 const IMAGE_ASSET_URLS = {
-  'images/app-chrome.png': new URL('../../assets/images/app-chrome.png', import.meta.url).href,
-  'images/app-file-explorer.png': new URL(
-    '../../assets/images/app-file-explorer.png',
-    import.meta.url,
-  ).href,
-  'images/avatar-profile.png': new URL('../../assets/images/avatar-profile.png', import.meta.url)
+  'images/app-chrome': new URL('../../assets/images/app-chrome.webp', import.meta.url).href,
+  'images/app-file-explorer': new URL('../../assets/images/app-file-explorer.webp', import.meta.url)
     .href,
-  'images/avatar-profile-placeholder.png': new URL(
-    '../../assets/images/avatar-profile-placeholder.png',
+  'images/avatar-profile': new URL('../../assets/images/avatar-profile.webp', import.meta.url).href,
+  'images/avatar-profile-placeholder': new URL(
+    '../../assets/images/avatar-profile-placeholder.webp',
     import.meta.url,
   ).href,
-  'images/file-document.png': new URL('../../assets/images/file-document.png', import.meta.url)
-    .href,
-  'images/file-folder.png': new URL('../../assets/images/file-folder.png', import.meta.url).href,
-  'images/file-recycle-bin-empty.png': new URL(
-    '../../assets/images/file-recycle-bin-empty.png',
+  'images/file-document': new URL('../../assets/images/file-document.webp', import.meta.url).href,
+  'images/file-folder': new URL('../../assets/images/file-folder.webp', import.meta.url).href,
+  'images/file-recycle-bin-empty': new URL(
+    '../../assets/images/file-recycle-bin-empty.webp',
     import.meta.url,
   ).href,
-  'images/file-recycle-bin-full.png': new URL(
-    '../../assets/images/file-recycle-bin-full.png',
+  'images/file-recycle-bin-full': new URL(
+    '../../assets/images/file-recycle-bin-full.webp',
     import.meta.url,
   ).href,
-  'images/wallpaper-bloom.png': new URL('../../assets/images/wallpaper-bloom.png', import.meta.url)
+  'images/wallpaper-bloom': new URL('../../assets/images/wallpaper-bloom.webp', import.meta.url)
     .href,
 } as const;
 
-/** 래스터 자산 이름(figma/assets/ 기준, 예: `images/file-folder.png`) */
+/** 래스터 자산 이름(figma/assets/ 기준 경로에서 확장자를 뺀 이름, 예: `images/file-folder`) */
 export type ImageAssetName = keyof typeof IMAGE_ASSET_URLS;
 
 type ImageAssetProps = Omit<ComponentProps<'img'>, 'src' | 'alt'> & {
-  /** 피그마 자산 파일 경로(figma/assets/ 기준) */
+  /** 래스터 자산 이름(figma/assets/ 기준, 확장자 없음) */
   name: ImageAssetName;
   /** 대체 글자. 장식 이미지면 빈 글자(기본값)로 둔다 */
   alt?: string;

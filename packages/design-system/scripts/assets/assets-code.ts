@@ -1,7 +1,7 @@
 /**
  * 피그마 자산 파일(figma/assets/)을 코드가 쓰는 자산으로 바꾼다. 파일을 읽거나 쓰지 않는 순수 변환이다.
  * - SVG(Icons·Shapes·Illustrations 묶음): 요소와 속성을 담은 데이터 모듈(src/assets/asset-data.ts)
- * - PNG(Images 묶음): src/assets/images/ 아래 같은 이름으로 복사(generate-assets.ts가 맡는다)
+ * - 래스터(Images 묶음): src/assets/images/ 아래 같은 이름의 WebP(raster-code.ts가 설정을 정하고 asset-files.ts가 만든다)
  */
 
 const GENERATED_HEADER = `// 이 파일은 scripts/assets/generate-assets.ts가 figma/assets/에서 만든다. 손으로 고치지 않는다.

@@ -3,7 +3,7 @@
 // Chrome 조립 스토리가 함께 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 
 /** 피그마 `file/Document` 인스턴스(글 아이콘)의 자산 */
-export const POST_ICON = 'images/file-document.png';
+export const POST_ICON = 'images/file-document';
 
 /** 피그마 Chrome/AddressSuggestions: 주소창에 입력 중인 글자와 추천 목록 */
 export const ADDRESS_SUGGESTIONS = {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ProfileButton } from './profile-button';
 
 // 피그마 ProfileButton `Photo` 기본 인스턴스(avatar/Profile)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
-const profilePhoto = new URL('../../assets/images/avatar-profile-placeholder.png', import.meta.url)
+const profilePhoto = new URL('../../assets/images/avatar-profile-placeholder.webp', import.meta.url)
   .href;
 
 type ParityArgs = {

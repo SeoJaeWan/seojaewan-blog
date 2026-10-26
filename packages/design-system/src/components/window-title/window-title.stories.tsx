@@ -12,7 +12,7 @@ type ParityArgs = {
 };
 
 // 피그마 App icon 속성의 기본 인스턴스(app/File Explorer)다. 앱 아이콘 이미지 자산이다.
-const appIcon = new URL('../../assets/images/app-file-explorer.png', import.meta.url).href;
+const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.meta.url).href;
 
 const meta = {
   title: 'Components/WindowTitle',

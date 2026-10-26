@@ -182,9 +182,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
             <PinnedTile
               key={post.title}
               label={post.title}
-              icon={
-                <ImageAsset name="images/file-document.png" className="size-full object-contain" />
-              }
+              icon={<ImageAsset name="images/file-document" className="size-full object-contain" />}
             />
           ),
         )}
@@ -225,10 +223,7 @@ function SearchResultsPage(
                 showTrailing={isWide}
                 trailing={result.url}
                 icon={
-                  <ImageAsset
-                    name="images/file-document.png"
-                    className="size-full object-contain"
-                  />
+                  <ImageAsset name="images/file-document" className="size-full object-contain" />
                 }
                 className="w-full"
               />

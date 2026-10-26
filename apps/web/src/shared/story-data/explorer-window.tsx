@@ -51,15 +51,15 @@ const NAVIGATION_ICONS = {
       className="size-icon-16 text-text-fill-primary"
     />
   ),
-  folder: <ImageAsset name="images/file-folder.png" className="size-full object-contain" />,
+  folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
   'recycle-bin': (
-    <ImageAsset name="images/file-recycle-bin-full.png" className="size-full object-contain" />
+    <ImageAsset name="images/file-recycle-bin-full" className="size-full object-contain" />
   ),
 } as const;
 
 const ITEM_ICONS = {
-  folder: <ImageAsset name="images/file-folder.png" className="size-full object-contain" />,
-  post: <ImageAsset name="images/file-document.png" className="size-full object-contain" />,
+  folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
+  post: <ImageAsset name="images/file-document" className="size-full object-contain" />,
 } as const;
 
 /**

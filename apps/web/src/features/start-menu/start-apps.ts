@@ -25,5 +25,5 @@ export const startAppGroups: readonly StartItemGroup[] = groupByStartLetter<Star
  */
 export const START_PROFILE = {
   name: '서재완',
-  photo: 'images/avatar-profile.png',
+  photo: 'images/avatar-profile',
 } as const;

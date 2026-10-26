@@ -4,7 +4,7 @@
 // 탐색기 창 스토리와, 그 창을 줄여 넣는 작업 표시줄 창 미리보기(Taskbar/PreviewList 등)가 같은 창을 그려서 기능 사이에 둔다.
 
 /** 피그마 Breadcrumb `Location icon` 기본 인스턴스(file/Folder)의 자산 */
-export const FOLDER_LOCATION_ICON = 'images/file-folder.png';
+export const FOLDER_LOCATION_ICON = 'images/file-folder';
 
 /** 피그마 Window/Explorer 탭 제목과 위치 칸(BreadcrumbItem)으로 쓰는 위치 이름 */
 export const LOCATION_NAMES = { desktop: '바탕 화면', blog: 'Blog', react: 'React' } as const;

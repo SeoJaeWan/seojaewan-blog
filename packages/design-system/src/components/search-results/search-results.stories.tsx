@@ -10,7 +10,7 @@ type ParityArgs = {
 };
 
 // 문서 아이콘 이미지 자산이다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
-const documentIcon = new URL('../../assets/images/file-document.png', import.meta.url).href;
+const documentIcon = new URL('../../assets/images/file-document.webp', import.meta.url).href;
 
 const meta = {
   title: 'Components/SearchResults',
