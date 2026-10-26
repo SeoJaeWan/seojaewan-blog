@@ -79,7 +79,7 @@ JSDoc: |
   - Tailwind 클래스는 `prettier-plugin-tailwindcss`로 정렬한다.
   - `.codocs` 문서는 codocs 도구가 쓰는 형식을 유지하기 위해 Prettier에서 제외한다.
 React와 Next.js: |
-  - Notion 데이터는 서버에서만 가져온다(`content/`와 `app/`의 서버 컴포넌트). `features/`는 데이터를 props로 받기만 하고 직접 가져오지 않는다. Notion 토큰이 브라우저로 나가지 않게 하기 위해서다.
+  - Notion 데이터는 서버에서만 가져온다(`content/`와 `app/`의 서버 컴포넌트). `shell/`·`features/`·`core/`는 데이터를 props로 받기만 하고 직접 가져오지 않는다. Notion 토큰이 브라우저로 나가지 않게 하기 위해서다.
   - Notion을 호출하는 파일에는 `import 'server-only'`를 넣어, 클라이언트에서 import하면 빌드가 실패하게 한다.
   - `'use client'`는 상호작용이 시작되는 경계 파일에만 붙인다.
   - 파일 하나에 공개 컴포넌트 하나다. 그 파일 안에서만 쓰는 작은 보조 컴포넌트는 같이 둘 수 있다.
