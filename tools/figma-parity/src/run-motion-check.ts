@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 
 import { changedFilesSince, gitShow } from './git-files.ts';
-import { selectMotions } from './motion-scope.ts';
+import { MOTION_STORY_DIR, selectMotions } from './motion-scope.ts';
 import { MOTION_SELECTION_ENV } from './motion-spec.ts';
 import {
   FIGMA_MOTIONS_DIR,
@@ -43,6 +43,7 @@ function main(): void {
     const scope = selectMotions({
       changedFiles: files,
       motionNames: new Set(names),
+      motionStoryFiles: motionStoryFiles(),
       readChange: (file) => ({
         before: gitShow(mergeBase, file),
         after: existsSync(fromRepo(file)) ? readFileSync(fromRepo(file), 'utf8') : undefined,
@@ -80,6 +81,25 @@ function main(): void {
     env: { [MOTION_SELECTION_ENV]: JSON.stringify(selected) },
   });
   process.exitCode = status;
+}
+
+/**
+ * 모션 스토리 폴더의 지금 파일을 읽는다(테스트 파일 제외).
+ * @returns 저장소 기준 경로 → 내용
+ */
+function motionStoryFiles(): Map<string, string> {
+  const dir = fromRepo(MOTION_STORY_DIR);
+  if (!existsSync(dir)) {
+    return new Map();
+  }
+  return new Map(
+    readdirSync(dir)
+      .filter((file) => /\.tsx?$/u.test(file) && !/\.(test|fixture)\.tsx?$/u.test(file))
+      .map((file): [string, string] => [
+        `${MOTION_STORY_DIR}${file}`,
+        readFileSync(fromRepo(`${MOTION_STORY_DIR}${file}`), 'utf8'),
+      ]),
+  );
 }
 
 /**

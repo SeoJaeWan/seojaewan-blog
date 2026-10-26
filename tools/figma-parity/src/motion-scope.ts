@@ -14,6 +14,11 @@ export type MotionScopeInputs = {
   motionNames: ReadonlySet<string>;
   /** 저장소 기준 경로의 기준 커밋 내용과 지금 내용을 읽는다 */
   readChange: (file: string) => FileChange;
+  /**
+   * 모션 스토리 폴더(`src/motion-story/`)의 지금 파일(저장소 기준 경로 → 내용). 모션 스토리 도우미가 바뀌면
+   * 이것으로 그 도우미를 import하는 모션 스토리를 찾는다. 없으면 도우미가 바뀔 때 전체다.
+   */
+  motionStoryFiles?: ReadonlyMap<string, string>;
 };
 
 /** 검사 범위 */
@@ -28,6 +33,10 @@ const DESIGN_SYSTEM = 'packages/design-system/';
 export const MOTION_CSS_FILE = `${DESIGN_SYSTEM}src/motion.css`;
 export const TOKENS_CSS_FILE = `${DESIGN_SYSTEM}src/tokens.css`;
 export const MOTION_CHECK_WORKFLOW_FILE = '.github/workflows/motion-check.yml';
+/** 모션 스토리와 그 도우미(`sample-*.tsx` 등)를 두는 폴더 */
+export const MOTION_STORY_DIR = `${DESIGN_SYSTEM}src/motion-story/`;
+const RELATIVE_IMPORT_PATTERN = /(?:from|import)\s+['"](\.{1,2}\/[^'"]+)['"]/gu;
+const SOURCE_EXTENSIONS = ['', '.tsx', '.ts', '/index.tsx', '/index.ts'] as const;
 const FIGMA_MOTION_PATTERN = /^packages\/design-system\/figma\/motions\/([^/]+)\.json$/u;
 const STORY_FILE_PATTERN = /^packages\/design-system\/.*\.stories\.tsx?$/u;
 const MOTION_STORY_TITLE_PATTERN = /\btitle:\s*['"`]Motion\/([^'"`]+)['"`]/gu;
@@ -55,7 +64,9 @@ const VARIABLE_REFERENCE_PATTERN = /var\(\s*(--[\w-]+)/gu;
  * - `motion.css`를 바뀌기 전·후로 읽어 내용(클래스 본문과 그 클래스가 쓰는 `@keyframes`)이 달라진 `motion-*` 클래스
  * - `tokens.css`에서 값이 바뀐 `--motion-*` 토큰(별칭 포함)을 쓰는 클래스
  * - 바뀐 모션 스토리(제목 `Motion/<이름>`)
- * - 모션 검사 도구·워크플로·모션 스토리 도우미가 바뀌면 모든 견본
+ * - 바뀐 모션 스토리 도우미(`src/motion-story/`의 스토리가 아닌 파일)를 import로 따라가 쓰는 모션 스토리. 쓰는 곳을
+ *   정하지 못하면(지운 파일, 아무 스토리도 쓰지 않는 파일) 모든 견본
+ * - 모션 검사 도구·워크플로·재생 도우미(motion-preview.tsx)가 바뀌면 모든 견본
  * json이 없는 클래스는 고르지 않는다.
  * @codocs [[피그마 연동:CI]]
  * @param inputs 바뀐 파일과 저장소 상태
@@ -63,6 +74,7 @@ const VARIABLE_REFERENCE_PATTERN = /var\(\s*(--[\w-]+)/gu;
  */
 export function selectMotions(inputs: MotionScopeInputs): MotionScope {
   const reasons = new Map<string, string[]>();
+  const helpers = motionStoryHelpers(inputs.motionStoryFiles ?? new Map<string, string>());
   /**
    * 견본에 이유를 더한다. json이 없는 이름은 버린다.
    * @param name 견본(클래스) 이름
@@ -117,9 +129,79 @@ export function selectMotions(inputs: MotionScopeInputs): MotionScope {
       for (const name of motionStoryTitles(`${change.before ?? ''}\n${change.after ?? ''}`)) {
         add(name, `${file}(모션 스토리)`);
       }
+      continue;
+    }
+    if (file.startsWith(MOTION_STORY_DIR)) {
+      const users = [...helpers].filter(([, files]) => files.has(file)).map(([name]) => name);
+      for (const name of users.length > 0 ? users : inputs.motionNames) {
+        add(
+          name,
+          users.length > 0
+            ? `${file}(모션 스토리 도우미)`
+            : `${file}(쓰는 모션 스토리를 정하지 못함)`,
+        );
+      }
     }
   }
   return { motions: [...reasons.keys()].sort(), reasons };
+}
+
+/**
+ * 모션 스토리마다 상대 import를 따라가 쓰는 모션 스토리 폴더 안 파일을 모은다. 캡처 범위가 조립 스토리의 import를
+ * 따라가는 것과 같은 방식이고, 모션 스토리 폴더 밖(컴포넌트 등)으로는 따라가지 않는다.
+ * @codocs [[피그마 연동:CI]]
+ * @param files 모션 스토리 폴더의 파일(저장소 기준 경로 → 내용)
+ * @returns 견본 이름 → 그 모션 스토리가 쓰는 파일(스토리 자신 포함)
+ */
+export function motionStoryHelpers(files: ReadonlyMap<string, string>): Map<string, Set<string>> {
+  const result = new Map<string, Set<string>>();
+  for (const [story, content] of files) {
+    const names = STORY_FILE_PATTERN.test(story) ? motionStoryTitles(content) : [];
+    if (names.length === 0) {
+      continue;
+    }
+    const found = new Set<string>([story]);
+    const queue = [story];
+    for (let file = queue.shift(); file !== undefined; file = queue.shift()) {
+      for (const match of (files.get(file) ?? '').matchAll(RELATIVE_IMPORT_PATTERN)) {
+        const target = resolveImport(file, match[1] ?? '', files);
+        if (target !== undefined && !found.has(target)) {
+          found.add(target);
+          queue.push(target);
+        }
+      }
+    }
+    for (const name of names) {
+      result.set(name, new Set([...(result.get(name) ?? []), ...found]));
+    }
+  }
+  return result;
+}
+
+/**
+ * 상대 import를 모션 스토리 폴더 안 파일로 푼다.
+ * @param from import하는 파일(저장소 기준 경로)
+ * @param specifier `./sample-window` 꼴
+ * @param files 모션 스토리 폴더의 파일
+ * @returns 저장소 기준 경로, 폴더 밖이거나 없으면 undefined
+ */
+function resolveImport(
+  from: string,
+  specifier: string,
+  files: ReadonlyMap<string, string>,
+): string | undefined {
+  const parts = from.split('/').slice(0, -1);
+  for (const part of specifier.split('/')) {
+    if (part === '..') {
+      parts.pop();
+    } else if (part !== '.') {
+      parts.push(part);
+    }
+  }
+  const joined = parts.join('/');
+  return SOURCE_EXTENSIONS.map((extension) => `${joined}${extension}`).find((candidate) =>
+    files.has(candidate),
+  );
 }
 
 /**
