@@ -48,8 +48,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   const minimize = useWindowStore((state) => state.minimize);
   const restore = useWindowStore((state) => state.restore);
   const close = useWindowStore((state) => state.close);
-  const openWindow = useWindowStore((state) => state.open);
-  const openApp = useOpenApp(openWindow);
+  const openApp = useOpenApp();
   const device = useDevice();
   const workArea = useWorkArea();
   const [previewApp, setPreviewApp] = useState<WindowApp | null>(null);

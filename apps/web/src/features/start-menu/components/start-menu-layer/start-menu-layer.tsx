@@ -21,7 +21,6 @@ import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
-import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
@@ -49,8 +48,7 @@ const EMPTY_SEARCH_ITEMS = [] as const;
  */
 export function StartMenuLayer(): JSX.Element {
   const device = useDevice();
-  const openWindow = useWindowStore((state) => state.open);
-  const openApp = useOpenApp(openWindow);
+  const openApp = useOpenApp();
   const restart = useWorkspaceStore((state) => state.restart);
   const openPanel = usePanelStore((state) => state.openPanel);
   const isPowerMenuOpen = usePanelStore((state) => state.isPowerMenuOpen);
