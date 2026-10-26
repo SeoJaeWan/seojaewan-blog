@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { tokensCssPath, tokensJsonPath } from '../package-paths.ts';
 import { TOKENS_FIXTURE } from './tokens-css.fixture.ts';
-import { naturalCompare, TokenFormatError, tokensJsonToCss } from './tokens-css.ts';
+import { naturalCompare, roundAngle, TokenFormatError, tokensJsonToCss } from './tokens-css.ts';
 
 const css = tokensJsonToCss(TOKENS_FIXTURE);
 
@@ -314,6 +314,178 @@ describe('그룹과 이름이 같은 변수', () => {
     expect(() =>
       tokensJsonToCss({ color: { white: { $root: white } }, 'color-white': white70 }),
     ).toThrow(TokenFormatError);
+  });
+});
+
+const blackToWhite = [
+  { color: '#000000', position: 0 },
+  { color: '#ffffff', position: 1 },
+];
+
+/**
+ * 그라데이션 칠 스타일 하나로 tokens.css를 만들어 그 변수 값을 꺼낸다.
+ * @param layer 칠 층(`type`, `gradientTransform`). undefined면 층 정보가 없는 옛 형식이다.
+ * @param stops 정지점
+ * @returns `--g` 변수 값
+ */
+function gradientValue(
+  layer: Record<string, unknown> | undefined,
+  stops: readonly { color: string; position: number }[] = blackToWhite,
+): string {
+  const extensions =
+    layer === undefined
+      ? {}
+      : { $extensions: { 'com.seojaewan': { layers: [{ gradientStops: stops, ...layer }] } } };
+  const output = tokensJsonToCss({
+    style: { paint: { G: { $type: 'gradient', $value: stops, ...extensions } } },
+  });
+  const line = output.split('\n').find((text) => text.startsWith('  --g: '));
+  return line?.slice('  --g: '.length, -1) ?? '';
+}
+
+/**
+ * 선형 그라데이션 칠 층을 만든다.
+ * @param gradientTransform 피그마 gradientTransform
+ * @returns 칠 층
+ */
+function linear(gradientTransform: number[][]): Record<string, unknown> {
+  return { type: 'GRADIENT_LINEAR', gradientTransform };
+}
+
+// @codocs [[피그마 연동:토큰 생성]]
+describe('그라데이션 방향', () => {
+  it('위→아래(피그마 기본 변환)는 기존 출력과 같게 to bottom이다', () => {
+    expect(
+      gradientValue(
+        linear([
+          [0, 1, 0],
+          [-1, 0, 1],
+        ]),
+      ),
+    ).toBe('linear-gradient(to bottom, #000000 0%, #ffffff 100%)');
+  });
+
+  it('층 정보나 변환이 없는 옛 tokens.json은 위→아래로 읽는다', () => {
+    expect(gradientValue(undefined)).toBe('linear-gradient(to bottom, #000000 0%, #ffffff 100%)');
+    expect(gradientValue({ type: 'GRADIENT_LINEAR' })).toBe(
+      'linear-gradient(to bottom, #000000 0%, #ffffff 100%)',
+    );
+  });
+
+  it('왼→오는 90deg, 아래→위는 0deg다', () => {
+    expect(
+      gradientValue(
+        linear([
+          [1, 0, 0],
+          [0, 1, 0],
+        ]),
+      ),
+    ).toBe('linear-gradient(90deg, #000000 0%, #ffffff 100%)');
+    expect(
+      gradientValue(
+        linear([
+          [0, -1, 1],
+          [1, 0, 0],
+        ]),
+      ),
+    ).toBe('linear-gradient(0deg, #000000 0%, #ffffff 100%)');
+  });
+
+  it('왼아래→오른위 대각선은 45deg, 왼위→오른아래 대각선은 135deg이고 정지점은 모서리를 지난다', () => {
+    expect(
+      gradientValue(
+        linear([
+          [0.5, -0.5, 0.5],
+          [0.5, 0.5, -0.5],
+        ]),
+      ),
+    ).toBe('linear-gradient(45deg, #000000 0%, #ffffff 100%)');
+    expect(
+      gradientValue(
+        linear([
+          [0.5, 0.5, 0],
+          [-0.5, 0.5, 0.5],
+        ]),
+      ),
+    ).toBe('linear-gradient(135deg, #000000 0%, #ffffff 100%)');
+  });
+
+  it('60°는 CSS 그라데이션 선 길이(|sin| + |cos|)에 맞춰 정지점 위치를 옮긴다', () => {
+    // 가운데를 지나고 길이 1인 60° 핸들(4자리 반올림 값, 실제 59.9993°). CSS 위치는 (t - 0.5) / (sin60 + cos60) + 0.5에 가깝다.
+    const stops = [
+      { color: '#000000', position: 0 },
+      { color: '#000000', position: 0.2 },
+      { color: '#ffffff', position: 0.4 },
+      { color: '#ffffff', position: 1 },
+    ];
+    expect(
+      gradientValue(
+        linear([
+          [0.866, -0.5, 0.317],
+          [0.5, 0.866, -0.183],
+        ]),
+        stops,
+      ),
+    ).toBe(
+      'linear-gradient(60deg, #000000 13.3968%, #000000 28.0381%, #ffffff 42.6794%, #ffffff 86.6032%)',
+    );
+  });
+
+  it('핸들이 상자 끝에 닿지 않으면 정지점 위치를 그만큼 옮긴다', () => {
+    // 위에서 25% 지점부터 75% 지점까지의 위→아래 핸들: t = 2y - 0.5
+    expect(
+      gradientValue(
+        linear([
+          [0, 2, -0.5],
+          [-2, 0, 1.5],
+        ]),
+      ),
+    ).toBe('linear-gradient(to bottom, #000000 25%, #ffffff 75%)');
+    // 가운데부터 오른쪽 끝까지의 왼→오 핸들: t = 2x - 1
+    expect(
+      gradientValue(
+        linear([
+          [2, 0, -1],
+          [0, 2, -0.5],
+        ]),
+      ),
+    ).toBe('linear-gradient(90deg, #000000 50%, #ffffff 100%)');
+  });
+
+  it('선형이 아닌 그라데이션이나 길이 0인 방향은 실패한다', () => {
+    expect(() => gradientValue({ type: 'GRADIENT_RADIAL', gradientTransform: [] })).toThrow(
+      TokenFormatError,
+    );
+    expect(() =>
+      gradientValue(
+        linear([
+          [0, 0, 0.5],
+          [0, 0, 0.5],
+        ]),
+      ),
+    ).toThrow(TokenFormatError);
+    expect(() => gradientValue(linear([[0, 1, 0]]))).toThrow(TokenFormatError);
+  });
+});
+
+describe('그라데이션 각도 반올림', () => {
+  it('소수 첫째 자리로 반올림한다', () => {
+    expect(roundAngle(123.456)).toBe(123.5);
+    expect(roundAngle(45.06)).toBe(45.1);
+  });
+
+  it('0·90·180·270°와 0.05°보다 덜 차이 나면 정수가 된다', () => {
+    expect(roundAngle(59.9971)).toBe(60);
+    expect(roundAngle(89.97)).toBe(90);
+    expect(roundAngle(180.04)).toBe(180);
+    expect(roundAngle(270.049)).toBe(270);
+  });
+
+  it('0 이상 360 미만으로 맞춘다', () => {
+    expect(roundAngle(-90)).toBe(270);
+    expect(roundAngle(359.97)).toBe(0);
+    expect(roundAngle(-0.01)).toBe(0);
+    expect(Object.is(roundAngle(-0.01), -0)).toBe(false);
   });
 });
 
