@@ -2,10 +2,8 @@
 
 import type { JSX } from 'react';
 
-import { useOpenApp } from '@/core/window/window';
 import { useWorkspaceStore } from '@/core/workspace/workspace';
-import type { DesktopIcon } from '@/features/desktop/desktop';
-import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/desktop';
+import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
@@ -13,9 +11,6 @@ import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
 import { ShellTaskbarApps } from '@/shell/components/shell-taskbar-apps/shell-taskbar-apps';
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
-
-// 데스크톱은 아이콘을 더블클릭해서, 모바일은 탭해서 연다.
-const ICON_OPEN_GESTURES = { desktop: 'double-click', mobile: 'click' } as const;
 
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
@@ -38,34 +33,17 @@ export function Shell(): JSX.Element {
 /**
  * 데스크톱 하위 트리를 그린다. 화면을 꽉 채우는 바탕화면(`Desktop/Scene`) 위에 아래에서부터 차례로
  * 배경화면·아이콘, 창 층, 패널 층(Start·검색), 작업 표시줄을 쌓는다. 작업 표시줄이 맨 위라 패널은 그 뒤에서 올라온다.
- * 시계와 화면 방식은 기기에 따라 달라, 서버 HTML과 수화 첫 렌더는 빈 시계·데스크톱 방식으로 그리고 마운트 뒤에 바꾼다.
- * 창 층은 창 저장소의 열린 창을 그리고, 작업 표시줄 앱 버튼과 바탕화면 `Blog` 폴더, Start 항목이 창을 연다.
- * Start 버튼과 검색칸은 패널 층(Start·검색 패널)을 열고 닫는다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
- * @codocs [[작업 표시줄:구성]]
- * @codocs [[창 동작:열기 규칙]]
- * @codocs [[모바일:차이]]
+ * 각 층은 자기 기능의 층 컴포넌트가 저장소를 직접 읽고 불러 그리므로, shell은 층을 순서대로 쌓기만 하고 기능 사이를 콜백으로 잇지 않는다.
+ * 창 안에 무엇을 그릴지(앱 등록표)는 shell이 창 층과 작업 표시줄 창 미리보기에 넘긴다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
+ * @codocs [[저장소 구성:앱 폴더 구조]]
+ * @codocs [[기술 스택:상태 관리]]
  * @returns 데스크톱 하위 트리
  */
 function ShellDesktop(): JSX.Element {
-  const device = useDevice();
-  const openApp = useOpenApp();
-
-  /**
-   * 바탕화면 아이콘을 열면 그 항목을 연다. 폴더(`Blog`)는 새 탐색기 창이다. 휴지통과 외부 링크는 다음 단계에서 붙인다.
-   * @param icon 연 아이콘
-   */
-  function handleIconOpen(icon: DesktopIcon): void {
-    if (icon.kind === 'folder') {
-      openApp('file-explorer');
-    }
-  }
-
   return (
     <DesktopScene
       className="size-full"
-      icons={INITIAL_DESKTOP_ITEMS}
-      iconOpenGesture={ICON_OPEN_GESTURES[device]}
-      onIconOpen={handleIconOpen}
+      icons={<DesktopIconsLayer />}
       taskbar={<TaskbarLayer apps={<ShellTaskbarApps />} />}
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
