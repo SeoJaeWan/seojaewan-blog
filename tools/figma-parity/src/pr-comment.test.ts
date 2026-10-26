@@ -101,7 +101,7 @@ describe('PR 댓글 길이', () => {
     const { bodies, images } = renderComments({ rows, fileErrors: [] }, commentOptions);
     expect(bodies.length).toBeGreaterThan(1);
     expect(bodies.every((body) => body.length <= COMMENT_LIMIT)).toBe(true);
-    expect(bodies.map(markerIndex)).toEqual(bodies.map((_, index) => index + 1));
+    expect(bodies.map((body) => markerIndex(body))).toEqual(bodies.map((_, index) => index + 1));
     expect(images).toHaveLength(1800);
   });
 });

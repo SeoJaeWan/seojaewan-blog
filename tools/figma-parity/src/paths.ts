@@ -47,6 +47,8 @@ export function storybookStaticDir(storybook: StorybookName): string {
 
 /** 결과 폴더 기본값. `--out`으로 바꿀 수 있다 */
 export const defaultResultsDir = path.join(toolRoot, 'parity-results');
+/** 모션 검사가 견본마다 결과(`<이름>.json`)를 남기는 폴더. PR 댓글이 이 결과로 표를 만든다 */
+export const motionResultsDir = path.join(defaultResultsDir, 'motion');
 
 /**
  * 저장소 기준 경로를 절대 경로로 바꾼다.

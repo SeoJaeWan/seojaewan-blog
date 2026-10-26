@@ -5,6 +5,8 @@ import {
   changedMotionVariables,
   type FileChange,
   MOTION_CSS_FILE,
+  MOTION_STORY_DIR,
+  motionStoryHelpers,
   selectMotions,
   TOKENS_CSS_FILE,
 } from './motion-scope.ts';
@@ -120,6 +122,47 @@ describe('CI', () => {
     expect(scope(['packages/design-system/src/motion-story/motion-preview.tsx'])).toEqual(
       [...knownMotions].sort(),
     );
+  });
+
+  it('바뀐 모션 스토리 도우미는 import를 따라가 그 도우미를 쓰는 모션 스토리의 견본만 검사한다', () => {
+    const files = new Map([
+      [
+        `${MOTION_STORY_DIR}motion-window-open.stories.tsx`,
+        "import { SampleWindow } from './sample-window';\nexport default { title: 'Motion/motion-window-open' };",
+      ],
+      [
+        `${MOTION_STORY_DIR}motion-progress-ring.stories.tsx`,
+        "import { ProgressRing } from '../components/progress-ring/progress-ring';\nexport default { title: 'Motion/motion-progress-ring' };",
+      ],
+      [`${MOTION_STORY_DIR}sample-window.tsx`, "import { frame } from './sample-frame';"],
+      [`${MOTION_STORY_DIR}sample-frame.tsx`, 'export const frame = 1;'],
+      [`${MOTION_STORY_DIR}sample-unused.tsx`, 'export const unused = 1;'],
+    ]);
+    expect(motionStoryHelpers(files).get('motion-window-open')).toEqual(
+      new Set([
+        `${MOTION_STORY_DIR}motion-window-open.stories.tsx`,
+        `${MOTION_STORY_DIR}sample-window.tsx`,
+        `${MOTION_STORY_DIR}sample-frame.tsx`,
+      ]),
+    );
+    /**
+     * 도우미 파일이 바뀌었을 때 범위를 정한다.
+     * @param file 바뀐 파일
+     * @returns 고른 견본 이름
+     */
+    function helperScope(file: string): string[] {
+      return selectMotions({
+        changedFiles: [file],
+        motionNames: knownMotions,
+        motionStoryFiles: files,
+        readChange: () => ({ before: '', after: '' }),
+      }).motions;
+    }
+    // 도우미가 import하는 도우미가 바뀌어도 따라간다
+    expect(helperScope(`${MOTION_STORY_DIR}sample-frame.tsx`)).toEqual(['motion-window-open']);
+    // 쓰는 모션 스토리를 정하지 못하면(지운 파일, 쓰지 않는 파일) 전체다
+    expect(helperScope(`${MOTION_STORY_DIR}sample-unused.tsx`)).toEqual([...knownMotions].sort());
+    expect(helperScope(`${MOTION_STORY_DIR}sample-removed.tsx`)).toEqual([...knownMotions].sort());
   });
 
   it('모션과 관계없는 파일과 테스트 파일만 바뀌면 범위가 없다', () => {

@@ -1,8 +1,10 @@
 /**
- * 피그마 플러그인이 쓴 `figma/motions/<이름>.json`에서 모션 시간 검사에 필요한 값만 읽고 검증한다.
+ * 피그마 플러그인이 쓴 `figma/motions/<이름>.json`에서 모션 시간 검사와 키프레임 값 검사에 필요한 값만 읽고 검증한다.
  * 형식은 플러그인(tools/figma-plugin/src/motion-file.ts)이 정하고, 패키지가 달라 타입을 가져오지 않고
  * 여기서는 읽는 값만 다시 확인한다(export.json을 읽는 variant-name.ts와 같은 방식).
  */
+
+import type { ValueKeyframe, ValueTrack } from './motion-values.ts';
 
 /** run-motion-check.ts가 Playwright Test에 검사할 견본 목록(JSON 배열)을 넘기는 환경 변수 */
 export const MOTION_SELECTION_ENV = 'MOTION_CHECK_SELECTION';
@@ -51,6 +53,60 @@ export function parseMotionSpec(value: unknown, where: string): MotionSpec {
     parseTrack(item, `${where}.tracks[${String(index)}]`),
   );
   return { name, url, iterations, tracks };
+}
+
+/**
+ * 모션 json에서 키프레임 값 검사에 쓰는 트랙 값(노드, 항목, 연산, 키프레임 위치와 값)을 읽는다.
+ * 값의 꼴은 항목마다 다르므로(숫자, `{ x, y }`) 여기서는 그대로 두고 비교할 때 변환표로 읽는다.
+ * @codocs [[피그마 연동:모션]]
+ * @param value json을 파싱한 값
+ * @param where 오류 메시지에 쓸 위치(파일 경로)
+ * @returns 트랙 값
+ */
+export function parseValueTracks(value: unknown, where: string): ValueTrack[] {
+  const entry = expectRecord(value, where);
+  if (!Array.isArray(entry.tracks)) {
+    throw new Error(`${where}.tracks: 배열이어야 한다.`);
+  }
+  return entry.tracks.map((item: unknown, index) =>
+    parseValueTrack(item, `${where}.tracks[${String(index)}]`),
+  );
+}
+
+/**
+ * 트랙 하나의 키프레임 값을 읽는다.
+ * @param value 트랙 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 트랙 값
+ */
+function parseValueTrack(value: unknown, where: string): ValueTrack {
+  const track = expectRecord(value, where);
+  const node = expectString(track.node, `${where}.node`);
+  const duration = expectRecord(track.duration, `${where}.duration`);
+  if (!Array.isArray(track.keyframes)) {
+    throw new Error(`${where}.keyframes: 배열이어야 한다.`);
+  }
+  return {
+    node,
+    path: typeof track.path === 'string' ? track.path : node,
+    property: expectString(track.property, `${where}.property`),
+    operation: typeof track.operation === 'string' ? track.operation : 'SET',
+    durationMs: expectNumber(duration.ms, `${where}.duration.ms`),
+    keyframes: track.keyframes.map((item: unknown, index) =>
+      parseValueKeyframe(item, `${where}.keyframes[${String(index)}]`),
+    ),
+  };
+}
+
+/**
+ * 키프레임 하나의 위치와 값을 읽는다.
+ * @param value 키프레임 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 위치와 값
+ */
+function parseValueKeyframe(value: unknown, where: string): ValueKeyframe {
+  const keyframe = expectRecord(value, where);
+  return { offset: expectNumber(keyframe.offset, `${where}.offset`), value: keyframe.value };
 }
 
 /**
