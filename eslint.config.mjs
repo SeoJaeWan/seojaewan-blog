@@ -472,6 +472,7 @@ export default defineConfig(
   },
 
   // @codocs [[저장소 구성:의존 방향]]
+  // 앱 층은 `app → shell → features → core → shared` 방향으로만 import한다. 뒤에 오는 정책이 앞의 정책보다 우선한다.
   {
     files: [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/**/*.{ts,tsx}`],
     plugins: { boundaries },
@@ -487,6 +488,7 @@ export default defineConfig(
       'boundaries/elements': [
         { type: 'design-system', pattern: DESIGN_SYSTEM, partialMatch: false },
         { type: 'web-app', pattern: `${WEB_SRC}/app`, partialMatch: false },
+        { type: 'web-shell', pattern: `${WEB_SRC}/shell`, partialMatch: false },
         {
           type: 'web-feature',
           pattern: `${WEB_SRC}/features/*`,
@@ -517,6 +519,7 @@ export default defineConfig(
                   element: {
                     type: [
                       'web-app',
+                      'web-shell',
                       'web-feature',
                       'web-core',
                       'web-content',
@@ -540,44 +543,102 @@ export default defineConfig(
                 to: { element: { type: 'design-system', fileInternalPath: 'src/index.ts' } },
               },
             },
+
+            // 위 층은 아래 층의 공개 진입점으로만 import한다.
             {
-              from: { element: { type: ['web-feature', 'web-core'] } },
-              disallow: { to: { element: { type: 'web-app' } } },
-              message: '`features/`와 `core/`는 `app/`을 import하지 않는다.',
+              from: { element: { type: 'web-app' } },
+              disallow: { to: { element: { type: 'web-shell' } } },
+              message: '`shell/`은 공개 진입점(`shell/shell.ts`)으로만 import한다.',
             },
             {
-              from: { element: { type: ['web-feature', 'web-core'] } },
+              from: { element: { type: ['web-app', 'web-shell', 'web-feature'] } },
               disallow: { to: { element: { type: ['web-feature', 'web-core'] } } },
               message:
-                '다른 기능은 공개 진입점(`{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
+                '아래 층은 공개 진입점(`{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
             },
-            ...['web-feature', 'web-core'].flatMap((type) => [
-              {
-                from: { element: { type } },
-                allow: {
-                  to: {
-                    element: {
-                      type,
-                      captured: { featureName: '{{from.element.captured.featureName}}' },
-                    },
+            // 같은 층의 다른 기능끼리는 import하지 않는다. 서로 필요한 부분은 아래 층으로 내린다.
+            {
+              from: { element: { type: 'web-feature' } },
+              disallow: { to: { element: { type: 'web-feature' } } },
+              message:
+                '`features/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 함께 필요한 부분은 아래 층으로 내린다.',
+            },
+            {
+              from: { element: { type: 'web-core' } },
+              disallow: { to: { element: { type: 'web-core' } } },
+              message:
+                '`core/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 함께 필요한 부분은 아래 층으로 내린다.',
+            },
+            {
+              from: { element: { type: 'web-app' } },
+              allow: { to: { element: { type: 'web-shell', fileInternalPath: 'shell.ts' } } },
+            },
+            {
+              from: { element: { type: ['web-app', 'web-shell'] } },
+              allow: {
+                to: {
+                  element: {
+                    type: ['web-feature', 'web-core'],
+                    fileInternalPath: [
+                      '{{to.element.captured.featureName}}.ts',
+                      '{{to.element.captured.featureName}}.tsx',
+                    ],
                   },
                 },
               },
-              {
-                from: { element: { type: ['web-feature', 'web-core'] } },
-                allow: {
-                  to: {
-                    element: {
-                      type,
-                      fileInternalPath: [
-                        '{{to.element.captured.featureName}}.ts',
-                        '{{to.element.captured.featureName}}.tsx',
-                      ],
-                    },
+            },
+            {
+              from: { element: { type: 'web-feature' } },
+              allow: {
+                to: {
+                  element: {
+                    type: 'web-core',
+                    fileInternalPath: [
+                      '{{to.element.captured.featureName}}.ts',
+                      '{{to.element.captured.featureName}}.tsx',
+                    ],
                   },
                 },
               },
-            ]),
+            },
+            // 기능 안은 자유롭게 import한다.
+            ...['web-feature', 'web-core'].map((type) => ({
+              from: { element: { type } },
+              allow: {
+                to: {
+                  element: {
+                    type,
+                    captured: { featureName: '{{from.element.captured.featureName}}' },
+                  },
+                },
+              },
+            })),
+
+            // 아래 층은 위 층을 import하지 않는다.
+            {
+              from: { element: { type: ['web-shell', 'web-feature', 'web-core', 'web-shared'] } },
+              disallow: { to: { element: { type: 'web-app' } } },
+              message:
+                '아래 층은 `app/`을 import하지 않는다(`app → shell → features → core → shared`).',
+            },
+            {
+              from: { element: { type: ['web-feature', 'web-core', 'web-shared'] } },
+              disallow: { to: { element: { type: 'web-shell' } } },
+              message:
+                '아래 층은 `shell/`을 import하지 않는다(`app → shell → features → core → shared`).',
+            },
+            {
+              from: { element: { type: ['web-core', 'web-shared'] } },
+              disallow: { to: { element: { type: 'web-feature' } } },
+              message:
+                '아래 층은 `features/`를 import하지 않는다(`app → shell → features → core → shared`).',
+            },
+            {
+              from: { element: { type: 'web-shared' } },
+              disallow: { to: { element: { type: 'web-core' } } },
+              message:
+                '`shared/`는 `core/`를 import하지 않는다(`app → shell → features → core → shared`).',
+            },
           ],
         },
       ],
