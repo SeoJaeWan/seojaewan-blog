@@ -232,7 +232,7 @@
   --font-weight-bold: 700;
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
-  --icon-color-search: linear-gradient(to bottom, var(--color-blue-dark-1) 0%, var(--color-blue-dark-1) 55%, var(--color-green-light-2) 90%, var(--color-green-light-2) 100%);
+  --icon-color-search: linear-gradient(45deg, var(--color-blue-dark-1) 0%, var(--color-blue-dark-1) 55%, var(--color-green-light-2) 90%, var(--color-green-light-2) 100%);
   --layer-fill-alt: var(--color-white);
   --layer-fill-default: var(--color-white-50);
   --layer-on-mica-base-alt-fill-default: var(--color-white-70);

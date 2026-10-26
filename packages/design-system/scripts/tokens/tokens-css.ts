@@ -15,6 +15,15 @@ const DEFAULT_MONO_TEXT_STYLE = 'Code';
 const NUMBER_PRECISION = 4;
 // 투명도와 RGB가 모두 다른 두 정지점 사이에 넣는 중간 정지점 수다.
 const INTERPOLATION_STOPS = 4;
+// 그라데이션 각도를 반올림하는 소수 자릿수다. 0.1°보다 작은 차이는 눈에 보이지 않는다.
+const ANGLE_PRECISION = 1;
+// 위→아래(CSS 180deg). 이 방향은 기존 출력과 같게 `to bottom`으로 쓴다.
+const TO_BOTTOM_ANGLE = 180;
+// 방향 정보가 없는 칠(옛 tokens.json)이 쓰는 피그마 위→아래 변환이다.
+const toBottomTransform: GradientTransform = [
+  [0, 1, 0],
+  [-1, 0, 1],
+];
 // 직선 이징(피그마 LINEAR)의 베지어 제어점이다. CSS에는 `linear`로 쓴다.
 const LINEAR_BEZIER = '0,0,1,1';
 // 플러그인이 붙이는 확장 필드 이름이다.
@@ -116,6 +125,20 @@ type Context = {
 type Rgba = [number, number, number, number];
 
 /** 그라데이션 정지점 하나 */
+// 피그마 gradientTransform의 위 두 줄([[a, b, c], [d, e, f]])이다.
+type GradientTransform = readonly [
+  readonly [number, number, number],
+  readonly [number, number, number],
+];
+
+// CSS 그라데이션 방향과, 피그마 정지점 위치를 CSS 정지점 위치로 바꾸는 함수다.
+type GradientDirection = {
+  /** CSS 각도(deg, 0 이상 360 미만, 반올림한 값) */
+  angle: number;
+  /** 피그마 위치(0~1) → CSS 위치(0~1) */
+  toCss: (position: number) => number;
+};
+
 type ParsedStop = {
   /** CSS 색(별칭이면 var()) */
   css: string;
@@ -753,7 +776,7 @@ function backdropBlur(blur: string): string[] {
 }
 
 /**
- * 칠 스타일을 CSS 변수로 바꾼다. 단색은 색, 그라데이션은 위→아래 `linear-gradient()`다.
+ * 칠 스타일을 CSS 변수로 바꾼다. 단색은 색, 그라데이션은 피그마 방향 그대로의 `linear-gradient()`다.
  * @param token 칠 스타일
  * @param context 변환 표
  * @returns CSS 변수
@@ -765,7 +788,11 @@ function paintVariable(token: FlatToken, context: Context): CssVariable {
     case 'color':
       return { name, value: solidPaintColor(token, context, source), source };
     case 'gradient':
-      return { name, value: linearGradient(token.value, context, source), source };
+      return {
+        name,
+        value: linearGradient(token.value, gradientTransform(token, source), context, source),
+        source,
+      };
     default:
       throw new TokenFormatError(source, `칠 스타일 $type ${token.type}은 변환 규칙이 없다.`);
   }
@@ -921,19 +948,129 @@ function textFamily(token: FlatToken, texts: readonly FlatToken[], context: Cont
 }
 
 /**
- * 정지점 목록을 위→아래 `linear-gradient()`로 바꾼다.
+ * 그라데이션 칠 스타일의 첫 그라데이션 층에서 피그마 gradientTransform을 꺼낸다.
+ * 토큰 값(정지점)이 첫 그라데이션 층의 것이므로 방향도 그 층을 쓴다.
+ * 층 정보나 변환이 없는 옛 tokens.json은 위→아래로 읽는다.
+ * 선형이 아닌 그라데이션(방사형, 각도, 다이아몬드)은 CSS 규칙이 없어 실패한다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param token 그라데이션 칠 스타일
+ * @param source 오류 메시지에 쓸 경로
+ * @returns 2×3 변환 행렬
+ */
+function gradientTransform(token: FlatToken, source: string): GradientTransform {
+  const extension = token.extensions[SEOJAEWAN_EXTENSION];
+  const layers: unknown[] =
+    isRecord(extension) && Array.isArray(extension.layers) ? extension.layers : [];
+  const layer = layers.find(
+    (candidate): candidate is Record<string, unknown> =>
+      isRecord(candidate) &&
+      typeof candidate.type === 'string' &&
+      candidate.type.startsWith('GRADIENT_'),
+  );
+  if (layer === undefined) {
+    return toBottomTransform;
+  }
+  if (layer.type !== 'GRADIENT_LINEAR') {
+    throw new TokenFormatError(
+      source,
+      `${String(layer.type)} 그라데이션은 변환 규칙이 없다(선형만 옮긴다).`,
+    );
+  }
+  if (layer.gradientTransform === undefined) {
+    return toBottomTransform;
+  }
+  const rows = layer.gradientTransform;
+  if (!Array.isArray(rows) || rows.length !== 2) {
+    throw new TokenFormatError(source, 'gradientTransform은 숫자 3개짜리 줄 2개여야 한다.');
+  }
+  const [first, second] = rows.map(
+    /**
+     * 변환 행렬의 줄 하나를 읽는다.
+     * @param row 숫자 3개
+     * @returns 숫자 3개
+     */
+    (row: unknown) => {
+      if (!Array.isArray(row) || row.length !== 3) {
+        throw new TokenFormatError(source, 'gradientTransform은 숫자 3개짜리 줄 2개여야 한다.');
+      }
+      const [a, b, c] = row.map((value: unknown) => numberValue(value, source));
+      return [a ?? 0, b ?? 0, c ?? 0] as const;
+    },
+  );
+  return [first ?? toBottomTransform[0], second ?? toBottomTransform[1]];
+}
+
+/**
+ * 피그마 선형 그라데이션 변환을 CSS 각도와 정지점 위치 변환으로 바꾼다.
+ *
+ * 피그마: gradientTransform은 도형의 정규화 좌표(왼쪽 위 (0,0), 오른쪽 아래 (1,1))를
+ * 그라데이션 공간으로 옮기고, 그라데이션은 그 공간의 x축(0→1)을 따른다.
+ * 그래서 점 (x, y)의 피그마 위치는 t = a·x + b·y + c(첫 줄)다.
+ * 기본 위→아래 칠의 변환 [[0, 1, 0], [-1, 0, 1]]이 t = y가 되는 것으로 확인했다.
+ *
+ * CSS(CSS Images 3 `linear-gradient`): 각도 A는 0deg가 위, 시계 방향이 양수이고,
+ * 방향 단위 벡터는 (sin A, -cos A)다. 그라데이션 선은 상자 가운데를 지나고 길이는
+ * |W·sin A| + |H·cos A|라서 0%와 100%가 상자 모서리를 지난다.
+ *
+ * 정사각형(정규화 좌표에서 W = H = 1)이면 t의 기울기 (a, b) = k·(sin A, -cos A)이고,
+ * 가운데에서의 위치를 t₀, 그라데이션 선 길이를 L이라 하면 CSS 위치 s = (t - t₀) / (k·L) + 0.5다.
+ * 정사각형에서는 피그마와 똑같이 그려진다. 정사각형이 아니면 피그마는 정규화 좌표 기준으로
+ * 기울기가 상자 비율만큼 늘어나므로 같은 각도·위치는 근사다(위→아래·왼→오는 어느 상자에서나 같다).
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param transform 피그마 gradientTransform
+ * @param source 오류 메시지에 쓸 경로
+ * @returns CSS 각도와 위치 변환
+ */
+function gradientDirection(transform: GradientTransform, source: string): GradientDirection {
+  const [a, b, c] = transform[0];
+  const slope = Math.hypot(a, b);
+  if (slope < 1e-9) {
+    throw new TokenFormatError(source, 'gradientTransform의 그라데이션 방향 길이가 0이다.');
+  }
+  const radians = Math.atan2(a, -b);
+  const length = Math.abs(Math.sin(radians)) + Math.abs(Math.cos(radians));
+  const center = a * 0.5 + b * 0.5 + c;
+  return {
+    angle: roundAngle((radians * 180) / Math.PI),
+    toCss: (position) => (position - center) / (slope * length) + 0.5,
+  };
+}
+
+/**
+ * CSS 각도를 소수 첫째 자리로 반올림하고 0 이상 360 미만으로 맞춘다.
+ * 0·90·180·270°와 0.05°보다 덜 차이 나면 정수가 된다.
+ * @param degrees 각도
+ * @returns 반올림한 각도
+ */
+export function roundAngle(degrees: number): number {
+  const factor = 10 ** ANGLE_PRECISION;
+  const rounded = Math.round(degrees * factor) / factor;
+  const normalized = ((rounded % 360) + 360) % 360;
+  return Math.round(normalized * factor) / factor;
+}
+
+/**
+ * 정지점 목록을 피그마 방향 그대로의 `linear-gradient()`로 바꾼다.
+ * 위→아래(180deg)는 기존 출력과 같게 `to bottom`으로 쓴다.
  * 피그마는 정지점 사이 색을 투명도와 따로(투명도를 곱하지 않고) 섞고, CSS는 투명도를 곱한 값으로 섞는다.
  * 투명도와 RGB가 모두 다른 두 정지점 사이에는 피그마 방식으로 계산한 중간 정지점을 넣는다.
  * @codocs [[디자인 기반:컨트롤 테두리]]
  * @param stops `[{color, position}]`
+ * @param transform 피그마 gradientTransform
  * @param context 변환 표
  * @param source 오류 메시지에 쓸 경로
- * @returns `linear-gradient(to bottom, ...)`
+ * @returns `linear-gradient(to bottom, ...)` 또는 `linear-gradient(45deg, ...)`
  */
-function linearGradient(stops: unknown, context: Context, source: string): string {
+function linearGradient(
+  stops: unknown,
+  transform: GradientTransform,
+  context: Context,
+  source: string,
+): string {
   if (!Array.isArray(stops) || stops.length === 0) {
     throw new TokenFormatError(source, '그라데이션 정지점은 비어 있지 않은 배열이어야 한다.');
   }
+  const direction = gradientDirection(transform, source);
   const parsed = stops.map(
     /**
      * 정지점 하나를 읽는다.
@@ -946,7 +1083,7 @@ function linearGradient(stops: unknown, context: Context, source: string): strin
       }
       return {
         css: aliasReference(stop.color, context, source) ?? colorValue(stop.color, source),
-        percent: round(numberValue(stop.position, source) * 100),
+        percent: round(direction.toCss(numberValue(stop.position, source)) * 100),
         rgba: resolvedRgba(stop.color, context),
       };
     },
@@ -959,7 +1096,9 @@ function linearGradient(stops: unknown, context: Context, source: string): strin
       parts.push(...interpolatedStops(stop, next));
     }
   }
-  return `linear-gradient(to bottom, ${parts.join(', ')})`;
+  const angle =
+    direction.angle === TO_BOTTOM_ANGLE ? 'to bottom' : `${formatNumber(direction.angle)}deg`;
+  return `linear-gradient(${angle}, ${parts.join(', ')})`;
 }
 
 /**
