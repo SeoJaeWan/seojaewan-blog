@@ -128,7 +128,7 @@ export type DesignTokensInput = {
   textStyles: readonly TextStyleInput[];
   effectStyles: readonly EffectStyleInput[];
   paintStyles: readonly PaintStyleInput[];
-  /** 이미지 해시 → 이미지 자산 파일(`images/<자산>.png`). Foundations / Assets / Images의 이름 있는 자산이다 */
+  /** 이미지 해시 → 이미지 자산 이름(`images/<자산>`, 확장자 없음). Foundations / Assets / Images의 이름 있는 자산이다 */
   imageAssets: Readonly<Record<string, string>>;
 };
 

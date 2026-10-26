@@ -173,7 +173,7 @@ export const TOKENS_FIXTURE = {
             [SEOJAEWAN]: {
               layers: [
                 { type: 'SOLID', color: '{acrylic-background-fill.default}', opacity: 0.85 },
-                { type: 'IMAGE', asset: 'images/noise-acrylic.png', opacity: 0.02 },
+                { type: 'IMAGE', asset: 'images/noise-acrylic', opacity: 0.02 },
               ],
             },
           },

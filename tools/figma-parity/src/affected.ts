@@ -196,7 +196,7 @@ function designSystemScope(file: string, relative: string, inputs: AffectedInput
   }
   const figmaAsset = FIGMA_ASSET_PATTERN.exec(relative)?.[1];
   if (figmaAsset !== undefined) {
-    return assetScope([figmaAsset], inputs);
+    return assetScope([assetUseName(figmaAsset)], inputs);
   }
   if (relative === ASSET_DATA_FILE) {
     const change = inputs.readChange(file);
@@ -207,7 +207,7 @@ function designSystemScope(file: string, relative: string, inputs: AffectedInput
   }
   const sourceAsset = SOURCE_ASSET_PATTERN.exec(relative)?.[1];
   if (sourceAsset !== undefined) {
-    return assetScope([sourceAsset], inputs);
+    return assetScope([assetUseName(sourceAsset)], inputs);
   }
   if (tokenFiles.has(relative)) {
     return tokenScope(inputs);
@@ -244,7 +244,18 @@ function webScope(file: string, relative: string, inputs: AffectedInputs): FileS
 }
 
 /**
- * 자산을 쓰는 컴포넌트와 조립을 코드에서 자산 이름(`icons/x.svg`)으로 찾는다.
+ * 자산 파일 경로를 코드가 쓰는 자산 이름으로 바꾼다. SVG 자산은 파일 경로 그대로(`icons/x.svg`),
+ * 래스터 자산은 확장자를 뺀 이름(`images/x`)이다. 피그마 원본(`images/x.jpg`)과 코드 자산(`images/x.webp`)이 같은 이름이 된다.
+ * @codocs [[피그마 연동:자산]]
+ * @param file figma/assets 또는 src/assets 기준 자산 경로
+ * @returns 코드의 자산 이름
+ */
+function assetUseName(file: string): string {
+  return file.endsWith('.svg') ? file : file.replace(/\.[^./]+$/u, '');
+}
+
+/**
+ * 자산을 쓰는 컴포넌트와 조립을 코드에서 자산 이름(`icons/x.svg`, `images/x`)으로 찾는다.
  * @param assets figma/assets 기준 자산 경로
  * @param inputs 저장소 상태
  * @returns 범위

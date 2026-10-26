@@ -302,7 +302,7 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
               opacity: 0.02,
               blendMode: 'NORMAL',
               imageHash: 'a563f96d0f0af894df83be986ec4e7a84096fd54',
-              asset: 'images/noise-acrylic.png',
+              asset: 'images/noise-acrylic',
               scaleMode: 'TILE',
               scalingFactor: 1,
             },

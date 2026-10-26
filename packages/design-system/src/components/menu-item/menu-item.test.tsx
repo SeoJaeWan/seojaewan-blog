@@ -99,7 +99,7 @@ describe('MenuItem', () => {
   it('래스터 자산 아이콘은 이미지로, SVG 아이콘은 svg로 그린다', () => {
     renderInMenu(
       <>
-        <MenuItem label="파일 탐색기" icon="images/app-file-explorer.png" />
+        <MenuItem label="파일 탐색기" icon="images/app-file-explorer" />
         <MenuItem label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
       </>,
     );

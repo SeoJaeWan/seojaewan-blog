@@ -35,7 +35,7 @@ const meta = {
       device={args.device}
       searchBoxProps={{ 'aria-label': '검색', placeholder: SEARCH_PLACEHOLDER }}
       profileName={START_PROFILE_NAME}
-      profilePhoto={<ImageAsset name="images/avatar-profile.png" className="size-full" />}
+      profilePhoto={<ImageAsset name="images/avatar-profile" className="size-full" />}
       powerButton={<StartPowerButton menuItems={MENU_POWER} />}
     >
       <StartBody

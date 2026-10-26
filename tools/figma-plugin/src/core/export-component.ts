@@ -1,5 +1,6 @@
 import { type ExportManifest, nodeBox, type VariantEntry } from '../export-manifest';
-import { assetFile, variantSlug } from '../naming';
+import { rasterExtension } from '../image-format';
+import { assetFile, assetName, variantSlug } from '../naming';
 import { utf8Encode } from '../sha256';
 import { monoColorSvg, normalizeSvgBytes, utf8Decode } from '../svg-normalize';
 import { relativeTransform, trimmedPathSvg, type TrimmedVector } from '../svg-trim';
@@ -16,7 +17,7 @@ export type TargetExport = {
   manifest: ExportManifest;
   /** 변형 이름 → PNG */
   pngs: Map<string, Uint8Array>;
-  /** 자산 파일(`<묶음>/<자산>.<svg|png>`) → 내용 */
+  /** 자산 파일(`<묶음>/<자산>.<확장자>`) → 내용. 래스터 자산의 확장자는 바이트의 실제 형식이다 */
   assets: Map<string, Uint8Array>;
 };
 
@@ -74,8 +75,9 @@ export async function exportTargetCore(
     pngs.set(slug, await exportPng(variant, scale));
   }
   const assets = new Map<string, Uint8Array>();
-  for (const [file, asset] of assetNodes) {
-    assets.set(file, await exportAsset(asset));
+  for (const [name, asset] of assetNodes) {
+    const exported = await exportAsset(asset);
+    assets.set(assetFile(name, exported.extension), exported.bytes);
   }
   return {
     ok: true,
@@ -157,18 +159,18 @@ async function exportPng(variant: ComponentNode, scale: number): Promise<Uint8Ar
 }
 
 /**
- * 자산 인스턴스를 파일 이름별로 모은다. 같은 파일 이름에 다른 원본 컴포넌트가 있으면 실패한다.
+ * 자산 인스턴스를 자산 이름별로 모은다. 같은 자산 이름에 다른 원본 컴포넌트가 있으면 실패한다.
  * @param node 노드 데이터
- * @param assets 자산 파일 → 자산
+ * @param assets 자산 이름 → 자산
  */
 function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
   if (node.asset !== null) {
-    const file = assetFile(node.asset);
-    const known = assets.get(file);
+    const name = assetName(node.asset);
+    const known = assets.get(name);
     if (known !== undefined && known.mainComponentId !== node.asset.mainComponentId) {
-      throw new Error(`자산 파일 "${file}"에 해당하는 컴포넌트가 둘 이상이다.`);
+      throw new Error(`자산 "${name}"에 해당하는 컴포넌트가 둘 이상이다.`);
     }
-    assets.set(file, node.asset);
+    assets.set(name, node.asset);
     return;
   }
   for (const child of node.children) {
@@ -179,21 +181,21 @@ function collectAssets(node: NodeData, assets: Map<string, AssetData>): void {
 /**
  * 자산 원본 컴포넌트를 파일로 내보낸다.
  * 한 가지 색 자산은 SVG의 색을 currentColor로 바꾸고(색은 코드의 글자 색 클래스가 정한다),
- * 여러 색 자산은 SVG 그대로, 래스터 이미지는 PNG(배율 1)로 내보낸다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
+ * 여러 색 자산은 SVG 그대로 내보낸다. 래스터 이미지는 rasterAsset이 정한다. SVG 안의 id는 내용으로 정해지는 이름으로 바꾼다.
  * 경로 트림이 걸린 벡터는 벡터 경로와 트림 기본값으로 `pathLength="1"`·`stroke-dasharray` 요소를 직접 만든다.
  * 트림이 없는 자산은 피그마가 내보낸 SVG를 그대로 쓴다.
  * @codocs [[피그마 연동:자산]]
  * @codocs [[피그마 연동:모션]]
  * @param asset 자산
- * @returns 파일 내용
+ * @returns 파일 내용과 확장자
  */
-async function exportAsset(asset: AssetData): Promise<Uint8Array> {
+async function exportAsset(asset: AssetData): Promise<AssetExport> {
   const node = await figma.getNodeByIdAsync(asset.mainComponentId);
   if (node === null || node.type !== 'COMPONENT') {
     throw new Error(`자산 컴포넌트 ${asset.name}를 찾을 수 없다.`);
   }
   if (asset.kind === 'raster') {
-    return rasterBytes(node);
+    return rasterAsset(node);
   }
   const exported = normalizeSvgBytes(
     await node.exportAsync({ format: 'SVG', svgOutlineText: true, svgIdAttribute: false }),
@@ -203,7 +205,7 @@ async function exportAsset(asset: AssetData): Promise<Uint8Array> {
     trims.length === 0
       ? exported
       : utf8Encode(trimmedPathSvg(utf8Decode(exported), asset.name, trims));
-  return asset.kind === 'mono' ? monoColorSvg(svg) : svg;
+  return { bytes: asset.kind === 'mono' ? monoColorSvg(svg) : svg, extension: 'svg' };
 }
 
 /**
@@ -278,22 +280,35 @@ function trimBase(track: ManualKeyframeBinding | undefined, fallback: number): n
   return track.baseValue.type === 'FLOAT' ? track.baseValue.value : null;
 }
 
+/** 내보낸 자산 파일의 내용과 확장자 */
+export type AssetExport = {
+  bytes: Uint8Array;
+  /** 바이트의 실제 형식에 맞는 확장자(`svg`, `png`, `jpg` 등) */
+  extension: string;
+};
+
 /**
  * 이미지 자산의 바이트를 읽는다. 이미지 칠 하나만 있으면 원본 이미지를, 아니면 1배 PNG를 쓴다.
- * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다.
+ * 원본을 쓰면 토큰의 이미지 칠과 같은 해시의 파일이 된다. 확장자는 바이트의 매직넘버로 정한다(JPEG 원본이면 `jpg`).
+ * 원본이 알 수 없는 형식이면 1배 PNG로 내보낸다.
  * @codocs [[피그마 연동:자산]]
  * @param node 자산 컴포넌트
- * @returns PNG 등 이미지 바이트
+ * @returns 이미지 바이트와 확장자
  */
-export async function rasterBytes(node: ComponentNode): Promise<Uint8Array> {
+export async function rasterAsset(node: ComponentNode): Promise<AssetExport> {
   const fills =
     node.fills === figma.mixed ? [] : node.fills.filter((fill) => fill.visible !== false);
   const [fill] = fills;
   if (fills.length === 1 && fill?.type === 'IMAGE' && fill.imageHash !== null) {
     const image = figma.getImageByHash(fill.imageHash);
     if (image !== null) {
-      return image.getBytesAsync();
+      const bytes = await image.getBytesAsync();
+      const extension = rasterExtension(bytes);
+      if (extension !== undefined) {
+        return { bytes, extension };
+      }
     }
   }
-  return node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
+  const png = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
+  return { bytes: png, extension: 'png' };
 }

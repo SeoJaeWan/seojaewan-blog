@@ -1,9 +1,10 @@
 import { tokensJsonToCss } from '../../../../packages/design-system/scripts/tokens/tokens-css';
 import { buildDesignTokens } from '../design-tokens';
 import { readDesignTokensInput, readImageAssets, readUsageInput } from '../figma-reader';
+import { assetFile } from '../naming';
 import { stableStringify } from '../stable-json';
 import { unusedNotices } from '../unused-tokens';
-import { rasterBytes } from './export-component';
+import { rasterAsset } from './export-component';
 
 /** tokens.json 내보내기 결과 */
 export type TokensExport = {
@@ -13,7 +14,7 @@ export type TokensExport = {
   css: string;
   /** 토큰으로 옮기지 않은 칠 스타일 이름 */
   skippedStyles: string[];
-  /** 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.png`) → 바이트 */
+  /** 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.<실제 형식의 확장자>`) → 바이트 */
   images: Map<string, Uint8Array>;
   /** 막지 않는 알림: 블렌드 층의 날값 색, 쓰는 곳이 없는 변수·스타일 */
   notices: string[];
@@ -33,6 +34,7 @@ export async function exportTokensText(): Promise<TokensExport> {
   const { tokens, skippedStyles, notices: tokenNotices } = buildDesignTokens(input);
   const assets = await readImageAssets();
   const images = new Map<string, Uint8Array>();
+  const exportedNames = new Set<string>();
   for (const style of input.paintStyles) {
     if (skippedStyles.includes(style.name)) {
       continue;
@@ -42,8 +44,10 @@ export async function exportTokensText(): Promise<TokensExport> {
         continue;
       }
       const asset = assets.get(paint.imageHash);
-      if (asset !== undefined && !images.has(asset.file)) {
-        images.set(asset.file, await rasterBytes(asset.node));
+      if (asset !== undefined && !exportedNames.has(asset.name)) {
+        exportedNames.add(asset.name);
+        const raster = await rasterAsset(asset.node);
+        images.set(assetFile(asset.name, raster.extension), raster.bytes);
       }
     }
   }

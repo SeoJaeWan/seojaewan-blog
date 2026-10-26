@@ -74,9 +74,7 @@ export function renderAppWindow(
       <ExplorerContent
         device={device}
         className="min-h-0 w-full flex-1"
-        locationIcon={
-          <ImageAsset name="images/file-folder.png" className="size-full object-contain" />
-        }
+        locationIcon={<ImageAsset name="images/file-folder" className="size-full object-contain" />}
         searchPlaceholder={`${EXPLORER_FOLDER} 검색`}
         path={path.map(
           /**

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Breadcrumb } from './breadcrumb';
 
-const folderIcon = new URL('../../assets/images/file-folder.png', import.meta.url).href;
+const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
 // 피그마 Breadcrumb의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'editing'] as const;

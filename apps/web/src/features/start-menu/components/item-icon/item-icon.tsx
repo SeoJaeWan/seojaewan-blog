@@ -10,8 +10,8 @@ export type ItemIconSource = { kind: 'folder' | 'post' | 'link' } | { kind: 'app
 
 // 앱별 아이콘(피그마 app/File Explorer, app/Chrome)이다.
 const appIconNames = {
-  'file-explorer': 'images/app-file-explorer.png',
-  chrome: 'images/app-chrome.png',
+  'file-explorer': 'images/app-file-explorer',
+  chrome: 'images/app-chrome',
 } as const satisfies Record<StartApp, string>;
 
 /**
@@ -23,9 +23,9 @@ const appIconNames = {
 export function renderItemIcon(source: ItemIconSource): ReactNode {
   switch (source.kind) {
     case 'folder':
-      return <ImageAsset name="images/file-folder.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
     case 'post':
-      return <ImageAsset name="images/file-document.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
     case 'link':
       return <Asset name="illustrations/file-link.svg" className="size-full" />;
     case 'app':

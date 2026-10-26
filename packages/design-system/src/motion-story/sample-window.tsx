@@ -4,7 +4,7 @@ import { cn } from '../cn';
 import { WindowFrame, type WindowFramePlacement } from '../components/window-frame/window-frame';
 
 // 견본의 WindowFrame 인스턴스가 쓰는 기본 앱 아이콘(app/File Explorer)이다.
-const appIcon = new URL('../assets/images/app-file-explorer.png', import.meta.url).href;
+const appIcon = new URL('../assets/images/app-file-explorer.webp', import.meta.url).href;
 
 type SampleWindowProps = {
   /** 모션 클래스 */

@@ -46,17 +46,15 @@ function renderDesktopIcon(icon: DesktopIcon): ReactNode {
       return (
         <ImageAsset
           name={
-            icon.full === true
-              ? 'images/file-recycle-bin-full.png'
-              : 'images/file-recycle-bin-empty.png'
+            icon.full === true ? 'images/file-recycle-bin-full' : 'images/file-recycle-bin-empty'
           }
           className="size-full object-contain"
         />
       );
     case 'folder':
-      return <ImageAsset name="images/file-folder.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
     case 'post':
-      return <ImageAsset name="images/file-document.png" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
     case 'link':
       return <Asset name="illustrations/file-link.svg" className="size-full" />;
   }

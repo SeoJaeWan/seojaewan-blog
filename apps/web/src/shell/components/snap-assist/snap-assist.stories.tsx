@@ -23,7 +23,7 @@ const meta = {
       suggestions={[
         {
           id: SNAP_ASSIST_CHROME.id,
-          appIcon: <ImageAsset name="images/app-chrome.png" className="size-full object-contain" />,
+          appIcon: <ImageAsset name="images/app-chrome" className="size-full object-contain" />,
           title: SNAP_ASSIST_CHROME.title,
           thumbnail: (
             <WindowThumbnail

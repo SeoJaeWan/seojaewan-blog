@@ -4,8 +4,9 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { sourceAssetsDir } from '../package-paths.ts';
-import { expectedAssetFiles } from './asset-files.ts';
+import { expectedAssetFiles, staleAssetFiles } from './asset-files.ts';
 import { assetDataModule, parseSvgAsset } from './assets-code.ts';
+import { rasterFormat, WEBP_PHOTO_QUALITY, webpEncoding } from './raster-code.ts';
 
 const SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8 1L15 15H1Z" fill="currentColor" fill-rule="evenodd"/>
@@ -97,12 +98,39 @@ describe('자산 생성', () => {
     );
   });
 
-  it('src/assets가 figma/assets와 맞다', () => {
+  it('래스터 원본의 형식은 확장자가 아니라 바이트 앞부분으로 알아낸다', () => {
+    expect(rasterFormat(bytes([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]))).toBe('png');
+    expect(rasterFormat(bytes([0xff, 0xd8, 0xff, 0xe0]))).toBe('jpg');
+    expect(rasterFormat(bytes([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]))).toBe('gif');
+    const webp = [0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50];
+    expect(rasterFormat(bytes(webp))).toBe('webp');
+    expect(rasterFormat(bytes([0x3c, 0x73, 0x76, 0x67]))).toBeUndefined();
+  });
+
+  it('PNG·GIF 원본은 무손실, JPEG 원본은 손실 WebP로 바꾸고 WebP 원본은 그대로 쓴다', () => {
+    expect(webpEncoding('png')).toMatchObject({ lossless: true });
+    expect(webpEncoding('gif')).toMatchObject({ lossless: true });
+    expect(webpEncoding('jpg')).toMatchObject({ quality: WEBP_PHOTO_QUALITY });
+    expect(webpEncoding('webp')).toBeNull();
+  });
+
+  it('src/assets가 figma/assets와 맞다', async () => {
     // 다르면 `pnpm --filter @seojaewan/design-system generate:assets`로 다시 만들어 커밋한다.
-    for (const [file, bytes] of expectedAssetFiles()) {
+    const outputs = await expectedAssetFiles();
+    for (const [file, bytes] of outputs) {
       const name = path.relative(sourceAssetsDir, file);
       expect(existsSync(file), name).toBe(true);
       expect(readFileSync(file).equals(bytes), name).toBe(true);
     }
+    expect(staleAssetFiles(outputs)).toEqual([]);
   });
 });
+
+/**
+ * 숫자 목록으로 바이트를 만든다.
+ * @param values 바이트 값
+ * @returns 바이트
+ */
+function bytes(values: number[]): Uint8Array {
+  return Uint8Array.from(values);
+}

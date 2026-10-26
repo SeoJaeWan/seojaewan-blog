@@ -45,12 +45,8 @@ type ChromeWindowProps = WindowFrameControlProps & {
 };
 
 // 탭 파비콘과 모바일 앱 아이콘은 피그마 Window/Chrome의 인스턴스(file/Document, app/Chrome) 그대로다.
-const tabFavicon = (
-  <ImageAsset name="images/file-document.png" className="size-full object-contain" />
-);
-const chromeAppIcon = (
-  <ImageAsset name="images/app-chrome.png" className="size-full object-contain" />
-);
+const tabFavicon = <ImageAsset name="images/file-document" className="size-full object-contain" />;
+const chromeAppIcon = <ImageAsset name="images/app-chrome" className="size-full object-contain" />;
 
 /**
  * Chrome 창(피그마 조립 `Window/Chrome`)을 그린다. WindowFrame(Chrome 재질) 위에 desktop은 탭 줄과 창 버튼,

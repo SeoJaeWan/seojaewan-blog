@@ -5,8 +5,8 @@ import { JumpListLetter } from '../components/jump-list-letter/jump-list-letter'
 import { ListItem } from '../components/list-item/list-item';
 import { TileGrid } from '../components/tile-grid/tile-grid';
 
-const folderIcon = new URL('../assets/images/file-folder.png', import.meta.url).href;
-const documentIcon = new URL('../assets/images/file-document.png', import.meta.url).href;
+const folderIcon = new URL('../assets/images/file-folder.webp', import.meta.url).href;
+const documentIcon = new URL('../assets/images/file-document.webp', import.meta.url).href;
 
 // 글자 격자의 글자 순서다([[Start 메뉴:모두]]). 항목이 없는 글자(견본처럼 몇 개)는 흐리게 그린다.
 const letters =
