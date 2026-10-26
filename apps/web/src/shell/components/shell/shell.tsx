@@ -6,16 +6,13 @@ import { useOpenApp } from '@/core/window/window';
 import { useWorkspaceStore } from '@/core/workspace/workspace';
 import type { DesktopIcon } from '@/features/desktop/desktop';
 import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/desktop';
-import { StartMenuLayer, useStartMenuStore } from '@/features/start-menu/start-menu';
-import { TaskbarDefault, useClock } from '@/features/taskbar/taskbar';
+import { StartMenuLayer } from '@/features/start-menu/start-menu';
+import { TaskbarLayer } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
 import { ShellTaskbarApps } from '@/shell/components/shell-taskbar-apps/shell-taskbar-apps';
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
-
-// 좁은 화면은 작업 표시줄에 검색 입력칸 대신 검색 버튼을 둔다(피그마 Taskbar/Default Search).
-const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;
 
 // 데스크톱은 아이콘을 더블클릭해서, 모바일은 탭해서 연다.
 const ICON_OPEN_GESTURES = { desktop: 'double-click', mobile: 'click' } as const;
@@ -51,7 +48,6 @@ export function Shell(): JSX.Element {
  */
 function ShellDesktop(): JSX.Element {
   const device = useDevice();
-  const clock = useClock();
   const openApp = useOpenApp();
 
   /**
@@ -64,61 +60,19 @@ function ShellDesktop(): JSX.Element {
     }
   }
 
-  const openPanel = useStartMenuStore((state) => state.openPanel);
-  const toggleStart = useStartMenuStore((state) => state.toggleStart);
-  const openSearch = useStartMenuStore((state) => state.openSearch);
-  const toggleSearch = useStartMenuStore((state) => state.toggleSearch);
-  const restart = useWorkspaceStore((state) => state.restart);
-
-  /**
-   * Start 메뉴에서 앱 항목을 열면 그 앱 창을 연다. Start 메뉴는 패널 층이 닫는다.
-   * @param app 연 앱
-   */
-  function handleOpenApp(app: Parameters<typeof openApp>[0]): void {
-    openApp(app);
-  }
-
-  /** Start 버튼을 누르면 Start 메뉴를 열거나 닫는다. */
-  function handleStartClick(): void {
-    toggleStart();
-  }
-
-  /** 전원 메뉴의 `다시 시작`을 누르면 다시 시작한다. 재부팅 화면과 초기화는 shell 최상위가 맡는다. */
-  function handleRestart(): void {
-    restart();
-  }
-
-  /** 좁은 화면의 검색 버튼을 누르면 검색 패널을 열거나 닫는다. */
-  function handleSearchClick(): void {
-    toggleSearch();
-  }
-
   return (
     <DesktopScene
       className="size-full"
       icons={INITIAL_DESKTOP_ITEMS}
       iconOpenGesture={ICON_OPEN_GESTURES[device]}
       onIconOpen={handleIconOpen}
-      taskbar={
-        <TaskbarDefault
-          search={TASKBAR_SEARCHES[device]}
-          time={clock?.time ?? ''}
-          date={clock?.date ?? ''}
-          isStartOpen={openPanel === 'start'}
-          onStartClick={handleStartClick}
-          // 포커스한 채 패널을 닫았다가(Esc) 다시 누르면 포커스가 바뀌지 않으므로 클릭에도 연다
-          searchBoxProps={{ onFocus: openSearch, onClick: openSearch }}
-          isSearchOpen={openPanel === 'search'}
-          onSearchClick={handleSearchClick}
-          apps={<ShellTaskbarApps />}
-        />
-      }
+      taskbar={<TaskbarLayer apps={<ShellTaskbarApps />} />}
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
       <ShellWindows />
       {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
       <div data-layer="panels" className="pointer-events-none absolute inset-0">
-        <StartMenuLayer device={device} onOpenApp={handleOpenApp} onRestart={handleRestart} />
+        <StartMenuLayer />
       </div>
     </DesktopScene>
   );
