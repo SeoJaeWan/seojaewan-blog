@@ -2,9 +2,9 @@ import { render, screen, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { usePanelStore } from '@/core/panels/panels';
-import { useWindowStore } from '@/core/window/window';
-import { useWorkspaceStore } from '@/core/workspace/workspace';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 
 import { StartMenuLayer } from './start-menu-layer';
 

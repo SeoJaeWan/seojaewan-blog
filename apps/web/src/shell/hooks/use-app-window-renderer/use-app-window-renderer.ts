@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
 
-import type { OpenWindow, RenderWindow, WindowFrameControls } from '@/core/window/window';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import type {
+  OpenWindow,
+  RenderWindow,
+  WindowFrameControls,
+} from '@/shared/utils/window-rules/window-rules';
 import { renderAppWindow } from '@/shell/components/app-windows/app-windows';
 
 /**

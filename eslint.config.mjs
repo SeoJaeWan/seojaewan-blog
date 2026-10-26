@@ -3,9 +3,11 @@ import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier/flat';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
+import { importX } from 'eslint-plugin-import-x';
 import jsdoc from 'eslint-plugin-jsdoc';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -19,6 +21,11 @@ const rootDir = import.meta.dirname;
 const tsFiles = ['**/*.{ts,tsx}'];
 const WEB_SRC = 'apps/web/src';
 const DESIGN_SYSTEM = 'packages/design-system';
+// 앱 `shared/`의 종류. 종류마다 boundaries 요소가 된다.
+const sharedKinds = ['components', 'hooks', 'utils', 'stores', 'stories'];
+const sharedTypes = sharedKinds.map((kind) => `web-shared-${kind}`);
+// 종류 폴더 밖에 둔 `shared/` 파일도 층 방향은 지키도록 `web-shared`로 묶는다.
+const sharedLayerTypes = [...sharedTypes, 'web-shared'];
 
 // 테스트·fixture·스토리 파일. JSDoc 규칙에서 제외한다.
 const testLikeFiles = [
@@ -472,7 +479,9 @@ export default defineConfig(
   },
 
   // @codocs [[저장소 구성:의존 방향]]
-  // 앱 층은 `app → shell → features → core → shared` 방향으로만 import한다. 뒤에 오는 정책이 앞의 정책보다 우선한다.
+  // 앱 층은 `app → shell → features → shared` 방향으로만 import한다. 기능끼리는 import하지 않는다.
+  // `shared/` 안은 종류 사이에 방향 제한 없이 서로 import한다.
+  // 뒤에 오는 정책이 앞의 정책보다 우선한다.
   {
     files: [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/**/*.{ts,tsx}`],
     plugins: { boundaries },
@@ -495,14 +504,13 @@ export default defineConfig(
           capture: ['featureName'],
           partialMatch: false,
         },
-        {
-          type: 'web-core',
-          pattern: `${WEB_SRC}/core/*`,
-          capture: ['featureName'],
+        ...sharedKinds.map((kind) => ({
+          type: `web-shared-${kind}`,
+          pattern: `${WEB_SRC}/shared/${kind}`,
           partialMatch: false,
-        },
-        { type: 'web-content', pattern: `${WEB_SRC}/content`, partialMatch: false },
+        })),
         { type: 'web-shared', pattern: `${WEB_SRC}/shared`, partialMatch: false },
+        { type: 'web-content', pattern: `${WEB_SRC}/content`, partialMatch: false },
         { type: 'web-root', pattern: WEB_SRC, partialMatch: false },
       ],
     },
@@ -521,9 +529,8 @@ export default defineConfig(
                       'web-app',
                       'web-shell',
                       'web-feature',
-                      'web-core',
+                      ...sharedLayerTypes,
                       'web-content',
-                      'web-shared',
                       'web-root',
                     ],
                   },
@@ -544,30 +551,17 @@ export default defineConfig(
               },
             },
 
-            // 위 층은 아래 층의 공개 진입점으로만 import한다.
+            // 위 층은 `shell/`과 기능을 공개 진입점으로만 import한다. `shared/`는 진입점 없이 대상 파일을 바로 import한다.
             {
               from: { element: { type: 'web-app' } },
               disallow: { to: { element: { type: 'web-shell' } } },
               message: '`shell/`은 공개 진입점(`shell/shell.ts`)으로만 import한다.',
             },
             {
-              from: { element: { type: ['web-app', 'web-shell', 'web-feature'] } },
-              disallow: { to: { element: { type: ['web-feature', 'web-core'] } } },
-              message:
-                '아래 층은 공개 진입점(`{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
-            },
-            // 같은 층의 다른 기능끼리는 import하지 않는다. 서로 필요한 부분은 아래 층으로 내린다.
-            {
-              from: { element: { type: 'web-feature' } },
+              from: { element: { type: ['web-app', 'web-shell'] } },
               disallow: { to: { element: { type: 'web-feature' } } },
               message:
-                '`features/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 함께 필요한 부분은 아래 층으로 내린다.',
-            },
-            {
-              from: { element: { type: 'web-core' } },
-              disallow: { to: { element: { type: 'web-core' } } },
-              message:
-                '`core/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 함께 필요한 부분은 아래 층으로 내린다.',
+                '기능은 공개 진입점(`features/{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
             },
             {
               from: { element: { type: 'web-app' } },
@@ -578,7 +572,7 @@ export default defineConfig(
               allow: {
                 to: {
                   element: {
-                    type: ['web-feature', 'web-core'],
+                    type: 'web-feature',
                     fileInternalPath: [
                       '{{to.element.captured.featureName}}.ts',
                       '{{to.element.captured.featureName}}.tsx',
@@ -587,61 +581,66 @@ export default defineConfig(
                 },
               },
             },
+            // 기능끼리는 import하지 않는다. 기능 사이에 오가는 상태는 `shared/stores`에 둔다.
+            {
+              from: { element: { type: 'web-feature' } },
+              disallow: { to: { element: { type: 'web-feature' } } },
+              message:
+                '`features/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 기능 사이에 오가는 상태는 `shared/stores`에, 함께 쓰는 화면·함수는 `shared/`에 둔다.',
+            },
+            // 기능 안은 자유롭게 import한다.
             {
               from: { element: { type: 'web-feature' } },
               allow: {
                 to: {
                   element: {
-                    type: 'web-core',
-                    fileInternalPath: [
-                      '{{to.element.captured.featureName}}.ts',
-                      '{{to.element.captured.featureName}}.tsx',
-                    ],
-                  },
-                },
-              },
-            },
-            // 기능 안은 자유롭게 import한다.
-            ...['web-feature', 'web-core'].map((type) => ({
-              from: { element: { type } },
-              allow: {
-                to: {
-                  element: {
-                    type,
+                    type: 'web-feature',
                     captured: { featureName: '{{from.element.captured.featureName}}' },
                   },
                 },
               },
-            })),
+            },
 
             // 아래 층은 위 층을 import하지 않는다.
             {
-              from: { element: { type: ['web-shell', 'web-feature', 'web-core', 'web-shared'] } },
+              from: { element: { type: ['web-shell', 'web-feature', ...sharedLayerTypes] } },
               disallow: { to: { element: { type: 'web-app' } } },
-              message:
-                '아래 층은 `app/`을 import하지 않는다(`app → shell → features → core → shared`).',
+              message: '아래 층은 `app/`을 import하지 않는다(`app → shell → features → shared`).',
             },
             {
-              from: { element: { type: ['web-feature', 'web-core', 'web-shared'] } },
+              from: { element: { type: ['web-feature', ...sharedLayerTypes] } },
               disallow: { to: { element: { type: 'web-shell' } } },
-              message:
-                '아래 층은 `shell/`을 import하지 않는다(`app → shell → features → core → shared`).',
+              message: '아래 층은 `shell/`을 import하지 않는다(`app → shell → features → shared`).',
             },
             {
-              from: { element: { type: ['web-core', 'web-shared'] } },
+              from: { element: { type: sharedLayerTypes } },
               disallow: { to: { element: { type: 'web-feature' } } },
               message:
-                '아래 층은 `features/`를 import하지 않는다(`app → shell → features → core → shared`).',
-            },
-            {
-              from: { element: { type: 'web-shared' } },
-              disallow: { to: { element: { type: 'web-core' } } },
-              message:
-                '`shared/`는 `core/`를 import하지 않는다(`app → shell → features → core → shared`).',
+                '`shared/`는 `features/`를 import하지 않는다(`app → shell → features → shared`).',
             },
           ],
         },
       ],
+    },
+  },
+
+  // 순환 import를 막는다. 적용 범위는 `apps/web/src/shared`다.
+  {
+    files: [`${WEB_SRC}/shared/**/*.{ts,tsx}`],
+    plugins: { 'import-x': importX },
+    settings: {
+      'import-x/extensions': ['.ts', '.tsx'],
+      'import-x/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx'] },
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
+          project: ['apps/web/tsconfig.json'],
+        }),
+      ],
+    },
+    rules: {
+      'import-x/no-cycle': 'error',
     },
   },
 

@@ -1,10 +1,10 @@
 import type { JSX } from 'react';
 
-import { useOpenApp } from '@/core/window/window';
 import type { DesktopIcon } from '@/features/desktop/components/desktop-icons/desktop-icons';
 import { DesktopIcons } from '@/features/desktop/components/desktop-icons/desktop-icons';
 import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/data/desktop-items/desktop-items';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 
 // 데스크톱은 아이콘을 더블클릭해서, 모바일은 탭해서 연다.
 const ICON_OPEN_GESTURES = { desktop: 'double-click', mobile: 'click' } as const;

@@ -2,7 +2,7 @@ import type { ComponentProps, JSX, MouseEvent } from 'react';
 
 import { JumpListLetter, TileGrid } from '@seojaewan/design-system';
 
-import { JUMP_LIST_LETTERS } from '@/features/start-menu/rules/start-letter-rules/start-letter-rules';
+import { JUMP_LIST_LETTERS } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 
 type StartJumpListProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 목록에 항목이 있는 글자. 나머지 글자는 흐리게 보이고 누를 수 없다 */

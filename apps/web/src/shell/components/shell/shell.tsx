@@ -2,10 +2,10 @@
 
 import type { JSX } from 'react';
 
-import { useWorkspaceStore } from '@/core/workspace/workspace';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { getAppWindowTitle } from '@/shell/components/app-windows/app-windows';
 import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';

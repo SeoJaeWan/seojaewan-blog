@@ -4,9 +4,6 @@ import { type JSX, type ReactNode, useEffect, useRef } from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import { usePanelStore } from '@/core/panels/panels';
-import { useOpenApp } from '@/core/window/window';
-import { useWorkspaceStore } from '@/core/workspace/workspace';
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import { SearchPanel } from '@/features/start-menu/components/search-panel/search-panel';
 import type { StartItem } from '@/features/start-menu/components/start-body/start-body';
@@ -21,7 +18,10 @@ import {
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';

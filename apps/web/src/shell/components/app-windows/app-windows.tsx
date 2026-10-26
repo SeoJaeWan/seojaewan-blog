@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 
 import { BreadcrumbItem, ImageAsset } from '@seojaewan/design-system';
 
-import type { OpenWindow, WindowFrameControls } from '@/core/window/window';
 import { ChromePage, ChromeWindow } from '@/features/chrome/chrome';
 import {
   ExplorerCommands,
@@ -10,6 +9,7 @@ import {
   ExplorerWindow,
 } from '@/features/file-explorer/file-explorer';
 import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 
 // 글 데이터를 붙이기 전, 앱을 처음 열 때의 창 내용이다. 탐색기는 빈 `Blog` 폴더, Chrome은 최신 글이 빈 새 탭 페이지다.
 const EXPLORER_FOLDER = 'Blog';
@@ -33,7 +33,7 @@ export function getAppWindowTitle(window: OpenWindow): string {
 }
 
 /**
- * 열린 창의 앱 창 조립을 고른다. 창 층(`core/window`)은 앱을 모르므로 shell이 이 함수를 넘긴다(앱 등록표).
+ * 열린 창의 앱 창 조립을 고른다. 창 층(`features/window`)은 앱을 모르므로 shell이 이 함수를 넘긴다(앱 등록표).
  * 앱을 처음 열 때 탐색기는 `Blog` 폴더, Chrome은 새 탭 페이지를 보여 준다. 글과 폴더 내용은 콘텐츠를 붙일 때 채운다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @codocs [[Chrome:새 탭 페이지]]

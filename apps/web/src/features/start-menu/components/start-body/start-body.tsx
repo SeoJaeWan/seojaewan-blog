@@ -22,7 +22,7 @@ import {
   type SearchResultGroups,
 } from '@/features/start-menu/components/search-body/search-body';
 import { StartJumpList } from '@/features/start-menu/components/start-jump-list/start-jump-list';
-import { getAvailableLetters } from '@/features/start-menu/rules/start-letter-rules/start-letter-rules';
+import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 
 /** Start 고정됨과 모두 목록에 보이는 항목 하나 */

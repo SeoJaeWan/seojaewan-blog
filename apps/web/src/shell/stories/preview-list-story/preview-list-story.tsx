@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 
-import { WindowThumbnail } from '@/core/window/window';
 import { ExplorerContent, ExplorerWindow } from '@/features/file-explorer/file-explorer';
 import { TaskbarWindowPreviewList } from '@/features/taskbar/taskbar';
+import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
 import {
   PREVIEW_THUMBNAIL,
