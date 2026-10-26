@@ -1,0 +1,44 @@
+_codocs:
+  id: remaining-work
+  name: 남은 작업
+  parent:
+    - seojaewan 블로그
+개요: |
+  2026-10-26 작업(폴더 구조 개편, 피그마 수정, 검사 도구 보강)을 마친 뒤 이어서 할 일을 순서대로 모은다. 끝난 항목은 지운다.
+  기능 구현 순서는 [[구현 순서:7단계 기능 구현]]이 기준이고 여기서는 다시 적지 않는다.
+1. 저장소 설정: |
+  - GitHub ruleset `main: CI 통과 필수`의 필수 검사에 `Branch name`을 더한다(Settings → Rules → Rulesets). 더하기 전에는 브랜치 이름 검사가 병합을 막지 않는다([[Git 작업 규칙:브랜치]]).
+2. 피그마 내보낸 PR 처리: |
+  플러그인이 연 PR을 스킬(`figma-token-pr`, `figma-component-pr`, `figma-motion-pr`) 절차로 이 순서대로 처리한다. 앞 PR을 병합한 뒤 다음 PR에 `main`을 받아 온다.
+
+  | 순서 | PR | 코드에서 할 일 |
+  |---|---|---|
+  | 1 | #235 토큰 | 새 색 변수 2개, `motion/duration/slower`, 칠 스타일 `Icon Color/Search Focus`. 지워진 `Icon Color/Search`·`color/green/light-2`를 쓰는 코드 정리 |
+  | 2 | #225 SearchBox | `Appearance=Web` 분리(Chrome 새 탭이 씀), Taskbar·Pill의 Hover·Focused 그라데이션 아이콘(`icon-color/Search Focus`), `State=Pressed`(아이콘 0.8배), Safari는 단색 강조색 대체([[검색:입력칸]]). 옛 컬러 돋보기 자산·`motion-search-icon-state`와 [[디자인 기반]]의 해당 줄 정리 |
+  | 3 | #226 FileRow, #227 DetailsHeader | `View=Recycle bin` 변형, prop `originalLocation`·`deletedDate` |
+  | 4 | #228 Menu | 라디오 하위 메뉴 3개를 하나의 `RadioGroup`으로(기본값 이름·오름차순·보통 아이콘), `pin_off`·`zoom_in` 아이콘 |
+  | 5 | #229 Chrome | 검색 결과 주소 데이터, 새 탭 검색칸을 `Web` 모양으로 |
+  | 6 | #230 Window | React 폴더 창 데이터, 휴지통 변형(자세히 보기), SnapLayoutMenu는 메뉴가 열린 동안 최대화 버튼 Hover 유지, SnapAssist 축소 창 명령 모음 |
+  | 7 | #231 Taskbar | 축소 창 명령 모음이 보이게 하고 스토리 전용 `showCommands` 옵션 삭제 |
+  | 8 | #232 Desktop | 배경화면이 자산 인스턴스(`images/wallpaper-bloom`)로 바뀜 |
+  | 9 | #233 MessageBox | 새 영역. `MessageBox/EmptyRecycleBin` 조립(제목 "휴지통 비우기", 버튼 "확인") |
+  | 10 | #234 애니메이션 | `motion-search-box-focus` 모션 클래스. 토큰·SearchBox PR 다음 |
+3. 문서 중복 정리: |
+  [[개발 컨벤션:작업 원칙]]의 "사실 하나는 한 곳에" 원칙으로 `.codocs` 전체를 점검했다(중복 49건). 내용이 서로 어긋나는 7건부터 사용자와 하나씩 정한다.
+
+  | 내용 | 위치 |
+  |---|---|
+  | CI 실패가 병합을 막는지(무료 플랜 / ruleset) | `development-conventions.yaml` ↔ [[Git 작업 규칙:CI]] |
+  | 작업 표시줄 창 미리보기 방식("구현 때 정함" / CSS `scale`) | `taskbar.yaml` ↔ [[디자인 시스템:조립]] |
+  | 검색 돋보기 효과(그라데이션 회전 / 투명도만) | [[검색:입력칸]] ↔ `foundations.yaml` 모션 표. 2번 SearchBox PR에서 foundations를 맞춘다 |
+  | 글 갱신 방식(주기적 / 웹훅 즉시) | `notion-image-delivery.yaml` ↔ [[콘텐츠 원천:갱신 방식]] |
+  | 모션 검사 목록(키프레임 값 검사 누락) | `git-workflow.yaml`·`tech-stack.yaml` ↔ [[피그마 연동:CI]] |
+  | 열린 창 저장 여부 | [[작업 공간:다시 시작]] ↔ `window.yaml` |
+  | 데스크톱 검색 결과 배치 | `search.yaml` ↔ `mobile.yaml` |
+
+  그다음 어긋나지 않는 중복을 묶어 정리한다. 반복 패턴은 [[한계]] 섹션이 규칙·"검토한 대안"의 이유를 되풀이하는 것(foundations에 "검토한 대안" 섹션이 없어 이유가 규칙 문장에 섞임), `tech-stack.yaml`이 다른 개발 문서의 규칙을 다시 적는 것이다.
+4. 피그마 플러그인 개선: |
+  - 내보내기 목록을 이름순으로 정렬한다. 지금은 찾기 어렵다.
+  - "토큰만 내보내기"를 누르면 컴포넌트와 조립이 모두 선택된 상태로 나온다. 토큰만 선택된 상태가 되어야 한다.
+5. 기능 구현: |
+  [[구현 순서:7단계 기능 구현]]의 ㄱ부터 기능마다 PR로 진행한다. 브랜치 이름은 [[Git 작업 규칙:브랜치]]를 따른다.
