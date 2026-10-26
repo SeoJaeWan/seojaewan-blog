@@ -3,8 +3,9 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import { readCommentArgs, upsertComments } from './github-comments.ts';
 import { defaultResultsDir } from './paths.ts';
-import { markerIndex, renderComments } from './pr-comment.ts';
+import { COMMENT_MARKER, renderComments } from './pr-comment.ts';
 import { CAPTURES_FILE, type CaptureSummary } from './results.ts';
 
 // CI에서 실행한다:
@@ -16,7 +17,7 @@ import { CAPTURES_FILE, type CaptureSummary } from './results.ts';
 /** 이미지를 올리는 브랜치 이름의 앞부분 */
 export const REPORT_BRANCH_PREFIX = 'parity-report/pr-';
 
-const env = readArgs(process.argv.slice(2));
+const env = readCommentArgs(process.argv.slice(2));
 const parityResultsDir = defaultResultsDir;
 main();
 
@@ -39,62 +40,13 @@ function main(): void {
     imageUrl: (file) =>
       `${env.server}/${env.repository}/blob/${branch}/${file.split('/').map(encodeURIComponent).join('/')}?raw=true`,
   });
-  const existing = listComments();
   if (images.length > 0) {
     pushImages(branch, images);
   }
-  for (const [index, body] of bodies.entries()) {
-    const previous = existing.find((comment) => comment.index === index + 1);
-    if (previous === undefined) {
-      gh(['api', `repos/${env.repository}/issues/${env.pr}/comments`, '-f', `body=${body}`]);
-    } else {
-      gh([
-        'api',
-        '-X',
-        'PATCH',
-        `repos/${env.repository}/issues/comments/${String(previous.id)}`,
-        '-f',
-        `body=${body}`,
-      ]);
-    }
-  }
-  for (const comment of existing.filter((item) => item.index > bodies.length)) {
-    gh(['api', '-X', 'DELETE', `repos/${env.repository}/issues/comments/${String(comment.id)}`]);
-  }
+  upsertComments(env, bodies, COMMENT_MARKER);
   console.log(
     `[figma-parity] PR 댓글 ${String(bodies.length)}개를 남겼다(이미지 ${String(images.length)}개).`,
   );
-}
-
-/**
- * 이 도구가 남긴 PR 댓글을 찾는다.
- * @returns 댓글 ID와 순서
- */
-function listComments(): { id: number; index: number }[] {
-  const output = gh([
-    'api',
-    '--paginate',
-    `repos/${env.repository}/issues/${env.pr}/comments`,
-    '--jq',
-    '.[] | {id, body} | @json',
-  ]);
-  return output.split('\n').filter(Boolean).flatMap(parseCommentLine);
-}
-
-/**
- * gh가 출력한 댓글 한 줄(JSON)에서 이 도구의 댓글이면 ID와 순서를 꺼낸다.
- * @param line `{ id, body }` JSON
- * @returns 이 도구의 댓글이면 ID와 순서 하나를 담은 목록, 아니면 빈 목록
- */
-function parseCommentLine(line: string): { id: number; index: number }[] {
-  const comment: unknown = JSON.parse(line);
-  if (typeof comment !== 'object' || comment === null) {
-    return [];
-  }
-  const id: unknown = Reflect.get(comment, 'id');
-  const body: unknown = Reflect.get(comment, 'body');
-  const index = typeof body === 'string' ? markerIndex(body) : undefined;
-  return typeof id === 'number' && index !== undefined ? [{ id, index }] : [];
 }
 
 /**
@@ -134,45 +86,4 @@ function pushImages(branch: string, images: readonly string[]): void {
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
-}
-
-/**
- * gh CLI를 실행한다.
- * @param args gh 인자
- * @returns 표준 출력
- */
-function gh(args: readonly string[]): string {
-  return execFileSync('gh', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
-}
-
-/**
- * 명령줄 인자를 읽는다.
- * @param argv 명령줄 인자
- * @returns 저장소, GitHub 주소, 실행 ID, PR 번호
- */
-function readArgs(argv: readonly string[]): {
-  repository: string;
-  server: string;
-  runId: string;
-  pr: string;
-} {
-  /**
-   * `--이름 값` 인자를 읽는다. 없으면 실패한다.
-   * @param name 인자 이름
-   * @returns 값
-   */
-  function read(name: string): string {
-    const index = argv.indexOf(`--${name}`);
-    const value = index >= 0 ? argv[index + 1] : undefined;
-    if (value === undefined || value === '') {
-      throw new Error(`--${name} 인자가 없다.`);
-    }
-    return value;
-  }
-  return {
-    repository: read('repository'),
-    server: read('server'),
-    runId: read('run-id'),
-    pr: read('pr'),
-  };
 }

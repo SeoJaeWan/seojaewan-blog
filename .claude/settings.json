@@ -11,8 +11,28 @@
     "GIT_COMMITTER_EMAIL": "52366178+SeoJaeWan@users.noreply.github.com"
   },
   "permissions": {
-    "allow": [
-      "mcp__Figma"
+    "allow": ["mcp__Figma"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-end.sh"
+          }
+        ]
+      }
     ]
   }
 }
