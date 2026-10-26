@@ -1,4 +1,5 @@
 # @codocs [[Git 작업 규칙:CI]]
+# `Branch name` 작업은 PR 브랜치 이름을 검사한다([[Git 작업 규칙:브랜치]]). 늘 시작해 `main` push에서도 `main`을 검사한다.
 name: CI
 
 on:
@@ -18,6 +19,28 @@ env:
   TURBO_TELEMETRY_DISABLED: 1
 
 jobs:
+  branch-name:
+    # ruleset의 필수 검사 이름과 같아야 한다
+    name: Branch name
+    runs-on: ubuntu-latest
+    env:
+      # PR이면 PR 브랜치, `main` push면 `main`. 값을 스크립트 안에 풀어 쓰지 않고 환경 변수로 넘긴다.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # 종류 목록을 commitlint 설정에서 읽으므로 루트 의존성만 설치한다
+      - run: pnpm install --frozen-lockfile --filter seojaewan-blog
+
+      - run: node scripts/check-branch-name.mjs "$BRANCH"
+
   verify:
     name: Lint, typecheck, test, build
     runs-on: ubuntu-latest
