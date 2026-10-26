@@ -6,11 +6,11 @@ import { useWorkspaceStore } from '@/core/workspace/workspace';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { getAppWindowTitle } from '@/shell/components/app-windows/app-windows';
 import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
-import { ShellTaskbarApps } from '@/shell/components/shell-taskbar-apps/shell-taskbar-apps';
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
+import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-app-window-renderer';
 
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
@@ -20,12 +20,11 @@ import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
  * @returns 작업 공간
  */
 export function Shell(): JSX.Element {
-  const device = useDevice();
   const generation = useWorkspaceStore((state) => state.generation);
   return (
     <main aria-label="바탕화면" className="fixed inset-0 overflow-hidden">
       <ShellDesktop key={generation} />
-      <RestartScreen device={device} />
+      <RestartScreen />
     </main>
   );
 }
@@ -40,11 +39,12 @@ export function Shell(): JSX.Element {
  * @returns 데스크톱 하위 트리
  */
 function ShellDesktop(): JSX.Element {
+  const renderWindow = useAppWindowRenderer();
   return (
     <DesktopScene
       className="size-full"
       icons={<DesktopIconsLayer />}
-      taskbar={<TaskbarLayer apps={<ShellTaskbarApps />} />}
+      taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getAppWindowTitle} />}
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
       <ShellWindows />

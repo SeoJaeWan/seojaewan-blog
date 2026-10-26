@@ -1,6 +1,8 @@
-import type { JSX, ReactNode } from 'react';
+import type { JSX } from 'react';
 
 import { usePanelStore } from '@/core/panels/panels';
+import type { TaskbarAppsLayerProps } from '@/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer';
+import { TaskbarAppsLayer } from '@/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer';
 import { TaskbarDefault } from '@/features/taskbar/components/taskbar-default/taskbar-default';
 import { useClock } from '@/features/taskbar/hooks/use-clock/use-clock';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
@@ -8,13 +10,11 @@ import { useDevice } from '@/shared/hooks/use-device/use-device';
 // 좁은 화면은 작업 표시줄에 검색 입력칸 대신 검색 버튼을 둔다(피그마 Taskbar/Default Search).
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;
 
-type TaskbarLayerProps = {
-  /** 앱 버튼 자리 */
-  apps?: ReactNode;
-};
+/** 앱 버튼의 창 미리보기에 그릴 창 내용과 제목. 앱을 아는 쓰는 곳(앱 등록표)이 넘긴다 */
+type TaskbarLayerProps = TaskbarAppsLayerProps;
 
 /**
- * 작업 표시줄(`TaskbarDefault`)을 패널 저장소와 시계에 잇는 층이다.
+ * 작업 표시줄(`TaskbarDefault`)을 패널 저장소, 창 저장소(앱 버튼), 시계에 잇는 층이다.
  * Start 버튼은 Start 메뉴를, 검색칸(넓은 화면)·검색 버튼(좁은 화면)은 검색 패널을 열고 닫는다. 패널은 패널 층(Start 메뉴 기능)이 그린다.
  * 시계와 화면 방식은 기기에 따라 달라, 서버 HTML과 수화 첫 렌더는 빈 시계·데스크톱 방식으로 그리고 마운트 뒤에 바꾼다.
  * @codocs [[작업 표시줄:구성]]
@@ -25,7 +25,7 @@ type TaskbarLayerProps = {
  * @returns 작업 표시줄
  */
 export function TaskbarLayer(props: TaskbarLayerProps): JSX.Element {
-  const { apps } = props;
+  const { renderWindow, getWindowTitle } = props;
   const device = useDevice();
   const clock = useClock();
   const openPanel = usePanelStore((state) => state.openPanel);
@@ -54,7 +54,7 @@ export function TaskbarLayer(props: TaskbarLayerProps): JSX.Element {
       searchBoxProps={{ onFocus: openSearch, onClick: openSearch }}
       isSearchOpen={openPanel === 'search'}
       onSearchClick={handleSearchClick}
-      apps={apps}
+      apps={<TaskbarAppsLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}
     />
   );
 }
