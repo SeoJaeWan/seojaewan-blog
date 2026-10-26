@@ -1,0 +1,115 @@
+{
+  "delay": {
+    "ms": 0,
+    "token": null
+  },
+  "duration": {
+    "ms": 1000,
+    "token": "motion/duration/slower"
+  },
+  "iterations": null,
+  "name": "motion-search-box-focus",
+  "nodeId": "864:433",
+  "tracks": [
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": {
+            "x": 1,
+            "y": 1
+          },
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": {
+            "x": 0.8,
+            "y": 0.8
+          },
+          "valueToken": null
+        }
+      ],
+      "node": "icon-color/Search Focus",
+      "nodeKind": "asset",
+      "operation": "SET",
+      "path": "icon-color/Search Focus",
+      "property": "SCALE_XY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 333,
+        "token": "motion/duration/slow"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": 0,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 333,
+          "value": 1,
+          "valueToken": null
+        }
+      ],
+      "node": "gradient",
+      "nodeKind": "layer",
+      "operation": "SET",
+      "path": "icon-color/Search Focus / gradient",
+      "property": "OPACITY"
+    },
+    {
+      "delay": {
+        "ms": 0,
+        "token": null
+      },
+      "duration": {
+        "ms": 1000,
+        "token": "motion/duration/slower"
+      },
+      "keyframes": [
+        {
+          "easing": null,
+          "offset": 0,
+          "time": 0,
+          "value": -60,
+          "valueToken": null
+        },
+        {
+          "easing": "motion/easing/point-to-point",
+          "offset": 1,
+          "time": 1000,
+          "value": -160,
+          "valueToken": null
+        }
+      ],
+      "node": "gradient",
+      "nodeKind": "layer",
+      "operation": "SET",
+      "path": "icon-color/Search Focus / gradient",
+      "property": "ROTATION"
+    }
+  ],
+  "url": "https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=864-433"
+}
