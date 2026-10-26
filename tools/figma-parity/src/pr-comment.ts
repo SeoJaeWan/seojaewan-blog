@@ -45,7 +45,10 @@ export function renderComments(
   const tables = captureBlocks(captures.rows, options);
   blocks.push(...tables.blocks);
   const footer = `[실행 결과](${options.runUrl})`;
-  return { bodies: paginate(header, blocks, footer), images: tables.images };
+  return {
+    bodies: paginate(header, blocks, footer, { marker: COMMENT_MARKER, tableHeader }),
+    images: tables.images,
+  };
 }
 
 /**
@@ -117,18 +120,34 @@ function image(file: string, alt: string, options: CommentOptions): string {
   return `<img src="${options.imageUrl(file)}" alt="${alt}">`;
 }
 
+/** 댓글 나누기 설정 */
+export type PaginateOptions = {
+  /** 댓글을 찾는 숨은 표시 이름(`figma-parity`, `motion-check`) */
+  marker: string;
+  /** 표가 든 블록을 나눌 때 다시 쓰는 표 머리 */
+  tableHeader: readonly string[];
+};
+
 /**
  * 블록을 댓글 길이 제한에 맞춰 나눈다. 블록 하나가 너무 길면 줄 단위로 나눈다.
+ * 캡처 표 댓글과 모션 검사 댓글이 함께 쓴다.
+ * @codocs [[피그마 연동:CI]]
  * @param header 첫 댓글 머리말
  * @param blocks 블록
  * @param footer 마지막 댓글 꼬리말
+ * @param options 숨은 표시 이름과 표 머리
  * @returns 댓글 본문
  */
-function paginate(header: string, blocks: readonly string[], footer: string): string[] {
+export function paginate(
+  header: string,
+  blocks: readonly string[],
+  footer: string,
+  options: PaginateOptions,
+): string[] {
   const pages: string[][] = [[header]];
   let length = header.length;
   for (const block of blocks) {
-    for (const piece of splitBlock(block)) {
+    for (const piece of splitBlock(block, options.tableHeader)) {
       if (length + piece.length + 2 > COMMENT_LIMIT - footer.length) {
         pages.push([]);
         length = 0;
@@ -138,15 +157,16 @@ function paginate(header: string, blocks: readonly string[], footer: string): st
     }
   }
   pages.at(-1)?.push(footer);
-  return pages.map((parts, index) => `${marker(index + 1)}\n${parts.join('\n\n')}`);
+  return pages.map((parts, index) => `${marker(index + 1, options.marker)}\n${parts.join('\n\n')}`);
 }
 
 /**
  * 한 블록이 댓글 하나보다 길면 줄 단위로 나눈다. 나뉜 조각은 같은 접힌 블록으로 다시 감싸고 표 머리를 다시 쓴다.
  * @param text 블록
+ * @param header 다시 쓰는 표 머리
  * @returns 조각 목록
  */
-function splitBlock(text: string): string[] {
+function splitBlock(text: string, header: readonly string[]): string[] {
   if (text.length <= COMMENT_LIMIT / 2) {
     return [text];
   }
@@ -160,8 +180,8 @@ function splitBlock(text: string): string[] {
   for (const line of body) {
     if (length + line.length > COMMENT_LIMIT / 2 && current.length > 0) {
       pieces.push(current.join('\n'));
-      current = [...tableHeader];
-      length = tableHeader.join('\n').length;
+      current = [...header];
+      length = header.join('\n').length;
     }
     current.push(line);
     length += line.length + 1;
@@ -178,19 +198,21 @@ function splitBlock(text: string): string[] {
 /**
  * 댓글을 찾는 숨은 표시를 만든다.
  * @param index 댓글 순서(1부터)
+ * @param name 숨은 표시 이름. 기본은 캡처 표 댓글이다
  * @returns HTML 주석
  */
-export function marker(index: number): string {
-  return index === 1 ? `<!-- ${COMMENT_MARKER} -->` : `<!-- ${COMMENT_MARKER} ${String(index)} -->`;
+export function marker(index: number, name = COMMENT_MARKER): string {
+  return index === 1 ? `<!-- ${name} -->` : `<!-- ${name} ${String(index)} -->`;
 }
 
 /**
  * 댓글 본문의 숨은 표시에서 순서를 읽는다.
  * @param body 댓글 본문
+ * @param name 숨은 표시 이름. 기본은 캡처 표 댓글이다
  * @returns 순서(1부터), 이 도구의 댓글이 아니면 undefined
  */
-export function markerIndex(body: string): number | undefined {
-  const match = new RegExp(`^<!-- ${COMMENT_MARKER}(?: (\\d+))? -->`, 'u').exec(body);
+export function markerIndex(body: string, name = COMMENT_MARKER): number | undefined {
+  const match = new RegExp(`^<!-- ${name}(?: (\\d+))? -->`, 'u').exec(body);
   if (match === null) {
     return undefined;
   }
@@ -202,6 +224,6 @@ export function markerIndex(body: string): number | undefined {
  * @param text 메시지
  * @returns 바꾼 메시지
  */
-function escapeMarkdown(text: string): string {
+export function escapeMarkdown(text: string): string {
   return text.replace(/[<>|*_`[\]]/gu, (char) => `\\${char}`);
 }
