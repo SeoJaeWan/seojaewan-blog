@@ -1,0 +1,13 @@
+# @codocs [[Git 작업 규칙:브랜치]]
+# push하는 브랜치의 원격 이름을 검사한다. 브랜치 삭제와 태그 push는 검사하지 않는다.
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  case "$remote_ref" in
+    refs/heads/*) ;;
+    *) continue ;;
+  esac
+  case "$local_sha" in
+    *[!0]*) ;;
+    *) continue ;;
+  esac
+  node scripts/check-branch-name.mjs "${remote_ref#refs/heads/}" || exit 1
+done
