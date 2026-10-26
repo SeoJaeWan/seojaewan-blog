@@ -2,10 +2,10 @@ import { type JSX, useEffect, useRef } from 'react';
 
 import { BootScreen } from '@seojaewan/design-system';
 
-import { useWorkspaceStore } from '@/features/desktop/stores/workspace-store/workspace-store';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { readCssTimeVariable } from '@/shared/rules/motion-time/motion-time';
+import { useWorkspaceStore } from '@/shell/stores/workspace-store/workspace-store';
 
 // 재부팅 화면을 보여 주는 시간 토큰(`motion/delay/boot-screen`)이다. 동작 줄이기에서도 이 시간은 그대로 둔다.
 const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';

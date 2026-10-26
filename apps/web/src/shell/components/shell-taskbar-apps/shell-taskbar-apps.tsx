@@ -11,14 +11,11 @@ import {
   useWindowStore,
   WindowThumbnail,
 } from '@/core/window/window';
-import {
-  getAppWindowTitle,
-  renderAppWindow,
-} from '@/features/desktop/components/app-windows/app-windows';
-import { useOpenApp } from '@/features/desktop/hooks/use-open-app/use-open-app';
 import { TaskbarAppPreview, TaskbarWindowPreviewList } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { getAppWindowTitle, renderAppWindow } from '@/shell/components/app-windows/app-windows';
+import { useOpenApp } from '@/shell/hooks/use-open-app/use-open-app';
 
 /** 작업 표시줄에 처음 고정된 앱 */
 const PINNED_APPS = ['file-explorer', 'chrome'] as const;
@@ -36,7 +33,7 @@ const PREVIEW_THUMBNAIL_BOX = { width: 192, height: 108 } as const;
  * @codocs [[작업 표시줄:창 미리보기]]
  * @returns 앱 버튼들
  */
-export function WorkspaceTaskbarApps(): JSX.Element {
+export function ShellTaskbarApps(): JSX.Element {
   const windows = useWindowStore((state) => state.windows);
   const order = useWindowStore((state) => state.order);
   const minimize = useWindowStore((state) => state.minimize);

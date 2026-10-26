@@ -2,17 +2,17 @@
 
 import type { JSX } from 'react';
 
-import type { DesktopIcon } from '@/features/desktop/components/desktop-scene/desktop-scene';
-import { DesktopScene } from '@/features/desktop/components/desktop-scene/desktop-scene';
-import { RestartScreen } from '@/features/desktop/components/restart-screen/restart-screen';
-import { WorkspaceTaskbarApps } from '@/features/desktop/components/workspace-taskbar-apps/workspace-taskbar-apps';
-import { WorkspaceWindows } from '@/features/desktop/components/workspace-windows/workspace-windows';
-import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/data/desktop-items/desktop-items';
-import { useOpenApp } from '@/features/desktop/hooks/use-open-app/use-open-app';
-import { useWorkspaceStore } from '@/features/desktop/stores/workspace-store/workspace-store';
+import type { DesktopIcon } from '@/features/desktop/desktop';
+import { INITIAL_DESKTOP_ITEMS } from '@/features/desktop/desktop';
 import { StartMenuLayer, useStartMenuStore } from '@/features/start-menu/start-menu';
 import { TaskbarDefault, useClock } from '@/features/taskbar/taskbar';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
+import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
+import { ShellTaskbarApps } from '@/shell/components/shell-taskbar-apps/shell-taskbar-apps';
+import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
+import { useOpenApp } from '@/shell/hooks/use-open-app/use-open-app';
+import { useWorkspaceStore } from '@/shell/stores/workspace-store/workspace-store';
 
 // 좁은 화면은 작업 표시줄에 검색 입력칸 대신 검색 버튼을 둔다(피그마 Taskbar/Default Search).
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;
@@ -27,12 +27,12 @@ const ICON_OPEN_GESTURES = { desktop: 'double-click', mobile: 'click' } as const
  * @codocs [[작업 공간:다시 시작]]
  * @returns 작업 공간
  */
-export function Workspace(): JSX.Element {
+export function Shell(): JSX.Element {
   const device = useDevice();
   const generation = useWorkspaceStore((state) => state.generation);
   return (
     <main aria-label="바탕화면" className="fixed inset-0 overflow-hidden">
-      <WorkspaceDesktop key={generation} />
+      <ShellDesktop key={generation} />
       <RestartScreen device={device} />
     </main>
   );
@@ -49,7 +49,7 @@ export function Workspace(): JSX.Element {
  * @codocs [[모바일:차이]]
  * @returns 데스크톱 하위 트리
  */
-function WorkspaceDesktop(): JSX.Element {
+function ShellDesktop(): JSX.Element {
   const device = useDevice();
   const clock = useClock();
   const openApp = useOpenApp();
@@ -83,7 +83,7 @@ function WorkspaceDesktop(): JSX.Element {
     toggleStart();
   }
 
-  /** 전원 메뉴의 `다시 시작`을 누르면 다시 시작한다. 재부팅 화면과 초기화는 작업 공간 최상위가 맡는다. */
+  /** 전원 메뉴의 `다시 시작`을 누르면 다시 시작한다. 재부팅 화면과 초기화는 shell 최상위가 맡는다. */
   function handleRestart(): void {
     restart();
   }
@@ -110,12 +110,12 @@ function WorkspaceDesktop(): JSX.Element {
           searchBoxProps={{ onFocus: openSearch, onClick: openSearch }}
           isSearchOpen={openPanel === 'search'}
           onSearchClick={handleSearchClick}
-          apps={<WorkspaceTaskbarApps />}
+          apps={<ShellTaskbarApps />}
         />
       }
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
-      <WorkspaceWindows />
+      <ShellWindows />
       {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
       <div data-layer="panels" className="pointer-events-none absolute inset-0">
         <StartMenuLayer device={device} onOpenApp={handleOpenApp} onRestart={handleRestart} />
