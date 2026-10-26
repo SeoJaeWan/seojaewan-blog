@@ -1,5 +1,5 @@
 // Start와 검색 기능의 공개 진입점이다.
-export type { ItemIconSource, StartApp } from './item-icon';
+export type { ItemIconSource, StartApp } from './components/item-icon/item-icon';
 export type {
   SearchBestMatch,
   SearchBodyDevice,
@@ -7,24 +7,27 @@ export type {
   SearchItemKind,
   SearchRecommendedPost,
   SearchResultGroups,
-} from './search-body';
-export { SearchBody } from './search-body';
-export type { SearchPanelDevice } from './search-panel';
-export { SearchPanel } from './search-panel';
-export type { StartAllView, StartBodyDevice, StartItem, StartItemGroup } from './start-body';
-export { StartBody } from './start-body';
-export { StartJumpList } from './start-jump-list';
-export type { JumpListLetter } from './start-letter-rules';
+} from './components/search-body/search-body';
+export { SearchBody } from './components/search-body/search-body';
+export type { SearchPanelDevice } from './components/search-panel/search-panel';
+export { SearchPanel } from './components/search-panel/search-panel';
+export type {
+  StartAllView,
+  StartBodyDevice,
+  StartItem,
+  StartItemGroup,
+} from './components/start-body/start-body';
+export { StartBody } from './components/start-body/start-body';
+export { StartJumpList } from './components/start-jump-list/start-jump-list';
+export { StartMenuLayer } from './components/start-menu-layer/start-menu-layer';
+export type { StartMenuPanelDevice } from './components/start-menu-panel/start-menu-panel';
+export { StartMenuPanel } from './components/start-menu-panel/start-menu-panel';
+export { StartPowerButton } from './components/start-power-button/start-power-button';
+export { StartViewMenu } from './components/start-view-menu/start-view-menu';
+export type { JumpListLetter } from './rules/start-letter-rules/start-letter-rules';
 export {
   getAvailableLetters,
   getStartLetter,
   groupByStartLetter,
   JUMP_LIST_LETTERS,
-} from './start-letter-rules';
-export { StartMenuLayer } from './start-menu-layer';
-export type { StartMenuPanelDevice } from './start-menu-panel';
-export { StartMenuPanel } from './start-menu-panel';
-export type { OpenPanel } from './start-menu-rules';
-export { useStartMenuStore } from './start-menu-store';
-export { StartPowerButton } from './start-power-button';
-export { StartViewMenu } from './start-view-menu';
+} from './rules/start-letter-rules/start-letter-rules';
