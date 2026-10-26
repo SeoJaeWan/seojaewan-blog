@@ -1,6 +1,8 @@
 // 창 열기·순서·최소화·복원·닫기 규칙을 React 밖의 순수 함수로 모은다. 저장소(`window-store.ts`)는 이 함수만 부른다.
 // 근거는 [[기술 스택:상태 관리]], 위치는 [[저장소 구성:앱 폴더 구조]]이다.
 
+import type { ReactNode } from 'react';
+
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
 
@@ -78,6 +80,31 @@ export type WindowWorkArea = {
   /** 높이 */
   height: number;
 };
+
+/** 창 층이 앱 창(`ExplorerWindow`, `ChromeWindow`)의 WindowFrame에 넘기는 속성 */
+export type WindowFrameControls = {
+  /** 맨 앞 창이 아니면 흐리게 그린다 */
+  inactive: boolean;
+  /** 창 배치. 모바일은 늘 maximized다 */
+  placement: WindowPlacement;
+  /** 최소화 버튼을 눌렀을 때 */
+  onMinimize: () => void;
+  /** 닫기 버튼을 눌렀을 때 */
+  onClose: () => void;
+  /** 최대화 버튼을 눌렀을 때. 늘 최대화인 모바일 창은 없다 */
+  onMaximize?: () => void;
+  /** 이전 크기로 복원 버튼을 눌렀을 때 */
+  onRestore?: () => void;
+  /** 제목 표시줄을 더블클릭했을 때(최대화·복원) */
+  onTitleBarDoubleClick?: () => void;
+  /** 최대화 버튼 자리. 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다 */
+  maximizeSlot?: ReactNode;
+  /** 창 자리를 채우는 크기 클래스 */
+  className: string;
+};
+
+/** 열린 창 하나를 그리는 함수. 앱마다 다른 창 조립은 쓰는 곳(shell의 앱 등록표)이 고른다 */
+export type RenderWindow = (window: OpenWindow, controls: WindowFrameControls) => ReactNode;
 
 /**
  * 작업 표시줄 앱 버튼을 눌렀을 때 할 일.

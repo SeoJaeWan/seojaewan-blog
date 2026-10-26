@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 
+import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 import type {
   SnapZone,
   WindowApp,
   WindowState,
   WindowWorkArea,
-} from '@/core/window/rules/window-rules/window-rules';
+} from '@/shared/utils/window-rules/window-rules';
 import {
   closeWindow,
   focusWindow,
@@ -17,8 +18,7 @@ import {
   restoreWindow,
   snapWindow,
   toggleMaximizeWindow,
-} from '@/core/window/rules/window-rules/window-rules';
-import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
+} from '@/shared/utils/window-rules/window-rules';
 
 /**
  * 창을 끌거나 크기를 조절하는 중인지. 그동안에는 최대화·스냅 모션을 끈다([[디자인 기반:모션 클래스]]).

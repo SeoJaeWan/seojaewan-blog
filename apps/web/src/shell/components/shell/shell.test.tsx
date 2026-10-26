@@ -3,8 +3,8 @@ import { userEvent } from '@testing-library/user-event';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { usePanelStore } from '@/core/panels/panels';
-import { useWindowStore } from '@/core/window/window';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
 
 import { Shell } from './shell';
 

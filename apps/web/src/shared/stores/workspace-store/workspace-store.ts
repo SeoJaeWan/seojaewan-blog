@@ -1,5 +1,6 @@
 import { create, type StoreApi } from 'zustand';
 
+import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
 import {
   finishRestartCovering,
   finishRestartRevealing,
@@ -7,8 +8,7 @@ import {
   initialRestartState,
   type RestartState,
   startRestart,
-} from '@/core/workspace/rules/restart-rules/restart-rules';
-import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
+} from '@/shared/utils/restart-rules/restart-rules';
 
 /** 작업 공간 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다 */
 export type WorkspaceStore = RestartState & {

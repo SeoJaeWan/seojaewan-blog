@@ -1,11 +1,11 @@
 import type { JSX } from 'react';
 
-import { usePanelStore } from '@/core/panels/panels';
 import type { TaskbarAppsLayerProps } from '@/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer';
 import { TaskbarAppsLayer } from '@/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer';
 import { TaskbarDefault } from '@/features/taskbar/components/taskbar-default/taskbar-default';
 import { useClock } from '@/features/taskbar/hooks/use-clock/use-clock';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 
 // 좁은 화면은 작업 표시줄에 검색 입력칸 대신 검색 버튼을 둔다(피그마 Taskbar/Default Search).
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;

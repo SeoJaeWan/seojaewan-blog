@@ -5,10 +5,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { WindowFrame } from '@seojaewan/design-system';
 
-import type { WindowFrameControls } from '@/core/window/components/window-view/window-view';
-import type { OpenWindow } from '@/core/window/rules/window-rules/window-rules';
-import { getSnapFlip, getWindowRect } from '@/core/window/rules/window-rules/window-rules';
-import { useWindowStore } from '@/core/window/stores/window-store/window-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
+import type { OpenWindow } from '@/shared/utils/window-rules/window-rules';
+import { getSnapFlip, getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 import { WindowLayer } from './window-layer';
 

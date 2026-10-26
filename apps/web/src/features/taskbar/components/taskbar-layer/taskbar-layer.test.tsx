@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { usePanelStore } from '@/core/panels/panels';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 
 import { TaskbarLayer } from './taskbar-layer';
 

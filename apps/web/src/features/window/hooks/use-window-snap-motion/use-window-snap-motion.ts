@@ -1,8 +1,8 @@
 import type { RefObject } from 'react';
 import { useLayoutEffect, useRef } from 'react';
 
-import type { WindowBounds } from '@/core/window/rules/window-rules/window-rules';
-import { getSnapFlip } from '@/core/window/rules/window-rules/window-rules';
+import type { WindowBounds } from '@/shared/utils/window-rules/window-rules';
+import { getSnapFlip } from '@/shared/utils/window-rules/window-rules';
 
 // 최대화·복원·스냅 모션 클래스와 그 실행 중 값(motion.css)이다.
 const SNAP_CLASS = 'motion-window-snap';

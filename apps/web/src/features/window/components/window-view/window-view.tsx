@@ -1,45 +1,20 @@
-import type { JSX, ReactNode } from 'react';
+import type { JSX } from 'react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-import { SnapLayoutMenu } from '@/core/window/components/snap-layout-menu/snap-layout-menu';
-import { useWindowSnapMotion } from '@/core/window/hooks/use-window-snap-motion/use-window-snap-motion';
-import { getTaskbarOffset } from '@/core/window/rules/window-geometry/window-geometry';
-import type {
-  OpenWindow,
-  SnapLayout,
-  SnapZone,
-  WindowPlacement,
-  WindowWorkArea,
-} from '@/core/window/rules/window-rules/window-rules';
-import { getWindowRect } from '@/core/window/rules/window-rules/window-rules';
-import { useWindowStore } from '@/core/window/stores/window-store/window-store';
+import { SnapLayoutMenu } from '@/features/window/components/snap-layout-menu/snap-layout-menu';
+import { useWindowSnapMotion } from '@/features/window/hooks/use-window-snap-motion/use-window-snap-motion';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
-
-/** 창 층이 앱 창(`ExplorerWindow`, `ChromeWindow`)의 WindowFrame에 넘기는 속성 */
-export type WindowFrameControls = {
-  /** 맨 앞 창이 아니면 흐리게 그린다 */
-  inactive: boolean;
-  /** 창 배치. 모바일은 늘 maximized다 */
-  placement: WindowPlacement;
-  /** 최소화 버튼을 눌렀을 때 */
-  onMinimize: () => void;
-  /** 닫기 버튼을 눌렀을 때 */
-  onClose: () => void;
-  /** 최대화 버튼을 눌렀을 때. 늘 최대화인 모바일 창은 없다 */
-  onMaximize?: () => void;
-  /** 이전 크기로 복원 버튼을 눌렀을 때 */
-  onRestore?: () => void;
-  /** 제목 표시줄을 더블클릭했을 때(최대화·복원) */
-  onTitleBarDoubleClick?: () => void;
-  /** 최대화 버튼 자리. 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다 */
-  maximizeSlot?: ReactNode;
-  /** 창 자리를 채우는 크기 클래스 */
-  className: string;
-};
-
-/** 열린 창 하나를 그리는 함수. 앱마다 다른 창 조립은 쓰는 곳(`features/desktop`)이 고른다 */
-export type RenderWindow = (window: OpenWindow, controls: WindowFrameControls) => ReactNode;
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { getTaskbarOffset } from '@/shared/utils/window-geometry/window-geometry';
+import type {
+  OpenWindow,
+  RenderWindow,
+  SnapLayout,
+  SnapZone,
+  WindowWorkArea,
+} from '@/shared/utils/window-rules/window-rules';
+import { getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 type WindowViewProps = {
   /** 그릴 창. 닫힌 창은 저장소에서 지우기 직전의 모습이다 */

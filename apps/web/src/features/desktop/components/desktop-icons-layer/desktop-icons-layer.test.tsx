@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { useWindowStore } from '@/core/window/window';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
 
 import { DesktopIconsLayer } from './desktop-icons-layer';
 

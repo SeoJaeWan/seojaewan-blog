@@ -1,5 +1,6 @@
 import { create, type StoreApi } from 'zustand';
 
+import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 import {
   closePanels,
   initialPanelState,
@@ -7,8 +8,7 @@ import {
   type PanelState,
   toggleSearchPanel,
   toggleStartPanel,
-} from '@/core/panels/rules/panel-rules/panel-rules';
-import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
+} from '@/shared/utils/panel-rules/panel-rules';
 
 /** Start·검색 패널 저장소. 상태와 바꾸는 동작이다 */
 export type PanelStore = PanelState & {
@@ -28,7 +28,7 @@ export type PanelStore = PanelState & {
 
 /**
  * Start 메뉴와 검색 패널의 열림 상태를 담는 저장소. 규칙은 `panel-rules.ts`의 순수 함수가 갖는다.
- * 작업 표시줄(Start 버튼, 검색칸·검색 버튼)이 열고 패널 층(Start 메뉴)이 그리고 닫으므로, 두 기능이 함께 쓰도록 `core/`에 둔다.
+ * 작업 표시줄(Start 버튼, 검색칸·검색 버튼)이 열고 패널 층(Start 메뉴)이 그리고 닫으므로, 두 기능이 함께 쓰도록 `shared/stores/`에 둔다.
  * 패널을 닫으면 그 안의 전원 메뉴도 닫히는 규칙이 패널 전환과 묶여 있어 전원 메뉴 열림도 여기 둔다.
  * 열림 상태는 새로고침 뒤에 남지 않으므로 `persist`를 쓰지 않는다. 다시 시작하면 닫히도록 초기화 함수를 등록한다.
  * @codocs [[기술 스택:상태 관리]]

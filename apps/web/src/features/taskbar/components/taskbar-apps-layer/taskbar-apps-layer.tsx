@@ -1,21 +1,21 @@
 import type { JSX } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { OpenWindow, RenderWindow, WindowApp } from '@/core/window/window';
+import { TaskbarAppPreview } from '@/features/taskbar/components/taskbar-app-preview/taskbar-app-preview';
+import { TaskbarWindowPreviewList } from '@/features/taskbar/components/taskbar-window-preview-list/taskbar-window-preview-list';
+import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
+import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
+import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { getThumbnailScale } from '@/shared/utils/window-geometry/window-geometry';
+import type { OpenWindow, RenderWindow, WindowApp } from '@/shared/utils/window-rules/window-rules';
 import {
   getAppWindows,
   getTaskbarAppAction,
   getTaskbarAppIndicator,
-  getThumbnailScale,
   getWindowRect,
-  useOpenApp,
-  useWindowStore,
-  WindowThumbnail,
-} from '@/core/window/window';
-import { TaskbarAppPreview } from '@/features/taskbar/components/taskbar-app-preview/taskbar-app-preview';
-import { TaskbarWindowPreviewList } from '@/features/taskbar/components/taskbar-window-preview-list/taskbar-window-preview-list';
-import { useDevice } from '@/shared/hooks/use-device/use-device';
-import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+} from '@/shared/utils/window-rules/window-rules';
 
 /** 작업 표시줄에 처음 고정된 앱 */
 const PINNED_APPS = ['file-explorer', 'chrome'] as const;
@@ -48,7 +48,8 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   const minimize = useWindowStore((state) => state.minimize);
   const restore = useWindowStore((state) => state.restore);
   const close = useWindowStore((state) => state.close);
-  const openApp = useOpenApp();
+  const openWindow = useWindowStore((state) => state.open);
+  const openApp = useOpenApp(openWindow);
   const device = useDevice();
   const workArea = useWorkArea();
   const [previewApp, setPreviewApp] = useState<WindowApp | null>(null);

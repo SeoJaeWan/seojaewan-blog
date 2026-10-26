@@ -2,9 +2,9 @@ import { act, render, screen, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { usePanelStore } from '@/core/panels/panels';
-import { useWindowStore } from '@/core/window/window';
-import { useWorkspaceStore } from '@/core/workspace/workspace';
+import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { Shell } from '@/shell/components/shell/shell';
 
 // 테스트에서 재부팅 화면을 보여 주는 시간. jsdom에는 토큰 CSS가 없어 문서 루트에 직접 넣는다.

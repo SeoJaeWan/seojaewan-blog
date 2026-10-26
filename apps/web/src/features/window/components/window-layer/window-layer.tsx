@@ -1,21 +1,14 @@
 import type { JSX, ReactNode } from 'react';
 import { useState } from 'react';
 
-import { WindowSnapAssist } from '@/core/window/components/window-snap-assist/window-snap-assist';
-import type { RenderWindow } from '@/core/window/components/window-view/window-view';
-import { WindowView } from '@/core/window/components/window-view/window-view';
-import type {
-  OpenWindow,
-  SnapZone,
-  WindowState,
-} from '@/core/window/rules/window-rules/window-rules';
-import {
-  getFrontWindowId,
-  getRemainingSnapZones,
-} from '@/core/window/rules/window-rules/window-rules';
-import { useWindowStore } from '@/core/window/stores/window-store/window-store';
+import { WindowSnapAssist } from '@/features/window/components/window-snap-assist/window-snap-assist';
+import { WindowView } from '@/features/window/components/window-view/window-view';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import type { RenderWindow } from '@/shared/utils/window-rules/window-rules';
+import type { OpenWindow, SnapZone, WindowState } from '@/shared/utils/window-rules/window-rules';
+import { getFrontWindowId, getRemainingSnapZones } from '@/shared/utils/window-rules/window-rules';
 
 type WindowLayerProps = {
   /** 앱 창을 그린다. 앱마다 다른 창 조립은 쓰는 곳이 고른다 */

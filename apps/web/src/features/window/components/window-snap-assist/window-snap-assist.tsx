@@ -1,16 +1,16 @@
 import type { JSX, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { SnapAssist } from '@/core/window/components/snap-assist/snap-assist';
-import { WindowThumbnail } from '@/core/window/components/window-thumbnail/window-thumbnail';
-import type { RenderWindow } from '@/core/window/components/window-view/window-view';
-import { getThumbnailScale } from '@/core/window/rules/window-geometry/window-geometry';
+import { SnapAssist } from '@/features/window/components/snap-assist/snap-assist';
+import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
+import { getThumbnailScale } from '@/shared/utils/window-geometry/window-geometry';
+import type { RenderWindow } from '@/shared/utils/window-rules/window-rules';
 import type {
   OpenWindow,
   SnapZone,
   WindowWorkArea,
-} from '@/core/window/rules/window-rules/window-rules';
-import { getSnapZoneRect, getWindowRect } from '@/core/window/rules/window-rules/window-rules';
+} from '@/shared/utils/window-rules/window-rules';
+import { getSnapZoneRect, getWindowRect } from '@/shared/utils/window-rules/window-rules';
 
 /** Snap Assist 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
 const THUMBNAIL_BOX = { width: 192, height: 108 } as const;
