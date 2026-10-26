@@ -17,6 +17,8 @@ export function MenuItem() {
   return <span className="text-text-fill-primary type-body"><Asset name="icons/ic_fluent_open_20_regular.svg" /></span>;
 }`;
 const FLYOUT = `export function Flyout() { return <div className="material-acrylic-default rounded-overlay" />; }`;
+const FILE_ITEM = `import { ImageAsset } from '../image-asset/image-asset';
+export function FileItem() { return <ImageAsset name="images/file-folder" />; }`;
 const ASSET = `export function Asset() { return <svg />; }`;
 const FOLDER_STORY = `import { ContextMenu } from './context-menu';
 export default { title: 'Patterns/Menu/Folder' };
@@ -66,6 +68,7 @@ function inputs(changedFiles: string[], changes: Record<string, FileChange> = {}
       ['button', [BUTTON]],
       ['menu-item', [MENU_ITEM]],
       ['flyout', [FLYOUT]],
+      ['file-item', [FILE_ITEM]],
       ['asset', [ASSET]],
     ]),
     patterns: new Map([['Menu/Folder', folderPattern]]),
@@ -154,6 +157,13 @@ describe('캡처 범위', () => {
         },
       }),
     ).toEqual({ components: ['menu-item'], patterns: ['Menu/Folder'] });
+  });
+
+  it('래스터 자산은 원본(형식 그대로)과 코드 자산(WebP) 모두 확장자 없는 이름으로 찾는다', () => {
+    const expected = { components: ['file-item'], patterns: [] };
+    expect(scope(['packages/design-system/figma/assets/images/file-folder.png'])).toEqual(expected);
+    expect(scope(['packages/design-system/figma/assets/images/file-folder.jpg'])).toEqual(expected);
+    expect(scope(['packages/design-system/src/assets/images/file-folder.webp'])).toEqual(expected);
   });
 
   it('토큰이 바뀌면 별칭을 따라가 바뀐 토큰의 클래스를 쓰는 컴포넌트와 조립이다', () => {
