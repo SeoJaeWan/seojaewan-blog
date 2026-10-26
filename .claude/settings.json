@@ -10,6 +10,9 @@
     "GIT_COMMITTER_NAME": "Ing-yeo_Developer",
     "GIT_COMMITTER_EMAIL": "52366178+SeoJaeWan@users.noreply.github.com"
   },
+  "permissions": {
+    "allow": ["mcp__Figma"]
+  },
   "hooks": {
     "SessionStart": [
       {
