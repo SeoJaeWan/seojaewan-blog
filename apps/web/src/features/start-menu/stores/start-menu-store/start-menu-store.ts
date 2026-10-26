@@ -8,6 +8,7 @@ import {
   toggleSearchPanel,
   toggleStartPanel,
 } from '@/features/start-menu/rules/start-menu-rules/start-menu-rules';
+import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 
 /** Start·검색 패널 저장소. 상태와 바꾸는 동작이다 */
 export type StartMenuStore = StartMenuState & {
@@ -27,10 +28,15 @@ export type StartMenuStore = StartMenuState & {
 
 /**
  * Start 메뉴와 검색 패널의 열림 상태를 담는 저장소. 규칙은 `start-menu-rules.ts`의 순수 함수가 갖는다.
- * 열림 상태는 새로고침 뒤에 남지 않으므로 `persist`를 쓰지 않는다.
+ * 열림 상태는 새로고침 뒤에 남지 않으므로 `persist`를 쓰지 않는다. 다시 시작하면 닫히도록 초기화 함수를 등록한다.
  * @codocs [[기술 스택:상태 관리]]
+ * @codocs [[작업 공간:다시 시작]]
  */
 export const useStartMenuStore = create<StartMenuStore>()(createStartMenuStore);
+
+registerStoreReset(() => {
+  useStartMenuStore.getState().reset();
+});
 
 /**
  * 저장소의 처음 상태와 동작을 만든다.
