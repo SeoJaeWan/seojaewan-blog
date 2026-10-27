@@ -106,9 +106,10 @@
   --color-gray-500-95: #f3f3f3f2;
   --color-gray-800: #dadada;
   --color-gray-1000-40: #75757566;
-  --color-green-light-2: #78bf91;
   --color-red-dark-1: #c42b1c;
   --color-red-dark-1-90: #c42b1ce5;
+  --color-search-gradient-blue: #0853e0;
+  --color-search-gradient-cyan: #12ecf3;
   --color-white: #ffffff;
   --color-white-0: #ffffff00;
   --color-white-8: #ffffff14;
@@ -142,6 +143,7 @@
   --motion-duration-normal: 250ms;
   --motion-duration-progress-ring: 2000ms;
   --motion-duration-slow: 333ms;
+  --motion-duration-slower: 1000ms;
   --motion-easing-direct-entrance: cubic-bezier(0, 0, 0, 1);
   --motion-easing-fade: linear;
   --motion-easing-gentle-exit: cubic-bezier(1, 0, 1, 1);
@@ -232,7 +234,7 @@
   --font-weight-bold: 700;
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
-  --icon-color-search: linear-gradient(45deg, var(--color-blue-dark-1) 0%, var(--color-blue-dark-1) 55%, var(--color-green-light-2) 90%, var(--color-green-light-2) 100%);
+  --icon-color-search-focus: linear-gradient(60deg, var(--color-search-gradient-cyan) 0%, var(--color-search-gradient-cyan) 20%, var(--color-search-gradient-blue) 40%, var(--color-search-gradient-blue) 100%);
   --layer-fill-alt: var(--color-white);
   --layer-fill-default: var(--color-white-50);
   --layer-on-mica-base-alt-fill-default: var(--color-white-70);
