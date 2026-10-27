@@ -233,11 +233,13 @@ export const svgAssets = {
       { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '-4.75', y1: '7.32031', x2: '10.0347', y2: '50.2486', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#36DFF1' } }, { tag: 'stop', attributes: { offset: '1', stopColor: '#2764E7' } }] }] },
     ],
   },
-  'illustrations/icon-color-search.svg': {
+  'illustrations/icon-color-search-focus.svg': {
     viewBox: '0 0 16 16',
     elements: [
-      { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'url(#s1)' } },
-      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's1', x1: '8.5', y1: '21.5', x2: '21.5', y2: '8.5', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.55', stopColor: '#005FB8' } }, { tag: 'stop', attributes: { offset: '0.9', stopColor: '#78BF91' } }, { tag: 'stop', attributes: { offset: '1', stopColor: '#78BF91' } }] }] },
+      { tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'black', fillOpacity: '0.6063' } },
+      { tag: 'mask', attributes: { id: 's1', maskUnits: 'userSpaceOnUse', x: '2', y: '2', width: '13', height: '13', maskType: 'alpha' }, children: [{ tag: 'path', attributes: { d: 'M11.02 11.73C10.07 12.52 8.84 13 7.5 13C4.46 13 2 10.54 2 7.5C2 4.46 4.46 2 7.5 2C10.54 2 13 4.46 13 7.5C13 8.84 12.52 10.07 11.73 11.02L14.85 14.15C15.05 14.34 15.05 14.66 14.85 14.85C14.66 15.05 14.34 15.05 14.15 14.85L11.02 11.73ZM12 7.5C12 5.01 9.99 3 7.5 3C5.01 3 3 5.01 3 7.5C3 9.99 5.01 12 7.5 12C9.99 12 12 9.99 12 7.5Z', fill: 'black', fillOpacity: '0.6063' } }] },
+      { tag: 'g', attributes: { mask: 'url(#s1)' }, children: [{ tag: 'rect', attributes: { x: '18.2537', y: '12.7812', width: '16', height: '16', transform: 'rotate(160 18.2537 12.7812)', fill: 'url(#s2)' } }] },
+      { tag: 'defs', attributes: {  }, children: [{ tag: 'linearGradient', attributes: { id: 's2', x1: '16.7896', y1: '26.2454', x2: '35.7178', y2: '15.3171', gradientUnits: 'userSpaceOnUse' }, children: [{ tag: 'stop', attributes: { stopColor: '#12ECF3' } }, { tag: 'stop', attributes: { offset: '0.2', stopColor: '#12ECF3' } }, { tag: 'stop', attributes: { offset: '0.4', stopColor: '#0853E0' } }, { tag: 'stop', attributes: { offset: '1', stopColor: '#0853E0' } }] }] },
     ],
   },
   'illustrations/logo-windows.svg': {
