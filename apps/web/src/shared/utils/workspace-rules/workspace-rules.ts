@@ -1446,7 +1446,8 @@ function cleanReferences(state: WorkspaceState): WorkspaceState {
   );
   const explorerViews = Object.fromEntries(
     Object.entries(state.explorerViews).filter(
-      ([id]) => id === DESKTOP_LOCATION_KEY || items[id]?.kind === 'folder',
+      ([id]) =>
+        id === DESKTOP_LOCATION_KEY || id === RECYCLE_BIN_ID || items[id]?.kind === 'folder',
     ),
   );
   return {

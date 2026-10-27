@@ -1,10 +1,7 @@
 import type { KeyboardEvent, MouseEvent, PointerEvent } from 'react';
 import { useRef, useState } from 'react';
 
-import type {
-  Selection,
-  SelectionDirection,
-} from '@/features/desktop/utils/selection-rules/selection-rules';
+import type { Selection, SelectionDirection } from '@/shared/utils/selection-rules/selection-rules';
 import {
   emptySelection,
   pruneSelection,
@@ -13,7 +10,7 @@ import {
   selectOnly,
   selectRange,
   toggleSelection,
-} from '@/features/desktop/utils/selection-rules/selection-rules';
+} from '@/shared/utils/selection-rules/selection-rules';
 
 type UseSelectionOptions = {
   /** 지금 보이는 항목 id. 표시 순서다(바탕화면은 격자 순서). Shift 범위와 Ctrl + A가 이 순서를 쓴다 */
@@ -48,7 +45,7 @@ type SelectionControls = {
 };
 
 /**
- * 바탕화면 아이콘 선택을 포인터와 키보드에 잇는다. 규칙은 `selection-rules`에 있다.
+ * 바탕화면 아이콘과 탐색기 항목의 선택을 포인터와 키보드에 잇는다. 규칙은 `selection-rules`에 있다.
  * - 클릭: 그 항목만 고른다. Ctrl + 클릭: 더하거나 뺀다. Shift + 클릭: 범위 선택의 시작 항목부터 표시 순서로 고른다.
  * - 고른 항목을 누르면 함께 끌 수 있게 선택을 그대로 두고, 끌지 않고 놓으면(클릭) 그 항목만 고른다.
  * - 방향키: 옆 항목으로 선택과 포커스를 옮긴다. Shift + 방향키: 범위를 넓힌다. Ctrl + A: 모두 고른다.

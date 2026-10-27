@@ -3,22 +3,18 @@ import { useEffect, useRef, useState } from 'react';
 
 import { SelectionMarquee, Tooltip } from '@seojaewan/design-system';
 
-import { ContextMenuArea } from '@/features/desktop/components/context-menu-area/context-menu-area';
 import { DesktopDragGhost } from '@/features/desktop/components/desktop-drag-ghost/desktop-drag-ghost';
 import type {
   DesktopIcon,
   DesktopIconProps,
 } from '@/features/desktop/components/desktop-icons/desktop-icons';
 import { DesktopIcons } from '@/features/desktop/components/desktop-icons/desktop-icons';
-import { useFolderRename } from '@/features/desktop/hooks/use-folder-rename/use-folder-rename';
 import type { ItemDropResult } from '@/features/desktop/hooks/use-item-drag/use-item-drag';
 import {
   DROP_TARGET_ATTRIBUTE,
   DROP_TARGET_NAME_ATTRIBUTE,
   useItemDrag,
 } from '@/features/desktop/hooks/use-item-drag/use-item-drag';
-import { useMarqueeSelection } from '@/features/desktop/hooks/use-marquee-selection/use-marquee-selection';
-import { useSelection } from '@/features/desktop/hooks/use-selection/use-selection';
 import {
   arrangeInGridOrder,
   getCellGeometry,
@@ -31,28 +27,32 @@ import {
   moveIconsToCell,
   sortDesktopItems,
 } from '@/features/desktop/utils/desktop-grid/desktop-grid';
+import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
+import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
+import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
+import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { useFolderRename } from '@/shared/hooks/use-folder-rename/use-folder-rename';
+import { useMarqueeSelection } from '@/shared/hooks/use-marquee-selection/use-marquee-selection';
+import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
+import { useSelection } from '@/shared/hooks/use-selection/use-selection';
+import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { copyItemLink } from '@/shared/utils/item-link/item-link';
+import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 import type {
   SelectionDirection,
   SelectionRect,
-} from '@/features/desktop/utils/selection-rules/selection-rules';
+} from '@/shared/utils/selection-rules/selection-rules';
 import {
   emptySelection,
   getIdAfterRemoval,
   getNeighborInGrid,
   isRectIntersecting,
   selectOnly,
-} from '@/features/desktop/utils/selection-rules/selection-rules';
-import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
-import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
-import { useDevice } from '@/shared/hooks/use-device/use-device';
-import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
-import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
-import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
+} from '@/shared/utils/selection-rules/selection-rules';
 import type {
   DesktopIconSize,
   DesktopSortKey,
-  WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 import {
   getDesktopItems,
@@ -295,22 +295,6 @@ export function DesktopIconsLayer(): JSX.Element {
       getWorkspace().setDesktopIconPositions(cells);
     }
     getWorkspace().setDesktopAutoArrange(isOn);
-  }
-
-  /**
-   * 항목의 링크(글은 공유 링크, 외부 링크는 그 주소)를 클립보드에 복사한다.
-   * @param item 항목
-   */
-  function copyLink(item: WorkspaceItem): void {
-    const link =
-      item.kind === 'post'
-        ? `${window.location.origin}/posts/${item.slug}`
-        : item.kind === 'link'
-          ? item.url
-          : null;
-    if (link !== null && typeof navigator.clipboard !== 'undefined') {
-      navigator.clipboard.writeText(link).catch(ignoreClipboardError);
-    }
   }
 
   /**
@@ -574,7 +558,7 @@ export function DesktopIconsLayer(): JSX.Element {
       },
       onCopyLink: () => {
         if (first !== undefined) {
-          copyLink(first);
+          copyItemLink(first);
         }
       },
       onTogglePin: () => {
@@ -703,6 +687,3 @@ function handleNativeDragStart(event: DragEvent): void {
 function getWorkspace(): ReturnType<typeof useWorkspaceStore.getState> {
   return useWorkspaceStore.getState();
 }
-
-/** 클립보드에 쓰지 못하면(권한 거부 등) 조용히 넘어간다. */
-function ignoreClipboardError(): void {}

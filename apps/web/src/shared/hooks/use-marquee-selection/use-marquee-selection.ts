@@ -1,10 +1,10 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useState } from 'react';
 
-import type { PointerPoint } from '@/features/desktop/hooks/use-pointer-drag/use-pointer-drag';
-import { usePointerDrag } from '@/features/desktop/hooks/use-pointer-drag/use-pointer-drag';
-import type { SelectionRect } from '@/features/desktop/utils/selection-rules/selection-rules';
-import { getRectFromPoints } from '@/features/desktop/utils/selection-rules/selection-rules';
+import type { PointerPoint } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import type { SelectionRect } from '@/shared/utils/selection-rules/selection-rules';
+import { getRectFromPoints } from '@/shared/utils/selection-rules/selection-rules';
 
 type UseMarqueeSelectionOptions = {
   /** 빈 곳을 누를 때 부른다. Ctrl(맥은 Cmd)을 누른 채면 더하기다 */
@@ -22,7 +22,7 @@ type MarqueeControls = {
 };
 
 /**
- * 영역의 빈 곳에서 끌어 사각형으로 항목을 고른다(바탕화면). 사각형은 누른 요소(영역) 왼쪽 위를 원점으로 잰다.
+ * 영역의 빈 곳에서 끌어 사각형으로 항목을 고른다(바탕화면, 탐색기). 사각형은 누른 요소(영역) 왼쪽 위를 원점으로 잰다.
  * 누르면 `onStart`로 선택을 비우거나(더하기가 아니면) 끌기 전 선택을 기억하게 하고, 끄는 동안 사각형을 알린다.
  * 그리는 것은 쓰는 곳이 디자인 시스템 `SelectionMarquee`로 한다.
  * @codocs [[바탕화면:아이콘 조작]]

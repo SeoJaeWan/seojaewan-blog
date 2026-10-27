@@ -235,18 +235,21 @@ export function closeTab(
 }
 
 /**
- * 새 탭을 `Blog` 폴더로 열어 맨 끝에 두고 고른다.
+ * 새 탭을 열어 맨 끝에 두고 고른다. 새 탭(+)은 `Blog` 폴더, 우클릭 메뉴의 새 탭에서 열기는 그 폴더다.
  * @codocs [[파일 탐색기:탭]]
+ * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param target 새 탭이 볼 위치. 주지 않으면 `Blog` 폴더다
  * @returns 새 창 내용
  */
 export function openNewTab(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  target: ExplorerLocation = BLOG_FOLDER_ID,
 ): ExplorerWindowContent {
   const serial = content.lastTabSerial + 1;
-  const location = resolveLocation(workspace, BLOG_FOLDER_ID);
+  const location = resolveLocation(workspace, target);
   const tab: ExplorerTabState = {
     id: `tab-${String(serial)}`,
     history: [location],
@@ -339,20 +342,29 @@ export function setTreeNodeExpanded(
   return { ...content, treeExpansion: { ...content.treeExpansion, [key]: isExpanded } };
 }
 
+/** 한 위치의 하위 폴더 트리 칸을 늘어놓는 함수. 위치(폴더 id, 바탕화면은 null)와 하위 폴더를 받는다 */
+export type OrderFolders = (
+  parentId: string | null,
+  nodes: readonly FolderTreeNode[],
+) => readonly FolderTreeNode[];
+
 /**
  * 탐색 창에 보일 트리 칸을 위에서부터 돌려준다. 바탕화면, 펼친 폴더의 하위 폴더, 휴지통 차례다.
- * 휴지통 안의 폴더는 보이지 않는다. 폴더는 작업 공간 차례대로 둔다.
+ * 휴지통 안의 폴더는 보이지 않는다. 하위 폴더는 `orderFolders`가 정한 차례(그 위치의 정렬)로 둔다.
  * @codocs [[파일 탐색기:구성]]
+ * @codocs [[파일 탐색기:보기와 정렬]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param orderFolders 하위 폴더를 늘어놓는 함수. 주지 않으면 작업 공간 차례다
  * @returns 트리 칸
  */
 export function getNavigationRows(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  orderFolders: OrderFolders = keepOrder,
 ): NavigationRow[] {
   const location = getCurrentLocation(content);
-  const tree = getFolderTree(workspace);
+  const tree = orderFolders(null, getFolderTree(workspace));
   const rows: NavigationRow[] = [
     {
       key: DESKTOP_LOCATION_KEY,
@@ -365,7 +377,7 @@ export function getNavigationRows(
     },
   ];
   if (rows[0]?.expand === 'expanded') {
-    appendFolderRows(rows, tree, 1, content, workspace);
+    appendFolderRows(rows, tree, 1, content, workspace, orderFolders);
   }
   rows.push({
     key: RECYCLE_BIN_ID,
@@ -411,6 +423,7 @@ export function getFocusableTreeKey(
  * @param depth 깊이
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
+ * @param orderFolders 하위 폴더를 늘어놓는 함수
  */
 function appendFolderRows(
   rows: NavigationRow[],
@@ -418,6 +431,7 @@ function appendFolderRows(
   depth: number,
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
+  orderFolders: OrderFolders,
 ): void {
   const location = getCurrentLocation(content);
   for (const node of nodes) {
@@ -432,7 +446,14 @@ function appendFolderRows(
       icon: 'folder',
     });
     if (expand === 'expanded') {
-      appendFolderRows(rows, node.children, depth + 1, content, workspace);
+      appendFolderRows(
+        rows,
+        orderFolders(node.folder.id, node.children),
+        depth + 1,
+        content,
+        workspace,
+        orderFolders,
+      );
     }
   }
 }
@@ -573,4 +594,17 @@ function getTrashedRoot(
     current = current.parentId === null ? undefined : workspace.items[current.parentId];
   }
   return current;
+}
+
+/**
+ * 하위 폴더를 작업 공간 차례 그대로 둔다.
+ * @param _parentId 위치
+ * @param nodes 하위 폴더
+ * @returns 그대로의 하위 폴더
+ */
+function keepOrder(
+  _parentId: string | null,
+  nodes: readonly FolderTreeNode[],
+): readonly FolderTreeNode[] {
+  return nodes;
 }

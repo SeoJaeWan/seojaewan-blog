@@ -384,6 +384,12 @@ describe('작업 공간:Notion과 맞추기 - 깨진 상태 복구', () => {
     expect(state.desktop.positions).toEqual({});
     expect(state.explorerViews).toEqual({});
   });
+
+  it('휴지통 보기의 정렬은 지우지 않는다', () => {
+    const view = { view: 'details', sortBy: 'modified', sortDirection: 'desc' } as const;
+    const state = repairWorkspace({ ...initial, explorerViews: { [RECYCLE_BIN_ID]: view } });
+    expect(state.explorerViews).toEqual({ [RECYCLE_BIN_ID]: view });
+  });
 });
 
 // @codocs [[작업 공간:폴더 이름]]

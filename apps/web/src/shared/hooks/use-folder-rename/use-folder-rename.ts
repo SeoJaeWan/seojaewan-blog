@@ -1,11 +1,11 @@
 import type { FocusEvent, KeyboardEvent } from 'react';
 import { useRef, useState } from 'react';
 
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import {
   getFolderNameErrorMessage,
   isFolderNameError,
-} from '@/features/desktop/utils/folder-name-message/folder-name-message';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+} from '@/shared/utils/folder-name-message/folder-name-message';
 
 /** 이름을 바꾸는 중인 폴더 */
 type RenameState = {
@@ -54,7 +54,7 @@ type UseFolderRenameOptions = {
 const RENAME_FIELD_LABEL = '새 이름';
 
 /**
- * 바탕화면 폴더 이름 바꾸기를 입력창에 잇는다.
+ * 바탕화면·탐색기의 폴더 이름 바꾸기를 입력창에 잇는다.
  * - Enter와 바깥 클릭(포커스를 잃음)은 확정, Esc는 취소다.
  * - 이름이 폴더 이름 규칙에 맞지 않으면 이름 바꾸기를 끝내지 않고 이유를 말풍선 문구로 돌려주며, 입력값을 그대로 두고 입력창에 포커스를 돌려준다.
  * - Enter·Esc로 끝내면 `onKeyboardEnd`로 알려 키보드 포커스를 항목에 돌려주게 한다. 바깥을 눌러 끝내면 누른 곳에 포커스를 둔다.

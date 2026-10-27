@@ -1,6 +1,9 @@
-import type { ComponentProps, JSX, MouseEventHandler } from 'react';
+import { type ComponentProps, type JSX, type MouseEventHandler, useState } from 'react';
 
 import { Button, IconButton, Separator } from '@seojaewan/design-system';
+
+import { MenuButton } from '@/shared/components/menu-button/menu-button';
+import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 export type ExplorerCommandsLocation = 'folder' | 'recycle-bin';
 export type ExplorerCommandsDevice = 'desktop' | 'mobile';
@@ -8,7 +11,7 @@ export type ExplorerCommandsDevice = 'desktop' | 'mobile';
 type IconName = NonNullable<ComponentProps<typeof IconButton>['icon']>;
 
 /** 명령 버튼마다 누를 때 부르는 동작 prop 이름 */
-type CommandHandlerName =
+export type ExplorerCommandName =
   | 'onNew'
   | 'onCut'
   | 'onPaste'
@@ -19,13 +22,19 @@ type CommandHandlerName =
   | 'onSort'
   | 'onView';
 
-type CommandHandlers = Partial<Record<CommandHandlerName, MouseEventHandler<HTMLButtonElement>>>;
+type CommandHandlers = Partial<Record<ExplorerCommandName, MouseEventHandler<HTMLButtonElement>>>;
 
 type ExplorerCommandsProps = CommandHandlers & {
   /** 피그마 Location. folder는 폴더 명령, recycle-bin은 휴지통 명령이다 */
   location?: ExplorerCommandsLocation;
   /** 피그마 Device. desktop은 글자 있는 버튼을 쓰고, mobile은 모두 아이콘 버튼이다 */
   device?: ExplorerCommandsDevice;
+  /** 지금 쓸 수 없어 비활성(Button·IconButton disabled)으로 둘 명령 */
+  disabledCommands?: readonly ExplorerCommandName[];
+  /** 정렬 버튼이 여는 메뉴 항목. 주면 정렬 버튼을 누를 때 메뉴를 연다 */
+  sortMenu?: readonly MenuPopupEntry[];
+  /** 보기 버튼이 여는 메뉴 항목. 주면 보기 버튼을 누를 때 메뉴를 연다 */
+  viewMenu?: readonly MenuPopupEntry[];
   /** 바깥 배치 클래스 */
   className?: string;
 };
@@ -33,7 +42,7 @@ type ExplorerCommandsProps = CommandHandlers & {
 /** 명령 버튼 하나 */
 type Command = {
   /** 누를 때 부르는 동작 prop 이름 */
-  handler: CommandHandlerName;
+  handler: ExplorerCommandName;
   /** desktop 버튼 글자이자 접근성 이름 */
   label: string;
   icon: IconName;
@@ -127,13 +136,24 @@ const MOBILE_NEW_ICON: IconName = 'icons/ic_fluent_folder_add_20_regular.svg';
 
 /**
  * 탐색기 명령 막대(ExplorerCommandBar)의 Commands 자리에 넣는 명령 버튼 묶음(피그마 조립 `Explorer/Commands`)을 그린다.
- * 정렬·보기는 지금 모습만 그리고, 메뉴를 여는 동작은 기능을 구현할 때 붙인다.
+ * 쓸 수 없는 명령은 비활성으로 그린다. 정렬·보기는 메뉴 항목을 주면 버튼 아래에 그 메뉴를 연다.
  * @codocs [[디자인 시스템:조립]]
+ * @codocs [[파일 탐색기:구성]]
  * @param props
  */
 export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
-  const { location = 'folder', device = 'desktop', className, ...handlers } = props;
+  const {
+    location = 'folder',
+    device = 'desktop',
+    disabledCommands = [],
+    sortMenu,
+    viewMenu,
+    className,
+    ...handlers
+  } = props;
   const isDesktop = device === 'desktop';
+  const [openMenu, setOpenMenu] = useState<'onSort' | 'onView' | null>(null);
+  const menus = { onSort: sortMenu, onView: viewMenu } as const;
   return (
     <div className={['flex w-fit items-center gap-4', className].filter(Boolean).join(' ')}>
       {commandsByLocation[location].map(
@@ -158,9 +178,10 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
             );
           }
           const handleClick = handlers[command.handler];
-          if (isDesktop && command.isLabeledOnDesktop) {
-            // 피그마 인스턴스가 Button의 최소 너비(size/120)를 지웠다.
-            return (
+          const isDisabled = disabledCommands.includes(command.handler);
+          // 피그마 인스턴스가 Button의 최소 너비(size/120)를 지웠다.
+          const button =
+            isDesktop && command.isLabeledOnDesktop ? (
               <Button
                 key={command.handler}
                 variant="subtle"
@@ -168,21 +189,69 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
                 showIcon
                 icon={command.icon}
                 className="min-w-0"
+                disabled={isDisabled}
+                onClick={handleClick}
+              />
+            ) : (
+              <IconButton
+                key={command.handler}
+                variant="subtle"
+                label={command.label}
+                icon={!isDesktop && command.handler === 'onNew' ? MOBILE_NEW_ICON : command.icon}
+                disabled={isDisabled}
                 onClick={handleClick}
               />
             );
+          const menuName =
+            command.handler === 'onSort' || command.handler === 'onView' ? command.handler : null;
+          const menu = menuName === null ? undefined : menus[menuName];
+          if (menuName === null || menu === undefined) {
+            return button;
           }
           return (
-            <IconButton
+            <MenuButton
               key={command.handler}
-              variant="subtle"
-              label={command.label}
-              icon={!isDesktop && command.handler === 'onNew' ? MOBILE_NEW_ICON : command.icon}
-              onClick={handleClick}
+              trigger={button}
+              items={closeOnSelect(menu, () => {
+                setOpenMenu(null);
+              })}
+              open={openMenu === menuName}
+              onOpenChange={(isOpen: boolean) => {
+                setOpenMenu(isOpen ? menuName : null);
+              }}
             />
           );
         },
       )}
     </div>
+  );
+}
+
+/**
+ * 라디오 묶음에서 고르면 메뉴를 닫게 한다(Windows 정렬·보기 메뉴처럼). 명령 항목은 Base UI가 닫는다.
+ * @param entries 메뉴 항목
+ * @param close 메뉴를 닫는 함수
+ * @returns 고르면 닫는 메뉴 항목
+ */
+function closeOnSelect(
+  entries: readonly MenuPopupEntry[],
+  close: () => void,
+): readonly MenuPopupEntry[] {
+  return entries.map(
+    /**
+     * 라디오 묶음이면 고를 때 메뉴를 닫게 감싼다.
+     * @param entry 메뉴 항목
+     * @returns 감싼 메뉴 항목
+     */
+    (entry) =>
+      entry.kind === 'radio-group'
+        ? {
+            ...entry,
+            onValueChange: (value: string) => {
+              entry.onValueChange?.(value);
+              close();
+            },
+          }
+        : entry,
   );
 }

@@ -75,7 +75,7 @@ function renderExplorer(location: string | null, device?: 'desktop' | 'mobile'):
  * @returns 폴더 내용
  */
 function folderContent(): HTMLElement {
-  return screen.getByRole('group', { name: '폴더 내용' });
+  return screen.getByRole('listbox', { name: '폴더 내용' });
 }
 
 /**
@@ -156,6 +156,17 @@ describe('파일 탐색기:조작', () => {
     await userEvent.dblClick(within(folderContent()).getByText('React'));
     fireEvent.keyDown(folderContent(), { key: 'ArrowLeft', altKey: true });
     expect(tabTitles()).toEqual(['Blog']);
+  });
+
+  it('본문 DOM 밖(포털 메뉴)에서 올라온 Backspace로는 뒤로 가지 않는다', async () => {
+    renderExplorer(BLOG_FOLDER_ID);
+    await userEvent.dblClick(within(folderContent()).getByText('React'));
+    fireEvent.contextMenu(folderContent());
+    fireEvent.keyDown(await screen.findByRole('menu'), { key: 'Backspace' });
+    // 메뉴가 열린 동안 바깥은 접근성 트리에서 숨겨지므로 숨은 요소까지 찾는다.
+    expect(screen.getAllByRole('tab', { hidden: true }).map((tab) => tab.textContent)).toEqual([
+      'React',
+    ]);
   });
 
   it('Alt + →는 앞으로 간다', async () => {

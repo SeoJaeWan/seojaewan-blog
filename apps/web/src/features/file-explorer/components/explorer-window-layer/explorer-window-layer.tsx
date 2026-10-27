@@ -1,24 +1,13 @@
-import { type JSX, type KeyboardEvent, type ReactNode, useEffect, useState } from 'react';
+import { type JSX, type KeyboardEvent, type ReactNode, useEffect } from 'react';
 
-import {
-  Asset,
-  BreadcrumbItem,
-  DetailsHeader,
-  FileItem,
-  FileRow,
-  ImageAsset,
-  NavigationItem,
-} from '@seojaewan/design-system';
+import { Asset, BreadcrumbItem, ImageAsset, NavigationItem } from '@seojaewan/design-system';
 
-import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
-import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
+import { ExplorerBody } from '@/features/file-explorer/components/explorer-body/explorer-body';
 import { ExplorerWindow } from '@/features/file-explorer/components/explorer-window/explorer-window';
 import {
   type ExplorerWorkspace,
-  formatDeletedDate,
   getExplorerLocationName,
   getExplorerLocationTrail,
-  getOriginalLocation,
 } from '@/features/file-explorer/utils/explorer-location/explorer-location';
 import {
   canGoBack,
@@ -36,25 +25,25 @@ import {
   navigateTo,
   type NavigationRow,
   openNewTab,
+  type OrderFolders,
   resolveExplorerContent,
   selectTab,
   setTreeNodeExpanded,
 } from '@/features/file-explorer/utils/explorer-navigation/explorer-navigation';
+import { sortExplorerItems } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
-import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 import type {
   ExplorerLocation,
   ExplorerWindowContent,
   WindowFrameControls,
 } from '@/shared/utils/window-rules/window-rules';
 import {
-  getChildItems,
+  DEFAULT_EXPLORER_VIEW,
+  DESKTOP_LOCATION_KEY,
   isRecycleBinFull,
-  type PlacedItem,
   RECYCLE_BIN_ID,
-  type WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 type ExplorerWindowLayerProps = {
@@ -72,10 +61,10 @@ type ExplorerWindowLayerProps = {
  * 탐색기 창 하나를 작업 공간 저장소와 창 저장소에 잇는 층이다. 창 내용(탭과 위치 기록)은 창 저장소에 두어,
  * 작업 표시줄 미리보기나 Snap Assist가 창을 다시 그려도 같은 모습이다.
  * 고른 탭이 보는 위치의 이름(탭, 검색 안내 글자), 위치 칸, 탐색 창 폴더 트리, 항목, 항목 개수를 그리고,
- * 폴더 더블클릭·위치 칸·탐색 창·뒤로·앞으로·위로·Backspace·Alt + ← / →로 같은 탭에서 위치를 옮긴다.
- * 폴더는 항목을 보통 아이콘으로, 휴지통은 지운 항목을 자세히 보기(이름 · 원래 위치 · 삭제한 날짜)로 그린다.
- * 항목은 저장소 차례대로 그린다. 선택·정렬·보기 바꾸기는 탐색기 다음 단계에서 붙인다.
+ * 폴더 열기·위치 칸·탐색 창·뒤로·앞으로·위로·Backspace·Alt + ← / →로 같은 탭에서 위치를 옮긴다.
+ * 항목과 항목 조작은 본문(`ExplorerBody`)이 맡는다. 탐색 창의 하위 폴더는 그 위치에 기억한 정렬을 따른다.
  * 모바일은 탭 하나만 쓴다(탭 줄이 없다).
+ * @codocs [[파일 탐색기:보기와 정렬]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:조작]]
  * @codocs [[파일 탐색기:탭]]
@@ -87,18 +76,14 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
   const { windowId, content, controls, device } = props;
   const items = useWorkspaceStore((state) => state.items);
   const setContent = useWindowStore((state) => state.setContent);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const workspace = { items };
   const location = getCurrentLocation(content);
-  const isRecycleBin = location === RECYCLE_BIN_ID;
+  const explorerViews = useWorkspaceStore((state) => state.explorerViews);
   const locationName = getExplorerLocationName(workspace, location);
-  const children = getChildItems(workspace, location).filter(
-    (item): item is PlacedItem => item.kind !== 'recycle-bin',
-  );
   const trail = getExplorerLocationTrail(workspace, location);
   const visibleTrail = device === 'mobile' ? trail.slice(-1) : trail;
   const activeTab = getActiveTab(content);
-  const navigationRows = getNavigationRows(content, workspace);
+  const navigationRows = getNavigationRows(content, workspace, orderFolders);
   const focusableTreeKey = getFocusableTreeKey(navigationRows, content, workspace);
 
   useEffect(
@@ -115,24 +100,24 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
     [content, items, setContent, windowId],
   );
 
-  useEffect(
-    /**
-     * 새로 고침을 누르면 항목을 `motion/duration/faster` 동안 감췄다가 다시 보인다(바탕화면 새로 고침과 같은 깜빡임).
-     * @returns 기다림을 지우는 정리 함수
-     */
-    () => {
-      if (!isRefreshing) {
-        return undefined;
-      }
-      const timer = window.setTimeout(() => {
-        setIsRefreshing(false);
-      }, readCssTimeVariable('--motion-duration-faster'));
-      return () => {
-        window.clearTimeout(timer);
-      };
-    },
-    [isRefreshing],
-  );
+  /**
+   * 탐색 창의 하위 폴더를 그 위치(상위 폴더, 바탕화면)에 기억한 정렬로 늘어놓는다.
+   * @param parentId 위치
+   * @param nodes 하위 폴더
+   * @returns 정렬한 하위 폴더
+   */
+  function orderFolders(
+    parentId: Parameters<OrderFolders>[0],
+    nodes: Parameters<OrderFolders>[1],
+  ): ReturnType<OrderFolders> {
+    const view = explorerViews[parentId ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW;
+    const sorted = sortExplorerItems(
+      nodes.map((node) => node.folder),
+      view,
+      workspace,
+    );
+    return sorted.flatMap((folder) => nodes.filter((node) => node.folder === folder));
+  }
 
   /**
    * 창 내용을 바꾼다.
@@ -150,28 +135,6 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
     update(navigateTo(content, workspace, target));
   }
 
-  /**
-   * 모바일은 항목을 탭하면 연다(바탕화면 아이콘과 같다). 데스크톱의 클릭은 선택이라 다음 단계에서 붙인다.
-   * @codocs [[모바일:차이]]
-   * @param item 항목
-   */
-  function handleItemClick(item: PlacedItem): void {
-    if (device === 'mobile') {
-      handleItemOpen(item);
-    }
-  }
-
-  /**
-   * 항목을 열 때(더블클릭, 모바일 탭) 폴더면 같은 탭에서 그 폴더로 간다. 글·외부 링크 열기는 다음 단계에서 붙인다.
-   * @codocs [[파일 탐색기:조작]]
-   * @param item 항목
-   */
-  function handleItemOpen(item: PlacedItem): void {
-    if (item.kind === 'folder') {
-      handleNavigate(item.id);
-    }
-  }
-
   /** 뒤로 간다. */
   function handleBack(): void {
     update(goBack(content, workspace));
@@ -185,11 +148,6 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
   /** 상위 위치로 간다. */
   function handleUp(): void {
     update(goUp(content, workspace));
-  }
-
-  /** 항목을 잠깐 감췄다가 다시 보인다. */
-  function handleRefresh(): void {
-    setIsRefreshing(true);
   }
 
   /**
@@ -213,6 +171,15 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
     update(next);
   }
 
+  /**
+   * 폴더를 새 탭에서 열고 그 탭을 고른다(우클릭 메뉴의 새 탭에서 열기).
+   * @codocs [[파일 탐색기:우클릭 메뉴]]
+   * @param target 열 폴더
+   */
+  function handleOpenInNewTab(target: ExplorerLocation): void {
+    update(openNewTab(content, workspace, target));
+  }
+
   /** 새 탭을 `Blog` 폴더로 연다. */
   function handleNewTab(): void {
     update(openNewTab(content, workspace));
@@ -233,6 +200,10 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
    * @param event 키 이벤트
    */
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    // 포털로 그린 메뉴(우클릭·정렬·보기)의 키도 React 트리로 올라오므로, 본문 DOM 안에서 누른 키만 받는다.
+    if (!(event.target instanceof Node) || !event.currentTarget.contains(event.target)) {
+      return;
+    }
     const isTyping =
       event.target instanceof HTMLElement &&
       (event.target.isContentEditable || event.target.closest('input, textarea') !== null);
@@ -273,13 +244,13 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
       onTabClose={handleTabClose}
       onNewTab={handleNewTab}
     >
-      <ExplorerContent
-        // 탭마다 본문을 따로 그려, 탭을 바꾸면 스크롤 위치 같은 본문 상태가 새로 시작한다.
+      <ExplorerBody
+        // 탭마다 본문을 따로 그려, 탭을 바꾸면 선택·스크롤 같은 본문 상태가 새로 시작한다.
         key={activeTab.id}
         device={device}
-        // 같은 탭에서 위치를 옮기면 항목 자리를 새로 그려 스크롤을 맨 위로 돌린다.
-        itemsKey={location ?? 'desktop'}
-        className="min-h-0 w-full flex-1"
+        location={location}
+        onNavigate={handleNavigate}
+        onOpenInNewTab={handleOpenInNewTab}
         locationIcon={renderLocationIcon(workspace, location)}
         searchPlaceholder={`${locationName} 검색`}
         path={visibleTrail.map(
@@ -333,43 +304,8 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
         onBack={handleBack}
         onForward={handleForward}
         onUp={handleUp}
-        onRefresh={handleRefresh}
         onKeyDown={handleKeyDown}
-        commands={
-          <ExplorerCommands device={device} location={isRecycleBin ? 'recycle-bin' : 'folder'} />
-        }
-        itemCount={`항목 ${String(children.length)}개`}
-        showSelection={false}
-      >
-        {isRefreshing
-          ? null
-          : isRecycleBin
-            ? renderRecycleBinDetails(workspace, children)
-            : children.map(
-                /**
-                 * 항목 하나를 보통 아이콘으로 그린다. 폴더는 더블클릭하면 같은 탭에서 그 폴더로 간다.
-                 * @param item 항목
-                 * @returns FileItem
-                 */
-                (item) => {
-                  return (
-                    <FileItem
-                      key={item.id}
-                      surface="explorer"
-                      view="medium"
-                      name={item.name}
-                      icon={renderItemIcon(item)}
-                      onClick={() => {
-                        handleItemClick(item);
-                      }}
-                      onDoubleClick={() => {
-                        handleItemOpen(item);
-                      }}
-                    />
-                  );
-                },
-              )}
-      </ExplorerContent>
+      />
     </ExplorerWindow>
   );
 }
@@ -465,60 +401,4 @@ function renderLocationIcon(workspace: ExplorerWorkspace, folderId: string | nul
     );
   }
   return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
-}
-
-/**
- * 항목 종류에 맞는 아이콘(file/Folder, file/Document, 외부 링크 설정의 아이콘).
- * @param item 항목
- * @returns 아이콘
- */
-function renderItemIcon(item: WorkspaceItem): ReactNode {
-  switch (item.kind) {
-    case 'folder':
-      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
-    case 'post':
-      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
-    case 'link':
-      return <Asset name={item.icon} className="size-full" />;
-    case 'recycle-bin':
-      return (
-        <ImageAsset name="images/file-recycle-bin-empty" className="size-full object-contain" />
-      );
-  }
-}
-
-/**
- * 휴지통의 지운 항목을 자세히 보기(이름 · 원래 위치 · 삭제한 날짜)로 그린다.
- * @codocs [[파일 탐색기:휴지통 보기]]
- * @param workspace 작업 공간
- * @param items 지운 항목
- * @returns 자세히 보기
- */
-function renderRecycleBinDetails(
-  workspace: ExplorerWorkspace,
-  items: readonly PlacedItem[],
-): ReactNode {
-  return (
-    <div className="flex w-full flex-col items-start">
-      <DetailsHeader view="recycle-bin" />
-      {items.map(
-        /**
-         * 지운 항목 한 줄을 그린다.
-         * @param item 지운 항목
-         * @returns FileRow
-         */
-        (item) => (
-          <FileRow
-            key={item.id}
-            view="recycle-bin"
-            name={item.name}
-            originalLocation={getOriginalLocation(workspace, item)}
-            deletedDate={formatDeletedDate(item.trash?.deletedAt ?? '')}
-            icon={renderItemIcon(item)}
-            className="w-full"
-          />
-        ),
-      )}
-    </div>
-  );
 }

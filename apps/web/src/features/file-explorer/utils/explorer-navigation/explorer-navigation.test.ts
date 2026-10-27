@@ -142,6 +142,10 @@ describe('파일 탐색기:탭', () => {
     expect(getCurrentLocation(content)).toBe(BLOG_FOLDER_ID);
   });
 
+  it('새 탭에서 열기는 그 폴더를 보는 새 탭을 열고 고른다', () => {
+    expect(getCurrentLocation(openNewTab(visit(BLOG_FOLDER_ID), workspace, REACT))).toBe(REACT);
+  });
+
   it('새 탭은 창 안에서 겹치지 않는 id를 받는다', () => {
     const content = closeTab(withTabs(3), workspace, 1);
     const ids = openNewTab(content ?? withTabs(1), workspace).tabs.map((tab) => tab.id);
@@ -274,5 +278,18 @@ describe('파일 탐색기:구성', () => {
     const content = visit(REACT);
     const rows = getNavigationRows(content, workspace).filter((row) => row.key !== REACT);
     expect(getFocusableTreeKey(rows.slice(-1), content, workspace)).toBe(RECYCLE_BIN_ID);
+  });
+
+  it('탐색 창의 하위 폴더는 정해 준 차례로 둔다', () => {
+    const rows = getNavigationRows(visit(BLOG_FOLDER_ID), workspace, (_parent, nodes) =>
+      [...nodes].reverse(),
+    );
+    expect(rows.map((row) => row.label)).toEqual([
+      '바탕 화면',
+      'Blog',
+      'Next.js',
+      'React',
+      '휴지통',
+    ]);
   });
 });
