@@ -26,6 +26,63 @@
 }
 
 /*
+ * 검색 돋보기 강조(견본 motion-search-box-focus). 클래스는 그라데이션 돋보기 자산(icon-color/Search Focus)의 svg에 붙인다.
+ * 돋보기가 배율 1 → 1.1로 커지고(slow), 안의 그라데이션 사각형(gradient 레이어)이 투명도 0 → 1(slow)로 나타나며
+ * 회전 60deg → 160deg(slower, 피그마 -60° → -160°의 부호를 뒤집음)로 돈다. 세 트랙의 이징은 같고 시간이 달라 animation을 나눈다.
+ * 자산은 사각형을 transform 속성(rotate(160 18.2537 12.7812))으로 놓으므로, 같은 자리를 transform 대신
+ * 개별 속성(translate·rotate, 사각형 자기 중심 기준)으로 다시 써서 회전 키프레임이 그 위에서 돌게 한다.
+ * 정지 모습(배율 1.1)은 컴포넌트가 갖고, 회전 160deg는 위 자리 옮김의 일부라 여기 둔다. 반복하지 않는다.
+ * 쓰는 곳은 호버·포커스에서만 자산을 보이게 해 보일 때마다 처음부터 재생되게 하고, 이미 보이는 동안 상태가 더해져도 다시 돌지 않는다.
+ */
+@keyframes motion-search-box-focus-scale {
+  0% {
+    scale: 1;
+  }
+
+  100% {
+    scale: 1.1;
+  }
+}
+
+@keyframes motion-search-box-focus-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-search-box-focus-rotate {
+  0% {
+    rotate: 60deg;
+  }
+
+  100% {
+    rotate: 160deg;
+  }
+}
+
+@utility motion-search-box-focus {
+  animation: motion-search-box-focus-scale var(--motion-duration-slow)
+    var(--motion-easing-point-to-point) both;
+
+  & rect {
+    transform: none;
+    transform-box: fill-box;
+    transform-origin: center;
+    translate: -18.2537px -12.7812px;
+    rotate: 160deg;
+    animation:
+      motion-search-box-focus-fade var(--motion-duration-slow) var(--motion-easing-point-to-point)
+        both,
+      motion-search-box-focus-rotate var(--motion-duration-slower)
+        var(--motion-easing-point-to-point) both;
+  }
+}
+
+/*
  * ProgressRing 호 회전 + 경로 트림(견본 motion-progress-ring). 클래스는 Asset의 svg에 붙이고 안의 호 경로를 움직인다.
  * 트림은 자산의 pathLength="1" 기준으로 dasharray(<끝-시작> 1)·dashoffset(-<시작>)으로, 회전은 피그마 부호를 뒤집어 옮긴다.
  * 세 트랙의 시간·구간 위치·이징 토큰이 같아 키프레임 하나로 묶는다. 정지 모습(트림 끝 0.46·색·크기)은 자산과 컴포넌트가 갖는다.
