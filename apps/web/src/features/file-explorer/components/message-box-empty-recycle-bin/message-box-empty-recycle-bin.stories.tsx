@@ -7,8 +7,16 @@ import { MessageBoxEmptyRecycleBin } from './message-box-empty-recycle-bin';
 const meta = {
   title: 'Patterns/MessageBox/EmptyRecycleBin',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
+  // 그림자가 상자 왼쪽으로 64px까지 나가므로 padded 여백에 48px을 더 두어 화면 밖으로 잘리지 않게 하고,
+  // 상자(피그마 노드)를 캡처 대상으로 표시한다.
   parameters: { layout: 'padded' },
-  render: () => <MessageBoxEmptyRecycleBin />,
+  render: () => (
+    <div className="p-48">
+      <div data-parity-target className="flex">
+        <MessageBoxEmptyRecycleBin />
+      </div>
+    </div>
+  ),
 } satisfies Meta;
 
 export default meta;
