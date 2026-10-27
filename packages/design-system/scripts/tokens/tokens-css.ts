@@ -802,7 +802,7 @@ function paintVariable(token: FlatToken, context: Context): CssVariable {
  * 단색 칠 스타일의 색을 만든다. 이미지 층(예전 재질의 노이즈)은 그리지 않는다.
  * 피그마에서 변수에 연결한 단색 칠은 변수 색의 알파를 쓰지 않고 칠 불투명도만 쓰므로,
  * 불투명도가 1보다 작으면 변수 색의 RGB에 칠 불투명도를 알파로 준다.
- * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[피그마 연동:재질 구현]]
  * @param token 칠 스타일
  * @param context 변환 표
  * @param source 오류 메시지에 쓸 경로
@@ -835,7 +835,7 @@ function solidPaintColor(token: FlatToken, context: Context, source: string): st
 /**
  * 재질 칠 스타일(`Material/*` 효과 스타일 이름으로 시작하는 칠 스타일)을 `@utility`로 바꾼다.
  * 재질은 반투명 바탕색(칠 스타일)과 배경 흐림(효과 스타일)이다.
- * @codocs [[디자인 기반:재질 효과]]
+ * @codocs [[피그마 연동:재질 구현]]
  * @param paints 칠 스타일
  * @param effects 효과 스타일
  * @returns `@utility material-*` 블록
@@ -1054,7 +1054,7 @@ export function roundAngle(degrees: number): number {
  * 위→아래(180deg)는 기존 출력과 같게 `to bottom`으로 쓴다.
  * 피그마는 정지점 사이 색을 투명도와 따로(투명도를 곱하지 않고) 섞고, CSS는 투명도를 곱한 값으로 섞는다.
  * 투명도와 RGB가 모두 다른 두 정지점 사이에는 피그마 방식으로 계산한 중간 정지점을 넣는다.
- * @codocs [[디자인 기반:컨트롤 테두리]]
+ * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @param stops `[{color, position}]`
  * @param transform 피그마 gradientTransform
  * @param context 변환 표

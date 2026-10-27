@@ -51,7 +51,7 @@ _codocs:
   | ④ 탐색기·바탕화면 | FileItem, FileRow, SelectionMarquee, ExplorerTab, NavigationItem, NavigationPane, ColumnHeader, DetailsHeader, Breadcrumb, BreadcrumbItem, ExplorerAddressRow, ExplorerCommandBar, ExplorerStatusBar |
   | ⑤ Chrome·스냅·재부팅 | BrowserTab, BrowserTabStrip, BrowserToolbar, AddressBar, Toc, TocItem, PostNavCard, SnapLayoutFlyout, SnapLayoutOption, SnapZone, SnapPreview, BootScreen |
 
-  모션 토대는 첫 애니메이션 PR보다 먼저 만든다. 피그마 이징 변수를 `EASING` 타입으로 옮기고(토큰 PR), `motion.css`와 Stylelint 예외, Tailwind 기본 애니메이션 지우기, 토큰 변환의 이징 규칙, 자산 생성기 규칙, 플러그인의 애니메이션 내보내기, 모션 스토리와 시간 검사, CI 나누기를 [[디자인 기반:모션 클래스]], [[피그마 연동:모션]], [[피그마 연동:CI]]대로 만든다. 애니메이션 PR은 견본마다 열리고, 병합 순서는 [[피그마 연동:PR 흐름]]을 따른다.
+  모션 토대는 첫 애니메이션 PR보다 먼저 만든다. 피그마 이징 변수를 `EASING` 타입으로 옮기고(토큰 PR), `motion.css`와 Stylelint 예외, Tailwind 기본 애니메이션 지우기, 토큰 변환의 이징 규칙, 자산 생성기 규칙, 플러그인의 애니메이션 내보내기, 모션 스토리와 시간 검사, CI 나누기를 [[피그마 연동:모션 클래스]], [[피그마 연동:모션]], [[피그마 연동:CI]]대로 만든다. 애니메이션 PR은 견본마다 열리고, 병합 순서는 [[피그마 연동:PR 흐름]]을 따른다.
 7단계 기능 구현: |
   디자인 시스템 컴포넌트를 활용해 2단계 문서의 기능을 `apps/web`에 구현한다.
 

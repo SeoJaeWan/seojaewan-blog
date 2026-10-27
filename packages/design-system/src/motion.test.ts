@@ -28,7 +28,7 @@ async function disallowedAtRules(code: string, fileName: string): Promise<number
   ).length;
 }
 
-// @codocs [[디자인 기반:모션 클래스]]
+// @codocs [[피그마 연동:모션 클래스]]
 // @codocs [[피그마 연동:토큰 사용 강제]]
 describe('스타일링', () => {
   it('@keyframes는 motion.css에서만 정의할 수 있다', async () => {
@@ -53,7 +53,7 @@ describe('스타일링', () => {
   });
 });
 
-// @codocs [[디자인 기반:모션 클래스]]
+// @codocs [[피그마 연동:모션 클래스]]
 describe('모션 클래스', () => {
   it('시간·이징·지연은 tokens.css에 있는 var(--motion-*) 토큰으로 쓴다', () => {
     const values = [

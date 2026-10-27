@@ -24,14 +24,14 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
 - json이 쓰는 모션 토큰이 `figma/tokens.json`에 없다. 토큰 PR을 먼저 처리·병합한 뒤 이 PR에 `main`을 받아 와야 한다.
 - 키프레임이 걸린 컴포넌트나 자산(json `node`)이 코드에 아직 없다. 그 컴포넌트 PR을 먼저 병합해야 한다.
 - 견본 이름이 @codocs [[디자인 기반:모션]] 표에 없거나, 표의 시간·이징과 json의 토큰 짝이 다르다.
-- 한 트랙 안에서 구간마다 이징 토큰이 다르다. 이징은 요소 쪽 `animation-timing-function`에만 `var()`로 둘 수 있어(@codocs [[디자인 기반:모션 클래스]]) 한 animation 안에서 구간마다 다른 토큰을 쓸 수 없다. 옮기는 방법을 사람과 정한다.
+- 한 트랙 안에서 구간마다 이징 토큰이 다르다. 이징은 요소 쪽 `animation-timing-function`에만 `var()`로 둘 수 있어(@codocs [[피그마 연동:모션 클래스]]) 한 animation 안에서 구간마다 다른 토큰을 쓸 수 없다. 옮기는 방법을 사람과 정한다.
 - 모션 시간 검사를 통과시키려면 검사 도구나 `figma/`를 바꿔야 할 것 같다.
 
 ## 절차
 
 1. 문서를 읽는다.
    - @codocs [[피그마 연동:모션]]
-   - @codocs [[디자인 기반:모션]], @codocs [[디자인 기반:모션 클래스]], @codocs [[디자인 기반:모션 견본]]
+   - @codocs [[디자인 기반:모션]], @codocs [[피그마 연동:모션 클래스]], @codocs [[디자인 기반:모션 견본]]
    - @codocs [[디자인 기반:회전]]
    - @codocs [[피그마 연동:PR 흐름]], @codocs [[피그마 연동:CI]]
 2. PR 브랜치를 받는다(`gh pr checkout <번호>`). `main` 대비 바뀐 파일이 @codocs [[피그마 연동:피그마 플러그인]]에서 애니메이션 PR이 바꾸는 파일뿐인지 확인한다.
@@ -39,7 +39,7 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
    - json(`packages/design-system/figma/motions/<이름>.json`)에서 트랙마다 노드, 항목, 키프레임(시간, 위치, 값, 이징 토큰, 값 토큰), 트랙 길이와 시작 지연의 토큰을 정리한다. PR 본문의 키프레임 표와 토큰 짝 표도 같은 내용이다.
    - @codocs [[디자인 기반:모션]] 표에서 이 클래스의 행을 찾아 "실행 중 값" 열과 반복 여부를 읽는다. json에는 반복이 없다(피그마에서 읽을 수 없다).
    - 피그마 견본(PR 본문 링크)을 열어 키프레임 모양을 확인한다(피그마 MCP).
-4. `packages/design-system/src/motion.css`에 `@keyframes`와 `@utility <이름>` 클래스를 만든다(@codocs [[디자인 기반:모션 클래스]]).
+4. `packages/design-system/src/motion.css`에 `@keyframes`와 `@utility <이름>` 클래스를 만든다(@codocs [[피그마 연동:모션 클래스]]).
    - 클래스 이름은 json `name`(견본 이름)이다.
    - 토큰 짝(트랙 길이, 시작 지연, 이징, 값 토큰)은 `var(--motion-*)`로 쓴다. CSS 이름은 @codocs [[피그마 연동:토큰 생성]]의 규칙이다.
    - 시간·이징·지연은 요소의 `animation`(또는 `animation-duration`·`animation-timing-function`·`animation-delay`)에 `var()`로 쓴다. 요소 쪽 이징은 키프레임 구간마다 적용된다. `@keyframes` 안 `animation-timing-function`에는 `var()`를 쓰지 않는다(Chromium이 무시하고 `ease`로 재생한다).
