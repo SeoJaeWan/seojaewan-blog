@@ -15,19 +15,19 @@ export const NEW_TAB_LATEST_POSTS = [
   'Figma 일치 검사',
 ] as const;
 
-/** 피그마 Chrome/Page `Page=Search results`: 검색어와 결과(피그마 조립의 주소 글자를 그대로 둔다) */
+/** 피그마 Chrome/Page `Page=Search results`: 검색어와 결과(주소는 글마다 `/posts/<slug>`다) */
 export const SEARCH_RESULTS = {
   query: '리액트',
   results: [
     {
       title: '리액트 서버 컴포넌트 이해하기',
       date: '2026-10-12',
-      url: 'seojaewan.com/posts/react-19-hooks',
+      url: 'seojaewan.com/posts/react-server-components',
     },
     {
       title: '리액트 쿼리로 서버 상태 다루기',
       date: '2026-08-03',
-      url: 'seojaewan.com/posts/react-19-hooks',
+      url: 'seojaewan.com/posts/react-query-server-state',
     },
   ],
 } as const;
