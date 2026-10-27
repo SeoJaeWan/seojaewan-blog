@@ -67,7 +67,7 @@ export type Presence = {
  *     className={presence.status === 'exiting' ? 'motion-panel-exit' : 'motion-panel-enter'}
  *   />
  * );
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param ref 애니메이션을 기다릴 요소. 쓰는 곳이 그 요소에 단다
  * @param isOpen 보여야 하는지(저장소의 값). false가 되면 저장소에서는 이미 지워졌어도 화면에서만 잠시 남긴다
  * @param options 설정

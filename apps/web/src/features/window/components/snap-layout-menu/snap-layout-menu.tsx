@@ -28,11 +28,16 @@ type SnapLayoutMenuProps = {
 // 최대화 버튼과 선택지 사이 간격(px)이다. 고정 모습(Popover)의 mt-4와 같다.
 const FLYOUT_OFFSET = 4;
 
+// 선택지가 열려 있는 동안(aria-expanded) 최대화 버튼을 CaptionButton Hover 모습(바탕 subtle-fill/secondary, 아이콘
+// text-fill/primary)으로 둔다. 선택지는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다.
+const OPEN_TRIGGER_CLASS_NAME =
+  'aria-expanded:bg-subtle-fill-secondary aria-expanded:text-text-fill-primary';
+
 /**
  * 창 최대화 버튼과 그 아래 가운데에 뜨는 스냅 레이아웃 선택지(피그마 조립 `Window/SnapLayoutMenu`)를 그린다.
  * 피그마 Popover(`Bottom-Center`)에 CaptionButton(최대화)과 SnapLayoutFlyout을 넣은 조립이다.
  * 최대화 버튼에 마우스를 올리면 선택지를 열고(Base UI Popover의 hover 열기), 칸을 고르면 닫고 쓰는 곳에 알린다.
- * 버튼을 누르면 최대화한다.
+ * 버튼을 누르면 최대화한다. 선택지가 열려 있는 동안 최대화 버튼은 Hover 모습이다(피그마 `State=Hover`).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[창 동작:스냅]]
@@ -60,6 +65,7 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
             icon="icons/ic_fluent_maximize_20_regular.svg"
             inactive={isInactive}
             aria-expanded={isFixedOpen}
+            className={OPEN_TRIGGER_CLASS_NAME}
             onClick={handleMaximize}
           />
         }
@@ -102,6 +108,7 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
               label="최대화"
               icon="icons/ic_fluent_maximize_20_regular.svg"
               inactive={isInactive}
+              className={OPEN_TRIGGER_CLASS_NAME}
               onClick={handleMaximizeClick}
             />
           }

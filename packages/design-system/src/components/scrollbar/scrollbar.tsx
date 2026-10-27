@@ -59,7 +59,7 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
         className,
       )}
     >
-      {/* 화살표는 아래쪽 쉐브론 자산을 돌려 쓴다. 피그마 회전은 반시계가 양수라 CSS와 부호가 반대다(@codocs [[디자인 기반:회전]]). */}
+      {/* 화살표는 아래쪽 쉐브론 자산을 돌려 쓴다. 피그마 회전은 반시계가 양수라 CSS와 부호가 반대다(@codocs [[피그마 연동:회전 구현]]). */}
       {isExpanded && (
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"

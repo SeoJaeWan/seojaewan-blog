@@ -19,7 +19,7 @@ function tokenNames(namespace: string): string[] {
     .sort();
 }
 
-// @codocs [[기술 스택:스타일링]]
+// @codocs [[피그마 연동:토큰 사용 강제]]
 describe('스타일링', () => {
   it('className 병합이 아는 토큰 이름이 tokens.css와 같다', () => {
     expect([...TOKEN_NAMES.spacing].sort()).toEqual(tokenNames('spacing'));
