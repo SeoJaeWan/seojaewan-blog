@@ -1,6 +1,8 @@
+import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import { getItemOpenAction } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -14,7 +16,7 @@ export type OpenItemOptions = {
  * 작업 공간 항목을 여는 함수를 돌려준다. 바탕화면·Start·검색·탐색기가 항목을 열 때 이 함수 하나를 쓴다.
  * - 폴더: 그 폴더를 보는 새 탐색기 창
  * - 휴지통: 휴지통을 보는 새 탐색기 창
- * - 글: 가장 최근에 쓴 Chrome 창의 새 탭(없으면 새 Chrome 창)
+ * - 글: 가장 최근에 쓴 Chrome 창의 새 탭(없으면 새 Chrome 창). 탭을 하나만 쓰는 모바일은 그 창의 고른 탭
  * - 외부 링크: 실제 브라우저의 새 탭(블로그 안의 창을 만들지 않는다)
  * - 앱(`APP_ITEM_IDS`): 그 앱의 새 창
  * `isNewWindow`(우클릭 메뉴의 새 창에서 열기)면 글도 열린 Chrome 창과 상관없이 새 Chrome 창으로 연다. 폴더는 늘 새 탐색기 창이다.
@@ -23,10 +25,12 @@ export type OpenItemOptions = {
  * @codocs [[창 동작:열기 규칙]]
  * @codocs [[항목 모델:종류]]
  * @codocs [[검색:입력 전 화면]]
+ * @codocs [[모바일:차이]]
  * @returns 항목 id를 받아 그 항목을 여는 함수
  */
 export function useOpenItem(): (id: string, options?: OpenItemOptions) => void {
   const workArea = useWorkArea();
+  const device = useDevice();
   const openWindow = useWindowStore((state) => state.open);
   const openPost = useWindowStore((state) => state.openPost);
   const recordRecentItem = useWorkspaceStore((state) => state.recordRecentItem);
@@ -49,13 +53,9 @@ export function useOpenItem(): (id: string, options?: OpenItemOptions) => void {
         break;
       case 'post':
         if (options.isNewWindow === true) {
-          openWindow('chrome', workArea, {
-            app: 'chrome',
-            tabs: [{ kind: 'post', slug: action.slug }],
-            activeTabIndex: 0,
-          });
+          openWindow('chrome', workArea, createChromeContent({ kind: 'post', slug: action.slug }));
         } else {
-          openPost(action.slug, workArea);
+          openPost(action.slug, workArea, device === 'mobile');
         }
         break;
       case 'external':

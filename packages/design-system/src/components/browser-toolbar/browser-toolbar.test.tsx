@@ -60,4 +60,28 @@ describe('BrowserToolbar', () => {
     expect(screen.queryByRole('button', { name: '새로고침' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
   });
+
+  it('backDisabled·forwardDisabled면 뒤로·앞으로 버튼이 비활성이다', () => {
+    render(<BrowserToolbar backDisabled forwardDisabled />);
+    expect(screen.getByRole('button', { name: '뒤로' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '앞으로' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '새로고침' })).toBeEnabled();
+  });
+
+  it('addressBar를 주면 기본 주소창 대신 그 자리를 그린다', () => {
+    render(<BrowserToolbar addressBar={<input aria-label="내 주소창" />} />);
+    expect(screen.getByRole('textbox', { name: '내 주소창' })).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: '주소' })).not.toBeInTheDocument();
+  });
+
+  it('renderMenuButton은 더보기 버튼을 받아 감싸 그린다', () => {
+    render(
+      <BrowserToolbar
+        renderMenuButton={(button) => <div data-testid="menu-wrapper">{button}</div>}
+      />,
+    );
+    expect(screen.getByTestId('menu-wrapper')).toContainElement(
+      screen.getByRole('button', { name: '더보기' }),
+    );
+  });
 });

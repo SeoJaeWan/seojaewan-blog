@@ -43,8 +43,11 @@ type WindowUiState = {
 type WindowActions = {
   /** 새 창을 열고 맨 앞으로 둔다. 창 내용을 주지 않으면 앱을 처음 열 때의 내용이다. 연 창의 id를 돌려준다 */
   open: (app: WindowApp, workArea: WindowWorkArea, content?: WindowContent) => string;
-  /** 글을 가장 최근 Chrome 창의 새 탭(없으면 새 Chrome 창)으로 연다. 글을 연 창의 id를 돌려준다 */
-  openPost: (slug: string, workArea: WindowWorkArea) => string;
+  /**
+   * 글을 가장 최근 Chrome 창의 새 탭(없으면 새 Chrome 창)으로 연다. `isSameTab`(모바일)이면 그 창의 고른 탭에서 연다.
+   * 글을 연 창의 id를 돌려준다
+   */
+  openPost: (slug: string, workArea: WindowWorkArea, isSameTab?: boolean) => string;
   /** 창을 맨 앞으로 가져온다 */
   focus: (id: string) => void;
   /** 창을 바로 지운다 */
@@ -97,8 +100,8 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
       set(result.state);
       return result.id;
     },
-    openPost: (slug, workArea) => {
-      const result = openPostInChrome(get(), slug, workArea);
+    openPost: (slug, workArea, isSameTab) => {
+      const result = openPostInChrome(get(), slug, workArea, isSameTab);
       set(result.state);
       return result.id;
     },

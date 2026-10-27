@@ -2,6 +2,7 @@
 
 import { type JSX, useEffect, useRef } from 'react';
 
+import { useBrowserAddressSync } from '@/features/chrome/chrome';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
@@ -24,6 +25,7 @@ import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-wi
  * 그래서 서버 HTML과 첫 클라이언트 렌더는 저장분 없이 초기 구조로 같게 그리고(수화 불일치 없음), 저장된 배치는 그 뒤에 보인다.
  * @codocs [[작업 공간:다시 시작]]
  * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[창 동작:브라우저 주소]]
  * @param props
  */
 export function Shell(props: ShellProps): JSX.Element {
@@ -33,6 +35,8 @@ export function Shell(props: ShellProps): JSX.Element {
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';
+  // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
+  useBrowserAddressSync();
 
   useEffect(
     /** 마운트한 뒤 브라우저 저장분을 읽어 작업 공간을 되살린다. */

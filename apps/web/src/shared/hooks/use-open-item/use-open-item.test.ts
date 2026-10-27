@@ -6,6 +6,7 @@ import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
+import { createChromeContent, openChromeTab } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import {
   APP_ITEM_IDS,
@@ -69,14 +70,7 @@ describe('창 동작:열기 규칙', () => {
     openItem('post:a');
     openItem('post:a');
     expect(windowContents()).toEqual([
-      {
-        app: 'chrome',
-        tabs: [
-          { kind: 'post', slug: 'a' },
-          { kind: 'post', slug: 'a' },
-        ],
-        activeTabIndex: 1,
-      },
+      openChromeTab(createChromeContent({ kind: 'post', slug: 'a' }), { kind: 'post', slug: 'a' }),
     ]);
   });
 
@@ -87,8 +81,8 @@ describe('창 동작:열기 규칙', () => {
       result.current('post:a', { isNewWindow: true });
     });
     expect(windowContents()).toEqual([
-      { app: 'chrome', tabs: [{ kind: 'post', slug: 'a' }], activeTabIndex: 0 },
-      { app: 'chrome', tabs: [{ kind: 'post', slug: 'a' }], activeTabIndex: 0 },
+      createChromeContent({ kind: 'post', slug: 'a' }),
+      createChromeContent({ kind: 'post', slug: 'a' }),
     ]);
   });
 
@@ -101,9 +95,7 @@ describe('창 동작:열기 규칙', () => {
 
   it('앱 항목을 열면 그 앱의 새 창을 연다', () => {
     openItem(APP_ITEM_IDS.chrome);
-    expect(windowContents()).toEqual([
-      { app: 'chrome', tabs: [{ kind: 'new-tab' }], activeTabIndex: 0 },
-    ]);
+    expect(windowContents()).toEqual([createChromeContent()]);
   });
 
   it('휴지통 안의 항목은 열지 않는다', () => {

@@ -41,6 +41,15 @@ describe('파일 탐색기:탭', () => {
     expect(handleTitleBarPointerDown).not.toHaveBeenCalled();
   });
 
+  it('탭 묶음의 여백(탭 옆)에서 누른 것도 창 끌기를 시작하지 않는다', () => {
+    const handleTitleBarPointerDown = vi.fn();
+    render(<ExplorerWindow tabs={TABS} onTitleBarPointerDown={handleTitleBarPointerDown} />);
+    fireEvent.pointerDown(
+      screen.getByRole('tab', { name: /React/ }).parentElement ?? document.body,
+    );
+    expect(handleTitleBarPointerDown).not.toHaveBeenCalled();
+  });
+
   it('탭 줄 밖의 제목 표시줄을 누르면 창 끌기를 시작한다', () => {
     const handleTitleBarPointerDown = vi.fn();
     render(<ExplorerWindow tabs={TABS} onTitleBarPointerDown={handleTitleBarPointerDown} />);

@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 
 import { BrowserTab } from './browser-tab';
 
@@ -29,5 +30,29 @@ describe('BrowserTab', () => {
     expect(container.querySelector('.bg-chrome-tab-separator')).toBeNull();
     rerender(<BrowserTab active favicon={<i />} />);
     expect(container.querySelector('.bg-chrome-tab-separator')).toBeNull();
+  });
+
+  it('닫기 버튼은 onClose만 부르고 탭의 onClick은 부르지 않는다', async () => {
+    const user = userEvent.setup();
+    const handleClose = vi.fn();
+    const handleClick = vi.fn();
+    render(<BrowserTab favicon={<i />} onClose={handleClose} onClick={handleClick} />);
+
+    await user.click(screen.getByRole('button', { name: '탭 닫기' }));
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  it('닫기 버튼은 탭(role="tab") 안이 아니라 옆에 둔다', () => {
+    render(<BrowserTab favicon={<i />} title="문서" />);
+    expect(screen.getByRole('tab')).not.toContainElement(
+      screen.getByRole('button', { name: '탭 닫기' }),
+    );
+  });
+
+  it('tabIndex는 탭(role="tab")이 받는다', () => {
+    render(<BrowserTab favicon={<i />} tabIndex={0} />);
+    expect(screen.getByRole('tab')).toHaveAttribute('tabindex', '0');
   });
 });
