@@ -19,6 +19,8 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 /**
  * 탐색기 제목 표시줄의 폴더 탭(피그마 ExplorerTab)을 그린다. 크기는 Windows가 정한 220×32로 고정한다.
  * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다.
+ * 탭 묶음(바깥 상자) 안에 탭(`role="tab"`, 아이콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
+ * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖고, `tabIndex`는 탭이 받는다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
@@ -31,13 +33,12 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
     closeLabel = '탭 닫기',
     onClose,
     className,
+    tabIndex,
     ...divProps
   } = props;
   return (
     <div
       {...divProps}
-      role="tab"
-      aria-selected={isSelected}
       className={cn(
         'flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
         'motion-control-state',
@@ -47,8 +48,18 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         className,
       )}
     >
-      <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>
-      <span className="min-w-0 flex-1 truncate type-caption text-text-fill-primary">{title}</span>
+      <div
+        role="tab"
+        aria-selected={isSelected}
+        tabIndex={tabIndex}
+        className={cn(
+          'flex min-w-0 flex-1 items-center gap-8 rounded-control',
+          'focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        )}
+      >
+        <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>
+        <span className="min-w-0 flex-1 truncate type-caption text-text-fill-primary">{title}</span>
+      </div>
       <button
         type="button"
         aria-label={closeLabel}

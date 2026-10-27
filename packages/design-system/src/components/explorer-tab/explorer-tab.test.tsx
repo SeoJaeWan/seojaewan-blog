@@ -34,4 +34,16 @@ describe('ExplorerTab', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
     expect(handleClick).not.toHaveBeenCalled();
   });
+
+  it('닫기 버튼은 탭(role="tab") 안이 아니라 옆에 둔다', () => {
+    render(<ExplorerTab icon={<i />} title="문서" />);
+    expect(screen.getByRole('tab')).not.toContainElement(
+      screen.getByRole('button', { name: '탭 닫기' }),
+    );
+  });
+
+  it('tabIndex는 탭(role="tab")이 받는다', () => {
+    render(<ExplorerTab icon={<i />} tabIndex={0} />);
+    expect(screen.getByRole('tab')).toHaveAttribute('tabindex', '0');
+  });
 });
