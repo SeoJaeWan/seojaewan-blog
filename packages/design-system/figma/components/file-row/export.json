@@ -2,7 +2,7 @@
   "name": "FileRow",
   "nodeId": "514:15135",
   "variants": {
-    "state=cut": {
+    "view=default,state=cut": {
       "node": {
         "height": 32,
         "width": 840,
@@ -11,10 +11,11 @@
       },
       "nodeId": "69:2149",
       "properties": {
-        "State": "Cut"
+        "State": "Cut",
+        "View": "Default"
       }
     },
-    "state=cut-selected": {
+    "view=default,state=cut-selected": {
       "node": {
         "height": 32,
         "width": 840,
@@ -23,10 +24,11 @@
       },
       "nodeId": "69:2157",
       "properties": {
-        "State": "Cut selected"
+        "State": "Cut selected",
+        "View": "Default"
       }
     },
-    "state=hover": {
+    "view=default,state=hover": {
       "node": {
         "height": 32,
         "width": 840,
@@ -35,10 +37,11 @@
       },
       "nodeId": "29:492",
       "properties": {
-        "State": "Hover"
+        "State": "Hover",
+        "View": "Default"
       }
     },
-    "state=rename": {
+    "view=default,state=rename": {
       "node": {
         "height": 32,
         "width": 840,
@@ -47,10 +50,11 @@
       },
       "nodeId": "29:516",
       "properties": {
-        "State": "Rename"
+        "State": "Rename",
+        "View": "Default"
       }
     },
-    "state=rest": {
+    "view=default,state=rest": {
       "node": {
         "height": 32,
         "width": 840,
@@ -59,10 +63,11 @@
       },
       "nodeId": "29:484",
       "properties": {
-        "State": "Rest"
+        "State": "Rest",
+        "View": "Default"
       }
     },
-    "state=selected": {
+    "view=default,state=selected": {
       "node": {
         "height": 32,
         "width": 840,
@@ -71,10 +76,11 @@
       },
       "nodeId": "29:500",
       "properties": {
-        "State": "Selected"
+        "State": "Selected",
+        "View": "Default"
       }
     },
-    "state=selected-focus": {
+    "view=default,state=selected-focus": {
       "node": {
         "height": 32,
         "width": 840,
@@ -83,7 +89,99 @@
       },
       "nodeId": "29:508",
       "properties": {
-        "State": "Selected focus"
+        "State": "Selected focus",
+        "View": "Default"
+      }
+    },
+    "view=recycle-bin,state=cut": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1103",
+      "properties": {
+        "State": "Cut",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=cut-selected": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1110",
+      "properties": {
+        "State": "Cut selected",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1073",
+      "properties": {
+        "State": "Hover",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=rename": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1094",
+      "properties": {
+        "State": "Rename",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1066",
+      "properties": {
+        "State": "Rest",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=selected": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1080",
+      "properties": {
+        "State": "Selected",
+        "View": "Recycle bin"
+      }
+    },
+    "view=recycle-bin,state=selected-focus": {
+      "node": {
+        "height": 32,
+        "width": 840,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:1087",
+      "properties": {
+        "State": "Selected focus",
+        "View": "Recycle bin"
       }
     }
   }
