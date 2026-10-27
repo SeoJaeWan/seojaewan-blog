@@ -20,6 +20,11 @@ type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   cut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그린다. 탐색기에서는 선택 바탕을 함께 깐다 */
   renaming?: boolean;
+  /**
+   * 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
+   * 생김새는 바꾸지 않는다. `renaming`일 때만 쓴다
+   */
+  renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
 
 const WIDTHS = {
@@ -46,6 +51,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
     focused: isFocused = false,
     cut: isCut = false,
     renaming: isRenaming = false,
+    renameFieldProps,
     className,
     ...divProps
   } = props;
@@ -56,7 +62,8 @@ export function FileItem(props: FileItemProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex flex-col items-center rounded-control select-none',
+        // 포커스 표시는 선택된 채 포커스를 받은 모습(`focused`)으로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
+        'flex flex-col items-center rounded-control outline-none select-none',
         isDesktop ? 'gap-2 px-2 py-4' : 'gap-4 p-4',
         WIDTHS[surface][view],
         isSelected || (isRenaming && !isDesktop)
@@ -79,7 +86,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
         {icon}
       </div>
       {isRenaming ? (
-        <RenameField text={name} />
+        <RenameField {...renameFieldProps} text={name} />
       ) : (
         <span
           className={cn(
