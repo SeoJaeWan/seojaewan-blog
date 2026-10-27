@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX } from 'react';
+import type { ComponentProps, JSX, MouseEvent } from 'react';
 
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
@@ -10,6 +10,8 @@ type BreadcrumbItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   current?: boolean;
   /** 피그마 Show separator. 오른쪽 꺾쇠 구분자를 보일지 정한다 */
   showSeparator?: boolean;
+  /** 위치 이름 버튼을 눌렀을 때 부른다. 구분자를 누른 것은 부르지 않는다 */
+  onLabelClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 /**
@@ -23,6 +25,7 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
     label = '위치 이름',
     current: isCurrent = false,
     showSeparator: hasSeparator = true,
+    onLabelClick: handleLabelClick,
     className,
     ...divProps
   } = props;
@@ -31,6 +34,7 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
       <button
         type="button"
         aria-current={isCurrent ? 'page' : undefined}
+        onClick={handleLabelClick}
         className={cn(
           'flex max-w-200 items-start overflow-clip rounded-control px-6 py-4 select-none',
           'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary active:bg-subtle-fill-tertiary',

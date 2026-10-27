@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, ReactNode } from 'react';
+import type { ComponentProps, JSX, MouseEvent, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
@@ -19,6 +19,8 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   icon: ReactNode;
   /** 피그마 INSTANCE_SWAP 속성 Chevron. expand가 none이 아닐 때 보이는 꺾쇠이며 기본은 꺾쇠 자산이다 */
   chevron?: ReactNode;
+  /** 꺾쇠를 눌렀을 때 부른다(펼치기·접기). 항목 자체의 onClick은 부르지 않는다. expand가 none이면 부르지 않는다 */
+  onChevronClick?: (event: MouseEvent<HTMLSpanElement>) => void;
 };
 
 /**
@@ -36,9 +38,21 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
     label = '항목 이름',
     icon,
     chevron,
+    onChevronClick,
     className,
     ...divProps
   } = props;
+  /**
+   * 꺾쇠 누르기를 받아 항목 누르기로 올라가지 않게 하고 콜백을 부른다. 꺾쇠가 없거나 콜백이 없으면 항목 누르기로 둔다.
+   * @param event 누르기 이벤트
+   */
+  function handleChevronClick(event: MouseEvent<HTMLSpanElement>): void {
+    if (expand === 'none' || onChevronClick === undefined) {
+      return;
+    }
+    event.stopPropagation();
+    onChevronClick(event);
+  }
   const defaultChevron = (
     <Asset
       name="icons/ic_fluent_chevron_right_16_regular.svg"
@@ -62,7 +76,10 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
       )}
     >
       {level > 0 && <span className={cn('h-16 shrink-0', INDENT_CLASS_NAMES[level])} />}
-      <span className="flex size-icon-16 shrink-0 items-center justify-center">
+      <span
+        onClick={handleChevronClick}
+        className="flex size-icon-16 shrink-0 items-center justify-center"
+      >
         {expand !== 'none' && (chevron ?? defaultChevron)}
       </span>
       <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>

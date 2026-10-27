@@ -40,6 +40,14 @@ describe('ExplorerAddressRow', () => {
     }
   });
 
+  it('비활성으로 둔 이동 버튼은 누를 수 없다', () => {
+    render(<ExplorerAddressRow locationIcon={<span />} backDisabled forwardDisabled upDisabled />);
+    for (const name of ['뒤로', '앞으로', '위로']) {
+      expect(screen.getByRole('button', { name })).toBeDisabled();
+    }
+    expect(screen.getByRole('button', { name: '새로 고침' })).toBeEnabled();
+  });
+
   it('검색 입력과 mobile 검색 버튼을 알린다', async () => {
     const user = userEvent.setup();
     const handleSearchChange = vi.fn();

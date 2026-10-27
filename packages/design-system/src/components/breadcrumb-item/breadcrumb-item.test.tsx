@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 
 import { BreadcrumbItem } from './breadcrumb-item';
 
@@ -16,5 +17,12 @@ describe('BreadcrumbItem', () => {
     const { container } = render(<BreadcrumbItem label="문서" current showSeparator={false} />);
     expect(screen.getByRole('button', { name: '문서' })).toHaveAttribute('aria-current', 'page');
     expect(container.querySelector('svg')).toBeNull();
+  });
+
+  it('위치 이름 버튼을 누르면 onLabelClick을 부른다', async () => {
+    const handleLabelClick = vi.fn();
+    render(<BreadcrumbItem label="문서" onLabelClick={handleLabelClick} />);
+    await userEvent.click(screen.getByRole('button', { name: '문서' }));
+    expect(handleLabelClick).toHaveBeenCalledTimes(1);
   });
 });
