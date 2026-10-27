@@ -1,13 +1,11 @@
 'use client';
 
-import { type JSX, type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { type JSX, type PointerEvent, useEffect, useRef, useState } from 'react';
 
 import {
   Button,
   DropDownButton,
   ListGroup,
-  ListItem,
-  PinnedTile,
   ScrollArea,
   SectionTitle,
   TileGrid,
@@ -17,16 +15,24 @@ import {
   type ItemIconSource,
   renderItemIcon,
 } from '@/features/start-menu/components/item-icon/item-icon';
+import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
 import {
   SearchBody,
   type SearchResultGroups,
 } from '@/features/start-menu/components/search-body/search-body';
 import { StartJumpList } from '@/features/start-menu/components/start-jump-list/start-jump-list';
+import { StartTile } from '@/features/start-menu/components/start-tile/start-tile';
+import { StartViewMenu } from '@/features/start-menu/components/start-view-menu/start-view-menu';
+import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
+import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 
 /** Start 고정됨과 모두 목록에 보이는 항목 하나 */
 export type StartItem = ItemIconSource & {
+  /** 작업 공간 항목 id(앱은 `APP_ITEM_IDS`의 id). 목록의 key이고, 열거나 고정을 바꿀 때 어느 항목인지 알린다 */
+  id: string;
   /** 항목 이름(글은 제목) */
   title: string;
 };
@@ -58,8 +64,14 @@ type StartListViewProps = StartBodyCommonProps & {
   pinned: readonly StartItem[];
   /** 모두 목록의 묶음 */
   groups: readonly StartItemGroup[];
-  /** 항목 칸(고정됨, 그리드 보기)을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
+  /** 항목 칸(고정됨, 그리드 보기)과 목록 줄을 눌렀을 때 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
   onItemOpen?: (item: StartItem) => void;
+  /** 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다 */
+  getPinnedMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
+  /** 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다 */
+  onPinnedMove?: (id: string, targetId: string) => void;
+  /** `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다 */
+  onViewChange?: (view: StartAllView) => void;
 };
 
 type StartBodyProps =
@@ -77,6 +89,16 @@ type StartBodyProps =
             view: 'results';
             /** 검색 결과 */
             results: SearchResultGroups;
+            /** 고른 항목의 id. 주지 않으면 최고 일치다 */
+            selectedId?: string;
+            /** 항목 줄이나 최고 일치 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다 */
+            onItemOpen?: (id: string) => void;
+            /** 최고 일치 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
+            onCopyLink?: (id: string) => void;
+          }
+        | {
+            /** 검색 결과가 없을 때. "검색 결과 없음"을 안내한다 */
+            view: 'no-results';
           }
       ));
 
@@ -86,6 +108,13 @@ const viewLabels = {
   grid: '보기: 그리드',
   category: '보기: 범주',
 } as const satisfies Record<StartAllView, string>;
+
+// `보기:` 메뉴의 항목이다(피그마 `Menu/ViewOptions`). 범주, 그리드, 간단히 차례다.
+const viewMenuOptions = [
+  { view: 'category', label: '범주' },
+  { view: 'grid', label: '그리드' },
+  { view: 'list', label: '간단히' },
+] as const satisfies readonly { view: StartAllView; label: string }[];
 
 // 기기별 고정 항목 칸 너비다. 데스크톱은 PinnedTile 기본(95)으로 6열, 모바일은 89로 4열이다.
 const tileClassNames = {
@@ -135,8 +164,17 @@ export function StartBody(props: StartBodyProps): JSX.Element {
             view="results"
             device={props.device}
             results={props.results}
+            selectedId={props.selectedId}
+            onItemOpen={props.onItemOpen}
+            onCopyLink={props.onCopyLink}
             className="min-h-px w-full flex-1"
           />
+        </div>
+      );
+    case 'no-results':
+      return (
+        <div className={joinClassNames('flex flex-col pb-24', props.className)}>
+          <SearchBody view="no-results" className="min-h-px w-full flex-1" />
         </div>
       );
     case 'jump-list':
@@ -214,6 +252,11 @@ function StartListView(props: StartListViewProps): JSX.Element {
   const isGridOpen = openedLetter !== null;
   const bodyRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const pinnedGridRef = useRef<HTMLDivElement>(null);
+  // 방금 고정 칸을 끌었는지. 끌기 뒤에 따라오는 클릭이 항목을 열지 않게 거른다. 새로 누를 때 지운다.
+  const isPinnedDraggedRef = useRef(false);
+  const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
+  const startPointerDrag = usePointerDrag();
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
   const jumpList = usePresence(bodyRef, isGridOpen, { subtree: true });
@@ -263,7 +306,92 @@ function StartListView(props: StartListViewProps): JSX.Element {
     setOpenedLetter(null);
   }
 
+  /**
+   * 고정 칸 위에서 포인터를 누르면 끌어 순서 바꾸기를 시작한다. 끄는 동안 포인터 아래 칸 자리로 바로 옮긴다.
+   * @param event 누르기 이벤트
+   * @param item 누른 칸의 항목
+   */
+  function handlePinnedPointerDown(event: PointerEvent<HTMLButtonElement>, item: StartItem): void {
+    isPinnedDraggedRef.current = false;
+    const { onPinnedMove: handlePinnedMove } = props;
+    if (handlePinnedMove === undefined) {
+      return;
+    }
+    startPointerDrag(event, {
+      onStart: () => {
+        isPinnedDraggedRef.current = true;
+      },
+      onMove: (point) => {
+        const targetId = findPinnedIdAt(pinnedGridRef.current, point.x, point.y);
+        if (targetId !== null && targetId !== item.id) {
+          handlePinnedMove(item.id, targetId);
+        }
+      },
+    });
+  }
+
+  /**
+   * 끌기 뒤에 따라오는 클릭이면 한 번 거른다.
+   * @returns 거르면 true
+   */
+  function shouldSuppressPinnedClick(): boolean {
+    const isSuppressed = isPinnedDraggedRef.current;
+    isPinnedDraggedRef.current = false;
+    return isSuppressed;
+  }
+
+  /**
+   * `보기:` 메뉴에서 보기를 고르면 메뉴를 닫고 쓰는 곳에 알린다.
+   * @param nextView 고른 보기
+   */
+  function handleViewSelect(nextView: StartAllView): void {
+    setIsViewMenuOpen(false);
+    props.onViewChange?.(nextView);
+  }
+
+  /**
+   * `보기:` 메뉴를 열거나 닫으려 하면 상태를 맞춘다.
+   * @param isOpen 열려는지
+   */
+  function handleViewMenuOpenChange(isOpen: boolean): void {
+    setIsViewMenuOpen(isOpen);
+  }
+
   const handleHeaderClick = isJumpListEnabled ? openJumpList : undefined;
+  const viewMenuItems = viewMenuOptions.map(
+    /**
+     * 보기 하나의 메뉴 항목을 만든다. 지금 보기에 확인 표시를 한다.
+     * @param option 보기와 이름
+     * @returns 메뉴 항목
+     */
+    (option): MenuPopupEntry => ({
+      kind: 'checkbox',
+      label: option.label,
+      checked: option.view === view,
+      onCheckedChange: () => {
+        handleViewSelect(option.view);
+      },
+    }),
+  );
+
+  /**
+   * `모두` 제목 줄 오른쪽의 `보기:` 버튼을 그린다. 보기를 바꾸는 동작을 받았으면 보기 메뉴가 붙은 버튼, 아니면 메뉴 없는 버튼 모양이다.
+   * @returns `보기:` 버튼
+   */
+  function renderViewControl(): JSX.Element {
+    if (props.onViewChange === undefined) {
+      return <DropDownButton label={viewLabels[view]} />;
+    }
+    return (
+      <StartViewMenu
+        open={isViewMenuOpen}
+        onOpenChange={handleViewMenuOpenChange}
+        label={viewLabels[view]}
+        menuItems={viewMenuItems}
+      />
+    );
+  }
+
   const isListHidden = jumpList.status === 'entered';
   let motionClassName = '';
   if (jumpList.isMounted) {
@@ -291,7 +419,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
             className={`flex w-full shrink-0 flex-col items-start gap-16 pb-24 ${scrollContentClassNames[device]}`}
           >
             <SectionTitle title="고정됨" className="w-full shrink-0" />
-            <TileGrid className="w-full shrink-0">
+            <TileGrid ref={pinnedGridRef} className="w-full shrink-0">
               {props.pinned.map(
                 /**
                  * 고정 항목 칸 하나를 그린다.
@@ -300,10 +428,13 @@ function StartListView(props: StartListViewProps): JSX.Element {
                  */
                 (item) => (
                   <StartTile
-                    key={item.title}
+                    key={item.id}
                     item={item}
                     className={tileClassName}
                     onItemOpen={props.onItemOpen}
+                    menuItems={props.getPinnedMenuItems?.(item)}
+                    onPointerDown={handlePinnedPointerDown}
+                    shouldSuppressClick={shouldSuppressPinnedClick}
                   />
                 ),
               )}
@@ -311,7 +442,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
             <SectionTitle
               title="모두"
               showAction
-              action={<DropDownButton label={viewLabels[view]} />}
+              action={renderViewControl()}
               className="w-full shrink-0"
             />
             <StartAllList
@@ -414,7 +545,7 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
              */
             (item) => (
               <StartTile
-                key={item.title}
+                key={item.id}
                 item={item}
                 className={tileClassName}
                 onItemOpen={props.onItemOpen}
@@ -429,41 +560,10 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
            * @param item 항목
            * @returns ListItem
            */
-          (item) => <StartListRow key={item.title} item={item} onItemOpen={props.onItemOpen} />,
+          (item) => <StartListRow key={item.id} item={item} onItemOpen={props.onItemOpen} />,
         )
       )}
     </ListGroup>
-  );
-}
-
-type StartTileProps = {
-  /** 항목 */
-  item: StartItem;
-  /** 칸 너비 클래스 */
-  className: string | undefined;
-  /** 칸을 눌렀을 때 부른다 */
-  onItemOpen?: (item: StartItem) => void;
-};
-
-/**
- * 항목 칸 하나(PinnedTile)를 그린다. 누르면 그 항목으로 `onItemOpen`을 부른다.
- * @param props
- */
-function StartTile(props: StartTileProps): JSX.Element {
-  const { item, className } = props;
-
-  /** 칸을 누르면 쓰는 곳에 항목을 알린다. */
-  function handleClick(): void {
-    props.onItemOpen?.(item);
-  }
-
-  return (
-    <PinnedTile
-      label={item.title}
-      icon={renderItemIcon(item)}
-      className={className}
-      onClick={handleClick}
-    />
   );
 }
 
@@ -475,40 +575,25 @@ type StartListRowProps = {
 };
 
 /**
- * 모두 목록의 항목 한 줄(ListItem)을 그린다. 고정 항목 칸처럼 클릭·Enter·Space로 열 수 있어, 열면 그 항목으로 `onItemOpen`을 부른다.
+ * 모두 목록의 항목 한 줄을 그린다. 고정 항목 칸처럼 클릭·Enter·Space로 열 수 있어, 열면 그 항목으로 `onItemOpen`을 부른다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @param props
  */
 function StartListRow(props: StartListRowProps): JSX.Element {
   const { item } = props;
 
-  /** 줄을 누르면 쓰는 곳에 항목을 알린다. */
-  function handleClick(): void {
+  /** 줄을 열면 쓰는 곳에 항목을 알린다. */
+  function handleOpen(): void {
     props.onItemOpen?.(item);
   }
 
-  /**
-   * Enter·Space를 누르면 줄을 누른 것으로 본다.
-   * @param event 키 이벤트
-   */
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      props.onItemOpen?.(item);
-    }
-  }
-
   return (
-    <ListItem
-      role="button"
-      tabIndex={0}
-      // 버튼 역할에는 aria-selected가 맞지 않아 ListItem이 붙이는 값을 뺀다
-      aria-selected={undefined}
+    <ItemListRow
+      id={item.id}
       title={item.title}
       icon={renderItemIcon(item)}
       className="w-full"
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
+      onOpen={handleOpen}
     />
   );
 }

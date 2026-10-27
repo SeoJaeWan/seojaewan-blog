@@ -137,10 +137,23 @@ describe('검색:결과 화면', () => {
     ]);
   });
 
-  it('위·아래 방향키로 고른 항목을 옮기고 처음과 끝에서 멈춘다', () => {
+  it('아래 방향키로 고른 항목을 아래로 옮긴다', () => {
     expect(moveSearchSelection(0, 1, 3)).toBe(1);
+  });
+
+  it('위 방향키로 고른 항목을 위로 옮긴다', () => {
+    expect(moveSearchSelection(2, -1, 3)).toBe(1);
+  });
+
+  it('끝에서 아래로 옮기면 멈춘다', () => {
     expect(moveSearchSelection(2, 1, 3)).toBe(2);
+  });
+
+  it('처음에서 위로 옮기면 멈춘다', () => {
     expect(moveSearchSelection(0, -1, 3)).toBe(0);
+  });
+
+  it('결과가 없으면 처음에 머문다', () => {
     expect(moveSearchSelection(0, 1, 0)).toBe(0);
   });
 });

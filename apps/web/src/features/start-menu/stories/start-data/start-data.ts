@@ -4,33 +4,44 @@
 
 /** 피그마 Start/Body의 고정됨 항목 8개 */
 export const START_PINNED = [
-  { kind: 'app', app: 'file-explorer', title: 'File Explorer' },
-  { kind: 'app', app: 'chrome', title: 'Chrome' },
-  { kind: 'folder', title: 'Blog' },
-  { kind: 'link', title: 'GitHub' },
-  { kind: 'link', title: '이력서' },
-  { kind: 'link', title: '사이드 프로젝트' },
-  { kind: 'folder', title: 'React' },
-  { kind: 'post', title: 'React 19 훅 정리' },
+  { id: 'app:file-explorer', kind: 'app', app: 'file-explorer', title: 'File Explorer' },
+  { id: 'app:chrome', kind: 'app', app: 'chrome', title: 'Chrome' },
+  { id: 'blog', kind: 'folder', title: 'Blog' },
+  { id: 'link:github', kind: 'link', title: 'GitHub' },
+  { id: 'link:resume', kind: 'link', title: '이력서' },
+  { id: 'link:side-project', kind: 'link', title: '사이드 프로젝트' },
+  { id: 'folder:React', kind: 'folder', title: 'React' },
+  { id: 'post:react-19-hooks', kind: 'post', title: 'React 19 훅 정리' },
 ] as const;
 
 /** 피그마 Start/Body `View=List`·`Grid`의 모두 목록. 이름순으로 첫 글자별로 묶었다 */
 export const START_LETTER_GROUPS = [
-  { label: 'B', items: [{ kind: 'folder', title: 'Blog' }] },
-  { label: 'C', items: [{ kind: 'app', app: 'chrome', title: 'Chrome' }] },
-  { label: 'F', items: [{ kind: 'app', app: 'file-explorer', title: 'File Explorer' }] },
-  { label: 'G', items: [{ kind: 'link', title: 'GitHub' }] },
-  { label: 'N', items: [{ kind: 'post', title: 'Next.js App Router 캐시' }] },
+  { label: 'B', items: [{ id: 'blog', kind: 'folder', title: 'Blog' }] },
+  { label: 'C', items: [{ id: 'app:chrome', kind: 'app', app: 'chrome', title: 'Chrome' }] },
+  {
+    label: 'F',
+    items: [{ id: 'app:file-explorer', kind: 'app', app: 'file-explorer', title: 'File Explorer' }],
+  },
+  { label: 'G', items: [{ id: 'link:github', kind: 'link', title: 'GitHub' }] },
+  {
+    label: 'N',
+    items: [{ id: 'post:nextjs-app-router-cache', kind: 'post', title: 'Next.js App Router 캐시' }],
+  },
   {
     label: 'R',
     items: [
-      { kind: 'folder', title: 'React' },
-      { kind: 'post', title: 'React 19 훅 정리' },
+      { id: 'folder:React', kind: 'folder', title: 'React' },
+      { id: 'post:react-19-hooks', kind: 'post', title: 'React 19 훅 정리' },
     ],
   },
-  { label: 'ㄹ', items: [{ kind: 'post', title: '리액트 서버 컴포넌트 이해하기' }] },
-  { label: 'ㅅ', items: [{ kind: 'link', title: '사이드 프로젝트' }] },
-  { label: 'ㅇ', items: [{ kind: 'link', title: '이력서' }] },
+  {
+    label: 'ㄹ',
+    items: [
+      { id: 'post:react-server-components', kind: 'post', title: '리액트 서버 컴포넌트 이해하기' },
+    ],
+  },
+  { label: 'ㅅ', items: [{ id: 'link:side-project', kind: 'link', title: '사이드 프로젝트' }] },
+  { label: 'ㅇ', items: [{ id: 'link:resume', kind: 'link', title: '이력서' }] },
 ] as const;
 
 /** 피그마 Start/JumpList에서 흐리지 않은(항목이 있는) 글자. 모두 목록의 첫 글자 묶음과 같다 */

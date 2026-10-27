@@ -6,19 +6,20 @@ import { ImageAsset } from '@seojaewan/design-system';
 
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import { SearchPanel } from '@/features/start-menu/components/search-panel/search-panel';
-import type { StartItem } from '@/features/start-menu/components/start-body/start-body';
+import type {
+  StartAllView,
+  StartItem,
+} from '@/features/start-menu/components/start-body/start-body';
 import { StartBody } from '@/features/start-menu/components/start-body/start-body';
 import { StartMenuPanel } from '@/features/start-menu/components/start-menu-panel/start-menu-panel';
 import { StartPowerButton } from '@/features/start-menu/components/start-power-button/start-power-button';
-import {
-  START_PROFILE,
-  startAppGroups,
-  startPinnedApps,
-} from '@/features/start-menu/data/start-apps/start-apps';
+import { START_PROFILE } from '@/features/start-menu/data/start-apps/start-apps';
+import { useSearchKeyboard } from '@/features/start-menu/hooks/use-search-keyboard/use-search-keyboard';
+import { useStartLists } from '@/features/start-menu/hooks/use-start-lists/use-start-lists';
+import { useStartSearch } from '@/features/start-menu/hooks/use-start-search/use-start-search';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
-import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
@@ -34,23 +35,25 @@ const RESTART_ICON = 'icons/ic_fluent_arrow_clockwise_20_regular.svg';
 // 검색 입력칸의 안내 글자(피그마 Start/Menu, Search/Panel `Device=Mobile`).
 const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
 
-// 검색 패널 입력 전 화면의 최근과 추천. 콘텐츠를 불러오기 전이라 비어 있다.
-const EMPTY_SEARCH_ITEMS = [] as const;
-
 /**
  * 패널 층(Start 메뉴와 검색 패널)을 그린다. 열린 패널은 패널 저장소(`usePanelStore`)가 정하고 둘 중 하나만 열린다.
  * 모바일은 패널이 화면 폭을 채우고 작업 표시줄 바로 위에 붙는다.
- * Start에서 앱 항목을 열면 창 저장소로 그 앱 창을 열고, 전원 메뉴의 `다시 시작`을 고르면 다시 시작 저장소로 다시 시작한다.
- * 열려 있는 동안 Esc를 누르거나 바깥(Start 버튼과 작업 표시줄 검색칸은 빼고)을 누르면 닫는다. 패널 안에서 연 전원 메뉴는
- * 문서 끝에 포털되지만 React 트리로는 패널 안이라 바깥으로 보지 않는다. 전원 메뉴가 열려 있을 때 Esc는 메뉴만 닫는다.
+ * Start 고정됨·모두 목록과 검색 결과는 작업 공간 저장소의 항목에서 그리고, 항목은 열기 규칙(`useOpenItem`)대로 열며 열면 패널을 닫는다.
+ * 검색어는 검색 저장소가 갖고(작업 표시줄 검색칸, Start 위쪽 검색칸, 모바일 검색 패널 입력칸이 함께 쓴다), 패널 저장소가 패널을 닫거나 바꿀 때 지운다.
+ * 전원 메뉴의 `다시 시작`을 고르면 다시 시작 저장소로 다시 시작한다.
+ * 열려 있는 동안 Esc를 누르거나 바깥(Start 버튼과 작업 표시줄 검색칸은 빼고)을 누르면 닫는다. 패널 안에서 연 메뉴(전원 메뉴, 보기 메뉴,
+ * 고정 항목 메뉴)는 문서 끝에 포털되지만 React 트리로는 패널 안이라 바깥으로 보지 않는다. 메뉴가 열려 있을 때 Esc는 메뉴만 닫는다.
  * @codocs [[Start 메뉴:열기와 닫기]]
+ * @codocs [[Start 메뉴:검색]]
+ * @codocs [[검색:개요]]
  * @codocs [[검색:결과 화면]]
  * @codocs [[작업 공간:다시 시작]]
  * @returns 패널 층
  */
 export function StartMenuLayer(): JSX.Element {
   const device = useDevice();
-  const openApp = useOpenApp();
+  const search = useStartSearch(device);
+  const lists = useStartLists(handleItemOpen);
   const restart = useRestartStore((state) => state.restart);
   const openPanel = usePanelStore((state) => state.openPanel);
   const isPowerMenuOpen = usePanelStore((state) => state.isPowerMenuOpen);
@@ -59,6 +62,7 @@ export function StartMenuLayer(): JSX.Element {
   // 이번 pointerdown이 패널 안(포털된 메뉴 포함)에서 일어났는지. React 이벤트가 문서 리스너보다 먼저 돌아 표시한다.
   const isPointerInsideRef = useRef(false);
   const isOpen = openPanel !== null;
+  useSearchKeyboard(isOpen, search.openItem);
 
   useEffect(
     /** 패널이 열려 있는 동안 Esc와 바깥 pointerdown을 듣는다. */
@@ -70,11 +74,14 @@ export function StartMenuLayer(): JSX.Element {
       isPointerInsideRef.current = false;
 
       /**
-       * Esc를 누르면 닫는다. 캡처 단계에서 들어, Base UI가 전원 메뉴를 닫기 전에 메뉴가 열려 있었는지 본다.
+       * Esc를 누르면 닫는다. 캡처 단계에서 들어, Base UI가 메뉴를 닫기 전에 메뉴가 열려 있었는지 본다.
        * @param event 키 이벤트
        */
       function handleKeyDown(event: KeyboardEvent): void {
-        if (event.key !== 'Escape' || usePanelStore.getState().isPowerMenuOpen) {
+        const isMenuOpen =
+          usePanelStore.getState().isPowerMenuOpen ||
+          document.querySelector('[role="menu"]') !== null;
+        if (event.key !== 'Escape' || isMenuOpen) {
           return;
         }
         close();
@@ -140,7 +147,12 @@ export function StartMenuLayer(): JSX.Element {
         device={device}
         className={panelClassName}
         style={panelStyle}
-        searchBoxProps={{ 'aria-label': '시작 메뉴 검색', placeholder: SEARCH_PLACEHOLDER }}
+        searchBoxProps={{
+          'aria-label': '시작 메뉴 검색',
+          placeholder: SEARCH_PLACEHOLDER,
+          value: search.query,
+          onValueChange: search.setQuery,
+        }}
         profileName={START_PROFILE.name}
         profilePhoto={<ImageAsset name={START_PROFILE.photo} className="size-full" />}
         powerButton={
@@ -151,20 +163,82 @@ export function StartMenuLayer(): JSX.Element {
           />
         }
       >
-        <StartBody
-          view="list"
-          device={device}
-          className="min-h-px w-full flex-1"
-          pinned={startPinnedApps}
-          groups={startAppGroups}
-          onItemOpen={handleItemOpen}
-        />
+        {renderStartBody()}
       </StartMenuPanel>
     );
   }
 
   /**
-   * 검색 패널을 그린다. 결과 계산 전이라 입력 전 화면이다.
+   * Start 본문을 그린다. 검색어가 있으면 검색 결과 화면(결과가 없으면 안내), 없으면 고정됨과 모두 목록이다.
+   * @returns Start 본문
+   */
+  function renderStartBody(): ReactNode {
+    if (!search.isSearching) {
+      return (
+        <StartBody
+          view={lists.view}
+          device={device}
+          className="min-h-px w-full flex-1"
+          pinned={lists.pinned}
+          groups={lists.groups}
+          onItemOpen={handleItemOpen}
+          getPinnedMenuItems={lists.getPinnedMenuItems}
+          onPinnedMove={handlePinnedMove}
+          onViewChange={handleViewChange}
+        />
+      );
+    }
+    if (search.results === null) {
+      return <StartBody view="no-results" device={device} className="min-h-px w-full flex-1" />;
+    }
+    return (
+      <StartBody
+        view="results"
+        device={device}
+        className="min-h-px w-full flex-1"
+        results={search.results}
+        selectedId={search.selectedId}
+        onItemOpen={handleResultOpen}
+        onCopyLink={handleResultCopyLink}
+      />
+    );
+  }
+
+  /**
+   * 검색 패널 본문을 그린다. 검색어가 있으면 검색 결과 화면(결과가 없으면 안내), 없으면 입력 전 화면(최근과 추천)이다.
+   * @returns 검색 패널 본문
+   */
+  function renderSearchBody(): ReactNode {
+    if (!search.isSearching) {
+      return (
+        <SearchBody
+          view="before-typing"
+          device={device}
+          className="min-h-px w-full flex-1"
+          recent={search.recent}
+          recommended={search.recommended}
+          onItemOpen={handleResultOpen}
+        />
+      );
+    }
+    if (search.results === null) {
+      return <SearchBody view="no-results" device={device} className="min-h-px w-full flex-1" />;
+    }
+    return (
+      <SearchBody
+        view="results"
+        device={device}
+        className="min-h-px w-full flex-1"
+        results={search.results}
+        selectedId={search.selectedId}
+        onItemOpen={handleResultOpen}
+        onCopyLink={handleResultCopyLink}
+      />
+    );
+  }
+
+  /**
+   * 검색 패널을 그린다.
    * @param panelClassName 패널 바탕에 넘길 클래스
    * @param panelStyle 패널 바탕에 넘길 최대 높이
    * @returns 검색 패널
@@ -178,15 +252,14 @@ export function StartMenuLayer(): JSX.Element {
         device={device}
         className={panelClassName}
         style={panelStyle}
-        searchBoxProps={{ 'aria-label': '검색', placeholder: SEARCH_PLACEHOLDER }}
+        searchBoxProps={{
+          'aria-label': '검색',
+          placeholder: SEARCH_PLACEHOLDER,
+          value: search.query,
+          onValueChange: search.setQuery,
+        }}
       >
-        <SearchBody
-          view="before-typing"
-          device={device}
-          className="min-h-px w-full flex-1"
-          recent={EMPTY_SEARCH_ITEMS}
-          recommended={EMPTY_SEARCH_ITEMS}
-        />
+        {renderSearchBody()}
       </SearchPanel>
     );
   }
@@ -197,14 +270,44 @@ export function StartMenuLayer(): JSX.Element {
   }
 
   /**
-   * Start 항목을 연다. 앱이면 그 앱 창을 열고, 항목을 열면 Start는 닫힌다.
+   * 고정 항목을 끌어 다른 칸 자리로 옮긴다.
+   * @param id 끈 항목 id
+   * @param targetId 놓인 칸의 항목 id
+   */
+  function handlePinnedMove(id: string, targetId: string): void {
+    lists.movePinned(id, targetId);
+  }
+
+  /**
+   * `보기:` 메뉴에서 고른 보기로 바꾼다.
+   * @param nextView 고른 보기
+   */
+  function handleViewChange(nextView: StartAllView): void {
+    lists.changeView(nextView);
+  }
+
+  /**
+   * 검색 결과나 입력 전 화면의 항목을 연다.
+   * @param id 항목 id
+   */
+  function handleResultOpen(id: string): void {
+    search.openItem(id);
+  }
+
+  /**
+   * 최고 일치 카드의 `링크 복사`를 골랐을 때 그 항목의 링크를 복사한다.
+   * @param id 항목 id
+   */
+  function handleResultCopyLink(id: string): void {
+    search.copyLink(id);
+  }
+
+  /**
+   * Start 항목을 연다. 열기 규칙대로 열고(폴더 탐색기, 글 Chrome, 링크 새 탭, 앱 창), 항목을 열면 Start는 닫힌다.
    * @param item 연 항목
    */
   function handleItemOpen(item: StartItem): void {
-    close();
-    if (item.kind === 'app') {
-      openApp(item.app);
-    }
+    search.openItem(item.id);
   }
 
   return (

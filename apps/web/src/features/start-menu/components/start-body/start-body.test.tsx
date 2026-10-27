@@ -79,7 +79,12 @@ describe('Start 메뉴:모두', () => {
       <StartBody
         view="category"
         pinned={START_PINNED}
-        groups={[{ label: '앱', items: [{ kind: 'app', app: 'chrome', title: 'Chrome' }] }]}
+        groups={[
+          {
+            label: '앱',
+            items: [{ id: 'app:chrome', kind: 'app', app: 'chrome', title: 'Chrome' }],
+          },
+        ]}
       />,
     );
     expect(screen.queryByRole('button', { name: '앱' })).not.toBeInTheDocument();
@@ -119,7 +124,12 @@ describe('Start 메뉴:열기와 닫기', () => {
   it('모두 목록의 줄을 클릭하면 그 항목을 연다', async () => {
     const onItemOpen = vi.fn();
     await userEvent.click(renderChromeRow(onItemOpen));
-    expect(onItemOpen).toHaveBeenCalledWith({ kind: 'app', app: 'chrome', title: 'Chrome' });
+    expect(onItemOpen).toHaveBeenCalledWith({
+      id: 'app:chrome',
+      kind: 'app',
+      app: 'chrome',
+      title: 'Chrome',
+    });
   });
 
   it('모두 목록의 줄에서 Enter나 Space를 누르면 그 항목을 연다', async () => {

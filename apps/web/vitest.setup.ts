@@ -29,3 +29,13 @@ if (typeof Element.prototype.setPointerCapture === 'undefined') {
     hasPointerCapture: { configurable: true, writable: true, value: () => false },
   });
 }
+
+// jsdom에는 scrollIntoView가 없다. 고른 줄을 보이게 스크롤하는 코드가 돌 수 있게, 아무것도 하지 않는 것으로 둔다.
+// 스크롤 호출을 확인하는 시험은 이 함수를 가짜로 바꿔 건다.
+if (typeof Element.prototype.scrollIntoView === 'undefined') {
+  Object.defineProperty(Element.prototype, 'scrollIntoView', {
+    configurable: true,
+    writable: true,
+    value: () => undefined,
+  });
+}
