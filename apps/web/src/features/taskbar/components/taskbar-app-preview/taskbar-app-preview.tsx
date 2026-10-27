@@ -6,6 +6,12 @@ import { Popover } from '@seojaewan/design-system';
 import type { TaskbarAppId } from '@/features/taskbar/components/taskbar-app/taskbar-app';
 import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-app/taskbar-app';
 
+// 목록이 열려 있는 동안(data-preview-open) 앱 버튼을 TaskbarButton Hover 모습(테두리 control-stroke/default, 바탕 control-fill/default)으로
+// 둔다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다. 버튼 동작이 없는 조립(스토리)에서도
+// 보이도록 `aria-expanded` 대신 열림 표시를 따로 단다.
+const OPEN_TRIGGER_CLASS_NAME =
+  'data-preview-open:border-control-stroke-default data-preview-open:bg-control-fill-default';
+
 type TaskbarAppPreviewProps = {
   /** 버튼이 가리키는 앱 */
   app: TaskbarAppId;
@@ -28,10 +34,11 @@ type TaskbarAppPreviewProps = {
 /**
  * 작업 표시줄 앱 버튼과 그 창 미리보기 목록(피그마 조립 `Taskbar/AppPreview`)을 그린다.
  * 목록은 버튼 위 가운데 맞춤(피그마 Popover `Top-Center`)으로 띄운다. 열림 여부와 버튼 클릭 동작은 쓰는 곳이 prop으로 넣는다.
- * 열렸을 때 버튼의 `aria-expanded`가 true다. 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
+ * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스, [[컴포넌트 목록:상태]]의 예외). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
  * `centered`면 목록의 기준을 버튼이 아닌 작업 표시줄(가장 가까운 위치 기준 조상)로 옮겨, 목록이 작업 표시줄 위 가운데에 뜬다.
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[작업 표시줄:창 미리보기]]
+ * @codocs [[컴포넌트 목록:상태]]
  * @param props
  */
 export function TaskbarAppPreview(props: TaskbarAppPreviewProps): JSX.Element {
@@ -49,6 +56,8 @@ export function TaskbarAppPreview(props: TaskbarAppPreviewProps): JSX.Element {
         <TaskbarAppButton
           app={app}
           indicator={indicator}
+          data-preview-open={isOpen ? '' : undefined}
+          className={OPEN_TRIGGER_CLASS_NAME}
           aria-expanded={isToggle ? isOpen : undefined}
           onClick={props.onButtonClick}
         />

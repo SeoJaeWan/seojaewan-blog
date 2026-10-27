@@ -107,6 +107,23 @@ describe('작업 표시줄:창 미리보기 - 마우스를 올려 열기', () =>
     expect(screen.getByRole('button', { name: 'Chrome' })).toHaveAttribute('aria-expanded', 'true');
   });
 
+  it('미리보기가 떠 있는 동안 그 앱 버튼은 Hover 모양이다', () => {
+    // 맨 앞 창이 다른 앱이라 Chrome 버튼은 running(바탕 없음)이다
+    useWindowStore.getState().open('chrome', workArea);
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    const button = screen.getByRole('button', { name: 'Chrome' });
+    expect(button).not.toHaveAttribute('data-preview-open');
+    hoverMouse(button);
+    wait(400);
+    // Hover 모양은 이 속성의 변형 클래스(data-preview-open:*)가 그린다
+    expect(button).toHaveAttribute('data-preview-open');
+    expect(button).toHaveClass(
+      'data-preview-open:border-control-stroke-default',
+      'data-preview-open:bg-control-fill-default',
+    );
+  });
+
   it('창이 없는 앱 버튼에는 미리보기를 띄우지 않는다', () => {
     renderLayer();
     hoverMouse(screen.getByRole('button', { name: 'Chrome' }));
