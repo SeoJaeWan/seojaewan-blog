@@ -3,14 +3,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SearchBox } from './search-box';
 
 // 피그마 SearchBox의 변형 속성 값이다(정규화한 이름).
-const APPEARANCES = ['default', 'pill', 'taskbar'] as const;
-const STATES = ['rest', 'hover', 'focused', 'disabled'] as const;
+const APPEARANCES = ['default', 'pill', 'taskbar', 'web'] as const;
+const STATES = ['rest', 'hover', 'focused', 'pressed', 'disabled'] as const;
 
 // SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 모양별로 감싼다.
 const previewWidthClassNames = {
   default: 'w-240',
   pill: 'w-320',
   taskbar: 'w-220',
+  web: 'w-320',
 } as const satisfies Record<(typeof APPEARANCES)[number], string>;
 
 type ParityArgs = {
@@ -54,5 +55,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다. Hover·Focused는 캡처 도구가 마우스·키보드로 재현한다.
+// 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed·Focused는 캡처 도구가 마우스·키보드로 재현한다.
 export const Parity: Story = {};

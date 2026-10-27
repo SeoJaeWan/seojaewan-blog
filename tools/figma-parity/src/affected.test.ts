@@ -98,7 +98,7 @@ describe('캡처 범위', () => {
   it('문서와 테스트만 바뀌면 범위가 없다', () => {
     expect(
       scope([
-        '.codocs/development/figma-sync.yaml',
+        '.codocs/design-system/figma-sync.yaml',
         'packages/design-system/src/components/button/button.test.tsx',
       ]),
     ).toEqual({ components: [], patterns: [] });

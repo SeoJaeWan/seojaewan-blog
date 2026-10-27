@@ -50,7 +50,7 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 제안할 다른 창이 없으면(열린 창이 하나뿐이면) 보여 주지 않는다.
  * 층 자체는 빈 곳의 클릭을 아래(바탕화면 아이콘)로 넘기고, 창만 클릭을 받는다. 층은 쌓임 맥락을 따로 만들어(`isolate`)
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[창 동작:창 조작]]
  * @codocs [[창 동작:스냅]]
  * @param props

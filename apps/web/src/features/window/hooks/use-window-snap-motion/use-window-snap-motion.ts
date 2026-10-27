@@ -27,7 +27,7 @@ type SnapMotionFrame = {
  * - 작업 영역 크기만 바뀐 경우(배치가 그대로)는 움직이지 않는다.
  * - 클래스는 이 요소의 className prop에 두지 않고 classList로만 다룬다. React가 다시 그릴 때 덮어쓰지 않게 하기 위해서다.
  * - 열기·최소화 클래스는 바깥 요소가 갖고, 이 훅은 안쪽 요소에만 쓴다. 같은 요소에 두면 animation이 서로 덮는다.
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param ref 움직일 안쪽 요소
  * @param rect 지금 창 자리
  * @param layoutKey 배치를 가리키는 값

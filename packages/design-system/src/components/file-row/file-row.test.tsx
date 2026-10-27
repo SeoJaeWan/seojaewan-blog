@@ -20,6 +20,15 @@ describe('FileRow', () => {
     expect(screen.getByText('위치')).toBeInTheDocument();
   });
 
+  it('recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그린다', () => {
+    render(<FileRow icon={<i />} view="recycle-bin" showLocation />);
+    expect(screen.getByText('원래 위치')).toBeInTheDocument();
+    expect(screen.getByText('삭제한 날짜')).toBeInTheDocument();
+    expect(screen.queryByText('수정한 날짜')).toBeNull();
+    expect(screen.queryByText('유형')).toBeNull();
+    expect(screen.queryByText('위치')).toBeNull();
+  });
+
   it('icon 슬롯을 받는다', () => {
     render(<FileRow icon={<i>아이콘</i>} />);
     expect(screen.getByText('아이콘')).toBeInTheDocument();

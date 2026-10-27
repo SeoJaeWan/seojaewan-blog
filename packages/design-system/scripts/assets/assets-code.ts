@@ -120,9 +120,18 @@ export function parseSvgAsset(svg: string, file: string): SvgAssetData {
  */
 function parseElement(tag: string, rawAttributes: string, file: string): SvgElementData {
   const attributes: Record<string, string> = {};
-  for (const [name, value] of parseAttributes(rawAttributes)) {
+  const sourceAttributes = parseAttributes(rawAttributes);
+  let maskType: string | undefined;
+  for (const [name, value] of sourceAttributes) {
     // React는 style을 객체로만 받아 문자열을 그대로 넘기면 깨진다.
     if (name === 'style') {
+      // mask-type는 같은 의미의 SVG presentation attribute가 있어 원본을 바꾸지 않고 옮길 수 있다.
+      // style은 presentation attribute보다 우선하므로, 원본 속성 순서와 관계없이 마지막에 반영한다.
+      const maskStyle = /^\s*mask-type\s*:\s*(alpha|luminance)\s*;?\s*$/u.exec(value);
+      if (tag === 'mask' && maskStyle !== null) {
+        maskType = maskStyle[1];
+        continue;
+      }
       throw new Error(
         `${file}: <${tag}>의 style 속성은 옮길 수 없다. React가 문자열 style을 받지 않는다(${value.slice(0, 40)}).`,
       );
@@ -134,6 +143,9 @@ function parseElement(tag: string, rawAttributes: string, file: string): SvgElem
       );
     }
     attributes[reactName] = value;
+  }
+  if (maskType !== undefined) {
+    attributes.maskType = maskType;
   }
   return { tag, attributes };
 }
