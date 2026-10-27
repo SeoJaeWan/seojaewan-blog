@@ -4,7 +4,13 @@ import { assetFile, assetName, variantSlug } from '../naming';
 import { utf8Encode } from '../sha256';
 import { monoColorSvg, normalizeSvgBytes, utf8Decode } from '../svg-normalize';
 import { relativeTransform, trimmedPathSvg, type TrimmedVector } from '../svg-trim';
-import { type CheckContext, checkVariant, type Violation } from './check-structure';
+import {
+  type AncestorData,
+  checkClippingAncestors,
+  type CheckContext,
+  checkVariant,
+  type Violation,
+} from './check-structure';
 import type { AssetData, NodeData } from './node-data';
 import { isMotionApiError } from './read-motion';
 import { type NameCache, readNodeTree } from './read-node';
@@ -43,7 +49,7 @@ export async function exportTargetCore(
     throw new Error(`컴포넌트 ${nodeId}를 찾을 수 없다.`);
   }
   const names: NameCache = new Map();
-  const violations: Violation[] = [];
+  const violations: Violation[] = checkClippingAncestors(node.name, variantAncestors(node));
   const variants: Record<string, VariantEntry> = {};
   const assetNodes = new Map<string, AssetData>();
   const nodes = new Map<string, ComponentNode>();
@@ -85,22 +91,32 @@ export async function exportTargetCore(
   };
 }
 
+/** 변형 PNG만 다시 내보낸 결과 */
+export type VariantImagesOutcome =
+  { ok: true; pngs: Map<string, Uint8Array> } | { ok: false; violations: Violation[] };
+
 /**
- * 컴포넌트(세트)의 변형 PNG만 다시 내보낸다. 바뀐 토큰을 쓰는 컴포넌트의 모습만 갱신할 때 쓴다(구조 검사는 하지 않는다).
+ * 컴포넌트(세트)의 변형 PNG만 다시 내보낸다. 바뀐 토큰을 쓰는 컴포넌트의 모습만 갱신할 때 쓴다.
+ * 변형 트리의 구조 검사(checkVariant)는 하지 않는다. 자르는 조상만은 PNG 자체를 틀리게 만들므로 검사하고, 걸리면 PNG를 만들지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[피그마 연동:구조 검사]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param variants 내보낼 변형 이름(저장소에 있는 변형)
  * @param scale PNG 배율
- * @returns 변형 이름 → PNG, 노드를 찾지 못하면 null
+ * @returns 변형 이름 → PNG, 또는 자르는 조상 위반. 노드를 찾지 못하면 null
  */
 export async function exportVariantImages(
   nodeId: string,
   variants: ReadonlySet<string>,
   scale: number,
-): Promise<Map<string, Uint8Array> | null> {
+): Promise<VariantImagesOutcome | null> {
   const node = await findComponent(nodeId);
   if (node === null) {
     return null;
+  }
+  const violations = checkClippingAncestors(node.name, variantAncestors(node));
+  if (violations.length > 0) {
+    return { ok: false, violations };
   }
   const pngs = new Map<string, Uint8Array>();
   for (const variant of variantsOf(node)) {
@@ -109,7 +125,28 @@ export async function exportVariantImages(
       pngs.set(slug, await exportPng(variant, scale));
     }
   }
-  return pngs;
+  return { ok: true, pngs };
+}
+
+/**
+ * 변형의 조상을 페이지 아래 가장 바깥부터 읽는다. 컴포넌트 세트의 변형은 세트가 가장 가까운 조상이고,
+ * 세트의 변형은 모두 세트의 바로 아래 자식이라 조상이 같다. 변형 자신은 넣지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 컴포넌트 세트나 단독 컴포넌트
+ * @returns 조상 목록
+ */
+function variantAncestors(node: ComponentSetNode | ComponentNode): AncestorData[] {
+  const ancestors: AncestorData[] = [];
+  let current: BaseNode | null = node.type === 'COMPONENT_SET' ? node : node.parent;
+  while (current !== null && current.type !== 'PAGE' && current.type !== 'DOCUMENT') {
+    ancestors.unshift({
+      name: current.name,
+      type: current.type,
+      clipsContent: 'clipsContent' in current && current.clipsContent,
+    });
+    current = current.parent;
+  }
+  return ancestors;
 }
 
 /**
