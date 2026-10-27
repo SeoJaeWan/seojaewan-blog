@@ -3,6 +3,12 @@
   "nodeId": "16:195",
   "variants": {
     "material=acrylic,padding=compact": {
+      "node": {
+        "height": 22,
+        "width": 320,
+        "x": 16,
+        "y": 8
+      },
       "nodeId": "509:5955",
       "properties": {
         "Material": "Acrylic",
@@ -10,6 +16,12 @@
       }
     },
     "material=acrylic,padding=default": {
+      "node": {
+        "height": 98,
+        "width": 320,
+        "x": 16,
+        "y": 8
+      },
       "nodeId": "16:189",
       "properties": {
         "Material": "Acrylic",
@@ -17,6 +29,12 @@
       }
     },
     "material=solid,padding=compact": {
+      "node": {
+        "height": 22,
+        "width": 320,
+        "x": 16,
+        "y": 8
+      },
       "nodeId": "509:5958",
       "properties": {
         "Material": "Solid",
@@ -24,6 +42,12 @@
       }
     },
     "material=solid,padding=default": {
+      "node": {
+        "height": 98,
+        "width": 320,
+        "x": 16,
+        "y": 8
+      },
       "nodeId": "16:192",
       "properties": {
         "Material": "Solid",
