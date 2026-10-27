@@ -17,6 +17,7 @@ import {
   INITIAL_WINDOW_STATE,
   maximizeWindow,
   minimizeWindow,
+  openPostInChrome,
   openWindow,
   restoreFromMaximize,
   restoreWindow,
@@ -403,5 +404,64 @@ describe('창 동작:스냅 - 끌어서 떼기', () => {
     const { state, ids } = openAll(['file-explorer']);
     const id = ids[0] ?? '';
     expect(detachWindow(state, id, { x: 0, y: 0, width: 1, height: 1 })).toBe(state);
+  });
+});
+
+// @codocs [[창 동작:열기 규칙]]
+describe('창 동작:열기 규칙', () => {
+  it('앱을 처음 열면 탐색기는 Blog 폴더, Chrome은 새 탭 페이지 하나를 보여 준다', () => {
+    const { state, ids } = openAll(['file-explorer', 'chrome']);
+    expect(state.windows[ids[0] ?? '']?.content).toEqual({
+      app: 'file-explorer',
+      folderId: 'blog',
+    });
+    expect(state.windows[ids[1] ?? '']?.content).toEqual({
+      app: 'chrome',
+      tabs: [{ kind: 'new-tab' }],
+      activeTabIndex: 0,
+    });
+  });
+
+  it('폴더를 열면 그 폴더를 보는 새 탐색기 창을 연다', () => {
+    const { state } = openAll(['file-explorer']);
+    const result = openWindow(state, 'file-explorer', WORK_AREA, {
+      app: 'file-explorer',
+      folderId: 'folder:React',
+    });
+    expect(result.state.order).toHaveLength(2);
+    expect(result.state.windows[result.id]?.content).toEqual({
+      app: 'file-explorer',
+      folderId: 'folder:React',
+    });
+  });
+
+  it('글은 Chrome 창이 없으면 그 글 탭 하나인 새 창으로 연다', () => {
+    const result = openPostInChrome(INITIAL_WINDOW_STATE, 'a', WORK_AREA);
+    expect(result.state.windows[result.id]?.content).toEqual({
+      app: 'chrome',
+      tabs: [{ kind: 'post', slug: 'a' }],
+      activeTabIndex: 0,
+    });
+  });
+
+  it('글은 가장 최근에 쓴 Chrome 창의 새 탭으로 열고, 같은 글이 열려 있어도 새 탭을 연다', () => {
+    const { state, ids } = openAll(['chrome', 'chrome', 'file-explorer']);
+    const focused = focusWindow(state, ids[0] ?? '');
+    const first = openPostInChrome(focused, 'a', WORK_AREA);
+    const second = openPostInChrome(first.state, 'a', WORK_AREA);
+    expect(second.id).toBe(ids[0]);
+    expect(second.state.windows[ids[0] ?? '']?.content).toEqual({
+      app: 'chrome',
+      tabs: [{ kind: 'new-tab' }, { kind: 'post', slug: 'a' }, { kind: 'post', slug: 'a' }],
+      activeTabIndex: 2,
+    });
+  });
+
+  it('최소화된 Chrome 창에 글을 열면 그 창을 복원해 맨 앞으로 가져온다', () => {
+    const { state, ids } = openAll(['chrome', 'file-explorer']);
+    const minimized = minimizeWindow(state, ids[0] ?? '');
+    const result = openPostInChrome(minimized, 'a', WORK_AREA);
+    expect(result.state.windows[ids[0] ?? '']?.isMinimized).toBe(false);
+    expect(getFrontWindowId(result.state)).toBe(ids[0]);
   });
 });

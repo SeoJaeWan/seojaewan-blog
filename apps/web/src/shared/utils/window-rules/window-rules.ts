@@ -3,6 +3,8 @@
 
 import type { PointerEvent, ReactNode } from 'react';
 
+import { BLOG_FOLDER_ID } from '@/shared/utils/workspace-rules/workspace-rules';
+
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
 
@@ -43,6 +45,29 @@ export type WindowRestorePoint = {
   snapZone: SnapZone | null;
 };
 
+/** Chrome 탭 하나가 보여 주는 페이지. 새 탭 페이지나 글이다 */
+export type ChromeTabPage = { kind: 'new-tab' } | { kind: 'post'; slug: string };
+
+/**
+ * 창 내용. 탐색기는 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null), Chrome은 탭 목록과 고른 탭이다.
+ * 탐색기 탭과 기록, Chrome 탭 조작은 그 앱 단계에서 더한다.
+ */
+export type WindowContent =
+  | {
+      /** 앱 */
+      app: 'file-explorer';
+      /** 보고 있는 위치 */
+      folderId: string | null;
+    }
+  | {
+      /** 앱 */
+      app: 'chrome';
+      /** 탭 목록 */
+      tabs: readonly ChromeTabPage[];
+      /** 고른 탭의 차례 */
+      activeTabIndex: number;
+    };
+
 /** 열린 창 하나 */
 export type OpenWindow = {
   /** 창 id */
@@ -61,6 +86,8 @@ export type OpenWindow = {
   previous: WindowRestorePoint | null;
   /** 최소화됐는지 */
   isMinimized: boolean;
+  /** 창 내용 */
+  content: WindowContent;
 };
 
 /** 창 저장소의 상태 */
@@ -143,6 +170,19 @@ export const WINDOW_CASCADE_OFFSET = 32;
 export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as const;
 
 /**
+ * 앱을 처음 열 때의 창 내용. 탐색기는 `Blog` 폴더(새 탭이 `Blog`로 여는 것과 같다), Chrome은 새 탭 페이지 하나다.
+ * @codocs [[파일 탐색기:탭]]
+ * @codocs [[Chrome:새 탭 페이지]]
+ * @param app 앱
+ * @returns 창 내용
+ */
+export function getDefaultWindowContent(app: WindowApp): WindowContent {
+  return app === 'file-explorer'
+    ? { app, folderId: BLOG_FOLDER_ID }
+    : { app, tabs: [{ kind: 'new-tab' }], activeTabIndex: 0 };
+}
+
+/**
  * 새 창을 열고 맨 앞으로 둔다. 앱별 기본 크기로 작업 영역 가운데에 놓되, 맨 앞 창이 있으면 그보다 32px씩
  * 오른쪽 아래로 비켜 놓는다(계단식). 비켜 놓은 창이 작업 영역을 벗어나면 가운데로 돌아간다.
  * 작업 영역이 기본 크기보다 작으면 작업 영역에 맞춰 줄인다.
@@ -150,12 +190,14 @@ export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as
  * @param state 지금 상태
  * @param app 열 앱
  * @param workArea 작업 영역 크기
+ * @param content 창 내용. 주지 않으면 앱을 처음 열 때의 내용이다
  * @returns 새 상태와 연 창의 id
  */
 export function openWindow(
   state: WindowState,
   app: WindowApp,
   workArea: WindowWorkArea,
+  content: WindowContent | null = null,
 ): { state: WindowState; id: string } {
   const serial = state.lastSerial + 1;
   const id = `window-${String(serial)}`;
@@ -190,6 +232,7 @@ export function openWindow(
     snapZone: null,
     previous: null,
     isMinimized: false,
+    content: content?.app === app ? content : getDefaultWindowContent(app),
   };
   return {
     id,
@@ -197,6 +240,46 @@ export function openWindow(
       windows: { ...state.windows, [id]: opened },
       order: [...state.order, id],
       lastSerial: serial,
+    },
+  };
+}
+
+/**
+ * 글을 Chrome에서 연다. 가장 최근에 쓴 Chrome 창(최소화된 창 포함)이 있으면 그 창에 새 탭으로 열어 고르고,
+ * 창을 복원해 맨 앞으로 가져온다. 없으면 그 글 탭 하나인 새 Chrome 창을 연다. 같은 글이 열려 있어도 새 탭을 연다.
+ * @codocs [[창 동작:열기 규칙]]
+ * @param state 지금 상태
+ * @param slug 글 slug
+ * @param workArea 작업 영역 크기(새 창을 열 때)
+ * @returns 새 상태와 글을 연 창의 id
+ */
+export function openPostInChrome(
+  state: WindowState,
+  slug: string,
+  workArea: WindowWorkArea,
+): { state: WindowState; id: string } {
+  const page: ChromeTabPage = { kind: 'post', slug };
+  const targetId = state.order.findLast((id) => state.windows[id]?.app === 'chrome');
+  const target = targetId === undefined ? undefined : state.windows[targetId];
+  if (target?.content.app !== 'chrome') {
+    return openWindow(state, 'chrome', workArea, {
+      app: 'chrome',
+      tabs: [page],
+      activeTabIndex: 0,
+    });
+  }
+  const tabs = [...target.content.tabs, page];
+  const updated: OpenWindow = {
+    ...target,
+    isMinimized: false,
+    content: { app: 'chrome', tabs, activeTabIndex: tabs.length - 1 },
+  };
+  return {
+    id: target.id,
+    state: {
+      ...state,
+      windows: { ...state.windows, [target.id]: updated },
+      order: moveToEnd(state.order, target.id),
     },
   };
 }

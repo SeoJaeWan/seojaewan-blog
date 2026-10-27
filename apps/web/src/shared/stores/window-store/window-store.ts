@@ -5,6 +5,7 @@ import type {
   SnapZone,
   WindowApp,
   WindowBounds,
+  WindowContent,
   WindowState,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
@@ -16,6 +17,7 @@ import {
   INITIAL_WINDOW_STATE,
   maximizeWindow,
   minimizeWindow,
+  openPostInChrome,
   openWindow,
   restoreFromMaximize,
   restoreWindow,
@@ -38,8 +40,10 @@ type WindowUiState = {
 
 /** 창 저장소의 조작 */
 type WindowActions = {
-  /** 새 창을 열고 맨 앞으로 둔다. 연 창의 id를 돌려준다 */
-  open: (app: WindowApp, workArea: WindowWorkArea) => string;
+  /** 새 창을 열고 맨 앞으로 둔다. 창 내용을 주지 않으면 앱을 처음 열 때의 내용이다. 연 창의 id를 돌려준다 */
+  open: (app: WindowApp, workArea: WindowWorkArea, content?: WindowContent) => string;
+  /** 글을 가장 최근 Chrome 창의 새 탭(없으면 새 Chrome 창)으로 연다. 글을 연 창의 id를 돌려준다 */
+  openPost: (slug: string, workArea: WindowWorkArea) => string;
   /** 창을 맨 앞으로 가져온다 */
   focus: (id: string) => void;
   /** 창을 바로 지운다 */
@@ -85,8 +89,13 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
   (set, get) => ({
     ...INITIAL_WINDOW_STATE,
     interaction: null,
-    open: (app, workArea) => {
-      const result = openWindow(get(), app, workArea);
+    open: (app, workArea, content) => {
+      const result = openWindow(get(), app, workArea, content);
+      set(result.state);
+      return result.id;
+    },
+    openPost: (slug, workArea) => {
+      const result = openPostInChrome(get(), slug, workArea);
       set(result.state);
       return result.id;
     },
