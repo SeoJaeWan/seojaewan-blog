@@ -20,7 +20,9 @@ describe('Start 메뉴:열기와 닫기', () => {
     usePanelStore.getState().toggleStart();
     render(<StartMenuLayer />);
     const startPanel = screen.getByRole('dialog', { name: '시작' });
-    await userEvent.click(within(startPanel).getByRole('button', { name: 'File Explorer' }));
+    // 고정됨 칸과 모두 목록의 줄에 같은 이름이 있어, DOM 순서가 앞인 고정됨 칸을 누른다
+    const [pinnedExplorer] = within(startPanel).getAllByRole('button', { name: 'File Explorer' });
+    await userEvent.click(pinnedExplorer ?? document.body);
     const { windows, order } = useWindowStore.getState();
     expect(order.map((id) => windows[id]?.app)).toEqual(['file-explorer']);
     expect(screen.queryByRole('dialog', { name: '시작' })).not.toBeInTheDocument();

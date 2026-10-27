@@ -1,6 +1,6 @@
 'use client';
 
-import { type JSX, useEffect, useRef, useState } from 'react';
+import { type JSX, type KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -119,7 +119,7 @@ function joinClassNames(base: string, className: string | undefined): string {
  * 간단히·그리드 목록은 글자 머리글을 누르면 그 자리에 글자 격자(`View=JumpList`와 같은 내용)를 겹쳐 연다([[Start 메뉴:모두]]).
  * `view="jump-list"`는 격자만 그린 피그마 변형 그대로의 모습이다.
  * 고정됨과 모두 목록은 넘치면 ScrollArea로 아래로 스크롤하고, 스크롤바는 본문 오른쪽 바깥에 겹쳐 그린다. 보기 바꾸기는 기능을 구현할 때 붙인다.
- * 항목 칸을 누르면 `onItemOpen`으로 알린다.
+ * 항목 칸과 목록 줄을 누르면 `onItemOpen`으로 알린다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:고정됨]]
  * @codocs [[Start 메뉴:모두]]
@@ -429,14 +429,7 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
            * @param item 항목
            * @returns ListItem
            */
-          (item) => (
-            <ListItem
-              key={item.title}
-              title={item.title}
-              icon={renderItemIcon(item)}
-              className="w-full"
-            />
-          ),
+          (item) => <StartListRow key={item.title} item={item} onItemOpen={props.onItemOpen} />,
         )
       )}
     </ListGroup>
@@ -470,6 +463,50 @@ function StartTile(props: StartTileProps): JSX.Element {
       icon={renderItemIcon(item)}
       className={className}
       onClick={handleClick}
+    />
+  );
+}
+
+type StartListRowProps = {
+  /** 항목 */
+  item: StartItem;
+  /** 줄을 열었을 때 부른다 */
+  onItemOpen?: (item: StartItem) => void;
+};
+
+/**
+ * 모두 목록의 항목 한 줄(ListItem)을 그린다. 고정 항목 칸처럼 클릭·Enter·Space로 열 수 있어, 열면 그 항목으로 `onItemOpen`을 부른다.
+ * @codocs [[Start 메뉴:열기와 닫기]]
+ * @param props
+ */
+function StartListRow(props: StartListRowProps): JSX.Element {
+  const { item } = props;
+
+  /** 줄을 누르면 쓰는 곳에 항목을 알린다. */
+  function handleClick(): void {
+    props.onItemOpen?.(item);
+  }
+
+  /**
+   * Enter·Space를 누르면 줄을 누른 것으로 본다.
+   * @param event 키 이벤트
+   */
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      props.onItemOpen?.(item);
+    }
+  }
+
+  return (
+    <ListItem
+      role="button"
+      tabIndex={0}
+      title={item.title}
+      icon={renderItemIcon(item)}
+      className="w-full"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
     />
   );
 }

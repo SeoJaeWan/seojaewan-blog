@@ -154,7 +154,9 @@ describe('Start 메뉴:열기와 닫기', () => {
     const user = userEvent.setup();
     render(<Shell />);
     await user.click(screen.getByRole('button', { name: '시작' }));
-    await user.click(within(getStartPanel()).getByRole('button', { name: 'Chrome' }));
+    // 고정됨 칸과 모두 목록의 줄에 같은 이름이 있어, DOM 순서가 앞인 고정됨 칸을 누른다
+    const [pinnedChrome] = within(getStartPanel()).getAllByRole('button', { name: 'Chrome' });
+    await user.click(pinnedChrome ?? document.body);
     expect(queryStartPanel()).not.toBeInTheDocument();
   });
 
@@ -224,7 +226,10 @@ describe('Start 메뉴:항목 열기', () => {
   it('Start 메뉴에서 앱 항목을 열면 그 앱 창이 열리고 Start 메뉴는 닫힌다', async () => {
     render(<Shell />);
     await userEvent.click(screen.getByRole('button', { name: '시작' }));
-    await userEvent.click(within(getStartPanel()).getByRole('button', { name: 'File Explorer' }));
+    const [pinnedExplorer] = within(getStartPanel()).getAllByRole('button', {
+      name: 'File Explorer',
+    });
+    await userEvent.click(pinnedExplorer ?? document.body);
     expect(screen.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeInTheDocument();
     expect(queryStartPanel()).not.toBeInTheDocument();
   });
