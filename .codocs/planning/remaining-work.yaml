@@ -11,7 +11,6 @@ _codocs:
 
   | 순서 | PR | 코드에서 할 일 |
   |---|---|---|
-  | 1 | #235 토큰 | 새 색 변수 2개, `motion/duration/slower`, 칠 스타일 `Icon Color/Search Focus`. 지워진 `Icon Color/Search`·`color/green/light-2`를 쓰는 코드 정리 |
   | 2 | #225 SearchBox | `Appearance=Web` 분리(Chrome 새 탭이 씀), Taskbar·Pill의 Hover·Focused 그라데이션 아이콘(`icon-color/Search Focus`), `State=Pressed`(아이콘 0.8배), Safari는 단색 강조색 대체([[검색:입력칸]]). 옛 컬러 돋보기 자산·`motion-search-icon-state`와 [[디자인 기반]]의 해당 줄 정리 |
   | 3 | #226 FileRow, #227 DetailsHeader | `View=Recycle bin` 변형, prop `originalLocation`·`deletedDate` |
   | 4 | #228 Menu | 라디오 하위 메뉴 3개를 하나의 `RadioGroup`으로(기본값 이름·오름차순·보통 아이콘), `pin_off`·`zoom_in` 아이콘 |
