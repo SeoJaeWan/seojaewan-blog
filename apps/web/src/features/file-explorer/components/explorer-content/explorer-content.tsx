@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, KeyboardEvent, ReactNode } from 'react';
+import type { ComponentProps, JSX, KeyboardEvent, ReactElement, ReactNode } from 'react';
 
 import {
   ExplorerAddressRow,
@@ -41,6 +41,13 @@ type ExplorerContentProps = Pick<
     navigation?: ReactNode;
     /** 피그마 `Items` 슬롯. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다 */
     children?: ReactNode;
+    /**
+     * 항목 자리 요소에 넘길 속성(역할·접근성 이름, 선택·우클릭·키보드 동작, ref). 바깥 배치 클래스를 더할 수 있다.
+     * 주지 않으면 이름이 "폴더 내용"인 group이다
+     */
+    itemsAreaProps?: ComponentProps<'div'>;
+    /** 항목 자리 요소를 감싸 그린다(우클릭 메뉴처럼 그 요소에 동작을 합치는 컴포넌트). 주지 않으면 그대로 그린다 */
+    renderItemsArea?: (area: ReactElement) => ReactNode;
     /** 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다 */
     itemsKey?: string;
     /** 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다 */
@@ -80,6 +87,8 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     onLargeIconsView: handleLargeIconsView,
     onKeyDown: handleKeyDown,
     itemsKey,
+    itemsAreaProps,
+    renderItemsArea,
     className,
   } = props;
   const isDesktop = device === 'desktop';
@@ -129,13 +138,21 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         )}
         {/* 항목이 넘치면 세로로 스크롤한다. */}
         <ScrollArea key={itemsKey} material="solid" className="min-w-px flex-1">
-          <div
-            role="group"
-            aria-label="폴더 내용"
-            className="flex flex-wrap content-start items-start gap-4 px-12 py-8"
-          >
-            {children}
-          </div>
+          {(renderItemsArea ?? renderAsIs)(
+            <div
+              role="group"
+              aria-label="폴더 내용"
+              {...itemsAreaProps}
+              className={[
+                'relative flex flex-1 flex-wrap content-start items-start gap-4 px-12 py-8',
+                itemsAreaProps?.className,
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {children}
+            </div>,
+          )}
         </ScrollArea>
       </div>
       <ExplorerStatusBar
@@ -148,4 +165,13 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
       />
     </div>
   );
+}
+
+/**
+ * 항목 자리 요소를 그대로 그린다.
+ * @param area 항목 자리 요소
+ * @returns 그대로의 요소
+ */
+function renderAsIs(area: ReactElement): ReactNode {
+  return area;
 }

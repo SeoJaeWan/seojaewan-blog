@@ -1,0 +1,390 @@
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { useExplorerClipboardStore } from '@/features/file-explorer/stores/explorer-clipboard-store/explorer-clipboard-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import {
+  hydrateWorkspaceStore,
+  useWorkspaceStore,
+} from '@/shared/stores/workspace-store/workspace-store';
+import type { ExplorerLocation } from '@/shared/utils/window-rules/window-rules';
+import { BLOG_FOLDER_ID, RECYCLE_BIN_ID } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { ExplorerBody } from './explorer-body';
+
+const POSTS = [
+  { slug: 'a', title: '훅 정리', folderPath: ['React'], date: '2026-10-20' },
+  { slug: 'b', title: '회고', folderPath: [], date: '2026-10-21' },
+  { slug: 'c', title: '캐시', folderPath: ['Next.js'], date: '2026-10-22' },
+] as const;
+
+const handleNavigate = vi.fn();
+const handleOpenInNewTab = vi.fn();
+
+let userInstance: ReturnType<typeof userEvent.setup> = userEvent.setup();
+
+/**
+ * 테스트마다 만든 사용자 입력기를 돌려준다. 눌러 둔 수정 키(Ctrl, Shift)가 다음 입력까지 이어진다.
+ * @returns 사용자 입력기
+ */
+function user(): ReturnType<typeof userEvent.setup> {
+  return userInstance;
+}
+
+/**
+ * 위치를 보는 탐색기 본문을 그린다.
+ * @param location 볼 위치
+ * @param device 화면 방식
+ * @returns 다시 그리는 함수
+ */
+function renderBody(
+  location: ExplorerLocation,
+  device: 'desktop' | 'mobile' = 'desktop',
+): (next: ExplorerLocation) => void {
+  const view = render(
+    <ExplorerBody
+      device={device}
+      location={location}
+      locationIcon={null}
+      onNavigate={handleNavigate}
+      onOpenInNewTab={handleOpenInNewTab}
+    />,
+  );
+  return (next) => {
+    view.rerender(
+      <ExplorerBody
+        key={next ?? 'desktop'}
+        device={device}
+        location={next}
+        locationIcon={null}
+        onNavigate={handleNavigate}
+        onOpenInNewTab={handleOpenInNewTab}
+      />,
+    );
+  };
+}
+
+/**
+ * 항목 자리.
+ * @returns 폴더 내용 목록
+ */
+function list(): HTMLElement {
+  return screen.getByRole('listbox', { name: '폴더 내용' });
+}
+
+/**
+ * 항목 하나.
+ * @param name 항목 이름
+ * @returns 항목
+ */
+function option(name: string): HTMLElement {
+  return within(list()).getByRole('option', { name });
+}
+
+/**
+ * 고른 항목 이름들.
+ * @returns 이름
+ */
+function selectedNames(): string[] {
+  return within(list())
+    .getAllByRole('option')
+    .filter((element) => element.getAttribute('aria-selected') === 'true')
+    .map((element) => element.textContent);
+}
+
+/**
+ * 위치에 있는 항목 이름들.
+ * @param parentId 위치
+ * @returns 이름
+ */
+function namesIn(parentId: string | null): string[] {
+  return Object.values(useWorkspaceStore.getState().items)
+    .filter((item) => item.parentId === parentId)
+    .map((item) => item.name);
+}
+
+beforeEach(async () => {
+  // Base UI 메뉴가 열려 있는 동안 바깥에 pointer-events: none을 걸어, 메뉴 항목을 누를 수 있게 검사를 끈다.
+  userInstance = userEvent.setup({ pointerEventsCheck: 0 });
+  localStorage.clear();
+  hydrateWorkspaceStore(POSTS);
+  await vi.waitFor(() => {
+    expect(useWorkspaceStore.getState().items['post:a']).toBeDefined();
+  });
+  handleNavigate.mockClear();
+  handleOpenInNewTab.mockClear();
+});
+
+afterEach(() => {
+  useWindowStore.getState().reset();
+  useWorkspaceStore.getState().reset();
+  useExplorerClipboardStore.getState().clear();
+  localStorage.clear();
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+// @codocs [[파일 탐색기:조작]]
+describe('파일 탐색기:조작', () => {
+  it('항목을 클릭하면 그 항목만 고른다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    expect(selectedNames()).toEqual(['React']);
+  });
+
+  it('Ctrl + 클릭하면 선택에 더한다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{Control>}');
+    await user().click(option('회고'));
+    await user().keyboard('{/Control}');
+    expect(selectedNames()).toEqual(['React', '회고']);
+  });
+
+  it('Shift + 클릭하면 표시 순서로 범위를 고른다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('Next.js'));
+    await user().keyboard('{Shift>}');
+    await user().click(option('회고'));
+    await user().keyboard('{/Shift}');
+    expect(selectedNames()).toEqual(['Next.js', 'React', '회고']);
+  });
+
+  it('Ctrl + A는 모두 고른다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{Control>}a{/Control}');
+    expect(selectedNames()).toHaveLength(3);
+  });
+
+  it('상태 줄에 항목 수를 보인다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+  });
+
+  it('상태 줄에 고른 항목 수를 보인다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    expect(screen.getByText('1개 항목 선택함')).toBeInTheDocument();
+  });
+
+  it('폴더를 고르고 Enter를 누르면 같은 탭에서 그 폴더로 간다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{Enter}');
+    expect(handleNavigate).toHaveBeenCalledWith('folder:React');
+  });
+
+  it('글을 더블클릭하면 Chrome 창으로 연다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().dblClick(option('회고'));
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['chrome']);
+  });
+
+  it('자세히 보기 열 제목에서 누른 Enter는 고른 항목을 열지 않는다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '자세히' }));
+    await user().click(within(list()).getByRole('option', { name: /^React/ }));
+    fireEvent.keyDown(screen.getByRole('button', { name: '유형' }), { key: 'Enter' });
+    expect(handleNavigate).not.toHaveBeenCalled();
+  });
+
+  it('빈 곳에서 끄는 사각형은 그려진 자리에 걸친 항목을 고른다', () => {
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function rectOf(
+      this: Element,
+    ) {
+      const id = this.getAttribute('data-explorer-item');
+      const left = id === 'post:b' ? 210 : 0;
+      return DOMRect.fromRect({ x: left, y: 10, width: 80, height: 80 });
+    });
+    renderBody(BLOG_FOLDER_ID);
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 } as const;
+    fireEvent.pointerDown(list(), { ...pointer, clientX: 200, clientY: 0 });
+    fireEvent.pointerMove(list(), { ...pointer, clientX: 300, clientY: 100 });
+    fireEvent.pointerUp(list(), { ...pointer, clientX: 300, clientY: 100 });
+    expect(selectedNames()).toEqual(['회고']);
+  });
+
+  it('Delete를 누르면 고른 항목을 휴지통으로 보낸다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('회고'));
+    await user().keyboard('{Delete}');
+    expect(namesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
+  });
+
+  it('F2를 누르면 고른 폴더의 이름을 바꾼다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{F2}');
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('React');
+  });
+
+  it('이름이 맞지 않으면 말풍선으로 이유를 보인다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{F2}');
+    await user().clear(screen.getByRole('textbox', { name: '새 이름' }));
+    await user().keyboard('Next.js{Enter}');
+    expect(screen.getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.')).toBeInTheDocument();
+  });
+
+  it('새로 만들기는 새 폴더를 만들고 이름 바꾸기를 시작한다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '새로 만들기' }));
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('새 폴더');
+  });
+
+  it('Ctrl + X 뒤 다른 폴더에서 Ctrl + V를 누르면 항목을 옮긴다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID);
+    await user().click(option('회고'));
+    await user().keyboard('{Control>}x{/Control}');
+    show('folder:React');
+    fireEvent.keyDown(list(), { key: 'v', ctrlKey: true });
+    expect(namesIn('folder:React')).toContain('회고');
+  });
+
+  it('잘라낸 항목은 흐리게 그린다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('회고'));
+    await user().keyboard('{Control>}x{/Control}');
+    expect(option('회고').querySelector('.opacity-cut')).not.toBeNull();
+  });
+
+  it('잘라낸 것이 없으면 붙여넣기가 비활성이다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    expect(screen.getByRole('button', { name: '붙여넣기' })).toBeDisabled();
+  });
+
+  it('폴더를 자기 안으로는 붙여넣을 수 없다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{Control>}x{/Control}');
+    show('folder:React');
+    expect(screen.getByRole('button', { name: '붙여넣기' })).toBeDisabled();
+  });
+
+  it('아무것도 고르지 않으면 잘라내기가 비활성이다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    expect(screen.getByRole('button', { name: '잘라내기' })).toBeDisabled();
+  });
+
+  it('폴더 하나를 고르지 않으면 이름 바꾸기가 비활성이다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('회고'));
+    expect(screen.getByRole('button', { name: '이름 바꾸기' })).toBeDisabled();
+  });
+
+  it('Blog 폴더를 고르면 삭제가 비활성이다', async () => {
+    renderBody(null);
+    await user().click(option('Blog'));
+    expect(screen.getByRole('button', { name: '삭제' })).toBeDisabled();
+  });
+});
+
+// @codocs [[파일 탐색기:우클릭 메뉴]]
+describe('파일 탐색기:우클릭 메뉴', () => {
+  it('항목을 우클릭하면 그 항목의 메뉴를 연다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    fireEvent.contextMenu(option('React'));
+    expect(screen.getByRole('menuitem', { name: /이름 바꾸기/ })).toBeInTheDocument();
+  });
+
+  it('빈 곳을 우클릭하면 빈 곳 메뉴를 연다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    fireEvent.contextMenu(list());
+    expect(screen.getByRole('menuitem', { name: /붙여넣기/ })).toBeInTheDocument();
+  });
+
+  it('새 탭에서 열기는 그 폴더를 새 탭으로 연다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    fireEvent.contextMenu(option('React'));
+    await user().click(screen.getByRole('menuitem', { name: /새 탭에서 열기/ }));
+    expect(handleOpenInNewTab).toHaveBeenCalledWith('folder:React');
+  });
+});
+
+// @codocs [[파일 탐색기:보기와 정렬]]
+describe('파일 탐색기:보기와 정렬', () => {
+  it('기본 보기는 보통 아이콘이라 열 제목이 없다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    expect(screen.queryByRole('button', { name: '수정한 날짜' })).not.toBeInTheDocument();
+  });
+
+  it('상태 줄의 자세히 버튼을 누르면 자세히 보기로 바꾼다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '자세히' }));
+    expect(screen.getByRole('button', { name: '수정한 날짜' })).toBeInTheDocument();
+  });
+
+  it('자세히 보기의 유형 칸은 폴더를 "파일 폴더"로 보인다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '자세히' }));
+    const row = within(list()).getByRole('option', { name: /^React/ });
+    expect(within(row).getByText('파일 폴더')).toBeInTheDocument();
+  });
+
+  it('열 제목을 누르면 그 열로 정렬한다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '자세히' }));
+    await user().click(screen.getByRole('button', { name: '유형' }));
+    expect(useWorkspaceStore.getState().explorerViews[BLOG_FOLDER_ID]?.sortBy).toBe('type');
+  });
+
+  it('보기는 폴더마다 따로 기억한다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(screen.getByRole('button', { name: '자세히' }));
+    expect(useWorkspaceStore.getState().explorerViews['folder:React']).toBeUndefined();
+  });
+
+  it('이름 내림차순이어도 폴더를 앞에 둔다', () => {
+    useWorkspaceStore.getState().setExplorerView(BLOG_FOLDER_ID, { sortDirection: 'desc' });
+    renderBody(BLOG_FOLDER_ID);
+    expect(
+      within(list())
+        .getAllByRole('option')
+        .map((element) => element.textContent),
+    ).toEqual(['React', 'Next.js', '회고']);
+  });
+});
+
+// @codocs [[파일 탐색기:휴지통 보기]]
+describe('파일 탐색기:휴지통 보기', () => {
+  beforeEach(() => {
+    useWorkspaceStore.getState().trashItems(['post:b']);
+  });
+
+  it('휴지통은 원래 위치 열이 있는 자세히 보기다', () => {
+    renderBody(RECYCLE_BIN_ID);
+    expect(screen.getByRole('button', { name: '원래 위치' })).toBeInTheDocument();
+  });
+
+  it('휴지통 안의 항목은 더블클릭해도 열리지 않는다', async () => {
+    renderBody(RECYCLE_BIN_ID);
+    await user().dblClick(within(list()).getByRole('option', { name: /^회고/ }));
+    expect(useWindowStore.getState().order).toEqual([]);
+  });
+
+  it('복원을 누르면 고른 항목을 원래 위치로 돌려놓는다', async () => {
+    renderBody(RECYCLE_BIN_ID);
+    await user().click(within(list()).getByRole('option', { name: /^회고/ }));
+    await user().click(screen.getByRole('button', { name: '복원' }));
+    expect(namesIn(BLOG_FOLDER_ID)).toContain('회고');
+  });
+
+  it('휴지통 비우기를 누르면 메시지 상자를 보인다', async () => {
+    renderBody(RECYCLE_BIN_ID);
+    await user().click(screen.getByRole('button', { name: '휴지통 비우기' }));
+    expect(await screen.findByRole('alertdialog', { name: '휴지통 비우기' })).toBeInTheDocument();
+  });
+});
+
+// @codocs [[모바일:차이]]
+describe('모바일:차이', () => {
+  it('모바일은 폴더를 탭하면 같은 탭에서 그 폴더로 간다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(option('React'));
+    expect(handleNavigate).toHaveBeenCalledWith('folder:React');
+  });
+});
