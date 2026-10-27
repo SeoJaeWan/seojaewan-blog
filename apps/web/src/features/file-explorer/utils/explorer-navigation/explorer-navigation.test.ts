@@ -25,6 +25,7 @@ import {
   goForward,
   goUp,
   isTreeNodeExpanded,
+  moveTab,
   navigateTo,
   openNewTab,
   resolveExplorerContent,
@@ -177,6 +178,16 @@ describe('파일 탐색기:탭', () => {
     const collapsed = setTreeNodeExpanded(content, BLOG_FOLDER_ID, false);
     const closed = closeTab(collapsed, workspace, 1);
     expect(closed && isTreeNodeExpanded(closed, workspace, BLOG_FOLDER_ID)).toBe(true);
+  });
+
+  it('탭을 끌어 다른 자리로 옮긴다', () => {
+    const moved = moveTab(withTabs(3), 2, 0);
+    expect(moved.tabs.map((tab) => tab.id)).toEqual(['tab-3', 'tab-1', 'tab-2']);
+  });
+
+  it('탭을 옮겨도 고른 탭은 그대로다', () => {
+    const moved = moveTab(withTabs(3), 2, 0);
+    expect(moved.tabs[moved.activeTabIndex]?.id).toBe('tab-3');
   });
 
   it('마지막 탭을 닫으면 창을 닫는다', () => {

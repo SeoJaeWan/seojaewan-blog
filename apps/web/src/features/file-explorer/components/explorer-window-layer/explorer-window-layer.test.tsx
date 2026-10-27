@@ -93,6 +93,18 @@ function treeItem(label: string): HTMLElement {
   return item;
 }
 
+const POINTER = { pointerId: 1, pointerType: 'mouse', button: 0 } as const;
+
+/** 탭 요소의 자리를 탭 차례마다 가로 100px씩으로 둔다(jsdom에는 그려진 자리가 없다). */
+function mockTabRects(): void {
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function rectOf(
+    this: Element,
+  ) {
+    const index = this.parentElement === null ? 0 : [...this.parentElement.children].indexOf(this);
+    return DOMRect.fromRect({ x: index * 100, y: 0, width: 100, height: 32 });
+  });
+}
+
 /**
  * 탭 제목들.
  * @returns 탭 제목
@@ -111,6 +123,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  vi.restoreAllMocks();
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
   localStorage.clear();
@@ -118,6 +131,11 @@ afterEach(() => {
 
 // @codocs [[파일 탐색기:조작]]
 describe('파일 탐색기:조작', () => {
+  it('탐색 창 칸은 끌어 놓을 곳이다', () => {
+    renderExplorer(BLOG_FOLDER_ID);
+    expect(treeItem('React')).toHaveAttribute('data-drop-target', 'folder:React');
+  });
+
   it('폴더를 더블클릭하면 그 폴더로 이동한다', async () => {
     renderExplorer(BLOG_FOLDER_ID);
     await userEvent.dblClick(within(folderContent()).getByText('React'));
@@ -180,6 +198,53 @@ describe('파일 탐색기:조작', () => {
 
 // @codocs [[파일 탐색기:탭]]
 describe('파일 탐색기:탭', () => {
+  it('탭을 끌어 순서를 바꾸면 창 내용의 탭 차례가 바뀐다', async () => {
+    renderExplorer('folder:React');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function rectOf(
+      this: Element,
+    ) {
+      const index =
+        this.parentElement === null ? 0 : [...this.parentElement.children].indexOf(this);
+      return DOMRect.fromRect({ x: index * 100, y: 0, width: 100, height: 32 });
+    });
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 } as const;
+    const blog = screen.getByRole('tab', { name: /Blog/ });
+    fireEvent.pointerDown(blog, { ...pointer, clientX: 150, clientY: 10 });
+    fireEvent.pointerMove(blog, { ...pointer, clientX: 20, clientY: 10 });
+    expect(tabTitles()).toEqual(['Blog', 'React']);
+  });
+
+  it('탭을 두 칸 이상 끌면 끈 자리마다 차례대로 옮긴다', async () => {
+    renderExplorer('folder:React');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    await userEvent.dblClick(within(folderContent()).getByText('React'));
+    mockTabRects();
+    const last = screen.getAllByRole('tab')[2] ?? document.body;
+    fireEvent.pointerDown(last, { ...POINTER, clientX: 250, clientY: 10 });
+    fireEvent.pointerMove(last, { ...POINTER, clientX: 150, clientY: 10 });
+    fireEvent.pointerMove(last, { ...POINTER, clientX: 20, clientY: 10 });
+    expect(tabTitles()).toEqual(['React', 'React', 'Blog']);
+  });
+
+  it('끄는 동안 탭이 닫히면 닫힌 탭이 되살아나지 않는다', async () => {
+    renderExplorer('folder:React');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    mockTabRects();
+    const last = screen.getAllByRole('tab')[2] ?? document.body;
+    fireEvent.pointerDown(last, { ...POINTER, clientX: 250, clientY: 10 });
+    fireEvent.pointerMove(last, { ...POINTER, clientX: 150, clientY: 10 });
+    fireEvent.click(
+      within(screen.getAllByRole('tab')[0] ?? document.body).getByRole('button', {
+        name: '탭 닫기',
+      }),
+    );
+    fireEvent.pointerMove(last, { ...POINTER, clientX: 20, clientY: 10 });
+    expect(screen.getAllByRole('tab')).toHaveLength(2);
+  });
+
   it('탭 제목은 현재 폴더 이름이다', async () => {
     renderExplorer(BLOG_FOLDER_ID);
     await userEvent.dblClick(within(folderContent()).getByText('React'));

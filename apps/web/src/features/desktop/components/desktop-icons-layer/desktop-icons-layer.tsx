@@ -3,18 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 
 import { SelectionMarquee, Tooltip } from '@seojaewan/design-system';
 
-import { DesktopDragGhost } from '@/features/desktop/components/desktop-drag-ghost/desktop-drag-ghost';
+import { DesktopIconImage } from '@/features/desktop/components/desktop-icon-image/desktop-icon-image';
 import type {
   DesktopIcon,
   DesktopIconProps,
 } from '@/features/desktop/components/desktop-icons/desktop-icons';
 import { DesktopIcons } from '@/features/desktop/components/desktop-icons/desktop-icons';
-import type { ItemDropResult } from '@/features/desktop/hooks/use-item-drag/use-item-drag';
-import {
-  DROP_TARGET_ATTRIBUTE,
-  DROP_TARGET_NAME_ATTRIBUTE,
-  useItemDrag,
-} from '@/features/desktop/hooks/use-item-drag/use-item-drag';
 import {
   arrangeInGridOrder,
   getCellGeometry,
@@ -28,14 +22,27 @@ import {
   sortDesktopItems,
 } from '@/features/desktop/utils/desktop-grid/desktop-grid';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
+import {
+  ItemDragGhost,
+  type ItemDragGhostItem,
+} from '@/shared/components/item-drag-ghost/item-drag-ghost';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useFolderRename } from '@/shared/hooks/use-folder-rename/use-folder-rename';
+import type { ItemDropResult } from '@/shared/hooks/use-item-drag/use-item-drag';
+import {
+  DESKTOP_DROP_TARGET,
+  DROP_TARGET_ATTRIBUTE,
+  DROP_TARGET_NAME_ATTRIBUTE,
+  toDropLocation,
+  useItemDrag,
+} from '@/shared/hooks/use-item-drag/use-item-drag';
 import { useMarqueeSelection } from '@/shared/hooks/use-marquee-selection/use-marquee-selection';
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import { useSelection } from '@/shared/hooks/use-selection/use-selection';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
@@ -55,8 +62,10 @@ import type {
   DesktopSortKey,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 import {
+  DESKTOP_NAME,
   getDesktopItems,
   isRecycleBinFull,
+  moveItems,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -136,7 +145,8 @@ export function DesktopIconsLayer(): JSX.Element {
       selection.updateMarquee(getIconsInRect(rect));
     },
   });
-  const itemDrag = useItemDrag({ onDrop: handleDrop });
+  const itemDrag = useItemDrag({ onDrop: handleDrop, canDrop: canDropOn });
+  const dragTargetId = useItemDragStore((state) => state.targetId);
   const selectedIds = selection.selection.ids;
 
   useEffect(
@@ -298,13 +308,30 @@ export function DesktopIconsLayer(): JSX.Element {
   }
 
   /**
+   * 끄는 아이콘을 놓을 곳으로 옮길 수 있는지 본다. 바탕화면 빈 곳은 놓을 곳이 아니라 칸 옮기기로 다룬다.
+   * @param ids 끄는 아이콘 id
+   * @param targetId 놓을 곳 id
+   * @returns 옮길 수 있으면 true
+   */
+  function canDropOn(ids: readonly string[], targetId: string): boolean {
+    return (
+      targetId !== DESKTOP_DROP_TARGET &&
+      moveItems(getWorkspace(), ids, toDropLocation(targetId), new Date().toISOString()).ok
+    );
+  }
+
+  /**
    * 끈 아이콘을 놓는다. 폴더·휴지통 위면 그곳으로 옮기고(거부되면 그대로), 아이콘 영역의 빈 곳이면
    * 자동 정렬이 꺼져 있을 때만 놓은 칸으로 옮긴다. 영역 밖(작업 표시줄 등)에 놓으면 아무것도 하지 않는다.
    * @param result 놓은 결과
    */
   function handleDrop(result: ItemDropResult): void {
     if (result.target !== null) {
-      getWorkspace().moveItems(result.ids, result.target.id);
+      getWorkspace().moveItems(result.ids, toDropLocation(result.target.id));
+      return;
+    }
+    // 옮길 수 없는 폴더·휴지통·창 위에 놓았으면 빈 곳에 놓은 것이 아니므로 제자리에 둔다(바탕화면 빈 곳은 칸 옮기기다).
+    if (result.rejectedTargetId !== null && result.rejectedTargetId !== DESKTOP_DROP_TARGET) {
       return;
     }
     const anchorId = dragAnchorRef.current;
@@ -476,7 +503,6 @@ export function DesktopIconsLayer(): JSX.Element {
     };
   }
 
-  const dragTargetId = itemDrag.drag?.target?.id ?? null;
   const icons: DesktopIcon[] = isRefreshing
     ? []
     : orderedIds.flatMap(
@@ -598,6 +624,26 @@ export function DesktopIconsLayer(): JSX.Element {
   }
 
   const drag = itemDrag.drag;
+
+  /**
+   * 끄는 아이콘 하나를 끄는 복제본으로 바꾼다. 칸 자리를 화면 자리로 바꿔 시작 자리로 쓴다.
+   * @param icon 끄는 아이콘
+   * @returns 복제본. 칸이 없으면 빈 목록
+   */
+  function toGhostItem(icon: DesktopIcon): ItemDragGhostItem[] {
+    if (icon.cell === undefined) {
+      return [];
+    }
+    const origin = getCellOrigin(icon.cell, iconSize);
+    return [
+      {
+        id: icon.id,
+        name: icon.name,
+        icon: <DesktopIconImage kind={icon.kind} full={icon.full} />,
+        origin: { x: dragAreaOrigin.x + origin.x, y: dragAreaOrigin.y + origin.y },
+      },
+    ];
+  }
   const overlay = (
     <>
       {marquee.marquee !== null && (
@@ -612,10 +658,10 @@ export function DesktopIconsLayer(): JSX.Element {
         />
       )}
       {drag !== null && (
-        <DesktopDragGhost
-          icons={icons.filter((icon) => drag.ids.includes(icon.id))}
-          iconView={iconSize}
-          areaOrigin={dragAreaOrigin}
+        <ItemDragGhost
+          items={icons.filter((icon) => drag.ids.includes(icon.id)).flatMap(toGhostItem)}
+          surface="desktop"
+          view={iconSize}
           delta={drag.delta}
           pointer={drag.pointer}
           targetName={drag.target?.name ?? null}
@@ -650,6 +696,10 @@ export function DesktopIconsLayer(): JSX.Element {
             ref={containerRef}
             role="listbox"
             aria-label="바탕화면 아이콘"
+            {...{
+              [DROP_TARGET_ATTRIBUTE]: DESKTOP_DROP_TARGET,
+              [DROP_TARGET_NAME_ATTRIBUTE]: DESKTOP_NAME,
+            }}
             aria-multiselectable={!isMobile}
             tabIndex={-1}
             className="outline-none"

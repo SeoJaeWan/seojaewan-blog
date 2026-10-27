@@ -27,8 +27,13 @@ import { ExplorerContent } from '@/features/file-explorer/components/explorer-co
 import { useExplorerClipboardStore } from '@/features/file-explorer/stores/explorer-clipboard-store/explorer-clipboard-store';
 import {
   formatDeletedDate,
+  getExplorerLocationName,
   getOriginalLocation,
 } from '@/features/file-explorer/utils/explorer-location/explorer-location';
+import {
+  getItemLocationLabel,
+  searchItems,
+} from '@/features/file-explorer/utils/explorer-search/explorer-search';
 import {
   type ExplorerDetailsColumn,
   formatModifiedDate,
@@ -38,14 +43,28 @@ import {
   sortExplorerItems,
 } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
+import {
+  ItemDragGhost,
+  type ItemDragGhostItem,
+} from '@/shared/components/item-drag-ghost/item-drag-ghost';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useFolderRename } from '@/shared/hooks/use-folder-rename/use-folder-rename';
+import {
+  DESKTOP_DROP_TARGET,
+  DROP_TARGET_ATTRIBUTE,
+  DROP_TARGET_NAME_ATTRIBUTE,
+  type ItemDropResult,
+  toDropLocation,
+  useItemDrag,
+} from '@/shared/hooks/use-item-drag/use-item-drag';
 import { useMarqueeSelection } from '@/shared/hooks/use-marquee-selection/use-marquee-selection';
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
+import type { PointerPoint } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { useSelection } from '@/shared/hooks/use-selection/use-selection';
+import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
@@ -160,18 +179,34 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const [pendingRenameId, setPendingRenameId] = useState<string | null>(null);
   // 메뉴의 삭제로 지운 뒤 포커스를 옮길 항목(null이면 항목 자리). 메뉴가 닫힌 뒤 옮긴다.
   const [pendingFocus, setPendingFocus] = useState<{ id: string | null } | null>(null);
+  // 폴더 안 검색어. 입력한 위치와 함께 두어, 다른 위치로 가면 검색어가 없는 원래 보기로 돌아간다.
+  const [search, setSearch] = useState<{ location: ExplorerLocation; query: string }>({
+    location,
+    query: '',
+  });
+  // 끌기를 시작할 때 끄는 항목의 화면 자리. 끄는 복제본을 그리는 데 쓴다.
+  const [dragOrigins, setDragOrigins] = useState<Readonly<Record<string, PointerPoint>>>({});
+  const dragTargetId = useItemDragStore((state) => state.targetId);
 
   const workspace = { items };
   const savedView = explorerViews[location ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW;
   const view: ExplorerFolderView = isRecycleBin ? { ...savedView, view: 'details' } : savedView;
-  const children = sortExplorerItems(
-    getChildItems(workspace, location).filter(
-      (item): item is PlacedItem => item.kind !== 'recycle-bin',
-    ),
-    view,
-    workspace,
-    isRecycleBin,
-  );
+  if (search.location !== location) {
+    // 다른 위치로 가면 검색을 비운다. 돌아와도 앞의 검색어가 되살아나지 않는다.
+    setSearch({ location, query: '' });
+  }
+  const query = search.location === location ? search.query : '';
+  const isSearching = query.trim() !== '';
+  const children = isSearching
+    ? searchItems(workspace, location, query)
+    : sortExplorerItems(
+        getChildItems(workspace, location).filter(
+          (item): item is PlacedItem => item.kind !== 'recycle-bin',
+        ),
+        view,
+        workspace,
+        isRecycleBin,
+      );
   const orderedIds = children.map((item) => item.id);
   const cutSet = new Set(cutIds);
   const pasteIds = cutIds.filter((id) => id in items && !isItemInTrash(workspace, id));
@@ -193,6 +228,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       selection.updateMarquee(getItemsInRect(rect));
     },
   });
+  const itemDrag = useItemDrag({ onDrop: handleItemDrop, canDrop: canDropOn });
   const selectedIds = selection.selection.ids;
   const [onlySelectedId] = selectedIds;
   const onlySelected =
@@ -301,6 +337,58 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   }
 
   /**
+   * 항목이 끌어 놓을 곳인지. 휴지통 밖의 폴더만 놓을 곳이다.
+   * @param item 항목
+   * @returns 놓을 곳이면 true
+   */
+  function canBeDropTarget(item: PlacedItem): boolean {
+    return !isRecycleBin && item.kind === 'folder';
+  }
+
+  /**
+   * 끄는 항목들의 화면 자리를 잰다. 끄는 복제본이 이 자리에서 시작한다.
+   * @param ids 끄는 항목 id
+   * @returns 항목 id별 화면 자리
+   */
+  function measureDragOrigins(ids: readonly string[]): Record<string, PointerPoint> {
+    return Object.fromEntries(
+      ids.flatMap((id) => {
+        const rect = findItemElement(id)?.getBoundingClientRect();
+        return rect === undefined ? [] : [[id, { x: rect.left, y: rect.top }]];
+      }),
+    );
+  }
+
+  /**
+   * 끄는 항목을 놓을 곳으로 옮길 수 있는지 본다. 끄는 항목이 모두 이미 그 위치에 있으면(이 창의 빈 곳) 놓을 곳이 아니고,
+   * 검색 중에는 이 창의 본문도 놓을 곳이 아니다.
+   * @codocs [[파일 탐색기:조작]]
+   * @param ids 끄는 항목 id
+   * @param targetId 놓을 곳 id
+   * @returns 옮길 수 있으면 true
+   */
+  function canDropOn(ids: readonly string[], targetId: string): boolean {
+    const target = toDropLocation(targetId);
+    // 검색 결과는 하위 폴더의 항목도 보이므로, 검색 중에는 이 창의 본문(지금 위치)을 놓을 곳으로 보지 않는다.
+    if ((isSearching && target === location) || ids.every((id) => items[id]?.parentId === target)) {
+      return false;
+    }
+    return moveItems(getWorkspace(), ids, target, new Date().toISOString()).ok;
+  }
+
+  /**
+   * 끈 항목을 놓는다. 같은 창의 폴더, 탐색 창 칸, 다른 탐색기 창, 바탕화면(빈 곳·폴더·휴지통) 위면 그곳으로 옮긴다.
+   * 놓을 곳이 아니면(옮길 수 없는 곳 포함) 제자리다.
+   * @codocs [[파일 탐색기:조작]]
+   * @param result 놓은 결과
+   */
+  function handleItemDrop(result: ItemDropResult): void {
+    if (result.target !== null) {
+      getWorkspace().moveItems(result.ids, toDropLocation(result.target.id));
+    }
+  }
+
+  /**
    * 폴더 보기와 정렬을 바꾼다(폴더마다 기억한다).
    * @param next 바꿀 값
    */
@@ -365,9 +453,24 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
    * @param ids 항목 id
    */
   function restore(ids: readonly string[]): void {
-    if (isRecycleBin && ids.length > 0) {
-      getWorkspace().restoreItems(ids);
+    const restorable = getRestorableIds(ids);
+    if (isRecycleBin && restorable.length > 0) {
+      getWorkspace().restoreItems(restorable);
     }
+  }
+
+  /**
+   * 복원할 수 있는 항목만 거른다. 휴지통에 바로 보낸 항목(휴지통 기록이 있는 항목)만 복원하고,
+   * 휴지통에 보낸 폴더 안의 항목(검색 결과로 보인다)은 그 폴더와 함께 돌아가므로 따로 복원하지 않는다.
+   * @codocs [[파일 탐색기:휴지통 보기]]
+   * @param ids 항목 id
+   * @returns 복원할 수 있는 항목 id
+   */
+  function getRestorableIds(ids: readonly string[]): string[] {
+    return ids.filter((id) => {
+      const item = items[id];
+      return item !== undefined && item.trash !== null;
+    });
   }
 
   /**
@@ -415,6 +518,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       return null;
     }
     const result = getWorkspace().createFolder(location);
+    // 새 폴더가 검색 결과에 가려지지 않게 검색을 끝낸다.
+    setSearch({ location, query: '' });
     if (!result.ok) {
       return null;
     }
@@ -439,6 +544,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
    * @param column 누른 열
    */
   function handleColumnSort(column: ExplorerDetailsColumn): void {
+    if (isSearching) {
+      return;
+    }
     const next = getSortAfterColumnClick(view, column);
     if (next !== undefined) {
       changeView(next);
@@ -570,6 +678,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       'aria-selected': selectedIds.includes(id),
       tabIndex: id === tabbableId ? 0 : -1,
       [ITEM_ATTRIBUTE]: id,
+      [DROP_TARGET_ATTRIBUTE]: canBeDropTarget(item) ? id : undefined,
+      [DROP_TARGET_NAME_ATTRIBUTE]: canBeDropTarget(item) ? item.name : undefined,
       onFocus: () => {
         setFocusedItemId(id);
       },
@@ -580,11 +690,19 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         if (rename.renamingId === id || event.button !== 0) {
           return;
         }
-        selection.handleItemPointerDown(id, event);
+        const next = selection.handleItemPointerDown(id, event);
         event.currentTarget.focus();
+        if (!isMobile && !isRecycleBin) {
+          const ids = next.ids.includes(id) ? next.ids : [id];
+          setDragOrigins(measureDragOrigins(ids));
+          if (itemDrag.startItemDrag(event, ids)) {
+            // 글자 선택과 그림의 기본 끌기가 시작되지 않게 한다. 클릭·더블클릭은 그대로 일어난다.
+            event.preventDefault();
+          }
+        }
       },
       onClick: (event: MouseEvent<HTMLDivElement>) => {
-        if (rename.renamingId === id || menu !== null) {
+        if (itemDrag.consumeDragEnd() || rename.renamingId === id || menu !== null) {
           return;
         }
         selection.handleItemClick(id, event);
@@ -685,7 +803,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   };
   const menuEntries = menu === null ? [] : getMenuEntries(menu);
   const visibleItems = isRefreshing ? [] : children;
-  const isDetails = view.view === 'details';
+  const isDetails = view.view === 'details' || isSearching;
 
   /**
    * 항목 하나를 지금 보기로 그린다.
@@ -724,7 +842,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
     const common = {
       ...getItemProps(item),
       name: item.name,
-      selected: isSelected,
+      selected: isSelected || item.id === dragTargetId,
       focused: isSelected && focusedItemId === item.id,
       cut: cutSet.has(item.id),
       renaming: isRenaming,
@@ -738,6 +856,20 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           surface="explorer"
           view={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
           icon={renderItemIcon(item)}
+        />
+      );
+    }
+    if (isSearching) {
+      return (
+        <FileRow
+          key={item.id}
+          {...common}
+          date={formatModifiedDate(item.date)}
+          type={getItemTypeLabel(item.kind)}
+          showLocation
+          location={getItemLocationLabel(workspace, item.parentId)}
+          icon={renderItemIcon(item)}
+          className="w-full"
         />
       );
     }
@@ -767,8 +899,32 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   }
 
   const listItems = visibleItems.map(renderItem);
+  const drag = itemDrag.drag;
+
+  /**
+   * 끄는 항목 하나를 끄는 복제본으로 바꾼다. 끌기를 시작할 때 잰 화면 자리에서 시작한다.
+   * @param id 끄는 항목 id
+   * @returns 복제본. 항목이나 자리가 없으면 빈 목록
+   */
+  function toGhostItem(id: string): ItemDragGhostItem[] {
+    const item = items[id];
+    const origin = dragOrigins[id];
+    return item === undefined || item.kind === 'recycle-bin' || origin === undefined
+      ? []
+      : [{ id, name: item.name, icon: renderItemIcon(item), origin }];
+  }
   const overlay = (
     <>
+      {drag !== null && (
+        <ItemDragGhost
+          items={drag.ids.flatMap(toGhostItem)}
+          surface="explorer"
+          view={view.view === 'large' ? 'large' : 'medium'}
+          delta={drag.delta}
+          pointer={drag.pointer}
+          targetName={drag.target?.name ?? null}
+        />
+      )}
       {marquee.marquee !== null && (
         <SelectionMarquee
           className="pointer-events-none absolute z-1"
@@ -816,7 +972,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       };
   const disabledCommands = isRecycleBin
     ? [
-        ...(selectedIds.length === 0 ? (['onRestore'] as const) : []),
+        ...(getRestorableIds(selectedIds).length === 0 ? (['onRestore'] as const) : []),
         ...(children.length === 0 ? (['onEmptyRecycleBin'] as const) : []),
         'onView' as const,
       ]
@@ -874,6 +1030,14 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           setIsRefreshing(true);
         }}
         onKeyDown={handleNavigationKeyDown}
+        searchValue={query}
+        onSearchChange={(value: string) => {
+          setSearch({ location, query: value });
+        }}
+        dropTarget={{
+          id: location ?? DESKTOP_DROP_TARGET,
+          name: getExplorerLocationName(workspace, location),
+        }}
         commands={
           <ExplorerCommands
             device={device}
@@ -909,8 +1073,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         {isDetails ? (
           <div className="flex w-full flex-col items-start">
             <DetailsHeader
-              view={isRecycleBin ? 'recycle-bin' : 'default'}
-              sortColumn={getSortColumn(view.sortBy, isRecycleBin)}
+              view={isRecycleBin && !isSearching ? 'recycle-bin' : 'default'}
+              showLocation={isSearching}
+              sortColumn={getSortColumn(view.sortBy, isRecycleBin && !isSearching)}
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}
             />

@@ -117,6 +117,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  Reflect.deleteProperty(document, 'elementFromPoint');
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
   useExplorerClipboardStore.getState().clear();
@@ -373,10 +374,179 @@ describe('파일 탐색기:휴지통 보기', () => {
     expect(namesIn(BLOG_FOLDER_ID)).toContain('회고');
   });
 
+  it('휴지통에 보낸 폴더 안의 항목만 고르면 복원이 비활성이다', async () => {
+    useWorkspaceStore.getState().trashItems(['folder:React']);
+    renderBody(RECYCLE_BIN_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    await user().click(within(list()).getByRole('option', { name: /^훅 정리/ }));
+    expect(screen.getByRole('button', { name: '복원' })).toBeDisabled();
+  });
+
   it('휴지통 비우기를 누르면 메시지 상자를 보인다', async () => {
     renderBody(RECYCLE_BIN_ID);
     await user().click(screen.getByRole('button', { name: '휴지통 비우기' }));
     expect(await screen.findByRole('alertdialog', { name: '휴지통 비우기' })).toBeInTheDocument();
+  });
+});
+
+/**
+ * 포인터 아래 맨 위 요소를 정한다(jsdom에는 elementFromPoint가 없다).
+ * @param element 포인터 아래 요소
+ */
+function pointAt(element: Element): void {
+  Object.defineProperty(document, 'elementFromPoint', {
+    configurable: true,
+    value: () => element,
+  });
+}
+
+/**
+ * 놓을 곳 속성만 단 요소(다른 탐색기 창 본문, 바탕화면)를 만든다.
+ * @param id 놓을 곳 id
+ * @param name 놓을 곳 이름
+ * @returns 요소
+ */
+function dropTarget(id: string, name: string): Element {
+  const element = document.createElement('div');
+  element.setAttribute('data-drop-target', id);
+  element.setAttribute('data-drop-target-name', name);
+  return element;
+}
+
+const POINTER = { pointerId: 1, pointerType: 'mouse', button: 0 } as const;
+
+/**
+ * 항목을 끌어 움직인다(놓지는 않는다).
+ * @param element 끄는 항목
+ */
+function dragOver(element: HTMLElement): void {
+  fireEvent.pointerDown(element, { ...POINTER, clientX: 10, clientY: 10 });
+  fireEvent.pointerMove(element, { ...POINTER, clientX: 60, clientY: 60 });
+}
+
+/**
+ * 항목을 끌어 놓는다.
+ * @param element 끄는 항목
+ */
+function dragAndDrop(element: HTMLElement): void {
+  dragOver(element);
+  fireEvent.pointerUp(element, { ...POINTER, clientX: 60, clientY: 60 });
+}
+
+// @codocs [[파일 탐색기:조작]]
+describe('파일 탐색기:조작 - 끌어 옮기기', () => {
+  it('항목을 같은 창의 폴더 위에 놓으면 그 폴더로 옮긴다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(option('React'));
+    dragAndDrop(option('회고'));
+    expect(namesIn('folder:React')).toContain('회고');
+  });
+
+  it('끄는 동안 놓을 곳 이름으로 이동 툴팁을 보인다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(option('React'));
+    dragOver(option('회고'));
+    expect(screen.getByRole('tooltip')).toHaveTextContent('React(으)로 이동');
+  });
+
+  it('끄는 동안 놓을 폴더를 강조한다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(option('React'));
+    dragOver(option('회고'));
+    expect(option('React')).toHaveClass('bg-file-item-explorer-fill-selected');
+  });
+
+  it('다른 탐색기 창 본문에 놓으면 그 창이 보는 폴더로 옮긴다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(dropTarget('folder:Next.js', 'Next.js'));
+    dragAndDrop(option('회고'));
+    expect(namesIn('folder:Next.js')).toContain('회고');
+  });
+
+  it('바탕화면에 놓으면 바탕화면으로 옮긴다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(dropTarget('desktop', '바탕 화면'));
+    dragAndDrop(option('회고'));
+    expect(namesIn(null)).toContain('회고');
+  });
+
+  it('폴더를 자기 하위 폴더로 끌어 놓으면 제자리다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(dropTarget('folder:React', 'React'));
+    dragAndDrop(option('React'));
+    expect(namesIn(BLOG_FOLDER_ID)).toContain('React');
+  });
+
+  it('옮길 수 없는 곳 위에서는 이동 툴팁이 없다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(dropTarget(BLOG_FOLDER_ID, 'Blog'));
+    dragOver(option('회고'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('검색 중에는 결과 항목을 이 창 본문에 놓아도 제자리다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    pointAt(dropTarget(BLOG_FOLDER_ID, 'Blog'));
+    dragAndDrop(within(list()).getByRole('option', { name: /^훅 정리/ }));
+    expect(namesIn('folder:React')).toContain('훅 정리');
+  });
+
+  it('휴지통 안의 항목은 끌어 옮길 수 없다', () => {
+    useWorkspaceStore.getState().trashItems(['post:b']);
+    renderBody(RECYCLE_BIN_ID);
+    pointAt(dropTarget('desktop', '바탕 화면'));
+    dragAndDrop(within(list()).getByRole('option', { name: /^회고/ }));
+    expect(namesIn(RECYCLE_BIN_ID)).toContain('회고');
+  });
+});
+
+// @codocs [[파일 탐색기:폴더 안 검색]]
+describe('파일 탐색기:폴더 안 검색', () => {
+  it('검색어를 넣으면 현재 폴더와 하위 폴더에서 찾은 항목을 보인다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    expect(
+      within(list())
+        .getAllByRole('option')
+        .map((element) => element.textContent),
+    ).toEqual([expect.stringMatching(/^훅 정리/)]);
+  });
+
+  it('검색 결과는 자세히 보기에 위치 열을 더한다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    expect(screen.getByRole('button', { name: '위치' })).toBeInTheDocument();
+  });
+
+  it('검색어를 지우면 원래 보기로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    const box = screen.getByRole('searchbox', { name: '검색' });
+    await user().type(box, '훅');
+    await user().clear(box);
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+  });
+
+  it('다른 위치로 가면 검색어를 비운다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    show('folder:React');
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('');
+  });
+
+  it('다른 위치로 갔다가 돌아와도 앞의 검색어가 되살아나지 않는다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    show('folder:React');
+    show(BLOG_FOLDER_ID);
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('');
+  });
+
+  it('휴지통에서는 휴지통 항목 안에서 찾는다', async () => {
+    useWorkspaceStore.getState().trashItems(['folder:React']);
+    renderBody(RECYCLE_BIN_ID);
+    await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
+    expect(within(list()).getAllByRole('option')).toHaveLength(1);
   });
 });
 
@@ -386,5 +556,12 @@ describe('모바일:차이', () => {
     renderBody(BLOG_FOLDER_ID, 'mobile');
     await user().click(option('React'));
     expect(handleNavigate).toHaveBeenCalledWith('folder:React');
+  });
+
+  it('모바일은 항목을 끌어 옮기지 않는다', () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    pointAt(option('React'));
+    dragAndDrop(option('회고'));
+    expect(namesIn(BLOG_FOLDER_ID)).toContain('회고');
   });
 });

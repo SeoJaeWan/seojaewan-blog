@@ -22,6 +22,7 @@ import {
   goBack,
   goForward,
   goUp,
+  moveTab,
   navigateTo,
   type NavigationRow,
   openNewTab,
@@ -32,6 +33,11 @@ import {
 } from '@/features/file-explorer/utils/explorer-navigation/explorer-navigation';
 import { sortExplorerItems } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
 import type { Device } from '@/shared/hooks/use-device/use-device';
+import {
+  DROP_TARGET_ATTRIBUTE,
+  DROP_TARGET_NAME_ATTRIBUTE,
+} from '@/shared/hooks/use-item-drag/use-item-drag';
+import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type {
@@ -79,6 +85,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
   const workspace = { items };
   const location = getCurrentLocation(content);
   const explorerViews = useWorkspaceStore((state) => state.explorerViews);
+  const dragTargetId = useItemDragStore((state) => state.targetId);
   const locationName = getExplorerLocationName(workspace, location);
   const trail = getExplorerLocationTrail(workspace, location);
   const visibleTrail = device === 'mobile' ? trail.slice(-1) : trail;
@@ -180,6 +187,19 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
     update(openNewTab(content, workspace, target));
   }
 
+  /**
+   * 탭을 끌어 다른 자리로 옮긴다.
+   * @param from 옮길 탭의 차례
+   * @param to 옮길 자리
+   */
+  function handleTabMove(from: number, to: number): void {
+    // 끄는 동안 여러 번 옮기므로, 그린 때의 내용이 아니라 저장소의 지금 내용에서 옮긴다.
+    const latest = useWindowStore.getState().windows[windowId]?.content;
+    if (latest?.app === 'file-explorer') {
+      update(moveTab(latest, from, to));
+    }
+  }
+
   /** 새 탭을 `Blog` 폴더로 연다. */
   function handleNewTab(): void {
     update(openNewTab(content, workspace));
@@ -243,6 +263,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
       onTabSelect={handleTabSelect}
       onTabClose={handleTabClose}
       onNewTab={handleNewTab}
+      onTabMove={handleTabMove}
     >
       <ExplorerBody
         // 탭마다 본문을 따로 그려, 탭을 바꾸면 선택·스크롤 같은 본문 상태가 새로 시작한다.
@@ -288,6 +309,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
               key={row.key}
               row={row}
               isFocusable={row.key === focusableTreeKey}
+              isDropTarget={row.key === dragTargetId}
               icon={
                 row.icon === 'recycle-bin'
                   ? renderLocationIcon(workspace, RECYCLE_BIN_ID)
@@ -313,6 +335,8 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
 type NavigationTreeItemProps = {
   /** 트리 칸 */
   row: NavigationRow;
+  /** 끄는 항목을 이 칸에 놓으려는 중인지. 강조한다 */
+  isDropTarget: boolean;
   /** Tab으로 닿는 칸인지. 고른 칸이 보이지 않으면 가장 가까운 보이는 조상이다 */
   isFocusable: boolean;
   /** 칸 아이콘 */
@@ -325,12 +349,12 @@ type NavigationTreeItemProps = {
 
 /**
  * 탐색 창 트리 칸 하나. 클릭·Enter·Space로 그 위치로 가고, 꺾쇠·→·←로 펼치거나 접는다.
- * 고른 칸(현재 위치, 보이지 않으면 가장 가까운 보이는 조상)만 Tab으로 닿는다.
+ * 고른 칸(현재 위치, 보이지 않으면 가장 가까운 보이는 조상)만 Tab으로 닿는다. 항목을 끌어 놓을 곳이기도 하다.
  * @codocs [[파일 탐색기:구성]]
  * @param props
  */
 function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
-  const { row, isFocusable, icon, onNavigate, onToggle } = props;
+  const { row, isFocusable, isDropTarget, icon, onNavigate, onToggle } = props;
 
   /**
    * 트리 칸에서 키를 눌렀을 때 이동하거나 펼치고 접는다.
@@ -353,7 +377,8 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
     <NavigationItem
       level={row.level}
       expand={row.expand}
-      selected={row.selected}
+      selected={row.selected || isDropTarget}
+      {...{ [DROP_TARGET_ATTRIBUTE]: row.key, [DROP_TARGET_NAME_ATTRIBUTE]: row.label }}
       label={row.label}
       icon={icon}
       aria-level={row.level + 1}

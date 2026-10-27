@@ -72,4 +72,16 @@ describe('ExplorerAddressRow', () => {
       'Blog 검색',
     );
   });
+
+  it('searchValue로 검색 상자의 입력값을 정한다', () => {
+    const handleSearchChange = vi.fn();
+    render(
+      <ExplorerAddressRow
+        locationIcon={<span />}
+        searchValue="리액트"
+        onSearchChange={handleSearchChange}
+      />,
+    );
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('리액트');
+  });
 });
