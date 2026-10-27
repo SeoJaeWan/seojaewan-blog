@@ -24,6 +24,13 @@ describe('FileItem', () => {
     expect(container.querySelector('.line-clamp-2')).toBeNull();
   });
 
+  it('renameFieldProps를 이름 바꾸기 입력창에 넘긴다', () => {
+    render(
+      <FileItem icon={icon} renaming name="문서" renameFieldProps={{ 'aria-label': '새 이름' }} />,
+    );
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('문서');
+  });
+
   it('탐색기에서 이름을 바꾸면 선택 바탕을 깔고, 바탕화면에서는 깔지 않는다', () => {
     const { container, rerender } = render(<FileItem icon={icon} surface="explorer" renaming />);
     expect((container.firstChild as HTMLElement).className).toContain(

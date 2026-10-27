@@ -79,6 +79,18 @@ describe('창 동작:열기 규칙', () => {
     ]);
   });
 
+  it('새 창에서 열기는 열린 Chrome 창이 있어도 글을 새 Chrome 창으로 연다', () => {
+    openItem('post:a');
+    const { result } = renderHook(() => useOpenItem());
+    act(() => {
+      result.current('post:a', { isNewWindow: true });
+    });
+    expect(windowContents()).toEqual([
+      { app: 'chrome', tabs: [{ kind: 'post', slug: 'a' }], activeTabIndex: 0 },
+      { app: 'chrome', tabs: [{ kind: 'post', slug: 'a' }], activeTabIndex: 0 },
+    ]);
+  });
+
   it('외부 링크는 블로그 안의 창을 만들지 않고 실제 브라우저의 새 탭으로 연다', () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     openItem('link:github');

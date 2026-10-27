@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,23 +7,95 @@ import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
-import { BLOG_FOLDER_ID, RECYCLE_BIN_ID } from '@/shared/utils/workspace-rules/workspace-rules';
+import {
+  BLOG_FOLDER_ID,
+  isItemInTrash,
+  RECYCLE_BIN_ID,
+} from '@/shared/utils/workspace-rules/workspace-rules';
 
 import { DesktopIconsLayer } from './desktop-icons-layer';
 
 const POSTS = [{ slug: 'a', title: '가', folderPath: [], date: '2026-10-20' }] as const;
 
+/**
+ * 바탕화면 아이콘을 이름으로 찾는다.
+ * @param name 아이콘 이름
+ * @returns 아이콘 요소
+ */
+function icon(name: string): HTMLElement {
+  return screen.getByRole('option', { name });
+}
+
+/**
+ * 고른 아이콘 이름을 돌려준다.
+ * @returns 고른 아이콘 이름
+ */
+function selectedNames(): string[] {
+  return screen.getAllByRole('option', { selected: true }).map((element) => element.textContent);
+}
+
+/**
+ * 빈 곳 메뉴를 열어 하위 메뉴의 항목을 고른다. jsdom에서는 하위 메뉴가 포인터로 열리지 않아 키보드로 연다.
+ * @param submenu 하위 메뉴를 여는 항목 이름
+ * @param role 고를 항목의 역할
+ * @param name 고를 항목 이름
+ */
+async function chooseDesktopMenuItem(
+  submenu: string,
+  role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox',
+  name: string,
+): Promise<void> {
+  openMenu(screen.getByRole('listbox'));
+  screen.getByRole('menuitem', { name: submenu }).focus();
+  await user().keyboard('{ArrowRight}');
+  const item = await screen.findByRole(role, { name });
+  item.focus();
+  await user().keyboard('{Enter}');
+}
+
+/**
+ * 요소를 우클릭해 메뉴를 열고 메뉴 항목 이름을 돌려준다.
+ * @param element 우클릭할 요소
+ * @returns 메뉴 항목 이름
+ */
+function openMenu(element: HTMLElement): string[] {
+  fireEvent.contextMenu(element);
+  return screen.getAllByRole('menuitem').map((item) => item.textContent);
+}
+
+let userInstance: ReturnType<typeof userEvent.setup> = userEvent.setup();
+
+/**
+ * 테스트마다 만든 사용자 입력기를 돌려준다. 눌러 둔 수정 키(Ctrl, Shift)가 다음 입력까지 이어진다.
+ * @returns 사용자 입력기
+ */
+function user(): ReturnType<typeof userEvent.setup> {
+  return userInstance;
+}
+
 beforeEach(() => {
+  // Base UI 메뉴가 열려 있는 동안 바깥에 pointer-events: none을 걸어, 하위 메뉴 항목을 누를 수 있게 검사를 끈다.
+  userInstance = userEvent.setup({ pointerEventsCheck: 0 });
   localStorage.clear();
   hydrateWorkspaceStore(POSTS);
 });
 
 afterEach(() => {
+  Reflect.deleteProperty(document, 'elementFromPoint');
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
   localStorage.clear();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
+
+/** 화면 폭을 모바일 기준(768px 미만)으로 둔다. */
+function useMobileScreen(): void {
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })),
+  );
+}
 
 /**
  * 열린 창들의 내용을 돌려준다.
@@ -79,21 +151,386 @@ describe('바탕화면:표시하는 항목', () => {
 describe('창 동작:열기 규칙', () => {
   it('Blog 폴더 아이콘을 더블클릭하면 그 폴더를 보는 새 탐색기 창을 연다', async () => {
     render(<DesktopIconsLayer />);
-    await userEvent.dblClick(screen.getByText('Blog'));
+    await user().dblClick(screen.getByText('Blog'));
     expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
   });
 
   it('휴지통 아이콘을 더블클릭하면 휴지통을 보는 탐색기 창을 연다', async () => {
     render(<DesktopIconsLayer />);
-    await userEvent.dblClick(screen.getByText('휴지통'));
+    await user().dblClick(screen.getByText('휴지통'));
     expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: RECYCLE_BIN_ID }]);
   });
 
   it('외부 링크 아이콘을 더블클릭하면 창을 만들지 않고 실제 브라우저의 새 탭으로 연다', async () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     render(<DesktopIconsLayer />);
-    await userEvent.dblClick(screen.getByText('GitHub'));
+    await user().dblClick(screen.getByText('GitHub'));
     expect(open).toHaveBeenCalledWith('https://github.com/SeoJaeWan', '_blank', 'noopener');
     expect(useWindowStore.getState().order).toHaveLength(0);
+  });
+});
+
+// @codocs [[바탕화면:아이콘 조작]]
+describe('바탕화면:아이콘 조작', () => {
+  it('클릭하면 고르고, Ctrl + 클릭은 더하거나 빼고, 빈 곳을 누르면 선택을 지운다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    expect(selectedNames()).toEqual(['Blog']);
+    await user().keyboard('{Control>}');
+    await user().click(icon('GitHub'));
+    await user().keyboard('{/Control}');
+    expect(selectedNames()).toEqual(['Blog', 'GitHub']);
+    fireEvent.pointerDown(screen.getByRole('listbox'), { button: 0, pointerType: 'mouse' });
+    expect(screen.queryAllByRole('option', { selected: true })).toHaveLength(0);
+  });
+
+  it('Shift + 클릭은 마지막으로 고른 아이콘부터 격자 순서로 범위를 고른다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('휴지통'));
+    await user().keyboard('{Shift>}');
+    await user().click(icon('GitHub'));
+    await user().keyboard('{/Shift}');
+    expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub']);
+  });
+
+  it('방향키는 격자에서 옆 아이콘으로 선택을 옮기고, Ctrl + A는 모두 고른다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('휴지통'));
+    await user().keyboard('{ArrowDown}');
+    expect(selectedNames()).toEqual(['Blog']);
+    expect(icon('Blog')).toHaveFocus();
+    await user().keyboard('{Control>}a{/Control}');
+    expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub', '이력서']);
+  });
+
+  it('Enter는 고른 아이콘을 열고, Delete는 휴지통으로 보낸다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{Enter}');
+    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
+    await user().click(icon('GitHub'));
+    await user().keyboard('{Delete}');
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
+    expect(screen.queryByText('GitHub')).not.toBeInTheDocument();
+  });
+
+  it('지우면 격자 순서의 다음 아이콘(없으면 이전 아이콘)으로 선택과 포커스를 옮긴다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('GitHub'));
+    await user().keyboard('{Delete}');
+    expect(selectedNames()).toEqual(['이력서']);
+    expect(icon('이력서')).toHaveFocus();
+    await user().keyboard('{Delete}');
+    expect(selectedNames()).toEqual(['Blog']);
+    expect(icon('Blog')).toHaveFocus();
+  });
+
+  it('메뉴의 삭제로 지워도 메뉴가 닫힌 뒤 다음 아이콘으로 포커스를 옮긴다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(icon('GitHub'));
+    await user().click(screen.getByRole('menuitem', { name: /^삭제/ }));
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
+    await waitFor(() => {
+      expect(icon('이력서')).toHaveFocus();
+    });
+    expect(selectedNames()).toEqual(['이력서']);
+  });
+
+  it('Blog 폴더와 휴지통은 Delete로 보내지 않는다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{Delete}');
+    expect(icon('Blog')).toBeInTheDocument();
+  });
+
+  it('F2는 폴더 이름 바꾸기를 시작하고, Enter로 확정한다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{F2}');
+    const field = screen.getByRole('textbox', { name: '새 이름' });
+    expect(field).toHaveFocus();
+    await user().clear(field);
+    await user().type(field, '내 블로그{Enter}');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('내 블로그');
+    expect(screen.queryByRole('textbox', { name: '새 이름' })).not.toBeInTheDocument();
+    expect(icon('내 블로그')).toHaveFocus();
+  });
+
+  it('Esc는 이름 바꾸기를 취소하고, 글·외부 링크는 F2로 이름을 바꾸지 않는다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{F2}');
+    await user().type(screen.getByRole('textbox', { name: '새 이름' }), 'x{Escape}');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+    await user().click(icon('GitHub'));
+    await user().keyboard('{F2}');
+    expect(screen.queryByRole('textbox', { name: '새 이름' })).not.toBeInTheDocument();
+  });
+
+  it('폴더·휴지통 위에 끌어 놓으면 그 폴더로 옮기거나 휴지통으로 보내고, 끄는 동안 이동 툴팁을 보인다', () => {
+    const elementFromPoint = vi.fn<(x: number, y: number) => Element | null>();
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: elementFromPoint,
+    });
+    render(<DesktopIconsLayer />);
+    elementFromPoint.mockReturnValue(icon('Blog'));
+    const github = icon('GitHub');
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    fireEvent.pointerDown(github, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(github, { ...pointer, clientX: 40, clientY: 40 });
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Blog(으)로 이동');
+    expect(icon('Blog')).toHaveAttribute('aria-selected', 'true');
+    fireEvent.pointerUp(github, { ...pointer, clientX: 40, clientY: 40 });
+    expect(useWorkspaceStore.getState().items['link:github']?.parentId).toBe(BLOG_FOLDER_ID);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+
+    elementFromPoint.mockReturnValue(icon('휴지통'));
+    const resume = icon('이력서');
+    fireEvent.pointerDown(resume, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(resume, { ...pointer, clientX: 40, clientY: 40 });
+    fireEvent.pointerUp(resume, { ...pointer, clientX: 40, clientY: 40 });
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'link:resume')).toBe(true);
+  });
+
+  it('자동 정렬이 켜져 있으면 빈 곳에 놓아도 정렬된 자리로 돌아가고, 꺼져 있으면 놓은 칸으로 옮긴다', () => {
+    render(<DesktopIconsLayer />);
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    /**
+     * 아이콘을 오른쪽으로 두 칸(보통 아이콘 간격 92px) 끌어 놓는다.
+     * @param name 아이콘 이름
+     */
+    function dragRight(name: string): void {
+      const element = icon(name);
+      fireEvent.pointerDown(element, { ...pointer, clientX: 10, clientY: 10 });
+      fireEvent.pointerMove(element, { ...pointer, clientX: 194, clientY: 10 });
+      fireEvent.pointerUp(element, { ...pointer, clientX: 194, clientY: 10 });
+    }
+    dragRight('GitHub');
+    expect(icon('GitHub')).toHaveStyle({ left: '8px' });
+    act(() => {
+      useWorkspaceStore.getState().setDesktopAutoArrange(false);
+    });
+    dragRight('GitHub');
+    expect(icon('GitHub')).toHaveStyle({ left: '192px', top: '188px' });
+    expect(useWorkspaceStore.getState().desktop.positions['link:github']).toEqual({
+      column: 2,
+      row: 2,
+    });
+  });
+});
+
+// @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+describe('바탕화면:빈 곳 우클릭 메뉴', () => {
+  it('빈 곳을 우클릭하면 보기·정렬 기준·새로 고침·새로 만들기 메뉴를 열고 선택을 지운다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    expect(openMenu(screen.getByRole('listbox'))).toEqual([
+      '보기',
+      '정렬 기준',
+      '새로 고침',
+      '새로 만들기',
+    ]);
+    expect(screen.queryAllByRole('option', { selected: true })).toHaveLength(0);
+  });
+
+  it('보기에서 아이콘 크기와 자동 정렬을, 정렬 기준에서 기준을 고른다', async () => {
+    render(<DesktopIconsLayer />);
+    await chooseDesktopMenuItem('보기', 'menuitemradio', '큰 아이콘');
+    expect(useWorkspaceStore.getState().desktop.iconSize).toBe('large');
+
+    await chooseDesktopMenuItem('보기', 'menuitemcheckbox', '아이콘 자동 정렬');
+    expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(false);
+    // 끄는 순간의 자리를 저장해 아이콘이 움직이지 않는다.
+    expect(useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID]).toEqual({
+      column: 0,
+      row: 1,
+    });
+
+    await chooseDesktopMenuItem('정렬 기준', 'menuitemradio', '항목 유형');
+    expect(useWorkspaceStore.getState().desktop.sortBy).toBe('type');
+  });
+
+  it('새로 만들기 > 폴더는 새 폴더를 만들고 바로 이름 바꾸기를 시작한다', async () => {
+    render(<DesktopIconsLayer />);
+    await chooseDesktopMenuItem('새로 만들기', 'menuitem', '폴더');
+    const field = await screen.findByRole('textbox', { name: '새 이름' });
+    expect(field).toHaveValue('새 폴더');
+    expect(field).toHaveFocus();
+  });
+});
+
+// @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+describe('바탕화면:아이콘 우클릭 메뉴', () => {
+  it('항목 종류마다 메뉴가 다르고, 고정된 항목은 고정 해제를 보인다', () => {
+    render(<DesktopIconsLayer />);
+    expect(openMenu(icon('Blog'))).toEqual([
+      '열기',
+      '새 창에서 열기',
+      '시작 화면에서 고정 해제',
+      '이름 바꾸기F2',
+      '삭제Delete',
+    ]);
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(openMenu(icon('GitHub'))).toEqual([
+      '열기',
+      '링크 복사',
+      '시작 화면에서 고정 해제',
+      '삭제Delete',
+    ]);
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(openMenu(icon('휴지통'))).toEqual(['열기', '휴지통 비우기']);
+  });
+
+  it('글 메뉴에는 새 창에서 열기와 링크 복사가 있다', () => {
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
+    render(<DesktopIconsLayer />);
+    expect(openMenu(icon('가'))).toEqual([
+      '열기',
+      '새 창에서 열기',
+      '링크 복사',
+      '시작 화면에 고정',
+      '삭제Delete',
+    ]);
+  });
+
+  it('여러 개를 고른 채 우클릭하면 열기·삭제 메뉴이고, Blog가 있으면 삭제를 고를 수 없다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{Control>}');
+    await user().click(icon('GitHub'));
+    await user().keyboard('{/Control}');
+    expect(openMenu(icon('GitHub'))).toEqual(['열기', '삭제Delete']);
+    expect(screen.getByRole('menuitem', { name: /^삭제/ })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+
+  it('이름 바꾸기는 메뉴가 닫힌 뒤 입력창에 포커스를 두고, 잘못된 이름이면 말풍선으로 이유를 보인다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(icon('Blog'));
+    await user().click(screen.getByRole('menuitem', { name: /^이름 바꾸기/ }));
+    const field = await screen.findByRole('textbox', { name: '새 이름' });
+    expect(field).toHaveFocus();
+    await user().clear(field);
+    await user().type(field, 'a:b{Enter}');
+    expect(screen.getByRole('tooltip')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+    expect(field).toHaveValue('a:b');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+  });
+
+  it('시작 화면에 고정·고정 해제는 Start 고정됨을 바꾼다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(icon('GitHub'));
+    await user().click(screen.getByRole('menuitem', { name: '시작 화면에서 고정 해제' }));
+    expect(useWorkspaceStore.getState().startPins).not.toContain('link:github');
+    openMenu(icon('GitHub'));
+    await user().click(screen.getByRole('menuitem', { name: '시작 화면에 고정' }));
+    expect(useWorkspaceStore.getState().startPins).toContain('link:github');
+  });
+
+  it('링크 복사는 글이면 공유 링크, 외부 링크면 그 주소를 클립보드에 복사한다', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } });
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
+    render(<DesktopIconsLayer />);
+    openMenu(icon('가'));
+    await user().click(screen.getByRole('menuitem', { name: '링크 복사' }));
+    expect(writeText).toHaveBeenLastCalledWith(`${window.location.origin}/posts/a`);
+    openMenu(icon('GitHub'));
+    await user().click(screen.getByRole('menuitem', { name: '링크 복사' }));
+    expect(writeText).toHaveBeenLastCalledWith('https://github.com/SeoJaeWan');
+  });
+
+  it('새 창에서 열기는 열린 Chrome 창이 있어도 글을 새 Chrome 창으로 연다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
+    render(<DesktopIconsLayer />);
+    await user().dblClick(icon('가'));
+    openMenu(icon('가'));
+    await user().click(screen.getByRole('menuitem', { name: '새 창에서 열기' }));
+    expect(windowContents()).toHaveLength(2);
+  });
+
+  it('휴지통 비우기는 지우지 않고 메시지 상자만 보여 준다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().trashItems(['link:github']);
+    });
+    render(<DesktopIconsLayer />);
+    openMenu(icon('휴지통'));
+    await user().click(screen.getByRole('menuitem', { name: '휴지통 비우기' }));
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('소중한 글이에요 지우지 말아주세요')).toBeInTheDocument();
+    await user().click(within(dialog).getByRole('button', { name: '확인' }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
+  });
+});
+
+// @codocs [[모바일:차이]]
+describe('모바일:차이', () => {
+  beforeEach(() => {
+    useMobileScreen();
+  });
+
+  it('아이콘을 탭하면 연다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
+  });
+
+  it('Ctrl + 탭과 Ctrl + A로 여러 개를 고르지 않는다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{Control>}');
+    await user().click(icon('GitHub'));
+    await user().keyboard('{/Control}');
+    expect(selectedNames()).toEqual(['GitHub']);
+    await user().keyboard('{Control>}a{/Control}');
+    expect(selectedNames()).toEqual(['GitHub']);
+    expect(screen.getByRole('listbox')).toHaveAttribute('aria-multiselectable', 'false');
+  });
+
+  it('아이콘을 끌어 옮기지 않는다', () => {
+    const elementFromPoint = vi.fn<(x: number, y: number) => Element | null>();
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: elementFromPoint,
+    });
+    render(<DesktopIconsLayer />);
+    elementFromPoint.mockReturnValue(icon('Blog'));
+    const github = icon('GitHub');
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    fireEvent.pointerDown(github, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(github, { ...pointer, clientX: 40, clientY: 40 });
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    fireEvent.pointerUp(github, { ...pointer, clientX: 40, clientY: 40 });
+    expect(useWorkspaceStore.getState().items['link:github']?.parentId).toBeNull();
+  });
+
+  it('메뉴가 열린 동안(길게 누른 뒤) 오는 탭은 아이콘을 열지 않는다', () => {
+    render(<DesktopIconsLayer />);
+    const blog = icon('Blog');
+    fireEvent.contextMenu(blog);
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    fireEvent.click(blog);
+    expect(windowContents()).toEqual([]);
+  });
+
+  it('늘 자동 정렬이라 아이콘 자동 정렬 항목을 고를 수 없고, 눌러도 설정이 바뀌지 않는다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(screen.getByRole('listbox'));
+    screen.getByRole('menuitem', { name: '보기' }).focus();
+    await user().keyboard('{ArrowRight}');
+    const autoArrange = await screen.findByRole('menuitemcheckbox', { name: '아이콘 자동 정렬' });
+    expect(autoArrange).toHaveAttribute('aria-disabled', 'true');
+    await user().click(autoArrange);
+    expect(useWorkspaceStore.getState().desktop.autoArrange).toBe(true);
   });
 });

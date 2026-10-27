@@ -29,8 +29,13 @@ export type MenuPopupSubmenu = {
   icon?: MenuItemIcon;
   /** 고를 수 없게 한다 */
   disabled?: boolean;
-  /** 펼쳐 보일 하위 메뉴 항목. 있으면 항목 오른쪽에 하위 메뉴를 연 모습으로 그린다 */
+  /** 펼쳐 보일 하위 메뉴 항목. 있으면 항목 오른쪽에 하위 메뉴를 연 모습으로 그린다(조립 스토리) */
   submenu?: readonly MenuPopupEntry[];
+  /**
+   * 실제로 여닫는 하위 메뉴 항목. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 연다(앱의 메뉴).
+   * `submenu`와 함께 쓰지 않는다
+   */
+  entries?: readonly MenuPopupEntry[];
 };
 
 /** 켜고 끄는 항목(피그마 MenuItem `Kind=Toggle on/off`) */
@@ -40,6 +45,8 @@ export type MenuPopupCheckbox = {
   label: string;
   /** 켜짐 여부 */
   checked: boolean;
+  /** 고를 수 없게 한다 */
+  disabled?: boolean;
   /** 켜짐 여부가 바뀔 때 호출 */
   onCheckedChange?: (checked: boolean) => void;
 };
@@ -85,6 +92,9 @@ type MenuPanelProps = {
   /** 항목 줄 너비를 바꾸는 클래스. 없으면 MenuItem 기본 너비다 */
   itemClassName?: string;
 };
+
+// 피그마 Popover의 트리거(하위 메뉴 항목)와 팝업(하위 메뉴) 사이 간격(spacing/4)이다.
+const SUBMENU_OFFSET = 4;
 
 type MenuPopupProps = MenuPanelProps &
   Omit<ComponentProps<typeof BaseMenu.Popup>, 'children' | 'className' | 'render'>;
@@ -175,6 +185,7 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
           kind="checkbox"
           label={entry.label}
           checked={entry.checked}
+          disabled={entry.disabled}
           onCheckedChange={handleCheckedChange}
           className={itemClassName}
         />
@@ -230,6 +241,25 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
  */
 function SubmenuEntry(props: { entry: MenuPopupSubmenu; itemClassName?: string }): JSX.Element {
   const { entry, itemClassName } = props;
+  if (entry.entries !== undefined) {
+    return (
+      // 실제 하위 메뉴다. Base UI가 마우스·키보드로 여닫고, 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.
+      <BaseMenu.SubmenuRoot>
+        <MenuItem
+          kind="submenu"
+          label={entry.label}
+          icon={entry.icon}
+          disabled={entry.disabled}
+          className={itemClassName}
+        />
+        <BaseMenu.Portal>
+          <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
+            <MenuPopup items={entry.entries} />
+          </BaseMenu.Positioner>
+        </BaseMenu.Portal>
+      </BaseMenu.SubmenuRoot>
+    );
+  }
   const isExpanded = entry.submenu !== undefined;
   const trigger = (
     // 하위 메뉴를 연 상태면 Base UI가 항목에 data-popup-open을 달아 MenuItem이 강조 색을 칠한다.
