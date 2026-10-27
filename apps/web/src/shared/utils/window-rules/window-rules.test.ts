@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { OpenWindow, WindowState, WindowWorkArea } from './window-rules';
 import {
   closeWindow,
+  detachWindow,
   fitBoundsToWorkArea,
   fitWindowsToWorkArea,
   focusWindow,
@@ -19,6 +20,7 @@ import {
   openWindow,
   restoreFromMaximize,
   restoreWindow,
+  setWindowBounds,
   snapWindow,
   toggleMaximizeWindow,
 } from './window-rules';
@@ -356,5 +358,50 @@ describe('창 동작:창 조작 - 화면 크기가 바뀔 때 창 자리', () =>
       width: 800,
       height: 400,
     });
+  });
+});
+
+// @codocs [[창 동작:창 조작]]
+describe('창 동작:창 조작 - 끌어서 옮기기와 크기 조절', () => {
+  it('떠 있는 창의 자리를 바꾸고, 최대화·스냅한 창은 그대로 둔다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const id = ids[0] ?? '';
+    const bounds = { x: 10, y: 20, width: 600, height: 400 };
+    expect(setWindowBounds(state, id, bounds).windows[id]?.bounds).toEqual(bounds);
+    const maximized = maximizeWindow(state, id);
+    expect(setWindowBounds(maximized, id, bounds)).toBe(maximized);
+  });
+});
+
+// @codocs [[창 동작:스냅]]
+describe('창 동작:스냅 - 끌어서 떼기', () => {
+  it('스냅된 창을 떼면 떠 있는 창으로 돌아가 받은 자리에 놓인다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const id = ids[0] ?? '';
+    const snapped = snapWindow(state, id, { layout: 'half', index: 0 });
+    const bounds = { x: 300, y: 0, width: 1024, height: 640 };
+    expect(detachWindow(snapped, id, bounds).windows[id]).toMatchObject({
+      placement: 'normal',
+      snapZone: null,
+      previous: null,
+      bounds,
+    });
+  });
+
+  it('최대화한 창을 떼면 최대화하기 앞 모습을 지운다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const id = ids[0] ?? '';
+    const maximized = maximizeWindow(snapWindow(state, id, { layout: 'half', index: 1 }), id);
+    const bounds = { x: 0, y: 0, width: 1024, height: 640 };
+    expect(detachWindow(maximized, id, bounds).windows[id]).toMatchObject({
+      placement: 'normal',
+      previous: null,
+    });
+  });
+
+  it('떠 있는 창은 그대로 둔다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const id = ids[0] ?? '';
+    expect(detachWindow(state, id, { x: 0, y: 0, width: 1, height: 1 })).toBe(state);
   });
 });
