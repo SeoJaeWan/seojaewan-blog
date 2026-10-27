@@ -1,5 +1,5 @@
-// 아이콘을 고르는 규칙을 React 밖의 순수 함수로 모은다. 바탕화면이 쓰고, 탐색기가 쓰게 되면 shared로 옮긴다.
-// 포인터·키보드를 이 규칙에 잇는 것은 `features/desktop/hooks/use-selection`이다.
+// 아이콘·항목을 고르는 규칙을 React 밖의 순수 함수로 모은다. 바탕화면과 탐색기가 함께 쓴다.
+// 포인터·키보드를 이 규칙에 잇는 것은 `shared/hooks/use-selection`이다.
 
 /** 고른 항목. 바탕화면·탐색기의 선택 상태다 */
 export type Selection = {

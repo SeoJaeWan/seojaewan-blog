@@ -1,8 +1,8 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useRef, useState } from 'react';
 
-import type { PointerPoint } from '@/features/desktop/hooks/use-pointer-drag/use-pointer-drag';
-import { usePointerDrag } from '@/features/desktop/hooks/use-pointer-drag/use-pointer-drag';
+import type { PointerPoint } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 
 /**
  * 끌어 놓을 수 있는 곳(폴더 아이콘, 휴지통)에 다는 속성. 값은 놓으면 옮길 위치 id(폴더 id, 휴지통 id)다.

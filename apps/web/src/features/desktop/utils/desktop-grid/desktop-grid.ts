@@ -1,6 +1,11 @@
 // 바탕화면 아이콘 격자의 규칙(칸 크기, 자동 정렬, 빈 칸 찾기, 끌어 옮기기)을 React 밖의 순수 함수로 모은다.
 // 저장은 작업 공간 저장소의 바탕화면 설정(`desktop.positions`)이 갖고, 화면은 여기서 계산한 칸에 아이콘을 놓는다.
 
+import {
+  compareDatesNewestFirst,
+  compareItemKinds,
+  compareItemNames,
+} from '@/shared/utils/item-sort/item-sort';
 import type {
   DesktopIconSize,
   DesktopSortKey,
@@ -46,12 +51,6 @@ const cellGeometries = {
   medium: { itemWidth: 76, itemHeight: 74 },
   small: { itemWidth: 76, itemHeight: 58 },
 } as const satisfies Record<DesktopIconSize, CellGeometry>;
-
-// 정렬할 때 항목 유형의 차례. 휴지통은 늘 맨 앞(Windows 바탕화면의 시스템 아이콘처럼), 그다음 폴더, 글, 외부 링크다.
-const kindOrder = { 'recycle-bin': 0, folder: 1, post: 2, link: 3 } as const satisfies Record<
-  WorkspaceItem['kind'],
-  number
->;
 
 /**
  * 아이콘 크기에 맞는 칸 하나의 크기를 돌려준다.
@@ -174,12 +173,12 @@ export function sortDesktopItems<Item extends Pick<WorkspaceItem, 'kind' | 'name
       if (isRecycleBinFirst !== 0) {
         return isRecycleBinFirst;
       }
-      const byName = a.name.localeCompare(b.name, 'en', { numeric: true });
+      const byName = compareItemNames(a.name, b.name);
       switch (sortBy) {
         case 'name':
           return Number(b.kind === 'folder') - Number(a.kind === 'folder') || byName;
         case 'type':
-          return kindOrder[a.kind] - kindOrder[b.kind] || byName;
+          return compareItemKinds(a.kind, b.kind) || byName;
         case 'modified':
           return compareDatesNewestFirst(a.date, b.date) || byName;
       }
@@ -420,25 +419,6 @@ function takeNearestFreeCell(wanted: GridCell, grid: GridSize, taken: Set<number
   }
   taken.add(best.index);
   return getCellAtIndex(best.index, grid);
-}
-
-/**
- * 날짜를 최근 것이 앞에 오게 비교한다. 날짜가 없으면 뒤로 보낸다.
- * @param a 날짜(ISO 8601이나 YYYY-MM-DD)
- * @param b 날짜
- * @returns 비교 값
- */
-function compareDatesNewestFirst(a: string | null, b: string | null): number {
-  if (a === b) {
-    return 0;
-  }
-  if (a === null) {
-    return 1;
-  }
-  if (b === null) {
-    return -1;
-  }
-  return b.localeCompare(a);
 }
 
 /**
