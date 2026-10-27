@@ -321,6 +321,52 @@ describe('바탕화면:아이콘 조작', () => {
   });
 });
 
+// @codocs [[바탕화면:아이콘 조작]]
+describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
+  it('아이콘을 탐색기 창 위에 놓으면 그 창이 보는 폴더로 옮긴다', () => {
+    const explorer = document.createElement('div');
+    explorer.setAttribute('data-drop-target', 'blog');
+    explorer.setAttribute('data-drop-target-name', 'Blog');
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: () => explorer,
+    });
+    render(<DesktopIconsLayer />);
+    const github = icon('GitHub');
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    fireEvent.pointerDown(github, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(github, { ...pointer, clientX: 40, clientY: 40 });
+    fireEvent.pointerUp(github, { ...pointer, clientX: 40, clientY: 40 });
+    expect(useWorkspaceStore.getState().items['link:github']?.parentId).toBe('blog');
+  });
+
+  it('자동 정렬을 끈 채 옮길 수 없는 곳(Blog를 휴지통) 위에 놓으면 아이콘이 제자리다', () => {
+    useWorkspaceStore.getState().setDesktopAutoArrange(false);
+    const elementFromPoint = vi.fn<(x: number, y: number) => Element | null>();
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: elementFromPoint,
+    });
+    render(<DesktopIconsLayer />);
+    const before = useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID];
+    elementFromPoint.mockReturnValue(icon('휴지통'));
+    const blog = icon('Blog');
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    fireEvent.pointerDown(blog, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(blog, { ...pointer, clientX: 10, clientY: 200 });
+    fireEvent.pointerUp(blog, { ...pointer, clientX: 10, clientY: 200 });
+    expect(useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID]).toEqual(before);
+  });
+
+  it('바탕화면 영역은 탐색기 항목을 끌어 놓을 곳이다', () => {
+    render(<DesktopIconsLayer />);
+    expect(screen.getByRole('listbox', { name: '바탕화면 아이콘' })).toHaveAttribute(
+      'data-drop-target',
+      'desktop',
+    );
+  });
+});
+
 // @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
 describe('바탕화면:빈 곳 우클릭 메뉴', () => {
   it('빈 곳을 우클릭하면 보기·정렬 기준·새로 고침·새로 만들기 메뉴를 열고 선택을 지운다', async () => {
