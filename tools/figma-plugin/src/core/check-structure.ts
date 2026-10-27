@@ -4,6 +4,7 @@ import type { Bound, NodeData, PaintData } from './node-data';
 // 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값 포함)
 // 2. CSS로 그릴 수 없는 피그마 기능
 // 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
+// 5번(변형을 자르는 조상)은 변형 트리가 아니라 대상의 조상을 보므로 checkClippingAncestors가 대상마다 한 번 검사한다.
 // 4번(모션 변수 값이 아닌 키프레임 시간·지연, 변수에 연결되지 않은 키프레임 이징)은 모션 견본을 보는 check-motion.ts에 있다.
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
 
@@ -82,6 +83,56 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
   }
   checkNode(root, true, context, add);
   checkInstanceOverrides(root, add);
+  return violations;
+}
+
+/** 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다 */
+export type AncestorData = {
+  name: string;
+  /** 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등) */
+  type: string;
+  /** 내용 자르기(Clip content). 이 속성이 없는 노드(그룹·섹션)는 false */
+  clipsContent: boolean;
+};
+
+// 메시지에 쓰는 조상 종류 이름
+const ancestorKinds: Readonly<Record<string, string>> = {
+  FRAME: '프레임',
+  COMPONENT_SET: '컴포넌트 세트',
+  COMPONENT: '컴포넌트',
+  INSTANCE: '인스턴스',
+};
+
+/**
+ * 내보내는 변형을 자르는 조상을 막는다. 피그마는 노드를 PNG로 내보낼 때 조상의 내용 자르기를 적용해,
+ * 변형의 그림자와 변형 밖으로 나온 자식이 PNG에서 빠진다. 한 대상의 변형은 모두 같은 조상 아래에 있으므로
+ * 변형마다가 아니라 대상마다 한 번, 자르는 조상마다 위반 하나를 낸다.
+ * 페이지와 섹션은 자르지 않는다. 변형 자신의 자르기는 보지 않는다(자기 그림자는 자기 자르기에 잘리지 않는다).
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param target 대상 이름(컴포넌트 세트, 단독 컴포넌트, 조립)
+ * @param ancestors 변형의 조상(페이지 아래 가장 바깥부터 가장 가까운 것까지)
+ * @returns 위반 목록(자르는 조상마다 하나)
+ */
+export function checkClippingAncestors(
+  target: string,
+  ancestors: readonly AncestorData[],
+): Violation[] {
+  const violations: Violation[] = [];
+  for (const [index, ancestor] of ancestors.entries()) {
+    if (!ancestor.clipsContent || ancestor.type === 'SECTION' || ancestor.type === 'PAGE') {
+      continue;
+    }
+    const kind = ancestorKinds[ancestor.type] ?? ancestor.type;
+    const path = ancestors
+      .slice(0, index + 1)
+      .map((item) => item.name)
+      .join(' / ');
+    violations.push({
+      where: `${target} (모든 변형)`,
+      reason: `조상 ${kind} \`${path}\`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다`,
+      fix: `${kind} \`${ancestor.name}\`의 Clip content를 끈다.`,
+    });
+  }
   return violations;
 }
 

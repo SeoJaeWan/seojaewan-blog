@@ -98,6 +98,36 @@ describe('자산 생성', () => {
     );
   });
 
+  it('mask-type 선언은 같은 의미의 SVG 속성으로 옮기고 style의 우선순위를 유지한다', () => {
+    for (const maskType of ['alpha', 'luminance']) {
+      const svg = `<svg viewBox="0 0 1 1"><mask style=" mask-type: ${maskType}; " mask-type="alpha"/></svg>`;
+      expect(parseSvgAsset(svg, 'illustrations/mask.svg').elements).toEqual([
+        { tag: 'mask', attributes: { maskType } },
+      ]);
+    }
+  });
+
+  it('지원하지 않는 mask style 선언은 무시하지 않고 실패한다', () => {
+    for (const style of [
+      'mask-type:alpha;opacity:0.5',
+      'mask-type:invalid',
+      'mask-type:alpha!important',
+    ]) {
+      expect(() =>
+        parseSvgAsset(
+          `<svg viewBox="0 0 1 1"><mask style="${style}"/></svg>`,
+          'illustrations/mask.svg',
+        ),
+      ).toThrow(/style/u);
+    }
+    expect(() =>
+      parseSvgAsset(
+        '<svg viewBox="0 0 1 1"><path style="mask-type:alpha"/></svg>',
+        'icons/path.svg',
+      ),
+    ).toThrow(/style/u);
+  });
+
   it('래스터 원본의 형식은 확장자가 아니라 바이트 앞부분으로 알아낸다', () => {
     expect(rasterFormat(bytes([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0]))).toBe('png');
     expect(rasterFormat(bytes([0xff, 0xd8, 0xff, 0xe0]))).toBe('jpg');

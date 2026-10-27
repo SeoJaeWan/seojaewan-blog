@@ -6,19 +6,18 @@ _codocs:
 개요: |
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
-  모션 남은 작업(애니메이션 PR → 조립 PR → 모션 클래스 붙이기)의 검토를 마쳐, 지금은 아래 두 가지만 남아 있다.
-피그마 수정 중: |
-  피그마 수정이 진행 중이다. 고쳐지면 코드와 스토리를 피그마에 맞추고 여기서 지운다.
-
-  | 항목 | 확인할 것 |
+  2026-10-26 작업에서 생긴 아래 항목이 검토를 기다린다. 이어서 할 일은 [[남은 작업]]에 있다.
+2026-10-26 작업: |
+  | 영역 | 정한 것 |
   |---|---|
-  | 라디오 전체 선택 | `Menu/SortSubmenu`·`ExplorerSortSubmenu`·`ExplorerViewSubmenu`의 라디오 항목이 모두 골라진 모습. 코드는 그대로 그리려고 항목마다 `RadioGroup`을 따로 뒀다 |
-  | React 폴더 창 | `Folder=React` 검색 안내 글자가 "Blog 검색"이고, 탐색 창은 Blog가 선택돼 있다 |
-  | SnapLayoutMenu Hover | 피그마가 최대화 버튼·첫 칸을 Hover 모양으로 그렸는데 변형에 State가 없어 코드는 Rest다 |
-  | ChromeMore 확대/축소 | 아이콘이 돋보기다 |
-  | StartTile 고정 해제 | "시작 화면에서 고정 해제"가 고정과 같은 pin 아이콘이다 |
-  | 검색 결과 주소 | 두 줄 모두 `react-19-hooks`다 |
-  | 미리보기 명령 모음 | Window/Explorer Selection=Single의 명령 모음 자리가 비어 있어, 스토리에서만 `showCommands`를 끄고 그렸다. 피그마를 고치면 이 옵션을 지운다 |
-정리 중: |
-  - 배경화면 `wallpaper-bloom.png`: 손으로 넣은 파일 항목을 자산 컴포넌트로 바꾸고 WebP 생성으로 정리 중이다.
-  - 캡처 도구의 `export *` 문제: 수정 PR 진행 중이다.
+  | 코드 구조 | `desktop`을 `DesktopWallpaper`·`DesktopIcons`로 나눴다(배경화면은 작업 표시줄 뒤까지 깔려 한 덩어리면 DOM이 바뀜) |
+  | 코드 구조 | 메뉴 스토리는 메뉴마다 `components/menu-<이름>/`, `ViewOptions` 메뉴는 Start "보기:" 메뉴라 `start-menu`로 |
+  | lint | 순환 import 검사는 `shared`에만 건다(앱 전체면 lint 시간 +22%). `import type`만의 순환은 검사하지 않는다 |
+  | 검사 도구 | 브랜치 이름 검사에서 `renovate/…`는 예외(Renovate PR이 막히지 않게) |
+  | 검사 도구 | 모션 값 검사 허용 오차: 투명도·배율·트림 0.001, 이동 0.5px, 회전 0.5° |
+  | 자산 | WebP 품질 80(배경화면 PSNR 42.8dB, 1:1 비교에서 차이가 보이지 않음) |
+  | 피그마 | 새 이름 `color/search-gradient/cyan`·`blue`, 칠 스타일 `Icon Color/Search Focus` |
+  | 피그마 | 변형 `View=Default`/`View=Recycle bin`, `Folder=Recycle Bin`(기존 `Location=Recycle Bin` 표기). 휴지통 창은 데스크톱 변형만(모바일은 Blog에만 있는 관례) |
+  | 피그마 | 모션 견본 설명은 자산 `icon-color/Search Focus`의 description에 적음 |
+  | 피그마 | `MessageBox`를 새 조립 영역으로 만듦 |
+  | 디자인 시스템 | `BrowserTabStrip` 탭 사이 간격 없음(피그마에 정보가 없음) |

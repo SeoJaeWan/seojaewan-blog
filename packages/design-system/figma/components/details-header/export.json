@@ -1,8 +1,8 @@
 {
   "name": "DetailsHeader",
-  "nodeId": "31:369",
+  "nodeId": "870:9324",
   "variants": {
-    "default": {
+    "view=default": {
       "node": {
         "height": 32,
         "width": 652,
@@ -10,7 +10,21 @@
         "y": 0
       },
       "nodeId": "31:369",
-      "properties": {}
+      "properties": {
+        "View": "Default"
+      }
+    },
+    "view=recycle-bin": {
+      "node": {
+        "height": 32,
+        "width": 652,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "870:9314",
+      "properties": {
+        "View": "Recycle bin"
+      }
     }
   }
 }

@@ -102,4 +102,5 @@ Windows 화면 요소: |
   - `Closed`·`Open`은 `Popover`와, 트리거와 팝업을 묶은 조립(예: `Start/PowerButton`, `Taskbar/AppMenu`)이 갖는다. 트리거 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)는 `Open` 변형을 갖지 않는다.
   - 팝업이 열려 있어도 트리거는 `Rest` 모양 그대로다. Windows(WinUI)도 팝업이 뜨면 바깥 클릭을 받는 막이 마우스를 가져가 트리거가 평소 모양으로 돌아간다. 코드에서는 열림 상태(`aria-expanded`)로만 구분한다.
   - 예외: 작업 표시줄 앱 버튼은 창 미리보기(`Taskbar/AppPreview`)가 떠 있는 동안 `Hover` 모양이다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다. 우클릭 메뉴(`Taskbar/AppMenu`)가 열렸을 때는 다른 트리거처럼 `Rest` 모양이다.
+  - 예외: 창의 최대화 버튼은 스냅 레이아웃 메뉴(`Window/SnapLayoutMenu`)가 떠 있는 동안 `Hover` 모양이다. 스냅 레이아웃도 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다.
   - 메뉴가 열린 화면에서는 그 메뉴를 연 트리거를 담은 조립이 `Open`이다([[디자인 시스템:팝업]]).

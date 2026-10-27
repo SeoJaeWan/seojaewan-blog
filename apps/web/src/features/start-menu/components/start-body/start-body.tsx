@@ -198,7 +198,7 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
  * 격자가 다 들어오면(`entered`) 목록을 `invisible`·`inert`로 둔다. 동작 줄이기에서는 목록 페이드가 없어 이것이 없으면 목록이 격자 아래로 비친다.
  * 닫기 시작하면 `invisible`을 풀어, 투명도 0에서 시작하는 목록 페이드 인이 보이게 한다.
  * @codocs [[Start 메뉴:모두]]
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param props
  */
 function StartListView(props: StartListViewProps): JSX.Element {

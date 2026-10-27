@@ -10,6 +10,8 @@ export type ExplorerWindowTab = {
   title: string;
   /** 지금 고른 탭인지. 모바일은 고른 탭의 제목을 창 제목으로 쓴다 */
   selected?: boolean;
+  /** 피그마 ExplorerTab Icon. 현재 위치의 아이콘(16px)이다. 주지 않으면 폴더 아이콘(file/Folder)이다 */
+  icon?: ReactNode;
 };
 
 // 창 층이 넘기는 창 동작 속성이다. WindowFrame에 그대로 넘긴다.
@@ -36,8 +38,8 @@ type ExplorerWindowProps = WindowFrameControlProps & {
   className?: string;
 };
 
-// 탭 아이콘과 모바일 앱 아이콘은 피그마 Window/Explorer의 인스턴스(file/Folder, app/File Explorer) 그대로다.
-const tabIcon = <ImageAsset name="images/file-folder" className="size-full object-contain" />;
+// 탭 기본 아이콘과 모바일 앱 아이콘은 피그마 Window/Explorer의 인스턴스(file/Folder, app/File Explorer) 그대로다.
+const folderTabIcon = <ImageAsset name="images/file-folder" className="size-full object-contain" />;
 const explorerAppIcon = (
   <ImageAsset name="images/app-file-explorer" className="size-full object-contain" />
 );
@@ -86,7 +88,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
               <ExplorerTab
                 key={`${String(index)}-${tab.title}`}
                 selected={tab.selected}
-                icon={tabIcon}
+                icon={tab.icon ?? folderTabIcon}
                 title={tab.title}
                 className="shrink-0"
               />

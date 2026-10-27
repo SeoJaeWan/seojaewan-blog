@@ -3,13 +3,13 @@
 // 작업 표시줄 미리보기 목록 조립 스토리가 함께 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
 
 /**
- * 피그마 Taskbar/PreviewList: 탐색기 창들의 제목. Count 값만큼 앞에서부터 쓴다.
- * 축소 화면은 모두 Window/Explorer `Device=Desktop, Folder=Blog, Selection=Single`이고, 명령 모음 자리(Commands)가 비어 있다.
+ * 피그마 Taskbar/PreviewList: 탐색기 창들의 미리보기 제목과 축소 화면 속 창의 탭 제목. Count 값만큼 앞에서부터 쓴다.
+ * 축소 화면은 모두 Window/Explorer `Device=Desktop, Folder=Blog, Selection=Single`이고, 탭 제목만 창마다 다르다.
  */
 export const PREVIEW_WINDOWS = [
-  { id: 'explorer-1', title: 'Blog - 파일 탐색기' },
-  { id: 'explorer-2', title: 'React - 파일 탐색기' },
-  { id: 'explorer-3', title: 'Next.js - 파일 탐색기' },
+  { id: 'explorer-1', title: 'Blog - 파일 탐색기', tabTitle: 'Blog' },
+  { id: 'explorer-2', title: 'React - 파일 탐색기', tabTitle: 'React' },
+  { id: 'explorer-3', title: 'Next.js - 파일 탐색기', tabTitle: 'Next.js' },
 ] as const;
 
 /**
