@@ -10,7 +10,7 @@ test('바탕화면의 Blog 폴더와 휴지통을 열면 그 위치를 보는 �
   await desktop.getByText('Blog', { exact: true }).dblclick();
   const blog = page
     .getByRole('region', { name: 'Blog - 파일 탐색기' })
-    .getByRole('group', { name: '폴더 내용' });
+    .getByRole('listbox', { name: '폴더 내용' });
   await expect(blog.getByText('Notion 블로그 이전기')).toBeVisible();
   await expect(blog.getByText('React', { exact: true })).toBeVisible();
 
