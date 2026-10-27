@@ -5,28 +5,42 @@ import { type JSX, useEffect, useRef } from 'react';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
-import { getAppWindowTitle } from '@/shell/components/app-windows/app-windows';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
+import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
 import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
 import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-app-window-renderer';
+import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-window-title';
 
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
  * 다시 시작하면 데스크톱 하위 트리의 `key`(세대)를 바꿔 새로고침 없이 다시 마운트한다. 그래서 저장소 밖의 지역 상태도 사라진다.
- * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useWorkspaceStore`)가 가져 다시 마운트한 뒤에도 남는다.
+ * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useRestartStore`)가 가져 다시 마운트한 뒤에도 남는다.
  * 다시 시작 단계(`idle`이 아닌 동안) 데스크톱 하위 트리는 `inert`라 재부팅 화면 뒤에서 키보드·보조 기술로 닿지 않는다.
  * 다시 시작이 끝나면 포커스가 사라진 자리(다시 마운트한 트리) 대신 바탕화면(`main`)으로 옮긴다.
+ * 서버가 읽은 글 색인을 받아, 마운트한 뒤 작업 공간 저장소가 브라우저 저장분을 읽고 글 색인과 맞추게 한다.
+ * 그래서 서버 HTML과 첫 클라이언트 렌더는 저장분 없이 초기 구조로 같게 그리고(수화 불일치 없음), 저장된 배치는 그 뒤에 보인다.
  * @codocs [[작업 공간:다시 시작]]
- * @returns 작업 공간
+ * @codocs [[작업 공간:방문자별 저장]]
+ * @param props
  */
-export function Shell(): JSX.Element {
-  const generation = useWorkspaceStore((state) => state.generation);
-  const phase = useWorkspaceStore((state) => state.phase);
+export function Shell(props: ShellProps): JSX.Element {
+  const { posts } = props;
+  const generation = useRestartStore((state) => state.generation);
+  const phase = useRestartStore((state) => state.phase);
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';
+
+  useEffect(
+    /** 마운트한 뒤 브라우저 저장분을 읽어 작업 공간을 되살린다. */
+    () => {
+      hydrateWorkspaceStore(posts);
+    },
+    [posts],
+  );
 
   useEffect(
     /** 다시 시작이 끝나면 포커스를 바탕화면으로 옮긴다. */
@@ -52,6 +66,11 @@ export function Shell(): JSX.Element {
   );
 }
 
+type ShellProps = {
+  /** 서버(`content/`)가 읽은 글 색인 */
+  posts: readonly PostSummary[];
+};
+
 type ShellDesktopProps = {
   /** 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지 */
   isInert: boolean;
@@ -69,12 +88,13 @@ type ShellDesktopProps = {
  */
 function ShellDesktop(props: ShellDesktopProps): JSX.Element {
   const renderWindow = useAppWindowRenderer();
+  const getWindowTitle = useAppWindowTitle();
   return (
     <DesktopScene
       inert={props.isInert}
       className="size-full"
       icons={<DesktopIconsLayer />}
-      taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getAppWindowTitle} />}
+      taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}
     >
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
       <ShellWindows />

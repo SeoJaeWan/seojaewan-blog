@@ -3,8 +3,8 @@ import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { Shell } from '@/shell/components/shell/shell';
 
 // 테스트에서 재부팅 화면을 보여 주는 시간. jsdom에는 토큰 CSS가 없어 문서 루트에 직접 넣는다.
@@ -92,14 +92,14 @@ afterEach(() => {
   Reflect.deleteProperty(Element.prototype, 'getAnimations');
   useWindowStore.getState().reset();
   usePanelStore.getState().reset();
-  useWorkspaceStore.setState({ phase: 'idle' });
+  useRestartStore.setState({ phase: 'idle' });
 });
 
 // @codocs [[작업 공간:다시 시작]]
 describe('작업 공간:다시 시작', () => {
   it('다시 시작하면 메뉴와 Start가 닫히고 재부팅 화면이 덮은 뒤 열린 창이 모두 닫힌다', async () => {
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await user.click(screen.getByRole('button', { name: 'Chrome' }));
     expect(queryChromeWindow()).toBeInTheDocument();
 
@@ -113,7 +113,7 @@ describe('작업 공간:다시 시작', () => {
   it('재부팅 화면이 다 덮기 전에는 창이 남아 있고, 다 덮은 뒤에 지운다', async () => {
     const finishEnter = stubBootScreenEnterAnimation();
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await user.click(screen.getByRole('button', { name: 'Chrome' }));
 
     await clickRestart(user);
@@ -130,7 +130,7 @@ describe('작업 공간:다시 시작', () => {
 
   it('재부팅 화면은 정해진 시간 동안 보이다가 사라지고, 처음 상태의 바탕화면이 남는다', async () => {
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await clickRestart(user);
     expect(queryBootScreen()).toBeInTheDocument();
 
@@ -143,7 +143,7 @@ describe('작업 공간:다시 시작', () => {
       vi.advanceTimersByTime(1);
     });
     expect(queryBootScreen()).not.toBeInTheDocument();
-    expect(useWorkspaceStore.getState().phase).toBe('idle');
+    expect(useRestartStore.getState().phase).toBe('idle');
     expect(screen.getByRole('main', { name: '바탕화면' })).toBeInTheDocument();
   });
 });
