@@ -16,18 +16,20 @@ const sourceExtensions = ['.ts', '.tsx', '/index.ts', '/index.tsx'];
  * 디자인 시스템 공개 진입점에서 공개 이름 → 컴포넌트 폴더 표를 만든다.
  * `export * from './components/<폴더>/<파일>'`은 그 파일이 내보낸 이름을 모으고(그 파일이 또 `export *`를 하면 따라간다),
  * `export { A, B } from './components/<폴더>/...'`는 중괄호 안 이름을 쓴다.
+ * 경로는 Vite·Vitest·TypeScript처럼 `/` 기준으로 통일해 다룬다. `read`는 `/` 경로를 받는다(Windows Node도 `E:/a/b.ts`를 연다).
  * @codocs [[피그마 연동:캡처 범위]]
- * @param indexFile 공개 진입점 파일 경로
+ * @param indexFile 공개 진입점 파일 경로(`\`는 `/`로 바꾼다)
  * @param read 파일 읽기
  * @returns 공개 이름 → 컴포넌트 폴더 이름
  */
 export function designSystemExports(indexFile: string, read: SourceReader): Map<string, string> {
   const names = new Map<string, string>();
-  const source = read(indexFile);
+  const indexPath = indexFile.replaceAll('\\', '/');
+  const source = read(indexPath);
   if (source === undefined) {
     return names;
   }
-  const componentsDir = path.join(path.dirname(indexFile), 'components');
+  const componentsDir = path.posix.join(path.posix.dirname(indexPath), 'components');
   for (const match of stripComments(source).matchAll(COMPONENTS_REEXPORT_PATTERN)) {
     const [, namespace, braces, folder = '', rest = ''] = match;
     const exported =
@@ -35,7 +37,7 @@ export function designSystemExports(indexFile: string, read: SourceReader): Map<
         ? namesInBraces(braces)
         : namespace !== undefined
           ? [namespace]
-          : exportedNames(path.join(componentsDir, folder, rest), read, new Set());
+          : exportedNames(path.posix.join(componentsDir, folder, rest), read, new Set());
     for (const name of exported) {
       names.set(name, folder);
     }
@@ -96,7 +98,7 @@ function exportedNames(specifier: string, read: SourceReader, visited: Set<strin
       names.push(namespace);
     } else if (target.startsWith('.')) {
       names.push(
-        ...exportedNames(path.resolve(path.dirname(resolved.file), target), read, visited),
+        ...exportedNames(path.posix.join(path.posix.dirname(resolved.file), target), read, visited),
       );
     }
   }
