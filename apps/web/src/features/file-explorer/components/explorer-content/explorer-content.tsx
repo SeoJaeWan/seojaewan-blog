@@ -8,7 +8,20 @@ import {
   ScrollArea,
 } from '@seojaewan/design-system';
 
+import {
+  DROP_TARGET_ATTRIBUTE,
+  DROP_TARGET_NAME_ATTRIBUTE,
+} from '@/shared/hooks/use-item-drag/use-item-drag';
+
 export type ExplorerContentDevice = 'desktop' | 'mobile';
+
+/** 끌어 놓을 곳 */
+type ExplorerDropTarget = {
+  /** 놓으면 옮길 위치 id(폴더 id, 휴지통 id, 바탕화면은 `desktop`) */
+  id: string;
+  /** 위치 이름. `○○(으)로 이동` 툴팁에 쓴다 */
+  name: string;
+};
 
 type AddressRowProps = ComponentProps<typeof ExplorerAddressRow>;
 type StatusBarProps = ComponentProps<typeof ExplorerStatusBar>;
@@ -24,6 +37,7 @@ type ExplorerContentProps = Pick<
   | 'onForward'
   | 'onUp'
   | 'onRefresh'
+  | 'searchValue'
   | 'onSearchChange'
   | 'onSearch'
 > &
@@ -48,6 +62,11 @@ type ExplorerContentProps = Pick<
     itemsAreaProps?: ComponentProps<'div'>;
     /** 항목 자리 요소를 감싸 그린다(우클릭 메뉴처럼 그 요소에 동작을 합치는 컴포넌트). 주지 않으면 그대로 그린다 */
     renderItemsArea?: (area: ReactElement) => ReactNode;
+    /**
+     * 끌어 놓을 곳으로 쓸 때의 위치 id와 이름(`data-drop-target`). 다른 창이나 바탕화면에서 항목을 끌어 이 본문에 놓으면
+     * 그 위치로 옮긴다
+     */
+    dropTarget?: ExplorerDropTarget;
     /** 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다 */
     itemsKey?: string;
     /** 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다 */
@@ -67,6 +86,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     device = 'desktop',
     locationIcon,
     searchPlaceholder,
+    searchValue,
     path,
     commands,
     navigation,
@@ -87,6 +107,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     onLargeIconsView: handleLargeIconsView,
     onKeyDown: handleKeyDown,
     itemsKey,
+    dropTarget,
     itemsAreaProps,
     renderItemsArea,
     className,
@@ -97,6 +118,12 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     <div
       tabIndex={-1}
       onKeyDown={handleKeyDown}
+      {...(dropTarget === undefined
+        ? {}
+        : {
+            [DROP_TARGET_ATTRIBUTE]: dropTarget.id,
+            [DROP_TARGET_NAME_ATTRIBUTE]: dropTarget.name,
+          })}
       className={[
         'flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none',
         className,
@@ -108,6 +135,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         device={device}
         locationIcon={locationIcon}
         searchPlaceholder={searchPlaceholder}
+        searchValue={searchValue}
         onBack={handleBack}
         backDisabled={isBackDisabled}
         forwardDisabled={isForwardDisabled}

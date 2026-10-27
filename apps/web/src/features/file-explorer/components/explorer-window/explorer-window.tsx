@@ -1,14 +1,8 @@
-import {
-  type ComponentProps,
-  type JSX,
-  type MouseEvent,
-  type PointerEvent,
-  type ReactNode,
-  useEffect,
-  useRef,
-} from 'react';
+import type { ComponentProps, JSX, MouseEvent, PointerEvent, ReactNode } from 'react';
 
 import { ExplorerTab, IconButton, ImageAsset, WindowFrame } from '@seojaewan/design-system';
+
+import { useTabStrip } from '@/features/file-explorer/hooks/use-tab-strip/use-tab-strip';
 
 export type ExplorerWindowDevice = 'desktop' | 'mobile';
 
@@ -47,6 +41,8 @@ type ExplorerWindowProps = WindowFrameControlProps & {
   onTabSelect?: (index: number) => void;
   /** 탭의 닫기 버튼을 누르거나 탭을 가운데 클릭했을 때. 닫을 탭의 차례를 받는다 */
   onTabClose?: (index: number) => void;
+  /** 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다 */
+  onTabMove?: (from: number, to: number) => void;
   /** 새 탭(+) 버튼을 눌렀을 때 */
   onNewTab?: () => void;
   /** 탭 내용 자리. 고른 탭의 `ExplorerContent`를 넣는다. 남는 자리를 채우도록 `min-h-0 w-full flex-1`을 준다 */
@@ -70,7 +66,7 @@ const MIDDLE_BUTTON = 1;
  * 모바일은 늘 전체화면이라 최대화 버튼을 빼고, 탭 하나만 쓰므로 탭 줄이 없다.
  * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)과 제목 표시줄 누르기(창 끌기)는 WindowFrame에 그대로 넘긴다.
  * 탭은 클릭으로 고르고, × 또는 가운데 클릭으로 닫는다. 탭 위에서 누른 것은 창 끌기로 올리지 않는다.
- * 탭이 많으면 탭 너비를 고르게 줄이고, 더 줄일 수 없으면 탭 줄을 가로로 스크롤한다.
+ * 탭이 많으면 탭 너비를 최소 폭까지 고르게 줄이고, 더 줄일 수 없으면 탭 줄을 가로로 스크롤한다. 탭을 끌어 순서를 바꾼다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:탭]]
@@ -83,35 +79,19 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
     tabs,
     onTabSelect,
     onTabClose,
+    onTabMove,
     onNewTab: handleNewTab,
     children,
     className,
     onTitleBarPointerDown: handleFrameTitleBarPointerDown,
     ...frameProps
   } = props;
-  const tabListRef = useRef<HTMLDivElement>(null);
   const selectedIndex = tabs.findIndex((tab) => tab.selected === true);
-
-  useEffect(
-    /**
-     * 탭 줄이 넘쳐 스크롤할 때, 고른 탭(새로 연 탭 등)이 가려져 있으면 보이도록 탭 줄만 가로로 스크롤한다.
-     */
-    () => {
-      const list = tabListRef.current;
-      const selected = list?.children[selectedIndex];
-      if (list === null || !(selected instanceof HTMLElement)) {
-        return;
-      }
-      const start = selected.offsetLeft - list.offsetLeft;
-      const end = start + selected.offsetWidth;
-      if (start < list.scrollLeft) {
-        list.scrollLeft = start;
-      } else if (end > list.scrollLeft + list.clientWidth) {
-        list.scrollLeft = end - list.clientWidth;
-      }
-    },
-    [selectedIndex, tabs.length],
-  );
+  const { tabListRef, startTabDrag } = useTabStrip({
+    selectedIndex,
+    tabCount: tabs.length,
+    onTabMove,
+  });
 
   /**
    * 제목 표시줄 누르기(창 끌기)를 넘기되, 탭 위에서 누른 것은 거른다. 탭을 끌어 순서를 바꾸는 동작이 이 자리를 쓴다.
@@ -123,6 +103,18 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
       return;
     }
     handleFrameTitleBarPointerDown?.(event);
+  }
+
+  /**
+   * 탭 위에서 누르면 탭을 끌어 순서를 바꾸기 시작한다. 닫기 버튼 위에서 누른 것은 받지 않는다.
+   * @param event 누르기 이벤트
+   * @param index 탭 차례
+   */
+  function handleTabPointerDown(event: PointerEvent<HTMLDivElement>, index: number): void {
+    if (event.target instanceof Element && event.target.closest('button') !== null) {
+      return;
+    }
+    startTabDrag(event, index);
   }
 
   /**
@@ -182,6 +174,9 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
                     onClick={() => onTabSelect?.(index)}
                     onClose={() => onTabClose?.(index)}
                     onMouseDown={handleTabMouseDown}
+                    onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                      handleTabPointerDown(event, index);
+                    }}
                     onAuxClick={(event: MouseEvent<HTMLDivElement>) => {
                       handleTabAuxClick(event, index);
                     }}

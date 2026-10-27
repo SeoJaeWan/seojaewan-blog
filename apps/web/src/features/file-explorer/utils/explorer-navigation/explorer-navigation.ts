@@ -202,6 +202,30 @@ export function selectTab(
 }
 
 /**
+ * 탭을 끌어 다른 자리로 옮긴다. 고른 탭은 옮긴 뒤에도 같은 탭이다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param content 탐색기 창 내용
+ * @param from 옮길 탭의 차례
+ * @param to 옮길 자리
+ * @returns 새 창 내용. 옮길 것이 없으면 그대로다
+ */
+export function moveTab(
+  content: ExplorerWindowContent,
+  from: number,
+  to: number,
+): ExplorerWindowContent {
+  const tab = content.tabs[from];
+  const target = Math.min(Math.max(to, 0), content.tabs.length - 1);
+  if (tab === undefined || from === target) {
+    return content;
+  }
+  const activeId = getActiveTab(content).id;
+  const rest = content.tabs.filter((_, index) => index !== from);
+  const tabs = [...rest.slice(0, target), tab, ...rest.slice(target)];
+  return { ...content, tabs, activeTabIndex: tabs.findIndex((entry) => entry.id === activeId) };
+}
+
+/**
  * 탭을 닫는다. 고른 탭을 닫으면 그 오른쪽 탭(없으면 왼쪽 탭)을 고르고, 그 탭의 위치와 조상을 탐색 창에서 펼친다.
  * 마지막 탭을 닫으면 창을 닫아야 한다.
  * @codocs [[파일 탐색기:탭]]
