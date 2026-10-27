@@ -229,13 +229,22 @@ function checkedIds(list: HTMLDivElement): string[] {
 }
 
 /**
+ * 목록을 이름순으로 정렬한다. 찾기 쉽게 하려는 것이다.
+ * @param items 항목
+ * @returns 이름순으로 정렬한 새 배열
+ */
+function byName<T extends { readonly name: string }>(items: readonly T[]): T[] {
+  return [...items].sort((a, b) => a.name.localeCompare(b.name, 'en'));
+}
+
+/**
  * 컴포넌트나 조립 체크박스 목록을 그린다.
  * @param list 그릴 곳
  * @param items 컴포넌트나 조립 목록
  */
 function renderList(list: HTMLDivElement, items: readonly ComponentSummary[]): void {
   list.classList.remove('muted');
-  list.replaceChildren(...items.map(itemLabel));
+  list.replaceChildren(...byName(items).map(itemLabel));
 }
 
 /**
@@ -254,7 +263,7 @@ function renderMotions(items: readonly MotionSummary[], unavailable: string | nu
     return;
   }
   motionList.classList.remove('muted');
-  motionList.replaceChildren(...items.map(motionLabel));
+  motionList.replaceChildren(...byName(items).map(motionLabel));
 }
 
 /**
@@ -301,14 +310,22 @@ function itemLabel(item: ComponentSummary): HTMLLabelElement {
 }
 
 /**
+ * 목록에 항목이 있고 모두 골랐는지 본다. 빈 목록은 고르지 않은 것으로 본다(토큰만 고를 때 "모두 선택"이 켜지지 않게).
+ * @param list 목록
+ * @returns 모두 골랐으면 true
+ */
+function allChecked(list: HTMLDivElement): boolean {
+  const items = checkboxes(list);
+  return items.length > 0 && items.every((checkbox) => checkbox.checked);
+}
+
+/**
  * 항목을 하나라도 끄면 그 목록의 "모두 선택"을 끄고, 내보내기 버튼 상태를 맞춘다.
  */
 function handleItemChange(): void {
-  selectAll.checked = checkboxes(componentList).every((checkbox) => checkbox.checked);
-  selectAllPatterns.checked = checkboxes(patternList).every((checkbox) => checkbox.checked);
-  selectAllMotions.checked =
-    checkboxes(motionList).length > 0 &&
-    checkboxes(motionList).every((checkbox) => checkbox.checked);
+  selectAll.checked = allChecked(componentList);
+  selectAllPatterns.checked = allChecked(patternList);
+  selectAllMotions.checked = allChecked(motionList);
   updateExportButton();
 }
 

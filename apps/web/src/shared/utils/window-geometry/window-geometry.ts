@@ -14,7 +14,7 @@ export type ScreenRect = {
  * 최소화·작업 표시줄에서 복원 모션(`motion-window-minimize`·`motion-window-restore`)이 창을 옮길 거리를 구한다.
  * 두 클래스는 `translate` 다음에 `scale`을 걸고 원점이 가운데라, 창 중심에서 작업 표시줄 앱 버튼 중심까지의 차이가
  * 줄어든 창이 버튼 위에 놓이는 거리다. 앱은 이 값을 `--motion-window-taskbar-offset-x`·`-y`로 넘긴다.
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param windowRect 창 자리
  * @param buttonRect 작업 표시줄 앱 버튼 자리
  * @returns 옮길 거리(px)

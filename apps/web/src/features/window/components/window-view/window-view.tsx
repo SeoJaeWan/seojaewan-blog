@@ -54,7 +54,7 @@ const TASKBAR_OFFSET_Y = '--motion-window-taskbar-offset-y';
  * - 최대화·복원·스냅으로 자리가 바뀌면 안쪽 요소에서 `motion-window-snap`을 FLIP으로 재생한다(`useWindowSnapMotion`).
  * 위치는 실행 중 값이라 인라인 left·top·width·height로 주고 `transform`은 쓰지 않는다(모션 클래스의 translate·scale과 겹치지 않게).
  * @codocs [[창 동작:창 조작]]
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[창 동작:스냅]]
  * @codocs [[모바일:차이]]
  * @param props
