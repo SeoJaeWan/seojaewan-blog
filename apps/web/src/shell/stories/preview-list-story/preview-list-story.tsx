@@ -1,6 +1,10 @@
 import type { JSX } from 'react';
 
-import { ExplorerContent, ExplorerWindow } from '@/features/file-explorer/file-explorer';
+import {
+  ExplorerCommands,
+  ExplorerContent,
+  ExplorerWindow,
+} from '@/features/file-explorer/file-explorer';
 import { TaskbarWindowPreviewList } from '@/features/taskbar/taskbar';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
@@ -17,7 +21,7 @@ type PreviewListStoryProps = {
 /**
  * 피그마 조립 `Taskbar/PreviewList`를 같은 데이터로 그리는 스토리 도우미다. 창 미리보기 목록 스토리와
  * 그 목록을 품는 `Taskbar/AppPreview` 스토리가 함께 쓴다. 축소 화면은 실제 탐색기 창을 `WindowThumbnail`로 줄인 것이다.
- * 피그마처럼 축소 화면의 탐색기 창(`Device=Desktop, Folder=Blog, Selection=Single`)은 명령 모음 자리(Commands)가 비어 있다.
+ * 축소 화면의 탐색기 창은 피그마처럼 `Window/Explorer`(`Device=Desktop, Folder=Blog, Selection=Single`) 그대로이고, 탭 제목만 창마다 다르다.
  * @codocs [[저장소 구성:앱 폴더 구조]]
  * @param props
  * @returns TaskbarWindowPreviewList
@@ -31,7 +35,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
       windows={PREVIEW_WINDOWS.slice(0, count).map(
         /**
          * 창 하나의 미리보기 데이터를 만든다.
-         * @param item 창 제목과 id
+         * @param item 창 제목, 탭 제목과 id
          * @returns 미리보기 데이터
          */
         (item) => ({
@@ -45,7 +49,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
             >
               <ExplorerWindow
                 device="desktop"
-                tabs={[{ title: parts.tabTitle, selected: true }]}
+                tabs={[{ title: item.tabTitle, icon: parts.tabIcon, selected: true }]}
                 className="size-full"
               >
                 <ExplorerContent
@@ -54,6 +58,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
                   locationIcon={parts.locationIcon}
                   searchPlaceholder={parts.searchPlaceholder}
                   path={parts.path}
+                  commands={<ExplorerCommands device="desktop" location={parts.commandsLocation} />}
                   navigation={parts.navigation}
                   itemCount={parts.itemCount}
                   selection={parts.selection}
