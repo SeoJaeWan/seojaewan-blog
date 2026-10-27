@@ -91,7 +91,8 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
 }
 
 /**
- * pill·taskbar의 돋보기를 그린다. Hover·Focused·Pressed에는 그라데이션 자산을 1.1배로 키워 쓴다(누를 때 따로 줄지 않는다).
+ * pill·taskbar의 돋보기를 그린다. Hover·Focused·Pressed에는 그라데이션 자산을 1.1배로 키워 쓰고(누를 때 따로 줄지 않는다),
+ * 나타날 때 강조 모션(motion-search-box-focus)을 재생한다.
  * Safari 계열 WebKit에서는 그라데이션 대신 단색 강조색을 쓴다. disabled면 늘 회색이다.
  * @codocs [[검색:입력칸]]
  * @param props 돋보기 속성
@@ -106,12 +107,7 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
   );
   return (
     <span className="grid size-icon-16 shrink-0 place-items-center">
-      <span
-        className={cn(
-          'grid size-icon-16',
-          !isDisabled && 'group-focus-within:scale-110 group-hover:scale-110',
-        )}
-      >
+      <span className="grid size-icon-16">
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
@@ -119,14 +115,15 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
             isDisabled
               ? 'text-text-fill-disabled'
               : shouldUseSolidIcon
-                ? 'text-text-fill-secondary group-focus-within:text-accent-fill-default group-hover:text-accent-fill-default'
+                ? 'text-text-fill-secondary group-focus-within:scale-110 group-focus-within:text-accent-fill-default group-hover:scale-110 group-hover:text-accent-fill-default'
                 : 'text-text-fill-secondary group-focus-within:hidden group-hover:hidden',
           )}
         />
         {!isDisabled && !shouldUseSolidIcon && (
+          // 호버·포커스에서만 보이므로 보일 때마다 강조 모션이 처음부터 재생된다. 배율 1.1은 끝 모습이다.
           <Asset
             name="illustrations/icon-color-search-focus.svg"
-            className="col-start-1 row-start-1 hidden size-icon-16 group-focus-within:block group-hover:block"
+            className="col-start-1 row-start-1 hidden size-icon-16 motion-search-box-focus scale-110 group-focus-within:block group-hover:block"
           />
         )}
       </span>
