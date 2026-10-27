@@ -166,7 +166,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
         {WORDMARK}
       </p>
       <SearchBox
-        appearance="pill"
+        appearance="web"
         placeholder={NEW_TAB_SEARCH_PLACEHOLDER}
         aria-label={NEW_TAB_SEARCH_PLACEHOLDER}
         className="w-320"
