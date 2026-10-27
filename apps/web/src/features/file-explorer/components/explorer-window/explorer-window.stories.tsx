@@ -8,7 +8,7 @@ import { ExplorerWindow } from './explorer-window';
 
 // 피그마 Window/Explorer의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
-const FOLDERS = ['blog', 'react'] as const;
+const FOLDERS = ['blog', 'react', 'recycle-bin'] as const;
 const SELECTIONS = ['none', 'single'] as const;
 
 // 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1024×640, size/390×796)로 그린다.
@@ -21,7 +21,7 @@ type ParityArgs = {
 };
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 제목은 Patterns/ + 피그마 조립 이름이다. 피그마에 있는 변형 조합(넷)만 캡처 도구가 짝짓는다.
+// 제목은 Patterns/ + 피그마 조립 이름이다. 피그마에 있는 변형 조합(다섯)만 캡처 도구가 짝짓는다.
 const meta = {
   title: 'Patterns/Window/Explorer',
   args: { device: 'desktop', folder: 'blog', selection: 'none' },
@@ -35,7 +35,7 @@ const meta = {
     return (
       <ExplorerWindow
         device={args.device}
-        tabs={[{ title: parts.tabTitle, selected: true }]}
+        tabs={[{ title: parts.tabTitle, icon: parts.tabIcon, selected: true }]}
         className={SIZE_CLASS_NAMES[args.device]}
       >
         <ExplorerContent
@@ -44,7 +44,7 @@ const meta = {
           locationIcon={parts.locationIcon}
           searchPlaceholder={parts.searchPlaceholder}
           path={parts.path}
-          commands={<ExplorerCommands device={args.device} />}
+          commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
           navigation={parts.navigation}
           itemCount={parts.itemCount}
           selection={parts.selection}
