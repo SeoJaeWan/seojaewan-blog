@@ -7,7 +7,7 @@
         "height": 640,
         "width": 1024,
         "x": 64,
-        "y": 20
+        "y": 32
       },
       "nodeId": "576:4465",
       "properties": {
@@ -20,8 +20,8 @@
       "node": {
         "height": 640,
         "width": 1024,
-        "x": 20,
-        "y": 20
+        "x": 64,
+        "y": 32
       },
       "nodeId": "564:6951",
       "properties": {
@@ -35,7 +35,7 @@
         "height": 640,
         "width": 1024,
         "x": 64,
-        "y": 20
+        "y": 32
       },
       "nodeId": "576:4775",
       "properties": {
@@ -49,7 +49,7 @@
         "height": 640,
         "width": 1024,
         "x": 64,
-        "y": 20
+        "y": 32
       },
       "nodeId": "851:5997",
       "properties": {
