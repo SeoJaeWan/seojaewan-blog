@@ -1,11 +1,15 @@
 import type { JSX, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
+import { SnapPreview } from '@seojaewan/design-system';
+
 import { WindowSnapAssist } from '@/features/window/components/window-snap-assist/window-snap-assist';
 import { WindowView } from '@/features/window/components/window-view/window-view';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import type { DragSnapTarget } from '@/shared/utils/window-drag-rules/window-drag-rules';
+import { getDragSnapRect } from '@/shared/utils/window-drag-rules/window-drag-rules';
 import type {
   OpenWindow,
   RenderWindow,
@@ -39,6 +43,14 @@ type LeavingWindow = {
   anchorId: string | null;
 };
 
+/** 끄는 창과 놓으면 채울 곳 */
+type DragSnapPreview = {
+  /** 끄는 창 */
+  id: string;
+  /** 채울 곳 */
+  target: DragSnapTarget;
+};
+
 type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
 
 /**
@@ -46,7 +58,8 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 닫히는 애니메이션이 끝날 때까지만 화면에 남긴다. 그래서 저장소에서는 바로 지워져 "맨 앞 창을 닫으면 최근 창이 앞으로"가
  * 바로 적용된다. 최소화된 채 닫힌 창은 이미 보이지 않으므로 남기지 않는다.
  * DOM 순서는 연 차례로 고정하고 쌓는 차례는 z-index로 준다. 창을 앞으로 가져올 때 요소를 옮기면 모션 클래스가 다시 재생되기 때문이다.
- * 스냅 레이아웃으로 창 하나를 스냅하면 남은 칸에 다른 창을 제안한다(Snap Assist). 남은 칸이 여럿이면 칸 번호 순서로 하나씩 제안하고,
+ * 창을 끌어 작업 영역 끝에 닿으면 놓았을 때 채울 자리에 SnapPreview를 끄는 창 바로 아래에 그린다.
+ * 스냅 레이아웃이나 끌어서 스냅으로 창 하나를 스냅하면 남은 칸에 다른 창을 제안한다(Snap Assist). 남은 칸이 여럿이면 칸 번호 순서로 하나씩 제안하고,
  * 제안할 다른 창이 없으면(열린 창이 하나뿐이면) 보여 주지 않는다.
  * 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 저장소에서 작업 영역 안으로 보정한다(`fitWindowsToWorkArea`).
  * 층 자체는 빈 곳의 클릭을 아래(바탕화면 아이콘)로 넘기고, 창만 클릭을 받는다. 층은 쌓임 맥락을 따로 만들어(`isolate`)
@@ -70,6 +83,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   const [snapAssist, setSnapAssist] = useState<SnapAssistProgress | null>(null);
   const [leaving, setLeaving] = useState<readonly LeavingWindow[]>([]);
   const [previous, setPrevious] = useState<WindowSnapshot>({ windows, order });
+  const [dragSnap, setDragSnap] = useState<DragSnapPreview | null>(null);
 
   useEffect(
     /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다. */
@@ -105,7 +119,21 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   }
 
   /**
-   * 스냅 레이아웃으로 창을 스냅하면 그 레이아웃의 남은 칸에 Snap Assist를 띄운다.
+   * 끄는 창이 놓으면 채울 곳이 바뀌면 미리 보기 판을 옮기거나 지운다.
+   * @param id 끄는 창
+   * @param target 채울 곳. 없으면 null
+   */
+  function handleSnapPreviewChange(id: string, target: DragSnapTarget | null): void {
+    setDragSnap(target === null ? null : { id, target });
+  }
+
+  // 미리 보기 판은 끄는 창과 같은 z-index로 창들보다 앞에 두어, 끄는 창 바로 아래이고 다른 창들 위에 놓인다.
+  const previewRect =
+    dragSnap === null || workArea === null ? null : getDragSnapRect(dragSnap.target, workArea);
+  const previewZIndex = dragSnap === null ? 0 : stack.indexOf(dragSnap.id) + 1;
+
+  /**
+   * 스냅 레이아웃이나 끌어서 스냅으로 창을 스냅하면 그 레이아웃의 남은 칸에 Snap Assist를 띄운다.
    * @param id 스냅한 창
    * @param zone 채운 칸
    */
@@ -150,6 +178,20 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
 
   return (
     <div data-layer="windows" className="pointer-events-none absolute inset-0 isolate">
+      {previewRect !== null && (
+        <SnapPreview
+          aria-hidden
+          data-snap-preview
+          className="absolute"
+          style={{
+            zIndex: previewZIndex,
+            left: previewRect.x,
+            top: previewRect.y,
+            width: previewRect.width,
+            height: previewRect.height,
+          }}
+        />
+      )}
       {entries.map(
         /**
          * 창 하나를 그린다.
@@ -169,6 +211,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
             renderWindow={renderWindow}
             onExitComplete={handleExitComplete}
             onSnap={handleSnap}
+            onSnapPreviewChange={handleSnapPreviewChange}
           />
         ),
       )}

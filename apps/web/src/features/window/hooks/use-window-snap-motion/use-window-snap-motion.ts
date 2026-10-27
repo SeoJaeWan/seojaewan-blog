@@ -27,18 +27,21 @@ type SnapMotionFrame = {
  * - 작업 영역 크기만 바뀐 경우(배치가 그대로)는 움직이지 않는다.
  * - 클래스는 이 요소의 className prop에 두지 않고 classList로만 다룬다. React가 다시 그릴 때 덮어쓰지 않게 하기 위해서다.
  * - 열기·최소화 클래스는 바깥 요소가 갖고, 이 훅은 안쪽 요소에만 쓴다. 같은 요소에 두면 animation이 서로 덮는다.
+ * - 끌어서 스냅·최대화하면 끄는 동안의 자리는 저장소를 거치지 않아 지난번 계산값에 없다. 놓을 때 돌려준 함수로 끌던 자리를 알려 주면
+ *   그 자리에서 이어서 재생한다.
  * @codocs [[피그마 연동:모션 클래스]]
  * @param ref 움직일 안쪽 요소
  * @param rect 지금 창 자리
  * @param layoutKey 배치를 가리키는 값
  * @param isEnabled 움직임을 켤지. 모바일, 끌기·크기 조절 중에는 끈다
+ * @returns 다음 재생의 이전 자리를 바꾸는 함수. 창을 끌던 자리를 넘긴다
  */
 export function useWindowSnapMotion(
   ref: RefObject<HTMLElement | null>,
   rect: WindowBounds,
   layoutKey: string,
   isEnabled: boolean,
-): void {
+): (rect: WindowBounds) => void {
   const previousRef = useRef<SnapMotionFrame | null>(null);
   const { x, y, width, height } = rect;
 
@@ -63,4 +66,16 @@ export function useWindowSnapMotion(
     },
     [ref, x, y, width, height, layoutKey, isEnabled],
   );
+
+  /**
+   * 다음 재생이 이어질 이전 자리를 바꾼다. 배치는 그대로 두어, 배치가 바뀔 때만 재생하는 규칙은 같다.
+   * @param rect 이전 자리로 쓸 자리
+   */
+  function rememberRect(rect: WindowBounds): void {
+    if (previousRef.current !== null) {
+      previousRef.current = { ...previousRef.current, rect };
+    }
+  }
+
+  return rememberRect;
 }
