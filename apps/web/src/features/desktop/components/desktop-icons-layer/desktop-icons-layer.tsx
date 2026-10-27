@@ -37,6 +37,7 @@ import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import { useSelection } from '@/shared/hooks/use-selection/use-selection';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { copyItemLink } from '@/shared/utils/item-link/item-link';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 import type {
   SelectionDirection,
@@ -52,7 +53,6 @@ import {
 import type {
   DesktopIconSize,
   DesktopSortKey,
-  WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 import {
   getDesktopItems,
@@ -295,22 +295,6 @@ export function DesktopIconsLayer(): JSX.Element {
       getWorkspace().setDesktopIconPositions(cells);
     }
     getWorkspace().setDesktopAutoArrange(isOn);
-  }
-
-  /**
-   * 항목의 링크(글은 공유 링크, 외부 링크는 그 주소)를 클립보드에 복사한다.
-   * @param item 항목
-   */
-  function copyLink(item: WorkspaceItem): void {
-    const link =
-      item.kind === 'post'
-        ? `${window.location.origin}/posts/${item.slug}`
-        : item.kind === 'link'
-          ? item.url
-          : null;
-    if (link !== null && typeof navigator.clipboard !== 'undefined') {
-      navigator.clipboard.writeText(link).catch(ignoreClipboardError);
-    }
   }
 
   /**
@@ -574,7 +558,7 @@ export function DesktopIconsLayer(): JSX.Element {
       },
       onCopyLink: () => {
         if (first !== undefined) {
-          copyLink(first);
+          copyItemLink(first);
         }
       },
       onTogglePin: () => {
@@ -703,6 +687,3 @@ function handleNativeDragStart(event: DragEvent): void {
 function getWorkspace(): ReturnType<typeof useWorkspaceStore.getState> {
   return useWorkspaceStore.getState();
 }
-
-/** 클립보드에 쓰지 못하면(권한 거부 등) 조용히 넘어간다. */
-function ignoreClipboardError(): void {}
