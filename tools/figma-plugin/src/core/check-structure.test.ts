@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkVariant } from './check-structure';
+import { checkClippingAncestors, checkVariant } from './check-structure';
 import type { NodeData } from './node-data';
 import { buttonRoot, node, segment, solid } from './node-data.fixture';
 
@@ -759,5 +759,68 @@ describe('구조 검사: 부모 자동 배치 밖 노드의 크기 판단', () =
         ),
       ),
     ).toEqual(['고정 높이 164가 크기 변수에 연결되어 있지 않다']);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 변형을 자르는 조상', () => {
+  it('자르기가 꺼진 조상과 섹션·그룹은 위반이 없다', () => {
+    expect(
+      checkClippingAncestors('Button', [
+        { name: 'Buttons', type: 'SECTION', clipsContent: false },
+        { name: 'row', type: 'FRAME', clipsContent: false },
+        { name: 'group', type: 'GROUP', clipsContent: false },
+        { name: 'Button', type: 'COMPONENT_SET', clipsContent: false },
+      ]),
+    ).toEqual([]);
+  });
+
+  it('조상이 없으면(페이지 바로 아래 단독 컴포넌트) 위반이 없다', () => {
+    expect(checkClippingAncestors('Icon', [])).toEqual([]);
+  });
+
+  it('자르는 배치 프레임마다 위치·조상 경로·고칠 방법을 대상마다 한 번 돌려준다', () => {
+    expect(
+      checkClippingAncestors('MessageBox/EmptyRecycleBin', [
+        { name: 'pattern grid', type: 'FRAME', clipsContent: true },
+        { name: 'row', type: 'FRAME', clipsContent: true },
+        { name: 'MessageBox/EmptyRecycleBin', type: 'COMPONENT_SET', clipsContent: false },
+      ]),
+    ).toEqual([
+      {
+        where: 'MessageBox/EmptyRecycleBin (모든 변형)',
+        reason:
+          '조상 프레임 `pattern grid`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
+        fix: '프레임 `pattern grid`의 Clip content를 끈다.',
+      },
+      {
+        where: 'MessageBox/EmptyRecycleBin (모든 변형)',
+        reason:
+          '조상 프레임 `pattern grid / row`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
+        fix: '프레임 `row`의 Clip content를 끈다.',
+      },
+    ]);
+  });
+
+  it('변형을 담은 컴포넌트 세트의 자르기도 막는다', () => {
+    expect(
+      checkClippingAncestors('WindowFrame', [
+        { name: 'Windows', type: 'SECTION', clipsContent: false },
+        { name: 'WindowFrame', type: 'COMPONENT_SET', clipsContent: true },
+      ]),
+    ).toEqual([
+      {
+        where: 'WindowFrame (모든 변형)',
+        reason:
+          '조상 컴포넌트 세트 `Windows / WindowFrame`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
+        fix: '컴포넌트 세트 `WindowFrame`의 Clip content를 끈다.',
+      },
+    ]);
+  });
+
+  it('섹션은 자르기 값이 켜져 있다고 읽혀도 대상이 아니다', () => {
+    expect(
+      checkClippingAncestors('Button', [{ name: 'Buttons', type: 'SECTION', clipsContent: true }]),
+    ).toEqual([]);
   });
 });

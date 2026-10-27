@@ -639,11 +639,20 @@ async function commitTokens(
     if (variants.size === 0) {
       continue;
     }
-    const pngs = await exportVariantImages(usage.id, variants, SCALE);
-    if (pngs === null) {
+    const images = await exportVariantImages(usage.id, variants, SCALE);
+    if (images === null) {
       log(`${usage.name}: 피그마에서 컴포넌트를 찾지 못해 변형 이미지를 다시 내보내지 않는다.`);
       continue;
     }
+    if (!images.ok) {
+      // 잘린 PNG는 틀린 그림이라 넣지 않고, main의 PNG를 그대로 둔다.
+      for (const violation of images.violations) {
+        log(`${violation.where}: ${violation.reason}. ${violation.fix}`);
+      }
+      log(`${usage.name}: 자르는 조상이 있어 변형 이미지를 다시 내보내지 않는다.`);
+      continue;
+    }
+    const { pngs } = images;
     refreshed.push(usage.name);
     for (const [variant, png] of pngs) {
       log(`토큰 PR 이미지 올리는 중: ${folder}/${pngFile(variant)}`);
