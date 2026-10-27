@@ -128,7 +128,7 @@ jobs:
             --run-id "$RUN_ID" --pr "$PR_NUMBER"
 
       # main: 캡처한 변형을 parity-captures/<컴포넌트>/<변형>.png와
-      # parity-captures/patterns/<영역>/<이름>/<변형>.png에 덮어쓴다(플러그인 PR 본문의 "현재 구현")
+      # parity-captures/patterns/<영역>/<이름>/<변형>.png에 덮어쓴다
       - name: Publish captures
         if: >-
           github.event_name == 'push' && !cancelled() &&
