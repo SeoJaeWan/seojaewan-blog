@@ -2,7 +2,7 @@
 // 토큰(`@theme`)과 토큰 유틸리티(`@utility`)는 figma/tokens.json에서 만든 tokens.css에서만 정의한다.
 // 다른 CSS에서 정의하면 피그마에 없는 값이 토큰처럼 쓰이므로 막는다.
 const TOKENS_CSS = 'packages/design-system/src/tokens.css';
-// @codocs [[기술 스택:스타일링]]
+// @codocs [[디자인 기반:모션 클래스]]
 // 움직임(`@keyframes`와 motion-* 클래스를 만드는 `@utility`)은 손으로 쓰는 motion.css에서만 정의한다.
 // motion.css의 `@utility` 이름이 motion-으로 시작하는지는 src/motion.test.ts가 지킨다.
 const MOTION_CSS = 'packages/design-system/src/motion.css';

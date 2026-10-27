@@ -18,14 +18,8 @@ _codocs:
   Turborepo는 패키지 수가 적어도 빌드 순서 관리와 캐시 이점이 있고, Vercel과 원격 캐시가 바로 연결된다.
 스타일링: |
   디자인 시스템과 앱 모두 Tailwind CSS v4를 쓴다.
-
-  - 토큰은 `packages/design-system`의 `tokens.css` 한 곳에서 정의하고 앱은 그것을 가져다 쓴다. `tokens.css`는 피그마 변수·스타일에서 변환 스크립트가 만든다([[피그마 연동:토큰 생성]]). 다른 CSS에서 `@theme`·`@utility`를 쓰는 것은 Stylelint가 막는다([[피그마 연동:토큰 사용 강제]]).
-  - Tailwind 기본 테마 값(색상, 간격, 서체, 글자 크기, 줄 높이, 반경, 그림자, 블러, 이징, 애니메이션)은 `tokens.css` 맨 앞에서 모두 지우고 디자인 토큰 이름으로만 쓴다. `rounded-lg`, `shadow-md`, `animate-spin`처럼 피그마에 없는 값이 섞여 들어가지 않게 하기 위해서다. 애니메이션은 `--animate-*: initial`로 지운다.
-  - 움직임은 디자인 시스템의 `motion.css`(손으로 쓰는 파일)에 `motion-*` 클래스로 두고, 컴포넌트는 그 클래스만 붙인다([[디자인 기반:모션 클래스]]). `@keyframes`와 `motion-*` 클래스 정의는 Stylelint가 `motion.css`에서만 허용한다.
-  - 토큰 클래스는 `@theme` 변수와 `@utility` + `--value()`로 만든다.
-  - 모르는 클래스와 임의 값(`bg-[#fff]`, `p-[13px]`)은 lint로 막는다. 토큰에 없는 값이 필요하면 피그마부터 고친다.
-  - 클래스는 `cn`(`clsx` + 디자인 토큰 이름을 아는 `tailwind-merge`)으로 조합한다. 사용처에서 넘긴 `className`이 같은 속성의 기본 클래스를 이기게 하고, lint 플러그인이 기본으로 검사하는 함수 이름이라 조합한 클래스도 검사된다([[피그마 연동:토큰 사용 강제]]).
-  - 앱의 CSS는 `@source`로 디자인 시스템 소스를 읽게 한다.
+  토큰 생성과 앱 CSS 연결은 [[피그마 연동:토큰 생성]], 토큰 클래스 사용과 lint 제약은 [[피그마 연동:토큰 사용 강제]], 모션 클래스 정의 규칙은 [[디자인 기반:모션 클래스]]에서 정한다.
+  클래스 조합에는 `clsx`와 디자인 토큰 이름을 아는 `tailwind-merge`를 쓰며, `cn`의 사용 규칙은 [[피그마 연동:토큰 사용 강제]]에 있다.
 
   디자인 시스템을 CSS Modules로, 앱을 Tailwind로 나누는 방식도 검토했다. 스타일링을 하나로 통일하고, 피그마 MCP가 넘겨주는 React + Tailwind 출력과 맞추기 위해 둘 다 Tailwind를 골랐다.
 동작 기반 라이브러리: |
@@ -54,7 +48,7 @@ _codocs:
   자동 시각 판정과 코드 기준 회귀 테스트를 고르지 않은 이유는 [[피그마 연동:검토한 대안]]에서 확인한다.
   화면 단위 시각 검증의 검토 범위는 [[미결 사항:화면 단위 시각 검증]]에 있다.
 린트와 포맷: |
-  ESLint + Prettier를 쓰고, CSS는 Stylelint로 검사한다.
-  Tailwind 모르는 클래스·임의 값 금지와 `packages/design-system`이 `apps/web`을 import하지 못하게 하는 경계 규칙을 ESLint 플러그인으로 강제하고, Prettier로 Tailwind 클래스 순서를 정렬한다. 토큰을 `tokens.css` 밖에서 정의하지 못하게 하는 규칙은 Stylelint가 맡는다. ESLint는 CSS 안의 at-rule을 검사하지 않기 때문이다.
+  ESLint + Prettier를 쓰고, CSS는 Stylelint로 검사한다. ESLint는 CSS 안의 at-rule을 검사하지 않으므로 CSS 규칙은 Stylelint에 맡긴다.
+  토큰 클래스 제약은 [[피그마 연동:토큰 사용 강제]], 패키지·기능의 import 경계는 [[저장소 구성:의존 방향]], 포맷 규칙은 [[코드 작성 규칙:포맷]]에서 정한다.
 
   Biome은 빠르지만 위 규칙을 걸 플러그인이 부족해 고르지 않았다.

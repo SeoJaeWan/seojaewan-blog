@@ -529,7 +529,7 @@ function header(
 
 /**
  * Tailwind 기본 테마 지우기와 기본 서체 블록을 만든다. 토큰보다 앞에 와야 한다.
- * @codocs [[기술 스택:스타일링]]
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param texts 글자 스타일
  * @param context 변환 표
  * @returns `@theme` 블록

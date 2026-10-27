@@ -14,7 +14,7 @@ _codocs:
   - `tools/`의 도구는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다.
   - `.codocs`: 기획·정책·컨벤션 문서
   - `.claude/skills`: 피그마 플러그인 PR을 처리하는 스킬처럼 반복 작업의 절차. 규칙은 옮겨 적지 않고 `.codocs`를 가리킨다([[피그마 연동:스킬]]).
-  - `stylelint.config.mjs`: CSS lint 설정. 토큰 정의를 `tokens.css`에만, `@keyframes`와 `motion-*` 클래스 정의를 `motion.css`에만 허락한다([[피그마 연동:토큰 사용 강제]], [[기술 스택:스타일링]]).
+  - `stylelint.config.mjs`: CSS lint 설정. 토큰 관련 제약은 [[피그마 연동:토큰 사용 강제]], 모션 정의 위치는 [[디자인 기반:모션 클래스]]에서 정한다.
   - `AGENTS.md`: AI 에이전트가 작업 전에 codocs 문서를 확인하고 codocs MCP로 찾고 고치도록 안내한다. 프로젝트 지식을 여기에 복제하지 않는다.
 앱 폴더 구조: |
   `apps/web/src`는 층으로 나누고, 기능 층 안에서는 기능별로 나눈다. 역할별(`components/`, `stores/`) 폴더에 모두 섞으면 폴더마다 파일이 쌓이고 한 기능을 고칠 때 여러 폴더를 오가야 하고, 기능끼리 얽혀도 import 방향으로 막을 수 없기 때문이다.

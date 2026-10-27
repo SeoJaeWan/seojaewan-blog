@@ -32,7 +32,7 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
 1. 문서를 읽는다.
    - @codocs [[피그마 연동:모션]]
    - @codocs [[디자인 기반:모션]], @codocs [[디자인 기반:모션 클래스]], @codocs [[디자인 기반:모션 견본]]
-   - @codocs [[디자인 기반:회전]], @codocs [[기술 스택:스타일링]]
+   - @codocs [[디자인 기반:회전]]
    - @codocs [[피그마 연동:PR 흐름]], @codocs [[피그마 연동:CI]]
 2. PR 브랜치를 받는다(`gh pr checkout <번호>`). `main` 대비 바뀐 파일이 @codocs [[피그마 연동:피그마 플러그인]]에서 애니메이션 PR이 바꾸는 파일뿐인지 확인한다.
 3. json과 표를 읽는다.

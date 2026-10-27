@@ -28,7 +28,8 @@ async function disallowedAtRules(code: string, fileName: string): Promise<number
   ).length;
 }
 
-// @codocs [[기술 스택:스타일링]]
+// @codocs [[디자인 기반:모션 클래스]]
+// @codocs [[피그마 연동:토큰 사용 강제]]
 describe('스타일링', () => {
   it('@keyframes는 motion.css에서만 정의할 수 있다', async () => {
     await expect(disallowedAtRules(KEYFRAMES_CODE, 'motion.css')).resolves.toBe(0);
