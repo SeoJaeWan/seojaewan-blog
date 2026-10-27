@@ -8,7 +8,7 @@ import {
   ListGroup,
   ListItem,
   PinnedTile,
-  Scrollbar,
+  ScrollArea,
   SectionTitle,
   TileGrid,
 } from '@seojaewan/design-system';
@@ -93,12 +93,15 @@ const tileClassNames = {
   mobile: 'w-89',
 } as const satisfies Record<StartBodyDevice, string | undefined>;
 
-// 기기별 스크롤바 자리다. 피그마는 스크롤바를 본문 오른쪽 바깥(Start 메뉴 안쪽 여백)에 두고 위로 36(검색 입력칸 자리) 올려,
-// 본문 아래 8 위에서 끝나게 그린다(데스크톱은 오른쪽 바깥 16, 모바일은 바로 바깥).
-// 간격 토큰에 36·28이 없어 위치(32, 24)와 음수 바깥 여백(4)을 더해 맞춘다.
-const scrollbarClassNames = {
-  desktop: 'absolute -top-32 -right-24 bottom-8 -mt-4 -mr-4',
-  mobile: 'absolute -top-32 -right-12 bottom-8 -mt-4',
+// 기기별 스크롤 영역의 오른쪽 확장과 그만큼의 안쪽 여백이다. 피그마는 스크롤바를 본문 오른쪽 바깥(Start 메뉴 안쪽 여백)에 그려,
+// 스크롤 영역을 안쪽 여백(데스크톱 24, 모바일 12)만큼 오른쪽으로 넓히고 내용에 같은 여백을 줘 내용 너비는 그대로 두고 스크롤바만 바깥에 놓는다.
+const scrollAreaClassNames = {
+  desktop: '-mr-24',
+  mobile: '-mr-12',
+} as const satisfies Record<StartBodyDevice, string>;
+const scrollContentClassNames = {
+  desktop: 'pr-24',
+  mobile: 'pr-12',
 } as const satisfies Record<StartBodyDevice, string>;
 
 /**
@@ -115,7 +118,7 @@ function joinClassNames(base: string, className: string | undefined): string {
  * Start 메뉴 안의 본문(피그마 조립 `Start/Body`)을 그린다. 고정됨과 모두 목록(간단히·그리드·범주), 글자 격자, 검색 결과 중 하나다.
  * 간단히·그리드 목록은 글자 머리글을 누르면 그 자리에 글자 격자(`View=JumpList`와 같은 내용)를 겹쳐 연다([[Start 메뉴:모두]]).
  * `view="jump-list"`는 격자만 그린 피그마 변형 그대로의 모습이다.
- * 스크롤바는 피그마처럼 막대 기본 위치로 그린다. 스크롤과 막대 위치, 보기 바꾸기는 기능을 구현할 때 붙인다.
+ * 고정됨과 모두 목록은 넘치면 ScrollArea로 아래로 스크롤하고, 스크롤바는 본문 오른쪽 바깥에 겹쳐 그린다. 보기 바꾸기는 기능을 구현할 때 붙인다.
  * 항목 칸을 누르면 `onItemOpen`으로 알린다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:고정됨]]
@@ -280,43 +283,46 @@ function StartListView(props: StartListViewProps): JSX.Element {
         ref={listRef}
         data-jump-list={isJumpListEnabled ? 'list' : undefined}
         inert={isGridOpen}
-        className={isListHidden ? 'invisible size-full' : 'size-full'}
+        className={isListHidden ? 'invisible flex size-full flex-col' : 'flex size-full flex-col'}
       >
-        {/* 글자로 이동하기가 scrollIntoView로 옮길 수 있게 overflow-hidden(스크롤 상자)이다. 사용자 스크롤은 아직 없다 */}
-        <div className="flex size-full flex-col items-start gap-16 overflow-hidden pb-24">
-          <SectionTitle title="고정됨" className="w-full shrink-0" />
-          <TileGrid className="w-full shrink-0">
-            {props.pinned.map(
-              /**
-               * 고정 항목 칸 하나를 그린다.
-               * @param item 고정 항목
-               * @returns StartTile
-               */
-              (item) => (
-                <StartTile
-                  key={item.title}
-                  item={item}
-                  className={tileClassName}
-                  onItemOpen={props.onItemOpen}
-                />
-              ),
-            )}
-          </TileGrid>
-          <SectionTitle
-            title="모두"
-            showAction
-            action={<DropDownButton label={viewLabels[view]} />}
-            className="w-full shrink-0"
-          />
-          <StartAllList
-            view={view}
-            groups={groups}
-            tileClassName={tileClassName}
-            onItemOpen={props.onItemOpen}
-            onHeaderClick={handleHeaderClick}
-          />
-        </div>
-        <Scrollbar className={scrollbarClassNames[device]} />
+        {/* 넘치면 아래로 스크롤한다. 글자로 이동하기의 scrollIntoView도 이 스크롤 영역을 옮긴다 */}
+        <ScrollArea className={`min-h-px flex-1 ${scrollAreaClassNames[device]}`}>
+          <div
+            className={`flex w-full shrink-0 flex-col items-start gap-16 pb-24 ${scrollContentClassNames[device]}`}
+          >
+            <SectionTitle title="고정됨" className="w-full shrink-0" />
+            <TileGrid className="w-full shrink-0">
+              {props.pinned.map(
+                /**
+                 * 고정 항목 칸 하나를 그린다.
+                 * @param item 고정 항목
+                 * @returns StartTile
+                 */
+                (item) => (
+                  <StartTile
+                    key={item.title}
+                    item={item}
+                    className={tileClassName}
+                    onItemOpen={props.onItemOpen}
+                  />
+                ),
+              )}
+            </TileGrid>
+            <SectionTitle
+              title="모두"
+              showAction
+              action={<DropDownButton label={viewLabels[view]} />}
+              className="w-full shrink-0"
+            />
+            <StartAllList
+              view={view}
+              groups={groups}
+              tileClassName={tileClassName}
+              onItemOpen={props.onItemOpen}
+              onHeaderClick={handleHeaderClick}
+            />
+          </div>
+        </ScrollArea>
       </div>
       {jumpList.isMounted && (
         <StartJumpListView

@@ -85,3 +85,12 @@ describe('Start 메뉴:모두', () => {
     expect(screen.queryByRole('button', { name: '앱' })).not.toBeInTheDocument();
   });
 });
+
+// @codocs [[Start 메뉴:고정됨]]
+describe('Start 메뉴:고정됨', () => {
+  it('고정됨과 모두 목록은 넘치면 아래로 스크롤하는 영역 안에 있다', () => {
+    renderListBody();
+    expect(screen.getByText('고정됨').closest('.overflow-y-auto')).not.toBeNull();
+    expect(screen.getByText('Blog', { selector: 'p' }).closest('.overflow-y-auto')).not.toBeNull();
+  });
+});

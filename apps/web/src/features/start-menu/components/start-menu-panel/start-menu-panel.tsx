@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, JSX, ReactNode } from 'react';
 
 import { ProfileButton, SearchBox, ShellSurface, StartMenuFooter } from '@seojaewan/design-system';
 
@@ -19,6 +19,8 @@ type StartMenuPanelProps = {
   children?: ReactNode;
   /** 바깥 배치 클래스 */
   className?: string;
+  /** 실행 중에 정해지는 크기(패널 최대 높이). 쓰는 곳(패널 층)이 화면 높이에 맞춰 넘긴다 */
+  style?: CSSProperties;
 };
 
 /**
@@ -39,10 +41,11 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
     powerButton,
     children,
     className,
+    style,
   } = props;
   const isMobile = device === 'mobile';
   return (
-    <ShellSurface material="acrylic" device={device} className={className}>
+    <ShellSurface material="acrylic" device={device} className={className} style={style}>
       <div className="flex size-full flex-col">
         {/* 피그마 `body` 배치 프레임이다. 위 32와 좌우 여백(모바일 16) 안에 입력칸과 본문을 간격 16으로 쌓는다 */}
         <div
