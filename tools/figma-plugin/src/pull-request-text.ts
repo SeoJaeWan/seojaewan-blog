@@ -1,7 +1,7 @@
 import type { MotionValue } from './core/motion-data';
 import { pngFile } from './export-manifest';
 import { type MotionExport, type MotionTime, roundMs, roundValue } from './motion-file';
-import { CAPTURES_BRANCH, REPO_NAME, REPO_OWNER } from './plugin-config';
+import { FILE_KEY, REPO_NAME, REPO_OWNER } from './plugin-config';
 
 // 플러그인이 여는 브랜치 이름과 커밋·PR 글을 만든다. 컴포넌트 하나마다 PR 하나, 조립은 영역마다 PR 하나,
 // 토큰은 따로 PR 하나다.
@@ -23,14 +23,12 @@ export type TargetChanges = {
   name: string;
   /** 저장소의 대상 폴더(PNG가 있는 곳) */
   folder: string;
-  /** `parity-captures` 브랜치에서 이 대상의 캡처 폴더 */
-  captureFolder: string;
   /** 새로 생기거나 PNG가 바뀐 변형 */
   changedVariants: readonly string[];
   /** 사라진 변형 */
   removedVariants: readonly string[];
-  /** `parity-captures` 브랜치에 현재 구현 캡처가 있는 변형 */
-  capturedVariants: ReadonlySet<string>;
+  /** 이번에 내보낸 변형 이름과 최신 피그마 노드 ID */
+  variants: readonly { name: string; nodeId: string }[];
 };
 
 /** 대상 PR 한 번의 커밋에 담은 변경 */
@@ -135,7 +133,7 @@ export function targetCommitBody(names: readonly string[], summary: CommitSummar
 }
 
 /**
- * 컴포넌트 PR의 한국어 본문을 만든다. 바뀐 변형 목록과 `피그마 | 현재 구현` 표를 담는다.
+ * 컴포넌트 PR의 한국어 본문을 만든다. 바뀐 변형 목록과 피그마 미리보기를 담는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param target 컴포넌트와 main 기준 변경
@@ -154,19 +152,19 @@ export function componentPullRequestBody(
     ...changeLines(target),
     ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
     '',
-    '## 피그마와 현재 구현',
+    '## 피그마',
     '',
-    ...variantTable(branch, [target]),
+    ...variantPreviews(branch, [target]),
     '',
     '## 확인',
     '',
-    '- `피그마` 열이 구현할 모습이다. 이 PR에서 코드와 `Parity` 스토리를 고치고, CI 캡처 표를 보고 병합한다.',
+    '- 피그마 이미지가 구현할 모습이다. 이 PR에서 코드와 `Parity` 스토리를 고치고, CI 댓글의 `피그마 | 코드 | 차이` 캡처 표를 보고 병합한다.',
     `- 토큰 PR(\`${TOKENS_BRANCH}\`)이 열려 있으면 그것을 먼저 병합하고 이 PR에 \`main\`을 받아 온다.`,
   ].join('\n');
 }
 
 /**
- * 조립 PR의 한국어 본문을 만든다. 조립마다 바뀐 변형 목록과, 영역 전체의 `피그마 | 현재 구현` 표를 담는다.
+ * 조립 PR의 한국어 본문을 만든다. 조립마다 바뀐 변형 목록과 피그마 미리보기를 담는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param area 영역 폴더 이름
@@ -190,13 +188,13 @@ export function patternPullRequestBody(
     ]),
     ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
     '',
-    '## 피그마와 현재 구현',
+    '## 피그마',
     '',
-    ...variantTable(branch, targets),
+    ...variantPreviews(branch, targets),
     '',
     '## 확인',
     '',
-    '- `피그마` 열이 구현할 모습이다. 앱(`apps/web` `features/`)의 조립 컴포넌트와 `Patterns/<조립 이름>` 스토리를 만들고, CI 캡처 표를 보고 병합한다.',
+    '- 피그마 이미지가 구현할 모습이다. 앱(`apps/web` `features/`)의 조립 컴포넌트와 `Patterns/<조립 이름>` 스토리를 만들고, CI 댓글의 `피그마 | 코드 | 차이` 캡처 표를 보고 병합한다.',
     '- 쓰는 토큰·컴포넌트 PR이 열려 있으면 그것을 먼저 병합하고 이 PR에 `main`을 받아 온다.',
   ].join('\n');
 }
@@ -218,45 +216,26 @@ function changeLines(target: TargetChanges): string[] {
 }
 
 /**
- * 바뀐 변형마다 피그마 이미지(이 PR 브랜치)와 현재 구현 캡처(`parity-captures`)를 나란히 놓는 표를 만든다.
- * 현재 구현 캡처가 없으면(처음 구현하는 대상) 빈칸이다.
- * @codocs [[피그마 연동:캡처 표]]
+ * 바뀐 변형 이미지를 세로로 놓고, 바로 아래 변형 이름에서 최신 피그마 노드로 연결한다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param targets 대상과 main 기준 변경
- * @returns 표 줄
+ * @returns 이미지와 변형 링크 줄
  */
-export function variantTable(branch: string, targets: readonly TargetChanges[]): string[] {
-  const rows = targets.flatMap((target) =>
-    target.changedVariants.map((variant) =>
-      variantRow(branch, targets.length > 1, target, variant),
-    ),
-  );
-  if (rows.length === 0) {
-    return ['바뀐 변형이 없다.'];
+export function variantPreviews(branch: string, targets: readonly TargetChanges[]): string[] {
+  const lines: string[] = [];
+  for (const target of targets) {
+    for (const variant of target.variants) {
+      if (!target.changedVariants.includes(variant.name)) {
+        continue;
+      }
+      const label = targets.length > 1 ? `${target.name} / ${variant.name}` : variant.name;
+      const image = `${blobRoot(branch)}/${target.folder}/${pngFile(variant.name)}?raw=true`;
+      const url = `https://www.figma.com/design/${FILE_KEY}?node-id=${encodeURIComponent(variant.nodeId)}`;
+      lines.push(`![${variant.name}](${image})`, '', `[${label}](${url})`, '');
+    }
   }
-  return ['| 변형 | 피그마 | 현재 구현 |', '|---|---|---|', ...rows];
-}
-
-/**
- * 변형 하나의 표 줄을 만든다.
- * @param branch PR 브랜치
- * @param shouldName 변형 앞에 대상 이름을 붙일지(대상이 여럿인 PR)
- * @param target 대상
- * @param variant 변형 이름
- * @returns 표 줄
- */
-function variantRow(
-  branch: string,
-  shouldName: boolean,
-  target: TargetChanges,
-  variant: string,
-): string {
-  const label = shouldName ? `${target.name} / ${variant}` : variant;
-  const figmaImage = `![${variant}](${blobRoot(branch)}/${target.folder}/${pngFile(variant)}?raw=true)`;
-  const capture = target.capturedVariants.has(variant)
-    ? `![${variant}](${blobRoot(CAPTURES_BRANCH)}/${target.captureFolder}/${pngFile(variant)}?raw=true)`
-    : '';
-  return `| \`${label}\` | ${figmaImage} | ${capture} |`;
+  return lines.length === 0 ? ['바뀐 변형이 없다.'] : lines.slice(0, -1);
 }
 
 /**

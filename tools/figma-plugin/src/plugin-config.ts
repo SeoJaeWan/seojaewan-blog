@@ -15,8 +15,6 @@ export const SCALE = 1;
 export const REPO_OWNER = 'SeoJaeWan';
 export const REPO_NAME = 'seojaewan-blog';
 export const BASE_BRANCH = 'main';
-/** main에 병합된 컴포넌트의 현재 구현 캡처를 두는 브랜치(CI가 쓴다). PR 본문 "현재 구현" 열이 여기를 가리킨다 */
-export const CAPTURES_BRANCH = 'parity-captures';
 
 /** 디자인 시스템 패키지의 피그마 기준 자료 폴더 */
 export const FIGMA_DIR = 'packages/design-system/figma';

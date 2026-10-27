@@ -44,6 +44,20 @@
         "Selection": "None"
       }
     },
+    "device=desktop,folder=recycle-bin,selection=none": {
+      "node": {
+        "height": 640,
+        "width": 1024,
+        "x": 64,
+        "y": 20
+      },
+      "nodeId": "851:5997",
+      "properties": {
+        "Device": "Desktop",
+        "Folder": "Recycle Bin",
+        "Selection": "None"
+      }
+    },
     "device=mobile,folder=blog,selection=none": {
       "node": {
         "height": 796,
