@@ -42,7 +42,7 @@ CI: |
   - E2E 작업(`ci.yml`)
   - 생성 검사(`figma-generated.yml`): 토큰 생성 확인(`generate:tokens --check`)과 자산 생성 확인(`generate:assets --check`)
   - 피그마 캡처(`figma-parity.yml`): 일반 CI와 나눈 워크플로다. PR(초안 포함)에서 바뀐 파일로 캡처 범위를 정하고, 범위가 있을 때만 캡처 표를 PR 댓글로 남긴다. `main` push에서는 영향받은 컴포넌트와 조립을 캡처해 `parity-captures` 브랜치에 저장한다([[피그마 연동:캡처 범위]], [[피그마 연동:CI]]).
-  - 모션 시간 검사(`motion-check.yml`): 바뀐 모션 클래스의 시간·이징·지연·반복 횟수를 내보낸 자료와 비교한다([[피그마 연동:모션]]).
+  - 모션 검사(`motion-check.yml`): 검사 내용과 실행 범위는 [[피그마 연동:CI]]를 따른다.
 
   빌드는 Vercel 미리보기 배포에서도 만들어지지만, Vercel 연결 여부와 상관없이 깨진 빌드를 PR에서 바로 잡기 위해 CI에서도 빌드한다. Storybook 빌드는 디자인 시스템 카탈로그와 앱 조립 스토리가 깨지지 않았는지 확인한다.
 
