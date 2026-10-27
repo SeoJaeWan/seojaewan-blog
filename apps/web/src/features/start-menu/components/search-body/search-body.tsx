@@ -1,14 +1,17 @@
 import type { JSX } from 'react';
 
-import { ListGroup, ListItem, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
+import { ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
+import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
 
 /** 검색 대상의 종류. 폴더, 글, 외부 링크다 */
 export type SearchItemKind = 'folder' | 'post' | 'link';
 
 /** 검색 패널에 보이는 항목 하나 */
 export type SearchItem = {
+  /** 작업 공간 항목 id. 목록의 key이고, 열거나 링크를 복사할 때 어느 항목인지 알린다 */
+  id: string;
   /** 항목 종류. 아이콘과 종류 이름을 정한다 */
   kind: SearchItemKind;
   /** 항목 이름(글은 제목) */
@@ -17,6 +20,8 @@ export type SearchItem = {
 
 /** 추천 글 하나 */
 export type SearchRecommendedPost = {
+  /** 글 항목 id */
+  id: string;
   /** 글 제목 */
   title: string;
   /** 글 날짜(예: `2026-10-20`) */
@@ -34,11 +39,11 @@ export type SearchResultGroups = {
   /** 맨 위에 크게 보이는 최고 일치 */
   bestMatch: SearchBestMatch;
   /** 나머지 폴더 결과 */
-  folders: readonly string[];
+  folders: readonly SearchItem[];
   /** 나머지 글 결과 */
-  posts: readonly string[];
+  posts: readonly SearchItem[];
   /** 나머지 외부 링크 결과 */
-  links: readonly string[];
+  links: readonly SearchItem[];
 };
 
 export type SearchBodyDevice = 'desktop' | 'mobile';
@@ -48,6 +53,8 @@ type SearchBodyCommonProps = {
   device?: SearchBodyDevice;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(검색 패널, Start 메뉴)이 정한다 */
   className?: string;
+  /** 항목 줄(최근, 추천, 결과)이나 최고 일치 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
+  onItemOpen?: (id: string) => void;
 };
 
 type SearchBodyProps = SearchBodyCommonProps &
@@ -65,6 +72,10 @@ type SearchBodyProps = SearchBodyCommonProps &
         view: 'results';
         /** 검색 결과 */
         results: SearchResultGroups;
+        /** 고른 항목의 id. 그 줄에 선택 바탕을 깐다. 주지 않으면 최고 일치다 */
+        selectedId?: string;
+        /** 최고 일치 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
+        onCopyLink?: (id: string) => void;
       }
     | {
         /** 피그마 View=No results. "검색 결과 없음"을 안내한다 */
@@ -92,7 +103,7 @@ function joinClassNames(base: string, className: string | undefined): string {
 /**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
  * 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 최고 일치 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
- * 고르기·열기·링크 복사 동작은 기능을 구현할 때 붙인다.
+ * 항목 줄과 카드의 동작은 `onItemOpen`·`onCopyLink`로 알리고, 열거나 복사하는 일은 쓰는 곳이 한다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:결과 화면]]
  * @codocs [[검색:입력 전 화면]]
@@ -111,14 +122,16 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                   /**
                    * 최근 항목 한 줄을 그린다.
                    * @param item 최근 항목
-                   * @returns ListItem
+                   * @returns ItemListRow
                    */
                   (item) => (
-                    <ListItem
-                      key={`${item.kind}-${item.title}`}
+                    <ItemListRow
+                      key={item.id}
+                      id={item.id}
                       title={item.title}
                       icon={renderItemIcon({ kind: item.kind })}
                       className="w-full"
+                      onOpen={props.onItemOpen}
                     />
                   ),
                 )}
@@ -129,16 +142,17 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                 /**
                  * 추천 글 한 줄을 그린다.
                  * @param post 추천 글
-                 * @returns ListItem
+                 * @returns ItemListRow
                  */
                 (post) => (
-                  <ListItem
-                    key={post.title}
-                    size="two-line"
+                  <ItemListRow
+                    key={post.id}
+                    id={post.id}
                     title={post.title}
                     subtitle={post.date}
                     icon={renderItemIcon({ kind: 'post' })}
                     className="w-full"
+                    onOpen={props.onItemOpen}
                   />
                 ),
               )}
@@ -147,7 +161,16 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
         </ScrollArea>
       );
     case 'results':
-      return <SearchBodyResults device={device} results={props.results} className={className} />;
+      return (
+        <SearchBodyResults
+          device={device}
+          results={props.results}
+          selectedId={props.selectedId}
+          className={className}
+          onItemOpen={props.onItemOpen}
+          onCopyLink={props.onCopyLink}
+        />
+      );
     case 'no-results':
       return (
         <div className={joinClassNames('flex items-center justify-center', className)}>
@@ -162,8 +185,14 @@ type SearchBodyResultsProps = {
   device: SearchBodyDevice;
   /** 검색 결과 */
   results: SearchResultGroups;
+  /** 고른 항목의 id. 주지 않으면 최고 일치다 */
+  selectedId?: string;
   /** 바깥 배치 클래스 */
   className?: string;
+  /** 항목 줄이나 카드의 `열기`를 눌렀을 때 부른다 */
+  onItemOpen?: (id: string) => void;
+  /** 카드의 `링크 복사`를 눌렀을 때 부른다 */
+  onCopyLink?: (id: string) => void;
 };
 
 /**
@@ -173,13 +202,25 @@ type SearchBodyResultsProps = {
 function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
   const { device, results, className } = props;
   const { bestMatch } = results;
+  const selectedId = props.selectedId ?? bestMatch.id;
   const kindLabel = kindLabels[bestMatch.kind];
   // 링크 복사는 주소가 있는 글과 외부 링크에만 둔다(폴더는 열기만).
   const canCopyLink = bestMatch.kind !== 'folder';
+
+  /** 최고 일치 카드의 `열기`를 누르면 최고 일치 항목을 연다고 알린다. */
+  function handleOpenBestMatch(): void {
+    props.onItemOpen?.(bestMatch.id);
+  }
+
+  /** 최고 일치 카드의 `링크 복사`를 누르면 최고 일치 항목의 링크를 복사한다고 알린다. */
+  function handleCopyBestMatchLink(): void {
+    props.onCopyLink?.(bestMatch.id);
+  }
+
   const groups = [
-    { kind: 'folder', titles: results.folders },
-    { kind: 'post', titles: results.posts },
-    { kind: 'link', titles: results.links },
+    { kind: 'folder', items: results.folders },
+    { kind: 'post', items: results.posts },
+    { kind: 'link', items: results.links },
   ] as const;
   return (
     <SearchResults
@@ -190,45 +231,59 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
       meta={bestMatch.date === undefined ? kindLabel : `${kindLabel} · ${bestMatch.date}`}
       actions={
         <div className="flex flex-col items-start gap-8">
-          <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+          <MenuItem
+            standalone
+            label="열기"
+            icon="icons/ic_fluent_open_20_regular.svg"
+            onClick={handleOpenBestMatch}
+          />
           {canCopyLink && (
-            <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
+            <MenuItem
+              standalone
+              label="링크 복사"
+              icon="icons/ic_fluent_link_20_regular.svg"
+              onClick={handleCopyBestMatchLink}
+            />
           )}
         </div>
       }
     >
       <ListGroup label="최고 일치" className="w-full shrink-0">
-        <ListItem
-          selected
-          size="two-line"
+        <ItemListRow
+          id={bestMatch.id}
+          isSelected={selectedId === bestMatch.id}
           title={bestMatch.title}
           subtitle={kindLabel}
           icon={renderItemIcon({ kind: bestMatch.kind })}
           className="w-full"
+          onOpen={props.onItemOpen}
         />
       </ListGroup>
       {groups
-        .filter((group) => group.titles.length > 0)
+        .filter((group) => group.items.length > 0)
         .map(
           /**
            * 종류 하나의 결과 묶음을 그린다.
-           * @param group 종류와 결과 이름
+           * @param group 종류와 결과 항목
            * @returns ListGroup
            */
           (group) => (
             <ListGroup key={group.kind} label={kindLabels[group.kind]} className="w-full shrink-0">
-              {group.titles.map(
+              {group.items.map(
                 /**
                  * 결과 한 줄을 그린다.
-                 * @param title 항목 이름
-                 * @returns ListItem
+                 * @param item 결과 항목
+                 * @returns ItemListRow
                  */
-                (title) => (
-                  <ListItem
-                    key={title}
-                    title={title}
+                (item) => (
+                  <ItemListRow
+                    key={item.id}
+                    id={item.id}
+                    isSelected={selectedId === item.id}
+                    title={item.title}
                     icon={renderItemIcon({ kind: group.kind })}
                     className="w-full"
+                    onOpen={props.onItemOpen}
                   />
                 ),
               )}

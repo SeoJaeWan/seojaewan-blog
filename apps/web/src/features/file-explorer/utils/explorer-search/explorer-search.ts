@@ -1,8 +1,7 @@
 // 탐색기 폴더 안 검색의 범위와 결과 차례, 위치 열 글자를 React 밖의 순수 함수로 모은다.
 
 import type { ExplorerWorkspace } from '@/features/file-explorer/utils/explorer-location/explorer-location';
-import { getMatchRank, type MatchRank } from '@/features/file-explorer/utils/name-match/name-match';
-import { compareItemKinds, compareItemNames } from '@/shared/utils/item-sort/item-sort';
+import { rankItems } from '@/shared/utils/search-rules/search-rules';
 import {
   DESKTOP_NAME,
   getFolderPath,
@@ -10,14 +9,6 @@ import {
   RECYCLE_BIN_ID,
   RECYCLE_BIN_NAME,
 } from '@/shared/utils/workspace-rules/workspace-rules';
-
-/** 일치 단계를 붙인 항목 */
-type RankedItem = {
-  /** 항목 */
-  item: PlacedItem;
-  /** 일치 단계 */
-  rank: MatchRank;
-};
 
 // 위치 열에서 위치 이름을 잇는 글자(Windows 경로 구분자).
 const LOCATION_SEPARATOR = '\\';
@@ -38,11 +29,7 @@ export function searchItems(
   location: string | null,
   query: string,
 ): PlacedItem[] {
-  const matches = getItemsUnder(workspace, location).flatMap((item) => {
-    const rank = getMatchRank(item.name, query);
-    return rank === null ? [] : [{ item, rank }];
-  });
-  return matches.sort(compareMatches).map((match) => match.item);
+  return rankItems(getItemsUnder(workspace, location), query);
 }
 
 /**
@@ -91,21 +78,4 @@ function getItemsUnder(workspace: ExplorerWorkspace, location: string | null): P
     }
   }
   return result;
-}
-
-/**
- * 두 검색 결과의 차례를 비교한다.
- * @param a 결과
- * @param b 결과
- * @returns 비교 값
- */
-function compareMatches(a: RankedItem, b: RankedItem): number {
-  const byKind = compareItemKinds(a.item.kind, b.item.kind);
-  if (a.rank !== b.rank || byKind !== 0) {
-    return a.rank - b.rank || byKind;
-  }
-  if (a.item.kind === 'post' && b.item.kind === 'post') {
-    return b.item.date.localeCompare(a.item.date) || compareItemNames(a.item.name, b.item.name);
-  }
-  return compareItemNames(a.item.name, b.item.name);
 }

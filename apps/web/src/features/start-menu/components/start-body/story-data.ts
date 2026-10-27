@@ -7,31 +7,31 @@ export const START_CATEGORY_GROUPS = [
   {
     label: '폴더',
     items: [
-      { kind: 'folder', title: 'Blog' },
-      { kind: 'folder', title: 'React' },
+      { id: 'blog', kind: 'folder', title: 'Blog' },
+      { id: 'folder:React', kind: 'folder', title: 'React' },
     ],
   },
   {
     label: '글',
     items: [
-      { kind: 'post', title: 'Next.js App Router 캐시' },
-      { kind: 'post', title: 'React 19 훅 정리' },
-      { kind: 'post', title: '리액트 서버 컴포넌트 이해하기' },
+      { id: 'post:nextjs-app-router-cache', kind: 'post', title: 'Next.js App Router 캐시' },
+      { id: 'post:react-19-hooks', kind: 'post', title: 'React 19 훅 정리' },
+      { id: 'post:react-server-components', kind: 'post', title: '리액트 서버 컴포넌트 이해하기' },
     ],
   },
   {
     label: '외부 링크',
     items: [
-      { kind: 'link', title: 'GitHub' },
-      { kind: 'link', title: '사이드 프로젝트' },
-      { kind: 'link', title: '이력서' },
+      { id: 'link:github', kind: 'link', title: 'GitHub' },
+      { id: 'link:side-project', kind: 'link', title: '사이드 프로젝트' },
+      { id: 'link:resume', kind: 'link', title: '이력서' },
     ],
   },
   {
     label: '앱',
     items: [
-      { kind: 'app', app: 'chrome', title: 'Chrome' },
-      { kind: 'app', app: 'file-explorer', title: 'File Explorer' },
+      { id: 'app:chrome', kind: 'app', app: 'chrome', title: 'Chrome' },
+      { id: 'app:file-explorer', kind: 'app', app: 'file-explorer', title: 'File Explorer' },
     ],
   },
 ] as const;

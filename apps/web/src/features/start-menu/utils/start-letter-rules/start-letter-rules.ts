@@ -105,6 +105,17 @@ const doubleConsonants: Readonly<Record<string, JumpListLetter>> = {
 const titleCollator = new Intl.Collator('ko', { numeric: true, sensitivity: 'base' });
 
 /**
+ * 모두 목록의 이름을 비교한다. 한글과 라틴이 섞여도 사람이 읽는 순서로 놓는다.
+ * @codocs [[Start 메뉴:모두]]
+ * @param a 이름
+ * @param b 이름
+ * @returns 비교 값
+ */
+export function compareStartTitles(a: string, b: string): number {
+  return titleCollator.compare(a, b);
+}
+
+/**
  * 글자 격자의 글자인지 본다.
  * @param value 볼 글자
  * @returns 격자에 있는 글자면 true
@@ -166,7 +177,7 @@ export function groupByStartLetter<T extends LetterItem>(items: readonly T[]): L
       if (bucket === undefined) {
         return [];
       }
-      const sorted = bucket.toSorted((a, b) => titleCollator.compare(a.title, b.title));
+      const sorted = bucket.toSorted((a, b) => compareStartTitles(a.title, b.title));
       return [{ label: letter, items: sorted }];
     },
   );
