@@ -4,6 +4,16 @@ import { useState } from 'react';
 
 import { MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
+/** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement) */
+export type ContextMenuAreaPlacement = {
+  /** 영역의 위(top)나 아래(bottom)에 붙는다 */
+  side: 'top' | 'bottom';
+  /** 영역의 시작(start)·가운데(center)·끝(end)에 맞춘다 */
+  align: 'start' | 'center' | 'end';
+  /** 영역과 메뉴 사이 간격(px) */
+  offset: number;
+};
+
 type ContextMenuAreaProps = Pick<
   ComponentProps<typeof MenuPopup>,
   'items' | 'className' | 'itemClassName'
@@ -13,6 +23,11 @@ type ContextMenuAreaProps = Pick<
    * 요소의 ref와 이벤트 속성은 그대로 남는다
    */
   area: ReactElement;
+  /**
+   * 주면 메뉴를 누른 자리가 아니라 영역 요소에 붙인다(작업 표시줄 앱 버튼처럼 메뉴가 버튼 위 가운데에 붙는 경우).
+   * 주지 않으면 누른 자리 옆에 띄운다
+   */
+  placement?: ContextMenuAreaPlacement;
   /** 메뉴가 열렸는지. 쓰는 곳이 정한다 */
   open: boolean;
   /**
@@ -34,15 +49,18 @@ type ContextMenuAreaProps = Pick<
  * 닫힌 뒤 포커스는 Base UI가 옮기지 않고 여기서 정한다. 닫히고 나서 `onCloseComplete`를 부르고, 포커스가 갈 곳을 잃었으면(문서 끝)
  * 메뉴를 열 때 포커스가 있던 요소로 돌려준다. Base UI가 돌려주면 그 포커스가 메뉴 항목이 띄운 입력창(이름 바꾸기)보다 늦게 와
  * 입력창을 닫기 때문이다. 바깥을 눌러 닫았으면 누른 곳의 포커스를 그대로 둔다.
+ * `placement`를 주면 누른 자리 대신 영역 요소에 붙여 연다(모바일 길게 누르기도 같다).
  * 팝업은 문서 끝(body)에 포털해 영역의 `overflow`에 잘리지 않게 한다.
  * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
  * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
  * @codocs [[모바일:차이]]
+ * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @param props
  */
 export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
   const {
     area,
+    placement,
     open: isOpen,
     onOpenChange,
     onCloseComplete,
@@ -51,6 +69,7 @@ export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
     itemClassName,
   } = props;
   const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
+  const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
 
   /**
    * 열림이 바뀐 것을 연 자리와 함께 쓰는 곳에 알린다.
@@ -90,9 +109,14 @@ export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
       onOpenChange={handleOpenChange}
       onOpenChangeComplete={handleOpenChangeComplete}
     >
-      <ContextMenu.Trigger render={area} />
+      <ContextMenu.Trigger ref={setAreaElement} render={area} />
       <ContextMenu.Portal>
-        <ContextMenu.Positioner>
+        <ContextMenu.Positioner
+          anchor={placement === undefined ? undefined : areaElement}
+          side={placement?.side}
+          align={placement?.align}
+          sideOffset={placement?.offset}
+        >
           <MenuPopup
             items={items}
             className={className}
