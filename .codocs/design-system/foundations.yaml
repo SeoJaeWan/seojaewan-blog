@@ -138,7 +138,7 @@ _codocs:
   | Chrome 앱 아이콘 | 설치된 `chrome.exe` 아이콘을 256px로 추출. Google의 상표이지만 개인 포트폴리오에서 화면을 재현하는 용도로 쓴다 |
   | Windows 로고 | 시스템 앱의 `WindowsLogo.svg`(그라데이션 로고) |
   | 외부 링크 아이콘 | Fluent UI System Icons의 `link` 컬러 아이콘 |
-  | 컬러 돋보기(`icon-color/Search`) | Fluent UI System Icons의 `search` 컬러 아이콘. 그라데이션은 칠 스타일 `Icon Color/Search`(`color/blue/dark-1` → `color/green/light-2` #78BF91)이다 |
+  | 검색 포커스 돋보기(`icon-color/Search Focus`) | Fluent 돋보기 모양과 칠 스타일 `Icon Color/Search Focus`를 쓴다. 상태별 표현은 [[검색:입력칸]]을 따른다 |
   | Bloom 배경 | `C:\Windows\Web\Wallpaper\Windows\img0.jpg` |
 
   프로필 사진은 아직 임시 이미지다.
@@ -149,7 +149,7 @@ _codocs:
 
   | 토큰 | 값 | 근거·쓰는 곳 |
   |---|---|---|
-  | `motion/duration/faster` | 83ms | WinUI `ControlFasterAnimationDuration`. hover·pressed 상태 전환, 투명도만 바꾸는 페이드(검색 돋보기 등), 새로 고침 깜빡임 |
+  | `motion/duration/faster` | 83ms | WinUI `ControlFasterAnimationDuration`. hover·pressed 상태 전환, 투명도만 바꾸는 페이드, 새로 고침 깜빡임 |
   | `motion/duration/fast` | 167ms | WinUI `ControlFastAnimationDuration`. 우클릭 메뉴·플라이아웃·메시지 상자 등장, 창 닫기, Start 글자 목록 열기·닫기, 재부팅 화면 나타남 |
   | `motion/duration/normal` | 250ms | WinUI `ControlNormalAnimationDuration`. 창 열기, Start·검색 패널 올라오기, 최대화·복원·스냅, 재부팅 화면 사라짐 |
   | `motion/duration/slow` | 333ms | Windows 모션 표의 가장 긴 단계. 창 최소화·작업 표시줄에서 복원(이동 거리가 큰 동작) |
@@ -184,11 +184,10 @@ _codocs:
   | ProgressRing 회전 | `motion-progress-ring` | progress-ring | progress-ring | 호가 돌며 길이가 늘고 준다(회전 + 경로 트림). 계속 반복한다([[디자인 기반:모션 견본]]) | 없음 |
   | hover·pressed | `motion-control-state` | faster | fade | 상태 색만 바꾼다 | 없음 |
   | 검색 상자 포커스(pill·taskbar 모양) | `motion-search-box-focus-state` | fast | direct-entrance | Rest → Focused 상태 색과 테두리를 바꾼다 | 없음 |
-  | 검색 돋보기 | `motion-search-icon-state` | 들어갈 때 faster, 나올 때 즉시 | fade | 회색·컬러 돋보기를 겹쳐 투명도만 바꾼다([[검색:입력칸]]) | 없음 |
 
   글자 목록의 시작 배율(1.15)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).
 
-  컴포넌트 상태 전환(Rest → Hover 등, 검색 돋보기 포함)은 피그마 변형 사이 프로토타입 전환에 이 토큰 값을 쓴다. 코드의 상태 전환 구현은 [[피그마 연동:모션 클래스]]를 따른다.
+  컴포넌트 상태 전환(Rest → Hover 등)은 피그마 변형 사이 프로토타입 전환에 이 토큰 값을 쓴다. 코드의 상태 전환 구현은 [[피그마 연동:모션 클래스]]를 따른다.
 모션 견본: |
   피그마 00 · Foundations 페이지의 Motion 섹션에 모션 클래스마다 견본 프레임을 하나씩 둔다. 견본 프레임 이름은 클래스 이름(`motion-window-open`)과 같고, 견본마다 각자의 타임라인을 가진다.
   모션 클래스는 토큰·자산처럼 여러 컴포넌트가 함께 쓰는 기반이라 Foundations에 둔다. 견본은 화면 흐름이 아니라 모션 클래스 하나의 기준이다([[디자인 시스템:Screens]]).
