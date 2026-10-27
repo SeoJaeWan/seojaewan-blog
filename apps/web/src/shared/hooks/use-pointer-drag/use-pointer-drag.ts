@@ -26,7 +26,7 @@ export type PointerDragCallbacks = {
 /**
  * 누른 포인터를 끌기로 따라가는 함수를 돌려준다. 바탕화면 아이콘 끌기와 끄는 사각형이 쓴다.
  * - 마우스 왼쪽 버튼과 펜만 받는다. 터치는 받지 않는다(모바일은 끌기가 없고, 터치 스크롤을 막지 않는다).
- * - 누른 요소에 포인터를 붙잡아(pointer capture) 포인터가 요소 밖으로 나가도 따라간다.
+ * - 누른 요소에 포인터를 붙잡아(pointer capture) 포인터가 요소 밖으로 나가도 따라가고, 이동·놓기는 문서에서 받는다. 끄는 도중 요소가 목록 안에서 옮겨져 붙잡기가 풀려도 요소가 문서에 있으면 다시 붙잡아 끌기를 이어 간다.
  * - 누른 뒤 끌기 거리(창 끌기와 같은 4px)를 넘게 움직여야 끌기를 시작해 클릭·더블클릭과 구분한다.
  * - 끄는 도중 쓰는 컴포넌트가 사라지면 끌기를 취소한다.
  * @codocs [[바탕화면:아이콘 조작]]
@@ -65,6 +65,8 @@ export function usePointerDrag(): (
     }
     cancelRef.current?.();
     const handle = event.currentTarget;
+    // 누른 요소가 끄는 도중 옮겨져(키가 있는 목록의 순서 바꾸기) 포인터 붙잡기가 풀려도 따라가도록 이동·놓기는 문서에서 받는다.
+    const doc = handle.ownerDocument;
     const { pointerId } = event;
     const start = { x: event.clientX, y: event.clientY };
     let isDragging = false;
@@ -113,6 +115,21 @@ export function usePointerDrag(): (
       }
     }
 
+    /**
+     * 붙잡은 포인터를 잃었을 때, 요소가 그대로 문서에 있으면(끄는 도중 목록에서 옮겨져 풀린 경우) 다시 붙잡고, 없으면 취소한다.
+     * @param lostEvent 포인터 이벤트
+     */
+    function handleLostCapture(lostEvent: Event): void {
+      if (!isPointerEvent(lostEvent, pointerId)) {
+        return;
+      }
+      if (handle.isConnected) {
+        capturePointer(handle, pointerId);
+      } else {
+        cancel();
+      }
+    }
+
     /** 따라가기를 멈추고, 끌던 중이었으면 취소를 알린다. */
     function cancel(): void {
       if (!isTracking) {
@@ -128,20 +145,20 @@ export function usePointerDrag(): (
     function stop(): void {
       isTracking = false;
       cancelRef.current = null;
-      handle.removeEventListener('pointermove', handleMove);
-      handle.removeEventListener('pointerup', handleUp);
-      handle.removeEventListener('pointercancel', handleCancel);
-      handle.removeEventListener('lostpointercapture', handleCancel);
+      doc.removeEventListener('pointermove', handleMove);
+      doc.removeEventListener('pointerup', handleUp);
+      doc.removeEventListener('pointercancel', handleCancel);
+      handle.removeEventListener('lostpointercapture', handleLostCapture);
       if (handle.hasPointerCapture(pointerId)) {
         handle.releasePointerCapture(pointerId);
       }
     }
 
-    handle.addEventListener('pointermove', handleMove);
-    handle.addEventListener('pointerup', handleUp);
-    handle.addEventListener('pointercancel', handleCancel);
+    doc.addEventListener('pointermove', handleMove);
+    doc.addEventListener('pointerup', handleUp);
+    doc.addEventListener('pointercancel', handleCancel);
     capturePointer(handle, pointerId);
-    handle.addEventListener('lostpointercapture', handleCancel);
+    handle.addEventListener('lostpointercapture', handleLostCapture);
     cancelRef.current = cancel;
     return true;
   }
