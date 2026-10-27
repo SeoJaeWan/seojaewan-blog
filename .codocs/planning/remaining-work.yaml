@@ -11,15 +11,15 @@ _codocs:
 
   | 순서 | PR | 남은 코드 작업 |
   |---|---|---|
-  | 1 | SearchBox | pill·taskbar 모양의 Hover·Focused·Pressed 정지 모습을 돋보기 1.1배와 그라데이션으로 맞추고, 누를 때 0.8배(`group-active:scale-80`)를 없앤다([[검색:입력칸]]). Web·Pressed 변형의 글자가 속성을 따르게 된 그림을 확인한다 |
-  | 2 | WindowFrame, MessageBox, Flyout, TaskbarPreviewList, ShellSurface, AddressBar | 잘렸던 그림자가 PNG에 들어온다. 코드는 그대로 두고 캡처 표에서 그림자 차이가 사라졌는지 확인한다 |
-  | 3 | Menu, SnapLayoutFlyout, SnapPreview | 그림이 자기 상자 밖으로 나가는 컴포넌트라 잘림 여부를 확인하려고 다시 내보낸다. 캡처 표만 확인한다 |
-  | 4 | Menu 조립 | `Menu/Desktop`, `Menu/ExplorerEmpty`의 하위 메뉴 그림이 골라진 항목 하나에만 점이 있는 모습으로 바뀐다. 캡처 표만 확인한다 |
-  | 5 | Chrome 조립 | `Chrome/Page` 새 탭 검색칸 안내 글자와 Post "다음 글" 제목, `Chrome/AddressSuggestions` 그림자. 캡처 표만 확인한다 |
-  | 6 | Window 조립 | `Window/Explorer`·`Window/Chrome`·`Window/SnapAssist`·`Window/SnapLayoutMenu` 그림자와 SnapAssist 축소 창의 "다음 글" 제목. 캡처 표만 확인한다 |
-  | 7 | Taskbar 조립 | `Taskbar/PreviewList`, `Taskbar/AppMenu` 그림자. 캡처 표만 확인한다 |
-  | 8 | Start 조립 | `Start/ViewMenu` 그림자. 캡처 표만 확인한다 |
-  | 9 | MessageBox 조립 | `MessageBox/EmptyRecycleBin` 그림자. 캡처 표만 확인한다 |
+  | 1 | #251 SearchBox | pill·taskbar 모양의 Hover·Focused·Pressed 정지 모습을 돋보기 1.1배와 그라데이션으로 맞추고, 누를 때 0.8배(`group-active:scale-80`)를 없앤다([[검색:입력칸]]). Web·Pressed 변형의 글자가 속성을 따르게 된 그림을 확인한다 |
+  | 2 | #255 WindowFrame, #262 MessageBox, #249 Flyout, #254 TaskbarPreviewList, #252 ShellSurface, #248 AddressBar | 잘렸던 그림자가 PNG에 들어온다. 코드는 그대로 두고 캡처 표에서 그림자 차이가 사라졌는지 확인한다 |
+  | 3 | #250 Menu, #253 SnapLayoutFlyout | 그림이 자기 상자 밖으로 나가는 컴포넌트다. Menu는 PNG 안 노드 위치(`export.json`)만, SnapLayoutFlyout은 그림이 바뀌었다. 캡처 표만 확인한다 |
+  | 4 | #257 Menu 조립 | `Menu/Desktop`, `Menu/ExplorerEmpty`의 하위 메뉴 그림이 골라진 항목 하나에만 점이 있는 모습으로 바뀐다. 캡처 표만 확인한다 |
+  | 5 | #256 Chrome 조립 | `Chrome/Page` 새 탭 검색칸 안내 글자와 Post "다음 글" 제목, `Chrome/AddressSuggestions` 그림자. 캡처 표만 확인한다 |
+  | 6 | #261 Window 조립 | `Window/Explorer`·`Window/Chrome`·`Window/SnapAssist`·`Window/SnapLayoutMenu` 그림자와 SnapAssist 축소 창의 "다음 글" 제목. 캡처 표만 확인한다 |
+  | 7 | #260 Taskbar 조립 | `Taskbar/PreviewList`, `Taskbar/AppMenu` 그림자. 캡처 표만 확인한다 |
+  | 8 | #259 Start 조립 | `Start/ViewMenu` 그림자. 캡처 표만 확인한다 |
+  | 9 | #258 MessageBox 조립 | `MessageBox/EmptyRecycleBin` 그림자. 캡처 표만 확인한다 |
   | 10 | #234 애니메이션 | `motion-search-box-focus` 모션 클래스와 모션 스토리를 만들고, SearchBox pill·taskbar의 호버·포커스(`:hover`, `:focus-within`)에 붙인다([[디자인 기반:모션]]). 모션 시간 검사와 SearchBox 캡처 표를 확인한다 |
 
   캡처 표에서 그림자 말고 다른 차이가 새로 보이면 코드를 고치기 전에 원인을 보고한다.
