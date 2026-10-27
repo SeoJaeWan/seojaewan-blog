@@ -12,4 +12,3 @@ export type { ChromeWindowDevice, ChromeWindowTab } from './components/chrome-wi
 export { ChromeWindow } from './components/chrome-window/chrome-window';
 export { ChromeWindowLayer } from './components/chrome-window-layer/chrome-window-layer';
 export { useChromeWindowTitle } from './hooks/use-chrome-window-title/use-chrome-window-title';
-export type { ChromeWindowContent } from './utils/chrome-tab-title/chrome-tab-title';

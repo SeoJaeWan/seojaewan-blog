@@ -3,6 +3,13 @@
 
 import type { PointerEvent, ReactNode } from 'react';
 
+import {
+  type ChromeTabPage,
+  type ChromeWindowContent,
+  createChromeContent,
+  navigateChromeTab,
+  openChromeTab,
+} from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { BLOG_FOLDER_ID } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
@@ -45,9 +52,6 @@ export type WindowRestorePoint = {
   snapZone: SnapZone | null;
 };
 
-/** Chrome 탭 하나가 보여 주는 페이지. 새 탭 페이지나 글이다 */
-export type ChromeTabPage = { kind: 'new-tab' } | { kind: 'post'; slug: string };
-
 /** 탐색기가 보는 위치. 폴더 id, 휴지통 id, 바탕화면은 null이다 */
 export type ExplorerLocation = string | null;
 
@@ -79,18 +83,9 @@ export type ExplorerWindowContent = {
 };
 
 /**
- * 창 내용. 탐색기는 탭과 탭마다의 위치 기록, Chrome은 탭 목록과 고른 탭이다. Chrome 탭 조작은 그 앱 단계에서 더한다.
+ * 창 내용. 탐색기와 Chrome 모두 탭 목록과 탭마다의 뒤로·앞으로 기록, 고른 탭이다(Chrome은 `chrome-tabs`).
  */
-export type WindowContent =
-  | ExplorerWindowContent
-  | {
-      /** 앱 */
-      app: 'chrome';
-      /** 탭 목록 */
-      tabs: readonly ChromeTabPage[];
-      /** 고른 탭의 차례 */
-      activeTabIndex: number;
-    };
+export type WindowContent = ExplorerWindowContent | ChromeWindowContent;
 
 /** 열린 창 하나 */
 export type OpenWindow = {
@@ -201,9 +196,7 @@ export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as
  * @returns 창 내용
  */
 export function getDefaultWindowContent(app: WindowApp): WindowContent {
-  return app === 'file-explorer'
-    ? createExplorerContent(BLOG_FOLDER_ID)
-    : { app, tabs: [{ kind: 'new-tab' }], activeTabIndex: 0 };
+  return app === 'file-explorer' ? createExplorerContent(BLOG_FOLDER_ID) : createChromeContent();
 }
 
 /**
@@ -287,32 +280,33 @@ export function openWindow(
 /**
  * 글을 Chrome에서 연다. 가장 최근에 쓴 Chrome 창(최소화된 창 포함)이 있으면 그 창에 새 탭으로 열어 고르고,
  * 창을 복원해 맨 앞으로 가져온다. 없으면 그 글 탭 하나인 새 Chrome 창을 연다. 같은 글이 열려 있어도 새 탭을 연다.
+ * 탭을 하나만 쓰는 모바일(`isSameTab`)은 새 탭 대신 그 창의 고른 탭에서 글로 간다(뒤로 가면 앞 페이지다).
  * @codocs [[창 동작:열기 규칙]]
+ * @codocs [[모바일:차이]]
  * @param state 지금 상태
  * @param slug 글 slug
  * @param workArea 작업 영역 크기(새 창을 열 때)
+ * @param isSameTab 새 탭 대신 고른 탭에서 열지(모바일)
  * @returns 새 상태와 글을 연 창의 id
  */
 export function openPostInChrome(
   state: WindowState,
   slug: string,
   workArea: WindowWorkArea,
+  isSameTab = false,
 ): { state: WindowState; id: string } {
   const page: ChromeTabPage = { kind: 'post', slug };
   const targetId = state.order.findLast((id) => state.windows[id]?.app === 'chrome');
   const target = targetId === undefined ? undefined : state.windows[targetId];
   if (target?.content.app !== 'chrome') {
-    return openWindow(state, 'chrome', workArea, {
-      app: 'chrome',
-      tabs: [page],
-      activeTabIndex: 0,
-    });
+    return openWindow(state, 'chrome', workArea, createChromeContent(page));
   }
-  const tabs = [...target.content.tabs, page];
   const updated: OpenWindow = {
     ...target,
     isMinimized: false,
-    content: { app: 'chrome', tabs, activeTabIndex: tabs.length - 1 },
+    content: isSameTab
+      ? navigateChromeTab(target.content, page)
+      : openChromeTab(target.content, page),
   };
   return {
     id: target.id,

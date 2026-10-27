@@ -22,7 +22,14 @@ export function renderAppWindow(
 ): ReactNode {
   const { content } = window;
   if (content.app === 'chrome') {
-    return <ChromeWindowLayer content={content} controls={controls} device={device} />;
+    return (
+      <ChromeWindowLayer
+        windowId={window.id}
+        content={content}
+        controls={controls}
+        device={device}
+      />
+    );
   }
   return (
     <ExplorerWindowLayer

@@ -1,4 +1,4 @@
-import type { JSX, MouseEventHandler, ReactNode } from 'react';
+import type { JSX, KeyboardEvent, MouseEventHandler, ReactNode } from 'react';
 
 import {
   EmptyState,
@@ -18,11 +18,11 @@ export type ChromePageLayout = 'wide' | 'narrow';
 /** 목차 항목 하나 */
 export type ChromePageTocItem = { label: string; active?: boolean };
 
-/** 새 탭 최신 글 바로가기 하나 */
-export type ChromePageLatestPost = { title: string };
+/** 새 탭 최신 글 바로가기 하나. id는 같은 제목의 글을 구분한다 */
+export type ChromePageLatestPost = { id?: string; title: string };
 
-/** 검색 결과 글 하나 */
-export type ChromePageSearchResult = { title: string; date: string; url: string };
+/** 검색 결과 글 하나. id는 같은 제목의 글을 구분한다 */
+export type ChromePageSearchResult = { id?: string; title: string; date: string; url: string };
 
 type ChromePageCommonProps = {
   /** 피그마 Layout. wide는 넓은 창, narrow는 좁은 창(모바일 폭)의 배치다 */
@@ -53,6 +53,10 @@ type ChromeNewTabPageProps = {
   page: 'new-tab';
   /** 최신 글 바로가기 */
   latestPosts: readonly ChromePageLatestPost[];
+  /** 최신 글 바로가기를 눌렀을 때. 누른 글의 순서를 받는다 */
+  onLatestPostOpen?: (index: number) => void;
+  /** 검색창에서 Enter를 눌렀을 때. 입력한 글자를 받는다(주소창과 같이 동작한다) */
+  onSearchSubmit?: (text: string) => void;
 };
 
 type ChromeSearchResultsPageProps = {
@@ -62,6 +66,8 @@ type ChromeSearchResultsPageProps = {
   query: string;
   /** 제목에 검색어가 든 글 목록 */
   results: readonly ChromePageSearchResult[];
+  /** 결과 글을 눌렀을 때(클릭·Enter·Space). 누른 글의 순서를 받는다 */
+  onResultOpen?: (index: number) => void;
 };
 
 type ChromeNotFoundPageProps = {
@@ -154,7 +160,19 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
  * @returns 새 탭 페이지
  */
 function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const { layout, latestPosts } = props;
+  const { layout, latestPosts, onLatestPostOpen, onSearchSubmit } = props;
+
+  /**
+   * 검색창에서 Enter를 누르면 입력한 글자를 넘긴다. 한글을 조합하는 중의 Enter는 받지 않는다.
+   * @param event 키 이벤트
+   */
+  function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    if (onSearchSubmit !== undefined && event.key === 'Enter' && !event.nativeEvent.isComposing) {
+      event.preventDefault();
+      onSearchSubmit(event.currentTarget.value);
+    }
+  }
+
   const isWide = layout === 'wide';
   return (
     <div
@@ -169,6 +187,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
         appearance="web"
         placeholder={NEW_TAB_SEARCH_PLACEHOLDER}
         aria-label={NEW_TAB_SEARCH_PLACEHOLDER}
+        onKeyDown={handleSearchKeyDown}
         className="w-320"
       />
       <TileGrid align="center" className={isWide ? 'w-576' : 'w-full max-w-720'}>
@@ -176,15 +195,23 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
           /**
            * 최신 글 바로가기 하나를 그린다.
            * @param post 최신 글
+           * @param index 순서
            * @returns PinnedTile
            */
-          (post) => (
-            <PinnedTile
-              key={post.title}
-              label={post.title}
-              icon={<ImageAsset name="images/file-document" className="size-full object-contain" />}
-            />
-          ),
+          (post, index) => {
+            return (
+              <PinnedTile
+                key={post.id ?? post.title}
+                label={post.title}
+                onClick={() => {
+                  onLatestPostOpen?.(index);
+                }}
+                icon={
+                  <ImageAsset name="images/file-document" className="size-full object-contain" />
+                }
+              />
+            );
+          },
         )}
       </TileGrid>
     </div>
@@ -199,7 +226,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
 function SearchResultsPage(
   props: ChromeSearchResultsPageProps & { layout: ChromePageLayout },
 ): JSX.Element {
-  const { layout, query, results } = props;
+  const { layout, query, results, onResultOpen } = props;
   const isWide = layout === 'wide';
   return (
     <div className={['flex flex-col items-center px-16', isWide ? 'pt-48' : 'pt-24'].join(' ')}>
@@ -212,22 +239,30 @@ function SearchResultsPage(
             /**
              * 검색 결과 글 하나를 그린다.
              * @param result 검색 결과
+             * @param index 순서
              * @returns ListItem
              */
-            (result) => (
-              <ListItem
-                key={result.title}
-                size="two-line"
-                title={result.title}
-                subtitle={result.date}
-                showTrailing={isWide}
-                trailing={result.url}
-                icon={
-                  <ImageAsset name="images/file-document" className="size-full object-contain" />
-                }
-                className="w-full"
-              />
-            ),
+            (result, index) => {
+              return (
+                <ListItem
+                  key={result.id ?? result.title}
+                  {...(onResultOpen === undefined
+                    ? {}
+                    : getOpenableRowProps(() => {
+                        onResultOpen(index);
+                      }))}
+                  size="two-line"
+                  title={result.title}
+                  subtitle={result.date}
+                  showTrailing={isWide}
+                  trailing={result.url}
+                  icon={
+                    <ImageAsset name="images/file-document" className="size-full object-contain" />
+                  }
+                  className="w-full"
+                />
+              );
+            },
           )}
         </div>
       </section>
@@ -294,4 +329,37 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
       {content}
     </div>
   );
+}
+
+/**
+ * 누르면 여는 목록 줄의 속성. 버튼 역할이고 클릭·Enter·Space로 연다(Start 목록 줄과 같다).
+ * 버튼 역할에 맞지 않는 `aria-selected`(ListItem이 붙인다)는 뺀다.
+ * @param open 여는 함수
+ * @returns 줄 속성
+ */
+function getOpenableRowProps(open: () => void): {
+  role: 'button';
+  tabIndex: number;
+  'aria-selected': undefined;
+  onClick: () => void;
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
+} {
+  return {
+    role: 'button',
+    tabIndex: 0,
+    'aria-selected': undefined,
+    onClick: open,
+    onKeyDown: handleKeyDown,
+  };
+
+  /**
+   * Enter·Space로 연다.
+   * @param event 키 이벤트
+   */
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      open();
+    }
+  }
 }
