@@ -29,6 +29,7 @@ type WindowFrameControlProps = Pick<
   | 'onClose'
   | 'maximizeSlot'
   | 'onTitleBarDoubleClick'
+  | 'onTitleBarPointerDown'
 >;
 
 type ChromeWindowProps = WindowFrameControlProps & {
@@ -52,7 +53,7 @@ const chromeAppIcon = <ImageAsset name="images/app-chrome" className="size-full 
  * Chrome 창(피그마 조립 `Window/Chrome`)을 그린다. WindowFrame(Chrome 재질) 위에 desktop은 탭 줄과 창 버튼,
  * mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 도구 모음(BrowserToolbar) 아래에 탭 내용 자리를 둔다.
  * 모바일은 늘 전체화면이라 최대화 버튼과 도구 모음의 앞으로·새로고침을 뺀다.
- * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)은 WindowFrame에 그대로 넘긴다. 창 이동·크기 조절, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
+ * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)은 WindowFrame에 그대로 넘긴다. 제목 표시줄 누르기(창 끌기)도 그대로 넘긴다. 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[모바일:차이]]
  * @param props

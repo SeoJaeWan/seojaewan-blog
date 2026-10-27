@@ -25,6 +25,7 @@ type WindowFrameControlProps = Pick<
   | 'onClose'
   | 'maximizeSlot'
   | 'onTitleBarDoubleClick'
+  | 'onTitleBarPointerDown'
 >;
 
 type ExplorerWindowProps = WindowFrameControlProps & {
@@ -48,7 +49,7 @@ const explorerAppIcon = (
  * 탐색기 창(피그마 조립 `Window/Explorer`)을 그린다. WindowFrame(마이카 재질) 위에 desktop은 폴더 탭·새 탭 버튼과
  * 창 버튼, mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 그 아래에 탭 내용 자리를 둔다.
  * 모바일은 늘 전체화면이라 최대화 버튼을 뺀다. 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)은 WindowFrame에 그대로 넘긴다.
- * 창 이동·크기 조절, 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
+ * 제목 표시줄 누르기(창 끌기)도 그대로 넘긴다. 탭 열고 닫기 같은 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[모바일:차이]]

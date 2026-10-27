@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, MouseEvent, ReactNode } from 'react';
+import type { ComponentProps, JSX, MouseEvent, PointerEvent, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 import { CaptionButtonGroup } from '../caption-button-group/caption-button-group';
@@ -31,6 +31,8 @@ type WindowFrameCommonProps = Omit<ComponentProps<'div'>, 'children' | 'title'> 
   maximizeSlot?: ReactNode;
   /** 제목 표시줄을 더블클릭했을 때. 창 버튼 위에서 한 더블클릭은 부르지 않는다 */
   onTitleBarDoubleClick?: () => void;
+  /** 제목 표시줄을 눌렀을 때(창 끌기 시작). 창 버튼 위에서 누른 것은 부르지 않는다 */
+  onTitleBarPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
   /** 피그마 `Content` 슬롯. 앱 내용이 채운다 */
   children?: ReactNode;
 };
@@ -103,22 +105,40 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
     onClose: handleClose,
     maximizeSlot,
     onTitleBarDoubleClick: handleTitleBarDoubleClick,
+    onTitleBarPointerDown: handleTitleBarPointerDown,
     className,
     children,
     ...divProps
   } = props;
   const isFloating = placement === 'normal';
   const isCustom = titleBar === 'custom';
-  // 창 버튼(스냅 레이아웃 칸 포함, 포털로 그려도 React 이벤트는 올라온다) 위의 더블클릭은 제목 표시줄 동작이 아니다.
+  // 창 버튼 위의 더블클릭과, 포털로 그린 팝업(스냅 레이아웃 등)에서 올라온 더블클릭은 제목 표시줄 동작이 아니다.
   /**
-   * 제목 표시줄 더블클릭을 받아, 창 버튼 위가 아닐 때만 콜백을 부른다.
+   * 제목 표시줄 더블클릭을 받아, 제목 표시줄 DOM 안이고 창 버튼 위가 아닐 때만 콜백을 부른다.
    * @param event 더블클릭 이벤트
    */
   function handleTitleBarDoubleClickEvent(event: MouseEvent<HTMLDivElement>): void {
+    if (!(event.target instanceof Node) || !event.currentTarget.contains(event.target)) {
+      return;
+    }
     if (event.target instanceof Element && event.target.closest('button') !== null) {
       return;
     }
     handleTitleBarDoubleClick?.();
+  }
+  /**
+   * 제목 표시줄 누르기를 받아, 창 버튼 위가 아닐 때만 콜백을 부른다. 더블클릭과 같은 기준이다.
+   * 포털로 그린 팝업(스냅 레이아웃 등)에서 누른 것도 React 이벤트로 올라오므로, 제목 표시줄 DOM 안에서 누른 것만 받는다.
+   * @param event 누르기 이벤트
+   */
+  function handleTitleBarPointerDownEvent(event: PointerEvent<HTMLDivElement>): void {
+    if (!(event.target instanceof Node) || !event.currentTarget.contains(event.target)) {
+      return;
+    }
+    if (event.target instanceof Element && event.target.closest('button') !== null) {
+      return;
+    }
+    handleTitleBarPointerDown?.(event);
   }
   return (
     <div
@@ -136,6 +156,9 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
       <div
         onDoubleClick={
           handleTitleBarDoubleClick === undefined ? undefined : handleTitleBarDoubleClickEvent
+        }
+        onPointerDown={
+          handleTitleBarPointerDown === undefined ? undefined : handleTitleBarPointerDownEvent
         }
         className={cn('flex w-full shrink-0 items-start overflow-clip', isCustom ? 'h-40' : 'h-32')}
       >

@@ -1,11 +1,16 @@
-import type { JSX } from 'react';
+import type { JSX, PointerEvent } from 'react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 import { SnapLayoutMenu } from '@/features/window/components/snap-layout-menu/snap-layout-menu';
+import { useWindowDrag } from '@/features/window/hooks/use-window-drag/use-window-drag';
 import { useWindowSnapMotion } from '@/features/window/hooks/use-window-snap-motion/use-window-snap-motion';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import type {
+  DragSnapTarget,
+  ResizeDirection,
+} from '@/shared/utils/window-drag-rules/window-drag-rules';
 import { getTaskbarOffset } from '@/shared/utils/window-geometry/window-geometry';
 import type {
   OpenWindow,
@@ -37,11 +42,25 @@ type WindowViewProps = {
   onExitComplete: (id: string) => void;
   /** 스냅 레이아웃에서 칸을 골라 스냅했을 때 부른다. 창 층이 남은 칸에 Snap Assist를 띄운다 */
   onSnap: (id: string, zone: SnapZone) => void;
+  /** 끄는 동안 놓으면 채울 곳이 바뀌었을 때 부른다. 창 층이 그 자리에 SnapPreview를 그린다 */
+  onSnapPreviewChange: (id: string, target: DragSnapTarget | null) => void;
 };
 
 // 작업 표시줄 앱 버튼까지의 거리를 넘기는 CSS 변수(motion.css의 실행 중 값)다.
 const TASKBAR_OFFSET_X = '--motion-window-taskbar-offset-x';
 const TASKBAR_OFFSET_Y = '--motion-window-taskbar-offset-y';
+
+// 크기 조절 핸들. 가장자리는 창 밖 8px 띠, 모서리는 창 모서리에 걸친 16px 칸이다(창 안으로 8px 들어온다).
+const resizeHandles = [
+  { direction: 'n', className: 'inset-x-8 -top-8 h-8 cursor-ns-resize' },
+  { direction: 's', className: 'inset-x-8 -bottom-8 h-8 cursor-ns-resize' },
+  { direction: 'w', className: 'inset-y-8 -left-8 w-8 cursor-ew-resize' },
+  { direction: 'e', className: 'inset-y-8 -right-8 w-8 cursor-ew-resize' },
+  { direction: 'nw', className: '-top-8 -left-8 size-16 cursor-nwse-resize' },
+  { direction: 'ne', className: '-top-8 -right-8 size-16 cursor-nesw-resize' },
+  { direction: 'sw', className: '-bottom-8 -left-8 size-16 cursor-nesw-resize' },
+  { direction: 'se', className: '-right-8 -bottom-8 size-16 cursor-nwse-resize' },
+] as const satisfies readonly { direction: ResizeDirection; className: string }[];
 
 /**
  * 열린 창 하나를 작업 영역 위 제자리에 그리고, 열기·닫기·최소화·복원·최대화·스냅 모션 클래스를 붙인다.
@@ -52,6 +71,8 @@ const TASKBAR_OFFSET_Y = '--motion-window-taskbar-offset-y';
  * - 창을 누르면 맨 앞으로 가져오고, 맨 앞이 아닌 창은 흐리게 그린다.
  * - 최대화 버튼·이전 크기로 복원 버튼·제목 표시줄 더블클릭으로 최대화하고 복원한다. 최대화 버튼에 마우스를 올리면 스냅 레이아웃을 연다.
  * - 최대화·복원·스냅으로 자리가 바뀌면 안쪽 요소에서 `motion-window-snap`을 FLIP으로 재생한다(`useWindowSnapMotion`).
+ * - 제목 표시줄을 끌어 옮기고, 떠 있는 창은 가장자리·모서리 핸들로 크기를 조절한다(`useWindowDrag`). 끝으로 끌어 놓으면 스냅·최대화한다.
+ *   최대화·스냅한 창은 크기를 조절하지 않는다. 모바일 창은 늘 전체화면이라 끌기·크기 조절이 없다.
  * 위치는 실행 중 값이라 인라인 left·top·width·height로 주고 `transform`은 쓰지 않는다(모션 클래스의 translate·scale과 겹치지 않게).
  * @codocs [[창 동작:창 조작]]
  * @codocs [[피그마 연동:모션 클래스]]
@@ -71,6 +92,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
     renderWindow,
     onExitComplete,
     onSnap,
+    onSnapPreviewChange,
   } = props;
   const { id, app, isMinimized } = target;
   const rect = workArea === null ? target.bounds : getWindowRect(target, workArea);
@@ -87,12 +109,28 @@ export function WindowView(props: WindowViewProps): JSX.Element {
   const snap = useWindowStore((state) => state.snap);
   const interaction = useWindowStore((state) => state.interaction);
 
-  useWindowSnapMotion(
+  const rememberSnapRect = useWindowSnapMotion(
     snapRef,
     rect,
     `${target.placement}:${target.snapZone?.layout ?? ''}:${String(target.snapZone?.index ?? '')}`,
     !isMobile && interaction === null,
   );
+
+  const { handleTitleBarPointerDown, handleResizePointerDown } = useWindowDrag({
+    elementRef: ref,
+    window: target,
+    rect,
+    workArea,
+    isEnabled: !isMobile && !isClosing && !isMinimized,
+    onSnapPreviewChange: (snapTarget) => {
+      onSnapPreviewChange(id, snapTarget);
+    },
+    onDragSnap: (zone) => {
+      onSnap(id, zone);
+    },
+    rememberSnapRect,
+  });
+  const isResizable = !isMobile && !isClosing && target.placement === 'normal';
 
   // 최소화에서 돌아오는 것인지 기억한다. 처음 나타날 때만 열기 모션이다.
   const [isRestoring, setIsRestoring] = useState(false);
@@ -215,6 +253,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
                 onMaximize: handleMaximize,
                 onRestore: handleRestore,
                 onTitleBarDoubleClick: handleTitleBarDoubleClick,
+                onTitleBarPointerDown: handleTitleBarPointerDown,
                 maximizeSlot: (
                   <SnapLayoutMenu
                     inactive={!isActive}
@@ -226,7 +265,56 @@ export function WindowView(props: WindowViewProps): JSX.Element {
               },
         )}
       </div>
+      {isResizable &&
+        resizeHandles.map(
+          /**
+           * 크기 조절 핸들 하나를 그린다.
+           * @param handle 방향과 자리 클래스
+           * @returns ResizeHandle
+           */
+          (handle) => (
+            <ResizeHandle
+              key={handle.direction}
+              direction={handle.direction}
+              className={handle.className}
+              onResizeStart={handleResizePointerDown}
+            />
+          ),
+        )}
     </div>
+  );
+}
+
+type ResizeHandleProps = {
+  /** 핸들 방향 */
+  direction: ResizeDirection;
+  /** 자리와 커서 클래스 */
+  className: string;
+  /** 핸들을 눌렀을 때. 그 방향으로 크기 조절을 시작한다 */
+  onResizeStart: (direction: ResizeDirection, event: PointerEvent<HTMLDivElement>) => void;
+};
+
+/**
+ * 창 크기 조절 핸들 하나를 그린다. 마우스·펜으로만 쓰는 자리라 접근성 트리에서 뺀다.
+ * @codocs [[창 동작:창 조작]]
+ * @param props
+ */
+function ResizeHandle(props: ResizeHandleProps): JSX.Element {
+  const { direction, className, onResizeStart } = props;
+  /**
+   * 누르면 이 방향으로 크기 조절을 시작한다.
+   * @param event 누르기 이벤트
+   */
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>): void {
+    onResizeStart(direction, event);
+  }
+  return (
+    <div
+      aria-hidden
+      data-resize-handle={direction}
+      onPointerDown={handlePointerDown}
+      className={`absolute ${className}`}
+    />
   );
 }
 

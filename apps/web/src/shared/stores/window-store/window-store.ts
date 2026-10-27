@@ -4,11 +4,13 @@ import { registerStoreReset } from '@/shared/stores/store-reset/store-reset';
 import type {
   SnapZone,
   WindowApp,
+  WindowBounds,
   WindowState,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
 import {
   closeWindow,
+  detachWindow,
   fitWindowsToWorkArea,
   focusWindow,
   INITIAL_WINDOW_STATE,
@@ -17,13 +19,14 @@ import {
   openWindow,
   restoreFromMaximize,
   restoreWindow,
+  setWindowBounds,
   snapWindow,
   toggleMaximizeWindow,
 } from '@/shared/utils/window-rules/window-rules';
 
 /**
  * 창을 끌거나 크기를 조절하는 중인지. 그동안에는 최대화·스냅 모션을 끈다([[피그마 연동:모션 클래스]]).
- * 끌기와 크기 조절은 아직 없어 늘 null이다. 그 기능을 붙일 때 이 값을 바꾼다.
+ * 끄는 동안의 자리는 저장소에 두지 않고 창 요소에 바로 그리며, 놓을 때 `setBounds`·`snap`·`maximize`로 반영한다.
  */
 export type WindowInteraction = 'drag' | 'resize' | null;
 
@@ -53,6 +56,12 @@ type WindowActions = {
   toggleMaximize: (id: string) => void;
   /** 창을 스냅 칸에 맞추고 맨 앞으로 가져온다 */
   snap: (id: string, zone: SnapZone) => void;
+  /** 떠 있는 창의 자리를 바꾼다(끌어서 옮기거나 크기를 조절한 뒤 놓았을 때) */
+  setBounds: (id: string, bounds: WindowBounds) => void;
+  /** 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다 */
+  detach: (id: string, bounds: WindowBounds) => void;
+  /** 끌기·크기 조절을 시작하거나(drag·resize) 끝낸다(null) */
+  setInteraction: (interaction: WindowInteraction) => void;
   /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다 */
   fitToWorkArea: (workArea: WindowWorkArea) => void;
   /** 창을 모두 닫은 처음 상태로 돌린다(다시 시작) */
@@ -104,6 +113,15 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
     },
     snap: (id, zone) => {
       set((state) => snapWindow(state, id, zone));
+    },
+    setBounds: (id, bounds) => {
+      set((state) => setWindowBounds(state, id, bounds));
+    },
+    detach: (id, bounds) => {
+      set((state) => detachWindow(state, id, bounds));
+    },
+    setInteraction: (interaction) => {
+      set({ interaction });
     },
     fitToWorkArea: (workArea) => {
       set((state) => fitWindowsToWorkArea(state, workArea));

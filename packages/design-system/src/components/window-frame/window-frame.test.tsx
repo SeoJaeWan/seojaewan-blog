@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createPortal } from 'react-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 import { WindowFrame } from './window-frame';
@@ -130,6 +131,52 @@ describe('WindowFrame', () => {
     await user.dblClick(screen.getByRole('button', { name: '최대화' }));
     expect(handleDoubleClick).not.toHaveBeenCalled();
     expect(handleMaximize).toHaveBeenCalledTimes(2);
+  });
+
+  it('창 버튼 자리에서 포털로 그린 팝업을 더블클릭한 것은 onTitleBarDoubleClick을 부르지 않는다', async () => {
+    const user = userEvent.setup();
+    const handleDoubleClick = vi.fn();
+    render(
+      <WindowFrame
+        appIcon={null}
+        onTitleBarDoubleClick={handleDoubleClick}
+        maximizeSlot={createPortal(<p>스냅 레이아웃</p>, document.body)}
+      />,
+    );
+    await user.dblClick(screen.getByText('스냅 레이아웃'));
+    expect(handleDoubleClick).not.toHaveBeenCalled();
+  });
+
+  it('제목 표시줄을 누르면 onTitleBarPointerDown을 부른다', async () => {
+    const user = userEvent.setup();
+    const handlePointerDown = vi.fn();
+    render(
+      <WindowFrame appIcon={null} title="파일 탐색기" onTitleBarPointerDown={handlePointerDown} />,
+    );
+    await user.pointer({ keys: '[MouseLeft>]', target: screen.getByText('파일 탐색기') });
+    expect(handlePointerDown).toHaveBeenCalledOnce();
+  });
+
+  it('창 버튼 위에서 누른 것은 onTitleBarPointerDown을 부르지 않는다', async () => {
+    const user = userEvent.setup();
+    const handlePointerDown = vi.fn();
+    render(<WindowFrame appIcon={null} onTitleBarPointerDown={handlePointerDown} />);
+    await user.click(screen.getByRole('button', { name: '최소화' }));
+    expect(handlePointerDown).not.toHaveBeenCalled();
+  });
+
+  it('창 버튼 자리에서 포털로 그린 팝업을 누른 것은 onTitleBarPointerDown을 부르지 않는다', async () => {
+    const user = userEvent.setup();
+    const handlePointerDown = vi.fn();
+    render(
+      <WindowFrame
+        appIcon={null}
+        onTitleBarPointerDown={handlePointerDown}
+        maximizeSlot={createPortal(<p>스냅 레이아웃</p>, document.body)}
+      />,
+    );
+    await user.pointer({ keys: '[MouseLeft>]', target: screen.getByText('스냅 레이아웃') });
+    expect(handlePointerDown).not.toHaveBeenCalled();
   });
 
   it('내용 자리를 더블클릭해도 부르지 않는다', async () => {

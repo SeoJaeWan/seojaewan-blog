@@ -1,7 +1,7 @@
 // 창 열기·순서·최소화·복원·닫기 규칙을 React 밖의 순수 함수로 모은다. 저장소(`window-store.ts`)는 이 함수만 부른다.
 // 근거는 [[기술 스택:상태 관리]], 위치는 [[저장소 구성:앱 폴더 구조]]이다.
 
-import type { ReactNode } from 'react';
+import type { PointerEvent, ReactNode } from 'react';
 
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
@@ -97,6 +97,8 @@ export type WindowFrameControls = {
   onRestore?: () => void;
   /** 제목 표시줄을 더블클릭했을 때(최대화·복원) */
   onTitleBarDoubleClick?: () => void;
+  /** 제목 표시줄을 눌렀을 때(창 끌기 시작). 끌 수 없는 모바일 창은 없다 */
+  onTitleBarPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
   /** 최대화 버튼 자리. 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다 */
   maximizeSlot?: ReactNode;
   /** 창 자리를 채우는 크기 클래스 */
@@ -126,6 +128,12 @@ export type TaskbarAppIndicator = 'none' | 'running' | 'active';
 export const DEFAULT_WINDOW_SIZES = {
   'file-explorer': { width: 1024, height: 640 },
   chrome: { width: 1280, height: 800 },
+} as const;
+
+/** 앱별 최소 크기(px). 크기 조절로 이보다 작게 줄일 수 없다 */
+export const MIN_WINDOW_SIZES = {
+  'file-explorer': { width: 500, height: 340 },
+  chrome: { width: 500, height: 400 },
 } as const;
 
 /** 계단식으로 열 때 새 창을 앞 창보다 오른쪽 아래로 비켜 놓는 거리(px) */
@@ -569,6 +577,45 @@ export function fitWindowsToWorkArea(state: WindowState, workArea: WindowWorkAre
     }
   }
   return changedCount > 0 ? { ...state, windows } : state;
+}
+
+/**
+ * 떠 있는 창의 자리를 바꾼다(끌어서 옮기거나 크기를 조절한 뒤 놓았을 때). 떠 있지 않은 창은 그대로 둔다.
+ * @codocs [[창 동작:창 조작]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @param bounds 새 자리
+ * @returns 새 상태
+ */
+export function setWindowBounds(state: WindowState, id: string, bounds: WindowBounds): WindowState {
+  const target = state.windows[id];
+  if (target === undefined || target.placement !== 'normal') {
+    return state;
+  }
+  return replaceWindow(state, { ...target, bounds });
+}
+
+/**
+ * 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다. 크기는 떠 있을 때의 크기이고 자리는 끄는 포인터 아래다.
+ * 최대화하기 앞 모습은 지운다. 이미 떠 있는 창은 그대로 둔다.
+ * @codocs [[창 동작:스냅]]
+ * @param state 지금 상태
+ * @param id 창 id
+ * @param bounds 뗀 창의 자리
+ * @returns 새 상태
+ */
+export function detachWindow(state: WindowState, id: string, bounds: WindowBounds): WindowState {
+  const target = state.windows[id];
+  if (target === undefined || target.placement === 'normal') {
+    return state;
+  }
+  return replaceWindow(state, {
+    ...target,
+    placement: 'normal',
+    snapZone: null,
+    previous: null,
+    bounds,
+  });
 }
 
 /**
