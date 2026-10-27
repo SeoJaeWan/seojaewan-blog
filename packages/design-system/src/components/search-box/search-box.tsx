@@ -91,7 +91,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
 }
 
 /**
- * pill·taskbar의 돋보기를 그린다. Hover·Focused에는 새 그라데이션 자산을 쓰고 Pressed에는 0.8배로 줄인다.
+ * pill·taskbar의 돋보기를 그린다. Hover·Focused·Pressed에는 그라데이션 자산을 1.1배로 키워 쓴다(누를 때 따로 줄지 않는다).
  * Safari 계열 WebKit에서는 그라데이션 대신 단색 강조색을 쓴다. disabled면 늘 회색이다.
  * @codocs [[검색:입력칸]]
  * @param props 돋보기 속성
@@ -106,7 +106,12 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
   );
   return (
     <span className="grid size-icon-16 shrink-0 place-items-center">
-      <span className={cn('grid size-icon-16', !isDisabled && 'group-active:scale-80')}>
+      <span
+        className={cn(
+          'grid size-icon-16',
+          !isDisabled && 'group-focus-within:scale-110 group-hover:scale-110',
+        )}
+      >
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
