@@ -62,11 +62,28 @@ export function getExplorerLocationPath(
   workspace: ExplorerWorkspace,
   folderId: string | null,
 ): string[] {
+  return getExplorerLocationTrail(workspace, folderId).map((entry) => entry.name);
+}
+
+/**
+ * 위치 칸(Breadcrumb)의 위치와 이름. 폴더는 바탕 화면부터 그 폴더까지, 휴지통은 휴지통 하나다. 칸을 누르면 그 위치로 간다.
+ * @codocs [[파일 탐색기:구성]]
+ * @param workspace 작업 공간
+ * @param folderId 보고 있는 위치
+ * @returns 위에서부터의 위치와 이름
+ */
+export function getExplorerLocationTrail(
+  workspace: ExplorerWorkspace,
+  folderId: string | null,
+): { location: string | null; name: string }[] {
   if (folderId === RECYCLE_BIN_ID) {
-    return [RECYCLE_BIN_NAME];
+    return [{ location: RECYCLE_BIN_ID, name: RECYCLE_BIN_NAME }];
   }
   const folders = folderId === null ? [] : getFolderPath(workspace, folderId);
-  return [DESKTOP_NAME, ...folders.map((folder) => folder.name)];
+  return [
+    { location: null, name: DESKTOP_NAME },
+    ...folders.map((folder) => ({ location: folder.id, name: folder.name })),
+  ];
 }
 
 /**

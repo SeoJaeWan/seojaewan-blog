@@ -24,5 +24,12 @@ export function renderAppWindow(
   if (content.app === 'chrome') {
     return <ChromeWindowLayer content={content} controls={controls} device={device} />;
   }
-  return <ExplorerWindowLayer folderId={content.folderId} controls={controls} device={device} />;
+  return (
+    <ExplorerWindowLayer
+      windowId={window.id}
+      content={content}
+      controls={controls}
+      device={device}
+    />
+  );
 }

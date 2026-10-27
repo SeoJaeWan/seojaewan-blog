@@ -1,10 +1,11 @@
-import type { ComponentProps, JSX, ReactNode } from 'react';
+import type { ComponentProps, JSX, KeyboardEvent, ReactNode } from 'react';
 
 import {
   ExplorerAddressRow,
   ExplorerCommandBar,
   ExplorerStatusBar,
   NavigationPane,
+  ScrollArea,
 } from '@seojaewan/design-system';
 
 export type ExplorerContentDevice = 'desktop' | 'mobile';
@@ -17,6 +18,9 @@ type ExplorerContentProps = Pick<
   | 'locationIcon'
   | 'searchPlaceholder'
   | 'onBack'
+  | 'backDisabled'
+  | 'forwardDisabled'
+  | 'upDisabled'
   | 'onForward'
   | 'onUp'
   | 'onRefresh'
@@ -37,6 +41,10 @@ type ExplorerContentProps = Pick<
     navigation?: ReactNode;
     /** 피그마 `Items` 슬롯. 현재 폴더의 항목(FileItem, 또는 DetailsHeader와 FileRow)을 넣는다 */
     children?: ReactNode;
+    /** 항목 자리를 새로 그리는 열쇠. 보는 위치가 바뀌면 바꿔, 항목 자리 스크롤을 맨 위로 돌린다 */
+    itemsKey?: string;
+    /** 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다 */
+    onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
     /** 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다 */
     className?: string;
   };
@@ -60,6 +68,9 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     selection,
     showSelection: isSelectionShown,
     onBack: handleBack,
+    backDisabled: isBackDisabled,
+    forwardDisabled: isForwardDisabled,
+    upDisabled: isUpDisabled,
     onForward: handleForward,
     onUp: handleUp,
     onRefresh: handleRefresh,
@@ -67,12 +78,20 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     onSearch: handleSearch,
     onDetailsView: handleDetailsView,
     onLargeIconsView: handleLargeIconsView,
+    onKeyDown: handleKeyDown,
+    itemsKey,
     className,
   } = props;
   const isDesktop = device === 'desktop';
   return (
+    // 본문 어디를 눌러도 이동 단축키를 받도록 포커스를 받는다(Tab으로는 닿지 않는다). 포커스 고리는 그리지 않는다.
     <div
-      className={['flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default', className]
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+      className={[
+        'flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
     >
@@ -81,6 +100,9 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         locationIcon={locationIcon}
         searchPlaceholder={searchPlaceholder}
         onBack={handleBack}
+        backDisabled={isBackDisabled}
+        forwardDisabled={isForwardDisabled}
+        upDisabled={isUpDisabled}
         onForward={handleForward}
         onUp={handleUp}
         onRefresh={handleRefresh}
@@ -96,13 +118,25 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
       <div className="flex min-h-0 flex-1 overflow-clip border-t-default border-card-stroke-default bg-layer-fill-default">
         {isDesktop && (
           <>
-            <NavigationPane className="shrink-0">{navigation}</NavigationPane>
+            {/* 폴더 트리가 길면 세로로 스크롤한다. */}
+            <ScrollArea material="solid" className="shrink-0">
+              <NavigationPane role="tree" aria-label="탐색 창" className="shrink-0">
+                {navigation}
+              </NavigationPane>
+            </ScrollArea>
             <div className="w-1 shrink-0 bg-divider-stroke-default" />
           </>
         )}
-        <div className="flex min-w-px flex-1 flex-wrap content-start items-start gap-4 overflow-clip px-12 py-8">
-          {children}
-        </div>
+        {/* 항목이 넘치면 세로로 스크롤한다. */}
+        <ScrollArea key={itemsKey} material="solid" className="min-w-px flex-1">
+          <div
+            role="group"
+            aria-label="폴더 내용"
+            className="flex flex-wrap content-start items-start gap-4 px-12 py-8"
+          >
+            {children}
+          </div>
+        </ScrollArea>
       </div>
       <ExplorerStatusBar
         device={device}

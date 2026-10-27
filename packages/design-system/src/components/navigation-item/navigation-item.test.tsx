@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 
 import { NavigationItem } from './navigation-item';
 
@@ -32,5 +33,22 @@ describe('NavigationItem', () => {
     render(<NavigationItem expand="collapsed" icon={<i>아이콘</i>} chevron={<i>꺾쇠</i>} />);
     expect(screen.getByText('아이콘')).toBeInTheDocument();
     expect(screen.getByText('꺾쇠')).toBeInTheDocument();
+  });
+
+  it('꺾쇠를 누르면 onChevronClick만 부르고 항목 누르기로 올리지 않는다', async () => {
+    const handleChevronClick = vi.fn();
+    const handleClick = vi.fn();
+    render(
+      <NavigationItem
+        expand="collapsed"
+        icon={<i />}
+        chevron={<i>꺾쇠</i>}
+        onChevronClick={handleChevronClick}
+        onClick={handleClick}
+      />,
+    );
+    await userEvent.click(screen.getByText('꺾쇠'));
+    expect(handleChevronClick).toHaveBeenCalledTimes(1);
+    expect(handleClick).not.toHaveBeenCalled();
   });
 });

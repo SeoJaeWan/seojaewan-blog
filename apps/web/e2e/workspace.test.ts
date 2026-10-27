@@ -8,11 +8,16 @@ test('바탕화면의 Blog 폴더와 휴지통을 열면 그 위치를 보는 �
   const desktop = page.getByRole('main', { name: '바탕화면' });
 
   await desktop.getByText('Blog', { exact: true }).dblclick();
-  const blog = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+  const blog = page
+    .getByRole('region', { name: 'Blog - 파일 탐색기' })
+    .getByRole('group', { name: '폴더 내용' });
   await expect(blog.getByText('Notion 블로그 이전기')).toBeVisible();
   await expect(blog.getByText('React', { exact: true })).toBeVisible();
 
-  await desktop.getByText('휴지통', { exact: true }).dblclick();
+  await desktop
+    .getByRole('listbox', { name: '바탕화면 아이콘' })
+    .getByRole('option', { name: '휴지통' })
+    .dblclick();
   await expect(page.getByRole('region', { name: '휴지통 - 파일 탐색기' })).toBeVisible();
 });
 

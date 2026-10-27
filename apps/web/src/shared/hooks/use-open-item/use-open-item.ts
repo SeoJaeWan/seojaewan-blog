@@ -1,6 +1,7 @@
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import { getItemOpenAction } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /** 항목을 여는 방법 */
@@ -44,7 +45,7 @@ export function useOpenItem(): (id: string, options?: OpenItemOptions) => void {
       case 'none':
         return;
       case 'explorer':
-        openWindow('file-explorer', workArea, { app: 'file-explorer', folderId: action.folderId });
+        openWindow('file-explorer', workArea, createExplorerContent(action.folderId));
         break;
       case 'post':
         if (options.isNewWindow === true) {
