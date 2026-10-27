@@ -53,4 +53,11 @@ describe('FileRow', () => {
     expect(screen.getByRole('textbox', { name: '이름 바꾸기' })).toHaveValue('보고서');
     expect(screen.queryByText('보고서')).toBeNull();
   });
+
+  it('renameFieldProps를 이름 바꾸기 입력창에 넘긴다', () => {
+    render(
+      <FileRow icon={<i />} renaming name="문서" renameFieldProps={{ 'aria-label': '새 이름' }} />,
+    );
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('문서');
+  });
 });

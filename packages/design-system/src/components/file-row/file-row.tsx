@@ -30,6 +30,11 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   cut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그리고 선택 바탕을 깐다 */
   renaming?: boolean;
+  /**
+   * 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
+   * 생김새는 바꾸지 않는다. `renaming`일 때만 쓴다
+   */
+  renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
 
 /**
@@ -57,6 +62,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
     focused: isFocused = false,
     cut: isCut = false,
     renaming: isRenaming = false,
+    renameFieldProps,
     className,
     ...divProps
   } = props;
@@ -78,7 +84,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
           {icon}
         </span>
         {isRenaming ? (
-          <RenameField text={name} aria-label="이름 바꾸기" />
+          <RenameField aria-label="이름 바꾸기" {...renameFieldProps} text={name} />
         ) : (
           <span className={cn('min-w-px flex-1 truncate type-caption text-text-fill-primary', dim)}>
             {name}
