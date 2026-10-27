@@ -7,4 +7,3 @@ export type {
 export { DesktopIcons } from './components/desktop-icons/desktop-icons';
 export { DesktopIconsLayer } from './components/desktop-icons-layer/desktop-icons-layer';
 export { DesktopWallpaper } from './components/desktop-wallpaper/desktop-wallpaper';
-export { INITIAL_DESKTOP_ITEMS } from './data/desktop-items/desktop-items';

@@ -99,7 +99,7 @@ afterEach(() => {
 describe('작업 공간:다시 시작', () => {
   it('다시 시작하면 메뉴와 Start가 닫히고 재부팅 화면이 덮은 뒤 열린 창이 모두 닫힌다', async () => {
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await user.click(screen.getByRole('button', { name: 'Chrome' }));
     expect(queryChromeWindow()).toBeInTheDocument();
 
@@ -113,7 +113,7 @@ describe('작업 공간:다시 시작', () => {
   it('재부팅 화면이 다 덮기 전에는 창이 남아 있고, 다 덮은 뒤에 지운다', async () => {
     const finishEnter = stubBootScreenEnterAnimation();
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await user.click(screen.getByRole('button', { name: 'Chrome' }));
 
     await clickRestart(user);
@@ -130,7 +130,7 @@ describe('작업 공간:다시 시작', () => {
 
   it('재부팅 화면은 정해진 시간 동안 보이다가 사라지고, 처음 상태의 바탕화면이 남는다', async () => {
     const user = userEvent.setup({ advanceTimers });
-    render(<Shell />);
+    render(<Shell posts={[]} />);
     await clickRestart(user);
     expect(queryBootScreen()).toBeInTheDocument();
 
