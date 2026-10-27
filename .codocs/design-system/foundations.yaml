@@ -153,6 +153,7 @@ _codocs:
   | `motion/duration/fast` | 167ms | WinUI `ControlFastAnimationDuration`. 우클릭 메뉴·플라이아웃·메시지 상자 등장, 창 닫기, Start 글자 목록 열기·닫기, 재부팅 화면 나타남 |
   | `motion/duration/normal` | 250ms | WinUI `ControlNormalAnimationDuration`. 창 열기, Start·검색 패널 올라오기, 최대화·복원·스냅, 재부팅 화면 사라짐 |
   | `motion/duration/slow` | 333ms | Windows 모션 표의 가장 긴 단계. 창 최소화·작업 표시줄에서 복원(이동 거리가 큰 동작) |
+  | `motion/duration/slower` | 1000ms | 검색 돋보기 그라데이션 회전 |
   | `motion/easing/direct-entrance` | `cubic-bezier(0, 0, 0, 1)` | Fast Out, Slow In. 들어오는 요소(창 열기, 패널·메뉴 등장)와 Direct exit(창 닫기, 항상 페이드 아웃과 함께) |
   | `motion/easing/point-to-point` | `cubic-bezier(0.55, 0.55, 0, 1)` | 이미 화면에 있는 요소의 위치·크기 변화(최대화·복원, 스냅, 최소화·복원) |
   | `motion/easing/gentle-exit` | `cubic-bezier(1, 0, 1, 1)` | Slow Out, Fast In. 화면 밖으로 나가는 패널(Start·검색 패널 내려가기) |
@@ -184,6 +185,9 @@ _codocs:
   | ProgressRing 회전 | `motion-progress-ring` | progress-ring | progress-ring | 호가 돌며 길이가 늘고 준다(회전 + 경로 트림). 계속 반복한다([[디자인 기반:모션 견본]]) | 없음 |
   | hover·pressed | `motion-control-state` | faster | fade | 상태 색만 바꾼다 | 없음 |
   | 검색 상자 포커스(pill·taskbar 모양) | `motion-search-box-focus-state` | fast | direct-entrance | Rest → Focused 상태 색과 테두리를 바꾼다 | 없음 |
+  | 검색 돋보기 강조(pill·taskbar 모양) | `motion-search-box-focus` | slow, 그라데이션 회전은 slower | point-to-point | 호버하거나 포커스하면 돋보기가 1에서 1.1배로 커지고 그라데이션이 나타나며(투명도 0 → 1) -60°에서 -160°로 돈다. 호버와 포커스 중 하나라도 켜져 있으면 유지되고, 이미 켜진 상태에서 다른 쪽이 더해져도 처음부터 다시 돌지 않는다. 반복하지 않는다 | 없음 |
+
+  검색 돋보기 강조는 SearchBox 안에서 끝나는 상태 연동이라, 창·패널 움직임과 달리 기능 구현을 기다리지 않고 SearchBox에 바로 붙인다([[피그마 연동:PR 흐름]]).
 
   글자 목록의 시작 배율(1.15)처럼 토큰이 아닌 숫자는 견본에서 화면을 보고 정하는 구성이다([[피그마 연동:모션]]).
 
@@ -194,7 +198,7 @@ _codocs:
 
   - 요소 전체가 움직이는 것(창·패널·메뉴): 견본 안에 실제 컴포넌트 인스턴스를 놓고 인스턴스 전체에 키프레임을 건다.
   - 안쪽이 움직이는 것(ProgressRing의 호): 키프레임을 자산 원본(`progress-ring/Arc`)에 건다. 원본 키프레임은 모든 인스턴스로 이어지고, 인스턴스 안쪽 레이어에는 키프레임을 걸 수 없기 때문이다. 견본 `motion-progress-ring`에는 ProgressRing 인스턴스만 놓는다.
-  - hover·pressed·focus 전환은 Motion 섹션이 아니라 컴포넌트 변형 사이 전환에 둔다([[디자인 기반:모션]]).
+  - hover·pressed·focus 전환은 Motion 섹션이 아니라 컴포넌트 변형 사이 전환에 둔다([[디자인 기반:모션]]). 예외로, 상태 색 전환이 아니라 키프레임으로 움직이는 효과(검색 돋보기 강조 `motion-search-box-focus`)는 Motion 섹션 견본에 둔다. 키프레임은 자산 원본 `icon-color/Search Focus`에 건다.
   - 실행 중 값이 들어간 움직임은 대표값으로 만든다. 예: 최소화 견본에는 작업 표시줄 버튼 자리를 두고 그 위치로 줄어드는 대표 움직임을 보여 준다.
   - 키프레임의 시간·지연·이징을 넣는 방법과 내보낼 때의 검사는 [[피그마 연동:모션]]을 따른다.
 

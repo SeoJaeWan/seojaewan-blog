@@ -16,8 +16,8 @@ _codocs:
   | 검사 도구 | 브랜치 이름 검사에서 `renovate/…`는 예외(Renovate PR이 막히지 않게) |
   | 검사 도구 | 모션 값 검사 허용 오차: 투명도·배율·트림 0.001, 이동 0.5px, 회전 0.5° |
   | 자산 | WebP 품질 80(배경화면 PSNR 42.8dB, 1:1 비교에서 차이가 보이지 않음) |
-  | 피그마 | 새 이름 `color/search-gradient/cyan`·`blue`, `motion/duration/slower`, 칠 스타일 `Icon Color/Search Focus` |
+  | 피그마 | 새 이름 `color/search-gradient/cyan`·`blue`, 칠 스타일 `Icon Color/Search Focus` |
   | 피그마 | 변형 `View=Default`/`View=Recycle bin`, `Folder=Recycle Bin`(기존 `Location=Recycle Bin` 표기). 휴지통 창은 데스크톱 변형만(모바일은 Blog에만 있는 관례) |
-  | 피그마 | `SearchBox` `State=Pressed`는 Focused 모습에 아이콘만 0.8배. 모션 견본 설명은 자산 `icon-color/Search Focus`의 description에 적음 |
+  | 피그마 | 모션 견본 설명은 자산 `icon-color/Search Focus`의 description에 적음 |
   | 피그마 | `MessageBox`를 새 조립 영역으로 만듦 |
   | 디자인 시스템 | `BrowserTabStrip` 탭 사이 간격 없음(피그마에 정보가 없음) |
