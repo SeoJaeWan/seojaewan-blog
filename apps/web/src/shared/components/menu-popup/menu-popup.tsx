@@ -44,13 +44,26 @@ export type MenuPopupCheckbox = {
   onCheckedChange?: (checked: boolean) => void;
 };
 
-/** 여럿 중 하나를 고르는 항목(피그마 MenuItem `Kind=Radio on/off`) */
-export type MenuPopupRadio = {
-  kind: 'radio';
+/** 라디오 묶음 안의 선택지 하나 */
+export type MenuPopupRadioOption = {
+  /** 묶음 안에서 이 선택지를 가리키는 값 */
+  value: string;
   /** 항목 이름 */
   label: string;
-  /** 골라졌는지 */
-  checked: boolean;
+};
+
+/**
+ * 여럿 중 하나를 고르는 라디오 항목 묶음(피그마 MenuItem `Kind=Radio on/off`가 이어진 줄들).
+ * 고른 값은 묶음 하나가 가지므로, 골라진 항목(`Radio on`)은 언제나 하나다.
+ */
+export type MenuPopupRadioGroup = {
+  kind: 'radio-group';
+  /** 위에서부터 그릴 선택지 */
+  options: readonly MenuPopupRadioOption[];
+  /** 지금 고른 선택지의 값 */
+  value: string;
+  /** 다른 선택지를 골랐을 때 호출 */
+  onValueChange?: (value: string) => void;
 };
 
 /** 항목 사이 구분선(피그마 조립의 `separator` 배치 프레임과 Separator) */
@@ -58,7 +71,11 @@ export type MenuPopupSeparator = { kind: 'separator' };
 
 /** 메뉴 한 줄 */
 export type MenuPopupEntry =
-  MenuPopupCommand | MenuPopupSubmenu | MenuPopupCheckbox | MenuPopupRadio | MenuPopupSeparator;
+  | MenuPopupCommand
+  | MenuPopupSubmenu
+  | MenuPopupCheckbox
+  | MenuPopupRadioGroup
+  | MenuPopupSeparator;
 
 type MenuPanelProps = {
   /** 메뉴 항목과 구분선. 위에서부터 그린다 */
@@ -106,7 +123,7 @@ function MenuPanel(props: MenuPanelProps): JSX.Element {
          */
         (entry, index) => (
           <MenuEntry
-            key={entry.kind === 'separator' ? `separator-${String(index)}` : entry.label}
+            key={entryKey(entry, index)}
             entry={entry}
             itemClassName={props.itemClassName}
           />
@@ -114,6 +131,23 @@ function MenuPanel(props: MenuPanelProps): JSX.Element {
       )}
     </Menu>
   );
+}
+
+/**
+ * 메뉴 한 줄의 React key를 만든다. 구분선은 순서로, 라디오 묶음은 첫 선택지 값으로, 나머지는 이름으로 구분한다.
+ * @param entry 메뉴 한 줄
+ * @param index 순서
+ * @returns React key
+ */
+function entryKey(entry: MenuPopupEntry, index: number): string {
+  switch (entry.kind) {
+    case 'separator':
+      return `separator-${String(index)}`;
+    case 'radio-group':
+      return `radio-group-${entry.options[0]?.value ?? String(index)}`;
+    default:
+      return entry.label;
+  }
 }
 
 /**
@@ -146,19 +180,30 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
         />
       );
     }
-    case 'radio':
-      // 피그마 조립은 라디오 항목마다 골라짐 여부를 따로 그린다. 그 모습을 그대로 그리려고 항목마다 묶음을 두고,
-      // 골라진 항목만 묶음의 값을 자기 값으로 둔다. 고르는 동작은 기능을 구현할 때 묶음을 합쳐 붙인다.
+    case 'radio-group': {
+      // 선택지들을 Base UI 라디오 묶음 하나에 두어, 묶음의 값과 같은 선택지 하나만 골라진 모습(점)으로 그린다.
+      const { onValueChange: handleValueChange } = entry;
       return (
-        <BaseMenu.RadioGroup value={entry.checked ? entry.label : null}>
-          <MenuItem
-            kind="radio"
-            label={entry.label}
-            value={entry.label}
-            className={itemClassName}
-          />
+        <BaseMenu.RadioGroup value={entry.value} onValueChange={handleValueChange}>
+          {entry.options.map(
+            /**
+             * 선택지 하나를 라디오 항목으로 그린다.
+             * @param option 선택지
+             * @returns 라디오 항목
+             */
+            (option) => (
+              <MenuItem
+                key={option.value}
+                kind="radio"
+                label={option.label}
+                value={option.value}
+                className={itemClassName}
+              />
+            ),
+          )}
         </BaseMenu.RadioGroup>
       );
+    }
     case 'command':
     case undefined: {
       const { onClick: handleClick } = entry;
