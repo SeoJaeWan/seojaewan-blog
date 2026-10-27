@@ -75,3 +75,27 @@ test('탐색기에서 항목을 잘라 붙이고, 새 폴더를 만들어 지우
   await explorer.getByRole('button', { name: '자세히' }).click();
   await expect(explorer.getByRole('button', { name: '수정한 날짜' })).toBeVisible();
 });
+
+// @codocs [[파일 탐색기:조작]]
+// @codocs [[파일 탐색기:폴더 안 검색]]
+test('탐색기 항목을 탐색 창 폴더로 끌어 옮기고, 폴더 안에서 초성으로 찾는다', async ({ page }) => {
+  await page.goto('/');
+  await page
+    .getByRole('listbox', { name: '바탕화면 아이콘' })
+    .getByRole('option', { name: 'Blog' })
+    .dblclick();
+  const explorer = page.getByRole('region', { name: /- 파일 탐색기$/ });
+  const content = explorer.getByRole('listbox', { name: '폴더 내용' });
+  const tree = explorer.getByRole('tree', { name: '탐색 창' });
+
+  await content
+    .getByRole('option', { name: '2026 상반기 회고', exact: true })
+    .dragTo(tree.getByRole('treeitem', { name: 'Next.js' }));
+  await expect(
+    content.getByRole('option', { name: '2026 상반기 회고', exact: true }),
+  ).not.toBeAttached();
+
+  await explorer.getByRole('searchbox', { name: '검색' }).fill('ㅎㄱ');
+  await expect(content.getByRole('option', { name: /^2026 상반기 회고/ })).toBeVisible();
+  await expect(explorer.getByRole('button', { name: '위치' })).toBeVisible();
+});
