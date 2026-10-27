@@ -68,8 +68,15 @@
   animation: motion-search-box-focus-scale var(--motion-duration-slow)
     var(--motion-easing-point-to-point) both;
 
-  & rect {
+  /*
+   * transform: none은 다른 규칙에 둔다. 한 규칙에 두면 CSS 최적화가 translate·rotate와 합쳐 transform 행렬 하나로 바꾸고,
+   * 그러면 재생 중 rotate 키프레임이 그 행렬 위에 더해져 사각형이 마스크 밖으로 나간다.
+   */
+  & [mask] > rect {
     transform: none;
+  }
+
+  & rect {
     transform-box: fill-box;
     transform-origin: center;
     translate: -18.2537px -12.7812px;
