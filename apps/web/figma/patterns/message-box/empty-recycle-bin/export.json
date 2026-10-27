@@ -1,0 +1,16 @@
+{
+  "name": "MessageBox/EmptyRecycleBin",
+  "nodeId": "854:6152",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 189,
+        "width": 448,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "854:6152",
+      "properties": {}
+    }
+  }
+}

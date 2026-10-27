@@ -11,3 +11,4 @@ export type {
   ExplorerWindowTab,
 } from './components/explorer-window/explorer-window';
 export { ExplorerWindow } from './components/explorer-window/explorer-window';
+export { MessageBoxEmptyRecycleBin } from './components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
