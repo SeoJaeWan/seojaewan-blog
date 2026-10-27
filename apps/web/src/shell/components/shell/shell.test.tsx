@@ -1,10 +1,12 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { initialRestartState } from '@/shared/utils/restart-rules/restart-rules';
 
 import { Shell } from './shell';
 
@@ -225,5 +227,43 @@ describe('Start 메뉴:항목 열기', () => {
     await userEvent.click(within(getStartPanel()).getByRole('button', { name: 'File Explorer' }));
     expect(screen.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeInTheDocument();
     expect(queryStartPanel()).not.toBeInTheDocument();
+  });
+});
+
+// @codocs [[작업 공간:다시 시작]]
+describe('작업 공간:다시 시작', () => {
+  afterEach(() => {
+    act(() => {
+      useWorkspaceStore.setState(initialRestartState);
+    });
+  });
+
+  it('다시 시작하는 동안 바탕화면 하위 트리는 조작할 수 없고(inert), 끝나면 다시 조작할 수 있다', () => {
+    render(<Shell />);
+    const taskbarButton = screen.getByRole('button', { name: 'Chrome' });
+    expect(taskbarButton.closest('[inert]')).toBeNull();
+    // 재부팅 화면이 jsdom에서는 단계를 바로 넘기므로 다시 시작이 끝나기 전 단계 하나만 확인한다
+    act(() => {
+      useWorkspaceStore.setState({ phase: 'covering' });
+    });
+    expect(screen.getByRole('button', { name: 'Chrome' }).closest('[inert]')).not.toBeNull();
+    act(() => {
+      useWorkspaceStore.setState({ phase: 'idle' });
+    });
+    expect(screen.getByRole('button', { name: 'Chrome' }).closest('[inert]')).toBeNull();
+  });
+
+  it('다시 시작이 끝나면 포커스를 바탕화면(main)으로 옮긴다', () => {
+    render(<Shell />);
+    const desktop = screen.getByRole('main', { name: '바탕화면' });
+    expect(desktop).not.toHaveFocus();
+    act(() => {
+      useWorkspaceStore.setState({ phase: 'covering' });
+    });
+    expect(desktop).not.toHaveFocus();
+    act(() => {
+      useWorkspaceStore.setState({ phase: 'idle' });
+    });
+    expect(desktop).toHaveFocus();
   });
 });

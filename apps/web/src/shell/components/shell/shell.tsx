@@ -1,6 +1,6 @@
 'use client';
 
-import type { JSX } from 'react';
+import { type JSX, useEffect, useRef } from 'react';
 
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
@@ -16,18 +16,46 @@ import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
  * 다시 시작하면 데스크톱 하위 트리의 `key`(세대)를 바꿔 새로고침 없이 다시 마운트한다. 그래서 저장소 밖의 지역 상태도 사라진다.
  * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useWorkspaceStore`)가 가져 다시 마운트한 뒤에도 남는다.
+ * 다시 시작 단계(`idle`이 아닌 동안) 데스크톱 하위 트리는 `inert`라 재부팅 화면 뒤에서 키보드·보조 기술로 닿지 않는다.
+ * 다시 시작이 끝나면 포커스가 사라진 자리(다시 마운트한 트리) 대신 바탕화면(`main`)으로 옮긴다.
  * @codocs [[작업 공간:다시 시작]]
  * @returns 작업 공간
  */
 export function Shell(): JSX.Element {
   const generation = useWorkspaceStore((state) => state.generation);
+  const phase = useWorkspaceStore((state) => state.phase);
+  const mainRef = useRef<HTMLElement>(null);
+  const wasRestartingRef = useRef(false);
+  const isRestarting = phase !== 'idle';
+
+  useEffect(
+    /** 다시 시작이 끝나면 포커스를 바탕화면으로 옮긴다. */
+    () => {
+      if (wasRestartingRef.current && !isRestarting) {
+        mainRef.current?.focus();
+      }
+      wasRestartingRef.current = isRestarting;
+    },
+    [isRestarting],
+  );
+
   return (
-    <main aria-label="바탕화면" className="fixed inset-0 overflow-hidden">
-      <ShellDesktop key={generation} />
+    <main
+      ref={mainRef}
+      tabIndex={-1}
+      aria-label="바탕화면"
+      className="fixed inset-0 overflow-hidden outline-none"
+    >
+      <ShellDesktop key={generation} isInert={isRestarting} />
       <RestartScreen />
     </main>
   );
 }
+
+type ShellDesktopProps = {
+  /** 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지 */
+  isInert: boolean;
+};
 
 /**
  * 데스크톱 하위 트리를 그린다. 화면을 꽉 채우는 바탕화면(`Desktop/Scene`) 위에 아래에서부터 차례로
@@ -36,12 +64,14 @@ export function Shell(): JSX.Element {
  * 창 안에 무엇을 그릴지(앱 등록표)는 shell이 창 층과 작업 표시줄 창 미리보기에 넘긴다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
  * @codocs [[저장소 구성:앱 폴더 구조]]
  * @codocs [[기술 스택:상태 관리]]
+ * @param props
  * @returns 데스크톱 하위 트리
  */
-function ShellDesktop(): JSX.Element {
+function ShellDesktop(props: ShellDesktopProps): JSX.Element {
   const renderWindow = useAppWindowRenderer();
   return (
     <DesktopScene
+      inert={props.isInert}
       className="size-full"
       icons={<DesktopIconsLayer />}
       taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getAppWindowTitle} />}
