@@ -61,7 +61,8 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
             name="icons/ic_fluent_chevron_right_16_regular.svg"
             className="size-icon-16 shrink-0 text-text-fill-secondary"
           />
-          <div className="flex items-center">{children}</div>
+          {/* 피그마 Items 슬롯의 배치(가로, 간격 spacing/4)다 */}
+          <div className="flex items-center gap-4">{children}</div>
         </>
       )}
     </div>

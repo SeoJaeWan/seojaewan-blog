@@ -6,6 +6,7 @@ import { FileRow } from './file-row';
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
 // 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+const VIEWS = ['default', 'recycle-bin'] as const;
 const STATES = [
   'rest',
   'hover',
@@ -17,6 +18,7 @@ const STATES = [
 ] as const;
 
 type ParityArgs = {
+  view: (typeof VIEWS)[number];
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Name */
   name: string;
@@ -28,6 +30,10 @@ type ParityArgs = {
   location: string;
   /** 피그마 BOOLEAN 속성 Show location */
   showLocation: boolean;
+  /** 피그마 TEXT 속성 Original location */
+  originalLocation: string;
+  /** 피그마 TEXT 속성 Deleted date */
+  deletedDate: string;
 };
 
 const meta = {
@@ -35,30 +41,39 @@ const meta = {
   parameters: { layout: 'padded' },
   // 글자는 피그마 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
   args: {
+    view: 'default',
     state: 'rest',
     name: '파일 이름',
     date: '수정한 날짜',
     type: '유형',
     location: '위치',
     showLocation: false,
+    originalLocation: '원래 위치',
+    deletedDate: '삭제한 날짜',
   },
   argTypes: {
+    view: { control: 'inline-radio', options: VIEWS },
     state: { control: 'select', options: STATES },
     name: { control: 'text' },
     date: { control: 'text' },
     type: { control: 'text' },
     location: { control: 'text' },
     showLocation: { control: 'boolean' },
+    originalLocation: { control: 'text' },
+    deletedDate: { control: 'text' },
   },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 840으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => (
     <div className="w-840">
       <FileRow
+        view={args.view}
         name={args.name}
         date={args.date}
         type={args.type}
         location={args.location}
         showLocation={args.showLocation}
+        originalLocation={args.originalLocation}
+        deletedDate={args.deletedDate}
         icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
         selected={['selected', 'selected-focus', 'cut-selected'].includes(args.state)}
         focused={args.state === 'selected-focus'}

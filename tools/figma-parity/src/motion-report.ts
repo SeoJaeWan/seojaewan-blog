@@ -47,10 +47,19 @@ export function isFailedMotion(result: MotionResult): boolean {
  * @returns 댓글 본문 목록
  */
 export function renderMotionComments(results: readonly MotionResult[], runUrl: string): string[] {
-  const failed = results.filter(isFailedMotion);
+  const unavailable = results.filter((result) => result.error !== null);
+  const different = results.filter((result) => result.error === null && isFailedMotion(result));
+  const counts = [
+    ...(different.length > 0 ? [`다름 ${String(different.length)}개`] : []),
+    ...(unavailable.length > 0 ? [`검사 불가 ${String(unavailable.length)}개`] : []),
+  ];
   const header = [
     `모션 검사: 견본 ${String(results.length)}개` +
-      (failed.length > 0 ? `, 다름 ${String(failed.length)}개` : ', 모두 같음'),
+      (results.length === 0
+        ? ', 결과 없음'
+        : counts.length > 0
+          ? `, ${counts.join(', ')}`
+          : ', 모두 같음'),
     `키프레임 값은 투명도·배율·경로 트림 ${String(RATIO_TOLERANCE)}, 이동 ${String(LENGTH_TOLERANCE)}px, 회전 ${String(ANGLE_TOLERANCE)}° 안의 차이를 같다고 본다. ` +
       '실행 중 값(토큰이 아닌 CSS 변수)은 값 대신 그 자리에 변수를 쓰는지와 부호만 본다.',
   ].join('\n');
@@ -72,15 +81,18 @@ export function renderMotionComments(results: readonly MotionResult[], runUrl: s
 function motionBlock(result: MotionResult): string {
   const failedRows = result.rows.filter(isFailedRow).length;
   const isFailed = isFailedMotion(result);
-  const summary = isFailed
-    ? `❌ ${result.name} (키프레임 값 다름 ${String(failedRows)}곳` +
-      (result.timingErrors.length > 0
-        ? `, 시간 오류 ${String(result.timingErrors.length)}개`
-        : '') +
-      ')'
-    : `✅ ${result.name}`;
+  const errors = [
+    ...(result.error !== null ? ['검사 불가'] : []),
+    ...(failedRows > 0 ? [`키프레임 값 다름 ${String(failedRows)}곳`] : []),
+    ...(result.timingErrors.length > 0
+      ? [`시간 오류 ${String(result.timingErrors.length)}개`]
+      : []),
+  ];
+  const summary = isFailed ? `❌ ${result.name} (${errors.join(', ')})` : `✅ ${result.name}`;
   const lines = [`<details${isFailed ? ' open' : ''}><summary>${summary}</summary>`, ''];
-  lines.push(`[피그마 견본](${result.url})`, '');
+  if (result.url !== '') {
+    lines.push(`[피그마 견본](${result.url})`, '');
+  }
   if (result.error !== null) {
     lines.push(`검사하지 못했다: ${escapeMarkdown(result.error)}`, '');
   }
