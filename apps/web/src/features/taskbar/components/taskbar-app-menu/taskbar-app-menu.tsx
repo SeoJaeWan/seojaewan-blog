@@ -1,8 +1,8 @@
 import type { TaskbarButtonIndicator } from '@seojaewan/design-system';
 import type { JSX } from 'react';
 
-import type { TaskbarAppId } from '@/features/taskbar/components/taskbar-app/taskbar-app';
 import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-app/taskbar-app';
+import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
