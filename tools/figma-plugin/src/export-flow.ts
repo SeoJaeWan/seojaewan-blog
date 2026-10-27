@@ -25,7 +25,6 @@ import {
   findOpenPullRequest,
   getBranchHead,
   getFileText,
-  listDirectory,
   listTreeFiles,
   resetBranch,
   type TreeEntry,
@@ -37,7 +36,6 @@ import { assetFilePath, componentSlug, patternFolder, patternPlace } from './nam
 import {
   ASSETS_DIR,
   BASE_BRANCH,
-  CAPTURES_BRANCH,
   COMPONENTS_DIR,
   FIGMA_DIR,
   FILE_KEY,
@@ -106,8 +104,6 @@ type PlacedTarget = {
   exported: TargetExport;
   /** 저장소의 대상 폴더 */
   folder: string;
-  /** `parity-captures` 브랜치의 캡처 폴더 */
-  captureFolder: string;
 };
 
 /** 내보낸 조립 하나와 영역 */
@@ -142,7 +138,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       continue;
     }
     const slug = componentSlug(outcome.target.manifest.name);
-    if (components.some((other) => other.captureFolder === slug)) {
+    if (components.some((other) => other.folder === `${COMPONENTS_DIR}/${slug}`)) {
       throw new Error(`컴포넌트 폴더 이름 "${slug}"가 겹친다.`);
     }
     componentBranchName(slug);
@@ -150,7 +146,6 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     components.push({
       exported: outcome.target,
       folder: `${COMPONENTS_DIR}/${slug}`,
-      captureFolder: slug,
     });
   }
   const patterns: PlacedPattern[] = [];
@@ -181,7 +176,6 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     patterns.push({
       exported: outcome.target,
       folder,
-      captureFolder: `patterns/${place.area}/${place.name}`,
       area: place.area,
     });
   }
@@ -396,7 +390,7 @@ async function commitComponent(
   log: (text: string) => void,
 ): Promise<PullRequestCommit | null> {
   const { name } = component.exported.manifest;
-  const branch = componentBranchName(component.captureFolder);
+  const branch = componentBranchName(componentSlug(name));
   const target = await readTarget(token, branch, main);
   log(`${name}: ${target.openPullRequest === null ? BASE_BRANCH : branch} 기준으로 비교하는 중`);
 
@@ -413,13 +407,13 @@ async function commitComponent(
     return null;
   }
 
-  const subject = componentCommitSubject(component.captureFolder);
+  const subject = componentCommitSubject(componentSlug(name));
   const message = `${subject}\n\n${targetCommitBody([name], {
     changedCount: plan.changed.length,
     deletedCount: plan.deleted.length,
     assetCount: plan.changed.filter((path) => path.startsWith(`${ASSETS_DIR}/`)).length,
   })}`;
-  const changes = await targetChanges(token, component, desired, main);
+  const changes = targetChanges(component, desired, main);
   return commitToPullRequest(token, target, plan.entries, {
     target: name,
     subject,
@@ -471,7 +465,7 @@ async function commitPatterns(
   })}`;
   const changes: TargetChanges[] = [];
   for (const pattern of patterns) {
-    changes.push(await targetChanges(token, pattern, desired, main));
+    changes.push(targetChanges(pattern, desired, main));
   }
   return commitToPullRequest(token, target, plan.entries, {
     target: `${area} 조립`,
@@ -553,19 +547,17 @@ async function renamedOldFolders(
 }
 
 /**
- * main과 비교한 대상의 변경(새로 생기거나 PNG가 바뀐 변형, 사라진 변형)과 현재 구현 캡처가 있는 변형을 구한다.
- * @param token GitHub 토큰
+ * main과 비교한 대상의 변경과 현재 변형의 피그마 노드 ID를 구한다.
  * @param placed 대상
  * @param desired 이번에 쓸 파일 경로 → blob SHA
  * @param main main 상태
  * @returns PR 본문에 쓰는 대상 변경
  */
-async function targetChanges(
-  token: string,
+function targetChanges(
   placed: PlacedTarget,
   desired: ReadonlyMap<string, string>,
   main: RepoState,
-): Promise<TargetChanges> {
+): TargetChanges {
   const variants = Object.keys(placed.exported.manifest.variants);
   /**
    * 변형 PNG의 저장소 경로를 만든다.
@@ -584,12 +576,14 @@ async function targetChanges(
   return {
     name: placed.exported.manifest.name,
     folder: placed.folder,
-    captureFolder: placed.captureFolder,
     changedVariants: variants.filter(
       (variant) => main.files.get(pngPath(variant)) !== desired.get(pngPath(variant)),
     ),
     removedVariants: removed.sort(),
-    capturedVariants: await capturedVariants(token, placed.captureFolder),
+    variants: Object.entries(placed.exported.manifest.variants).map(([name, entry]) => ({
+      name,
+      nodeId: entry.nodeId,
+    })),
   };
 }
 
@@ -761,18 +755,4 @@ async function textBlob(token: string, text: string): Promise<string> {
  */
 async function bytesBlob(token: string, bytes: Uint8Array): Promise<string> {
   return createBlob(token, figma.base64Encode(bytes));
-}
-
-/**
- * `parity-captures` 브랜치에 현재 구현 캡처가 있는 변형을 찾는다. 브랜치나 폴더가 없으면 비어 있다.
- * @codocs [[피그마 연동:캡처 표]]
- * @param token GitHub 토큰
- * @param folder 캡처 폴더
- * @returns 캡처가 있는 변형 이름
- */
-async function capturedVariants(token: string, folder: string): Promise<Set<string>> {
-  const files = (await listDirectory(token, folder, CAPTURES_BRANCH)) ?? [];
-  return new Set(
-    files.filter((file) => file.endsWith('.png')).map((file) => file.slice(0, -'.png'.length)),
-  );
 }

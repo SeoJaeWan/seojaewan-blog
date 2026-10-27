@@ -170,16 +170,19 @@ for (const name of selected) {
      */
     async ({ page }) => {
       const file = `${FIGMA_MOTIONS_DIR}/${name}.json`;
-      const json: unknown = JSON.parse(readFileSync(fromRepo(file), 'utf8'));
-      const spec = parseMotionSpec(json, file);
-      const result: MotionResult = { name, url: spec.url, rows: [], timingErrors: [], error: null };
+      const result: MotionResult = { name, url: '', rows: [], timingErrors: [], error: null };
       try {
+        const json: unknown = JSON.parse(readFileSync(fromRepo(file), 'utf8'));
+        const spec = parseMotionSpec(json, file);
+        result.url = spec.url;
         const story = findMotionStoryId(index, name);
         if (!story.ok || server === undefined) {
-          result.error = story.ok ? 'Storybook 정적 서버가 없다' : story.message;
-          return;
+          throw new Error(story.ok ? 'Storybook 정적 서버가 없다' : story.message);
         }
         const observed = await readAnimations(page, server.url, story.id);
+        if (observed.timing.length === 0) {
+          throw new Error('모션 스토리에서 재생 중인 CSS 애니메이션을 찾지 못했다.');
+        }
         if (spec.iterations === null) {
           // 피그마에서 반복을 알 수 없어 비교하지 않는다. 사람이 [[디자인 기반:모션]] 표와 맞는지 보도록 남긴다.
           console.log(
@@ -187,13 +190,14 @@ for (const name of selected) {
           );
         }
         result.timingErrors = compareMotion(spec, tokens, observed.timing);
-        if (observed.timing.length > 0) {
-          result.rows = compareMotionValues(
-            parseValueTracks(json, file),
-            observed.effects,
-            tokenVariables,
-          );
-        }
+        result.rows = compareMotionValues(
+          parseValueTracks(json, file),
+          observed.effects,
+          tokenVariables,
+        );
+      } catch (error) {
+        result.error = error instanceof Error ? error.message : String(error);
+        throw error;
       } finally {
         writeResult(result);
       }

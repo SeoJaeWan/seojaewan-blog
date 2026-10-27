@@ -404,7 +404,7 @@ export default defineConfig(
     },
   },
 
-  // @codocs [[기술 스택:스타일링]]
+  // @codocs [[피그마 연동:토큰 사용 강제]]
   // 임의 값(`bg-[#fff]`, `p-[13px]`, `bg-(--x)`)을 막고, 토큰에 없는 클래스(`bg-red-500`)를 막는다.
   {
     files: [`${WEB_SRC}/**/*.tsx`, `${DESIGN_SYSTEM}/src/**/*.tsx`],

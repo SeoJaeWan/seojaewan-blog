@@ -80,7 +80,7 @@ afterEach(() => {
   Reflect.deleteProperty(Element.prototype, 'getAnimations');
 });
 
-// @codocs [[디자인 기반:모션 클래스]]
+// @codocs [[피그마 연동:모션 클래스]]
 describe('usePresence', () => {
   it('getAnimations가 없으면(jsdom) 열자마자 entered, 닫자마자 빠진다', () => {
     const handleExitComplete = vi.fn();

@@ -209,7 +209,7 @@ export function focusWindow(state: WindowState, id: string): WindowState {
 }
 
 /**
- * 창을 바로 지운다. 화면에서 닫히는 애니메이션은 창 층이 따로 남겨 그린다([[디자인 기반:모션 클래스]]).
+ * 창을 바로 지운다. 화면에서 닫히는 애니메이션은 창 층이 따로 남겨 그린다([[피그마 연동:모션 클래스]]).
  * 맨 앞은 남은 창 가운데 최소화되지 않은 가장 최근 창이 된다(`getFrontWindowId`).
  * @codocs [[창 동작:창 조작]]
  * @param state 지금 상태
@@ -514,7 +514,7 @@ export type SnapFlip = {
 /**
  * 최대화·복원·스냅 모션(`motion-window-snap`)의 시작 값을 구한다(FLIP). 창을 새 자리로 바로 옮긴 뒤 이 값으로 이전 자리·크기에
  * 맞추면, 클래스가 이동 0·배율 1로 되돌린다. 원점이 가운데라 이동은 두 자리의 중심 차이, 배율은 크기 비율이다.
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param from 이전 자리
  * @param to 새 자리
  * @returns 시작 이동과 배율
