@@ -3,15 +3,15 @@ import { userEvent } from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 
 import { StartMenuLayer } from './start-menu-layer';
 
 afterEach(() => {
   usePanelStore.getState().reset();
   useWindowStore.getState().reset();
-  useWorkspaceStore.setState({ phase: 'idle' });
+  useRestartStore.setState({ phase: 'idle' });
 });
 
 // @codocs [[Start 메뉴:열기와 닫기]]
@@ -39,7 +39,7 @@ describe('작업 공간:다시 시작', () => {
     within(startPanel).getByRole('button', { name: '전원' }).focus();
     await userEvent.keyboard('{Enter}');
     await userEvent.click(screen.getByRole('menuitem', { name: '다시 시작' }));
-    expect(useWorkspaceStore.getState().phase).toBe('covering');
+    expect(useRestartStore.getState().phase).toBe('covering');
     expect(usePanelStore.getState().openPanel).toBeNull();
   });
 });

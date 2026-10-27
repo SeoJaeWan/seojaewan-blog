@@ -4,8 +4,8 @@ import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { initialRestartState } from '@/shared/utils/restart-rules/restart-rules';
 
 import { Shell } from './shell';
@@ -239,7 +239,7 @@ describe('Start 메뉴:항목 열기', () => {
 describe('작업 공간:다시 시작', () => {
   afterEach(() => {
     act(() => {
-      useWorkspaceStore.setState(initialRestartState);
+      useRestartStore.setState(initialRestartState);
     });
   });
 
@@ -249,11 +249,11 @@ describe('작업 공간:다시 시작', () => {
     expect(taskbarButton.closest('[inert]')).toBeNull();
     // 재부팅 화면이 jsdom에서는 단계를 바로 넘기므로 다시 시작이 끝나기 전 단계 하나만 확인한다
     act(() => {
-      useWorkspaceStore.setState({ phase: 'covering' });
+      useRestartStore.setState({ phase: 'covering' });
     });
     expect(screen.getByRole('button', { name: 'Chrome' }).closest('[inert]')).not.toBeNull();
     act(() => {
-      useWorkspaceStore.setState({ phase: 'idle' });
+      useRestartStore.setState({ phase: 'idle' });
     });
     expect(screen.getByRole('button', { name: 'Chrome' }).closest('[inert]')).toBeNull();
   });
@@ -263,11 +263,11 @@ describe('작업 공간:다시 시작', () => {
     const desktop = screen.getByRole('main', { name: '바탕화면' });
     expect(desktop).not.toHaveFocus();
     act(() => {
-      useWorkspaceStore.setState({ phase: 'covering' });
+      useRestartStore.setState({ phase: 'covering' });
     });
     expect(desktop).not.toHaveFocus();
     act(() => {
-      useWorkspaceStore.setState({ phase: 'idle' });
+      useRestartStore.setState({ phase: 'idle' });
     });
     expect(desktop).toHaveFocus();
   });

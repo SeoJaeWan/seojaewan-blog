@@ -3,8 +3,8 @@ import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { Shell } from '@/shell/components/shell/shell';
 
 // 테스트에서 재부팅 화면을 보여 주는 시간. jsdom에는 토큰 CSS가 없어 문서 루트에 직접 넣는다.
@@ -92,7 +92,7 @@ afterEach(() => {
   Reflect.deleteProperty(Element.prototype, 'getAnimations');
   useWindowStore.getState().reset();
   usePanelStore.getState().reset();
-  useWorkspaceStore.setState({ phase: 'idle' });
+  useRestartStore.setState({ phase: 'idle' });
 });
 
 // @codocs [[작업 공간:다시 시작]]
@@ -143,7 +143,7 @@ describe('작업 공간:다시 시작', () => {
       vi.advanceTimersByTime(1);
     });
     expect(queryBootScreen()).not.toBeInTheDocument();
-    expect(useWorkspaceStore.getState().phase).toBe('idle');
+    expect(useRestartStore.getState().phase).toBe('idle');
     expect(screen.getByRole('main', { name: '바탕화면' })).toBeInTheDocument();
   });
 });

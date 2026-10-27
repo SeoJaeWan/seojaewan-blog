@@ -5,7 +5,7 @@ import { type JSX, useEffect, useRef } from 'react';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { getAppWindowTitle } from '@/shell/components/app-windows/app-windows';
 import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
 import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
@@ -15,15 +15,15 @@ import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
  * 다시 시작하면 데스크톱 하위 트리의 `key`(세대)를 바꿔 새로고침 없이 다시 마운트한다. 그래서 저장소 밖의 지역 상태도 사라진다.
- * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useWorkspaceStore`)가 가져 다시 마운트한 뒤에도 남는다.
+ * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useRestartStore`)가 가져 다시 마운트한 뒤에도 남는다.
  * 다시 시작 단계(`idle`이 아닌 동안) 데스크톱 하위 트리는 `inert`라 재부팅 화면 뒤에서 키보드·보조 기술로 닿지 않는다.
  * 다시 시작이 끝나면 포커스가 사라진 자리(다시 마운트한 트리) 대신 바탕화면(`main`)으로 옮긴다.
  * @codocs [[작업 공간:다시 시작]]
  * @returns 작업 공간
  */
 export function Shell(): JSX.Element {
-  const generation = useWorkspaceStore((state) => state.generation);
-  const phase = useWorkspaceStore((state) => state.phase);
+  const generation = useRestartStore((state) => state.generation);
+  const phase = useRestartStore((state) => state.phase);
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';

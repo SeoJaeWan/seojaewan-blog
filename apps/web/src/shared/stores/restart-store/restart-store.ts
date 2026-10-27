@@ -10,8 +10,8 @@ import {
   startRestart,
 } from '@/shared/utils/restart-rules/restart-rules';
 
-/** 작업 공간 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다 */
-export type WorkspaceStore = RestartState & {
+/** 다시 시작 저장소. 다시 시작 단계와 데스크톱 하위 트리의 세대 번호다 */
+export type RestartStore = RestartState & {
   /** 전원 메뉴의 `다시 시작`을 눌렀다. 다시 시작하는 중이면 무시한다 */
   restart: () => void;
   /** 재부팅 화면이 화면을 다 덮었다. 저장소를 처음 상태로 돌리고 세대를 올린다 */
@@ -29,7 +29,7 @@ export type WorkspaceStore = RestartState & {
  * @codocs [[작업 공간:다시 시작]]
  * @codocs [[기술 스택:상태 관리]]
  */
-export const useWorkspaceStore = create<WorkspaceStore>()(createWorkspaceStore);
+export const useRestartStore = create<RestartStore>()(createRestartStore);
 
 /**
  * 저장소의 처음 상태와 동작을 만든다. 단계는 정해진 차례로만 넘어가고, 차례가 아닌 알림은 무시한다.
@@ -37,10 +37,10 @@ export const useWorkspaceStore = create<WorkspaceStore>()(createWorkspaceStore);
  * @param get 지금 상태를 읽는 함수
  * @returns 처음 상태와 동작
  */
-function createWorkspaceStore(
-  set: StoreApi<WorkspaceStore>['setState'],
-  get: StoreApi<WorkspaceStore>['getState'],
-): WorkspaceStore {
+function createRestartStore(
+  set: StoreApi<RestartStore>['setState'],
+  get: StoreApi<RestartStore>['getState'],
+): RestartStore {
   return {
     ...initialRestartState,
     restart: () => {

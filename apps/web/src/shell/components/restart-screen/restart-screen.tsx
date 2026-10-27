@@ -4,7 +4,7 @@ import { BootScreen } from '@seojaewan/design-system';
 
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 
 // 재부팅 화면을 보여 주는 시간 토큰(`motion/delay/boot-screen`)이다. 동작 줄이기에서도 이 시간은 그대로 둔다.
@@ -23,10 +23,10 @@ const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';
  */
 export function RestartScreen(): JSX.Element | null {
   const device = useDevice();
-  const phase = useWorkspaceStore((state) => state.phase);
-  const finishCovering = useWorkspaceStore((state) => state.finishCovering);
-  const finishShowing = useWorkspaceStore((state) => state.finishShowing);
-  const finishRevealing = useWorkspaceStore((state) => state.finishRevealing);
+  const phase = useRestartStore((state) => state.phase);
+  const finishCovering = useRestartStore((state) => state.finishCovering);
+  const finishShowing = useRestartStore((state) => state.finishShowing);
+  const finishRevealing = useRestartStore((state) => state.finishRevealing);
   const screenRef = useRef<HTMLDivElement>(null);
   const presence = usePresence(screenRef, phase === 'covering' || phase === 'showing', {
     onExitComplete: finishRevealing,

@@ -22,7 +22,7 @@ import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { getPanelMaxHeight } from '@/shared/utils/panel-rules/panel-rules';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
@@ -40,7 +40,7 @@ const EMPTY_SEARCH_ITEMS = [] as const;
 /**
  * 패널 층(Start 메뉴와 검색 패널)을 그린다. 열린 패널은 패널 저장소(`usePanelStore`)가 정하고 둘 중 하나만 열린다.
  * 모바일은 패널이 화면 폭을 채우고 작업 표시줄 바로 위에 붙는다.
- * Start에서 앱 항목을 열면 창 저장소로 그 앱 창을 열고, 전원 메뉴의 `다시 시작`을 고르면 작업 공간 저장소로 다시 시작한다.
+ * Start에서 앱 항목을 열면 창 저장소로 그 앱 창을 열고, 전원 메뉴의 `다시 시작`을 고르면 다시 시작 저장소로 다시 시작한다.
  * 열려 있는 동안 Esc를 누르거나 바깥(Start 버튼과 작업 표시줄 검색칸은 빼고)을 누르면 닫는다. 패널 안에서 연 전원 메뉴는
  * 문서 끝에 포털되지만 React 트리로는 패널 안이라 바깥으로 보지 않는다. 전원 메뉴가 열려 있을 때 Esc는 메뉴만 닫는다.
  * @codocs [[Start 메뉴:열기와 닫기]]
@@ -51,7 +51,7 @@ const EMPTY_SEARCH_ITEMS = [] as const;
 export function StartMenuLayer(): JSX.Element {
   const device = useDevice();
   const openApp = useOpenApp();
-  const restart = useWorkspaceStore((state) => state.restart);
+  const restart = useRestartStore((state) => state.restart);
   const openPanel = usePanelStore((state) => state.openPanel);
   const isPowerMenuOpen = usePanelStore((state) => state.isPowerMenuOpen);
   const close = usePanelStore((state) => state.close);
