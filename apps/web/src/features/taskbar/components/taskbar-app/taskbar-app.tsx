@@ -2,14 +2,8 @@ import type { ComponentProps, JSX, ReactElement } from 'react';
 
 import { ImageAsset, TaskbarButton } from '@seojaewan/design-system';
 
-/** 작업 표시줄에 버튼을 두는 앱. 처음에 고정된 앱(File Explorer, Chrome)이다 */
-export type TaskbarAppId = 'file-explorer' | 'chrome';
-
-// 앱마다 버튼 아이콘(피그마 app/* 인스턴스)과 접근성 이름이다.
-const taskbarApps = {
-  'file-explorer': { label: '파일 탐색기', icon: 'images/app-file-explorer' },
-  chrome: { label: 'Chrome', icon: 'images/app-chrome' },
-} as const satisfies Record<TaskbarAppId, { label: string; icon: string }>;
+import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
+import { taskbarApps } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 
 /**
  * 앱 아이콘(16px 자리 등 쓰는 곳이 크기를 정한다)을 그린다.

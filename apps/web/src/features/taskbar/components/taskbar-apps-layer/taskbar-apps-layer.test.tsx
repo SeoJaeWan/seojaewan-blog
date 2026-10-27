@@ -2,7 +2,9 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { OpenWindow } from '@/shared/utils/window-rules/window-rules';
 
 import { TaskbarAppsLayer } from './taskbar-apps-layer';
@@ -27,6 +29,7 @@ function getTitle(target: OpenWindow): string {
 
 afterEach(() => {
   useWindowStore.getState().reset();
+  resetRegisteredStores();
 });
 
 // @codocs [[작업 표시줄:앱 버튼]]
@@ -201,5 +204,228 @@ describe('모바일:차이 - 창 미리보기 목록', () => {
     // 390 - 12 * 2 = 366, (366 - 10 - 4 * 2) / 3 = 116
     expect(cards[0]?.parentElement).toHaveStyle({ width: '366px' });
     expect(cards[0]).toHaveStyle({ width: '116px' });
+  });
+});
+
+const workArea = { width: 1920, height: 1032 };
+
+/** 앱 창 층을 그린다. */
+function renderLayer(): void {
+  render(<TaskbarAppsLayer renderWindow={renderAppName} getWindowTitle={getTitle} />);
+}
+
+/**
+ * 앱 버튼 이름을 차례대로 돌려준다.
+ * @returns 버튼 이름
+ */
+function getButtonNames(): string[] {
+  return screen
+    .getAllByRole('button')
+    .filter((button) => button.hasAttribute('data-taskbar-app'))
+    .map((button) => button.getAttribute('aria-label') ?? '');
+}
+
+/**
+ * 앱 버튼을 우클릭해 메뉴를 연다.
+ * @param name 버튼 이름
+ */
+function openAppMenu(name: string): void {
+  fireEvent.contextMenu(screen.getByRole('button', { name }));
+}
+
+/**
+ * 열린 메뉴의 항목 이름을 차례대로 돌려준다.
+ * @returns 항목 이름
+ */
+function getMenuItemNames(): string[] {
+  return screen.getAllByRole('menuitem').map((item) => item.textContent);
+}
+
+/**
+ * 메뉴 항목을 누른다.
+ * @param name 항목 이름
+ */
+async function clickMenuItem(name: string): Promise<void> {
+  await userEvent.click(screen.getByRole('menuitem', { name }));
+}
+
+// @codocs [[작업 표시줄:우클릭 메뉴]]
+describe('작업 표시줄:우클릭 메뉴', () => {
+  it('앱 버튼을 우클릭하면 앱 이름, 고정 해제, 창 닫기 메뉴를 연다', () => {
+    useWindowStore.getState().open('chrome', workArea);
+    renderLayer();
+    openAppMenu('Chrome');
+    expect(getMenuItemNames()).toEqual(['Chrome', '작업 표시줄에서 고정 해제', '창 닫기']);
+  });
+
+  it('메뉴가 열리면 창 미리보기를 닫는다', async () => {
+    useWindowStore.getState().open('chrome', workArea);
+    useWindowStore.getState().open('chrome', workArea);
+    renderLayer();
+    await userEvent.click(screen.getByRole('button', { name: 'Chrome' }));
+    expect(screen.getAllByRole('button', { name: 'chrome 창' })).toHaveLength(2);
+    openAppMenu('Chrome');
+    expect(screen.queryByRole('button', { name: 'chrome 창' })).not.toBeInTheDocument();
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+  });
+
+  it('앱 이름을 고르면 새 창을 연다', async () => {
+    useWindowStore.getState().open('chrome', workArea);
+    renderLayer();
+    openAppMenu('Chrome');
+    await clickMenuItem('Chrome');
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['chrome', 'chrome']);
+  });
+
+  it('탐색기 이름을 고르면 새 탐색기 창을 연다', async () => {
+    renderLayer();
+    openAppMenu('파일 탐색기');
+    await clickMenuItem('파일 탐색기');
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['file-explorer']);
+  });
+
+  it('고정 해제를 고르면 고정 목록에서 뺀다', async () => {
+    renderLayer();
+    openAppMenu('Chrome');
+    await clickMenuItem('작업 표시줄에서 고정 해제');
+    expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer']);
+  });
+
+  it('고정하지 않은 앱은 작업 표시줄에 고정을 고르면 고정 목록 맨 뒤에 붙인다', async () => {
+    useWorkspaceStore.getState().unpinFromTaskbar('file-explorer');
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    openAppMenu('파일 탐색기');
+    expect(getMenuItemNames()).toEqual(['파일 탐색기', '작업 표시줄에 고정', '창 닫기']);
+    await clickMenuItem('작업 표시줄에 고정');
+    expect(useWorkspaceStore.getState().taskbarPins).toEqual(['chrome', 'file-explorer']);
+  });
+
+  it('창 닫기를 고르면 그 앱의 창을 닫는다', async () => {
+    useWindowStore.getState().open('chrome', workArea);
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    openAppMenu('Chrome');
+    await clickMenuItem('창 닫기');
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['file-explorer']);
+  });
+
+  it('창이 여러 개면 모든 창 닫기로 그 앱의 창을 모두 닫는다', async () => {
+    useWindowStore.getState().open('chrome', workArea);
+    useWindowStore.getState().open('chrome', workArea);
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    openAppMenu('Chrome');
+    await clickMenuItem('모든 창 닫기');
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['file-explorer']);
+  });
+
+  it('창이 없는 앱의 메뉴에는 창 닫기가 없다', () => {
+    renderLayer();
+    openAppMenu('Chrome');
+    expect(getMenuItemNames()).toEqual(['Chrome', '작업 표시줄에서 고정 해제']);
+  });
+});
+
+// @codocs [[작업 표시줄:창 미리보기]]
+describe('작업 표시줄:창 미리보기 - 마지막 창을 닫은 뒤', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('고정하지 않은 앱의 마지막 창을 미리보기에서 닫은 뒤 그 앱 창을 다시 열어도 미리보기가 저절로 열리지 않는다', () => {
+    useWorkspaceStore.getState().unpinFromTaskbar('chrome');
+    useWindowStore.getState().open('chrome', workArea);
+    renderLayer();
+    fireEvent.pointerEnter(screen.getByRole('button', { name: 'Chrome' }), {
+      pointerType: 'mouse',
+    });
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+    fireEvent.click(screen.getByRole('button', { name: '창 닫기', hidden: true }));
+    expect(screen.queryByRole('button', { name: 'Chrome' })).not.toBeInTheDocument();
+    act(() => {
+      useWindowStore.getState().open('chrome', workArea);
+    });
+    expect(screen.getByRole('button', { name: 'Chrome' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'chrome 창' })).not.toBeInTheDocument();
+  });
+});
+
+// @codocs [[작업 표시줄:고정과 순서]]
+describe('작업 표시줄:고정과 순서', () => {
+  it('고정한 앱을 고정 순서대로 그린다', () => {
+    useWorkspaceStore.getState().moveTaskbarPin('chrome', 0);
+    renderLayer();
+    expect(getButtonNames()).toEqual(['Chrome', '파일 탐색기']);
+  });
+
+  it('고정하지 않은 실행 중인 앱은 뒤에 붙는다', () => {
+    useWorkspaceStore.getState().unpinFromTaskbar('file-explorer');
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    expect(getButtonNames()).toEqual(['Chrome', '파일 탐색기']);
+  });
+
+  it('고정을 해제한 앱은 창을 모두 닫으면 버튼이 사라진다', async () => {
+    useWindowStore.getState().open('chrome', workArea);
+    renderLayer();
+    openAppMenu('Chrome');
+    await clickMenuItem('작업 표시줄에서 고정 해제');
+    expect(getButtonNames()).toEqual(['파일 탐색기', 'Chrome']);
+    openAppMenu('Chrome');
+    await clickMenuItem('창 닫기');
+    expect(getButtonNames()).toEqual(['파일 탐색기']);
+  });
+
+  describe('앱 버튼을 끌어 순서 바꾸기', () => {
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+
+    /** 버튼 자리를 40px 칸으로 정한다. jsdom은 레이아웃이 없다. */
+    function layoutButtons(): void {
+      document.querySelectorAll('[data-taskbar-app]').forEach((button, index) => {
+        button.getBoundingClientRect = () => new DOMRect(index * 40, 0, 40, 40);
+      });
+    }
+
+    /** Chrome 버튼을 탐색기 버튼 자리로 끌어 놓고 따라오는 클릭까지 보낸다. */
+    function dragChromeToExplorer(): void {
+      renderLayer();
+      layoutButtons();
+      const chrome = screen.getByRole('button', { name: 'Chrome' });
+      fireEvent.pointerDown(chrome, { ...pointer, clientX: 60, clientY: 20 });
+      fireEvent.pointerMove(chrome, { ...pointer, clientX: 20, clientY: 20 });
+      fireEvent.pointerUp(chrome, { ...pointer, clientX: 20, clientY: 20 });
+      fireEvent.click(chrome);
+    }
+
+    it('고정한 버튼을 다른 고정 버튼 자리로 끌어 놓으면 순서가 바뀐다', () => {
+      dragChromeToExplorer();
+      expect(useWorkspaceStore.getState().taskbarPins).toEqual(['chrome', 'file-explorer']);
+    });
+
+    it('끌기 뒤에 따라오는 클릭은 버튼 동작을 하지 않는다', () => {
+      dragChromeToExplorer();
+      expect(useWindowStore.getState().order).toEqual([]);
+    });
+
+    it('끌지 않고 누르면 버튼 동작을 한다', () => {
+      renderLayer();
+      layoutButtons();
+      const chrome = screen.getByRole('button', { name: 'Chrome' });
+      fireEvent.pointerDown(chrome, { ...pointer, clientX: 60, clientY: 20 });
+      fireEvent.pointerUp(chrome, { ...pointer, clientX: 60, clientY: 20 });
+      fireEvent.click(chrome);
+      expect(useWindowStore.getState().order).toHaveLength(1);
+    });
   });
 });

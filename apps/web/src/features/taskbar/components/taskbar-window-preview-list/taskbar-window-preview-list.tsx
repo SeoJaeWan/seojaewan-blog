@@ -2,8 +2,8 @@ import type { JSX, KeyboardEvent, ReactNode } from 'react';
 
 import { TaskbarPreviewList, WindowPreview } from '@seojaewan/design-system';
 
-import type { TaskbarAppId } from '@/features/taskbar/components/taskbar-app/taskbar-app';
 import { renderTaskbarAppIcon } from '@/features/taskbar/components/taskbar-app/taskbar-app';
+import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 
 /** 창 미리보기 목록의 창 하나 */
 export type TaskbarWindowPreview = {
