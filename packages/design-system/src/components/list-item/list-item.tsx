@@ -58,8 +58,8 @@ export function ListItem(props: ListItemProps): JSX.Element {
   const isTwoLine = size === 'two-line';
   return (
     <div
-      {...divProps}
       aria-selected={isSelected}
+      {...divProps}
       className={cn(
         'flex items-center gap-12 rounded-control px-12 py-4 select-none',
         isTwoLine ? 'h-52' : 'h-36',

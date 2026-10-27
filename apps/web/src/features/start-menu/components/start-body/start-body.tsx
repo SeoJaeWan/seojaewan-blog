@@ -502,6 +502,8 @@ function StartListRow(props: StartListRowProps): JSX.Element {
     <ListItem
       role="button"
       tabIndex={0}
+      // 버튼 역할에는 aria-selected가 맞지 않아 ListItem이 붙이는 값을 뺀다
+      aria-selected={undefined}
       title={item.title}
       icon={renderItemIcon(item)}
       className="w-full"
