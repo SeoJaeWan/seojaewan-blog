@@ -1,8 +1,15 @@
-import type { ComponentProps, JSX, MouseEvent, PointerEvent, ReactNode } from 'react';
+import type {
+  ComponentProps,
+  JSX,
+  KeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  ReactNode,
+} from 'react';
 
 import { ExplorerTab, IconButton, ImageAsset, WindowFrame } from '@seojaewan/design-system';
 
-import { useTabStrip } from '@/features/file-explorer/hooks/use-tab-strip/use-tab-strip';
+import { useTabStrip } from '@/shared/hooks/use-tab-strip/use-tab-strip';
 
 export type ExplorerWindowDevice = 'desktop' | 'mobile';
 
@@ -65,7 +72,7 @@ const MIDDLE_BUTTON = 1;
  * 창 버튼, mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 그 아래에 탭 내용 자리를 둔다.
  * 모바일은 늘 전체화면이라 최대화 버튼을 빼고, 탭 하나만 쓰므로 탭 줄이 없다.
  * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)과 제목 표시줄 누르기(창 끌기)는 WindowFrame에 그대로 넘긴다.
- * 탭은 클릭으로 고르고, × 또는 가운데 클릭으로 닫는다. 탭 위에서 누른 것은 창 끌기로 올리지 않는다.
+ * 탭은 클릭이나 ←/→/Home/End로 고르고(고른 탭만 Tab 키로 닿는다), × 또는 가운데 클릭으로 닫는다. 탭 위에서 누른 것은 창 끌기로 올리지 않는다.
  * 탭이 많으면 탭 너비를 최소 폭까지 고르게 줄이고, 더 줄일 수 없으면 탭 줄을 가로로 스크롤한다. 탭을 끌어 순서를 바꾼다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
@@ -87,19 +94,20 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
     ...frameProps
   } = props;
   const selectedIndex = tabs.findIndex((tab) => tab.selected === true);
-  const { tabListRef, startTabDrag } = useTabStrip({
+  const { tabListRef, startTabDrag, getTabIndex, handleTabKeyDown } = useTabStrip({
     selectedIndex,
     tabCount: tabs.length,
     onTabMove,
+    onTabSelect,
   });
 
   /**
-   * 제목 표시줄 누르기(창 끌기)를 넘기되, 탭 위에서 누른 것은 거른다. 탭을 끌어 순서를 바꾸는 동작이 이 자리를 쓴다.
+   * 제목 표시줄 누르기(창 끌기)를 넘기되, 탭 묶음(탭과 그 닫기 버튼, 바깥 여백) 위에서 누른 것은 거른다. 탭을 끌어 순서를 바꾸는 동작이 이 자리를 쓴다.
    * 이벤트 전파는 끊지 않아 창을 맨 앞으로 가져오는 창 층의 누르기 처리는 그대로 일어난다.
    * @param event 누르기 이벤트
    */
   function handleTitleBarPointerDown(event: PointerEvent<HTMLDivElement>): void {
-    if (event.target instanceof Element && event.target.closest('[role="tab"]') !== null) {
+    if (event.target instanceof Element && event.target.closest('[role="tablist"] > *') !== null) {
       return;
     }
     handleFrameTitleBarPointerDown?.(event);
@@ -171,6 +179,10 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
                     selected={tab.selected}
                     icon={tab.icon ?? folderTabIcon}
                     title={tab.title}
+                    tabIndex={getTabIndex(index)}
+                    onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+                      handleTabKeyDown(event, index);
+                    }}
                     onClick={() => onTabSelect?.(index)}
                     onClose={() => onTabClose?.(index)}
                     onMouseDown={handleTabMouseDown}

@@ -32,6 +32,7 @@ test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', asyn
 
   await explorer
     .getByRole('tab', { name: /Blog/ })
+    .locator('..')
     .getByRole('button', { name: '탭 닫기' })
     .click();
   await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();

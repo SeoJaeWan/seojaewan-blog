@@ -237,7 +237,7 @@ describe('파일 탐색기:탭', () => {
     fireEvent.pointerDown(last, { ...POINTER, clientX: 250, clientY: 10 });
     fireEvent.pointerMove(last, { ...POINTER, clientX: 150, clientY: 10 });
     fireEvent.click(
-      within(screen.getAllByRole('tab')[0] ?? document.body).getByRole('button', {
+      within(screen.getAllByRole('tab')[0]?.parentElement ?? document.body).getByRole('button', {
         name: '탭 닫기',
       }),
     );
@@ -305,7 +305,10 @@ describe('파일 탐색기:탭', () => {
     renderExplorer('folder:React');
     await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
     await userEvent.click(
-      within(screen.getByRole('tab', { name: /Blog/ })).getByRole('button', { name: '탭 닫기' }),
+      within(screen.getByRole('tab', { name: /Blog/ }).parentElement ?? document.body).getByRole(
+        'button',
+        { name: '탭 닫기' },
+      ),
     );
     expect(tabTitles()).toEqual(['React']);
   });
@@ -318,6 +321,23 @@ describe('파일 탐색기:탭', () => {
       new MouseEvent('auxclick', { bubbles: true, button: 1 }),
     );
     expect(tabTitles()).toEqual(['Blog']);
+  });
+
+  it('고른 탭만 Tab 키로 닿는다', async () => {
+    renderExplorer('folder:React');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    expect(screen.getAllByRole('tab').map((tab) => tab.tabIndex)).toEqual([-1, 0]);
+  });
+
+  it('탭에서 ←를 누르면 앞 탭을 고르고 그 탭에 포커스를 옮긴다', async () => {
+    renderExplorer('folder:React');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    act(() => {
+      screen.getByRole('tab', { name: /Blog/ }).focus();
+    });
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('tab', { name: /React/ })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tab', { name: /React/ })).toHaveFocus();
   });
 
   it('마지막 탭을 닫으면 창을 닫는다', async () => {
