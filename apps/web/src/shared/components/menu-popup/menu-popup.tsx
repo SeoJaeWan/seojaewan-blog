@@ -78,7 +78,7 @@ type MenuPopupProps = MenuPanelProps &
  * 열고 닫기와 위치를 정한다. 나머지 속성은 팝업 요소에 준다.
  * 열 때 `motion-flyout-enter`로 페이드해 나타난다. 사라지는 움직임은 없어 Base UI가 기다리지 않고 바로 닫는다.
  * @codocs [[디자인 시스템:조립]]
- * @codocs [[디자인 기반:모션 클래스]]
+ * @codocs [[피그마 연동:모션 클래스]]
  * @param props
  */
 export function MenuPopup(props: MenuPopupProps): JSX.Element {

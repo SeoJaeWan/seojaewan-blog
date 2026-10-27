@@ -74,6 +74,34 @@ describe('CI', () => {
     expect(body).toContain('- CSS 애니메이션 시간 300ms가 json의 토큰 값(333ms)에 없다.');
   });
 
+  it('스토리 누락 등 검사 불가를 실제 불일치와 구분한다', () => {
+    const [body = ''] = renderMotionComments(
+      [result('motion-search-box-focus', { rows: [], error: '스토리가 없다' })],
+      RUN_URL,
+    );
+    expect(body).toContain('모션 검사: 견본 1개, 검사 불가 1개');
+    expect(body).toContain(
+      '<details open><summary>❌ motion-search-box-focus (검사 불가)</summary>',
+    );
+    expect(body).toContain('검사하지 못했다: 스토리가 없다');
+    expect(body).not.toContain('키프레임 값 다름 0곳');
+    expect(body).not.toContain('모두 같음');
+  });
+
+  it('검사 불가와 실제 불일치가 함께 있으면 각각 집계한다', () => {
+    const [body = ''] = renderMotionComments(
+      [
+        result('motion-missing', { rows: [], error: '스토리가 없다' }),
+        result('motion-duration', { timingErrors: ['시간이 다르다'] }),
+        result('motion-ok'),
+      ],
+      RUN_URL,
+    );
+    expect(body).toContain('견본 3개, 다름 1개, 검사 불가 1개');
+    expect(body).toContain('❌ motion-duration (시간 오류 1개)');
+    expect(body).not.toContain('키프레임 값 다름 0곳');
+  });
+
   it('모션 검사 댓글은 캡처 표 댓글과 다른 숨은 표시로 찾아 따로 고친다', () => {
     const [body = ''] = renderMotionComments([result('motion-window-open')], RUN_URL);
     expect(markerIndex(body, 'motion-check')).toBe(1);
@@ -83,5 +111,7 @@ describe('CI', () => {
   it('결과가 없으면 이유를 적는다', () => {
     const [body = ''] = renderMotionComments([], RUN_URL);
     expect(body).toContain('모션 검사 결과가 없다');
+    expect(body).toContain('견본 0개, 결과 없음');
+    expect(body).not.toContain('모두 같음');
   });
 });

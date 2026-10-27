@@ -1,0 +1,25 @@
+_codocs:
+  id: remaining-work
+  name: 남은 작업
+  parent:
+    - seojaewan 블로그
+개요: |
+  2026-10-26 작업(폴더 구조 개편, 피그마 수정, 검사 도구 보강)을 마친 뒤 이어서 할 일을 순서대로 모은다. 끝난 항목은 지운다.
+  기능 구현 순서는 [[구현 순서:7단계 기능 구현]]이 기준이고 여기서는 다시 적지 않는다.
+1. 피그마 내보낸 PR 처리: |
+  플러그인이 연 PR을 스킬(`figma-token-pr`, `figma-component-pr`, `figma-motion-pr`) 절차로 이 순서대로 처리한다. 앞 PR을 병합한 뒤 다음 PR에 `main`을 받아 온다.
+
+  | 순서 | PR | 코드에서 할 일 |
+  |---|---|---|
+  | 1 | #235 토큰 | 새 색 변수 2개, `motion/duration/slower`, 칠 스타일 `Icon Color/Search Focus`. 지워진 `Icon Color/Search`·`color/green/light-2`를 쓰는 코드 정리 |
+  | 2 | #225 SearchBox | `Appearance=Web` 분리(Chrome 새 탭이 씀), Taskbar·Pill의 Hover·Focused 그라데이션 아이콘(`icon-color/Search Focus`), `State=Pressed`(아이콘 0.8배), Safari는 단색 강조색 대체([[검색:입력칸]]). 옛 컬러 돋보기 자산·`motion-search-icon-state`와 [[디자인 기반]]의 해당 줄 정리 |
+  | 3 | #226 FileRow, #227 DetailsHeader | `View=Recycle bin` 변형, prop `originalLocation`·`deletedDate` |
+  | 4 | #228 Menu | 라디오 하위 메뉴 3개를 하나의 `RadioGroup`으로(기본값 이름·오름차순·보통 아이콘), `pin_off`·`zoom_in` 아이콘 |
+  | 5 | #229 Chrome | 검색 결과 주소 데이터, 새 탭 검색칸을 `Web` 모양으로 |
+  | 6 | #230 Window | React 폴더 창 데이터, 휴지통 변형(자세히 보기), SnapLayoutMenu는 메뉴가 열린 동안 최대화 버튼 Hover 유지, SnapAssist 축소 창 명령 모음 |
+  | 7 | #231 Taskbar | 축소 창 명령 모음이 보이게 하고 스토리 전용 `showCommands` 옵션 삭제 |
+  | 8 | #232 Desktop | 배경화면이 자산 인스턴스(`images/wallpaper-bloom`)로 바뀜 |
+  | 9 | #233 MessageBox | 새 영역. `MessageBox/EmptyRecycleBin` 조립(제목 "휴지통 비우기", 버튼 "확인") |
+  | 10 | #234 애니메이션 | `motion-search-box-focus` 모션 클래스. 토큰·SearchBox PR 다음 |
+2. 기능 구현: |
+  [[구현 순서:7단계 기능 구현]]의 ㄱ부터 기능마다 PR로 진행한다. 브랜치 이름은 [[Git 작업 규칙:브랜치]]를 따른다.
