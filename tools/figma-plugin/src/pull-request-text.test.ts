@@ -18,16 +18,18 @@ import {
   tokensCommitBody,
   tokensCommitSubject,
   tokensPullRequestBody,
-  variantTable,
+  variantPreviews,
 } from './pull-request-text';
 
 const button: TargetChanges = {
   name: 'Button',
   folder: 'packages/design-system/figma/components/button',
-  captureFolder: 'button',
   changedVariants: ['style=accent,state=rest', 'style=accent,state=hover'],
   removedVariants: [],
-  capturedVariants: new Set(['style=accent,state=rest']),
+  variants: [
+    { name: 'style=accent,state=rest', nodeId: '12:34' },
+    { name: 'style=accent,state=hover', nodeId: '12:35' },
+  ],
 };
 
 // @codocs [[Git 작업 규칙:커밋]]
@@ -103,24 +105,43 @@ describe('피그마 플러그인 브랜치는 대상마다 이름이 고정이�
   });
 });
 
-// @codocs [[피그마 연동:캡처 표]]
-describe('PR 본문의 피그마 | 현재 구현 표', () => {
-  it('바뀐 변형마다 PR 브랜치의 피그마 이미지와 parity-captures의 캡처를 놓는다', () => {
-    expect(variantTable('feat/figma-button', [button])).toEqual([
-      '| 변형 | 피그마 | 현재 구현 |',
-      '|---|---|---|',
-      '| `style=accent,state=rest` | ![style=accent,state=rest](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-button/packages/design-system/figma/components/button/style=accent,state=rest.png?raw=true) | ![style=accent,state=rest](https://github.com/SeoJaeWan/seojaewan-blog/blob/parity-captures/button/style=accent,state=rest.png?raw=true) |',
-      '| `style=accent,state=hover` | ![style=accent,state=hover](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-button/packages/design-system/figma/components/button/style=accent,state=hover.png?raw=true) |  |',
+// @codocs [[피그마 연동:피그마 플러그인]]
+describe('PR 본문의 피그마 미리보기', () => {
+  it('바뀐 변형 이미지를 세로로 놓고 바로 아래 변형 이름을 피그마 노드로 연결한다', () => {
+    expect(variantPreviews('feat/figma-button', [button])).toEqual([
+      '![style=accent,state=rest](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-button/packages/design-system/figma/components/button/style=accent,state=rest.png?raw=true)',
+      '',
+      '[style=accent,state=rest](https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=12%3A34)',
+      '',
+      '![style=accent,state=hover](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-button/packages/design-system/figma/components/button/style=accent,state=hover.png?raw=true)',
+      '',
+      '[style=accent,state=hover](https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=12%3A35)',
     ]);
   });
 
-  it('바뀐 변형이 없으면 표 대신 그렇다고 적는다', () => {
-    expect(variantTable('feat/figma-button', [{ ...button, changedVariants: [] }])).toEqual([
+  it('바뀐 변형이 없으면 이미지를 보여 주지 않는다', () => {
+    expect(variantPreviews('feat/figma-button', [{ ...button, changedVariants: [] }])).toEqual([
       '바뀐 변형이 없다.',
     ]);
   });
 
-  it('컴포넌트 PR 본문은 바뀐 변형 목록과 표를 담는다', () => {
+  it('다시 내보낸 변경 변형은 최신 노드 ID를 사용하고 바뀌지 않은 변형은 제외한다', () => {
+    const lines = variantPreviews('feat/figma-button', [
+      {
+        ...button,
+        changedVariants: ['style=accent,state=rest'],
+        variants: [
+          { name: 'style=accent,state=rest', nodeId: '99:100' },
+          ...button.variants.slice(1),
+        ],
+      },
+    ]).join('\n');
+    expect(lines).toContain('?node-id=99%3A100');
+    expect(lines).not.toContain('?node-id=12%3A34');
+    expect(lines).not.toContain('state=hover');
+  });
+
+  it('컴포넌트 PR 본문은 변경 설명과 피그마 미리보기, CI 비교 안내를 담는다', () => {
     const body = componentPullRequestBody(
       'feat/figma-button',
       { ...button, removedVariants: ['style=old'] },
@@ -132,7 +153,11 @@ describe('PR 본문의 피그마 | 현재 구현 표', () => {
     );
     expect(body).toContain('- 사라진 변형: `style=old`');
     expect(body).toContain('- 이름이 바뀌어 이전 폴더 삭제:');
-    expect(body).toContain('| 변형 | 피그마 | 현재 구현 |');
+    expect(body).toContain('## 피그마');
+    expect(body).toContain('CI 댓글의 `피그마 | 코드 | 차이`');
+    expect(body).not.toContain('| 변형 |');
+    expect(body).not.toContain('현재 구현');
+    expect(body).not.toContain('parity-captures');
   });
 
   it('토큰 PR 본문은 새로 생기거나 바뀌거나 사라진 토큰과 그 토큰을 쓰는 컴포넌트를 적는다', () => {
@@ -167,7 +192,7 @@ describe('PR 본문의 피그마 | 현재 구현 표', () => {
     expect(body).not.toContain('이미지 자산');
   });
 
-  it('조립 PR 본문은 조립마다 변경을 적고, 표의 변형 앞에 조립 이름을 붙인다', () => {
+  it('조립 PR 본문은 조립마다 변경을 적고, 이미지 아래 링크에 조립 이름을 붙인다', () => {
     /**
      * 조립 하나의 변경을 만든다.
      * @param name 조립 이름(영역 뒤)
@@ -177,10 +202,9 @@ describe('PR 본문의 피그마 | 현재 구현 표', () => {
       return {
         name: `Menu/${name}`,
         folder: `apps/web/figma/patterns/menu/${name.toLowerCase()}`,
-        captureFolder: `patterns/menu/${name.toLowerCase()}`,
         changedVariants: ['default'],
         removedVariants: [],
-        capturedVariants: new Set(name === 'Folder' ? ['default'] : []),
+        variants: [{ name: 'default', nodeId: name === 'Folder' ? '20:1' : '20:2' }],
       };
     }
     const body = patternPullRequestBody(
@@ -192,8 +216,12 @@ describe('PR 본문의 피그마 | 현재 구현 표', () => {
     expect(body).toContain('- 영역: `menu`');
     expect(body).toContain('- 조립: Menu/Folder\n  - 새로 생기거나 PNG가 바뀐 변형 1개');
     expect(body).toContain(
-      '| `Menu/Folder / default` | ![default](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-patterns-menu/apps/web/figma/patterns/menu/folder/default.png?raw=true) | ![default](https://github.com/SeoJaeWan/seojaewan-blog/blob/parity-captures/patterns/menu/folder/default.png?raw=true) |',
+      '![default](https://github.com/SeoJaeWan/seojaewan-blog/blob/feat/figma-patterns-menu/apps/web/figma/patterns/menu/folder/default.png?raw=true)\n\n[Menu/Folder / default](https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=20%3A1)',
     );
-    expect(body).toContain('| `Menu/Desktop / default` |');
+    expect(body).toContain(
+      '[Menu/Desktop / default](https://www.figma.com/design/XV9Y1UT5UH4tC5hSqLVipZ?node-id=20%3A2)',
+    );
+    expect(body).not.toContain('| 변형 |');
+    expect(body).not.toContain('현재 구현');
   });
 });
