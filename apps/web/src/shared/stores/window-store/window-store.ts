@@ -22,6 +22,7 @@ import {
   restoreFromMaximize,
   restoreWindow,
   setWindowBounds,
+  setWindowContent,
   snapWindow,
   toggleMaximizeWindow,
 } from '@/shared/utils/window-rules/window-rules';
@@ -64,6 +65,8 @@ type WindowActions = {
   setBounds: (id: string, bounds: WindowBounds) => void;
   /** 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다 */
   detach: (id: string, bounds: WindowBounds) => void;
+  /** 창 내용(탐색기 탭과 위치 기록 등)을 바꾼다 */
+  setContent: (id: string, content: WindowContent) => void;
   /** 끌기·크기 조절을 시작하거나(drag·resize) 끝낸다(null) */
   setInteraction: (interaction: WindowInteraction) => void;
   /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다 */
@@ -128,6 +131,9 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
     },
     detach: (id, bounds) => {
       set((state) => detachWindow(state, id, bounds));
+    },
+    setContent: (id, content) => {
+      set((state) => setWindowContent(state, id, content));
     },
     setInteraction: (interaction) => {
       set({ interaction });

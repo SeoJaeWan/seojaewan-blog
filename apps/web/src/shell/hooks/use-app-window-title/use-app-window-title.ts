@@ -18,7 +18,7 @@ export function useAppWindowTitle(): (window: OpenWindow) => string {
    */
   function getWindowTitle(target: OpenWindow): string {
     const { content } = target;
-    return content.app === 'chrome' ? getChromeTitle(content) : getExplorerTitle(content.folderId);
+    return content.app === 'chrome' ? getChromeTitle(content) : getExplorerTitle(content);
   }
   return getWindowTitle;
 }

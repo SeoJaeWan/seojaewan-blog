@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { OpenWindow, WindowState, WindowWorkArea } from './window-rules';
 import {
   closeWindow,
+  createExplorerContent,
   detachWindow,
   fitBoundsToWorkArea,
   fitWindowsToWorkArea,
@@ -22,6 +23,7 @@ import {
   restoreFromMaximize,
   restoreWindow,
   setWindowBounds,
+  setWindowContent,
   snapWindow,
   toggleMaximizeWindow,
 } from './window-rules';
@@ -411,10 +413,7 @@ describe('창 동작:스냅 - 끌어서 떼기', () => {
 describe('창 동작:열기 규칙', () => {
   it('앱을 처음 열면 탐색기는 Blog 폴더, Chrome은 새 탭 페이지 하나를 보여 준다', () => {
     const { state, ids } = openAll(['file-explorer', 'chrome']);
-    expect(state.windows[ids[0] ?? '']?.content).toEqual({
-      app: 'file-explorer',
-      folderId: 'blog',
-    });
+    expect(state.windows[ids[0] ?? '']?.content).toEqual(createExplorerContent('blog'));
     expect(state.windows[ids[1] ?? '']?.content).toEqual({
       app: 'chrome',
       tabs: [{ kind: 'new-tab' }],
@@ -424,15 +423,10 @@ describe('창 동작:열기 규칙', () => {
 
   it('폴더를 열면 그 폴더를 보는 새 탐색기 창을 연다', () => {
     const { state } = openAll(['file-explorer']);
-    const result = openWindow(state, 'file-explorer', WORK_AREA, {
-      app: 'file-explorer',
-      folderId: 'folder:React',
-    });
+    const content = createExplorerContent('folder:React');
+    const result = openWindow(state, 'file-explorer', WORK_AREA, content);
     expect(result.state.order).toHaveLength(2);
-    expect(result.state.windows[result.id]?.content).toEqual({
-      app: 'file-explorer',
-      folderId: 'folder:React',
-    });
+    expect(result.state.windows[result.id]?.content).toEqual(content);
   });
 
   it('글은 Chrome 창이 없으면 그 글 탭 하나인 새 창으로 연다', () => {
@@ -463,5 +457,31 @@ describe('창 동작:열기 규칙', () => {
     const result = openPostInChrome(minimized, 'a', WORK_AREA);
     expect(result.state.windows[ids[0] ?? '']?.isMinimized).toBe(false);
     expect(getFrontWindowId(result.state)).toBe(ids[0]);
+  });
+});
+
+// @codocs [[파일 탐색기:탭]]
+describe('파일 탐색기:탭', () => {
+  it('폴더를 열면 그 폴더 하나만 기록에 있는 탭 하나로 연다', () => {
+    expect(createExplorerContent('folder:React')).toEqual({
+      app: 'file-explorer',
+      tabs: [{ id: 'tab-1', history: ['folder:React'], historyIndex: 0 }],
+      activeTabIndex: 0,
+      lastTabSerial: 1,
+      treeExpansion: {},
+    });
+  });
+
+  it('창 내용을 바꾸면 그 창만 바뀐다', () => {
+    const { state, ids } = openAll(['file-explorer', 'file-explorer']);
+    const content = createExplorerContent(null);
+    const next = setWindowContent(state, ids[0] ?? '', content);
+    expect(next.windows[ids[0] ?? '']?.content).toBe(content);
+    expect(next.windows[ids[1] ?? '']).toBe(state.windows[ids[1] ?? '']);
+  });
+
+  it('다른 앱의 내용으로는 바꾸지 않는다', () => {
+    const { state, ids } = openAll(['chrome']);
+    expect(setWindowContent(state, ids[0] ?? '', createExplorerContent(null))).toBe(state);
   });
 });

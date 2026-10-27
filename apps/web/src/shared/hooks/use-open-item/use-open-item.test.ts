@@ -6,6 +6,7 @@ import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
+import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import {
   APP_ITEM_IDS,
   BLOG_FOLDER_ID,
@@ -54,14 +55,14 @@ describe('창 동작:열기 규칙', () => {
     openItem('folder:React');
     openItem('folder:React');
     expect(windowContents()).toEqual([
-      { app: 'file-explorer', folderId: 'folder:React' },
-      { app: 'file-explorer', folderId: 'folder:React' },
+      createExplorerContent('folder:React'),
+      createExplorerContent('folder:React'),
     ]);
   });
 
   it('휴지통을 열면 휴지통을 보는 탐색기 창을 연다', () => {
     openItem(RECYCLE_BIN_ID);
-    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: RECYCLE_BIN_ID }]);
+    expect(windowContents()).toEqual([createExplorerContent(RECYCLE_BIN_ID)]);
   });
 
   it('글을 열면 Chrome 창이 없으면 새 창, 있으면 가장 최근 Chrome 창의 새 탭으로 연다', () => {

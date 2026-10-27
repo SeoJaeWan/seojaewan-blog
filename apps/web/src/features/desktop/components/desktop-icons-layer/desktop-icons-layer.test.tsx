@@ -7,6 +7,7 @@ import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
+import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
 import {
   BLOG_FOLDER_ID,
   isItemInTrash,
@@ -152,13 +153,13 @@ describe('창 동작:열기 규칙', () => {
   it('Blog 폴더 아이콘을 더블클릭하면 그 폴더를 보는 새 탐색기 창을 연다', async () => {
     render(<DesktopIconsLayer />);
     await user().dblClick(screen.getByText('Blog'));
-    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
+    expect(windowContents()).toEqual([createExplorerContent(BLOG_FOLDER_ID)]);
   });
 
   it('휴지통 아이콘을 더블클릭하면 휴지통을 보는 탐색기 창을 연다', async () => {
     render(<DesktopIconsLayer />);
     await user().dblClick(screen.getByText('휴지통'));
-    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: RECYCLE_BIN_ID }]);
+    expect(windowContents()).toEqual([createExplorerContent(RECYCLE_BIN_ID)]);
   });
 
   it('외부 링크 아이콘을 더블클릭하면 창을 만들지 않고 실제 브라우저의 새 탭으로 연다', async () => {
@@ -207,7 +208,7 @@ describe('바탕화면:아이콘 조작', () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
     await user().keyboard('{Enter}');
-    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
+    expect(windowContents()).toEqual([createExplorerContent(BLOG_FOLDER_ID)]);
     await user().click(icon('GitHub'));
     await user().keyboard('{Delete}');
     expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
@@ -482,7 +483,7 @@ describe('모바일:차이', () => {
   it('아이콘을 탭하면 연다', async () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
-    expect(windowContents()).toEqual([{ app: 'file-explorer', folderId: BLOG_FOLDER_ID }]);
+    expect(windowContents()).toEqual([createExplorerContent(BLOG_FOLDER_ID)]);
   });
 
   it('Ctrl + 탭과 Ctrl + A로 여러 개를 고르지 않는다', async () => {

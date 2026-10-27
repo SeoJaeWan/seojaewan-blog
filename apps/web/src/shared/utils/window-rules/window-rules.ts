@@ -48,17 +48,41 @@ export type WindowRestorePoint = {
 /** Chrome 탭 하나가 보여 주는 페이지. 새 탭 페이지나 글이다 */
 export type ChromeTabPage = { kind: 'new-tab' } | { kind: 'post'; slug: string };
 
+/** 탐색기가 보는 위치. 폴더 id, 휴지통 id, 바탕화면은 null이다 */
+export type ExplorerLocation = string | null;
+
+/** 탐색기 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다 */
+export type ExplorerTabState = {
+  /** 탭 id. 창 안에서만 겹치지 않는다 */
+  id: string;
+  /** 지나온 위치. 처음 연 위치부터 차례대로다 */
+  history: readonly ExplorerLocation[];
+  /** 기록에서 지금 보는 위치의 차례 */
+  historyIndex: number;
+};
+
+/** 탐색기 창 내용. 탭 목록과 고른 탭, 탐색 창 폴더 트리를 방문자가 펼치거나 접은 상태다 */
+export type ExplorerWindowContent = {
+  /** 앱 */
+  app: 'file-explorer';
+  /** 탭 목록 */
+  tabs: readonly ExplorerTabState[];
+  /** 고른 탭의 차례 */
+  activeTabIndex: number;
+  /** 마지막으로 만든 탭의 차례. 새 탭 id를 만드는 데 쓴다 */
+  lastTabSerial: number;
+  /**
+   * 탐색 창 트리 칸(바탕화면은 `desktop`, 폴더는 폴더 id)을 방문자가 펼치거나(true) 접은(false) 상태.
+   * 없는 칸은 현재 위치와 그 조상이면 펼치고 나머지는 접는다. 창 안에서만 기억한다
+   */
+  treeExpansion: Readonly<Record<string, boolean>>;
+};
+
 /**
- * 창 내용. 탐색기는 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null), Chrome은 탭 목록과 고른 탭이다.
- * 탐색기 탭과 기록, Chrome 탭 조작은 그 앱 단계에서 더한다.
+ * 창 내용. 탐색기는 탭과 탭마다의 위치 기록, Chrome은 탭 목록과 고른 탭이다. Chrome 탭 조작은 그 앱 단계에서 더한다.
  */
 export type WindowContent =
-  | {
-      /** 앱 */
-      app: 'file-explorer';
-      /** 보고 있는 위치 */
-      folderId: string | null;
-    }
+  | ExplorerWindowContent
   | {
       /** 앱 */
       app: 'chrome';
@@ -178,8 +202,24 @@ export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as
  */
 export function getDefaultWindowContent(app: WindowApp): WindowContent {
   return app === 'file-explorer'
-    ? { app, folderId: BLOG_FOLDER_ID }
+    ? createExplorerContent(BLOG_FOLDER_ID)
     : { app, tabs: [{ kind: 'new-tab' }], activeTabIndex: 0 };
+}
+
+/**
+ * 위치 하나를 보는 탭 하나의 탐색기 창 내용을 만든다. 탐색 창 트리는 펼치거나 접은 칸이 없는 처음 상태다.
+ * @codocs [[파일 탐색기:탭]]
+ * @param location 볼 위치(폴더 id, 휴지통 id, 바탕화면은 null)
+ * @returns 탐색기 창 내용
+ */
+export function createExplorerContent(location: ExplorerLocation): ExplorerWindowContent {
+  return {
+    app: 'file-explorer',
+    tabs: [{ id: 'tab-1', history: [location], historyIndex: 0 }],
+    activeTabIndex: 0,
+    lastTabSerial: 1,
+    treeExpansion: {},
+  };
 }
 
 /**
@@ -699,6 +739,25 @@ export function detachWindow(state: WindowState, id: string, bounds: WindowBound
     previous: null,
     bounds,
   });
+}
+
+/**
+ * 창 내용을 바꾼다(탐색기에서 위치를 옮기거나 탭을 열고 닫았을 때). 다른 앱의 내용으로는 바꾸지 않는다.
+ * @param state 지금 상태
+ * @param id 창 id
+ * @param content 새 창 내용
+ * @returns 새 상태
+ */
+export function setWindowContent(
+  state: WindowState,
+  id: string,
+  content: WindowContent,
+): WindowState {
+  const target = state.windows[id];
+  if (target === undefined || target.content.app !== content.app || target.content === content) {
+    return state;
+  }
+  return replaceWindow(state, { ...target, content });
 }
 
 /**
