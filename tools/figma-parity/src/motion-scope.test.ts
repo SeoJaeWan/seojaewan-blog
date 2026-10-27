@@ -168,7 +168,7 @@ describe('CI', () => {
   it('모션과 관계없는 파일과 테스트 파일만 바뀌면 범위가 없다', () => {
     expect(
       scope([
-        '.codocs/development/figma-sync.yaml',
+        '.codocs/design-system/figma-sync.yaml',
         'packages/design-system/src/components/button/button.tsx',
         'tools/figma-parity/src/motion-compare.test.ts',
       ]),
