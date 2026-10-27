@@ -12,7 +12,7 @@ _codocs:
 브랜치: |
   `종류/짧은-설명` 형식이다. 예: `feat/taskbar-pin`, `fix/window-drag`, `chore/setup-monorepo`
   종류는 커밋 종류와 같은 단어를 쓴다.
-  피그마 플러그인이 여는 브랜치는 이름이 고정이다: 토큰은 `feat/figma-tokens`, 컴포넌트마다 `feat/figma-<컴포넌트>`, 조립은 영역마다 `feat/figma-patterns-<영역>`, 애니메이션은 견본마다 `feat/figma-motion-<견본 이름에서 motion-을 뺀 이름>`(예: `motion-progress-ring` → `feat/figma-motion-progress-ring`). 같은 대상을 다시 내보내면 열린 PR의 브랜치를 이어 쓴다([[피그마 연동:피그마 플러그인]]).
+  피그마 플러그인이 여는 브랜치의 고정 이름과 재내보내기 시 브랜치 재사용은 [[피그마 연동:피그마 플러그인]]에서 정한다.
   `main`과 Renovate가 여는 `renovate/...` 브랜치는 이 형식 검사에서 제외한다.
   CI 작업 `Branch name`과 push 훅(pre-push)이 이름을 검사한다. 설명은 소문자·숫자·하이픈이고, 종류 목록은 commitlint 설정(`type-enum`)에서 읽는다.
 커밋: |
