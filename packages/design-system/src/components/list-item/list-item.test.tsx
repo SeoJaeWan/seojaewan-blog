@@ -20,6 +20,13 @@ describe('ListItem', () => {
     expect(container.firstChild).toHaveClass('h-52');
   });
 
+  it('호출하는 쪽이 aria-selected를 덮을 수 있다(버튼 역할 줄은 undefined로 뺀다)', () => {
+    const { container, rerender } = render(<ListItem icon={<i />} selected />);
+    expect(container.firstChild).toHaveAttribute('aria-selected', 'true');
+    rerender(<ListItem icon={<i />} selected aria-selected={undefined} />);
+    expect(container.firstChild).not.toHaveAttribute('aria-selected');
+  });
+
   it('showSubtitle을 끄면 부제를 숨긴다', () => {
     render(<ListItem size="two-line" showSubtitle={false} icon={<i />} />);
     expect(screen.queryByText('보조 설명')).not.toBeInTheDocument();

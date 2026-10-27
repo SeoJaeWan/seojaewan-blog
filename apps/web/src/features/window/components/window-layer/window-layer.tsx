@@ -1,5 +1,5 @@
 import type { JSX, ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { WindowSnapAssist } from '@/features/window/components/window-snap-assist/window-snap-assist';
 import { WindowView } from '@/features/window/components/window-view/window-view';
@@ -48,6 +48,7 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * DOM 순서는 연 차례로 고정하고 쌓는 차례는 z-index로 준다. 창을 앞으로 가져올 때 요소를 옮기면 모션 클래스가 다시 재생되기 때문이다.
  * 스냅 레이아웃으로 창 하나를 스냅하면 남은 칸에 다른 창을 제안한다(Snap Assist). 남은 칸이 여럿이면 칸 번호 순서로 하나씩 제안하고,
  * 제안할 다른 창이 없으면(열린 창이 하나뿐이면) 보여 주지 않는다.
+ * 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 저장소에서 작업 영역 안으로 보정한다(`fitWindowsToWorkArea`).
  * 층 자체는 빈 곳의 클릭을 아래(바탕화면 아이콘)로 넘기고, 창만 클릭을 받는다. 층은 쌓임 맥락을 따로 만들어(`isolate`)
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
  * @codocs [[피그마 연동:모션 클래스]]
@@ -61,11 +62,24 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   const order = useWindowStore((state) => state.order);
   const snap = useWindowStore((state) => state.snap);
   const close = useWindowStore((state) => state.close);
+  const fitToWorkArea = useWindowStore((state) => state.fitToWorkArea);
   const device = useDevice();
   const workArea = useWorkArea();
+  const workAreaWidth = workArea?.width;
+  const workAreaHeight = workArea?.height;
   const [snapAssist, setSnapAssist] = useState<SnapAssistProgress | null>(null);
   const [leaving, setLeaving] = useState<readonly LeavingWindow[]>([]);
   const [previous, setPrevious] = useState<WindowSnapshot>({ windows, order });
+
+  useEffect(
+    /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다. */
+    () => {
+      if (workAreaWidth !== undefined && workAreaHeight !== undefined) {
+        fitToWorkArea({ width: workAreaWidth, height: workAreaHeight });
+      }
+    },
+    [workAreaWidth, workAreaHeight, fitToWorkArea],
+  );
 
   // 저장소가 바뀐 그 렌더에서 지워진 창을 붙든다. 효과에서 하면 한 번은 창이 빠진 채 칠해진다.
   let current = leaving;

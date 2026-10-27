@@ -9,6 +9,7 @@ import type {
 } from '@/shared/utils/window-rules/window-rules';
 import {
   closeWindow,
+  fitWindowsToWorkArea,
   focusWindow,
   INITIAL_WINDOW_STATE,
   maximizeWindow,
@@ -52,6 +53,8 @@ type WindowActions = {
   toggleMaximize: (id: string) => void;
   /** 창을 스냅 칸에 맞추고 맨 앞으로 가져온다 */
   snap: (id: string, zone: SnapZone) => void;
+  /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다 */
+  fitToWorkArea: (workArea: WindowWorkArea) => void;
   /** 창을 모두 닫은 처음 상태로 돌린다(다시 시작) */
   reset: () => void;
 };
@@ -101,6 +104,9 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
     },
     snap: (id, zone) => {
       set((state) => snapWindow(state, id, zone));
+    },
+    fitToWorkArea: (workArea) => {
+      set((state) => fitWindowsToWorkArea(state, workArea));
     },
     reset: () => {
       set({ ...INITIAL_WINDOW_STATE, interaction: null });

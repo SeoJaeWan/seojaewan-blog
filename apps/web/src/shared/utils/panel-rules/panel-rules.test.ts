@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   closePanels,
+  getPanelMaxHeight,
   initialPanelState,
   openSearchPanel,
   type PanelState,
@@ -41,5 +42,21 @@ describe('모바일:차이', () => {
     const opened = toggleSearchPanel(initialPanelState);
     expect(opened.openPanel).toBe('search');
     expect(toggleSearchPanel(opened).openPanel).toBeNull();
+  });
+});
+
+// @codocs [[Start 메뉴:고정됨]]
+describe('Start 메뉴:고정됨', () => {
+  it('패널은 작업 영역 높이에서 작업 표시줄과의 틈(데스크톱 12)을 뺀 높이를 넘지 않는다', () => {
+    expect(getPanelMaxHeight(1032, 'desktop')).toBe(1020);
+    expect(getPanelMaxHeight(500, 'desktop')).toBe(488);
+  });
+
+  it('모바일 패널은 작업 표시줄 바로 위에 붙어 틈 없이 작업 영역 높이를 넘지 않는다', () => {
+    expect(getPanelMaxHeight(500, 'mobile')).toBe(500);
+  });
+
+  it('작업 영역이 틈보다 낮으면 0이다', () => {
+    expect(getPanelMaxHeight(8, 'desktop')).toBe(0);
   });
 });

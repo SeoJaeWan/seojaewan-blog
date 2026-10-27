@@ -85,3 +85,49 @@ describe('Start 메뉴:모두', () => {
     expect(screen.queryByRole('button', { name: '앱' })).not.toBeInTheDocument();
   });
 });
+
+// @codocs [[Start 메뉴:고정됨]]
+describe('Start 메뉴:고정됨', () => {
+  it('고정됨과 모두 목록은 넘치면 아래로 스크롤하는 영역 안에 있다', () => {
+    renderListBody();
+    expect(screen.getByText('고정됨').closest('.overflow-y-auto')).not.toBeNull();
+    expect(screen.getByText('Blog', { selector: 'p' }).closest('.overflow-y-auto')).not.toBeNull();
+  });
+});
+
+// @codocs [[Start 메뉴:열기와 닫기]]
+describe('Start 메뉴:열기와 닫기', () => {
+  /**
+   * 모두 목록의 Chrome 줄을 찾는다. 고정됨 칸 뒤(DOM 순서)에 있는 줄이다.
+   * @param handleItemOpen 항목을 열었을 때 부를 함수
+   * @returns Chrome 줄
+   */
+  function renderChromeRow(handleItemOpen: () => void): HTMLElement {
+    render(
+      <StartBody
+        view="list"
+        pinned={START_PINNED}
+        groups={START_LETTER_GROUPS}
+        className="h-569"
+        onItemOpen={handleItemOpen}
+      />,
+    );
+    const rows = screen.getAllByRole('button', { name: 'Chrome' });
+    return rows[1] ?? document.body;
+  }
+
+  it('모두 목록의 줄을 클릭하면 그 항목을 연다', async () => {
+    const onItemOpen = vi.fn();
+    await userEvent.click(renderChromeRow(onItemOpen));
+    expect(onItemOpen).toHaveBeenCalledWith({ kind: 'app', app: 'chrome', title: 'Chrome' });
+  });
+
+  it('모두 목록의 줄에서 Enter나 Space를 누르면 그 항목을 연다', async () => {
+    const onItemOpen = vi.fn();
+    const row = renderChromeRow(onItemOpen);
+    row.focus();
+    await userEvent.keyboard('{Enter}');
+    await userEvent.keyboard(' ');
+    expect(onItemOpen).toHaveBeenCalledTimes(2);
+  });
+});

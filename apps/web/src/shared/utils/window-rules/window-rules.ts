@@ -529,6 +529,49 @@ export function getSnapFlip(from: WindowBounds, to: WindowBounds): SnapFlip {
 }
 
 /**
+ * 창 자리(`bounds`)를 작업 영역 안으로 보정한다. 창이 작업 영역보다 크면 작업 영역에 맞게 줄이고, 그 크기로 창 전체(제목 표시줄 포함)가
+ * 작업 영역 안에 들어오도록 가장 가까운 자리로 옮긴다. 이미 안에 있으면 그대로다.
+ * @codocs [[창 동작:창 조작]]
+ * @param bounds 창 자리
+ * @param workArea 작업 영역 크기
+ * @returns 보정한 창 자리. 바꿀 것이 없으면 받은 값 그대로
+ */
+export function fitBoundsToWorkArea(bounds: WindowBounds, workArea: WindowWorkArea): WindowBounds {
+  const width = Math.min(bounds.width, workArea.width);
+  const height = Math.min(bounds.height, workArea.height);
+  const x = Math.min(Math.max(bounds.x, 0), workArea.width - width);
+  const y = Math.min(Math.max(bounds.y, 0), workArea.height - height);
+  if (x === bounds.x && y === bounds.y && width === bounds.width && height === bounds.height) {
+    return bounds;
+  }
+  return { x, y, width, height };
+}
+
+/**
+ * 화면 크기가 바뀌어 작업 영역이 달라졌을 때 모든 창의 자리를 작업 영역 안으로 보정한다.
+ * 최대화·스냅한 창은 화면에서 차지하는 자리를 작업 영역에서 구하므로 그대로지만, 떠 있을 때의 자리(`bounds`)는 나중에
+ * 이전 크기로 복원하거나 스냅에서 뗄 때 쓰므로 함께 보정한다. 보정할 창이 없으면 받은 상태 그대로 돌려준다.
+ * @codocs [[창 동작:창 조작]]
+ * @param state 지금 상태
+ * @param workArea 바뀐 작업 영역 크기
+ * @returns 새 상태
+ */
+export function fitWindowsToWorkArea(state: WindowState, workArea: WindowWorkArea): WindowState {
+  const windows: Record<string, OpenWindow> = {};
+  let changedCount = 0;
+  for (const target of Object.values(state.windows)) {
+    const bounds = fitBoundsToWorkArea(target.bounds, workArea);
+    if (bounds === target.bounds) {
+      windows[target.id] = target;
+    } else {
+      windows[target.id] = { ...target, bounds };
+      changedCount += 1;
+    }
+  }
+  return changedCount > 0 ? { ...state, windows } : state;
+}
+
+/**
  * 창 하나를 바꾼 상태를 만든다.
  * @param state 지금 상태
  * @param window 바꾼 창

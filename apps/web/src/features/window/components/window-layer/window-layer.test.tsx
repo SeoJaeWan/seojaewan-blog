@@ -264,3 +264,28 @@ describe('창 동작:스냅', () => {
     expect(screen.queryByRole('dialog', { name: 'Snap Assist' })).not.toBeInTheDocument();
   });
 });
+
+// @codocs [[창 동작:창 조작]]
+describe('창 동작:창 조작 - 화면 크기가 바뀔 때', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('화면이 줄어 창이 작업 영역을 벗어나면 저장소의 창 자리를 작업 영역 안으로 보정한다', () => {
+    renderLayer(1);
+    const before = useWindowStore.getState().windows['window-1']?.bounds;
+    expect(before).toEqual({ x: 448, y: 196, width: 1024, height: 640 });
+    act(() => {
+      vi.stubGlobal('innerWidth', 800);
+      vi.stubGlobal('innerHeight', 500);
+      window.dispatchEvent(new Event('resize'));
+    });
+    // 작업 영역 800×452(500 - 작업 표시줄 48)에 맞게 줄이고 안으로 옮긴다
+    expect(useWindowStore.getState().windows['window-1']?.bounds).toEqual({
+      x: 0,
+      y: 0,
+      width: 800,
+      height: 452,
+    });
+  });
+});

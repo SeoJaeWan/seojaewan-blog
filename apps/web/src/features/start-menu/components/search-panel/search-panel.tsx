@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, JSX, ReactNode } from 'react';
 
 import { SearchBox, ShellSurface } from '@seojaewan/design-system';
 
@@ -16,6 +16,8 @@ type SearchPanelProps = {
   children?: ReactNode;
   /** 바깥 배치 클래스 */
   className?: string;
+  /** 실행 중에 정해지는 크기(패널 최대 높이). 쓰는 곳(패널 층)이 화면 높이에 맞춰 넘긴다 */
+  style?: CSSProperties;
 };
 
 /**
@@ -28,10 +30,10 @@ type SearchPanelProps = {
  * @param props
  */
 export function SearchPanel(props: SearchPanelProps): JSX.Element {
-  const { device = 'desktop', searchBoxProps, children, className } = props;
+  const { device = 'desktop', searchBoxProps, children, className, style } = props;
   const isMobile = device === 'mobile';
   return (
-    <ShellSurface material="acrylic" device={device} className={className}>
+    <ShellSurface material="acrylic" device={device} className={className} style={style}>
       {/* 피그마 `padding` 배치 프레임이다. 모바일은 입력칸과 본문 사이 간격 16을 둔다 */}
       <div
         className={

@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { ListGroup, ListItem, MenuItem, SearchResults } from '@seojaewan/design-system';
+import { ListGroup, ListItem, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 
@@ -91,7 +91,7 @@ function joinClassNames(base: string, className: string | undefined): string {
 
 /**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
- * 결과 화면은 SearchResults에 최고 일치 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
+ * 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 최고 일치 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
  * 고르기·열기·링크 복사 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:결과 화면]]
@@ -103,46 +103,48 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
   switch (props.view) {
     case 'before-typing':
       return (
-        <div className={joinClassNames('flex flex-col items-start gap-2 overflow-clip', className)}>
-          {props.recent.length > 0 && (
-            <ListGroup label="최근" className="w-full shrink-0">
-              {props.recent.map(
+        <ScrollArea className={className}>
+          <div className="flex w-full shrink-0 flex-col items-start gap-2">
+            {props.recent.length > 0 && (
+              <ListGroup label="최근" className="w-full shrink-0">
+                {props.recent.map(
+                  /**
+                   * 최근 항목 한 줄을 그린다.
+                   * @param item 최근 항목
+                   * @returns ListItem
+                   */
+                  (item) => (
+                    <ListItem
+                      key={`${item.kind}-${item.title}`}
+                      title={item.title}
+                      icon={renderItemIcon({ kind: item.kind })}
+                      className="w-full"
+                    />
+                  ),
+                )}
+              </ListGroup>
+            )}
+            <ListGroup label="추천" className="w-full shrink-0">
+              {props.recommended.map(
                 /**
-                 * 최근 항목 한 줄을 그린다.
-                 * @param item 최근 항목
+                 * 추천 글 한 줄을 그린다.
+                 * @param post 추천 글
                  * @returns ListItem
                  */
-                (item) => (
+                (post) => (
                   <ListItem
-                    key={`${item.kind}-${item.title}`}
-                    title={item.title}
-                    icon={renderItemIcon({ kind: item.kind })}
+                    key={post.title}
+                    size="two-line"
+                    title={post.title}
+                    subtitle={post.date}
+                    icon={renderItemIcon({ kind: 'post' })}
                     className="w-full"
                   />
                 ),
               )}
             </ListGroup>
-          )}
-          <ListGroup label="추천" className="w-full shrink-0">
-            {props.recommended.map(
-              /**
-               * 추천 글 한 줄을 그린다.
-               * @param post 추천 글
-               * @returns ListItem
-               */
-              (post) => (
-                <ListItem
-                  key={post.title}
-                  size="two-line"
-                  title={post.title}
-                  subtitle={post.date}
-                  icon={renderItemIcon({ kind: 'post' })}
-                  className="w-full"
-                />
-              ),
-            )}
-          </ListGroup>
-        </div>
+          </div>
+        </ScrollArea>
       );
     case 'results':
       return <SearchBodyResults device={device} results={props.results} className={className} />;

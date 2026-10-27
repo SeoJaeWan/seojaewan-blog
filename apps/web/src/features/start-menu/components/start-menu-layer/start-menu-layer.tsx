@@ -1,6 +1,6 @@
 'use client';
 
-import { type JSX, type ReactNode, useEffect, useRef } from 'react';
+import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef } from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
@@ -20,8 +20,10 @@ import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import { getPanelMaxHeight } from '@/shared/utils/panel-rules/panel-rules';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';
@@ -126,13 +128,18 @@ export function StartMenuLayer(): JSX.Element {
   /**
    * Start 패널을 그린다.
    * @param panelClassName 패널 바탕에 넘길 클래스
+   * @param panelStyle 패널 바탕에 넘길 최대 높이
    * @returns Start 메뉴
    */
-  function renderStartPanel(panelClassName: string): ReactNode {
+  function renderStartPanel(
+    panelClassName: string,
+    panelStyle: CSSProperties | undefined,
+  ): ReactNode {
     return (
       <StartMenuPanel
         device={device}
         className={panelClassName}
+        style={panelStyle}
         searchBoxProps={{ 'aria-label': '시작 메뉴 검색', placeholder: SEARCH_PLACEHOLDER }}
         profileName={START_PROFILE.name}
         profilePhoto={<ImageAsset name={START_PROFILE.photo} className="size-full" />}
@@ -159,13 +166,18 @@ export function StartMenuLayer(): JSX.Element {
   /**
    * 검색 패널을 그린다. 결과 계산 전이라 입력 전 화면이다.
    * @param panelClassName 패널 바탕에 넘길 클래스
+   * @param panelStyle 패널 바탕에 넘길 최대 높이
    * @returns 검색 패널
    */
-  function renderSearchPanel(panelClassName: string): ReactNode {
+  function renderSearchPanel(
+    panelClassName: string,
+    panelStyle: CSSProperties | undefined,
+  ): ReactNode {
     return (
       <SearchPanel
         device={device}
         className={panelClassName}
+        style={panelStyle}
         searchBoxProps={{ 'aria-label': '검색', placeholder: SEARCH_PLACEHOLDER }}
       >
         <SearchBody
@@ -226,14 +238,16 @@ type PanelPresenceProps = {
   device: Device;
   /** 패널 안에서 눌렀을 때 부른다(포털된 메뉴 포함) */
   onPointerDown: () => void;
-  /** 패널을 그린다. 받은 클래스를 패널 바탕(ShellSurface)에 넘긴다 */
-  children: (panelClassName: string) => ReactNode;
+  /** 패널을 그린다. 받은 클래스와 최대 높이를 패널 바탕(ShellSurface)에 넘긴다 */
+  children: (panelClassName: string, panelStyle: CSSProperties | undefined) => ReactNode;
 };
 
 /**
  * 패널 하나를 작업 표시줄 위(데스크톱은 가운데, 모바일은 화면 폭)에 그리고, 열고 닫을 때 올라오고 내려가는 움직임을 붙인다.
  * 움직이는 요소는 패널과 그 아래 틈(데스크톱 12)을 함께 감싸, 자기 높이만큼 내려가면 작업 표시줄 뒤로 모두 숨는다.
  * 틈은 누를 수 없고(아래 바탕화면으로 넘어간다) 패널 바탕만 누를 수 있다.
+ * 화면이 낮아 작업 영역이 패널보다 작으면, 패널 높이를 작업 영역에서 틈을 뺀 값으로 줄여 위쪽이 잘리지 않게 한다(본문은 스크롤한다).
+ * @codocs [[Start 메뉴:고정됨]]
  * @codocs [[디자인 기반:모션]]
  * @codocs [[모바일:차이]]
  * @param props
@@ -242,10 +256,14 @@ function PanelPresence(props: PanelPresenceProps): ReactNode {
   const { isOpen, label, device, children } = props;
   const panelRef = useRef<HTMLDivElement>(null);
   const presence = usePresence(panelRef, isOpen);
+  const workArea = useWorkArea();
   if (!presence.isMounted) {
     return null;
   }
   const isMobile = device === 'mobile';
+  // 작업 영역은 화면 크기에 따라 실행 중에 정해지는 값이라 토큰 클래스가 아닌 인라인 스타일로 준다.
+  const panelStyle: CSSProperties | undefined =
+    workArea === null ? undefined : { maxHeight: getPanelMaxHeight(workArea.height, device) };
   return (
     <div className="absolute inset-x-0 bottom-0 flex justify-center">
       <div
@@ -256,7 +274,7 @@ function PanelPresence(props: PanelPresenceProps): ReactNode {
         onPointerDownCapture={props.onPointerDown}
         className={`${isMobile ? 'w-full' : 'pb-12'} ${presence.status === 'exiting' ? 'motion-panel-exit' : 'motion-panel-enter'}`}
       >
-        {children(isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto')}
+        {children(isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto', panelStyle)}
       </div>
     </div>
   );

@@ -57,3 +57,20 @@ export function toggleSearchPanel(state: PanelState): PanelState {
 export function closePanels(): PanelState {
   return initialPanelState;
 }
+
+/** 데스크톱 패널과 작업 표시줄 사이의 틈(px). 모바일 패널은 작업 표시줄 바로 위에 붙어 틈이 없다 */
+export const PANEL_GAP = 12;
+
+/**
+ * Start·검색 패널이 가질 수 있는 가장 큰 높이를 구한다. 작업 영역 높이에서 패널과 작업 표시줄 사이의 틈을 뺀 값이라,
+ * 화면이 낮아도 패널 위쪽이 잘리지 않는다. 패널의 원래 높이(데스크톱 720, 모바일 640)보다 작을 때만 줄어든다.
+ * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[모바일:차이]]
+ * @param workAreaHeight 작업 영역 높이(화면에서 작업 표시줄을 뺀 곳)
+ * @param device 화면 방식
+ * @returns 패널의 최대 높이(px)
+ */
+export function getPanelMaxHeight(workAreaHeight: number, device: 'desktop' | 'mobile'): number {
+  const gap = device === 'desktop' ? PANEL_GAP : 0;
+  return Math.max(0, workAreaHeight - gap);
+}

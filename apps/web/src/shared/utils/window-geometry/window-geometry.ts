@@ -48,3 +48,38 @@ export function getThumbnailScale(
   }
   return Math.min(box.width / size.width, box.height / size.height);
 }
+
+/** 모바일 창 미리보기 목록의 좌우 화면 여백(px) */
+export const MOBILE_PREVIEW_MARGIN = 12;
+
+/** 창 미리보기 카드의 원래 너비(px). 디자인 시스템 WindowPreview가 정한 값이다 */
+export const PREVIEW_CARD_WIDTH = 208;
+
+// 목록 판의 바깥 여백(안쪽 여백 4 + 테두리 1을 양쪽에), 카드 사이 간격이다.
+const PREVIEW_LIST_CHROME = 10;
+const PREVIEW_CARD_GAP = 4;
+
+/** 모바일 창 미리보기 목록의 크기 */
+export type MobilePreviewLayout = {
+  /** 목록 판의 너비 */
+  listWidth: number;
+  /** 카드 하나의 너비. 카드가 많으면 같은 비율로 줄어든다 */
+  cardWidth: number;
+};
+
+/**
+ * 모바일 창 미리보기 목록의 크기를 구한다. 카드를 원래 너비(208)로 놓은 목록이 화면 폭에서 좌우 12px 여백을 뺀 폭에 들어가면
+ * 그대로 두고, 넘치면 목록을 그 폭에 맞추고 카드를 같은 너비로 줄인다.
+ * @codocs [[모바일:차이]]
+ * @param screenWidth 화면 폭
+ * @param count 카드 개수
+ * @returns 목록 판과 카드 너비
+ */
+export function getMobilePreviewLayout(screenWidth: number, count: number): MobilePreviewLayout {
+  const cards = Math.max(count, 1);
+  const gaps = PREVIEW_CARD_GAP * (cards - 1);
+  const naturalWidth = PREVIEW_CARD_WIDTH * cards + gaps + PREVIEW_LIST_CHROME;
+  const listWidth = Math.max(0, Math.min(naturalWidth, screenWidth - MOBILE_PREVIEW_MARGIN * 2));
+  const cardWidth = Math.max(0, Math.floor((listWidth - PREVIEW_LIST_CHROME - gaps) / cards));
+  return { listWidth, cardWidth };
+}
