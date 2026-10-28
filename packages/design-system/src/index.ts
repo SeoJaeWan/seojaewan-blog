@@ -24,6 +24,7 @@ export * from './components/explorer-address-row/explorer-address-row';
 export * from './components/explorer-command-bar/explorer-command-bar';
 export * from './components/explorer-status-bar/explorer-status-bar';
 export * from './components/explorer-tab/explorer-tab';
+export * from './components/figure/figure';
 export * from './components/file-item/file-item';
 export * from './components/file-row/file-row';
 export * from './components/flyout/flyout';
