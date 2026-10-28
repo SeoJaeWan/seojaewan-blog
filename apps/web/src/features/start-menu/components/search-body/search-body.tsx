@@ -28,32 +28,32 @@ export type SearchRecommendedPost = {
   date: string;
 };
 
-/** 최고 일치 항목. 글이면 날짜를 함께 보인다 */
-export type SearchBestMatch = SearchItem & {
+/** 결과 항목 하나. 글이면 카드에 날짜를 함께 보인다 */
+export type SearchResultItem = SearchItem & {
   /** 글 날짜. 카드의 부가 정보에 종류 이름과 함께 보인다 */
   date?: string;
 };
 
 /** 검색 결과. 최고 일치 하나와 나머지 결과를 종류별로 묶은 것이다 */
 export type SearchResultGroups = {
-  /** 맨 위에 크게 보이는 최고 일치 */
-  bestMatch: SearchBestMatch;
+  /** 결과 목록 맨 위의 최고 일치. 처음에 카드가 보이는 항목이다 */
+  bestMatch: SearchResultItem;
   /** 나머지 폴더 결과 */
-  folders: readonly SearchItem[];
+  folders: readonly SearchResultItem[];
   /** 나머지 글 결과 */
-  posts: readonly SearchItem[];
+  posts: readonly SearchResultItem[];
   /** 나머지 외부 링크 결과 */
-  links: readonly SearchItem[];
+  links: readonly SearchResultItem[];
 };
 
 export type SearchBodyDevice = 'desktop' | 'mobile';
 
 type SearchBodyCommonProps = {
-  /** 피그마 Device. 결과 화면에서 최고 일치 카드를 옆(desktop)이나 위(mobile)에 둔다 */
+  /** 피그마 Device. 결과 화면에서 고른 항목의 카드를 옆(desktop)이나 위(mobile)에 둔다 */
   device?: SearchBodyDevice;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(검색 패널, Start 메뉴)이 정한다 */
   className?: string;
-  /** 항목 줄(최근, 추천, 결과)이나 최고 일치 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
+  /** 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
   onItemOpen?: (id: string) => void;
 };
 
@@ -68,13 +68,13 @@ type SearchBodyProps = SearchBodyCommonProps &
         recommended: readonly SearchRecommendedPost[];
       }
     | {
-        /** 피그마 View=Results. 최고 일치 카드와 종류별 결과를 보인다 */
+        /** 피그마 View=Results. 고른 항목의 카드(처음에는 최고 일치)와 종류별 결과를 보인다 */
         view: 'results';
         /** 검색 결과 */
         results: SearchResultGroups;
         /** 고른 항목의 id. 그 줄에 선택 바탕을 깐다. 주지 않으면 최고 일치다 */
         selectedId?: string;
-        /** 최고 일치 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
+        /** 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
         onCopyLink?: (id: string) => void;
       }
     | {
@@ -102,7 +102,7 @@ function joinClassNames(base: string, className: string | undefined): string {
 
 /**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
- * 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 최고 일치 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
+ * 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 고른 항목 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
  * 항목 줄과 카드의 동작은 `onItemOpen`·`onCopyLink`로 알리고, 열거나 복사하는 일은 쓰는 곳이 한다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:결과 화면]]
@@ -196,25 +196,28 @@ type SearchBodyResultsProps = {
 };
 
 /**
- * 결과 화면을 그린다. 최고 일치는 카드와 맨 위 묶음에 함께 보이고, 나머지 결과는 있는 종류만 묶어 보인다.
+ * 결과 화면을 그린다. 최고 일치는 맨 위 묶음에 보이고, 나머지 결과는 있는 종류만 묶어 보인다.
+ * 카드는 목록에서 고른 항목을 따라가고(처음에는 최고 일치), 내용과 동작은 그 항목의 종류에 맞춘다.
+ * @codocs [[검색:결과 화면]]
  * @param props
  */
 function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
   const { device, results, className } = props;
   const { bestMatch } = results;
-  const selectedId = props.selectedId ?? bestMatch.id;
-  const kindLabel = kindLabels[bestMatch.kind];
+  const cardItem = findResultItem(results, props.selectedId) ?? bestMatch;
+  const selectedId = cardItem.id;
+  const cardKindLabel = kindLabels[cardItem.kind];
   // 링크 복사는 주소가 있는 글과 외부 링크에만 둔다(폴더는 열기만).
-  const canCopyLink = bestMatch.kind !== 'folder';
+  const canCopyLink = cardItem.kind !== 'folder';
 
-  /** 최고 일치 카드의 `열기`를 누르면 최고 일치 항목을 연다고 알린다. */
-  function handleOpenBestMatch(): void {
-    props.onItemOpen?.(bestMatch.id);
+  /** 카드의 `열기`를 누르면 카드의 항목을 연다고 알린다. */
+  function handleOpenCardItem(): void {
+    props.onItemOpen?.(cardItem.id);
   }
 
-  /** 최고 일치 카드의 `링크 복사`를 누르면 최고 일치 항목의 링크를 복사한다고 알린다. */
-  function handleCopyBestMatchLink(): void {
-    props.onCopyLink?.(bestMatch.id);
+  /** 카드의 `링크 복사`를 누르면 카드의 항목의 링크를 복사한다고 알린다. */
+  function handleCopyCardItemLink(): void {
+    props.onCopyLink?.(cardItem.id);
   }
 
   const groups = [
@@ -226,23 +229,23 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     <SearchResults
       device={device}
       className={className}
-      icon={renderItemIcon({ kind: bestMatch.kind })}
-      title={bestMatch.title}
-      meta={bestMatch.date === undefined ? kindLabel : `${kindLabel} · ${bestMatch.date}`}
+      icon={renderItemIcon({ kind: cardItem.kind })}
+      title={cardItem.title}
+      meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
       actions={
         <div className="flex flex-col items-start gap-8">
           <MenuItem
             standalone
             label="열기"
             icon="icons/ic_fluent_open_20_regular.svg"
-            onClick={handleOpenBestMatch}
+            onClick={handleOpenCardItem}
           />
           {canCopyLink && (
             <MenuItem
               standalone
               label="링크 복사"
               icon="icons/ic_fluent_link_20_regular.svg"
-              onClick={handleCopyBestMatchLink}
+              onClick={handleCopyCardItemLink}
             />
           )}
         </div>
@@ -253,7 +256,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           id={bestMatch.id}
           isSelected={selectedId === bestMatch.id}
           title={bestMatch.title}
-          subtitle={kindLabel}
+          subtitle={kindLabels[bestMatch.kind]}
           icon={renderItemIcon({ kind: bestMatch.kind })}
           className="w-full"
           onOpen={props.onItemOpen}
@@ -291,5 +294,23 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           ),
         )}
     </SearchResults>
+  );
+}
+
+/**
+ * 결과 목록에서 id로 항목을 찾는다.
+ * @param results 검색 결과
+ * @param id 찾을 항목 id. 없으면 찾지 않는다
+ * @returns 찾은 항목. 없으면 undefined
+ */
+function findResultItem(
+  results: SearchResultGroups,
+  id: string | undefined,
+): SearchResultItem | undefined {
+  if (id === undefined) {
+    return undefined;
+  }
+  return [results.bestMatch, ...results.folders, ...results.posts, ...results.links].find(
+    (item) => item.id === id,
   );
 }

@@ -25,7 +25,7 @@ function getEmptyTitle(): string {
 
 afterEach(() => {
   usePanelStore.getState().reset();
-  useSearchStore.getState().clear();
+  useSearchStore.getState().clearAll();
 });
 
 // @codocs [[Start 메뉴:열기와 닫기]]
@@ -55,7 +55,7 @@ describe('검색:개요', () => {
     render(<TaskbarLayer renderWindow={renderNothing} getWindowTitle={getEmptyTitle} />);
     const searchBox = screen.getByRole('searchbox', { name: '검색' });
     await userEvent.type(searchBox, '리액트');
-    expect(useSearchStore.getState().query).toBe('리액트');
+    expect(useSearchStore.getState().panels.search.query).toBe('리액트');
     expect(searchBox).toHaveValue('리액트');
   });
 
@@ -84,10 +84,13 @@ describe('검색:개요', () => {
     const searchBox = await typeAfterClosingPanel();
     expect(searchBox).toHaveValue('가');
   });
+});
 
-  it('Start가 열려 있으면 작업 표시줄 검색칸은 비어 있다', () => {
+// @codocs [[검색:입력칸]]
+describe('검색:입력칸', () => {
+  it('Start 위쪽 검색칸의 검색어는 작업 표시줄 검색칸에 나타나지 않는다', () => {
     usePanelStore.getState().toggleStart();
-    useSearchStore.getState().setQuery('리액트');
+    useSearchStore.getState().setQuery('start', '리액트');
     render(<TaskbarLayer renderWindow={renderNothing} getWindowTitle={getEmptyTitle} />);
     expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('');
   });
