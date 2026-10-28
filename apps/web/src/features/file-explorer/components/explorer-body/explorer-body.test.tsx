@@ -601,6 +601,65 @@ describe('파일 탐색기:폴더 안 검색', () => {
   });
 });
 
+// @codocs [[파일 탐색기:폴더 안 검색]]
+describe('파일 탐색기:폴더 안 검색 - 모바일 검색 줄', () => {
+  it('모바일 주소 줄에는 검색 상자 대신 검색 버튼이 있다', () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '검색' })).toBeInTheDocument();
+  });
+
+  it('검색 버튼을 누르면 ← 버튼과 검색 상자로 바뀌고 검색 상자에 포커스를 준다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByRole('button', { name: '검색 닫기' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '뒤로' })).not.toBeInTheDocument();
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveFocus();
+  });
+
+  it('입력이 비어 있으면 원래 폴더 내용을, 입력하면 검색 결과를 보여 준다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+    await user().keyboard('훅');
+    expect(
+      within(list())
+        .getAllByRole('option')
+        .map((element) => element.textContent),
+    ).toEqual([expect.stringMatching(/^훅 정리/)]);
+  });
+
+  it('← 버튼은 검색어를 지우고 원래 주소 줄로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    await user().click(screen.getByRole('button', { name: '검색 닫기' }));
+    expect(screen.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+  });
+
+  it('검색 상자에서 Esc를 누르면 검색어를 지우고 원래 주소 줄로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    await user().keyboard('{Escape}');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('');
+  });
+
+  it('다른 위치로 가면 검색을 끝내고 원래 주소 줄로 돌아간다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    show('folder:React');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '검색' })).toBeInTheDocument();
+  });
+});
+
 // @codocs [[모바일:차이]]
 describe('모바일:차이', () => {
   it('모바일은 폴더를 탭하면 같은 탭에서 그 폴더로 간다', async () => {

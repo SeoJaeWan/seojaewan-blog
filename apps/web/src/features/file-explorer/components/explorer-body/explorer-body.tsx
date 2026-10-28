@@ -128,6 +128,16 @@ type ExplorerBodyProps = Pick<
 /** 열린 우클릭 메뉴. 빈 곳 메뉴거나 항목 메뉴(우클릭한 항목들)다 */
 type OpenMenu = { kind: 'empty' } | { kind: 'items'; ids: readonly string[] };
 
+/** 폴더 안 검색 상태 */
+type ExplorerSearchState = {
+  /** 검색어를 입력한 위치. 다른 위치로 가면 검색을 끝낸다 */
+  location: ExplorerLocation;
+  /** 검색어 */
+  query: string;
+  /** 모바일 검색 줄이 열렸는지. 데스크톱은 쓰지 않는다 */
+  isOpen: boolean;
+};
+
 // 항목을 표시하는 속성. 우클릭·길게 누른 자리와 방향키로 옮길 항목을 찾는 데 쓴다.
 const ITEM_ATTRIBUTE = 'data-explorer-item';
 
@@ -145,12 +155,14 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * - 새 폴더(만든 뒤 이름 바꾸기), F2 이름 바꾸기, Delete 휴지통으로, Ctrl + X 잘라내기, Ctrl + V 붙여넣기(옮기기만).
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
  * - 휴지통은 늘 자세히 보기(이름·원래 위치·삭제한 날짜)이고 항목을 열 수 없으며 복원만 된다. 휴지통 비우기는 메시지 상자만 보인다.
+ * - 폴더 안 검색. 모바일은 주소 줄의 검색 버튼으로 검색 줄을 열고, ← 버튼·Esc·다른 위치로 가기로 검색어를 지우며 닫는다.
  * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:보기와 정렬]]
  * @codocs [[파일 탐색기:조작]]
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @codocs [[파일 탐색기:휴지통 보기]]
+ * @codocs [[파일 탐색기:폴더 안 검색]]
  * @codocs [[모바일:차이]]
  * @param props
  */
@@ -179,10 +191,12 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const [pendingRenameId, setPendingRenameId] = useState<string | null>(null);
   // 메뉴의 삭제로 지운 뒤 포커스를 옮길 항목(null이면 항목 자리). 메뉴가 닫힌 뒤 옮긴다.
   const [pendingFocus, setPendingFocus] = useState<{ id: string | null } | null>(null);
-  // 폴더 안 검색어. 입력한 위치와 함께 두어, 다른 위치로 가면 검색어가 없는 원래 보기로 돌아간다.
-  const [search, setSearch] = useState<{ location: ExplorerLocation; query: string }>({
+  // 폴더 안 검색어와 모바일 검색 줄이 열렸는지. 입력한 위치와 함께 두어, 다른 위치로 가면 검색어가 없는 원래 보기와
+  // 원래 주소 줄로 돌아간다.
+  const [search, setSearch] = useState<ExplorerSearchState>({
     location,
     query: '',
+    isOpen: false,
   });
   // 끌기를 시작할 때 끄는 항목의 화면 자리. 끄는 복제본을 그리는 데 쓴다.
   const [dragOrigins, setDragOrigins] = useState<Readonly<Record<string, PointerPoint>>>({});
@@ -192,10 +206,13 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const savedView = explorerViews[location ?? DESKTOP_LOCATION_KEY] ?? DEFAULT_EXPLORER_VIEW;
   const view: ExplorerFolderView = isRecycleBin ? { ...savedView, view: 'details' } : savedView;
   if (search.location !== location) {
-    // 다른 위치로 가면 검색을 비운다. 돌아와도 앞의 검색어가 되살아나지 않는다.
-    setSearch({ location, query: '' });
+    // 다른 위치로 가면 검색을 끝낸다. 돌아와도 앞의 검색어가 되살아나지 않는다.
+    setSearch(endSearch(location));
   }
-  const query = search.location === location ? search.query : '';
+  // 모바일은 주소 줄의 검색 버튼으로 연 검색 줄에서만 검색한다. 데스크톱은 검색 상자가 늘 보인다.
+  const isMobileSearchOpen = isMobile && search.location === location && search.isOpen;
+  const query =
+    search.location !== location || (isMobile && !isMobileSearchOpen) ? '' : search.query;
   const isSearching = query.trim() !== '';
   const children = isSearching
     ? searchItems(workspace, location, query)
@@ -526,12 +543,41 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
     }
     const result = getWorkspace().createFolder(location);
     // 새 폴더가 검색 결과에 가려지지 않게 검색을 끝낸다.
-    setSearch({ location, query: '' });
+    setSearch(endSearch(location));
     if (!result.ok) {
       return null;
     }
     selection.setSelection(selectOnly(result.id));
     return result.id;
+  }
+
+  /**
+   * 모바일 검색 줄을 닫는다(← 버튼, 외부 키보드의 Esc). 검색어를 지우고 원래 주소 줄로 돌아가며,
+   * 사라지는 검색 상자 대신 항목 자리에 포커스를 둔다.
+   * @codocs [[파일 탐색기:폴더 안 검색]]
+   */
+  function handleMobileSearchClose(): void {
+    setSearch(endSearch(location));
+    areaRef.current?.focus();
+  }
+
+  /**
+   * 본문에서 누른 키를 처리한다. 모바일 검색 줄의 검색 상자에서 누른 Esc는 검색 줄을 닫고, 나머지는 이동 단축키로 넘긴다.
+   * @codocs [[파일 탐색기:폴더 안 검색]]
+   * @param event 키 이벤트
+   */
+  function handleContentKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    if (
+      isMobileSearchOpen &&
+      event.key === 'Escape' &&
+      event.target instanceof HTMLInputElement &&
+      event.target.getAttribute('role') === 'searchbox'
+    ) {
+      event.preventDefault();
+      handleMobileSearchClose();
+      return;
+    }
+    handleNavigationKeyDown?.(event);
   }
 
   /**
@@ -1036,11 +1082,16 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         onRefresh={() => {
           setIsRefreshing(true);
         }}
-        onKeyDown={handleNavigationKeyDown}
+        onKeyDown={handleContentKeyDown}
         searchValue={query}
         onSearchChange={(value: string) => {
-          setSearch({ location, query: value });
+          setSearch({ location, query: value, isOpen: isMobileSearchOpen });
         }}
+        search={isMobileSearchOpen ? 'open' : 'closed'}
+        onSearch={() => {
+          setSearch({ location, query: '', isOpen: true });
+        }}
+        onSearchClose={handleMobileSearchClose}
         dropTarget={{
           id: location ?? DESKTOP_DROP_TARGET,
           name: getExplorerLocationName(workspace, location),
@@ -1101,6 +1152,16 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       <MessageBoxDialog {...rename.messageBoxProps} />
     </>
   );
+}
+
+/**
+ * 검색을 끝낸 상태. 검색어를 지우고 모바일 검색 줄을 닫는다.
+ * @codocs [[파일 탐색기:폴더 안 검색]]
+ * @param location 보고 있는 위치
+ * @returns 검색 상태
+ */
+function endSearch(location: ExplorerLocation): ExplorerSearchState {
+  return { location, query: '', isOpen: false };
 }
 
 /**
