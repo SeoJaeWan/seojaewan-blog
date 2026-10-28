@@ -28,6 +28,8 @@ export type DesktopIcon = {
   focused?: boolean;
   /** 이름 바꾸기 중이면 이름 대신 입력창을 그린다(피그마 FileItem `State=Rename`) */
   renaming?: boolean;
+  /** 잘라낸 아이콘이면 흐리게 그린다(피그마 FileItem `cut`) */
+  cut?: boolean;
   /** 격자 칸. 모든 아이콘에 있으면 아이콘을 그 칸에 놓는다. 없으면 격자 순서대로 흘려 놓는다 */
   cell?: GridCell;
 };
@@ -122,6 +124,7 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               selected={icon.selected}
               focused={icon.focused}
               renaming={icon.renaming}
+              cut={icon.cut}
               className={
                 origin === null ? undefined : icon.selected === true ? 'absolute z-1' : 'absolute'
               }

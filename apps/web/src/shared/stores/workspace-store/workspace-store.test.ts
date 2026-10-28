@@ -70,12 +70,33 @@ describe('작업 공간:방문자별 저장', () => {
 
   it('바꾼 상태는 localStorage에 저장한다', () => {
     hydrateWorkspaceStore(POSTS);
-    useWorkspaceStore.getState().trashItems(['post:a']);
+    useWorkspaceStore.getState().moveItems(['post:a'], null);
     const stored: unknown = JSON.parse(localStorage.getItem(WORKSPACE_STORAGE_KEY) ?? 'null');
     expect(stored).toMatchObject({
       version: WORKSPACE_STORAGE_VERSION,
-      state: { items: { 'post:a': { parentId: 'recycle-bin' } } },
+      state: { items: { 'post:a': { parentId: null } } },
     });
+  });
+
+  it('휴지통은 메모리에만 두어, 다시 들어오면 휴지통의 항목은 원래 자리로 돌아오고 휴지통은 빈다', () => {
+    hydrateWorkspaceStore(POSTS);
+    useWorkspaceStore.getState().trashItems(['post:a', BLOG_FOLDER_ID]);
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'post:a')).toBe(true);
+    const raw = localStorage.getItem(WORKSPACE_STORAGE_KEY) ?? 'null';
+    const stored: unknown = JSON.parse(raw);
+    expect(stored).toMatchObject({
+      state: {
+        items: { 'post:a': { parentId: 'folder:React' }, [BLOG_FOLDER_ID]: { parentId: null } },
+      },
+    });
+
+    // 새로고침처럼 메모리 상태를 버리고 저장분만 남긴 채 다시 읽는다.
+    useWorkspaceStore.getState().reset();
+    localStorage.setItem(WORKSPACE_STORAGE_KEY, raw);
+    hydrateWorkspaceStore(POSTS);
+    const state = useWorkspaceStore.getState();
+    expect(state.items['post:a']).toMatchObject({ parentId: 'folder:React', trash: null });
+    expect(state.items[BLOG_FOLDER_ID]).toMatchObject({ parentId: null, trash: null });
   });
 
   it('저장분이 스키마에 맞지 않으면 초기 구조에서 다시 시작한다', () => {

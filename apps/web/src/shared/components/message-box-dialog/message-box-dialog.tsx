@@ -1,5 +1,5 @@
 import { AlertDialog } from '@base-ui/react/alert-dialog';
-import { type ComponentProps, type JSX, useRef } from 'react';
+import { type ComponentProps, type JSX, type RefObject, useRef } from 'react';
 
 import { MessageBox } from '@seojaewan/design-system';
 
@@ -19,10 +19,12 @@ type MessageBoxDialogProps = MessageBoxContentProps & {
   onPrimaryClick?: () => void;
   /** 기본 버튼(취소)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다 */
   onSecondaryClick?: () => void;
+  /** 닫힌 뒤 포커스를 둘 요소. 없으면 열기 전에 포커스가 있던 요소로 돌려준다 */
+  finalFocus?: RefObject<HTMLElement | null>;
 };
 
 /**
- * 메시지 상자(MessageBox)를 모달 대화 상자로 띄운다. 브라우저 `alert()` 대신 Windows 화면 안에서 알리는 데 쓴다(휴지통 비우기).
+ * 메시지 상자(MessageBox)를 모달 대화 상자로 띄운다. 브라우저 `alert()` 대신 Windows 화면 안에서 알리는 데 쓴다(휴지통 비우기, 폴더 이름).
  * Base UI AlertDialog가 포커스 가두기, Esc, 열고 닫기를 맡고, 화면 가운데에 `motion-flyout-enter`로 페이드해 나타난다.
  * 사라지는 움직임은 없어 버튼을 누르면 바로 닫힌다. 버튼은 어느 쪽이든 핸들러를 부른 뒤 닫는다.
  * @codocs [[작업 공간:휴지통]]
@@ -36,6 +38,7 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
     onOpenChange,
     onPrimaryClick,
     onSecondaryClick,
+    finalFocus,
     ...contentProps
   } = props;
   const actionsRef = useRef<AlertDialog.Root.Actions | null>(null);
@@ -91,7 +94,7 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
       actionsRef={actionsRef}
     >
       <AlertDialog.Portal>
-        <AlertDialog.Popup render={renderPopup} />
+        <AlertDialog.Popup render={renderPopup} finalFocus={finalFocus} />
       </AlertDialog.Portal>
     </AlertDialog.Root>
   );

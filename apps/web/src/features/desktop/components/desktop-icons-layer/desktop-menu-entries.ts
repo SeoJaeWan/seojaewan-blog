@@ -27,6 +27,10 @@ type DesktopMenuOptions = {
   onSortByChange: (sortBy: DesktopSortKey) => void;
   /** 새로 고침 */
   onRefresh: () => void;
+  /** 붙여넣을 수 있는지(잘라낸 항목을 바탕화면으로 옮길 수 있는지) */
+  canPaste: boolean;
+  /** 붙여넣기 */
+  onPaste: () => void;
   /** 새로 만들기 > 폴더 */
   onNewFolder: () => void;
 };
@@ -37,7 +41,7 @@ type ItemMenuOptions = {
   kind: WorkspaceItemKind | null;
   /** Start 고정됨에 있는지(하나일 때) */
   isPinned: boolean;
-  /** 휴지통으로 보낼 수 있는지(`Blog`, 휴지통은 보낼 수 없다) */
+  /** 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다) */
   canTrash: boolean;
   /** 열기 */
   onOpen: () => void;
@@ -47,6 +51,8 @@ type ItemMenuOptions = {
   onCopyLink: () => void;
   /** 시작 화면에 고정·고정 해제 */
   onTogglePin: () => void;
+  /** 잘라내기 */
+  onCut: () => void;
   /** 이름 바꾸기 */
   onRename: () => void;
   /** 삭제(휴지통으로 보내기) */
@@ -65,6 +71,8 @@ const ICONS = {
   delete: 'icons/ic_fluent_delete_20_regular.svg',
   link: 'icons/ic_fluent_link_20_regular.svg',
   refresh: 'icons/ic_fluent_arrow_clockwise_20_regular.svg',
+  cut: 'icons/ic_fluent_cut_20_regular.svg',
+  paste: 'icons/ic_fluent_clipboard_paste_20_regular.svg',
   grid: 'icons/ic_fluent_grid_20_regular.svg',
   sort: 'icons/ic_fluent_arrow_sort_20_regular.svg',
   folderAdd: 'icons/ic_fluent_folder_add_20_regular.svg',
@@ -135,6 +143,13 @@ export function getDesktopMenuEntries(options: DesktopMenuOptions): MenuPopupEnt
     { label: '새로 고침', icon: ICONS.refresh, onClick: options.onRefresh },
     SEPARATOR,
     {
+      label: '붙여넣기',
+      icon: ICONS.paste,
+      shortcut: 'Ctrl+V',
+      disabled: !options.canPaste,
+      onClick: options.onPaste,
+    },
+    {
       kind: 'submenu',
       label: '새로 만들기',
       icon: ICONS.folderAdd,
@@ -161,6 +176,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
   const pin = options.isPinned
     ? { label: '시작 화면에서 고정 해제', icon: ICONS.pinOff, onClick: options.onTogglePin }
     : { label: '시작 화면에 고정', icon: ICONS.pin, onClick: options.onTogglePin };
+  const cut = { label: '잘라내기', icon: ICONS.cut, shortcut: 'Ctrl+X', onClick: options.onCut };
   const trash = {
     label: '삭제',
     icon: ICONS.delete,
@@ -175,13 +191,14 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
         openInNewWindow,
         pin,
         SEPARATOR,
+        cut,
         { label: '이름 바꾸기', icon: ICONS.rename, shortcut: 'F2', onClick: options.onRename },
         trash,
       ];
     case 'post':
-      return [open, openInNewWindow, copyLink, pin, SEPARATOR, trash];
+      return [open, openInNewWindow, copyLink, pin, SEPARATOR, cut, trash];
     case 'link':
-      return [open, copyLink, pin, SEPARATOR, trash];
+      return [open, copyLink, pin, SEPARATOR, cut, trash];
     case 'recycle-bin':
       return [
         open,
@@ -189,7 +206,7 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
         { label: '휴지통 비우기', icon: ICONS.delete, onClick: options.onEmptyRecycleBin },
       ];
     case null:
-      return [open, SEPARATOR, trash];
+      return [open, SEPARATOR, cut, trash];
   }
 }
 
