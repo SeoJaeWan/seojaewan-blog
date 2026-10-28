@@ -2,7 +2,20 @@
   "name": "Window/Chrome",
   "nodeId": "564:7107",
   "variants": {
-    "device=desktop": {
+    "device=desktop,tabs=multiple": {
+      "node": {
+        "height": 800,
+        "width": 1280,
+        "x": 64,
+        "y": 32
+      },
+      "nodeId": "1375:10569",
+      "properties": {
+        "Device": "Desktop",
+        "Tabs": "Multiple"
+      }
+    },
+    "device=desktop,tabs=single": {
       "node": {
         "height": 800,
         "width": 1280,
@@ -11,10 +24,11 @@
       },
       "nodeId": "564:6969",
       "properties": {
-        "Device": "Desktop"
+        "Device": "Desktop",
+        "Tabs": "Single"
       }
     },
-    "device=mobile": {
+    "device=mobile,tabs=single": {
       "node": {
         "height": 796,
         "width": 390,
@@ -23,7 +37,8 @@
       },
       "nodeId": "564:7105",
       "properties": {
-        "Device": "Mobile"
+        "Device": "Mobile",
+        "Tabs": "Single"
       }
     }
   }
