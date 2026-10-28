@@ -435,6 +435,7 @@ function textStyleInput(style: TextStyle): TextStyleInput {
     fontSize: style.fontSize,
     lineHeight: style.lineHeight,
     letterSpacing: style.letterSpacing,
+    textDecoration: style.textDecoration,
     boundVariables: {
       fontFamily: alias(bound.fontFamily),
       fontStyle: alias(bound.fontStyle),

@@ -78,6 +78,7 @@ export const bodyStyle: TextStyleInput = {
   fontSize: 14,
   lineHeight: { unit: 'PIXELS', value: 20 },
   letterSpacing: { unit: 'PERCENT', value: 0 },
+  textDecoration: 'NONE',
   boundVariables: {
     fontFamily: aliasTo('font/family/base'),
     fontStyle: aliasTo('font/weight/regular'),

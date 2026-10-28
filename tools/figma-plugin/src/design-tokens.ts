@@ -37,11 +37,13 @@ export type TextStyleField =
 export type TextStyleInput = {
   name: string;
   fontFamily: string;
-  /** 피그마 글꼴 스타일 이름(예: `Regular`, `SemiBold`) */
+  /** 피그마 글꼴 스타일 이름(예: `Regular`, `SemiBold`, `Italic`, `SemiBold Italic`) */
   fontStyle: string;
   fontSize: number;
   lineHeight: { unit: 'PIXELS' | 'PERCENT'; value: number } | { unit: 'AUTO' };
   letterSpacing: { unit: 'PIXELS' | 'PERCENT'; value: number };
+  /** 피그마 글자 장식(`NONE`, `UNDERLINE`, `STRIKETHROUGH`) */
+  textDecoration: string;
   boundVariables: Partial<Record<TextStyleField, VariableAlias>>;
 };
 
@@ -139,6 +141,14 @@ const NUMBER_PRECISION = 10_000;
 const ROOT_TOKEN = '$root';
 
 const fontWeights: Readonly<Record<string, number>> = { Regular: 400, SemiBold: 600, Bold: 700 };
+// 글꼴 스타일 이름 끝의 기울임 표시다. `Italic`만 있으면 굵기는 Regular다(Regular Italic).
+const ITALIC_STYLE = 'Italic';
+const DEFAULT_WEIGHT_STYLE = 'Regular';
+// 피그마 글자 장식 → CSS `text-decoration-line` 값. `NONE`은 기본값이라 토큰에 적지 않는다.
+const textDecorations: Readonly<Record<string, string>> = {
+  UNDERLINE: 'underline',
+  STRIKETHROUGH: 'line-through',
+};
 
 /**
  * Variables와 글자·효과·칠 스타일을 W3C 디자인 토큰(DTCG) 형식의 토큰 트리로 바꾼다.
@@ -412,6 +422,9 @@ function easingCubicBezier(easing: EasingValue): number[] | null {
 
 /**
  * 글자 스타일을 typography 토큰으로 바꾼다. 변수에 묶인 속성은 별칭으로 남긴다.
+ * 기울임과 글자 장식은 DTCG typography 값에 자리가 없어, 기본값(normal, none)이 아닐 때만
+ * `com.seojaewan` 확장 필드(`fontStyle`, `textDecoration`)에 둔다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param style 글자 스타일
  * @param context 별칭 이름표와 문제 목록
  * @returns typography 토큰
@@ -431,18 +444,52 @@ function textStyleToken(style: TextStyleInput, context: ConversionContext): Json
     return alias === undefined ? literal() : aliasValue(alias, label, context);
   }
 
+  const fontStyle = splitFontStyle(style.fontStyle);
   const fontWeightAlias = bound.fontWeight ?? bound.fontStyle;
   const value: JsonObject = {
     fontFamily: boundOr('fontFamily', () => style.fontFamily) ?? '',
     fontWeight:
       (fontWeightAlias === undefined
-        ? fontWeightNumber(style.fontStyle, label, context)
+        ? fontWeightNumber(fontStyle.weight, style.fontStyle, label, context)
         : aliasValue(fontWeightAlias, label, context)) ?? 0,
     fontSize: boundOr('fontSize', () => dimension(style.fontSize)) ?? 0,
     lineHeight: boundOr('lineHeight', () => lineHeightValue(style, label, context)) ?? 0,
     letterSpacing: boundOr('letterSpacing', () => letterSpacingValue(style)) ?? 0,
   };
-  return { $type: 'typography', $value: value };
+  const token: JsonObject = { $type: 'typography', $value: value };
+  const extension: JsonObject = {};
+  if (fontStyle.isItalic) {
+    extension.fontStyle = 'italic';
+  }
+  if (style.textDecoration !== 'NONE') {
+    const decoration = textDecorations[style.textDecoration];
+    if (decoration === undefined) {
+      context.problems.push(`${label}: 글자 장식 ${style.textDecoration}는 계약에 없다`);
+    } else {
+      extension.textDecoration = decoration;
+    }
+  }
+  if (Object.keys(extension).length > 0) {
+    token.$extensions = { [PROJECT_EXTENSION]: extension };
+  }
+  return token;
+}
+
+/**
+ * 글꼴 스타일 이름을 굵기 이름과 기울임으로 나눈다.
+ * 예: `Italic` → Regular + 기울임, `SemiBold Italic` → SemiBold + 기울임, `Bold` → Bold.
+ * 굵기가 변수에 묶여 있어도 기울임은 이 이름으로 정한다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param style 피그마 글꼴 스타일 이름
+ * @returns 굵기 이름과 기울임 여부
+ */
+function splitFontStyle(style: string): { weight: string; isItalic: boolean } {
+  const words = style.trim().split(/\s+/u);
+  if (words.at(-1) !== ITALIC_STYLE) {
+    return { weight: style, isItalic: false };
+  }
+  const weight = words.slice(0, -1).join(' ');
+  return { weight: weight === '' ? DEFAULT_WEIGHT_STYLE : weight, isItalic: true };
 }
 
 /**
@@ -725,14 +772,20 @@ function solidColor(paint: SolidPaintInput, label: string, context: ConversionCo
 }
 
 /**
- * 글꼴 스타일 이름을 숫자 굵기로 바꾼다.
- * @param style 피그마 글꼴 스타일 이름
+ * 굵기 이름을 숫자 굵기로 바꾼다.
+ * @param weightName 기울임을 뗀 굵기 이름(예: `SemiBold`)
+ * @param style 오류 메시지에 쓸 원래 글꼴 스타일 이름
  * @param label 오류 메시지에 쓸 이름
  * @param context 문제 목록
  * @returns 굵기 숫자, 모르는 이름이면 null
  */
-function fontWeightNumber(style: string, label: string, context: ConversionContext): number | null {
-  const weight = fontWeights[style];
+function fontWeightNumber(
+  weightName: string,
+  style: string,
+  label: string,
+  context: ConversionContext,
+): number | null {
+  const weight = fontWeights[weightName];
   if (weight === undefined) {
     context.problems.push(`${label}: 글꼴 굵기 "${style}"는 계약에 없다`);
     return null;
