@@ -5,13 +5,15 @@ import {
   ImageAsset,
   ListItem,
   PinnedTile,
+  PostCover,
   PostNavCard,
-  SearchBox,
   Separator,
   TileGrid,
   Toc,
   TocItem,
 } from '@seojaewan/design-system';
+
+import { ChromeNewTabSearch } from '@/features/chrome/components/chrome-new-tab-search/chrome-new-tab-search';
 
 export type ChromePageLayout = 'wide' | 'narrow';
 
@@ -36,6 +38,11 @@ type ChromePageCommonProps = {
 type ChromePostPageProps = {
   /** 피그마 Page=Post. 글 화면이다 */
   page: 'post';
+  /**
+   * 커버 이미지(피그마 PostCover `image`). 있으면 제목 위에 그린다. Notion 커버 제공([[Notion 이미지 제공]])은
+   * 9단계라 그 전까지는 쓰는 곳이 넣는다
+   */
+  cover?: ReactNode;
   /** 제목 위 작은 글자(폴더 경로와 작성일) */
   meta: string;
   /** 글 제목 */
@@ -101,7 +108,6 @@ type ChromePageProps = ChromePageCommonProps &
 
 // 새 탭 로고 자리의 글자다(Google 로고는 상표라 쓰지 않는다).
 const WORDMARK = 'seojaewan.com';
-const NEW_TAB_SEARCH_PLACEHOLDER = '글 검색 또는 URL 입력';
 
 /**
  * 글 화면. wide는 글(최대 720)과 오른쪽 목차(220)를 가운데에 놓고, narrow는 글 머리 아래에 접은 목차를 둔다.
@@ -113,6 +119,7 @@ const NEW_TAB_SEARCH_PLACEHOLDER = '글 검색 또는 URL 입력';
 function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
   const {
     layout,
+    cover,
     meta,
     title,
     toc,
@@ -155,6 +162,10 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
       className={isWide ? 'flex justify-center gap-48 px-16 pt-48' : 'flex flex-col px-16 pt-24'}
     >
       <article className="flex w-full max-w-720 min-w-0 flex-col items-start gap-16">
+        {cover !== undefined && (
+          // 피그마 `cover`는 wide에서 PostCover 높이 그대로(240), narrow에서 140으로 줄여 쓴다
+          <PostCover image={cover} className={isWide ? 'w-full' : 'h-140 w-full'} />
+        )}
         <p className="w-full type-caption text-text-fill-secondary">{meta}</p>
         <h1
           className={[
@@ -237,13 +248,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
       <p className={['text-text-fill-primary', isWide ? 'type-display' : 'type-title'].join(' ')}>
         {WORDMARK}
       </p>
-      <SearchBox
-        appearance="web"
-        placeholder={NEW_TAB_SEARCH_PLACEHOLDER}
-        aria-label={NEW_TAB_SEARCH_PLACEHOLDER}
-        onKeyDown={handleSearchKeyDown}
-        className="w-320"
-      />
+      <ChromeNewTabSearch onKeyDown={handleSearchKeyDown} />
       <TileGrid align="center" className={isWide ? 'w-576' : 'w-full max-w-720'}>
         {latestPosts.map(
           /**

@@ -1,0 +1,30 @@
+{
+  "name": "Chrome/FindBar",
+  "nodeId": "1379:6297",
+  "variants": {
+    "device=desktop": {
+      "node": {
+        "height": 46,
+        "width": 400,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "1379:6233",
+      "properties": {
+        "Device": "Desktop"
+      }
+    },
+    "device=mobile": {
+      "node": {
+        "height": 46,
+        "width": 390,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "1379:6265",
+      "properties": {
+        "Device": "Mobile"
+      }
+    }
+  }
+}

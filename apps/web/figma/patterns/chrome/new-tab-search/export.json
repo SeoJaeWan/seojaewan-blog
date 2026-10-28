@@ -1,0 +1,30 @@
+{
+  "name": "Chrome/NewTabSearch",
+  "nodeId": "1379:6351",
+  "variants": {
+    "state=closed": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1379:6298",
+      "properties": {
+        "State": "Closed"
+      }
+    },
+    "state=open": {
+      "node": {
+        "height": 36,
+        "width": 320,
+        "x": 16,
+        "y": 0
+      },
+      "nodeId": "1379:6307",
+      "properties": {
+        "State": "Open"
+      }
+    }
+  }
+}

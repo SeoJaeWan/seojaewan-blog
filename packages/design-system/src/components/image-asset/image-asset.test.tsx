@@ -24,6 +24,7 @@ describe('ImageAsset', () => {
       'images/app-file-explorer',
       'images/avatar-profile-placeholder',
       'images/avatar-profile',
+      'images/equation-quadratic-formula',
       'images/file-document',
       'images/file-folder',
       'images/file-recycle-bin-empty',
