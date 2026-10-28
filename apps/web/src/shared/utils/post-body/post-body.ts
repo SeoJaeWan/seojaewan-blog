@@ -81,7 +81,7 @@ export type ListItemBlock =
 
 /**
  * 본문 블록 하나. 이름은 Notion 블록 종류와 같다. `unsupported`는 지원하지 않는 블록 자리이고 Notion 유형 이름을 담는다.
- * 코드 블록의 강조(`highlighted`)와 수식은 서버가 본문을 만들 때 처리해 보낸다([[기술 스택:글 본문 처리]]).
+ * 코드 블록의 강조(`highlighted`)와 수식 HTML(`html`, KaTeX)은 서버가 본문을 만들 때 처리해 보낸다([[기술 스택:글 본문 처리]]).
  * 이미지 주소는 [[Notion 이미지 제공]]의 주소다.
  */
 export type PostBlock =
@@ -96,7 +96,12 @@ export type PostBlock =
   | { type: 'toggle'; richText: RichText[]; children?: PostBlock[] }
   | { type: 'table'; hasColumnHeader: boolean; rows: RichText[][][] }
   | { type: 'bookmark'; url: string; title: string; description: string }
-  | { type: 'equation'; expression: string }
+  | {
+      type: 'equation';
+      expression: string;
+      /** 서버가 KaTeX로 그린 수식 HTML. 그리지 못한 식이면 없다 */
+      html?: string;
+    }
   | { type: 'unsupported'; typeName: string };
 
 const richTextsSchema = z.array(richTextSchema);
@@ -150,7 +155,7 @@ export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type'
     title: z.string(),
     description: z.string(),
   }),
-  z.object({ type: z.literal('equation'), expression: z.string() }),
+  z.object({ type: z.literal('equation'), expression: z.string(), html: z.string().optional() }),
   z.object({ type: z.literal('unsupported'), typeName: z.string().min(1) }),
 ]);
 

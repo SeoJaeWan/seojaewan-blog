@@ -39,6 +39,19 @@ describe('콘텐츠 원천:결정', () => {
   });
 });
 
+// @codocs [[기술 스택:글 본문 처리]]
+describe('기술 스택:글 본문 처리', () => {
+  it('임시 글 본문도 보낼 때 코드 강조와 수식 HTML을 서버에서 채운다', async () => {
+    const blocks = (await allBodies()).flat();
+    const codes = blocks.filter((block) => block.type === 'code');
+    const equations = blocks.filter((block) => block.type === 'equation');
+    expect(codes.length).toBeGreaterThan(0);
+    expect(codes.every((block) => block.highlighted !== undefined)).toBe(true);
+    expect(equations.length).toBeGreaterThan(0);
+    expect(equations.every((block) => block.html?.includes('katex') === true)).toBe(true);
+  });
+});
+
 // 문서 규칙이 아니라 임시 글 원천(9단계에서 Notion으로 바뀐다)이 글 화면을 확인할 만큼의 글을 갖췄는지 본다.
 describe('임시 글 원천', () => {
   it('임시 글에는 목차가 보이는 글이 있다', async () => {
