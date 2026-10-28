@@ -86,7 +86,6 @@ Windows 화면 요소: |
   | `Focused` | 키보드 포커스 | 실제 키보드 |
   | `Disabled` | 쓸 수 없음 | args |
   | `Selected` | 선택됨 | args |
-  | `Selected focus` | 선택된 채 포커스를 받음 | args |
   | `Rename` | 이름을 바꾸는 중 | args |
   | `Cut` | 잘라냄 | args |
   | `Cut selected` | 잘라낸 채 선택됨 | args |
@@ -99,6 +98,7 @@ Windows 화면 요소: |
   | `Closed` | 팝업이 닫혀 트리거만 보임 | args |
   | `Open` | 팝업이나 하위 메뉴가 열려 있음 | args |
 
+  - `FileItem`·`FileRow`의 포커스(`Focused`)는 선택과 상관없이 겹쳐 그리는 1px 선 하나다. 색은 바탕화면 `white-50`, 탐색기 `explorer-blue-focus`다. 선은 레이아웃 크기에 넣지 않아 포커스로 크기가 바뀌지 않는다. 실제 Windows 11도 선택 없이 포커스만 있으면 테두리만 보인다. 선택된 채 포커스를 받으면 `Selected` 모습 위에 이 선이 겹치므로 따로 변형을 두지 않는다. 코드는 `:focus-visible` 외곽선으로 그리고 포커스를 주는 prop을 두지 않는다.
   - `Closed`·`Open`은 `Popover`와, 트리거와 팝업을 묶은 조립(예: `Start/PowerButton`, `Taskbar/AppMenu`)이 갖는다. 트리거 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)는 `Open` 변형을 갖지 않는다.
   - 팝업이 열려 있어도 트리거는 `Rest` 모양 그대로다. Windows(WinUI)도 팝업이 뜨면 바깥 클릭을 받는 막이 마우스를 가져가 트리거가 평소 모양으로 돌아간다. 코드에서는 열림 상태(`aria-expanded`)로만 구분한다.
   - 예외: 작업 표시줄 앱 버튼은 창 미리보기(`Taskbar/AppPreview`)가 떠 있는 동안 `Hover` 모양이다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다. 우클릭 메뉴(`Taskbar/AppMenu`)가 열렸을 때는 다른 트리거처럼 `Rest` 모양이다.

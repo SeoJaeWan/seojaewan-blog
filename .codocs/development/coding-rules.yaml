@@ -42,7 +42,7 @@ export와 import: |
   - import 순서는 외부 패키지 → `@seojaewan/design-system` → `@/` 별칭 → 상대 경로이며 `simple-import-sort`가 자동 정렬한다.
   - 앱 안에서 상위 폴더는 `@/`(`apps/web/src/`) 별칭으로 import하고 `../`는 쓰지 않는다. 같은 폴더·하위 폴더는 `./`를 쓴다.
   - 타입만 쓰는 import는 `import type`으로 쓴다.
-  - 패키지와 기능 사이 경계는 [[저장소 구성:의존 방향]]을 따른다.
+  - 패키지와 기능 사이 경계와 순환 import 검사는 [[저장소 구성:의존 방향]]을 따른다.
 JSDoc: |
   - 함수와 메서드에는 한국어 설명을 단다. 5줄 이상인 콜백도 같다.
   - `@param`과 `@returns`에는 설명을 반드시 쓰고, 타입은 쓰지 않는다. TypeScript가 이미 갖고 있다.
@@ -79,10 +79,14 @@ JSDoc: |
   - Tailwind 클래스는 `prettier-plugin-tailwindcss`로 정렬한다.
   - `.codocs` 문서는 codocs 도구가 쓰는 형식을 유지하기 위해 Prettier에서 제외한다.
 React와 Next.js: |
-  - Notion 데이터는 서버에서만 가져온다(`content/`와 `app/`의 서버 컴포넌트). `shell/`·`features/`·`shared/`는 데이터를 props로 받기만 하고 직접 가져오지 않는다. Notion 토큰이 브라우저로 나가지 않게 하기 위해서다.
+  - Notion과 Notion 토큰은 서버(`content/`, `app/`)에서만 다룬다. Notion 토큰이 브라우저로 나가지 않게 하기 위해서다.
+  - 브라우저 쪽 코드(`shell/`·`features/`·`shared/`)는 Notion을 직접 부르지 않고, 데이터는 앱의 서버 경로(`app/api/…`)로만 받는다. 글 목록처럼 첫 렌더에 필요한 데이터는 props로 받는다.
   - Notion을 호출하는 파일에는 `import 'server-only'`를 넣어, 클라이언트에서 import하면 빌드가 실패하게 한다.
   - `'use client'`는 상호작용이 시작되는 경계 파일에만 붙인다.
   - 파일 하나에 공개 컴포넌트 하나다. 그 파일 안에서만 쓰는 작은 보조 컴포넌트는 같이 둘 수 있다.
   - 전역 화면 상태는 Zustand, 컴포넌트 안의 일시적 상태는 `useState`다. URL로 표현되는 상태(열린 글)는 URL이 기준이다.
   - React Compiler를 켜고 `useMemo`·`useCallback`·`memo`는 직접 쓰지 않는다. 성능 문제가 측정된 곳에서만 예외로 쓴다.
   - 환경 변수는 Zod로 검증하는 모듈 하나에서만 읽는다. 코드 곳곳에서 `process.env`를 직접 읽지 않는다.
+검토한 대안: |
+  - Server Action을 props로 내려 불러 데이터(글 본문) 받기: Server Action은 POST 요청이라 ISR과 태그 캐시([[콘텐츠 원천:갱신 방식]])를 쓰기 어렵고, 함수 prop을 여러 층 내려야 해 고르지 않았다.
+  - 모든 글 본문을 처음 렌더에 넣기: 글이 늘수록 첫 페이지가 무거워져 고르지 않았다.
