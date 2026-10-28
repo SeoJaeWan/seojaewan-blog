@@ -624,9 +624,11 @@ export default defineConfig(
     },
   },
 
-  // 순환 import를 막는다. 적용 범위는 `apps/web/src/shared`다.
+  // 순환 import를 막는다. 앱 전체(`shared/`·`features/`·`shell/`·`app/`)와 디자인 시스템 패키지에 적용한다.
+  // `import type`만으로 생긴 순환은 `no-cycle`이 검사하지 않는다.
+  // @codocs [[저장소 구성:의존 방향]]
   {
-    files: [`${WEB_SRC}/shared/**/*.{ts,tsx}`],
+    files: [`${WEB_SRC}/**/*.{ts,tsx}`],
     plugins: { 'import-x': importX },
     settings: {
       'import-x/extensions': ['.ts', '.tsx'],
@@ -636,6 +638,24 @@ export default defineConfig(
           alwaysTryTypes: true,
           noWarnOnMultipleProjects: true,
           project: ['apps/web/tsconfig.json'],
+        }),
+      ],
+    },
+    rules: {
+      'import-x/no-cycle': 'error',
+    },
+  },
+  {
+    files: [`${DESIGN_SYSTEM}/src/**/*.{ts,tsx}`],
+    plugins: { 'import-x': importX },
+    settings: {
+      'import-x/extensions': ['.ts', '.tsx'],
+      'import-x/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx'] },
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
+          project: ['packages/design-system/tsconfig.json'],
         }),
       ],
     },
