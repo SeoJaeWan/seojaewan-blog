@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -210,7 +210,14 @@ describe('Chrome:글 화면', () => {
     Object.defineProperty(container, 'clientHeight', { configurable: true, value: 500 });
     container.scrollTop = 700;
     fireEvent.scroll(container);
-    expect(screen.getByRole('button', { name: '둘' })).toHaveAttribute('aria-current', 'location');
+    // 본문이 그려진 직후에는 스크롤을 듣는 효과(effect)가 아직 돌지 않았을 수 있다(부하가 크면 그렇다).
+    // 그때는 scroll 이벤트를 아무도 듣지 못하지만, 효과가 돌 때 스크롤 상태를 다시 읽으므로 곧 맞는 항목으로 바뀐다.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: '둘' })).toHaveAttribute(
+        'aria-current',
+        'location',
+      );
+    });
   });
 
   it('목차 항목을 누르면 그 제목으로 스크롤한다', async () => {
