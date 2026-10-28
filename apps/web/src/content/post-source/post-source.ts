@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { renderPostBlocks } from '@/content/post-body-render/post-body-render';
 import { parsePostIndex } from '@/content/post-schema/post-schema';
 import { temporaryPostBodies } from '@/content/temporary-post-bodies/temporary-post-bodies';
 import { temporaryPostRows } from '@/content/temporary-posts/temporary-posts';
@@ -21,9 +22,11 @@ export async function getPostIndex(): Promise<PostSummary[]> {
 /**
  * 글 하나의 본문을 서버에서 읽는다. 브라우저는 서버 경로(`app/api/posts/[slug]`)로 받는다.
  * 지금은 임시 글 본문을 읽고, Notion을 붙이면 이 함수 안에서 Notion 블록을 읽어 같은 모양(`postBodySchema`)으로 바꾼다.
+ * 보내기 전에 코드 강조(Shiki)와 수식(KaTeX)을 서버에서 처리한다.
  * @codocs [[코드 작성 규칙:React와 Next.js]]
  * @codocs [[콘텐츠 원천:결정]]
  * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[기술 스택:글 본문 처리]]
  * @param slug 글 slug
  * @returns 본문. 색인에 없는 글이면 null
  */
@@ -32,5 +35,6 @@ export async function getPostBody(slug: string): Promise<PostBody | null> {
   if (!index.some((post) => post.slug === slug)) {
     return null;
   }
-  return postBodySchema.parse({ blocks: temporaryPostBodies[slug] ?? [] });
+  const blocks = await renderPostBlocks(temporaryPostBodies[slug] ?? []);
+  return postBodySchema.parse({ blocks });
 }

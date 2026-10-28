@@ -24,6 +24,8 @@ export type FontSource = {
 
 // @codocs [[디자인 기반:서체]]
 // 굵기는 Regular·SemiBold·Bold만 쓰고(피그마가 제공하는 Pretendard 굵기와 같다), 코드 블록 서체는 Regular만 쓴다.
+// 글 본문의 기울임(`Body Large Italic`)은 Open Sans Italic Regular로 그려 브라우저가 기울임을 흉내 내지 않게 한다.
+// Pretendard에는 기울임 글꼴이 없어 한글은 기울이지 않는다.
 export const fontSources: readonly FontSource[] = [
   {
     output: 'pretendard.css',
@@ -37,7 +39,7 @@ export const fontSources: readonly FontSource[] = [
     packageName: '@fontsource/open-sans',
     cssDir: '@fontsource/open-sans',
     woff2Dir: 'files',
-    files: ['400.css', '600.css', '700.css'],
+    files: ['400.css', '600.css', '700.css', '400-italic.css'],
   },
   {
     output: 'cascadia-mono.css',

@@ -7,6 +7,7 @@
  *   Open Sans에는 한글 범위가 없어 한글은 글자마다 Pretendard로 그린다.
  * - 패키지 CSS는 woff 대체 파일도 함께 가리켜 빌드에 woff가 딸려 들어간다.
  *   그래서 woff2만 가리키는 @font-face를 만들어 쓴다(scripts/fonts/generate-fonts.ts).
+ * - 글 본문의 기울임은 Open Sans Italic Regular(400 italic)만 불러온다. 한글은 기울이지 않는다(theme.css).
  * - 코드 블록용 Cascadia Mono는 Regular만 쓴다.
  */
 @import './open-sans.css';
