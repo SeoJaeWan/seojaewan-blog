@@ -9,5 +9,6 @@ export const MENU_LINK = [
   { label: '링크 복사', icon: ICON.link },
   { label: '시작 화면에 고정', icon: ICON.pin },
   SEPARATOR,
+  { label: '잘라내기', icon: ICON.cut, shortcut: 'Ctrl+X' },
   { label: '삭제', icon: ICON.delete, shortcut: 'Delete' },
 ] as const;
