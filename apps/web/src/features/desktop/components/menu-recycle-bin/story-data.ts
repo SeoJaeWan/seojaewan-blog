@@ -1,11 +1,8 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // @codocs [[피그마 연동:스토리 규칙]]
-// 메뉴 조립 Menu/RecycleBin 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 글자·아이콘·켜짐 상태를 둔다.
-import { ICON, SEPARATOR } from '@/shared/stories/menu-icons/menu-icons';
+// 메뉴 조립 Menu/RecycleBin 스토리의 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태(휴지통이 참)를 넣어 만든다.
+import { itemMenuOptions } from '@/features/desktop/stories/desktop-submenu-data/desktop-submenu-data';
+import { getItemMenuEntries } from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
 
 /** 피그마 Menu/RecycleBin: 바탕화면 휴지통 우클릭 */
-export const MENU_RECYCLE_BIN = [
-  { label: '열기', icon: ICON.open },
-  SEPARATOR,
-  { label: '휴지통 비우기', icon: ICON.delete },
-] as const;
+export const menuRecycleBin = getItemMenuEntries(itemMenuOptions('recycle-bin'));

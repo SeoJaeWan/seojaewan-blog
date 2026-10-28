@@ -642,6 +642,16 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
   });
+
+  // 휴지통이 비었을 때의 비활성은 탐색기 명령과 같은 규칙이다([[파일 탐색기:구성]]).
+  it('휴지통이 비었으면 휴지통 비우기를 고를 수 없다', () => {
+    render(<DesktopIconsLayer />);
+    openMenu(icon('휴지통'));
+    expect(screen.getByRole('menuitem', { name: '휴지통 비우기' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
 });
 
 // @codocs [[작업 공간:폴더 이름]]

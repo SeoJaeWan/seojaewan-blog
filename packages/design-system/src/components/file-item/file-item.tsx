@@ -14,8 +14,6 @@ type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   icon: ReactNode;
   /** 피그마 State=Selected. 선택된 항목이면 바탕을 깔고 이름을 모두 보인다 */
   selected?: boolean;
-  /** 피그마 State=Focused. 포커스를 받으면 선택과 상관없이 1px 선을 겹쳐 그린다. 선은 크기에 넣지 않는다 */
-  focused?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 항목이면 아이콘과 이름을 흐리게 그린다 */
   cut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그린다. 탐색기에서는 선택 바탕을 함께 깐다 */
@@ -37,8 +35,10 @@ const ICON_SIZES = { large: 'size-96', medium: 'size-48', small: 'size-32' } as 
 /**
  * 바탕화면과 탐색기의 큰 아이콘·보통 아이콘·작은 아이콘 보기에서 파일이나 폴더 하나(피그마 FileItem)를 그린다.
  * 너비는 Windows가 정한 크기로 고정하고 높이는 내용에 맞춘다(HUG). Rest·Hover는 CSS hover로 바꾸고,
- * 선택·포커스·잘라냄·이름 바꾸기는 prop으로 바꾼다. 포커스 선은 안쪽에 겹쳐 그려 크기를 바꾸지 않는다.
+ * 선택·잘라냄·이름 바꾸기는 prop으로 바꾼다. 포커스(State=Focused)는 prop 없이 키보드 포커스(`:focus-visible`)일 때
+ * 선택과 상관없이 1px 선을 안쪽에 겹쳐 그려 크기를 바꾸지 않는다.
  * @codocs [[컴포넌트 목록:상태]]
+ * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @param props
  */
@@ -49,7 +49,6 @@ export function FileItem(props: FileItemProps): JSX.Element {
     name = '파일 이름',
     icon,
     selected: isSelected = false,
-    focused: isFocused = false,
     cut: isCut = false,
     renaming: isRenaming = false,
     renameFieldProps,
@@ -62,7 +61,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        // 포커스 표시는 `focused`로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
+        // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative flex flex-col items-center rounded-control outline-none select-none',
         isDesktop ? 'gap-2 px-2 py-4' : 'gap-4 p-4',
         WIDTHS[surface][view],
@@ -75,10 +74,10 @@ export function FileItem(props: FileItemProps): JSX.Element {
             : isDesktop
               ? 'bg-subtle-fill-transparent hover:bg-file-item-desktop-fill-hover'
               : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        isFocused &&
-          (isDesktop
-            ? 'inner-border-file-item-desktop-stroke-focus inner-border-w-default'
-            : 'inner-border-file-item-explorer-stroke-focus inner-border-w-default'),
+        'focus-visible:inner-border-w-default',
+        isDesktop
+          ? 'focus-visible:inner-border-file-item-desktop-stroke-focus'
+          : 'focus-visible:inner-border-file-item-explorer-stroke-focus',
         className,
       )}
     >

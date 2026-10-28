@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_EXPLORER_VIEW_SUBMENU } from '@/features/file-explorer/stories/explorer-submenu-data/explorer-submenu-data';
+import { menuExplorerViewSubmenu } from '@/features/file-explorer/stories/explorer-submenu-data/explorer-submenu-data';
 import { MenuStory } from '@/shared/stories/menu-story/menu-story';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -9,7 +9,7 @@ const meta = {
   title: 'Patterns/Menu/ExplorerViewSubmenu',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded' },
-  render: () => <MenuStory items={MENU_EXPLORER_VIEW_SUBMENU} />,
+  render: () => <MenuStory items={menuExplorerViewSubmenu} />,
 } satisfies Meta;
 
 export default meta;

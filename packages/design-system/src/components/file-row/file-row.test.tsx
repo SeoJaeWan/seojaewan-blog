@@ -39,15 +39,23 @@ describe('FileRow', () => {
     expect(container.firstElementChild).toHaveClass('bg-file-item-explorer-fill-selected');
   });
 
-  it('focused면 선택과 상관없이 크기에 넣지 않는 안쪽 선을 그린다', () => {
-    const { container, rerender } = render(<FileRow icon={<i />} />);
-    expect(container.firstElementChild).not.toHaveClass('inner-border-w-default');
-    rerender(<FileRow icon={<i />} focused />);
+  it('포커스 선은 prop 없이 키보드 포커스(:focus-visible)일 때만 크기에 넣지 않는 안쪽 선으로 그린다', () => {
+    const { container } = render(<FileRow icon={<i />} />);
     expect(container.firstElementChild).toHaveClass(
-      'inner-border-file-item-explorer-stroke-focus',
-      'inner-border-w-default',
+      'focus-visible:inner-border-file-item-explorer-stroke-focus',
+      'focus-visible:inner-border-w-default',
+      'outline-none',
     );
+    const classes = container.firstElementChild?.className.split(' ') ?? [];
+    expect(classes.filter((name) => name.startsWith('inner-border'))).toEqual([]);
     expect(container.firstElementChild).not.toHaveClass('border-default');
+  });
+
+  it('포커스 선은 선택과 상관없이 같다', () => {
+    const { container } = render(<FileRow icon={<i />} selected />);
+    expect(container.firstElementChild).toHaveClass(
+      'focus-visible:inner-border-file-item-explorer-stroke-focus',
+    );
   });
 
   it('cut이면 아이콘과 이름을 흐리게 그린다', () => {

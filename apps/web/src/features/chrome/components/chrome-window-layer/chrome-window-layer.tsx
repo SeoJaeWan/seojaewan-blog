@@ -25,6 +25,7 @@ import {
   resolveAddress,
   searchPosts,
 } from '@/features/chrome/utils/chrome-address/chrome-address';
+import { getChromeMoreMenuEntries } from '@/features/chrome/utils/chrome-more-menu/chrome-more-menu';
 import {
   canGoBack,
   canGoForward,
@@ -35,12 +36,7 @@ import {
   selectTab,
 } from '@/features/chrome/utils/chrome-navigation/chrome-navigation';
 import { getChromeTabTitle } from '@/features/chrome/utils/chrome-tab-title/chrome-tab-title';
-import {
-  canZoomIn,
-  canZoomOut,
-  DEFAULT_ZOOM,
-  formatZoom,
-} from '@/features/chrome/utils/chrome-zoom/chrome-zoom';
+import { DEFAULT_ZOOM } from '@/features/chrome/utils/chrome-zoom/chrome-zoom';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import type { Device } from '@/shared/hooks/use-device/use-device';
@@ -66,14 +62,6 @@ import {
 
 // Chrome 새 탭 페이지에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
 const NEW_TAB_LATEST_POST_COUNT = 6;
-
-// ⋮ 메뉴 아이콘이다(피그마 Menu/ChromeMore, Menu/ChromeMoreMobile).
-const MENU_ICONS = {
-  link: 'icons/ic_fluent_link_20_regular.svg',
-  search: 'icons/ic_fluent_search_20_regular.svg',
-  forward: 'icons/ic_fluent_arrow_right_20_regular.svg',
-  refresh: 'icons/ic_fluent_arrow_clockwise_20_regular.svg',
-} as const;
 
 /** 열린 찾기 막대와 그 막대를 연 페이지 */
 type FindState = ChromePageFind & {
@@ -132,7 +120,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
   const [imageViewer, setImageViewer] = useState<ImageViewerState | null>(null);
   const [trashedSlug, setTrashedSlug] = useState<string | null>(null);
   // ⋮ 메뉴에서 찾기를 열면 메뉴가 닫힌 뒤 포커스를 ⋮ 버튼으로 돌리지 않는다(찾기 입력칸에 둔다).
-  const shouldKeepFocusAfterMenuRef = useRef(false);
+  const menuFocusKeeper = useMenuFocusKeeper();
   const workspace = { items };
   const activeTab = getActiveChromeTab(content);
   const page: ChromeTabPage =
@@ -249,9 +237,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
    * @returns 돌려주면 true
    */
   function getMenuFinalFocus(): boolean {
-    const shouldReturn = !shouldKeepFocusAfterMenuRef.current;
-    shouldKeepFocusAfterMenuRef.current = false;
-    return shouldReturn;
+    return menuFocusKeeper.shouldReturnFocus();
   }
 
   /**
@@ -386,58 +372,33 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
     update(openChromeTab(content));
   }
 
+  /** ⋮ 메뉴의 페이지에서 찾기: 찾기 막대를 열고, 메뉴가 닫힌 뒤에도 입력칸 포커스를 지킨다. */
+  function handleMenuFind(): void {
+    menuFocusKeeper.keep();
+    openFind();
+  }
+
   /**
-   * ⋮ 메뉴 항목을 정한다. 링크 복사는 글을 보고 있을 때만 된다. 페이지에서 찾기는 찾기 막대를 열고,
-   * 확대/축소 줄은 −·+로 배율을 바꾼다(끝 단계에서는 그쪽 버튼이 비활성이다). 모바일은 앞으로·새로고침을 메뉴 맨 위에 둔다.
-   * @codocs [[Chrome:구성]]
-   * @codocs [[Chrome:확대/축소]]
-   * @codocs [[모바일:차이]]
+   * ⋮ 메뉴 항목을 정한다.
    * @returns 메뉴 항목
    */
   function getMoreMenuItems(): MenuPopupEntry[] {
-    const entries: MenuPopupEntry[] = [
-      {
-        label: '링크 복사',
-        icon: MENU_ICONS.link,
-        disabled: post === undefined,
-        onClick: () => {
-          if (post !== undefined) {
-            copyItemLink(post);
-          }
-        },
+    return getChromeMoreMenuEntries({
+      isMobile,
+      canCopyLink: post !== undefined,
+      canGoForward: canGoForward(content),
+      zoom,
+      onCopyLink: () => {
+        if (post !== undefined) {
+          copyItemLink(post);
+        }
       },
-      {
-        label: '페이지에서 찾기',
-        icon: MENU_ICONS.search,
-        shortcut: isMobile ? undefined : 'Ctrl+F',
-        onClick: () => {
-          shouldKeepFocusAfterMenuRef.current = true;
-          openFind();
-        },
-      },
-      {
-        kind: 'zoom',
-        value: formatZoom(zoom),
-        onZoomOut: zoomOut,
-        onZoomIn: zoomIn,
-        isZoomOutDisabled: !canZoomOut(zoom),
-        isZoomInDisabled: !canZoomIn(zoom),
-      },
-    ];
-    if (!isMobile) {
-      return entries;
-    }
-    return [
-      {
-        label: '앞으로',
-        icon: MENU_ICONS.forward,
-        disabled: !canGoForward(content),
-        onClick: handleForward,
-      },
-      { label: '새로고침', icon: MENU_ICONS.refresh, onClick: handleRefresh },
-      { kind: 'separator' },
-      ...entries,
-    ];
+      onFind: handleMenuFind,
+      onZoomOut: zoomOut,
+      onZoomIn: zoomIn,
+      onForward: handleForward,
+      onRefresh: handleRefresh,
+    });
   }
 
   return (
@@ -699,4 +660,31 @@ function findPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): PostI
 function isTrashedPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): boolean {
   const target = findPost(workspace, slug);
   return target !== undefined && isItemInTrash(workspace, target.id);
+}
+
+/** 메뉴가 닫힌 뒤 포커스를 메뉴 버튼으로 돌려줄지 정하는 표시 */
+type MenuFocusKeeper = {
+  /** 메뉴가 닫힌 뒤 포커스를 돌려주지 않게 표시한다. 메뉴 항목을 고를 때 부른다 */
+  keep: () => void;
+  /** 메뉴가 닫힐 때 부른다. 포커스를 돌려주면 true이고, 표시를 지운다 */
+  shouldReturnFocus: () => boolean;
+};
+
+/**
+ * 메뉴 항목이 메뉴가 닫힌 뒤의 포커스를 지키게 하는 표시를 만든다. 렌더링과 상관없는 값이라 ref에 둔다.
+ * 메뉴 항목 함수에 넘기는 동작이 ref를 직접 만지지 않게 감싼다.
+ * @returns 표시를 바꾸고 읽는 함수
+ */
+function useMenuFocusKeeper(): MenuFocusKeeper {
+  const shouldKeepRef = useRef(false);
+  return {
+    keep: () => {
+      shouldKeepRef.current = true;
+    },
+    shouldReturnFocus: () => {
+      const shouldReturn = !shouldKeepRef.current;
+      shouldKeepRef.current = false;
+      return shouldReturn;
+    },
+  };
 }

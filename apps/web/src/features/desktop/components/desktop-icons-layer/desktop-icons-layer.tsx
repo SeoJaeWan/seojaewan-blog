@@ -21,6 +21,10 @@ import {
   moveIconsToCell,
   sortDesktopItems,
 } from '@/features/desktop/utils/desktop-grid/desktop-grid';
+import {
+  getDesktopMenuEntries,
+  getItemMenuEntries,
+} from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
@@ -71,8 +75,6 @@ import {
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
-import { getDesktopMenuEntries, getItemMenuEntries } from './desktop-menu-entries';
-
 /** 열린 우클릭 메뉴. 빈 곳 메뉴거나 아이콘 메뉴(우클릭한 항목들)다 */
 type OpenMenu = { kind: 'desktop' } | { kind: 'items'; ids: readonly string[] };
 
@@ -115,7 +117,6 @@ export function DesktopIconsLayer(): JSX.Element {
   const [menu, setMenu] = useState<OpenMenu | null>(null);
   const [isEmptyDialogOpen, setIsEmptyDialogOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [focusedIconId, setFocusedIconId] = useState<string | null>(null);
   // 끄기 시작할 때 아이콘 영역 왼쪽 위의 화면 자리. 끄는 복제본을 화면 기준으로 그리는 데 쓴다.
   const [dragAreaOrigin, setDragAreaOrigin] = useState({ x: 0, y: 0 });
   // 메뉴에서 고른 이름 바꾸기(새 폴더 포함). 메뉴가 닫히며 영역으로 돌아가는 포커스에 입력창이 닫히지 않게, 닫힌 뒤 시작한다.
@@ -513,12 +514,6 @@ export function DesktopIconsLayer(): JSX.Element {
       [DROP_TARGET_ATTRIBUTE]: isDropTarget ? id : undefined,
       [DROP_TARGET_NAME_ATTRIBUTE]: isDropTarget ? icon.name : undefined,
       renameFieldProps: icon.renaming === true ? rename.renameFieldProps : undefined,
-      onFocus: () => {
-        setFocusedIconId(id);
-      },
-      onBlur: () => {
-        setFocusedIconId((current) => (current === id ? null : current));
-      },
       onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
         if (icon.renaming === true || event.button !== 0) {
           return;
@@ -574,7 +569,6 @@ export function DesktopIconsLayer(): JSX.Element {
               kind: item.kind,
               full: item.kind === 'recycle-bin' ? isRecycleBinFull({ items }) : undefined,
               selected: isSelected,
-              focused: isSelected && id === focusedIconId,
               renaming: rename.renamingId === id,
               cut: cutIds.includes(id),
               cell: cells?.[id],
@@ -629,6 +623,7 @@ export function DesktopIconsLayer(): JSX.Element {
       kind: ids.length === 1 ? (first?.kind ?? null) : null,
       isPinned: firstId !== undefined && startPins.includes(firstId),
       canTrash: trashItems(getWorkspace(), ids, new Date().toISOString()).ok,
+      isRecycleBinEmpty: !isRecycleBinFull({ items }),
       onOpen: () => {
         openItems(ids);
       },

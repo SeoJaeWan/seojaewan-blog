@@ -48,13 +48,32 @@ describe('FileItem', () => {
   });
 
   // @codocs [[컴포넌트 목록:상태]]
-  it('focused면 선택과 상관없이 크기에 넣지 않는 안쪽 선을 그린다', () => {
-    const { container, rerender } = render(<FileItem icon={icon} />);
-    expect((container.firstChild as HTMLElement).className).not.toContain('inner-border-w-default');
-    rerender(<FileItem icon={icon} focused />);
-    const { className } = container.firstChild as HTMLElement;
-    expect(className).toContain('inner-border-file-item-desktop-stroke-focus');
-    expect(className.split(' ')).not.toContain('border-default');
+  it('포커스 선은 prop 없이 키보드 포커스(:focus-visible)일 때만 크기에 넣지 않는 안쪽 선으로 그린다', () => {
+    const { container } = render(<FileItem icon={icon} />);
+    const classes = (container.firstChild as HTMLElement).className.split(' ');
+    expect(classes).toContain('focus-visible:inner-border-file-item-desktop-stroke-focus');
+    expect(classes).toContain('focus-visible:inner-border-w-default');
+    expect(classes).toContain('outline-none');
+    expect(classes.filter((name) => name.startsWith('inner-border'))).toEqual([]);
+    expect(classes).not.toContain('border-default');
+  });
+
+  it('포커스 선은 선택과 상관없이 같고 탐색기에서는 탐색기 색으로 그린다', () => {
+    const { container, rerender } = render(<FileItem icon={icon} surface="explorer" />);
+    expect(container.firstChild).toHaveClass(
+      'focus-visible:inner-border-file-item-explorer-stroke-focus',
+    );
+    rerender(<FileItem icon={icon} surface="explorer" selected />);
+    expect(container.firstChild).toHaveClass(
+      'focus-visible:inner-border-file-item-explorer-stroke-focus',
+    );
+  });
+
+  it('포커스를 받아도 선택 모습은 바뀌지 않는다', () => {
+    const { container } = render(<FileItem icon={icon} tabIndex={0} />);
+    (container.firstChild as HTMLElement).focus();
+    expect(container.firstChild).toHaveFocus();
+    expect(container.firstChild).not.toHaveClass('bg-file-item-desktop-fill-selected');
   });
 
   it('cut이면 아이콘과 이름을 흐리게 그린다', () => {

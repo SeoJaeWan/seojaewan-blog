@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_TASKBAR_APP } from '@/features/taskbar/stories/taskbar-app-menu-data/taskbar-app-menu-data';
+import { menuTaskbarApp } from '@/features/taskbar/stories/taskbar-app-menu-data/taskbar-app-menu-data';
 
 import { TaskbarAppMenu } from './taskbar-app-menu';
 
@@ -28,7 +28,7 @@ const meta = {
           app="file-explorer"
           indicator="active"
           open={args.state === 'open'}
-          menuItems={MENU_TASKBAR_APP}
+          menuItems={menuTaskbarApp}
         />
       </div>
     </div>

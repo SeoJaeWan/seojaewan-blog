@@ -10,7 +10,6 @@ import {
   getTaskbarAppMenu,
   getTaskbarApps,
 } from '@/features/taskbar/utils/taskbar-app-rules/taskbar-app-rules';
-import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
@@ -359,25 +358,16 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
     function handleButtonMenuOpenChange(isOpen: boolean): void {
       handleMenuOpenChange(app, isOpen);
     }
-    const menuItems = getTaskbarAppMenu(state, app, taskbarPins.includes(app)).map(
-      /**
-       * 메뉴 줄 하나를 메뉴 항목으로 바꾼다. 항목을 고르면 그 일을 한다.
-       * @param line 메뉴 줄
-       * @returns 메뉴 항목
-       */
-      (line): MenuPopupEntry =>
-        'action' in line
-          ? {
-              label: line.label,
-              icon: line.icon,
-              onClick: () => {
-                handleMenuAction(app, line.action);
-              },
-            }
-          : line,
-    );
-    const isPreviewOpen = openPreviewApp === app;
     const appWindows = getAppWindows(state, app);
+    const menuItems = getTaskbarAppMenu({
+      app,
+      isPinned: taskbarPins.includes(app),
+      windowCount: appWindows.length,
+      onAction: (action) => {
+        handleMenuAction(app, action);
+      },
+    });
+    const isPreviewOpen = openPreviewApp === app;
     const isMobile = device === 'mobile';
     // 모바일은 목록을 화면 폭에 맞추고 카드를 줄인다. 축소 화면 자리도 카드 너비에 맞춰 줄인다(카드 안쪽 여백 8씩).
     const mobileLayout =
