@@ -95,6 +95,7 @@ import {
 import {
   getEmptyMenuEntries,
   getItemMenuEntries,
+  getRecycleBinSortMenuEntries,
   getSortMenuEntries,
   getViewMenuEntries,
 } from './explorer-menu-entries';
@@ -258,6 +259,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
     !isRecycleBin &&
     selectedIds.length > 0 &&
     trashItems(getWorkspace(), selectedIds, new Date().toISOString()).ok;
+  // 휴지통이 비었는지. 검색 결과가 아니라 휴지통에 실제로 든 항목으로 본다.
+  const isRecycleBinEmpty = isRecycleBin && getChildItems(workspace, RECYCLE_BIN_ID).length === 0;
 
   useEffect(
     /**
@@ -786,6 +789,13 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         onNewFolder: () => {
           setPendingRenameId(createFolder());
         },
+        isRecycleBinEmpty,
+        onRefresh: () => {
+          setIsRefreshing(true);
+        },
+        onEmptyRecycleBin: () => {
+          setIsEmptyDialogOpen(true);
+        },
       });
     }
     const { ids } = openMenu;
@@ -1026,7 +1036,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const disabledCommands = isRecycleBin
     ? [
         ...(getRestorableIds(selectedIds).length === 0 ? (['onRestore'] as const) : []),
-        ...(children.length === 0 ? (['onEmptyRecycleBin'] as const) : []),
+        ...(isRecycleBinEmpty ? (['onEmptyRecycleBin'] as const) : []),
         'onView' as const,
       ]
     : [
@@ -1101,7 +1111,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
             device={device}
             location={isRecycleBin ? 'recycle-bin' : 'folder'}
             disabledCommands={disabledCommands}
-            sortMenu={getSortMenuEntries(viewMenuOptions)}
+            sortMenu={(isRecycleBin ? getRecycleBinSortMenuEntries : getSortMenuEntries)(
+              viewMenuOptions,
+            )}
             viewMenu={getViewMenuEntries(viewMenuOptions)}
             {...commandHandlers}
           />
