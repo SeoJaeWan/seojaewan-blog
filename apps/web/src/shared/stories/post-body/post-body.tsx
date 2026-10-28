@@ -31,7 +31,9 @@ export function PostBody(props: PostBodyProps): JSX.Element {
         </a>
         {POST_BODY.useParagraph.after}
       </p>
-      <CodeBlock language={POST_BODY.code.language} code={POST_BODY.code.code} className="w-full" />
+      <CodeBlock language={POST_BODY.code.language} className="w-full">
+        {POST_BODY.code.code}
+      </CodeBlock>
       {layout === 'wide' && (
         <>
           <h2 className="w-full type-subtitle text-text-fill-primary">
