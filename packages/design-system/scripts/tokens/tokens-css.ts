@@ -29,6 +29,9 @@ const LINEAR_BEZIER = '0,0,1,1';
 // 플러그인이 붙이는 확장 필드 이름이다.
 const FIGMA_EXTENSION = 'com.figma';
 const SEOJAEWAN_EXTENSION = 'com.seojaewan';
+// 글자 스타일 확장 필드에서 받는 기울임·글자 장식 값이다. 기본값(normal, none)은 플러그인이 적지 않는다.
+const FONT_STYLES = ['italic'] as const;
+const TEXT_DECORATIONS = ['underline', 'line-through'] as const;
 // Primitive 변수 모음이다. 컴포넌트는 Semantic·Component 변수를 쓰므로 클래스를 만들지 않는다.
 const PRIMITIVE_COLLECTION = 'Primitive';
 // 배경 흐림이 있는 효과 스타일은 그림자와 배경 흐림을 이 접미사의 변수 둘로 나눈다.
@@ -918,8 +921,58 @@ function textUtility(
       `font-weight: ${field('fontWeight', (raw) => formatNumber(numberValue(raw, source)))};`,
       `line-height: ${field('lineHeight', (raw) => lineHeightValue(raw, source))};`,
       `letter-spacing: ${field('letterSpacing', (raw) => letterSpacingValue(raw, source))};`,
+      ...textStyleDecorations(token, source),
     ],
   };
+}
+
+/**
+ * 글자 스타일 확장 필드의 기울임과 글자 장식을 CSS 선언으로 바꾼다. 값이 없으면 기본값이라 선언하지 않는다.
+ * 글자 장식은 `text-decoration-line`으로 쓴다. 줄임 속성 `text-decoration`은 색·모양까지 기본값으로
+ * 되돌려, 사용처가 따로 준 장식 색을 지우기 때문이다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param token 글자 스타일
+ * @param source 오류 메시지에 쓸 경로
+ * @returns `font-style`, `text-decoration-line` 선언
+ */
+function textStyleDecorations(token: FlatToken, source: string): string[] {
+  const extension = token.extensions[SEOJAEWAN_EXTENSION];
+  if (!isRecord(extension)) {
+    return [];
+  }
+  const lines: string[] = [];
+  const { fontStyle, textDecoration } = extension;
+  if (fontStyle !== undefined) {
+    lines.push(`font-style: ${allowedValue(fontStyle, FONT_STYLES, 'fontStyle', source)};`);
+  }
+  if (textDecoration !== undefined) {
+    const line = allowedValue(textDecoration, TEXT_DECORATIONS, 'textDecoration', source);
+    lines.push(`text-decoration-line: ${line};`);
+  }
+  return lines;
+}
+
+/**
+ * 정해진 값 가운데 하나인지 확인한다.
+ * @param value 토큰 값
+ * @param allowed 받는 값
+ * @param key 오류 메시지에 쓸 값 이름
+ * @param source 오류 메시지에 쓸 경로
+ * @returns 그 값
+ */
+function allowedValue(
+  value: unknown,
+  allowed: readonly string[],
+  key: string,
+  source: string,
+): string {
+  if (typeof value === 'string' && allowed.includes(value)) {
+    return value;
+  }
+  throw new TokenFormatError(
+    source,
+    `${key} ${JSON.stringify(value)}는 변환 규칙이 없다(${allowed.join(', ')}만 옮긴다).`,
+  );
 }
 
 /**
