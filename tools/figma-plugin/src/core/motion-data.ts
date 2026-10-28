@@ -44,6 +44,8 @@ export type TrackData = {
   /** 노드 이름(컴포넌트·자산·레이어 이름) */
   node: string;
   nodeKind: MotionNodeKind;
+  /** 키프레임이 걸린 피그마 노드 ID */
+  nodeId: string;
   /** 견본 기준 레이어 경로(`ProgressRing / Arc`) */
   path: string;
   /** 피그마 항목 이름(`ROTATION`, `SCALE_XY`, `fills[0]`, `effects[0].RADIUS`) */
@@ -58,6 +60,8 @@ export type TrackData = {
 export type ReadProblem = {
   /** 견본 기준 레이어 경로와 항목 */
   path: string;
+  /** 문제가 있는 피그마 노드 ID */
+  nodeId: string;
   reason: string;
   fix: string;
 };
