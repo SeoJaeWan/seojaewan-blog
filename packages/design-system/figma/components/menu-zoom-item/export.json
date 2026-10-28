@@ -1,0 +1,16 @@
+{
+  "name": "MenuZoomItem",
+  "nodeId": "1377:9817",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 32,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1377:9817",
+      "properties": {}
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Callout",
+  "nodeId": "1380:1131",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 134,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1131",
+      "properties": {}
+    }
+  }
+}
