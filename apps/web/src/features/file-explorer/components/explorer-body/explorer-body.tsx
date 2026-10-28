@@ -187,7 +187,6 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const [menu, setMenu] = useState<OpenMenu | null>(null);
   const [isEmptyDialogOpen, setIsEmptyDialogOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [focusedItemId, setFocusedItemId] = useState<string | null>(null);
   // 메뉴에서 고른 이름 바꾸기(새 폴더 포함). 메뉴가 닫히며 돌아가는 포커스에 입력창이 닫히지 않게, 닫힌 뒤 시작한다.
   const [pendingRenameId, setPendingRenameId] = useState<string | null>(null);
   // 메뉴의 삭제로 지운 뒤 포커스를 옮길 항목(null이면 항목 자리). 메뉴가 닫힌 뒤 옮긴다.
@@ -736,12 +735,6 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       [ITEM_ATTRIBUTE]: id,
       [DROP_TARGET_ATTRIBUTE]: canBeDropTarget(item) ? id : undefined,
       [DROP_TARGET_NAME_ATTRIBUTE]: canBeDropTarget(item) ? item.name : undefined,
-      onFocus: () => {
-        setFocusedItemId(id);
-      },
-      onBlur: () => {
-        setFocusedItemId((current) => (current === id ? null : current));
-      },
       onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
         if (rename.renamingId === id || event.button !== 0) {
           return;
@@ -906,7 +899,6 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       ...getItemProps(item),
       name: item.name,
       selected: isSelected || item.id === dragTargetId,
-      focused: isSelected && focusedItemId === item.id,
       cut: cutSet.has(item.id),
       renaming: isRenaming,
       renameFieldProps: isRenaming ? rename.renameFieldProps : undefined,
