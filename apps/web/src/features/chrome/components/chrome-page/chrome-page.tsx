@@ -1,4 +1,4 @@
-import type { JSX, KeyboardEvent, MouseEventHandler, ReactNode } from 'react';
+import type { ComponentProps, JSX, KeyboardEvent, MouseEventHandler, ReactNode, Ref } from 'react';
 
 import {
   EmptyState,
@@ -29,6 +29,8 @@ type ChromePageCommonProps = {
   layout?: ChromePageLayout;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다 */
   className?: string;
+  /** 페이지를 스크롤하는 상자. 글 화면이 지금 읽는 위치를 잴 때 쓴다 */
+  scrollRef?: Ref<HTMLDivElement>;
 };
 
 type ChromePostPageProps = {
@@ -38,14 +40,24 @@ type ChromePostPageProps = {
   meta: string;
   /** 글 제목 */
   title: string;
-  /** 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다 */
+  /** 목차 항목. wide는 오른쪽에 펼치고, narrow는 제목 아래 접은 목차로 보인다. 비어 있으면 목차를 그리지 않는다 */
   toc: readonly ChromePageTocItem[];
+  /** 목차 항목을 눌렀을 때(클릭·Enter·Space). 누른 항목의 순서를 받는다 */
+  onTocItemSelect?: (index: number) => void;
+  /** narrow에서 목차를 펼쳤는지. 펼치면 접은 목차 대신 항목 목록을 보인다 */
+  isTocExpanded?: boolean;
+  /** narrow에서 목차를 누르면 펼치거나 접는다 */
+  onTocToggle?: () => void;
   /** 글 본문 자리. Notion 글을 바꾼 블록(문단, 제목, 코드 블록 등)을 넣는다. 블록 사이 간격은 이 화면이 정한다 */
   children?: ReactNode;
   /** 이전 글 제목. 없으면 카드를 그리지 않는다 */
   previousTitle?: string;
   /** 다음 글 제목. 없으면 카드를 그리지 않는다 */
   nextTitle?: string;
+  /** 이전 글 카드를 눌렀을 때(클릭·Enter·Space) */
+  onPreviousOpen?: () => void;
+  /** 다음 글 카드를 눌렀을 때(클릭·Enter·Space) */
+  onNextOpen?: () => void;
 };
 
 type ChromeNewTabPageProps = {
@@ -93,20 +105,50 @@ const NEW_TAB_SEARCH_PLACEHOLDER = '글 검색 또는 URL 입력';
 
 /**
  * 글 화면. wide는 글(최대 720)과 오른쪽 목차(220)를 가운데에 놓고, narrow는 글 머리 아래에 접은 목차를 둔다.
+ * wide의 목차는 스크롤해도 오른쪽에 붙어 있다(sticky). 목차 항목이 없으면 목차를 그리지 않는다.
+ * narrow의 접은 목차를 누르면 펼치고, 펼친 목차의 머리(제목)를 누르면 다시 접는다(클릭·Enter·Space).
  * @param props
  * @returns 글 화면
  */
 function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const { layout, meta, title, toc, children, previousTitle, nextTitle } = props;
+  const {
+    layout,
+    meta,
+    title,
+    toc,
+    children,
+    previousTitle,
+    nextTitle,
+    onTocItemSelect,
+    isTocExpanded = false,
+    onTocToggle,
+    onPreviousOpen,
+    onNextOpen,
+  } = props;
   const isWide = layout === 'wide';
   const tocItems = toc.map(
     /**
      * 목차 항목 하나를 그린다.
      * @param item 목차 항목
+     * @param index 순서
      * @returns TocItem
      */
-    (item) => <TocItem key={item.label} label={item.label} active={item.active} />,
+    (item, index) => {
+      return (
+        <TocItem
+          key={String(index) + item.label}
+          label={item.label}
+          active={item.active}
+          {...(onTocItemSelect === undefined
+            ? {}
+            : getOpenableRowProps(() => {
+                onTocItemSelect(index);
+              }))}
+        />
+      );
+    },
   );
+  const hasToc = toc.length > 0;
   const device = isWide ? 'desktop' : 'mobile';
   return (
     <div
@@ -122,7 +164,15 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         >
           {title}
         </h1>
-        {!isWide && <Toc state="collapsed" className="w-full" />}
+        {!isWide && hasToc && (
+          <Toc
+            state={isTocExpanded ? 'expanded' : 'collapsed'}
+            className="w-full"
+            {...(onTocToggle === undefined ? {} : getTocToggleProps(isTocExpanded, onTocToggle))}
+          >
+            {isTocExpanded ? tocItems : undefined}
+          </Toc>
+        )}
         {children}
         <Separator className="w-full" />
         {/* 피그마 `prev / next` 배치 프레임이다. wide는 가로로 반씩, narrow는 세로로 쌓는다 */}
@@ -136,6 +186,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
               direction="prev"
               device={device}
               title={previousTitle}
+              {...(onPreviousOpen === undefined ? {} : getOpenableRowProps(onPreviousOpen))}
               className={isWide ? 'min-w-0 flex-1' : 'w-full'}
             />
           )}
@@ -144,12 +195,15 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
               direction="next"
               device={device}
               title={nextTitle}
+              {...(onNextOpen === undefined ? {} : getOpenableRowProps(onNextOpen))}
               className={isWide ? 'min-w-0 flex-1' : 'w-full'}
             />
           )}
         </nav>
       </article>
-      {isWide && <Toc className="w-220 shrink-0">{tocItems}</Toc>}
+      {isWide && hasToc && (
+        <Toc className="sticky top-48 w-220 shrink-0 self-start">{tocItems}</Toc>
+      )}
     </div>
   );
 }
@@ -300,7 +354,7 @@ function NotFoundPage(props: ChromeNotFoundPageProps & { layout: ChromePageLayou
  * @param props
  */
 export function ChromePage(props: ChromePageProps): JSX.Element {
-  const { layout = 'wide', className } = props;
+  const { layout = 'wide', className, scrollRef } = props;
   let content: JSX.Element;
   switch (props.page) {
     case 'post': {
@@ -322,6 +376,7 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
   }
   return (
     <div
+      ref={scrollRef}
       className={['flex flex-col overflow-y-auto bg-chrome-page-fill', className]
         .filter(Boolean)
         .join(' ')}
@@ -362,4 +417,16 @@ function getOpenableRowProps(open: () => void): {
       open();
     }
   }
+}
+
+/**
+ * narrow 목차를 펼치거나 접는 속성. 접은 목차는 목차 전체, 펼친 목차는 머리(제목)가 버튼 역할이고
+ * 클릭·Enter·Space로 펼치거나 접는다. 펼친 목차의 항목과 버튼이 겹치지 않게 머리만 버튼으로 둔다.
+ * @param isExpanded 펼쳤는지
+ * @param toggle 펼치거나 접는 함수
+ * @returns 목차 속성
+ */
+function getTocToggleProps(isExpanded: boolean, toggle: () => void): ComponentProps<typeof Toc> {
+  const buttonProps = { ...getOpenableRowProps(toggle), 'aria-expanded': isExpanded };
+  return isExpanded ? { titleProps: buttonProps } : buttonProps;
 }
