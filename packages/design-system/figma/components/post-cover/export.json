@@ -1,0 +1,16 @@
+{
+  "name": "PostCover",
+  "nodeId": "1380:1105",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 240,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1105",
+      "properties": {}
+    }
+  }
+}
