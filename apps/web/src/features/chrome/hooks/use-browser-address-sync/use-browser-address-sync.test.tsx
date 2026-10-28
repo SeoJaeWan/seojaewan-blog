@@ -85,3 +85,14 @@ describe('창 동작:브라우저 주소', () => {
     expect(replaceState).not.toHaveBeenCalled();
   });
 });
+
+// @codocs [[창 동작:새로고침과 첫 진입]]
+describe('창 동작:새로고침과 첫 진입', () => {
+  it('주소로 들어온 첫 창을 열기 전에는 들어온 주소를 `/`로 바꾸지 않는다', () => {
+    window.history.replaceState(null, '', '/posts/rsc');
+    renderHook(() => {
+      useBrowserAddressSync(false);
+    });
+    expect(window.location.pathname).toBe('/posts/rsc');
+  });
+});

@@ -14,6 +14,10 @@ import { RestartScreen } from '@/shell/components/restart-screen/restart-screen'
 import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
 import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-app-window-renderer';
 import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-window-title';
+import {
+  type InitialPage,
+  useInitialWindow,
+} from '@/shell/hooks/use-initial-window/use-initial-window';
 
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
@@ -25,18 +29,21 @@ import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-wi
  * 그래서 서버 HTML과 첫 클라이언트 렌더는 저장분 없이 초기 구조로 같게 그리고(수화 불일치 없음), 저장된 배치는 그 뒤에 보인다.
  * @codocs [[작업 공간:다시 시작]]
  * @codocs [[작업 공간:방문자별 저장]]
+ * 주소로 처음 들어왔으면(`initialPage`) 그 주소의 Chrome 창 하나를 연 채로 시작하고, 그 창을 열 때까지 브라우저 주소를 그대로 둔다.
  * @codocs [[창 동작:브라우저 주소]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
  * @param props
  */
 export function Shell(props: ShellProps): JSX.Element {
-  const { posts } = props;
+  const { posts, initialPage = null } = props;
   const generation = useRestartStore((state) => state.generation);
   const phase = useRestartStore((state) => state.phase);
   const mainRef = useRef<HTMLElement>(null);
   const wasRestartingRef = useRef(false);
   const isRestarting = phase !== 'idle';
+  const isInitialWindowPending = useInitialWindow(initialPage);
   // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
-  useBrowserAddressSync();
+  useBrowserAddressSync(!isInitialWindowPending);
 
   useEffect(
     /** 마운트한 뒤 브라우저 저장분을 읽어 작업 공간을 되살린다. */
@@ -73,6 +80,8 @@ export function Shell(props: ShellProps): JSX.Element {
 type ShellProps = {
   /** 서버(`content/`)가 읽은 글 색인 */
   posts: readonly PostSummary[];
+  /** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`, 찾을 수 없음). `/`이면 없다 */
+  initialPage?: InitialPage;
 };
 
 type ShellDesktopProps = {

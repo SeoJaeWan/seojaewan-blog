@@ -11,19 +11,23 @@ const HOME_PATH = '/';
  * 브라우저 주소창이 글만 따라가게 한다. 맨 앞 창이 글을 보는 Chrome 탭이면 그 글의 주소(`/posts/<slug>`), 그 밖은 `/`다.
  * 주소만 바꾸고 브라우저 기록에는 쌓지 않는다(`history.replaceState`). 다시 시작하면 창이 모두 닫혀 `/`로 돌아간다.
  * 창 하나마다가 아니라 화면 전체에서 한 번만 써야 해서(작업 표시줄 미리보기·Snap Assist가 창을 여러 번 그린다) shell이 부른다.
+ * 주소로 처음 들어와 그 주소의 창을 아직 열지 않은 동안(`isEnabled`가 false)은 주소를 바꾸지 않는다. 창이 없는 첫 렌더에서
+ * 들어온 글 주소를 `/`로 덮어쓰지 않기 위해서다.
  * @codocs [[창 동작:브라우저 주소]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
+ * @param isEnabled 주소를 맞출지. 주소로 들어온 첫 창을 열기 전에는 false다
  */
-export function useBrowserAddressSync(): void {
+export function useBrowserAddressSync(isEnabled = true): void {
   const path = useWindowStore(getBrowserPath);
 
   useEffect(
     /** 브라우저 주소가 다르면 기록을 쌓지 않고 바꾼다. */
     () => {
-      if (window.location.pathname !== path) {
+      if (isEnabled && window.location.pathname !== path) {
         window.history.replaceState(window.history.state, '', path);
       }
     },
-    [path],
+    [isEnabled, path],
   );
 }
 
