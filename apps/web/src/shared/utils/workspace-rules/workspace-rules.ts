@@ -862,6 +862,32 @@ export function restoreItems(state: WorkspaceState, ids: readonly string[]): Wor
 }
 
 /**
+ * 휴지통에 있는 글 하나를 주소로 열 때 복원한다. 휴지통에 바로 든 글은 `restoreItems`의 복원 규칙을 따르고,
+ * 휴지통에 든 폴더 안의 글은 원래 상위 폴더가 휴지통에 있으므로 그 글만 바탕화면으로 꺼낸다. 폴더는 휴지통에 그대로 둔다.
+ * @codocs [[Chrome:휴지통에 있는 글]]
+ * @codocs [[작업 공간:휴지통]]
+ * @param state 작업 공간 상태
+ * @param id 글 id
+ * @returns 새 상태. 글이 아니거나 휴지통에 없으면 거부한다
+ */
+export function restoreTrashedPost(state: WorkspaceState, id: string): WorkspaceResult {
+  const item = state.items[id];
+  if (item?.kind !== 'post') {
+    return { ok: false, reason: 'not-found' };
+  }
+  if (item.trash !== null) {
+    return restoreItems(state, [id]);
+  }
+  if (!isItemInTrash(state, id)) {
+    return { ok: false, reason: 'not-in-trash' };
+  }
+  return {
+    ok: true,
+    state: { ...state, items: { ...state.items, [id]: { ...item, parentId: null } } },
+  };
+}
+
+/**
  * 위치에 바로 들어 있는 항목을 넣은 차례대로 돌려준다. 바탕화면(null)에는 휴지통도 있다. 휴지통 id를 주면 휴지통에 보낸 항목이다.
  * @codocs [[작업 공간:배치]]
  * @param state 작업 공간 상태
