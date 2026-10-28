@@ -6,7 +6,11 @@ import type {
   WindowBounds,
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
-import { getSnapZoneRect } from '@/shared/utils/window-rules/window-rules';
+import {
+  getSnapZoneRect,
+  getVisibleWindowBounds,
+  VISIBLE_TITLE_BAR,
+} from '@/shared/utils/window-rules/window-rules';
 
 /** 작업 영역 위 한 점(px). 작업 영역 왼쪽 위가 원점이다 */
 export type WindowPoint = {
@@ -40,12 +44,6 @@ export const SNAP_EDGE_DISTANCE = 8;
 export const SNAP_CORNER_SIZE = 64;
 
 /**
- * 창이 화면 밖으로 나가도 작업 영역 안에 남기는 제목 표시줄 크기(px).
- * 가로는 창 버튼 셋(138px)보다 넓어, 창이 왼쪽 밖으로 나가도 버튼이 아닌 잡을 곳이 남는다. 세로는 제목 표시줄 높이(32·40px)다.
- */
-export const VISIBLE_TITLE_BAR = { width: 200, height: 40 } as const;
-
-/**
  * 누른 자리에서 끌기를 시작할 만큼 움직였는지 본다.
  * @param start 누른 자리
  * @param current 지금 포인터 자리
@@ -72,7 +70,7 @@ export function moveWindowBounds(
   delta: WindowPoint,
   workArea: WindowWorkArea,
 ): WindowBounds {
-  return keepTitleBarVisible({ ...start, x: start.x + delta.x, y: start.y + delta.y }, workArea);
+  return getVisibleWindowBounds({ ...start, x: start.x + delta.x, y: start.y + delta.y }, workArea);
 }
 
 /**
@@ -138,7 +136,7 @@ export function getDetachedBounds(
   workArea: WindowWorkArea,
 ): WindowBounds {
   const ratio = rect.width > 0 ? Math.min(Math.max((grab.x - rect.x) / rect.width, 0), 1) : 0;
-  return keepTitleBarVisible(
+  return getVisibleWindowBounds(
     {
       x: Math.round(pointer.x - ratio * size.width),
       y: pointer.y - (grab.y - rect.y),
@@ -217,19 +215,4 @@ export function isSameDragSnapTarget(
     return left?.type === right?.type;
   }
   return left.zone.layout === right.zone.layout && left.zone.index === right.zone.index;
-}
-
-/**
- * 창 자리를 옮겨 제목 표시줄 일부가 작업 영역 안에 남게 한다. 크기는 바꾸지 않는다.
- * @param bounds 창 자리
- * @param workArea 작업 영역 크기
- * @returns 보정한 자리
- */
-function keepTitleBarVisible(bounds: WindowBounds, workArea: WindowWorkArea): WindowBounds {
-  const x = Math.min(
-    Math.max(bounds.x, VISIBLE_TITLE_BAR.width - bounds.width),
-    workArea.width - VISIBLE_TITLE_BAR.width,
-  );
-  const y = Math.min(Math.max(bounds.y, 0), workArea.height - VISIBLE_TITLE_BAR.height);
-  return { ...bounds, x, y };
 }

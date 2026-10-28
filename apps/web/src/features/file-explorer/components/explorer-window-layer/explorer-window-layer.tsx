@@ -200,7 +200,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
     }
   }
 
-  /** 새 탭을 `Blog` 폴더로 연다. */
+  /** 새 탭(+)을 "바탕 화면" 위치로 연다. */
   function handleNewTab(): void {
     update(openNewTab(content, workspace));
   }

@@ -8,7 +8,6 @@ import type {
   ExplorerWindowContent,
 } from '@/shared/utils/window-rules/window-rules';
 import {
-  BLOG_FOLDER_ID,
   DESKTOP_LOCATION_KEY,
   DESKTOP_NAME,
   type FolderTreeNode,
@@ -47,7 +46,7 @@ const MAX_TREE_LEVEL = 3;
  */
 export function getActiveTab(content: ExplorerWindowContent): ExplorerTabState {
   const tab = content.tabs[content.activeTabIndex] ?? content.tabs[0];
-  return tab ?? { id: 'tab-1', history: [BLOG_FOLDER_ID], historyIndex: 0 };
+  return tab ?? { id: 'tab-1', history: [null], historyIndex: 0 };
 }
 
 /**
@@ -259,18 +258,19 @@ export function closeTab(
 }
 
 /**
- * 새 탭을 열어 맨 끝에 두고 고른다. 새 탭(+)은 `Blog` 폴더, 우클릭 메뉴의 새 탭에서 열기는 그 폴더다.
+ * 새 탭을 열어 맨 끝에 두고 고른다. 새 탭(+)은 "바탕 화면" 위치, 우클릭 메뉴의 새 탭에서 열기는 그 폴더다.
+ * @codocs [[창 동작:열기 규칙]]
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @param content 탐색기 창 내용
  * @param workspace 작업 공간
- * @param target 새 탭이 볼 위치. 주지 않으면 `Blog` 폴더다
+ * @param target 새 탭이 볼 위치. 주지 않으면 바탕화면(null)이다
  * @returns 새 창 내용
  */
 export function openNewTab(
   content: ExplorerWindowContent,
   workspace: ExplorerWorkspace,
-  target: ExplorerLocation = BLOG_FOLDER_ID,
+  target: ExplorerLocation = null,
 ): ExplorerWindowContent {
   const serial = content.lastTabSerial + 1;
   const location = resolveLocation(workspace, target);

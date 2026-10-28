@@ -5,7 +5,7 @@ test('Start 전원 메뉴에서 다시 시작하면 재부팅 화면이 보였�
   page,
 }) => {
   await page.goto('/');
-  const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+  const explorer = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
   await page.getByRole('button', { name: '파일 탐색기' }).click();
   await expect(explorer).toBeVisible();
 

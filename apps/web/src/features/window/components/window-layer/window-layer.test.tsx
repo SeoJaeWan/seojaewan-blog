@@ -275,22 +275,64 @@ describe('창 동작:창 조작 - 화면 크기가 바뀔 때', () => {
     vi.unstubAllGlobals();
   });
 
-  it('화면이 줄어 창이 작업 영역을 벗어나면 저장소의 창 자리를 작업 영역 안으로 보정한다', () => {
-    renderLayer(1);
-    const before = useWindowStore.getState().windows['window-1']?.bounds;
-    expect(before).toEqual({ x: 448, y: 196, width: 1024, height: 640 });
+  /**
+   * 브라우저 화면 크기를 바꾼다. 작업 영역은 높이에서 작업 표시줄(48)을 뺀 크기다.
+   * @param width 화면 너비
+   * @param height 화면 높이
+   */
+  function resizeScreen(width: number, height: number): void {
     act(() => {
-      vi.stubGlobal('innerWidth', 800);
-      vi.stubGlobal('innerHeight', 500);
+      vi.stubGlobal('innerWidth', width);
+      vi.stubGlobal('innerHeight', height);
       window.dispatchEvent(new Event('resize'));
     });
-    // 작업 영역 800×452(500 - 작업 표시줄 48)에 맞게 줄이고 안으로 옮긴다
-    expect(useWindowStore.getState().windows['window-1']?.bounds).toEqual({
-      x: 0,
-      y: 0,
-      width: 800,
-      height: 452,
-    });
+  }
+
+  it('제목 표시줄이 화면 밖으로 나가게 되면 보이는 동안만 당겨 그리고 저장소의 자리는 그대로 둔다', () => {
+    renderLayer(1);
+    resizeScreen(500, 200);
+    const region = screen.getByRole('region', { name: '창 1' });
+    // 작업 영역 500×152에서 제목 표시줄 200×40이 남는 자리(가로 500 - 200, 세로 152 - 40)로 당긴다
+    expect(region.style.left).toBe('300px');
+    expect(region.style.top).toBe('112px');
+    expect(getStoredWindow('window-1')?.bounds).toEqual(FIRST_BOUNDS);
+  });
+
+  it('창 크기는 줄이지 않는다', () => {
+    renderLayer(1);
+    resizeScreen(500, 200);
+    const region = screen.getByRole('region', { name: '창 1' });
+    expect(region.style.width).toBe('1024px');
+    expect(region.style.height).toBe('640px');
+  });
+
+  it('화면이 다시 커지면 원래 자리로 돌아간다', () => {
+    renderLayer(1);
+    resizeScreen(500, 200);
+    resizeScreen(1920, 1080);
+    const region = screen.getByRole('region', { name: '창 1' });
+    expect(region.style.left).toBe('448px');
+    expect(region.style.top).toBe('196px');
+  });
+
+  it('제목 표시줄이 화면 안에 남으면 창 자리를 그대로 그린다', () => {
+    renderLayer(1);
+    resizeScreen(1000, 600);
+    const region = screen.getByRole('region', { name: '창 1' });
+    expect(region.style.left).toBe('448px');
+    expect(region.style.top).toBe('196px');
+  });
+
+  it('당겨 보이는 동안 끌어서 옮기면 새 자리를 기억한다', () => {
+    renderLayer(1);
+    resizeScreen(500, 200);
+    dragPointer(getWindowParts('창 1').title, [
+      { x: 320, y: 120 },
+      { x: 220, y: 100 },
+    ]);
+    expect(getStoredWindow('window-1')?.bounds).toEqual({ ...FIRST_BOUNDS, x: 200, y: 92 });
+    resizeScreen(1920, 1080);
+    expect(screen.getByRole('region', { name: '창 1' }).style.left).toBe('200px');
   });
 });
 

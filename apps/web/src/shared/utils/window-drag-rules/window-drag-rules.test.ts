@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { MIN_WINDOW_SIZES } from '@/shared/utils/window-rules/window-rules';
+import { MIN_WINDOW_SIZES, VISIBLE_TITLE_BAR } from '@/shared/utils/window-rules/window-rules';
 
 import {
   getDetachedBounds,
@@ -12,7 +12,6 @@ import {
   resizeWindowBounds,
   SNAP_CORNER_SIZE,
   SNAP_EDGE_DISTANCE,
-  VISIBLE_TITLE_BAR,
 } from './window-drag-rules';
 
 const WORK_AREA = { width: 1920, height: 1032 } as const;
