@@ -394,9 +394,10 @@ function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig
 /**
  * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 `Blog` 폴더를 두고, 글의 `폴더` 경로대로
  * `Blog` 아래에 폴더를 만들어 글을 넣는다(경로가 비면 `Blog`). 외부 링크는 설정의 초기 위치에 둔다.
- * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다.
+ * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다. Start 모두 목록의 처음 보기는 범주다.
  * @codocs [[작업 공간:초기 구조]]
  * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[Start 메뉴:모두]]
  * @codocs [[작업 표시줄:고정과 순서]]
  * @param catalog 글 색인과 외부 링크 설정
  * @returns 초기 상태
@@ -431,7 +432,7 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
         .filter((link) => link.pinnedToStart)
         .map((link) => getLinkItemId(link.id)),
     ],
-    startAllView: 'list',
+    startAllView: 'category',
     taskbarPins: INITIAL_TASKBAR_PINS,
     explorerViews: {},
     recentItemIds: [],
