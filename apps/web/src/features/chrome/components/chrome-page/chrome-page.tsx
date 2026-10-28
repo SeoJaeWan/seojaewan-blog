@@ -33,6 +33,11 @@ type ChromePageCommonProps = {
   className?: string;
   /** 페이지를 스크롤하는 상자. 글 화면이 지금 읽는 위치를 잴 때 쓴다 */
   scrollRef?: Ref<HTMLDivElement>;
+  /**
+   * 페이지 본문 배율(1이 100%, [[Chrome:확대/축소]]). 주면 스크롤 상자 안의 본문만 키우거나 줄인다(스크롤 상자 크기는 그대로다).
+   * 주지 않으면 배율을 걸지 않는다(조립 스토리)
+   */
+  zoom?: number;
 };
 
 type ChromePostPageProps = {
@@ -74,8 +79,11 @@ type ChromeNewTabPageProps = {
   latestPosts: readonly ChromePageLatestPost[];
   /** 최신 글 바로가기를 눌렀을 때. 누른 글의 순서를 받는다 */
   onLatestPostOpen?: (index: number) => void;
-  /** 검색창에서 Enter를 눌렀을 때. 입력한 글자를 받는다(주소창과 같이 동작한다) */
-  onSearchSubmit?: (text: string) => void;
+  /**
+   * 가운데 검색창 자리(피그마 `Chrome/NewTabSearch`). 주소창과 같이 동작하는 검색창을 쓰는 곳이 넣는다.
+   * 주지 않으면 닫힌 모습의 `ChromeNewTabSearch`다
+   */
+  search?: ReactNode;
 };
 
 type ChromeSearchResultsPageProps = {
@@ -225,19 +233,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
  * @returns 새 탭 페이지
  */
 function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout }): JSX.Element {
-  const { layout, latestPosts, onLatestPostOpen, onSearchSubmit } = props;
-
-  /**
-   * 검색창에서 Enter를 누르면 입력한 글자를 넘긴다. 한글을 조합하는 중의 Enter는 받지 않는다.
-   * @param event 키 이벤트
-   */
-  function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
-    if (onSearchSubmit !== undefined && event.key === 'Enter' && !event.nativeEvent.isComposing) {
-      event.preventDefault();
-      onSearchSubmit(event.currentTarget.value);
-    }
-  }
-
+  const { layout, latestPosts, onLatestPostOpen, search = <ChromeNewTabSearch /> } = props;
   const isWide = layout === 'wide';
   return (
     <div
@@ -248,7 +244,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
       <p className={['text-text-fill-primary', isWide ? 'type-display' : 'type-title'].join(' ')}>
         {WORDMARK}
       </p>
-      <ChromeNewTabSearch onKeyDown={handleSearchKeyDown} />
+      {search}
       <TileGrid align="center" className={isWide ? 'w-576' : 'w-full max-w-720'}>
         {latestPosts.map(
           /**
@@ -353,13 +349,15 @@ function NotFoundPage(props: ChromeNotFoundPageProps & { layout: ChromePageLayou
  * Chrome 창의 본문(피그마 조립 `Chrome/Page`)을 그린다. 글, 새 탭, 검색 결과, 찾을 수 없음 화면 중 하나를
  * 넓은 창(wide)이나 좁은 창(narrow) 배치로 그린다. 글 본문은 자리 prop(`children`)으로 받는다.
  * 크기는 쓰는 쪽(`Window/Chrome`)이 정한다. 목차 이동·검색·새로고침 같은 동작은 기능을 구현할 때 붙인다.
+ * 배율(`zoom`)은 본문에만 걸어 탭 표시줄과 도구 모음은 그대로다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:글 화면]]
  * @codocs [[Chrome:새 탭 페이지]]
+ * @codocs [[Chrome:확대/축소]]
  * @param props
  */
 export function ChromePage(props: ChromePageProps): JSX.Element {
-  const { layout = 'wide', className, scrollRef } = props;
+  const { layout = 'wide', className, scrollRef, zoom } = props;
   let content: JSX.Element;
   switch (props.page) {
     case 'post': {
@@ -386,7 +384,14 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
         .filter(Boolean)
         .join(' ')}
     >
-      {content}
+      {zoom === undefined ? (
+        content
+      ) : (
+        // 배율은 스크롤 상자 안의 본문에 건다. 스크롤 상자에 걸면 상자 크기까지 바뀌기 때문이다
+        <div className="flex min-h-full w-full flex-col" style={{ zoom }}>
+          {content}
+        </div>
+      )}
     </div>
   );
 }

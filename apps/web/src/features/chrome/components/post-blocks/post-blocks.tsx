@@ -50,6 +50,11 @@ type PostBlocksProps = {
    */
   renderImage?: (block: PostImageBlock) => ReactNode;
   /**
+   * 이미지를 눌렀을 때(클릭·Enter·Space). 주면 이미지가 크게 보기 버튼이 된다. 누른 이미지 블록과, 크게 보기를 닫은 뒤
+   * 포커스를 돌려줄 버튼을 받는다. 주지 않으면 누를 수 없는 이미지다(조립 스토리)
+   */
+  onImageOpen?: (block: PostImageBlock, trigger: HTMLElement) => void;
+  /**
    * 수식 블록의 수식(피그마 Equation `Formula` 슬롯)을 그린다. 없으면 식을 코드 글자로 보인다.
    * 서버가 KaTeX로 그려 보내기 전까지의 자리다([[기술 스택:글 본문 처리]])
    */
@@ -101,7 +106,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * 글자 서식은 굵게·기울임·밑줄·취소선·인라인 코드(배경 없이 코드 서체와 `post/inline-code` 글자색)·링크다.
  * 링크는 블로그 글이면 같은 탭에서 그 글로 가고, 외부 주소면 실제 브라우저의 새 탭(noopener)에서 연다.
  * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 `code-syntax` 색으로 칠하고, 없으면 글자 그대로다.
- * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다.
+ * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다. `onImageOpen`을 주면 이미지를 눌러 크게 보기를 연다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:Notion 블록]]
  * @codocs [[Chrome:글 화면]]
@@ -113,6 +118,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
     resolveLink,
     onPageOpen: handlePageOpen,
     renderImage = renderTemporaryImage,
+    onImageOpen,
     renderEquation = renderEquationText,
     expandedToggleIndexes = [],
     className,
@@ -292,11 +298,30 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
         );
       case 'image': {
         const caption = getPlainText(block.caption);
+        const image = renderImage(block);
         return (
           <Figure
             key={index}
             className="w-full"
-            image={renderImage(block)}
+            image={
+              onImageOpen === undefined ? (
+                image
+              ) : (
+                // Figure가 이미지 칸의 바로 아래 요소에 주는 모양(너비 채우기)을 이미지에도 준다
+                <button
+                  type="button"
+                  aria-label={
+                    caption.length > 0 ? `이미지 크게 보기: ${caption}` : '이미지 크게 보기'
+                  }
+                  onClick={(event) => {
+                    onImageOpen(block, event.currentTarget);
+                  }}
+                  className="cursor-zoom-in [&>*]:block [&>*]:w-full [&>*]:object-cover"
+                >
+                  {image}
+                </button>
+              )
+            }
             caption={caption}
             showCaption={caption.length > 0}
           />
@@ -601,11 +626,19 @@ function toRoman(number: number): string {
 
 /**
  * 이미지 블록의 임시 이미지. Notion 이미지 제공([[Notion 이미지 제공]])이 9단계라 그 전까지 배경화면 Bloom을 그린다.
+ * 글 본문과 이미지 크게 보기가 같은 이미지를 쓴다.
  * @param block 이미지 블록
+ * @param className 이미지 클래스. 크게 보기처럼 크기를 정해야 하는 곳이 준다
  * @returns 임시 이미지
  */
-function renderTemporaryImage(block: PostImageBlock): ReactNode {
-  return <ImageAsset name="images/wallpaper-bloom" alt={getPlainText(block.caption)} />;
+export function renderTemporaryImage(block: PostImageBlock, className?: string): ReactNode {
+  return (
+    <ImageAsset
+      name="images/wallpaper-bloom"
+      alt={getPlainText(block.caption)}
+      className={className}
+    />
+  );
 }
 
 /**

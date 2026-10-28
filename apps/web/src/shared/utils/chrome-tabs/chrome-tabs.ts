@@ -6,7 +6,12 @@ export type ChromeTabPage =
   | { kind: 'new-tab' }
   | { kind: 'post'; slug: string }
   | { kind: 'search'; query: string }
-  | { kind: 'not-found'; url: string };
+  | {
+      kind: 'not-found';
+      url: string;
+      /** 없는 주소로 처음 들어와 연 화면이면 들어온 경로(예: `/posts/none`). 그 화면을 보는 동안 브라우저 주소로 둔다 */
+      entryPath?: string;
+    };
 
 /** Chrome 탭 하나. 뒤로·앞으로 기록은 탭마다 따로 있다 */
 export type ChromeTabState = {

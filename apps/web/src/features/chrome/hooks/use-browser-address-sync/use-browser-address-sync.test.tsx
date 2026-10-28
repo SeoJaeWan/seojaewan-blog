@@ -84,6 +84,37 @@ describe('창 동작:브라우저 주소', () => {
     );
     expect(replaceState).not.toHaveBeenCalled();
   });
+
+  it('없는 글 주소로 들어와 찾을 수 없음 화면을 보고 있으면 들어온 경로를 그대로 둔다', () => {
+    window.history.replaceState(null, '', '/posts/none');
+    renderHook(() => {
+      useBrowserAddressSync();
+    });
+    act(() => {
+      useWindowStore.getState().open(
+        'chrome',
+        WORK_AREA,
+        createChromeContent({
+          kind: 'not-found',
+          url: 'seojaewan.com/posts/none',
+          entryPath: '/posts/none',
+        }),
+      );
+    });
+    expect(window.location.pathname).toBe('/posts/none');
+  });
+
+  it('주소창에서 연 찾을 수 없음 화면은 `/`다', () => {
+    renderHook(() => {
+      useBrowserAddressSync();
+    });
+    act(() => {
+      useWindowStore
+        .getState()
+        .open('chrome', WORK_AREA, createChromeContent({ kind: 'not-found', url: '/none' }));
+    });
+    expect(window.location.pathname).toBe('/');
+  });
 });
 
 // @codocs [[창 동작:새로고침과 첫 진입]]

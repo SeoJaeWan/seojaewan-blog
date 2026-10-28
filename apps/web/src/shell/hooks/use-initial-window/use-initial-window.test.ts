@@ -31,7 +31,11 @@ describe('창 동작:새로고침과 첫 진입', () => {
     window.history.replaceState(null, '', '/posts/none');
     renderHook(() => useInitialWindow({ kind: 'not-found' }));
     expect(windowContents()).toEqual([
-      createChromeContent({ kind: 'not-found', url: 'seojaewan.com/posts/none' }),
+      createChromeContent({
+        kind: 'not-found',
+        url: 'seojaewan.com/posts/none',
+        entryPath: '/posts/none',
+      }),
     ]);
   });
 
