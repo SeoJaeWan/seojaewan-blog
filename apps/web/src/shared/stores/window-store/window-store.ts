@@ -12,7 +12,6 @@ import type {
 import {
   closeWindow,
   detachWindow,
-  fitWindowsToWorkArea,
   focusWindow,
   INITIAL_WINDOW_STATE,
   maximizeWindow,
@@ -72,8 +71,6 @@ type WindowActions = {
   setContent: (id: string, content: WindowContent) => void;
   /** 끌기·크기 조절을 시작하거나(drag·resize) 끝낸다(null) */
   setInteraction: (interaction: WindowInteraction) => void;
-  /** 화면 크기가 바뀌어 작업 영역이 달라지면 창 자리를 작업 영역 안으로 보정한다 */
-  fitToWorkArea: (workArea: WindowWorkArea) => void;
   /** 창을 모두 닫은 처음 상태로 돌린다(다시 시작) */
   reset: () => void;
 };
@@ -140,9 +137,6 @@ export const useWindowStore = create<WindowState & WindowUiState & WindowActions
     },
     setInteraction: (interaction) => {
       set({ interaction });
-    },
-    fitToWorkArea: (workArea) => {
-      set((state) => fitWindowsToWorkArea(state, workArea));
     },
     reset: () => {
       set({ ...INITIAL_WINDOW_STATE, interaction: null });

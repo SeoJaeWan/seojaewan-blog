@@ -7,8 +7,6 @@ import {
   closeWindow,
   createExplorerContent,
   detachWindow,
-  fitBoundsToWorkArea,
-  fitWindowsToWorkArea,
   focusWindow,
   getFrontWindowId,
   getRemainingSnapZones,
@@ -16,6 +14,7 @@ import {
   getSnapZoneRect,
   getTaskbarAppAction,
   getTaskbarAppIndicator,
+  getVisibleWindowBounds,
   getWindowRect,
   INITIAL_WINDOW_STATE,
   maximizeWindow,
@@ -313,56 +312,51 @@ describe('디자인 기반:모션 클래스 (FLIP)', () => {
 
 // @codocs [[창 동작:창 조작]]
 describe('창 동작:창 조작 - 화면 크기가 바뀔 때 창 자리', () => {
-  it('창이 작업 영역 안에 있으면 그대로 둔다', () => {
-    const bounds = { x: 100, y: 50, width: 800, height: 600 };
-    expect(fitBoundsToWorkArea(bounds, WORK_AREA)).toBe(bounds);
+  it('제목 표시줄(200×40)이 작업 영역 안에 남으면 자리를 그대로 둔다', () => {
+    const bounds = { x: 800, y: 500, width: 600, height: 400 };
+    expect(getVisibleWindowBounds(bounds, { width: 1000, height: 600 })).toBe(bounds);
   });
 
-  it('작업 영역이 줄어 창이 오른쪽·아래로 벗어나면 제목 표시줄이 안에 남도록 안으로 옮긴다', () => {
+  it('제목 표시줄이 오른쪽·아래로 나가게 되면 200×40이 남는 자리로 당긴다', () => {
     expect(
-      fitBoundsToWorkArea(
-        { x: 800, y: 500, width: 600, height: 400 },
+      getVisibleWindowBounds(
+        { x: 900, y: 580, width: 600, height: 400 },
         { width: 1000, height: 600 },
       ),
-    ).toEqual({ x: 400, y: 200, width: 600, height: 400 });
+    ).toEqual({ x: 800, y: 560, width: 600, height: 400 });
   });
 
-  it('창이 왼쪽·위로 벗어나도 안으로 옮긴다', () => {
+  it('작업 영역보다 큰 창도 크기는 줄이지 않는다', () => {
     expect(
-      fitBoundsToWorkArea(
-        { x: -50, y: -20, width: 600, height: 400 },
-        { width: 1000, height: 600 },
+      getVisibleWindowBounds(
+        { x: 100, y: 40, width: 1280, height: 800 },
+        { width: 700, height: 500 },
       ),
-    ).toEqual({ x: 0, y: 0, width: 600, height: 400 });
+    ).toEqual({ x: 100, y: 40, width: 1280, height: 800 });
   });
 
-  it('창이 작업 영역보다 크면 작업 영역에 맞게 줄이고 가장자리에 붙인다', () => {
-    expect(
-      fitBoundsToWorkArea({ x: 100, y: 40, width: 1280, height: 800 }, { width: 700, height: 500 }),
-    ).toEqual({ x: 0, y: 0, width: 700, height: 500 });
+  it('떠 있는 창은 보이는 동안만 당겨 그리고 기억한 자리는 바꾸지 않는다', () => {
+    const { state, ids } = openAll(['file-explorer']);
+    const target = state.windows[ids[0] ?? ''];
+    if (target === undefined) {
+      throw new Error('창이 없다');
+    }
+    expect(getWindowRect(target, { width: 600, height: 300 })).toEqual({
+      ...target.bounds,
+      x: 400,
+    });
+    expect(getWindowRect(target, WORK_AREA)).toBe(target.bounds);
   });
 
-  it('떠 있는 창 자리를 모두 보정하고, 바꿀 창이 없으면 상태를 그대로 돌려준다', () => {
-    const { state, ids } = openAll(['chrome', 'file-explorer']);
-    const [first, second] = ids;
-    expect(fitWindowsToWorkArea(state, WORK_AREA)).toBe(state);
-    const fitted = fitWindowsToWorkArea(state, { width: 900, height: 500 });
-    expect(fitted.windows[first ?? '']?.bounds).toEqual({ x: 0, y: 0, width: 900, height: 500 });
-    expect(fitted.windows[second ?? '']?.bounds).toEqual({ x: 0, y: 0, width: 900, height: 500 });
-  });
-
-  it('최대화한 창도 떠 있을 때 자리를 보정해, 이전 크기로 복원해도 안에 들어온다', () => {
+  it('최대화한 창을 줄어든 화면에서 이전 크기로 복원하면 원래 자리를 당겨 보인다', () => {
     const { state, ids } = openAll(['file-explorer']);
     const id = ids[0] ?? '';
-    const maximized = maximizeWindow(state, id);
-    const fitted = fitWindowsToWorkArea(maximized, { width: 800, height: 400 });
-    expect(fitted.windows[id]?.placement).toBe('maximized');
-    expect(restoreFromMaximize(fitted, id).windows[id]?.bounds).toEqual({
-      x: 0,
-      y: 0,
-      width: 800,
-      height: 400,
-    });
+    const restored = restoreFromMaximize(maximizeWindow(state, id), id).windows[id];
+    if (restored === undefined) {
+      throw new Error('창이 없다');
+    }
+    expect(restored.bounds).toEqual(state.windows[id]?.bounds);
+    expect(getWindowRect(restored, { width: 600, height: 300 })).toMatchObject({ x: 400 });
   });
 });
 
