@@ -136,11 +136,11 @@ describe('파일 탐색기:탭', () => {
     expect(getParentLocation(workspace, RECYCLE_BIN_ID)).toBeNull();
   });
 
-  it('새 탭은 Blog 폴더로 열고 그 탭을 고른다', () => {
+  it('새 탭(+)은 바탕 화면 위치로 열고 그 탭을 고른다', () => {
     const content = openNewTab(visit(REACT), workspace);
     expect(content.tabs).toHaveLength(2);
     expect(content.activeTabIndex).toBe(1);
-    expect(getCurrentLocation(content)).toBe(BLOG_FOLDER_ID);
+    expect(getCurrentLocation(content)).toBeNull();
   });
 
   it('새 탭에서 열기는 그 폴더를 보는 새 탭을 열고 고른다', () => {

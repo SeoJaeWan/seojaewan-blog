@@ -40,6 +40,8 @@ type ExplorerContentProps = Pick<
   | 'searchValue'
   | 'onSearchChange'
   | 'onSearch'
+  | 'search'
+  | 'onSearchClose'
 > &
   Pick<
     StatusBarProps,
@@ -103,6 +105,8 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     onRefresh: handleRefresh,
     onSearchChange: handleSearchChange,
     onSearch: handleSearch,
+    search,
+    onSearchClose: handleSearchClose,
     onDetailsView: handleDetailsView,
     onLargeIconsView: handleLargeIconsView,
     onKeyDown: handleKeyDown,
@@ -145,6 +149,8 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         onRefresh={handleRefresh}
         onSearchChange={handleSearchChange}
         onSearch={handleSearch}
+        search={search}
+        onSearchClose={handleSearchClose}
       >
         {path}
       </ExplorerAddressRow>

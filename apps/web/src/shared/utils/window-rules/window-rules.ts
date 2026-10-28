@@ -10,7 +10,6 @@ import {
   navigateChromeTab,
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
-import { BLOG_FOLDER_ID } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
@@ -185,18 +184,26 @@ export const MIN_WINDOW_SIZES = {
 /** 계단식으로 열 때 새 창을 앞 창보다 오른쪽 아래로 비켜 놓는 거리(px) */
 export const WINDOW_CASCADE_OFFSET = 32;
 
+/**
+ * 창이 화면 밖으로 나가도 작업 영역 안에 남기는 제목 표시줄 크기(px).
+ * 가로는 창 버튼 셋(138px)보다 넓어, 창이 왼쪽 밖으로 나가도 버튼이 아닌 잡을 곳이 남는다. 세로는 제목 표시줄 높이(32·40px)다.
+ */
+export const VISIBLE_TITLE_BAR = { width: 200, height: 40 } as const;
+
 /** 창이 하나도 없는 처음 상태 */
 export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as const;
 
 /**
- * 앱을 처음 열 때의 창 내용. 탐색기는 `Blog` 폴더(새 탭이 `Blog`로 여는 것과 같다), Chrome은 새 탭 페이지 하나다.
+ * 앱을 처음 열 때의 창 내용. 탐색기는 위치 없이 열면 늘 "바탕 화면" 위치(새 탭(+)과 같다), Chrome은 새 탭 페이지 하나다.
+ * 작업 표시줄·Start의 File Explorer와 작업 표시줄 우클릭 메뉴의 새 창이 모두 이 내용으로 연다.
+ * @codocs [[창 동작:열기 규칙]]
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[Chrome:새 탭 페이지]]
  * @param app 앱
  * @returns 창 내용
  */
 export function getDefaultWindowContent(app: WindowApp): WindowContent {
-  return app === 'file-explorer' ? createExplorerContent(BLOG_FOLDER_ID) : createChromeContent();
+  return app === 'file-explorer' ? createExplorerContent(null) : createChromeContent();
 }
 
 /**
@@ -608,8 +615,10 @@ export function getRemainingSnapZones(zone: SnapZone): SnapZone[] {
 }
 
 /**
- * 창이 지금 화면에서 차지하는 자리를 구한다. 떠 있으면 `bounds`, 최대화면 작업 영역 전체, 스냅이면 그 칸이다.
+ * 창이 지금 화면에서 차지하는 자리를 구한다. 최대화면 작업 영역 전체, 스냅이면 그 칸이다. 떠 있으면 기억한 자리(`bounds`)이되,
+ * 브라우저 화면이 줄어 제목 표시줄(200×40)이 작업 영역 밖으로 나가면 보이는 동안만 당겨 그린다. 크기는 줄이지 않는다.
  * @codocs [[창 동작:스냅]]
+ * @codocs [[창 동작:창 조작]]
  * @param window 창
  * @param workArea 작업 영역 크기
  * @returns 창 자리
@@ -621,7 +630,7 @@ export function getWindowRect(window: OpenWindow, workArea: WindowWorkArea): Win
   if (window.placement === 'snapped' && window.snapZone !== null) {
     return getSnapZoneRect(window.snapZone, workArea);
   }
-  return window.bounds;
+  return getVisibleWindowBounds(window.bounds, workArea);
 }
 
 /** 최대화·복원·스냅 FLIP의 시작 값. 새 자리에서 이전 자리로 되돌리는 이동(px)과 배율이다 */
@@ -654,46 +663,25 @@ export function getSnapFlip(from: WindowBounds, to: WindowBounds): SnapFlip {
 }
 
 /**
- * 창 자리(`bounds`)를 작업 영역 안으로 보정한다. 창이 작업 영역보다 크면 작업 영역에 맞게 줄이고, 그 크기로 창 전체(제목 표시줄 포함)가
- * 작업 영역 안에 들어오도록 가장 가까운 자리로 옮긴다. 이미 안에 있으면 그대로다.
+ * 창 자리를 옮겨 제목 표시줄 일부(가로 `VISIBLE_TITLE_BAR.width`, 세로 `VISIBLE_TITLE_BAR.height`)가 작업 영역 안에 남게 하고,
+ * 제목 표시줄이 작업 영역 위로 나가지 않게 한다. 크기는 바꾸지 않는다.
+ * 끌어서 옮길 때의 제한이고, 브라우저 화면 크기가 바뀌었을 때 떠 있는 창을 보이는 동안만 당겨 그릴 때도 쓴다.
+ * 이 함수는 기억한 자리(`bounds`)를 바꾸지 않으므로, 화면이 다시 커지면 원래 자리로 돌아간다.
  * @codocs [[창 동작:창 조작]]
  * @param bounds 창 자리
  * @param workArea 작업 영역 크기
- * @returns 보정한 창 자리. 바꿀 것이 없으면 받은 값 그대로
+ * @returns 보정한 자리. 바꿀 것이 없으면 받은 값 그대로
  */
-export function fitBoundsToWorkArea(bounds: WindowBounds, workArea: WindowWorkArea): WindowBounds {
-  const width = Math.min(bounds.width, workArea.width);
-  const height = Math.min(bounds.height, workArea.height);
-  const x = Math.min(Math.max(bounds.x, 0), workArea.width - width);
-  const y = Math.min(Math.max(bounds.y, 0), workArea.height - height);
-  if (x === bounds.x && y === bounds.y && width === bounds.width && height === bounds.height) {
-    return bounds;
-  }
-  return { x, y, width, height };
-}
-
-/**
- * 화면 크기가 바뀌어 작업 영역이 달라졌을 때 모든 창의 자리를 작업 영역 안으로 보정한다.
- * 최대화·스냅한 창은 화면에서 차지하는 자리를 작업 영역에서 구하므로 그대로지만, 떠 있을 때의 자리(`bounds`)는 나중에
- * 이전 크기로 복원하거나 스냅에서 뗄 때 쓰므로 함께 보정한다. 보정할 창이 없으면 받은 상태 그대로 돌려준다.
- * @codocs [[창 동작:창 조작]]
- * @param state 지금 상태
- * @param workArea 바뀐 작업 영역 크기
- * @returns 새 상태
- */
-export function fitWindowsToWorkArea(state: WindowState, workArea: WindowWorkArea): WindowState {
-  const windows: Record<string, OpenWindow> = {};
-  let changedCount = 0;
-  for (const target of Object.values(state.windows)) {
-    const bounds = fitBoundsToWorkArea(target.bounds, workArea);
-    if (bounds === target.bounds) {
-      windows[target.id] = target;
-    } else {
-      windows[target.id] = { ...target, bounds };
-      changedCount += 1;
-    }
-  }
-  return changedCount > 0 ? { ...state, windows } : state;
+export function getVisibleWindowBounds(
+  bounds: WindowBounds,
+  workArea: WindowWorkArea,
+): WindowBounds {
+  const x = Math.min(
+    Math.max(bounds.x, VISIBLE_TITLE_BAR.width - bounds.width),
+    workArea.width - VISIBLE_TITLE_BAR.width,
+  );
+  const y = Math.min(Math.max(bounds.y, 0), workArea.height - VISIBLE_TITLE_BAR.height);
+  return x === bounds.x && y === bounds.y ? bounds : { ...bounds, x, y };
 }
 
 /**

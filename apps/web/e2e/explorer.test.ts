@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // @codocs [[파일 탐색기:조작]]
 // @codocs [[파일 탐색기:탭]]
+// @codocs [[창 동작:열기 규칙]]
 test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', async ({ page }) => {
   await page.goto('/');
   await page
@@ -26,16 +27,18 @@ test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', asyn
   await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
   await expect(explorer.getByRole('button', { name: '위로' })).toBeDisabled();
 
+  await explorer.getByRole('tree', { name: '탐색 창' }).getByText('Blog').click();
+  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
   await explorer.getByRole('button', { name: '새 탭' }).click();
   await expect(explorer.getByRole('tab')).toHaveCount(2);
-  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
+  await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
 
   await explorer
-    .getByRole('tab', { name: /Blog/ })
+    .getByRole('tab', { name: /바탕 화면/ })
     .locator('..')
     .getByRole('button', { name: '탭 닫기' })
     .click();
-  await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
   await explorer.getByRole('button', { name: '탭 닫기' }).click();
   await expect(explorer).not.toBeAttached();
 });
@@ -99,4 +102,32 @@ test('탐색기 항목을 탐색 창 폴더로 끌어 옮기고, 폴더 안에�
   await explorer.getByRole('searchbox', { name: '검색' }).fill('ㅎㄱ');
   await expect(content.getByRole('option', { name: /^2026 상반기 회고/ })).toBeVisible();
   await expect(explorer.getByRole('button', { name: '위치' })).toBeVisible();
+});
+
+// @codocs [[파일 탐색기:폴더 안 검색]]
+// @codocs [[모바일:차이]]
+test('모바일 탐색기는 검색 버튼으로 검색 줄을 열어 찾고, Esc로 원래 주소 줄로 돌아간다', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page
+    .getByRole('listbox', { name: '바탕화면 아이콘' })
+    .getByRole('option', { name: 'Blog' })
+    .click();
+  const explorer = page.getByRole('region', { name: /- 파일 탐색기$/ });
+  const content = explorer.getByRole('listbox', { name: '폴더 내용' });
+
+  await explorer.getByRole('button', { name: '검색', exact: true }).click();
+  const searchBox = explorer.getByRole('searchbox', { name: '검색' });
+  await expect(searchBox).toBeFocused();
+  await searchBox.fill('ㅎㄱ');
+  await expect(content.getByRole('option', { name: /^2026 상반기 회고/ })).toBeVisible();
+
+  await searchBox.press('Escape');
+  await expect(searchBox).not.toBeAttached();
+  await expect(explorer.getByRole('button', { name: '뒤로' })).toBeVisible();
+  await expect(
+    content.getByRole('option', { name: '2026 상반기 회고', exact: true }),
+  ).toBeVisible();
 });

@@ -346,6 +346,65 @@ describe('파일 탐색기:우클릭 메뉴', () => {
   });
 });
 
+// @codocs [[파일 탐색기:우클릭 메뉴]]
+describe('파일 탐색기:우클릭 메뉴 - 휴지통의 빈 곳', () => {
+  beforeEach(() => {
+    useWorkspaceStore.getState().trashItems(['post:b']);
+  });
+
+  it('휴지통의 빈 곳을 우클릭하면 정렬 기준·새로 고침·휴지통 비우기 메뉴를 연다', () => {
+    renderBody(RECYCLE_BIN_ID);
+    fireEvent.contextMenu(list());
+    expect(
+      screen.getAllByRole('menuitem').map((item) => item.textContent.replace(/\s+/g, '')),
+    ).toEqual(['정렬기준', '새로고침', '휴지통비우기']);
+  });
+
+  it('휴지통 비우기를 고르면 메시지 상자를 보인다', async () => {
+    renderBody(RECYCLE_BIN_ID);
+    fireEvent.contextMenu(list());
+    await user().click(screen.getByRole('menuitem', { name: /휴지통 비우기/ }));
+    expect(await screen.findByRole('alertdialog', { name: '휴지통 비우기' })).toBeInTheDocument();
+    expect(namesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
+  });
+
+  it('새로 고침을 고르면 항목을 잠깐 숨겼다가 다시 보인다', async () => {
+    // jsdom에는 토큰 CSS가 없어 숨기는 시간을 문서 루트에 직접 준다.
+    document.documentElement.style.setProperty('--motion-duration-faster', '200ms');
+    try {
+      renderBody(RECYCLE_BIN_ID);
+      fireEvent.contextMenu(list());
+      await user().click(screen.getByRole('menuitem', { name: /새로 고침/ }));
+      expect(within(list()).queryAllByRole('option')).toHaveLength(0);
+      expect(await within(list()).findByRole('option', { name: /^회고/ })).toBeInTheDocument();
+    } finally {
+      document.documentElement.style.removeProperty('--motion-duration-faster');
+    }
+  });
+
+  it('정렬 기준에서 삭제한 날짜를 고르면 휴지통을 삭제한 날짜로 정렬한다', async () => {
+    renderBody(RECYCLE_BIN_ID);
+    fireEvent.contextMenu(list());
+    // jsdom에서는 하위 메뉴가 포인터로 열리지 않아 키보드로 연다.
+    screen.getByRole('menuitem', { name: /정렬 기준/ }).focus();
+    await user().keyboard('{ArrowRight}');
+    const deleted = await screen.findByRole('menuitemradio', { name: '삭제한 날짜' });
+    deleted.focus();
+    await user().keyboard('{Enter}');
+    expect(useWorkspaceStore.getState().explorerViews[RECYCLE_BIN_ID]?.sortBy).toBe('modified');
+  });
+
+  it('휴지통이 비었으면 휴지통 비우기를 고를 수 없다', () => {
+    useWorkspaceStore.getState().restoreItems(['post:b']);
+    renderBody(RECYCLE_BIN_ID);
+    fireEvent.contextMenu(list());
+    expect(screen.getByRole('menuitem', { name: /휴지통 비우기/ })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+});
+
 // @codocs [[파일 탐색기:보기와 정렬]]
 describe('파일 탐색기:보기와 정렬', () => {
   it('기본 보기는 보통 아이콘이라 열 제목이 없다', () => {
@@ -598,6 +657,65 @@ describe('파일 탐색기:폴더 안 검색', () => {
     renderBody(RECYCLE_BIN_ID);
     await user().type(screen.getByRole('searchbox', { name: '검색' }), '훅');
     expect(within(list()).getAllByRole('option')).toHaveLength(1);
+  });
+});
+
+// @codocs [[파일 탐색기:폴더 안 검색]]
+describe('파일 탐색기:폴더 안 검색 - 모바일 검색 줄', () => {
+  it('모바일 주소 줄에는 검색 상자 대신 검색 버튼이 있다', () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '검색' })).toBeInTheDocument();
+  });
+
+  it('검색 버튼을 누르면 ← 버튼과 검색 상자로 바뀌고 검색 상자에 포커스를 준다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByRole('button', { name: '검색 닫기' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '뒤로' })).not.toBeInTheDocument();
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveFocus();
+  });
+
+  it('입력이 비어 있으면 원래 폴더 내용을, 입력하면 검색 결과를 보여 준다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+    await user().keyboard('훅');
+    expect(
+      within(list())
+        .getAllByRole('option')
+        .map((element) => element.textContent),
+    ).toEqual([expect.stringMatching(/^훅 정리/)]);
+  });
+
+  it('← 버튼은 검색어를 지우고 원래 주소 줄로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    await user().click(screen.getByRole('button', { name: '검색 닫기' }));
+    expect(screen.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+  });
+
+  it('검색 상자에서 Esc를 누르면 검색어를 지우고 원래 주소 줄로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    await user().keyboard('{Escape}');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByText('항목 3개')).toBeInTheDocument();
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('');
+  });
+
+  it('다른 위치로 가면 검색을 끝내고 원래 주소 줄로 돌아간다', async () => {
+    const show = renderBody(BLOG_FOLDER_ID, 'mobile');
+    await user().click(screen.getByRole('button', { name: '검색' }));
+    await user().keyboard('훅');
+    show('folder:React');
+    expect(screen.queryByRole('searchbox', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '검색' })).toBeInTheDocument();
   });
 });
 

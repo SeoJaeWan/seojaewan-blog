@@ -22,7 +22,7 @@ type ViewMenuOptions = {
 
 /** 빈 곳 메뉴가 보이는 상태와 동작 */
 type EmptyMenuOptions = ViewMenuOptions & {
-  /** 휴지통 보기인지. 휴지통은 늘 자세히 보기라 정렬 기준만 있다 */
+  /** 휴지통 보기인지. 휴지통은 정렬 기준·새로 고침·휴지통 비우기 메뉴다 */
   isRecycleBin: boolean;
   /** 붙여넣을 수 있는지 */
   canPaste: boolean;
@@ -30,6 +30,12 @@ type EmptyMenuOptions = ViewMenuOptions & {
   onPaste: () => void;
   /** 새로 만들기 > 폴더 */
   onNewFolder: () => void;
+  /** 휴지통이 비었는지. 비었으면 휴지통 비우기를 고를 수 없다 */
+  isRecycleBinEmpty: boolean;
+  /** 새로 고침(휴지통) */
+  onRefresh: () => void;
+  /** 휴지통 비우기 */
+  onEmptyRecycleBin: () => void;
 };
 
 /** 항목 메뉴가 보이는 상태와 동작 */
@@ -80,6 +86,7 @@ const ICONS = {
   sort: 'icons/ic_fluent_arrow_sort_20_regular.svg',
   paste: 'icons/ic_fluent_clipboard_paste_20_regular.svg',
   folderAdd: 'icons/ic_fluent_folder_add_20_regular.svg',
+  refresh: 'icons/ic_fluent_arrow_clockwise_20_regular.svg',
 } as const;
 
 const SEPARATOR = { kind: 'separator' } as const;
@@ -120,15 +127,45 @@ export function getViewMenuEntries(options: ViewMenuOptions): MenuPopupEntry[] {
  * @returns 메뉴 항목
  */
 export function getSortMenuEntries(options: ViewMenuOptions): MenuPopupEntry[] {
+  return getSortEntries(options, [
+    { value: 'name', label: '이름' },
+    { value: 'modified', label: '수정한 날짜' },
+    { value: 'type', label: '유형' },
+  ]);
+}
+
+/**
+ * 휴지통 정렬 메뉴(피그마 Menu/RecycleBinSortSubmenu)의 항목을 만든다. 휴지통은 수정한 날짜 대신 삭제한 날짜, 유형 대신 원래 위치로
+ * 정렬하므로 같은 정렬 기준(`modified`, `type`)에 휴지통 열 이름을 붙이고 피그마 차례(이름·원래 위치·삭제한 날짜)로 둔다.
+ * 휴지통 명령 모음의 정렬 버튼과 휴지통 빈 곳 메뉴의 정렬 기준 하위 메뉴가 쓴다.
+ * @codocs [[파일 탐색기:보기와 정렬]]
+ * @codocs [[파일 탐색기:휴지통 보기]]
+ * @param options 지금 정렬과 동작
+ * @returns 메뉴 항목
+ */
+export function getRecycleBinSortMenuEntries(options: ViewMenuOptions): MenuPopupEntry[] {
+  return getSortEntries(options, [
+    { value: 'name', label: '이름' },
+    { value: 'type', label: '원래 위치' },
+    { value: 'modified', label: '삭제한 날짜' },
+  ]);
+}
+
+/**
+ * 정렬 기준 묶음과 방향 묶음으로 된 정렬 메뉴 항목을 만든다.
+ * @param options 지금 정렬과 동작
+ * @param sortOptions 정렬 기준 선택지(차례와 글자)
+ * @returns 메뉴 항목
+ */
+function getSortEntries(
+  options: ViewMenuOptions,
+  sortOptions: readonly { value: ExplorerSortKey; label: string }[],
+): MenuPopupEntry[] {
   return [
     {
       kind: 'radio-group',
       value: options.view.sortBy,
-      options: [
-        { value: 'name', label: '이름' },
-        { value: 'modified', label: '수정한 날짜' },
-        { value: 'type', label: '유형' },
-      ],
+      options: sortOptions,
       onValueChange: (value) => {
         if (isSortKey(value)) {
           options.onSortByChange(value);
@@ -152,24 +189,40 @@ export function getSortMenuEntries(options: ViewMenuOptions): MenuPopupEntry[] {
 
 /**
  * 빈 곳 우클릭 메뉴(피그마 Menu/ExplorerEmpty)의 항목을 만든다. 보기·정렬 기준 하위 메뉴, 붙여넣기, 새로 만들기다.
- * 휴지통은 보기와 새로 만들기·붙여넣기를 쓸 수 없어 정렬 기준만 둔다.
+ * 휴지통의 빈 곳(피그마 Menu/RecycleBinEmpty)은 휴지통 정렬 기준 하위 메뉴, 새로 고침, 휴지통 비우기다. 휴지통이 비었으면 휴지통 비우기를
+ * 고를 수 없다.
  * @codocs [[파일 탐색기:우클릭 메뉴]]
+ * @codocs [[파일 탐색기:구성]]
  * @param options 지금 설정과 동작
  * @returns 메뉴 항목
  */
 export function getEmptyMenuEntries(options: EmptyMenuOptions): MenuPopupEntry[] {
-  const sort: MenuPopupEntry = {
-    kind: 'submenu',
-    label: '정렬 기준',
-    icon: ICONS.sort,
-    entries: getSortMenuEntries(options),
-  };
   if (options.isRecycleBin) {
-    return [sort];
+    return [
+      {
+        kind: 'submenu',
+        label: '정렬 기준',
+        icon: ICONS.sort,
+        entries: getRecycleBinSortMenuEntries(options),
+      },
+      { label: '새로 고침', icon: ICONS.refresh, onClick: options.onRefresh },
+      SEPARATOR,
+      {
+        label: '휴지통 비우기',
+        icon: ICONS.delete,
+        disabled: options.isRecycleBinEmpty,
+        onClick: options.onEmptyRecycleBin,
+      },
+    ];
   }
   return [
     { kind: 'submenu', label: '보기', icon: ICONS.grid, entries: getViewMenuEntries(options) },
-    sort,
+    {
+      kind: 'submenu',
+      label: '정렬 기준',
+      icon: ICONS.sort,
+      entries: getSortMenuEntries(options),
+    },
     SEPARATOR,
     {
       label: '붙여넣기',

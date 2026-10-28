@@ -51,11 +51,11 @@ describe('작업 표시줄:시계', () => {
 
 // @codocs [[작업 표시줄:앱 버튼]]
 describe('작업 표시줄:앱 버튼', () => {
-  it('열린 창이 없을 때 누르면 탐색기는 Blog 폴더로 연다', async () => {
+  it('열린 창이 없을 때 누르면 탐색기는 바탕 화면 위치로 연다', async () => {
     render(<Shell posts={[]} />);
     await userEvent.click(screen.getByRole('button', { name: '파일 탐색기' }));
-    const region = screen.getByRole('region', { name: 'Blog - 파일 탐색기' });
-    expect(within(region).getAllByText('Blog').length).toBeGreaterThan(0);
+    const region = screen.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
+    expect(within(region).getAllByText('바탕 화면').length).toBeGreaterThan(0);
   });
 
   it('창이 1개이고 맨 앞이면 최소화하고, 다시 누르면 복원한다', async () => {
@@ -232,7 +232,7 @@ describe('Start 메뉴:항목 열기', () => {
       name: 'File Explorer',
     });
     await userEvent.click(pinnedExplorer ?? document.body);
-    expect(screen.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeInTheDocument();
     expect(queryStartPanel()).not.toBeInTheDocument();
   });
 });
