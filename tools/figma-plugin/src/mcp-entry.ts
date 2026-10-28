@@ -80,6 +80,7 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
         where: outcome.target.manifest.name,
         reason: '조립 이름이 `영역/이름` 꼴이 아니라 폴더를 정할 수 없다',
         fix: '조립 이름을 `영역/이름`(예: `Menu/Folder`)으로 바꾼다.',
+        nodeId: id,
       });
       continue;
     }

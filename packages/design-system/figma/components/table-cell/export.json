@@ -1,0 +1,30 @@
+{
+  "name": "TableCell",
+  "nodeId": "1380:6858",
+  "variants": {
+    "type=body": {
+      "node": {
+        "height": 37,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6854",
+      "properties": {
+        "Type": "Body"
+      }
+    },
+    "type=header": {
+      "node": {
+        "height": 37,
+        "width": 240,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6856",
+      "properties": {
+        "Type": "Header"
+      }
+    }
+  }
+}

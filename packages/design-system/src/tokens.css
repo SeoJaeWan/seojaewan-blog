@@ -45,7 +45,7 @@
  * | `<효과 스타일>`(배경 흐림이 있는 것) | box-shadow, backdrop-filter | `--<효과 스타일>-shadow`, `-backdrop-blur` |
  * | `material-<재질>` | background-color, backdrop-filter | `Material/*` 칠·효과 스타일 |
  *
- * 색 묶음: accent-fill, accent-text-fill, acrylic-background-fill, boot-screen, caption-button, card-background-fill, card-stroke, chrome, control-alt-fill, control-fill, control-stroke, control-strong-fill, control-strong-stroke, divider-stroke, file-item, focus-stroke, layer-fill, layer-on-mica-base-alt-fill, material, mica-background-fill, selection-marquee, solid-background-fill, subtle-fill, surface-stroke, system-fill, text-fill, text-on-accent-fill
+ * 색 묶음: accent-fill, accent-text-fill, acrylic-background-fill, boot-screen, caption-button, card-background-fill, card-stroke, chrome, code-syntax, control-alt-fill, control-fill, control-stroke, control-strong-fill, control-strong-stroke, divider-stroke, file-item, focus-stroke, layer-fill, layer-on-mica-base-alt-fill, material, mica-background-fill, post, selection-marquee, solid-background-fill, subtle-fill, surface-stroke, system-fill, text-fill, text-on-accent-fill
  */
 
 @theme {
@@ -79,6 +79,7 @@
   --color-black-40: #00000066;
   --color-black-45: #00000072;
   --color-black-61: #0000009b;
+  --color-black-80: #000000cc;
   --color-black-90: #000000e4;
   --color-blue-base: #0078d4;
   --color-blue-dark-1: #005fb8;
@@ -93,6 +94,8 @@
   --color-chrome-gray-omnibox-hover: #e0e5ed;
   --color-chrome-gray-on-surface: #1f1f1f;
   --color-chrome-gray-on-surface-variant: #474747;
+  --color-chrome-orange-active-text-search: #ff9632;
+  --color-chrome-yellow-text-search: #ffff00;
   --color-explorer-blue-focus: #99d1ff;
   --color-explorer-blue-hover: #e5f3ff;
   --color-explorer-blue-selected: #cce8ff;
@@ -110,6 +113,16 @@
   --color-red-dark-1-90: #c42b1ce5;
   --color-search-gradient-blue: #0853e0;
   --color-search-gradient-cyan: #12ecf3;
+  --color-vscode-0000ff: #0000ff;
+  --color-vscode-267f99: #267f99;
+  --color-vscode-795e26: #795e26;
+  --color-vscode-001080: #001080;
+  --color-vscode-008000: #008000;
+  --color-vscode-098658: #098658;
+  --color-vscode-800000: #800000;
+  --color-vscode-a31515: #a31515;
+  --color-vscode-af00db: #af00db;
+  --color-vscode-e50000: #e50000;
   --color-white: #ffffff;
   --color-white-0: #ffffff00;
   --color-white-8: #ffffff14;
@@ -185,7 +198,11 @@
   --card-background-fill-default: var(--color-white-70);
   --card-background-fill-secondary: var(--color-gray-400-50);
   --card-stroke-default: var(--color-black-6);
+  --chrome-find-highlight: var(--color-chrome-yellow-text-search);
+  --chrome-find-highlight-current: var(--color-chrome-orange-active-text-search);
   --chrome-frame-fill: var(--color-chrome-gray-frame);
+  --chrome-image-viewer-backdrop: var(--color-black-80);
+  --chrome-image-viewer-text: var(--color-white);
   --chrome-omnibox-fill: var(--color-chrome-gray-omnibox);
   --chrome-omnibox-fill-hover: var(--color-chrome-gray-omnibox-hover);
   --chrome-omnibox-selection-background: var(--color-chrome-blue-tonal-container);
@@ -197,6 +214,19 @@
   --chrome-text-primary: var(--color-chrome-gray-on-surface);
   --chrome-text-secondary: var(--color-chrome-gray-on-surface-variant);
   --chrome-toolbar-fill: var(--color-white);
+  --code-syntax-attribute: var(--color-vscode-e50000);
+  --code-syntax-comment: var(--color-vscode-008000);
+  --code-syntax-constant: var(--color-vscode-098658);
+  --code-syntax-function: var(--color-vscode-795e26);
+  --code-syntax-keyword: var(--color-vscode-0000ff);
+  --code-syntax-keyword-control: var(--color-vscode-af00db);
+  --code-syntax-parameter: var(--color-vscode-001080);
+  --code-syntax-punctuation: var(--color-black);
+  --code-syntax-string: var(--color-vscode-a31515);
+  --code-syntax-tag: var(--color-vscode-800000);
+  --code-syntax-text: var(--color-black);
+  --code-syntax-type: var(--color-vscode-267f99);
+  --code-syntax-variable: var(--color-vscode-001080);
   --control-alt-fill-quarternary: var(--color-black-9);
   --control-alt-fill-secondary: var(--color-black-2);
   --control-alt-fill-tertiary: var(--color-black-6);
@@ -226,10 +256,10 @@
   --file-item-desktop-fill-hover: var(--color-white-15);
   --file-item-desktop-fill-selected: var(--color-white-25);
   --file-item-desktop-label: var(--color-white);
-  --file-item-desktop-stroke-selected-focus: var(--color-white-50);
+  --file-item-desktop-stroke-focus: var(--color-white-50);
   --file-item-explorer-fill-hover: var(--color-explorer-blue-hover);
   --file-item-explorer-fill-selected: var(--color-explorer-blue-selected);
-  --file-item-explorer-stroke-selected-focus: var(--color-explorer-blue-focus);
+  --file-item-explorer-stroke-focus: var(--color-explorer-blue-focus);
   --focus-stroke-outer: var(--color-black-90);
   --font-weight-bold: 700;
   --font-weight-regular: 400;
@@ -250,6 +280,7 @@
   --mica-background-fill-base-fallback: var(--color-gray-500);
   --opacity-cut: 50%;
   --opacity-drag-ghost: 60%;
+  --post-inline-code: var(--color-red-dark-1);
   --radius-circular: 9999px;
   --radius-control: 4px;
   --radius-none: 0px;
@@ -332,6 +363,7 @@
   --size-654: 654px;
   --size-660: 660px;
   --size-711: 711px;
+  --size-712: 712px;
   --size-716: 716px;
   --size-720: 720px;
   --size-796: 796px;
@@ -423,6 +455,10 @@
   background-color: --value(--chrome-*);
 }
 
+@utility bg-code-syntax-* {
+  background-color: --value(--code-syntax-*);
+}
+
 @utility bg-control-alt-fill-* {
   background-color: --value(--control-alt-fill-*);
 }
@@ -477,6 +513,10 @@
 
 @utility bg-mica-background-fill-* {
   background-color: --value(--mica-background-fill-*);
+}
+
+@utility bg-post-* {
+  background-color: --value(--post-*);
 }
 
 @utility bg-selection-marquee-* {
@@ -547,6 +587,10 @@
 
 @utility border-chrome-* {
   border-color: --value(--chrome-*);
+}
+
+@utility border-code-syntax-* {
+  border-color: --value(--code-syntax-*);
 }
 
 @utility border-control-alt-fill-* {
@@ -632,6 +676,10 @@
 
 @utility border-mica-background-fill-* {
   border-color: --value(--mica-background-fill-*);
+}
+
+@utility border-post-* {
+  border-color: --value(--post-*);
 }
 
 @utility border-r-* {
@@ -811,6 +859,22 @@
     padding: var(--inner-border-width);
     border-radius: inherit;
     background: --value(--chrome-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
+
+@utility inner-border-code-syntax-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--code-syntax-*);
     mask:
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
@@ -1010,6 +1074,22 @@
   }
 }
 
+@utility inner-border-post-* {
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    padding: var(--inner-border-width);
+    border-radius: inherit;
+    background: --value(--post-*);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}
+
 @utility inner-border-selection-marquee-* {
   &::before {
     content: '';
@@ -1179,6 +1259,10 @@
   outline-color: --value(--chrome-*);
 }
 
+@utility outline-code-syntax-* {
+  outline-color: --value(--code-syntax-*);
+}
+
 @utility outline-control-alt-fill-* {
   outline-color: --value(--control-alt-fill-*);
 }
@@ -1225,6 +1309,10 @@
 
 @utility outline-mica-background-fill-* {
   outline-color: --value(--mica-background-fill-*);
+}
+
+@utility outline-post-* {
+  outline-color: --value(--post-*);
 }
 
 @utility outline-selection-marquee-* {
@@ -1296,6 +1384,10 @@
   color: --value(--chrome-*);
 }
 
+@utility text-code-syntax-* {
+  color: --value(--code-syntax-*);
+}
+
 @utility text-control-alt-fill-* {
   color: --value(--control-alt-fill-*);
 }
@@ -1342,6 +1434,10 @@
 
 @utility text-mica-background-fill-* {
   color: --value(--mica-background-fill-*);
+}
+
+@utility text-post-* {
+  color: --value(--post-*);
 }
 
 @utility text-selection-marquee-* {
@@ -1400,12 +1496,31 @@
   letter-spacing: 0em;
 }
 
+@utility type-body-large-italic {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body-large);
+  font-weight: 400;
+  line-height: var(--font-line-height-body-large);
+  letter-spacing: 0em;
+  font-style: italic;
+}
+
 @utility type-body-large-link {
   font-family: var(--font-family-base), var(--font-family-korean);
   font-size: var(--font-size-body-large);
   font-weight: var(--font-weight-regular);
   line-height: var(--font-line-height-body-large);
   letter-spacing: 0em;
+  text-decoration-line: underline;
+}
+
+@utility type-body-large-strikethrough {
+  font-family: var(--font-family-base), var(--font-family-korean);
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-body-large);
+  letter-spacing: 0em;
+  text-decoration-line: line-through;
 }
 
 @utility type-body-large-strong {
@@ -1414,6 +1529,15 @@
   font-weight: var(--font-weight-semibold);
   line-height: var(--font-line-height-body-large);
   letter-spacing: 0px;
+}
+
+@utility type-body-large-underline {
+  font-family: var(--font-family-base), var(--font-family-korean);
+  font-size: var(--font-size-body-large);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-body-large);
+  letter-spacing: 0em;
+  text-decoration-line: underline;
 }
 
 @utility type-body-strong {

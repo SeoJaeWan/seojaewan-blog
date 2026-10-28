@@ -85,3 +85,44 @@ describe('ExplorerAddressRow', () => {
     expect(screen.getByRole('searchbox', { name: '검색' })).toHaveValue('리액트');
   });
 });
+
+// @codocs [[파일 탐색기:폴더 안 검색]]
+describe('ExplorerAddressRow mobile 검색 줄', () => {
+  it('search=open이면 ← 버튼과 검색 상자만 그리고 검색 상자에 포커스를 준다', () => {
+    render(
+      <ExplorerAddressRow device="mobile" search="open" locationIcon={<span />}>
+        <span>경로 칸</span>
+      </ExplorerAddressRow>,
+    );
+    expect(screen.getByRole('button', { name: '검색 닫기' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '뒤로' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '검색' })).not.toBeInTheDocument();
+    expect(screen.queryByText('경로 칸')).not.toBeInTheDocument();
+    expect(screen.getByRole('searchbox', { name: '검색' })).toHaveFocus();
+  });
+
+  it('← 버튼과 입력을 알린다', async () => {
+    const user = userEvent.setup();
+    const handleSearchClose = vi.fn();
+    const handleSearchChange = vi.fn();
+    render(
+      <ExplorerAddressRow
+        device="mobile"
+        search="open"
+        locationIcon={<span />}
+        onSearchClose={handleSearchClose}
+        onSearchChange={handleSearchChange}
+      />,
+    );
+    await user.type(screen.getByRole('searchbox'), 'ab');
+    expect(handleSearchChange).toHaveBeenLastCalledWith('ab');
+    await user.click(screen.getByRole('button', { name: '검색 닫기' }));
+    expect(handleSearchClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('desktop은 search 값과 상관없이 주소 줄을 그린다', () => {
+    render(<ExplorerAddressRow search="open" locationIcon={<span />} />);
+    expect(screen.getByRole('button', { name: '뒤로' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '검색 닫기' })).not.toBeInTheDocument();
+  });
+});

@@ -63,9 +63,15 @@ export function checkMotionSample(
    * @param path 견본 기준 위치(레이어 경로와 항목). 견본 자체면 빈 문자열
    * @param reason 이유
    * @param fix 고칠 방법
+   * @param nodeId 고칠 노드 ID. 없으면 견본 프레임
    */
-  function add(path: string, reason: string, fix: string): void {
-    violations.push({ where: path === '' ? sample.name : `${sample.name} / ${path}`, reason, fix });
+  function add(path: string, reason: string, fix: string, nodeId: string = sample.nodeId): void {
+    violations.push({
+      where: path === '' ? sample.name : `${sample.name} / ${path}`,
+      reason,
+      fix,
+      nodeId,
+    });
   }
 
   if (!MOTION_NAME_PATTERN.test(sample.name)) {
@@ -76,7 +82,7 @@ export function checkMotionSample(
     );
   }
   for (const problem of sample.problems) {
-    add(problem.path, problem.reason, problem.fix);
+    add(problem.path, problem.reason, problem.fix, problem.nodeId);
   }
   if (sample.tracks.length === 0 && sample.problems.length === 0) {
     add(
@@ -95,7 +101,12 @@ export function checkMotionSample(
     const first = track.keyframes[0];
     const last = track.keyframes.at(-1);
     if (first === undefined || last === undefined) {
-      add(where, '키프레임이 없는 트랙이다', '트랙을 지우거나 키프레임을 둘 이상 건다.');
+      add(
+        where,
+        '키프레임이 없는 트랙이다',
+        '트랙을 지우거나 키프레임을 둘 이상 건다.',
+        track.nodeId,
+      );
       continue;
     }
     const durationMs = (last.time - first.time) * MS_PER_SECOND;
@@ -106,6 +117,7 @@ export function checkMotionSample(
         where,
         `트랙 길이(첫 키프레임 → 끝 키프레임) ${formatMs(durationMs)}가 \`${DURATION_PREFIX}*\` 변수 값(${listValues(durations)}) 가운데 어느 것과도 같지 않다`,
         '끝 키프레임을 옮겨 트랙 길이를 쓰려는 시간 변수 값(초 단위로 바꾼 값, 예: 250ms → 0.25초)에 맞춘다. 필요한 시간이 없으면 Motion 변수를 먼저 더한다.',
+        track.nodeId,
       );
     }
     const delay =
@@ -117,11 +129,17 @@ export function checkMotionSample(
         where,
         `시작 지연(첫 키프레임 위치) ${formatMs(delayMs)}가 \`${DELAY_PREFIX}*\` 변수 값(${listValues(delays)}) 가운데 어느 것과도 같지 않다`,
         '첫 키프레임을 0초로 옮기거나, 쓰려는 지연 변수 값(초 단위)에 맞춘다. 필요한 지연이 없으면 Motion 변수를 먼저 더한다.',
+        track.nodeId,
       );
     }
     const keyframes: MotionKeyframe[] = [];
     for (const [index, keyframe] of track.keyframes.entries()) {
-      const easing = index === 0 ? null : easingToken(keyframe, index, where, add);
+      const easing =
+        index === 0
+          ? null
+          : easingToken(keyframe, index, where, (path, reason, fix) => {
+              add(path, reason, fix, track.nodeId);
+            });
       keyframes.push({
         time: keyframe.time * MS_PER_SECOND,
         offset: durationMs === 0 ? 0 : (keyframe.time - first.time) / (last.time - first.time),
