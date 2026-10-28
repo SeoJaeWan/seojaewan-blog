@@ -1,7 +1,7 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX } from 'react';
 
-import { Menu, MenuItem, Popover, Separator } from '@seojaewan/design-system';
+import { Menu, MenuItem, MenuZoomItem, Popover, Separator } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -73,6 +73,21 @@ export type MenuPopupRadioGroup = {
   onValueChange?: (value: string) => void;
 };
 
+/** 확대/축소 조절 줄(피그마 MenuZoomItem). −·+ 버튼은 메뉴 항목이 아니라 일반 버튼이라 눌러도 메뉴가 닫히지 않는다 */
+export type MenuPopupZoom = {
+  kind: 'zoom';
+  /** 지금 배율 글자(예: `100%`) */
+  value: string;
+  /** 줄이기(−)를 눌렀을 때 호출 */
+  onZoomOut?: () => void;
+  /** 키우기(+)를 눌렀을 때 호출 */
+  onZoomIn?: () => void;
+  /** 줄이기를 쓸 수 없게 한다 */
+  isZoomOutDisabled?: boolean;
+  /** 키우기를 쓸 수 없게 한다 */
+  isZoomInDisabled?: boolean;
+};
+
 /** 항목 사이 구분선(피그마 조립의 `separator` 배치 프레임과 Separator) */
 export type MenuPopupSeparator = { kind: 'separator' };
 
@@ -82,6 +97,7 @@ export type MenuPopupEntry =
   | MenuPopupSubmenu
   | MenuPopupCheckbox
   | MenuPopupRadioGroup
+  | MenuPopupZoom
   | MenuPopupSeparator;
 
 type MenuPanelProps = {
@@ -153,6 +169,8 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
   switch (entry.kind) {
     case 'separator':
       return `separator-${String(index)}`;
+    case 'zoom':
+      return 'zoom';
     case 'radio-group':
       return `radio-group-${entry.options[0]?.value ?? String(index)}`;
     default:
@@ -178,6 +196,18 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
       );
     case 'submenu':
       return <SubmenuEntry entry={entry} itemClassName={itemClassName} />;
+    case 'zoom': {
+      const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
+      return (
+        <MenuZoomItem
+          value={entry.value}
+          onZoomOut={handleZoomOut}
+          onZoomIn={handleZoomIn}
+          isZoomOutDisabled={entry.isZoomOutDisabled}
+          isZoomInDisabled={entry.isZoomInDisabled}
+        />
+      );
+    }
     case 'checkbox': {
       const { onCheckedChange: handleCheckedChange } = entry;
       return (

@@ -7,5 +7,6 @@ import { ICON, SEPARATOR } from '@/shared/stories/menu-icons/menu-icons';
 export const MENU_MULTIPLE = [
   { label: '열기', icon: ICON.open },
   SEPARATOR,
+  { label: '잘라내기', icon: ICON.cut, shortcut: 'Ctrl+X' },
   { label: '삭제', icon: ICON.delete, shortcut: 'Delete' },
 ] as const;

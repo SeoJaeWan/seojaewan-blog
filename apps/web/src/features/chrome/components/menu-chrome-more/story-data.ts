@@ -7,5 +7,5 @@ import { ICON } from '@/shared/stories/menu-icons/menu-icons';
 export const MENU_CHROME_MORE = [
   { label: '링크 복사', icon: ICON.link },
   { label: '페이지에서 찾기', icon: ICON.search, shortcut: 'Ctrl+F' },
-  { label: '확대/축소', icon: ICON.zoomIn, shortcut: '100%' },
+  { kind: 'zoom', value: '100%' },
 ] as const;

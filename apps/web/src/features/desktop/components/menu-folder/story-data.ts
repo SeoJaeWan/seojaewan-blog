@@ -9,6 +9,7 @@ export const MENU_FOLDER = [
   { label: '새 창에서 열기', icon: ICON.window },
   { label: '시작 화면에 고정', icon: ICON.pin },
   SEPARATOR,
+  { label: '잘라내기', icon: ICON.cut, shortcut: 'Ctrl+X' },
   { label: '이름 바꾸기', icon: ICON.rename, shortcut: 'F2' },
   { label: '삭제', icon: ICON.delete, shortcut: 'Delete' },
 ] as const;
