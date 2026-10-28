@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_VIEW_OPTIONS } from '@/features/start-menu/stories/view-options-menu-data/view-options-menu-data';
+import { menuViewOptions } from '@/features/start-menu/stories/view-options-menu-data/view-options-menu-data';
 
 import { StartViewMenu } from './start-view-menu';
 
@@ -26,7 +26,7 @@ const meta = {
       <StartViewMenu
         label="보기: 간단히"
         open={args.state === 'open'}
-        menuItems={MENU_VIEW_OPTIONS}
+        menuItems={menuViewOptions}
       />
     </div>
   ),

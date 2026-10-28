@@ -21,6 +21,10 @@ import {
   moveIconsToCell,
   sortDesktopItems,
 } from '@/features/desktop/utils/desktop-grid/desktop-grid';
+import {
+  getDesktopMenuEntries,
+  getItemMenuEntries,
+} from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
@@ -70,8 +74,6 @@ import {
   moveItems,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
-
-import { getDesktopMenuEntries, getItemMenuEntries } from './desktop-menu-entries';
 
 /** 열린 우클릭 메뉴. 빈 곳 메뉴거나 아이콘 메뉴(우클릭한 항목들)다 */
 type OpenMenu = { kind: 'desktop' } | { kind: 'items'; ids: readonly string[] };

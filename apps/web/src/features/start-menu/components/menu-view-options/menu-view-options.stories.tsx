@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_VIEW_OPTIONS } from '@/features/start-menu/stories/view-options-menu-data/view-options-menu-data';
+import { menuViewOptions } from '@/features/start-menu/stories/view-options-menu-data/view-options-menu-data';
 import { MenuStory } from '@/shared/stories/menu-story/menu-story';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -10,7 +10,7 @@ const meta = {
   title: 'Patterns/Menu/ViewOptions',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded' },
-  render: () => <MenuStory items={MENU_VIEW_OPTIONS} className="w-104" itemClassName="w-full" />,
+  render: () => <MenuStory items={menuViewOptions} className="w-104" itemClassName="w-full" />,
 } satisfies Meta;
 
 export default meta;

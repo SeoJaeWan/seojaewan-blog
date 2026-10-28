@@ -25,6 +25,7 @@ import { StartTile } from '@/features/start-menu/components/start-tile/start-til
 import { StartViewMenu } from '@/features/start-menu/components/start-view-menu/start-view-menu';
 import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
+import { getViewMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
@@ -114,13 +115,6 @@ const viewLabels = {
   grid: '보기: 그리드',
   category: '보기: 범주',
 } as const satisfies Record<StartAllView, string>;
-
-// `보기:` 메뉴의 항목이다(피그마 `Menu/ViewOptions`). 범주, 그리드, 간단히 차례다.
-const viewMenuOptions = [
-  { view: 'category', label: '범주' },
-  { view: 'grid', label: '그리드' },
-  { view: 'list', label: '간단히' },
-] as const satisfies readonly { view: StartAllView; label: string }[];
 
 // 기기별 고정 항목 칸 너비다. 데스크톱은 PinnedTile 기본(95)으로 6열, 모바일은 89로 4열이다.
 const tileClassNames = {
@@ -364,21 +358,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
   }
 
   const handleHeaderClick = isJumpListEnabled ? openJumpList : undefined;
-  const viewMenuItems = viewMenuOptions.map(
-    /**
-     * 보기 하나의 메뉴 항목을 만든다. 지금 보기에 확인 표시를 한다.
-     * @param option 보기와 이름
-     * @returns 메뉴 항목
-     */
-    (option): MenuPopupEntry => ({
-      kind: 'checkbox',
-      label: option.label,
-      checked: option.view === view,
-      onCheckedChange: () => {
-        handleViewSelect(option.view);
-      },
-    }),
-  );
+  const viewMenuItems = getViewMenuEntries(view, handleViewSelect);
 
   /**
    * `모두` 제목 줄 오른쪽의 `보기:` 버튼을 그린다. 보기를 바꾸는 동작을 받았으면 보기 메뉴가 붙은 버튼, 아니면 메뉴 없는 버튼 모양이다.

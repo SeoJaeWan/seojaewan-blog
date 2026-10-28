@@ -17,7 +17,7 @@ import { START_PROFILE } from '@/features/start-menu/data/start-apps/start-apps'
 import { useSearchKeyboard } from '@/features/start-menu/hooks/use-search-keyboard/use-search-keyboard';
 import { useStartLists } from '@/features/start-menu/hooks/use-start-lists/use-start-lists';
 import { useStartSearch } from '@/features/start-menu/hooks/use-start-search/use-start-search';
-import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import { getPowerMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
@@ -28,9 +28,6 @@ import { getPanelMaxHeight, type PanelKind } from '@/shared/utils/panel-rules/pa
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';
-
-// 전원 메뉴의 `다시 시작` 아이콘(피그마 `Menu/Power`)이다.
-const RESTART_ICON = 'icons/ic_fluent_arrow_clockwise_20_regular.svg';
 
 // 검색 입력칸의 안내 글자(피그마 Start/Menu, Search/Panel `Device=Mobile`).
 const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
@@ -130,10 +127,7 @@ export function StartMenuLayer(): JSX.Element {
     restart();
   }
 
-  // 전원 메뉴 항목(피그마 `Menu/Power`). 절전과 시스템 종료는 두지 않는다([[작업 공간:다시 시작]]).
-  const powerMenuItems: readonly MenuPopupEntry[] = [
-    { label: '다시 시작', icon: RESTART_ICON, onClick: handleRestartClick },
-  ];
+  const powerMenuItems = getPowerMenuEntries(handleRestartClick);
 
   /**
    * Start 패널을 그린다.

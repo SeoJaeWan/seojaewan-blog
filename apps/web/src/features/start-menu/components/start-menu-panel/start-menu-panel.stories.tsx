@@ -4,7 +4,7 @@ import { ImageAsset } from '@seojaewan/design-system';
 
 import { StartBody } from '@/features/start-menu/components/start-body/start-body';
 import { StartPowerButton } from '@/features/start-menu/components/start-power-button/start-power-button';
-import { MENU_POWER } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
+import { menuPower } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
 import { SEARCH_PLACEHOLDER } from '@/features/start-menu/stories/search-data/search-data';
 import {
   START_LETTER_GROUPS,
@@ -36,7 +36,7 @@ const meta = {
       searchBoxProps={{ 'aria-label': '검색', placeholder: SEARCH_PLACEHOLDER }}
       profileName={START_PROFILE_NAME}
       profilePhoto={<ImageAsset name="images/avatar-profile" className="size-full" />}
-      powerButton={<StartPowerButton menuItems={MENU_POWER} />}
+      powerButton={<StartPowerButton menuItems={menuPower} />}
     >
       <StartBody
         view="list"
