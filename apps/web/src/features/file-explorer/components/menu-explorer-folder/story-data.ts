@@ -1,16 +1,8 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // @codocs [[피그마 연동:스토리 규칙]]
-// 메뉴 조립 Menu/ExplorerFolder 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 글자·아이콘·켜짐 상태를 둔다.
-import { ICON, SEPARATOR } from '@/shared/stories/menu-icons/menu-icons';
+// 메뉴 조립 Menu/ExplorerFolder 스토리의 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
+import { itemMenuOptions } from '@/features/file-explorer/stories/explorer-submenu-data/explorer-submenu-data';
+import { getItemMenuEntries } from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
 
 /** 피그마 Menu/ExplorerFolder: 탐색기 폴더 우클릭 */
-export const MENU_EXPLORER_FOLDER = [
-  { label: '열기', icon: ICON.open },
-  { label: '새 탭에서 열기', icon: ICON.add },
-  { label: '새 창에서 열기', icon: ICON.window },
-  { label: '시작 화면에 고정', icon: ICON.pin },
-  SEPARATOR,
-  { label: '잘라내기', icon: ICON.cut, shortcut: 'Ctrl+X' },
-  { label: '이름 바꾸기', icon: ICON.rename, shortcut: 'F2' },
-  { label: '삭제', icon: ICON.delete, shortcut: 'Delete' },
-] as const;
+export const menuExplorerFolder = getItemMenuEntries(itemMenuOptions('folder'));

@@ -30,6 +30,13 @@ import {
   getOriginalLocation,
 } from '@/features/file-explorer/utils/explorer-location/explorer-location';
 import {
+  getEmptyMenuEntries,
+  getItemMenuEntries,
+  getRecycleBinSortMenuEntries,
+  getSortMenuEntries,
+  getViewMenuEntries,
+} from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
+import {
   getItemLocationLabel,
   searchItems,
 } from '@/features/file-explorer/utils/explorer-search/explorer-search';
@@ -91,14 +98,6 @@ import {
   trashItems,
   type WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
-
-import {
-  getEmptyMenuEntries,
-  getItemMenuEntries,
-  getRecycleBinSortMenuEntries,
-  getSortMenuEntries,
-  getViewMenuEntries,
-} from './explorer-menu-entries';
 
 type ExplorerContentProps = ComponentProps<typeof ExplorerContent>;
 

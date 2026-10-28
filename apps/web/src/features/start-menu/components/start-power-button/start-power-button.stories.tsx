@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_POWER } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
+import { menuPower } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
 
 import { StartPowerButton } from './start-power-button';
 
@@ -24,7 +24,7 @@ const meta = {
   render: (args) => (
     <div className="flex h-120 w-320 items-end justify-end">
       <div data-parity-target className="flex">
-        <StartPowerButton open={args.state === 'open'} menuItems={MENU_POWER} />
+        <StartPowerButton open={args.state === 'open'} menuItems={menuPower} />
       </div>
     </div>
   ),

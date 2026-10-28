@@ -1,13 +1,15 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // @codocs [[피그마 연동:스토리 규칙]]
-// 메뉴 조립 Menu/StartTile 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 글자·아이콘·켜짐 상태를 둔다.
-import { ICON, SEPARATOR } from '@/shared/stories/menu-icons/menu-icons';
+// 메뉴 조립 Menu/StartTile 스토리의 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
+import { getPinnedMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
+import { ignoreMenuAction } from '@/shared/stories/menu-preview/menu-preview';
 
-/** 피그마 Menu/StartTile: Start 고정 항목 우클릭 */
-export const MENU_START_TILE = [
-  { label: '열기', icon: ICON.open },
-  { label: '맨 앞으로 이동', icon: ICON.arrowUp },
-  { label: '링크 복사', icon: ICON.link },
-  SEPARATOR,
-  { label: '시작 화면에서 고정 해제', icon: ICON.pinOff },
-] as const;
+/** 피그마 Menu/StartTile: Start 고정 항목(맨 앞이 아닌 글이나 외부 링크) 우클릭 */
+export const menuStartTile = getPinnedMenuEntries({
+  canMoveToFront: true,
+  canCopyLink: true,
+  onOpen: ignoreMenuAction,
+  onMoveToFront: ignoreMenuAction,
+  onCopyLink: ignoreMenuAction,
+  onUnpin: ignoreMenuAction,
+});

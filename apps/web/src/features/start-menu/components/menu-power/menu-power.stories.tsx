@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MENU_POWER } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
+import { menuPower } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
 import { MenuStory } from '@/shared/stories/menu-story/menu-story';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -9,7 +9,7 @@ const meta = {
   title: 'Patterns/Menu/Power',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded' },
-  render: () => <MenuStory items={MENU_POWER} />,
+  render: () => <MenuStory items={menuPower} />,
 } satisfies Meta;
 
 export default meta;

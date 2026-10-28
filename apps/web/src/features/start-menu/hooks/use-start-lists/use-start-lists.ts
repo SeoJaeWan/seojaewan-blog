@@ -8,18 +8,13 @@ import {
   getPinnedStartItems,
   groupStartItems,
 } from '@/features/start-menu/utils/start-items/start-items';
+import {
+  getListMenuEntries,
+  getPinnedMenuEntries,
+} from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
-
-// 고정 항목 우클릭 메뉴(피그마 `Menu/StartTile`)와 모두 목록 메뉴(피그마 `Menu/StartListApp`·`Menu/StartListPost`)의 아이콘이다.
-const MENU_ICONS = {
-  open: 'icons/ic_fluent_open_20_regular.svg',
-  pin: 'icons/ic_fluent_pin_20_regular.svg',
-  moveToFront: 'icons/ic_fluent_arrow_up_20_regular.svg',
-  copyLink: 'icons/ic_fluent_link_20_regular.svg',
-  unpin: 'icons/ic_fluent_pin_off_20_regular.svg',
-} as const;
 
 /** Start 고정됨과 모두 목록을 그리는 데이터와 그 동작 */
 export type StartLists = {
@@ -54,121 +49,84 @@ export function useStartLists(onOpen: (item: StartItem) => void): StartLists {
   const view = workspace.startAllView;
 
   /**
-   * 고정 항목의 우클릭 메뉴 항목을 만든다. 열기, 맨 앞으로 이동(이미 맨 앞이면 고를 수 없다), 링크 복사(글과 외부 링크만), 고정 해제다.
+   * 링크를 복사할 수 있는 항목(글과 외부 링크)이면 작업 공간 항목을 돌려준다.
+   * @param item Start 항목
+   * @returns 링크를 복사할 작업 공간 항목. 복사할 수 없으면 undefined
+   */
+  function getCopyableItem(item: StartItem) {
+    const workspaceItem = workspace.items[item.id];
+    return workspaceItem?.kind === 'post' || workspaceItem?.kind === 'link'
+      ? workspaceItem
+      : undefined;
+  }
+
+  /**
+   * 고정 항목의 우클릭 메뉴 항목을 만든다.
    * @param item 고정 항목
    * @returns 메뉴 항목
    */
   function getPinnedMenuItems(item: StartItem): readonly MenuPopupEntry[] {
-    const workspaceItem = workspace.items[item.id];
-    const copyableItem =
-      workspaceItem?.kind === 'post' || workspaceItem?.kind === 'link' ? workspaceItem : undefined;
-    const entries: MenuPopupEntry[] = [
-      {
-        label: '열기',
-        icon: MENU_ICONS.open,
-        onClick: () => {
-          onOpen(item);
-        },
+    const copyableItem = getCopyableItem(item);
+    return getPinnedMenuEntries({
+      canMoveToFront: pinned[0]?.id !== item.id,
+      canCopyLink: copyableItem !== undefined,
+      onOpen: () => {
+        onOpen(item);
       },
-      {
-        label: '맨 앞으로 이동',
-        icon: MENU_ICONS.moveToFront,
-        disabled: pinned[0]?.id === item.id,
-        onClick: () => {
-          workspace.moveStartPin(item.id, 0);
-        },
+      onMoveToFront: () => {
+        workspace.moveStartPin(item.id, 0);
       },
-    ];
-    if (copyableItem !== undefined) {
-      entries.push({
-        label: '링크 복사',
-        icon: MENU_ICONS.copyLink,
-        onClick: () => {
+      onCopyLink: () => {
+        if (copyableItem !== undefined) {
           copyItemLink(copyableItem);
-        },
-      });
-    }
-    entries.push(
-      { kind: 'separator' },
-      {
-        label: '시작 화면에서 고정 해제',
-        icon: MENU_ICONS.unpin,
-        onClick: () => {
-          workspace.unpinFromStart(item.id);
-        },
+        }
       },
-    );
-    return entries;
+      onUnpin: () => {
+        workspace.unpinFromStart(item.id);
+      },
+    });
   }
 
   /**
-   * 모두 목록 항목의 우클릭 메뉴 항목을 만든다. 열기, 시작 화면에 고정(이미 고정됐으면 고정 해제), 링크 복사(글과 외부 링크만),
-   * 작업 표시줄에 고정(앱만, 이미 고정됐으면 고정 해제)이다.
-   * @codocs [[Start 메뉴:모두]]
+   * 모두 목록 항목의 우클릭 메뉴 항목을 만든다.
    * @param item 모두 목록 항목
    * @returns 메뉴 항목
    */
   function getListMenuItems(item: StartItem): readonly MenuPopupEntry[] {
-    const workspaceItem = workspace.items[item.id];
-    const copyableItem =
-      workspaceItem?.kind === 'post' || workspaceItem?.kind === 'link' ? workspaceItem : undefined;
+    const copyableItem = getCopyableItem(item);
     const isPinnedToStart = workspace.startPins.includes(item.id);
-    const entries: MenuPopupEntry[] = [
-      {
-        label: '열기',
-        icon: MENU_ICONS.open,
-        onClick: () => {
-          onOpen(item);
-        },
+    const app = item.kind === 'app' ? item.app : undefined;
+    const isPinnedToTaskbar = app === undefined ? undefined : workspace.taskbarPins.includes(app);
+    return getListMenuEntries({
+      isPinnedToStart,
+      canCopyLink: copyableItem !== undefined,
+      isPinnedToTaskbar,
+      onOpen: () => {
+        onOpen(item);
       },
-      { kind: 'separator' },
-      isPinnedToStart
-        ? {
-            label: '시작 화면에서 고정 해제',
-            icon: MENU_ICONS.unpin,
-            onClick: () => {
-              workspace.unpinFromStart(item.id);
-            },
-          }
-        : {
-            label: '시작 화면에 고정',
-            icon: MENU_ICONS.pin,
-            onClick: () => {
-              workspace.pinToStart(item.id);
-            },
-          },
-    ];
-    if (copyableItem !== undefined) {
-      entries.push({
-        label: '링크 복사',
-        icon: MENU_ICONS.copyLink,
-        onClick: () => {
+      onToggleStartPin: () => {
+        if (isPinnedToStart) {
+          workspace.unpinFromStart(item.id);
+        } else {
+          workspace.pinToStart(item.id);
+        }
+      },
+      onCopyLink: () => {
+        if (copyableItem !== undefined) {
           copyItemLink(copyableItem);
-        },
-      });
-    }
-    if (item.kind === 'app') {
-      const { app } = item;
-      entries.push(
-        workspace.taskbarPins.includes(app)
-          ? {
-              label: '작업 표시줄에서 고정 해제',
-              // 작업 표시줄 앱 메뉴(피그마 `Menu/TaskbarApp`)의 고정 해제와 같은 아이콘이다
-              icon: MENU_ICONS.pin,
-              onClick: () => {
-                workspace.unpinFromTaskbar(app);
-              },
-            }
-          : {
-              label: '작업 표시줄에 고정',
-              icon: MENU_ICONS.pin,
-              onClick: () => {
-                workspace.pinToTaskbar(app);
-              },
-            },
-      );
-    }
-    return entries;
+        }
+      },
+      onToggleTaskbarPin: () => {
+        if (app === undefined) {
+          return;
+        }
+        if (isPinnedToTaskbar === true) {
+          workspace.unpinFromTaskbar(app);
+        } else {
+          workspace.pinToTaskbar(app);
+        }
+      },
+    });
   }
 
   /**

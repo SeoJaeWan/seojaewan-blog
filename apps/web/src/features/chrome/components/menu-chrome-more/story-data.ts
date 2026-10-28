@@ -1,11 +1,19 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // @codocs [[피그마 연동:스토리 규칙]]
-// 메뉴 조립 Menu/ChromeMore 스토리가 쓰는 고정 데이터다. 피그마 조립과 같은 글자·아이콘·켜짐 상태를 둔다.
-import { ICON } from '@/shared/stories/menu-icons/menu-icons';
+// 메뉴 조립 Menu/ChromeMore 스토리의 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
+import { getChromeMoreMenuEntries } from '@/features/chrome/utils/chrome-more-menu/chrome-more-menu';
+import { ignoreMenuAction } from '@/shared/stories/menu-preview/menu-preview';
 
-/** 피그마 Menu/ChromeMore: 데스크톱 Chrome ⋮ 메뉴 */
-export const MENU_CHROME_MORE = [
-  { label: '링크 복사', icon: ICON.link },
-  { label: '페이지에서 찾기', icon: ICON.search, shortcut: 'Ctrl+F' },
-  { kind: 'zoom', value: '100%' },
-] as const;
+/** 피그마 Menu/ChromeMore: 글을 보는 데스크톱 Chrome ⋮ 메뉴. 배율은 100%다 */
+export const menuChromeMore = getChromeMoreMenuEntries({
+  isMobile: false,
+  canCopyLink: true,
+  canGoForward: true,
+  zoom: 100,
+  onCopyLink: ignoreMenuAction,
+  onFind: ignoreMenuAction,
+  onZoomOut: ignoreMenuAction,
+  onZoomIn: ignoreMenuAction,
+  onForward: ignoreMenuAction,
+  onRefresh: ignoreMenuAction,
+});
