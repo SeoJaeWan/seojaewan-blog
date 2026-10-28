@@ -1,4 +1,4 @@
-import type { JSX, KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import type { JSX, KeyboardEvent, MouseEvent, ReactNode, Ref } from 'react';
 
 import { IconButton } from '@seojaewan/design-system';
 
@@ -18,18 +18,22 @@ type ChromeImageViewerProps = {
   onClose?: () => void;
   /** 바깥 배치 클래스. 덮을 페이지 영역의 크기와 위치는 쓰는 곳이 정한다 */
   className?: string;
+  /** 대화 상자 요소. 여는 쪽이 열 때 포커스를 이 안으로 옮기는 데 쓴다(대화 상자 자체도 포커스를 받는다) */
+  ref?: Ref<HTMLDivElement>;
 };
 
 /**
  * 글 이미지를 크게 보는 화면(피그마 조립 `Chrome/ImageViewer`)을 그린다. 탭의 페이지 영역을 어두운 바탕으로 덮고,
  * 오른쪽 위에 닫기 버튼, 가운데에 이미지와 캡션을 둔다. 닫기 버튼·Esc·이미지 밖 바탕을 누르면 `onClose`를 부른다.
- * 크기는 덮는 페이지 영역이 정하고, 열고 닫는 움직임은 없다. 포커스 가두기와 원래 이미지로 포커스 돌리기는 여는 쪽이 붙인다.
+ * Tab 키 포커스는 대화 상자 안에서만 돈다.
+ * 크기는 덮는 페이지 영역이 정하고, 열고 닫는 움직임은 없다. 포커스 가두기와 원래 이미지로 포커스 돌리기는 여는 쪽
+ * (`ChromePageArea`)이 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:글 화면]]
  * @param props
  */
 export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
-  const { layout = 'wide', image, caption, onClose: handleClose, className } = props;
+  const { layout = 'wide', image, caption, onClose: handleClose, className, ref } = props;
 
   /**
    * 이미지 밖 바탕(덮개나 이미지 칸의 빈 곳)을 누르면 닫는다.
@@ -45,25 +49,29 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
   }
 
   /**
-   * Esc를 누르면 닫는다.
+   * Esc를 누르면 닫는다. Tab·Shift+Tab은 대화 상자 안의 버튼 사이만 돈다(포커스 가두기).
    * @param event 키 이벤트
    */
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     if (event.key === 'Escape') {
       event.preventDefault();
       handleClose?.();
+    } else if (event.key === 'Tab') {
+      trapTabFocus(event);
     }
   }
 
   return (
     <div
+      ref={ref}
       role="dialog"
       aria-modal
       aria-label={caption === undefined ? '이미지 크게 보기' : caption}
+      tabIndex={-1}
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       className={[
-        'flex flex-col items-start gap-16 bg-chrome-image-viewer-backdrop p-16',
+        'flex flex-col items-start gap-16 bg-chrome-image-viewer-backdrop p-16 outline-none',
         className,
       ]
         .filter(Boolean)
@@ -92,4 +100,31 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       </div>
     </div>
   );
+}
+
+// 포커스를 받을 수 있는 요소다.
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Tab·Shift+Tab을 대화 상자 안에서 돌린다. 끝 요소에서 Tab은 첫 요소로, 첫 요소(또는 대화 상자 자체)에서 Shift+Tab은 끝 요소로 간다.
+ * @codocs [[Chrome:글 화면]]
+ * @param event Tab 키 이벤트
+ */
+function trapTabFocus(event: KeyboardEvent<HTMLDivElement>): void {
+  const focusables = [...event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)];
+  const first = focusables[0];
+  const last = focusables.at(-1);
+  if (first === undefined || last === undefined) {
+    event.preventDefault();
+    return;
+  }
+  const active = document.activeElement;
+  if (event.shiftKey && (active === first || active === event.currentTarget)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && active === last) {
+    event.preventDefault();
+    first.focus();
+  }
 }

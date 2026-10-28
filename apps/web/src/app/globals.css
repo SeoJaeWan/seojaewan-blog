@@ -3,3 +3,16 @@
 
 /* @codocs [[피그마 연동:토큰 생성]] 앱의 CSS가 디자인 시스템 소스의 클래스도 읽게 한다. */
 @source '../../../../packages/design-system/src';
+
+/*
+ * @codocs [[Chrome:페이지에서 찾기]]
+ * Chrome 찾기 막대의 강조(CSS Custom Highlight API). 일치하는 곳은 노란색, 지금 위치는 주황색이다.
+ * 강조 이름은 `use-page-find`가 문서의 강조 목록에 넣는다.
+ */
+::highlight(chrome-find) {
+  background-color: var(--chrome-find-highlight);
+}
+
+::highlight(chrome-find-current) {
+  background-color: var(--chrome-find-highlight-current);
+}
