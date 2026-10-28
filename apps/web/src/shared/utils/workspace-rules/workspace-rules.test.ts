@@ -101,6 +101,16 @@ describe('작업 공간:초기 구조', () => {
     expect(initial.items['post:retrospective']?.parentId).toBe(BLOG_FOLDER_ID);
   });
 
+  // @codocs [[항목 모델:외부 링크]]
+  it('주소가 없는 외부 링크는 항목으로 만들지 않고 Start 고정에도 넣지 않는다', () => {
+    const state = createInitialWorkspace({
+      posts: [],
+      links: [{ ...GITHUB_LINK, id: 'resume', url: '', pinnedToStart: true }],
+    });
+    expect(state.items['link:resume']).toBeUndefined();
+    expect(state.startPins).not.toContain('link:resume');
+  });
+
   it('외부 링크의 초기 위치가 없으면 바탕화면에 둔다', () => {
     const state = createInitialWorkspace({
       posts: [],
@@ -246,6 +256,27 @@ describe('작업 공간:Notion과 맞추기', () => {
     expect(state.items['post:nextjs-cache']).toBeUndefined();
     expect(state.items['link:github']).toBeUndefined();
     expect(state.startPins).not.toContain('post:nextjs-cache');
+    expect(state.startPins).not.toContain('link:github');
+  });
+
+  it('주소가 비어 있던 외부 링크에 주소가 생기면 초기 위치에 나타난다', () => {
+    const hidden = { ...testCatalog, links: [{ ...GITHUB_LINK, id: 'resume', url: '' }] };
+    const before = reconcileWorkspace(toSavedWorkspace(createInitialWorkspace(hidden)), hidden);
+    expect(before.items['link:resume']).toBeUndefined();
+    const after = reconcileWorkspace(toSavedWorkspace(before), {
+      ...testCatalog,
+      links: [{ ...GITHUB_LINK, id: 'resume' }],
+    });
+    expect(after.items['link:resume']?.parentId).toBeNull();
+  });
+
+  // @codocs [[항목 모델:외부 링크]]
+  it('저장된 상태에 있던 외부 링크의 주소가 비워지면 항목과 Start 고정에서 지운다', () => {
+    const state = reconcileWorkspace(toSavedWorkspace(initial), {
+      ...testCatalog,
+      links: testCatalog.links.map((link) => (link.id === 'github' ? { ...link, url: '' } : link)),
+    });
+    expect(state.items['link:github']).toBeUndefined();
     expect(state.startPins).not.toContain('link:github');
   });
 

@@ -2,7 +2,22 @@
   "name": "Window/Explorer",
   "nodeId": "564:6954",
   "variants": {
-    "device=desktop,folder=blog,selection=none": {
+    "device=desktop,folder=blog,selection=none,tabs=multiple": {
+      "node": {
+        "height": 640,
+        "width": 1024,
+        "x": 64,
+        "y": 32
+      },
+      "nodeId": "1375:10844",
+      "properties": {
+        "Device": "Desktop",
+        "Folder": "Blog",
+        "Selection": "None",
+        "Tabs": "Multiple"
+      }
+    },
+    "device=desktop,folder=blog,selection=none,tabs=single": {
       "node": {
         "height": 640,
         "width": 1024,
@@ -13,10 +28,11 @@
       "properties": {
         "Device": "Desktop",
         "Folder": "Blog",
-        "Selection": "None"
+        "Selection": "None",
+        "Tabs": "Single"
       }
     },
-    "device=desktop,folder=blog,selection=single": {
+    "device=desktop,folder=blog,selection=single,tabs=single": {
       "node": {
         "height": 640,
         "width": 1024,
@@ -27,10 +43,11 @@
       "properties": {
         "Device": "Desktop",
         "Folder": "Blog",
-        "Selection": "Single"
+        "Selection": "Single",
+        "Tabs": "Single"
       }
     },
-    "device=desktop,folder=react,selection=none": {
+    "device=desktop,folder=react,selection=none,tabs=single": {
       "node": {
         "height": 640,
         "width": 1024,
@@ -41,10 +58,11 @@
       "properties": {
         "Device": "Desktop",
         "Folder": "React",
-        "Selection": "None"
+        "Selection": "None",
+        "Tabs": "Single"
       }
     },
-    "device=desktop,folder=recycle-bin,selection=none": {
+    "device=desktop,folder=recycle-bin,selection=none,tabs=single": {
       "node": {
         "height": 640,
         "width": 1024,
@@ -55,10 +73,11 @@
       "properties": {
         "Device": "Desktop",
         "Folder": "Recycle Bin",
-        "Selection": "None"
+        "Selection": "None",
+        "Tabs": "Single"
       }
     },
-    "device=mobile,folder=blog,selection=none": {
+    "device=mobile,folder=blog,selection=none,tabs=single": {
       "node": {
         "height": 796,
         "width": 390,
@@ -69,7 +88,8 @@
       "properties": {
         "Device": "Mobile",
         "Folder": "Blog",
-        "Selection": "None"
+        "Selection": "None",
+        "Tabs": "Single"
       }
     }
   }

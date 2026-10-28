@@ -22,12 +22,14 @@ async function openBlogFolder(): Promise<void> {
 
 // @codocs [[바탕화면:표시하는 항목]]
 describe('바탕화면:표시하는 항목', () => {
-  it('처음에는 바탕화면에 휴지통, Blog 폴더, 외부 링크(GitHub, 이력서)가 보인다', () => {
+  // @codocs [[항목 모델:외부 링크]]
+  it('처음에는 바탕화면에 휴지통, Blog 폴더, 외부 링크(GitHub)가 보이고, 주소를 비운 이력서는 보이지 않는다', () => {
     render(<Shell posts={[]} />);
     const desktop = screen.getByRole('main', { name: '바탕화면' });
-    for (const name of ['휴지통', 'Blog', 'GitHub', '이력서']) {
+    for (const name of ['휴지통', 'Blog', 'GitHub']) {
       expect(within(desktop).getByText(name)).toBeInTheDocument();
     }
+    expect(within(desktop).queryByText('이력서')).not.toBeInTheDocument();
   });
 });
 
