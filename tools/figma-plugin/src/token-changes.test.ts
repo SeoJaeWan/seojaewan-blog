@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { type JsonObject, stableStringify } from './stable-json';
-import { componentsUsingTokens, tokenChanges } from './token-changes';
+import { componentsUsingTokens, tokenChanges, tokenSummary } from './token-changes';
 
 /**
  * 테스트용 토큰을 만든다.
@@ -128,5 +128,30 @@ describe('바뀐 토큰을 쓰는 컴포넌트', () => {
 
   it('이름 일부만 같은 것은 쓰는 것이 아니다', () => {
     expect(componentsUsingTokens(usages, new Set(['spacing/1']))).toEqual([]);
+  });
+});
+
+// @codocs [[피그마 연동:플러그인 화면]]
+describe('대상 목록: 토큰 줄의 추가·변경·이름 변경·삭제', () => {
+  it('지워진 토큰과 종류·값이 같은 새 토큰은 이름 변경으로 세고 추가·삭제에서 뺀다', () => {
+    const changes = tokenChanges(
+      stableStringify(before),
+      after((tokens) => {
+        tokens.color = {
+          blue: { 'dark-one': token('color', '#005fb8'), base: token('color', '#0078d5') },
+          red: { base: token('color', '#c42b1c') },
+        };
+        delete tokens.spacing;
+      }),
+    );
+    expect(changes.renamedPaths).toEqual([
+      { from: 'color/blue/dark-1', to: 'color/blue/dark-one' },
+    ]);
+    expect(tokenSummary(changes)).toEqual({
+      added: ['color/red/base'],
+      modified: ['color/blue/base'],
+      renamed: [{ from: 'color/blue/dark-1', to: 'color/blue/dark-one' }],
+      removed: ['spacing/12'],
+    });
   });
 });

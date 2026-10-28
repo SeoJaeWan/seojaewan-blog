@@ -126,12 +126,9 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               );
             case 'code':
               return (
-                <CodeBlock
-                  key={index}
-                  language={block.language}
-                  code={block.code}
-                  className="w-full"
-                />
+                <CodeBlock key={index} language={block.language} className="w-full">
+                  {block.code}
+                </CodeBlock>
               );
           }
         },

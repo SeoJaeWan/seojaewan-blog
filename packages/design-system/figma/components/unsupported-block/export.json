@@ -1,0 +1,16 @@
+{
+  "name": "UnsupportedBlock",
+  "nodeId": "1380:6880",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 46,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6880",
+      "properties": {}
+    }
+  }
+}

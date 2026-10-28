@@ -5,17 +5,9 @@ import { FileRow } from './file-row';
 // 피그마 FileRow Icon 속성의 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
-// 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 FileRow의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로, Focused는 Tab 키로 재현한다.
 const VIEWS = ['default', 'recycle-bin'] as const;
-const STATES = [
-  'rest',
-  'hover',
-  'selected',
-  'selected-focus',
-  'rename',
-  'cut',
-  'cut-selected',
-] as const;
+const STATES = ['rest', 'hover', 'selected', 'focused', 'rename', 'cut', 'cut-selected'] as const;
 
 type ParityArgs = {
   view: (typeof VIEWS)[number];
@@ -65,7 +57,9 @@ const meta = {
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 840으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => (
     <div className="w-840">
+      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 focused prop으로 그린다. */}
       <FileRow
+        tabIndex={0}
         view={args.view}
         name={args.name}
         date={args.date}
@@ -75,8 +69,8 @@ const meta = {
         originalLocation={args.originalLocation}
         deletedDate={args.deletedDate}
         icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
-        selected={['selected', 'selected-focus', 'cut-selected'].includes(args.state)}
-        focused={args.state === 'selected-focus'}
+        selected={args.state === 'selected' || args.state === 'cut-selected'}
+        focused={args.state === 'focused'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
       />

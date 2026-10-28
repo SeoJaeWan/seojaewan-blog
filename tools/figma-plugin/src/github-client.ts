@@ -11,6 +11,44 @@ const REPO_PATH = `/repos/${REPO_OWNER}/${REPO_NAME}`;
 export type TreeEntry = { path: string; sha: string | null };
 
 /**
+ * 저장소를 읽어 토큰으로 연결되는지와 쓰기 권한(`permissions.push`)을 확인한다.
+ * 실패하면 상태 코드에 맞춰 고칠 방법이 보이는 이유로 오류를 낸다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @param token GitHub 토큰
+ * @returns 저장소 이름(`owner/name`)과 쓰기 권한
+ */
+export async function readRepository(
+  token: string,
+): Promise<{ fullName: string; canPush: boolean }> {
+  const response = await fetch(`${API_ROOT}${REPO_PATH}`, {
+    method: 'GET',
+    headers: headers(token),
+  });
+  if (response.status === 401) {
+    throw new Error('토큰이 틀렸거나 만료됐다(401). 토큰을 새로 만들어 넣는다.');
+  }
+  if (response.status === 403 || response.status === 404) {
+    throw new Error(
+      `저장소 ${REPO_OWNER}/${REPO_NAME}를 읽을 수 없다(${String(response.status)}). 토큰의 저장소 접근에 이 저장소를 넣었는지 확인한다.`,
+    );
+  }
+  if (!response.ok) {
+    throw new Error(`저장소 읽기 실패 (${String(response.status)} ${response.statusText})`);
+  }
+  const json: unknown = await response.json();
+  const permissions: unknown =
+    json !== null && typeof json === 'object' ? Reflect.get(json, 'permissions') : null;
+  const push: unknown =
+    permissions !== null && typeof permissions === 'object'
+      ? Reflect.get(permissions, 'push')
+      : null;
+  return {
+    fullName: readOptionalString(json, ['full_name']) ?? `${REPO_OWNER}/${REPO_NAME}`,
+    canPush: push === true,
+  };
+}
+
+/**
  * 브랜치 끝 커밋과 그 트리의 SHA를 가져온다.
  * @param token GitHub 토큰
  * @param branch 브랜치 이름
