@@ -1,0 +1,30 @@
+{
+  "name": "Chrome/ImageViewer",
+  "nodeId": "1382:6525",
+  "variants": {
+    "layout=narrow": {
+      "node": {
+        "height": 720,
+        "width": 388,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1382:6516",
+      "properties": {
+        "Layout": "Narrow"
+      }
+    },
+    "layout=wide": {
+      "node": {
+        "height": 712,
+        "width": 1278,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1382:6506",
+      "properties": {
+        "Layout": "Wide"
+      }
+    }
+  }
+}
