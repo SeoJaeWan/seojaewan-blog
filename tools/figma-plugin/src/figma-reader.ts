@@ -1,3 +1,4 @@
+import { type CanvasBox, compareRankPaths, readingOrder } from './canvas-order';
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
 import type { CheckContext } from './core/check-structure';
 import { isMotionApiError } from './core/read-motion';
@@ -18,29 +19,57 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 
 // 피그마 API를 읽어 순수 데이터로 옮기는 얇은 층. 변환 규칙은 design-tokens.ts, naming.ts에 둔다.
 
+/** 섹션 밖에 놓인 컴포넌트, `영역/이름` 꼴이 아닌 조립의 묶음 이름 */
+const UNGROUPED = '묶음 밖';
+
 /**
- * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 문서 순서대로 찾는다.
+ * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다. 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
+ * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
-  return listPageComponents(await loadPage(COMPONENTS_PAGE_ID));
+  return listPageComponents(await loadPage(COMPONENTS_PAGE_ID), areaSectionName);
 }
 
 /**
- * "02 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 문서 순서대로 찾는다.
+ * "02 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 캔버스 순서로 찾는다. 묶음은 이름의 영역(조립 PR 단위)이다.
  * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 조립 목록
  */
 export async function listPatterns(): Promise<ComponentSummary[]> {
-  return listPageComponents(await loadPage(PATTERNS_PAGE_ID));
+  return listPageComponents(await loadPage(PATTERNS_PAGE_ID), patternAreaName);
 }
 
 /**
- * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾는다.
+ * 노드를 피그마 캔버스에서 읽는 순서로 정렬한다. 페이지 바로 아래부터 조상마다 형제 사이 순서(위→아래 행, 행 안 왼→오른)를 구해
+ * 바깥 묶음 순서부터 비교한다. 찾지 못한 노드는 뒤에 둔다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @param items 노드 ID를 가진 항목
+ * @returns 캔버스 순서로 정렬한 새 배열
+ */
+export async function sortByCanvasOrder<T extends { readonly id: string }>(
+  items: readonly T[],
+): Promise<T[]> {
+  const ranks = new Map<string, Map<string, number>>();
+  const paths = new Map<string, number[]>();
+  for (const item of items) {
+    const node = await figma.getNodeByIdAsync(item.id);
+    paths.set(item.id, node === null ? [Number.MAX_SAFE_INTEGER] : rankPath(node, ranks));
+  }
+  return [...items].sort((a, b) => compareRankPaths(paths.get(a.id) ?? [], paths.get(b.id) ?? []));
+}
+
+/**
+ * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾아 캔버스 순서로 정렬한다.
  * @param page 불러온 페이지
+ * @param groupOf 노드의 묶음 이름을 정하는 함수
  * @returns 컴포넌트 목록
  */
-function listPageComponents(page: PageNode): ComponentSummary[] {
+async function listPageComponents(
+  page: PageNode,
+  groupOf: (node: ComponentSetNode | ComponentNode) => string,
+): Promise<ComponentSummary[]> {
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
   for (const node of nodes) {
@@ -50,12 +79,96 @@ function listPageComponents(page: PageNode): ComponentSummary[] {
         name: node.name,
         kind: node.type,
         variantCount: variantsOf(node).length,
+        group: groupOf(node),
       });
     } else if (node.parent?.type !== 'COMPONENT_SET') {
-      summaries.push({ id: node.id, name: node.name, kind: node.type, variantCount: 1 });
+      summaries.push({
+        id: node.id,
+        name: node.name,
+        kind: node.type,
+        variantCount: 1,
+        group: groupOf(node),
+      });
     }
   }
-  return summaries;
+  return sortByCanvasOrder(summaries);
+}
+
+/**
+ * 노드가 든 영역 섹션(페이지 바로 아래 섹션)의 이름을 구한다.
+ * @param node 컴포넌트
+ * @returns 영역 섹션 이름, 섹션 밖이면 `묶음 밖`
+ */
+function areaSectionName(node: BaseNode): string {
+  let current: BaseNode = node;
+  while (current.parent !== null && current.parent.type !== 'PAGE') {
+    current = current.parent;
+  }
+  return current !== node && current.type === 'SECTION' ? current.name : UNGROUPED;
+}
+
+/**
+ * 조립 이름의 영역(`Menu/Folder` → `Menu`)을 구한다.
+ * @param node 조립
+ * @returns 영역 이름, `영역/이름` 꼴이 아니면 `묶음 밖`
+ */
+function patternAreaName(node: BaseNode): string {
+  const parts = node.name.split('/').map((part) => part.trim());
+  const [area, rest] = parts;
+  return parts.length === 2 &&
+    area !== undefined &&
+    area !== '' &&
+    rest !== undefined &&
+    rest !== ''
+    ? area
+    : UNGROUPED;
+}
+
+/**
+ * 페이지 바로 아래부터 노드까지 조상마다 형제 사이 순위를 구한다.
+ * @param node 노드
+ * @param ranks 부모 ID → 자식 ID → 순위(캐시)
+ * @returns 순위 경로
+ */
+function rankPath(node: BaseNode, ranks: Map<string, Map<string, number>>): number[] {
+  const path: number[] = [];
+  let current: BaseNode = node;
+  while (current.parent !== null && current.parent.type !== 'DOCUMENT') {
+    const { parent } = current;
+    let order = ranks.get(parent.id);
+    if (order === undefined) {
+      order = siblingOrder(parent);
+      ranks.set(parent.id, order);
+    }
+    path.unshift(order.get(current.id) ?? Number.MAX_SAFE_INTEGER);
+    current = parent;
+  }
+  return path;
+}
+
+/**
+ * 부모의 자식을 읽는 순서로 번호 매긴다.
+ * @param parent 부모 노드
+ * @returns 자식 ID → 순위
+ */
+function siblingOrder(parent: BaseNode & ChildrenMixin): Map<string, number> {
+  const boxes = parent.children.map((child) => boxOf(child));
+  return new Map(readingOrder(boxes).map((id, index) => [id, index]));
+}
+
+/**
+ * 노드의 부모 기준 위치와 크기를 읽는다.
+ * @param child 노드
+ * @returns 위치와 크기
+ */
+function boxOf(child: SceneNode): CanvasBox {
+  return {
+    id: child.id,
+    x: child.x,
+    y: child.y,
+    width: child.width,
+    height: child.height,
+  };
 }
 
 /**

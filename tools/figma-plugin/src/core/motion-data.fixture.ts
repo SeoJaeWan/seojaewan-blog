@@ -60,6 +60,7 @@ export function track(
   return {
     node: 'Window',
     nodeKind: 'component',
+    nodeId: '12:35',
     path: 'Window',
     property,
     operation: 'SET',
