@@ -3,6 +3,8 @@ import { userEvent } from '@testing-library/user-event';
 import type { JSX } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clearPostBodyCache } from '@/features/chrome/hooks/use-post-body/use-post-body';
+import { useChromeZoomStore } from '@/features/chrome/stores/chrome-zoom-store/chrome-zoom-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
   hydrateWorkspaceStore,
@@ -114,6 +116,9 @@ beforeEach(async () => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+  clearPostBodyCache();
+  useChromeZoomStore.getState().resetZoom();
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
   localStorage.clear();
@@ -247,17 +252,304 @@ describe('Chrome:구성', () => {
     );
   });
 
-  it('⋮ 메뉴의 페이지에서 찾기·확대/축소는 비활성이다', async () => {
+  it('⋮ 메뉴는 링크 복사 · 페이지에서 찾기 · 확대/축소 줄이다', async () => {
     renderChrome({ kind: 'post', slug: 'rsc' });
     await userEvent.click(screen.getByRole('button', { name: '더보기' }));
-    for (const name of [/페이지에서 찾기/, /확대\/축소/]) {
-      expect(await screen.findByRole('menuitem', { name })).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
-    }
+    const items = await screen.findAllByRole('menuitem');
+    expect(items.map((item) => item.textContent)).toEqual(['링크 복사', '페이지에서 찾기Ctrl+F']);
+    expect(screen.getByRole('group', { name: '확대/축소' })).toHaveTextContent('100%');
   });
 });
+
+// @codocs [[Chrome:페이지에서 찾기]]
+describe('Chrome:페이지에서 찾기', () => {
+  it('⋮ 메뉴의 페이지에서 찾기를 누르면 찾기 막대를 열고 입력칸에 포커스를 준다', async () => {
+    renderChrome();
+    await userEvent.click(screen.getByRole('button', { name: '더보기' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: /페이지에서 찾기/ }));
+    expect(findInput()).toHaveFocus();
+  });
+
+  it('Chrome 창에 포커스가 있을 때 Ctrl+F로 열고 실제 브라우저의 찾기는 막는다', () => {
+    renderChrome();
+    const isNotPrevented = fireEvent.keyDown(addressBar(), { key: 'f', ctrlKey: true });
+    expect(isNotPrevented).toBe(false);
+    expect(findInput()).toHaveFocus();
+  });
+
+  it('이미 열려 있으면 Ctrl+F가 입력칸에 포커스를 주고 글자를 모두 선택한다', async () => {
+    renderChrome();
+    await openFindBar('리액트');
+    addressBar().focus();
+    fireEvent.keyDown(addressBar(), { key: 'f', ctrlKey: true });
+    const input = findInput();
+    expect(input).toHaveFocus();
+    expect([input.selectionStart, input.selectionEnd]).toEqual([0, '리액트'.length]);
+  });
+
+  it('입력할 때마다 페이지 본문에서 찾아 `현재/전체` 개수를 보인다', async () => {
+    renderChrome();
+    await openFindBar('리액트');
+    expect(findBar()).toHaveTextContent('1/2');
+    await userEvent.clear(findInput());
+    await userEvent.type(findInput(), '없는 글자');
+    expect(findBar()).toHaveTextContent('0/0');
+  });
+
+  it('Enter·다음은 다음, Shift+Enter·이전은 이전이고 끝에 닿으면 처음으로 돌아간다', async () => {
+    renderChrome();
+    await openFindBar('리액트');
+    await userEvent.keyboard('{Enter}');
+    expect(findBar()).toHaveTextContent('2/2');
+    await userEvent.keyboard('{Enter}');
+    expect(findBar()).toHaveTextContent('1/2');
+    await userEvent.keyboard('{Shift>}{Enter}{/Shift}');
+    expect(findBar()).toHaveTextContent('2/2');
+    await userEvent.click(screen.getByRole('button', { name: '다음 찾기' }));
+    expect(findBar()).toHaveTextContent('1/2');
+    await userEvent.click(screen.getByRole('button', { name: '이전 찾기' }));
+    expect(findBar()).toHaveTextContent('2/2');
+  });
+
+  it('Esc나 닫기 버튼으로 닫는다', async () => {
+    renderChrome();
+    await openFindBar('리액트');
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('search', { name: '페이지에서 찾기' })).not.toBeInTheDocument();
+    await openFindBar('리액트');
+    await userEvent.click(screen.getByRole('button', { name: '찾기 닫기' }));
+    expect(screen.queryByRole('search', { name: '페이지에서 찾기' })).not.toBeInTheDocument();
+  });
+
+  it('다른 페이지로 가거나 탭을 바꾸면 닫는다', async () => {
+    renderChrome();
+    await openFindBar('리액트');
+    await userEvent.click(screen.getByRole('button', { name: '리액트 서버 컴포넌트' }));
+    expect(screen.queryByRole('search', { name: '페이지에서 찾기' })).not.toBeInTheDocument();
+    await openFindBar('리액트');
+    await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+    expect(screen.queryByRole('search', { name: '페이지에서 찾기' })).not.toBeInTheDocument();
+  });
+});
+
+// @codocs [[Chrome:확대/축소]]
+describe('Chrome:확대/축소', () => {
+  it('⋮ 메뉴의 −·+로 배율을 바꾸고 눌러도 메뉴가 닫히지 않는다', async () => {
+    renderChrome();
+    await userEvent.click(screen.getByRole('button', { name: '더보기' }));
+    await userEvent.click(await screen.findByRole('button', { name: '확대' }));
+    expect(zoomRow()).toHaveTextContent('110%');
+    await userEvent.click(screen.getByRole('button', { name: '축소' }));
+    await userEvent.click(screen.getByRole('button', { name: '축소' }));
+    expect(zoomRow()).toHaveTextContent('90%');
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+  });
+
+  it('끝 단계에서는 그쪽 버튼이 비활성이다', async () => {
+    act(() => {
+      for (let step = 0; step < 6; step += 1) {
+        useChromeZoomStore.getState().zoomIn();
+      }
+    });
+    renderChrome();
+    await userEvent.click(screen.getByRole('button', { name: '더보기' }));
+    expect(await screen.findByRole('group', { name: '확대/축소' })).toHaveTextContent('200%');
+    expect(screen.getByRole('button', { name: '확대' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '축소' })).toBeEnabled();
+  });
+
+  it('Ctrl + `+`·`-`·`0`으로 배율을 바꾸고 실제 브라우저의 확대는 막는다', () => {
+    renderChrome();
+    expect(fireEvent.keyDown(addressBar(), { key: '=', ctrlKey: true })).toBe(false);
+    expect(useChromeZoomStore.getState().zoom).toBe(110);
+    fireEvent.keyDown(addressBar(), { key: '-', ctrlKey: true });
+    fireEvent.keyDown(addressBar(), { key: '-', ctrlKey: true });
+    expect(useChromeZoomStore.getState().zoom).toBe(90);
+    fireEvent.keyDown(addressBar(), { key: '0', ctrlKey: true });
+    expect(useChromeZoomStore.getState().zoom).toBe(100);
+  });
+
+  it('페이지 본문만 키우고 모든 Chrome 창이 같은 배율을 쓴다', () => {
+    renderChrome();
+    renderChrome({ kind: 'search', query: '리액트' });
+    act(() => {
+      useChromeZoomStore.getState().zoomIn();
+    });
+    const zoomed = [...document.querySelectorAll<HTMLElement>('[style*="zoom"]')];
+    expect(zoomed.map((element) => element.style.zoom)).toEqual(['1.1', '1.1']);
+    expect(zoomed.every((element) => element.closest('[role="tablist"]') === null)).toBe(true);
+  });
+});
+
+// @codocs [[Chrome:휴지통에 있는 글]]
+describe('Chrome:휴지통에 있는 글', () => {
+  it('휴지통에 있는 글 주소를 주소창에 넣으면 바로 열지 않고 복원할지 묻는다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().trashItems(['post:rsc']);
+    });
+    const id = renderChrome();
+    await userEvent.type(addressBar(), '/posts/rsc{Enter}');
+    const dialog = await screen.findByRole('alertdialog');
+    expect(dialog).toHaveTextContent('휴지통에 있는 글');
+    expect(dialog).toHaveTextContent('이 글은 휴지통에 있어요. 복원하고 열까요?');
+    expect(currentPage(id)).toEqual({ kind: 'new-tab' });
+  });
+
+  it('복원을 누르면 그 글을 원래 위치로 돌려놓고 연다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().trashItems(['post:rsc']);
+    });
+    const id = renderChrome();
+    await userEvent.type(addressBar(), '/posts/rsc{Enter}');
+    await userEvent.click(await screen.findByRole('button', { name: '복원' }));
+    expect(currentPage(id)).toEqual({ kind: 'post', slug: 'rsc' });
+    expect(useWorkspaceStore.getState().items['post:rsc']?.trash).toBeNull();
+  });
+
+  it('취소를 누르면 보던 페이지를 그대로 둔다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().trashItems(['post:rsc']);
+    });
+    const id = renderChrome({ kind: 'search', query: '리액트' });
+    await userEvent.type(addressBar(), '/posts/rsc{Enter}');
+    await userEvent.click(await screen.findByRole('button', { name: '취소' }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(currentPage(id)).toEqual({ kind: 'search', query: '리액트' });
+    expect(useWorkspaceStore.getState().items['post:rsc']?.trash).not.toBeNull();
+  });
+});
+
+// @codocs [[Chrome:글 화면]]
+describe('Chrome:글 화면', () => {
+  it('본문 이미지를 누르면 페이지 영역을 덮어 크게 보고 포커스를 그 안으로 옮긴다', async () => {
+    mockImageBody();
+    renderChrome({ kind: 'post', slug: 'rsc' });
+    await userEvent.click(
+      await screen.findByRole('button', { name: '이미지 크게 보기: 구조 그림' }),
+    );
+    const dialog = screen.getByRole('dialog', { name: '구조 그림' });
+    expect(dialog).toHaveFocus();
+    expect(screen.getByRole('tablist')).toBeVisible();
+  });
+
+  it('크게 보는 동안 Tab 키 포커스는 그 안에만 머문다', async () => {
+    mockImageBody();
+    renderChrome({ kind: 'post', slug: 'rsc' });
+    await userEvent.click(
+      await screen.findByRole('button', { name: '이미지 크게 보기: 구조 그림' }),
+    );
+    const dialog = screen.getByRole('dialog', { name: '구조 그림' });
+    const close = within(dialog).getByRole('button', { name: '닫기' });
+    await userEvent.tab();
+    expect(close).toHaveFocus();
+    await userEvent.tab();
+    expect(close).toHaveFocus();
+    await userEvent.tab({ shift: true });
+    expect(close).toHaveFocus();
+  });
+
+  it('Esc·닫기 버튼·이미지 밖 바탕으로 닫고, 닫으면 원래 이미지로 포커스를 돌린다', async () => {
+    mockImageBody();
+    renderChrome({ kind: 'post', slug: 'rsc' });
+    const image = await screen.findByRole('button', { name: '이미지 크게 보기: 구조 그림' });
+    await userEvent.click(image);
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(image).toHaveFocus();
+    await userEvent.click(image);
+    await userEvent.click(
+      within(screen.getByRole('dialog', { name: '구조 그림' })).getByRole('button', {
+        name: '닫기',
+      }),
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await userEvent.click(image);
+    await userEvent.click(screen.getByRole('dialog', { name: '구조 그림' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(image).toHaveFocus();
+  });
+
+  it('찾기 막대가 열려 있으면 크게 보기가 그 위를 덮는다', async () => {
+    mockImageBody();
+    renderChrome({ kind: 'post', slug: 'rsc' });
+    const image = await screen.findByRole('button', { name: '이미지 크게 보기: 구조 그림' });
+    fireEvent.keyDown(addressBar(), { key: 'f', ctrlKey: true });
+    await userEvent.click(image);
+    const dialog = screen.getByRole('dialog', { name: '구조 그림' });
+    expect(
+      findBar().compareDocumentPosition(dialog) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it('다음 글은 휴지통에 있는 글을 건너뛴다', async () => {
+    mockImageBody();
+    act(() => {
+      useWorkspaceStore.getState().trashItems(['post:rsc']);
+    });
+    renderChrome({ kind: 'post', slug: 'next-cache' });
+    expect(await screen.findByText('리액트 19 훅 정리')).toBeInTheDocument();
+    expect(screen.queryByText('리액트 서버 컴포넌트')).not.toBeInTheDocument();
+  });
+});
+
+/**
+ * 서버 경로가 캡션 있는 이미지 하나의 본문을 돌려주게 한다.
+ */
+function mockImageBody(): void {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(() =>
+      Promise.resolve(
+        Response.json({
+          blocks: [
+            {
+              type: 'image',
+              url: 'https://images.seojaewan.com/notion/a',
+              caption: [{ text: '구조 그림', link: null }],
+            },
+          ],
+        }),
+      ),
+    ),
+  );
+}
+
+/**
+ * 찾기 막대.
+ * @returns 찾기 막대
+ */
+function findBar(): HTMLElement {
+  return screen.getByRole('search', { name: '페이지에서 찾기' });
+}
+
+/**
+ * 찾기 막대 입력칸.
+ * @returns 입력칸
+ */
+function findInput(): HTMLInputElement {
+  const input = within(findBar()).getByRole('searchbox');
+  if (!(input instanceof HTMLInputElement)) {
+    throw new Error('찾기 입력칸이 입력칸이 아니다');
+  }
+  return input;
+}
+
+/**
+ * Ctrl+F로 찾기 막대를 열고 글자를 입력한다.
+ * @param query 찾는 글자
+ */
+async function openFindBar(query: string): Promise<void> {
+  fireEvent.keyDown(addressBar(), { key: 'f', ctrlKey: true });
+  await userEvent.type(findInput(), query);
+}
+
+/**
+ * ⋮ 메뉴의 확대/축소 줄.
+ * @returns 확대/축소 줄
+ */
+function zoomRow(): HTMLElement {
+  return screen.getByRole('group', { name: '확대/축소' });
+}
 
 // @codocs [[Chrome:새 탭 페이지]]
 describe('Chrome:새 탭 페이지', () => {
@@ -282,6 +574,29 @@ describe('Chrome:새 탭 페이지', () => {
       '/posts/rsc{Enter}',
     );
     expect(currentPage(id)).toEqual({ kind: 'post', slug: 'rsc' });
+  });
+
+  it('검색창에 입력하면 주소창과 같은 추천 목록을 열고 ↓·Enter로 그 글을 연다', async () => {
+    const id = renderChrome();
+    const search = screen.getByRole('searchbox', { name: '글 검색 또는 URL 입력' });
+    await userEvent.type(search, '리액');
+    const options = screen.getAllByRole('option').map((option) => option.textContent);
+    expect(options).toEqual(['리액트 19 훅 정리', '리액트 서버 컴포넌트', '리액 검색']);
+    expect(search).not.toHaveAttribute('aria-activedescendant');
+    await userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}');
+    expect(currentPage(id)).toEqual({ kind: 'post', slug: 'rsc' });
+  });
+
+  it('검색창 추천을 누르면 그 글을 열고, Esc는 추천을 닫고 빈칸으로 돌린다', async () => {
+    const id = renderChrome();
+    const search = screen.getByRole('searchbox', { name: '글 검색 또는 URL 입력' });
+    await userEvent.type(search, '리액');
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('option')).not.toBeInTheDocument();
+    expect(search).toHaveValue('');
+    await userEvent.type(search, 'Next');
+    await userEvent.click(screen.getByRole('option', { name: 'Next.js 캐시' }));
+    expect(currentPage(id)).toEqual({ kind: 'post', slug: 'next-cache' });
   });
 });
 

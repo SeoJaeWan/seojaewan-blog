@@ -31,9 +31,46 @@ describe('Chrome:글 화면', () => {
     expect(getPostNeighbors(workspace, 'new').next).toBeUndefined();
   });
 
-  it('폴더와 휴지통에 상관없이 사이트의 모든 글에서 찾는다', () => {
-    const trashed = trashItems(workspace, ['post:old'], '2026-10-28T00:00:00.000Z');
-    const state = trashed.ok ? trashed.state : workspace;
-    expect(getPostNeighbors(state, 'mid').previous?.slug).toBe('old');
+  it('폴더와 상관없이 사이트의 글에서 찾는다', () => {
+    expect(getPostNeighbors(workspace, 'old').next?.slug).toBe('mid');
+    expect(getPostNeighbors(workspace, 'new').previous?.slug).toBe('mid');
   });
 });
+
+// @codocs [[Chrome:휴지통에 있는 글]]
+describe('Chrome:휴지통에 있는 글', () => {
+  it('이전 글·다음 글은 휴지통에 있는 글을 건너뛴다', () => {
+    const state = trash(['post:mid']);
+    expect(getPostNeighbors(state, 'old').next?.slug).toBe('new');
+    expect(getPostNeighbors(state, 'new').previous?.slug).toBe('old');
+  });
+
+  it('휴지통에 든 폴더 안의 글도 건너뛴다', () => {
+    const folder = Object.values(workspace.items).find(
+      (item) => item.kind === 'folder' && item.name === 'React',
+    );
+    const state = trash([folder?.id ?? '']);
+    expect(getPostNeighbors(state, 'old').next?.slug).toBe('new');
+  });
+
+  it('보고 있는 글이 휴지통에 있어도 자기 자리에서 이웃을 찾는다', () => {
+    const state = trash(['post:mid']);
+    expect(getPostNeighbors(state, 'mid')).toEqual({
+      previous: state.items['post:old'],
+      next: state.items['post:new'],
+    });
+  });
+});
+
+/**
+ * 항목들을 휴지통에 넣은 작업 공간.
+ * @param ids 넣을 항목 id
+ * @returns 작업 공간
+ */
+function trash(ids: readonly string[]): typeof workspace {
+  const result = trashItems(workspace, ids, '2026-10-28T00:00:00.000Z');
+  if (!result.ok) {
+    throw new Error(result.reason);
+  }
+  return result.state;
+}

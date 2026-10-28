@@ -32,6 +32,7 @@ import {
   renameFolder,
   repairWorkspace,
   restoreItems,
+  restoreTrashedPost,
   setDesktopIconPositions,
   setExplorerView,
   toSavedWorkspace,
@@ -808,5 +809,32 @@ describe('바탕화면:표시하는 항목', () => {
     ]);
     const moved = expectOk(moveItems(initial, ['link:github'], BLOG_FOLDER_ID, NOW));
     expect(getDesktopItems(moved).map((item) => item.id)).toEqual([RECYCLE_BIN_ID, BLOG_FOLDER_ID]);
+  });
+});
+
+// @codocs [[Chrome:휴지통에 있는 글]]
+describe('Chrome:휴지통에 있는 글', () => {
+  it('휴지통에 바로 든 글은 원래 위치로 복원한다', () => {
+    const trashed = expectOk(trashItems(initial, ['post:react-19-hooks'], NOW));
+    const restored = expectOk(restoreTrashedPost(trashed, 'post:react-19-hooks'));
+    expect(restored.items['post:react-19-hooks']).toMatchObject({
+      parentId: 'folder:React',
+      trash: null,
+    });
+  });
+
+  it('휴지통에 든 폴더 안의 글은 그 글만 바탕화면으로 꺼낸다', () => {
+    const trashed = expectOk(trashItems(initial, ['folder:React'], NOW));
+    const restored = expectOk(restoreTrashedPost(trashed, 'post:react-19-hooks'));
+    expect(restored.items['post:react-19-hooks']?.parentId).toBeNull();
+    expect(isItemInTrash(restored, 'post:react-19-hooks')).toBe(false);
+    expect(isItemInTrash(restored, 'folder:React')).toBe(true);
+  });
+
+  it('휴지통에 없는 글은 복원하지 않는다', () => {
+    expect(restoreTrashedPost(initial, 'post:react-19-hooks')).toEqual({
+      ok: false,
+      reason: 'not-in-trash',
+    });
   });
 });

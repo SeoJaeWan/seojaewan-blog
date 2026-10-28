@@ -5,7 +5,7 @@ import { MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
 type MenuButtonProps = Pick<
   ComponentProps<typeof MenuPopup>,
-  'items' | 'className' | 'itemClassName'
+  'items' | 'className' | 'itemClassName' | 'finalFocus'
 > & {
   /** 메뉴를 여는 버튼. Base UI `Menu.Trigger`가 이 요소에 열림 상태와 동작 속성을 합쳐 그린다 */
   trigger: ReactElement;
@@ -29,6 +29,7 @@ const POPUP_OFFSET = 4;
  * 버튼과 그 버튼이 여는 메뉴 조립(`Menu/*`)을 한 쌍으로 그린다. Start 전원 버튼, Start 보기 버튼처럼 피그마 Popover에
  * 버튼과 메뉴를 넣은 조립에 쓴다. 메뉴는 MenuPopup이 그리고, 위치는 Base UI `Menu.Positioner`가 트리거에 맞춰 정한다.
  * 팝업은 문서 끝(body)에 포털해 트리거를 담은 영역의 `overflow`에 잘리지 않게 한다.
+ * 닫힌 뒤 포커스가 갈 곳(`finalFocus`, Base UI `Menu.Popup`과 같다)을 주면 그대로 넘긴다. 주지 않으면 트리거로 돌아간다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
  * @param props
@@ -42,13 +43,19 @@ export function MenuButton(props: MenuButtonProps): JSX.Element {
     items,
     className,
     itemClassName,
+    finalFocus,
   } = props;
   return (
     <BaseMenu.Root open={isOpen} modal={false} onOpenChange={props.onOpenChange}>
       <BaseMenu.Trigger render={trigger} />
       <BaseMenu.Portal>
         <BaseMenu.Positioner side={side} align={align} sideOffset={POPUP_OFFSET}>
-          <MenuPopup items={items} className={className} itemClassName={itemClassName} />
+          <MenuPopup
+            items={items}
+            className={className}
+            itemClassName={itemClassName}
+            finalFocus={finalFocus}
+          />
         </BaseMenu.Positioner>
       </BaseMenu.Portal>
     </BaseMenu.Root>

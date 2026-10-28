@@ -167,7 +167,7 @@ export const postBodySchema: z.ZodType<PostBody> = z.object({
 });
 
 /** 목차를 보이는 제목 개수의 최소값([[Chrome:글 화면]]) */
-export const TOC_MIN_HEADINGS = 3;
+export const TOC_MIN_HEADINGS = 1;
 
 /** 목차 항목 하나 */
 export type TocHeading = {
@@ -205,7 +205,7 @@ export function getPlainText(richText: readonly RichText[]): string {
 }
 
 /**
- * 본문의 목차 항목. 제목(Heading)이 3개 이상일 때만 목차를 보이므로, 그보다 적으면 빈 목록이다.
+ * 본문의 목차 항목. 제목(Heading)이 1개 이상일 때 목차를 보이므로, 제목이 없으면 빈 목록이다.
  * @codocs [[Chrome:글 화면]]
  * @param blocks 본문 블록
  * @returns 목차 항목

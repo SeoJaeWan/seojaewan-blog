@@ -44,6 +44,7 @@ type WindowFrameControlProps = Pick<
   | 'maximizeSlot'
   | 'onTitleBarDoubleClick'
   | 'onTitleBarPointerDown'
+  | 'onKeyDown'
 >;
 
 // 도구 모음에 그대로 넘기는 이동 버튼 속성이다.
@@ -74,6 +75,8 @@ type ChromeWindowProps = WindowFrameControlProps &
     isMoreMenuOpen?: boolean;
     /** ⋮ 메뉴를 열거나 닫으려 할 때 */
     onMoreMenuOpenChange?: (isOpen: boolean) => void;
+    /** ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다 */
+    moreMenuFinalFocus?: ComponentProps<typeof MenuButton>['finalFocus'];
     /** 탭 내용 자리. 고른 탭의 `ChromePage`를 넣는다. 도구 모음 아래 남는 자리를 채우도록 `min-h-0 w-full flex-1`을 준다 */
     children?: ReactNode;
     /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
@@ -118,6 +121,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     moreMenuItems,
     isMoreMenuOpen = false,
     onMoreMenuOpenChange: handleMoreMenuOpenChange,
+    moreMenuFinalFocus,
     children,
     className,
     onTitleBarPointerDown: handleFrameTitleBarPointerDown,
@@ -147,6 +151,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
         items={moreMenuItems}
         open={isMoreMenuOpen}
         onOpenChange={handleMoreMenuOpenChange}
+        finalFocus={moreMenuFinalFocus}
         align="end"
       />
     );

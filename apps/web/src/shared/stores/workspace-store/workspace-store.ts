@@ -20,6 +20,7 @@ import {
   recordRecentItem,
   renameFolder,
   restoreItems,
+  restoreTrashedPost,
   type SavedWorkspaceShape,
   setDesktopIconPositions,
   setExplorerView,
@@ -50,6 +51,8 @@ type WorkspaceActions = {
   trashItems: (ids: readonly string[]) => WorkspaceActionResult;
   /** 휴지통의 항목들을 원래 위치로 복원한다 */
   restoreItems: (ids: readonly string[]) => WorkspaceActionResult;
+  /** 휴지통에 있는 글 하나를 주소로 열 때 복원한다(휴지통에 든 폴더 안의 글이면 그 글만 바탕화면으로) */
+  restoreTrashedPost: (id: string) => WorkspaceActionResult;
   /** 위치에 새 폴더를 만든다. 만든 폴더의 id를 돌려준다 */
   createFolder: (
     parentId: string | null,
@@ -187,6 +190,7 @@ function createWorkspaceStore(
     moveItems: (ids, targetId) => apply(moveItems(get(), ids, targetId, new Date().toISOString())),
     trashItems: (ids) => apply(trashItems(get(), ids, new Date().toISOString())),
     restoreItems: (ids) => apply(restoreItems(get(), ids)),
+    restoreTrashedPost: (id) => apply(restoreTrashedPost(get(), id)),
     createFolder: (parentId) => {
       const id = crypto.randomUUID();
       const result = apply(
