@@ -1,0 +1,30 @@
+{
+  "name": "Checkbox",
+  "nodeId": "1380:1100",
+  "variants": {
+    "checked=false": {
+      "node": {
+        "height": 20,
+        "width": 20,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1096",
+      "properties": {
+        "Checked": "False"
+      }
+    },
+    "checked=true": {
+      "node": {
+        "height": 20,
+        "width": 20,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1097",
+      "properties": {
+        "Checked": "True"
+      }
+    }
+  }
+}
