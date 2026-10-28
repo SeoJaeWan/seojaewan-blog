@@ -44,6 +44,7 @@ export * from './components/popover/popover';
 export * from './components/post-nav-card/post-nav-card';
 export * from './components/profile-button/profile-button';
 export * from './components/progress-ring/progress-ring';
+export * from './components/quote/quote';
 export * from './components/rename-field/rename-field';
 export * from './components/scrollbar/scroll-area';
 export * from './components/scrollbar/scrollbar';
