@@ -192,6 +192,38 @@ describe('토큰 생성', () => {
     expect(css).not.toContain('type-hangul');
   });
 
+  it('글자 스타일 확장 필드의 기울임은 font-style, 밑줄·취소선은 text-decoration-line이 된다', () => {
+    expect(utilityBlock('type-body-italic')).toBe(
+      [
+        '@utility type-body-italic {',
+        '  font-family: var(--font-family-base);',
+        '  font-size: var(--font-size-body);',
+        '  font-weight: 400;',
+        '  line-height: var(--font-line-height-body);',
+        '  letter-spacing: 0em;',
+        '  font-style: italic;',
+        '}',
+      ].join('\n'),
+    );
+    expect(utilityBlock('type-body-underline')).toContain('  text-decoration-line: underline;\n');
+    expect(utilityBlock('type-body-strikethrough')).toContain(
+      '  text-decoration-line: line-through;\n',
+    );
+  });
+
+  it('기울임·글자 장식이 없는 글자 스타일은 font-style·text-decoration을 선언하지 않는다', () => {
+    expect(utilityBlock('type-body')).not.toMatch(/font-style|text-decoration/u);
+  });
+
+  it('규칙이 없는 기울임·글자 장식 값은 실패한다', () => {
+    for (const extension of [{ fontStyle: 'oblique' }, { textDecoration: 'overline' }]) {
+      const { style } = TOKENS_FIXTURE;
+      const body = { ...style.text.Body, $extensions: { 'com.seojaewan': extension } };
+      const json = { ...TOKENS_FIXTURE, style: { ...style, text: { ...style.text, Body: body } } };
+      expect(() => tokensJsonToCss(json)).toThrow(TokenFormatError);
+    }
+  });
+
   it('스타일이 아닌 클래스는 이름공간을 빼고, 색은 토큰 이름 전체를 쓴다', () => {
     expect(utilityBlock('w-*')).toBe('@utility w-* {\n  width: --value(--size-*);\n}');
     expect(utilityBlock('bg-text-fill-*')).toBe(

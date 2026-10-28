@@ -221,6 +221,85 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
     expect(() => buildDesignTokens(input)).toThrow(/AUTO/u);
   });
 
+  it('글꼴 스타일 이름의 Italic은 기울임이고 앞부분이 굵기다(Italic만 있으면 Regular)', () => {
+    const { tokens } = buildDesignTokens(
+      tokensInput({
+        textStyles: [
+          { ...bodyStyle, name: 'Body Italic', fontStyle: 'Italic', boundVariables: {} },
+          {
+            ...bodyStyle,
+            name: 'Body Strong Italic',
+            fontStyle: 'SemiBold Italic',
+            boundVariables: {},
+          },
+        ],
+      }),
+    );
+    expect(at(tokens, ['style', 'text', 'Body Italic', '$value', 'fontWeight'])).toBe(400);
+    expect(at(tokens, ['style', 'text', 'Body Italic', '$extensions'])).toEqual({
+      'com.seojaewan': { fontStyle: 'italic' },
+    });
+    expect(at(tokens, ['style', 'text', 'Body Strong Italic', '$value', 'fontWeight'])).toBe(600);
+    expect(at(tokens, ['style', 'text', 'Body Strong Italic', '$extensions'])).toEqual({
+      'com.seojaewan': { fontStyle: 'italic' },
+    });
+  });
+
+  it('굵기가 변수에 묶여 있어도 기울임은 글꼴 스타일 이름으로 정한다', () => {
+    const { tokens } = buildDesignTokens(
+      tokensInput({ textStyles: [{ ...bodyStyle, fontStyle: 'Italic' }] }),
+    );
+    expect(at(tokens, ['style', 'text', 'Body'])).toEqual({
+      $type: 'typography',
+      $value: {
+        fontFamily: '{font.family.base}',
+        fontWeight: '{font.weight.regular}',
+        fontSize: '{font.size.body}',
+        lineHeight: '{font.line-height.body}',
+        letterSpacing: { value: 0, unit: '%' },
+      },
+      $extensions: { 'com.seojaewan': { fontStyle: 'italic' } },
+    });
+  });
+
+  it('밑줄은 underline, 취소선은 line-through 글자 장식이고 기울임과 함께 담을 수 있다', () => {
+    const { tokens } = buildDesignTokens(
+      tokensInput({
+        textStyles: [
+          { ...bodyStyle, name: 'Body Underline', textDecoration: 'UNDERLINE' },
+          {
+            ...bodyStyle,
+            name: 'Body Strikethrough Italic',
+            fontStyle: 'Italic',
+            boundVariables: {},
+            textDecoration: 'STRIKETHROUGH',
+          },
+        ],
+      }),
+    );
+    expect(at(tokens, ['style', 'text', 'Body Underline', '$extensions'])).toEqual({
+      'com.seojaewan': { textDecoration: 'underline' },
+    });
+    expect(at(tokens, ['style', 'text', 'Body Strikethrough Italic', '$extensions'])).toEqual({
+      'com.seojaewan': { fontStyle: 'italic', textDecoration: 'line-through' },
+    });
+  });
+
+  it('기울임이 없고 글자 장식이 NONE이면 확장 필드를 두지 않는다', () => {
+    const { tokens } = buildDesignTokens(tokensInput({ textStyles: [bodyStyle] }));
+    expect(at(tokens, ['style', 'text', 'Body', '$extensions'])).toBeUndefined();
+  });
+
+  it('계약에 없는 굵기의 기울임 스타일과 글자 장식은 모아 중단한다', () => {
+    const input = tokensInput({
+      textStyles: [
+        { ...bodyStyle, name: 'Light', fontStyle: 'Light Italic', boundVariables: {} },
+        { ...bodyStyle, name: 'Overline', textDecoration: 'OVERLINE' },
+      ],
+    });
+    expect(() => buildDesignTokens(input)).toThrow(/Light Italic[\s\S]*OVERLINE/u);
+  });
+
   it('효과 스타일은 그림자 배열이고 흐림은 com.seojaewan 확장 필드다. 원래 이름 조각을 경로로 쓴다', () => {
     const { tokens } = buildDesignTokens(tokensInput({ effectStyles: [flyoutEffectStyle] }));
     expect(at(tokens, ['style', 'effect', 'Surface', 'Flyout (Acrylic)'])).toEqual({

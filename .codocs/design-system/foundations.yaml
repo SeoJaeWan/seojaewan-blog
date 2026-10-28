@@ -33,7 +33,8 @@ _codocs:
   - 두 서체 모두 SIL Open Font License이며 웹 폰트로 제공한다. 피그마, 로컬, CI, 방문자가 모두 같은 서체로 보게 해야 캡처 표의 비교가 의미가 있다([[피그마 연동:캡처 표]]).
   - 글 본문의 코드 블록만 고정폭 서체 Cascadia Mono(Microsoft, SIL Open Font License)를 쓴다. 글자 폭이 같아야 들여쓰기와 줄 맞춤이 맞기 때문이다. Windows Terminal의 기본 서체라 Windows 느낌과도 맞고, 기호를 이어 그리는 합자가 없어 입력할 문자 그대로 보인다. 코드 안의 한글은 Pretendard로 그린다. 피그마 텍스트 스타일은 `Code`와 `Hangul/Code`, 서체 변수는 `font/family/code`다.
   - 글자 스타일은 두 벌이다. 라틴 스타일(`Body`, `Body Strong` 등)과 같은 이름의 한글 스타일(`Hangul/Body` 등)이다. 분리 이유는 [[디자인 기반:검토한 대안]], 영향과 재시도 조건은 [[한계:한글 글자 스타일 두 벌]]에서 확인한다. 두 벌은 같은 크기·굵기·줄 높이·자간 변수에 연결한다. 코드 표현은 [[피그마 연동:서체 구현]]을 따른다.
-  - 글 본문의 링크처럼 밑줄이 있는 글자는 밑줄을 글자에 직접 넣지 않고 밑줄이 든 글자 스타일을 쓴다. `Body Large Link`·`Hangul/Body Large Link`는 `Body Large`에 밑줄을 더한 것이다. 링크 색은 칠 변수로 따로 준다.
+  - 글 본문의 링크처럼 밑줄이 있는 글자는 밑줄을 글자에 직접 넣지 않고 밑줄이 든 글자 스타일을 쓴다. `Body Large Link`·`Hangul/Body Large Link`는 `Body Large`에 밑줄을 더한 것이다. 링크 색은 칠 변수로 따로 준다. 글 본문의 밑줄·취소선 서식도 같은 방식으로 `Body Large Underline`·`Body Large Strikethrough`(한글 짝 포함)를 쓴다.
+  - 글 본문의 기울임 서식은 `Body Large Italic`(Open Sans Italic)을 쓴다. Pretendard에는 기울임 글꼴이 없어 한글 짝을 두지 않고, 한글은 기울이지 않는다. 코드도 Open Sans Italic 웹 폰트를 함께 제공해 브라우저가 기울임을 흉내 내지 않게 한다.
 
   서체 선택에서 검토한 대안은 [[디자인 기반:검토한 대안]]에 있다.
 레이아웃: |

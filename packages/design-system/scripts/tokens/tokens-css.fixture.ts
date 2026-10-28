@@ -204,6 +204,39 @@ export const TOKENS_FIXTURE = {
           lineHeight: '{font.line-height.body}',
         },
       },
+      'Body Italic': {
+        $type: 'typography',
+        $value: {
+          fontFamily: '{font.family.base}',
+          fontSize: '{font.size.body}',
+          fontWeight: 400,
+          letterSpacing: { unit: '%', value: 0 },
+          lineHeight: '{font.line-height.body}',
+        },
+        $extensions: { 'com.seojaewan': { fontStyle: 'italic' } },
+      },
+      'Body Strikethrough': {
+        $type: 'typography',
+        $value: {
+          fontFamily: '{font.family.base}',
+          fontSize: '{font.size.body}',
+          fontWeight: '{font.weight.regular}',
+          letterSpacing: { unit: '%', value: 0 },
+          lineHeight: '{font.line-height.body}',
+        },
+        $extensions: { 'com.seojaewan': { textDecoration: 'line-through' } },
+      },
+      'Body Underline': {
+        $type: 'typography',
+        $value: {
+          fontFamily: '{font.family.base}',
+          fontSize: '{font.size.body}',
+          fontWeight: '{font.weight.regular}',
+          letterSpacing: { unit: '%', value: 0 },
+          lineHeight: '{font.line-height.body}',
+        },
+        $extensions: { 'com.seojaewan': { textDecoration: 'underline' } },
+      },
       Caption: {
         $type: 'typography',
         $value: {
