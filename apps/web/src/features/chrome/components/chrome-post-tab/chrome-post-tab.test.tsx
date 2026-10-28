@@ -140,16 +140,16 @@ describe('Chrome:글 화면', () => {
     ).toBeVisible();
   });
 
-  it('제목이 3개 이상이면 넓은 창에 목차를 보인다', async () => {
-    mockBody(threeHeadings);
+  it('제목이 1개 이상이면 넓은 창에 목차를 보인다', async () => {
+    mockBody([heading('하나')]);
     renderPost();
     expect(await screen.findByText('목차')).toBeVisible();
   });
 
-  it('제목이 3개보다 적으면 목차를 보이지 않는다', async () => {
-    mockBody([heading('하나'), heading('둘')]);
+  it('제목이 없으면 목차를 보이지 않는다', async () => {
+    mockBody(linkedBody);
     renderPost();
-    await screen.findByRole('heading', { name: '하나' });
+    await screen.findByRole('link', { name: '앞 글' });
     expect(screen.queryByText('목차')).not.toBeInTheDocument();
   });
 

@@ -87,7 +87,7 @@ describe('Chrome:Notion 블록', () => {
 
 // @codocs [[Chrome:글 화면]]
 describe('Chrome:글 화면', () => {
-  it('제목이 3개 이상이면 제목마다 목차 항목을 만든다', () => {
+  it('제목마다 목차 항목을 만든다', () => {
     const blocks = [heading('하나'), paragraph, heading('둘'), heading('셋')];
     expect(getTocHeadings(blocks)).toEqual([
       { id: 'heading-0', label: '하나' },
@@ -96,7 +96,13 @@ describe('Chrome:글 화면', () => {
     ]);
   });
 
-  it('제목이 3개보다 적으면 목차가 없다', () => {
-    expect(getTocHeadings([heading('하나'), paragraph, heading('둘')])).toEqual([]);
+  it('제목이 1개여도 목차 항목을 만든다', () => {
+    expect(getTocHeadings([paragraph, heading('하나')])).toEqual([
+      { id: 'heading-1', label: '하나' },
+    ]);
+  });
+
+  it('제목이 없으면 목차가 없다', () => {
+    expect(getTocHeadings([paragraph])).toEqual([]);
   });
 });
