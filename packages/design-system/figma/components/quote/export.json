@@ -1,0 +1,16 @@
+{
+  "name": "Quote",
+  "nodeId": "1380:1125",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 104,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1125",
+      "properties": {}
+    }
+  }
+}
