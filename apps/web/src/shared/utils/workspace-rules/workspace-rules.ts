@@ -89,6 +89,10 @@ const invalidNameCharacters: ReadonlySet<string> = new Set([
 ]);
 const CONTROL_CHARACTER_LIMIT = 32;
 
+// UTF-16 서로게이트 쌍의 앞 단위 범위다. 최대 길이로 자를 때 쌍을 가르지 않는 데 쓴다.
+const HIGH_SURROGATE_START = 0xd800;
+const HIGH_SURROGATE_END = 0xdbff;
+
 // 확장자와 대소문자에 관계없이 쓸 수 없는 Windows 예약 이름이다.
 const reservedNames: ReadonlySet<string> = new Set([
   'CON',
@@ -427,7 +431,8 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
 
 /**
  * 저장된 상태를 지금 글 색인·외부 링크 설정과 맞춘다. 방문할 때마다 부른다.
- * - 새 글은 `폴더` 경로의 폴더(id로 찾는다)에 넣고, 그 폴더가 없거나 휴지통에 있으면 `Blog`에 넣는다.
+ * - 새 글은 `폴더` 경로의 폴더(id로 찾는다)에 넣고, 그 폴더가 없으면 `Blog`에 넣는다.
+ *   휴지통은 저장하지 않아(`toSavedWorkspace`) 저장분에는 휴지통에 있는 폴더가 없다.
  * - 방문자가 옮겨 둔 기존 글은 그 자리에 둔다. 제목과 작성일은 색인을 따른다.
  * - 색인에서 사라진 글과 설정에서 사라진 외부 링크는 지운다. 외부 링크의 이름·주소·아이콘은 설정을 따른다.
  * - 새 외부 링크는 설정의 초기 위치(없거나 휴지통에 있으면 바탕화면)에 둔다.
@@ -458,18 +463,18 @@ export function reconcileWorkspace(
         id,
         name: savedItem.name,
         parentId: savedItem.parentId,
-        trash: savedItem.trash,
+        trash: null,
         date: savedItem.date,
       };
       continue;
     }
     const post = savedItem.kind === 'post' ? postsById.get(id) : undefined;
     if (post !== undefined) {
-      items[id] = createPostItem(post, savedItem.parentId, savedItem.trash);
+      items[id] = createPostItem(post, savedItem.parentId, null);
     }
     const link = savedItem.kind === 'link' ? linksById.get(id) : undefined;
     if (link !== undefined) {
-      items[id] = createLinkItem(link, savedItem.parentId, savedItem.trash);
+      items[id] = createLinkItem(link, savedItem.parentId, null);
     }
   }
   if (items[BLOG_FOLDER_ID]?.kind !== 'folder') {
@@ -509,7 +514,7 @@ export type SavedWorkspaceShape = Omit<WorkspaceState, 'items'> & {
   items: Readonly<Record<string, SavedItemShape>>;
 };
 
-/** 저장된 항목 하나 */
+/** 저장된 항목 하나. 휴지통은 저장하지 않아 휴지통 기록이 없다 */
 export type SavedItemShape =
   | {
       /** 종류 */
@@ -518,8 +523,6 @@ export type SavedItemShape =
       name: string;
       /** 상위 폴더 id */
       parentId: string | null;
-      /** 휴지통 기록 */
-      trash: TrashRecord | null;
       /** 만든 시각 */
       date: string | null;
     }
@@ -528,42 +531,42 @@ export type SavedItemShape =
       kind: 'post' | 'link';
       /** 상위 폴더 id */
       parentId: string | null;
-      /** 휴지통 기록 */
-      trash: TrashRecord | null;
     };
 
 /**
  * 배치만 남긴 저장 형태로 바꾼다. 글과 외부 링크의 이름·주소는 원본(색인, 설정)이 갖으므로 저장하지 않는다. 휴지통은 늘 있어 빼다.
+ * 휴지통은 메모리에만 두므로, 휴지통에 보낸 항목을 모두 복원한 배치(`restoreItems`와 같은 규칙)를 저장한다.
+ * 그래서 새로고침하거나 다시 들어오면 휴지통에 있던 항목은 원래 자리로 돌아오고 휴지통은 빈다.
  * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[작업 공간:휴지통]]
  * @param state 작업 공간 상태
  * @returns 저장 형태
  */
 export function toSavedWorkspace(state: WorkspaceState): SavedWorkspaceShape {
+  const restored = restoreItems(
+    state,
+    getTrashedItems(state).map((item) => item.id),
+  );
+  const placed = restored.ok ? restored.state : state;
   const items: Record<string, SavedItemShape> = {};
-  for (const item of Object.values(state.items)) {
+  for (const item of Object.values(placed.items)) {
     if (item.kind === 'recycle-bin') {
       continue;
     }
     items[item.id] =
       item.kind === 'folder'
-        ? {
-            kind: 'folder',
-            name: item.name,
-            parentId: item.parentId,
-            trash: item.trash,
-            date: item.date,
-          }
-        : { kind: item.kind, parentId: item.parentId, trash: item.trash };
+        ? { kind: 'folder', name: item.name, parentId: item.parentId, date: item.date }
+        : { kind: item.kind, parentId: item.parentId };
   }
-  return { ...state, items };
+  return { ...placed, items };
 }
 
 /**
  * 깨진 배치를 고친다. 상위 폴더가 없거나 폴더가 아니면, 또는 상위로 올라가다 자기에게 돌아오면 바탕화면으로 옮긴다.
  * 휴지통 자리와 휴지통 기록이 어긋나면(기록 없이 휴지통에 있거나, 기록이 있는데 휴지통 밖에 있으면) 바탕화면 쪽으로 맞춘다.
- * `Blog` 폴더가 휴지통 안에 있으면(휴지통에 보낸 상위 폴더 안에 있어도) 바탕화면으로 꺼낸다. 없는 항목을 가리키는 고정·최근·아이콘 칸·폴더 보기도 지운다.
+ * 없는 항목을 가리키는 고정·최근·아이콘 칸·폴더 보기도 지운다.
  * @codocs [[작업 공간:Notion과 맞추기]]
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[작업 공간:방문자별 저장]]
  * @param state 작업 공간 상태
  * @returns 고친 상태
  */
@@ -585,10 +588,6 @@ export function repairWorkspace(state: WorkspaceState): WorkspaceState {
     if (parentId !== RECYCLE_BIN_ID && trash !== null) {
       trash = null;
     }
-    if (item.id === BLOG_FOLDER_ID && parentId === RECYCLE_BIN_ID) {
-      parentId = null;
-      trash = null;
-    }
     if (parentId !== item.parentId || trash !== item.trash) {
       items[item.id] = { ...item, parentId, trash };
     }
@@ -598,14 +597,6 @@ export function repairWorkspace(state: WorkspaceState): WorkspaceState {
     if (item !== undefined && item.kind !== 'recycle-bin' && hasParentCycle(items, id)) {
       items[id] = { ...item, parentId: null, trash: null };
     }
-  }
-  const blog = items[BLOG_FOLDER_ID];
-  if (
-    blog !== undefined &&
-    blog.kind !== 'recycle-bin' &&
-    isItemInTrash({ items }, BLOG_FOLDER_ID)
-  ) {
-    items[BLOG_FOLDER_ID] = { ...blog, parentId: null, trash: null };
   }
   return cleanReferences({ ...state, items });
 }
@@ -654,6 +645,49 @@ export function validateFolderName(
  */
 export function getNewFolderName(siblingNames: readonly string[]): string {
   return getFreeFolderName(NEW_FOLDER_NAME, siblingNames);
+}
+
+/** 이름 입력을 거른 결과 */
+export type FolderNameInput = {
+  /** 쓸 수 없는 문자를 빼고 최대 길이까지 남긴 이름 */
+  value: string;
+  /** 쓸 수 없는 문자를 뺐으면 true(말풍선으로 알린다) */
+  hasRemovedInvalidCharacter: boolean;
+};
+
+/**
+ * 폴더 이름을 입력하는 순간 쓸 수 없는 문자(`< > : " / \ | ? *`와 제어 문자)를 빼고, 최대 길이(UTF-16 단위 255자)를 넘는 부분을 잘라
+ * 입력되지 않게 한다. 자르는 자리가 서로게이트 쌍 가운데면 그 앞에서 자른다.
+ * @codocs [[작업 공간:폴더 이름]]
+ * @param value 입력창의 새 값
+ * @returns 남길 이름과 쓸 수 없는 문자를 뺐는지
+ */
+export function filterFolderNameInput(value: string): FolderNameInput {
+  let filtered = '';
+  for (let index = 0; index < value.length; index += 1) {
+    if (!isInvalidNameCharacter(value, index)) {
+      filtered += value.charAt(index);
+    }
+  }
+  const hasRemovedInvalidCharacter = filtered.length !== value.length;
+  if (filtered.length > FOLDER_NAME_MAX_LENGTH) {
+    const lastKept = filtered.charCodeAt(FOLDER_NAME_MAX_LENGTH - 1);
+    const isHighSurrogate = lastKept >= HIGH_SURROGATE_START && lastKept <= HIGH_SURROGATE_END;
+    filtered = filtered.slice(0, FOLDER_NAME_MAX_LENGTH - (isHighSurrogate ? 1 : 0));
+  }
+  return { value: filtered, hasRemovedInvalidCharacter };
+}
+
+/**
+ * 확정할 폴더 이름을 만든다. 끝의 공백과 마침표는 잘라낸다. 비었거나 공백만 있으면(잘라낸 뒤 비어도) null이고,
+ * 쓰는 곳은 이름을 원래대로 되돌린다.
+ * @codocs [[작업 공간:폴더 이름]]
+ * @param value 입력한 이름
+ * @returns 확정할 이름. 되돌려야 하면 null
+ */
+export function getFolderNameToCommit(value: string): string | null {
+  const trimmed = value.replace(/[ .]+$/u, '');
+  return trimmed.trim() === '' ? null : trimmed;
 }
 
 /**
@@ -774,8 +808,33 @@ export function moveItems(
 }
 
 /**
+ * 잘라낸 항목 가운데 위치에 붙여넣을 항목을 고른다. 그사이 휴지통에 들어갔거나 사라진 항목은 뺀다.
+ * 붙여넣을 것이 없거나, 모두 이미 그 위치에 있거나, 위치가 휴지통이거나, 옮길 수 없으면(`moveItems`가 거부) null이다.
+ * 바탕화면과 탐색기의 붙여넣기가 함께 쓰고, null이면 붙여넣기를 비활성으로 둔다.
+ * @codocs [[작업 공간:배치]]
+ * @param state 작업 공간 상태
+ * @param cutIds 잘라낸 항목 id
+ * @param targetId 붙여넣을 위치(폴더 id, 바탕화면은 null)
+ * @param now 지금 시각(ISO 8601)
+ * @returns 붙여넣을 항목 id. 붙여넣을 수 없으면 null
+ */
+export function getPasteIds(
+  state: WorkspaceState,
+  cutIds: readonly string[],
+  targetId: string | null,
+  now: string,
+): string[] | null {
+  const ids = cutIds.filter((id) => id in state.items && !isItemInTrash(state, id));
+  const isAlreadyThere = ids.every((id) => state.items[id]?.parentId === targetId);
+  if (ids.length === 0 || isAlreadyThere || targetId === RECYCLE_BIN_ID) {
+    return null;
+  }
+  return moveItems(state, ids, targetId, now).ok ? ids : null;
+}
+
+/**
  * 항목들을 휴지통으로 보낸다. 폴더를 보내면 안의 항목도 함께 간다(하위 항목은 폴더 안에 그대로 있다).
- * 휴지통과 `Blog` 폴더, `Blog`를 하위에 둔 폴더는 보낼 수 없다. 이미 휴지통에 있는 항목도 거부한다. 하나라도 거부되면 아무것도 보내지 않는다.
+ * 휴지통은 보낼 수 없다(`Blog` 폴더는 보낼 수 있다). 이미 휴지통에 있는 항목도 거부한다. 하나라도 거부되면 아무것도 보내지 않는다.
  * 고른 항목 가운데 다른 고른 폴더 안에 있는 것은 그 폴더와 함께 가므로 따로 보내지 않는다.
  * @codocs [[작업 공간:휴지통]]
  * @param state 작업 공간 상태
@@ -794,8 +853,7 @@ export function trashItems(
     if (item === undefined) {
       return { ok: false, reason: 'not-found' };
     }
-    const hasBlog = id === BLOG_FOLDER_ID || isDescendantOf(state, BLOG_FOLDER_ID, id);
-    if (item.kind === 'recycle-bin' || hasBlog) {
+    if (item.kind === 'recycle-bin') {
       return { ok: false, reason: 'protected' };
     }
     if (isItemInTrash(state, id)) {
@@ -1239,14 +1297,24 @@ export function setDesktopIconPositions(
  */
 function hasInvalidNameCharacter(name: string): boolean {
   for (let index = 0; index < name.length; index += 1) {
-    if (
-      invalidNameCharacters.has(name.charAt(index)) ||
-      name.charCodeAt(index) < CONTROL_CHARACTER_LIMIT
-    ) {
+    if (isInvalidNameCharacter(name, index)) {
       return true;
     }
   }
   return false;
+}
+
+/**
+ * 이름의 한 단위가 쓸 수 없는 문자인지 본다.
+ * @param name 이름
+ * @param index UTF-16 단위 자리
+ * @returns 쓸 수 없으면 true
+ */
+function isInvalidNameCharacter(name: string, index: number): boolean {
+  return (
+    invalidNameCharacters.has(name.charAt(index)) ||
+    name.charCodeAt(index) < CONTROL_CHARACTER_LIMIT
+  );
 }
 
 /**

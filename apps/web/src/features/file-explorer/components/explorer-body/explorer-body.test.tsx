@@ -2,7 +2,8 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useExplorerClipboardStore } from '@/features/file-explorer/stores/explorer-clipboard-store/explorer-clipboard-store';
+import { DRAG_REJECTED_ATTRIBUTE } from '@/shared/hooks/use-item-drag/use-item-drag';
+import { useItemClipboardStore } from '@/shared/stores/item-clipboard-store/item-clipboard-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
   hydrateWorkspaceStore,
@@ -120,7 +121,8 @@ afterEach(() => {
   Reflect.deleteProperty(document, 'elementFromPoint');
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
-  useExplorerClipboardStore.getState().clear();
+  useItemClipboardStore.getState().clear();
+  document.documentElement.removeAttribute(DRAG_REJECTED_ATTRIBUTE);
   localStorage.clear();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -222,13 +224,16 @@ describe('파일 탐색기:조작', () => {
     expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('React');
   });
 
-  it('이름이 맞지 않으면 말풍선으로 이유를 보인다', async () => {
+  it('같은 위치에 같은 이름의 폴더가 있으면 메시지 상자로 알린다', async () => {
     renderBody(BLOG_FOLDER_ID);
     await user().click(option('React'));
     await user().keyboard('{F2}');
     await user().clear(screen.getByRole('textbox', { name: '새 이름' }));
     await user().keyboard('Next.js{Enter}');
-    expect(screen.getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.')).toBeInTheDocument();
+    const dialog = await screen.findByRole('alertdialog');
+    expect(
+      within(dialog).getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.'),
+    ).toBeInTheDocument();
   });
 
   it('새로 만들기는 새 폴더를 만들고 이름 바꾸기를 시작한다', async () => {
@@ -277,10 +282,45 @@ describe('파일 탐색기:조작', () => {
     expect(screen.getByRole('button', { name: '이름 바꾸기' })).toBeDisabled();
   });
 
-  it('Blog 폴더를 고르면 삭제가 비활성이다', async () => {
+  it('Blog 폴더도 삭제해 휴지통으로 보낼 수 있다', async () => {
     renderBody(null);
     await user().click(option('Blog'));
-    expect(screen.getByRole('button', { name: '삭제' })).toBeDisabled();
+    await user().click(screen.getByRole('button', { name: '삭제' }));
+    expect(namesIn(RECYCLE_BIN_ID)).toEqual(['Blog']);
+  });
+
+  it('잘라낸 항목이 이미 지금 위치에 있으면 붙여넣기가 비활성이다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('회고'));
+    await user().keyboard('{Control>}x{/Control}');
+    expect(screen.getByRole('button', { name: '붙여넣기' })).toBeDisabled();
+  });
+});
+
+// @codocs [[작업 공간:폴더 이름]]
+describe('작업 공간:폴더 이름', () => {
+  it('쓸 수 없는 문자는 입력되지 않게 막고 말풍선으로 알린다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{F2}');
+    const field = screen.getByRole('textbox', { name: '새 이름' });
+    await user().clear(field);
+    await user().type(field, 'a*');
+    expect(field).toHaveValue('a');
+    expect(screen.getByRole('tooltip')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+  });
+
+  it('예약 이름이면 메시지 상자를 보인 뒤 이름 바꾸기로 돌아간다', async () => {
+    renderBody(BLOG_FOLDER_ID);
+    await user().click(option('React'));
+    await user().keyboard('{F2}');
+    await user().clear(screen.getByRole('textbox', { name: '새 이름' }));
+    await user().keyboard('LPT1{Enter}');
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('지정한 장치 이름이 잘못되었습니다.')).toBeInTheDocument();
+    await user().click(within(dialog).getByRole('button', { name: '확인' }));
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('LPT1');
+    expect(useWorkspaceStore.getState().items['folder:React']?.name).toBe('React');
   });
 });
 
@@ -477,11 +517,22 @@ describe('파일 탐색기:조작 - 끌어 옮기기', () => {
     expect(namesIn(BLOG_FOLDER_ID)).toContain('React');
   });
 
-  it('옮길 수 없는 곳 위에서는 이동 툴팁이 없다', () => {
+  it('옮길 수 없는 곳 위에서는 이동 툴팁 없이 not-allowed 커서를 보이고, 놓으면 되돌린다', () => {
+    renderBody(BLOG_FOLDER_ID);
+    pointAt(dropTarget('folder:React/Hooks', 'Hooks'));
+    dragOver(option('React'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    expect(document.documentElement).toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
+    fireEvent.pointerUp(option('React'), { ...POINTER, clientX: 60, clientY: 60 });
+    expect(document.documentElement).not.toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
+  });
+
+  it('지금 보는 위치(이 창의 본문)는 놓을 곳이 아닐 뿐이라 not-allowed 커서를 보이지 않는다', () => {
     renderBody(BLOG_FOLDER_ID);
     pointAt(dropTarget(BLOG_FOLDER_ID, 'Blog'));
     dragOver(option('회고'));
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    expect(document.documentElement).not.toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
   });
 
   it('검색 중에는 결과 항목을 이 창 본문에 놓아도 제자리다', async () => {

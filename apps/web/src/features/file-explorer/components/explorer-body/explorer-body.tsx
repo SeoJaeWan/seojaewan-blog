@@ -24,7 +24,6 @@ import {
 
 import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
 import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
-import { useExplorerClipboardStore } from '@/features/file-explorer/stores/explorer-clipboard-store/explorer-clipboard-store';
 import {
   formatDeletedDate,
   getExplorerLocationName,
@@ -64,6 +63,7 @@ import { useMarqueeSelection } from '@/shared/hooks/use-marquee-selection/use-ma
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import type { PointerPoint } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { useSelection } from '@/shared/hooks/use-selection/use-selection';
+import { useItemClipboardStore } from '@/shared/stores/item-clipboard-store/item-clipboard-store';
 import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
@@ -84,7 +84,7 @@ import {
   DESKTOP_LOCATION_KEY,
   type ExplorerFolderView,
   getChildItems,
-  isItemInTrash,
+  getPasteIds,
   moveItems,
   type PlacedItem,
   RECYCLE_BIN_ID,
@@ -145,7 +145,7 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * - 새 폴더(만든 뒤 이름 바꾸기), F2 이름 바꾸기, Delete 휴지통으로, Ctrl + X 잘라내기, Ctrl + V 붙여넣기(옮기기만).
  * - 명령 모음, 우클릭(모바일은 길게 누르기) 메뉴, 상태 줄(항목 수, 선택 수, 자세히·큰 아이콘 보기).
  * - 휴지통은 늘 자세히 보기(이름·원래 위치·삭제한 날짜)이고 항목을 열 수 없으며 복원만 된다. 휴지통 비우기는 메시지 상자만 보인다.
- * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기, `Blog` 삭제)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
+ * 쓸 수 없는 조작(같은 이름 충돌, 자기·하위 폴더로 옮기기)은 명령과 메뉴를 비활성으로 두고, 거부되면 제자리다.
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:보기와 정렬]]
  * @codocs [[파일 탐색기:조작]]
@@ -168,7 +168,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const items = useWorkspaceStore((state) => state.items);
   const explorerViews = useWorkspaceStore((state) => state.explorerViews);
   const startPins = useWorkspaceStore((state) => state.startPins);
-  const cutIds = useExplorerClipboardStore((state) => state.cutIds);
+  const cutIds = useItemClipboardStore((state) => state.cutIds);
   const openItem = useOpenItem();
   const areaRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState<OpenMenu | null>(null);
@@ -209,11 +209,10 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       );
   const orderedIds = children.map((item) => item.id);
   const cutSet = new Set(cutIds);
-  const pasteIds = cutIds.filter((id) => id in items && !isItemInTrash(workspace, id));
-  const canPaste =
-    !isRecycleBin &&
-    pasteIds.length > 0 &&
-    moveItems(getWorkspace(), pasteIds, location, new Date().toISOString()).ok;
+  const pasteIds = isRecycleBin
+    ? null
+    : getPasteIds(getWorkspace(), cutIds, location, new Date().toISOString());
+  const canPaste = pasteIds !== null;
 
   const rename = useFolderRename({ onKeyboardEnd: focusItemAfterRender });
   const selection = useSelection({
@@ -228,7 +227,12 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       selection.updateMarquee(getItemsInRect(rect));
     },
   });
-  const itemDrag = useItemDrag({ onDrop: handleItemDrop, canDrop: canDropOn });
+  const itemDrag = useItemDrag({
+    onDrop: handleItemDrop,
+    canDrop: canDropOn,
+    // 지금 보는 위치(이 창의 본문)는 놓을 곳이 아닐 뿐 막힌 곳이 아니라 `not-allowed` 커서를 보이지 않는다.
+    isNeutralTarget: (targetId: string) => toDropLocation(targetId) === location,
+  });
   const selectedIds = selection.selection.ids;
   const [onlySelectedId] = selectedIds;
   const onlySelected =
@@ -479,16 +483,19 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
    */
   function cut(ids: readonly string[]): void {
     if (!isRecycleBin && ids.length > 0) {
-      useExplorerClipboardStore.getState().cut(ids);
+      useItemClipboardStore.getState().cut(ids);
     }
   }
 
-  /** 잘라낸 항목을 지금 위치로 옮기고 고른다. 옮길 수 없으면 제자리다. */
+  /**
+   * 잘라낸 항목을 지금 위치로 옮기고, 잘라낸 것을 비운 뒤 붙여넣은 항목을 고른다. 옮길 수 없으면 제자리다.
+   * @codocs [[작업 공간:배치]]
+   */
   function paste(): void {
-    if (!canPaste || !getWorkspace().moveItems(pasteIds, location).ok) {
+    if (pasteIds === null || !getWorkspace().moveItems(pasteIds, location).ok) {
       return;
     }
-    useExplorerClipboardStore.getState().clear();
+    useItemClipboardStore.getState().clear();
     const [firstId] = pasteIds;
     selection.setSelection({
       ids: pasteIds,
@@ -1091,6 +1098,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         open={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
       />
+      <MessageBoxDialog {...rename.messageBoxProps} />
     </>
   );
 }

@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { DRAG_REJECTED_ATTRIBUTE } from '@/shared/hooks/use-item-drag/use-item-drag';
+import { useItemClipboardStore } from '@/shared/stores/item-clipboard-store/item-clipboard-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
   hydrateWorkspaceStore,
@@ -85,6 +87,8 @@ afterEach(() => {
   Reflect.deleteProperty(document, 'elementFromPoint');
   useWindowStore.getState().reset();
   useWorkspaceStore.getState().reset();
+  useItemClipboardStore.getState().clear();
+  document.documentElement.removeAttribute(DRAG_REJECTED_ATTRIBUTE);
   localStorage.clear();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -237,11 +241,35 @@ describe('바탕화면:아이콘 조작', () => {
     expect(selectedNames()).toEqual(['이력서']);
   });
 
-  it('Blog 폴더와 휴지통은 Delete로 보내지 않는다', async () => {
+  it('휴지통은 Delete로 보내지 않고, Blog 폴더는 Delete로 휴지통에 보낸다', async () => {
     render(<DesktopIconsLayer />);
+    await user().click(icon('휴지통'));
+    await user().keyboard('{Delete}');
+    expect(icon('휴지통')).toBeInTheDocument();
     await user().click(icon('Blog'));
     await user().keyboard('{Delete}');
-    expect(icon('Blog')).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'Blog' })).not.toBeInTheDocument();
+    expect(isItemInTrash(useWorkspaceStore.getState(), BLOG_FOLDER_ID)).toBe(true);
+  });
+
+  it('Ctrl + X로 고른 아이콘을 잘라내면 탐색기 창과 함께 쓰는 잘라낸 항목이 되고, 흐리게 보인다', async () => {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('GitHub'));
+    await user().keyboard('{Control>}x{/Control}');
+    expect(useItemClipboardStore.getState().cutIds).toEqual(['link:github']);
+    expect(icon('GitHub').querySelectorAll('.opacity-cut')).toHaveLength(2);
+  });
+
+  it('잘라낸 항목은 Ctrl + V로 바탕화면에 붙여넣고, 잘라낸 것을 비운 뒤 붙여넣은 항목을 고른다', async () => {
+    act(() => {
+      useItemClipboardStore.getState().cut(['post:a']);
+    });
+    render(<DesktopIconsLayer />);
+    await user().click(icon('GitHub'));
+    await user().keyboard('{Control>}v{/Control}');
+    expect(useWorkspaceStore.getState().items['post:a']?.parentId).toBeNull();
+    expect(useItemClipboardStore.getState().cutIds).toEqual([]);
+    expect(selectedNames()).toEqual(['가']);
   });
 
   it('F2는 폴더 이름 바꾸기를 시작하고, Enter로 확정한다', async () => {
@@ -340,8 +368,15 @@ describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
     expect(useWorkspaceStore.getState().items['link:github']?.parentId).toBe('blog');
   });
 
-  it('자동 정렬을 끈 채 옮길 수 없는 곳(Blog를 휴지통) 위에 놓으면 아이콘이 제자리다', () => {
-    useWorkspaceStore.getState().setDesktopAutoArrange(false);
+  it('자동 정렬을 끈 채 옮길 수 없는 곳(같은 이름 폴더가 있는 폴더) 위에 놓으면 아이콘이 제자리다', () => {
+    const store = useWorkspaceStore.getState();
+    const outer = store.createFolder(null);
+    const inner = outer.ok ? store.createFolder(outer.id) : outer;
+    if (!inner.ok) {
+      throw new Error('폴더를 만들지 못함');
+    }
+    store.renameFolder(inner.id, 'Blog');
+    store.setDesktopAutoArrange(false);
     const elementFromPoint = vi.fn<(x: number, y: number) => Element | null>();
     Object.defineProperty(document, 'elementFromPoint', {
       configurable: true,
@@ -349,13 +384,48 @@ describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
     });
     render(<DesktopIconsLayer />);
     const before = useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID];
-    elementFromPoint.mockReturnValue(icon('휴지통'));
+    elementFromPoint.mockReturnValue(icon('새 폴더'));
     const blog = icon('Blog');
     const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
     fireEvent.pointerDown(blog, { ...pointer, clientX: 10, clientY: 10 });
     fireEvent.pointerMove(blog, { ...pointer, clientX: 10, clientY: 200 });
     fireEvent.pointerUp(blog, { ...pointer, clientX: 10, clientY: 200 });
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.parentId).toBeNull();
     expect(useWorkspaceStore.getState().desktop.positions[BLOG_FOLDER_ID]).toEqual(before);
+  });
+
+  it('옮길 수 없는 곳 위로 끄는 동안은 강조와 툴팁 없이 not-allowed 커서를 보이고, 놓으면 되돌린다', () => {
+    const store = useWorkspaceStore.getState();
+    const outer = store.createFolder(null);
+    const inner = outer.ok ? store.createFolder(outer.id) : outer;
+    if (!inner.ok) {
+      throw new Error('폴더를 만들지 못함');
+    }
+    store.renameFolder(inner.id, 'Blog');
+    const elementFromPoint = vi.fn<(x: number, y: number) => Element | null>();
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: elementFromPoint,
+    });
+    render(<DesktopIconsLayer />);
+    const blog = icon('Blog');
+    const pointer = { pointerId: 1, pointerType: 'mouse', button: 0 };
+    fireEvent.pointerDown(blog, { ...pointer, clientX: 10, clientY: 10 });
+    elementFromPoint.mockReturnValue(icon('새 폴더'));
+    fireEvent.pointerMove(blog, { ...pointer, clientX: 40, clientY: 40 });
+    expect(document.documentElement).toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+    expect(icon('새 폴더')).toHaveAttribute('aria-selected', 'false');
+
+    // 바탕화면 빈 곳은 칸 옮기기라 막힌 곳이 아니다.
+    elementFromPoint.mockReturnValue(screen.getByRole('listbox'));
+    fireEvent.pointerMove(blog, { ...pointer, clientX: 60, clientY: 60 });
+    expect(document.documentElement).not.toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
+
+    elementFromPoint.mockReturnValue(icon('새 폴더'));
+    fireEvent.pointerMove(blog, { ...pointer, clientX: 40, clientY: 40 });
+    fireEvent.pointerUp(blog, { ...pointer, clientX: 40, clientY: 40 });
+    expect(document.documentElement).not.toHaveAttribute(DRAG_REJECTED_ATTRIBUTE);
   });
 
   it('바탕화면 영역은 탐색기 항목을 끌어 놓을 곳이다', () => {
@@ -369,16 +439,35 @@ describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
 
 // @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
 describe('바탕화면:빈 곳 우클릭 메뉴', () => {
-  it('빈 곳을 우클릭하면 보기·정렬 기준·새로 고침·새로 만들기 메뉴를 열고 선택을 지운다', async () => {
+  it('빈 곳을 우클릭하면 보기·정렬 기준·새로 고침·붙여넣기·새로 만들기 메뉴를 열고 선택을 지운다', async () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
     expect(openMenu(screen.getByRole('listbox'))).toEqual([
       '보기',
       '정렬 기준',
       '새로 고침',
+      '붙여넣기Ctrl+V',
       '새로 만들기',
     ]);
     expect(screen.queryAllByRole('option', { selected: true })).toHaveLength(0);
+  });
+
+  it('붙여넣기는 잘라낸 항목을 바탕화면으로 옮기고, 붙여넣을 것이 없으면 비활성이다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(screen.getByRole('listbox'));
+    expect(screen.getByRole('menuitem', { name: /^붙여넣기/ })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+
+    act(() => {
+      useItemClipboardStore.getState().cut(['post:a']);
+    });
+    openMenu(screen.getByRole('listbox'));
+    await user().click(screen.getByRole('menuitem', { name: /^붙여넣기/ }));
+    expect(useWorkspaceStore.getState().items['post:a']?.parentId).toBeNull();
+    expect(useItemClipboardStore.getState().cutIds).toEqual([]);
   });
 
   it('보기에서 아이콘 크기와 자동 정렬을, 정렬 기준에서 기준을 고른다', async () => {
@@ -415,6 +504,7 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
       '열기',
       '새 창에서 열기',
       '시작 화면에서 고정 해제',
+      '잘라내기Ctrl+X',
       '이름 바꾸기F2',
       '삭제Delete',
     ]);
@@ -423,6 +513,7 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
       '열기',
       '링크 복사',
       '시작 화면에서 고정 해제',
+      '잘라내기Ctrl+X',
       '삭제Delete',
     ]);
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
@@ -439,34 +530,52 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
       '새 창에서 열기',
       '링크 복사',
       '시작 화면에 고정',
+      '잘라내기Ctrl+X',
       '삭제Delete',
     ]);
   });
 
-  it('여러 개를 고른 채 우클릭하면 열기·삭제 메뉴이고, Blog가 있으면 삭제를 고를 수 없다', async () => {
+  it('여러 개를 고른 채 우클릭하면 열기·잘라내기·삭제 메뉴이고, 휴지통이 있으면 삭제를 고를 수 없다', async () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
     await user().keyboard('{Control>}');
     await user().click(icon('GitHub'));
     await user().keyboard('{/Control}');
-    expect(openMenu(icon('GitHub'))).toEqual(['열기', '삭제Delete']);
+    expect(openMenu(icon('GitHub'))).toEqual(['열기', '잘라내기Ctrl+X', '삭제Delete']);
+    expect(screen.getByRole('menuitem', { name: /^삭제/ })).not.toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    await user().keyboard('{Control>}');
+    await user().click(icon('휴지통'));
+    await user().keyboard('{/Control}');
+    openMenu(icon('GitHub'));
     expect(screen.getByRole('menuitem', { name: /^삭제/ })).toHaveAttribute(
       'aria-disabled',
       'true',
     );
   });
 
-  it('이름 바꾸기는 메뉴가 닫힌 뒤 입력창에 포커스를 두고, 잘못된 이름이면 말풍선으로 이유를 보인다', async () => {
+  it('잘라내기는 고른 항목을 잘라낸다', async () => {
+    render(<DesktopIconsLayer />);
+    openMenu(icon('GitHub'));
+    await user().click(screen.getByRole('menuitem', { name: /^잘라내기/ }));
+    expect(useItemClipboardStore.getState().cutIds).toEqual(['link:github']);
+  });
+
+  it('이름 바꾸기는 메뉴가 닫힌 뒤 입력창에 포커스를 두고, 쓸 수 없는 문자는 입력되지 않게 막고 말풍선으로 알린다', async () => {
     render(<DesktopIconsLayer />);
     openMenu(icon('Blog'));
     await user().click(screen.getByRole('menuitem', { name: /^이름 바꾸기/ }));
     const field = await screen.findByRole('textbox', { name: '새 이름' });
     expect(field).toHaveFocus();
     await user().clear(field);
-    await user().type(field, 'a:b{Enter}');
+    await user().type(field, 'a:');
     expect(screen.getByRole('tooltip')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
-    expect(field).toHaveValue('a:b');
-    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+    expect(field).toHaveValue('a');
+    await user().type(field, 'b{Enter}');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('ab');
   });
 
   it('시작 화면에 고정·고정 해제는 Start 고정됨을 바꾼다', async () => {
@@ -517,6 +626,71 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
     await user().click(within(dialog).getByRole('button', { name: '확인' }));
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
+  });
+});
+
+// @codocs [[작업 공간:폴더 이름]]
+describe('작업 공간:폴더 이름', () => {
+  /**
+   * Blog 폴더의 이름 바꾸기를 시작하고 입력창을 비운다.
+   * @returns 입력창
+   */
+  async function startBlogRename(): Promise<HTMLElement> {
+    render(<DesktopIconsLayer />);
+    await user().click(icon('Blog'));
+    await user().keyboard('{F2}');
+    const field = screen.getByRole('textbox', { name: '새 이름' });
+    await user().clear(field);
+    return field;
+  }
+
+  it('끝의 공백과 마침표는 잘라내고 확정한다', async () => {
+    const field = await startBlogRename();
+    await user().type(field, '메모. .{Enter}');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('메모');
+  });
+
+  it('비었거나 공백만 있으면 원래 이름으로 되돌린다', async () => {
+    const field = await startBlogRename();
+    await user().type(field, '   {Enter}');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+    expect(screen.queryByRole('textbox', { name: '새 이름' })).not.toBeInTheDocument();
+  });
+
+  it('255자를 넘게는 입력되지 않는다', async () => {
+    const field = await startBlogRename();
+    expect(field).toHaveAttribute('maxlength', '255');
+  });
+
+  it('예약 이름이면 메시지 상자를 보인 뒤 입력값을 둔 채 이름 바꾸기로 돌아간다', async () => {
+    const field = await startBlogRename();
+    await user().type(field, 'con.txt{Enter}');
+    const dialog = await screen.findByRole('alertdialog');
+    expect(within(dialog).getByText('지정한 장치 이름이 잘못되었습니다.')).toBeInTheDocument();
+    await user().click(within(dialog).getByRole('button', { name: '확인' }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    const returned = screen.getByRole('textbox', { name: '새 이름' });
+    expect(returned).toHaveValue('con.txt');
+    await waitFor(() => {
+      expect(returned).toHaveFocus();
+    });
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+  });
+
+  it('같은 위치에 같은 이름의 폴더가 있으면 합치지 않고 메시지 상자를 보인 뒤 이름 바꾸기로 돌아간다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().createFolder(null);
+    });
+    const field = await startBlogRename();
+    await user().type(field, '새 폴더{Enter}');
+    const dialog = await screen.findByRole('alertdialog');
+    expect(
+      within(dialog).getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.'),
+    ).toBeInTheDocument();
+    await user().keyboard('{Escape}');
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('새 폴더');
+    expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
   });
 });
 
