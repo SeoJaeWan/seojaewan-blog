@@ -191,6 +191,11 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
    * @param event 키 이벤트
    */
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    // 메시지 상자가 열린 동안(포커스가 아직 상자로 옮겨지기 전 포함) 입력창에 온 키는 상자가 처리하게 둔다.
+    // 여기서 Esc를 받으면 이름 바꾸기가 끝나 상자를 닫은 뒤 돌아갈 입력창이 사라진다.
+    if (isMessageBoxOpenRef.current) {
+      return;
+    }
     event.stopPropagation();
     if (rename === null) {
       return;

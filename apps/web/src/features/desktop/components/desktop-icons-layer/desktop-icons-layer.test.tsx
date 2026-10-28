@@ -703,9 +703,19 @@ describe('작업 공간:폴더 이름', () => {
       within(dialog).getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.'),
     ).toBeInTheDocument();
     await user().keyboard('{Escape}');
-    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
     expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('새 폴더');
     expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('Blog');
+  });
+
+  it('메시지 상자가 열린 뒤 포커스가 옮겨지기 전에 입력창에 온 Esc는 이름 바꾸기를 끝내지 않는다', async () => {
+    const field = await startBlogRename();
+    await user().type(field, 'CON{Enter}');
+    await screen.findByRole('alertdialog');
+    fireEvent.keyDown(field, { key: 'Escape' });
+    expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveValue('CON');
   });
 });
 
