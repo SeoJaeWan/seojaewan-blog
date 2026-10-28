@@ -65,14 +65,16 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
     expect(reasonsAfter(() => undefined)).toEqual([]);
   });
 
-  it('위반에는 레이어 경로·이유·고칠 방법이 있다', () => {
+  it('위반에는 레이어 경로·이유·고칠 방법과 피그마에서 보기에 쓸 노드 ID가 있다', () => {
     const root = buttonRoot();
+    root.id = '10:1';
     root.fills = [solid()];
     expect(checkVariant(root, 'Button / Rest', context)).toEqual([
       {
         where: 'Button / Rest',
         reason: '단색 칠이 색 변수에 연결되어 있지 않다',
         fix: '칠 색을 색 변수에 연결한다.',
+        nodeId: '10:1',
       },
     ]);
   });
@@ -389,6 +391,7 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
         where: 'Menu/Folder / Default / item/label',
         reason: '인스턴스의 칠을 직접 바꿨다(fills)',
         fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+        nodeId: 'item/label',
       },
     ]);
   });
@@ -486,6 +489,7 @@ describe('구조 검사: 인스턴스 모양의 직접 덮어쓰기', () => {
         where: 'Menu/Folder / Default / menu/item/label',
         reason: '인스턴스의 칠을 직접 바꿨다(fills)',
         fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+        nodeId: 'menu/item/label',
       },
     ]);
   });
@@ -640,6 +644,7 @@ describe('구조 검사: 인스턴스 전체의 불투명도', () => {
         where: 'Menu/Folder / Default / menu/item',
         reason: '인스턴스의 불투명도를 직접 바꿨다(opacity)',
         fix: '덮어쓰기를 되돌리고, MenuItem에 변형이나 속성을 열어 그것을 고른다.',
+        nodeId: 'menu/item',
       },
     ]);
   });
@@ -767,10 +772,10 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('자르기가 꺼진 조상과 섹션·그룹은 위반이 없다', () => {
     expect(
       checkClippingAncestors('Button', [
-        { name: 'Buttons', type: 'SECTION', clipsContent: false },
-        { name: 'row', type: 'FRAME', clipsContent: false },
-        { name: 'group', type: 'GROUP', clipsContent: false },
-        { name: 'Button', type: 'COMPONENT_SET', clipsContent: false },
+        { id: '1:1', name: 'Buttons', type: 'SECTION', clipsContent: false },
+        { id: '1:2', name: 'row', type: 'FRAME', clipsContent: false },
+        { id: '1:3', name: 'group', type: 'GROUP', clipsContent: false },
+        { id: '1:4', name: 'Button', type: 'COMPONENT_SET', clipsContent: false },
       ]),
     ).toEqual([]);
   });
@@ -779,12 +784,17 @@ describe('구조 검사: 변형을 자르는 조상', () => {
     expect(checkClippingAncestors('Icon', [])).toEqual([]);
   });
 
-  it('자르는 배치 프레임마다 위치·조상 경로·고칠 방법을 대상마다 한 번 돌려준다', () => {
+  it('자르는 배치 프레임마다 위치·조상 경로·고칠 방법과 그 프레임의 노드 ID를 대상마다 한 번 돌려준다', () => {
     expect(
       checkClippingAncestors('MessageBox/EmptyRecycleBin', [
-        { name: 'pattern grid', type: 'FRAME', clipsContent: true },
-        { name: 'row', type: 'FRAME', clipsContent: true },
-        { name: 'MessageBox/EmptyRecycleBin', type: 'COMPONENT_SET', clipsContent: false },
+        { id: '2:1', name: 'pattern grid', type: 'FRAME', clipsContent: true },
+        { id: '2:2', name: 'row', type: 'FRAME', clipsContent: true },
+        {
+          id: '2:3',
+          name: 'MessageBox/EmptyRecycleBin',
+          type: 'COMPONENT_SET',
+          clipsContent: false,
+        },
       ]),
     ).toEqual([
       {
@@ -792,12 +802,14 @@ describe('구조 검사: 변형을 자르는 조상', () => {
         reason:
           '조상 프레임 `pattern grid`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
         fix: '프레임 `pattern grid`의 Clip content를 끈다.',
+        nodeId: '2:1',
       },
       {
         where: 'MessageBox/EmptyRecycleBin (모든 변형)',
         reason:
           '조상 프레임 `pattern grid / row`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
         fix: '프레임 `row`의 Clip content를 끈다.',
+        nodeId: '2:2',
       },
     ]);
   });
@@ -805,8 +817,8 @@ describe('구조 검사: 변형을 자르는 조상', () => {
   it('변형을 담은 컴포넌트 세트의 자르기도 막는다', () => {
     expect(
       checkClippingAncestors('WindowFrame', [
-        { name: 'Windows', type: 'SECTION', clipsContent: false },
-        { name: 'WindowFrame', type: 'COMPONENT_SET', clipsContent: true },
+        { id: '3:1', name: 'Windows', type: 'SECTION', clipsContent: false },
+        { id: '3:2', name: 'WindowFrame', type: 'COMPONENT_SET', clipsContent: true },
       ]),
     ).toEqual([
       {
@@ -814,13 +826,16 @@ describe('구조 검사: 변형을 자르는 조상', () => {
         reason:
           '조상 컴포넌트 세트 `Windows / WindowFrame`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다',
         fix: '컴포넌트 세트 `WindowFrame`의 Clip content를 끈다.',
+        nodeId: '3:2',
       },
     ]);
   });
 
   it('섹션은 자르기 값이 켜져 있다고 읽혀도 대상이 아니다', () => {
     expect(
-      checkClippingAncestors('Button', [{ name: 'Buttons', type: 'SECTION', clipsContent: true }]),
+      checkClippingAncestors('Button', [
+        { id: '4:1', name: 'Buttons', type: 'SECTION', clipsContent: true },
+      ]),
     ).toEqual([]);
   });
 });

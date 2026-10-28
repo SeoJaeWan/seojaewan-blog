@@ -75,7 +75,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
         isSelected || isRenaming
           ? 'bg-file-item-explorer-fill-selected'
           : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        isSelected && isFocused && 'border-default border-file-item-explorer-stroke-selected-focus',
+        isSelected && isFocused && 'border-default border-file-item-explorer-stroke-focus',
         className,
       )}
     >

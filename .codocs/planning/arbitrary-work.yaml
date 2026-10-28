@@ -6,4 +6,10 @@ _codocs:
 개요: |
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
-  지금 검토를 기다리는 항목은 없다. 이어서 할 일은 [[남은 작업]]에 있다.
+  이어서 할 일은 [[남은 작업]]에 있다.
+"#304 토큰 PR: 옛 토큰 이름을 쓰는 코드 고침": |
+  `file-item/*/stroke-selected-focus`가 `stroke-focus`로 바뀌어, `file-item.tsx`와 `file-row.tsx`의 `border-file-item-*-stroke-selected-focus` 클래스를 `border-file-item-*-stroke-focus`로 고쳤다. 새 이름이 옛 이름에서 `selected-`만 빠진 것이라 대응이 분명해 사람에게 묻지 않고 정했다. 토큰 이름이 바뀌면 같은 PR에서 코드를 고친다는 [[피그마 연동:PR 흐름]]을 따랐다. 고치기 전 로컬 `pnpm lint`는 이 옛 클래스를 잡지 못하고 통과했다. 문서는 lint가 알려 준다고 하므로([[피그마 연동:PR 흐름]]) 실제 검사와 어긋나는지 따로 확인이 필요하다.
+"#304 토큰 PR: cn.ts 토큰 이름 목록에 size 712 추가": |
+  새 토큰 `size/712`(`--size-712`)가 생겨 `cn.test.ts`(tokens.css와 이름 목록이 같은지 확인)가 실패했다. 손으로 관리하는 `packages/design-system/src/cn.ts`의 `TOKEN_NAMES.size`에 `'712'`를 정렬 위치에 더했다. 이 목록은 생성 파일이 아니고 코드 주석이 `tokens.css`와 같아야 한다고 정하므로([[피그마 연동:토큰 사용 강제]]) 고치는 것이 맞다고 보았다. 토큰 PR이 이 목록까지 고쳐야 한다는 내용은 [[피그마 연동:PR 흐름]]에 없으므로, 문서에 적을지 검토가 필요하다.
+"#281 Bookmark: 링크 아이콘 색을 text-fill-primary로 둠": |
+  Bookmark의 `link icon`은 속성 없이 `ic_fluent_link_20_regular` 인스턴스를 16px로 쓰고, 피그마가 칠 변수를 따로 주지 않아 색이 어느 변수인지 MCP 결과로 알 수 없었다. 자산 설명이 "Glyph fill bound to text-fill/primary"라서 `text-text-fill-primary`로 정했고, 로컬 캡처 차이 그림에서 아이콘이 일치함을 확인했다. 글 본문 블록이라 [[Chrome:Notion 블록]]의 "색은 디자인 시스템 토큰"을 따랐다. 아이콘 자리를 속성으로 열지는 않았다. 피그마에 속성이 없고 쓰는 곳마다 바뀌지 않는 기능 아이콘이기 때문이다([[디자인 시스템:아이콘 자리]]).
