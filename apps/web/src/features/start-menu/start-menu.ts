@@ -1,12 +1,12 @@
 // Start와 검색 기능의 공개 진입점이다.
 export type { ItemIconSource, StartApp } from './components/item-icon/item-icon';
 export type {
-  SearchBestMatch,
   SearchBodyDevice,
   SearchItem,
   SearchItemKind,
   SearchRecommendedPost,
   SearchResultGroups,
+  SearchResultItem,
 } from './components/search-body/search-body';
 export { SearchBody } from './components/search-body/search-body';
 export type { SearchPanelDevice } from './components/search-panel/search-panel';

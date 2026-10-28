@@ -171,6 +171,13 @@ describe('Start 메뉴:고정됨', () => {
   });
 });
 
+// @codocs [[Start 메뉴:모두]]
+describe('Start 메뉴:모두', () => {
+  it('모두 목록의 처음 보기는 범주다', () => {
+    expect(initial.startAllView).toBe('category');
+  });
+});
+
 // @codocs [[작업 표시줄:고정과 순서]]
 describe('작업 표시줄:고정과 순서', () => {
   it('처음에는 File Explorer와 Chrome이 고정돼 있다', () => {

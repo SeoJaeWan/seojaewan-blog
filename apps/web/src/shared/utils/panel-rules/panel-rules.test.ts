@@ -45,18 +45,25 @@ describe('모바일:차이', () => {
   });
 });
 
-// @codocs [[Start 메뉴:고정됨]]
-describe('Start 메뉴:고정됨', () => {
+// @codocs [[Start 메뉴:구성]]
+describe('Start 메뉴:구성', () => {
   it('패널은 작업 영역 높이에서 작업 표시줄과의 틈(데스크톱 12)을 뺀 높이를 넘지 않는다', () => {
-    expect(getPanelMaxHeight(1032, 'desktop')).toBe(1020);
-    expect(getPanelMaxHeight(500, 'desktop')).toBe(488);
+    expect(getPanelMaxHeight(1032, 'desktop', 'start')).toBe(1020);
+    expect(getPanelMaxHeight(500, 'desktop', 'start')).toBe(488);
   });
 
   it('모바일 패널은 작업 표시줄 바로 위에 붙어 틈 없이 작업 영역 높이를 넘지 않는다', () => {
-    expect(getPanelMaxHeight(500, 'mobile')).toBe(500);
+    expect(getPanelMaxHeight(500, 'mobile', 'start')).toBe(500);
   });
 
-  it('작업 영역이 틈보다 낮으면 0이다', () => {
-    expect(getPanelMaxHeight(8, 'desktop')).toBe(0);
+  it('Start 패널은 위쪽(검색칸)과 아래쪽(프로필·전원 줄)을 더한 높이보다 작아지지 않는다', () => {
+    expect(getPanelMaxHeight(100, 'desktop', 'start')).toBe(151);
+    expect(getPanelMaxHeight(8, 'mobile', 'start')).toBe(151);
+  });
+
+  it('검색 패널도 같은 규칙이라 위아래 여백(모바일은 검색칸까지)보다 작아지지 않는다', () => {
+    expect(getPanelMaxHeight(500, 'desktop', 'search')).toBe(488);
+    expect(getPanelMaxHeight(8, 'desktop', 'search')).toBe(66);
+    expect(getPanelMaxHeight(8, 'mobile', 'search')).toBe(118);
   });
 });
