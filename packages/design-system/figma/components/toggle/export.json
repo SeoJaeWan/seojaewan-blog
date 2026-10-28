@@ -1,0 +1,30 @@
+{
+  "name": "Toggle",
+  "nodeId": "1380:6849",
+  "variants": {
+    "state=collapsed": {
+      "node": {
+        "height": 24,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6843",
+      "properties": {
+        "State": "Collapsed"
+      }
+    },
+    "state=expanded": {
+      "node": {
+        "height": 128,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6836",
+      "properties": {
+        "State": "Expanded"
+      }
+    }
+  }
+}
