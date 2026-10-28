@@ -16,6 +16,7 @@ _codocs:
   | SearchBox | 작업 표시줄·Start·탐색기의 검색 입력창 |
   | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창 |
   | MenuItem | 메뉴의 항목 한 줄 |
+  | MenuZoomItem | Chrome ⋮ 메뉴의 확대/축소 조절 줄 |
   | Menu | 메뉴 항목을 담는 메뉴 바탕 |
   | Separator | 메뉴, 목록, 명령 모음의 구분선 |
   | Popover | 트리거와 그 옆에 뜨는 팝업의 틀([[디자인 시스템:팝업]]) |
@@ -30,6 +31,7 @@ _codocs:
   | MessageBox | 확인·알림 대화 상자 |
   | ProgressRing | 로딩 표시 |
   | EmptyState | 내용이 없거나 찾을 수 없을 때의 안내 |
+  | Checkbox | 글 본문 할 일 목록의 읽기 전용 체크 표시 |
   | CodeBlock | 글 본문의 코드 블록 |
 Windows 화면 요소: |
   | 컴포넌트 | 용도 |
@@ -74,6 +76,16 @@ Windows 화면 요소: |
   | Toc | 글 목차 |
   | TocItem | 글 목차의 항목 |
   | PostNavCard | 글 아래의 이전 글·다음 글 카드 |
+  | PostCover | 글 머리 위의 커버 이미지 |
+  | Callout | 글 본문의 아이콘과 글을 담은 강조 상자 |
+  | Quote | 글 본문의 인용 |
+  | Toggle | 글 본문의 펼치고 접는 블록 |
+  | Table | 글 본문의 표 |
+  | TableCell | 표의 칸 하나 |
+  | Bookmark | 글 본문의 링크 카드 |
+  | Figure | 글 본문의 이미지와 캡션 |
+  | Equation | 글 본문의 블록 수식 |
+  | UnsupportedBlock | 지원하지 않는 Notion 블록 자리의 안내 상자 |
   | BootScreen | 다시 시작할 때의 재부팅 화면 |
 상태: |
   상태 변형(`State`)의 이름과 뜻이다. 모든 컴포넌트가 모든 상태를 갖지는 않는다. 캡처할 때 상태를 재현하는 방법은 [[피그마 연동:스토리 규칙]]을 따른다.
