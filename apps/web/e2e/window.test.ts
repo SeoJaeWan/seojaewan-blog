@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('작업 표시줄에서 탐색기를 열고, 최소화했다가 복원한 뒤 닫는다', async ({ page }) => {
   await page.goto('/');
   const taskbarButton = page.getByRole('button', { name: '파일 탐색기' });
-  const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+  const explorer = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
 
   await taskbarButton.click();
   await expect(explorer).toBeVisible();
@@ -29,7 +29,7 @@ test('창을 최대화하면 "이전 크기로 복원" 버튼으로 바뀌고, �
 }) => {
   await page.goto('/');
   await page.getByRole('button', { name: '파일 탐색기' }).click();
-  const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+  const explorer = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
   await expect(explorer).toBeVisible();
   const before = await explorer.boundingBox();
 

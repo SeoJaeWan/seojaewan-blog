@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // @codocs [[파일 탐색기:조작]]
 // @codocs [[파일 탐색기:탭]]
+// @codocs [[창 동작:열기 규칙]]
 test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', async ({ page }) => {
   await page.goto('/');
   await page
@@ -26,16 +27,18 @@ test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', asyn
   await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
   await expect(explorer.getByRole('button', { name: '위로' })).toBeDisabled();
 
+  await explorer.getByRole('tree', { name: '탐색 창' }).getByText('Blog').click();
+  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
   await explorer.getByRole('button', { name: '새 탭' }).click();
   await expect(explorer.getByRole('tab')).toHaveCount(2);
-  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
+  await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
 
   await explorer
-    .getByRole('tab', { name: /Blog/ })
+    .getByRole('tab', { name: /바탕 화면/ })
     .locator('..')
     .getByRole('button', { name: '탭 닫기' })
     .click();
-  await expect(page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
   await explorer.getByRole('button', { name: '탭 닫기' }).click();
   await expect(explorer).not.toBeAttached();
 });

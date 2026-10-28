@@ -429,3 +429,36 @@ describe('작업 표시줄:고정과 순서', () => {
     });
   });
 });
+
+/**
+ * 열린 창마다 고른 탐색기 탭이 보는 위치.
+ * @returns 창마다의 위치(탐색기가 아니면 undefined)
+ */
+function getExplorerLocations(): (string | null | undefined)[] {
+  const { windows, order } = useWindowStore.getState();
+  return order.map((id) => {
+    const content = windows[id]?.content;
+    if (content?.app !== 'file-explorer') {
+      return undefined;
+    }
+    const tab = content.tabs[content.activeTabIndex];
+    return tab?.history[tab.historyIndex];
+  });
+}
+
+// @codocs [[창 동작:열기 규칙]]
+describe('창 동작:열기 규칙 - 작업 표시줄에서 탐색기 열기', () => {
+  it('작업 표시줄의 파일 탐색기 버튼은 탐색기를 바탕 화면 위치로 연다', async () => {
+    renderLayer();
+    await userEvent.click(screen.getByRole('button', { name: '파일 탐색기' }));
+    expect(getExplorerLocations()).toEqual([null]);
+  });
+
+  it('작업 표시줄 우클릭 메뉴의 새 창도 탐색기를 바탕 화면 위치로 연다', async () => {
+    useWindowStore.getState().open('file-explorer', workArea);
+    renderLayer();
+    openAppMenu('파일 탐색기');
+    await clickMenuItem('파일 탐색기');
+    expect(getExplorerLocations()).toEqual([null, null]);
+  });
+});

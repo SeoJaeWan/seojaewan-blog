@@ -10,7 +10,6 @@ import {
   navigateChromeTab,
   openChromeTab,
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
-import { BLOG_FOLDER_ID } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /** 창을 여는 앱. 작업 표시줄에 고정된 앱(File Explorer, Chrome)이다 */
 export type WindowApp = 'file-explorer' | 'chrome';
@@ -189,14 +188,16 @@ export const WINDOW_CASCADE_OFFSET = 32;
 export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as const;
 
 /**
- * 앱을 처음 열 때의 창 내용. 탐색기는 `Blog` 폴더(새 탭이 `Blog`로 여는 것과 같다), Chrome은 새 탭 페이지 하나다.
+ * 앱을 처음 열 때의 창 내용. 탐색기는 위치 없이 열면 늘 "바탕 화면" 위치(새 탭(+)과 같다), Chrome은 새 탭 페이지 하나다.
+ * 작업 표시줄·Start의 File Explorer와 작업 표시줄 우클릭 메뉴의 새 창이 모두 이 내용으로 연다.
+ * @codocs [[창 동작:열기 규칙]]
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[Chrome:새 탭 페이지]]
  * @param app 앱
  * @returns 창 내용
  */
 export function getDefaultWindowContent(app: WindowApp): WindowContent {
-  return app === 'file-explorer' ? createExplorerContent(BLOG_FOLDER_ID) : createChromeContent();
+  return app === 'file-explorer' ? createExplorerContent(null) : createChromeContent();
 }
 
 /**

@@ -413,9 +413,9 @@ describe('창 동작:스냅 - 끌어서 떼기', () => {
 
 // @codocs [[창 동작:열기 규칙]]
 describe('창 동작:열기 규칙', () => {
-  it('앱을 처음 열면 탐색기는 Blog 폴더, Chrome은 새 탭 페이지 하나를 보여 준다', () => {
+  it('앱을 위치 없이 열면 탐색기는 바탕 화면, Chrome은 새 탭 페이지 하나를 보여 준다', () => {
     const { state, ids } = openAll(['file-explorer', 'chrome']);
-    expect(state.windows[ids[0] ?? '']?.content).toEqual(createExplorerContent('blog'));
+    expect(state.windows[ids[0] ?? '']?.content).toEqual(createExplorerContent(null));
     expect(state.windows[ids[1] ?? '']?.content).toEqual(createChromeContent());
   });
 
