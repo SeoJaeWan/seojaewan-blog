@@ -31,4 +31,9 @@ describe('Toc', () => {
     expect(screen.getByText('이 글의 목차')).toBeInTheDocument();
     expect(screen.getByTestId('toc')).toHaveClass('w-220');
   });
+
+  it('펼친 상태의 제목은 titleProps의 동작·접근성 속성을 받는다', () => {
+    render(<Toc titleProps={{ role: 'button', tabIndex: 0, 'aria-expanded': true }} />);
+    expect(screen.getByRole('button', { name: '목차' })).toHaveAttribute('aria-expanded', 'true');
+  });
 });

@@ -6,6 +6,7 @@ import {
   type ChromePageLatestPost,
   type ChromePageSearchResult,
 } from '@/features/chrome/components/chrome-page/chrome-page';
+import { ChromePostTab } from '@/features/chrome/components/chrome-post-tab/chrome-post-tab';
 import { ChromeWindow } from '@/features/chrome/components/chrome-window/chrome-window';
 import {
   type AddressSuggestionTarget,
@@ -40,7 +41,6 @@ import {
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
 import type { WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 import {
-  getFolderPath,
   getLatestPosts,
   getPostItemId,
   type PostItem,
@@ -58,10 +58,6 @@ const MENU_ICONS = {
   forward: 'icons/ic_fluent_arrow_right_20_regular.svg',
   refresh: 'icons/ic_fluent_arrow_clockwise_20_regular.svg',
 } as const;
-
-// 글 머리의 폴더 경로 사이와 경로·작성일 사이 글자다(피그마 Chrome/Page `Page=Post`의 `Blog › React · 2026-10-20`).
-const META_PATH_SEPARATOR = ' › ';
-const META_DATE_SEPARATOR = ' · ';
 
 type ChromeWindowLayerProps = {
   /** 창 id. 창 내용(탭과 탭마다의 기록)을 바꿀 때 쓴다 */
@@ -132,6 +128,17 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
       return;
     }
     handleNavigate(action.page);
+  }
+
+  /**
+   * 글 본문 링크가 블로그 안의 페이지(글, 찾을 수 없음 등)인지 본다. 외부 주소는 null이다.
+   * @codocs [[Chrome:글 화면]]
+   * @param href 링크 주소
+   * @returns 블로그 안의 페이지. 외부 주소면 null
+   */
+  function resolveLink(href: string): ChromeTabPage | null {
+    const action = resolveAddress(href, workspace, window.location.host);
+    return action?.type === 'page' && action.page.kind !== 'search' ? action.page : null;
   }
 
   /**
@@ -306,6 +313,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
         device={device}
         onNavigate={handleNavigate}
         onAddressSubmit={handleAddressSubmit}
+        resolveLink={resolveLink}
         onReload={handleRefresh}
       />
     </ChromeWindow>
@@ -327,11 +335,13 @@ type ChromeTabContentProps = {
   onAddressSubmit: (text: string) => void;
   /** 찾을 수 없음 화면의 새로고침 버튼을 눌렀을 때 */
   onReload: () => void;
+  /** 글 본문 링크 주소가 블로그 안의 페이지면 그 페이지를 돌려준다. 외부 주소면 null이다 */
+  resolveLink: (href: string) => ChromeTabPage | null;
 };
 
 /**
  * 고른 탭의 페이지를 그린다. 새 탭 페이지는 휴지통에 없는 최신 글 바로가기, 검색 결과는 제목에 검색어가 든 글이다.
- * 글 화면은 색인 정보로 머리만 그린다. 색인에 없는 글은 찾을 수 없음 화면이다.
+ * 글 화면은 `ChromePostTab`이 그린다. 색인에 없는 글은 찾을 수 없음 화면이다.
  * @codocs [[Chrome:새 탭 페이지]]
  * @codocs [[Chrome:주소창]]
  * @param props
@@ -346,6 +356,7 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
     onNavigate: handleNavigate,
     onAddressSubmit: handleAddressSubmit,
     onReload: handleReload,
+    resolveLink,
   } = props;
   const layout = device === 'mobile' ? 'narrow' : 'wide';
   const className = 'min-h-0 w-full flex-1';
@@ -403,13 +414,13 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
         );
       }
       return (
-        <ChromePage
-          page="post"
+        <ChromePostTab
+          post={post}
+          workspace={workspace}
           layout={layout}
-          className={className}
-          meta={getPostMeta(workspace, post)}
-          title={post.name}
-          toc={[]}
+          resolveLink={resolveLink}
+          onNavigate={handleNavigate}
+          onReload={handleReload}
         />
       );
     case 'not-found':
@@ -452,19 +463,4 @@ function toSearchResult(post: PostItem): ChromePageSearchResult {
 function findPost(workspace: Pick<WorkspaceState, 'items'>, slug: string): PostItem | undefined {
   const item = workspace.items[getPostItemId(slug)];
   return item?.kind === 'post' ? item : undefined;
-}
-
-/**
- * 글 머리의 작은 글자. 글이 놓인 폴더 경로와 작성일이다(예: `Blog › React · 2026-10-20`).
- * @codocs [[Chrome:글 화면]]
- * @param workspace 작업 공간
- * @param post 글
- * @returns 머리 글자
- */
-function getPostMeta(workspace: Pick<WorkspaceState, 'items'>, post: PostItem): string {
-  const path =
-    post.parentId === null ? [] : getFolderPath(workspace, post.parentId).map((f) => f.name);
-  return [...(path.length > 0 ? [path.join(META_PATH_SEPARATOR)] : []), post.date].join(
-    META_DATE_SEPARATOR,
-  );
 }

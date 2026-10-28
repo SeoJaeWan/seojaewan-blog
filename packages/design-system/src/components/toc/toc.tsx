@@ -11,6 +11,8 @@ type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   title?: string;
   /** 피그마 `Items` 슬롯. 펼친 상태에서 TocItem을 세로로 넣는다 */
   children?: ReactNode;
+  /** 펼친 상태의 제목(SectionTitle)에 넘길 동작·접근성 속성. 제목을 눌러 접는 버튼으로 쓸 때 준다. 생김새는 그대로다 */
+  titleProps?: Omit<ComponentProps<'div'>, 'children' | 'className'>;
 };
 
 /**
@@ -20,7 +22,14 @@ type TocProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @param props
  */
 export function Toc(props: TocProps): JSX.Element {
-  const { state = 'expanded', title = '목차', children, className, ...divProps } = props;
+  const {
+    state = 'expanded',
+    title = '목차',
+    children,
+    titleProps,
+    className,
+    ...divProps
+  } = props;
   if (state === 'collapsed') {
     return (
       <div
@@ -40,7 +49,7 @@ export function Toc(props: TocProps): JSX.Element {
   }
   return (
     <div {...divProps} className={cn('flex flex-col items-start gap-8 pt-4', className)}>
-      <SectionTitle title={title} className="w-full shrink-0" />
+      <SectionTitle {...titleProps} title={title} className="w-full shrink-0" />
       {/* 피그마 Items 슬롯의 배치(세로, 간격 spacing/8)다 */}
       <div className="flex w-full shrink-0 flex-col items-start gap-8">{children}</div>
     </div>
