@@ -1,0 +1,16 @@
+{
+  "name": "Equation",
+  "nodeId": "1380:1119",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 116,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:1119",
+      "properties": {}
+    }
+  }
+}
