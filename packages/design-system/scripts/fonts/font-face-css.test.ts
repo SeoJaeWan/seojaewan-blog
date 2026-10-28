@@ -68,6 +68,17 @@ describe('서체', () => {
     expect(weights('open-sans.css')).toEqual(['400', '600', '700']);
     expect(weights('cascadia-mono.css')).toEqual(['400']);
   });
+
+  it('기울임은 Open Sans Italic Regular만 웹 폰트로 담고, 한글(Pretendard)과 코드 서체는 기울임 글꼴이 없다', () => {
+    expect(italicWeights('open-sans.css')).toEqual(['400']);
+    expect(italicWeights('pretendard.css')).toEqual([]);
+    expect(italicWeights('cascadia-mono.css')).toEqual([]);
+  });
+
+  it('브라우저가 기울임 글꼴이 없는 글자(한글)를 기울여 흉내 내지 않는다', () => {
+    const theme = readFileSync(path.join(sourceDir, 'theme.css'), 'utf8');
+    expect(theme).toMatch(/:root\s*\{\s*font-synthesis-style: none;\s*\}/u);
+  });
 });
 
 /**
@@ -78,5 +89,18 @@ describe('서체', () => {
 function weights(output: string): string[] {
   const css = readFileSync(path.join(sourceDir, output), 'utf8');
   const found = [...css.matchAll(/font-weight: (\d+);/gu)].map((match) => match[1] ?? '');
+  return [...new Set(found)].sort();
+}
+
+/**
+ * 생성 CSS에서 기울임(`font-style: italic`) 규칙의 굵기를 모은다.
+ * @param output src/ 아래 생성 파일 이름
+ * @returns 정렬한 굵기 목록
+ */
+function italicWeights(output: string): string[] {
+  const css = readFileSync(path.join(sourceDir, output), 'utf8');
+  const found = [
+    ...css.matchAll(/font-style: italic;\s*font-display: \w+;\s*font-weight: (\d+);/gu),
+  ].map((match) => match[1] ?? '');
   return [...new Set(found)].sort();
 }

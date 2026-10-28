@@ -57,8 +57,18 @@ function code(language: string, source: string): PostBlock {
 }
 
 /**
+ * 수식 블록을 만든다.
+ * @param expression 수식(LaTeX)
+ * @returns 수식 블록
+ */
+function equation(expression: string): PostBlock {
+  return { type: 'equation', expression };
+}
+
+/**
  * Notion을 붙이기 전의 임시 글 본문. slug마다 본문 블록(Notion 블록을 단순화한 모양)을 둔다.
- * 목차가 보이는 글(제목 3개 이상)과 아닌 글을 섞고, 다른 글 링크·외부 링크·코드 블록을 넣었다.
+ * 목차가 보이는 글(제목 3개 이상)과 아닌 글을 섞고, 다른 글 링크·외부 링크·코드 블록·수식을 넣었다.
+ * 코드 강조와 수식 HTML은 넣지 않는다. Notion 블록처럼 서버가 본문을 보낼 때 채운다(`getPostBody`).
  * Notion을 붙이면 이 파일을 지운다.
  * @codocs [[콘텐츠 원천:결정]]
  * @codocs [[Chrome:Notion 블록]]
@@ -147,7 +157,8 @@ export const temporaryPostBodies: Readonly<Record<string, readonly PostBlock[]>>
   'react-compiler': [
     paragraph('React Compiler를 켜고 useMemo·useCallback을 지웠다.'),
     code('ts', 'const nextConfig = { reactCompiler: true };'),
-    paragraph('측정해 보니 다시 그리는 횟수가 눈에 띄게 줄었다.'),
+    paragraph('측정해 보니 다시 그리는 횟수가 눈에 띄게 줄었다. 줄어든 비율은 이렇게 셌다.'),
+    equation(String.raw`r = 1 - \frac{n_{\text{after}}}{n_{\text{before}}}`),
   ],
   'typescript-5-6': [
     paragraph('TypeScript 5.6에서 눈에 띈 변화를 짧게 적는다.'),
