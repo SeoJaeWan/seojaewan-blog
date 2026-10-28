@@ -1,0 +1,16 @@
+{
+  "name": "Menu/StartListApp",
+  "nodeId": "1375:10387",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 111,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "1375:10387",
+      "properties": {}
+    }
+  }
+}

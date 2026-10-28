@@ -4,7 +4,7 @@
   "variants": {
     "submenu=none": {
       "node": {
-        "height": 143,
+        "height": 175,
         "width": 250,
         "x": 16,
         "y": 8
@@ -16,7 +16,7 @@
     },
     "submenu=sort": {
       "node": {
-        "height": 143,
+        "height": 175,
         "width": 250,
         "x": 16,
         "y": 8
@@ -28,7 +28,7 @@
     },
     "submenu=view": {
       "node": {
-        "height": 143,
+        "height": 175,
         "width": 250,
         "x": 16,
         "y": 8
