@@ -14,7 +14,7 @@ type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   icon: ReactNode;
   /** 피그마 State=Selected. 선택된 항목이면 바탕을 깔고 이름을 모두 보인다 */
   selected?: boolean;
-  /** 피그마 State=Selected focus. 선택된 채 포커스를 받으면 선을 그린다(selected와 함께 쓴다) */
+  /** 피그마 State=Focused. 포커스를 받으면 선택과 상관없이 1px 선을 겹쳐 그린다. 선은 크기에 넣지 않는다 */
   focused?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 항목이면 아이콘과 이름을 흐리게 그린다 */
   cut?: boolean;
@@ -37,7 +37,8 @@ const ICON_SIZES = { large: 'size-96', medium: 'size-48', small: 'size-32' } as 
 /**
  * 바탕화면과 탐색기의 큰 아이콘·보통 아이콘·작은 아이콘 보기에서 파일이나 폴더 하나(피그마 FileItem)를 그린다.
  * 너비는 Windows가 정한 크기로 고정하고 높이는 내용에 맞춘다(HUG). Rest·Hover는 CSS hover로 바꾸고,
- * 선택·포커스·잘라냄·이름 바꾸기는 prop으로 바꾼다. 선택된 채 포커스를 받으면 선이 크기에 더해진다(+2).
+ * 선택·포커스·잘라냄·이름 바꾸기는 prop으로 바꾼다. 포커스 선은 안쪽에 겹쳐 그려 크기를 바꾸지 않는다.
+ * @codocs [[컴포넌트 목록:상태]]
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @param props
  */
@@ -56,14 +57,13 @@ export function FileItem(props: FileItemProps): JSX.Element {
     ...divProps
   } = props;
   const isDesktop = surface === 'desktop';
-  const hasFocusLine = isSelected && isFocused;
   const dim = isCut ? 'opacity-cut' : undefined;
   return (
     <div
       {...divProps}
       className={cn(
-        // 포커스 표시는 선택된 채 포커스를 받은 모습(`focused`)으로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
-        'flex flex-col items-center rounded-control outline-none select-none',
+        // 포커스 표시는 `focused`로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
+        'relative flex flex-col items-center rounded-control outline-none select-none',
         isDesktop ? 'gap-2 px-2 py-4' : 'gap-4 p-4',
         WIDTHS[surface][view],
         isSelected || (isRenaming && !isDesktop)
@@ -75,10 +75,10 @@ export function FileItem(props: FileItemProps): JSX.Element {
             : isDesktop
               ? 'bg-subtle-fill-transparent hover:bg-file-item-desktop-fill-hover'
               : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        hasFocusLine &&
+        isFocused &&
           (isDesktop
-            ? 'border-default border-file-item-desktop-stroke-focus'
-            : 'border-default border-file-item-explorer-stroke-focus'),
+            ? 'inner-border-file-item-desktop-stroke-focus inner-border-w-default'
+            : 'inner-border-file-item-explorer-stroke-focus inner-border-w-default'),
         className,
       )}
     >
