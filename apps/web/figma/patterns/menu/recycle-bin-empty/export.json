@@ -1,0 +1,30 @@
+{
+  "name": "Menu/RecycleBinEmpty",
+  "nodeId": "1375:10129",
+  "variants": {
+    "submenu=none": {
+      "node": {
+        "height": 111,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "1375:10130",
+      "properties": {
+        "Submenu": "None"
+      }
+    },
+    "submenu=sort": {
+      "node": {
+        "height": 111,
+        "width": 250,
+        "x": 16,
+        "y": 8
+      },
+      "nodeId": "1375:10134",
+      "properties": {
+        "Submenu": "Sort"
+      }
+    }
+  }
+}
