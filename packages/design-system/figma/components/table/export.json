@@ -1,0 +1,16 @@
+{
+  "name": "Table",
+  "nodeId": "1380:6863",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 101,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6863",
+      "properties": {}
+    }
+  }
+}
