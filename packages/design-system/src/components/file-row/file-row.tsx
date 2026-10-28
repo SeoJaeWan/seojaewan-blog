@@ -24,8 +24,6 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   icon: ReactNode;
   /** 피그마 State=Selected. 선택된 줄이면 바탕을 깐다 */
   selected?: boolean;
-  /** 피그마 State=Focused. 포커스를 받으면 선택과 상관없이 1px 선을 겹쳐 그린다. 선은 크기에 넣지 않는다 */
-  focused?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 줄이면 아이콘과 이름을 흐리게 그린다 */
   cut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그리고 선택 바탕을 깐다 */
@@ -41,9 +39,11 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 탐색기 자세히 보기의 파일 한 줄(피그마 FileRow)을 그린다. 이름·수정한 날짜·유형·위치 칸을 가진다.
  * 휴지통 보기(view='recycle-bin')는 이름·원래 위치·삭제한 날짜 칸을 가진다.
  * 너비는 쓰는 곳이 정한다(피그마 원본은 840). 칸 너비는 DetailsHeader의 열과 맞춰 고정한다.
- * Rest·Hover는 CSS hover로 바꾸고, 선택·포커스·잘라냄·이름 바꾸기는 prop으로 바꾼다.
- * 포커스 선은 안쪽에 겹쳐 그려 크기를 바꾸지 않는다.
+ * Rest·Hover는 CSS hover로 바꾸고, 선택·잘라냄·이름 바꾸기는 prop으로 바꾼다.
+ * 포커스(State=Focused)는 prop 없이 키보드 포커스(`:focus-visible`)일 때 선택과 상관없이 1px 선을 안쪽에 겹쳐 그려
+ * 크기를 바꾸지 않는다.
  * @codocs [[컴포넌트 목록:상태]]
+ * @codocs [[피그마 연동:컨트롤 테두리 구현]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
  */
@@ -59,7 +59,6 @@ export function FileRow(props: FileRowProps): JSX.Element {
     deletedDate = '삭제한 날짜',
     icon,
     selected: isSelected = false,
-    focused: isFocused = false,
     cut: isCut = false,
     renaming: isRenaming = false,
     renameFieldProps,
@@ -71,12 +70,12 @@ export function FileRow(props: FileRowProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        // 포커스 표시는 `focused`로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
+        // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative flex h-control-height items-center gap-8 rounded-control px-8 py-0 outline-none select-none',
         isSelected || isRenaming
           ? 'bg-file-item-explorer-fill-selected'
           : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        isFocused && 'inner-border-file-item-explorer-stroke-focus inner-border-w-default',
+        'focus-visible:inner-border-file-item-explorer-stroke-focus focus-visible:inner-border-w-default',
         className,
       )}
     >

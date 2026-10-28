@@ -57,7 +57,7 @@ const meta = {
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 840으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => (
     <div className="w-840">
-      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 focused prop으로 그린다. */}
+      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다. */}
       <FileRow
         tabIndex={0}
         view={args.view}
@@ -70,7 +70,6 @@ const meta = {
         deletedDate={args.deletedDate}
         icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
         selected={args.state === 'selected' || args.state === 'cut-selected'}
-        focused={args.state === 'focused'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
       />
