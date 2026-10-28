@@ -24,8 +24,6 @@ export type DesktopIcon = {
   full?: boolean;
   /** 선택된 아이콘이면 선택 바탕을 깐다. 끌어 올린 놓을 곳(폴더·휴지통)의 강조도 이 모양이다 */
   selected?: boolean;
-  /** 선택된 채 키보드 포커스를 받았으면 선을 그린다(피그마 FileItem `State=Selected focus`) */
-  focused?: boolean;
   /** 이름 바꾸기 중이면 이름 대신 입력창을 그린다(피그마 FileItem `State=Rename`) */
   renaming?: boolean;
   /** 잘라낸 아이콘이면 흐리게 그린다(피그마 FileItem `cut`) */
@@ -37,7 +35,7 @@ export type DesktopIcon = {
 /** 아이콘(FileItem)마다 더하는 동작·접근성 속성 */
 export type DesktopIconProps = Omit<
   ComponentProps<typeof FileItem>,
-  'icon' | 'name' | 'surface' | 'view' | 'selected' | 'focused' | 'renaming' | 'cut' | 'className'
+  'icon' | 'name' | 'surface' | 'view' | 'selected' | 'renaming' | 'cut' | 'className'
 > & {
   /** 아이콘을 찾거나 놓을 곳을 표시하는 data 속성 */
   [attribute: `data-${string}`]: string | undefined;
@@ -122,7 +120,6 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               name={icon.name}
               icon={<DesktopIconImage kind={icon.kind} full={icon.full} />}
               selected={icon.selected}
-              focused={icon.focused}
               renaming={icon.renaming}
               cut={icon.cut}
               className={

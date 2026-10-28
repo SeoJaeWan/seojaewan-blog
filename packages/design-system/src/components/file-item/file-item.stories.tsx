@@ -53,7 +53,7 @@ const meta = {
   },
   render: (args) => (
     <Backdrop surface={args.surface}>
-      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 항목이 포커스를 받을 수 있게 한다. 선은 focused prop으로 그린다. */}
+      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 항목이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다. */}
       <FileItem
         tabIndex={0}
         surface={args.surface}
@@ -61,7 +61,6 @@ const meta = {
         name={args.name}
         icon={<img src={folderIcon} alt="" className="size-full object-contain" />}
         selected={args.state === 'selected' || args.state === 'cut-selected'}
-        focused={args.state === 'focused'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
       />
