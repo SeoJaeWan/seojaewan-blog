@@ -36,7 +36,7 @@ afterEach(() => {
   usePanelStore.getState().reset();
   useWindowStore.getState().reset();
   useRestartStore.setState({ phase: 'idle' });
-  useSearchStore.getState().clear();
+  useSearchStore.getState().clearAll();
   useWorkspaceStore.getState().reset();
   vi.unstubAllGlobals();
 });
@@ -52,7 +52,7 @@ function renderStartPanel(): HTMLElement {
 }
 
 /**
- * 검색 패널을 열어 그린다. 데스크톱의 검색어는 작업 표시줄 검색칸이 쓰므로 저장소에 직접 넣는다.
+ * 검색 패널을 열어 그린다. 데스크톱의 검색 패널 검색어는 작업 표시줄 검색칸이 쓰므로 저장소에 직접 넣는다.
  * @param query 검색어
  * @returns 검색 패널
  */
@@ -60,7 +60,7 @@ function renderSearchPanel(query: string): HTMLElement {
   usePanelStore.getState().openSearch();
   render(<StartMenuLayer />);
   act(() => {
-    useSearchStore.getState().setQuery(query);
+    useSearchStore.getState().setQuery('search', query);
   });
   return screen.getByRole('dialog', { name: '검색' });
 }
@@ -136,8 +136,8 @@ describe('작업 공간:다시 시작', () => {
   });
 });
 
-// @codocs [[Start 메뉴:고정됨]]
-describe('Start 메뉴:고정됨', () => {
+// @codocs [[Start 메뉴:구성]]
+describe('Start 메뉴:구성', () => {
   it('화면이 낮으면 패널 높이를 작업 영역에서 틈(12)을 뺀 값 이하로 줄인다', () => {
     vi.stubGlobal('innerHeight', 400);
     renderStartPanel();
@@ -147,6 +147,23 @@ describe('Start 메뉴:고정됨', () => {
     });
   });
 
+  it('화면이 아주 낮아도 Start 패널은 위쪽과 아래쪽을 더한 높이보다 줄지 않는다', () => {
+    vi.stubGlobal('innerHeight', 100);
+    renderStartPanel();
+    expect(screen.getByRole('dialog', { name: '시작' }).firstElementChild).toHaveStyle({
+      maxHeight: '151px',
+    });
+  });
+
+  it('검색 패널도 같은 규칙으로 줄고, 위아래 여백을 더한 높이보다 줄지 않는다', () => {
+    vi.stubGlobal('innerHeight', 100);
+    const searchPanel = renderSearchPanel('');
+    expect(searchPanel.firstElementChild).toHaveStyle({ maxHeight: '66px' });
+  });
+});
+
+// @codocs [[Start 메뉴:고정됨]]
+describe('Start 메뉴:고정됨', () => {
   it('저장소의 고정 목록과 순서로 그린다', () => {
     const startPanel = renderStartPanel();
     const tiles = within(startPanel).getAllByRole('button', {
@@ -281,25 +298,104 @@ describe('Start 메뉴:모두', () => {
     expect(within(startPanel).queryByRole('button', { name: '글 하나' })).not.toBeInTheDocument();
   });
 
-  it('보기 메뉴에서 보기를 고르면 그 보기로 바뀌고 저장소에 저장한다', async () => {
+  it('처음 보기는 범주라 항목 종류로 묶어 보인다', () => {
     const startPanel = renderStartPanel();
-    // jsdom에서는 Base UI 메뉴가 포인터 클릭으로 열리지 않아 키보드로 연다
-    within(startPanel).getByRole('button', { name: '보기: 간단히' }).focus();
-    await userEvent.keyboard('{Enter}');
-    await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: '범주' }));
-    expect(useWorkspaceStore.getState().startAllView).toBe('category');
     expect(within(startPanel).getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
     expect(within(startPanel).getByText('외부 링크')).toBeInTheDocument();
   });
 
-  it('다시 시작하면 보기가 처음 상태(간단히)로 돌아간다', () => {
+  it('보기 메뉴에서 보기를 고르면 그 보기로 바뀌고 저장소에 저장한다', async () => {
+    const startPanel = renderStartPanel();
+    // jsdom에서는 Base UI 메뉴가 포인터 클릭으로 열리지 않아 키보드로 연다
+    within(startPanel).getByRole('button', { name: '보기: 범주' }).focus();
+    await userEvent.keyboard('{Enter}');
+    await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: '간단히' }));
+    expect(useWorkspaceStore.getState().startAllView).toBe('list');
+    expect(within(startPanel).getByRole('button', { name: '보기: 간단히' })).toBeInTheDocument();
+    expect(within(startPanel).queryByText('외부 링크')).not.toBeInTheDocument();
+  });
+
+  it('다시 시작하면 보기가 처음 상태(범주)로 돌아간다', () => {
     act(() => {
       useWorkspaceStore.getState().setStartAllView('grid');
     });
     act(() => {
       useWorkspaceStore.getState().reset();
     });
-    expect(useWorkspaceStore.getState().startAllView).toBe('list');
+    expect(useWorkspaceStore.getState().startAllView).toBe('category');
+  });
+
+  it('고정됨과 모두 영역은 화면 읽기 프로그램이 구분하도록 각각 이름을 가진다', () => {
+    const startPanel = renderStartPanel();
+    const pinned = within(startPanel).getByRole('region', { name: '고정됨' });
+    const all = within(startPanel).getByRole('region', { name: '모두' });
+    expect(within(pinned).getByRole('button', { name: 'GitHub' })).toBeInTheDocument();
+    expect(within(all).getByRole('button', { name: '글 하나' })).toBeInTheDocument();
+  });
+
+  it('줄 우클릭 메뉴는 열기와 시작 화면 고정이고, 글·외부 링크는 링크 복사, 앱은 작업 표시줄 고정도 있다', () => {
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    expect(openTileMenu(within(all).getByRole('button', { name: 'Next.js 캐시' }))).toEqual([
+      '열기',
+      '시작 화면에 고정',
+      '링크 복사',
+    ]);
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(openTileMenu(within(all).getByRole('button', { name: 'React' }))).toEqual([
+      '열기',
+      '시작 화면에 고정',
+    ]);
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(openTileMenu(within(all).getByRole('button', { name: 'Chrome' }))).toEqual([
+      '열기',
+      '시작 화면에서 고정 해제',
+      '작업 표시줄에서 고정 해제',
+    ]);
+  });
+
+  it('줄 우클릭 메뉴의 시작 화면에 고정은 그 항목을 고정됨 맨 뒤에 더한다', async () => {
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    openTileMenu(within(all).getByRole('button', { name: 'Next.js 캐시' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '시작 화면에 고정' }));
+    expect(useWorkspaceStore.getState().startPins.at(-1)).toBe('post:nextjs-cache');
+  });
+
+  it('이미 고정된 항목은 줄 우클릭 메뉴에서 시작 화면 고정을 해제한다', async () => {
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    openTileMenu(within(all).getByRole('button', { name: 'Blog' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '시작 화면에서 고정 해제' }));
+    expect(useWorkspaceStore.getState().startPins).not.toContain('blog');
+  });
+
+  it('앱 줄 우클릭 메뉴로 작업 표시줄 고정을 해제하고 다시 고정한다', async () => {
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    openTileMenu(within(all).getByRole('button', { name: 'Chrome' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }));
+    expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer']);
+    openTileMenu(within(all).getByRole('button', { name: 'Chrome' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '작업 표시줄에 고정' }));
+    expect(useWorkspaceStore.getState().taskbarPins).toEqual(['file-explorer', 'chrome']);
+  });
+
+  it('줄 우클릭 메뉴의 열기는 항목을 열고 Start 메뉴를 닫는다', async () => {
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    openTileMenu(within(all).getByRole('button', { name: 'Next.js 캐시' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '열기' }));
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['chrome']);
+    expect(usePanelStore.getState().openPanel).toBeNull();
+  });
+
+  it('그리드 보기의 항목 칸도 같은 우클릭 메뉴를 띄운다', () => {
+    act(() => {
+      useWorkspaceStore.getState().setStartAllView('grid');
+    });
+    const all = within(renderStartPanel()).getByRole('region', { name: '모두' });
+    expect(openTileMenu(within(all).getByRole('button', { name: 'Next.js 캐시' }))).toEqual([
+      '열기',
+      '시작 화면에 고정',
+      '링크 복사',
+    ]);
   });
 });
 
@@ -342,7 +438,7 @@ describe('Start 메뉴:검색', () => {
     act(() => {
       usePanelStore.getState().close();
     });
-    expect(useSearchStore.getState().query).toBe('');
+    expect(useSearchStore.getState().panels.start.query).toBe('');
   });
 });
 
@@ -364,6 +460,22 @@ describe('검색:결과 화면', () => {
     expect(selected[0]).toHaveTextContent('React폴더');
   });
 
+  it('오른쪽 카드는 목록에서 고른 항목을 따라가고, 카드의 열기는 그 항목을 연다', async () => {
+    const searchPanel = renderSearchPanel('react');
+    // 최고 일치(React 폴더)는 링크 복사가 없다
+    expect(
+      within(searchPanel).queryByRole('button', { name: '링크 복사' }),
+    ).not.toBeInTheDocument();
+    act(() => {
+      useSearchStore.getState().moveSelection('search', 1, 4);
+    });
+    expect(within(searchPanel).getByRole('button', { name: '링크 복사' })).toBeInTheDocument();
+    expect(within(searchPanel).getAllByText('React 19 훅 정리')).toHaveLength(2);
+    await userEvent.click(within(searchPanel).getByRole('button', { name: '열기' }));
+    const { windows, order } = useWindowStore.getState();
+    expect(order.map((id) => windows[id]?.app)).toEqual(['chrome']);
+  });
+
   it('최고 일치 카드에 열기를 두고, 글과 외부 링크만 링크 복사도 둔다', () => {
     const searchPanel = renderSearchPanel('react');
     expect(within(searchPanel).getByRole('button', { name: '열기' })).toBeInTheDocument();
@@ -371,7 +483,7 @@ describe('검색:결과 화면', () => {
       within(searchPanel).queryByRole('button', { name: '링크 복사' }),
     ).not.toBeInTheDocument();
     act(() => {
-      useSearchStore.getState().setQuery('Next.js 캐시');
+      useSearchStore.getState().setQuery('search', 'Next.js 캐시');
     });
     expect(within(searchPanel).getByRole('button', { name: '링크 복사' })).toBeInTheDocument();
   });
@@ -446,7 +558,7 @@ describe('검색:결과 화면', () => {
 
   it('항목을 열면 검색어를 지운다', async () => {
     await typeAndOpenFirstResult();
-    expect(useSearchStore.getState().query).toBe('');
+    expect(useSearchStore.getState().panels.start.query).toBe('');
   });
 
   it('Esc를 누르면 닫힌다', async () => {
@@ -481,6 +593,21 @@ describe('검색:결과 화면', () => {
     const searchPanel = screen.getByRole('dialog', { name: '검색' });
     await userEvent.type(within(searchPanel).getByRole('searchbox', { name: '검색' }), 'react');
     expect(within(searchPanel).getByText('최고 일치')).toBeInTheDocument();
+  });
+});
+
+// @codocs [[검색:입력칸]]
+describe('검색:입력칸', () => {
+  it('Start 위쪽 검색칸에 입력한 검색어는 Start 안에서만 쓰고 검색 패널 검색어는 비어 있다', async () => {
+    const startPanel = renderStartPanel();
+    await userEvent.type(
+      within(startPanel).getByRole('searchbox', { name: '시작 메뉴 검색' }),
+      'react',
+    );
+    expect(useSearchStore.getState().panels).toMatchObject({
+      start: { query: 'react' },
+      search: { query: '' },
+    });
   });
 });
 

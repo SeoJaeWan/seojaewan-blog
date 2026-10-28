@@ -2,6 +2,7 @@ import type {
   SearchItem,
   SearchRecommendedPost,
   SearchResultGroups,
+  SearchResultItem,
 } from '@/features/start-menu/components/search-body/search-body';
 import { toSearchItem } from '@/features/start-menu/utils/start-items/start-items';
 import type { Device } from '@/shared/hooks/use-device/use-device';
@@ -10,13 +11,18 @@ import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useSearchStore } from '@/shared/stores/search-store/search-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
+import type { PanelKind } from '@/shared/utils/panel-rules/panel-rules';
 import {
   getSearchDisplayOrder,
   groupSearchResults,
   type SearchResultSet,
   searchWorkspace,
 } from '@/shared/utils/search-rules/search-rules';
-import { getLatestPosts, getRecentItems } from '@/shared/utils/workspace-rules/workspace-rules';
+import {
+  getLatestPosts,
+  getRecentItems,
+  type PlacedItem,
+} from '@/shared/utils/workspace-rules/workspace-rules';
 
 // 입력 전 화면의 최근 항목 최대 개수와 추천 글 개수(데스크톱 6, 모바일 3)다.
 const RECENT_COUNT = 5;
@@ -46,23 +52,34 @@ export type StartSearch = {
 
 /**
  * 검색 패널과 Start 안 검색 화면이 그릴 데이터를 만든다. 검색어와 고른 항목은 검색 저장소, 결과는 작업 공간 저장소의 항목에서 규칙대로 찾는다.
+ * 검색어는 패널마다 따로다(Start 위쪽 검색칸과 검색 패널).
  * 검색어가 없으면 입력 전 화면(최근 5개, 추천 글 6개·모바일 3개)을 준다. 항목을 열면 열기 규칙대로 열고 패널을 닫는다(검색어는 패널이 닫힐 때 지운다).
  * @codocs [[검색:결과 화면]]
  * @codocs [[검색:입력 전 화면]]
  * @codocs [[Start 메뉴:검색]]
+ * @codocs [[검색:입력칸]]
  * @param device 화면 방식. 추천 글 개수가 다르다
+ * @param panel 검색어를 쓰는 패널
  * @returns 검색 데이터와 동작
  */
-export function useStartSearch(device: Device): StartSearch {
+export function useStartSearch(device: Device, panel: PanelKind): StartSearch {
   const workspace = useWorkspaceStore((state) => state);
-  const query = useSearchStore((state) => state.query);
-  const selectedIndex = useSearchStore((state) => state.selectedIndex);
-  const setQuery = useSearchStore((state) => state.setQuery);
+  const query = useSearchStore((state) => state.panels[panel].query);
+  const selectedIndex = useSearchStore((state) => state.panels[panel].selectedIndex);
+  const setPanelQuery = useSearchStore((state) => state.setQuery);
   const close = usePanelStore((state) => state.close);
   const openWorkspaceItem = useOpenItem();
   const isSearching = query.trim() !== '';
   const resultSet = isSearching ? groupSearchResults(searchWorkspace(workspace, query)) : null;
   const displayOrder = resultSet === null ? [] : getSearchDisplayOrder(resultSet);
+
+  /**
+   * 이 패널의 검색어를 바꾼다.
+   * @param nextQuery 입력칸의 글자
+   */
+  function setQuery(nextQuery: string): void {
+    setPanelQuery(panel, nextQuery);
+  }
 
   /**
    * 항목을 열고 패널을 닫는다.
@@ -114,14 +131,19 @@ export function useStartSearch(device: Device): StartSearch {
  * @returns 결과 화면의 결과
  */
 function toResultGroups(resultSet: SearchResultSet): SearchResultGroups {
-  const { bestMatch } = resultSet;
   return {
-    bestMatch: {
-      ...toSearchItem(bestMatch),
-      date: bestMatch.kind === 'post' ? bestMatch.date : undefined,
-    },
-    folders: resultSet.folders.map(toSearchItem),
-    posts: resultSet.posts.map(toSearchItem),
-    links: resultSet.links.map(toSearchItem),
+    bestMatch: toResultItem(resultSet.bestMatch),
+    folders: resultSet.folders.map(toResultItem),
+    posts: resultSet.posts.map(toResultItem),
+    links: resultSet.links.map(toResultItem),
   };
+}
+
+/**
+ * 결과 항목 하나를 결과 화면의 모양으로 바꾼다. 글은 카드에 보일 날짜를 함께 둔다.
+ * @param item 결과 항목
+ * @returns 결과 화면의 항목
+ */
+function toResultItem(item: PlacedItem): SearchResultItem {
+  return { ...toSearchItem(item), date: item.kind === 'post' ? item.date : undefined };
 }
