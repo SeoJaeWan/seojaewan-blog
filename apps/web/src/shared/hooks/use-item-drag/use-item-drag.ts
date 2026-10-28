@@ -57,7 +57,17 @@ type UseItemDragOptions = {
    * 놓을 곳으로 보지 않아 강조·툴팁이 없고, 놓아도 제자리다
    */
   canDrop?: (ids: readonly string[], targetId: string) => boolean;
+  /**
+   * 옮길 수 없지만 막힌 곳으로 보지 않을 놓을 곳인지. 바탕화면 아이콘을 바탕화면 빈 곳에 끌면 옮기기가 아니라 칸 옮기기라
+   * `canDrop`이 거부해도 `not-allowed` 커서를 보이지 않는다
+   */
+  isNeutralTarget?: (targetId: string) => boolean;
 };
+
+/**
+ * 옮길 수 없는 곳 위를 끄는 동안 문서 맨 위 요소(`html`)에 다는 속성. 전역 CSS가 이 속성이 있으면 어디서나 `not-allowed` 커서를 보인다.
+ */
+export const DRAG_REJECTED_ATTRIBUTE = 'data-item-drag-rejected';
 
 /** 항목 끌기 상태와 시작 핸들러 */
 type ItemDragControls = {
@@ -73,6 +83,7 @@ type ItemDragControls = {
  * 항목(아이콘·목록 줄)을 포인터로 끌어 옮긴다. 바탕화면 아이콘과 탐색기 항목이 쓴다.
  * 끄는 동안 포인터 아래 요소에서 가장 가까운 놓을 곳(`data-drop-target`)을 찾는다. 끄는 항목 자신과 옮길 수 없는 곳은 놓을 곳이 아니다.
  * 놓을 곳은 항목 끌기 저장소에도 알려, 그곳을 그린 쪽(다른 창 포함)이 강조하게 한다.
+ * 옮길 수 없는 놓을 곳 위에서는 강조와 툴팁 없이 커서를 `not-allowed`로 바꾸고(`DRAG_REJECTED_ATTRIBUTE`), 끌기가 끝나면 되돌린다.
  * 끄는 복제본처럼 포인터를 따라가는 요소는 `pointer-events: none`이어야 그 아래를 찾는다.
  * @codocs [[바탕화면:아이콘 조작]]
  * @codocs [[파일 탐색기:조작]]
@@ -80,7 +91,7 @@ type ItemDragControls = {
  * @returns 끄는 상태와 시작 핸들러
  */
 export function useItemDrag(options: UseItemDragOptions): ItemDragControls {
-  const { onDrop, canDrop } = options;
+  const { onDrop, canDrop, isNeutralTarget } = options;
   const startPointerDrag = usePointerDrag();
   const setTargetId = useItemDragStore((state) => state.setTargetId);
   const [drag, setDrag] = useState<ItemDragState | null>(null);
@@ -118,14 +129,20 @@ export function useItemDrag(options: UseItemDragOptions): ItemDragControls {
         didDragRef.current = true;
       },
       onMove: (point) => {
-        const next = measure(point, getElementAt(point));
+        const element = getElementAt(point);
+        const next = measure(point, element);
+        const found = findDropTarget(element, ids);
         setDrag(next);
         setTargetId(next.target?.id ?? null);
+        setRejectedCursor(
+          next.target === null && found !== null && isNeutralTarget?.(found.id) !== true,
+        );
       },
       onDrop: (point) => {
         const element = getElementAt(point);
         setDrag(null);
         setTargetId(null);
+        setRejectedCursor(false);
         const measured = measure(point, element);
         const found = findDropTarget(element, ids);
         onDrop({
@@ -137,6 +154,7 @@ export function useItemDrag(options: UseItemDragOptions): ItemDragControls {
       onCancel: () => {
         setDrag(null);
         setTargetId(null);
+        setRejectedCursor(false);
       },
     });
   }
@@ -152,6 +170,16 @@ export function useItemDrag(options: UseItemDragOptions): ItemDragControls {
   }
 
   return { drag, startItemDrag, consumeDragEnd };
+}
+
+/**
+ * 옮길 수 없는 곳 위를 끄는 중인지 문서에 표시한다. 전역 CSS가 표시를 보고 어디서나 `not-allowed` 커서를 보인다.
+ * 끄는 요소가 포인터를 붙잡고 있어 그 아래 요소의 커서가 아니라 문서 전체에 건다.
+ * @codocs [[바탕화면:아이콘 조작]]
+ * @param isRejected 옮길 수 없는 곳 위면 true
+ */
+function setRejectedCursor(isRejected: boolean): void {
+  document.documentElement.toggleAttribute(DRAG_REJECTED_ATTRIBUTE, isRejected);
 }
 
 /**

@@ -20,25 +20,22 @@ import {
 /** localStorage 열쇠 */
 export const WORKSPACE_STORAGE_KEY = 'seojaewan-blog:workspace';
 
-/** 저장 형태의 버전. 모양을 바꾸면 올린다. 버전이 다른 저장분은 버리고 초기 구조에서 다시 시작한다 */
-export const WORKSPACE_STORAGE_VERSION = 1;
-
-const trashSchema = z
-  .object({ originalParentId: z.string().nullable(), deletedAt: z.string() })
-  .nullable();
+/**
+ * 저장 형태의 버전. 모양을 바꾸면 올린다. 버전이 다른 저장분은 버리고 초기 구조에서 다시 시작한다.
+ * 2: 휴지통을 저장하지 않아 항목의 휴지통 기록(`trash`)을 뺐다.
+ */
+export const WORKSPACE_STORAGE_VERSION = 2;
 
 const savedItemSchema = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('folder'),
     name: z.string(),
     parentId: z.string().nullable(),
-    trash: trashSchema,
     date: z.string().nullable(),
   }),
   z.object({
     kind: z.enum(['post', 'link']),
     parentId: z.string().nullable(),
-    trash: trashSchema,
   }),
 ]);
 

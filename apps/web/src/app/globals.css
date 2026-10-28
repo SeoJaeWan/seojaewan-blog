@@ -5,6 +5,16 @@
 @source '../../../../packages/design-system/src';
 
 /*
+ * @codocs [[바탕화면:아이콘 조작]]
+ * 항목을 옮길 수 없는 곳 위로 끄는 동안(`useItemDrag`가 html에 다는 속성) 어디서나 not-allowed 커서를 보인다.
+ * 끄는 요소가 포인터를 붙잡고 있고 버튼 같은 요소가 제 커서를 갖고 있어, 문서 전체에서 덮어쓴다.
+ */
+:root[data-item-drag-rejected],
+:root[data-item-drag-rejected] * {
+  cursor: not-allowed !important;
+}
+
+/*
  * @codocs [[Chrome:페이지에서 찾기]]
  * Chrome 찾기 막대의 강조(CSS Custom Highlight API). 일치하는 곳은 노란색, 지금 위치는 주황색이다.
  * 강조 이름은 `use-page-find`가 문서의 강조 목록에 넣는다.

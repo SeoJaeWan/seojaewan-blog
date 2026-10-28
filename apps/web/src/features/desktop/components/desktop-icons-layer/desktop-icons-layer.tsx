@@ -42,6 +42,7 @@ import { useMarqueeSelection } from '@/shared/hooks/use-marquee-selection/use-ma
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import { useSelection } from '@/shared/hooks/use-selection/use-selection';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
+import { useItemClipboardStore } from '@/shared/stores/item-clipboard-store/item-clipboard-store';
 import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';
@@ -64,6 +65,7 @@ import type {
 import {
   DESKTOP_NAME,
   getDesktopItems,
+  getPasteIds,
   isRecycleBinFull,
   moveItems,
   trashItems,
@@ -87,6 +89,7 @@ const BALLOON_OFFSET = 8;
  * - 끌기(데스크톱): 고른 아이콘을 끌면 반투명한 복제본이 따라가고, 폴더·휴지통 위에 놓으면 옮기거나 휴지통으로 보낸다.
  *   빈 곳에 놓으면 자동 정렬이 꺼져 있을 때만 그 칸으로 옮기고, 켜져 있으면 정렬된 자리로 돌아간다. 거부되면 제자리에 둔다.
  * - 열기: 더블클릭(모바일은 탭), Enter. 키보드: Delete는 휴지통으로, F2는 폴더 이름 바꾸기.
+ * - 잘라내기(Ctrl + X, 메뉴)와 붙여넣기(Ctrl + V, 빈 곳 메뉴): 잘라낸 항목은 탐색기 창과 함께 쓰고, 붙여넣으면 바탕화면으로 옮긴다.
  * - 지우면 격자 순서의 다음 아이콘(없으면 이전 아이콘, 그것도 없으면 영역)으로 선택과 포커스를 옮긴다.
  * - 모바일은 늘 자동 정렬이라 보기 메뉴의 아이콘 자동 정렬을 고를 수 없다.
  * - 우클릭(모바일은 길게 누르기) 메뉴: 빈 곳 메뉴와 항목 종류별 메뉴. 휴지통 비우기는 메시지 상자만 보여 준다.
@@ -106,6 +109,7 @@ export function DesktopIconsLayer(): JSX.Element {
   const items = useWorkspaceStore((state) => state.items);
   const settings = useWorkspaceStore((state) => state.desktop);
   const startPins = useWorkspaceStore((state) => state.startPins);
+  const cutIds = useItemClipboardStore((state) => state.cutIds);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragAnchorRef = useRef<string | null>(null);
   const [menu, setMenu] = useState<OpenMenu | null>(null);
@@ -131,6 +135,7 @@ export function DesktopIconsLayer(): JSX.Element {
           (item) => item.id,
         )
       : getGridOrder(cells, grid);
+  const pasteIds = getPasteIds(getWorkspace(), cutIds, null, new Date().toISOString());
 
   const rename = useFolderRename({ onKeyboardEnd: focusIcon });
   const selection = useSelection({
@@ -145,7 +150,12 @@ export function DesktopIconsLayer(): JSX.Element {
       selection.updateMarquee(getIconsInRect(rect));
     },
   });
-  const itemDrag = useItemDrag({ onDrop: handleDrop, canDrop: canDropOn });
+  const itemDrag = useItemDrag({
+    onDrop: handleDrop,
+    canDrop: canDropOn,
+    // 바탕화면 빈 곳은 옮기기가 아니라 칸 옮기기라 막힌 곳(`not-allowed`)으로 보지 않는다.
+    isNeutralTarget: (targetId: string) => targetId === DESKTOP_DROP_TARGET,
+  });
   const dragTargetId = useItemDragStore((state) => state.targetId);
   const selectedIds = selection.selection.ids;
 
@@ -230,7 +240,7 @@ export function DesktopIconsLayer(): JSX.Element {
   }
 
   /**
-   * 항목들을 휴지통으로 보낸다. 보낼 수 없는 항목(`Blog`, 휴지통)이 있으면 아무것도 보내지 않는다.
+   * 항목들을 휴지통으로 보낸다. 보낼 수 없는 항목(휴지통)이 있으면 아무것도 보내지 않는다.
    * 보냈으면 격자 순서의 다음 아이콘(없으면 이전 아이콘)을 고르고, 포커스를 옮길 아이콘을 돌려준다.
    * @param ids 항목 id
    * @returns 보냈으면 포커스를 옮길 아이콘 id(남은 아이콘이 없으면 null), 보내지 못했으면 undefined
@@ -254,6 +264,32 @@ export function DesktopIconsLayer(): JSX.Element {
     } else {
       focusIcon(id);
     }
+  }
+
+  /**
+   * 항목들을 잘라낸다. 바탕화면과 모든 탐색기 창이 같은 잘라낸 항목을 쓴다(붙여넣으면 옮긴다).
+   * @codocs [[작업 공간:배치]]
+   * @param ids 항목 id
+   */
+  function cut(ids: readonly string[]): void {
+    if (ids.length > 0) {
+      useItemClipboardStore.getState().cut(ids);
+    }
+  }
+
+  /**
+   * 잘라낸 항목을 바탕화면으로 옮기고, 잘라낸 것을 비운 뒤 붙여넣은 항목을 고른다. 붙여넣을 수 없으면 아무것도 하지 않는다.
+   * 자동 정렬이 꺼져 있으면 붙여넣은 아이콘은 첫 빈 칸에 보인다(칸을 정하지 않는다).
+   * @codocs [[작업 공간:배치]]
+   * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+   */
+  function paste(): void {
+    if (pasteIds === null || !getWorkspace().moveItems(pasteIds, null).ok) {
+      return;
+    }
+    useItemClipboardStore.getState().clear();
+    const [firstId] = pasteIds;
+    selection.setSelection({ ids: pasteIds, anchorId: firstId ?? null, focusId: firstId ?? null });
   }
 
   /**
@@ -412,11 +448,25 @@ export function DesktopIconsLayer(): JSX.Element {
   }
 
   /**
-   * 바탕화면 키를 처리한다. 방향키·Ctrl + A는 선택, Enter는 열기, Delete는 휴지통으로 보내기, F2는 폴더 이름 바꾸기다.
+   * 바탕화면 키를 처리한다. 방향키·Ctrl + A는 선택, Enter는 열기, Delete는 휴지통으로 보내기, F2는 폴더 이름 바꾸기,
+   * Ctrl + X는 잘라내기, Ctrl + V는 붙여넣기다.
+   * @codocs [[바탕화면:아이콘 조작]]
+   * @codocs [[작업 공간:배치]]
    * @param event 키 이벤트
    */
   function handleAreaKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     if (selection.handleSelectionKeyDown(event)) {
+      return;
+    }
+    const isCommand = event.ctrlKey || event.metaKey;
+    if (isCommand && event.key.toLowerCase() === 'x') {
+      event.preventDefault();
+      cut(selectedIds);
+      return;
+    }
+    if (isCommand && event.key.toLowerCase() === 'v') {
+      event.preventDefault();
+      paste();
       return;
     }
     switch (event.key) {
@@ -526,6 +576,7 @@ export function DesktopIconsLayer(): JSX.Element {
               selected: isSelected,
               focused: isSelected && id === focusedIconId,
               renaming: rename.renamingId === id,
+              cut: cutIds.includes(id),
               cell: cells?.[id],
             },
           ];
@@ -564,6 +615,8 @@ export function DesktopIconsLayer(): JSX.Element {
         onRefresh: () => {
           setIsRefreshing(true);
         },
+        canPaste: pasteIds !== null,
+        onPaste: paste,
         onNewFolder: () => {
           setPendingRenameId(createFolder());
         },
@@ -596,6 +649,9 @@ export function DesktopIconsLayer(): JSX.Element {
         } else {
           getWorkspace().pinToStart(firstId);
         }
+      },
+      onCut: () => {
+        cut(ids);
       },
       onRename: () => {
         if (firstId !== undefined) {
@@ -718,6 +774,7 @@ export function DesktopIconsLayer(): JSX.Element {
         open={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
       />
+      <MessageBoxDialog {...rename.messageBoxProps} />
     </>
   );
 }

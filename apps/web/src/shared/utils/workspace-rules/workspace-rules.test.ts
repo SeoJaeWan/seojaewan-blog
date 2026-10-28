@@ -5,14 +5,17 @@ import {
   BLOG_FOLDER_ID,
   createFolder,
   createInitialWorkspace,
+  filterFolderNameInput,
   getChildItems,
   getDesktopItems,
   getExplorerView,
+  getFolderNameToCommit,
   getFolderPath,
   getFolderTree,
   getItemOpenAction,
   getLatestPosts,
   getNewFolderName,
+  getPasteIds,
   getRecentItems,
   getVisibleStartPins,
   isItemInTrash,
@@ -193,6 +196,40 @@ describe('작업 표시줄:고정과 순서', () => {
   });
 });
 
+// @codocs [[작업 공간:방문자별 저장]]
+describe('작업 공간:방문자별 저장', () => {
+  it('휴지통은 저장하지 않아, 휴지통에 보낸 항목은 원래 자리에 둔 채 저장한다', () => {
+    const trashed = expectOk(trashItems(initial, ['folder:React', 'link:github'], NOW));
+    const saved = toSavedWorkspace(trashed);
+    expect(saved.items['folder:React']).toEqual({
+      kind: 'folder',
+      name: 'React',
+      parentId: BLOG_FOLDER_ID,
+      date: null,
+    });
+    expect(saved.items['link:github']).toEqual({ kind: 'link', parentId: null });
+    const state = reconcileWorkspace(saved, testCatalog);
+    expect(isRecycleBinFull(state)).toBe(false);
+    expect(state.items['post:use-effect']?.parentId).toBe('folder:React/Hooks');
+  });
+
+  it('휴지통에 보낸 Blog 폴더도 다시 들어오면 바탕화면에 돌아온다', () => {
+    const trashed = expectOk(trashItems(initial, [BLOG_FOLDER_ID], NOW));
+    const state = reconcileWorkspace(toSavedWorkspace(trashed), testCatalog);
+    expect(state.items[BLOG_FOLDER_ID]).toMatchObject({ parentId: null, trash: null });
+  });
+
+  it('돌아올 자리에 같은 이름의 폴더가 생겼으면 복원처럼 번호를 붙여 저장한다', () => {
+    const trashed = expectOk(trashItems(initial, ['folder:React'], NOW));
+    const created = expectOk(createFolder(trashed, BLOG_FOLDER_ID, { id: 'v1', createdAt: NOW }));
+    const renamed = expectOk(renameFolder(created, 'v1', 'React'));
+    expect(toSavedWorkspace(renamed).items['folder:React']).toMatchObject({
+      name: 'React (2)',
+      parentId: BLOG_FOLDER_ID,
+    });
+  });
+});
+
 // @codocs [[작업 공간:Notion과 맞추기]]
 describe('작업 공간:Notion과 맞추기', () => {
   const saved = toSavedWorkspace(initial);
@@ -221,17 +258,14 @@ describe('작업 공간:Notion과 맞추기', () => {
     expect(state.items['post:new']?.parentId).toBe('folder:React');
   });
 
-  it('새 글의 폴더가 없거나 휴지통에 있으면 Blog 폴더로 들어간다', () => {
-    const trashed = expectOk(trashItems(initial, ['folder:React'], NOW));
-    const state = reconcileWorkspace(toSavedWorkspace(trashed), {
+  it('새 글의 폴더가 없으면 Blog 폴더로 들어간다', () => {
+    const state = reconcileWorkspace(saved, {
       ...testCatalog,
       posts: [
         ...testCatalog.posts,
-        { slug: 'a', title: '가', folderPath: ['React', 'Hooks'], date: '2026-10-27' },
         { slug: 'b', title: '나', folderPath: ['없는 폴더'], date: '2026-10-27' },
       ],
     });
-    expect(state.items['post:a']?.parentId).toBe(BLOG_FOLDER_ID);
     expect(state.items['post:b']?.parentId).toBe(BLOG_FOLDER_ID);
   });
 
@@ -300,7 +334,7 @@ describe('작업 공간:Notion과 맞추기', () => {
       ...saved,
       items: {
         ...saved.items,
-        'post:react-19-hooks': { kind: 'post', parentId: 'folder:없음', trash: null },
+        'post:react-19-hooks': { kind: 'post', parentId: 'folder:없음' },
       },
     } as const;
     expect(
@@ -313,20 +347,8 @@ describe('작업 공간:Notion과 맞추기', () => {
       ...saved,
       items: {
         ...saved.items,
-        'post:react-19-hooks': {
-          kind: 'folder',
-          name: '가짜',
-          parentId: null,
-          trash: null,
-          date: null,
-        },
-        c1: {
-          kind: 'folder',
-          name: '하위',
-          parentId: 'post:react-19-hooks',
-          trash: null,
-          date: null,
-        },
+        'post:react-19-hooks': { kind: 'folder', name: '가짜', parentId: null, date: null },
+        c1: { kind: 'folder', name: '하위', parentId: 'post:react-19-hooks', date: null },
       },
     } as const;
     const state = reconcileWorkspace(broken, testCatalog);
@@ -380,36 +402,6 @@ describe('작업 공간:Notion과 맞추기 - 깨진 상태 복구', () => {
     const state = repairWorkspace({ ...initial, items });
     expect(state.items['post:react-19-hooks']?.parentId).toBeNull();
     expect(state.items['post:use-effect']?.trash).toBeNull();
-  });
-
-  it('휴지통에 들어간 Blog 폴더는 바탕화면으로 꺼낸다', () => {
-    const items = {
-      ...initial.items,
-      [BLOG_FOLDER_ID]: {
-        ...itemOf(BLOG_FOLDER_ID),
-        parentId: RECYCLE_BIN_ID,
-        trash: { originalParentId: null, deletedAt: NOW },
-      },
-    };
-    expect(repairWorkspace({ ...initial, items }).items[BLOG_FOLDER_ID]?.parentId).toBeNull();
-  });
-
-  it('휴지통에 보낸 폴더 안에 있는 Blog 폴더도 바탕화면으로 꺼낸다', () => {
-    const items = {
-      ...initial.items,
-      u1: {
-        kind: 'folder',
-        id: 'u1',
-        name: '새 폴더',
-        parentId: RECYCLE_BIN_ID,
-        trash: { originalParentId: null, deletedAt: NOW },
-        date: NOW,
-      },
-      [BLOG_FOLDER_ID]: { ...itemOf(BLOG_FOLDER_ID), parentId: 'u1' },
-    } as const;
-    const state = repairWorkspace({ ...initial, items });
-    expect(state.items[BLOG_FOLDER_ID]).toMatchObject({ parentId: null, trash: null });
-    expect(isItemInTrash(state, BLOG_FOLDER_ID)).toBe(false);
   });
 
   it('없는 항목을 가리키는 최근 항목, 아이콘 칸, 폴더 보기를 지운다', () => {
@@ -502,6 +494,34 @@ describe('작업 공간:폴더 이름', () => {
     expect(second.items.v2?.name).toBe('새 폴더 (2)');
   });
 
+  it('입력하는 순간 쓸 수 없는 문자를 빼고, 뺐는지 알려 준다', () => {
+    expect(filterFolderNameInput('a/b:c')).toEqual({
+      value: 'abc',
+      hasRemovedInvalidCharacter: true,
+    });
+    expect(filterFolderNameInput('a\u0001b')).toEqual({
+      value: 'ab',
+      hasRemovedInvalidCharacter: true,
+    });
+    expect(filterFolderNameInput('React')).toEqual({
+      value: 'React',
+      hasRemovedInvalidCharacter: false,
+    });
+  });
+
+  it('255자를 넘게는 입력되지 않고, 서로게이트 쌍을 가르지 않는다', () => {
+    expect(filterFolderNameInput('가'.repeat(300)).value).toHaveLength(255);
+    expect(filterFolderNameInput(`${'a'.repeat(254)}😀`).value).toBe('a'.repeat(254));
+  });
+
+  it('끝의 공백과 마침표는 잘라내고 확정하며, 비었거나 공백만 있으면 되돌린다', () => {
+    expect(getFolderNameToCommit('메모. . ')).toBe('메모');
+    expect(getFolderNameToCommit(' 메모')).toBe(' 메모');
+    expect(getFolderNameToCommit('')).toBeNull();
+    expect(getFolderNameToCommit('   ')).toBeNull();
+    expect(getFolderNameToCommit('...')).toBeNull();
+  });
+
   it('글, 외부 링크, 휴지통은 이름을 바꿀 수 없다', () => {
     expect(renameFolder(initial, 'post:react-19-hooks', '가')).toEqual({
       ok: false,
@@ -592,6 +612,27 @@ describe('작업 공간:배치', () => {
     const trashed = expectOk(trashItems(initial, ['folder:Next.js'], NOW));
     expect(getFolderTree(trashed)[0]?.children.map((node) => node.folder.name)).toEqual(['React']);
   });
+
+  it('잘라낸 항목을 붙여넣을 위치로 옮길 수 있으면 붙여넣을 항목을 돌려준다', () => {
+    expect(getPasteIds(initial, ['link:github', 'folder:Next.js'], 'folder:React', NOW)).toEqual([
+      'link:github',
+      'folder:Next.js',
+    ]);
+  });
+
+  it('그사이 휴지통에 들어갔거나 사라진 항목은 빼고 붙인다', () => {
+    const trashed = expectOk(trashItems(initial, ['post:nextjs-cache'], NOW));
+    expect(
+      getPasteIds(trashed, ['post:nextjs-cache', 'post:없음', 'link:github'], 'folder:React', NOW),
+    ).toEqual(['link:github']);
+  });
+
+  it('붙여넣을 것이 없거나 옮길 수 없으면 붙여넣을 수 없다', () => {
+    expect(getPasteIds(initial, [], null, NOW)).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], null, NOW)).toBeNull();
+    expect(getPasteIds(initial, ['folder:React'], 'folder:React/Hooks', NOW)).toBeNull();
+    expect(getPasteIds(initial, ['link:github'], RECYCLE_BIN_ID, NOW)).toBeNull();
+  });
 });
 
 // @codocs [[작업 공간:휴지통]]
@@ -606,19 +647,21 @@ describe('작업 공간:휴지통', () => {
     });
   });
 
-  it('Blog 폴더와 휴지통은 휴지통으로 보낼 수 없다', () => {
-    expect(trashItems(initial, [BLOG_FOLDER_ID], NOW)).toEqual({ ok: false, reason: 'protected' });
+  it('휴지통은 휴지통으로 보낼 수 없다', () => {
     expect(trashItems(initial, [RECYCLE_BIN_ID], NOW)).toEqual({ ok: false, reason: 'protected' });
   });
 
-  it('Blog 폴더를 하위에 둔 폴더도 휴지통으로 보낼 수 없다', () => {
+  it('Blog 폴더도 휴지통으로 보낼 수 있고, 안의 항목도 함께 간다', () => {
+    const state = expectOk(trashItems(initial, [BLOG_FOLDER_ID], NOW));
+    expect(state.items[BLOG_FOLDER_ID]?.parentId).toBe(RECYCLE_BIN_ID);
+    expect(isItemInTrash(state, 'post:retrospective')).toBe(true);
+  });
+
+  it('Blog 폴더를 하위에 둔 폴더도 휴지통으로 보낼 수 있다', () => {
     const created = expectOk(createFolder(initial, null, { id: 'u1', createdAt: NOW }));
     const moved = expectOk(moveItems(created, [BLOG_FOLDER_ID], 'u1', NOW));
-    expect(trashItems(moved, ['u1'], NOW)).toEqual({ ok: false, reason: 'protected' });
-    expect(moveItems(moved, ['u1'], RECYCLE_BIN_ID, NOW)).toEqual({
-      ok: false,
-      reason: 'protected',
-    });
+    const state = expectOk(moveItems(moved, ['u1'], RECYCLE_BIN_ID, NOW));
+    expect(isItemInTrash(state, BLOG_FOLDER_ID)).toBe(true);
   });
 
   it('Blog 폴더는 이름 변경과 이동은 된다', () => {

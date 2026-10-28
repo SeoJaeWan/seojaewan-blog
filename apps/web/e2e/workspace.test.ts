@@ -22,6 +22,31 @@ test('바탕화면의 Blog 폴더와 휴지통을 열면 그 위치를 보는 �
 });
 
 // @codocs [[작업 공간:방문자별 저장]]
+// @codocs [[작업 공간:휴지통]]
+test('Blog 폴더도 휴지통에 보낼 수 있고, 새로고침하면 휴지통의 항목은 원래 자리로 돌아온다', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
+  const blog = icons.getByRole('option', { name: 'Blog' });
+  await blog.click();
+  await page.keyboard.press('Delete');
+  await expect(blog).not.toBeAttached();
+  await expect
+    .poll(() => page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY))
+    .not.toBeNull();
+
+  await page.reload();
+  await expect(blog).toBeVisible();
+  await icons.getByRole('option', { name: '휴지통' }).dblclick();
+  const recycleBin = page
+    .getByRole('region', { name: '휴지통 - 파일 탐색기' })
+    .getByRole('listbox', { name: '폴더 내용' });
+  await expect(recycleBin).toBeVisible();
+  await expect(recycleBin.getByRole('option')).toHaveCount(0);
+});
+
+// @codocs [[작업 공간:방문자별 저장]]
 // @codocs [[작업 공간:다시 시작]]
 test('브라우저에 저장한 작업 공간은 새로고침 뒤에도 남고, 다시 시작하면 처음 상태로 돌아간다', async ({
   page,

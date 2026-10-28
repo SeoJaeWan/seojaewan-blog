@@ -42,7 +42,7 @@ type ItemMenuOptions = {
   isMobile: boolean;
   /** Start 고정됨에 있는지(하나일 때) */
   isPinned: boolean;
-  /** 휴지통으로 보낼 수 있는지(`Blog`는 보낼 수 없다) */
+  /** 휴지통으로 보낼 수 있는지 */
   canTrash: boolean;
   /** 열기 */
   onOpen: () => void;
