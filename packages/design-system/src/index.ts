@@ -62,6 +62,7 @@ export * from './components/snap-preview/snap-preview';
 export * from './components/snap-zone/snap-zone';
 export * from './components/start-menu-footer/start-menu-footer';
 export * from './components/system-tray/system-tray';
+export * from './components/table/table';
 export * from './components/table-cell/table-cell';
 export * from './components/taskbar/taskbar';
 export * from './components/taskbar-button/taskbar-button';
