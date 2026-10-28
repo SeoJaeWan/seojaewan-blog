@@ -35,6 +35,7 @@ export * from './components/list-group/list-group';
 export * from './components/list-item/list-item';
 export * from './components/menu/menu';
 export * from './components/menu-item/menu-item';
+export * from './components/menu-zoom-item/menu-zoom-item';
 export * from './components/message-box/message-box';
 export * from './components/navigation-item/navigation-item';
 export * from './components/navigation-pane/navigation-pane';
