@@ -77,8 +77,8 @@ export function FileItem(props: FileItemProps): JSX.Element {
               : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
         hasFocusLine &&
           (isDesktop
-            ? 'border-default border-file-item-desktop-stroke-selected-focus'
-            : 'border-default border-file-item-explorer-stroke-selected-focus'),
+            ? 'border-default border-file-item-desktop-stroke-focus'
+            : 'border-default border-file-item-explorer-stroke-focus'),
         className,
       )}
     >
