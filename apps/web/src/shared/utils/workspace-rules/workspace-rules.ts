@@ -225,7 +225,7 @@ export type ExternalLinkConfig = {
   id: string;
   /** 이름 */
   name: string;
-  /** 주소 */
+  /** 주소. 비어 있으면(빈 문자열) 어디에도 보이지 않는다 */
   url: string;
   /** 아이콘 */
   icon: LinkIcon;
@@ -385,6 +385,17 @@ export function getLinkItemId(configId: string): string {
 }
 
 /**
+ * 화면에 보이는 외부 링크 설정. 주소가 없는(빈) 링크는 작업 공간에 항목으로 만들지 않아 바탕화면·탐색기·Start·검색 어디에도 보이지 않는다.
+ * 저장된 상태에 있던 그 링크 항목도 맞추기에서 지워지고, 주소가 생기면 초기 위치에 다시 나타난다.
+ * @codocs [[항목 모델:외부 링크]]
+ * @param catalog 글 색인과 외부 링크 설정
+ * @returns 주소가 있는 외부 링크 설정
+ */
+function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig[] {
+  return catalog.links.filter((link) => link.url !== '');
+}
+
+/**
  * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 `Blog` 폴더를 두고, 글의 `폴더` 경로대로
  * `Blog` 아래에 폴더를 만들어 글을 넣는다(경로가 비면 `Blog`). 외부 링크는 설정의 초기 위치에 둔다.
  * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다.
@@ -402,7 +413,7 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
   for (const post of catalog.posts) {
     addNotionFolders(items, post.folderPath);
   }
-  for (const link of catalog.links) {
+  for (const link of getVisibleLinks(catalog)) {
     const parentId = isOpenFolder(items, link.initialParentId) ? link.initialParentId : null;
     items[getLinkItemId(link.id)] = createLinkItem(link, parentId, null);
   }
@@ -420,7 +431,9 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
       APP_ITEM_IDS['file-explorer'],
       APP_ITEM_IDS.chrome,
       BLOG_FOLDER_ID,
-      ...catalog.links.filter((link) => link.pinnedToStart).map((link) => getLinkItemId(link.id)),
+      ...getVisibleLinks(catalog)
+        .filter((link) => link.pinnedToStart)
+        .map((link) => getLinkItemId(link.id)),
     ],
     startAllView: 'list',
     taskbarPins: INITIAL_TASKBAR_PINS,
@@ -447,7 +460,7 @@ export function reconcileWorkspace(
   catalog: WorkspaceCatalog,
 ): WorkspaceState {
   const postsById = new Map(catalog.posts.map((post) => [getPostItemId(post.slug), post]));
-  const linksById = new Map(catalog.links.map((link) => [getLinkItemId(link.id), link]));
+  const linksById = new Map(getVisibleLinks(catalog).map((link) => [getLinkItemId(link.id), link]));
   const items: Record<string, WorkspaceItem> = { [RECYCLE_BIN_ID]: recycleBinItem };
   for (const [id, savedItem] of Object.entries(saved.items)) {
     if (id === RECYCLE_BIN_ID) {

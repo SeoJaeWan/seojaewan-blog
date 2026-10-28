@@ -115,10 +115,16 @@ function windowContents(): unknown[] {
 describe('바탕화면:표시하는 항목', () => {
   it('상위 폴더가 없는 항목과 휴지통을 보여 준다', () => {
     render(<DesktopIconsLayer />);
-    for (const name of ['휴지통', 'Blog', 'GitHub', '이력서']) {
+    for (const name of ['휴지통', 'Blog', 'GitHub']) {
       expect(screen.getByText(name)).toBeInTheDocument();
     }
     expect(screen.queryByText('가')).not.toBeInTheDocument();
+  });
+
+  // @codocs [[항목 모델:외부 링크]]
+  it('주소를 비워 둔 외부 링크(이력서)는 보이지 않는다', () => {
+    render(<DesktopIconsLayer />);
+    expect(screen.queryByText('이력서')).not.toBeInTheDocument();
   });
 
   it('항목을 폴더 안으로 옮기면 바탕화면에서 사라지고, 바탕화면으로 옮기면 나타난다', () => {
@@ -205,7 +211,7 @@ describe('바탕화면:아이콘 조작', () => {
     expect(selectedNames()).toEqual(['Blog']);
     expect(icon('Blog')).toHaveFocus();
     await user().keyboard('{Control>}a{/Control}');
-    expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub', '이력서']);
+    expect(selectedNames()).toEqual(['휴지통', 'Blog', 'GitHub']);
   });
 
   it('Enter는 고른 아이콘을 열고, Delete는 휴지통으로 보낸다', async () => {
@@ -220,25 +226,31 @@ describe('바탕화면:아이콘 조작', () => {
   });
 
   it('지우면 격자 순서의 다음 아이콘(없으면 이전 아이콘)으로 선택과 포커스를 옮긴다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
     render(<DesktopIconsLayer />);
     await user().click(icon('GitHub'));
     await user().keyboard('{Delete}');
-    expect(selectedNames()).toEqual(['이력서']);
-    expect(icon('이력서')).toHaveFocus();
+    expect(selectedNames()).toEqual(['가']);
+    expect(icon('가')).toHaveFocus();
     await user().keyboard('{Delete}');
     expect(selectedNames()).toEqual(['Blog']);
     expect(icon('Blog')).toHaveFocus();
   });
 
   it('메뉴의 삭제로 지워도 메뉴가 닫힌 뒤 다음 아이콘으로 포커스를 옮긴다', async () => {
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
     render(<DesktopIconsLayer />);
     openMenu(icon('GitHub'));
     await user().click(screen.getByRole('menuitem', { name: /^삭제/ }));
     expect(isItemInTrash(useWorkspaceStore.getState(), 'link:github')).toBe(true);
     await waitFor(() => {
-      expect(icon('이력서')).toHaveFocus();
+      expect(icon('가')).toHaveFocus();
     });
-    expect(selectedNames()).toEqual(['이력서']);
+    expect(selectedNames()).toEqual(['가']);
   });
 
   it('휴지통은 Delete로 보내지 않고, Blog 폴더는 Delete로 휴지통에 보낸다', async () => {
@@ -302,6 +314,9 @@ describe('바탕화면:아이콘 조작', () => {
       configurable: true,
       value: elementFromPoint,
     });
+    act(() => {
+      useWorkspaceStore.getState().moveItems(['post:a'], null);
+    });
     render(<DesktopIconsLayer />);
     elementFromPoint.mockReturnValue(icon('Blog'));
     const github = icon('GitHub');
@@ -315,11 +330,11 @@ describe('바탕화면:아이콘 조작', () => {
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
     elementFromPoint.mockReturnValue(icon('휴지통'));
-    const resume = icon('이력서');
-    fireEvent.pointerDown(resume, { ...pointer, clientX: 10, clientY: 10 });
-    fireEvent.pointerMove(resume, { ...pointer, clientX: 40, clientY: 40 });
-    fireEvent.pointerUp(resume, { ...pointer, clientX: 40, clientY: 40 });
-    expect(isItemInTrash(useWorkspaceStore.getState(), 'link:resume')).toBe(true);
+    const post = icon('가');
+    fireEvent.pointerDown(post, { ...pointer, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(post, { ...pointer, clientX: 40, clientY: 40 });
+    fireEvent.pointerUp(post, { ...pointer, clientX: 40, clientY: 40 });
+    expect(isItemInTrash(useWorkspaceStore.getState(), 'post:a')).toBe(true);
   });
 
   it('자동 정렬이 켜져 있으면 빈 곳에 놓아도 정렬된 자리로 돌아가고, 꺼져 있으면 놓은 칸으로 옮긴다', () => {

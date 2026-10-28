@@ -136,12 +136,7 @@ describe('작업 공간:다시 시작', () => {
 
     const state = useWorkspaceStore.getState();
     expect(isItemInTrash(state, 'post:a')).toBe(false);
-    expect(getDesktopItems(state).map((item) => item.name)).toEqual([
-      '휴지통',
-      'Blog',
-      'GitHub',
-      '이력서',
-    ]);
+    expect(getDesktopItems(state).map((item) => item.name)).toEqual(['휴지통', 'Blog', 'GitHub']);
     expect(state.desktop.iconSize).toBe('medium');
     expect(state.taskbarPins).toEqual(['file-explorer', 'chrome']);
     expect(localStorage.getItem(WORKSPACE_STORAGE_KEY)).toBeNull();
