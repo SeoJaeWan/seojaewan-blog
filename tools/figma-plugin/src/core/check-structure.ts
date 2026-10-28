@@ -16,6 +16,8 @@ export type Violation = {
   reason: string;
   /** 어떻게 고치는지 */
   fix: string;
+  /** 고칠 레이어의 피그마 노드 ID. 플러그인 화면의 "피그마에서 보기"가 쓴다. 가리킬 노드가 없으면(토큰 변환 실패 등) null */
+  nodeId: string | null;
 };
 
 type Add = (node: NodeData, reason: string, fix: string) => void;
@@ -79,7 +81,12 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
    * @param fix 고칠 방법
    */
   function add(node: NodeData, reason: string, fix: string): void {
-    violations.push({ where: node.path === '' ? where : `${where} / ${node.path}`, reason, fix });
+    violations.push({
+      where: node.path === '' ? where : `${where} / ${node.path}`,
+      reason,
+      fix,
+      nodeId: node.id,
+    });
   }
   checkNode(root, true, context, add);
   checkInstanceOverrides(root, add);
@@ -88,6 +95,8 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
 
 /** 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다 */
 export type AncestorData = {
+  /** 피그마 노드 ID */
+  id: string;
   name: string;
   /** 피그마 노드 종류(`FRAME`, `COMPONENT_SET` 등) */
   type: string;
@@ -131,6 +140,7 @@ export function checkClippingAncestors(
       where: `${target} (모든 변형)`,
       reason: `조상 ${kind} \`${path}\`의 Clip content가 켜져 있어 PNG에서 변형의 그림자와 변형 밖으로 나온 자식이 잘린다`,
       fix: `${kind} \`${ancestor.name}\`의 Clip content를 끈다.`,
+      nodeId: ancestor.id,
     });
   }
   return violations;

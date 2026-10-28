@@ -161,6 +161,7 @@ async function readTracks(node: SceneNode, path: string, sample: MotionSampleDat
       if (field.binding === null) {
         sample.problems.push({
           path: label,
+          nodeId: node.id,
           reason: '컴포넌트 속성에 묶인 칠·효과 키프레임은 내보낼 수 없다',
           fix: '키프레임을 칠·효과 항목에 직접 건다.',
         });
@@ -173,10 +174,16 @@ async function readTracks(node: SceneNode, path: string, sample: MotionSampleDat
         }
         const data: TrackData = {
           ...identity,
+          nodeId: node.id,
           path,
           property: field.property,
           operation: track.keyframeOperation,
-          keyframes: await keyframesOf(track.keyframes, manual, label, sample.problems),
+          keyframes: await keyframesOf(
+            track.keyframes,
+            manual,
+            { path: label, nodeId: node.id },
+            sample.problems,
+          ),
         };
         sample.tracks.push(data);
       }
@@ -241,14 +248,14 @@ function animatedFields(animations: Animations): AnimatedField[] {
  * 재생되는 키프레임을 순수 데이터로 옮긴다. 이징은 정의한 노드의 같은 키프레임(같은 순서, 아니면 같은 시간)에서 읽는다.
  * @param keyframes 재생되는 키프레임
  * @param manual 정의한 노드의 키프레임. 찾지 못했으면 null
- * @param label 문제 위치
+ * @param at 문제 위치(견본 기준 경로와 항목, 노드 ID)
  * @param problems 문제 목록
  * @returns 시간순 키프레임
  */
 async function keyframesOf(
   keyframes: readonly ManualKeyframe[],
   manual: ManualKeyframeBinding | null,
-  label: string,
+  at: Pick<ReadProblem, 'path' | 'nodeId'>,
   problems: ReadProblem[],
 ): Promise<KeyframeData[]> {
   const sorted = [...keyframes].sort((a, b) => a.timelinePosition - b.timelinePosition);
@@ -261,7 +268,7 @@ async function keyframesOf(
     const value = motionValue(keyframe.value);
     if (value === null) {
       problems.push({
-        path: label,
+        ...at,
         reason: `${keyframe.value.type} 값 키프레임은 내보낼 수 없다`,
         fix: '숫자·벡터·색 항목의 키프레임만 쓴다.',
       });
