@@ -2,113 +2,630 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      body {
-        margin: 0;
-        padding: 12px;
-        font:
-          12px/1.5 system-ui,
-          sans-serif;
-        color: var(--figma-color-text, #333);
-        background: var(--figma-color-bg, #fff);
+      /* 피그마 테마 변수(themeColors)를 쓰고, 브라우저에서 열 때는 밝은 테마 값으로 대신한다. */
+      :root {
+        --bg: var(--figma-color-bg, #fff);
+        --bg-secondary: var(--figma-color-bg-secondary, #f5f5f5);
+        --bg-hover: var(--figma-color-bg-hover, #f0f0f0);
+        --bg-selected: var(--figma-color-bg-selected, #e5f4ff);
+        --border: var(--figma-color-border, #e6e6e6);
+        --text: var(--figma-color-text, #1e1e1e);
+        --text-secondary: var(--figma-color-text-secondary, #757575);
+        --text-tertiary: var(--figma-color-text-tertiary, #b3b3b3);
+        --brand: var(--figma-color-bg-brand, #0d99ff);
+        --on-brand: var(--figma-color-text-onbrand, #fff);
+        --text-brand: var(--figma-color-text-brand, #007be5);
+        --danger: var(--figma-color-text-danger, #dc3412);
+        --bg-danger: var(--figma-color-bg-danger-tertiary, #fff0eb);
+        --success: var(--figma-color-text-success, #14ae5c);
+        --warning: var(--figma-color-text-warning, #b86200);
+        --bg-warning: var(--figma-color-bg-warning-tertiary, #fff4e5);
       }
-      label {
-        display: block;
-      }
-      fieldset {
-        margin: 0 0 12px;
-        padding: 8px;
-        border: 1px solid var(--figma-color-border, #ddd);
-        border-radius: 4px;
-      }
-      input[type='password'] {
+      * {
         box-sizing: border-box;
-        width: 100%;
-        padding: 4px 6px;
-        border: 1px solid var(--figma-color-border, #ccc);
-        border-radius: 4px;
-        color: inherit;
-        background: transparent;
       }
-      #components,
-      #patterns,
-      #motions {
-        max-height: 160px;
-        overflow-y: auto;
+      html,
+      body {
+        height: 100%;
       }
-      .muted {
-        color: var(--figma-color-text-secondary, #888);
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        font:
+          11px/16px Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      [hidden] {
+        display: none !important;
       }
       button {
-        padding: 6px 12px;
-        border: 0;
-        border-radius: 4px;
-        color: var(--figma-color-text-onbrand, #fff);
-        background: var(--figma-color-bg-brand, #0d99ff);
+        padding: 0 8px;
+        min-height: 24px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) {
+        background: var(--bg-hover);
       }
       button:disabled {
-        opacity: 0.5;
+        color: var(--text-tertiary);
+        cursor: default;
+      }
+      button.primary {
+        border-color: transparent;
+        font-weight: 600;
+        color: var(--on-brand);
+        background: var(--brand);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--brand);
+        filter: brightness(0.95);
+      }
+      button.primary:disabled {
+        opacity: 0.4;
+        color: var(--on-brand);
+      }
+      button.icon {
+        width: 24px;
+        padding: 0;
+        border-color: transparent;
+        font-size: 14px;
+      }
+      button.link {
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        color: var(--text-brand);
+        background: none;
+      }
+      button.link:hover:not(:disabled) {
+        background: none;
+        text-decoration: underline;
+      }
+      button.link:disabled {
+        color: var(--text-tertiary);
+      }
+      a {
+        color: var(--text-brand);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      input[type='text'],
+      input[type='search'],
+      input[type='password'],
+      textarea {
+        width: 100%;
+        min-height: 24px;
+        padding: 3px 7px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        outline: none;
+      }
+      input:focus,
+      textarea:focus {
+        border-color: var(--brand);
+      }
+      textarea {
+        resize: vertical;
+      }
+      input[type='checkbox'] {
+        flex: none;
+        margin: 0;
+        accent-color: var(--brand);
+      }
+      .muted {
+        color: var(--text-secondary);
+      }
+      .count {
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* 머리줄 */
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 8px 0 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .topbar h1 {
+        flex: 1;
+        margin: 0;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* 선택 도구줄 */
+      .toolbar {
+        display: grid;
+        gap: 6px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .paste-row {
+        display: flex;
+        gap: 6px;
+        align-items: stretch;
+      }
+      .paste-row textarea {
+        height: 40px;
+      }
+      .paste-row button {
+        flex: none;
+        white-space: nowrap;
+      }
+      .tool-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .tool-row input {
+        flex: 1;
+        min-width: 0;
+      }
+      .tool-row button {
+        flex: none;
+      }
+      .paste-result {
+        margin: 0;
+      }
+      .paste-result .missing {
+        color: var(--warning);
+      }
+
+      /* 가운데(스크롤되는 자리) */
+      .view {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+      }
+      .back {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* 대상 목록 */
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        padding: 10px 12px 4px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .section-title .status {
+        margin-left: auto;
+        font-weight: 400;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 28px;
+        padding: 0 12px;
+      }
+      .row:hover {
+        background: var(--bg-hover);
+      }
+      .row label {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        cursor: pointer;
+      }
+      .row .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .row .meta {
+        margin-left: auto;
+        flex: none;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .token-row {
+        min-height: 32px;
+        border-bottom: 1px solid var(--border);
+      }
+      .token-row .name {
+        font-weight: 600;
+      }
+      .token-detail {
+        margin: 0;
+        padding: 4px 12px 8px 33px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-secondary);
+      }
+      .token-detail h3 {
+        margin: 6px 0 2px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .token-detail ul {
+        margin: 0;
+        padding-left: 14px;
+        word-break: break-all;
+      }
+      .group-head {
+        gap: 4px;
+        padding-left: 4px;
+      }
+      .group-head .name {
+        font-weight: 500;
+      }
+      .toggle {
+        width: 18px;
+        min-height: 18px;
+        padding: 0;
+        border: 0;
+        color: var(--text-secondary);
+        background: none;
+        transition: transform 0.1s;
+      }
+      .toggle[aria-expanded='true'] {
+        transform: rotate(90deg);
+      }
+      .items {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .items .row {
+        padding-left: 34px;
+      }
+      .badge {
+        padding: 0 5px;
+        border-radius: 3px;
+        font-size: 10px;
+        line-height: 16px;
+        white-space: nowrap;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+      }
+      .badge.new {
+        color: var(--text-brand);
+        background: var(--bg-selected);
+      }
+      .badge.warn {
+        color: var(--warning);
+        background: var(--bg-warning);
+      }
+      .empty {
+        padding: 4px 12px 8px 34px;
+      }
+
+      /* 아래 고정줄 */
+      .bottombar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 48px;
+        padding: 8px 12px;
+        border-top: 1px solid var(--border);
+      }
+      .bottombar .summary {
+        flex: 1;
+        min-width: 0;
+      }
+      .bottombar .hint {
+        display: block;
+        color: var(--warning);
+      }
+
+      /* 설정 */
+      .panel {
+        display: grid;
+        gap: 16px;
+        padding: 12px;
+      }
+      .panel h2 {
+        margin: 0 0 6px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .panel p {
+        margin: 4px 0 0;
+      }
+      .field-row {
+        display: flex;
+        gap: 6px;
+      }
+      .field-row input {
+        flex: 1;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .connection.ok {
+        color: var(--success);
+      }
+      .connection.bad {
+        color: var(--danger);
+      }
+      .permissions {
+        margin: 4px 0 0;
+        padding-left: 16px;
+      }
+      dl.readonly {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 4px 12px;
+        margin: 0;
+      }
+      dl.readonly dt {
+        color: var(--text-secondary);
+      }
+      dl.readonly dd {
+        margin: 0;
+        font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+        word-break: break-all;
+      }
+
+      /* 진행·결과 */
+      .run {
+        display: grid;
+        gap: 12px;
+        padding: 12px;
+      }
+      .run p {
+        margin: 0;
+      }
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+      .bar {
+        height: 4px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: var(--bg-secondary);
+      }
+      .bar > div {
+        height: 100%;
+        background: var(--brand);
+        transition: width 0.2s;
+      }
+      .now {
+        margin-top: 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .headline {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .headline.bad {
+        color: var(--danger);
+      }
+      .result-group h3 {
+        margin: 0 0 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+      .result-group ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .result-group li {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        padding: 4px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .result-group li .target {
+        font-weight: 500;
+      }
+      .result-group li .links {
+        display: flex;
+        gap: 8px;
+        margin-left: auto;
+      }
+      details {
+        border: 1px solid var(--border);
+        border-radius: 5px;
+      }
+      details > summary {
+        padding: 6px 8px;
+        cursor: pointer;
+        user-select: none;
+      }
+      details > .body {
+        padding: 0 8px 8px;
+      }
+      details ul {
+        margin: 0;
+        padding-left: 16px;
+      }
+      pre.log {
+        max-height: 200px;
+        margin: 0;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        font:
+          10px/14px ui-monospace,
+          'SF Mono',
+          Menlo,
+          Consolas,
+          monospace;
+        color: var(--text-secondary);
+      }
+      .violation-group > summary {
+        font-weight: 600;
+      }
+      .violation-group .count {
+        font-weight: 400;
       }
       .violations {
-        max-height: 240px;
-        margin: 8px 0 0;
-        padding-left: 20px;
-        overflow-y: auto;
+        margin: 0;
+        padding: 0;
+        list-style: none;
       }
       .violations li {
-        margin-bottom: 6px;
+        display: grid;
+        gap: 2px;
+        padding: 6px 0;
+        border-top: 1px solid var(--border);
       }
-      #log {
-        height: 120px;
-        margin: 12px 0 0;
-        padding: 6px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        border: 1px solid var(--figma-color-border, #ddd);
-        border-radius: 4px;
-        font-family: ui-monospace, monospace;
+      .violations .where {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        font-weight: 500;
+        word-break: break-all;
+      }
+      .violations .where button {
+        flex: none;
+        margin-left: auto;
+      }
+      .violations .reason {
+        color: var(--danger);
+      }
+      .error-box {
+        padding: 8px;
+        border-radius: 5px;
+        color: var(--danger);
+        background: var(--bg-danger);
+        word-break: break-all;
       }
     </style>
   </head>
   <body>
-    <fieldset>
-      <legend>GitHub</legend>
-      <label for="token">Fine-grained 토큰 (SeoJaeWan/seojaewan-blog 전용)</label>
-      <input id="token" type="password" autocomplete="off" spellcheck="false" />
-      <p class="muted">
-        저장소: SeoJaeWan/seojaewan-blog · 컴포넌트마다 PR 하나(feat/figma-&lt;컴포넌트&gt;), 조립은
-        영역마다 PR 하나(feat/figma-patterns-&lt;영역&gt;), 애니메이션은 견본마다 PR
-        하나(feat/figma-motion-&lt;견본 이름에서 motion-을 뺀 이름&gt;)를 열고, 열린 PR이 있으면 그
-        브랜치에 이어서 커밋한다.
-      </p>
-    </fieldset>
-    <fieldset>
-      <legend>토큰</legend>
-      <label><input id="tokens" type="checkbox" /> 토큰만 따로 내보내기</label>
-      <p class="muted">
-        다른 대상을 내보낼 때도 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 tokens.json과
-        그것으로 만든 tokens.css를 토큰 PR(feat/figma-tokens)에 따로 열거나 갱신한다.
-      </p>
-    </fieldset>
-    <fieldset>
-      <legend>컴포넌트 (01 · Components)</legend>
-      <label><input id="select-all" type="checkbox" /> 모두 선택</label>
-      <div id="components" class="muted">불러오는 중…</div>
-    </fieldset>
-    <fieldset>
-      <legend>조립 (02 · Patterns)</legend>
-      <label><input id="select-all-patterns" type="checkbox" /> 모두 선택</label>
-      <div id="patterns" class="muted">불러오는 중…</div>
-    </fieldset>
-    <fieldset>
-      <legend>애니메이션 (00 · Foundations / Motion)</legend>
-      <label><input id="select-all-motions" type="checkbox" /> 모두 선택</label>
-      <div id="motions" class="muted">불러오는 중…</div>
-    </fieldset>
-    <button id="export" type="button" disabled>내보내고 커밋</button>
-    <p id="result"></p>
-    <div id="notices"></div>
-    <div id="log" aria-live="polite"></div>
+    <header class="topbar">
+      <h1>피그마 → GitHub 내보내기</h1>
+      <button id="open-settings" class="icon" type="button" aria-label="설정" title="설정">
+        ⚙
+      </button>
+    </header>
+
+    <section id="toolbar" class="toolbar" aria-label="선택 도구">
+      <div class="paste-row">
+        <textarea
+          id="paste"
+          placeholder="이름 붙여넣기: 토큰, Button, Menu/Folder, Menu/*, motion-… (쉼표·줄바꿈)"
+          spellcheck="false"
+          aria-label="이름 붙여넣기"
+        ></textarea>
+        <button id="paste-select" type="button">선택</button>
+      </div>
+      <div class="tool-row">
+        <button id="clear-selection" type="button">선택 해제</button>
+        <input id="filter" type="search" placeholder="목록에서 찾기" aria-label="목록에서 찾기" />
+      </div>
+      <p id="paste-result" class="paste-result muted" hidden></p>
+    </section>
+
+    <main id="view-list" class="view" aria-label="내보낼 대상">
+      <p class="empty muted">불러오는 중…</p>
+    </main>
+
+    <main id="view-settings" class="view" hidden aria-label="설정">
+      <div class="back">
+        <button id="settings-back" class="link" type="button">← 목록으로 돌아가기</button>
+      </div>
+      <div class="panel">
+        <section>
+          <h2>GitHub 토큰</h2>
+          <div class="field-row">
+            <input
+              id="token"
+              type="password"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="github_pat_…"
+              aria-label="GitHub 토큰"
+            />
+            <button id="token-visibility" type="button">보기</button>
+          </div>
+          <p class="muted">입력하면 이 컴퓨터의 플러그인 저장소에 바로 저장한다.</p>
+          <div class="actions">
+            <button id="check-connection" type="button">연결 확인</button>
+            <button id="clear-token" type="button">토큰 지우기</button>
+            <span id="connection" class="connection" aria-live="polite"></span>
+          </div>
+        </section>
+        <section>
+          <h2>토큰 만들기</h2>
+          <a id="new-token-link" href="#" target="_blank" rel="noreferrer"
+            >GitHub에서 fine-grained 토큰 만들기 ↗</a
+          >
+          <p class="muted">저장소 접근은 아래 저장소 하나만 고르고, 권한은 다음만 준다.</p>
+          <ul class="permissions">
+            <li>Contents: 읽기/쓰기</li>
+            <li>Pull requests: 읽기/쓰기</li>
+            <li>Metadata: 읽기</li>
+          </ul>
+        </section>
+        <section>
+          <h2>내보내는 곳</h2>
+          <dl class="readonly">
+            <dt>저장소</dt>
+            <dd id="repo-name">-</dd>
+            <dt>피그마 파일 키</dt>
+            <dd id="file-key">-</dd>
+          </dl>
+          <p>
+            PR 규칙:
+            <a id="rules-link" href="#" target="_blank" rel="noreferrer">figma-sync.yaml ↗</a>
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <main id="view-run" class="view" hidden aria-label="진행과 결과">
+      <div class="back">
+        <button id="run-back" class="link" type="button">← 목록으로 돌아가기</button>
+      </div>
+      <div id="run" class="run"></div>
+    </main>
+
+    <footer class="bottombar">
+      <div class="summary">
+        <span id="selection-summary">0개 선택</span>
+        <span id="token-hint" class="hint" hidden
+          >⚙ 설정에서 GitHub 토큰을 넣어야 내보낼 수 있다</span
+        >
+      </div>
+      <button id="export" class="primary" type="button" disabled>내보내고 커밋</button>
+    </footer>
     <!-- UI_SCRIPT -->
   </body>
 </html>

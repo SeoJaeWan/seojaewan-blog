@@ -1,0 +1,16 @@
+{
+  "name": "Bookmark",
+  "nodeId": "1380:6869",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 86,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1380:6869",
+      "properties": {}
+    }
+  }
+}

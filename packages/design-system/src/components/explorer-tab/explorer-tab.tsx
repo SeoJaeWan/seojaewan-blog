@@ -18,7 +18,7 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 
 /**
  * 탐색기 제목 표시줄의 폴더 탭(피그마 ExplorerTab)을 그린다. 크기는 Windows가 정한 220×32로 고정한다.
- * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다.
+ * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다. Rest에만 오른쪽 구분선이 있고 Hover·Selected에서는 없다.
  * 탭 묶음(바깥 상자) 안에 탭(`role="tab"`, 아이콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
  * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖고, `tabIndex`는 탭이 받는다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
@@ -40,7 +40,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
+        'group relative flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
         'motion-control-state',
         isSelected
           ? 'bg-layer-on-mica-base-alt-fill-default'
@@ -71,6 +71,13 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       >
         <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-icon-16" />
       </button>
+      {!isSelected && (
+        <span
+          aria-hidden
+          data-testid="explorer-tab-separator"
+          className="absolute top-1/2 right-0 h-16 w-stroke-default -translate-y-1/2 bg-divider-stroke-default group-hover:hidden"
+        />
+      )}
     </div>
   );
 }
