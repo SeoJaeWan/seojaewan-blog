@@ -13,6 +13,7 @@ export * from './components/button/button';
 export * from './components/callout/callout';
 export * from './components/caption-button/caption-button';
 export * from './components/caption-button-group/caption-button-group';
+export * from './components/checkbox/checkbox';
 export * from './components/code-block/code-block';
 export * from './components/column-header/column-header';
 export * from './components/details-header/details-header';
