@@ -6,18 +6,10 @@ import { FileItem } from './file-item';
 // 피그마 FileItem 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
 const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.url).href;
 
-// 피그마 FileItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
+// 피그마 FileItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로, Focused는 Tab 키로 재현한다.
 const SURFACES = ['desktop', 'explorer'] as const;
 const VIEWS = ['large', 'medium', 'small'] as const;
-const STATES = [
-  'rest',
-  'hover',
-  'selected',
-  'selected-focus',
-  'rename',
-  'cut',
-  'cut-selected',
-] as const;
+const STATES = ['rest', 'hover', 'selected', 'focused', 'rename', 'cut', 'cut-selected'] as const;
 
 type ParityArgs = {
   surface: (typeof SURFACES)[number];
@@ -61,13 +53,15 @@ const meta = {
   },
   render: (args) => (
     <Backdrop surface={args.surface}>
+      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 항목이 포커스를 받을 수 있게 한다. 선은 focused prop으로 그린다. */}
       <FileItem
+        tabIndex={0}
         surface={args.surface}
         view={args.view}
         name={args.name}
         icon={<img src={folderIcon} alt="" className="size-full object-contain" />}
-        selected={['selected', 'selected-focus', 'cut-selected'].includes(args.state)}
-        focused={args.state === 'selected-focus'}
+        selected={args.state === 'selected' || args.state === 'cut-selected'}
+        focused={args.state === 'focused'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
       />

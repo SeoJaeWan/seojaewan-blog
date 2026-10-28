@@ -34,12 +34,20 @@ describe('FileRow', () => {
     expect(screen.getByText('아이콘')).toBeInTheDocument();
   });
 
-  it('selected면 바탕을 깔고, 포커스까지 받으면 선을 그린다', () => {
-    const { container, rerender } = render(<FileRow icon={<i />} selected />);
+  it('selected면 바탕을 깐다', () => {
+    const { container } = render(<FileRow icon={<i />} selected />);
     expect(container.firstElementChild).toHaveClass('bg-file-item-explorer-fill-selected');
+  });
+
+  it('focused면 선택과 상관없이 크기에 넣지 않는 안쪽 선을 그린다', () => {
+    const { container, rerender } = render(<FileRow icon={<i />} />);
+    expect(container.firstElementChild).not.toHaveClass('inner-border-w-default');
+    rerender(<FileRow icon={<i />} focused />);
+    expect(container.firstElementChild).toHaveClass(
+      'inner-border-file-item-explorer-stroke-focus',
+      'inner-border-w-default',
+    );
     expect(container.firstElementChild).not.toHaveClass('border-default');
-    rerender(<FileRow icon={<i />} selected focused />);
-    expect(container.firstElementChild).toHaveClass('border-default');
   });
 
   it('cut이면 아이콘과 이름을 흐리게 그린다', () => {
