@@ -28,6 +28,34 @@ test('바탕화면에서 새 폴더를 만들어 이름을 바꾸고, Delete로 
   ).toBeVisible();
 });
 
+// @codocs [[작업 공간:배치]]
+// @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+test('바탕화면에서 잘라낸 아이콘을 탐색기에 붙여넣고, 탐색기에서 잘라낸 항목을 바탕화면에 붙여넣는다', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
+  const github = icons.getByRole('option', { name: 'GitHub' });
+  await github.click({ button: 'right' });
+  await page.getByRole('menuitem', { name: /^잘라내기/ }).click();
+
+  await icons.getByRole('option', { name: 'Blog' }).dblclick();
+  const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+  const content = explorer.getByRole('listbox', { name: '폴더 내용' });
+  await content.getByRole('option', { name: 'React', exact: true }).click();
+  await page.keyboard.press('Control+V');
+  await expect(content.getByRole('option', { name: 'GitHub' })).toBeVisible();
+  await expect(github).not.toBeAttached();
+
+  await content.getByRole('option', { name: 'GitHub' }).click();
+  await page.keyboard.press('Control+X');
+  // 잘라낸 항목은 창 밖에 두므로 창을 닫아도 바탕화면에 붙여넣을 수 있다.
+  await explorer.getByRole('button', { name: '닫기', exact: true }).click();
+  await icons.click({ button: 'right', position: { x: 500, y: 400 } });
+  await page.getByRole('menuitem', { name: /^붙여넣기/ }).click();
+  await expect(github).toBeVisible();
+});
+
 // @codocs [[바탕화면:아이콘 조작]]
 test('아이콘을 끌어 폴더 위에 놓으면 그 폴더로 들어간다', async ({ page }) => {
   await page.goto('/');
