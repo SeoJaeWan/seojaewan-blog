@@ -10,6 +10,7 @@ export * from './components/browser-tab/browser-tab';
 export * from './components/browser-tab-strip/browser-tab-strip';
 export * from './components/browser-toolbar/browser-toolbar';
 export * from './components/button/button';
+export * from './components/callout/callout';
 export * from './components/caption-button/caption-button';
 export * from './components/caption-button-group/caption-button-group';
 export * from './components/code-block/code-block';
