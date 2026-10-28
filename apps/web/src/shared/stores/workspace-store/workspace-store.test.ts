@@ -43,8 +43,8 @@ beforeEach(() => {
 // @codocs [[작업 공간:방문자별 저장]]
 describe('작업 공간:방문자별 저장', () => {
   it('수화하기 전에는 저장분을 읽지 않고 초기 구조로 그린다', () => {
-    writeStorage({ ...initialSaved(), startAllView: 'grid' });
-    expect(useWorkspaceStore.getState().startAllView).toBe('list');
+    writeStorage({ ...initialSaved(), startAllView: 'list' });
+    expect(useWorkspaceStore.getState().startAllView).toBe('category');
   });
 
   it('수화하면 브라우저에 저장된 배치와 설정을 되살린다', () => {
@@ -55,12 +55,12 @@ describe('작업 공간:방문자별 저장', () => {
         ...saved.items,
         [BLOG_FOLDER_ID]: { ...saved.items[BLOG_FOLDER_ID], name: '내 블로그' },
       },
-      startAllView: 'grid',
+      startAllView: 'list',
     });
     hydrateWorkspaceStore(POSTS);
     const state = useWorkspaceStore.getState();
     expect(state.items[BLOG_FOLDER_ID]?.name).toBe('내 블로그');
-    expect(state.startAllView).toBe('grid');
+    expect(state.startAllView).toBe('list');
   });
 
   it('저장분이 없으면 서버가 넘긴 글 색인으로 초기 구조를 만든다', () => {
@@ -88,9 +88,9 @@ describe('작업 공간:방문자별 저장', () => {
 
   it('저장분의 버전이 다르면 초기 구조에서 다시 시작한다', () => {
     const saved = initialSaved();
-    writeStorage({ ...saved, startAllView: 'grid' }, WORKSPACE_STORAGE_VERSION + 1);
+    writeStorage({ ...saved, startAllView: 'list' }, WORKSPACE_STORAGE_VERSION + 1);
     hydrateWorkspaceStore(POSTS);
-    expect(useWorkspaceStore.getState().startAllView).toBe('list');
+    expect(useWorkspaceStore.getState().startAllView).toBe('category');
   });
 
   it('저장된 JSON이 깨져 있으면 초기 구조에서 다시 시작한다', () => {

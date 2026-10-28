@@ -25,6 +25,7 @@ import { StartTile } from '@/features/start-menu/components/start-tile/start-til
 import { StartViewMenu } from '@/features/start-menu/components/start-view-menu/start-view-menu';
 import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
+import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
@@ -68,6 +69,11 @@ type StartListViewProps = StartBodyCommonProps & {
   onItemOpen?: (item: StartItem) => void;
   /** 고정됨 칸의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartTile`)을 항목마다 정한다. 주지 않으면 메뉴가 없다 */
   getPinnedMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
+  /**
+   * 모두 목록 줄(그리드 보기는 칸)의 우클릭(모바일은 길게 누르기) 메뉴 항목(피그마 `Menu/StartListApp`·`Menu/StartListPost`)을
+   * 항목마다 정한다. 주지 않으면 메뉴가 없다
+   */
+  getListMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
   /** 고정됨 칸을 끌어 다른 칸 자리에 놓을 때(끄는 동안 칸마다) 끈 항목 id와 놓인 칸의 항목 id로 부른다. 주지 않으면 끌 수 없다 */
   onPinnedMove?: (id: string, targetId: string) => void;
   /** `보기:` 메뉴에서 보기를 골랐을 때 부른다. 주지 않으면 `보기:`는 메뉴 없는 버튼 모양만 그린다 */
@@ -91,9 +97,9 @@ type StartBodyProps =
             results: SearchResultGroups;
             /** 고른 항목의 id. 주지 않으면 최고 일치다 */
             selectedId?: string;
-            /** 항목 줄이나 최고 일치 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다 */
+            /** 항목 줄이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다 */
             onItemOpen?: (id: string) => void;
-            /** 최고 일치 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
+            /** 카드의 `링크 복사`를 눌렀을 때 그 항목의 id로 부른다 */
             onCopyLink?: (id: string) => void;
           }
         | {
@@ -418,40 +424,49 @@ function StartListView(props: StartListViewProps): JSX.Element {
           <div
             className={`flex w-full shrink-0 flex-col items-start gap-16 pb-24 ${scrollContentClassNames[device]}`}
           >
-            <SectionTitle title="고정됨" className="w-full shrink-0" />
-            <TileGrid ref={pinnedGridRef} className="w-full shrink-0">
-              {props.pinned.map(
-                /**
-                 * 고정 항목 칸 하나를 그린다.
-                 * @param item 고정 항목
-                 * @returns StartTile
-                 */
-                (item) => (
-                  <StartTile
-                    key={item.id}
-                    item={item}
-                    className={tileClassName}
-                    onItemOpen={props.onItemOpen}
-                    menuItems={props.getPinnedMenuItems?.(item)}
-                    onPointerDown={handlePinnedPointerDown}
-                    shouldSuppressClick={shouldSuppressPinnedClick}
-                  />
-                ),
-              )}
-            </TileGrid>
-            <SectionTitle
-              title="모두"
-              showAction
-              action={renderViewControl()}
-              className="w-full shrink-0"
-            />
-            <StartAllList
-              view={view}
-              groups={groups}
-              tileClassName={tileClassName}
-              onItemOpen={props.onItemOpen}
-              onHeaderClick={handleHeaderClick}
-            />
+            {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 영역마다 이름을 단다 */}
+            <section
+              aria-label="고정됨"
+              className="flex w-full shrink-0 flex-col items-start gap-16"
+            >
+              <SectionTitle title="고정됨" className="w-full shrink-0" />
+              <TileGrid ref={pinnedGridRef} className="w-full shrink-0">
+                {props.pinned.map(
+                  /**
+                   * 고정 항목 칸 하나를 그린다.
+                   * @param item 고정 항목
+                   * @returns StartTile
+                   */
+                  (item) => (
+                    <StartTile
+                      key={item.id}
+                      item={item}
+                      className={tileClassName}
+                      onItemOpen={props.onItemOpen}
+                      menuItems={props.getPinnedMenuItems?.(item)}
+                      onPointerDown={handlePinnedPointerDown}
+                      shouldSuppressClick={shouldSuppressPinnedClick}
+                    />
+                  ),
+                )}
+              </TileGrid>
+            </section>
+            <section aria-label="모두" className="flex w-full shrink-0 flex-col items-start gap-16">
+              <SectionTitle
+                title="모두"
+                showAction
+                action={renderViewControl()}
+                className="w-full shrink-0"
+              />
+              <StartAllList
+                view={view}
+                groups={groups}
+                tileClassName={tileClassName}
+                onItemOpen={props.onItemOpen}
+                getMenuItems={props.getListMenuItems}
+                onHeaderClick={handleHeaderClick}
+              />
+            </section>
           </div>
         </ScrollArea>
       </div>
@@ -477,6 +492,8 @@ type StartAllListProps = {
   tileClassName: string | undefined;
   /** 그리드 보기의 항목 칸을 눌렀을 때 부른다 */
   onItemOpen?: (item: StartItem) => void;
+  /** 항목의 우클릭 메뉴 항목을 정한다. 주지 않으면 메뉴가 없다 */
+  getMenuItems?: (item: StartItem) => readonly MenuPopupEntry[];
   /** 묶음 머리글을 눌렀을 때 그 묶음 글자로 부른다. 없으면 머리글은 누를 수 없다 */
   onHeaderClick?: (label: string) => void;
 };
@@ -502,6 +519,7 @@ function StartAllList(props: StartAllListProps): JSX.Element {
             group={group}
             tileClassName={tileClassName}
             onItemOpen={props.onItemOpen}
+            getMenuItems={props.getMenuItems}
             onHeaderClick={props.onHeaderClick}
           />
         ),
@@ -549,6 +567,7 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
                 item={item}
                 className={tileClassName}
                 onItemOpen={props.onItemOpen}
+                menuItems={props.getMenuItems?.(item)}
               />
             ),
           )}
@@ -560,7 +579,14 @@ function StartAllGroup(props: StartAllGroupProps): JSX.Element {
            * @param item 항목
            * @returns ListItem
            */
-          (item) => <StartListRow key={item.id} item={item} onItemOpen={props.onItemOpen} />,
+          (item) => (
+            <StartListRow
+              key={item.id}
+              item={item}
+              onItemOpen={props.onItemOpen}
+              menuItems={props.getMenuItems?.(item)}
+            />
+          ),
         )
       )}
     </ListGroup>
@@ -572,28 +598,53 @@ type StartListRowProps = {
   item: StartItem;
   /** 줄을 열었을 때 부른다 */
   onItemOpen?: (item: StartItem) => void;
+  /** 우클릭(모바일은 길게 누르기) 메뉴 항목. 주지 않으면 메뉴가 없다 */
+  menuItems?: readonly MenuPopupEntry[];
 };
 
 /**
  * 모두 목록의 항목 한 줄을 그린다. 고정 항목 칸처럼 클릭·Enter·Space로 열 수 있어, 열면 그 항목으로 `onItemOpen`을 부른다.
+ * 메뉴 항목을 주면 줄을 우클릭(모바일은 길게 누르기, 키보드는 Shift+F10·메뉴 키)할 때 그 메뉴를 띄운다.
+ * 줄(`ItemListRow`)이 받은 속성을 넘기지 않아, 우클릭을 받는 영역은 줄을 감싼 요소로 둔다(줄의 `contextmenu`가 올라온다).
  * @codocs [[Start 메뉴:열기와 닫기]]
+ * @codocs [[Start 메뉴:모두]]
  * @param props
  */
 function StartListRow(props: StartListRowProps): JSX.Element {
-  const { item } = props;
+  const { item, menuItems } = props;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   /** 줄을 열면 쓰는 곳에 항목을 알린다. */
   function handleOpen(): void {
     props.onItemOpen?.(item);
   }
 
-  return (
+  /**
+   * 메뉴가 열리거나 닫히면 상태를 맞춘다.
+   * @param isOpen 열렸는지
+   */
+  function handleMenuOpenChange(isOpen: boolean): void {
+    setIsMenuOpen(isOpen);
+  }
+
+  const row = (
     <ItemListRow
       id={item.id}
       title={item.title}
       icon={renderItemIcon(item)}
       className="w-full"
       onOpen={handleOpen}
+    />
+  );
+  if (menuItems === undefined) {
+    return row;
+  }
+  return (
+    <ContextMenuArea
+      open={isMenuOpen}
+      onOpenChange={handleMenuOpenChange}
+      items={menuItems}
+      area={<div className="w-full">{row}</div>}
     />
   );
 }
