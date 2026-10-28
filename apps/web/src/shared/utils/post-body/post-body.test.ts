@@ -11,6 +11,15 @@ function heading(label: string): PostBlock {
   return { type: 'heading_2', richText: [{ text: label, link: null }] };
 }
 
+/**
+ * 서식 없는 글자 조각을 만든다.
+ * @param value 글자
+ * @returns 글자 조각
+ */
+function text(value: string): { text: string; link: null } {
+  return { text: value, link: null };
+}
+
 const paragraph: PostBlock = { type: 'paragraph', richText: [{ text: '문단', link: null }] };
 
 // @codocs [[Chrome:Notion 블록]]
@@ -27,13 +36,51 @@ describe('Chrome:Notion 블록', () => {
     };
     expect(postBodySchema.safeParse(body).success).toBe(true);
   });
-});
 
-// 9단계 전까지의 임시 동작이다. 문서([[Chrome:Notion 블록]])는 지원하지 않는 블록에 안내 상자를 보이지만,
-// 지금은 디자인이 없는 블록을 9단계로 미뤄 스키마가 받지 않는다(임의 작업 "본문 블록").
-describe('본문 스키마(9단계 전 임시 동작)', () => {
-  it('9단계 전까지는 디자인이 없는 블록(인용 등)을 받지 않는다(임시)', () => {
-    const body = { blocks: [{ type: 'quote', richText: [{ text: '인용', link: null }] }] };
+  it('글자 서식, 들여쓴 목록·할 일, 인용, 콜아웃, 이미지, 구분선, 토글, 표, 북마크, 수식을 받는다', () => {
+    const body = {
+      blocks: [
+        {
+          type: 'paragraph',
+          richText: [
+            { text: '굵게', link: null, annotations: { bold: true } },
+            { text: 'code()', link: null, annotations: { code: true } },
+          ],
+        },
+        {
+          type: 'bulleted_list_item',
+          richText: [text('항목')],
+          children: [{ type: 'bulleted_list_item', richText: [text('하위')] }],
+        },
+        { type: 'numbered_list_item', richText: [text('번호')] },
+        { type: 'to_do', richText: [text('할 일')], checked: true },
+        { type: 'quote', richText: [text('인용')] },
+        { type: 'callout', richText: [text('콜아웃')] },
+        {
+          type: 'code',
+          language: 'ts',
+          code: 'const a',
+          highlighted: [
+            [
+              { text: 'const', syntax: 'keyword' },
+              { text: ' a', syntax: null },
+            ],
+          ],
+        },
+        { type: 'image', url: 'https://example.com/a.png', caption: [text('캡션')] },
+        { type: 'divider' },
+        { type: 'toggle', richText: [text('토글')], children: [{ type: 'divider' }] },
+        { type: 'table', hasColumnHeader: true, rows: [[[text('가')], [text('나')]]] },
+        { type: 'bookmark', url: 'https://react.dev', title: 'React', description: '설명' },
+        { type: 'equation', expression: 'x^2' },
+        { type: 'unsupported', typeName: 'embed' },
+      ],
+    };
+    expect(postBodySchema.safeParse(body).success).toBe(true);
+  });
+
+  it('지원하지 않는 블록은 unsupported 블록으로 바꿔 보내야 하고, 모르는 종류는 받지 않는다', () => {
+    const body = { blocks: [{ type: 'embed', url: 'https://example.com' }] };
     expect(postBodySchema.safeParse(body).success).toBe(false);
   });
 });
