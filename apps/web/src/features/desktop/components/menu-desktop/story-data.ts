@@ -29,6 +29,7 @@ export function menuDesktop(submenu: 'none' | 'view' | 'sort'): readonly MenuPop
     },
     { label: '새로 고침', icon: ICON.refresh },
     SEPARATOR,
+    { label: '붙여넣기', icon: ICON.paste, shortcut: 'Ctrl+V' },
     { kind: 'submenu', label: '새로 만들기', icon: ICON.folderAdd },
   ];
 }

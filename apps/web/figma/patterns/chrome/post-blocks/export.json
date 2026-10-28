@@ -1,0 +1,16 @@
+{
+  "name": "Chrome/PostBlocks",
+  "nodeId": "1382:6346",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 1754,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "1382:6346",
+      "properties": {}
+    }
+  }
+}

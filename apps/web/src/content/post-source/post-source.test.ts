@@ -23,7 +23,7 @@ async function allBodies(): Promise<(readonly PostBlock[])[]> {
  */
 function linksOf(blocks: readonly PostBlock[]): string[] {
   return blocks.flatMap((block) =>
-    block.type === 'code' ? [] : block.richText.flatMap((part) => part.link ?? []),
+    'richText' in block ? block.richText.flatMap((part) => part.link ?? []) : [],
   );
 }
 

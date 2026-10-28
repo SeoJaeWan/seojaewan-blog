@@ -13,6 +13,10 @@ const IMAGE_ASSET_URLS = {
     '../../assets/images/avatar-profile-placeholder.webp',
     import.meta.url,
   ).href,
+  'images/equation-quadratic-formula': new URL(
+    '../../assets/images/equation-quadratic-formula.webp',
+    import.meta.url,
+  ).href,
   'images/file-document': new URL('../../assets/images/file-document.webp', import.meta.url).href,
   'images/file-folder': new URL('../../assets/images/file-folder.webp', import.meta.url).href,
   'images/file-recycle-bin-empty': new URL(

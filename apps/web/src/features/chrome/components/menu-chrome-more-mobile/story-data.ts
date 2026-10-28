@@ -10,5 +10,5 @@ export const MENU_CHROME_MORE_MOBILE = [
   SEPARATOR,
   { label: '링크 복사', icon: ICON.link },
   { label: '페이지에서 찾기', icon: ICON.search },
-  { label: '확대/축소', icon: ICON.zoomIn, shortcut: '100%' },
+  { kind: 'zoom', value: '100%' },
 ] as const;

@@ -1,0 +1,16 @@
+{
+  "name": "MessageBox/DuplicateFolderName",
+  "nodeId": "1375:10466",
+  "variants": {
+    "default": {
+      "node": {
+        "height": 189,
+        "width": 448,
+        "x": 64,
+        "y": 32
+      },
+      "nodeId": "1375:10466",
+      "properties": {}
+    }
+  }
+}
