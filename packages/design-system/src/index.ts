@@ -19,6 +19,7 @@ export * from './components/column-header/column-header';
 export * from './components/details-header/details-header';
 export * from './components/drop-down-button/drop-down-button';
 export * from './components/empty-state/empty-state';
+export * from './components/equation/equation';
 export * from './components/explorer-address-row/explorer-address-row';
 export * from './components/explorer-command-bar/explorer-command-bar';
 export * from './components/explorer-status-bar/explorer-status-bar';
