@@ -16,3 +16,7 @@ _codocs:
 "#284 CodeBlock: 코드를 children 슬롯으로 받고 Parity는 빈 자리 100을 넣음": |
   CodeBlock의 `code` 문자열 prop을 없애고 강조된 코드를 `children`으로 받게 했다([[남은 작업:1. 7단계 마무리]], [[기술 스택:글 본문 처리]]). 복사 단추는 그려진 `<code>`의 글자(`textContent`)를 복사한다. 코드 색은 `code-syntax-text`를 기본으로 두고, 강조는 쓰는 곳이 `text-code-syntax-*` span으로 칠한다. 앱의 `post-blocks.tsx`와 `post-body.tsx`는 문법 강조가 아직 없어(Shiki는 이 PR 범위가 아님) 코드 문자열을 그대로 children으로 넣는다.
   `Parity` 스토리는 피그마 CodeBlock 변형(`default`)과 같게 Code 슬롯을 비운 채 높이 100의 빈 자리를 넣는다. 피그마 PNG(`figma/components/code-block/default.png`)가 견본 코드가 없는 빈 슬롯이고 [[디자인 시스템:컴포넌트 조립 규칙]]이 컴포넌트에 예시를 채우지 않게 하므로, 견본 코드를 넣으면 차이 그림이 코드 줄 때문에 어긋난다. 높이 100은 피그마 슬롯의 고정 높이이고 같은 값의 크기 토큰이 없어 스토리 안에서만 인라인 style로 줬다. 견본 코드를 `code-syntax` 클래스로 칠한 모습은 `Highlighted` 스토리로 따로 두었다. 사람이 `Parity`를 견본 코드로 바꿀지, `size/100` 토큰을 더할지 검토가 필요하다.
+"#283 Checkbox: 읽기 전용 표시로 구현": |
+  [[Chrome:Notion 블록]]이 할 일 목록을 지원 블록으로만 적고 눌러 바꾸는지는 정하지 않는다. 피그마 Checkbox 컴포넌트 설명이 "글 본문 할 일 목록의 읽기 전용 체크 표시"라서, 코드도 `onChange`와 `<input>` 없이 `role="checkbox"`, `aria-checked`, `aria-readonly`를 단 `div`로 만들었다. 글에 적힌 상태만 보여 주는 블록이라 상호작용을 넣을 이유가 없다고 보았다. 나중에 상호작용이 필요하면 문서에서 먼저 정해야 한다.
+"#283 Checkbox: 체크 표시 자산과 색": |
+  피그마 `checkmark` 인스턴스는 `ic_fluent_checkmark_20_regular`를 16으로 줄여 쓰고 글리프 색이 `text-on-accent-fill-primary`다. 코드는 같은 자산(`icons/ic_fluent_checkmark_20_regular.svg`)을 `size-icon-16`과 `text-text-on-accent-fill-primary`로 그렸다. 자산 파일이 이미 있어 `generate:assets`는 바뀐 것이 없었다. 체크 표시는 자리가 하나로 정해져 있어 [[디자인 시스템:아이콘 자리]]의 교체 속성(prop)으로 열지 않고 컴포넌트 안에 고정했다. 로컬 캡처 차이 그림에는 체크 표시 가장자리의 옅은 엔진 차이만 남았다([[피그마 연동:캡처 표]]).
