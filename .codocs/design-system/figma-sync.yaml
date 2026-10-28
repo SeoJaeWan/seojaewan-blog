@@ -48,7 +48,7 @@ _codocs:
   | `font/family/base` | `--font-family-base` | `font-base` |
   | `font/weight/semibold`, `font/size/body`, `font/line-height/body` | `--font-weight-semibold` 등 | `font-semibold`, `text-body`, `leading-body` |
   | `motion/*`(시간, 이징, 배율, 지연) | `--motion-duration-fast`, `--motion-easing-direct-entrance` 등 | 없음. `motion.css`의 모션 클래스가 `var()`로 쓴다([[피그마 연동:모션 클래스]]) |
-  | 글자 스타일 `Body Strong` | 없음 | `type-body-strong`(연결된 서체·크기·굵기·줄 높이·자간 변수를 함께 건다) |
+  | 글자 스타일 `Body Strong` | 없음 | `type-body-strong`(연결된 서체·크기·굵기·줄 높이·자간 변수를 함께 건다). 기울임과 글자 장식이 있는 스타일(`Body Large Italic`, `Body Large Link` 등)은 `font-style: italic`, `text-decoration-line: underline`·`line-through`도 함께 건다. DTCG typography 값에는 이 필드가 없어 `tokens.json`에는 `$extensions.com.seojaewan`의 `fontStyle`(`italic`)·`textDecoration`(`underline`·`line-through`)으로 담고, 기본값(normal·none)이면 적지 않는다. 피그마 글꼴 스타일 이름 끝의 `Italic`은 기울임으로, 앞부분은 굵기로 읽는다 |
   | 글자 스타일 `Hangul/*` | 없음 | 만들지 않는다. 같은 이름의 라틴 스타일과 연결 변수가 같아야 하고, 다르면 생성이 실패한다([[디자인 기반:서체]]) |
   | 효과 스타일 `Elevation/Flyout`(그림자) | `--elevation-flyout`(상자), `--shadow-text-elevation-flyout`(글자) | `shadow-elevation-flyout`(상자), `text-shadow-elevation-flyout`(글자) |
   | 효과 스타일 `Material/Acrylic`(배경 블러) | `--material-acrylic` | `backdrop-blur-material-acrylic` |

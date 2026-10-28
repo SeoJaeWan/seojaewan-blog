@@ -62,9 +62,9 @@ _codocs:
 
   문법 강조 색은 피그마 Component 컨렉션의 `code-syntax/*` 변수가 정한다. 내장 테마를 쓰지 않고 앱 코드에 우리 Shiki 테마 객체를 둔다.
   - 테마는 문법 범위(TextMate scope)를 어느 `code-syntax` 변수로 칠할지만 적고, 색 값은 CSS 변수(`var(...)`)로 넣는다. Shiki는 hex가 아닌 색 값을 테마에 넣는 것을 지원한다.
-  - 색 갈래는 기본 글자, 주석, 키워드, 문자열, 숫자·상수, 함수, 타입·클래스, 변수·속성, 매개변수, 연산자·구두점, 태그(JSX·HTML), 태그 속성 이름이다. 처음 값은 VS Code 기본 밝은 테마(Light+)의 색에서 가져온다.
+  - 색 갈래는 기본 글자, 주석, 키워드, 흐름 키워드(`import`·`return`·`if` 등 `keyword.control`), 문자열, 숫자·상수, 함수, 타입·클래스, 변수·속성, 매개변수, 연산자·구두점, 태그(JSX·HTML), 태그 속성 이름이다. 처음 값은 VS Code 기본 밝은 테마(Light+)의 색에서 가져온다.
   - 색을 피그마 변수에 두면 토큰 PR이 CSS 변수를 만들고, CodeBlock 견본을 이 변수로 칠해 캡처 표가 코드 색까지 비교한다. 내장 테마를 그대로 쓰면 피그마에 일부 색만 손으로 옮겨 두 곳이 어긋나도 검사로 잡을 수 없기 때문이다.
-  - 갈래마다 묶을 scope는 Shiki를 설치할 때 Light+ 테마의 scope 목록을 보고 정한다.
+  - 갈래마다 묶을 scope는 Shiki를 설치할 때 Light+ 테마의 scope 목록을 보고 정한다. `true`·`false`·`null`(`constant.language`)은 Light+처럼 키워드 갈래로 칠한다.
 검토한 대안: |
   - Prism·highlight.js(코드 문법 강조): Shiki보다 강조가 덜 정확하고 보통 브라우저에서 돌려 고르지 않았다.
   - MathJax(수식): KaTeX보다 무거워 고르지 않았다.
