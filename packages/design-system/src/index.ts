@@ -41,6 +41,7 @@ export * from './components/navigation-item/navigation-item';
 export * from './components/navigation-pane/navigation-pane';
 export * from './components/pinned-tile/pinned-tile';
 export * from './components/popover/popover';
+export * from './components/post-cover/post-cover';
 export * from './components/post-nav-card/post-nav-card';
 export * from './components/profile-button/profile-button';
 export * from './components/progress-ring/progress-ring';
