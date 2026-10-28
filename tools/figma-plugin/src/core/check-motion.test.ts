@@ -170,6 +170,20 @@ describe('구조 검사', () => {
     expect(result.violations.every((violation) => violation.fix !== '')).toBe(true);
   });
 
+  it('트랙 위반은 키프레임이 걸린 노드를, 견본 자체 위반은 견본 프레임을 가리킨다', () => {
+    const sample = windowOpenSample();
+    sample.name = 'Window open';
+    sample.tracks = [
+      track('OPACITY', [keyframe(0, 0), keyframe(0.3, 1, unbound)], { nodeId: '12:99' }),
+    ];
+    const result = checkMotionSample(sample, motionVariables, FILE_KEY);
+    expect(result.ok ? [] : result.violations.map((violation) => violation.nodeId)).toEqual([
+      '12:34',
+      '12:99',
+      '12:99',
+    ]);
+  });
+
   it('견본 이름이 motion-* 꼴이 아니거나 키프레임이 없으면 막는다', () => {
     expect(
       reasonsAfter((sample) => {
@@ -185,7 +199,12 @@ describe('구조 검사', () => {
   it('읽는 중에 찾은 문제(정의한 노드를 못 찾은 이징 등)도 위반으로 막는다', () => {
     expect(
       reasonsAfter((sample) => {
-        sample.problems.push({ path: 'Window / fills[0]', reason: '읽을 수 없다', fix: '고친다' });
+        sample.problems.push({
+          path: 'Window / fills[0]',
+          nodeId: '12:35',
+          reason: '읽을 수 없다',
+          fix: '고친다',
+        });
         sample.tracks = [
           track('OPACITY', [keyframe(0, 0), keyframe(0.25, 1, { kind: 'unknown' })]),
         ];

@@ -140,6 +140,7 @@ function variantAncestors(node: ComponentSetNode | ComponentNode): AncestorData[
   let current: BaseNode | null = node.type === 'COMPONENT_SET' ? node : node.parent;
   while (current !== null && current.type !== 'PAGE' && current.type !== 'DOCUMENT') {
     ancestors.unshift({
+      id: current.id,
       name: current.name,
       type: current.type,
       clipsContent: 'clipsContent' in current && current.clipsContent,
