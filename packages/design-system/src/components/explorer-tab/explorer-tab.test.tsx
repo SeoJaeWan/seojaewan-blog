@@ -18,6 +18,13 @@ describe('ExplorerTab', () => {
     expect(screen.getByRole('tab')).toHaveAttribute('aria-selected', 'true');
   });
 
+  it('선택되지 않은 탭에만 오른쪽 구분선을 그린다', () => {
+    const { rerender } = render(<ExplorerTab icon={<i />} />);
+    expect(screen.getByTestId('explorer-tab-separator')).toBeInTheDocument();
+    rerender(<ExplorerTab selected icon={<i />} />);
+    expect(screen.queryByTestId('explorer-tab-separator')).not.toBeInTheDocument();
+  });
+
   it('icon으로 받은 아이콘을 그린다', () => {
     render(<ExplorerTab icon={<i>폴더</i>} />);
     expect(screen.getByText('폴더')).toBeInTheDocument();
