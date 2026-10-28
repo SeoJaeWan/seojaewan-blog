@@ -21,6 +21,17 @@ export type TokensExport = {
 };
 
 /**
+ * tokens.json 내용만 만든다. 이미지 자산 바이트, tokens.css, 사용처 알림은 만들지 않아 가볍다.
+ * 플러그인을 열 때 `main`의 tokens.json과 비교하는 데 쓴다. 내용은 exportTokensText의 text와 같다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @returns tokens.json 내용
+ */
+export async function tokensJsonText(): Promise<string> {
+  const { tokens } = buildDesignTokens(await readDesignTokensInput());
+  return stableStringify(tokens);
+}
+
+/**
  * Variables와 글자·효과·칠 스타일을 읽어 tokens.json 내용을 만들고, 변환 스크립트와 같은 함수(tokensJsonToCss)로
  * tokens.css를 만든다. 플러그인과 피그마 MCP가 함께 쓴다.
  * 이미지 칠은 이름 있는 이미지 자산을 가리키고, 그 자산 파일도 함께 돌려준다.
