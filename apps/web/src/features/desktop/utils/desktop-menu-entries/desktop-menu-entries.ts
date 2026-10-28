@@ -67,6 +67,8 @@ type ItemMenuOptions = {
   isPinned: boolean;
   /** 휴지통으로 보낼 수 있는지(휴지통은 보낼 수 없다) */
   canTrash: boolean;
+  /** 휴지통이 비었는지. 비었으면 휴지통 비우기를 고를 수 없다 */
+  isRecycleBinEmpty: boolean;
   /** 열기 */
   onOpen: () => void;
   /** 새 창에서 열기 */
@@ -176,8 +178,10 @@ export function getDesktopSortMenuEntries(options: DesktopSortMenuOptions): Menu
 
 /**
  * 아이콘 우클릭 메뉴(피그마 Menu/Folder·Post·Link·RecycleBin·Multiple)의 항목을 만든다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
- * 이미 Start에 고정된 항목은 `시작 화면에 고정` 대신 `시작 화면에서 고정 해제`다. 휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없다.
+ * 이미 Start에 고정된 항목은 `시작 화면에 고정` 대신 `시작 화면에서 고정 해제`다. 휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없고,
+ * 휴지통이 비었으면 휴지통 비우기를 고를 수 없다(탐색기와 같다).
  * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+ * @codocs [[파일 탐색기:구성]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 우클릭한 항목과 동작
  * @returns 메뉴 항목
@@ -205,7 +209,11 @@ export function getItemMenuEntries(options: ItemMenuOptions): MenuPopupEntry[] {
     case 'link':
       return [open, copyLink, pin, MENU_SEPARATOR, cut, trash];
     case 'recycle-bin':
-      return [open, MENU_SEPARATOR, emptyRecycleBinMenuItem(false, options.onEmptyRecycleBin)];
+      return [
+        open,
+        MENU_SEPARATOR,
+        emptyRecycleBinMenuItem(options.isRecycleBinEmpty, options.onEmptyRecycleBin),
+      ];
     case null:
       return [open, MENU_SEPARATOR, cut, trash];
   }

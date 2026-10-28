@@ -46,6 +46,7 @@ export function itemMenuOptions(
     kind,
     isPinned: false,
     canTrash: true,
+    isRecycleBinEmpty: false,
     onOpen: ignoreMenuAction,
     onOpenInNewWindow: ignoreMenuAction,
     onCopyLink: ignoreMenuAction,

@@ -631,6 +631,7 @@ export function DesktopIconsLayer(): JSX.Element {
       kind: ids.length === 1 ? (first?.kind ?? null) : null,
       isPinned: firstId !== undefined && startPins.includes(firstId),
       canTrash: trashItems(getWorkspace(), ids, new Date().toISOString()).ok,
+      isRecycleBinEmpty: !isRecycleBinFull({ items }),
       onOpen: () => {
         openItems(ids);
       },
