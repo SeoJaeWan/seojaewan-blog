@@ -111,7 +111,6 @@ function renderFolderItems(folder: 'blog' | 'react', isSelected: boolean): React
         name={item.name}
         icon={ITEM_ICONS[item.kind]}
         selected={isSelected && index === 0}
-        focused={isSelected && index === 0}
       />
     ),
   );
