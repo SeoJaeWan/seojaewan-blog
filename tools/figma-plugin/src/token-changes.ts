@@ -1,6 +1,14 @@
 // main의 tokens.json과 새로 내보낸 tokens.json을 비교해 바뀐 토큰과, 그 토큰을 쓰는 컴포넌트를 찾는 순수 계산이다.
 // 토큰 PR은 바뀐 토큰을 쓰는 컴포넌트의 변형 PNG를 다시 내보내는데, 그 대상을 여기서 정한다.
 
+/** 플러그인 화면 토큰 줄에 보이는, `main`의 tokens.json과 비교한 토큰 변경 */
+export type TokenSummary = {
+  added: string[];
+  modified: string[];
+  renamed: { from: string; to: string }[];
+  removed: string[];
+};
+
 /** 스타일 토큰이 tokens.json에서 놓이는 그룹(`style/<종류>/<스타일 이름>`) */
 const STYLE_GROUP = /^style\/(?:text|effect|paint)\//u;
 
@@ -17,6 +25,11 @@ export type TokenChanges = {
   modifiedPaths: string[];
   /** main에만 있는 토큰 경로(이름이 바뀌었거나 지워진 토큰) */
   removedPaths: string[];
+  /**
+   * 이름이 바뀐 것으로 보는 짝. main에만 있는 토큰과 새로 생긴 토큰의 종류·값이 같으면 이름을 바꾼 것으로 본다.
+   * 같은 값이 여럿이면 경로 순서대로 하나씩 짝짓는다. addedPaths·removedPaths에도 그대로 남아 있다.
+   */
+  renamedPaths: { from: string; to: string }[];
   /**
    * 피그마가 그 토큰을 부르는 이름. 바뀐 토큰과, 바뀐 토큰을 (거쳐서라도) 가리키는 별칭을 모두 담는다.
    * 변수는 경로 그대로(`accent-fill/default`), 스타일은 스타일 이름(`Hangul/Body`)이다.
@@ -55,12 +68,42 @@ export function tokenChanges(oldText: string | null, newText: string): TokenChan
       }
     }
   }
+  const addedPaths = changedPaths.filter((path) => !before.has(path));
+  const removedPaths = changedPaths.filter((path) => !after.has(path));
+  const unpaired = [...addedPaths];
+  const renamedPaths: { from: string; to: string }[] = [];
+  for (const from of removedPaths) {
+    const index = unpaired.findIndex((to) => after.get(to) === before.get(from));
+    const to = unpaired[index];
+    if (to !== undefined) {
+      renamedPaths.push({ from, to });
+      unpaired.splice(index, 1);
+    }
+  }
   return {
     changedPaths,
-    addedPaths: changedPaths.filter((path) => !before.has(path)),
+    addedPaths,
     modifiedPaths: changedPaths.filter((path) => before.has(path) && after.has(path)),
-    removedPaths: changedPaths.filter((path) => !after.has(path)),
+    removedPaths,
+    renamedPaths,
     affectedNames: new Set([...affected].map((path) => path.replace(STYLE_GROUP, ''))),
+  };
+}
+
+/**
+ * 플러그인 화면의 토큰 줄에 보일 추가·변경·이름 변경·삭제를 나눈다. 이름이 바뀐 토큰은 추가·삭제에서 뺀다.
+ * @codocs [[피그마 연동:플러그인 화면]]
+ * @param changes tokens.json 비교 결과
+ * @returns 화면에 보일 토큰 변경
+ */
+export function tokenSummary(changes: TokenChanges): TokenSummary {
+  const renamedFrom = new Set(changes.renamedPaths.map(({ from }) => from));
+  const renamedTo = new Set(changes.renamedPaths.map(({ to }) => to));
+  return {
+    added: changes.addedPaths.filter((path) => !renamedTo.has(path)),
+    modified: changes.modifiedPaths,
+    renamed: changes.renamedPaths,
+    removed: changes.removedPaths.filter((path) => !renamedFrom.has(path)),
   };
 }
 

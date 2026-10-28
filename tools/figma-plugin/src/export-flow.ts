@@ -31,7 +31,7 @@ import {
   updateBranch,
   updatePullRequestBody,
 } from './github-client';
-import type { ExportOutcome, PullRequestCommit } from './messages';
+import type { ExportOutcome, ExportProgress, PullRequestCommit, ViolationGroup } from './messages';
 import { assetFilePath, componentSlug, patternFolder, patternPlace } from './naming';
 import {
   ASSETS_DIR,
@@ -79,6 +79,8 @@ export type ExportRequest = {
   log: (text: string) => void;
   /** 막지 않는 알림(쓰는 곳이 없는 변수·스타일, 같은 값 변수가 여럿인 모션 짝, 건너뛴 애니메이션)을 UI에 보여 준다 */
   notify: (notices: string[]) => void;
+  /** 진행 막대와 지금 하는 일을 UI에 알린다 */
+  progress: (update: ExportProgress) => void;
 };
 
 /** 브랜치 끝 커밋과 트리 */
@@ -116,9 +118,11 @@ type PlacedPattern = PlacedTarget & { area: string };
  * 컴포넌트 PR은 그 컴포넌트 폴더와 쓰는 자산(과 figma.json)만, 조립 PR은 그 영역의 조립 폴더와 쓰는 자산만,
  * 애니메이션 PR은 `figma/motions/<이름>.json`만 바꾼다. 토큰만 고르면 토큰만 내보낸다.
  * 토큰은 늘 읽어 main의 tokens.json과 비교하고, 다르면 토큰 PR(`feat/figma-tokens`)을 따로 열거나 갱신한다.
+ * 진행은 검사(대상마다 하나와 토큰)와 커밋(PR마다 하나와 토큰) 두 단계로 알린다.
  * @codocs [[피그마 연동:피그마 플러그인]]
+ * @codocs [[피그마 연동:플러그인 화면]]
  * @param request 토큰, 고른 컴포넌트와 조립, 진행 로그
- * @returns PR별 커밋 결과, 또는 위반 목록
+ * @returns PR별 커밋 결과, 또는 대상별 위반 목록
  */
 export async function runExport(request: ExportRequest): Promise<ExportOutcome> {
   const { token, log } = request;
@@ -127,14 +131,26 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   }
 
   log('구조 검사 중');
+  const checkTotal =
+    request.componentIds.length + request.patternIds.length + request.motionIds.length + 1;
+  let checked = 0;
+  /**
+   * 검사 단계에서 대상 하나를 시작했음을 알린다.
+   * @param text 지금 하는 일
+   */
+  function checkStep(text: string): void {
+    request.progress({ phase: 'check', done: checked, total: checkTotal, text });
+    checked += 1;
+  }
   const context = await readCheckContext();
   const components: PlacedTarget[] = [];
-  const violations: Violation[] = [];
+  const groups: ViolationGroup[] = [];
   for (const id of request.componentIds) {
+    checkStep(`${await nodeName(id)} 검사·내보내는 중`);
     const outcome = await exportTargetCore(id, SCALE, context);
     if (!outcome.ok) {
       log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
-      violations.push(...outcome.violations);
+      groups.push({ target: outcome.name, kind: 'component', violations: outcome.violations });
       continue;
     }
     const slug = componentSlug(outcome.target.manifest.name);
@@ -150,22 +166,27 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   }
   const patterns: PlacedPattern[] = [];
   for (const id of request.patternIds) {
+    checkStep(`${await nodeName(id)} 검사·내보내는 중`);
     const outcome = await exportTargetCore(id, SCALE, context);
     const name = outcome.ok ? outcome.target.manifest.name : outcome.name;
     const place = patternPlace(name);
+    const violations: Violation[] = [];
     if (place === null) {
       violations.push({
         where: name,
         reason: '조립 이름이 `영역/이름` 꼴이 아니라 폴더를 정할 수 없다',
         fix: '조립 이름을 `영역/이름`(예: `Menu/Folder`)으로 바꾼다.',
+        nodeId: id,
       });
     }
     if (!outcome.ok) {
       log(`${name}: 위반 ${String(outcome.violations.length)}개`);
       violations.push(...outcome.violations);
-      continue;
     }
-    if (place === null) {
+    if (violations.length > 0) {
+      groups.push({ target: name, kind: 'pattern', violations });
+    }
+    if (!outcome.ok || place === null) {
       continue;
     }
     const folder = patternFolder(place);
@@ -181,13 +202,19 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   }
 
   const motionNotices: string[] = [];
-  const motions = await exportMotions(request.motionIds, violations, motionNotices, log);
+  const motions = await exportMotions(request.motionIds, {
+    groups,
+    notices: motionNotices,
+    log,
+    step: checkStep,
+  });
 
+  checkStep('토큰 변환 중');
   log('토큰 변환 중');
-  const tokens = await readTokens(violations);
-  if (tokens === null || violations.length > 0) {
+  const tokens = await readTokens(groups);
+  if (tokens === null || groups.length > 0) {
     request.notify(motionNotices);
-    return { kind: 'blocked', violations };
+    return { kind: 'blocked', groups };
   }
   for (const name of tokens.skippedStyles) {
     log(`토큰이 아닌 칠 스타일이라 건너뜀: ${name}`);
@@ -197,9 +224,21 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   log(`${BASE_BRANCH} 브랜치의 기준 자료를 읽는 중`);
   const main = await readRepoState(token, BASE_BRANCH);
 
+  const areas = [...new Set(patterns.map((pattern) => pattern.area))];
+  const commitTotal = components.length + areas.length + motions.length + 1;
+  let committed = 0;
+  /**
+   * 커밋 단계에서 PR 하나를 시작했음을 알린다.
+   * @param text 지금 하는 일
+   */
+  function commitStep(text: string): void {
+    request.progress({ phase: 'commit', done: committed, total: commitTotal, text });
+    committed += 1;
+  }
   const commits: PullRequestCommit[] = [];
   const unchanged: string[] = [];
   for (const component of components) {
+    commitStep(`${component.exported.manifest.name} 커밋 중`);
     const commit = await commitComponent(token, component, main, log);
     if (commit === null) {
       unchanged.push(component.exported.manifest.name);
@@ -207,7 +246,8 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       commits.push(commit);
     }
   }
-  for (const area of [...new Set(patterns.map((pattern) => pattern.area))]) {
+  for (const area of areas) {
+    commitStep(`${area} 조립 커밋 중`);
     const group = patterns.filter((pattern) => pattern.area === area);
     const commit = await commitPatterns(token, area, group, main, log);
     if (commit === null) {
@@ -217,6 +257,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
     }
   }
   for (const motion of motions) {
+    commitStep(`${motion.name} 커밋 중`);
     const commit = await commitMotion(token, motion, main, log);
     if (commit === null) {
       unchanged.push(motion.name);
@@ -224,6 +265,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
       commits.push(commit);
     }
   }
+  commitStep('토큰 비교·커밋 중');
   const tokensCommit = await commitTokens(
     token,
     tokens,
@@ -234,26 +276,42 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   if (tokensCommit !== null) {
     commits.push(tokensCommit);
   }
+  request.progress({ phase: 'commit', done: commitTotal, total: commitTotal, text: '끝' });
   return { kind: 'done', commits, unchanged };
 }
 
 /**
- * 고른 애니메이션 견본을 모션 검사하고 json 내용을 만든다. 위반은 목록에 더한다.
+ * 진행 문구에 쓸 노드 이름을 읽는다.
+ * @param id 노드 ID
+ * @returns 노드 이름, 찾지 못하면 ID
+ */
+async function nodeName(id: string): Promise<string> {
+  return (await figma.getNodeByIdAsync(id))?.name ?? id;
+}
+
+/**
+ * 고른 애니메이션 견본을 모션 검사하고 json 내용을 만든다. 위반은 견본별 묶음으로 더한다.
  * 모션 API를 쓸 수 없는 계정이면 애니메이션만 건너뛰고 알림을 남긴다(다른 대상은 그대로 내보낸다).
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @codocs [[피그마 연동:모션]]
  * @param ids 견본 프레임 ID
- * @param violations 위반을 더할 목록
- * @param notices 알림을 더할 목록
- * @param log 진행 로그
+ * @param sink 위반 묶음·알림을 더할 목록과 진행 알림
+ * @param sink.groups 위반 묶음을 더할 목록
+ * @param sink.notices 알림을 더할 목록
+ * @param sink.log 진행 로그
+ * @param sink.step 견본 하나를 시작할 때 진행을 알리는 함수
  * @returns 검사를 통과한 모션
  */
 async function exportMotions(
   ids: readonly string[],
-  violations: Violation[],
-  notices: string[],
-  log: (text: string) => void,
+  sink: {
+    groups: ViolationGroup[];
+    notices: string[];
+    log: (text: string) => void;
+    step: (text: string) => void;
+  },
 ): Promise<MotionFileExport[]> {
+  const { groups, notices, log, step } = sink;
   if (ids.length === 0) {
     return [];
   }
@@ -262,10 +320,11 @@ async function exportMotions(
   try {
     const variables = await readMotionVariables();
     for (const id of ids) {
+      step(`${await nodeName(id)} 모션 검사 중`);
       const outcome = await exportMotionCore(id, variables, FILE_KEY);
       if (!outcome.ok) {
         log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
-        violations.push(...outcome.violations);
+        groups.push({ target: outcome.name, kind: 'motion', violations: outcome.violations });
         continue;
       }
       const { motion } = outcome;
@@ -319,6 +378,7 @@ async function commitMotion(
   const subject = motionCommitSubject(motion.name);
   return commitToPullRequest(token, target, plan.entries, {
     target: motion.name,
+    kind: 'motion',
     subject,
     message: `${subject}\n\n${motionCommitBody(motion.result.motion)}`,
     body: motionPullRequestBody(motion.result.motion),
@@ -329,20 +389,27 @@ async function commitMotion(
 /**
  * tokens.json과 tokens.css를 만든다. 변환 규칙에 맞지 않는 토큰이 있으면 위반으로 더하고 null을 돌려준다.
  * @codocs [[피그마 연동:토큰 생성]]
- * @param violations 위반을 더할 목록
+ * @param groups 위반 묶음을 더할 목록
  * @returns 내보낸 토큰, 변환에 실패하면 null
  */
-async function readTokens(violations: Violation[]): Promise<TokensExport | null> {
+async function readTokens(groups: ViolationGroup[]): Promise<TokensExport | null> {
   try {
     return await exportTokensText();
   } catch (error) {
     if (!(error instanceof TokenFormatError)) {
       throw error;
     }
-    violations.push({
-      where: '토큰',
-      reason: `tokens.css를 만들 수 없다: ${error.message}`,
-      fix: '피그마에서 토큰 이름이나 값을 고친다. 규칙이 없는 변수 묶음·스타일 종류면 토큰 생성 규칙을 먼저 정한다.',
+    groups.push({
+      target: '토큰',
+      kind: 'tokens',
+      violations: [
+        {
+          where: '토큰',
+          reason: `tokens.css를 만들 수 없다: ${error.message}`,
+          fix: '피그마에서 토큰 이름이나 값을 고친다. 규칙이 없는 변수 묶음·스타일 종류면 토큰 생성 규칙을 먼저 정한다.',
+          nodeId: null,
+        },
+      ],
     });
     return null;
   }
@@ -416,6 +483,7 @@ async function commitComponent(
   const changes = targetChanges(component, desired, main);
   return commitToPullRequest(token, target, plan.entries, {
     target: name,
+    kind: 'component',
     subject,
     message,
     body: componentPullRequestBody(branch, changes, renamed),
@@ -469,6 +537,7 @@ async function commitPatterns(
   }
   return commitToPullRequest(token, target, plan.entries, {
     target: `${area} 조립`,
+    kind: 'pattern',
     subject,
     message,
     body: patternPullRequestBody(branch, area, changes, renamed),
@@ -677,6 +746,7 @@ async function commitTokens(
   const subject = tokensCommitSubject();
   return commitToPullRequest(token, target, plan.entries, {
     target: '토큰',
+    kind: 'tokens',
     subject,
     message: `${subject}\n\n${tokensCommitBody(summary)}`,
     body: tokensPullRequestBody(summary),
@@ -693,6 +763,7 @@ async function commitTokens(
  * @param entries 트리 항목
  * @param text 대상 이름, 커밋 제목·메시지, PR 본문, 진행 로그
  * @param text.target 대상 이름(컴포넌트 이름이나 `토큰`)
+ * @param text.kind 대상 종류
  * @param text.subject 커밋 제목(PR 제목)
  * @param text.message 커밋 메시지
  * @param text.body PR 본문
@@ -705,6 +776,7 @@ async function commitToPullRequest(
   entries: readonly TreeEntry[],
   text: {
     target: string;
+    kind: PullRequestCommit['kind'];
     subject: string;
     message: string;
     body: string;
@@ -720,6 +792,7 @@ async function commitToPullRequest(
     await updatePullRequestBody(token, target.openPullRequest.number, text.body);
     return {
       target: text.target,
+      kind: text.kind,
       branch: target.branch,
       commitUrl: commitUrl(commit),
       pullRequestUrl: target.openPullRequest.url,
@@ -734,6 +807,7 @@ async function commitToPullRequest(
   }
   return {
     target: text.target,
+    kind: text.kind,
     branch: target.branch,
     commitUrl: commitUrl(commit),
     pullRequestUrl: await createPullRequest(token, {

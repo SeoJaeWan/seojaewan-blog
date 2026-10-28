@@ -47,11 +47,14 @@ describe('FileItem', () => {
     expect(screen.getByText('긴 이름').className).not.toContain('line-clamp-2');
   });
 
-  it('선택된 채 포커스를 받을 때만 선을 그린다', () => {
-    const { container, rerender } = render(<FileItem icon={icon} focused />);
-    expect((container.firstChild as HTMLElement).className).not.toContain('border-default');
-    rerender(<FileItem icon={icon} selected focused />);
-    expect((container.firstChild as HTMLElement).className).toContain('border-default');
+  // @codocs [[컴포넌트 목록:상태]]
+  it('focused면 선택과 상관없이 크기에 넣지 않는 안쪽 선을 그린다', () => {
+    const { container, rerender } = render(<FileItem icon={icon} />);
+    expect((container.firstChild as HTMLElement).className).not.toContain('inner-border-w-default');
+    rerender(<FileItem icon={icon} focused />);
+    const { className } = container.firstChild as HTMLElement;
+    expect(className).toContain('inner-border-file-item-desktop-stroke-focus');
+    expect(className.split(' ')).not.toContain('border-default');
   });
 
   it('cut이면 아이콘과 이름을 흐리게 그린다', () => {
