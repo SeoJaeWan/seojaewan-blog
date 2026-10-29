@@ -2,13 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import { ChromePage, ChromeWindow } from '@/features/chrome/chrome';
+import { ChromePage, ChromeWindow, PostBlocks } from '@/features/chrome/chrome';
 import { SnapAssist } from '@/features/window/window';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
-import { POST_PAGE, POST_WINDOW } from '@/shared/stories/post/post';
-import { PostBody } from '@/shared/stories/post-body/post-body';
+import { POST_PAGE, POST_WINDOW, postPageBlocks } from '@/shared/stories/post/post';
 
 import { SNAP_ASSIST_CHROME } from './story-data';
+
+// 피그마 `figure`의 이미지 칸 높이다(Window/Chrome 스토리와 같다). 축소 화면은 desktop 창이라 wide 값이다.
+const FIGURE_IMAGE_HEIGHT = 420;
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // 컴포넌트(`SnapAssist`)는 `features/window`에 두고, 자리를 다른 기능(Chrome)의 조립으로 채운 이 스토리만 shell에 둔다.
@@ -38,14 +40,24 @@ const meta = {
               >
                 <ChromePage
                   page="post"
+                  layout="wide"
                   className="min-h-0 w-full flex-1"
+                  cover={<ImageAsset name="images/wallpaper-bloom" />}
                   meta={POST_PAGE.meta}
                   title={POST_PAGE.title}
                   toc={POST_PAGE.toc}
                   previousTitle={POST_PAGE.previousTitle}
                   nextTitle={POST_PAGE.nextTitle}
                 >
-                  <PostBody layout="wide" />
+                  <PostBlocks
+                    blocks={postPageBlocks.wide}
+                    renderImage={() => (
+                      <ImageAsset
+                        name="images/wallpaper-bloom"
+                        style={{ height: FIGURE_IMAGE_HEIGHT }}
+                      />
+                    )}
+                  />
                 </ChromePage>
               </ChromeWindow>
             </WindowThumbnail>

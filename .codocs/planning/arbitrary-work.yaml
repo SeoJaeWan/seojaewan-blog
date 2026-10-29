@@ -176,3 +176,5 @@ _codocs:
   [[바탕화면:아이콘 우클릭 메뉴]]에는 휴지통 비우기의 비활성 조건이 없지만, 탐색기의 메뉴·명령 모음이 따르는 [[파일 탐색기:구성]]의 "휴지통 비우기는 휴지통이 비었을 때 비활성"과 같게 바탕화면 휴지통 아이콘 메뉴도 휴지통이 비면 고를 수 없게 했다. 판단은 휴지통 아이콘의 찬 모양과 같은 `isRecycleBinFull`(휴지통에 실제로 든 항목)이다. 바탕화면 문서에 이 조건을 적을지 검토가 필요하다.
 "메뉴 공유 PR: Chrome ⋮ 메뉴의 찾기 포커스 표시를 작은 훅으로 감쌈": |
   ⋮ 메뉴 항목을 함수(`getChromeMoreMenuEntries`)에 동작으로 넘기자 React Compiler lint(`react-hooks/refs`)가 "렌더 중 ref 접근"으로 막았다. 함수가 넘긴 동작을 렌더 중에 부를 수 있다고 보기 때문이다. 메뉴에서 찾기를 열 때 포커스를 ⋮ 버튼으로 돌리지 않는 표시(Chrome PR 섹션 참고)를 `chrome-window-layer.tsx` 안의 작은 훅 `useMenuFocusKeeper`(`keep`·`shouldReturnFocus`)로 감싸 동작이 ref를 직접 만지지 않게 했다. lint 규칙을 끄는 주석은 저장소에 없는 방식이라 쓰지 않았다. 동작은 전과 같다.
+"Window 조립 PR: SnapAssist 축소 화면도 새 본문으로 바꾸고 옛 본문 도우미를 지움, PostBlocks는 Chrome 공개 진입점으로 내보냄": |
+  `Window/SnapAssist` PNG가 커버와 새 본문을 담아, 축소 Chrome 창 스토리도 `Window/Chrome`과 같은 `cover`(Bloom), `PostBlocks`(`postPageBlocks.wide`), 그림 칸 높이 420으로 바꿨다. 더 쓰는 곳이 없어진 `shared/stories/post-body`는 지웠다. `shell/` 스토리가 `PostBlocks`를 쓰려면 기능의 공개 진입점으로만 import해야 해서(lint `boundaries/dependencies`), `features/chrome/chrome.ts`에서 `PostBlocks`를 내보냈다. 로컬 캡처(`--target Window/SnapAssist`, 0개 실패)의 차이 그림에는 글자·이미지 가장자리의 엔진 차이만 남는다.
