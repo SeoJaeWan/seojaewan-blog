@@ -34,13 +34,8 @@ export function itemMenuOptions(
 /** 피그마 Menu/Folder: 바탕화면 폴더 우클릭 */
 export const menuFolder = getItemMenuEntries(itemMenuOptions('folder'));
 
-/**
- * 피그마 Menu/Post: 바탕화면 글 우클릭.
- * 실제 글 메뉴에는 [[바탕화면 우클릭 메뉴:아이콘]]대로 잘라내기가 있지만 피그마 조립에는 아직 없어, 피그마에 더할 때까지 스토리에서만 뺀다.
- */
-export const menuPost = getItemMenuEntries(itemMenuOptions('post')).filter(
-  (entry) => !('label' in entry && entry.label === '잘라내기'),
-);
+/** 피그마 Menu/Post: 바탕화면 글 우클릭 */
+export const menuPost = getItemMenuEntries(itemMenuOptions('post'));
 
 /** 피그마 Menu/Link: 바탕화면 외부 링크 우클릭 */
 export const menuLink = getItemMenuEntries(itemMenuOptions('link'));
