@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-// @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
-// @codocs [[바탕화면:아이콘 조작]]
+// @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+// @codocs [[항목 조작:단축키]]
 test('바탕화면에서 새 폴더를 만들어 이름을 바꾸고, Delete로 휴지통에 보낸다', async ({ page }) => {
   await page.goto('/');
   const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
@@ -28,8 +28,8 @@ test('바탕화면에서 새 폴더를 만들어 이름을 바꾸고, Delete로 
   ).toBeVisible();
 });
 
-// @codocs [[작업 공간:배치]]
-// @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+// @codocs [[항목 조작:잘라내기와 붙여넣기]]
+// @codocs [[바탕화면 우클릭 메뉴:아이콘]]
 test('바탕화면에서 잘라낸 아이콘을 탐색기에 붙여넣고, 탐색기에서 잘라낸 항목을 바탕화면에 붙여넣는다', async ({
   page,
 }) => {
@@ -56,7 +56,7 @@ test('바탕화면에서 잘라낸 아이콘을 탐색기에 붙여넣고, 탐�
   await expect(github).toBeVisible();
 });
 
-// @codocs [[바탕화면:아이콘 조작]]
+// @codocs [[항목 조작:끌기]]
 test('아이콘을 끌어 폴더 위에 놓으면 그 폴더로 들어간다', async ({ page }) => {
   await page.goto('/');
   const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });

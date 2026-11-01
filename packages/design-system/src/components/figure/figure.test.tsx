@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Figure } from './figure';
 
-// @codocs [[Chrome:Notion 블록]]
+// @codocs [[Notion 블록:모양]]
 describe('Figure', () => {
   it('image와 기본 캡션을 그린다', () => {
     render(<Figure image={<img alt="그림" src="a.png" />} />);

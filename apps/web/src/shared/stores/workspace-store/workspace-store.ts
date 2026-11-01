@@ -102,8 +102,8 @@ let catalog: WorkspaceCatalog = { posts: [], links: externalLinks };
  * 방문자 브라우저(localStorage)에 `persist`로 저장한다. 서버 HTML과 첫 클라이언트 렌더가 같도록 저장분을 바로 읽지 않고(`skipHydration`),
  * 마운트한 뒤 `hydrateWorkspaceStore`가 읽는다. 저장분은 Zod로 검증해 맞지 않거나 버전이 다르면 초기 구조에서 다시 시작한다.
  * 다시 시작하면 처음 상태로 돌리고 저장분을 지운다.
- * @codocs [[작업 공간:방문자별 저장]]
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[방문자 저장:저장하는 것]]
+ * @codocs [[다시 시작:되돌리는 상태]]
  * @codocs [[기술 스택:상태 관리]]
  */
 export const useWorkspaceStore = create<WorkspaceStore>()(
@@ -129,8 +129,8 @@ registerStoreReset(() => {
  * 서버가 읽은 글 색인을 받아 브라우저 저장분을 읽는다. 마운트한 뒤 한 번 부른다(shell).
  * 저장분이 없거나 읽을 수 없으면 초기 구조, 있으면 지금 글 색인·외부 링크 설정과 맞춘 상태가 된다.
  * localStorage는 바로 읽혀 이 함수가 끝나면 상태가 바뀌어 있다. 읽다 실패하면 초기 구조에서 다시 시작한다.
- * @codocs [[작업 공간:Notion과 맞추기]]
- * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+ * @codocs [[방문자 저장:저장분 읽기]]
  * @param posts 글 색인
  */
 export function hydrateWorkspaceStore(posts: readonly PostSummary[]): void {

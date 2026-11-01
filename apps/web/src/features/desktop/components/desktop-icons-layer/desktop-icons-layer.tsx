@@ -96,12 +96,17 @@ const BALLOON_OFFSET = 8;
  * - 모바일은 늘 자동 정렬이라 보기 메뉴의 아이콘 자동 정렬을 고를 수 없다.
  * - 우클릭(모바일은 길게 누르기) 메뉴: 빈 곳 메뉴와 항목 종류별 메뉴. 휴지통 비우기는 메시지 상자만 보여 준다.
  * @codocs [[바탕화면:표시하는 항목]]
- * @codocs [[바탕화면:아이콘 배치]]
- * @codocs [[바탕화면:아이콘 조작]]
- * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
- * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+ * @codocs [[바탕화면 아이콘:격자 자리]]
+ * @codocs [[항목 조작:선택]]
+ * @codocs [[항목 조작:열기]]
+ * @codocs [[항목 조작:끌기]]
+ * @codocs [[항목 조작:잘라내기와 붙여넣기]]
+ * @codocs [[항목 조작:단축키]]
+ * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @codocs [[창 동작:열기 규칙]]
- * @codocs [[모바일:차이]]
+ * @codocs [[바탕화면 아이콘:모바일]]
+ * @codocs [[반응형:입력 차이]]
  * @returns 바탕화면 아이콘
  */
 export function DesktopIconsLayer(): JSX.Element {
@@ -269,7 +274,7 @@ export function DesktopIconsLayer(): JSX.Element {
 
   /**
    * 항목들을 잘라낸다. 바탕화면과 모든 탐색기 창이 같은 잘라낸 항목을 쓴다(붙여넣으면 옮긴다).
-   * @codocs [[작업 공간:배치]]
+   * @codocs [[항목 조작:잘라내기와 붙여넣기]]
    * @param ids 항목 id
    */
   function cut(ids: readonly string[]): void {
@@ -281,8 +286,8 @@ export function DesktopIconsLayer(): JSX.Element {
   /**
    * 잘라낸 항목을 바탕화면으로 옮기고, 잘라낸 것을 비운 뒤 붙여넣은 항목을 고른다. 붙여넣을 수 없으면 아무것도 하지 않는다.
    * 자동 정렬이 꺼져 있으면 붙여넣은 아이콘은 첫 빈 칸에 보인다(칸을 정하지 않는다).
-   * @codocs [[작업 공간:배치]]
-   * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+   * @codocs [[항목 조작:잘라내기와 붙여넣기]]
+   * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
    */
   function paste(): void {
     if (pasteIds === null || !getWorkspace().moveItems(pasteIds, null).ok) {
@@ -451,8 +456,8 @@ export function DesktopIconsLayer(): JSX.Element {
   /**
    * 바탕화면 키를 처리한다. 방향키·Ctrl + A는 선택, Enter는 열기, Delete는 휴지통으로 보내기, F2는 폴더 이름 바꾸기,
    * Ctrl + X는 잘라내기, Ctrl + V는 붙여넣기다.
-   * @codocs [[바탕화면:아이콘 조작]]
-   * @codocs [[작업 공간:배치]]
+   * @codocs [[항목 조작:단축키]]
+   * @codocs [[항목 조작:잘라내기와 붙여넣기]]
    * @param event 키 이벤트
    */
   function handleAreaKeyDown(event: KeyboardEvent<HTMLDivElement>): void {

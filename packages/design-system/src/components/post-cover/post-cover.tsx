@@ -11,7 +11,7 @@ type PostCoverProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 글 머리 위의 커버 이미지(피그마 PostCover)를 그린다. 글 페이지에 쓴다. 이미지는 `image`로 받고
  * 실제 Notion 이미지 제공은 나중 기능이 맡는다. 높이는 240이고 너비는 쓰는 곳이 `className`으로
  * 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:모양]]
  * @param props
  */
 export function PostCover(props: PostCoverProps): JSX.Element {

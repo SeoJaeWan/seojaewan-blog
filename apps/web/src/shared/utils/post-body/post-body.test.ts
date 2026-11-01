@@ -22,8 +22,9 @@ function text(value: string): { text: string; link: null } {
 
 const paragraph: PostBlock = { type: 'paragraph', richText: [{ text: '문단', link: null }] };
 
-// @codocs [[Chrome:Notion 블록]]
-describe('Chrome:Notion 블록', () => {
+// @codocs [[Notion 블록:지원 블록]]
+// @codocs [[Notion 블록:지원하지 않는 블록]]
+describe('Notion 블록', () => {
   it('제목 1~3, 문단, 코드 블록을 받는다', () => {
     const body = {
       blocks: [

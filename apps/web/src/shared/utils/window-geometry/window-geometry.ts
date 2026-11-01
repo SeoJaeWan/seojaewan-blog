@@ -70,7 +70,7 @@ export type MobilePreviewLayout = {
 /**
  * 모바일 창 미리보기 목록의 크기를 구한다. 카드를 원래 너비(208)로 놓은 목록이 화면 폭에서 좌우 12px 여백을 뺀 폭에 들어가면
  * 그대로 두고, 넘치면 목록을 그 폭에 맞추고 카드를 같은 너비로 줄인다.
- * @codocs [[모바일:차이]]
+ * @codocs [[작업 표시줄:모바일]]
  * @param screenWidth 화면 폭
  * @param count 카드 개수
  * @returns 목록 판과 카드 너비

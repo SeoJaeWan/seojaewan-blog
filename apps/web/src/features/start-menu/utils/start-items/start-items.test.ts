@@ -34,8 +34,8 @@ function trash(state: WorkspaceState, ids: readonly string[]): WorkspaceState {
   return result.state;
 }
 
-// @codocs [[Start 메뉴:고정됨]]
-describe('Start 메뉴:고정됨', () => {
+// @codocs [[고정:시작 화면 고정]]
+describe('고정:시작 화면 고정', () => {
   it('처음에는 File Explorer, Chrome, Blog 폴더, 처음부터 고정한 외부 링크를 고정한 순서대로 보인다', () => {
     expect(getPinnedStartItems(initial).map((item) => item.title)).toEqual([
       'File Explorer',

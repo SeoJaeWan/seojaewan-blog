@@ -36,8 +36,8 @@ describe('검색:개요', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[작업 표시줄:모바일]]
+describe('작업 표시줄:모바일', () => {
   it('좁은 화면의 검색 버튼을 누르면 검색 패널이 열리고, 다시 누르면 닫힌다', () => {
     const opened = toggleSearchPanel(initialPanelState);
     expect(opened.openPanel).toBe('search');

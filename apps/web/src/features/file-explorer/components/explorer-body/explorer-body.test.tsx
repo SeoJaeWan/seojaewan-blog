@@ -297,8 +297,8 @@ describe('파일 탐색기:조작', () => {
   });
 });
 
-// @codocs [[작업 공간:폴더 이름]]
-describe('작업 공간:폴더 이름', () => {
+// @codocs [[항목과 폴더:폴더 이름]]
+describe('항목과 폴더:폴더 이름', () => {
   it('쓸 수 없는 문자는 입력되지 않게 막고 말풍선으로 알린다', async () => {
     renderBody(BLOG_FOLDER_ID);
     await user().click(option('React'));
@@ -533,6 +533,7 @@ function dragAndDrop(element: HTMLElement): void {
 }
 
 // @codocs [[파일 탐색기:조작]]
+// @codocs [[항목 조작:끌기]]
 describe('파일 탐색기:조작 - 끌어 옮기기', () => {
   it('항목을 같은 창의 폴더 위에 놓으면 그 폴더로 옮긴다', () => {
     renderBody(BLOG_FOLDER_ID);
@@ -719,8 +720,9 @@ describe('파일 탐색기:폴더 안 검색 - 모바일 검색 줄', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[파일 탐색기:조작]]
+// @codocs [[반응형:입력 차이]]
+describe('파일 탐색기:조작', () => {
   it('모바일은 폴더를 탭하면 같은 탭에서 그 폴더로 간다', async () => {
     renderBody(BLOG_FOLDER_ID, 'mobile');
     await user().click(option('React'));

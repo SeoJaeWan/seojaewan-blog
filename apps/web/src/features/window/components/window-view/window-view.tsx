@@ -76,8 +76,8 @@ const resizeHandles = [
  * 위치는 실행 중 값이라 인라인 left·top·width·height로 주고 `transform`은 쓰지 않는다(모션 클래스의 translate·scale과 겹치지 않게).
  * @codocs [[창 동작:창 조작]]
  * @codocs [[피그마 연동:모션 클래스]]
- * @codocs [[창 동작:스냅]]
- * @codocs [[모바일:차이]]
+ * @codocs [[스냅:스냅된 창]]
+ * @codocs [[창 동작:모바일]]
  * @param props
  */
 export function WindowView(props: WindowViewProps): JSX.Element {

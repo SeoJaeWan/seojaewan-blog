@@ -25,8 +25,8 @@ function Handle(props: { callbacks: PointerDragCallbacks }) {
   );
 }
 
-// @codocs [[바탕화면:아이콘 조작]]
-describe('바탕화면:아이콘 조작 - 끌기 따라가기', () => {
+// @codocs [[항목 조작:끌기]]
+describe('항목 조작:끌기 - 끌기 따라가기', () => {
   it('끄는 도중 붙잡은 포인터가 풀려도 요소가 문서에 있으면 끌기를 이어 간다', () => {
     const onMove = vi.fn();
     render(<Handle callbacks={{ onMove }} />);

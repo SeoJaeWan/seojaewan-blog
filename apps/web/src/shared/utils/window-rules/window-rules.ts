@@ -289,7 +289,7 @@ export function openWindow(
  * 창을 복원해 맨 앞으로 가져온다. 없으면 그 글 탭 하나인 새 Chrome 창을 연다. 같은 글이 열려 있어도 새 탭을 연다.
  * 탭을 하나만 쓰는 모바일(`isSameTab`)은 새 탭 대신 그 창의 고른 탭에서 글로 간다(뒤로 가면 앞 페이지다).
  * @codocs [[창 동작:열기 규칙]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
  * @param state 지금 상태
  * @param slug 글 slug
  * @param workArea 작업 영역 크기(새 창을 열 때)
@@ -521,7 +521,7 @@ export function toggleMaximizeWindow(state: WindowState, id: string): WindowStat
 /**
  * 창을 스냅 칸에 맞춘다. 떠 있을 때의 자리(`bounds`)는 그대로 두어, 나중에 끌어서 떼면 스냅하기 전 크기로 돌아갈 수 있다.
  * Snap Assist에서 고른 창도 이 함수로 칸을 채우므로, 최소화된 창은 복원하고 맨 앞으로 가져온다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅 레이아웃]]
  * @param state 지금 상태
  * @param id 창 id
  * @param zone 채울 칸
@@ -582,7 +582,7 @@ const snapCells = {
  * 스냅 칸이 작업 영역에서 차지하는 자리를 구한다. 반반, 2:1, 반 + 4분의 1 두 칸, 4분할의 네 레이아웃이다.
  * 칸은 빈틈 없이 작업 영역을 나누고, 나눠 떨어지지 않는 1px은 오른쪽·아래 칸이 갖는다.
  * 없는 칸 번호면 작업 영역 전체를 돌려준다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅 레이아웃]]
  * @param zone 칸
  * @param workArea 작업 영역 크기
  * @returns 칸 자리
@@ -604,7 +604,7 @@ export function getSnapZoneRect(zone: SnapZone, workArea: WindowWorkArea): Windo
 
 /**
  * 한 칸을 채운 뒤 남은 칸을 칸 번호 순서로 구한다. Snap Assist가 이 차례대로 한 칸씩 제안한다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:Snap Assist]]
  * @param zone 채운 칸
  * @returns 남은 칸들
  */
@@ -617,7 +617,7 @@ export function getRemainingSnapZones(zone: SnapZone): SnapZone[] {
 /**
  * 창이 지금 화면에서 차지하는 자리를 구한다. 최대화면 작업 영역 전체, 스냅이면 그 칸이다. 떠 있으면 기억한 자리(`bounds`)이되,
  * 브라우저 화면이 줄어 제목 표시줄(200×40)이 작업 영역 밖으로 나가면 보이는 동안만 당겨 그린다. 크기는 줄이지 않는다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅 레이아웃]]
  * @codocs [[창 동작:창 조작]]
  * @param window 창
  * @param workArea 작업 영역 크기
@@ -703,7 +703,7 @@ export function setWindowBounds(state: WindowState, id: string, bounds: WindowBo
 /**
  * 최대화·스냅한 창을 끌어서 떼어 떠 있는 창으로 돌린다. 크기는 떠 있을 때의 크기이고 자리는 끄는 포인터 아래다.
  * 최대화하기 앞 모습은 지운다. 이미 떠 있는 창은 그대로 둔다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅된 창]]
  * @param state 지금 상태
  * @param id 창 id
  * @param bounds 뗀 창의 자리

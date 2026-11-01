@@ -9,8 +9,8 @@ import {
   startRestart,
 } from './restart-rules';
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:순서]]
+describe('다시 시작:순서', () => {
   it('덮기, 보여 주기, 드러내기 차례로 넘어가고, 다 덮었을 때 세대가 오른다', () => {
     const covering = startRestart(initialRestartState);
     expect(covering).toEqual({ phase: 'covering', generation: 0 });

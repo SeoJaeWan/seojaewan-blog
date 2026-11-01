@@ -123,8 +123,8 @@ describe('Start 메뉴:열기와 닫기', () => {
   });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:순서]]
+describe('다시 시작:순서', () => {
   it('전원 메뉴의 다시 시작을 고르면 Start 메뉴를 닫고 다시 시작한다', async () => {
     const startPanel = renderStartPanel();
     // jsdom에서는 Base UI 메뉴가 포인터 클릭으로 열리지 않아 키보드로 연다

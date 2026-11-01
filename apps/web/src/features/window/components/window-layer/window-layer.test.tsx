@@ -233,8 +233,9 @@ describe('디자인 기반:모션 클래스 (FLIP)', () => {
   });
 });
 
-// @codocs [[창 동작:스냅]]
-describe('창 동작:스냅', () => {
+// @codocs [[스냅:스냅 레이아웃]]
+// @codocs [[스냅:Snap Assist]]
+describe('스냅', () => {
   it('스냅 레이아웃에서 칸을 고르면 그 칸을 채우고, 남은 칸의 Snap Assist에서 고른 창이 남은 칸을 채운다', async () => {
     renderLayer(2);
     await selectSnapZone(screen.getByRole('region', { name: '창 2' }), '왼쪽 절반');
@@ -718,8 +719,8 @@ describe('창 동작:창 조작 - 크기 조절', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이 - 창 끌기', () => {
+// @codocs [[창 동작:모바일]]
+describe('창 동작:모바일 - 창 끌기', () => {
   beforeEach(() => {
     vi.stubGlobal('innerWidth', 390);
     vi.stubGlobal('innerHeight', 844);
@@ -750,8 +751,8 @@ describe('모바일:차이 - 창 끌기', () => {
   });
 });
 
-// @codocs [[창 동작:스냅]]
-describe('창 동작:스냅 - 끌어서 스냅', () => {
+// @codocs [[스냅:끌어서 스냅]]
+describe('스냅:끌어서 스냅', () => {
   beforeEach(() => {
     vi.stubGlobal('innerWidth', 1920);
     vi.stubGlobal('innerHeight', 1080);
@@ -939,8 +940,8 @@ describe('디자인 기반:모션 클래스 - 끌기', () => {
   });
 });
 
-// @codocs [[창 동작:스냅]]
-describe('창 동작:스냅 - 끌어서 떼기', () => {
+// @codocs [[스냅:스냅된 창]]
+describe('스냅:스냅된 창 - 끌어서 떼기', () => {
   beforeEach(() => {
     vi.stubGlobal('innerWidth', 1920);
     vi.stubGlobal('innerHeight', 1080);

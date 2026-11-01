@@ -16,8 +16,9 @@ import {
 
 const ORDER = ['a', 'b', 'c', 'd', 'e'] as const;
 
-// @codocs [[바탕화면:아이콘 조작]]
-describe('바탕화면:아이콘 조작', () => {
+// @codocs [[항목 조작:선택]]
+// @codocs [[항목 조작:단축키]]
+describe('항목 조작', () => {
   it('클릭하면 그 항목만 고르고 범위 선택의 시작이 된다', () => {
     expect(selectOnly('b')).toEqual({ ids: ['b'], anchorId: 'b', focusId: 'b' });
   });

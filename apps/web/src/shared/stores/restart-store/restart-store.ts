@@ -26,7 +26,7 @@ export type RestartStore = RestartState & {
  * 다시 시작의 진행을 담는 저장소. 다시 마운트하는 데스크톱 하위 트리 바깥(shell 최상위와 재부팅 화면)이 읽어,
  * 다시 마운트한 뒤에도 남는다. 다시 시작으로 지우는 대상이 아니고 브라우저에 저장하지도 않는다.
  * 단계 규칙은 `restart-rules.ts`의 순수 함수가 갖는다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:초기화 방법]]
  * @codocs [[기술 스택:상태 관리]]
  */
 export const useRestartStore = create<RestartStore>()(createRestartStore);

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Toggle } from './toggle';
 
-// @codocs [[Chrome:Notion 블록]]
+// @codocs [[Notion 블록:모양]]
 describe('Toggle', () => {
   it('기본은 접혀 있고 내용을 그리지 않는다', () => {
     render(

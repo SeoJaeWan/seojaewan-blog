@@ -60,6 +60,7 @@ function names(
 }
 
 // @codocs [[파일 탐색기:보기와 정렬]]
+// @codocs [[항목 정렬:방향 정렬]]
 describe('파일 탐색기:보기와 정렬', () => {
   it('폴더를 늘 항목보다 앞에 둔다', () => {
     expect(names([item('a', 'post'), item('z', 'folder')], 'name')).toEqual(['z', 'a']);

@@ -20,8 +20,8 @@ describe('getThumbnailScale', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이 - 창 미리보기 목록', () => {
+// @codocs [[작업 표시줄:모바일]]
+describe('작업 표시줄:모바일 - 창 미리보기 목록', () => {
   it('카드가 화면 폭 안에 들어가면 원래 너비(208)로 두고 목록은 카드에 맞춘다', () => {
     expect(getMobilePreviewLayout(390, 1)).toEqual({ listWidth: 218, cardWidth: 208 });
   });

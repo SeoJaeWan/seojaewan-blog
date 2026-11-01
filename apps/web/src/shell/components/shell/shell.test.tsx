@@ -22,7 +22,7 @@ async function openBlogFolder(): Promise<void> {
 
 // @codocs [[바탕화면:표시하는 항목]]
 describe('바탕화면:표시하는 항목', () => {
-  // @codocs [[항목 모델:외부 링크]]
+  // @codocs [[항목과 폴더:외부 링크]]
   it('처음에는 바탕화면에 휴지통, Blog 폴더, 외부 링크(GitHub)가 보이고, 주소를 비운 이력서는 보이지 않는다', () => {
     render(<Shell posts={[]} />);
     const desktop = screen.getByRole('main', { name: '바탕화면' });
@@ -237,8 +237,9 @@ describe('Start 메뉴:항목 열기', () => {
   });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:초기화 방법]]
+// @codocs [[다시 시작:순서]]
+describe('다시 시작', () => {
   afterEach(() => {
     act(() => {
       useRestartStore.setState(initialRestartState);

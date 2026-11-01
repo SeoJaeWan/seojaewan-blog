@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { PostCover } from './post-cover';
 
-// @codocs [[Chrome:Notion 블록]]
+// @codocs [[Notion 블록:모양]]
 describe('PostCover', () => {
   it('image를 그린다', () => {
     render(<PostCover image={<img alt="표지" src="a.png" />} />);

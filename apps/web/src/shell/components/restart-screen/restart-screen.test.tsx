@@ -95,8 +95,8 @@ afterEach(() => {
   useRestartStore.setState({ phase: 'idle' });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:순서]]
+describe('다시 시작:순서', () => {
   it('다시 시작하면 메뉴와 Start가 닫히고 재부팅 화면이 덮은 뒤 열린 창이 모두 닫힌다', async () => {
     const user = userEvent.setup({ advanceTimers });
     render(<Shell posts={[]} />);

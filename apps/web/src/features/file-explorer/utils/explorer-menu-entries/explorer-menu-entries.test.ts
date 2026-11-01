@@ -174,8 +174,9 @@ describe('파일 탐색기:우클릭 메뉴', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[창 동작:모바일]]
+// @codocs [[반응형:입력 차이]]
+describe('창 동작:모바일', () => {
   it('모바일 폴더 메뉴에는 새 탭에서 열기가 없다', () => {
     expect(labels(getItemMenuEntries({ ...ITEM_OPTIONS, isMobile: true }))).not.toContain(
       '새 탭에서 열기',

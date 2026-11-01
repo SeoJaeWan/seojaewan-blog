@@ -82,8 +82,8 @@ function namesIn(state: WorkspaceState, parentId: string | null): string[] {
   return getChildItems(state, parentId).map((item) => item.name);
 }
 
-// @codocs [[작업 공간:초기 구조]]
-describe('작업 공간:초기 구조', () => {
+// @codocs [[작업 공간 맞추기:초기 구조]]
+describe('작업 공간 맞추기:초기 구조', () => {
   it('바탕화면에 휴지통과 Blog 폴더를 두고, 외부 링크는 설정한 초기 위치에 둔다', () => {
     expect(namesIn(initial, null)).toEqual(['휴지통', 'Blog', 'GitHub']);
     expect(initial.items['link:side']?.parentId).toBe(BLOG_FOLDER_ID);
@@ -104,7 +104,7 @@ describe('작업 공간:초기 구조', () => {
     expect(initial.items['post:retrospective']?.parentId).toBe(BLOG_FOLDER_ID);
   });
 
-  // @codocs [[항목 모델:외부 링크]]
+  // @codocs [[항목과 폴더:외부 링크]]
   it('주소가 없는 외부 링크는 항목으로 만들지 않고 Start 고정에도 넣지 않는다', () => {
     const state = createInitialWorkspace({
       posts: [],
@@ -123,8 +123,8 @@ describe('작업 공간:초기 구조', () => {
   });
 });
 
-// @codocs [[항목 모델:식별]]
-describe('항목 모델:식별', () => {
+// @codocs [[항목과 폴더:식별]]
+describe('항목과 폴더:식별', () => {
   it('글은 post:<slug>, Notion 폴더는 경로 기반, 외부 링크는 link:<설정 id>를 id로 쓴다', () => {
     expect(Object.keys(initial.items)).toEqual(
       expect.arrayContaining([
@@ -142,8 +142,8 @@ describe('항목 모델:식별', () => {
   });
 });
 
-// @codocs [[Start 메뉴:고정됨]]
-describe('Start 메뉴:고정됨', () => {
+// @codocs [[고정:시작 화면 고정]]
+describe('고정:시작 화면 고정', () => {
   it('처음에는 File Explorer, Chrome, Blog 폴더, 처음부터 고정하도록 정한 외부 링크가 고정돼 있다', () => {
     expect(initial.startPins).toEqual([
       APP_ITEM_IDS['file-explorer'],
@@ -179,8 +179,8 @@ describe('Start 메뉴:모두', () => {
   });
 });
 
-// @codocs [[작업 표시줄:고정과 순서]]
-describe('작업 표시줄:고정과 순서', () => {
+// @codocs [[고정:작업 표시줄 고정]]
+describe('고정:작업 표시줄 고정', () => {
   it('처음에는 File Explorer와 Chrome이 고정돼 있다', () => {
     expect(initial.taskbarPins).toEqual(['file-explorer', 'chrome']);
   });
@@ -196,8 +196,8 @@ describe('작업 표시줄:고정과 순서', () => {
   });
 });
 
-// @codocs [[작업 공간:방문자별 저장]]
-describe('작업 공간:방문자별 저장', () => {
+// @codocs [[방문자 저장:저장하지 않는 것]]
+describe('방문자 저장:저장하지 않는 것', () => {
   it('휴지통은 저장하지 않아, 휴지통에 보낸 항목은 원래 자리에 둔 채 저장한다', () => {
     const trashed = expectOk(trashItems(initial, ['folder:React', 'link:github'], NOW));
     const saved = toSavedWorkspace(trashed);
@@ -230,8 +230,8 @@ describe('작업 공간:방문자별 저장', () => {
   });
 });
 
-// @codocs [[작업 공간:Notion과 맞추기]]
-describe('작업 공간:Notion과 맞추기', () => {
+// @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+describe('작업 공간 맞추기:Notion과 맞추기', () => {
   const saved = toSavedWorkspace(initial);
 
   it('새 글은 그 글의 폴더 속성에 해당하는 폴더로 들어간다', () => {
@@ -311,7 +311,7 @@ describe('작업 공간:Notion과 맞추기', () => {
     expect(after.items['link:resume']?.parentId).toBeNull();
   });
 
-  // @codocs [[항목 모델:외부 링크]]
+  // @codocs [[항목과 폴더:외부 링크]]
   it('저장된 상태에 있던 외부 링크의 주소가 비워지면 항목과 Start 고정에서 지운다', () => {
     const state = reconcileWorkspace(toSavedWorkspace(initial), {
       ...testCatalog,
@@ -378,8 +378,8 @@ describe('작업 공간:Notion과 맞추기', () => {
   });
 });
 
-// @codocs [[작업 공간:Notion과 맞추기]]
-describe('작업 공간:Notion과 맞추기 - 깨진 상태 복구', () => {
+// @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+describe('작업 공간 맞추기:Notion과 맞추기 - 깨진 상태 복구', () => {
   it('상위로 올라가다 자기에게 돌아오는 폴더는 바탕화면으로 옮긴다', () => {
     const items = {
       ...initial.items,
@@ -423,8 +423,8 @@ describe('작업 공간:Notion과 맞추기 - 깨진 상태 복구', () => {
   });
 });
 
-// @codocs [[작업 공간:폴더 이름]]
-describe('작업 공간:폴더 이름', () => {
+// @codocs [[항목과 폴더:폴더 이름]]
+describe('항목과 폴더:폴더 이름', () => {
   it('비어 있거나 공백만 있으면 안 된다', () => {
     expect(validateFolderName('', [])).toEqual({ ok: false, reason: 'empty' });
     expect(validateFolderName('   ', [])).toEqual({ ok: false, reason: 'empty' });
@@ -531,8 +531,9 @@ describe('작업 공간:폴더 이름', () => {
   });
 });
 
-// @codocs [[작업 공간:배치]]
-describe('작업 공간:배치', () => {
+// @codocs [[항목과 폴더:위치와 옮기기]]
+// @codocs [[항목 조작:잘라내기와 붙여넣기]]
+describe('항목과 폴더:위치와 옮기기', () => {
   it('폴더, 글, 외부 링크를 바탕화면이나 어느 폴더에나 옮길 수 있다', () => {
     const state = expectOk(
       moveItems(
@@ -635,8 +636,9 @@ describe('작업 공간:배치', () => {
   });
 });
 
-// @codocs [[작업 공간:휴지통]]
-describe('작업 공간:휴지통', () => {
+// @codocs [[휴지통:기본 규칙]]
+// @codocs [[휴지통:복원]]
+describe('휴지통', () => {
   it('폴더를 보내면 안의 항목도 함께 휴지통에 간다', () => {
     const state = expectOk(trashItems(initial, ['folder:React'], NOW));
     expect(isItemInTrash(state, 'folder:React')).toBe(true);

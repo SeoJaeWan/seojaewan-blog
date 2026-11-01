@@ -22,7 +22,7 @@ type MessageBoxReservedNameProps = {
 /**
  * 폴더 이름을 예약된 장치 이름으로 정했을 때 보여 주는 메시지 상자(피그마 조립 MessageBox/ReservedName)를 그린다.
  * 바탕화면과 탐색기가 폴더 이름 바꾸기에서 함께 써서 shared에 둔다. 띄우는 위치와 막(모달)은 쓰는 곳이 정한다.
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @codocs [[디자인 시스템:조립]]
  * @param props
  */

@@ -121,7 +121,7 @@ describe('바탕화면:표시하는 항목', () => {
     expect(screen.queryByText('가')).not.toBeInTheDocument();
   });
 
-  // @codocs [[항목 모델:외부 링크]]
+  // @codocs [[항목과 폴더:외부 링크]]
   it('주소를 비워 둔 외부 링크(이력서)는 보이지 않는다', () => {
     render(<DesktopIconsLayer />);
     expect(screen.queryByText('이력서')).not.toBeInTheDocument();
@@ -181,8 +181,12 @@ describe('창 동작:열기 규칙', () => {
   });
 });
 
-// @codocs [[바탕화면:아이콘 조작]]
-describe('바탕화면:아이콘 조작', () => {
+// @codocs [[항목 조작:선택]]
+// @codocs [[항목 조작:열기]]
+// @codocs [[항목 조작:끌기]]
+// @codocs [[항목 조작:잘라내기와 붙여넣기]]
+// @codocs [[항목 조작:단축키]]
+describe('항목 조작', () => {
   it('클릭하면 고르고, Ctrl + 클릭은 더하거나 빼고, 빈 곳을 누르면 선택을 지운다', async () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
@@ -364,8 +368,8 @@ describe('바탕화면:아이콘 조작', () => {
   });
 });
 
-// @codocs [[바탕화면:아이콘 조작]]
-describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
+// @codocs [[항목 조작:끌기]]
+describe('항목 조작:끌기 - 탐색기 창으로 끌기', () => {
   it('아이콘을 탐색기 창 위에 놓으면 그 창이 보는 폴더로 옮긴다', () => {
     const explorer = document.createElement('div');
     explorer.setAttribute('data-drop-target', 'blog');
@@ -452,8 +456,8 @@ describe('바탕화면:아이콘 조작 - 탐색기 창으로 끌기', () => {
   });
 });
 
-// @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
-describe('바탕화면:빈 곳 우클릭 메뉴', () => {
+// @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+describe('바탕화면 우클릭 메뉴:빈 곳', () => {
   it('빈 곳을 우클릭하면 보기·정렬 기준·새로 고침·붙여넣기·새로 만들기 메뉴를 열고 선택을 지운다', async () => {
     render(<DesktopIconsLayer />);
     await user().click(icon('Blog'));
@@ -511,8 +515,8 @@ describe('바탕화면:빈 곳 우클릭 메뉴', () => {
   });
 });
 
-// @codocs [[바탕화면:아이콘 우클릭 메뉴]]
-describe('바탕화면:아이콘 우클릭 메뉴', () => {
+// @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+describe('바탕화면 우클릭 메뉴:아이콘', () => {
   it('항목 종류마다 메뉴가 다르고, 고정된 항목은 고정 해제를 보인다', () => {
     render(<DesktopIconsLayer />);
     expect(openMenu(icon('Blog'))).toEqual([
@@ -654,8 +658,8 @@ describe('바탕화면:아이콘 우클릭 메뉴', () => {
   });
 });
 
-// @codocs [[작업 공간:폴더 이름]]
-describe('작업 공간:폴더 이름', () => {
+// @codocs [[항목과 폴더:폴더 이름]]
+describe('항목과 폴더:폴더 이름', () => {
   /**
    * Blog 폴더의 이름 바꾸기를 시작하고 입력창을 비운다.
    * @returns 입력창
@@ -729,8 +733,9 @@ describe('작업 공간:폴더 이름', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[바탕화면 아이콘:모바일]]
+// @codocs [[반응형:입력 차이]]
+describe('바탕화면 아이콘:모바일', () => {
   beforeEach(() => {
     useMobileScreen();
   });

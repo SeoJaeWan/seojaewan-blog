@@ -75,7 +75,8 @@ type ExplorerWindowLayerProps = {
  * @codocs [[파일 탐색기:조작]]
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[파일 탐색기:휴지통 보기]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
+ * @codocs [[파일 탐색기:모바일]]
  * @param props
  */
 export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Element {

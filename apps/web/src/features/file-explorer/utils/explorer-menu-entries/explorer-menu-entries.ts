@@ -228,7 +228,8 @@ export function getEmptyMenuEntries(options: EmptyMenuOptions): MenuPopupEntry[]
  * 이미 Start에 고정된 항목은 `시작 화면에서 고정 해제`다. 휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없다.
  * 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * @codocs [[파일 탐색기:우클릭 메뉴]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
+ * @codocs [[반응형:입력 차이]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 우클릭한 항목과 동작
  * @returns 메뉴 항목

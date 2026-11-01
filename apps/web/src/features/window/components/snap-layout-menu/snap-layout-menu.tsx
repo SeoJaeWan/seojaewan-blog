@@ -40,7 +40,7 @@ const OPEN_TRIGGER_CLASS_NAME =
  * 버튼을 누르면 최대화한다. 선택지가 열려 있는 동안 최대화 버튼은 Hover 모습이다(피그마 `State=Hover`).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅 레이아웃]]
  * @param props
  */
 export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {

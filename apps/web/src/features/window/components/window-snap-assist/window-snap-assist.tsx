@@ -41,7 +41,7 @@ type WindowSnapAssistProps = {
 /**
  * 창 하나를 스냅한 뒤 남은 칸 자리에 Snap Assist를 띄운다. 제안 카드는 실제 창 조립을 `WindowThumbnail` 비율로 줄여 보여 준다.
  * 카드를 고르면 그 창이 남은 칸을 채우고, Esc나 카드 밖(빈 곳)을 누르면 닫는다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:Snap Assist]]
  * @param props
  */
 export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {

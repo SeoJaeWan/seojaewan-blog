@@ -120,7 +120,7 @@ export function resizeWindowBounds(
 /**
  * 최대화·스냅한 창을 끌어서 뗄 때 떠 있는 창의 자리를 구한다. 크기는 떠 있을 때의 크기로 돌아가고,
  * 누른 포인터가 제목 표시줄에서 차지하던 가로 비율과 위쪽에서의 거리를 지켜 포인터 아래에 놓는다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:스냅된 창]]
  * @param rect 떼기 전 화면에서 차지하던 자리(최대화면 작업 영역, 스냅이면 그 칸)
  * @param size 떠 있을 때의 크기
  * @param grab 누른 자리
@@ -151,7 +151,7 @@ export function getDetachedBounds(
  * 끄는 포인터 자리로 놓았을 때 채울 곳을 정한다. 왼쪽·오른쪽 끝이면 그쪽 절반, 끝의 위·아래 모서리 근처면 그 4분의 1,
  * 위쪽 끝이면 최대화(위쪽 끝의 왼쪽·오른쪽 모서리 근처면 위쪽 4분의 1)다. 포인터가 작업 영역 밖(작업 표시줄 위나 화면 밖)에
  * 있어도 가장 가까운 끝으로 본다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:끌어서 스냅]]
  * @param pointer 포인터 자리
  * @param workArea 작업 영역 크기
  * @returns 채울 곳. 끝 근처가 아니면 null
@@ -189,7 +189,7 @@ export function getDragSnapTarget(
 
 /**
  * 끌어서 스냅할 곳이 작업 영역에서 차지하는 자리를 구한다. 끄는 동안 미리 보여 주는 판(SnapPreview)의 자리다.
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:끌어서 스냅]]
  * @param target 채울 곳
  * @param workArea 작업 영역 크기
  * @returns 자리

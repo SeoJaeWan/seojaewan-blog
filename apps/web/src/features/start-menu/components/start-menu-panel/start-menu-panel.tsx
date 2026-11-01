@@ -29,7 +29,7 @@ type StartMenuPanelProps = {
  * 본문과 전원 버튼은 쓰는 쪽이 넣는다. 열고 닫기, 검색 입력, 프로필 동작은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:구성]]
- * @codocs [[모바일:차이]]
+ * @codocs [[Start 메뉴:모바일]]
  * @param props
  */
 export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {

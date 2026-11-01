@@ -181,8 +181,8 @@ describe('작업 표시줄:창 미리보기 - 마우스를 올려 열기', () =>
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이 - 창 미리보기 목록', () => {
+// @codocs [[작업 표시줄:모바일]]
+describe('작업 표시줄:모바일 - 창 미리보기 목록', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });

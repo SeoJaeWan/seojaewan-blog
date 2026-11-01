@@ -43,7 +43,7 @@ const gridCellSchema = z.object({ column: z.int().nonnegative(), row: z.int().no
 
 /**
  * 저장된 작업 공간의 스키마. 방문자 브라우저의 값은 손댈 수 있고 예전 모양일 수 있어 단언하지 않고 검증한다.
- * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[방문자 저장:저장분 읽기]]
  * @codocs [[코드 작성 규칙:타입]]
  */
 export const savedWorkspaceSchema = z.object({
@@ -71,8 +71,8 @@ export const savedWorkspaceSchema = z.object({
 /**
  * 저장분을 되살린다. 스키마에 맞으면 지금 글 색인·외부 링크 설정과 맞추고(`reconcileWorkspace`),
  * 없거나 맞지 않아 읽을 수 없으면 초기 구조에서 다시 시작한다.
- * @codocs [[작업 공간:Notion과 맞추기]]
- * @codocs [[작업 공간:초기 구조]]
+ * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+ * @codocs [[작업 공간 맞추기:초기 구조]]
  * @param saved 저장분(검증 전)
  * @param catalog 글 색인과 외부 링크 설정
  * @returns 작업 공간 상태

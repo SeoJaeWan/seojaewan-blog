@@ -25,7 +25,7 @@ export async function getPostIndex(): Promise<PostSummary[]> {
  * 보내기 전에 코드 강조(Shiki)와 수식(KaTeX)을 서버에서 처리한다.
  * @codocs [[코드 작성 규칙:React와 Next.js]]
  * @codocs [[콘텐츠 원천:결정]]
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:지원 블록]]
  * @codocs [[기술 스택:글 본문 처리]]
  * @param slug 글 slug
  * @returns 본문. 색인에 없는 글이면 null

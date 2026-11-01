@@ -15,7 +15,7 @@ type BookmarkProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 /**
  * 글 본문의 링크 카드(피그마 Bookmark)를 그린다. 글 페이지에 쓴다.
  * 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:모양]]
  * @param props
  */
 export function Bookmark(props: BookmarkProps): JSX.Element {

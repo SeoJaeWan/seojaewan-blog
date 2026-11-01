@@ -46,8 +46,8 @@ function DeviceText(): string {
   return useDevice();
 }
 
-// @codocs [[모바일:기준]]
-describe('모바일:기준', () => {
+// @codocs [[반응형:기준]]
+describe('반응형:기준', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });

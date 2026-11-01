@@ -90,7 +90,7 @@ type ItemMenuOptions = {
 /**
  * 바탕화면 빈 곳 우클릭 메뉴(피그마 Menu/Desktop, 하위 메뉴 Menu/ViewSubmenu·SortSubmenu·NewSubmenu)의 항목을 만든다.
  * 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
- * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+ * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 지금 설정과 동작
  * @returns 메뉴 항목
@@ -119,8 +119,8 @@ export function getDesktopMenuEntries(options: DesktopMenuOptions): MenuPopupEnt
 /**
  * 바탕화면 빈 곳 메뉴의 보기 하위 메뉴(피그마 Menu/ViewSubmenu) 항목을 만든다.
  * 모바일은 늘 자동 정렬이라 아이콘 자동 정렬 항목을 고를 수 없다.
- * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
- * @codocs [[모바일:차이]]
+ * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
+ * @codocs [[바탕화면 아이콘:모바일]]
  * @param options 지금 설정과 동작
  * @returns 메뉴 항목
  */
@@ -153,7 +153,7 @@ export function getDesktopViewMenuEntries(options: DesktopViewMenuOptions): Menu
 
 /**
  * 바탕화면 빈 곳 메뉴의 정렬 기준 하위 메뉴(피그마 Menu/SortSubmenu) 항목을 만든다. 하나를 고르는 선택지다.
- * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+ * @codocs [[바탕화면 우클릭 메뉴:빈 곳]]
  * @param options 지금 정렬 기준과 동작
  * @returns 메뉴 항목
  */
@@ -180,7 +180,7 @@ export function getDesktopSortMenuEntries(options: DesktopSortMenuOptions): Menu
  * 아이콘 우클릭 메뉴(피그마 Menu/Folder·Post·Link·RecycleBin·Multiple)의 항목을 만든다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * 이미 Start에 고정된 항목은 `시작 화면에 고정` 대신 `시작 화면에서 고정 해제`다. 휴지통으로 보낼 수 없는 항목은 삭제를 고를 수 없고,
  * 휴지통이 비었으면 휴지통 비우기를 고를 수 없다(탐색기와 같다).
- * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 우클릭한 항목과 동작

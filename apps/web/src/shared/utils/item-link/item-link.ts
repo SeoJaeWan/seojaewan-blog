@@ -4,7 +4,7 @@ import type { WorkspaceItem } from '@/shared/utils/workspace-rules/workspace-rul
 
 /**
  * 링크 복사에 쓸 항목의 링크. 글은 공유 링크(`/posts/<slug>`), 외부 링크는 그 주소다. 그 밖의 항목은 링크가 없다.
- * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @param item 항목
  * @param origin 블로그 주소의 출처(`https://…`)

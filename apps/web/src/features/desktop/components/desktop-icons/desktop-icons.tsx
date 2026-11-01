@@ -63,8 +63,8 @@ type DesktopIconsProps = Omit<ComponentProps<'div'>, 'children'> & {
  * 아이콘을 열면(데스크톱은 더블클릭, 모바일은 탭) `onIconOpen`으로 알린다. 선택·끌기·우클릭 같은 동작은 쓰는 곳이
  * 영역 속성과 `getIconProps`로 붙인다. 영역의 크기와 위치는 쓰는 곳(화면 배치)이 정한다.
  * @codocs [[디자인 시스템:조립]]
- * @codocs [[모바일:차이]]
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:모바일]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param props
  */
 export function DesktopIcons(props: DesktopIconsProps): JSX.Element {

@@ -34,7 +34,7 @@ export type PanelStore = PanelState & {
  * 열린 패널이 닫히거나 다른 패널로 바뀌면 닫힌 패널의 검색어도 지운다(`[[검색:입력칸]]`).
  * 열림 상태는 새로고침 뒤에 남지 않으므로 `persist`를 쓰지 않는다. 다시 시작하면 닫히도록 초기화 함수를 등록한다.
  * @codocs [[기술 스택:상태 관리]]
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:되돌리는 상태]]
  */
 export const usePanelStore = create<PanelStore>()(createPanelStore);
 

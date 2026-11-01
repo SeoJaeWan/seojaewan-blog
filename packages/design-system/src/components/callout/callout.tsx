@@ -12,7 +12,7 @@ type CalloutProps = Omit<ComponentProps<'div'>, 'children'> & {
 /**
  * 글 본문의 강조 상자(피그마 Callout)를 그린다. 아이콘은 `icon`, 글은 `children` 슬롯으로 채운다.
  * 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
- * 색과 모서리는 토큰 한 가지 모양이다(@codocs [[Chrome:Notion 블록]]).
+ * 색과 모서리는 토큰 한 가지 모양이다(@codocs [[Notion 블록:모양]]).
  * @param props
  */
 export function Callout(props: CalloutProps): JSX.Element {

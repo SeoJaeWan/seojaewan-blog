@@ -163,7 +163,8 @@ const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
  * @codocs [[파일 탐색기:우클릭 메뉴]]
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @codocs [[파일 탐색기:폴더 안 검색]]
- * @codocs [[모바일:차이]]
+ * @codocs [[반응형:입력 차이]]
+ * @codocs [[파일 탐색기:모바일]]
  * @param props
  */
 export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
@@ -402,6 +403,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
    * 끈 항목을 놓는다. 같은 창의 폴더, 탐색 창 칸, 다른 탐색기 창, 바탕화면(빈 곳·폴더·휴지통) 위면 그곳으로 옮긴다.
    * 놓을 곳이 아니면(옮길 수 없는 곳 포함) 제자리다.
    * @codocs [[파일 탐색기:조작]]
+   * @codocs [[항목 조작:끌기]]
    * @param result 놓은 결과
    */
   function handleItemDrop(result: ItemDropResult): void {
@@ -507,7 +509,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
 
   /**
    * 잘라낸 항목을 지금 위치로 옮기고, 잘라낸 것을 비운 뒤 붙여넣은 항목을 고른다. 옮길 수 없으면 제자리다.
-   * @codocs [[작업 공간:배치]]
+   * @codocs [[항목 조작:잘라내기와 붙여넣기]]
    */
   function paste(): void {
     if (pasteIds === null || !getWorkspace().moveItems(pasteIds, location).ok) {

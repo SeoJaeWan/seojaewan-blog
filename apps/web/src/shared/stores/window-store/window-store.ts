@@ -79,7 +79,7 @@ type WindowActions = {
  * 열린 창과 창 순서를 갖는 화면 저장소다. 규칙은 `window-rules.ts`의 순수 함수에 있고, 여기서는 그 함수만 부른다.
  * 열린 창은 브라우저에 저장하지 않으므로 `persist`를 쓰지 않는다. 다시 시작하면 처음 상태로 돌아가도록 초기화 함수를 등록한다.
  * @codocs [[기술 스택:상태 관리]]
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:되돌리는 상태]]
  * @codocs [[창 동작:새로고침과 첫 진입]]
  */
 export const useWindowStore = create<WindowState & WindowUiState & WindowActions>()(

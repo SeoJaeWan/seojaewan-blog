@@ -42,7 +42,7 @@ const CROSS_AXIS_WEIGHT = 2;
 
 /**
  * 항목 하나만 고른다(클릭, 방향키).
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:선택]]
  * @param id 고를 항목 id
  * @returns 새 선택
  */
@@ -52,7 +52,7 @@ export function selectOnly(id: string): Selection {
 
 /**
  * 항목을 선택에 더하거나 뺀다(Ctrl + 클릭). 더하거나 뺀 항목이 범위 선택의 시작이 된다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:선택]]
  * @param selection 지금 선택
  * @param id 더하거나 뺄 항목 id
  * @returns 새 선택
@@ -69,8 +69,8 @@ export function toggleSelection(selection: Selection, id: string): Selection {
 /**
  * 범위 선택의 시작 항목부터 항목까지 표시 순서로 고른다(Shift + 클릭, Shift + 방향키). 시작 항목이 없으면 그 항목 하나다.
  * 시작 항목은 그대로 두어 이어서 범위를 바꿀 수 있다.
- * @codocs [[바탕화면:아이콘 조작]]
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[항목 조작:선택]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param selection 지금 선택
  * @param orderedIds 표시 순서의 항목 id(바탕화면은 격자 순서)
  * @param id 범위의 끝 항목 id
@@ -93,7 +93,7 @@ export function selectRange(
 
 /**
  * 모든 항목을 고른다(Ctrl + A). 포커스는 그대로 두고, 없으면 첫 항목이다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:단축키]]
  * @param selection 지금 선택
  * @param orderedIds 표시 순서의 항목 id
  * @returns 새 선택
@@ -105,7 +105,7 @@ export function selectAll(selection: Selection, orderedIds: readonly string[]): 
 
 /**
  * 끄는 사각형에 걸친 항목을 고른다. 더하기(Ctrl)면 끌기 전 선택에 걸친 항목을 더한다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:선택]]
  * @param base 끌기를 시작할 때의 선택
  * @param hitIds 사각형에 걸친 항목 id(표시 순서)
  * @param isAdditive 끌기 전 선택에 더할지
@@ -147,7 +147,7 @@ export function pruneSelection(selection: Selection, existingIds: readonly strin
 /**
  * 항목들을 지운 뒤 포커스와 선택을 옮길 항목을 찾는다. 지운 항목 가운데 마지막 것 다음(표시 순서)의 남은 항목이고,
  * 없으면 마지막 지운 항목 앞의 가장 가까운 남은 항목, 그것도 없으면 null(영역)이다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:단축키]]
  * @param orderedIds 지우기 전 표시 순서의 항목 id
  * @param removedIds 지운 항목 id
  * @returns 옮길 항목 id. 없으면 null
@@ -170,7 +170,7 @@ export function getIdAfterRemoval(
 /**
  * 격자에서 방향키 방향의 옆 항목을 찾는다. 그 방향에 있는 항목 가운데 가장 가까운 것이고,
  * 다른 축으로 벗어난 거리에 무게를 더 주어 같은 줄(열)의 항목을 먼저 고른다. 그 방향에 항목이 없으면 null이다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:단축키]]
  * @param cells 항목 id별 칸
  * @param fromId 지금 항목 id
  * @param direction 방향

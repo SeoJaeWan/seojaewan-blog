@@ -40,8 +40,10 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-// @codocs [[작업 공간:방문자별 저장]]
-describe('작업 공간:방문자별 저장', () => {
+// @codocs [[방문자 저장:저장하는 것]]
+// @codocs [[방문자 저장:저장하지 않는 것]]
+// @codocs [[방문자 저장:저장분 읽기]]
+describe('방문자 저장', () => {
   it('수화하기 전에는 저장분을 읽지 않고 초기 구조로 그린다', () => {
     writeStorage({ ...initialSaved(), startAllView: 'list' });
     expect(useWorkspaceStore.getState().startAllView).toBe('category');
@@ -121,8 +123,8 @@ describe('작업 공간:방문자별 저장', () => {
   });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:되돌리는 상태]]
+describe('다시 시작:되돌리는 상태', () => {
   it('다시 시작하면 폴더·배치·휴지통·설정을 처음 상태로 돌리고 브라우저 저장분을 지운다', () => {
     hydrateWorkspaceStore(POSTS);
     const store = useWorkspaceStore.getState();
@@ -143,8 +145,8 @@ describe('작업 공간:다시 시작', () => {
   });
 });
 
-// @codocs [[작업 공간:폴더 이름]]
-describe('작업 공간:폴더 이름', () => {
+// @codocs [[항목과 폴더:폴더 이름]]
+describe('항목과 폴더:폴더 이름', () => {
   it('방문자가 만든 폴더는 UUID id를 받고, 거부된 조작은 이유를 돌려준다', () => {
     const result = useWorkspaceStore.getState().createFolder(null);
     expect(result.ok && /^[0-9a-f-]{36}$/.test(result.id)).toBe(true);

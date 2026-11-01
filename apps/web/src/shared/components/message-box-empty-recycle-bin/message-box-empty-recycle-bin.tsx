@@ -24,7 +24,7 @@ type MessageBoxEmptyRecycleBinProps = {
  * 휴지통 비우기를 눌렀을 때 보여 주는 메시지 상자(피그마 조립 MessageBox/EmptyRecycleBin)를 그린다.
  * 탐색기 기능에 있던 조립으로, 바탕화면의 휴지통 비우기가 함께 써서 shared에 둔다. 띄우는 위치와 막(모달)은 쓰는 곳이 정한다.
  * 앱은 `EMPTY_RECYCLE_BIN_MESSAGE`를 `MessageBoxDialog`에 넘겨 모달로 띄운다.
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:비우기]]
  * @codocs [[디자인 시스템:조립]]
  * @param props
  */
