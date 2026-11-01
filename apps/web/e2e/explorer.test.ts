@@ -36,10 +36,10 @@ test('탐색기에서 폴더를 옮겨 다니고, 탭을 열고 닫는다', asyn
   await explorer
     .getByRole('tab', { name: /바탕 화면/ })
     .locator('..')
-    .getByRole('button', { name: '탭 닫기' })
+    .getByLabel('탭 닫기')
     .click();
   await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
-  await explorer.getByRole('button', { name: '탭 닫기' }).click();
+  await explorer.getByLabel('탭 닫기').click();
   await expect(explorer).not.toBeAttached();
 });
 

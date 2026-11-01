@@ -276,9 +276,6 @@ function restoreReview(): void {
   useWorkspaceStore.getState().moveItems(['post:b'], BLOG_FOLDER_ID);
 }
 
-// 자세히 보기의 열 제목 버튼이 listbox 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
-// (임의 작업 문서의 "탐색기 목록 열 제목" 항목).
-const DETAILS_RULE = { id: 'aria-required-children', enabled: false } as const;
 // 메뉴와 메시지 상자(Base UI)는 닫는 애니메이션이 끝나기 전까지 포커스 가드(aria-hidden이면서 포커스를 받는 요소)를 남긴다.
 // 외부 라이브러리가 만드는 요소라 메뉴나 메시지 상자를 여는 스토리에서만 이 규칙을 끈다.
 const FOCUS_GUARD_RULE = { id: 'aria-hidden-focus', enabled: false } as const;
@@ -348,7 +345,6 @@ export const Select: Story = {
 
 /** 보통 아이콘 보기에서 자세히 보기로 바꾸고 열 제목으로 정렬한다 */
 export const ViewAndSort: Story = {
-  parameters: { a11y: { config: { rules: [DETAILS_RULE] } } },
   play: async ({ canvasElement, args, step }) => {
     const { onNavigate: handleNavigate } = args;
     const canvas = within(canvasElement);
@@ -426,7 +422,13 @@ export const RenameAndDelete: Story = {
       await user.clear(field);
       await user.type(field, 'a*');
       await expect(field).toHaveValue('a');
-      await expect(screen.getByRole('tooltip')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+      // @codocs [[접근성:역할]]
+      const balloon = screen.getByRole('alert');
+      await expect(balloon).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+      await expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveAttribute(
+        'aria-describedby',
+        balloon.id,
+      );
     });
 
     // @codocs [[파일 탐색기:조작]]
@@ -557,7 +559,7 @@ export const ContextMenu: Story = {
 
 /** 휴지통을 열어 보고, 항목을 복원하고, 비운다 */
 export const RecycleBin: Story = {
-  parameters: { a11y: { config: { rules: [DETAILS_RULE, FOCUS_GUARD_RULE] } } },
+  parameters: { a11y: { config: { rules: [FOCUS_GUARD_RULE] } } },
   args: { location: RECYCLE_BIN_ID },
   beforeEach: () => {
     useWorkspaceStore.getState().trashItems(['post:b']);
@@ -629,22 +631,35 @@ export const RecycleBin: Story = {
       }
     });
 
-    await step('휴지통 비우기를 고르면 메시지 상자를 보인다', async () => {
-      await userEvent.pointer({ keys: '[MouseRight]', target: getList(canvasElement) });
-      await user.click(await findMenuItem(/휴지통 비우기/));
-      await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
-      await expect(getNamesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
-      await user.keyboard('{Escape}');
-      await waitForPopupGone('alertdialog');
-    });
+    // @codocs [[접근성:포커스]]
+    await step(
+      '휴지통 비우기를 고르면 메시지 상자를 보이고 닫으면 항목 자리로 돌아온다',
+      async () => {
+        await userEvent.pointer({ keys: '[MouseRight]', target: getList(canvasElement) });
+        await user.click(await findMenuItem(/휴지통 비우기/));
+        await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
+        await expect(getNamesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
+        await user.keyboard('{Escape}');
+        await waitForPopupGone('alertdialog');
+        await waitFor(() =>
+          expect(canvasElement.querySelector('[data-window-focus]')).toHaveFocus(),
+        );
+      },
+    );
 
     // @codocs [[파일 탐색기:휴지통 보기]]
-    await step('휴지통 비우기 버튼을 누르면 메시지 상자를 보인다', async () => {
-      await user.click(canvas.getByRole('button', { name: '휴지통 비우기' }));
-      await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
-      await user.keyboard('{Escape}');
-      await waitForPopupGone('alertdialog');
-    });
+    // @codocs [[접근성:포커스]]
+    await step(
+      '휴지통 비우기 버튼을 누르면 메시지 상자를 보이고 취소하면 버튼으로 돌아온다',
+      async () => {
+        const emptyButton = canvas.getByRole('button', { name: '휴지통 비우기' });
+        await user.click(emptyButton);
+        await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await waitForPopupGone('alertdialog');
+        await waitFor(() => expect(emptyButton).toHaveFocus());
+      },
+    );
 
     await step('복원을 누르면 고른 항목을 원래 위치로 돌려놓는다', async () => {
       await user.click(within(getList(canvasElement)).getByRole('option', { name: /^회고/ }));
@@ -664,7 +679,6 @@ export const RecycleBin: Story = {
 
 /** 휴지통에 보낸 폴더 안의 항목을 검색한다 */
 export const RecycleBinFolder: Story = {
-  parameters: { a11y: { config: { rules: [DETAILS_RULE] } } },
   args: { location: RECYCLE_BIN_ID },
   beforeEach: () => {
     useWorkspaceStore.getState().trashItems(['folder:React']);
@@ -689,7 +703,6 @@ export const RecycleBinFolder: Story = {
 
 /** 항목을 끌어 폴더, 다른 창 본문, 바탕 화면에 놓는다 */
 export const DragItems: Story = {
-  parameters: { a11y: { config: { rules: [DETAILS_RULE] } } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup({ pointerEventsCheck: 0 });

@@ -7,7 +7,7 @@ import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 import { Shell } from '@/shell/shell';
-import { SHELL_STORY_POSTS, WINDOW_STORY_A11Y } from '@/shell/story-data';
+import { SHELL_STORY_POSTS } from '@/shell/story-data';
 import { chooseRestartInStory } from '@/shell/story-restart';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
@@ -16,7 +16,7 @@ import { chooseRestartInStory } from '@/shell/story-restart';
 const meta = {
   title: 'Features/Shell/RestartScreen',
   component: Shell,
-  parameters: { layout: 'fullscreen', a11y: WINDOW_STORY_A11Y },
+  parameters: { layout: 'fullscreen' },
   args: { posts: SHELL_STORY_POSTS },
   beforeEach: resetStoryStores,
 } satisfies Meta<typeof Shell>;

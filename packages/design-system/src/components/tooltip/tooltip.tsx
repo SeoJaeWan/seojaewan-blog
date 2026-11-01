@@ -30,6 +30,7 @@ const materialClassNames = {
 
 /**
  * 짧은 안내 말풍선(피그마 Tooltip)을 그린다. 띄우는 위치는 쓰는 곳(Popover)이 정한다.
+ * 스스로 뜨는 오류 안내는 쓰는 곳이 `role="alert"`를 넘겨 스크린 리더가 바로 읽게 한다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @param props
  */

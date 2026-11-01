@@ -92,14 +92,10 @@ const meta = {
   component: ChromeLayerHost,
   parameters: {
     layout: 'fullscreen',
-    // 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
-    // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다.
+    // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
     a11y: {
       config: {
-        rules: [
-          { id: 'color-contrast', enabled: false },
-          { id: 'aria-required-children', enabled: false },
-        ],
+        rules: [{ id: 'color-contrast', enabled: false }],
       },
     },
   },
@@ -168,7 +164,7 @@ function tabTitles(): string[] {
  * @returns 닫기 버튼
  */
 function closeButtonOf(tab: HTMLElement | undefined): HTMLElement {
-  return within(tab?.parentElement ?? document.body).getByRole('button', { name: '탭 닫기' });
+  return within(tab?.parentElement ?? document.body).getByLabelText('탭 닫기');
 }
 
 /**
@@ -316,6 +312,18 @@ export const Tabs: Story = {
       await expect(screen.getAllByRole('tab')).toHaveLength(2);
     });
 
+    // @codocs [[접근성:포커스]]
+    await step('탭에서 Delete를 누르면 그 탭을 닫고 고른 탭으로 포커스를 옮긴다', async () => {
+      await userEvent.click(screen.getByRole('button', { name: '새 탭' }));
+      await expect(screen.getAllByRole('tab')).toHaveLength(3);
+      screen.getAllByRole('tab')[2]?.focus();
+      await userEvent.keyboard('{Delete}');
+      await expect(screen.getAllByRole('tab')).toHaveLength(2);
+      await waitFor(async () => {
+        await expect(screen.getByRole('tab', { selected: true })).toHaveFocus();
+      });
+    });
+
     await step('탭을 가운데 클릭하면 그 탭을 닫는다', async () => {
       await fireEvent(
         screen.getAllByRole('tab')[0] ?? document.body,
@@ -325,7 +333,7 @@ export const Tabs: Story = {
     });
 
     await step('마지막 탭을 닫으면 창을 닫는다', async () => {
-      await userEvent.click(screen.getByRole('button', { name: '탭 닫기' }));
+      await userEvent.click(screen.getByLabelText('탭 닫기'));
       await expect(args.onClose).toHaveBeenCalledTimes(1);
     });
   },

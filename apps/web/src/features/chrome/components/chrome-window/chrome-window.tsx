@@ -1,3 +1,4 @@
+import { Tabs } from '@base-ui/react/tabs';
 import type {
   ComponentProps,
   JSX,
@@ -61,7 +62,7 @@ type ChromeWindowProps = WindowFrameControlProps &
     tabs: readonly ChromeWindowTab[];
     /** 탭을 눌렀을 때. 누른 탭의 차례를 받는다 */
     onTabSelect?: (index: number) => void;
-    /** 탭의 닫기 버튼을 누르거나 탭을 가운데 클릭했을 때. 닫을 탭의 차례를 받는다 */
+    /** 탭의 닫기 버튼을 누르거나 탭을 가운데 클릭하거나 탭에서 Delete를 눌렀을 때. 닫을 탭의 차례를 받는다 */
     onTabClose?: (index: number) => void;
     /** 탭을 끌어 다른 자리로 옮길 때. 옮길 탭의 차례와 옮길 자리를 받는다 */
     onTabMove?: (from: number, to: number) => void;
@@ -95,13 +96,14 @@ const MIDDLE_BUTTON = 1;
  * mobile은 앱 아이콘·제목과 최소화·닫기 버튼을 두고, 도구 모음(BrowserToolbar) 아래에 탭 내용 자리를 둔다.
  * 모바일은 늘 전체화면이라 최대화 버튼과 도구 모음의 앞으로·새로고침을 빼고(⋮ 메뉴로 옮긴다), 탭 하나만 써서 탭 줄이 없다.
  * 창 층이 넘기는 창 동작 속성(활성, 배치, 창 버튼)과 제목 표시줄 누르기(창 끌기)는 WindowFrame에 그대로 넘긴다.
- * 탭은 클릭이나 ←/→/Home/End로 고르고(고른 탭만 Tab 키로 닿는다), × 또는 가운데 클릭으로 닫고, 끌어 순서를 바꾼다. 탭 위에서 누른 것은 창 끌기로 올리지 않는다.
+ * 탭 줄은 Base UI `Tabs`다. 탭은 클릭이나 ←/→/Home/End로 고르고(고른 탭만 Tab 키로 닿는다), ×·가운데 클릭·Delete로 닫고, 끌어 순서를 바꾼다. 탭 위에서 누른 것은 창 끌기로 올리지 않는다.
  * 탭이 많으면 탭 너비를 최소 폭까지 고르게 줄이고, 더 줄일 수 없으면 탭 줄을 가로로 스크롤한다(탐색기 탭과 같다).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:구성]]
  * @codocs [[파일 탐색기:탭]]
  * @codocs [[창 동작:모바일]]
  * @codocs [[Chrome:모바일]]
+ * @codocs [[접근성:역할]]
  * @param props
  */
 export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
@@ -130,11 +132,19 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
   } = props;
   const isDesktop = device === 'desktop';
   const activeIndex = tabs.findIndex((tab) => tab.active === true);
-  const { tabListRef, startTabDrag, getTabIndex, handleTabKeyDown } = useTabStrip({
+  const {
+    tabListRef,
+    startTabDrag,
+    handleValueChange,
+    handleTabClick,
+    handleTabKeyDown,
+    closeTab,
+  } = useTabStrip({
     selectedIndex: activeIndex,
     tabCount: tabs.length,
     onTabMove,
     onTabSelect,
+    onTabClose,
   });
 
   /**
@@ -189,7 +199,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
    */
   function handleTabAuxClick(event: MouseEvent<HTMLDivElement>, index: number): void {
     if (event.button === MIDDLE_BUTTON) {
-      onTabClose?.(index);
+      closeTab(index);
     }
   }
 
@@ -234,52 +244,59 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       material="chrome"
       titleBarContent={
         <BrowserTabStrip onNewTab={handleNewTab} className="min-w-size-none">
-          <div
-            ref={tabListRef}
-            role="tablist"
-            aria-label="탭"
-            className="flex min-w-size-none overflow-x-auto"
-            style={{ scrollbarWidth: 'none' }}
+          {/* 탭 내용(`Tabs.Panel`)은 쓰지 않아 뿌리는 배치에 끼지 않는다 */}
+          <Tabs.Root
+            value={activeIndex === -1 ? null : activeIndex}
+            onValueChange={handleValueChange}
+            className="contents"
           >
-            {tabs.map(
-              /**
-               * 탭 하나를 그린다.
-               * @param tab 탭
-               * @param index 순서
-               * @returns BrowserTab
-               */
-              (tab, index) => {
-                return (
-                  <BrowserTab
-                    key={tab.id ?? `${String(index)}-${tab.title}`}
-                    active={tab.active}
-                    // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
-                    showSeparator={tabs[index + 1]?.active !== true}
-                    favicon={tabFavicon}
-                    title={tab.title}
-                    tabIndex={getTabIndex(index)}
-                    onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-                      handleTabKeyDown(event, index);
-                    }}
-                    onClick={() => {
-                      onTabSelect?.(index);
-                    }}
-                    onClose={() => {
-                      onTabClose?.(index);
-                    }}
-                    onMouseDown={handleTabMouseDown}
-                    onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                      handleTabPointerDown(event, index);
-                    }}
-                    onAuxClick={(event: MouseEvent<HTMLDivElement>) => {
-                      handleTabAuxClick(event, index);
-                    }}
-                    className="min-w-size-button-min-width"
-                  />
-                );
-              },
-            )}
-          </div>
+            <Tabs.List
+              ref={tabListRef}
+              activateOnFocus
+              aria-label="탭"
+              className="flex min-w-size-none overflow-x-auto"
+              style={{ scrollbarWidth: 'none' }}
+            >
+              {tabs.map(
+                /**
+                 * 탭 하나를 그린다.
+                 * @param tab 탭
+                 * @param index 순서
+                 * @returns BrowserTab
+                 */
+                (tab, index) => {
+                  return (
+                    <BrowserTab
+                      key={tab.id ?? `${String(index)}-${tab.title}`}
+                      value={index}
+                      active={tab.active}
+                      // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
+                      showSeparator={tabs[index + 1]?.active !== true}
+                      favicon={tabFavicon}
+                      title={tab.title}
+                      onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+                        handleTabKeyDown(event, index);
+                      }}
+                      onClick={(event: MouseEvent<HTMLDivElement>) => {
+                        handleTabClick(event, index);
+                      }}
+                      onClose={() => {
+                        closeTab(index);
+                      }}
+                      onMouseDown={handleTabMouseDown}
+                      onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                        handleTabPointerDown(event, index);
+                      }}
+                      onAuxClick={(event: MouseEvent<HTMLDivElement>) => {
+                        handleTabAuxClick(event, index);
+                      }}
+                      className="min-w-size-button-min-width"
+                    />
+                  );
+                },
+              )}
+            </Tabs.List>
+          </Tabs.Root>
         </BrowserTabStrip>
       }
       className={className}

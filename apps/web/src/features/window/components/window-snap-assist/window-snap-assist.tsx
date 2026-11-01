@@ -41,8 +41,9 @@ type WindowSnapAssistProps = {
 
 /**
  * 창 하나를 스냅한 뒤 남은 칸 자리에 Snap Assist를 띄운다. 제안 카드는 실제 창 조립을 `WindowThumbnail` 비율로 줄여 보여 준다.
- * 카드를 고르면 그 창이 남은 칸을 채우고, Esc나 카드 밖(빈 곳)을 누르면 닫는다.
+ * 카드를 고르면 그 창이 남은 칸을 채우고, Esc나 카드 밖(빈 곳)을 누르면 닫는다. 뜨면 첫 카드로 포커스를 옮긴다.
  * @codocs [[스냅:Snap Assist]]
+ * @codocs [[접근성:포커스]]
  * @param props
  */
 export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
@@ -60,12 +61,21 @@ export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
   } = props;
   const rect = getSnapZoneRect(zone, workArea);
   const dismissRef = useRef(onDismiss);
+  const assistRef = useRef<HTMLDivElement>(null);
 
   useEffect(
     /** 최신 닫기 함수를 기억한다. 문서 이벤트를 다시 걸지 않으려는 것이다. */
     () => {
       dismissRef.current = onDismiss;
     },
+  );
+
+  useEffect(
+    /** 뜨면 첫 카드로 포커스를 옮긴다. */
+    () => {
+      assistRef.current?.querySelector<HTMLElement>('[data-snap-assist-suggestion]')?.focus();
+    },
+    [],
   );
 
   useEffect(
@@ -105,6 +115,7 @@ export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
 
   return (
     <div
+      ref={assistRef}
       role="dialog"
       aria-label="Snap Assist"
       className="pointer-events-auto absolute flex"

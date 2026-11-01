@@ -1,3 +1,4 @@
+import { Tabs } from '@base-ui/react/tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
@@ -16,16 +17,8 @@ type FigmaArgs = {
   title: string;
   /** 피그마 불리언 속성 Show separator */
   showSeparator: boolean;
-  /** 동작 스토리가 쓴다 */
-  tabIndex?: number;
   onClick?: ComponentProps<typeof ExplorerTab>['onClick'];
   onClose?: ComponentProps<typeof ExplorerTab>['onClose'];
-};
-
-// 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
-// (임의 작업 문서의 "탭 닫기 버튼" 항목).
-const closeButtonA11y = {
-  a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } },
 };
 
 const meta = {
@@ -41,17 +34,19 @@ const meta = {
   render: (args) => {
     const { onClick: handleClick, onClose: handleClose } = args;
     return (
-      <div role="tablist" aria-label="탭">
-        <ExplorerTab
-          selected={args.state === 'selected'}
-          title={args.title}
-          showSeparator={args.showSeparator}
-          tabIndex={args.tabIndex}
-          icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
-          onClick={handleClick}
-          onClose={handleClose}
-        />
-      </div>
+      <Tabs.Root value={args.state === 'selected' ? 0 : null}>
+        <Tabs.List aria-label="탭">
+          <ExplorerTab
+            value={0}
+            selected={args.state === 'selected'}
+            title={args.title}
+            showSeparator={args.showSeparator}
+            icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
+            onClick={handleClick}
+            onClose={handleClose}
+          />
+        </Tabs.List>
+      </Tabs.Root>
     );
   },
 } satisfies Meta<FigmaArgs>;
@@ -63,21 +58,16 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
-// 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
-// (임의 작업 문서의 "탭 닫기 버튼" 항목).
-export const Figma: Story = {
-  parameters: closeButtonA11y,
-};
+export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 export const Default: Story = {
-  args: { title: '문서', tabIndex: 0, onClick: fn(), onClose: fn() },
-  parameters: closeButtonA11y,
+  args: { title: '문서', onClick: fn(), onClose: fn() },
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
     const tab = canvas.getByRole('tab', { name: /문서/u });
-    const closeButton = canvas.getByRole('button', { name: '탭 닫기' });
+    const closeButton = canvas.getByLabelText('탭 닫기');
 
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step('기본은 선택되지 않은 탭이고 오른쪽 구분선을 그린다', async () => {
@@ -90,10 +80,14 @@ export const Default: Story = {
       await expect(tab).not.toContainElement(closeButton);
     });
 
-    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-    await step('tabIndex는 탭(role="tab")이 받는다', async () => {
-      await expect(tab).toHaveAttribute('tabindex', '0');
-    });
+    // @codocs [[접근성:역할]]
+    await step(
+      '닫기 버튼은 마우스 전용이라 Tab으로 닿지 않고 보조 기술에 드러나지 않는다',
+      async () => {
+        await expect(closeButton).toHaveAttribute('tabindex', '-1');
+        await expect(closeButton).toHaveAttribute('aria-hidden', 'true');
+      },
+    );
 
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step('닫기 버튼은 onClose만 부르고 탭의 onClick은 부르지 않는다', async () => {
@@ -107,7 +101,6 @@ export const Default: Story = {
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
 export const Selected: Story = {
   args: { state: 'selected' },
-  parameters: closeButtonA11y,
   play: async ({ canvasElement, step }) => {
     const tab = within(canvasElement).getByRole('tab');
 
@@ -122,7 +115,6 @@ export const Selected: Story = {
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
 export const WithoutSeparator: Story = {
   args: { showSeparator: false },
-  parameters: closeButtonA11y,
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step('showSeparator=false면 선택되지 않은 탭도 구분선을 그리지 않는다', async () => {

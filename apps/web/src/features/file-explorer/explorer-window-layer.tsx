@@ -39,6 +39,7 @@ import {
   getNavigationRows,
   getParentLocation,
   getTabLocation,
+  getTreeMoveTarget,
   goBack,
   goForward,
   goUp,
@@ -310,6 +311,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
             <NavigationTreeItem
               key={row.key}
               row={row}
+              rows={navigationRows}
               isFocusable={row.key === focusableTreeKey}
               isDropTarget={row.key === dragTargetId}
               icon={
@@ -337,6 +339,8 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
 type NavigationTreeItemProps = {
   /** 트리 칸 */
   row: NavigationRow;
+  /** 보이는 트리 칸 전체. 방향키로 옮겨 갈 칸을 찾는다 */
+  rows: readonly NavigationRow[];
   /** 끄는 항목을 이 칸에 놓으려는 중인지. 강조한다 */
   isDropTarget: boolean;
   /** Tab으로 닿는 칸인지. 고른 칸이 보이지 않으면 가장 가까운 보이는 조상이다 */
@@ -351,12 +355,15 @@ type NavigationTreeItemProps = {
 
 /**
  * 탐색 창 트리 칸 하나. 클릭·Enter·Space로 그 위치로 가고, 꺾쇠·→·←로 펼치거나 접는다.
+ * ↑↓는 보이는 앞뒤 칸, Home/End는 처음·끝 칸, →는 펼친 칸의 첫 자식, ←는 펼치지 않은 칸의 부모로 포커스만 옮긴다.
  * 고른 칸(현재 위치, 보이지 않으면 가장 가까운 보이는 조상)만 Tab으로 닿는다. 항목을 끌어 놓을 곳이기도 하다.
  * @codocs [[파일 탐색기:구성]]
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @codocs [[접근성:Tab]]
  * @param props
  */
 function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
-  const { row, isFocusable, isDropTarget, icon, onNavigate, onToggle } = props;
+  const { row, rows, isFocusable, isDropTarget, icon, onNavigate, onToggle } = props;
 
   /**
    * 트리 칸에서 키를 눌렀을 때 이동하거나 펼치고 접는다.
@@ -372,6 +379,27 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
     } else if (event.key === 'ArrowLeft' && row.expand === 'expanded') {
       event.preventDefault();
       onToggle(row, false);
+    } else {
+      moveFocus(event);
+    }
+  }
+
+  /**
+   * 누른 키가 다른 칸으로 옮기는 키면 그 칸에 포커스를 옮긴다.
+   * @param event 키 이벤트
+   */
+  function moveFocus(event: KeyboardEvent<HTMLDivElement>): void {
+    const targetKey = getTreeMoveTarget(rows, row.key, event.key);
+    if (targetKey === null) {
+      return;
+    }
+    event.preventDefault();
+    const target = [
+      ...(event.currentTarget.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ??
+        []),
+    ].find((item) => item.getAttribute(DROP_TARGET_ATTRIBUTE) === targetKey);
+    if (target instanceof HTMLElement) {
+      target.focus();
     }
   }
 

@@ -75,9 +75,6 @@ const meta = {
   title: 'Behavior/FileExplorer/ExplorerWindowLayer',
   parameters: {
     layout: 'padded',
-    // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
-    // (임의 작업 문서의 "탭 닫기 버튼" 항목).
-    a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } },
   },
   beforeEach: [
     resetStoryStores,
@@ -143,7 +140,7 @@ function getTreeItem(canvasElement: HTMLElement, label: string): HTMLElement {
  * @returns 닫기 버튼
  */
 function getCloseButtonOf(tab: HTMLElement | undefined): HTMLElement {
-  return within(tab?.parentElement ?? document.body).getByRole('button', { name: '탭 닫기' });
+  return within(tab?.parentElement ?? document.body).getByLabelText('탭 닫기');
 }
 
 /**
@@ -323,6 +320,17 @@ export const Tabs: Story = {
       await expect(getTabTitles(canvasElement)).toEqual(['React']);
     });
 
+    // @codocs [[접근성:포커스]]
+    await step('탭에서 Delete를 누르면 그 탭을 닫고 고른 탭으로 포커스를 옮긴다', async () => {
+      await user.click(canvas.getByRole('button', { name: '새 탭' }));
+      canvas.getByRole('tab', { selected: true }).focus();
+      await user.keyboard('{Delete}');
+      await expect(getTabTitles(canvasElement)).toEqual(['React']);
+      await waitFor(async () => {
+        await expect(canvas.getByRole('tab', { selected: true })).toHaveFocus();
+      });
+    });
+
     await step('탭을 가운데 클릭하면 그 탭을 닫는다', async () => {
       await user.click(canvas.getByRole('button', { name: '새 탭' }));
       await fireEvent(
@@ -377,7 +385,7 @@ export const Tabs: Story = {
 
     await step('마지막 탭을 닫으면 창을 닫는다', async () => {
       await resetTabs(canvasElement);
-      await user.click(canvas.getByRole('button', { name: '탭 닫기' }));
+      await user.click(canvas.getByLabelText('탭 닫기'));
       await expect(handleClose).toHaveBeenCalledTimes(1);
     });
   },
@@ -441,6 +449,27 @@ export const Tree: Story = {
     await step('탐색 창 칸에서 →를 누르면 접힌 폴더를 펼친다', async () => {
       await fireEvent.keyDown(getTreeItem(canvasElement, 'React'), { key: 'ArrowRight' });
       await expect(getTreeItem(canvasElement, 'React')).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    // @codocs [[파일 탐색기:탐색 창]]
+    await step('탐색 창에서 ↑↓·Home/End·부모/자식 이동으로 포커스를 옮긴다', async () => {
+      const items = within(canvas.getByRole('tree')).getAllByRole('treeitem');
+      const react = getTreeItem(canvasElement, 'React');
+      const hooks = getTreeItem(canvasElement, 'Hooks');
+      react.focus();
+      await user.keyboard('{ArrowDown}');
+      await expect(hooks).toHaveFocus();
+      await user.keyboard('{ArrowUp}');
+      await expect(react).toHaveFocus();
+      await user.keyboard('{ArrowRight}');
+      await expect(hooks).toHaveFocus();
+      await user.keyboard('{ArrowLeft}');
+      await expect(react).toHaveFocus();
+      await user.keyboard('{End}');
+      await expect(items.at(-1)).toHaveFocus();
+      await user.keyboard('{Home}');
+      await expect(items[0]).toHaveFocus();
+      await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
     });
 
     await step('탐색 창은 현재 위치를 고른 칸으로 표시한다', async () => {

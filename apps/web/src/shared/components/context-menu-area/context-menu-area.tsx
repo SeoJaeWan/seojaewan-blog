@@ -2,7 +2,7 @@ import { ContextMenu } from '@base-ui/react/context-menu';
 import type { ComponentProps, JSX, ReactElement } from 'react';
 import { useState } from 'react';
 
-import { MenuPopup } from '@/shared/components/menu-popup/menu-popup';
+import { getMenuPortalContainer, MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
 /** 메뉴를 영역 요소에 붙이는 자리(피그마 Popover Placement) */
 export type ContextMenuAreaPlacement = {
@@ -110,7 +110,7 @@ export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
       onOpenChangeComplete={handleOpenChangeComplete}
     >
       <ContextMenu.Trigger ref={setAreaElement} render={area} />
-      <ContextMenu.Portal>
+      <ContextMenu.Portal container={getMenuPortalContainer()}>
         <ContextMenu.Positioner
           anchor={placement === undefined ? undefined : areaElement}
           side={placement?.side}

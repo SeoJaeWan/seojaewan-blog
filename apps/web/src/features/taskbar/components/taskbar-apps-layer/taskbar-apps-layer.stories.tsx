@@ -189,8 +189,6 @@ export const WithWindows: Story = {
 
 /** 창이 있는 앱 버튼에 마우스를 400ms 올리면 미리보기를 띄운다. 가짜 시계로 지연을 흘린다 */
 export const HoverPreview: Story = {
-  // 축소 화면의 글자가 카드 이름에 없다고 label-content-name-mismatch에 걸린다. 지연만 보는 스토리라 창 내용을 그리지 않는다.
-  args: { renderWindow: () => null },
   beforeEach: () => {
     openStoryWindows(['chrome']);
   },
@@ -214,6 +212,13 @@ export const HoverPreview: Story = {
           await expect(button).toHaveAttribute('data-preview-open');
         },
       );
+
+      // @codocs [[작업 표시줄:창 미리보기]]
+      await step('카드 이름은 창 제목이고 축소 화면은 실제 창 내용을 그린다', async () => {
+        const card = await body.findByRole('button', { name: PREVIEW_CARD_NAME });
+        const thumbnail = card.querySelector('[aria-hidden="true"] [inert]');
+        await expect(thumbnail).toHaveTextContent(PREVIEW_CARD_NAME);
+      });
 
       // @codocs [[작업 표시줄:창 미리보기]]
       await step(
@@ -294,6 +299,64 @@ export const HoverPreviewMultiple: Story = {
     } finally {
       clock.restore();
     }
+  },
+};
+
+/** 앱 버튼과 미리보기 카드를 키보드로 쓴다 */
+export const Keyboard: Story = {
+  beforeEach: () => {
+    openStoryWindows(['chrome', 'chrome']);
+  },
+  play: async ({ canvasElement, step }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const chrome = body.getByRole('button', { name: 'Chrome' });
+    const explorer = body.getByRole('button', { name: '파일 탐색기' });
+
+    // @codocs [[접근성:Tab]]
+    await step('앱 버튼은 Tab 한 번에 닿고(맨 앞 창의 앱) 안에서 ←/→로 옮긴다', async () => {
+      await expect(chrome).toHaveAttribute('tabindex', '0');
+      await expect(explorer).toHaveAttribute('tabindex', '-1');
+      chrome.focus();
+      await userEvent.keyboard('{ArrowLeft}');
+      await expect(explorer).toHaveFocus();
+      await userEvent.keyboard('{ArrowRight}');
+      await expect(chrome).toHaveFocus();
+    });
+
+    // @codocs [[접근성:포커스]]
+    await step('키보드로 목록을 열면 첫 카드로 포커스를 옮긴다', async () => {
+      await userEvent.keyboard('{Enter}');
+      const cards = await body.findAllByRole('button', { name: PREVIEW_CARD_NAME });
+      await waitFor(() => expect(cards[0]).toHaveFocus());
+    });
+
+    // @codocs [[접근성:Tab]]
+    await step('카드는 Tab 한 번에 닿고 안에서 ←/→로 옮긴다', async () => {
+      const cards = body.getAllByRole('button', { name: PREVIEW_CARD_NAME });
+      await expect(cards.filter((card) => card.tabIndex === 0)).toHaveLength(1);
+      await userEvent.keyboard('{ArrowRight}');
+      await expect(cards[1]).toHaveFocus();
+    });
+
+    // @codocs [[접근성:포커스]]
+    await step('Esc로 닫으면 앱 버튼으로 돌아간다', async () => {
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(chrome).toHaveFocus());
+    });
+
+    // @codocs [[접근성:포커스]]
+    await step('카드에서 Delete로 창을 닫으면 옆 카드, 마지막이면 앱 버튼으로 옮긴다', async () => {
+      await userEvent.keyboard('{Enter}');
+      await body.findAllByRole('button', { name: PREVIEW_CARD_NAME });
+      await userEvent.keyboard('{Delete}');
+      await waitFor(() => expect(useWindowStore.getState().order).toHaveLength(1));
+      await waitFor(() =>
+        expect(body.getByRole('button', { name: PREVIEW_CARD_NAME })).toHaveFocus(),
+      );
+      await userEvent.keyboard('{Delete}');
+      await waitFor(() => expect(useWindowStore.getState().order).toHaveLength(0));
+      await waitFor(() => expect(chrome).toHaveFocus());
+    });
   },
 };
 

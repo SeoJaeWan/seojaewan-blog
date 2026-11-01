@@ -236,6 +236,9 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       ref={ref}
       role="region"
       aria-label={title}
+      // 창 층이 포커스를 옮길 때 찾는다. 제목 표시줄을 눌러도 포커스가 창 안에 남도록 영역도 포커스를 받는다.
+      tabIndex={-1}
+      data-window-id={id}
       data-window-state={isActive ? 'active' : 'inactive'}
       data-window-motion={motion}
       hidden={presence.isHidden}
@@ -243,7 +246,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       onPointerDown={handlePointerDown}
       {...presence.presenceProps}
       className={cn(
-        'pointer-events-auto absolute flex',
+        'pointer-events-auto absolute flex outline-none',
         isMobile && 'inset-spacing-none',
         windowMotionClassNames[motion],
       )}

@@ -43,6 +43,17 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed·Focused는 캡처 도구가 마우스·키보드로 재현한다.
 export const Figma: Story = {};
 
+// @codocs [[접근성:버튼 이름]]
+/** 무엇을 고르는지 주면 글자와 이름이 `무엇: 값`이다 */
+export const WithSubject: Story = {
+  render: () => <DropDownButton subject="보기" label="범주" />,
+  play: async ({ canvasElement }) => {
+    await expect(
+      within(canvasElement).getByRole('button', { name: '보기: 범주' }),
+    ).toBeInTheDocument();
+  },
+};
+
 // @codocs [[컴포넌트 목록:상태]]
 export const Default: Story = {
   args: { onClick: fn() },

@@ -59,6 +59,7 @@ const SECOND_BOUNDS = { x: 480, y: 228, width: 1024, height: 640 } as const;
 const EXIT_WAIT = { timeout: 5000 } as const;
 
 const FIRST_NAME = 'File Explorer 1';
+const SECOND_CHROME_NAME = 'Chrome 2';
 const SECOND_NAME = 'File Explorer 2';
 
 /**
@@ -203,7 +204,7 @@ export const OneWindow: Story = {
 // @codocs [[창 동작:창 조작]]
 /** 창 둘을 연 채로 시작한다. 뒤 창을 누르면 맨 앞으로 온다 */
 export const TwoWindows: Story = {
-  // 비활성 창 제목(text-fill-tertiary)의 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
+  // 비활성 창 제목(text-fill-tertiary)의 색 대비가 모자라다. 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   beforeEach: () => {
     openStoryWindows(['file-explorer', 'chrome']);
@@ -295,6 +296,26 @@ export const MinimizeRestoreAndClose: Story = {
     await step('처음 연 창은 열기 모션이다', async () => {
       await expect(region).toHaveAttribute('data-window-motion', 'open');
     });
+
+    // @codocs [[접근성:포커스]]
+    await step(
+      '창을 열면 그 창으로, 닫거나 최소화해 포커스를 잃으면 맨 앞 창으로 옮긴다',
+      async () => {
+        const workArea = { width: window.innerWidth, height: window.innerHeight };
+        useWindowStore.getState().open('chrome', workArea);
+        const second = await canvas.findByRole('region', { name: SECOND_CHROME_NAME });
+        await waitFor(() => expect(second).toHaveFocus());
+
+        await userEvent.click(within(second).getByRole('button', { name: '최소화' }));
+        await waitFor(() => expect(region).toHaveFocus());
+
+        useWindowStore.getState().restore('window-2');
+        await waitFor(() => expect(second).toHaveFocus());
+
+        await userEvent.click(within(second).getByRole('button', { name: '닫기' }));
+        await waitFor(() => expect(region).toHaveFocus());
+      },
+    );
 
     await step('최소화하면 창을 빼지 않고 숨긴다', async () => {
       await userEvent.click(within(region).getByRole('button', { name: '최소화' }));
@@ -415,11 +436,25 @@ export const SnapLayoutAndAssist: Story = {
       },
     );
 
-    await step('Snap Assist는 Esc를 누르면 닫힌다', async () => {
-      await selectSnapZone(second, '오른쪽 절반');
+    // @codocs [[접근성:Tab]]
+    // @codocs [[접근성:포커스]]
+    await step(
+      'Snap Assist가 뜨면 첫 카드로 포커스를 옮기고 카드는 Tab 한 번에 닿는다',
+      async () => {
+        await selectSnapZone(second, '오른쪽 절반');
+        const assist = canvas.getByRole('dialog', { name: 'Snap Assist' });
+        const card = within(assist).getByRole('button', { name: FIRST_NAME });
+        await waitFor(() => expect(card).toHaveFocus());
+        await expect(card).toHaveAttribute('tabindex', '0');
+      },
+    );
+
+    // @codocs [[접근성:포커스]]
+    await step('Snap Assist는 Esc를 누르면 닫히고 포커스는 맨 앞 창으로 간다', async () => {
       await expect(querySnapAssist(canvasElement)).toBeInTheDocument();
       await userEvent.keyboard('{Escape}');
       await expect(querySnapAssist(canvasElement)).not.toBeInTheDocument();
+      await waitFor(() => expect(canvas.getByRole('region', { name: SECOND_NAME })).toHaveFocus());
     });
 
     await step('Snap Assist는 빈 곳을 누르면 닫힌다', async () => {

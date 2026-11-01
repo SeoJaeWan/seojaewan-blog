@@ -6,7 +6,7 @@ import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 type StartViewMenuProps = {
-  /** 버튼 글자. 지금 고른 보기다(예: `보기: 간단히`) */
+  /** 지금 고른 보기의 값 글자다(예: `간단히`). 버튼에는 `보기: 간단히`로 보인다 */
   label: string;
   /** 피그마 State. true면 보기 메뉴(`Menu/ViewOptions`)를 연 모습(Open), false면 버튼만 보인다(Closed) */
   open?: boolean;
@@ -38,7 +38,7 @@ export function StartViewMenu(props: StartViewMenuProps): JSX.Element {
         items={menuItems}
         className="w-size-menu-view-options-width"
         itemClassName="w-full"
-        trigger={<DropDownButton label={label} />}
+        trigger={<DropDownButton subject="보기" label={label} />}
       />
     </div>
   );

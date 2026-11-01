@@ -152,6 +152,21 @@ export const Selected: Story = {
 };
 
 // @codocs [[컴포넌트 목록:상태]]
+// 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
+/** cut이면 잘라낸 줄이다 */
+export const Cut: Story = {
+  render: () => (
+    <div className="w-size-file-row-width" data-testid="row">
+      <FileRow icon={<i />} cut />
+    </div>
+  ),
+  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute('data-state', 'cut');
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
 /** renaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
 export const Renaming: Story = {
   render: () => (

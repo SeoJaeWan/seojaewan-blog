@@ -182,6 +182,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   const areaRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState<OpenMenu | null>(null);
   const [isEmptyDialogOpen, setIsEmptyDialogOpen] = useState(false);
+  // 휴지통 비우기 메시지 상자를 메뉴에서 열었는지. 메뉴는 사라지므로 닫은 뒤 포커스는 항목 자리로 간다.
+  const [isEmptyDialogFromMenu, setIsEmptyDialogFromMenu] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   // 메뉴에서 고른 이름 바꾸기(새 폴더 포함). 메뉴가 닫히며 돌아가는 포커스에 입력창이 닫히지 않게, 닫힌 뒤 시작한다.
   const [pendingRenameId, setPendingRenameId] = useState<string | null>(null);
@@ -784,6 +786,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           setIsRefreshing(true);
         },
         onEmptyRecycleBin: () => {
+          setIsEmptyDialogFromMenu(true);
           setIsEmptyDialogOpen(true);
         },
       });
@@ -874,6 +877,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         {element}
         {rename.errorMessage !== null && (
           <Tooltip
+            {...rename.errorBalloonProps}
             type="balloon"
             message={rename.errorMessage}
             className="absolute left-spacing-none z-layer-balloon"
@@ -953,6 +957,11 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   }
 
   const listItems = visibleItems.map(renderItem);
+  const itemsListProps = {
+    role: 'listbox',
+    'aria-label': '폴더 내용',
+    'aria-multiselectable': !isMobile,
+  } as const;
   const drag = itemDrag.drag;
 
   /**
@@ -998,6 +1007,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           restore(selectedIds);
         },
         onEmptyRecycleBin: () => {
+          setIsEmptyDialogFromMenu(false);
           setIsEmptyDialogOpen(true);
         },
       }
@@ -1044,6 +1054,16 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   function changeIconView(next: ExplorerFolderView['view']): void {
     if (!isRecycleBin) {
       changeView({ view: next });
+    }
+  }
+
+  /**
+   * 휴지통 비우기 메시지 상자를 메뉴에서 열었으면 메뉴는 사라졌으므로 닫은 뒤 포커스를 항목 자리에 둔다.
+   * @codocs [[접근성:포커스]]
+   */
+  function handleEmptyDialogCloseComplete(): void {
+    if (isEmptyDialogFromMenu) {
+      areaRef.current?.focus();
     }
   }
 
@@ -1120,9 +1140,10 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         }}
         itemsAreaProps={{
           ref: areaRef,
-          role: 'listbox',
-          'aria-label': '폴더 내용',
-          'aria-multiselectable': !isMobile,
+          // 자세히 보기는 listbox가 안쪽 항목만 감싼다. listbox에는 항목만 들어갈 수 있어 열 제목 버튼을 넣을 수 없다.
+          ...(isDetails ? {} : itemsListProps),
+          // 창을 열면 포커스가 여기로 온다.
+          ...{ 'data-window-focus': true },
           tabIndex: -1,
           className: 'outline-none',
           onPointerDown: handleAreaPointerDown,
@@ -1140,7 +1161,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}
             />
-            {listItems}
+            <div {...itemsListProps} className="flex w-full flex-col items-start">
+              {listItems}
+            </div>
           </div>
         ) : (
           listItems
@@ -1151,6 +1174,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         {...EMPTY_RECYCLE_BIN_MESSAGE}
         open={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
+        finalFocus={isEmptyDialogFromMenu ? false : undefined}
+        onCloseComplete={handleEmptyDialogCloseComplete}
       />
       <MessageBoxDialog {...rename.messageBoxProps} />
     </>

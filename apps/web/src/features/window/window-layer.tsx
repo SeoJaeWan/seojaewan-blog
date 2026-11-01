@@ -1,5 +1,5 @@
 import type { JSX, ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { SnapPreview } from '@seojaewan/design-system';
 
@@ -65,10 +65,13 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 화면 크기가 바뀌어도 저장소의 창 자리는 그대로 두고, 제목 표시줄이 작업 영역 밖으로 나가는 창만 그릴 때 당겨 보인다(`getWindowRect`).
  * 층 자체는 빈 곳의 클릭을 아래(바탕화면 아이콘)로 넘기고, 창만 클릭을 받는다. 층은 쌓임 맥락을 따로 만들어(`isolate`)
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
+ * 포커스: 창을 열거나 복원하거나 맨 앞으로 가져오면 그 창의 바로 쓸 곳(`data-window-focus`, 없으면 창)으로 옮긴다. 맨 앞 창을 닫거나 최소화해
+ * 포커스를 잃으면 다음 맨 앞 창, 창이 없으면 바탕화면(`main`)으로 옮긴다. Snap Assist가 사라져 포커스를 잃어도 같다.
  * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[창 동작:창 조작]]
  * @codocs [[스냅:끌어서 스냅]]
  * @codocs [[스냅:Snap Assist]]
+ * @codocs [[접근성:포커스]]
  * @param props
  */
 export function WindowLayer(props: WindowLayerProps): JSX.Element {
@@ -83,6 +86,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   const [leaving, setLeaving] = useState<readonly LeavingWindow[]>([]);
   const [previous, setPrevious] = useState<WindowSnapshot>({ windows, order });
   const [dragSnap, setDragSnap] = useState<DragSnapPreview | null>(null);
+  const layerRef = useRef<HTMLDivElement>(null);
 
   // 저장소가 바뀐 그 렌더에서 지워진 창을 붙든다. 효과에서 하면 한 번은 창이 빠진 채 칠해진다.
   let current = leaving;
@@ -93,6 +97,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   }
 
   const frontId = getFrontWindowId({ windows, order });
+  const previousFrontIdRef = useRef(frontId);
   const stack = getStackOrder(order, current);
   const entries = [
     ...Object.values(windows).map((item) => ({ window: item, isClosing: false })),
@@ -140,6 +145,57 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
           .filter((id) => !snapAssist.placedIds.includes(id))
           .flatMap((id) => windows[id] ?? []);
 
+  const isAssistShown = assistZone !== undefined && workArea !== null && assistWindows.length > 0;
+  const wasAssistShownRef = useRef(isAssistShown);
+
+  const moveFocusToFront = useEffectEvent(
+    /**
+     * 맨 앞 창이 바뀌면 포커스 규칙대로 옮긴다. Snap Assist가 떠 있는 동안은 카드에 둔다.
+     * @returns 기다리던 포커스 옮기기를 지우는 정리 함수
+     */
+    () => {
+      const previousId = previousFrontIdRef.current;
+      previousFrontIdRef.current = frontId;
+      if (previousId === frontId || isAssistShown) {
+        return undefined;
+      }
+      const layer = layerRef.current;
+      const previous = previousId === null ? undefined : windows[previousId];
+      // 앞 창이 그대로 있으면 새 창을 열거나 다른 창을 앞으로 가져온 것이다. 앞 창이 사라졌으면 포커스를 잃었을 때만 옮긴다.
+      const isBroughtForward = frontId !== null && (previousId === null || isVisible(previous));
+      if (layer === null || (!isBroughtForward && !isFocusLost(layer, previousId))) {
+        return undefined;
+      }
+      return focusFront(layer, frontId);
+    },
+  );
+
+  useEffect(
+    /**
+     * 맨 앞 창이 바뀌면 포커스를 옮긴다.
+     * @returns 정리 함수
+     */
+    () => moveFocusToFront(),
+    [frontId],
+  );
+
+  useEffect(
+    /** Snap Assist가 사라져 포커스를 잃었으면 맨 앞 창으로 옮긴다. */
+    () => {
+      const hasBeenShown = wasAssistShownRef.current;
+      wasAssistShownRef.current = isAssistShown;
+      if (
+        hasBeenShown &&
+        !isAssistShown &&
+        layerRef.current !== null &&
+        isFocusLost(layerRef.current)
+      ) {
+        focusFront(layerRef.current, frontId);
+      }
+    },
+    [isAssistShown, frontId],
+  );
+
   /**
    * Snap Assist에서 창을 고르면 그 창이 남은 칸을 채우고, 다음 남은 칸으로 넘어간다.
    * @param id 고른 창
@@ -166,7 +222,11 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   }
 
   return (
-    <div data-layer="windows" className="pointer-events-none absolute inset-spacing-none isolate">
+    <div
+      ref={layerRef}
+      data-layer="windows"
+      className="pointer-events-none absolute inset-spacing-none isolate"
+    >
       {previewRect !== null && (
         <SnapPreview
           aria-hidden
@@ -204,7 +264,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
           />
         ),
       )}
-      {assistZone !== undefined && workArea !== null && assistWindows.length > 0 && (
+      {isAssistShown && (
         <WindowSnapAssist
           zone={assistZone}
           windows={assistWindows}
@@ -220,6 +280,66 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
       )}
     </div>
   );
+}
+
+/**
+ * 창이 열려 있고 최소화되지 않았는지 본다.
+ * @param target 창
+ * @returns 보이면 true
+ */
+function isVisible(target: OpenWindow | undefined): boolean {
+  return target !== undefined && !target.isMinimized;
+}
+
+/**
+ * 포커스가 갈 곳을 잃었는지 본다. 문서 끝에 있거나, 닫혔거나 최소화한 창 안에 남은 경우다. 최소화한 창은 사라지는 움직임이 끝나야 `inert`가 된다.
+ * @param layer 창 층 요소
+ * @param leftId 닫히거나 최소화한 창 id
+ * @returns 잃었으면 true
+ */
+function isFocusLost(layer: HTMLElement, leftId: string | null = null): boolean {
+  const active = document.activeElement;
+  return (
+    active === null ||
+    active === document.body ||
+    active.closest('[inert]') !== null ||
+    (leftId !== null &&
+      layer.querySelector(`[data-window-id="${leftId}"]`)?.contains(active) === true)
+  );
+}
+
+/**
+ * 맨 앞 창으로 포커스를 옮긴다. 창이 없으면 바탕화면(`main`)이다. 이미 창 안에 있으면 그대로 둔다.
+ * 메뉴가 열려 있으면 바깥이 `inert`라 옮겨지지 않으므로, 메뉴가 닫히며 포커스를 돌려줄 때 다시 옮긴다.
+ * @codocs [[접근성:포커스]]
+ * @param layer 창 층 요소
+ * @param id 맨 앞 창 id. 없으면 null
+ * @returns 다시 옮기기를 기다리면 그것을 지우는 정리 함수
+ */
+function focusFront(layer: HTMLElement, id: string | null): (() => void) | undefined {
+  if (id === null) {
+    layer.closest('main')?.focus();
+    return undefined;
+  }
+  const region = layer.querySelector<HTMLElement>(`[data-window-id="${id}"]`);
+  if (region === null || region.contains(document.activeElement)) {
+    return undefined;
+  }
+  const target = region.querySelector<HTMLElement>('[data-window-focus]') ?? region;
+  target.focus({ preventScroll: true });
+  if (document.activeElement === target) {
+    return undefined;
+  }
+
+  /** 메뉴가 포커스를 돌려주면 창으로 옮긴다. */
+  function handleFocusIn(): void {
+    target.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('focusin', handleFocusIn, { once: true });
+  return () => {
+    document.removeEventListener('focusin', handleFocusIn);
+  };
 }
 
 /**
