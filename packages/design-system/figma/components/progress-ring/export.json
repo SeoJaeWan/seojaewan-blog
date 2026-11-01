@@ -1,6 +1,26 @@
 {
+  "description": "끝을 모르는 진행 상태를 보여 주는 링으로, 글을 불러올 때와 재부팅 화면에 쓴다.",
   "name": "ProgressRing",
   "nodeId": "16:245",
+  "propertyDefinitions": {
+    "Size": {
+      "default": "16",
+      "options": [
+        "16",
+        "32",
+        "64"
+      ],
+      "type": "VARIANT"
+    },
+    "Tone": {
+      "default": "Accent",
+      "options": [
+        "Accent",
+        "On dark"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "tone=accent,size=16": {
       "node": {
@@ -13,6 +33,52 @@
       "properties": {
         "Size": "16",
         "Tone": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "accent-fill/default",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "scaleFactor": 0.5,
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/sm",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=Accent, Size=16",
+        "size": {
+          "h": 16,
+          "w": 16
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/sm"
       }
     },
     "tone=accent,size=32": {
@@ -26,6 +92,51 @@
       "properties": {
         "Size": "32",
         "Tone": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "accent-fill/default",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/md",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=Accent, Size=32",
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/md"
       }
     },
     "tone=accent,size=64": {
@@ -39,6 +150,52 @@
       "properties": {
         "Size": "64",
         "Tone": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "accent-fill/default",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "scaleFactor": 2,
+            "size": {
+              "h": 64,
+              "w": 64
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/lg",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=Accent, Size=64",
+        "size": {
+          "h": 64,
+          "w": 64
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/lg"
       }
     },
     "tone=on-dark,size=16": {
@@ -52,6 +209,58 @@
       "properties": {
         "Size": "16",
         "Tone": "On dark"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "boot-screen/foreground",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "scaleFactor": 0.5,
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/sm",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=On dark, Size=16",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 16,
+          "w": 16
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/sm"
       }
     },
     "tone=on-dark,size=32": {
@@ -65,6 +274,57 @@
       "properties": {
         "Size": "32",
         "Tone": "On dark"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "boot-screen/foreground",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/md",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=On dark, Size=32",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/md"
       }
     },
     "tone=on-dark,size=64": {
@@ -78,6 +338,58 @@
       "properties": {
         "Size": "64",
         "Tone": "On dark"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "boot-screen/foreground",
+              "path": "shapes/progress-ring-arc"
+            },
+            "component": "progress-ring/Arc",
+            "name": "arc",
+            "scaleFactor": 2,
+            "size": {
+              "h": 64,
+              "w": 64
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/progress-ring/lg",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Tone=On dark, Size=64",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 64,
+          "w": 64
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/progress-ring/lg"
       }
     }
   }

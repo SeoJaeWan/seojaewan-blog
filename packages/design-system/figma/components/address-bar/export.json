@@ -1,6 +1,27 @@
 {
+  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.",
   "name": "AddressBar",
   "nodeId": "36:582",
+  "propertyDefinitions": {
+    "Query": {
+      "default": "검색어",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Focused",
+        "Suggesting"
+      ],
+      "type": "VARIANT"
+    },
+    "URL": {
+      "default": "웹 주소",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=focused": {
       "node": {
@@ -12,6 +33,165 @@
       "nodeId": "36:526",
       "properties": {
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_info_24_regular"
+                },
+                "component": "ic_fluent_info_24_regular",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "chrome/omnibox-selection-text"
+                    ],
+                    "name": "url",
+                    "size": {
+                      "h": 20,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "웹",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "주소",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "chrome/omnibox-selection-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 20,
+                  "w": 40
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 636
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "chrome/toolbar-fill"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 40,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "chrome/omnibox-stroke-focus"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/address-bar/width"
       }
     },
     "state=hover": {
@@ -24,6 +204,126 @@
       "nodeId": "36:521",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_info_24_regular"
+                },
+                "component": "ic_fluent_info_24_regular",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "chrome/text-primary"
+                ],
+                "name": "url",
+                "size": {
+                  "h": 20,
+                  "w": 580
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "웹",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "주소",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "chrome/omnibox-fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/address-bar/width"
       }
     },
     "state=rest": {
@@ -36,6 +336,144 @@
       "nodeId": "36:516",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_info_24_regular"
+                },
+                "component": "ic_fluent_info_24_regular",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "chrome/text-primary"
+                ],
+                "name": "url",
+                "size": {
+                  "h": 20,
+                  "w": 580
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "웹",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "주소",
+                      "fill": "chrome/omnibox-selection-text",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "chrome/omnibox-fill"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 36,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/address-bar/width"
       }
     },
     "state=suggesting": {
@@ -48,6 +486,117 @@
       "nodeId": "36:532",
       "properties": {
         "State": "Suggesting"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_search_16_regular"
+                },
+                "component": "ic_fluent_search_16_regular",
+                "height": "size/icon/sm",
+                "name": "leading icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "chrome/text-primary"
+                ],
+                "name": "url",
+                "size": {
+                  "h": 20,
+                  "w": 580
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "검색어",
+                      "fill": "chrome/text-primary",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "height": "size/address-bar/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/lg",
+                "spacing/none",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "input row",
+            "size": {
+              "h": 36,
+              "w": 640
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "effectStyle": "Elevation/Flyout",
+        "fills": [
+          "chrome/toolbar-fill"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            0,
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Suggesting",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 36,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/address-bar/width"
       }
     }
   }

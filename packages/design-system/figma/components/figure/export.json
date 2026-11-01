@@ -1,16 +1,140 @@
 {
+  "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.",
   "name": "Figure",
   "nodeId": "1380:1111",
+  "propertyDefinitions": {
+    "Caption": {
+      "default": "캡션",
+      "type": "TEXT"
+    },
+    "Image": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Show caption": {
+      "default": true,
+      "type": "BOOLEAN"
+    }
+  },
   "variants": {
     "default": {
       "node": {
-        "height": 448,
+        "height": 478,
         "width": 720,
         "x": 0,
         "y": 0
       },
       "nodeId": "1380:1111",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "aspectRatio": {
+                  "value": 1.6,
+                  "variable": null
+                },
+                "asset": {
+                  "path": "images/wallpaper-bloom"
+                },
+                "component": "wallpaper/Bloom",
+                "fills": [
+                  "IMAGE"
+                ],
+                "name": "image",
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay",
+                  "radius/overlay"
+                ],
+                "size": {
+                  "h": 450,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "image frame",
+            "size": {
+              "h": 450,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "caption",
+            "size": {
+              "h": 20,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "캡션",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Figure",
+        "size": {
+          "h": 478,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }

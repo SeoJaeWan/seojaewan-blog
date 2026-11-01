@@ -1,6 +1,17 @@
 {
+  "description": "작업 표시줄 앱 버튼과 우클릭 메뉴로, 작업 표시줄 앱 버튼을 우클릭한 화면에 쓴다.",
   "name": "Taskbar/AppMenu",
   "nodeId": "564:7290",
+  "propertyDefinitions": {
+    "State": {
+      "default": "Closed",
+      "options": [
+        "Closed",
+        "Open"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "state=closed": {
       "node": {
@@ -12,6 +23,191 @@
       "nodeId": "564:7239",
       "properties": {
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "path": "images/app-file-explorer"
+                        },
+                        "component": "app/File Explorer",
+                        "fills": [
+                          "IMAGE"
+                        ],
+                        "height": "size/icon/lg",
+                        "name": "app/File Explorer",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/lg"
+                      },
+                      {
+                        "absolute": {
+                          "horizontal": "CENTER",
+                          "vertical": "MAX"
+                        },
+                        "fills": [
+                          "accent-fill/default"
+                        ],
+                        "height": "stroke-width/indicator",
+                        "name": "indicator",
+                        "radius": [
+                          "radius/circular",
+                          "radius/circular",
+                          "radius/circular",
+                          "radius/circular"
+                        ],
+                        "size": {
+                          "h": 3,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "RECTANGLE",
+                        "width": "size/taskbar-button/indicator-active"
+                      }
+                    ],
+                    "component": "TaskbarButton",
+                    "fills": [
+                      "control-fill/default"
+                    ],
+                    "height": "size/taskbar/item",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "File Explorer",
+                    "properties": {
+                      "Indicator": "Active",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "control-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE",
+                    "width": "size/taskbar/item"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Trigger",
+                "size": {
+                  "h": 40,
+                  "w": 40
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Popover",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "popover",
+            "properties": {
+              "Placement": "Top-Center",
+              "State": "Closed"
+            },
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/taskbar/item",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MAX"
+        },
+        "name": "State=Closed",
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/taskbar/item"
       }
     },
     "state=open": {
@@ -24,6 +220,894 @@
       "nodeId": "564:7249",
       "properties": {
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "path": "images/app-file-explorer"
+                        },
+                        "component": "app/File Explorer",
+                        "fills": [
+                          "IMAGE"
+                        ],
+                        "height": "size/icon/lg",
+                        "name": "app/File Explorer",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/lg"
+                      },
+                      {
+                        "absolute": {
+                          "horizontal": "CENTER",
+                          "vertical": "MAX"
+                        },
+                        "fills": [
+                          "accent-fill/default"
+                        ],
+                        "height": "stroke-width/indicator",
+                        "name": "indicator",
+                        "radius": [
+                          "radius/circular",
+                          "radius/circular",
+                          "radius/circular",
+                          "radius/circular"
+                        ],
+                        "size": {
+                          "h": 3,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "RECTANGLE",
+                        "width": "size/taskbar-button/indicator-active"
+                      }
+                    ],
+                    "component": "TaskbarButton",
+                    "fills": [
+                      "control-fill/default"
+                    ],
+                    "height": "size/taskbar/item",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "File Explorer",
+                    "properties": {
+                      "Indicator": "Active",
+                      "State": "Hover"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "control-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE",
+                    "width": "size/taskbar/item"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Trigger",
+                "size": {
+                  "h": 40,
+                  "w": 40
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              },
+              {
+                "absolute": {
+                  "horizontal": "STRETCH",
+                  "vertical": "MIN"
+                },
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "children": [
+                                  {
+                                    "children": [
+                                      {
+                                        "children": [
+                                          {
+                                            "children": [
+                                              {
+                                                "asset": {
+                                                  "path": "images/app-file-explorer"
+                                                },
+                                                "component": "app/File Explorer",
+                                                "fills": [
+                                                  "IMAGE"
+                                                ],
+                                                "height": "size/icon/sm",
+                                                "name": "icon",
+                                                "size": {
+                                                  "h": 16,
+                                                  "w": 16
+                                                },
+                                                "sizing": {
+                                                  "h": "FILL",
+                                                  "v": "FILL"
+                                                },
+                                                "type": "INSTANCE",
+                                                "width": "size/icon/sm"
+                                              }
+                                            ],
+                                            "height": "size/icon/sm",
+                                            "layout": {
+                                              "counterAlign": "CENTER",
+                                              "gap": "spacing/none",
+                                              "mode": "HORIZONTAL",
+                                              "padding": [
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none"
+                                              ],
+                                              "primaryAlign": "CENTER"
+                                            },
+                                            "name": "leading",
+                                            "size": {
+                                              "h": 16,
+                                              "w": 16
+                                            },
+                                            "sizing": {
+                                              "h": "FIXED",
+                                              "v": "FIXED"
+                                            },
+                                            "type": "FRAME",
+                                            "width": "size/icon/sm"
+                                          },
+                                          {
+                                            "fills": [
+                                              "text-fill/primary"
+                                            ],
+                                            "name": "label",
+                                            "size": {
+                                              "h": 20,
+                                              "w": 188
+                                            },
+                                            "sizing": {
+                                              "h": "FILL",
+                                              "v": "HUG"
+                                            },
+                                            "text": {
+                                              "autoResize": "HEIGHT",
+                                              "maxLines": 1,
+                                              "maxLinesVariable": null,
+                                              "segments": [
+                                                {
+                                                  "characters": "파일",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                },
+                                                {
+                                                  "characters": " ",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Body"
+                                                },
+                                                {
+                                                  "characters": "탐색기",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                }
+                                              ],
+                                              "truncation": "ENDING"
+                                            },
+                                            "type": "TEXT"
+                                          }
+                                        ],
+                                        "fills": [
+                                          "subtle-fill/transparent"
+                                        ],
+                                        "layout": {
+                                          "counterAlign": "CENTER",
+                                          "gap": "spacing/md",
+                                          "mode": "HORIZONTAL",
+                                          "padding": [
+                                            "spacing/xs",
+                                            "spacing/md",
+                                            "spacing/xs",
+                                            "spacing/md"
+                                          ],
+                                          "primaryAlign": "MIN"
+                                        },
+                                        "name": "base",
+                                        "radius": [
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control"
+                                        ],
+                                        "size": {
+                                          "h": 28,
+                                          "w": 240
+                                        },
+                                        "sizing": {
+                                          "h": "FILL",
+                                          "v": "FILL"
+                                        },
+                                        "type": "FRAME"
+                                      }
+                                    ],
+                                    "component": "MenuItem",
+                                    "layout": {
+                                      "counterAlign": "CENTER",
+                                      "gap": "spacing/none",
+                                      "mode": "HORIZONTAL",
+                                      "padding": [
+                                        "spacing/2xs",
+                                        "spacing/xs",
+                                        "spacing/2xs",
+                                        "spacing/xs"
+                                      ],
+                                      "primaryAlign": "MIN"
+                                    },
+                                    "name": "item 파일 탐색기",
+                                    "properties": {
+                                      "Kind": "Default",
+                                      "Label": "파일 탐색기",
+                                      "Shortcut": "Ctrl+O",
+                                      "Show icon": true,
+                                      "Show shortcut": false,
+                                      "State": "Rest",
+                                      "Value": "100%"
+                                    },
+                                    "size": {
+                                      "h": 32,
+                                      "w": 248
+                                    },
+                                    "sizing": {
+                                      "h": "FILL",
+                                      "v": "HUG"
+                                    },
+                                    "type": "INSTANCE"
+                                  },
+                                  {
+                                    "children": [
+                                      {
+                                        "component": "Separator",
+                                        "fills": [
+                                          "divider-stroke/default"
+                                        ],
+                                        "height": "stroke-width/default",
+                                        "name": "Separator",
+                                        "properties": {
+                                          "Orientation": "Horizontal"
+                                        },
+                                        "size": {
+                                          "h": 1,
+                                          "w": 248
+                                        },
+                                        "sizing": {
+                                          "h": "FILL",
+                                          "v": "FIXED"
+                                        },
+                                        "type": "INSTANCE"
+                                      }
+                                    ],
+                                    "layout": {
+                                      "counterAlign": "MIN",
+                                      "gap": "spacing/none",
+                                      "mode": "VERTICAL",
+                                      "padding": [
+                                        "spacing/2xs",
+                                        "spacing/none",
+                                        "spacing/sm-nudge",
+                                        "spacing/none"
+                                      ],
+                                      "primaryAlign": "MIN"
+                                    },
+                                    "name": "separator",
+                                    "size": {
+                                      "h": 9,
+                                      "w": 248
+                                    },
+                                    "sizing": {
+                                      "h": "FILL",
+                                      "v": "HUG"
+                                    },
+                                    "type": "FRAME"
+                                  },
+                                  {
+                                    "children": [
+                                      {
+                                        "children": [
+                                          {
+                                            "children": [
+                                              {
+                                                "asset": {
+                                                  "color": "text-fill/primary",
+                                                  "path": "icons/ic_fluent_pin_off_20_regular"
+                                                },
+                                                "component": "ic_fluent_pin_off_20_regular",
+                                                "height": "size/icon/sm",
+                                                "name": "icon",
+                                                "size": {
+                                                  "h": 16,
+                                                  "w": 16
+                                                },
+                                                "sizing": {
+                                                  "h": "FILL",
+                                                  "v": "FILL"
+                                                },
+                                                "type": "INSTANCE",
+                                                "width": "size/icon/sm"
+                                              }
+                                            ],
+                                            "height": "size/icon/sm",
+                                            "layout": {
+                                              "counterAlign": "CENTER",
+                                              "gap": "spacing/none",
+                                              "mode": "HORIZONTAL",
+                                              "padding": [
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none"
+                                              ],
+                                              "primaryAlign": "CENTER"
+                                            },
+                                            "name": "leading",
+                                            "size": {
+                                              "h": 16,
+                                              "w": 16
+                                            },
+                                            "sizing": {
+                                              "h": "FIXED",
+                                              "v": "FIXED"
+                                            },
+                                            "type": "FRAME",
+                                            "width": "size/icon/sm"
+                                          },
+                                          {
+                                            "fills": [
+                                              "text-fill/primary"
+                                            ],
+                                            "name": "label",
+                                            "size": {
+                                              "h": 20,
+                                              "w": 188
+                                            },
+                                            "sizing": {
+                                              "h": "FILL",
+                                              "v": "HUG"
+                                            },
+                                            "text": {
+                                              "autoResize": "HEIGHT",
+                                              "maxLines": 1,
+                                              "maxLinesVariable": null,
+                                              "segments": [
+                                                {
+                                                  "characters": "작업",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                },
+                                                {
+                                                  "characters": " ",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Body"
+                                                },
+                                                {
+                                                  "characters": "표시줄에서",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                },
+                                                {
+                                                  "characters": " ",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Body"
+                                                },
+                                                {
+                                                  "characters": "고정",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                },
+                                                {
+                                                  "characters": " ",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Body"
+                                                },
+                                                {
+                                                  "characters": "해제",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                }
+                                              ],
+                                              "truncation": "ENDING"
+                                            },
+                                            "type": "TEXT"
+                                          }
+                                        ],
+                                        "fills": [
+                                          "subtle-fill/transparent"
+                                        ],
+                                        "layout": {
+                                          "counterAlign": "CENTER",
+                                          "gap": "spacing/md",
+                                          "mode": "HORIZONTAL",
+                                          "padding": [
+                                            "spacing/xs",
+                                            "spacing/md",
+                                            "spacing/xs",
+                                            "spacing/md"
+                                          ],
+                                          "primaryAlign": "MIN"
+                                        },
+                                        "name": "base",
+                                        "radius": [
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control"
+                                        ],
+                                        "size": {
+                                          "h": 28,
+                                          "w": 240
+                                        },
+                                        "sizing": {
+                                          "h": "FILL",
+                                          "v": "FILL"
+                                        },
+                                        "type": "FRAME"
+                                      }
+                                    ],
+                                    "component": "MenuItem",
+                                    "layout": {
+                                      "counterAlign": "CENTER",
+                                      "gap": "spacing/none",
+                                      "mode": "HORIZONTAL",
+                                      "padding": [
+                                        "spacing/2xs",
+                                        "spacing/xs",
+                                        "spacing/2xs",
+                                        "spacing/xs"
+                                      ],
+                                      "primaryAlign": "MIN"
+                                    },
+                                    "name": "item 작업 표시줄에서 고정 해제",
+                                    "properties": {
+                                      "Kind": "Default",
+                                      "Label": "작업 표시줄에서 고정 해제",
+                                      "Shortcut": "Ctrl+O",
+                                      "Show icon": true,
+                                      "Show shortcut": false,
+                                      "State": "Rest",
+                                      "Value": "100%"
+                                    },
+                                    "size": {
+                                      "h": 32,
+                                      "w": 248
+                                    },
+                                    "sizing": {
+                                      "h": "FILL",
+                                      "v": "HUG"
+                                    },
+                                    "type": "INSTANCE"
+                                  },
+                                  {
+                                    "children": [
+                                      {
+                                        "children": [
+                                          {
+                                            "children": [
+                                              {
+                                                "asset": {
+                                                  "color": "text-fill/primary",
+                                                  "path": "icons/ic_fluent_dismiss_20_regular"
+                                                },
+                                                "component": "ic_fluent_dismiss_20_regular",
+                                                "height": "size/icon/sm",
+                                                "name": "icon",
+                                                "size": {
+                                                  "h": 16,
+                                                  "w": 16
+                                                },
+                                                "sizing": {
+                                                  "h": "FILL",
+                                                  "v": "FILL"
+                                                },
+                                                "type": "INSTANCE",
+                                                "width": "size/icon/sm"
+                                              }
+                                            ],
+                                            "height": "size/icon/sm",
+                                            "layout": {
+                                              "counterAlign": "CENTER",
+                                              "gap": "spacing/none",
+                                              "mode": "HORIZONTAL",
+                                              "padding": [
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none",
+                                                "spacing/none"
+                                              ],
+                                              "primaryAlign": "CENTER"
+                                            },
+                                            "name": "leading",
+                                            "size": {
+                                              "h": 16,
+                                              "w": 16
+                                            },
+                                            "sizing": {
+                                              "h": "FIXED",
+                                              "v": "FIXED"
+                                            },
+                                            "type": "FRAME",
+                                            "width": "size/icon/sm"
+                                          },
+                                          {
+                                            "fills": [
+                                              "text-fill/primary"
+                                            ],
+                                            "name": "label",
+                                            "size": {
+                                              "h": 20,
+                                              "w": 188
+                                            },
+                                            "sizing": {
+                                              "h": "FILL",
+                                              "v": "HUG"
+                                            },
+                                            "text": {
+                                              "autoResize": "HEIGHT",
+                                              "maxLines": 1,
+                                              "maxLinesVariable": null,
+                                              "segments": [
+                                                {
+                                                  "characters": "창",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                },
+                                                {
+                                                  "characters": " ",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Body"
+                                                },
+                                                {
+                                                  "characters": "닫기",
+                                                  "fill": "text-fill/primary",
+                                                  "textStyle": "Hangul/Body"
+                                                }
+                                              ],
+                                              "truncation": "ENDING"
+                                            },
+                                            "type": "TEXT"
+                                          }
+                                        ],
+                                        "fills": [
+                                          "subtle-fill/transparent"
+                                        ],
+                                        "layout": {
+                                          "counterAlign": "CENTER",
+                                          "gap": "spacing/md",
+                                          "mode": "HORIZONTAL",
+                                          "padding": [
+                                            "spacing/xs",
+                                            "spacing/md",
+                                            "spacing/xs",
+                                            "spacing/md"
+                                          ],
+                                          "primaryAlign": "MIN"
+                                        },
+                                        "name": "base",
+                                        "radius": [
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control",
+                                          "radius/control"
+                                        ],
+                                        "size": {
+                                          "h": 28,
+                                          "w": 240
+                                        },
+                                        "sizing": {
+                                          "h": "FILL",
+                                          "v": "FILL"
+                                        },
+                                        "type": "FRAME"
+                                      }
+                                    ],
+                                    "component": "MenuItem",
+                                    "layout": {
+                                      "counterAlign": "CENTER",
+                                      "gap": "spacing/none",
+                                      "mode": "HORIZONTAL",
+                                      "padding": [
+                                        "spacing/2xs",
+                                        "spacing/xs",
+                                        "spacing/2xs",
+                                        "spacing/xs"
+                                      ],
+                                      "primaryAlign": "MIN"
+                                    },
+                                    "name": "item 창 닫기",
+                                    "properties": {
+                                      "Kind": "Default",
+                                      "Label": "창 닫기",
+                                      "Shortcut": "Ctrl+O",
+                                      "Show icon": true,
+                                      "Show shortcut": false,
+                                      "State": "Rest",
+                                      "Value": "100%"
+                                    },
+                                    "size": {
+                                      "h": 32,
+                                      "w": 248
+                                    },
+                                    "sizing": {
+                                      "h": "FILL",
+                                      "v": "HUG"
+                                    },
+                                    "type": "INSTANCE"
+                                  }
+                                ],
+                                "layout": {
+                                  "counterAlign": "MIN",
+                                  "gap": "spacing/none",
+                                  "mode": "VERTICAL",
+                                  "padding": [
+                                    "spacing/none",
+                                    "spacing/none",
+                                    "spacing/none",
+                                    "spacing/none"
+                                  ],
+                                  "primaryAlign": "CENTER"
+                                },
+                                "name": "Content",
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 105,
+                                  "w": 248
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "type": "SLOT"
+                              }
+                            ],
+                            "component": "Flyout",
+                            "effectStyle": "Surface/Flyout (Acrylic)",
+                            "fillStyle": "Material/Acrylic Default",
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/none",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                "spacing/2xs",
+                                "spacing/none",
+                                "spacing/2xs",
+                                "spacing/none"
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "Flyout",
+                            "properties": {
+                              "Material": "Acrylic",
+                              "Padding": "Compact"
+                            },
+                            "radius": [
+                              "radius/overlay",
+                              "radius/overlay",
+                              "radius/overlay",
+                              "radius/overlay"
+                            ],
+                            "size": {
+                              "h": 111,
+                              "w": 250
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "strokeWeight": [
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default"
+                            ],
+                            "strokes": [
+                              "surface-stroke/flyout"
+                            ],
+                            "strokesIncludedInLayout": true,
+                            "type": "INSTANCE"
+                          }
+                        ],
+                        "component": "Menu",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "VERTICAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "Menu",
+                        "size": {
+                          "h": 111,
+                          "w": 250
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "HUG"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/menu/width"
+                      }
+                    ],
+                    "component": "Menu/TaskbarApp",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "Menu/TaskbarApp",
+                    "size": {
+                      "h": 111,
+                      "w": 250
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
+                "height": "size/popover/slot",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/xs",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MAX"
+                },
+                "name": "Popup",
+                "size": {
+                  "h": 4,
+                  "w": 40
+                },
+                "sizing": {
+                  "h": "DERIVED",
+                  "v": "FIXED"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Popover",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "popover",
+            "properties": {
+              "Placement": "Top-Center",
+              "State": "Open"
+            },
+            "size": {
+              "h": 40,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/taskbar/item",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MAX"
+        },
+        "name": "State=Open",
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/taskbar/item"
       }
     }
   }
