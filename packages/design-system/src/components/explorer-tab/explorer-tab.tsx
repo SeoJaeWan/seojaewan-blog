@@ -39,6 +39,8 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
   return (
     <div
       {...divProps}
+      // 오른쪽 구분선을 그리는 상태다.
+      data-separator={!isSelected}
       className={cn(
         'group relative flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
         'motion-control-state',
@@ -74,7 +76,6 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       {!isSelected && (
         <span
           aria-hidden
-          data-testid="explorer-tab-separator"
           className="absolute top-1/2 right-0 h-16 w-stroke-default -translate-y-1/2 bg-divider-stroke-default group-hover:hidden"
         />
       )}

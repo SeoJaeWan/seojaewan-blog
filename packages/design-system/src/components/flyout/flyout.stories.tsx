@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { Flyout } from './flyout';
 
@@ -36,3 +37,17 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 내용을 children 자리에 그리고, 역할과 접근성 이름 같은 div 속성을 그대로 넘긴다 */
+export const Default: Story = {
+  render: () => (
+    <Flyout role="dialog" aria-label="정렬 기준" material="solid">
+      <p>메뉴 내용</p>
+    </Flyout>
+  ),
+  play: async ({ canvas }) => {
+    const dialog = canvas.getByRole('dialog', { name: '정렬 기준' });
+    await expect(dialog).toHaveTextContent('메뉴 내용');
+  },
+};

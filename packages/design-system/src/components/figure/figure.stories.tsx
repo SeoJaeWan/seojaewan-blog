@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { ImageAsset } from '../image-asset/image-asset';
 import { Figure } from './figure';
@@ -23,7 +24,30 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형은 하나뿐이다.
 export const Figma: Story = {};
 
+// 이미지에 대체 글자를 달고 캡션을 바꾼 모습이다.
+// @codocs [[Notion 블록:모양]]
+export const WithCaption: Story = {
+  render: () => (
+    <div className="w-720">
+      <Figure
+        image={<ImageAsset name="images/wallpaper-bloom" alt="그림" style={{ height: 420 }} />}
+        caption="설명"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[Notion 블록:모양]]
+    await step('image와 caption으로 받은 글을 그린다', async () => {
+      await expect(canvas.getByRole('img', { name: '그림' })).toBeInTheDocument();
+      await expect(canvas.getByText('설명')).toBeInTheDocument();
+    });
+  },
+};
+
 // 캡션을 숨긴 모습이다.
+// @codocs [[Notion 블록:모양]]
 export const WithoutCaption: Story = {
   render: () => (
     <div className="w-720">
@@ -33,4 +57,10 @@ export const WithoutCaption: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[Notion 블록:모양]]
+    await step('showCaption이 false면 캡션을 그리지 않는다', async () => {
+      await expect(within(canvasElement).queryByText('캡션')).not.toBeInTheDocument();
+    });
+  },
 };

@@ -30,7 +30,12 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
     ...divProps
   } = props;
   return (
-    <div {...divProps} className={cn('flex items-center', className)}>
+    <div
+      {...divProps}
+      // 오른쪽 꺾쇠 구분자를 그리는 상태다.
+      data-separator={hasSeparator}
+      className={cn('flex items-center', className)}
+    >
       <button
         type="button"
         aria-current={isCurrent ? 'page' : undefined}

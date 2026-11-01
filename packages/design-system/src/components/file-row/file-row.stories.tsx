@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { FileRow } from './file-row';
 
@@ -85,3 +86,106 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// @codocs [[컴포넌트 목록:상태]]
+// @codocs [[디자인 시스템:아이콘 자리]]
+/** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 showLocation을 켜기 전에는 없다 */
+export const Default: Story = {
+  render: () => (
+    <div className="w-840">
+      <FileRow icon={<i>아이콘</i>} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('파일 이름')).toBeInTheDocument();
+    await expect(canvas.getByText('수정한 날짜')).toBeInTheDocument();
+    await expect(canvas.getByText('유형')).toBeInTheDocument();
+    await expect(canvas.getByText('아이콘')).toBeInTheDocument();
+    await expect(canvas.queryByText('위치')).not.toBeInTheDocument();
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
+/** showLocation을 켜면 위치 칸을 그린다 */
+export const WithLocation: Story = {
+  render: () => (
+    <div className="w-840">
+      <FileRow icon={<i />} showLocation />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('위치')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
+/** recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그리고 수정한 날짜·유형·위치 칸은 그리지 않는다 */
+export const RecycleBin: Story = {
+  render: () => (
+    <div className="w-840">
+      <FileRow icon={<i />} view="recycle-bin" showLocation />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('원래 위치')).toBeInTheDocument();
+    await expect(canvas.getByText('삭제한 날짜')).toBeInTheDocument();
+    await expect(canvas.queryByText('수정한 날짜')).not.toBeInTheDocument();
+    await expect(canvas.queryByText('유형')).not.toBeInTheDocument();
+    await expect(canvas.queryByText('위치')).not.toBeInTheDocument();
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
+/** selected면 선택된 줄이다 */
+export const Selected: Story = {
+  render: () => (
+    <div className="w-840" data-testid="row">
+      <FileRow icon={<i />} selected />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute(
+      'data-state',
+      'selected',
+    );
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
+/** renaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
+export const Renaming: Story = {
+  render: () => (
+    <div className="w-840" data-testid="row">
+      <FileRow icon={<i />} name="보고서" renaming renameFieldProps={{ 'aria-label': '새 이름' }} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('보고서');
+    await expect(canvas.queryByText('보고서')).not.toBeInTheDocument();
+    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute(
+      'data-state',
+      'rename',
+    );
+  },
+};
+
+// @codocs [[컴포넌트 목록:상태]]
+/** 포커스 선은 prop 없이 키보드 포커스일 때만 그리고, 크기에 넣지 않으므로 포커스를 받아도 줄 크기가 같다 */
+export const Focused: Story = {
+  render: () => (
+    <div className="w-840" data-testid="row">
+      <FileRow icon={<i />} tabIndex={0} />
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    const row = canvas.getByTestId('row').firstElementChild as HTMLElement;
+    const { offsetWidth, offsetHeight } = row;
+
+    await userEvent.tab();
+
+    await expect(row).toHaveFocus();
+    await expect(row.matches(':focus-visible')).toBe(true);
+    await expect(row.offsetWidth).toBe(offsetWidth);
+    await expect(row.offsetHeight).toBe(offsetHeight);
+  },
+};

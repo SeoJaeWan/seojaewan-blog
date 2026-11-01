@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { CodeBlock } from './code-block';
 
@@ -38,4 +39,34 @@ export const Highlighted: Story = {
       </CodeBlock>
     </div>
   ),
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+export const Copy: Story = {
+  render: () => (
+    <div className="w-720">
+      <CodeBlock language="ts">
+        <span>const</span> <span>a = 1;</span>
+      </CodeBlock>
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+    await step('언어와 코드 자리를 그린다', async () => {
+      await expect(canvas.getByText('ts')).toBeInTheDocument();
+      await expect(canvas.getByText('const')).toBeInTheDocument();
+    });
+
+    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+    await step('복사 단추를 누르면 강조된 코드의 글자를 클립보드에 쓴다', async () => {
+      // userEvent.setup()이 클립보드를 시험용으로 바꿔 읽어 볼 수 있다.
+      const user = userEvent.setup();
+      await user.click(canvas.getByRole('button', { name: '코드 복사' }));
+      await waitFor(async () => {
+        await expect(await navigator.clipboard.readText()).toBe('const a = 1;');
+      });
+    });
+  },
 };

@@ -45,6 +45,7 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
     : { left: thumbOffset, width: thumbLength };
   return (
     <div
+      data-state={state}
       {...divProps}
       className={cn(
         // 길이 방향 크기는 쓰는 곳(ScrollArea)이 정하므로 루트는 두께(size/12)만 가진다.

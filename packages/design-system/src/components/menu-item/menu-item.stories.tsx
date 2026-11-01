@@ -2,6 +2,7 @@ import { Menu } from '@base-ui/react/menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX, ReactNode } from 'react';
 import { useState } from 'react';
+import { expect, fn } from 'storybook/test';
 
 import { MenuItem } from './menu-item';
 
@@ -19,6 +20,15 @@ type FigmaArgs = {
   showIcon: boolean;
   /** 피그마 BOOLEAN 속성 Show shortcut */
   showShortcut: boolean;
+  /** 동작 스토리에서 호출 횟수를 확인하는 핸들러 */
+  onClick?: () => void;
+  /** 동작 스토리에서 확인 항목이 켜짐 여부를 알리는 핸들러 */
+  onCheckedChange?: (checked: boolean) => void;
+};
+
+// Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다. 외부 라이브러리 구조라 이 규칙만 끈다.
+const baseUiFocusGuardParameters = {
+  a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } },
 };
 
 const meta = {
@@ -44,9 +54,150 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
 // MenuItem은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 항목 하나만 담는다.
-// Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다. 외부 라이브러리 구조라 이 규칙만 끈다.
-export const Figma: Story = {
-  parameters: { a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } } },
+export const Figma: Story = { parameters: baseUiFocusGuardParameters };
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 이름을 접근성 이름으로 갖는 menuitem이다. 고르면 onClick을 부르고 단축키를 보인다 */
+export const Default: Story = {
+  parameters: baseUiFocusGuardParameters,
+  args: { onClick: fn() },
+  render: ({ onClick: handleClick }) => (
+    <OpenMenu>
+      <MenuItem label="열기" shortcut="Ctrl+O" onClick={handleClick} />
+    </OpenMenu>
+  ),
+  play: async ({ args, canvas, userEvent }) => {
+    await userEvent.click(await canvas.findByRole('menuitem', { name: /열기/u }));
+
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
+    await expect(canvas.getByText('Ctrl+O')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 확인 항목은 menuitemcheckbox이고 고르면 켜짐 여부가 바뀐다 */
+export const Checkbox: Story = {
+  parameters: baseUiFocusGuardParameters,
+  args: { onCheckedChange: fn() },
+  render: ({ onCheckedChange: handleCheckedChange }) => (
+    <OpenMenu>
+      <MenuItem
+        kind="checkbox"
+        label="숨김 항목"
+        defaultChecked
+        onCheckedChange={handleCheckedChange}
+      />
+    </OpenMenu>
+  ),
+  play: async ({ args, canvas, userEvent }) => {
+    const item = await canvas.findByRole('menuitemcheckbox', { name: '숨김 항목' });
+    await expect(item).toHaveAttribute('aria-checked', 'true');
+
+    await userEvent.click(item);
+
+    await expect(args.onCheckedChange).toHaveBeenCalledWith(false, expect.anything());
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 라디오 항목은 묶음의 값과 같으면 골라진 menuitemradio다 */
+export const Radio: Story = {
+  parameters: baseUiFocusGuardParameters,
+  render: () => (
+    <OpenMenu>
+      <Menu.RadioGroup defaultValue="name">
+        <MenuItem kind="radio" label="이름" value="name" />
+        <MenuItem kind="radio" label="날짜" value="date" />
+      </Menu.RadioGroup>
+    </OpenMenu>
+  ),
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByRole('menuitemradio', { name: '이름' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(canvas.getByRole('menuitemradio', { name: '날짜' })).toHaveAttribute(
+      'aria-checked',
+      'false',
+    );
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 하위 메뉴 항목은 하위 메뉴를 가진 menuitem이다 */
+export const Submenu: Story = {
+  parameters: baseUiFocusGuardParameters,
+  render: () => (
+    <OpenMenu>
+      <Menu.SubmenuRoot>
+        <MenuItem kind="submenu" label="새로 만들기" />
+      </Menu.SubmenuRoot>
+    </OpenMenu>
+  ),
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByRole('menuitem', { name: '새로 만들기' })).toHaveAttribute(
+      'aria-haspopup',
+      'menu',
+    );
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 비활성이면 골라도 onClick을 부르지 않는다 */
+export const Disabled: Story = {
+  parameters: baseUiFocusGuardParameters,
+  args: { onClick: fn() },
+  render: ({ onClick: handleClick }) => (
+    <OpenMenu>
+      <MenuItem label="열기" disabled onClick={handleClick} />
+    </OpenMenu>
+  ),
+  play: async ({ args, canvas, userEvent }) => {
+    const item = await canvas.findByRole('menuitem', { name: '열기' });
+
+    await userEvent.click(item);
+
+    await expect(item).toHaveAttribute('aria-disabled', 'true');
+    await expect(args.onClick).not.toHaveBeenCalled();
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 래스터 자산 아이콘은 이미지로, SVG 아이콘은 svg로 그린다 */
+export const Icons: Story = {
+  parameters: baseUiFocusGuardParameters,
+  render: () => (
+    <OpenMenu>
+      <MenuItem label="파일 탐색기" icon="images/app-file-explorer" />
+      <MenuItem label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+    </OpenMenu>
+  ),
+  play: async ({ canvas }) => {
+    const appItem = await canvas.findByRole('menuitem', { name: '파일 탐색기' });
+    const openItem = canvas.getByRole('menuitem', { name: '열기' });
+
+    await expect(appItem.querySelector('img')).not.toBeNull();
+    await expect(openItem.querySelector('svg')).not.toBeNull();
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 메뉴 밖에 홀로 둔(standalone) 항목은 버튼으로 그리고, 누르면 onClick을 부른다 */
+export const Standalone: Story = {
+  args: { onClick: fn() },
+  render: ({ onClick: handleClick }) => (
+    <MenuItem
+      standalone
+      label="열기"
+      icon="icons/ic_fluent_open_20_regular.svg"
+      onClick={handleClick}
+    />
+  ),
+  play: async ({ args, canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole('button', { name: '열기' }));
+
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
+  },
 };
 
 /**

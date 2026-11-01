@@ -42,6 +42,7 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
     <BaseButton
       {...buttonProps}
       aria-label={label}
+      data-indicator={indicator}
       className={cn(
         'group relative inline-flex size-40 items-center justify-center rounded-control border-default select-none',
         'motion-control-state',

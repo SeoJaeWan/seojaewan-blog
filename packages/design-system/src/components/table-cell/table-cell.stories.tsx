@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { TableCell } from './table-cell';
 
@@ -33,3 +34,53 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형은 args로 고른다(`Type=Body` → `type: 'body'`).
 export const Figma: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 본문 칸은 td로 그리고 서식이 섞인 내용을 children으로 받는다 */
+export const Body: Story = {
+  render: () => (
+    <table>
+      <tbody>
+        <tr>
+          <TableCell>
+            <strong>굵게</strong> 글
+          </TableCell>
+        </tr>
+      </tbody>
+    </table>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('본문 칸은 cell이고 서식이 섞인 내용을 받는다', async () => {
+      const cell = canvas.getByRole('cell');
+      await expect(within(cell).getByText('굵게').tagName).toBe('STRONG');
+    });
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 머리 칸은 th로 그리고 열 머리 범위를 scope로 받는다 */
+export const Header: Story = {
+  render: () => (
+    <table>
+      <tbody>
+        <tr>
+          <TableCell type="header" scope="col">
+            제목
+          </TableCell>
+        </tr>
+      </tbody>
+    </table>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('머리 칸은 columnheader이고 scope를 갖는다', async () => {
+      await expect(canvas.getByRole('columnheader', { name: '제목' })).toHaveAttribute(
+        'scope',
+        'col',
+      );
+    });
+  },
+};

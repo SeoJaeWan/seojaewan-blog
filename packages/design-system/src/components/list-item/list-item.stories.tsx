@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { ListItem } from './list-item';
 
@@ -79,3 +80,64 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 제목만 있는 한 줄이다. 오른쪽 보조 글자는 showTrailing을 켜기 전에는 없고, compact는 부제를 받지 않는다 */
+export const Default: Story = {
+  render: () => (
+    // @ts-expect-error subtitle은 size="two-line"에서만 받는다
+    <ListItem icon={<i aria-hidden="true" />} subtitle="부제" />
+  ),
+  play: async ({ canvas, step }) => {
+    await step('제목을 그린다', async () => {
+      await expect(canvas.getByText('항목 이름')).toBeInTheDocument();
+    });
+    await step('보조 글자와 부제는 그리지 않는다', async () => {
+      await expect(canvas.queryByText('부가 정보')).not.toBeInTheDocument();
+      await expect(canvas.queryByText('부제')).not.toBeInTheDocument();
+    });
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 제목과 부제 두 줄이다. showSubtitle을 끄면 부제를 숨긴다 */
+export const TwoLine: Story = {
+  render: () => (
+    <div className="flex flex-col">
+      <ListItem size="two-line" icon={<i aria-hidden="true" />} title="보이는 부제" />
+      <ListItem
+        size="two-line"
+        icon={<i aria-hidden="true" />}
+        title="숨긴 부제"
+        subtitle="숨겨진 설명"
+        showSubtitle={false}
+      />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('보조 설명')).toBeInTheDocument();
+    await expect(canvas.queryByText('숨겨진 설명')).not.toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** aria-selected는 option 역할에만 붙인다. 다른 역할이나 역할이 없는 줄은 선택돼도 붙이지 않는다 */
+export const Selected: Story = {
+  render: () => (
+    <div className="flex flex-col">
+      <div role="listbox" aria-label="선택 목록">
+        <ListItem selected role="option" title="옵션" icon={<i aria-hidden="true" />} />
+      </div>
+      <ListItem selected role="button" tabIndex={0} title="버튼" icon={<i aria-hidden="true" />} />
+      <ListItem selected title="일반" icon={<i aria-hidden="true" />} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('option', { name: '옵션' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(canvas.getByRole('button', { name: '버튼' })).not.toHaveAttribute('aria-selected');
+    await expect(canvas.getByText('일반').closest('[aria-selected]')).toBeNull();
+  },
+};

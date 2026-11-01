@@ -38,6 +38,7 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
   return (
     <div
       {...divProps}
+      data-state={isInactive ? 'inactive' : 'active'}
       className={cn('flex items-center overflow-clip', kindClassNames[kind], className)}
     >
       <span className="inline-flex size-icon-16 shrink-0 items-center justify-center">
