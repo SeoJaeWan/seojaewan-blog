@@ -26,7 +26,7 @@ type MenuZoomItemProps = {
 
 /**
  * Chrome ⋮ 메뉴의 확대/축소 조절 줄(피그마 MenuZoomItem)을 그린다.
- * −·+ 버튼은 메뉴 항목이 아니라 일반 버튼이라 눌러도 메뉴가 닫히지 않는다.
+ * −·+ 버튼은 Base UI 메뉴 항목이 아니라 일반 버튼이라 눌러도 메뉴가 닫히지 않는다. `menu` 안에 들어가므로 역할은 `menuitem`이다.
  * 실제 배율 동작은 쓰는 곳이 콜백과 값으로 잇는다.
  * @codocs [[컴포넌트 목록:기본 컨트롤]]
  * @codocs [[Chrome:확대/축소]]
@@ -56,6 +56,7 @@ export function MenuZoomItem(props: MenuZoomItemProps): JSX.Element {
         <span className="min-w-0 flex-1 truncate type-body text-text-fill-primary">{label}</span>
         <div className="flex shrink-0 items-center justify-start gap-4">
           <IconButton
+            role="menuitem"
             variant="subtle"
             label="축소"
             icon="icons/ic_fluent_subtract_20_regular.svg"
@@ -66,6 +67,7 @@ export function MenuZoomItem(props: MenuZoomItemProps): JSX.Element {
             {value}
           </span>
           <IconButton
+            role="menuitem"
             variant="subtle"
             label="확대"
             icon="icons/ic_fluent_add_20_regular.svg"

@@ -42,6 +42,7 @@ describe('Notion 블록', () => {
     expect(screen.getByRole('heading', { name: '둘' })).toHaveClass('type-subtitle');
     expect(screen.getByRole('heading', { name: '셋' })).toHaveClass('type-body-large-strong');
     expect(screen.getByRole('heading', { name: '셋' })).toHaveAttribute('id', 'heading-2');
+    expect(screen.getByRole('heading', { name: '하나', level: 2 })).toBeInTheDocument();
   });
 
   it('인라인 코드는 배경 없이 코드 서체와 post/inline-code 글자색으로 그린다', () => {

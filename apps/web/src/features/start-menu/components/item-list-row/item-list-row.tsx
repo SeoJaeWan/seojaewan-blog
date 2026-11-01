@@ -22,7 +22,7 @@ type ItemListRowProps = {
 /**
  * Start 목록과 검색 화면의 항목 한 줄(`ListItem`)을 열 수 있는 버튼으로 그린다. 클릭·Enter·Space로 열고, 열면 `onOpen`을 부른다.
  * 고른 줄이 보이는 영역 밖이면 스크롤해 보이게 한다(방향키로 고르는 검색 결과).
- * 버튼 역할에는 `aria-selected`가 맞지 않아 `ListItem`이 붙이는 값을 빼고, 고른 줄은 `aria-current`로 알린다.
+ * 고른 줄은 `aria-current`로 알린다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
  * @param props
@@ -61,7 +61,6 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
     ref: rowRef,
     role: 'button',
     tabIndex: 0,
-    'aria-selected': undefined,
     'aria-current': isSelected ? ('true' as const) : undefined,
     selected: isSelected,
     title,

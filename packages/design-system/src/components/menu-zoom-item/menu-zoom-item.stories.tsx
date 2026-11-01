@@ -6,6 +6,12 @@ const meta = {
   title: 'Components/MenuZoomItem',
   component: MenuZoomItem,
   args: { value: '100%' },
+  // 메뉴 안에서만 쓰는 줄이다. 감싸는 요소는 크기를 더하지 않는다.
+  render: (args) => (
+    <div role="menu" aria-label="메뉴">
+      <MenuZoomItem {...args} />
+    </div>
+  ),
 } satisfies Meta<typeof MenuZoomItem>;
 
 export default meta;

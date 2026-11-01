@@ -9,6 +9,12 @@ type MenuStoryProps = Pick<
   'items' | 'className' | 'itemClassName'
 >;
 
+// Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다.
+// 외부 라이브러리 구조라 메뉴 스토리에서만 이 규칙을 끈다.
+export const menuStoryA11y = {
+  config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] },
+};
+
 // Base UI 1.9.0 `Menu.Popup`은 실행 중에 `initialFocus`를 받지만 타입 선언에는 없어, 속성 객체로 넘겨 타입 검사를 지난다.
 const noInitialFocus: Record<string, unknown> = { initialFocus: false };
 

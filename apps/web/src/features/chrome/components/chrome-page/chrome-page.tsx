@@ -398,21 +398,18 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
 
 /**
  * 누르면 여는 목록 줄의 속성. 버튼 역할이고 클릭·Enter·Space로 연다(Start 목록 줄과 같다).
- * 버튼 역할에 맞지 않는 `aria-selected`(ListItem이 붙인다)는 뺀다.
  * @param open 여는 함수
  * @returns 줄 속성
  */
 function getOpenableRowProps(open: () => void): {
   role: 'button';
   tabIndex: number;
-  'aria-selected': undefined;
   onClick: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
 } {
   return {
     role: 'button',
     tabIndex: 0,
-    'aria-selected': undefined,
     onClick: open,
     onKeyDown: handleKeyDown,
   };

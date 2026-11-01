@@ -20,10 +20,12 @@ describe('ListItem', () => {
     expect(container.firstChild).toHaveClass('h-52');
   });
 
-  it('호출하는 쪽이 aria-selected를 덮을 수 있다(버튼 역할 줄은 undefined로 뺀다)', () => {
-    const { container, rerender } = render(<ListItem icon={<i />} selected />);
+  it('aria-selected는 option 역할에만 붙인다', () => {
+    const { container, rerender } = render(<ListItem icon={<i />} selected role="option" />);
     expect(container.firstChild).toHaveAttribute('aria-selected', 'true');
-    rerender(<ListItem icon={<i />} selected aria-selected={undefined} />);
+    rerender(<ListItem icon={<i />} selected role="button" />);
+    expect(container.firstChild).not.toHaveAttribute('aria-selected');
+    rerender(<ListItem icon={<i />} selected />);
     expect(container.firstChild).not.toHaveAttribute('aria-selected');
   });
 
@@ -45,9 +47,8 @@ describe('ListItem', () => {
     expect(screen.getByText('오늘')).toBeInTheDocument();
   });
 
-  it('selected면 선택된 바탕이고 aria-selected가 붙는다', () => {
+  it('selected면 선택된 바탕이다', () => {
     const { container } = render(<ListItem selected icon={<i />} />);
-    expect(container.firstChild).toHaveAttribute('aria-selected', 'true');
     expect(container.firstChild).toHaveClass('bg-control-alt-fill-tertiary');
   });
 
