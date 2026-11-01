@@ -1,6 +1,16 @@
 {
+  "description": "사용자 사진과 이름 버튼으로, Start 메뉴 아래 줄에 쓴다.",
   "name": "ProfileButton",
   "nodeId": "414:5722",
+  "propertyDefinitions": {
+    "Name": {
+      "default": "사용자 이름",
+      "type": "TEXT"
+    },
+    "Photo": {
+      "type": "INSTANCE_SWAP"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +20,89 @@
         "y": 0
       },
       "nodeId": "414:5722",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/avatar-profile"
+            },
+            "component": "avatar/Profile",
+            "height": "size/avatar/profile",
+            "name": "profile photo",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/avatar/profile"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "profile name",
+            "size": {
+              "h": 20,
+              "w": 65
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "사용자",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/md",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "ProfileButton",
+        "size": {
+          "h": 32,
+          "w": 109
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }

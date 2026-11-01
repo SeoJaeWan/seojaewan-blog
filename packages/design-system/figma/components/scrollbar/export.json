@@ -1,69 +1,790 @@
 {
+  "description": "얇은 스크롤 막대로, 넘치는 영역의 오른쪽(가로 막대는 아래쪽)에 겹쳐 놓아 스크롤 위치를 보여 줄 때 쓴다.",
   "name": "Scrollbar",
   "nodeId": "16:137",
+  "propertyDefinitions": {
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    },
+    "Orientation": {
+      "default": "Vertical",
+      "options": [
+        "Vertical",
+        "Horizontal"
+      ],
+      "type": "VARIANT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Expanded"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "orientation=horizontal,state=expanded,material=acrylic": {
+      "node": {
+        "height": 12,
+        "width": 200,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:131",
       "properties": {
         "Material": "Acrylic",
         "Orientation": "Horizontal",
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow start",
+            "rotation": {
+              "value": -90,
+              "variable": "rotate/quarter"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          },
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-hover",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 6,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-length"
+          },
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow end",
+            "rotation": {
+              "value": 90,
+              "variable": "rotate/three-quarter"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          }
+        ],
+        "effectStyle": "Material/Acrylic",
+        "fillStyle": "Material/Acrylic Default",
+        "height": "size/scrollbar/thickness",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Horizontal, State=Expanded, Material=Acrylic",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 12,
+          "w": 200
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/length"
       }
     },
     "orientation=horizontal,state=expanded,material=solid": {
+      "node": {
+        "height": 12,
+        "width": 200,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:877",
       "properties": {
         "Material": "Solid",
         "Orientation": "Horizontal",
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow start",
+            "rotation": {
+              "value": -90,
+              "variable": "rotate/quarter"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          },
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-hover",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 6,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-length"
+          },
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow end",
+            "rotation": {
+              "value": 90,
+              "variable": "rotate/three-quarter"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          }
+        ],
+        "fillStyle": "Material/Fallback/Acrylic Default",
+        "height": "size/scrollbar/thickness",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Horizontal, State=Expanded, Material=Solid",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 12,
+          "w": 200
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/length"
       }
     },
     "orientation=horizontal,state=rest,material=acrylic": {
+      "node": {
+        "height": 12,
+        "width": 200,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:129",
       "properties": {
         "Material": "Acrylic",
         "Orientation": "Horizontal",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-rest",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 2,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-length"
+          }
+        ],
+        "height": "size/scrollbar/thickness",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Horizontal, State=Rest, Material=Acrylic",
+        "size": {
+          "h": 12,
+          "w": 200
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/length"
       }
     },
     "orientation=horizontal,state=rest,material=solid": {
+      "node": {
+        "height": 12,
+        "width": 200,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:875",
       "properties": {
         "Material": "Solid",
         "Orientation": "Horizontal",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-rest",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 2,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-length"
+          }
+        ],
+        "height": "size/scrollbar/thickness",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Horizontal, State=Rest, Material=Solid",
+        "size": {
+          "h": 12,
+          "w": 200
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/length"
       }
     },
     "orientation=vertical,state=expanded,material=acrylic": {
+      "node": {
+        "height": 200,
+        "width": 12,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:123",
       "properties": {
         "Material": "Acrylic",
         "Orientation": "Vertical",
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow start",
+            "rotation": {
+              "value": 180,
+              "variable": "rotate/half"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          },
+          {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-length",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 80,
+              "w": 6
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow end",
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          }
+        ],
+        "effectStyle": "Material/Acrylic",
+        "fillStyle": "Material/Acrylic Default",
+        "height": "size/scrollbar/length",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Vertical, State=Expanded, Material=Acrylic",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 200,
+          "w": 12
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/thickness"
       }
     },
     "orientation=vertical,state=expanded,material=solid": {
+      "node": {
+        "height": 200,
+        "width": 12,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:869",
       "properties": {
         "Material": "Solid",
         "Orientation": "Vertical",
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow start",
+            "rotation": {
+              "value": 180,
+              "variable": "rotate/half"
+            },
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          },
+          {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-length",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 80,
+              "w": 6
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-hover"
+          },
+          {
+            "asset": {
+              "color": "control-strong-fill/default",
+              "path": "icons/ic_fluent_chevron_down_16_regular"
+            },
+            "component": "ic_fluent_chevron_down_16_regular",
+            "height": "size/icon/2xs",
+            "name": "arrow end",
+            "size": {
+              "h": 8,
+              "w": 8
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xs"
+          }
+        ],
+        "fillStyle": "Material/Fallback/Acrylic Default",
+        "height": "size/scrollbar/length",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Vertical, State=Expanded, Material=Solid",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 200,
+          "w": 12
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/thickness"
       }
     },
     "orientation=vertical,state=rest,material=acrylic": {
+      "node": {
+        "height": 200,
+        "width": 12,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "16:121",
       "properties": {
         "Material": "Acrylic",
         "Orientation": "Vertical",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-length",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 80,
+              "w": 2
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-rest"
+          }
+        ],
+        "height": "size/scrollbar/length",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Vertical, State=Rest, Material=Acrylic",
+        "size": {
+          "h": 200,
+          "w": 12
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/thickness"
       }
     },
     "orientation=vertical,state=rest,material=solid": {
+      "node": {
+        "height": 200,
+        "width": 12,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "58:867",
       "properties": {
         "Material": "Solid",
         "Orientation": "Vertical",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "absolute": {
+              "horizontal": "CENTER",
+              "vertical": "MIN"
+            },
+            "fills": [
+              "control-strong-fill/default"
+            ],
+            "height": "size/scrollbar/thumb-length",
+            "name": "thumb",
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 80,
+              "w": 2
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "size/scrollbar/thumb-rest"
+          }
+        ],
+        "height": "size/scrollbar/length",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "SPACE_BETWEEN"
+        },
+        "name": "Orientation=Vertical, State=Rest, Material=Solid",
+        "size": {
+          "h": 200,
+          "w": 12
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/scrollbar/thickness"
       }
     }
   }
