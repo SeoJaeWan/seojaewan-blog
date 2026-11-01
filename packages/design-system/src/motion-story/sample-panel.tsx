@@ -17,7 +17,7 @@ type SamplePanelProps = {
 export function SamplePanel(props: SamplePanelProps): JSX.Element {
   const { motionClassName } = props;
   return (
-    <div className="h-720 w-640 overflow-hidden">
+    <div className="h-size-shell-height w-size-shell-width overflow-hidden">
       <ShellSurface className={motionClassName} />
     </div>
   );

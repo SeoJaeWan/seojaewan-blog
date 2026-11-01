@@ -18,11 +18,11 @@ export function StartMenuFooter(props: StartMenuFooterProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex items-center overflow-clip border-t-default border-card-stroke-default bg-subtle-fill-secondary px-48 py-16',
+        'flex items-center overflow-clip border-t-stroke-width-default border-card-stroke-default bg-subtle-fill-secondary px-spacing-5xl py-spacing-lg',
         className,
       )}
     >
-      <div className="min-w-px flex-1">{children}</div>
+      <div className="min-w-size-hairline flex-flex-fill">{children}</div>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export function Taskbar(props: TaskbarProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex h-48 items-center px-12',
+        'relative flex h-size-taskbar-height items-center px-spacing-md',
         materialClassNames[material],
         className,
       )}
@@ -42,12 +42,14 @@ export function Taskbar(props: TaskbarProps): JSX.Element {
       {/* 위쪽 선이다. 피그마 안쪽 선은 레이아웃에 들어가지 않아, CSS border로 그리면 내용이 0.5px 내려간다. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-stroke-default bg-card-stroke-default"
+        className="pointer-events-none absolute inset-x-spacing-none top-spacing-none h-stroke-stroke-width-default bg-card-stroke-default"
       />
       {/* 피그마 left space다. Right와 같은 너비를 차지해 Center를 가운데에 둔다. */}
-      <div aria-hidden className="h-full min-w-0 flex-1" />
-      <div className="flex h-40 shrink-0 items-center gap-4">{center}</div>
-      <div className="flex h-full min-w-0 flex-1 items-center justify-end overflow-hidden">
+      <div aria-hidden className="h-full min-w-size-none flex-flex-fill" />
+      <div className="flex h-size-taskbar-item shrink-shrink-none items-center gap-spacing-xs">
+        {center}
+      </div>
+      <div className="flex h-full min-w-size-none flex-flex-fill items-center justify-end overflow-hidden">
         {right}
       </div>
     </div>

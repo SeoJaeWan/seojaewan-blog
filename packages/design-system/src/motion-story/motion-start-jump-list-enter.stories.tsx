@@ -19,7 +19,7 @@ export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-start-jump-list-enter">
       {(motionClassName) => (
-        <div className="p-24">
+        <div className="p-spacing-2xl">
           <SampleJumpList motionClassName={motionClassName} />
         </div>
       )}

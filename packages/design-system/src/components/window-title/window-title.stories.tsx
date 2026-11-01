@@ -24,11 +24,11 @@ const meta = {
   },
   // 부모가 너비를 정하는 컴포넌트라 피그마 원본 너비 660으로 감싼다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => (
-    <div className="w-660">
+    <div className="w-size-window-title-width">
       <WindowTitle
         kind={args.kind}
         inactive={args.state === 'inactive'}
-        appIcon={<img src={appIcon} alt="" className="size-icon-16 object-contain" />}
+        appIcon={<img src={appIcon} alt="" className="size-size-icon-sm object-contain" />}
       />
     </div>
   ),

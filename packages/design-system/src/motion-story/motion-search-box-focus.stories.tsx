@@ -18,10 +18,10 @@ export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-search-box-focus">
       {(motionClassName) => (
-        <div className="p-16">
+        <div className="p-spacing-lg">
           <Asset
             name="illustrations/icon-color-search-focus.svg"
-            className={`size-icon-48 ${motionClassName}`}
+            className={`size-size-icon-2xl ${motionClassName}`}
           />
         </div>
       )}

@@ -56,23 +56,23 @@ describe('스타일링', () => {
   });
 
   it('토큰 두께 클래스와 색 클래스를 서로 다른 속성으로 보고 둘 다 남긴다', () => {
-    expect(cn('border-focus-outer border-focus-stroke-outer')).toBe(
-      'border-focus-outer border-focus-stroke-outer',
+    expect(cn('border-stroke-width-focus-outer border-focus-stroke-outer')).toBe(
+      'border-stroke-width-focus-outer border-focus-stroke-outer',
     );
-    expect(cn('border-b-focus-outer border-accent-fill-default')).toBe(
-      'border-b-focus-outer border-accent-fill-default',
+    expect(cn('border-b-stroke-width-focus-outer border-accent-fill-default')).toBe(
+      'border-b-stroke-width-focus-outer border-accent-fill-default',
     );
-    expect(cn('outline-focus-outer outline-focus-stroke-outer')).toBe(
-      'outline-focus-outer outline-focus-stroke-outer',
+    expect(cn('outline-stroke-width-focus-outer outline-focus-stroke-outer')).toBe(
+      'outline-stroke-width-focus-outer outline-focus-stroke-outer',
     );
     expect(cn('type-body text-text-fill-primary')).toBe('type-body text-text-fill-primary');
   });
 
   it('사용처의 className이 같은 속성의 기본 클래스를 덮어쓴다', () => {
-    expect(cn('px-12 bg-control-fill-default', 'px-16 bg-accent-fill-default')).toBe(
-      'px-16 bg-accent-fill-default',
-    );
-    expect(cn('rounded-control', 'rounded-circular')).toBe('rounded-circular');
-    expect(cn('w-320', 'w-240')).toBe('w-240');
+    expect(
+      cn('px-spacing-md bg-control-fill-default', 'px-spacing-lg bg-accent-fill-default'),
+    ).toBe('px-spacing-lg bg-accent-fill-default');
+    expect(cn('rounded-radius-control', 'rounded-radius-circular')).toBe('rounded-radius-circular');
+    expect(cn('w-size-menu-width', 'w-full')).toBe('w-full');
   });
 });

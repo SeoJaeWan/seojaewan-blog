@@ -41,20 +41,22 @@ export function SearchResults(props: SearchResultsProps): JSX.Element {
   } = props;
   if (device === 'mobile') {
     return (
-      <ScrollArea {...divProps} className={cn('size-full rounded-control', className)}>
-        <div className="flex shrink-0 flex-col items-start gap-16">
+      <ScrollArea {...divProps} className={cn('size-full rounded-radius-control', className)}>
+        <div className="flex shrink-shrink-none flex-col items-start gap-spacing-lg">
           <BestMatchCard icon={icon} title={title} meta={meta} className="w-full">
             {actions}
           </BestMatchCard>
-          <div className="flex w-full shrink-0 flex-col gap-2">{children}</div>
+          <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">{children}</div>
         </div>
       </ScrollArea>
     );
   }
   return (
-    <div {...divProps} className={cn('flex size-full items-stretch gap-16', className)}>
-      <div className="flex w-300 shrink-0 flex-col gap-2">{children}</div>
-      <BestMatchCard icon={icon} title={title} meta={meta} className="shrink-0">
+    <div {...divProps} className={cn('flex size-full items-stretch gap-spacing-lg', className)}>
+      <div className="flex w-size-search-results-list-width shrink-shrink-none flex-col gap-spacing-2xs">
+        {children}
+      </div>
+      <BestMatchCard icon={icon} title={title} meta={meta} className="shrink-shrink-none">
         {actions}
       </BestMatchCard>
     </div>

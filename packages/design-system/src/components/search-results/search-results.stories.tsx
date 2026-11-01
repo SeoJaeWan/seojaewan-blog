@@ -25,13 +25,19 @@ const meta = {
   // 아이콘은 쓰는 곳마다 달라 필수 prop이므로 피그마 기본 인스턴스(file/Document)를 넣는다.
   // Results·Actions 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 크기만 칠 없는 빈 내용으로 둔다.
   render: (args) => (
-    <div className={args.device === 'mobile' ? 'h-465 w-356' : 'h-545 w-574'}>
+    <div
+      className={
+        args.device === 'mobile'
+          ? 'h-size-search-results-mobile-height w-size-shell-mobile-body-width'
+          : 'h-size-search-results-height w-size-shell-body-width'
+      }
+    >
       <SearchResults
         device={args.device}
         icon={<img src={documentIcon} alt="" className="size-full object-contain" />}
         actions={<div style={{ width: 100, height: 100 }} />}
       >
-        <div className="shrink-0" style={{ height: 100 }} />
+        <div className="shrink-shrink-none" style={{ height: 100 }} />
       </SearchResults>
     </div>
   ),
@@ -49,7 +55,7 @@ export const Figma: Story = {};
 /** 데스크톱은 결과 슬롯과 카드를 나란히 그리고, title·meta·icon·actions를 카드로 넘긴다 */
 export const Default: Story = {
   render: () => (
-    <div className="h-545 w-574">
+    <div className="h-size-search-results-height w-size-shell-body-width">
       <SearchResults
         icon={<span>아이콘</span>}
         title="글"
@@ -73,7 +79,7 @@ export const Default: Story = {
 /** 모바일은 카드 아래에 결과를 그리고 ScrollArea로 감싼다. 내용이 넘치지 않으면 스크롤바는 보이지 않는다 */
 export const Mobile: Story = {
   render: () => (
-    <div className="h-465 w-356">
+    <div className="h-size-search-results-mobile-height w-size-shell-mobile-body-width">
       <SearchResults device="mobile" icon={null}>
         <span>결과</span>
       </SearchResults>

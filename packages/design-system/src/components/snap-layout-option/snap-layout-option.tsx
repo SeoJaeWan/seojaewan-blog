@@ -29,7 +29,7 @@ const layoutLabels = {
 } as const satisfies Record<SnapLayoutOptionLayout, string>;
 
 // SnapZone은 고정 크기를 가지므로, 열 안에서 남는 자리를 채우도록 크기를 덮어쓴다.
-const ZONE_CLASS = 'h-auto min-h-0 w-full flex-1';
+const ZONE_CLASS = 'h-auto min-h-size-none w-full flex-flex-fill';
 
 /**
  * 스냅 레이아웃 선택지 안의 레이아웃 하나(피그마 SnapLayoutOption)를 그린다. SnapLayoutFlyout에 쓴다.
@@ -62,12 +62,15 @@ export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
       role="group"
       aria-label={layoutLabels[layout]}
       {...divProps}
-      className={cn('flex h-56 w-88 gap-4 overflow-clip', className)}
+      className={cn(
+        'flex h-size-snap-option-height w-size-snap-option-width gap-spacing-xs overflow-clip',
+        className,
+      )}
     >
       <div
         className={cn(
-          'flex h-full min-w-0 flex-col gap-4 overflow-clip',
-          isTwoThirds ? 'w-56 shrink-0' : 'flex-1',
+          'flex h-full min-w-size-none flex-col gap-spacing-xs overflow-clip',
+          isTwoThirds ? 'w-size-snap-option-column-width shrink-shrink-none' : 'flex-flex-fill',
         )}
       >
         {isLeftSplit ? (
@@ -79,7 +82,7 @@ export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
           renderZone(0)
         )}
       </div>
-      <div className="flex h-full min-w-0 flex-1 flex-col gap-4 overflow-clip">
+      <div className="flex h-full min-w-size-none flex-flex-fill flex-col gap-spacing-xs overflow-clip">
         {isRightSplit ? (
           <>
             {renderZone(rightStart)}

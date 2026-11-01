@@ -19,7 +19,7 @@ const meta = {
   // 컴포넌트의 Previews 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 크기 208x164만 칠 없는 빈 내용으로 둔다.
   render: (args) => (
     <TaskbarPreviewList material={args.material}>
-      <div className="shrink-0" style={{ width: 208, height: 164 }} />
+      <div className="shrink-shrink-none" style={{ width: 208, height: 164 }} />
     </TaskbarPreviewList>
   ),
 } satisfies Meta<FigmaArgs>;

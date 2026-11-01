@@ -19,7 +19,8 @@ type TooltipProps = Omit<ComponentProps<'div'>, 'children'> & {
 };
 
 // 바탕 테두리와 모서리다. 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
-const SURFACE_CLASS_NAME = 'rounded-control border-default border-surface-stroke-flyout';
+const SURFACE_CLASS_NAME =
+  'rounded-radius-control border-stroke-width-default border-surface-stroke-flyout';
 
 // Type=Default의 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다.
 const materialClassNames = {
@@ -42,29 +43,34 @@ export function Tooltip(props: TooltipProps): JSX.Element {
       <div
         role="tooltip"
         {...divProps}
-        className={cn('relative w-300 rounded-control shadow-elevation-tooltip', className)}
+        className={cn(
+          'relative w-size-tooltip-balloon-width rounded-radius-control shadow-elevation-tooltip',
+          className,
+        )}
       >
         <div
           className={cn(
-            'flex flex-col gap-4 bg-solid-background-fill-quarternary p-12',
+            'flex flex-col gap-spacing-xs bg-solid-background-fill-quarternary p-spacing-md',
             SURFACE_CLASS_NAME,
           )}
         >
-          <div className="flex items-start gap-8 self-stretch overflow-hidden">
+          <div className="flex items-start gap-spacing-sm self-stretch overflow-hidden">
             <Asset
               name="icons/ic_fluent_warning_24_regular.svg"
-              className="size-icon-16 shrink-0 text-system-fill-caution"
+              className="size-size-icon-sm shrink-shrink-none text-system-fill-caution"
             />
-            <span className="min-w-0 flex-1 type-caption text-text-fill-primary">{message}</span>
+            <span className="min-w-size-none flex-flex-fill type-caption text-text-fill-primary">
+              {message}
+            </span>
           </div>
         </div>
         <Asset
           name="shapes/tooltip-tail-fill.svg"
-          className="absolute -top-8 left-16 h-9 w-14 text-solid-background-fill-quarternary"
+          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-solid-background-fill-quarternary"
         />
         <Asset
           name="shapes/tooltip-tail-border.svg"
-          className="absolute -top-8 left-16 h-9 w-14 text-surface-stroke-flyout"
+          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-surface-stroke-flyout"
         />
       </div>
     );
@@ -74,7 +80,7 @@ export function Tooltip(props: TooltipProps): JSX.Element {
       role="tooltip"
       {...divProps}
       className={cn(
-        'inline-flex max-w-318 flex-col px-8 py-6 type-caption text-text-fill-primary',
+        'inline-flex max-w-size-tooltip-max-width flex-col px-spacing-sm py-spacing-sm-nudge type-caption text-text-fill-primary',
         SURFACE_CLASS_NAME,
         materialClassNames[material],
         className,

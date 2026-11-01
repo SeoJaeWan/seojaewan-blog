@@ -36,7 +36,7 @@ const meta = {
       inactive: args.state === 'inactive',
       placement: args.placement,
       material: args.material,
-      className: 'h-500 w-800',
+      className: 'h-size-window-height w-size-window-width',
     };
     return args.titleBar === 'custom' ? (
       <WindowFrame {...common} titleBar="custom" />
@@ -75,7 +75,7 @@ export const Default: Story = {
     <WindowFrame
       appIcon={<span role="img" aria-label="앱 아이콘" />}
       title="파일 탐색기"
-      className="h-500 w-800"
+      className="h-size-window-height w-size-window-width"
     >
       <p>내용</p>
     </WindowFrame>
@@ -110,7 +110,7 @@ export const Inactive: Story = {
   // (임의 작업 문서의 "색 대비 위반" 항목).
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   render: () => (
-    <WindowFrame appIcon={null} inactive className="h-500 w-800">
+    <WindowFrame appIcon={null} inactive className="h-size-window-height w-size-window-width">
       <p>내용</p>
     </WindowFrame>
   ),
@@ -142,7 +142,7 @@ export const Maximized: MaximizedStory = {
         placement="maximized"
         onRestore={handleRestore}
         onClose={handleClose}
-        className="h-500 w-800"
+        className="h-size-window-height w-size-window-width"
       >
         <p>내용</p>
       </WindowFrame>
@@ -170,7 +170,13 @@ export const Maximized: MaximizedStory = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** showMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다 */
 export const WithoutMaximize: Story = {
-  render: () => <WindowFrame appIcon={null} showMaximize={false} className="h-500 w-800" />,
+  render: () => (
+    <WindowFrame
+      appIcon={null}
+      showMaximize={false}
+      className="h-size-window-height w-size-window-width"
+    />
+  ),
   play: async ({ canvasElement, step }) => {
     await step('최대화 버튼이 없다', async () => {
       await expect(
@@ -187,7 +193,7 @@ export const MaximizeSlot: Story = {
     <WindowFrame
       appIcon={null}
       maximizeSlot={<button type="button">스냅</button>}
-      className="h-500 w-800"
+      className="h-size-window-height w-size-window-width"
     />
   ),
   play: async ({ canvasElement, step }) => {
@@ -217,7 +223,7 @@ export const TitleBar: TitleBarStory = {
         onMaximize={handleMaximize}
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
         onTitleBarPointerDown={handleTitleBarPointerDown}
-        className="h-500 w-800"
+        className="h-size-window-height w-size-window-width"
       >
         <p>내용</p>
       </WindowFrame>
@@ -265,7 +271,7 @@ export const CustomTitleBar: CustomTitleBarStory = {
         titleBar="custom"
         titleBarContent={<span>탭 목록</span>}
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
-        className="h-500 w-800"
+        className="h-size-window-height w-size-window-width"
       />
     );
   },
@@ -299,7 +305,7 @@ export const PortalPopup: TitleBarStory = {
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
         onTitleBarPointerDown={handleTitleBarPointerDown}
         maximizeSlot={createPortal(<p>스냅 레이아웃</p>, document.body)}
-        className="h-500 w-800"
+        className="h-size-window-height w-size-window-width"
       />
     );
   },

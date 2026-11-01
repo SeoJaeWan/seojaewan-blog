@@ -8,7 +8,7 @@ export type TokenNameLists = { readonly [key in keyof typeof TOKEN_NAMES]: reado
 
 /**
  * 디자인 토큰 이름을 아는 `tailwind-merge`를 만든다. 기본 설정은 Tailwind 기본 테마 이름(`text-sm`, `border-2`)만 알아서,
- * `border-focus-outer`(두께)와 `border-focus-stroke-outer`(색)를 같은 색 클래스로 보고 앞의 것을 지운다.
+ * `border-stroke-width-focus-outer`(두께)와 `border-focus-stroke-outer`(색)를 같은 색 클래스로 보고 앞의 것을 지운다.
  * 이름 목록은 `generate:tokens`와 플러그인이 tokens.css와 함께 만든다.
  * @codocs [[피그마 연동:토큰 사용 강제]]
  * @param names 토큰 이름 목록
@@ -34,7 +34,7 @@ export function createTokenMerge(names: TokenNameLists): (classes: string) => st
         'border-w-l': [{ 'border-l': [...names.strokeWidth] }],
         'border-w-s': [{ 'border-s': [...names.strokeWidth] }],
         'border-w-e': [{ 'border-e': [...names.strokeWidth] }],
-        // 바깥 선(outline) 두께도 선 두께 토큰을 쓴다(outline-focus-outer는 두께, outline-focus-stroke-outer는 색).
+        // 바깥 선(outline) 두께도 선 두께 토큰을 쓴다(outline-stroke-width-focus-outer는 두께, outline-focus-stroke-outer는 색).
         'outline-w': [{ outline: [...names.strokeWidth] }],
         opacity: [{ opacity: [...names.opacity] }],
         rotate: [{ rotate: [...names.rotate] }],

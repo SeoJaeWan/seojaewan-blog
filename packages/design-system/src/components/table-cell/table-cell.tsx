@@ -24,7 +24,7 @@ export function TableCell(props: TableCellProps): JSX.Element {
       ...cellProps,
       // 피그마에서 오른쪽·아래쪽 선이 레이아웃에 들어가므로 CSS border를 쓴다.
       className: cn(
-        'type-body-strong border-r-default border-b-default border-divider-stroke-default p-8 text-left align-top text-text-fill-primary',
+        'type-body-strong border-r-stroke-width-default border-b-stroke-width-default border-divider-stroke-default p-spacing-sm text-left align-top text-text-fill-primary',
         isHeader && 'bg-subtle-fill-secondary',
         className,
       ),
