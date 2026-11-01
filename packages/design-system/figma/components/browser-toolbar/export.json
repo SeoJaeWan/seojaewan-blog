@@ -1,6 +1,8 @@
 {
+  "description": "Chrome 이동 버튼과 주소창 줄로, Chrome 창의 탭 줄 아래에 쓴다.",
   "name": "BrowserToolbar",
   "nodeId": "36:591",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,399 @@
         "y": 0
       },
       "nodeId": "36:591",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_arrow_left_20_regular"
+                },
+                "component": "ic_fluent_arrow_left_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "back",
+            "properties": {
+              "State": "Rest",
+              "Style": "Chrome"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_arrow_right_20_regular"
+                },
+                "component": "ic_fluent_arrow_right_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "forward",
+            "properties": {
+              "State": "Rest",
+              "Style": "Chrome"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_arrow_clockwise_20_regular"
+                },
+                "component": "ic_fluent_arrow_clockwise_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "refresh",
+            "properties": {
+              "State": "Rest",
+              "Style": "Chrome"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "chrome/text-secondary",
+                      "path": "icons/ic_fluent_info_24_regular"
+                    },
+                    "component": "ic_fluent_info_24_regular",
+                    "height": "size/icon/sm",
+                    "name": "leading icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "chrome/text-primary"
+                    ],
+                    "name": "url",
+                    "size": {
+                      "h": 20,
+                      "w": 780
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "웹",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "주소",
+                          "fill": "chrome/omnibox-selection-text",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "height": "size/address-bar/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/md",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/lg",
+                    "spacing/none",
+                    "spacing/lg"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "input row",
+                "size": {
+                  "h": 36,
+                  "w": 840
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "AddressBar",
+            "fills": [
+              "chrome/omnibox-fill"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "address bar",
+            "properties": {
+              "Query": "검색어",
+              "State": "Rest",
+              "URL": "웹 주소"
+            },
+            "radius": [
+              "radius/circular",
+              "radius/circular",
+              "radius/circular",
+              "radius/circular"
+            ],
+            "size": {
+              "h": 36,
+              "w": 840
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "chrome/text-secondary",
+                  "path": "icons/ic_fluent_more_vertical_20_regular"
+                },
+                "component": "ic_fluent_more_vertical_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "menu (⋮)",
+            "properties": {
+              "State": "Rest",
+              "Style": "Chrome"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "fills": [
+          "chrome/toolbar-fill"
+        ],
+        "height": "size/browser-toolbar/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/sm",
+            "spacing/xs",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "BrowserToolbar",
+        "size": {
+          "h": 46,
+          "w": 1000
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/browser-toolbar/width"
+      }
     }
   }
 }

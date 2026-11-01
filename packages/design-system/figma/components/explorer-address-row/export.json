@@ -1,8 +1,28 @@
 {
+  "description": "이동 버튼·경로·검색이 있는 줄로, 파일 탐색기 본문 맨 위에 쓴다.",
   "name": "ExplorerAddressRow",
   "nodeId": "439:5700",
+  "propertyDefinitions": {
+    "Device": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Mobile"
+      ],
+      "type": "VARIANT"
+    },
+    "Search": {
+      "default": "Closed",
+      "options": [
+        "Closed",
+        "Open"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "device=desktop,search=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 44,
         "width": 798,
@@ -13,9 +33,487 @@
       "properties": {
         "Device": "Desktop",
         "Search": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_left_20_regular"
+                },
+                "component": "ic_fluent_arrow_left_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "back",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_right_20_regular"
+                },
+                "component": "ic_fluent_arrow_right_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "forward",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_up_20_regular"
+                },
+                "component": "ic_fluent_arrow_up_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "up",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_clockwise_20_regular"
+                },
+                "component": "ic_fluent_arrow_clockwise_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "refresh",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "location icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "separator",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Items",
+                "size": {
+                  "h": 100,
+                  "w": 100
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Breadcrumb",
+            "fills": [
+              "control-fill/default"
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "breadcrumb",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 394
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 20,
+                  "w": 196
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "검색",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_search_16_regular"
+                },
+                "component": "ic_fluent_search_16_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "SearchBox",
+            "fills": [
+              "control-fill/default"
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm-nudge",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/md"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "search box",
+            "properties": {
+              "Appearance": "Default",
+              "Filled": "False",
+              "Placeholder": "검색",
+              "State": "Rest",
+              "Value": "검색어"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 240
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeStyle": "Elevation/Text Control Border",
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokesIncludedInLayout": false,
+            "type": "INSTANCE",
+            "width": "size/search-box/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Device=Desktop, Search=Closed",
+        "size": {
+          "h": 44,
+          "w": 798
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer/content-width"
       }
     },
     "device=mobile,search=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 44,
         "width": 388,
@@ -26,6 +524,265 @@
       "properties": {
         "Device": "Mobile",
         "Search": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_left_20_regular"
+                },
+                "component": "ic_fluent_arrow_left_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "back",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/file-folder"
+                },
+                "component": "file/Folder",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/icon/sm",
+                "name": "location icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_chevron_right_16_regular"
+                },
+                "component": "ic_fluent_chevron_right_16_regular",
+                "height": "size/icon/sm",
+                "name": "separator",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Items",
+                "size": {
+                  "h": 100,
+                  "w": 100
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Breadcrumb",
+            "fills": [
+              "control-fill/default"
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "breadcrumb",
+            "properties": {
+              "State": "Rest"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 300
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_search_20_regular"
+                },
+                "component": "ic_fluent_search_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "search",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Device=Mobile, Search=Closed",
+        "size": {
+          "h": 44,
+          "w": 388
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window/mobile-content-width"
       }
     },
     "device=mobile,search=open": {
@@ -39,6 +796,213 @@
       "properties": {
         "Device": "Mobile",
         "Search": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_arrow_left_20_regular"
+                },
+                "component": "ic_fluent_arrow_left_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "IconButton",
+            "fills": [
+              "subtle-fill/transparent"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/sm"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "back",
+            "properties": {
+              "State": "Rest",
+              "Style": "Subtle"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 20,
+                  "w": 292
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "검색",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_search_16_regular"
+                },
+                "component": "ic_fluent_search_16_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "absolute": {
+                  "horizontal": "STRETCH",
+                  "vertical": "MAX"
+                },
+                "fills": [
+                  "accent-fill/default"
+                ],
+                "height": "stroke-width/focus-outer",
+                "name": "bottom border",
+                "size": {
+                  "h": 2,
+                  "w": 336
+                },
+                "sizing": {
+                  "h": "DERIVED",
+                  "v": "FIXED"
+                },
+                "type": "RECTANGLE"
+              }
+            ],
+            "component": "SearchBox",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm-nudge",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/md"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "search box",
+            "properties": {
+              "Appearance": "Default",
+              "Filled": "False",
+              "Placeholder": "검색",
+              "State": "Focused",
+              "Value": "검색어"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 336
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-stroke/default"
+            ],
+            "strokesIncludedInLayout": false,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Device=Mobile, Search=Open",
+        "size": {
+          "h": 44,
+          "w": 388
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window/mobile-content-width"
       }
     }
   }
