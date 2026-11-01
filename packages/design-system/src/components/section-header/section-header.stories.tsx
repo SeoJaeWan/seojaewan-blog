@@ -27,8 +27,8 @@ export const Default: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step('label로 바꾼 글자를 그린다', async () => {
-      await expect(canvas.getByText('고정됨')).toBeInTheDocument();
+    await step('label로 바꾼 글자를 제목 태그로 그린다', async () => {
+      await expect(canvas.getByRole('heading', { name: '고정됨' })).toBeInTheDocument();
     });
 
     await step('onClick이 없으면 버튼이 아니다', async () => {

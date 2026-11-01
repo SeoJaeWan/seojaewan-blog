@@ -22,6 +22,22 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나(default)를 그린다.
 export const Figma: Story = {};
 
+// @codocs [[접근성:영역 이름]]
+/** 제목은 제목 태그로 그리고 영역이 가리킬 id를 받는다 */
+export const Heading: Story = {
+  render: () => (
+    <div className="w-size-shell-body-width">
+      <SectionTitle title="고정됨" titleId="section-title" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole('heading', { name: '고정됨' })).toHaveAttribute(
+      'id',
+      'section-title',
+    );
+  },
+};
+
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** showAction이 꺼져 있으면 action을 그리지 않는다 */
 export const Default: Story = {
