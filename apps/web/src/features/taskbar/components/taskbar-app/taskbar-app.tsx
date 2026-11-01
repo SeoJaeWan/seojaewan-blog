@@ -1,18 +1,10 @@
-import type { ComponentProps, JSX, ReactElement } from 'react';
+import type { ComponentProps, JSX } from 'react';
 
-import { ImageAsset, TaskbarButton } from '@seojaewan/design-system';
+import { TaskbarButton } from '@seojaewan/design-system';
 
+import { TaskbarAppIcon } from '@/features/taskbar/components/taskbar-app-icon/taskbar-app-icon';
 import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 import { taskbarApps } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
-
-/**
- * 앱 아이콘(16px 자리 등 쓰는 곳이 크기를 정한다)을 그린다.
- * @param app 앱
- * @returns ImageAsset
- */
-export function renderTaskbarAppIcon(app: TaskbarAppId): ReactElement {
-  return <ImageAsset name={taskbarApps[app].icon} className="size-full object-contain" />;
-}
 
 type TaskbarAppButtonProps = Omit<
   ComponentProps<typeof TaskbarButton>,
@@ -36,7 +28,7 @@ export function TaskbarAppButton(props: TaskbarAppButtonProps): JSX.Element {
       {...buttonProps}
       data-taskbar-app={app}
       label={taskbarApps[app].label}
-      icon={renderTaskbarAppIcon(app)}
+      icon={<TaskbarAppIcon app={app} />}
     />
   );
 }

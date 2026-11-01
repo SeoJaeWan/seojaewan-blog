@@ -2,7 +2,7 @@ import type { JSX, KeyboardEvent, ReactNode } from 'react';
 
 import { TaskbarPreviewList, WindowPreview } from '@seojaewan/design-system';
 
-import { renderTaskbarAppIcon } from '@/features/taskbar/components/taskbar-app/taskbar-app';
+import { TaskbarAppIcon } from '@/features/taskbar/components/taskbar-app-icon/taskbar-app-icon';
 import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 
 /** 창 미리보기 목록의 창 하나 */
@@ -88,7 +88,7 @@ export function TaskbarWindowPreviewList(props: TaskbarWindowPreviewListProps): 
               onClick={handleSelectClick}
               onKeyDown={handleSelectKeyDown}
               onClose={handleClose}
-              appIcon={renderTaskbarAppIcon(app)}
+              appIcon={<TaskbarAppIcon app={app} />}
               title={item.title}
               thumbnail={item.thumbnail}
               style={cardWidth === undefined ? undefined : { width: cardWidth }}
