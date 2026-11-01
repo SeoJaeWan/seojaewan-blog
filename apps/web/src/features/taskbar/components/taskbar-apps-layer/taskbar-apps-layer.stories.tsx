@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fireEvent, waitFor, within } from 'storybook/test';
 
+import { HOVER_PREVIEW_OPEN_DELAY } from '@/features/taskbar/hooks/use-hover-preview/use-hover-preview';
+import { installStoryClock } from '@/shared/stories/story-clock/story-clock';
 import { openStoryWindows, resetStoryStores } from '@/shared/stories/story-stores/story-stores';
 import { getStoryWindowTitle, renderStoryWindow } from '@/shared/stories/story-window/story-window';
 
@@ -32,5 +35,29 @@ export const Default: Story = {};
 export const WithWindows: Story = {
   beforeEach: () => {
     openStoryWindows(['chrome', 'chrome', 'file-explorer']);
+  },
+};
+
+/** 창이 있는 앱 버튼에 마우스를 400ms 올리면 미리보기를 띄운다. 가짜 시계로 지연을 흘린다 */
+export const HoverPreview: Story = {
+  // 축소 화면의 글자가 카드 이름에 없다고 label-content-name-mismatch에 걸린다. 지연만 보는 스토리라 창 내용을 그리지 않는다.
+  args: { renderWindow: () => null },
+  beforeEach: () => {
+    openStoryWindows(['chrome']);
+  },
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const button = body.getByRole('button', { name: 'Chrome' });
+    const clock = installStoryClock([HOVER_PREVIEW_OPEN_DELAY]);
+    try {
+      // React의 onPointerEnter는 pointerover로 동작하므로 pointerEnter가 아니라 pointerOver를 보낸다.
+      await fireEvent.pointerOver(button, { pointerType: 'mouse' });
+      clock.tick(HOVER_PREVIEW_OPEN_DELAY - 1);
+      await expect(button).toHaveAttribute('aria-expanded', 'false');
+      clock.tick(1);
+      await waitFor(() => expect(button).toHaveAttribute('aria-expanded', 'true'));
+    } finally {
+      clock.restore();
+    }
   },
 };
