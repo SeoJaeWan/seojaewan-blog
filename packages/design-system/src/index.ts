@@ -76,3 +76,4 @@ export * from './components/unsupported-block/unsupported-block';
 export * from './components/window-frame/window-frame';
 export * from './components/window-preview/window-preview';
 export * from './components/window-title/window-title';
+export { BREAKPOINTS } from './token-names';

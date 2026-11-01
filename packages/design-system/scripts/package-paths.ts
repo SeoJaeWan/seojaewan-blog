@@ -9,6 +9,7 @@ export const figmaDir = path.join(packageRoot, 'figma');
 export const tokensJsonPath = path.join(figmaDir, 'tokens.json');
 
 export const tokensCssPath = path.join(packageRoot, 'src', 'tokens.css');
+export const tokenNamesPath = path.join(packageRoot, 'src', 'token-names.ts');
 
 // 웹 폰트 패키지 폴더다. generate:fonts가 이 패키지들의 CSS에서 woff2만 가리키는 CSS를 src/에 만든다.
 export const nodeModulesDir = path.join(packageRoot, 'node_modules');

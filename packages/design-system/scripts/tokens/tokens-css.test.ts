@@ -1,10 +1,18 @@
 // @vitest-environment node
 import { readFileSync } from 'node:fs';
+import { __unstable__loadDesignSystem as loadDesignSystem } from 'tailwindcss';
 import { describe, expect, it } from 'vitest';
 
-import { tokensCssPath, tokensJsonPath } from '../package-paths.ts';
+import { TOKEN_NAMES } from '../../src/token-names.ts';
+import { packageRoot, tokenNamesPath, tokensCssPath, tokensJsonPath } from '../package-paths.ts';
 import { TOKENS_FIXTURE } from './tokens-css.fixture.ts';
-import { naturalCompare, roundAngle, TokenFormatError, tokensJsonToCss } from './tokens-css.ts';
+import {
+  naturalCompare,
+  roundAngle,
+  TokenFormatError,
+  tokensJsonToCss,
+  tokensJsonToNames,
+} from './tokens-css.ts';
 
 const css = tokensJsonToCss(TOKENS_FIXTURE);
 
@@ -526,5 +534,287 @@ describe('토큰 검사', () => {
   it('커밋된 src/tokens.css가 figma/tokens.json에서 만든 결과와 같다', () => {
     const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
     expect(readFileSync(tokensCssPath, 'utf8')).toBe(tokensJsonToCss(json));
+  });
+});
+
+/**
+ * 숫자 토큰을 만든다.
+ * @param value 값
+ * @returns 토큰
+ */
+function dimensionToken(value: number): Record<string, unknown> {
+  return { $type: 'dimension', $value: { value, unit: 'px' } };
+}
+
+/**
+ * 단위 없는 숫자 토큰을 만든다.
+ * @param value 값
+ * @returns 토큰
+ */
+function numberToken(value: number): Record<string, unknown> {
+  return { $type: 'number', $value: value };
+}
+
+// 옛 이름과 새 이름, 코드 전용 변수, 경계값, 노트북 모드가 함께 든 tokens.json이다.
+const mixedTokens = {
+  spacing: {
+    '16': dimensionToken(16),
+    sm: {
+      ...dimensionToken(8),
+      $extensions: { 'com.seojaewan': { modes: { Laptop: { value: 6, unit: 'px' } } } },
+    },
+  },
+  size: {
+    '240': dimensionToken(240),
+    none: dimensionToken(0),
+    control: { height: dimensionToken(32) },
+  },
+  radius: { control: dimensionToken(4) },
+  'stroke-width': { default: dimensionToken(1) },
+  rotate: { half: numberToken(180) },
+  layer: { window: numberToken(10) },
+  position: { half: numberToken(50) },
+  grid: { start: numberToken(1) },
+  'border-spacing': { none: numberToken(0) },
+  'line-clamp': { two: numberToken(2) },
+  ratio: { wide: numberToken(1.6) },
+  shrink: { none: numberToken(0) },
+  flex: { fill: numberToken(1) },
+  breakpoint: {
+    mobile: { width: dimensionToken(768) },
+    laptop: { width: dimensionToken(1600), height: dimensionToken(900) },
+  },
+};
+
+// @codocs [[피그마 연동:토큰 생성]]
+describe('옛·새 규칙이 함께 있는 tokens.json', () => {
+  const mixed = tokensJsonToCss(mixedTokens);
+  const [, theme = ''] = mixed.split('@theme static {');
+  const [themeBlock = ''] = theme.split('\n}');
+  const [, root = ''] = mixed.split('\n:root {');
+  const [rootBlock = ''] = root.split('\n}');
+
+  it('옛 이름은 옛 클래스만, 새 이름은 경로 전체 클래스만 만든다', () => {
+    expect(themeBlock).toContain('--spacing-16: 16px;');
+    expect(themeBlock).toContain('--spacing-spacing-sm: var(--spacing-sm);');
+    expect(themeBlock).not.toContain('--spacing-spacing-16');
+    expect(themeBlock).not.toMatch(/--spacing-sm:/u);
+    expect(rootBlock).toContain('--spacing-sm: 8px;');
+    expect(themeBlock).toContain('--size-240: 240px;');
+    expect(themeBlock).toContain('--size-size-none: var(--size-none);');
+  });
+
+  it('이름이 그대로인 토큰은 옛 클래스와 새 클래스를 함께 만든다', () => {
+    expect(themeBlock).toContain('--radius-control: 4px;');
+    expect(themeBlock).toContain('--radius-radius-control: var(--radius-control);');
+    expect(themeBlock).toContain('--size-control-height: 32px;');
+    expect(themeBlock).toContain('--size-size-control-height: var(--size-control-height);');
+    expect(themeBlock).toContain(
+      '--stroke-width-stroke-width-default: var(--stroke-width-default);',
+    );
+  });
+
+  it('이름공간이 경로와 다른 묶음은 Tailwind가 읽는 이름공간으로 만든다', () => {
+    expect(themeBlock).toContain('--rotate-rotate-half: var(--rotate-half);');
+    expect(themeBlock).toContain('--z-index-layer-window: var(--layer-window);');
+    expect(themeBlock).toContain('--inset-position-half: var(--position-half);');
+    expect(themeBlock).toContain('--translate-position-half: var(--position-half);');
+    expect(themeBlock).toContain('--grid-column-start-grid-start: var(--grid-start);');
+    expect(themeBlock).toContain('--grid-row-start-grid-start: var(--grid-start);');
+    expect(themeBlock).toContain('--aspect-ratio-wide: var(--ratio-wide);');
+    expect(mixed).toContain('@utility shrink-* {\n  flex-shrink: --value(--shrink-*);\n}');
+    expect(mixed).toContain('@utility flex-* {\n  flex: --value(--flex-*);\n}');
+  });
+
+  it('값의 단위를 묶음에서 정한다', () => {
+    expect(rootBlock).toContain('--rotate-half: 180deg;');
+    expect(rootBlock).toContain('--position-half: 50%;');
+    expect(rootBlock).toContain('--border-spacing-none: 0px;');
+    expect(rootBlock).toContain('--layer-window: 10;');
+  });
+
+  it('경계값으로 구간 변형과 모드 값의 @media를 만들고 기본 구간을 지운다', () => {
+    const laptop =
+      '(min-width: 768px) and (max-width: 1599px), (min-width: 768px) and (max-height: 899px)';
+    expect(mixed).toContain('--breakpoint-*: initial;');
+    expect(mixed).toContain(`@custom-variant laptop {\n  @media ${laptop} {\n    @slot;\n  }\n}`);
+    expect(mixed).toContain(
+      '@custom-variant mobile {\n  @media (max-width: 767px) {\n    @slot;\n  }\n}',
+    );
+    expect(mixed).toContain(`@media ${laptop} {\n  :root {\n    --spacing-sm: 6px;\n  }\n}`);
+    expect(rootBlock).toContain('--breakpoint-laptop-height: 900px;');
+  });
+
+  it('Tailwind가 옛·새 클래스와 음수, 구간 변형을 만들고 기본 구간은 만들지 않는다', async () => {
+    const designSystem = await loadDesignSystem(`@import 'tailwindcss';\n${mixed}`, {
+      base: packageRoot,
+      loadStylesheet: async (id, base) => {
+        const file = require.resolve(id === 'tailwindcss' ? 'tailwindcss/index.css' : id);
+        return Promise.resolve({ path: file, base, content: readFileSync(file, 'utf8') });
+      },
+    });
+    const classes = [
+      'p-16',
+      'p-spacing-sm',
+      '-mt-spacing-sm',
+      '-top-spacing-sm',
+      'rounded-control',
+      'rounded-radius-control',
+      'w-size-none',
+      'min-w-size-none',
+      'border-stroke-width-default',
+      'rotate-rotate-half',
+      '-rotate-rotate-half',
+      'z-layer-window',
+      'top-position-half',
+      '-translate-y-position-half',
+      'col-start-grid-start',
+      'border-spacing-border-spacing-none',
+      'line-clamp-line-clamp-two',
+      'aspect-ratio-wide',
+      'shrink-shrink-none',
+      'flex-flex-fill',
+      'laptop:p-spacing-sm',
+      'mobile:p-16',
+    ];
+    expect(classes.filter((name) => designSystem.candidatesToCss([name])[0] === null)).toEqual([]);
+    expect(
+      ['p-sm', 'w-none', 'md:p-16', 'sm:p-16'].filter(
+        (name) => designSystem.candidatesToCss([name])[0] !== null,
+      ),
+    ).toEqual([]);
+  });
+
+  it('이름 목록과 경계값 상수를 만든다', () => {
+    const names = tokensJsonToNames(mixedTokens);
+    expect(names).toContain("    'spacing-sm',");
+    expect(names).toContain("    '16',");
+    expect(names).toContain("  rotate: [\n    'rotate-half',\n  ],");
+    expect(names).toContain("  zIndex: [\n    'layer-window',\n  ],");
+    expect(names).toContain(
+      'export const BREAKPOINTS = {\n  laptopHeight: 900,\n  laptopWidth: 1600,\n  mobileWidth: 768,\n} as const;',
+    );
+  });
+
+  it('경계값이 빠지면 실패한다', () => {
+    expect(() =>
+      tokensJsonToCss({ breakpoint: { mobile: { width: dimensionToken(768) } } }),
+    ).toThrow(TokenFormatError);
+  });
+
+  it('경계값 없이 모드 값이 있으면 실패한다', () => {
+    expect(() => tokensJsonToCss({ spacing: { sm: mixedTokens.spacing.sm } })).toThrow(
+      TokenFormatError,
+    );
+  });
+
+  it('모르는 모드는 실패한다', () => {
+    const token = {
+      ...dimensionToken(8),
+      $extensions: { 'com.seojaewan': { modes: { Tablet: { value: 6, unit: 'px' } } } },
+    };
+    expect(() => tokensJsonToCss({ ...mixedTokens, spacing: { sm: token } })).toThrow(
+      TokenFormatError,
+    );
+  });
+
+  it('문자 변수는 값을 그대로 쓰고 CSS를 깨는 글자는 막는다', () => {
+    /**
+     * 문자 변수 하나를 든 토큰을 만든다.
+     * @param value 값
+     * @returns tokens.json 값
+     */
+    function text(value: string): object {
+      return { flex: { fill: { $type: 'string', $value: value } } };
+    }
+    expect(tokensJsonToCss(text('1 1 0%'))).toContain('--flex-fill: 1 1 0%;');
+    expect(() => tokensJsonToCss(text('1; color: red'))).toThrow(TokenFormatError);
+  });
+});
+
+/**
+ * 그라데이션 층 종류와 변환으로 CSS 값을 만든다.
+ * @param type 피그마 칠 종류
+ * @param transform gradientTransform
+ * @returns CSS 값
+ */
+function gradientCss(type: string, transform: readonly (readonly number[])[]): string {
+  const output = tokensJsonToCss({
+    style: {
+      paint: {
+        Glow: {
+          $type: 'gradient',
+          $value: [
+            { color: '#000000', position: 0 },
+            { color: '#ffffff', position: 1 },
+          ],
+          $extensions: {
+            'com.seojaewan': { layers: [{ type, gradientTransform: transform }] },
+          },
+        },
+      },
+    },
+  });
+  return /--glow: (.+);/u.exec(output)?.[1] ?? '';
+}
+
+// @codocs [[피그마 연동:토큰 생성]]
+describe('방사형·각도형 그라데이션', () => {
+  const identity = [
+    [1, 0, 0],
+    [0, 1, 0],
+  ];
+
+  it('방사형 기본 손잡이는 상자를 채우는 타원이다', () => {
+    expect(gradientCss('GRADIENT_RADIAL', identity)).toBe(
+      'radial-gradient(ellipse 50% 50% at 50% 50%, #000000 0%, #ffffff 100%)',
+    );
+  });
+
+  it('방사형의 크기와 가운데를 비율로 옮긴다', () => {
+    // 그라데이션 공간을 2배로 늘이고 가운데를 (0.25, 0.5)로 옮긴 칠이다.
+    expect(
+      gradientCss('GRADIENT_RADIAL', [
+        [2, 0, 0],
+        [0, 1, 0],
+      ]),
+    ).toBe('radial-gradient(ellipse 25% 50% at 25% 50%, #000000 0%, #ffffff 100%)');
+  });
+
+  it('축이 기울어진 타원 방사형은 실패한다', () => {
+    expect(() =>
+      gradientCss('GRADIENT_RADIAL', [
+        [2, 1, 0],
+        [0, 1, 0],
+      ]),
+    ).toThrow(TokenFormatError);
+  });
+
+  it('각도형은 첫 손잡이 쪽에서 시작한다', () => {
+    expect(gradientCss('GRADIENT_ANGULAR', identity)).toBe(
+      'conic-gradient(from 90deg at 50% 50%, #000000 0%, #ffffff 100%)',
+    );
+  });
+
+  it('뒤집힌 각도형은 실패한다', () => {
+    expect(() =>
+      gradientCss('GRADIENT_ANGULAR', [
+        [-1, 0, 1],
+        [0, 1, 0],
+      ]),
+    ).toThrow(TokenFormatError);
+  });
+
+  it('다이아몬드는 실패한다', () => {
+    expect(() => gradientCss('GRADIENT_DIAMOND', identity)).toThrow(TokenFormatError);
+  });
+});
+
+// @codocs [[피그마 연동:토큰 검사]]
+describe('생성한 이름 목록', () => {
+  it('커밋된 src/token-names.ts가 figma/tokens.json에서 만든 결과와 같다', () => {
+    const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
+    expect(readFileSync(tokenNamesPath, 'utf8')).toBe(tokensJsonToNames(json));
+    expect(TOKEN_NAMES.spacing).toContain('16');
   });
 });

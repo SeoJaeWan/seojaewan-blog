@@ -71,7 +71,7 @@ const STORY_FILE_PATTERN = /\.stories\.tsx?$/u;
 const MOTION_STORY_TITLE_PATTERN = /\btitle:\s*['"`]Motion\//u;
 const ASSET_DATA_FILE = 'src/assets/asset-data.ts';
 const SOURCE_ASSET_PATTERN = /^src\/assets\/(.+)$/u;
-const tokenFiles = new Set(['figma/tokens.json', 'src/tokens.css']);
+const tokenFiles = new Set(['figma/tokens.json', 'src/tokens.css', 'src/token-names.ts']);
 const TOKENS_CSS_FILE = `${DESIGN_SYSTEM}src/tokens.css`;
 // 전역 스타일·설정이다. figma.json(배율), Storybook 설정, 패키지 설정
 const GLOBAL_PACKAGE_FILE_PATTERN =
