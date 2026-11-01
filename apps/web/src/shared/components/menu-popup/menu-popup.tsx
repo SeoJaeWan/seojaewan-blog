@@ -319,3 +319,12 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu; itemClassName?: string }
     />
   );
 }
+
+/**
+ * 메뉴를 포털할 자리인 문서 끝(body)을 돌려준다. 주지 않으면 Base UI가 감싼 포털(Start·검색 패널) 안에 그려, 메뉴가 작업 표시줄 뒤로 들어가고 누를 수 없게 된다.
+ * 메뉴는 열려야 그려지므로 서버에서는 쓰지 않는다.
+ * @returns 문서 끝. 서버에서는 undefined
+ */
+export function getMenuPortalContainer(): HTMLElement | undefined {
+  return typeof document === 'undefined' ? undefined : document.body;
+}

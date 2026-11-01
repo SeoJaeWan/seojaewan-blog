@@ -1,7 +1,7 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX, ReactElement } from 'react';
 
-import { MenuPopup } from '@/shared/components/menu-popup/menu-popup';
+import { getMenuPortalContainer, MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
 type MenuButtonProps = Pick<
   ComponentProps<typeof MenuPopup>,
@@ -48,7 +48,7 @@ export function MenuButton(props: MenuButtonProps): JSX.Element {
   return (
     <BaseMenu.Root open={isOpen} modal={false} onOpenChange={props.onOpenChange}>
       <BaseMenu.Trigger render={trigger} />
-      <BaseMenu.Portal>
+      <BaseMenu.Portal container={getMenuPortalContainer()}>
         <BaseMenu.Positioner side={side} align={align} sideOffset={POPUP_OFFSET}>
           <MenuPopup
             items={items}

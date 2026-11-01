@@ -115,19 +115,11 @@ export const WindowPreview: Story = {
       await userEvent.click(body.getByRole('button', { name: '파일 탐색기' }));
       const [preview] = await body.findAllByRole('button', { name: 'Blog - 파일 탐색기' });
 
-      // 닫기 버튼은 미리보기에 포커스가 있을 때(키보드 사용자) 보인다
-      preview?.focus();
-      await userEvent.click(
-        await within(preview ?? document.body).findByRole('button', { name: '창 닫기' }),
-      );
+      // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 없다
+      await userEvent.click(within(preview ?? document.body).getByLabelText('창 닫기'));
 
       await waitFor(() =>
         expect(body.getAllByRole('region', { name: 'Blog - 파일 탐색기' })).toHaveLength(1),
-      );
-      // 미리보기 카드 이름이 축소 화면 글자를 담지 못해 axe가 걸리므로, 검사 전에 미리보기를 닫아 둔다
-      await userEvent.keyboard('{Escape}');
-      await waitFor(() =>
-        expect(body.queryAllByRole('button', { name: 'Blog - 파일 탐색기' })).toHaveLength(0),
       );
     });
   },
@@ -160,14 +152,49 @@ export const StartMenu: Story = {
     });
 
     // @codocs [[Start 메뉴:열기와 닫기]]
-    await step('Esc를 누르면 닫힌다', async () => {
+    // @codocs [[접근성:포커스]]
+    await step('Esc를 누르면 닫히고 포커스는 Start 버튼으로 돌아간다', async () => {
       await userEvent.click(startButton);
       await body.findByRole('dialog', { name: '시작' });
 
       await userEvent.keyboard('{Escape}');
 
       await expectStartClosed();
+      await waitFor(() => expect(startButton).toHaveFocus());
     });
+
+    // @codocs [[접근성:역할]]
+    await step('포커스가 패널 밖으로 나가면 닫힌다', async () => {
+      await userEvent.click(startButton);
+      await body.findByRole('dialog', { name: '시작' });
+
+      canvasElement.ownerDocument
+        .querySelector<HTMLElement>('[data-taskbar-app="chrome"]')
+        ?.focus();
+
+      await expectStartClosed();
+    });
+
+    // @codocs [[Start 메뉴:열기와 닫기]]
+    await step(
+      'Start 버튼을 다시 누르면 닫히고 작업 표시줄 검색칸을 누르면 검색 패널로 바뀐다',
+      async () => {
+        await userEvent.click(startButton);
+        await body.findByRole('dialog', { name: '시작' });
+        await userEvent.click(startButton);
+        await expectStartClosed();
+
+        await userEvent.click(startButton);
+        await body.findByRole('dialog', { name: '시작' });
+        await userEvent.click(body.getByRole('searchbox', { name: '검색' }));
+        await expect(await body.findByRole('dialog', { name: '검색' })).toBeInTheDocument();
+        await expectStartClosed();
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() =>
+          expect(body.queryByRole('dialog', { name: '검색' })).not.toBeInTheDocument(),
+        );
+      },
+    );
 
     // @codocs [[Start 메뉴:열기와 닫기]]
     await step('바깥을 클릭하면 닫히고, 패널 안을 클릭하면 닫히지 않는다', async () => {
@@ -201,10 +228,11 @@ export const StartMenu: Story = {
 
       await userEvent.click(pinnedExplorer ?? document.body);
 
-      await expect(
-        await body.findByRole('region', { name: '바탕 화면 - 파일 탐색기' }),
-      ).toBeInTheDocument();
+      const region = await body.findByRole('region', { name: '바탕 화면 - 파일 탐색기' });
       await expectStartClosed();
+
+      // @codocs [[접근성:포커스]]
+      await waitFor(() => expect(region).toContainElement(document.activeElement as HTMLElement));
     });
 
     // @codocs [[Start 메뉴:열기와 닫기]]
@@ -256,8 +284,20 @@ export const Search: Story = {
     );
 
     // @codocs [[검색:결과 화면]]
-    await step('Esc를 누르면 닫힌다', async () => {
+    // @codocs [[접근성:포커스]]
+    await step('Esc를 누르면 닫히고 포커스는 검색칸에 남는다', async () => {
       await userEvent.keyboard('{Escape}');
+
+      await expectSearchClosed();
+      await expect(body.getByRole('searchbox', { name: '검색' })).toHaveFocus();
+    });
+
+    // @codocs [[접근성:역할]]
+    await step('포커스가 검색칸에서 패널 밖으로 나가면 닫힌다', async () => {
+      await userEvent.click(body.getByRole('searchbox', { name: '검색' }));
+      await body.findByRole('dialog', { name: '검색' });
+
+      body.getByRole('button', { name: 'Chrome' }).focus();
 
       await expectSearchClosed();
     });

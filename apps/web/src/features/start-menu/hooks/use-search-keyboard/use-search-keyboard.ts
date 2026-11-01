@@ -75,9 +75,10 @@ export function useSearchKeyboard(openPanel: OpenPanel, openItem: (id: string) =
         }
       }
 
-      document.addEventListener('keydown', handleKeyDown);
+      // 패널(Base UI Dialog)이 방향키의 전파를 막으므로 캡처 단계에서 듣는다.
+      document.addEventListener('keydown', handleKeyDown, true);
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keydown', handleKeyDown, true);
       };
     },
     [openPanel],
