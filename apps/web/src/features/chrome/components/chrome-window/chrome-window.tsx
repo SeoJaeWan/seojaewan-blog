@@ -253,6 +253,8 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
                   <BrowserTab
                     key={tab.id ?? `${String(index)}-${tab.title}`}
                     active={tab.active}
+                    // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
+                    showSeparator={tabs[index + 1]?.active !== true}
                     favicon={tabFavicon}
                     title={tab.title}
                     tabIndex={getTabIndex(index)}

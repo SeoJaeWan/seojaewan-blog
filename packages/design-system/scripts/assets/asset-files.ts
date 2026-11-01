@@ -2,8 +2,14 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 
-import { assetDataPath, figmaAssetsDir, sourceAssetsDir } from '../package-paths.ts';
-import { assetDataModule, parseSvgAsset, type SvgAssetData } from './assets-code.ts';
+import { assetDataPath, figmaAssetsDir, imageDataPath, sourceAssetsDir } from '../package-paths.ts';
+import {
+  assetDataModule,
+  type ImageAssetSize,
+  imageDataModule,
+  parseSvgAsset,
+  type SvgAssetData,
+} from './assets-code.ts';
 import { rasterFormat, webpEncoding } from './raster-code.ts';
 
 // figma/assets/를 읽어 만들어야 할 코드 자산을 계산한다. generate-assets.ts와 재생성 확인 테스트가 함께 쓴다.
@@ -17,6 +23,7 @@ import { rasterFormat, webpEncoding } from './raster-code.ts';
 export async function expectedAssetFiles(): Promise<Map<string, Buffer>> {
   const outputs = new Map<string, Buffer>();
   const svgs = new Map<string, SvgAssetData>();
+  const images = new Map<string, ImageAssetSize>();
   for (const file of listFiles(figmaAssetsDir)) {
     const relative = path.relative(figmaAssetsDir, file).split(path.sep).join('/');
     const extension = path.posix.extname(relative);
@@ -30,9 +37,12 @@ export async function expectedAssetFiles(): Promise<Map<string, Buffer>> {
         `[assets] ${relative}: 확장자만 다른 원본이 둘 이상이다. 남길 원본 하나만 둔다.`,
       );
     }
-    outputs.set(output, await rasterToWebp(readFileSync(file), relative, extension));
+    const webp = await rasterToWebp(readFileSync(file), relative, extension);
+    outputs.set(output, webp);
+    images.set(relative.slice(0, -extension.length), await imageSize(webp, relative));
   }
   outputs.set(assetDataPath, Buffer.from(assetDataModule(svgs), 'utf8'));
+  outputs.set(imageDataPath, Buffer.from(imageDataModule(images), 'utf8'));
   return outputs;
 }
 
@@ -73,6 +83,20 @@ async function rasterToWebp(bytes: Buffer, relative: string, extension: string):
     throw new Error(`[assets] ${relative}: 움직이는 이미지는 옮기지 않는다.`);
   }
   return image.webp(encoding).toBuffer();
+}
+
+/**
+ * 코드 자산(WebP)의 픽셀 크기를 읽는다.
+ * @param webp WebP 내용
+ * @param relative 오류 메시지에 쓸 자산 경로
+ * @returns 너비와 높이
+ */
+async function imageSize(webp: Buffer, relative: string): Promise<ImageAssetSize> {
+  const { width, height } = await sharp(webp).metadata();
+  if (width < 1 || height < 1) {
+    throw new Error(`[assets] ${relative}: 이미지 크기를 읽을 수 없다.`);
+  }
+  return { width, height };
 }
 
 /**

@@ -381,9 +381,7 @@ function PanelPresence(props: PanelPresenceProps): ReactNode {
   const isMobile = device === 'mobile';
   // 작업 영역은 화면 크기에 따라 실행 중에 정해지는 값이라 토큰 클래스가 아닌 인라인 스타일로 준다.
   const panelStyle: CSSProperties | undefined =
-    workArea === null
-      ? undefined
-      : { maxHeight: getPanelMaxHeight(workArea.height, device, props.panel) };
+    workArea === null ? undefined : { maxHeight: getPanelMaxHeight(workArea.height, device) };
   return (
     <div className="absolute inset-x-spacing-none bottom-spacing-none flex justify-center">
       <div

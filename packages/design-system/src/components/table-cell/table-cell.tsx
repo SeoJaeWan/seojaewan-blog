@@ -12,7 +12,7 @@ type TableCellProps = ComponentProps<'td'> & {
  * 머리 칸은 `th`, 본문 칸은 `td`로 그려 표의 의미를 지킨다. 너비는 표와 쓰는 곳이 정한다
  * (@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 색과 선은 토큰 한 가지 모양이다(@codocs [[Notion 블록:모양]]).
- * 글자 스타일은 피그마와 같이 두 변형 모두 Body Strong이다(@codocs [[디자인 기반:서체]]).
+ * 글자 스타일은 피그마와 같이 머리 칸은 Body Strong, 본문 칸은 Body(Regular)다(@codocs [[디자인 기반:서체]]).
  * @param props
  */
 export function TableCell(props: TableCellProps): JSX.Element {
@@ -24,8 +24,8 @@ export function TableCell(props: TableCellProps): JSX.Element {
       ...cellProps,
       // 피그마에서 오른쪽·아래쪽 선이 레이아웃에 들어가므로 CSS border를 쓴다.
       className: cn(
-        'type-body-strong border-r-stroke-width-default border-b-stroke-width-default border-divider-stroke-default p-spacing-sm text-left align-top text-text-fill-primary',
-        isHeader && 'bg-subtle-fill-secondary',
+        'border-r-stroke-width-default border-b-stroke-width-default border-divider-stroke-default p-spacing-sm text-left align-top text-text-fill-primary',
+        isHeader ? 'bg-subtle-fill-secondary type-body-strong' : 'type-body',
         className,
       ),
     },

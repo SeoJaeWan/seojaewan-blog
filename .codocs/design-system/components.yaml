@@ -15,8 +15,7 @@ _codocs:
   | DropDownButton | 고른 값을 보여 주고 선택 메뉴를 여는 버튼 |
   | SearchBox | 작업 표시줄·Start·탐색기의 검색 입력창 |
   | RenameField | 바탕화면·탐색기의 이름 바꾸기 입력창 |
-  | MenuItem | 메뉴의 항목 한 줄 |
-  | MenuZoomItem | Chrome ⋮ 메뉴의 확대/축소 조절 줄 |
+  | MenuItem | 메뉴의 항목 한 줄. Chrome ⋮ 메뉴의 확대/축소 조절 줄(`Kind=Zoom`)도 이것이다 |
   | Menu | 메뉴 항목을 담는 메뉴 바탕 |
   | Separator | 메뉴, 목록, 명령 모음의 구분선 |
   | Popover | 트리거와 그 옆에 뜨는 팝업의 틀([[디자인 시스템:팝업]]) |

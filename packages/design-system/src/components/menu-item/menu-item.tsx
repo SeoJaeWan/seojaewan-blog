@@ -4,6 +4,7 @@ import type { JSX, ReactNode } from 'react';
 import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
+import { IconButton } from '../icon-button/icon-button';
 import { ImageAsset, type ImageAssetName } from '../image-asset/image-asset';
 
 type MenuItemCommonProps = {
@@ -55,6 +56,23 @@ type MenuItemProps = MenuItemCommonProps &
         /** 라디오 묶음 안에서 이 항목의 값 */
         value: string;
       }
+    | {
+        /**
+         * 피그마 Kind=Zoom. Chrome ⋮ 메뉴의 확대/축소 조절 줄이다. 이름 오른쪽에 지금 배율과 −·+ 버튼을 둔다.
+         * −·+는 Base UI 메뉴 항목이라 ↑↓로 닿고, 눌러도 메뉴가 닫히지 않는다
+         */
+        kind: 'zoom';
+        /** 지금 배율 글자(피그마 value, 예: `100%`) */
+        value: string;
+        /** 줄이기(−)를 눌렀을 때 호출 */
+        onZoomOut?: () => void;
+        /** 키우기(+)를 눌렀을 때 호출 */
+        onZoomIn?: () => void;
+        /** 줄이기를 쓸 수 없게 한다(가장 작은 단계) */
+        isZoomOutDisabled?: boolean;
+        /** 키우기를 쓸 수 없게 한다(가장 큰 단계) */
+        isZoomInDisabled?: boolean;
+      }
   );
 
 // 행(피그마 MenuItem 루트). 위아래 2·좌우 4 들여 쓴 강조 영역(base)을 담는다.
@@ -74,6 +92,9 @@ const baseClassName = cn(
 // 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
 const STANDALONE_BASE_CLASS_NAME =
   'group-enabled:group-hover:bg-subtle-fill-secondary group-focus-visible:bg-subtle-fill-secondary group-enabled:group-active:bg-subtle-fill-tertiary group-enabled:group-active:text-text-fill-secondary';
+
+// 확대/축소 줄(Kind=Zoom)의 기본 아이콘이다.
+const ZOOM_DEFAULT_ICON = 'icons/ic_fluent_zoom_in_20_regular.svg';
 
 // 단축키·꺾쇠처럼 흐린 글자 색이다.
 const SECONDARY_TEXT_CLASS_NAME =
@@ -96,6 +117,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           <MenuItemContent {...props} leading={icon} />
         </Menu.SubmenuTrigger>
       );
+    case 'zoom':
+      return <MenuZoomRow {...props} icon={props.icon ?? ZOOM_DEFAULT_ICON} />;
     case 'checkbox':
       return (
         <Menu.CheckboxItem
@@ -163,6 +186,98 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         </Menu.Item>
       );
   }
+}
+
+type MenuZoomRowProps = MenuItemCommonProps & {
+  /**
+   *
+   */
+  kind: 'zoom';
+  /**
+   *
+   */
+  value: string;
+  /**
+   *
+   */
+  onZoomOut?: () => void;
+  /**
+   *
+   */
+  onZoomIn?: () => void;
+  /**
+   *
+   */
+  isZoomOutDisabled?: boolean;
+  /**
+   *
+   */
+  isZoomInDisabled?: boolean;
+};
+
+/**
+ * 확대/축소 줄(피그마 MenuItem `Kind=Zoom`)을 그린다. 줄 전체가 아니라 −·+ 버튼이 Base UI 메뉴 항목(`Menu.Item`)이라
+ * ↑↓ 키로 닿고, `closeOnClick={false}`라 눌러도 메뉴가 닫히지 않는다. 실제 배율 동작은 쓰는 곳이 콜백과 값으로 잇는다.
+ * @codocs [[컴포넌트 목록:기본 컨트롤]]
+ * @codocs [[Chrome:확대/축소]]
+ * @param props
+ */
+function MenuZoomRow(props: MenuZoomRowProps): JSX.Element {
+  const {
+    label,
+    icon,
+    value,
+    onZoomOut: handleZoomOut,
+    onZoomIn: handleZoomIn,
+    isZoomOutDisabled = false,
+    isZoomInDisabled = false,
+    className,
+  } = props;
+  return (
+    <Menu.Group
+      aria-label={label}
+      className={cn(
+        'flex w-full items-center justify-start px-spacing-xs py-spacing-none select-none',
+        className,
+      )}
+    >
+      <div className="flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch pr-spacing-xs pl-spacing-md">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-primary">
+          {icon !== undefined && <MenuItemIcon name={icon} />}
+        </span>
+        <span className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary">
+          {label}
+        </span>
+        <div className="flex shrink-shrink-none items-center justify-start gap-spacing-xs">
+          <Menu.Item
+            nativeButton
+            closeOnClick={false}
+            disabled={isZoomOutDisabled}
+            onClick={handleZoomOut}
+            render={
+              <IconButton
+                variant="subtle"
+                label="축소"
+                icon="icons/ic_fluent_subtract_20_regular.svg"
+              />
+            }
+          />
+          <span className="w-size-menu-item-value-width shrink-shrink-none text-center type-body text-text-fill-primary">
+            {value}
+          </span>
+          <Menu.Item
+            nativeButton
+            closeOnClick={false}
+            disabled={isZoomInDisabled}
+            onClick={handleZoomIn}
+            render={
+              <IconButton variant="subtle" label="확대" icon="icons/ic_fluent_add_20_regular.svg" />
+            }
+          />
+        </div>
+      </div>
+    </Menu.Group>
+  );
 }
 
 /**

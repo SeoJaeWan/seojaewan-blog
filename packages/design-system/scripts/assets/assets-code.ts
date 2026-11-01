@@ -183,6 +183,36 @@ export type SvgAssetName = keyof typeof svgAssets;
 `;
 }
 
+/** 래스터 자산 하나의 크기. 코드 자산(WebP)의 픽셀 크기다 */
+export type ImageAssetSize = { width: number; height: number };
+
+/**
+ * 래스터 자산 지도 모듈(src/assets/image-data.ts)의 내용을 만든다. 자산 이름(`images/file-folder`)마다 파일 주소와
+ * 원본 너비·높이를 담는다. 주소는 Vite와 Next.js가 빌드 결과의 파일 주소로 바꿔 주도록 `new URL(…, import.meta.url)`을 글자 그대로 쓴다.
+ * @codocs [[피그마 연동:자산]]
+ * @param images 자산 이름(figma/assets/ 기준 경로에서 확장자를 뺀 이름) → 크기
+ * @returns TypeScript 모듈 문자열
+ */
+export function imageDataModule(images: ReadonlyMap<string, ImageAssetSize>): string {
+  const entries = [...images]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(
+      ([name, size]) =>
+        `  '${name}': {\n    src: new URL('./${name}.webp', import.meta.url).href,\n    width: ${String(size.width)},\n    height: ${String(size.height)},\n  },`,
+    )
+    .join('\n');
+  return `${GENERATED_HEADER}
+
+/** 래스터 자산 이름(figma/assets/ 기준 경로에서 확장자를 뺀 이름) → 파일 주소와 원본 크기(픽셀) */
+export const imageAssets = {
+${entries}
+} as const satisfies Record<string, { src: string; width: number; height: number }>;
+
+/** 래스터 자산 이름 */
+export type ImageAssetName = keyof typeof imageAssets;
+`;
+}
+
 /**
  * 자산 데이터 모듈의 항목 하나를 쓴다.
  * @param file 자산 파일 경로
