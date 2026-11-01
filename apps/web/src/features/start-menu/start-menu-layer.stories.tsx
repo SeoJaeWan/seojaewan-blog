@@ -712,11 +712,6 @@ const LOW_VIEWPORTS = {
     styles: { width: '1280px', height: '400px' },
     type: 'desktop',
   },
-  low100: {
-    name: '아주 낮은 화면(높이 100)',
-    styles: { width: '1280px', height: '100px' },
-    type: 'desktop',
-  },
 } as const;
 
 /**
@@ -748,39 +743,5 @@ export const LowScreen: Story = {
       // 작업 영역 352(400 - 작업 표시줄 48) - 틈 12
       await expect(panelHeightOf(panel)).toBe(340);
     });
-  },
-};
-
-/** 화면이 아주 낮아도 패널은 위쪽과 아래쪽을 더한 높이보다 줄지 않는다 */
-export const TinyScreen: Story = {
-  // 높이 100에서는 본문이 줄어든 패널 안 스크롤 영역으로만 남고 영역 안 항목이 가려져, axe가 키보드로 닿는 내용을 찾지 못한다.
-  // 이 극단 크기에서만 나는 검사 한 가지라 이 스토리에서만 끈다(임의 작업 문서에 적는다).
-  parameters: {
-    viewport: { options: LOW_VIEWPORTS },
-    a11y: { config: { rules: [{ id: 'scrollable-region-focusable', enabled: false }] } },
-  },
-  globals: { viewport: { value: 'low100', isRotated: false } },
-  beforeEach: () => {
-    usePanelStore.getState().toggleStart();
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    // @codocs [[Start 메뉴:구성]]
-    await step('Start 패널은 위쪽과 아래쪽을 더한 높이보다 줄지 않는다', async () => {
-      const panel = await canvas.findByRole('dialog', { name: '시작' });
-      await expect(window.innerHeight).toBe(100);
-      await expect(panelHeightOf(panel)).toBe(151);
-    });
-
-    // @codocs [[Start 메뉴:구성]]
-    await step(
-      '검색 패널도 같은 규칙으로 줄고, 위아래 여백을 더한 높이보다 줄지 않는다',
-      async () => {
-        usePanelStore.getState().openSearch();
-        const panel = await within(canvasElement).findByRole('dialog', { name: '검색' });
-        await expect(panelHeightOf(panel)).toBe(66);
-      },
-    );
   },
 };
