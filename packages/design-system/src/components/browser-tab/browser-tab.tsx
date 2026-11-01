@@ -45,6 +45,8 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
   return (
     <div
       {...divProps}
+      // 오른쪽 구분선을 그리는 상태다.
+      data-separator={!isActive && hasSeparator}
       className={cn(
         'group relative flex h-34 w-240 items-center gap-8 py-0 pr-8 pl-12 select-none',
         'motion-control-state',

@@ -25,6 +25,8 @@ export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
   return (
     <BaseButton
       {...buttonProps}
+      // 정렬 방향을 상태 속성으로 알린다. 꺾쇠 모양은 이 값을 따른다.
+      data-sort={sort}
       className={cn(
         'flex h-control-height items-center gap-4 border-r-default border-divider-stroke-default px-8 select-none',
         'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',

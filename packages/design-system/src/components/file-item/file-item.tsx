@@ -60,6 +60,9 @@ export function FileItem(props: FileItemProps): JSX.Element {
   return (
     <div
       {...divProps}
+      // 선택·잘라냄 상태를 속성으로 알린다. 바탕, 이름 줄임, 흐림이 이 값을 따른다.
+      data-selected={isSelected}
+      data-cut={isCut}
       className={cn(
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative flex flex-col items-center rounded-control outline-none select-none',
