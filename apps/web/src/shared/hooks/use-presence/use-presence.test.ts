@@ -1,5 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
-import { type ReactNode, useRef } from 'react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { type PresenceOptions, usePresence } from './use-presence';
@@ -12,6 +11,13 @@ type FakeAnimation = {
   finish: () => void;
   /** 애니메이션을 취소한다(finished 거부) */
   cancel: () => void;
+};
+
+type PresenceProps = {
+  /** 보여야 하는지 */
+  open: boolean;
+  /** usePresence 설정 */
+  options?: PresenceOptions;
 };
 
 /**
@@ -54,26 +60,15 @@ function stubGetAnimations(animations: Animation[]): ReturnType<typeof vi.fn> {
 }
 
 /**
- * usePresence로 패널 하나를 그린다.
- * @param props
- * @param props.open 보여야 하는지
- * @param props.options usePresence 설정
+ * 요소 하나에 usePresence를 건 훅을 그린다.
+ * @param initialProps 처음 props
+ * @returns 훅 결과와 props 바꾸기
  */
-function Panel(props: { open: boolean; options?: PresenceOptions }): ReactNode {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const presence = usePresence(panelRef, props.open, props.options);
-  if (!presence.isMounted) {
-    return null;
-  }
-  return (
-    <div
-      ref={panelRef}
-      data-testid="panel"
-      data-status={presence.status}
-      hidden={presence.isHidden}
-      {...presence.presenceProps}
-    />
-  );
+function renderPresence(initialProps: PresenceProps) {
+  const ref = { current: document.createElement('div') };
+  return renderHook((props: PresenceProps) => usePresence(ref, props.open, props.options), {
+    initialProps,
+  });
 }
 
 afterEach(() => {
@@ -84,113 +79,119 @@ afterEach(() => {
 describe('usePresence', () => {
   it('getAnimations가 없으면(jsdom) 열자마자 entered, 닫자마자 빠진다', () => {
     const handleExitComplete = vi.fn();
-    const { rerender } = render(<Panel open options={{ onExitComplete: handleExitComplete }} />);
-    expect(screen.getByTestId('panel')).toHaveAttribute('data-status', 'entered');
+    const options = { onExitComplete: handleExitComplete };
+    const { result, rerender } = renderPresence({ open: true, options });
+    expect(result.current.status).toBe('entered');
 
-    rerender(<Panel open={false} options={{ onExitComplete: handleExitComplete }} />);
+    rerender({ open: false, options });
 
-    expect(screen.queryByTestId('panel')).not.toBeInTheDocument();
+    expect(result.current.isMounted).toBe(false);
     expect(handleExitComplete).toHaveBeenCalledTimes(1);
   });
 
   it('처음에 닫혀 있으면 그리지 않고 onExitComplete도 부르지 않는다', () => {
     const handleExitComplete = vi.fn();
-    render(<Panel open={false} options={{ onExitComplete: handleExitComplete }} />);
-    expect(screen.queryByTestId('panel')).not.toBeInTheDocument();
+    const { result } = renderPresence({
+      open: false,
+      options: { onExitComplete: handleExitComplete },
+    });
+    expect(result.current.isMounted).toBe(false);
     expect(handleExitComplete).not.toHaveBeenCalled();
   });
 
   it('사라지는 애니메이션이 끝날 때까지 data-ending-style을 달고 남았다가 빠진다', async () => {
-    const { rerender } = render(<Panel open />);
+    const { result, rerender } = renderPresence({ open: true });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender(<Panel open={false} />);
-    const panel = screen.getByTestId('panel');
-    expect(panel).toHaveAttribute('data-status', 'exiting');
-    expect(panel).toHaveAttribute('data-ending-style', '');
+    rerender({ open: false });
+    expect(result.current.isMounted).toBe(true);
+    expect(result.current.status).toBe('exiting');
+    expect(result.current.presenceProps).toHaveProperty('data-ending-style', '');
 
     await act(async () => {
       exit.finish();
       await exit.promise;
     });
-    expect(screen.queryByTestId('panel')).not.toBeInTheDocument();
+    expect(result.current.isMounted).toBe(false);
   });
 
   it('들어가는 애니메이션이 끝나야 entered가 되고, 첫 프레임까지만 data-starting-style을 단다', async () => {
     const enter = createFakeAnimation();
     stubGetAnimations([enter.animation]);
-    render(<Panel open />);
-    const panel = screen.getByTestId('panel');
-    expect(panel).toHaveAttribute('data-status', 'entering');
-    expect(panel).toHaveAttribute('data-starting-style', '');
+    const { result } = renderPresence({ open: true });
+    expect(result.current.status).toBe('entering');
+    expect(result.current.presenceProps).toHaveProperty('data-starting-style', '');
 
     await act(async () => {
       await new Promise(requestAnimationFrame);
     });
-    expect(panel).not.toHaveAttribute('data-starting-style');
+    expect(result.current.presenceProps).not.toHaveProperty('data-starting-style');
 
     await act(async () => {
       enter.finish();
       await enter.promise;
     });
-    expect(panel).toHaveAttribute('data-status', 'entered');
+    expect(result.current.status).toBe('entered');
   });
 
   it('취소된 애니메이션(finished 거부)은 끝난 것으로 본다', async () => {
-    const { rerender } = render(<Panel open />);
+    const { result, rerender } = renderPresence({ open: true });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender(<Panel open={false} />);
+    rerender({ open: false });
     await act(async () => {
       exit.cancel();
       await exit.promise.catch(() => undefined);
     });
-    expect(screen.queryByTestId('panel')).not.toBeInTheDocument();
+    expect(result.current.isMounted).toBe(false);
   });
 
   it('무한 반복 애니메이션은 기다리지 않는다', () => {
-    const { rerender } = render(<Panel open />);
+    const { result, rerender } = renderPresence({ open: true });
     stubGetAnimations([createFakeAnimation(Infinity).animation]);
 
-    rerender(<Panel open={false} />);
-    expect(screen.queryByTestId('panel')).not.toBeInTheDocument();
+    rerender({ open: false });
+    expect(result.current.isMounted).toBe(false);
   });
 
   it('subtree를 켜면 안쪽 요소의 애니메이션까지 묻는다', () => {
-    const { rerender } = render(<Panel open options={{ subtree: true }} />);
+    const options = { subtree: true };
+    const { rerender } = renderPresence({ open: true, options });
     const getAnimations = stubGetAnimations([]);
 
-    rerender(<Panel open={false} options={{ subtree: true }} />);
+    rerender({ open: false, options });
     expect(getAnimations).toHaveBeenCalledWith({ subtree: true });
   });
 
   it('사라지는 중에 다시 열면 남고, 앞서 기다리던 애니메이션이 끝나도 빠지지 않는다', async () => {
     const handleExitComplete = vi.fn();
-    const { rerender } = render(<Panel open options={{ onExitComplete: handleExitComplete }} />);
+    const options = { onExitComplete: handleExitComplete };
+    const { result, rerender } = renderPresence({ open: true, options });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender(<Panel open={false} options={{ onExitComplete: handleExitComplete }} />);
+    rerender({ open: false, options });
     stubGetAnimations([]);
-    rerender(<Panel open options={{ onExitComplete: handleExitComplete }} />);
+    rerender({ open: true, options });
     await act(async () => {
       exit.finish();
       await exit.promise;
     });
 
-    expect(screen.getByTestId('panel')).toHaveAttribute('data-status', 'entered');
+    expect(result.current.status).toBe('entered');
     expect(handleExitComplete).not.toHaveBeenCalled();
   });
 
   it('keepMounted면 사라진 뒤에도 빼지 않고 isHidden으로 알린다', () => {
-    const { rerender } = render(<Panel open options={{ keepMounted: true }} />);
+    const options = { keepMounted: true };
+    const { result, rerender } = renderPresence({ open: true, options });
 
-    rerender(<Panel open={false} options={{ keepMounted: true }} />);
+    rerender({ open: false, options });
 
-    const panel = screen.getByTestId('panel');
-    expect(panel).toHaveAttribute('data-status', 'exited');
-    expect(panel).not.toBeVisible();
+    expect(result.current.isMounted).toBe(true);
+    expect(result.current.status).toBe('exited');
+    expect(result.current.isHidden).toBe(true);
   });
 });

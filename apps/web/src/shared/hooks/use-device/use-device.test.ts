@@ -1,4 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
+import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -71,6 +72,6 @@ describe('반응형:기준', () => {
 
   it('서버에서는 화면 폭을 모르므로 데스크톱 방식으로 그린다', () => {
     installMatchMedia(true);
-    expect(renderToString(<DeviceText />)).toBe('desktop');
+    expect(renderToString(createElement(DeviceText))).toBe('desktop');
   });
 });
