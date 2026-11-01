@@ -1,6 +1,25 @@
 {
+  "description": "글 본문 표의 칸 하나로, 표 안에 쓴다.",
   "name": "TableCell",
   "nodeId": "1380:6858",
+  "propertyDefinitions": {
+    "Body Text": {
+      "default": "칸 내용",
+      "type": "TEXT"
+    },
+    "Text": {
+      "default": "칸 내용",
+      "type": "TEXT"
+    },
+    "Type": {
+      "default": "Body",
+      "options": [
+        "Body",
+        "Header"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "type=body": {
       "node": {
@@ -12,6 +31,81 @@
       "nodeId": "1380:6854",
       "properties": {
         "Type": "Body"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "text",
+            "size": {
+              "h": 20,
+              "w": 223
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "칸",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "내용",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Type=Body",
+        "size": {
+          "h": 37,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          0,
+          "stroke-width/default",
+          "stroke-width/default",
+          0
+        ],
+        "strokes": [
+          "divider-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/table-cell/width"
       }
     },
     "type=header": {
@@ -24,6 +118,84 @@
       "nodeId": "1380:6856",
       "properties": {
         "Type": "Header"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "text",
+            "size": {
+              "h": 20,
+              "w": 223
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "칸",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Strong"
+                },
+                {
+                  "characters": "내용",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Type=Header",
+        "size": {
+          "h": 37,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          0,
+          "stroke-width/default",
+          "stroke-width/default",
+          0
+        ],
+        "strokes": [
+          "divider-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/table-cell/width"
       }
     }
   }
