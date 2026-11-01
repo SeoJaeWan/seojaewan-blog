@@ -953,6 +953,11 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   }
 
   const listItems = visibleItems.map(renderItem);
+  const itemsListProps = {
+    role: 'listbox',
+    'aria-label': '폴더 내용',
+    'aria-multiselectable': !isMobile,
+  } as const;
   const drag = itemDrag.drag;
 
   /**
@@ -1120,9 +1125,8 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         }}
         itemsAreaProps={{
           ref: areaRef,
-          role: 'listbox',
-          'aria-label': '폴더 내용',
-          'aria-multiselectable': !isMobile,
+          // 자세히 보기는 listbox가 안쪽 항목만 감싼다. listbox에는 항목만 들어갈 수 있어 열 제목 버튼을 넣을 수 없다.
+          ...(isDetails ? {} : itemsListProps),
           tabIndex: -1,
           className: 'outline-none',
           onPointerDown: handleAreaPointerDown,
@@ -1140,7 +1144,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}
             />
-            {listItems}
+            <div {...itemsListProps} className="contents">
+              {listItems}
+            </div>
           </div>
         ) : (
           listItems
