@@ -1,6 +1,32 @@
 {
+  "description": "앱 아이콘과 창 제목 묶음으로, 창 제목 표시줄과 창 미리보기 머리글에 쓴다.",
   "name": "WindowTitle",
   "nodeId": "395:15808",
+  "propertyDefinitions": {
+    "App icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Kind": {
+      "default": "Window",
+      "options": [
+        "Window",
+        "Preview"
+      ],
+      "type": "VARIANT"
+    },
+    "State": {
+      "default": "Active",
+      "options": [
+        "Active",
+        "Inactive"
+      ],
+      "type": "VARIANT"
+    },
+    "Title": {
+      "default": "창 제목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "kind=preview,state=active": {
       "node": {
@@ -13,6 +39,92 @@
       "properties": {
         "Kind": "Preview",
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/app-file-explorer"
+            },
+            "component": "app/File Explorer",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "app icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 636
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "창",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Kind=Preview, State=Active",
+        "size": {
+          "h": 16,
+          "w": 660
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window-title/width"
       }
     },
     "kind=preview,state=inactive": {
@@ -26,6 +138,92 @@
       "properties": {
         "Kind": "Preview",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/app-file-explorer"
+            },
+            "component": "app/File Explorer",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "app icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/tertiary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 636
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "창",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Kind=Preview, State=Inactive",
+        "size": {
+          "h": 16,
+          "w": 660
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window-title/width"
       }
     },
     "kind=window,state=active": {
@@ -39,6 +237,92 @@
       "properties": {
         "Kind": "Window",
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/app-file-explorer"
+            },
+            "component": "app/File Explorer",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "app icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 616
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "창",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/md",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Kind=Window, State=Active",
+        "size": {
+          "h": 32,
+          "w": 660
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window-title/width"
       }
     },
     "kind=window,state=inactive": {
@@ -52,6 +336,92 @@
       "properties": {
         "Kind": "Window",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/app-file-explorer"
+            },
+            "component": "app/File Explorer",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "app icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/tertiary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 616
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "창",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/tertiary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/md",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Kind=Window, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 660
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/window-title/width"
       }
     }
   }
