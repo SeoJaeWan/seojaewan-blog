@@ -1,6 +1,12 @@
 {
+  "description": "글 머리 위의 커버 이미지로, 글 페이지에 쓴다.",
   "name": "PostCover",
   "nodeId": "1380:1105",
+  "propertyDefinitions": {
+    "Image": {
+      "type": "INSTANCE_SWAP"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +16,60 @@
         "y": 0
       },
       "nodeId": "1380:1105",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/wallpaper-bloom"
+            },
+            "component": "wallpaper/Bloom",
+            "fills": [
+              "IMAGE"
+            ],
+            "name": "image",
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 240,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "height": "size/post-cover/height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "PostCover",
+        "size": {
+          "h": 240,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }
