@@ -1,8 +1,19 @@
 {
+  "description": "머리글과 항목으로 된 목록 묶음으로, Start 목록·검색 결과·주소창 추천에 쓴다.",
   "name": "ListGroup",
   "nodeId": "426:5228",
+  "propertyDefinitions": {
+    "Show header": {
+      "default": true,
+      "type": "BOOLEAN"
+    },
+    "items": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 108,
         "width": 574,
@@ -10,7 +21,116 @@
         "y": 0
       },
       "nodeId": "426:5228",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 20,
+                  "w": 37
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "머리글",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Strong"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "SectionHeader",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/md",
+                "spacing/xs",
+                "spacing/md"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "header",
+            "properties": {
+              "Label": "머리글"
+            },
+            "size": {
+              "h": 32,
+              "w": 61
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/2xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "items",
+            "size": {
+              "h": 74,
+              "w": 574
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "ListGroup",
+        "size": {
+          "h": 108,
+          "w": 574
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/shell/body-width"
+      }
     }
   }
 }
