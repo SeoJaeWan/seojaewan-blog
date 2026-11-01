@@ -1,8 +1,23 @@
 {
+  "description": "탐색기 창의 본문 조립이다.",
   "name": "Explorer/Content",
   "nodeId": "87:2595",
+  "propertyDefinitions": {
+    "Device": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Mobile"
+      ],
+      "type": "VARIANT"
+    },
+    "Items": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "device=desktop": {
+      "emptyHugSlot": true,
       "node": {
         "height": 458,
         "width": 798,
@@ -12,9 +27,963 @@
       "nodeId": "87:2208",
       "properties": {
         "Device": "Desktop"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_arrow_left_20_regular"
+                    },
+                    "component": "ic_fluent_arrow_left_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "back",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_arrow_right_20_regular"
+                    },
+                    "component": "ic_fluent_arrow_right_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "forward",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_arrow_up_20_regular"
+                    },
+                    "component": "ic_fluent_arrow_up_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "up",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_arrow_clockwise_20_regular"
+                    },
+                    "component": "ic_fluent_arrow_clockwise_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "refresh",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "location icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "separator",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/xs",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "Items",
+                    "size": {
+                      "h": 100,
+                      "w": 100
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "SLOT"
+                  }
+                ],
+                "component": "Breadcrumb",
+                "fills": [
+                  "control-fill/default"
+                ],
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "breadcrumb",
+                "properties": {
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 394
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "strokeWeight": [
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default"
+                ],
+                "strokes": [
+                  "control-stroke/default"
+                ],
+                "strokesIncludedInLayout": true,
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 20,
+                      "w": 196
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "검색",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_search_16_regular"
+                    },
+                    "component": "ic_fluent_search_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "SearchBox",
+                "fills": [
+                  "control-fill/default"
+                ],
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm-nudge",
+                    "spacing/sm",
+                    "spacing/sm-nudge",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "search box",
+                "properties": {
+                  "Appearance": "Default",
+                  "Filled": "False",
+                  "Placeholder": "검색",
+                  "State": "Rest",
+                  "Value": "리액트"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "strokeStyle": "Elevation/Text Control Border",
+                "strokeWeight": [
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default"
+                ],
+                "strokesIncludedInLayout": false,
+                "type": "INSTANCE",
+                "width": "size/search-box/width"
+              }
+            ],
+            "component": "ExplorerAddressRow",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm-nudge",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "address row",
+            "properties": {
+              "Device": "Desktop",
+              "Search": "Closed"
+            },
+            "size": {
+              "h": 44,
+              "w": 798
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Commands",
+                "size": {
+                  "h": 32,
+                  "w": 774
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "ExplorerCommandBar",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/md",
+                "spacing/sm",
+                "spacing/md"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "command bar",
+            "properties": {},
+            "size": {
+              "h": 48,
+              "w": 798
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "items",
+                    "size": {
+                      "h": 192,
+                      "w": 240
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "SLOT"
+                  }
+                ],
+                "component": "NavigationPane",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "navigation pane",
+                "properties": {},
+                "size": {
+                  "h": 329,
+                  "w": 248
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "FILL"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "fills": [
+                  "divider-stroke/default"
+                ],
+                "name": "splitter",
+                "size": {
+                  "h": 329,
+                  "w": 1
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FILL"
+                },
+                "type": "RECTANGLE",
+                "width": "size/explorer/splitter-width"
+              },
+              {
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/md",
+                    "spacing/sm",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN",
+                  "wrap": true
+                },
+                "name": "Items",
+                "size": {
+                  "h": 329,
+                  "w": 549
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FILL"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "fills": [
+              "layer-fill/default"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "body",
+            "size": {
+              "h": 330,
+              "w": 798
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              0,
+              0,
+              0
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "item count",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "항목",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "개수",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "선택",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "정보",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "height": "size/status-bar/spacer-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "spacer",
+                "size": {
+                  "h": 1,
+                  "w": 556
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_text_bullet_list_ltr_20_regular"
+                    },
+                    "component": "ic_fluent_text_bullet_list_ltr_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "details view",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_grid_20_regular"
+                    },
+                    "component": "ic_fluent_grid_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "large icons view",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "component": "ExplorerStatusBar",
+            "fills": [
+              "layer-fill/default"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/lg",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/sm",
+                "spacing/2xs",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "status bar",
+            "properties": {
+              "Device": "Desktop",
+              "Item count": "항목 개수",
+              "Selection": "선택 정보",
+              "Show selection": true
+            },
+            "size": {
+              "h": 36,
+              "w": 798
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE",
+            "width": "size/explorer/content-width"
+          }
+        ],
+        "fills": [
+          "layer-on-mica-base-alt-fill/default"
+        ],
+        "height": "size/explorer/content-height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Device=Desktop",
+        "size": {
+          "h": 458,
+          "w": 798
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer/content-width"
       }
     },
     "device=mobile": {
+      "emptyHugSlot": true,
       "node": {
         "height": 716,
         "width": 388,
@@ -24,6 +993,555 @@
       "nodeId": "87:2477",
       "properties": {
         "Device": "Mobile"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_arrow_left_20_regular"
+                    },
+                    "component": "ic_fluent_arrow_left_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "back",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "location icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "separator",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/xs",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "Items",
+                    "size": {
+                      "h": 100,
+                      "w": 100
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "SLOT"
+                  }
+                ],
+                "component": "Breadcrumb",
+                "fills": [
+                  "control-fill/default"
+                ],
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "breadcrumb",
+                "properties": {
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 300
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "strokeWeight": [
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default",
+                  "stroke-width/default"
+                ],
+                "strokes": [
+                  "control-stroke/default"
+                ],
+                "strokesIncludedInLayout": true,
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_search_20_regular"
+                    },
+                    "component": "ic_fluent_search_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "search",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "component": "ExplorerAddressRow",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm-nudge",
+                "spacing/sm",
+                "spacing/sm-nudge",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "address row",
+            "properties": {
+              "Device": "Mobile",
+              "Search": "Closed"
+            },
+            "size": {
+              "h": 44,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Commands",
+                "size": {
+                  "h": 32,
+                  "w": 364
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "ExplorerCommandBar",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/md",
+                "spacing/sm",
+                "spacing/md"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "command bar",
+            "properties": {},
+            "size": {
+              "h": 48,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/md",
+                    "spacing/sm",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN",
+                  "wrap": true
+                },
+                "name": "Items",
+                "size": {
+                  "h": 603,
+                  "w": 388
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FILL"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "fills": [
+              "layer-fill/default"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "body",
+            "size": {
+              "h": 604,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              0,
+              0,
+              0
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "item count",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "항목",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "개수",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "선택",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "정보",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "height": "size/status-bar/spacer-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "spacer",
+                "size": {
+                  "h": 1,
+                  "w": 242
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "ExplorerStatusBar",
+            "fills": [
+              "layer-fill/default"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/lg",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/sm",
+                "spacing/2xs",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "ExplorerStatusBar",
+            "properties": {
+              "Device": "Mobile",
+              "Item count": "항목 개수",
+              "Selection": "선택 정보",
+              "Show selection": true
+            },
+            "size": {
+              "h": 20,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE",
+            "width": "size/window/mobile-content-width"
+          }
+        ],
+        "fills": [
+          "layer-on-mica-base-alt-fill/default"
+        ],
+        "height": "size/explorer/mobile-content-height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Device=Mobile",
+        "size": {
+          "h": 716,
+          "w": 388
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/window/mobile-content-width"
       }
     }
   }

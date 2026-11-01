@@ -1,6 +1,8 @@
 {
+  "description": "휴지통에 있는 글을 주소로 열 때 복원할지 묻는 메시지 상자로, Chrome에서 휴지통에 있는 글을 연 화면에 쓴다.",
   "name": "MessageBox/TrashedPost",
   "nodeId": "1375:10430",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,423 @@
         "y": 32
       },
       "nodeId": "1375:10430",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 28,
+                      "w": 400
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "휴지통에 있는 글",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Subtitle"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "message",
+                    "size": {
+                      "h": 20,
+                      "w": 400
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "이",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "글은",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "휴지통에",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "있어요",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": ". ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "복원하고",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "열까요",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        },
+                        {
+                          "characters": "?",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "layer-fill/alt"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/md",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/2xl",
+                    "spacing/2xl",
+                    "spacing/2xl",
+                    "spacing/2xl"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "content",
+                "size": {
+                  "h": 108,
+                  "w": 448
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-on-accent-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 25
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "복원",
+                              "fill": "text-on-accent-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "Button",
+                    "fills": [
+                      "accent-fill/default"
+                    ],
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm-nudge",
+                        "spacing/md",
+                        "spacing/sm-nudge",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "minWidth": "size/button/min-width",
+                    "name": "primary button",
+                    "properties": {
+                      "Label": "복원",
+                      "Show icon": false,
+                      "State": "Rest",
+                      "Style": "Accent"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 32,
+                      "w": 196
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "strokeStyle": "Elevation/Accent Control Border",
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokesIncludedInLayout": false,
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 25
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "취소",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "Button",
+                    "fills": [
+                      "control-fill/default"
+                    ],
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm-nudge",
+                        "spacing/md",
+                        "spacing/sm-nudge",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "minWidth": "size/button/min-width",
+                    "name": "secondary button",
+                    "properties": {
+                      "Label": "취소",
+                      "Show icon": false,
+                      "State": "Rest",
+                      "Style": "Standard"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 32,
+                      "w": 196
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "strokeStyle": "Elevation/Control Border",
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokesIncludedInLayout": false,
+                    "type": "INSTANCE"
+                  }
+                ],
+                "fills": [
+                  "solid-background-fill/base"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/2xl",
+                    "spacing/2xl",
+                    "spacing/2xl",
+                    "spacing/2xl"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "footer",
+                "size": {
+                  "h": 81,
+                  "w": 448
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "strokeWeight": [
+                  "stroke-width/default",
+                  0,
+                  0,
+                  0
+                ],
+                "strokes": [
+                  "card-stroke/default"
+                ],
+                "strokesIncludedInLayout": true,
+                "type": "FRAME"
+              }
+            ],
+            "component": "MessageBox",
+            "effectStyle": "Elevation/Dialog",
+            "fills": [
+              "solid-background-fill/base"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "message box",
+            "properties": {
+              "Buttons": "Two",
+              "Message": "이 글은 휴지통에 있어요. 복원하고 열까요?",
+              "Title": "휴지통에 있는 글"
+            },
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 189,
+              "w": 448
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "surface-stroke/default"
+            ],
+            "strokesIncludedInLayout": false,
+            "type": "INSTANCE",
+            "width": "size/message-box/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "MessageBox/TrashedPost",
+        "size": {
+          "h": 189,
+          "w": 448
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }

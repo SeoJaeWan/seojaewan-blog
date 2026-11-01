@@ -1,6 +1,29 @@
 {
+  "description": "글 끝의 이전 글·다음 글 이동 카드로, 글 페이지 아래에 쓴다.",
   "name": "PostNavCard",
   "nodeId": "399:5487",
+  "propertyDefinitions": {
+    "Device": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Mobile"
+      ],
+      "type": "VARIANT"
+    },
+    "Direction": {
+      "default": "Prev",
+      "options": [
+        "Prev",
+        "Next"
+      ],
+      "type": "VARIANT"
+    },
+    "Title": {
+      "default": "글 제목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "direction=next,device=desktop": {
       "node": {
@@ -13,6 +36,128 @@
       "properties": {
         "Device": "Desktop",
         "Direction": "Next"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 35
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "다음",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "글",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "post title",
+            "size": {
+              "h": 20,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Strong"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MAX",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Direction=Next, Device=Desktop",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 66,
+          "w": 354
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post-nav-card/width"
       }
     },
     "direction=next,device=mobile": {
@@ -26,6 +171,128 @@
       "properties": {
         "Device": "Mobile",
         "Direction": "Next"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 35
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "다음",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "글",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "post title",
+            "size": {
+              "h": 20,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Strong"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Direction=Next, Device=Mobile",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 66,
+          "w": 354
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post-nav-card/width"
       }
     },
     "direction=prev,device=desktop": {
@@ -39,6 +306,128 @@
       "properties": {
         "Device": "Desktop",
         "Direction": "Prev"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 35
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "이전",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "글",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "post title",
+            "size": {
+              "h": 20,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Strong"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Direction=Prev, Device=Desktop",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 66,
+          "w": 354
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post-nav-card/width"
       }
     },
     "direction=prev,device=mobile": {
@@ -52,6 +441,128 @@
       "properties": {
         "Device": "Mobile",
         "Direction": "Prev"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 35
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "이전",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "글",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "post title",
+            "size": {
+              "h": 20,
+              "w": 40
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Strong"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Direction=Prev, Device=Mobile",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 66,
+          "w": 354
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post-nav-card/width"
       }
     }
   }

@@ -1,6 +1,8 @@
 {
+  "description": "창이 채울 영역을 미리 보여 주는 반투명 판으로, 끌어서 스냅과 Snap Assist 화면에 쓴다.",
   "name": "SnapPreview",
   "nodeId": "90:2737",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,39 @@
         "y": 8
       },
       "nodeId": "90:2737",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "effectStyle": "Surface/Flyout (Acrylic)",
+        "fillStyle": "Material/Acrylic Default",
+        "height": "size/snap-preview/height",
+        "name": "SnapPreview",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 1016,
+          "w": 952
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/snap-preview/width"
+      }
     }
   }
 }
