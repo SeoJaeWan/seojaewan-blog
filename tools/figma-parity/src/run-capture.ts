@@ -26,6 +26,7 @@ import {
 } from './results.ts';
 import { PATTERN_TITLE_PREFIX } from './story-target.ts';
 import { loadTargets, type Target, variantResultDir } from './targets.ts';
+import type { VariantEntry } from './variant-name.ts';
 
 // 사용법: node src/run-capture.ts [--affected] [--base <ref>] [--target <대상>]... [--no-build] [--out <폴더>]
 //                                [--print-range]
@@ -93,7 +94,7 @@ function main(): void {
   });
   rmSync(path.join(resultsDir, SELECTION_FILE), { force: true });
   const rows = selected.targets.flatMap((target) =>
-    target.variants.map((variant) => readRow(resultsDir, target, variant.variant)),
+    target.variants.map((variant) => captureRow(resultsDir, target, variant)),
   );
   writeSummary(resultsDir, { rows, fileErrors });
   const failed = rows.filter((row) => row.error !== null);
@@ -311,6 +312,39 @@ function readRow(resultsDir: string, target: Target, variant: string): CaptureRo
     };
   }
   return JSON.parse(readFileSync(file, 'utf8')) as CaptureRow;
+}
+
+/**
+ * 변형 하나의 캡처 표 줄을 만든다. 빈 HUG 슬롯이 있는 변형은 캡처하지 않았으므로 결과 파일 대신 "조립에서 확인" 줄이다.
+ * @param resultsDir 결과 폴더
+ * @param target 대상
+ * @param variant 변형
+ * @returns 캡처 표 줄
+ */
+function captureRow(resultsDir: string, target: Target, variant: VariantEntry): CaptureRow {
+  return variant.emptyHugSlot
+    ? emptyHugSlotRow(target, variant.variant)
+    : readRow(resultsDir, target, variant.variant);
+}
+
+/**
+ * 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형의 표 줄을 만든다. 그림도 실패도 없다.
+ * @codocs [[피그마 연동:스토리 규칙]]
+ * @param target 대상
+ * @param variant 변형 파일 이름
+ * @returns 캡처 표 줄
+ */
+function emptyHugSlotRow(target: Target, variant: string): CaptureRow {
+  return {
+    target: target.id,
+    name: target.name,
+    variant,
+    figma: null,
+    code: null,
+    diff: null,
+    error: null,
+    emptyHugSlot: true,
+  };
 }
 
 /**

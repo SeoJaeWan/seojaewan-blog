@@ -11,6 +11,8 @@ export const COMMENT_MARKER = 'figma-parity';
 export const COMMENT_LIMIT = 60_000;
 // 캡처 표 하나에 넣는 줄 수. 넘치면 같은 대상의 표를 이어서 하나 더 만든다(표 머리를 다시 쓴다).
 export const CAPTURE_ROWS_PER_TABLE = 40;
+// 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형의 코드 칸에 쓰는 글이다.
+export const EMPTY_HUG_SLOT_NOTE = '조립에서 확인';
 const tableHeader = ['| 변형 | 피그마 | 코드 | 차이 |', '|---|---|---|---|'];
 
 export type CommentOptions = {
@@ -19,6 +21,25 @@ export type CommentOptions = {
   /** 이 실행(Actions run) 주소 */
   runUrl: string;
 };
+
+/**
+ * 보고 커밋에 올린 이미지의 주소를 만든다. 브랜치 이름이 아니라 커밋 SHA를 쓴다.
+ * 보고 브랜치는 실행마다 강제로 덮어쓰므로 브랜치 이름 주소는 내용이 바뀌어도 같고,
+ * 같은 주소면 GitHub의 댓글 그림 프록시가 옛 그림을 보여 주기 때문이다.
+ * @codocs [[피그마 연동:CI]]
+ * @param base GitHub 주소, 저장소, 보고 커밋 SHA
+ * @param base.server GitHub 주소(`https://github.com`)
+ * @param base.repository `owner/repo`
+ * @param base.sha 이미지를 올린 보고 커밋의 SHA
+ * @param file 결과 폴더 기준 이미지 경로
+ * @returns 이미지 주소
+ */
+export function reportImageUrl(
+  base: { server: string; repository: string; sha: string },
+  file: string,
+): string {
+  return `${base.server}/${base.repository}/blob/${base.sha}/${file.split('/').map(encodeURIComponent).join('/')}?raw=true`;
+}
 
 /**
  * 캡처 결과로 댓글 본문 목록을 만든다. 각 본문은 순서 번호가 든 숨은 표시로 시작한다.
@@ -90,11 +111,16 @@ function captureBlocks(
 
 /**
  * 캡처 표 한 줄을 쓴다. 만들지 못한 그림 칸은 비우고, 이유는 코드 칸에 쓴다.
+ * 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형은 그림 없이 "조립에서 확인"만 쓴다.
+ * @codocs [[피그마 연동:스토리 규칙]]
  * @param row 캡처 표 줄
  * @param options 이미지 주소
  * @returns 표 줄
  */
 function captureLine(row: CaptureRow, options: CommentOptions): string {
+  if (row.emptyHugSlot === true) {
+    return `| \`${row.variant}\` | | ${EMPTY_HUG_SLOT_NOTE} | |`;
+  }
   const figma = row.figma === null ? '' : image(row.figma, '피그마', options);
   const code =
     row.code === null
