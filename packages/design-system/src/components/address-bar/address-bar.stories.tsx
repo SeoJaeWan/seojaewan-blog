@@ -40,7 +40,7 @@ const meta = {
     return (
       // AddressBar는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비 640으로 감싼다.
       // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. AddressBar와 같은 크기라 찍히는 범위가 같다.
-      <div className="w-640">
+      <div className="w-size-address-bar-width">
         <AddressBar
           // 상태나 글자를 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
           key={`${args.state}-${args.url}-${args.query}`}

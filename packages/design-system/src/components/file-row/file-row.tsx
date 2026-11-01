@@ -83,52 +83,62 @@ export function FileRow(props: FileRowProps): JSX.Element {
     className,
     ...divProps
   } = props;
-  const dim = isCut ? 'opacity-cut' : undefined;
+  const dim = isCut ? 'opacity-opacity-cut' : undefined;
   return (
     <div
       data-state={fileRowState({ isSelected, isCut, isRenaming })}
       {...divProps}
       className={cn(
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
-        'relative flex h-control-height items-center gap-8 rounded-control px-8 py-0 outline-none select-none',
+        'relative flex h-size-control-height items-center gap-spacing-sm rounded-radius-control px-spacing-sm py-spacing-none outline-none select-none',
         isSelected || isRenaming
           ? 'bg-file-item-explorer-fill-selected'
           : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        'focus-visible:inner-border-file-item-explorer-stroke-focus focus-visible:inner-border-w-default',
+        'focus-visible:inner-border-file-item-explorer-stroke-focus focus-visible:inner-border-w-stroke-width-default',
         className,
       )}
     >
-      <div className="flex h-20 w-300 shrink-0 items-center gap-8 overflow-clip">
-        <span className={cn('flex size-icon-16 shrink-0 items-center justify-center', dim)}>
+      <div className="flex h-size-file-row-name-height w-size-file-row-name-width shrink-shrink-none items-center gap-spacing-sm overflow-clip">
+        <span
+          className={cn(
+            'flex size-size-icon-sm shrink-shrink-none items-center justify-center',
+            dim,
+          )}
+        >
           {icon}
         </span>
         {isRenaming ? (
           <RenameField aria-label="이름 바꾸기" {...renameFieldProps} text={name} />
         ) : (
-          <span className={cn('min-w-px flex-1 truncate type-caption text-text-fill-primary', dim)}>
+          <span
+            className={cn(
+              'min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary',
+              dim,
+            )}
+          >
             {name}
           </span>
         )}
       </div>
       {view === 'recycle-bin' ? (
         <>
-          <span className="w-180 shrink-0 truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
             {originalLocation}
           </span>
-          <span className="w-140 shrink-0 truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
             {deletedDate}
           </span>
         </>
       ) : (
         <>
-          <span className="w-180 shrink-0 truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
             {date}
           </span>
-          <span className="w-140 shrink-0 truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
             {type}
           </span>
           {isLocationShown && (
-            <span className="w-180 shrink-0 truncate type-caption text-text-fill-secondary">
+            <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
               {location}
             </span>
           )}

@@ -8,7 +8,7 @@ const meta = {
   // 글자는 피그마 Language 속성의 기본값이다. 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다.
   // 피그마 Code 슬롯은 비어 있고 높이 100만 갖는다. 코드의 슬롯은 내용 높이라 같은 높이의 빈 자리를 넣는다.
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <CodeBlock language="언어">
         <span className="block" style={{ height: 100 }} />
       </CodeBlock>
@@ -27,7 +27,7 @@ export const Figma: Story = {};
 // 강조된 코드를 슬롯에 넣은 모습이다. 색은 `code-syntax` 토큰 클래스다([[기술 스택:글 본문 처리]]).
 export const Highlighted: Story = {
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <CodeBlock language="ts">
         <span className="text-code-syntax-keyword-control">const</span>{' '}
         <span className="text-code-syntax-variable">count</span>{' '}
@@ -44,7 +44,7 @@ export const Highlighted: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Copy: Story = {
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <CodeBlock language="ts">
         <span>const</span> <span>a = 1;</span>
       </CodeBlock>

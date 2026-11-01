@@ -10,7 +10,7 @@ const meta = {
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다. 피그마의 이미지 칸은 720x420 고정이고
   // 코드는 이미지 높이를 따르므로 같은 높이를 인라인으로 준다(토큰에 없는 값).
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <Figure image={<ImageAsset name="images/wallpaper-bloom" style={{ height: 420 }} />} />
     </div>
   ),
@@ -28,7 +28,7 @@ export const Figma: Story = {};
 // @codocs [[Notion 블록:모양]]
 export const WithCaption: Story = {
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <Figure
         image={<ImageAsset name="images/wallpaper-bloom" alt="그림" style={{ height: 420 }} />}
         caption="설명"
@@ -50,7 +50,7 @@ export const WithCaption: Story = {
 // @codocs [[Notion 블록:모양]]
 export const WithoutCaption: Story = {
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <Figure
         showCaption={false}
         image={<ImageAsset name="images/wallpaper-bloom" style={{ height: 420 }} />}

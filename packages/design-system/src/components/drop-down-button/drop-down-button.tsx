@@ -23,8 +23,8 @@ export function DropDownButton(props: DropDownButtonProps): JSX.Element {
     <BaseButton
       {...buttonProps}
       className={cn(
-        'relative inline-flex items-center justify-center gap-8 rounded-control px-12 py-6 whitespace-nowrap select-none',
-        'focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'relative inline-flex items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-md py-spacing-sm-nudge whitespace-nowrap select-none',
+        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         'motion-control-state',
         'bg-subtle-fill-transparent text-text-fill-primary',
         'hover:not-data-disabled:bg-subtle-fill-secondary',
@@ -34,7 +34,7 @@ export function DropDownButton(props: DropDownButtonProps): JSX.Element {
       )}
     >
       <span className="text-start type-body">{label}</span>
-      <Asset name="icons/ic_fluent_chevron_down_16_regular.svg" className="size-icon-16" />
+      <Asset name="icons/ic_fluent_chevron_down_16_regular.svg" className="size-size-icon-sm" />
     </BaseButton>
   );
 }

@@ -27,8 +27,11 @@ export function Figure(props: FigureProps): JSX.Element {
     ...figureProps
   } = props;
   return (
-    <figure {...figureProps} className={cn('m-0 flex flex-col items-start gap-8', className)}>
-      <div className="flex w-full flex-col items-start overflow-hidden rounded-overlay [&>*]:block [&>*]:w-full [&>*]:object-cover">
+    <figure
+      {...figureProps}
+      className={cn('m-spacing-none flex flex-col items-start gap-spacing-sm', className)}
+    >
+      <div className="flex w-full flex-col items-start overflow-hidden rounded-radius-overlay [&>*]:block [&>*]:w-full [&>*]:object-cover">
         {image}
       </div>
       {hasCaption && (

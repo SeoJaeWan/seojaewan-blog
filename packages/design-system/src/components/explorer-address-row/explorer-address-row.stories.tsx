@@ -74,7 +74,7 @@ const meta = {
         >
           {args.items ?? (
             // 피그마 Items 슬롯의 미리보기 크기다. 칠 없는 빈 요소로 채운다
-            <div className="shrink-0" style={{ width: 100, height: 100 }} />
+            <div className="shrink-shrink-none" style={{ width: 100, height: 100 }} />
           )}
         </ExplorerAddressRow>
       </div>

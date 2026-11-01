@@ -41,19 +41,19 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
         aria-current={isCurrent ? 'page' : undefined}
         onClick={handleLabelClick}
         className={cn(
-          'flex max-w-200 items-start overflow-clip rounded-control px-6 py-4 select-none',
+          'flex max-w-size-breadcrumb-item-max-width items-start overflow-clip rounded-radius-control px-spacing-sm-nudge py-spacing-xs select-none',
           'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary active:bg-subtle-fill-tertiary',
           'motion-control-state',
         )}
       >
-        <span className="min-w-px flex-1 truncate type-caption text-text-fill-primary">
+        <span className="min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary">
           {label}
         </span>
       </button>
       {hasSeparator ? (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
-          className="size-icon-16 shrink-0 text-text-fill-secondary"
+          className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
         />
       ) : null}
     </div>

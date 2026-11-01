@@ -27,17 +27,17 @@ export function Checkbox(props: CheckboxProps): JSX.Element {
       aria-readonly
       {...divProps}
       className={cn(
-        'flex size-20 shrink-0 items-center justify-center rounded-control',
+        'flex size-size-checkbox-box shrink-shrink-none items-center justify-center rounded-radius-control',
         isChecked
           ? 'bg-accent-fill-default'
-          : 'border-default border-control-strong-stroke-default bg-control-alt-fill-secondary',
+          : 'border-stroke-width-default border-control-strong-stroke-default bg-control-alt-fill-secondary',
         className,
       )}
     >
       {isChecked ? (
         <Asset
           name="icons/ic_fluent_checkmark_20_regular.svg"
-          className="size-icon-16 shrink-0 text-text-on-accent-fill-primary"
+          className="size-size-icon-sm shrink-shrink-none text-text-on-accent-fill-primary"
         />
       ) : null}
     </div>

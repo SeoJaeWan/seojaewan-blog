@@ -43,7 +43,7 @@ const meta = {
           selected={args.state === 'selected'}
           title={args.title}
           tabIndex={args.tabIndex}
-          icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
+          icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
           onClick={handleClick}
           onClose={handleClose}
         />
