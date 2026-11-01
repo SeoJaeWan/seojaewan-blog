@@ -14,11 +14,12 @@ const repositoryRoot = path.resolve(packageRoot, '..', '..');
 const componentFile = path.join(packageRoot, 'src', 'components', 'button', 'button.tsx');
 const UNKNOWN_CLASS_RULE = 'better-tailwindcss/no-unknown-classes';
 const RESTRICTED_CLASS_RULE = 'better-tailwindcss/no-restricted-classes';
+const RESTRICTED_SYNTAX_RULE = 'no-restricted-syntax';
 const tokensCss = readFileSync(tokensCssPath, 'utf8');
 const motionCss = readFileSync(path.join(packageRoot, 'src', 'motion.css'), 'utf8');
 
-// 이름공간이 Tailwind 기본 이름공간과 같아 Tailwind 기본 유틸리티로 쓰는 토큰이다(값 종류 토큰은 클래스에서
-// 이름공간을 뺀다). 이름공간마다 그 유틸리티가 정해야 하는 CSS 속성이다.
+// 이름공간이 Tailwind 기본 이름공간과 같아 Tailwind 기본 유틸리티로 쓰는 토큰이다(별칭 변수가 경로 전체를 붙인다).
+// 이름공간마다 그 유틸리티가 정해야 하는 CSS 속성이다.
 const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
   ['--spacing-', /./u],
   ['--radius-', /radius:/u],
@@ -31,6 +32,7 @@ const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
   ['--inset-', /inset|top:|right:|bottom:|left:/u],
   ['--translate-', /translate/u],
   ['--line-clamp-', /line-clamp/u],
+  ['--aspect-', /aspect-ratio:/u],
   ['--grid-column-start-', /grid-column-start:/u],
   ['--grid-row-start-', /grid-row-start:/u],
 ];
@@ -49,10 +51,21 @@ async function lintClassErrors(
   isCnArgument = false,
   prelude = '',
 ): Promise<string[]> {
-  const eslint = new ESLint({ cwd: repositoryRoot });
   const element = isCnArgument
     ? `<div className={cn('${className}')} />`
     : `<div className="${className}" />`;
+  return lintElementErrors(element, ruleId, prelude);
+}
+
+/**
+ * 요소를 그리는 컴포넌트를 검사해 규칙 하나의 오류를 모은다.
+ * @param element 컴포넌트가 돌려주는 JSX
+ * @param ruleId 모을 규칙
+ * @param prelude 컴포넌트 앞에 넣는 코드
+ * @returns 오류 메시지
+ */
+async function lintElementErrors(element: string, ruleId: string, prelude = ''): Promise<string[]> {
+  const eslint = new ESLint({ cwd: repositoryRoot });
   const source = [
     "import type { JSX } from 'react';",
     "import { cn } from '../../cn';",
@@ -188,6 +201,78 @@ describe('토큰 사용 강제', () => {
       'Unknown class detected: bg-accent-fill-missing',
     ]);
   }, 60_000);
+
+  it('이름이 ClassName·CLASS_NAME으로 끝나는 문자열·배열 상수와 *ClassName 속성도 lint가 검사한다', async () => {
+    const prelude = [
+      "const ROW_CLASS_NAME = 'w-missing-a';",
+      "const INDENT_CLASS_NAMES = ['', 'w-missing-b'] as const;",
+      "const toneClassName = Math.random() > 0 ? 'w-missing-c' : 'w-full';",
+      "const zoneClass = 'w-not-class-name';",
+      'export const probe = [ROW_CLASS_NAME, INDENT_CLASS_NAMES, toneClassName, zoneClass];',
+      'declare function Item(props: { itemClassName: string }): JSX.Element;',
+    ].join('\n');
+    await expect(
+      lintElementErrors('<Item itemClassName="w-missing-d" />', UNKNOWN_CLASS_RULE, prelude),
+    ).resolves.toEqual([
+      'Unknown class detected: w-missing-a',
+      'Unknown class detected: w-missing-b',
+      'Unknown class detected: w-missing-c',
+      'Unknown class detected: w-missing-d',
+    ]);
+  }, 60_000);
+
+  it('className 안에서 .join()으로 클래스를 이으면 lint가 막는다', async () => {
+    await expect(
+      lintElementErrors("<div className={['flex', 'w-full'].join(' ')} />", RESTRICTED_SYNTAX_RULE),
+    ).resolves.toHaveLength(1);
+  }, 60_000);
+
+  it('숫자 값 클래스는 lint가 막는다', async () => {
+    const classes = [
+      'shrink-0',
+      'flex-1',
+      'rotate-180',
+      '-rotate-90',
+      'z-10',
+      'line-clamp-2',
+      'scale-110',
+      'border-3',
+      'opacity-37',
+      'order-3',
+      'grid-cols-5',
+      'w-1/2',
+      'aspect-3/2',
+      'mask-l-from-50%',
+      'bg-accent-fill-default/50',
+      'hover:rotate-45',
+      'laptop:shrink-0',
+      'shrink-0!',
+    ];
+    const errors = await lintClassErrors(classes.join(' '), RESTRICTED_CLASS_RULE, true);
+    expect(errors).toHaveLength(classes.length);
+    expect(errors.every((message) => message.includes('숫자 값 클래스'))).toBe(true);
+  }, 60_000);
+
+  it('토큰 이름의 클래스와 숫자가 아닌 기본 클래스는 숫자 규칙에 걸리지 않는다', async () => {
+    await expect(
+      lintClassErrors(
+        'p-spacing-2xs w-size-story-2xl size-size-story-3xl shrink-shrink-none rotate-rotate-half rounded-full w-full',
+        RESTRICTED_CLASS_RULE,
+      ),
+    ).resolves.toEqual([]);
+  }, 60_000);
+
+  it('클래스를 만드는 토큰 이름과 유틸리티는 숫자로 끝나지 않는다', () => {
+    const theme = tokensCss.split('@theme static {')[1]?.split('\n}')[0] ?? '';
+    const names = [
+      ...[...theme.matchAll(/^\s+--([a-z0-9-]+):/gmu)].map((match) => match[1] ?? ''),
+      ...[...`${tokensCss}${motionCss}`.matchAll(/^@utility ([a-z0-9-]+) \{/gmu)].map(
+        (match) => match[1] ?? '',
+      ),
+    ];
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.filter((name) => /[0-9]$/u.test(name))).toEqual([]);
+  });
 
   it('text-shadow 값 변수를 box-shadow로 읽은 shadow-text-* 클래스는 lint가 막는다', async () => {
     const className = 'shadow-text-elevation-desktop-label';
