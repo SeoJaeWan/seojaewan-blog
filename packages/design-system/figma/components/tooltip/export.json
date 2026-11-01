@@ -1,6 +1,33 @@
 {
+  "description": "짧은 설명이나 안내 말풍선으로, 작업 표시줄 앱 버튼 설명과 잘못된 이름 안내에 쓴다.",
   "name": "Tooltip",
   "nodeId": "14:345",
+  "propertyDefinitions": {
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    },
+    "Message": {
+      "default": "메시지 내용",
+      "type": "TEXT"
+    },
+    "Text": {
+      "default": "도움말",
+      "type": "TEXT"
+    },
+    "Type": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Balloon"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "type=balloon,material=solid": {
       "node": {
@@ -13,6 +40,172 @@
       "properties": {
         "Material": "Solid",
         "Type": "Balloon"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "system-fill/caution",
+                  "path": "icons/ic_fluent_warning_24_regular"
+                },
+                "component": "ic_fluent_warning_24_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 250
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "메시지 내용",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "row",
+            "size": {
+              "h": 16,
+              "w": 274
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "MIN"
+            },
+            "asset": {
+              "color": "solid-background-fill/quarternary",
+              "path": "shapes/tooltip-tail-fill"
+            },
+            "component": "tooltip/Tail fill",
+            "height": "size/tooltip/tail-height",
+            "name": "beak fill",
+            "size": {
+              "h": 9,
+              "w": 14
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/tooltip/tail-width"
+          },
+          {
+            "absolute": {
+              "horizontal": "MIN",
+              "vertical": "MIN"
+            },
+            "asset": {
+              "color": "surface-stroke/flyout",
+              "path": "shapes/tooltip-tail-border"
+            },
+            "component": "tooltip/Tail border",
+            "height": "size/tooltip/tail-height",
+            "name": "beak border",
+            "size": {
+              "h": 9,
+              "w": 14
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/tooltip/tail-width"
+          }
+        ],
+        "effectStyle": "Elevation/Tooltip",
+        "fills": [
+          "solid-background-fill/quarternary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/md",
+            "spacing/md",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Type=Balloon, Material=Solid",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 42,
+          "w": 300
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/tooltip/balloon-width"
       }
     },
     "type=default,material=acrylic": {
@@ -26,6 +219,79 @@
       "properties": {
         "Material": "Acrylic",
         "Type": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "도움말",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "effectStyle": "Surface/Tooltip (Acrylic)",
+        "fillStyle": "Material/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "maxWidth": "size/tooltip/max-width",
+        "name": "Type=Default, Material=Acrylic",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 30,
+          "w": 50
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "type=default,material=solid": {
@@ -39,6 +305,79 @@
       "properties": {
         "Material": "Solid",
         "Type": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 16,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "도움말",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "effectStyle": "Elevation/Tooltip",
+        "fillStyle": "Material/Fallback/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/sm"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "maxWidth": "size/tooltip/max-width",
+        "name": "Type=Default, Material=Solid",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 30,
+          "w": 50
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     }
   }

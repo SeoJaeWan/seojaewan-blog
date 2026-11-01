@@ -1,6 +1,17 @@
 {
+  "description": "구분선으로, 메뉴·카드·목록 사이를 나눌 때 쓴다.",
   "name": "Separator",
   "nodeId": "509:5923",
+  "propertyDefinitions": {
+    "Orientation": {
+      "default": "Horizontal",
+      "options": [
+        "Horizontal",
+        "Vertical"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "orientation=horizontal": {
       "node": {
@@ -12,6 +23,23 @@
       "nodeId": "509:5917",
       "properties": {
         "Orientation": "Horizontal"
+      },
+      "tree": {
+        "fills": [
+          "divider-stroke/default"
+        ],
+        "height": "stroke-width/default",
+        "name": "Orientation=Horizontal",
+        "size": {
+          "h": 1,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/separator/width"
       }
     },
     "orientation=vertical": {
@@ -24,6 +52,23 @@
       "nodeId": "509:5918",
       "properties": {
         "Orientation": "Vertical"
+      },
+      "tree": {
+        "fills": [
+          "divider-stroke/default"
+        ],
+        "height": "size/separator/height",
+        "name": "Orientation=Vertical",
+        "size": {
+          "h": 16,
+          "w": 1
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "stroke-width/default"
       }
     }
   }

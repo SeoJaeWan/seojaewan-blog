@@ -1,6 +1,26 @@
 {
+  "description": "창 제목 표시줄 오른쪽의 최소화·최대화·닫기 버튼 묶음으로, WindowFrame에 쓴다.",
   "name": "CaptionButtonGroup",
   "nodeId": "393:15736",
+  "propertyDefinitions": {
+    "Placement": {
+      "default": "Normal",
+      "options": [
+        "Normal",
+        "Maximized",
+        "Snapped"
+      ],
+      "type": "VARIANT"
+    },
+    "State": {
+      "default": "Active",
+      "options": [
+        "Active",
+        "Inactive"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "placement=maximized,state=active": {
       "node": {
@@ -13,6 +33,188 @@
       "properties": {
         "Placement": "Maximized",
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_square_multiple_20_regular"
+                },
+                "component": "ic_fluent_square_multiple_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "restore button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Maximized, State=Active",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=maximized,state=inactive": {
@@ -26,6 +228,188 @@
       "properties": {
         "Placement": "Maximized",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_square_multiple_20_regular"
+                },
+                "component": "ic_fluent_square_multiple_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "restore button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Maximized, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=normal,state=active": {
@@ -39,6 +423,188 @@
       "properties": {
         "Placement": "Normal",
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Normal, State=Active",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=normal,state=inactive": {
@@ -52,6 +618,188 @@
       "properties": {
         "Placement": "Normal",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Normal, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=snapped,state=active": {
@@ -65,6 +813,188 @@
       "properties": {
         "Placement": "Snapped",
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/primary",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Snapped, State=Active",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=snapped,state=inactive": {
@@ -78,6 +1008,188 @@
       "properties": {
         "Placement": "Snapped",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_subtract_20_regular"
+                },
+                "component": "ic_fluent_subtract_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "minimize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_maximize_20_regular"
+                },
+                "component": "ic_fluent_maximize_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "maximize button",
+            "properties": {
+              "Kind": "Default",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/disabled",
+                  "path": "icons/ic_fluent_dismiss_20_regular"
+                },
+                "component": "ic_fluent_dismiss_20_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              }
+            ],
+            "component": "CaptionButton",
+            "height": "size/caption-button/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "close button",
+            "properties": {
+              "Kind": "Close",
+              "State": "Inactive"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/caption-button/width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Snapped, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 138
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }
