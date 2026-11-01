@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { getMobilePreviewLayout, getTaskbarOffset, getThumbnailScale } from './window-geometry';
 
 // @codocs [[피그마 연동:모션 클래스]]
-describe('디자인 기반:모션 클래스', () => {
+describe('피그마 연동:모션 클래스', () => {
   it('최소화 도착 위치는 창 중심에서 작업 표시줄 앱 버튼 중심까지의 거리다', () => {
     const windowRect = { left: 448, top: 196, width: 1024, height: 640 };
     const buttonRect = { left: 940, top: 1036, width: 40, height: 40 };

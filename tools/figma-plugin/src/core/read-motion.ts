@@ -17,7 +17,7 @@ import { annotationTexts, assetGroupOf } from './read-node';
 /** UI 목록에 보이는 견본 */
 export type MotionSampleSummary = { id: string; name: string };
 
-/** 견본이 있는 페이지 이름에 든 글자(00 · Foundations) */
+/** 견본이 있는 페이지 이름에 든 글자(01 · Foundations) */
 const FOUNDATIONS_PAGE_KEYWORD = 'Foundations';
 /** 견본을 담는 섹션 이름 */
 const MOTION_SECTION_NAME = 'Motion';
@@ -33,7 +33,7 @@ const MAX_SOURCE_DEPTH = 8;
 const MAX_ALIAS_DEPTH = 10;
 
 /**
- * 00 · Foundations 페이지 `Motion` 섹션 안의 견본 프레임(이름이 `motion-`으로 시작)을 문서 순서대로 찾는다.
+ * 01 · Foundations 페이지 `Motion` 섹션 안의 견본 프레임(이름이 `motion-`으로 시작)을 문서 순서대로 찾는다.
  * 페이지 ID가 정해져 있지 않아 이름에 `Foundations`가 든 페이지를 읽는다.
  * @codocs [[디자인 기반:모션 견본]]
  * @returns 견본 목록

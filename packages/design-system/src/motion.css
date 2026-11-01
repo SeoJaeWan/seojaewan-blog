@@ -3,7 +3,7 @@
  * 컴포넌트와 앱은 이 클래스만 붙이고 duration-*·ease-*·transition-* 같은 클래스를 직접 쓰지 않는다.
  *
  * @codocs [[피그마 연동:모션 클래스]]
- * - 어떤 움직임이 있고 이름이 무엇인지는 [[디자인 기반:모션]]의 동작별 표가 정한다.
+ * - 어떤 움직임이 있고 이름이 무엇인지는 피그마 00 · Guide의 Motion이 보여 준다([[디자인 기반:모션]]).
  * - 상태 전환(hover·pressed·focus) 클래스는 transition 설정(속성·시간·이징)만 갖고, 바뀐 뒤의 값은 컴포넌트가 가진다.
  * - 시간·이징·배율은 tokens.css의 var(--motion-*)로 쓴다. 토큰 값은 피그마 Motion 변수에서 만들어진다.
  * - @keyframes와 motion-* 클래스(@utility)는 이 파일에서만 정의한다(stylelint.config.mjs).

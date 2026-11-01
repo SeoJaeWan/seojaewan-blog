@@ -5,7 +5,7 @@ import { MotionPreview } from './motion-preview';
 
 // @codocs [[피그마 연동:모션]]
 // 견본 motion-search-box-focus는 키프레임을 자산 원본 icon-color/Search Focus에 건다([[디자인 기반:모션 견본]]).
-// 같은 자산에 클래스를 걸어 크게 그린다. 실행 중 값은 없다([[디자인 기반:모션]] 표).
+// 같은 자산에 클래스를 걸어 크게 그린다. 실행 중 값은 없다(견본 주석에 `@runtime`이 없다).
 const meta = {
   title: 'Motion/motion-search-box-focus',
 } satisfies Meta;

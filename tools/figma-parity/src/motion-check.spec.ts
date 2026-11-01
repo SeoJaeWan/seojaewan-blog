@@ -185,7 +185,7 @@ for (const name of selected) {
           throw new Error('모션 스토리에서 재생 중인 CSS 애니메이션을 찾지 못했다.');
         }
         if (spec.iterations === null) {
-          // 피그마에서 반복을 알 수 없어 비교하지 않는다. 사람이 [[디자인 기반:모션]] 표와 맞는지 보도록 남긴다.
+          // 피그마에서 반복을 알 수 없어 비교하지 않는다. 사람이 견본 주석의 `@repeat`와 맞는지 보도록 남긴다.
           console.log(
             `[motion-check] ${name} 반복 횟수(비교 안 함): ${iterationSummary(observed.timing)}`,
           );

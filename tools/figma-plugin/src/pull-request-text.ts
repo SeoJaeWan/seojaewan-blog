@@ -379,7 +379,7 @@ export function motionPullRequestBody(motion: MotionExport): string {
     `- 견본: [${motion.name}](${motion.url})`,
     `- 자료: \`packages/design-system/figma/motions/${motion.name}.json\``,
     `- 전체 길이 ${timeText(motion.duration)}, 시작 지연 ${timeText(motion.delay)}`,
-    '- 반복: 피그마에서 읽을 수 없어 자료에 담지 않았다. 디자인 기반 문서의 모션 표를 본다.',
+    `- 반복: ${motion.iterations === null ? '견본 주석에 없음' : String(motion.iterations)}`,
     '',
     '## 키프레임',
     '',
