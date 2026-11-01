@@ -35,7 +35,7 @@ export function Bookmark(props: BookmarkProps): JSX.Element {
       <div className="flex w-full shrink-shrink-none items-center gap-spacing-sm-nudge">
         <Asset
           name="icons/ic_fluent_link_20_regular.svg"
-          className="size-size-icon-sm shrink-shrink-none text-text-fill-primary"
+          className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
         />
         <p className="min-w-size-none flex-flex-fill type-caption text-text-fill-secondary">
           {url}
