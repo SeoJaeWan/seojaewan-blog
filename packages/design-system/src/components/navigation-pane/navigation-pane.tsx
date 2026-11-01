@@ -17,9 +17,12 @@ export function NavigationPane(props: NavigationPaneProps): JSX.Element {
   return (
     <div
       {...divProps}
-      className={cn('flex flex-col items-start overflow-clip px-4 py-8', className)}
+      className={cn(
+        'flex flex-col items-start overflow-clip px-spacing-xs py-spacing-sm',
+        className,
+      )}
     >
-      <div className="flex w-full shrink-0 flex-col">{children}</div>
+      <div className="flex w-full shrink-shrink-none flex-col">{children}</div>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex h-control-height items-center gap-4 rounded-control border-default border-control-stroke-default px-8',
+        'relative flex h-size-control-height items-center gap-spacing-xs rounded-radius-control border-stroke-width-default border-control-stroke-default px-spacing-sm',
         isEditing ? 'bg-control-fill-input-active' : 'overflow-clip bg-control-fill-default',
         className,
       )}
@@ -46,23 +46,23 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
             type="text"
             aria-label="주소"
             defaultValue={address}
-            className="min-w-px flex-1 truncate type-caption text-text-fill-primary outline-none"
+            className="min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary outline-none"
           />
-          <div className="pointer-events-none absolute -inset-px overflow-clip rounded-control">
-            <div className="absolute inset-x-0 bottom-0 border-b-focus-outer border-accent-fill-default" />
+          <div className="pointer-events-none absolute -inset-spacing-hairline overflow-clip rounded-radius-control">
+            <div className="absolute inset-x-spacing-none bottom-spacing-none border-b-stroke-width-focus-outer border-accent-fill-default" />
           </div>
         </>
       ) : (
         <>
-          <span className="flex size-icon-16 shrink-0 items-center justify-center">
+          <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
             {locationIcon}
           </span>
           <Asset
             name="icons/ic_fluent_chevron_right_16_regular.svg"
-            className="size-icon-16 shrink-0 text-text-fill-secondary"
+            className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
           />
           {/* 피그마 Items 슬롯의 배치(가로, 간격 spacing/4)다 */}
-          <div className="flex items-center gap-4">{children}</div>
+          <div className="flex items-center gap-spacing-xs">{children}</div>
         </>
       )}
     </div>

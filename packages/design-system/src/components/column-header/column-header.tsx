@@ -28,21 +28,21 @@ export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
       // 정렬 방향을 상태 속성으로 알린다. 꺾쇠 모양은 이 값을 따른다.
       data-sort={sort}
       className={cn(
-        'flex h-control-height items-center gap-4 border-r-default border-divider-stroke-default px-8 select-none',
+        'flex h-size-control-height items-center gap-spacing-xs border-r-stroke-width-default border-divider-stroke-default px-spacing-sm select-none',
         'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
         'motion-control-state',
         className,
       )}
     >
-      <span className="min-w-px flex-1 overflow-hidden text-start type-caption text-ellipsis whitespace-nowrap text-text-fill-secondary">
+      <span className="min-w-size-hairline flex-flex-fill overflow-hidden text-start type-caption text-ellipsis whitespace-nowrap text-text-fill-secondary">
         {label}
       </span>
       {sort !== 'none' && (
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
           className={cn(
-            'size-icon-12 shrink-0 text-text-fill-secondary',
-            sort === 'ascending' && 'rotate-180',
+            'size-size-icon-xs shrink-shrink-none text-text-fill-secondary',
+            sort === 'ascending' && 'rotate-rotate-half',
           )}
         />
       )}

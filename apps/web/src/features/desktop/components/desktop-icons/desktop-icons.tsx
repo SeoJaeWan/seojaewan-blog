@@ -87,7 +87,7 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
         // 칸에 놓을 때는 선택된 아이콘을 위로 올리는 쌓임 순서가 이 영역 안에서만 정해지게 한다(창 층 위로 올라오지 않게).
         isPlaced
           ? 'relative isolate'
-          : 'flex flex-col flex-wrap content-start items-start gap-16 p-8',
+          : 'flex flex-col flex-wrap content-start items-start gap-spacing-lg p-spacing-sm',
         className,
       ]
         .filter(Boolean)
@@ -123,7 +123,11 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               renaming={icon.renaming}
               cut={icon.cut}
               className={
-                origin === null ? undefined : icon.selected === true ? 'absolute z-1' : 'absolute'
+                origin === null
+                  ? undefined
+                  : icon.selected === true
+                    ? 'absolute z-layer-selected-item'
+                    : 'absolute'
               }
               style={origin === null ? undefined : { left: origin.x, top: origin.y }}
             />

@@ -206,7 +206,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
     const isNumbered = items[0]?.type === 'numbered_list_item';
     return createElement(
       isNumbered ? 'ol' : 'ul',
-      { key, className: 'flex w-full flex-col gap-4' },
+      { key, className: 'flex w-full flex-col gap-spacing-xs' },
       items.map(
         /**
          * 목록 항목 하나를 그린다.
@@ -217,18 +217,18 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
         (item, index) => {
           const isDone = item.type === 'to_do' && item.checked;
           return (
-            <li key={index} className="flex w-full flex-col gap-4">
+            <li key={index} className="flex w-full flex-col gap-spacing-xs">
               {/* 피그마 `row` 배치 프레임. 표시(24×24)와 글 사이 간격은 8이다 */}
-              <div className="flex w-full items-start gap-8">
+              <div className="flex w-full items-start gap-spacing-sm">
                 {item.type === 'to_do' ? (
-                  <span className="flex size-24 shrink-0 items-center justify-center">
+                  <span className="flex size-size-post-block-marker shrink-shrink-none items-center justify-center">
                     <Checkbox checked={item.checked} label={getPlainText(item.richText)} />
                   </span>
                 ) : (
                   <span
                     aria-hidden
                     className={[
-                      'flex size-24 shrink-0 items-center type-body-large text-text-fill-primary',
+                      'flex size-size-post-block-marker shrink-shrink-none items-center type-body-large text-text-fill-primary',
                       isNumbered ? 'justify-end' : 'justify-center',
                     ].join(' ')}
                   >
@@ -237,7 +237,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                 )}
                 <p
                   className={[
-                    'min-w-0 flex-1',
+                    'min-w-size-none flex-flex-fill',
                     isDone
                       ? 'type-body-large-strikethrough text-text-fill-secondary'
                       : BODY_TEXT_CLASS_NAME,
@@ -248,7 +248,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               </div>
               {item.children !== undefined && item.children.length > 0 && (
                 // 피그마 `children` 배치 프레임. 하위 블록은 표시 너비 + 간격(32)만큼 들여 쓴다
-                <div className="flex w-full flex-col gap-4 pl-32">
+                <div className="flex w-full flex-col gap-spacing-xs pl-spacing-3xl">
                   {renderBlocks(item.children, depth + 1)}
                 </div>
               )}
@@ -355,7 +355,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
             defaultExpanded={isTopLevel && expandedToggleIndexes.includes(index)}
           >
             {/* 토글 내용은 꺾쇠 자리(24)만큼 들여 쓴다 */}
-            <div className="flex w-full flex-col gap-4 pl-24">
+            <div className="flex w-full flex-col gap-spacing-xs pl-spacing-2xl">
               {renderBlocks(block.children ?? [], depth + 1)}
             </div>
           </Toggle>
@@ -474,7 +474,9 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
 
   return (
     <div
-      className={['flex w-full flex-col items-start gap-16', className].filter(Boolean).join(' ')}
+      className={['flex w-full flex-col items-start gap-spacing-lg', className]
+        .filter(Boolean)
+        .join(' ')}
     >
       {renderBlocks(blocks, 0)}
     </div>

@@ -11,11 +11,17 @@ type FigmaArgs = {
   layout: (typeof LAYOUTS)[number];
 };
 
-// 덮는 페이지 영역은 크기를 갖지 않고 Chrome 창이 정하므로 피그마 원본 크기(size/1278×712, size/388×720)로 그린다.
-const SIZE_CLASS_NAMES = { wide: 'w-1278 h-712', narrow: 'w-388 h-720' } as const;
+// 덮는 페이지 영역은 크기를 갖지 않고 Chrome 창이 정하므로 피그마 원본 크기(1278×712, 388×720)로 그린다.
+const SIZE_CLASS_NAMES = {
+  wide: 'w-size-chrome-page-wide-width h-size-chrome-page-wide-height',
+  narrow: 'w-size-chrome-page-narrow-width h-size-chrome-page-narrow-height',
+} as const;
 
 // 피그마 조립의 이미지 칸 크기다. wide는 800×500, narrow는 남은 너비 × 220이다.
-const IMAGE_CLASS_NAMES = { wide: 'h-500 w-800', narrow: 'h-220 w-full' } as const;
+const IMAGE_CLASS_NAMES = {
+  wide: 'h-size-image-viewer-image-height w-size-image-viewer-image-width',
+  narrow: 'h-size-image-viewer-narrow-image-height w-full',
+} as const;
 
 const IMAGE_CAPTION = 'Bloom 배경화면';
 

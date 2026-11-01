@@ -19,9 +19,9 @@ type BrowserTabStripProps = Omit<ComponentProps<'div'>, 'children'> & {
 export function BrowserTabStrip(props: BrowserTabStripProps): JSX.Element {
   const { children, onNewTab: handleNewTab, className, ...divProps } = props;
   return (
-    <div {...divProps} className={cn('flex items-end gap-4', className)}>
-      <div className="flex min-w-0">{children}</div>
-      <div className="flex shrink-0 items-start overflow-clip pb-2">
+    <div {...divProps} className={cn('flex items-end gap-spacing-xs', className)}>
+      <div className="flex min-w-size-none">{children}</div>
+      <div className="flex shrink-shrink-none items-start overflow-clip pb-spacing-2xs">
         <IconButton
           variant="chrome"
           label="새 탭"

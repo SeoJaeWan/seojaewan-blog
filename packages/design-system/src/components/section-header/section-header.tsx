@@ -18,13 +18,18 @@ type SectionHeaderProps = Omit<ComponentProps<'div'>, 'children' | 'onClick'> & 
 export function SectionHeader(props: SectionHeaderProps): JSX.Element {
   const { label = '머리글', onClick: handleClick, className, ...divProps } = props;
   const text = (
-    <p className="shrink-0 type-body-strong whitespace-nowrap text-text-fill-primary">{label}</p>
+    <p className="shrink-shrink-none type-body-strong whitespace-nowrap text-text-fill-primary">
+      {label}
+    </p>
   );
   if (handleClick === undefined) {
     return (
       <div
         {...divProps}
-        className={cn('flex items-start overflow-clip px-12 pt-8 pb-4', className)}
+        className={cn(
+          'flex items-start overflow-clip px-spacing-md pt-spacing-sm pb-spacing-xs',
+          className,
+        )}
       >
         {text}
       </div>
@@ -36,7 +41,7 @@ export function SectionHeader(props: SectionHeaderProps): JSX.Element {
       <BaseButton
         type="button"
         onClick={handleClick}
-        className="flex items-start px-12 pt-8 pb-4 text-left"
+        className="flex items-start px-spacing-md pt-spacing-sm pb-spacing-xs text-left"
       >
         {text}
       </BaseButton>

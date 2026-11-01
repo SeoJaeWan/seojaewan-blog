@@ -22,7 +22,7 @@ const meta = {
     // Taskbar는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(1280)로 감싼다.
     // 컴포넌트의 슬롯은 언제나 비어 있으므로, 피그마 빈 Center 슬롯이 차지하는 너비 308만 칠 없는 빈 내용으로 둔다.
     // Right 슬롯은 남은 너비를 채우므로 비워 둔다.
-    <div className="w-1280">
+    <div className="w-size-taskbar-width">
       <Taskbar
         material={args.material}
         center={<div className="h-full" style={{ width: 308 }} />}
@@ -43,7 +43,7 @@ export const Figma: Story = {};
 /** center와 right 자리에 넣은 내용을 그린다 */
 export const Default: Story = {
   render: () => (
-    <div className="w-1280">
+    <div className="w-size-taskbar-width">
       <Taskbar
         center={<button type="button">시작</button>}
         right={<button type="button">시계</button>}
@@ -64,7 +64,7 @@ export const Default: Story = {
 /** 슬롯을 채우지 않으면 안쪽 부품을 그리지 않는다 */
 export const Empty: Story = {
   render: () => (
-    <div className="w-1280">
+    <div className="w-size-taskbar-width">
       <Taskbar />
     </div>
   ),

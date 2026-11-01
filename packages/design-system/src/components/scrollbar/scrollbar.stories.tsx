@@ -28,7 +28,9 @@ const meta = {
       orientation={args.orientation}
       state={args.state}
       material={args.material}
-      className={args.orientation === 'vertical' ? 'h-200' : 'w-200'}
+      className={
+        args.orientation === 'vertical' ? 'h-size-scrollbar-length' : 'w-size-scrollbar-length'
+      }
     />
   ),
 } satisfies Meta<FigmaArgs>;
@@ -44,7 +46,7 @@ export const Figma: Story = {};
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** rest는 얇은 막대만 그린다 */
 export const Default: Story = {
-  render: () => <Scrollbar className="h-200" />,
+  render: () => <Scrollbar className="h-size-scrollbar-length" />,
   play: async ({ canvasElement }) => {
     await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'rest');
   },
@@ -53,7 +55,7 @@ export const Default: Story = {
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** expanded는 양 끝 화살표와 바탕을 함께 그린다 */
 export const Expanded: Story = {
-  render: () => <Scrollbar state="expanded" material="solid" className="h-200" />,
+  render: () => <Scrollbar state="expanded" material="solid" className="h-size-scrollbar-length" />,
   play: async ({ canvasElement }) => {
     await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'expanded');
   },
@@ -63,7 +65,12 @@ export const Expanded: Story = {
 /** 막대의 위치와 길이를 방향에 맞춰 정한다 */
 export const Horizontal: Story = {
   render: () => (
-    <Scrollbar orientation="horizontal" thumbOffset={12} thumbLength={30} className="w-200" />
+    <Scrollbar
+      orientation="horizontal"
+      thumbOffset={12}
+      thumbLength={30}
+      className="w-size-scrollbar-length"
+    />
   ),
   play: async ({ canvasElement }) => {
     const thumb = canvasElement.firstElementChild?.querySelector<HTMLElement>(':scope > div');

@@ -22,7 +22,13 @@ const meta = {
     sort: { control: 'inline-radio', options: SORTS },
   },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 188로 감싼다.
-  render: (args) => <ColumnHeader label={args.label} sort={args.sort} className="w-188" />,
+  render: (args) => (
+    <ColumnHeader
+      label={args.label}
+      sort={args.sort}
+      className="w-size-details-header-wide-width"
+    />
+  ),
 } satisfies Meta<FigmaArgs>;
 
 export default meta;

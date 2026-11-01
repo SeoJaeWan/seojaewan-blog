@@ -58,7 +58,7 @@ function StoryDropTarget(props: StoryDropTargetProps): JSX.Element {
   const { id, name, label } = props;
   const attributes = { [DROP_TARGET_ATTRIBUTE]: id, [DROP_TARGET_NAME_ATTRIBUTE]: name };
   return (
-    <div {...attributes} className="h-48 w-160 border border-dashed p-4 text-center">
+    <div {...attributes} className="h-48 w-160 border border-dashed p-spacing-xs text-center">
       {label}
     </div>
   );
@@ -98,8 +98,8 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex gap-8">
+    <div className="flex flex-col gap-spacing-sm">
+      <div className="flex gap-spacing-sm">
         <button type="button" onClick={handleBlogClick}>
           Blog 위치로
         </button>
@@ -109,7 +109,9 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
       </div>
       <div
         className={
-          device === 'mobile' ? 'flex h-640 w-full flex-col' : 'flex h-640 w-1024 flex-col'
+          device === 'mobile'
+            ? 'flex h-size-window-explorer-height w-full flex-col'
+            : 'flex h-size-window-explorer-height w-size-window-explorer-width flex-col'
         }
       >
         <ExplorerBody
@@ -121,7 +123,7 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
           onOpenInNewTab={handleOpenInNewTab}
         />
       </div>
-      <div className="flex gap-8">
+      <div className="flex gap-spacing-sm">
         <StoryDropTarget id="folder:Next.js" name="Next.js" label="다른 창의 Next.js" />
         <StoryDropTarget id={DESKTOP_DROP_TARGET} name="바탕 화면" label="바탕 화면" />
         <StoryDropTarget id="folder:React" name="React" label="다른 창의 React" />

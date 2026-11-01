@@ -50,7 +50,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
               >
                 <ExplorerContent
                   device="desktop"
-                  className="min-h-0 w-full flex-1"
+                  className="min-h-size-none w-full flex-flex-fill"
                   locationIcon={parts.locationIcon}
                   searchPlaceholder={parts.searchPlaceholder}
                   path={parts.path}

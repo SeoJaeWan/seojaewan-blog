@@ -15,7 +15,7 @@ const meta = {
   // 너비는 표와 쓰는 곳이 정하므로, 피그마 원본 너비 240으로 감싼다. 칸은 표 안에서만 쓸 수 있어 표 구조로 감싸고,
   // 캡처 대상은 칸이다. Content는 피그마 기본 글자("칸 내용")를 넣는다.
   render: (args) => (
-    <table className="w-240 table-fixed border-spacing-0">
+    <table className="w-size-table-cell-width table-fixed border-spacing-border-spacing-none">
       <tbody>
         <tr>
           <TableCell {...args} data-parity-target>

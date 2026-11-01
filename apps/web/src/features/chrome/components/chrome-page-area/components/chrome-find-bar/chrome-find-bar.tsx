@@ -27,10 +27,10 @@ type ChromeFindBarProps = Pick<
 };
 
 // 피그마 조립의 기기별 상자 너비다. mobile은 도구 모음 아래 전체 폭을 채운다.
-const deviceClassNames = { desktop: 'w-400', mobile: 'w-full' } as const satisfies Record<
-  ChromeFindBarDevice,
-  string
->;
+const deviceClassNames = {
+  desktop: 'w-size-find-bar-width',
+  mobile: 'w-full',
+} as const satisfies Record<ChromeFindBarDevice, string>;
 
 const FIND_LABEL = '페이지에서 찾기';
 
@@ -68,14 +68,14 @@ export function ChromeFindBar(props: ChromeFindBarProps): JSX.Element {
       className={[deviceClassNames[device], className].filter(Boolean).join(' ')}
     >
       {/* 피그마 `find row` 배치 프레임이다 */}
-      <div className="flex w-full items-center gap-4 py-4 pr-4 pl-8">
+      <div className="flex w-full items-center gap-spacing-xs py-spacing-xs pr-spacing-xs pl-spacing-sm">
         <SearchBox
           {...searchBoxProps}
           ref={inputRef}
           aria-label={FIND_LABEL}
-          className="min-w-0 flex-1"
+          className="min-w-size-none flex-flex-fill"
         />
-        <span className="shrink-0 type-body whitespace-nowrap text-text-fill-secondary">
+        <span className="shrink-shrink-none type-body whitespace-nowrap text-text-fill-secondary">
           {`${String(current)}/${String(total)}`}
         </span>
         <Separator orientation="vertical" />

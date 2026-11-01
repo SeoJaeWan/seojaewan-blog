@@ -26,15 +26,19 @@ export function BestMatchCard(props: BestMatchCardProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex w-258 flex-col items-center gap-8 overflow-clip rounded-overlay border-default border-card-stroke-default bg-card-background-fill-default px-16 pt-24 pb-16',
+        'flex w-size-best-match-card-width flex-col items-center gap-spacing-sm overflow-clip rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-card-background-fill-default px-spacing-lg pt-spacing-2xl pb-spacing-lg',
         className,
       )}
     >
-      <div className="size-64 shrink-0">{icon}</div>
-      <p className="shrink-0 type-subtitle whitespace-nowrap text-text-fill-primary">{title}</p>
-      <p className="shrink-0 type-caption whitespace-nowrap text-text-fill-secondary">{meta}</p>
+      <div className="size-size-icon-3xl shrink-shrink-none">{icon}</div>
+      <p className="shrink-shrink-none type-subtitle whitespace-nowrap text-text-fill-primary">
+        {title}
+      </p>
+      <p className="shrink-shrink-none type-caption whitespace-nowrap text-text-fill-secondary">
+        {meta}
+      </p>
       <Separator className="w-full" />
-      <div className="shrink-0">{children}</div>
+      <div className="shrink-shrink-none">{children}</div>
     </div>
   );
 }

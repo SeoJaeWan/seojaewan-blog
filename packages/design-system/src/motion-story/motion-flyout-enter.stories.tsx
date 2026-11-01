@@ -19,9 +19,9 @@ export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-flyout-enter">
       {(motionClassName) => (
-        <div className="w-320 p-24">
+        <div className="w-size-search-box-wide-width p-spacing-2xl">
           <Flyout className={motionClassName}>
-            <div className="h-16" />
+            <div className="h-spacing-lg" />
           </Flyout>
         </div>
       )}

@@ -156,29 +156,29 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
       </ExplorerAddressRow>
       <ExplorerCommandBar>
         {/* 피그마 Commands 슬롯의 배치(가로, 간격 4, 높이 size/control/height)다. 비어 있어도 높이를 지킨다 */}
-        <div className="flex h-control-height items-center gap-4">{commands}</div>
+        <div className="flex h-size-control-height items-center gap-spacing-xs">{commands}</div>
       </ExplorerCommandBar>
-      <div className="flex min-h-0 flex-1 overflow-clip border-t-default border-card-stroke-default bg-layer-fill-default">
+      <div className="flex min-h-size-none flex-flex-fill overflow-clip border-t-stroke-width-default border-card-stroke-default bg-layer-fill-default">
         {isDesktop && (
           <>
             {/* 폴더 트리가 길면 세로로 스크롤한다. */}
-            <ScrollArea material="solid" className="shrink-0">
-              <NavigationPane role="tree" aria-label="탐색 창" className="shrink-0">
+            <ScrollArea material="solid" className="shrink-shrink-none">
+              <NavigationPane role="tree" aria-label="탐색 창" className="shrink-shrink-none">
                 {navigation}
               </NavigationPane>
             </ScrollArea>
-            <div className="w-1 shrink-0 bg-divider-stroke-default" />
+            <div className="w-size-explorer-splitter-width shrink-shrink-none bg-divider-stroke-default" />
           </>
         )}
         {/* 항목이 넘치면 세로로 스크롤한다. */}
-        <ScrollArea key={itemsKey} material="solid" className="min-w-px flex-1">
+        <ScrollArea key={itemsKey} material="solid" className="min-w-size-hairline flex-flex-fill">
           {(renderItemsArea ?? renderAsIs)(
             <div
               role="group"
               aria-label="폴더 내용"
               {...itemsAreaProps}
               className={[
-                'relative flex flex-1 flex-wrap content-start items-start gap-4 px-12 py-8',
+                'relative flex flex-flex-fill flex-wrap content-start items-start gap-spacing-xs px-spacing-md py-spacing-sm',
                 itemsAreaProps?.className,
               ]
                 .filter(Boolean)

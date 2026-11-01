@@ -80,7 +80,7 @@ export const Default: ClickStory = {
 /** indicator에 따라 표시줄 상태가 바뀐다. 기본은 표시줄이 없다 */
 export const Indicators: Story = {
   render: () => (
-    <div className="flex gap-8">
+    <div className="flex gap-spacing-sm">
       <TaskbarButton label="표시줄 없음" icon={<svg aria-hidden="true" />} />
       <TaskbarButton label="실행 중" icon={<svg aria-hidden="true" />} indicator="running" />
       <TaskbarButton label="활성" icon={<svg aria-hidden="true" />} indicator="active" />

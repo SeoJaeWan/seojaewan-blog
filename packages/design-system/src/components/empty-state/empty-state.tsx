@@ -34,10 +34,10 @@ export function EmptyState(props: EmptyStateProps): JSX.Element {
     ...divProps
   } = props;
   return (
-    <div {...divProps} className={cn('flex flex-col items-start gap-16', className)}>
+    <div {...divProps} className={cn('flex flex-col items-start gap-spacing-lg', className)}>
       <Asset
         name="icons/ic_fluent_document_20_regular.svg"
-        className="size-icon-48 shrink-0 text-text-fill-primary"
+        className="size-size-icon-2xl shrink-shrink-none text-text-fill-primary"
       />
       <h2 className="self-stretch type-subtitle break-words text-text-fill-primary">{heading}</h2>
       <p className="self-stretch type-body break-words text-text-fill-secondary">{message}</p>

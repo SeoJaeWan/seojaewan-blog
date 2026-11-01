@@ -52,12 +52,12 @@ export function MessageBox(props: MessageBoxProps): JSX.Element {
       aria-describedby={messageId}
       {...divProps}
       className={cn(
-        'relative flex w-448 flex-col overflow-hidden rounded-overlay bg-solid-background-fill-base shadow-elevation-dialog',
-        'inner-border-surface-stroke-default inner-border-w-default',
+        'relative flex w-size-message-box-width flex-col overflow-hidden rounded-radius-overlay bg-solid-background-fill-base shadow-elevation-dialog',
+        'inner-border-surface-stroke-default inner-border-w-stroke-width-default',
         className,
       )}
     >
-      <div className="flex flex-col gap-12 self-stretch bg-layer-fill-alt p-24 break-words text-text-fill-primary">
+      <div className="flex flex-col gap-spacing-md self-stretch bg-layer-fill-alt p-spacing-2xl break-words text-text-fill-primary">
         <h2 id={titleId} className="type-subtitle">
           {title}
         </h2>
@@ -65,19 +65,19 @@ export function MessageBox(props: MessageBoxProps): JSX.Element {
           {message}
         </p>
       </div>
-      <div className="flex items-start gap-8 self-stretch border-t-default border-card-stroke-default bg-solid-background-fill-base p-24">
+      <div className="flex items-start gap-spacing-sm self-stretch border-t-stroke-width-default border-card-stroke-default bg-solid-background-fill-base p-spacing-2xl">
         <Button
           variant="accent"
           label={primaryLabel}
           onClick={handlePrimaryClick}
-          className="flex-1"
+          className="flex-flex-fill"
         />
         {buttons === 'two' && (
           <Button
             variant="standard"
             label={secondaryLabel}
             onClick={handleSecondaryClick}
-            className="flex-1"
+            className="flex-flex-fill"
           />
         )}
       </div>

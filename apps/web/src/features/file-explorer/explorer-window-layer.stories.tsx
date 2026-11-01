@@ -59,7 +59,10 @@ function ExplorerWindowLayerHost(props: ExplorerWindowLayerHostProps): JSX.Eleme
         placement: 'normal',
         onMinimize: handleMinimize,
         onClose,
-        className: device === 'mobile' ? 'h-640 w-full' : 'h-640 w-1024',
+        className:
+          device === 'mobile'
+            ? 'h-size-window-explorer-height w-full'
+            : 'h-size-window-explorer-height w-size-window-explorer-width',
       }}
     />
   );

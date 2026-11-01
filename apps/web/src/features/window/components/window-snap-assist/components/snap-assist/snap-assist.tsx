@@ -40,9 +40,9 @@ export function SnapAssist(props: SnapAssistProps): JSX.Element {
     <div
       className={['relative flex items-center justify-center', className].filter(Boolean).join(' ')}
     >
-      <SnapPreview className="absolute inset-0" />
+      <SnapPreview className="absolute inset-spacing-none" />
       {/* 피그마 `suggestions` 배치 프레임(가로, 간격 8)이다 */}
-      <div className="relative flex items-start gap-8 overflow-clip">
+      <div className="relative flex items-start gap-spacing-sm overflow-clip">
         {suggestions.map(
           /**
            * 제안 창 카드 하나를 그린다.
@@ -86,7 +86,7 @@ export function SnapAssist(props: SnapAssistProps): JSX.Element {
                 appIcon={suggestion.appIcon}
                 title={suggestion.title}
                 thumbnail={suggestion.thumbnail}
-                className="shrink-0"
+                className="shrink-shrink-none"
               />
             );
           },

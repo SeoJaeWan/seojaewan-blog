@@ -16,8 +16,8 @@ type WindowTitleProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 };
 
 const kindClassNames = {
-  window: 'gap-12 py-8 pr-0 pl-16',
-  preview: 'gap-8 p-0',
+  window: 'gap-spacing-md py-spacing-sm pr-spacing-none pl-spacing-lg',
+  preview: 'gap-spacing-sm p-spacing-none',
 } as const satisfies Record<WindowTitleKind, string>;
 
 /**
@@ -41,12 +41,12 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
       data-state={isInactive ? 'inactive' : 'active'}
       className={cn('flex items-center overflow-clip', kindClassNames[kind], className)}
     >
-      <span className="inline-flex size-icon-16 shrink-0 items-center justify-center">
+      <span className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center">
         {appIcon}
       </span>
       <p
         className={cn(
-          'min-w-px flex-1 truncate type-caption',
+          'min-w-size-hairline flex-flex-fill truncate type-caption',
           isInactive ? 'text-text-fill-tertiary' : 'text-text-fill-primary',
         )}
       >

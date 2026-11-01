@@ -77,7 +77,7 @@ type ChromeWindowProps = WindowFrameControlProps &
     onMoreMenuOpenChange?: (isOpen: boolean) => void;
     /** ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다 */
     moreMenuFinalFocus?: ComponentProps<typeof MenuButton>['finalFocus'];
-    /** 탭 내용 자리. 고른 탭의 `ChromePage`를 넣는다. 도구 모음 아래 남는 자리를 채우도록 `min-h-0 w-full flex-1`을 준다 */
+    /** 탭 내용 자리. 고른 탭의 `ChromePage`를 넣는다. 도구 모음 아래 남는 자리를 채우도록 `min-h-size-none w-full flex-flex-fill`을 준다 */
     children?: ReactNode;
     /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
     className?: string;
@@ -205,7 +205,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       onForward={handleForward}
       onRefresh={handleRefresh}
       renderMenuButton={renderMenuButton}
-      className="w-full shrink-0"
+      className="w-full shrink-shrink-none"
     />
   );
   if (!isDesktop) {
@@ -233,12 +233,12 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       titleBar="custom"
       material="chrome"
       titleBarContent={
-        <BrowserTabStrip onNewTab={handleNewTab} className="min-w-0">
+        <BrowserTabStrip onNewTab={handleNewTab} className="min-w-size-none">
           <div
             ref={tabListRef}
             role="tablist"
             aria-label="탭"
-            className="flex min-w-0 overflow-x-auto"
+            className="flex min-w-size-none overflow-x-auto"
             style={{ scrollbarWidth: 'none' }}
           >
             {tabs.map(
@@ -272,7 +272,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
                     onAuxClick={(event: MouseEvent<HTMLDivElement>) => {
                       handleTabAuxClick(event, index);
                     }}
-                    className="min-w-120"
+                    className="min-w-size-button-min-width"
                   />
                 );
               },

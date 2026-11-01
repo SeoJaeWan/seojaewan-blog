@@ -20,7 +20,7 @@ export function KatexHtml(props: KatexHtmlProps): JSX.Element {
   const { html } = props;
   return (
     <div
-      className="max-w-full overflow-x-auto overflow-y-hidden type-body-large text-text-fill-primary [&_.katex-display]:m-0!"
+      className="max-w-full overflow-x-auto overflow-y-hidden type-body-large text-text-fill-primary [&_.katex-display]:m-spacing-none!"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

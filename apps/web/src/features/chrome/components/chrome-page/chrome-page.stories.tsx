@@ -13,8 +13,11 @@ import { NEW_TAB_LATEST_POSTS, NOT_FOUND_URL, SEARCH_RESULTS } from './story-dat
 const PAGES = ['post', 'new-tab', 'search-results', 'not-found'] as const;
 const LAYOUTS = ['wide', 'narrow'] as const;
 
-// 본문은 크기를 갖지 않고 창이 정하므로 피그마 원본 크기(size/1278×711, size/388×720)로 감싸 그린다.
-const SIZE_CLASS_NAMES = { wide: 'w-1278 h-711', narrow: 'w-388 h-720' } as const;
+// 본문은 크기를 갖지 않고 창이 정하므로 피그마 원본 크기(1278×712, 388×720)로 감싸 그린다.
+const SIZE_CLASS_NAMES = {
+  wide: 'w-size-chrome-page-wide-width h-size-chrome-page-wide-height',
+  narrow: 'w-size-chrome-page-narrow-width h-size-chrome-page-narrow-height',
+} as const;
 
 // 피그마 `figure`의 이미지 칸 높이다(그림 448·240에서 간격 8과 캡션 20을 뺀 값). 크기 토큰에 없는 값이라 인라인으로 준다.
 const FIGURE_IMAGE_HEIGHTS = { wide: 420, narrow: 212 } as const;

@@ -65,7 +65,7 @@ export function RestartScreen(): JSX.Element | null {
       ref={screenRef}
       device={device}
       {...presence.presenceProps}
-      className={`fixed inset-0 h-full w-full ${presence.status === 'exiting' ? 'motion-boot-screen-exit' : 'motion-boot-screen-enter'}`}
+      className={`fixed inset-spacing-none h-full w-full ${presence.status === 'exiting' ? 'motion-boot-screen-exit' : 'motion-boot-screen-enter'}`}
     />
   );
 }

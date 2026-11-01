@@ -36,11 +36,11 @@ export function DesktopScene(props: DesktopSceneProps): JSX.Element {
     >
       {/* 배경화면은 맨 아래에 깔고, 뒤에 오는 자리(relative)가 그 위에 그려진다 */}
       <DesktopWallpaper />
-      <div className="relative min-h-0 flex-1">
+      <div className="relative min-h-size-none flex-flex-fill">
         {icons}
         {children}
       </div>
-      <div className="relative shrink-0">{taskbar}</div>
+      <div className="relative shrink-shrink-none">{taskbar}</div>
     </div>
   );
 }

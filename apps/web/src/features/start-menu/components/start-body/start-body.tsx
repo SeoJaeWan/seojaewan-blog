@@ -101,18 +101,18 @@ const viewLabels = {
 // 기기별 고정 항목 칸 너비다. 데스크톱은 PinnedTile 기본(95)으로 6열, 모바일은 89로 4열이다.
 const tileClassNames = {
   desktop: undefined,
-  mobile: 'w-89',
+  mobile: 'w-size-pinned-tile-mobile-width',
 } as const satisfies Record<StartBodyDevice, string | undefined>;
 
 // 기기별 스크롤 영역의 오른쪽 확장과 그만큼의 안쪽 여백이다. 피그마는 스크롤바를 본문 오른쪽 바깥(Start 메뉴 안쪽 여백)에 그려,
 // 스크롤 영역을 안쪽 여백(데스크톱 24, 모바일 12)만큼 오른쪽으로 넓히고 내용에 같은 여백을 줘 내용 너비는 그대로 두고 스크롤바만 바깥에 놓는다.
 const scrollAreaClassNames = {
-  desktop: '-mr-24',
-  mobile: '-mr-12',
+  desktop: '-mr-spacing-2xl',
+  mobile: '-mr-spacing-md',
 } as const satisfies Record<StartBodyDevice, string>;
 const scrollContentClassNames = {
-  desktop: 'pr-24',
-  mobile: 'pr-12',
+  desktop: 'pr-spacing-2xl',
+  mobile: 'pr-spacing-md',
 } as const satisfies Record<StartBodyDevice, string>;
 
 /**
@@ -141,7 +141,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
   switch (props.view) {
     case 'results':
       return (
-        <div className={joinClassNames('flex flex-col pb-24', props.className)}>
+        <div className={joinClassNames('flex flex-col pb-spacing-2xl', props.className)}>
           <SearchBody
             view="results"
             device={props.device}
@@ -149,14 +149,14 @@ export function StartBody(props: StartBodyProps): JSX.Element {
             selectedId={props.selectedId}
             onItemOpen={props.onItemOpen}
             onCopyLink={props.onCopyLink}
-            className="min-h-px w-full flex-1"
+            className="min-h-size-hairline w-full flex-flex-fill"
           />
         </div>
       );
     case 'no-results':
       return (
-        <div className={joinClassNames('flex flex-col pb-24', props.className)}>
-          <SearchBody view="no-results" className="min-h-px w-full flex-1" />
+        <div className={joinClassNames('flex flex-col pb-spacing-2xl', props.className)}>
+          <SearchBody view="no-results" className="min-h-size-hairline w-full flex-flex-fill" />
         </div>
       );
     case 'jump-list':
@@ -164,7 +164,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
         <StartJumpListView
           availableLetters={props.availableLetters}
           className={joinClassNames(
-            'flex flex-col items-start gap-16 overflow-clip',
+            'flex flex-col items-start gap-spacing-lg overflow-clip',
             props.className,
           )}
         />
@@ -200,9 +200,9 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
         title="모두"
         showAction
         action={<Button variant="subtle" label="뒤로" onClick={props.onBack} />}
-        className="w-full shrink-0"
+        className="w-full shrink-shrink-none"
       />
-      <div className="flex w-full shrink-0 flex-col items-center">
+      <div className="flex w-full shrink-shrink-none flex-col items-center">
         <StartJumpList
           availableLetters={props.availableLetters}
           onLetterSelect={props.onLetterSelect}
@@ -382,17 +382,19 @@ function StartListView(props: StartListViewProps): JSX.Element {
         className={isListHidden ? 'invisible flex size-full flex-col' : 'flex size-full flex-col'}
       >
         {/* 넘치면 아래로 스크롤한다. 글자로 이동하기의 scrollIntoView도 이 스크롤 영역을 옮긴다 */}
-        <ScrollArea className={`min-h-px flex-1 ${scrollAreaClassNames[device]}`}>
+        <ScrollArea
+          className={`min-h-size-hairline flex-flex-fill ${scrollAreaClassNames[device]}`}
+        >
           <div
-            className={`flex w-full shrink-0 flex-col items-start gap-16 pb-24 ${scrollContentClassNames[device]}`}
+            className={`flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl ${scrollContentClassNames[device]}`}
           >
             {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 영역마다 이름을 단다 */}
             <section
               aria-label="고정됨"
-              className="flex w-full shrink-0 flex-col items-start gap-16"
+              className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg"
             >
-              <SectionTitle title="고정됨" className="w-full shrink-0" />
-              <TileGrid ref={pinnedGridRef} className="w-full shrink-0">
+              <SectionTitle title="고정됨" className="w-full shrink-shrink-none" />
+              <TileGrid ref={pinnedGridRef} className="w-full shrink-shrink-none">
                 {props.pinned.map(
                   /**
                    * 고정 항목 칸 하나를 그린다.
@@ -413,12 +415,15 @@ function StartListView(props: StartListViewProps): JSX.Element {
                 )}
               </TileGrid>
             </section>
-            <section aria-label="모두" className="flex w-full shrink-0 flex-col items-start gap-16">
+            <section
+              aria-label="모두"
+              className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg"
+            >
               <SectionTitle
                 title="모두"
                 showAction
                 action={renderViewControl()}
-                className="w-full shrink-0"
+                className="w-full shrink-shrink-none"
               />
               <StartAllList
                 view={view}
@@ -436,7 +441,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
         <StartJumpListView
           isInert={jumpList.status === 'exiting'}
           availableLetters={getAvailableLetters(groups)}
-          className="absolute inset-0 flex flex-col items-start gap-16 overflow-clip"
+          className="absolute inset-spacing-none flex flex-col items-start gap-spacing-lg overflow-clip"
           onBack={handleBack}
           onLetterSelect={handleLetterSelect}
         />
@@ -467,7 +472,7 @@ type StartAllListProps = {
 function StartAllList(props: StartAllListProps): JSX.Element {
   const { view, groups, tileClassName } = props;
   return (
-    <div className="flex w-full shrink-0 flex-col gap-2">
+    <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">
       {groups.map(
         /**
          * 묶음 하나를 그린다.

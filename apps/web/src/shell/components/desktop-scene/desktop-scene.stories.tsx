@@ -12,7 +12,10 @@ import { SCENE_ICONS } from './story-data';
 const DEVICES = ['desktop', 'mobile'] as const;
 
 // 화면 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1920×1080, size/390×844)로 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-1920 h-1080', mobile: 'w-390 h-844' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-screen-width h-size-screen-height',
+  mobile: 'w-size-screen-mobile-width h-size-screen-mobile-height',
+} as const;
 
 // 피그마 조립의 Taskbar/Default 변형이다. 좁은 화면은 검색 입력칸 대신 검색 버튼을 둔다.
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;

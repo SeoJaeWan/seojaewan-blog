@@ -7,7 +7,7 @@ const meta = {
   // 컴포넌트의 items 슬롯은 언제나 비어 있으므로, 피그마 원본 크기(248×192 슬롯)만 칠 없는 빈 내용으로 채운다.
   render: () => (
     <NavigationPane style={{ width: 248 }}>
-      <div className="w-full shrink-0" style={{ height: 192 }} />
+      <div className="w-full shrink-shrink-none" style={{ height: 192 }} />
     </NavigationPane>
   ),
 } satisfies Meta;

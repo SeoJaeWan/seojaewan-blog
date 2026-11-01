@@ -14,8 +14,16 @@ type BootScreenProps = Omit<ComponentProps<'div'>, 'children'> & {
 // 기기가 정한 화면 크기(size/1280×720, size/390×844)다. 로고와 링 사이 간격은 크기 변수(size/160, size/120)라
 // 간격 클래스가 없으므로, 같은 높이의 빈 자리로 둔다.
 const deviceClassNames = {
-  desktop: { screen: 'w-1280 h-720', logo: 'size-120', gap: 'h-160' },
-  mobile: { screen: 'w-390 h-844', logo: 'size-96', gap: 'h-120' },
+  desktop: {
+    screen: 'w-size-boot-screen-width h-size-boot-screen-height',
+    logo: 'size-size-boot-screen-logo',
+    gap: 'h-size-boot-screen-gap',
+  },
+  mobile: {
+    screen: 'w-size-screen-mobile-width h-size-screen-mobile-height',
+    logo: 'size-size-boot-screen-logo-mobile',
+    gap: 'h-size-boot-screen-mobile-gap',
+  },
 } as const satisfies Record<BootScreenDevice, { screen: string; logo: string; gap: string }>;
 
 /**
@@ -31,13 +39,16 @@ export function BootScreen(props: BootScreenProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex shrink-0 flex-col items-center justify-center bg-boot-screen-background',
+        'flex shrink-shrink-none flex-col items-center justify-center bg-boot-screen-background',
         classNames.screen,
         className,
       )}
     >
-      <Asset name="illustrations/logo-windows.svg" className={cn('shrink-0', classNames.logo)} />
-      <div aria-hidden className={cn('w-full shrink-0', classNames.gap)} />
+      <Asset
+        name="illustrations/logo-windows.svg"
+        className={cn('shrink-shrink-none', classNames.logo)}
+      />
+      <div aria-hidden className={cn('w-full shrink-shrink-none', classNames.gap)} />
       <ProgressRing tone="on-dark" size="32" aria-label="다시 시작하는 중" />
     </div>
   );

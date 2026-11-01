@@ -40,7 +40,7 @@
   }
 
   100% {
-    scale: 1.1;
+    scale: var(--motion-scale-search-icon);
   }
 }
 
@@ -87,6 +87,11 @@
       motion-search-box-focus-rotate var(--motion-duration-slower)
         var(--motion-easing-point-to-point) both;
   }
+}
+
+/* 검색 돋보기 강조의 정지 모습(배율 1.1)이다. 키프레임 없이 끝 배율 토큰만 준다. */
+@utility motion-search-box-focus-rest {
+  scale: var(--motion-scale-search-icon);
 }
 
 /*

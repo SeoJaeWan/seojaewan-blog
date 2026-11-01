@@ -149,7 +149,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
         'flex flex-col overflow-clip',
         materialClassNames[material],
         isFloating && [
-          'rounded-overlay border-default border-surface-stroke-default',
+          'rounded-radius-overlay border-stroke-width-default border-surface-stroke-default',
           (isInactive ? inactiveShadowClassNames : activeShadowClassNames)[material],
         ],
         className,
@@ -162,10 +162,13 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
         onPointerDown={
           handleTitleBarPointerDown === undefined ? undefined : handleTitleBarPointerDownEvent
         }
-        className={cn('flex w-full shrink-0 items-start overflow-clip', isCustom ? 'h-40' : 'h-32')}
+        className={cn(
+          'flex w-full shrink-shrink-none items-start overflow-clip',
+          isCustom ? 'h-size-window-tall-title-bar-height' : 'h-size-window-title-bar-height',
+        )}
       >
         {isCustom ? (
-          <div className="flex min-w-px flex-1 items-end self-stretch overflow-clip px-8 pt-8">
+          <div className="flex min-w-size-hairline flex-flex-fill items-end self-stretch overflow-clip px-spacing-sm pt-spacing-sm">
             {titleBarContent}
           </div>
         ) : (
@@ -173,7 +176,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
             appIcon={appIcon}
             title={title}
             inactive={isInactive}
-            className="min-w-px flex-1"
+            className="min-w-size-hairline flex-flex-fill"
           />
         )}
         <CaptionButtonGroup
@@ -185,10 +188,10 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           onRestore={handleRestore}
           maximizeSlot={maximizeSlot}
           onClose={handleClose}
-          className="shrink-0"
+          className="shrink-shrink-none"
         />
       </div>
-      <div className="flex min-h-px w-full flex-1 flex-col items-center justify-center overflow-clip">
+      <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col items-center justify-center overflow-clip">
         {children}
       </div>
     </div>

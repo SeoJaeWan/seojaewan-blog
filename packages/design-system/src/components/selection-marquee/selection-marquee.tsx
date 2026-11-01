@@ -16,7 +16,7 @@ export function SelectionMarquee(props: SelectionMarqueeProps): JSX.Element {
       aria-hidden="true"
       {...divProps}
       className={cn(
-        'border-default border-selection-marquee-stroke bg-selection-marquee-fill',
+        'border-stroke-width-default border-selection-marquee-stroke bg-selection-marquee-fill',
         className,
       )}
     />

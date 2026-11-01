@@ -59,7 +59,7 @@ export function DetailsHeader(props: DetailsHeaderProps): JSX.Element {
       <ColumnHeader
         label="이름"
         sort={sortOf('name', sortColumn, sortDirection)}
-        className="w-316"
+        className="w-size-details-header-name-width"
         onClick={() => onSort?.('name')}
       />
       {view === 'recycle-bin' ? (
@@ -67,13 +67,13 @@ export function DetailsHeader(props: DetailsHeaderProps): JSX.Element {
           <ColumnHeader
             label="원래 위치"
             sort={sortOf('originalLocation', sortColumn, sortDirection)}
-            className="w-188"
+            className="w-size-details-header-wide-width"
             onClick={() => onSort?.('originalLocation')}
           />
           <ColumnHeader
             label="삭제한 날짜"
             sort={sortOf('deletedDate', sortColumn, sortDirection)}
-            className="w-148"
+            className="w-size-details-header-narrow-width"
             onClick={() => onSort?.('deletedDate')}
           />
         </>
@@ -82,20 +82,20 @@ export function DetailsHeader(props: DetailsHeaderProps): JSX.Element {
           <ColumnHeader
             label="수정한 날짜"
             sort={sortOf('modified', sortColumn, sortDirection)}
-            className="w-188"
+            className="w-size-details-header-wide-width"
             onClick={() => onSort?.('modified')}
           />
           <ColumnHeader
             label="유형"
             sort={sortOf('type', sortColumn, sortDirection)}
-            className="w-148"
+            className="w-size-details-header-narrow-width"
             onClick={() => onSort?.('type')}
           />
           {hasLocation && (
             <ColumnHeader
               label="위치"
               sort={sortOf('location', sortColumn, sortDirection)}
-              className="w-188"
+              className="w-size-details-header-wide-width"
               onClick={() => onSort?.('location')}
             />
           )}

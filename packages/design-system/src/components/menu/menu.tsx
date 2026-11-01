@@ -22,7 +22,7 @@ export function Menu(props: MenuProps): JSX.Element {
       {...flyoutProps}
       material={material}
       padding="compact"
-      className={cn('w-250', className)}
+      className={cn('w-size-menu-width', className)}
     />
   );
 }

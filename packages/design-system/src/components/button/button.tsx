@@ -64,14 +64,14 @@ export function Button(props: ButtonProps): JSX.Element {
     <BaseButton
       {...buttonProps}
       className={cn(
-        'relative isolate inline-flex min-w-120 items-center justify-center gap-8 rounded-control px-12 py-6 whitespace-nowrap select-none',
-        'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'relative isolate inline-flex min-w-size-button-min-width items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-md py-spacing-sm-nudge whitespace-nowrap select-none',
+        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         'motion-control-state',
         ...variantClassNames[variant],
         className,
       )}
     >
-      {hasIcon && <Asset name={icon} className="size-icon-16" />}
+      {hasIcon && <Asset name={icon} className="size-size-icon-sm" />}
       <span className="text-start type-body">{label}</span>
     </BaseButton>
   );

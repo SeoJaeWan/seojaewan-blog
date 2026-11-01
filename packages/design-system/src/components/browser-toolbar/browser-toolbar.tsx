@@ -10,7 +10,7 @@ type BrowserToolbarProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 주소 입력값이 바뀔 때 부른다(AddressBar 입력창의 `onValueChange`) */
   onUrlChange?: (value: string) => void;
   /**
-   * 주소창 자리. 주소창과 추천 목록을 묶은 조립처럼 쓰는 곳이 채운다. 남는 너비를 채우도록 `min-w-0 flex-1`을 준다.
+   * 주소창 자리. 주소창과 추천 목록을 묶은 조립처럼 쓰는 곳이 채운다. 남는 너비를 채우도록 `min-w-size-none flex-flex-fill`을 준다.
    * 주지 않으면 `url`·`onUrlChange`로 AddressBar를 그린다
    */
   addressBar?: ReactNode;
@@ -84,13 +84,16 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
       label={menuLabel}
       icon="icons/ic_fluent_more_vertical_20_regular.svg"
       onClick={handleMenu}
-      className="shrink-0"
+      className="shrink-shrink-none"
     />
   );
   return (
     <div
       {...divProps}
-      className={cn('flex h-46 items-center gap-4 bg-chrome-toolbar-fill px-8', className)}
+      className={cn(
+        'flex h-size-browser-toolbar-height items-center gap-spacing-xs bg-chrome-toolbar-fill px-spacing-sm',
+        className,
+      )}
     >
       <IconButton
         variant="chrome"
@@ -98,7 +101,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
         icon="icons/ic_fluent_arrow_left_20_regular.svg"
         disabled={isBackDisabled}
         onClick={handleBack}
-        className="shrink-0"
+        className="shrink-shrink-none"
       />
       {isForwardShown && (
         <IconButton
@@ -107,7 +110,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
           icon="icons/ic_fluent_arrow_right_20_regular.svg"
           disabled={isForwardDisabled}
           onClick={handleForward}
-          className="shrink-0"
+          className="shrink-shrink-none"
         />
       )}
       {isRefreshShown && (
@@ -116,7 +119,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
           label={refreshLabel}
           icon="icons/ic_fluent_arrow_clockwise_20_regular.svg"
           onClick={handleRefresh}
-          className="shrink-0"
+          className="shrink-shrink-none"
         />
       )}
       {addressBar ?? (
@@ -124,7 +127,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
           aria-label={addressLabel}
           url={url}
           onValueChange={handleUrlChange}
-          className="min-w-0 flex-1"
+          className="min-w-size-none flex-flex-fill"
         />
       )}
       {renderMenuButton === undefined ? menuButton : renderMenuButton(menuButton)}

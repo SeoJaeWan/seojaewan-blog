@@ -12,7 +12,7 @@ const meta = {
   // 이미지는 글마다 달라 필수 prop이므로, Figma 스토리가 피그마 기본 인스턴스(wallpaper/Bloom)를 넣는다.
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다.
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <PostCover image={<ImageAsset name="images/wallpaper-bloom" />} />
     </div>
   ),
@@ -30,7 +30,7 @@ export const Figma: Story = {};
 /** image 자리에 넘긴 이미지를 그린다 */
 export const Default: Story = {
   render: () => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <PostCover image={<img alt="표지" src={coverImage} />} />
     </div>
   ),

@@ -31,7 +31,7 @@ const meta = {
     const { onReload: handleReload } = args;
     return (
       // EmptyState는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(600)로 감싼다.
-      <div className="w-600">
+      <div className="w-size-empty-state-width">
         <EmptyState
           heading={args.heading}
           message={args.message}

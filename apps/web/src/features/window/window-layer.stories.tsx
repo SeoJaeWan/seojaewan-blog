@@ -37,7 +37,7 @@ const meta = {
     renderWindowIcon: renderNoStoryWindowIcon,
   },
   render: (args) => (
-    <div className="fixed inset-0">
+    <div className="fixed inset-spacing-none">
       <WindowLayer {...args} />
     </div>
   ),
@@ -183,7 +183,7 @@ function RemovableWindowLayer(props: ComponentProps<typeof WindowLayer>): JSX.El
   }
 
   return (
-    <div className="fixed inset-0">
+    <div className="fixed inset-spacing-none">
       {!isRemoved && <WindowLayer {...props} />}
       <button type="button" onClick={handleRemove}>
         창 층 빼기

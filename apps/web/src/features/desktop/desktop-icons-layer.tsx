@@ -702,7 +702,7 @@ export function DesktopIconsLayer(): JSX.Element {
     <>
       {marquee.marquee !== null && (
         <SelectionMarquee
-          className="pointer-events-none absolute z-1"
+          className="pointer-events-none absolute z-layer-marquee"
           style={{
             left: marquee.marquee.x,
             top: marquee.marquee.y,
@@ -725,7 +725,7 @@ export function DesktopIconsLayer(): JSX.Element {
         <Tooltip
           type="balloon"
           message={rename.errorMessage}
-          className="absolute z-1"
+          className="absolute z-layer-balloon"
           style={{
             left: getCellOrigin(renamingCell, iconSize).x,
             top:

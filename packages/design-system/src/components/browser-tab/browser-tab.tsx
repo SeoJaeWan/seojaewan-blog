@@ -34,7 +34,9 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
     active: isActive = false,
     favicon,
     title = '페이지 제목',
-    closeIcon = <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-icon-16" />,
+    closeIcon = (
+      <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-size-icon-sm" />
+    ),
     showSeparator: hasSeparator = true,
     closeLabel = '탭 닫기',
     onClose,
@@ -48,11 +50,11 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
       // 오른쪽 구분선을 그리는 상태다.
       data-separator={!isActive && hasSeparator}
       className={cn(
-        'group relative flex h-34 w-240 items-center gap-8 py-0 pr-8 pl-12 select-none',
+        'group relative flex h-size-browser-tab-height w-size-browser-tab-width items-center gap-spacing-sm py-spacing-none pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
         isActive
-          ? 'rounded-t-overlay bg-chrome-toolbar-fill'
-          : 'rounded-t-overlay bg-transparent hover:rounded-overlay hover:bg-chrome-tab-fill-hover',
+          ? 'rounded-t-radius-overlay bg-chrome-toolbar-fill'
+          : 'rounded-t-radius-overlay bg-transparent hover:rounded-radius-overlay hover:bg-chrome-tab-fill-hover',
         className,
       )}
     >
@@ -61,12 +63,14 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
         aria-selected={isActive}
         tabIndex={tabIndex}
         className={cn(
-          'flex min-w-0 flex-1 items-center gap-8 rounded-control',
-          'focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+          'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
+          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         )}
       >
-        <span className="flex size-icon-16 shrink-0 items-center justify-center">{favicon}</span>
-        <span className="min-w-0 flex-1 truncate type-caption text-chrome-text-primary">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+          {favicon}
+        </span>
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-chrome-text-primary">
           {title}
         </span>
       </div>
@@ -77,14 +81,14 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-icon-16 shrink-0 items-center justify-center text-chrome-text-secondary"
+        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-chrome-text-secondary"
       >
         {closeIcon}
       </button>
       {!isActive && hasSeparator && (
         <span
           aria-hidden
-          className="absolute top-1/2 right-0 h-16 w-stroke-default -translate-y-1/2 bg-chrome-tab-separator group-hover:hidden"
+          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-chrome-tab-separator group-hover:hidden"
         />
       )}
     </div>

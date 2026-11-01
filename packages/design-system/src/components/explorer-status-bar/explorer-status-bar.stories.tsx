@@ -9,8 +9,8 @@ const DEVICES = ['desktop', 'mobile'] as const;
 
 // 컴포넌트는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 기기별로 감싼다.
 const previewWidthClassNames = {
-  desktop: 'w-798',
-  mobile: 'w-388',
+  desktop: 'w-size-explorer-content-width',
+  mobile: 'w-size-window-mobile-content-width',
 } as const satisfies Record<(typeof DEVICES)[number], string>;
 
 type FigmaArgs = {

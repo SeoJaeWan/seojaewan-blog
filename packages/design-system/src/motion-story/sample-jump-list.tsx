@@ -51,14 +51,14 @@ type SampleJumpListProps = {
 export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
   const { motionClassName } = props;
   return (
-    <div className={cn('relative h-600 w-400 overflow-hidden', motionClassName)}>
+    <div className={cn('relative h-600 w-size-list-item-width overflow-hidden', motionClassName)}>
       <div data-jump-list="list" data-motion-node="list" className="flex flex-col">
         {listItems.map((item) => renderListItem(item))}
       </div>
       <div
         data-jump-list="grid"
         data-motion-node="Start/JumpList"
-        className="absolute inset-0 flex justify-center"
+        className="absolute inset-spacing-none flex justify-center"
       >
         <TileGrid align="center" className="w-200">
           {letters.map((letter) => renderLetter(letter))}
@@ -96,7 +96,7 @@ function renderListItem(item: SampleListItem): JSX.Element {
  */
 function renderLetter(letter: string): JSX.Element {
   return (
-    <div key={letter} className="p-4">
+    <div key={letter} className="p-spacing-xs">
       <JumpListLetter label={letter} disabled={disabledLetters.has(letter)} />
     </div>
   );

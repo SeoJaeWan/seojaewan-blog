@@ -25,12 +25,24 @@ type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
 
-const WIDTHS = {
-  desktop: { large: 'w-112', medium: 'w-76', small: 'w-76' },
-  explorer: { large: 'w-112', medium: 'w-88', small: 'w-88' },
+const WIDTH_CLASS_NAMES = {
+  desktop: {
+    large: 'w-size-file-item-large-width',
+    medium: 'w-size-file-item-desktop-width',
+    small: 'w-size-file-item-desktop-width',
+  },
+  explorer: {
+    large: 'w-size-file-item-large-width',
+    medium: 'w-size-file-item-explorer-width',
+    small: 'w-size-file-item-explorer-width',
+  },
 } as const;
 
-const ICON_SIZES = { large: 'size-96', medium: 'size-48', small: 'size-32' } as const;
+const ICON_SIZE_CLASS_NAMES = {
+  large: 'size-size-icon-4xl',
+  medium: 'size-size-icon-2xl',
+  small: 'size-size-icon-xl',
+} as const;
 
 /**
  * 바탕화면과 탐색기의 큰 아이콘·보통 아이콘·작은 아이콘 보기에서 파일이나 폴더 하나(피그마 FileItem)를 그린다.
@@ -56,7 +68,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
     ...divProps
   } = props;
   const isDesktop = surface === 'desktop';
-  const dim = isCut ? 'opacity-cut' : undefined;
+  const dim = isCut ? 'opacity-opacity-cut' : undefined;
   return (
     <div
       {...divProps}
@@ -65,9 +77,9 @@ export function FileItem(props: FileItemProps): JSX.Element {
       data-cut={isCut}
       className={cn(
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
-        'relative flex flex-col items-center rounded-control outline-none select-none',
-        isDesktop ? 'gap-2 px-2 py-4' : 'gap-4 p-4',
-        WIDTHS[surface][view],
+        'relative flex flex-col items-center rounded-radius-control outline-none select-none',
+        isDesktop ? 'gap-spacing-2xs px-spacing-2xs py-spacing-xs' : 'gap-spacing-xs p-spacing-xs',
+        WIDTH_CLASS_NAMES[surface][view],
         isSelected || (isRenaming && !isDesktop)
           ? isDesktop
             ? 'bg-file-item-desktop-fill-selected'
@@ -77,14 +89,20 @@ export function FileItem(props: FileItemProps): JSX.Element {
             : isDesktop
               ? 'bg-subtle-fill-transparent hover:bg-file-item-desktop-fill-hover'
               : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        'focus-visible:inner-border-w-default',
+        'focus-visible:inner-border-w-stroke-width-default',
         isDesktop
           ? 'focus-visible:inner-border-file-item-desktop-stroke-focus'
           : 'focus-visible:inner-border-file-item-explorer-stroke-focus',
         className,
       )}
     >
-      <div className={cn('flex shrink-0 items-center justify-center', ICON_SIZES[view], dim)}>
+      <div
+        className={cn(
+          'flex shrink-shrink-none items-center justify-center',
+          ICON_SIZE_CLASS_NAMES[view],
+          dim,
+        )}
+      >
         {icon}
       </div>
       {isRenaming ? (
@@ -96,7 +114,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
             isDesktop
               ? 'text-file-item-desktop-label text-shadow-elevation-desktop-label'
               : 'text-text-fill-primary',
-            isSelected ? undefined : 'line-clamp-2',
+            isSelected ? undefined : 'line-clamp-line-clamp-two',
             dim,
           )}
         >

@@ -166,7 +166,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   }
 
   return (
-    <div data-layer="windows" className="pointer-events-none absolute inset-0 isolate">
+    <div data-layer="windows" className="pointer-events-none absolute inset-spacing-none isolate">
       {previewRect !== null && (
         <SnapPreview
           aria-hidden

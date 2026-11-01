@@ -26,11 +26,11 @@ type InputMouseEvent = Parameters<NonNullable<AddressBarProps['onMouseDown']>>[0
 // 그래서 CSS border로 그려 입력 줄(36) 바깥에 2px씩 더한다.
 const CONTAINER_CLASS_NAMES = {
   rest: [
-    'rounded-circular bg-chrome-omnibox-fill',
+    'rounded-radius-circular bg-chrome-omnibox-fill',
     'hover:not-focus-within:bg-chrome-omnibox-fill-hover',
-    'focus-within:border-focus-outer focus-within:border-chrome-omnibox-stroke-focus focus-within:bg-chrome-toolbar-fill',
+    'focus-within:border-stroke-width-focus-outer focus-within:border-chrome-omnibox-stroke-focus focus-within:bg-chrome-toolbar-fill',
   ],
-  suggesting: 'rounded-overlay bg-chrome-toolbar-fill shadow-elevation-flyout',
+  suggesting: 'rounded-radius-overlay bg-chrome-toolbar-fill shadow-elevation-flyout',
 } as const;
 
 /**
@@ -87,14 +87,14 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
         className,
       )}
     >
-      <div className="flex h-36 items-center gap-12 overflow-clip px-16">
+      <div className="flex h-size-address-bar-height items-center gap-spacing-md overflow-clip px-spacing-lg">
         <Asset
           name={
             isSuggesting
               ? 'icons/ic_fluent_search_16_regular.svg'
               : 'icons/ic_fluent_info_24_regular.svg'
           }
-          className="size-icon-16 shrink-0 text-chrome-text-secondary"
+          className="size-size-icon-sm shrink-shrink-none text-chrome-text-secondary"
         />
         <Input
           {...inputProps}
@@ -108,7 +108,7 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           className={cn(
-            'min-w-0 flex-1 truncate type-body text-chrome-text-primary outline-none',
+            'min-w-size-none flex-flex-fill truncate type-body text-chrome-text-primary outline-none',
             'selection:bg-chrome-omnibox-selection-background selection:text-chrome-omnibox-selection-text',
           )}
         />

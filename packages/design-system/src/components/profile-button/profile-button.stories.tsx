@@ -26,7 +26,7 @@ const meta = {
   render: (args) => (
     <ProfileButton
       name={args.name}
-      photo={<img src={profilePhoto} alt="" className="size-32 object-contain" />}
+      photo={<img src={profilePhoto} alt="" className="size-size-avatar-profile object-contain" />}
     />
   ),
 } satisfies Meta<FigmaArgs>;
@@ -47,7 +47,7 @@ export const Default: Story = {
   render: ({ onClick: handleClick }) => (
     <ProfileButton
       name="서재완"
-      photo={<img src={profilePhoto} alt="" className="size-32 object-contain" />}
+      photo={<img src={profilePhoto} alt="" className="size-size-avatar-profile object-contain" />}
       onClick={handleClick}
     />
   ),

@@ -123,7 +123,7 @@ describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-default text-text-fill-primary w-320 border-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default p-12 rounded-control',
+        'bg-accent-fill-default text-text-fill-primary w-size-menu-width border-stroke-width-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default p-spacing-md rounded-radius-control',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([]);
@@ -170,18 +170,20 @@ describe('토큰 사용 강제', () => {
 
   it('cn 인자 안의 토큰에 없는 클래스도 lint가 막는다', async () => {
     await expect(
-      lintClassErrors('bg-accent-fill-missing w-320', UNKNOWN_CLASS_RULE, true),
+      lintClassErrors('bg-accent-fill-missing w-size-menu-width', UNKNOWN_CLASS_RULE, true),
     ).resolves.toEqual(['Unknown class detected: bg-accent-fill-missing']);
   }, 60_000);
 
   it('이름이 ClassNames·CLASS_NAMES로 끝나는 객체의 값도 lint가 검사한다', async () => {
     const prelude = [
-      "const SIZE_CLASS_NAMES = { wide: 'w-missing-a', narrow: 'w-320' } as const;",
+      "const SIZE_CLASS_NAMES = { wide: 'w-missing-a', narrow: 'w-size-menu-width' } as const;",
       "const toneClassNames: Readonly<Record<string, string>> = { on: 'bg-accent-fill-missing' };",
       "const toneStyles = { on: 'bg-not-class-object' };",
       'export const probe = [SIZE_CLASS_NAMES, toneClassNames, toneStyles];',
     ].join('\n');
-    await expect(lintClassErrors('w-320', UNKNOWN_CLASS_RULE, false, prelude)).resolves.toEqual([
+    await expect(
+      lintClassErrors('w-size-menu-width', UNKNOWN_CLASS_RULE, false, prelude),
+    ).resolves.toEqual([
       'Unknown class detected: w-missing-a',
       'Unknown class detected: bg-accent-fill-missing',
     ]);

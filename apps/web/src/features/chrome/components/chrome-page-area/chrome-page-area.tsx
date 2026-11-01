@@ -46,12 +46,12 @@ type ChromePageAreaProps = {
 
 // 찾기 막대를 놓는 자리다. 데스크톱은 도구 모음 아래 오른쪽, 모바일은 도구 모음 아래 전체 폭이다.
 const findBarClassNames = {
-  desktop: 'absolute top-0 right-16',
-  mobile: 'absolute inset-x-0 top-0',
+  desktop: 'absolute top-spacing-none right-spacing-lg',
+  mobile: 'absolute inset-x-spacing-none top-spacing-none',
 } as const satisfies Record<Device, string>;
 
 // 크게 보는 이미지는 페이지 영역 안에 맞추되 원본보다 키우지 않는다.
-const VIEWER_IMAGE_CLASS_NAME = 'min-h-0 max-h-full max-w-full object-contain';
+const VIEWER_IMAGE_CLASS_NAME = 'min-h-size-none max-h-full max-w-full object-contain';
 
 /**
  * Chrome 창의 페이지 영역(도구 모음 아래)이다. 탭 내용 위에 찾기 막대와 이미지 크게 보기를 겹쳐 그린다.
@@ -130,11 +130,11 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
 
   const caption = image === null ? '' : getPlainText(image.block.caption);
   return (
-    <div ref={areaRef} className="relative flex min-h-0 w-full flex-1 flex-col">
+    <div ref={areaRef} className="relative flex min-h-size-none w-full flex-flex-fill flex-col">
       <div
         ref={contentRef}
         tabIndex={-1}
-        className="flex min-h-0 w-full flex-1 flex-col outline-none"
+        className="flex min-h-size-none w-full flex-flex-fill flex-col outline-none"
       >
         {children}
       </div>
@@ -159,7 +159,7 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
           image={renderTemporaryImage(image.block, VIEWER_IMAGE_CLASS_NAME)}
           caption={caption.length > 0 ? caption : undefined}
           onClose={handleImageClose}
-          className="absolute inset-0"
+          className="absolute inset-spacing-none"
         />
       )}
     </div>

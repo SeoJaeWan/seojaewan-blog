@@ -21,7 +21,7 @@ const meta = {
   },
   render: (args) => (
     // Bookmark는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(720)로 감싼다.
-    <div className="w-720">
+    <div className="w-size-post-width">
       <Bookmark title={args.title} description={args.description} url={args.url} />
     </div>
   ),

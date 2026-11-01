@@ -49,10 +49,10 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
       {...divProps}
       className={cn(
         // 길이 방향 크기는 쓰는 곳(ScrollArea)이 정하므로 루트는 두께(size/12)만 가진다.
-        'relative flex shrink-0 items-center justify-between gap-0 p-2',
-        isVertical ? 'w-12 flex-col' : 'h-12 flex-row',
+        'relative flex shrink-shrink-none items-center justify-between gap-spacing-none p-spacing-2xs',
+        isVertical ? 'w-size-scrollbar-thickness flex-col' : 'h-size-scrollbar-thickness flex-row',
         // State=Expanded 바탕의 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일 Material/Acrylic)다. 그림자는 없다.
-        isExpanded && 'rounded-circular',
+        isExpanded && 'rounded-radius-circular',
         isExpanded &&
           (material === 'acrylic'
             ? 'material-acrylic-default'
@@ -65,20 +65,22 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
           className={cn(
-            'size-8 shrink-0 text-control-strong-fill-default',
-            isVertical ? 'rotate-180' : 'rotate-90',
+            'size-size-icon-2xs shrink-shrink-none text-control-strong-fill-default',
+            isVertical ? 'rotate-rotate-half' : 'rotate-rotate-quarter',
           )}
         />
       )}
       {/* 막대는 가운데 정렬한 절대 위치 자식이다. 위치·길이의 피그마 기본값은 시작에서 40, 길이 80이다. */}
       <div
         className={cn(
-          'absolute rounded-circular bg-control-strong-fill-default',
+          'absolute rounded-radius-circular bg-control-strong-fill-default',
           isVertical
-            ? 'top-40 left-1/2 h-80 -translate-x-1/2'
-            : 'top-1/2 left-40 w-80 -translate-y-1/2',
-          isVertical && (isExpanded ? 'w-6' : 'w-2'),
-          !isVertical && (isExpanded ? 'h-6' : 'h-2'),
+            ? 'top-spacing-4xl left-position-half h-size-scrollbar-thumb-length -translate-x-position-half'
+            : 'top-position-half left-spacing-4xl w-size-scrollbar-thumb-length -translate-y-position-half',
+          isVertical &&
+            (isExpanded ? 'w-size-scrollbar-thumb-hover' : 'w-size-scrollbar-thumb-rest'),
+          !isVertical &&
+            (isExpanded ? 'h-size-scrollbar-thumb-hover' : 'h-size-scrollbar-thumb-rest'),
         )}
         style={thumbStyle}
       />
@@ -86,8 +88,8 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
           className={cn(
-            'size-8 shrink-0 text-control-strong-fill-default',
-            !isVertical && '-rotate-90',
+            'size-size-icon-2xs shrink-shrink-none text-control-strong-fill-default',
+            !isVertical && 'rotate-rotate-three-quarter',
           )}
         />
       )}

@@ -26,7 +26,7 @@ export function SampleWindow(props: SampleWindowProps): JSX.Element {
       title="창 제목"
       placement={placement}
       appIcon={<img src={appIcon} alt="" className="size-full object-contain" />}
-      className={cn('h-500 w-800', motionClassName)}
+      className={cn('h-size-window-height w-size-window-width', motionClassName)}
     />
   );
 }

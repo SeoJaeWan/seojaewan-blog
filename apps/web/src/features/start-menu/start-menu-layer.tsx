@@ -174,7 +174,7 @@ export function StartMenuLayer(): JSX.Element {
         <StartBody
           view={lists.view}
           device={device}
-          className="min-h-px w-full flex-1"
+          className="min-h-size-hairline w-full flex-flex-fill"
           pinned={lists.pinned}
           groups={lists.groups}
           onItemOpen={handleItemOpen}
@@ -186,13 +186,19 @@ export function StartMenuLayer(): JSX.Element {
       );
     }
     if (search.results === null) {
-      return <StartBody view="no-results" device={device} className="min-h-px w-full flex-1" />;
+      return (
+        <StartBody
+          view="no-results"
+          device={device}
+          className="min-h-size-hairline w-full flex-flex-fill"
+        />
+      );
     }
     return (
       <StartBody
         view="results"
         device={device}
-        className="min-h-px w-full flex-1"
+        className="min-h-size-hairline w-full flex-flex-fill"
         results={search.results}
         selectedId={search.selectedId}
         onItemOpen={handleResultOpen}
@@ -212,7 +218,7 @@ export function StartMenuLayer(): JSX.Element {
         <SearchBody
           view="before-typing"
           device={device}
-          className="min-h-px w-full flex-1"
+          className="min-h-size-hairline w-full flex-flex-fill"
           recent={search.recent}
           recommended={search.recommended}
           onItemOpen={handleResultOpen}
@@ -220,13 +226,19 @@ export function StartMenuLayer(): JSX.Element {
       );
     }
     if (search.results === null) {
-      return <SearchBody view="no-results" device={device} className="min-h-px w-full flex-1" />;
+      return (
+        <SearchBody
+          view="no-results"
+          device={device}
+          className="min-h-size-hairline w-full flex-flex-fill"
+        />
+      );
     }
     return (
       <SearchBody
         view="results"
         device={device}
-        className="min-h-px w-full flex-1"
+        className="min-h-size-hairline w-full flex-flex-fill"
         results={search.results}
         selectedId={search.selectedId}
         onItemOpen={handleResultOpen}
@@ -373,14 +385,14 @@ function PanelPresence(props: PanelPresenceProps): ReactNode {
       ? undefined
       : { maxHeight: getPanelMaxHeight(workArea.height, device, props.panel) };
   return (
-    <div className="absolute inset-x-0 bottom-0 flex justify-center">
+    <div className="absolute inset-x-spacing-none bottom-spacing-none flex justify-center">
       <div
         ref={panelRef}
         role="dialog"
         aria-label={label}
         {...presence.presenceProps}
         onPointerDownCapture={props.onPointerDown}
-        className={`${isMobile ? 'w-full' : 'pb-12'} ${presence.status === 'exiting' ? 'motion-panel-exit' : 'motion-panel-enter'}`}
+        className={`${isMobile ? 'w-full' : 'pb-spacing-md'} ${presence.status === 'exiting' ? 'motion-panel-exit' : 'motion-panel-enter'}`}
       >
         {children(isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto', panelStyle)}
       </div>

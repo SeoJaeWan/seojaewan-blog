@@ -81,7 +81,7 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
         {...contentProps}
         onPrimaryClick={handlePrimaryClick}
         onSecondaryClick={handleSecondaryClick}
-        className="fixed top-1/2 left-1/2 -translate-1/2 motion-flyout-enter outline-none"
+        className="fixed top-position-half left-position-half -translate-position-half motion-flyout-enter outline-none"
       />
     );
   }

@@ -22,12 +22,13 @@ const materialClassNames = {
 // 여백별 바탕의 안쪽 여백·간격과 Content 슬롯의 모양이다.
 const paddingClassNames = {
   compact: {
-    root: 'gap-0 px-0 py-2',
-    content: 'flex flex-col self-stretch rounded-control',
+    root: 'gap-spacing-none px-spacing-none py-spacing-2xs',
+    content: 'flex flex-col self-stretch rounded-radius-control',
   },
   default: {
-    root: 'gap-8 p-16',
-    content: 'flex flex-col items-center justify-center self-stretch rounded-control px-16 py-24',
+    root: 'gap-spacing-sm p-spacing-lg',
+    content:
+      'flex flex-col items-center justify-center self-stretch rounded-radius-control px-spacing-lg py-spacing-2xl',
   },
 } as const satisfies Record<FlyoutPadding, { root: string; content: string }>;
 
@@ -44,7 +45,7 @@ export function Flyout(props: FlyoutProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex flex-col items-start justify-start rounded-overlay border-default border-surface-stroke-flyout',
+        'relative flex flex-col items-start justify-start rounded-radius-overlay border-stroke-width-default border-surface-stroke-flyout',
         materialClassNames[material],
         paddingClassName.root,
         className,

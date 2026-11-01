@@ -19,7 +19,7 @@ const meta = {
       ...props
     } = args;
     return (
-      <div className="w-1000">
+      <div className="w-size-browser-toolbar-width">
         <BrowserToolbar
           {...props}
           onBack={handleBack}

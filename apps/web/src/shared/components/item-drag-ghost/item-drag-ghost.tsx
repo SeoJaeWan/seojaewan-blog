@@ -46,7 +46,7 @@ const TOOLTIP_OFFSET = 16;
 export function ItemDragGhost(props: ItemDragGhostProps): JSX.Element {
   const { items, surface, view, delta, pointer, targetName } = props;
   return createPortal(
-    <div className="pointer-events-none fixed inset-0 z-10">
+    <div className="pointer-events-none fixed inset-spacing-none z-layer-drag-ghost">
       {items.map(
         /**
          * 끄는 항목 하나의 복제본을 그린다.
