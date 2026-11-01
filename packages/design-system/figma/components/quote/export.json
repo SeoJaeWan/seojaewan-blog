@@ -1,8 +1,15 @@
 {
+  "description": "글 본문의 인용으로, 글 페이지에 쓴다.",
   "name": "Quote",
   "nodeId": "1380:1125",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 104,
         "width": 720,
@@ -10,7 +17,68 @@
         "y": 0
       },
       "nodeId": "1380:1125",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 100,
+              "w": 701
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/none",
+            "spacing/2xs",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Quote",
+        "size": {
+          "h": 104,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          0,
+          0,
+          0,
+          "stroke-width/indicator"
+        ],
+        "strokes": [
+          "control-strong-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }
