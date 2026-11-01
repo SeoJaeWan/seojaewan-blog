@@ -31,7 +31,7 @@ const TAB_LISTS = {
   })),
 } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
   tabs: (typeof TABS)[number];
 };
@@ -79,7 +79,7 @@ const meta = {
       </ChromeWindow>
     );
   },
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -88,7 +88,7 @@ type Story = StoryObj<typeof meta>;
 // 색 대비는 피그마 값을 사람이 판단할 때까지 끈다(임의 작업 문서의 "색 대비 위반" 항목).
 // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 끈다
 // (임의 작업 문서의 "탭 닫기 버튼" 항목).
-export const Parity: Story = {
+export const Figma: Story = {
   parameters: {
     a11y: {
       config: {

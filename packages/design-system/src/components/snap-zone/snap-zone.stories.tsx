@@ -5,7 +5,7 @@ import { SnapZone } from './snap-zone';
 // 피그마 SnapZone의 변형 속성 값이다(정규화한 이름).
 const STATES = ['rest', 'hover'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   state: (typeof STATES)[number];
 };
 
@@ -18,7 +18,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: () => <SnapZone label="왼쪽 절반" />,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -26,4 +26,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Hover는 캡처 도구가 마우스로 재현한다.
-export const Parity: Story = {};
+export const Figma: Story = {};

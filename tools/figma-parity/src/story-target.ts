@@ -17,8 +17,8 @@ export type StoryTarget = {
   interaction: Interaction;
 };
 
-// 컴포넌트마다 캡처에 쓰는 스토리 이름이다(export 이름 Parity에서 나온다).
-export const PARITY_STORY_NAME = 'Parity';
+// 컴포넌트마다 캡처에 쓰는 스토리 이름이다(export 이름 Figma에서 나온다).
+export const FIGMA_STORY_NAME = 'Figma';
 // 조립 스토리 제목의 앞부분이다(`Patterns/` + 피그마 조립 이름).
 export const PATTERN_TITLE_PREFIX = 'Patterns/';
 // 상호작용으로 재현하는 상태 속성 이름(정규화한 이름)이다.
@@ -73,8 +73,8 @@ export type IndexEntry = { id: string; title: string; name: string; importPath: 
 
 /**
  * Storybook index.json에서 대상과 짝인 스토리 ID를 찾는다.
- * 컴포넌트는 `src/components/<c>/<c>.stories.tsx`의 `Parity` 스토리,
- * 조립은 제목이 `Patterns/<조립 이름>`인 스토리다(여럿이면 `Parity` 스토리).
+ * 컴포넌트는 `src/components/<c>/<c>.stories.tsx`의 `Figma` 스토리,
+ * 조립은 제목이 `Patterns/<조립 이름>`인 스토리다(여럿이면 `Figma` 스토리).
  * @codocs [[피그마 연동:스토리 규칙]]
  * @param index storybook-static/index.json을 파싱한 값
  * @param target 대상
@@ -88,26 +88,26 @@ export function findStoryId(
   if (target.kind === 'component') {
     const importPath = `./src/components/${target.id}/${target.id}.stories.tsx`;
     const found = entries.find(
-      (entry) => entry.importPath === importPath && entry.name === PARITY_STORY_NAME,
+      (entry) => entry.importPath === importPath && entry.name === FIGMA_STORY_NAME,
     );
     return found === undefined
       ? {
           ok: false,
-          message: `스토리가 없다: ${importPath.slice(2)}에 ${PARITY_STORY_NAME} 스토리를 만든다`,
+          message: `스토리가 없다: ${importPath.slice(2)}에 ${FIGMA_STORY_NAME} 스토리를 만든다`,
         }
       : { ok: true, id: found.id };
   }
   const title = `${PATTERN_TITLE_PREFIX}${target.name}`;
   const titled = entries.filter((entry) => entry.title === title);
   const found =
-    titled.length === 1 ? titled[0] : titled.find((entry) => entry.name === PARITY_STORY_NAME);
+    titled.length === 1 ? titled[0] : titled.find((entry) => entry.name === FIGMA_STORY_NAME);
   if (found === undefined) {
     return {
       ok: false,
       message:
         titled.length === 0
           ? `스토리가 없다: 앱 Storybook에 제목이 "${title}"인 스토리를 만든다`
-          : `"${title}" 스토리가 여럿이라 고를 수 없다. 캡처할 스토리 이름을 ${PARITY_STORY_NAME}로 둔다`,
+          : `"${title}" 스토리가 여럿이라 고를 수 없다. 캡처할 스토리 이름을 ${FIGMA_STORY_NAME}로 둔다`,
     };
   }
   return { ok: true, id: found.id };

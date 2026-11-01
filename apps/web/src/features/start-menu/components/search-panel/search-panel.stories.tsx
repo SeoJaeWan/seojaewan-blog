@@ -13,7 +13,7 @@ import { SearchPanel } from './search-panel';
 // 피그마 Search/Panel의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
@@ -44,10 +44,10 @@ const meta = {
       />
     </SearchPanel>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

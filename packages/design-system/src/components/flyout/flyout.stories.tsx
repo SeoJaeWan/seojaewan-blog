@@ -6,7 +6,7 @@ import { Flyout } from './flyout';
 const MATERIALS = ['acrylic', 'solid'] as const;
 const PADDINGS = ['compact', 'default'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   material: (typeof MATERIALS)[number];
   padding: (typeof PADDINGS)[number];
 };
@@ -27,7 +27,7 @@ const meta = {
       </Flyout>
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -35,4 +35,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

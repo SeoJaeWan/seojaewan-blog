@@ -12,7 +12,7 @@ const SEARCHES = ['closed', 'open'] as const;
 // 컴포넌트는 너비를 갖지 않으므로 피그마 원본 너비로 감싸 그린다.
 const WIDTHS = { desktop: 798, mobile: 388 } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
   search: (typeof SEARCHES)[number];
 };
@@ -37,7 +37,7 @@ const meta = {
       </ExplorerAddressRow>
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -46,4 +46,4 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

@@ -46,10 +46,10 @@ describe('스토리 규칙', () => {
     });
   });
 
-  it('컴포넌트는 그 컴포넌트 스토리 파일의 Parity 스토리와 짝짓는다', () => {
+  it('컴포넌트는 그 컴포넌트 스토리 파일의 Figma 스토리와 짝짓는다', () => {
     expect(
       findStoryId(storybookIndexFixture, { id: 'button', kind: 'component', name: 'Button' }),
-    ).toEqual({ ok: true, id: 'components-button--parity' });
+    ).toEqual({ ok: true, id: 'components-button--figma' });
     expect(
       findStoryId(storybookIndexFixture, { id: 'menu-item', kind: 'component', name: 'MenuItem' }),
     ).toMatchObject({ ok: false });
@@ -65,14 +65,14 @@ describe('스토리 규칙', () => {
     ).toEqual({ ok: true, id: 'patterns-menu-folder--default' });
   });
 
-  it('조립 제목의 스토리가 여럿이면 Parity 스토리를 쓴다', () => {
+  it('조립 제목의 스토리가 여럿이면 Figma 스토리를 쓴다', () => {
     expect(
       findStoryId(storybookIndexFixture, {
         id: 'patterns/start/power-button',
         kind: 'pattern',
         name: 'Start/PowerButton',
       }),
-    ).toEqual({ ok: true, id: 'patterns-start-power-button--parity' });
+    ).toEqual({ ok: true, id: 'patterns-start-power-button--figma' });
   });
 
   it('짝 스토리가 없으면 만들 스토리를 알려 준다', () => {

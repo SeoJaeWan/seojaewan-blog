@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Toc } from './toc';
 
-type ParityArgs = {
+type FigmaArgs = {
   state: 'expanded' | 'collapsed';
 };
 
@@ -18,7 +18,7 @@ const meta = {
       <div className="w-full shrink-0" style={{ height: 100 }} />
     </Toc>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -26,4 +26,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나(State)를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

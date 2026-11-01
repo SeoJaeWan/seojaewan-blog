@@ -7,7 +7,7 @@ import { menuRecycleBinEmpty } from './story-data';
 // 피그마 Menu/RecycleBinEmpty의 변형 속성 값이다(정규화한 이름).
 const SUBMENUS = ['none', 'sort'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   submenu: (typeof SUBMENUS)[number];
 };
 
@@ -23,10 +23,10 @@ const meta = {
     submenu: { control: 'inline-radio', options: SUBMENUS },
   },
   render: (args) => <MenuStory items={menuRecycleBinEmpty(args.submenu)} />,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

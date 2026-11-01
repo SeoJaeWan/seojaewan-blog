@@ -19,10 +19,10 @@ export const manifestFixture = {
 export const storybookIndexFixture = {
   v: 5,
   entries: {
-    'components-button--parity': {
-      id: 'components-button--parity',
+    'components-button--figma': {
+      id: 'components-button--figma',
       title: 'Components/Button',
-      name: 'Parity',
+      name: 'Figma',
       importPath: './src/components/button/button.stories.tsx',
       type: 'story',
     },
@@ -47,10 +47,10 @@ export const storybookIndexFixture = {
       importPath: './src/features/desktop/menu-folder.stories.tsx',
       type: 'story',
     },
-    'patterns-start-power-button--parity': {
-      id: 'patterns-start-power-button--parity',
+    'patterns-start-power-button--figma': {
+      id: 'patterns-start-power-button--figma',
       title: 'Patterns/Start/PowerButton',
-      name: 'Parity',
+      name: 'Figma',
       importPath: './src/features/start-menu/power-button.stories.tsx',
       type: 'story',
     },

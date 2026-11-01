@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Bookmark } from './bookmark';
 
-type ParityArgs = {
+type FigmaArgs = {
   /** 피그마 TEXT 속성 Title */
   title: string;
   /** 피그마 TEXT 속성 Description */
@@ -25,7 +25,7 @@ const meta = {
       <Bookmark title={args.title} description={args.description} url={args.url} />
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -33,4 +33,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형은 default 하나다.
-export const Parity: Story = {};
+export const Figma: Story = {};

@@ -8,7 +8,7 @@ const faviconImage = new URL('../../assets/images/file-document.webp', import.me
 // 피그마 BrowserTab의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
 const STATES = ['rest', 'hover', 'active'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Title */
   title: string;
@@ -36,7 +36,7 @@ const meta = {
       />
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -47,6 +47,6 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나를 args 하나로 고른다.
 // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
 // (임의 작업 문서의 "탭 닫기 버튼" 항목).
-export const Parity: Story = {
+export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
 };

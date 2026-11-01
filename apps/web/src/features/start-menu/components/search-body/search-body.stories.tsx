@@ -16,7 +16,7 @@ const DEVICES = ['desktop', 'mobile'] as const;
 // 본문은 크기를 갖지 않고 검색 패널이 정하므로 피그마 원본 크기(size/574×654, size/356×522)로 감싸 그린다.
 const SIZE_CLASS_NAMES = { desktop: 'w-574 h-654', mobile: 'w-356 h-522' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   view: (typeof VIEWS)[number];
   device: (typeof DEVICES)[number];
 };
@@ -60,10 +60,10 @@ const meta = {
         return <SearchBody view="no-results" device={args.device} className={className} />;
     }
   },
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

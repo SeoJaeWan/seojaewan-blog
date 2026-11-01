@@ -7,7 +7,7 @@ import { ChromeImageViewer } from './chrome-image-viewer';
 // 피그마 Chrome/ImageViewer의 변형 속성 값이다(정규화한 이름).
 const LAYOUTS = ['wide', 'narrow'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   layout: (typeof LAYOUTS)[number];
 };
 
@@ -41,10 +41,10 @@ const meta = {
       }
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

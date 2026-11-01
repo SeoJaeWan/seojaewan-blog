@@ -7,7 +7,7 @@ import { ProgressRing } from './progress-ring';
 const TONES = ['accent', 'on-dark'] as const;
 const SIZES = ['16', '32', '64'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   tone: (typeof TONES)[number];
   size: (typeof SIZES)[number];
 };
@@ -20,7 +20,7 @@ type ParityArgs = {
  * @param props.children 그릴 링
  * @returns 링
  */
-function Backdrop(props: { tone: ParityArgs['tone']; children: ReactNode }): JSX.Element {
+function Backdrop(props: { tone: FigmaArgs['tone']; children: ReactNode }): JSX.Element {
   const { tone, children } = props;
   useLayoutEffect(() => {
     if (tone !== 'on-dark') {
@@ -46,7 +46,7 @@ const meta = {
       <ProgressRing tone={args.tone} size={args.size} aria-label="불러오는 중" />
     </Backdrop>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -54,4 +54,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

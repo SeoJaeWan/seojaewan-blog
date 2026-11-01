@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형은 하나뿐이다.
-export const Parity: Story = {};
+export const Figma: Story = {};
 
 // 강조된 코드를 슬롯에 넣은 모습이다. 색은 `code-syntax` 토큰 클래스다([[기술 스택:글 본문 처리]]).
 export const Highlighted: Story = {

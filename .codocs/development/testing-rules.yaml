@@ -47,7 +47,7 @@ E2E: |
 스토리 테스트: |
   `*.stories.tsx`의 스토리 하나가 테스트 하나다. 실제 Chromium에서 그려 오류가 없는지 보고, `play`가 있으면 돌리고, axe 접근성 검사를 오류로 돌린다.
 
-  - 피그마와 맞추는 스토리(`Parity`)에는 `play`를 넣지 않는다. 동작 스토리는 쓰는 상황 하나에 하나를 만들어 같은 파일에 두고, 안에서 `step()`으로 나눈다.
+  - 피그마와 맞추는 스토리(`Figma`)에는 `play`를 넣지 않는다. 동작 스토리는 쓰는 상황 하나에 하나를 만들어 같은 파일에 두고, 안에서 `step()`으로 나눈다.
   - 도구는 `storybook/test`에서 가져온다(`expect`, `userEvent`, `fireEvent`, `waitFor`, `within`, `fn`). `vitest`는 스토리에서 가져오지 않는다. 스토리는 Storybook 화면에서도 돌아야 한다. `fireEvent`는 Promise를 돌려주므로 `await`한다.
   - 스토리의 핸들러는 앱 코드처럼 `onClick: handleClick`으로 바꿔 받는다.
   - 저장소는 스토리 meta의 `beforeEach`에서 처음 상태로 돌리고(`resetStoryStores`), 미리 열 창은 스토리의 `beforeEach`에서 연다(`openStoryWindows`).

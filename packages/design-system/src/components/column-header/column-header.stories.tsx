@@ -6,7 +6,7 @@ import { ColumnHeader } from './column-header';
 const STATES = ['rest', 'hover'] as const;
 const SORTS = ['none', 'ascending', 'descending'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   state: (typeof STATES)[number];
   sort: (typeof SORTS)[number];
 };
@@ -20,7 +20,7 @@ const meta = {
   },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 188로 감싼다.
   render: (args) => <ColumnHeader sort={args.sort} className="w-188" />,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -28,4 +28,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

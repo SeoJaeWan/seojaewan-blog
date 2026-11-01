@@ -5,7 +5,7 @@ import { PreviewListStory } from '@/shell/stories/preview-list-story/preview-lis
 // 피그마 Taskbar/PreviewList의 변형 속성 값이다(정규화한 이름).
 const COUNTS = ['1', '2', '3'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   count: (typeof COUNTS)[number];
 };
 
@@ -22,10 +22,10 @@ const meta = {
     count: { control: 'inline-radio', options: COUNTS },
   },
   render: (args) => <PreviewListStory count={Number(args.count)} />,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

@@ -5,7 +5,7 @@ import { SearchResults } from './search-results';
 // 피그마 SearchResults의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
@@ -34,7 +34,7 @@ const meta = {
       </SearchResults>
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -42,4 +42,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

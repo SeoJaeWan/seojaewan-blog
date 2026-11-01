@@ -14,4 +14,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형이 하나뿐이라 args 없이 그린다.
-export const Parity: Story = {};
+export const Figma: Story = {};
