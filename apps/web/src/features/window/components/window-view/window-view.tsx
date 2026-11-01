@@ -52,16 +52,18 @@ const TASKBAR_OFFSET_X = '--motion-window-taskbar-offset-x';
 const TASKBAR_OFFSET_Y = '--motion-window-taskbar-offset-y';
 
 // 크기 조절 핸들. 가장자리는 창 밖 8px 띠, 모서리는 창 모서리에 걸친 16px 칸이다(창 안으로 8px 들어온다).
-const resizeHandles = [
-  { direction: 'n', className: 'inset-x-8 -top-8 h-8 cursor-ns-resize' },
-  { direction: 's', className: 'inset-x-8 -bottom-8 h-8 cursor-ns-resize' },
-  { direction: 'w', className: 'inset-y-8 -left-8 w-8 cursor-ew-resize' },
-  { direction: 'e', className: 'inset-y-8 -right-8 w-8 cursor-ew-resize' },
-  { direction: 'nw', className: '-top-8 -left-8 size-16 cursor-nwse-resize' },
-  { direction: 'ne', className: '-top-8 -right-8 size-16 cursor-nesw-resize' },
-  { direction: 'sw', className: '-bottom-8 -left-8 size-16 cursor-nesw-resize' },
-  { direction: 'se', className: '-right-8 -bottom-8 size-16 cursor-nwse-resize' },
-] as const satisfies readonly { direction: ResizeDirection; className: string }[];
+const resizeHandleClassNames = {
+  n: 'inset-x-spacing-sm -top-spacing-sm h-size-window-resize-edge cursor-ns-resize',
+  s: 'inset-x-spacing-sm -bottom-spacing-sm h-size-window-resize-edge cursor-ns-resize',
+  w: 'inset-y-spacing-sm -left-spacing-sm w-size-window-resize-edge cursor-ew-resize',
+  e: 'inset-y-spacing-sm -right-spacing-sm w-size-window-resize-edge cursor-ew-resize',
+  nw: '-top-spacing-sm -left-spacing-sm size-size-window-resize-corner cursor-nwse-resize',
+  ne: '-top-spacing-sm -right-spacing-sm size-size-window-resize-corner cursor-nesw-resize',
+  sw: '-bottom-spacing-sm -left-spacing-sm size-size-window-resize-corner cursor-nesw-resize',
+  se: '-right-spacing-sm -bottom-spacing-sm size-size-window-resize-corner cursor-nwse-resize',
+} as const satisfies Record<ResizeDirection, string>;
+
+const RESIZE_DIRECTIONS = ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se'] as const;
 
 /** 바깥 요소에서 재생하는 창 모션 */
 type WindowMotion = 'open' | 'restore' | 'minimize' | 'close';
@@ -240,7 +242,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       {...presence.presenceProps}
       className={[
         'pointer-events-auto absolute flex',
-        isMobile && 'inset-0',
+        isMobile && 'inset-spacing-none',
         windowMotionClassNames[motion],
       ]
         .filter(Boolean)
@@ -248,7 +250,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       style={isMobile ? { zIndex } : { zIndex, left: x, top: y, width, height }}
     >
       {/* 최대화·스냅 FLIP 전용 요소. 모션 클래스는 classList로만 붙여 바깥의 열기·최소화 클래스와 겹치지 않는다 */}
-      <div ref={snapRef} className="absolute inset-0 flex">
+      <div ref={snapRef} className="absolute inset-spacing-none flex">
         {renderWindow(
           target,
           isMobile
@@ -280,17 +282,17 @@ export function WindowView(props: WindowViewProps): JSX.Element {
         )}
       </div>
       {isResizable &&
-        resizeHandles.map(
+        RESIZE_DIRECTIONS.map(
           /**
            * 크기 조절 핸들 하나를 그린다.
-           * @param handle 방향과 자리 클래스
+           * @param direction 방향
            * @returns ResizeHandle
            */
-          (handle) => (
+          (direction) => (
             <ResizeHandle
-              key={handle.direction}
-              direction={handle.direction}
-              className={handle.className}
+              key={direction}
+              direction={direction}
+              className={resizeHandleClassNames[direction]}
               onResizeStart={handleResizePointerDown}
             />
           ),

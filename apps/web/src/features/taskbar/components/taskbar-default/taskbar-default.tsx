@@ -71,7 +71,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
                 appearance="taskbar"
                 placeholder="검색"
                 aria-label="검색"
-                className="w-220 shrink-0"
+                className="w-size-search-box-taskbar-width shrink-shrink-none"
               />
             </div>
           ) : (
@@ -91,7 +91,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
           {apps}
         </>
       }
-      right={<SystemTray time={time} date={date} className="shrink-0" />}
+      right={<SystemTray time={time} date={date} className="shrink-shrink-none" />}
     />
   );
 }
