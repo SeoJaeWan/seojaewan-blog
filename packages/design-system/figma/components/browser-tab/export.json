@@ -1,6 +1,32 @@
 {
+  "description": "Chrome 탭 하나로, BrowserTabStrip에 쓴다.",
   "name": "BrowserTab",
   "nodeId": "36:423",
+  "propertyDefinitions": {
+    "Close icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Favicon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Show separator": {
+      "default": true,
+      "type": "BOOLEAN"
+    },
+    "State": {
+      "default": "Active",
+      "options": [
+        "Active",
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
+    },
+    "Title": {
+      "default": "페이지 제목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=active": {
       "node": {
@@ -12,6 +38,121 @@
       "nodeId": "36:392",
       "properties": {
         "State": "Active"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-document"
+            },
+            "component": "file/Document",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "favicon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "chrome/text-primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 172
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "페이지",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "chrome/toolbar-fill"
+        ],
+        "height": "size/browser-tab/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Active",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          0,
+          0
+        ],
+        "size": {
+          "h": 34,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/browser-tab/width"
       }
     },
     "state=hover": {
@@ -24,6 +165,121 @@
       "nodeId": "36:413",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-document"
+            },
+            "component": "file/Document",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "favicon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "chrome/text-primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 172
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "페이지",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "chrome/tab-fill-hover"
+        ],
+        "height": "size/browser-tab/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 34,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/browser-tab/width"
       }
     },
     "state=rest": {
@@ -36,6 +292,157 @@
       "nodeId": "36:402",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-document"
+            },
+            "component": "file/Document",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "favicon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "chrome/text-primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 172
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "페이지",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "제목",
+                  "fill": "chrome/text-primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "MAX",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "chrome/tab-separator"
+            ],
+            "height": "size/separator/height",
+            "name": "separator",
+            "size": {
+              "h": 16,
+              "w": 1
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "stroke-width/default"
+          }
+        ],
+        "height": "size/browser-tab/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          0,
+          0
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 34,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/browser-tab/width"
       }
     }
   }

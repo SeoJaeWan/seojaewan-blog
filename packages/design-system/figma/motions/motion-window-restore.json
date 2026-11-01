@@ -4,8 +4,14 @@
     "token": null
   },
   "directives": {
+    "reduced-motion": [
+      "움직임 없이 바로 바뀐다"
+    ],
     "repeat": [
       "1"
+    ],
+    "runtime": [
+      "출발 위치(작업 표시줄 앱 버튼)"
     ],
     "trigger": [
       "작업 표시줄에서 창을 복원할 때"

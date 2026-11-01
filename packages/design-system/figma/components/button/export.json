@@ -1,110 +1,1394 @@
 {
+  "description": "글자와 선택 아이콘이 있는 기본 버튼으로, 메시지 상자·찾을 수 없음 화면처럼 사용자가 동작을 고르는 곳에 쓴다.",
   "name": "Button",
   "nodeId": "13:62",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Label": {
+      "default": "버튼",
+      "type": "TEXT"
+    },
+    "Show icon": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Pressed",
+        "Disabled",
+        "Focused"
+      ],
+      "type": "VARIANT"
+    },
+    "Style": {
+      "default": "Accent",
+      "options": [
+        "Accent",
+        "Standard",
+        "Subtle"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "style=accent,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:14",
       "properties": {
         "State": "Disabled",
         "Style": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-on-accent-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-on-accent-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "accent-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Accent, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=accent,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 2,
+        "y": 2
+      },
       "nodeId": "13:18",
       "properties": {
         "State": "Focused",
         "Style": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-on-accent-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-on-accent-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "accent-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Accent, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=accent,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:6",
       "properties": {
         "State": "Hover",
         "Style": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-on-accent-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-on-accent-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "accent-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Accent, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Accent, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Accent Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=accent,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:10",
       "properties": {
         "State": "Pressed",
         "Style": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-on-accent-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-on-accent-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "accent-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Accent, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/on-accent-default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=accent,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:2",
       "properties": {
         "State": "Rest",
         "Style": "Accent"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-on-accent-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-on-accent-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "accent-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Accent, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Accent, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Accent Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:34",
       "properties": {
         "State": "Disabled",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Standard, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 2,
+        "y": 2
+      },
       "nodeId": "13:38",
       "properties": {
         "State": "Focused",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Standard, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:26",
       "properties": {
         "State": "Hover",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Standard, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Standard, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:30",
       "properties": {
         "State": "Pressed",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Standard, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:22",
       "properties": {
         "State": "Rest",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Standard, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Standard, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=disabled": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:54",
       "properties": {
         "State": "Disabled",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Subtle, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=focused": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 2,
+        "y": 2
+      },
       "nodeId": "13:58",
       "properties": {
         "State": "Focused",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Subtle, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:46",
       "properties": {
         "State": "Hover",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Subtle, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Subtle, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:50",
       "properties": {
         "State": "Pressed",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Subtle, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 120,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "13:42",
       "properties": {
         "State": "Rest",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "버튼",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/md",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "minWidth": "size/button/min-width",
+        "name": "Style=Subtle, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Subtle, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }
