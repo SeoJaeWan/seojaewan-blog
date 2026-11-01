@@ -1,6 +1,21 @@
 {
+  "description": "이름 바꾸기 입력 상자로, FileItem과 FileRow의 이름 바꾸기 상태에 쓴다.",
   "name": "RenameField",
   "nodeId": "692:8253",
+  "propertyDefinitions": {
+    "State": {
+      "default": "Selected",
+      "options": [
+        "Selected",
+        "Rest"
+      ],
+      "type": "VARIANT"
+    },
+    "Text": {
+      "default": "이름",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=rest": {
       "node": {
@@ -12,6 +27,73 @@
       "nodeId": "692:8250",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "text",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Rest",
+        "size": {
+          "h": 22,
+          "w": 31
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-strong-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "state=selected": {
@@ -24,6 +106,102 @@
       "nodeId": "29:276",
       "properties": {
         "State": "Selected"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-on-accent-fill/selected-text"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 16,
+                  "w": 21
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "이름",
+                      "fill": "text-on-accent-fill/selected-text",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "fills": [
+              "accent-fill/selected-text-background"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "selection",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Selected",
+        "size": {
+          "h": 22,
+          "w": 31
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-strong-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     }
   }
