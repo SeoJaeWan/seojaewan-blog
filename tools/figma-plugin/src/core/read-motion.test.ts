@@ -55,7 +55,14 @@ function slotNode(id: string, children: FakeNode[]): FakeNode {
  * @param children 견본 프레임의 자식
  */
 function stubSample(children: FakeNode[]): void {
-  const frame = { id: '1:1', name: 'motion-sample', type: 'FRAME', children };
+  const frame = {
+    id: '1:1',
+    name: 'motion-sample',
+    type: 'FRAME',
+    children,
+    annotations: [{ label: '@repeat 1' }, { labelMarkdown: '@trigger open' }],
+    timelines: [{ id: 't', duration: 0.25 }],
+  };
   vi.stubGlobal('figma', { getNodeByIdAsync: () => Promise.resolve(frame) });
 }
 
@@ -79,5 +86,12 @@ describe('모션 견본 읽기', () => {
     const sample = await readMotionSample('1:1');
     expect(sample.tracks).toHaveLength(1);
     expect(sample.tracks[0]?.keyframes.map((item) => item.time)).toEqual([0, 0.25]);
+  });
+
+  it('견본 프레임의 주석과 타임라인 길이를 읽는다', async () => {
+    stubSample([animatedNode('3:1', 'box')]);
+    const sample = await readMotionSample('1:1');
+    expect(sample.annotations).toEqual(['@repeat 1', '@trigger open']);
+    expect(sample.lengthMs).toBe(250);
   });
 });

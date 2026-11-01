@@ -27,9 +27,11 @@ export type MotionSpec = {
   name: string;
   /** 견본 링크 */
   url: string;
-  /** 반복 횟수. 피그마에서 알 수 없으면 null */
-  iterations: number | null;
+  /** 반복 횟수(견본의 `@repeat`). 옛 내보내기는 null이다 */
+  iterations: number | 'infinite' | null;
   tracks: MotionSpecTrack[];
+  /** 견본 길이에서 잘린 트랙이 있었는지. 그 움직임은 견본 안 컴포넌트의 것이라 견본 클래스의 애니메이션만 본다 */
+  hasTruncatedTracks: boolean;
 };
 
 /**
@@ -44,15 +46,38 @@ export function parseMotionSpec(value: unknown, where: string): MotionSpec {
   const entry = expectRecord(value, where);
   const name = expectString(entry.name, `${where}.name`);
   const url = expectString(entry.url, `${where}.url`);
-  const iterations =
-    entry.iterations === null ? null : expectNumber(entry.iterations, `${where}.iterations`);
+  const iterations = parseIterations(entry.iterations, `${where}.iterations`);
   if (!Array.isArray(entry.tracks) || entry.tracks.length === 0) {
     throw new Error(`${where}.tracks: 트랙이 하나 이상 있는 배열이어야 한다.`);
   }
-  const tracks = entry.tracks.map((item: unknown, index) =>
+  const owned = entry.tracks.filter((item: unknown) => !isTruncatedTrack(item));
+  const tracks = owned.map((item: unknown, index) =>
     parseTrack(item, `${where}.tracks[${String(index)}]`),
   );
-  return { name, url, iterations, tracks };
+  return { name, url, iterations, tracks, hasTruncatedTracks: owned.length < entry.tracks.length };
+}
+
+/**
+ * 반복 횟수를 읽는다.
+ * @param value json 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 횟수나 `infinite`, 옛 내보내기는 null
+ */
+function parseIterations(value: unknown, where: string): number | 'infinite' | null {
+  if (value === null || value === 'infinite') {
+    return value;
+  }
+  return expectNumber(value, where);
+}
+
+/**
+ * 견본 길이에서 잘린 트랙인지 본다. 플러그인이 표시한 트랙은 견본 안 컴포넌트의 움직임이라 검사하지 않는다.
+ * @codocs [[피그마 연동:모션]]
+ * @param item json 트랙
+ * @returns 잘린 트랙이면 true
+ */
+function isTruncatedTrack(item: unknown): boolean {
+  return typeof item === 'object' && item !== null && Reflect.get(item, 'isTruncated') === true;
 }
 
 /**
@@ -68,9 +93,9 @@ export function parseValueTracks(value: unknown, where: string): ValueTrack[] {
   if (!Array.isArray(entry.tracks)) {
     throw new Error(`${where}.tracks: 배열이어야 한다.`);
   }
-  return entry.tracks.map((item: unknown, index) =>
-    parseValueTrack(item, `${where}.tracks[${String(index)}]`),
-  );
+  return entry.tracks
+    .filter((item: unknown) => !isTruncatedTrack(item))
+    .map((item: unknown, index) => parseValueTrack(item, `${where}.tracks[${String(index)}]`));
 }
 
 /**

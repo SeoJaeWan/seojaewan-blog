@@ -21,6 +21,8 @@ export const FIGMA_DIR = 'packages/design-system/figma';
 export const TOKENS_PATH = `${FIGMA_DIR}/tokens.json`;
 /** tokens.json에서 변환 함수로 만드는 생성 파일 */
 export const TOKENS_CSS_PATH = 'packages/design-system/src/tokens.css';
+/** tokens.json에서 만든 토큰 이름·경계값 상수 */
+export const TOKEN_NAMES_PATH = 'packages/design-system/src/token-names.ts';
 /** 파일 키와 배율처럼 바뀌지 않는 전역 값 */
 export const SETTINGS_PATH = `${FIGMA_DIR}/figma.json`;
 /** 컴포넌트마다 export.json과 변형 PNG를 두는 폴더 */

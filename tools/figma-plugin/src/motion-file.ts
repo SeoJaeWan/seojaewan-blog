@@ -1,4 +1,4 @@
-import type { MotionNodeKind, MotionValue } from './core/motion-data';
+import type { Directives, MotionNodeKind, MotionValue } from './core/motion-data';
 import { type JsonObject, type JsonValue, stableStringify } from './stable-json';
 
 // 애니메이션 견본마다 내보내는 `figma/motions/<이름>.json`의 형식. 형식은 이 파일 한 곳에서 정한다.
@@ -41,6 +41,8 @@ export type MotionTrack = {
   /** 시작 지연(첫 키프레임 위치)과 그 `motion/delay/*` 변수. 0이면 token이 null이다 */
   delay: MotionTime;
   keyframes: MotionKeyframe[];
+  /** 견본 길이에서 잘린 트랙이면 true. 견본 안 컴포넌트가 가진 움직임이라 검사 대상이 아니다 */
+  isTruncated?: boolean;
 };
 
 /** `figma/motions/<이름>.json` */
@@ -55,11 +57,10 @@ export type MotionExport = {
   duration: MotionTime;
   /** 애니메이션 시작 지연(가장 이른 첫 키프레임)과 같은 변수 */
   delay: MotionTime;
-  /**
-   * 반복 횟수. 피그마 플러그인 API로는 반복 여부를 읽을 수 없어 늘 null이다.
-   * 반복은 [[디자인 기반:모션]] 표가 기준이고 사람이 본다.
-   */
-  iterations: number | null;
+  /** 반복 횟수. 플러그인 API로 읽을 수 없어 견본 주석의 `@repeat`에서 온다. 옛 내보내기는 null이다 */
+  iterations: number | 'infinite' | null;
+  /** 견본 주석의 `@` 줄 */
+  directives: Directives;
   /** 노드 경로·항목 순으로 정렬한 트랙 */
   tracks: MotionTrack[];
 };
@@ -82,6 +83,7 @@ export function motionText(motion: MotionExport): string {
     duration: timeJson(motion.duration),
     delay: timeJson(motion.delay),
     iterations: motion.iterations,
+    directives: { ...motion.directives },
     tracks: motion.tracks.map(trackJson),
   });
 }
@@ -101,6 +103,7 @@ function trackJson(track: MotionTrack): JsonObject {
     duration: timeJson(track.duration),
     delay: timeJson(track.delay),
     keyframes: track.keyframes.map(keyframeJson),
+    ...(track.isTruncated === true ? { isTruncated: true } : {}),
   };
 }
 

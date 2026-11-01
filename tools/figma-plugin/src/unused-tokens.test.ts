@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { unusedNotices, type UsageInput } from './unused-tokens';
+import { unusedNotices, type UsageInput, type UsageVariable } from './unused-tokens';
 
 const input: UsageInput = {
   variables: [
@@ -66,5 +66,27 @@ describe('쓰는 곳이 없는 변수·스타일 알림(막지 않음)', () => {
     const notices = unusedNotices({ ...input, nodeStyleIds: new Set(['s2']) });
     expect(notices).not.toContain('효과 스타일 Focus/Ring: 쓰는 곳이 없다');
     expect(notices).not.toContain('변수 blur/acrylic: 쓰는 곳이 없다');
+  });
+});
+
+// @codocs [[디자인 기반:크기 변수]]
+describe('단계 이름 묶음', () => {
+  it('간격·아이콘 크기의 이름 단계는 쓰는 곳이 없어도 알리지 않고, 숫자 이름은 알린다', () => {
+    /**
+     * 범위가 있는 변수를 만든다.
+     * @param name 이름
+     * @returns 변수
+     */
+    function variable(name: string): UsageVariable {
+      return { id: name, name, scopes: ['GAP'], aliasIds: [] };
+    }
+    expect(
+      unusedNotices({
+        variables: ['spacing/5xl', 'size/icon/xl', 'spacing/16', 'size/icon/16'].map(variable),
+        styles: [],
+        nodeVariableIds: new Set(),
+        nodeStyleIds: new Set(),
+      }),
+    ).toEqual(['변수 size/icon/16: 쓰는 곳이 없다', '변수 spacing/16: 쓰는 곳이 없다']);
   });
 });

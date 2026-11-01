@@ -46,6 +46,13 @@ describe('스타일링', () => {
     await expect(disallowedAtRules('@theme { --x: 1px; }', 'motion.css')).resolves.toBe(1);
   });
 
+  it('@custom-variant는 tokens.css에서만 쓴다', async () => {
+    const code = '@custom-variant laptop { @media (max-width: 1599px) { @slot; } }';
+    await expect(disallowedAtRules(code, 'tokens.css')).resolves.toBe(0);
+    await expect(disallowedAtRules(code, 'theme.css')).resolves.toBe(1);
+    await expect(disallowedAtRules(code, 'motion.css')).resolves.toBe(1);
+  });
+
   it('motion.css의 @utility 이름은 모두 motion-으로 시작한다', () => {
     const names = [...motionCss.matchAll(/^@utility\s+([^\s{]+)/gmu)].map((match) => match[1]);
     expect(names.length).toBeGreaterThan(0);

@@ -2,6 +2,7 @@ import { type ExportManifest, nodeBox, type VariantEntry } from '../export-manif
 import { rasterExtension } from '../image-format';
 import { assetFile, assetName, variantSlug } from '../naming';
 import { utf8Encode } from '../sha256';
+import type { JsonObject } from '../stable-json';
 import { monoColorSvg, normalizeSvgBytes, utf8Decode } from '../svg-normalize';
 import { relativeTransform, trimmedPathSvg, type TrimmedVector } from '../svg-trim';
 import {
@@ -11,6 +12,9 @@ import {
   checkVariant,
   type Violation,
 } from './check-structure';
+import { noCodeVariables } from './code-variables';
+import { parseDirectiveTexts } from './directives';
+import { hasEmptyHugSlot, layerTree } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
 import { isMotionApiError } from './read-motion';
 import { type NameCache, readNodeTree } from './read-node';
@@ -32,7 +36,7 @@ export type TargetOutcome =
 
 /**
  * 컴포넌트(세트)를 변형마다 구조 검사하고 내보낸다. 위반이 하나라도 있으면 파일을 만들지 않고 위반을 모두 돌려준다.
- * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일이다. 레이어 정보는 내보내지 않는다.
+ * 내보내는 것은 변형 이름과 속성, 변형 PNG와 PNG 안 노드 위치, 쓰는 자산 파일, 구현 참고용 레이어 트리다. 레이어 트리는 판정에 쓰지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param nodeId 컴포넌트 세트나 단독 컴포넌트 ID
  * @param scale PNG 배율
@@ -53,9 +57,20 @@ export async function exportTargetCore(
   const variants: Record<string, VariantEntry> = {};
   const assetNodes = new Map<string, AssetData>();
   const nodes = new Map<string, ComponentNode>();
+  const codeVariables = context.codeVariables ?? noCodeVariables;
   for (const variant of variantsOf(node)) {
     const tree = await readNodeTree(variant, names);
-    violations.push(...checkVariant(tree, `${node.name} / ${variant.name}`, context));
+    const where = `${node.name} / ${variant.name}`;
+    const { directives, problems } = parseDirectiveTexts([node.description, variant.description]);
+    violations.push(...checkVariant(tree, where, context, directives));
+    for (const problem of problems) {
+      violations.push({
+        where,
+        reason: `description의 ${problem}`,
+        fix: 'description 줄을 고친다.',
+        nodeId: variant.id,
+      });
+    }
     collectAssets(tree, assetNodes);
     const properties = propertiesOf(node, variant);
     const slug = variantSlug(properties);
@@ -70,6 +85,8 @@ export async function exportTargetCore(
       nodeId: variant.id,
       properties,
       node: nodeBox(box, variant.absoluteRenderBounds),
+      ...(hasEmptyHugSlot(tree) ? { emptyHugSlot: true } : {}),
+      tree: layerTree(tree, codeVariables),
     };
     nodes.set(slug, variant);
   }
@@ -87,8 +104,38 @@ export async function exportTargetCore(
   }
   return {
     ok: true,
-    target: { manifest: { name: node.name, nodeId: node.id, variants }, pngs, assets },
+    target: {
+      manifest: {
+        name: node.name,
+        nodeId: node.id,
+        ...(node.description === '' ? {} : { description: node.description }),
+        propertyDefinitions: propertyDefinitionsOf(node),
+        variants,
+      },
+      pngs,
+      assets,
+    },
   };
+}
+
+/**
+ * 컴포넌트 속성 정의를 읽는다. 변형이 아닌 단독 컴포넌트와 세트만 정의를 가진다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param node 컴포넌트 세트나 단독 컴포넌트
+ * @returns 속성 이름 → 종류와 기본값
+ */
+function propertyDefinitionsOf(node: ComponentSetNode | ComponentNode): JsonObject {
+  const result: JsonObject = {};
+  for (const [key, definition] of Object.entries(node.componentPropertyDefinitions)) {
+    result[key.split('#')[0] ?? key] = {
+      type: definition.type,
+      ...(definition.type === 'INSTANCE_SWAP' ? {} : { default: definition.defaultValue }),
+      ...(definition.variantOptions === undefined
+        ? {}
+        : { options: [...definition.variantOptions] }),
+    };
+  }
+  return result;
 }
 
 /** 변형 PNG만 다시 내보낸 결과 */

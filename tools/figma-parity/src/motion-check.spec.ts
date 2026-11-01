@@ -7,6 +7,7 @@ import {
   findMotionStoryId,
   iterationSummary,
   type ObservedAnimation,
+  ownAnimations,
 } from './motion-compare.ts';
 import type { MotionResult } from './motion-report.ts';
 import { TOKENS_CSS_FILE } from './motion-scope.ts';
@@ -192,7 +193,7 @@ for (const name of selected) {
         result.timingErrors = compareMotion(spec, tokens, observed.timing);
         result.rows = compareMotionValues(
           parseValueTracks(json, file),
-          observed.effects,
+          ownAnimations(spec, observed.effects),
           tokenVariables,
         );
       } catch (error) {

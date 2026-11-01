@@ -16,6 +16,9 @@ function disallowedMessage(name) {
   if (name === 'keyframes') {
     return `@keyframes는 ${MOTION_CSS}에서만 쓴다. 움직임은 motion-* 클래스로 둔다.`;
   }
+  if (name === 'custom-variant') {
+    return `@custom-variant는 ${TOKENS_CSS}에서만 쓴다. 구간은 피그마 경계값 변수에서 만든다.`;
+  }
   if (name === 'utility') {
     return `@utility는 ${TOKENS_CSS}(토큰 클래스)와 ${MOTION_CSS}(motion-* 클래스)에서만 쓴다.`;
   }
@@ -34,7 +37,10 @@ const config = {
     '**/coverage/**',
   ],
   rules: {
-    'at-rule-disallowed-list': [['theme', 'utility', 'keyframes'], { message: disallowedMessage }],
+    'at-rule-disallowed-list': [
+      ['theme', 'utility', 'keyframes', 'custom-variant'],
+      { message: disallowedMessage },
+    ],
   },
   overrides: [
     {
@@ -46,7 +52,7 @@ const config = {
     {
       files: [MOTION_CSS],
       rules: {
-        'at-rule-disallowed-list': [['theme'], { message: disallowedMessage }],
+        'at-rule-disallowed-list': [['theme', 'custom-variant'], { message: disallowedMessage }],
       },
     },
   ],

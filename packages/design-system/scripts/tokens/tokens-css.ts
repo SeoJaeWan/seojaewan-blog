@@ -1,8 +1,17 @@
 /**
- * figma/tokens.json(DTCG 형식)을 src/tokens.css(Tailwind v4 `@theme`과 `@utility`)로 바꾼다.
+ * figma/tokens.json(DTCG 형식)을 src/tokens.css(Tailwind v4 `@theme`과 `@utility`)와 src/token-names.ts로 바꾼다.
  * 파일을 읽거나 쓰지 않는 순수 변환이라 Node가 아닌 곳(피그마 플러그인)에서도 가져다 쓸 수 있다.
  * 파일 입출력은 generate-tokens.ts가 맡는다.
  */
+
+import {
+  BREAKPOINT_GROUP,
+  classRuleOf,
+  isPathRuleActive,
+  type PathGroup,
+  pathGroupOf,
+  pathGroups,
+} from './token-naming.ts';
 
 // 한글 전용 글자 스타일 묶음이다. 웹에서는 서체 목록으로 글자마다 서체가 나뉘므로 짝인 라틴 스타일에 합친다.
 const HANGUL_STYLE_GROUP = 'Hangul';
@@ -19,6 +28,13 @@ const INTERPOLATION_STOPS = 4;
 const ANGLE_PRECISION = 1;
 // 위→아래(CSS 180deg). 이 방향은 기존 출력과 같게 `to bottom`으로 쓴다.
 const TO_BOTTOM_ANGLE = 180;
+// 피그마 그라데이션 칠 종류다.
+const LINEAR_GRADIENT = 'GRADIENT_LINEAR';
+const RADIAL_GRADIENT = 'GRADIENT_RADIAL';
+const ANGULAR_GRADIENT = 'GRADIENT_ANGULAR';
+const gradientTypes: readonly string[] = [LINEAR_GRADIENT, RADIAL_GRADIENT, ANGULAR_GRADIENT];
+// 방사형 축이 정규화 좌표 축과 나란한지 보는 오차다.
+const AXIS_TOLERANCE = 1e-3;
 // 방향 정보가 없는 칠(옛 tokens.json)이 쓰는 피그마 위→아래 변환이다.
 const toBottomTransform: GradientTransform = [
   [0, 1, 0],
@@ -26,6 +42,31 @@ const toBottomTransform: GradientTransform = [
 ];
 // 직선 이징(피그마 LINEAR)의 베지어 제어점이다. CSS에는 `linear`로 쓴다.
 const LINEAR_BEZIER = '0,0,1,1';
+// 노트북 변수 모드 이름이다. 값은 노트북 구간의 @media에서 바뀐다.
+const LAPTOP_MODE = 'Laptop';
+// 경계값 변수 이름이다(`breakpoint/` 뒤).
+const MOBILE_WIDTH = 'mobile/width';
+const LAPTOP_WIDTH = 'laptop/width';
+const LAPTOP_HEIGHT = 'laptop/height';
+// 생성한 이름 목록이 담는 @theme 이름공간이다.
+const NAME_LISTS = [
+  ['spacing', '--spacing'],
+  ['size', '--size'],
+  ['radius', '--radius'],
+  ['strokeWidth', '--stroke-width'],
+  ['opacity', '--opacity'],
+  ['rotate', '--rotate'],
+  ['zIndex', '--z-index'],
+  ['lineClamp', '--line-clamp'],
+  ['aspect', '--aspect'],
+  ['inset', '--inset'],
+  ['translate', '--translate'],
+  ['gridColumnStart', '--grid-column-start'],
+  ['gridRowStart', '--grid-row-start'],
+  ['borderSpacing', '--border-spacing'],
+  ['shrink', '--shrink'],
+  ['flex', '--flex'],
+] as const;
 // 플러그인이 붙이는 확장 필드 이름이다.
 const FIGMA_EXTENSION = 'com.figma';
 const SEOJAEWAN_EXTENSION = 'com.seojaewan';
@@ -117,6 +158,24 @@ type CssVariable = {
   source: string;
   /** 유틸리티가 읽지 않아 이름공간과 상관없이 :root에 두는지 */
   isRootOnly?: boolean;
+  /** 새 규칙 별칭이라 이름공간과 상관없이 테마에 두는지 */
+  isThemeOnly?: boolean;
+};
+
+/** 경계값(px)과 구간 조건 */
+type Breakpoints = {
+  /** `breakpoint/` 뒤 경로 → px */
+  values: ReadonlyMap<string, number>;
+  /** 모바일·노트북 구간의 미디어 조건. 경계값 셋이 없으면 undefined */
+  queries?: { mobile: string; laptop: string };
+};
+
+/** 한 번의 변환 결과 */
+type Converted = {
+  css: string;
+  /** `@theme static`에 든 변수 이름 */
+  themeNames: readonly string[];
+  breakpoints: Breakpoints;
 };
 
 /** 변환에 쓰는 표 */
@@ -126,6 +185,9 @@ type Context = {
 };
 
 type Rgba = [number, number, number, number];
+
+/** 정규화 좌표의 점이나 벡터 */
+type Point = { x: number; y: number };
 
 /** 그라데이션 정지점 하나 */
 // 피그마 gradientTransform의 위 두 줄([[a, b, c], [d, e, f]])이다.
@@ -172,6 +234,79 @@ export class TokenFormatError extends Error {
  * @returns Tailwind 기본값 지우기, `@theme static`, `@utility`를 담은 CSS
  */
 export function tokensJsonToCss(json: unknown): string {
+  return convertTokens(json).css;
+}
+
+/**
+ * tokens.json을 src/token-names.ts 내용으로 바꾼다. `cn`이 쓰는 토큰 이름 목록과 경계값 상수다.
+ * 이름 목록은 `@theme`에 든 변수에서 만들어 tokens.css와 늘 같다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param json figma/tokens.json을 파싱한 값
+ * @returns TS 파일 내용
+ */
+export function tokensJsonToNames(json: unknown): string {
+  const { themeNames, breakpoints } = convertTokens(json);
+  const lists = NAME_LISTS.map(([key, namespace]) => nameListLines(key, namespace, themeNames));
+  const values = [...breakpoints.values]
+    .sort(([a], [b]) => naturalCompare(a, b))
+    .map(([path, value]) => `  ${camelPath(path)}: ${formatNumber(value)},`);
+  return [
+    '/*',
+    ' * 이 파일은 scripts/tokens/generate-tokens.ts가 figma/tokens.json에서 만든다. 손으로 고치지 않는다.',
+    ' * 다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens',
+    ' */',
+    '',
+    '/** tokens.css의 테마 이름공간마다 든 토큰 이름. `cn`이 클래스 묶음을 알아보는 데 쓴다. */',
+    'export const TOKEN_NAMES = {',
+    ...lists,
+    '} as const;',
+    '',
+    '/** 피그마 `breakpoint/*` 경계값(px) */',
+    ...(values.length === 0
+      ? ['export const BREAKPOINTS = {} as const;']
+      : ['export const BREAKPOINTS = {', ...values, '} as const;']),
+    '',
+  ].join('\n');
+}
+
+/**
+ * 이름공간 하나의 이름 목록을 TS 글자로 쓴다.
+ * @param key 목록 이름
+ * @param namespace 이름공간
+ * @param themeNames 테마 변수 이름
+ * @returns TS 글자
+ */
+function nameListLines(key: string, namespace: string, themeNames: readonly string[]): string {
+  const names = uniqueSorted(
+    themeNames
+      .filter((name) => name.startsWith(`${namespace}-`))
+      .map((name) => name.slice(namespace.length + 1)),
+  );
+  if (names.length === 0) {
+    return `  ${key}: [],`;
+  }
+  return [`  ${key}: [`, ...names.map((name) => `    '${name}',`), '  ],'].join('\n');
+}
+
+/**
+ * 경로를 낙타 표기로 바꾼다.
+ * @param path `mobile/width`
+ * @returns `mobileWidth`
+ */
+function camelPath(path: string): string {
+  return path
+    .split(/[/-]/u)
+    .map((part, index) => (index === 0 ? part : `${part.charAt(0).toUpperCase()}${part.slice(1)}`))
+    .join('');
+}
+
+/**
+ * tokens.json을 변환한다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param json figma/tokens.json을 파싱한 값
+ * @returns CSS와 테마 변수 이름, 경계값
+ */
+function convertTokens(json: unknown): Converted {
   if (!isRecord(json)) {
     throw new TokenFormatError('(root)', '최상위는 객체여야 한다.');
   }
@@ -185,8 +320,10 @@ export function tokensJsonToCss(json: unknown): string {
   const effects = flattenTokens(asGroup(styles.effect, 'style/effect'), [], undefined);
   const texts = flattenTokens(asGroup(styles.text, 'style/text'), [], undefined);
 
+  const isPathActive = isPathRuleActive(variableTokens.map((token) => token.path.join('/')));
+  const breakpoints = breakpointsOf(variableTokens);
   const variables = [
-    ...variableTokens.map((token) => variableCss(token, context)),
+    ...variableTokens.flatMap((token) => variableCss(token, isPathActive, context)),
     ...effects.flatMap((token) => effectVariables(token, context)),
     ...paints.map((token) => paintVariable(token, context)),
   ];
@@ -228,16 +365,20 @@ export function tokensJsonToCss(json: unknown): string {
    */
   function isThemeVariable(variable: CssVariable): boolean {
     return (
-      variable.isRootOnly !== true &&
-      themePrefixes.some((prefix) => variable.name.startsWith(prefix))
+      variable.isThemeOnly === true ||
+      (variable.isRootOnly !== true &&
+        themePrefixes.some((prefix) => variable.name.startsWith(prefix)))
     );
   }
 
+  const themeVariables = variables.filter(isThemeVariable);
   const blocks = [
-    header(namespaces, colorGroups),
-    clearingBlock(texts, context),
+    header(namespaces, colorGroups, isPathActive),
+    clearingBlock(texts, breakpoints, context),
     block(':root', declarationLines(variables.filter((variable) => !isThemeVariable(variable)))),
-    block('@theme static', declarationLines(variables.filter(isThemeVariable))),
+    block('@theme static', declarationLines(themeVariables)),
+    ...customVariants(breakpoints),
+    ...laptopModeBlock(variableTokens, breakpoints, context),
     ...namespaces.map(([namespace, utility]) =>
       block(`@utility ${utility.prefix}-*`, utility.declarations(`--value(${namespace}-*)`)),
     ),
@@ -245,7 +386,112 @@ export function tokensJsonToCss(json: unknown): string {
     ...effects.flatMap((token) => blurredEffectUtility(token)),
     ...materialUtilities(paints, effects),
   ];
-  return `${blocks.join('\n\n')}\n`;
+  return {
+    css: `${blocks.join('\n\n')}\n`,
+    themeNames: themeVariables.map((variable) => variable.name),
+    breakpoints,
+  };
+}
+
+/**
+ * `breakpoint/*` 변수에서 경계값과 구간 조건을 만든다. 모바일 판정이 먼저라 노트북 구간은 모바일 폭을 뺀다.
+ * 그래서 어느 창 크기든 `pc | laptop | mobile` 가운데 하나에만 든다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param tokens 변수 토큰
+ * @returns 경계값
+ */
+function breakpointsOf(tokens: readonly FlatToken[]): Breakpoints {
+  const values = new Map<string, number>();
+  for (const token of tokens) {
+    const [group, ...rest] = token.path;
+    if (group === BREAKPOINT_GROUP && rest.length > 0) {
+      const source = token.path.join('/');
+      if (!isRecord(token.value) || token.value.unit !== 'px') {
+        throw new TokenFormatError(source, '경계값은 px 숫자 변수여야 한다.');
+      }
+      values.set(rest.join('/'), numberValue(token.value.value, source));
+    }
+  }
+  const mobile = values.get(MOBILE_WIDTH);
+  const width = values.get(LAPTOP_WIDTH);
+  const height = values.get(LAPTOP_HEIGHT);
+  if (values.size === 0) {
+    return { values };
+  }
+  if (mobile === undefined || width === undefined || height === undefined) {
+    throw new TokenFormatError(
+      BREAKPOINT_GROUP,
+      `경계값 ${[MOBILE_WIDTH, LAPTOP_WIDTH, LAPTOP_HEIGHT].join(', ')}가 모두 있어야 한다.`,
+    );
+  }
+  const notMobile = `(min-width: ${formatNumber(mobile)}px)`;
+  return {
+    values,
+    queries: {
+      mobile: `(max-width: ${formatNumber(mobile - 1)}px)`,
+      laptop: `${notMobile} and (max-width: ${formatNumber(width - 1)}px), ${notMobile} and (max-height: ${formatNumber(height - 1)}px)`,
+    },
+  };
+}
+
+/**
+ * 구간 변형을 블록 형식 `@custom-variant`로 만든다. 한 줄 형식은 쉼표에서 잘려 깨진다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param breakpoints 경계값
+ * @returns `@custom-variant` 블록
+ */
+function customVariants(breakpoints: Breakpoints): string[] {
+  const { queries } = breakpoints;
+  if (queries === undefined) {
+    return [];
+  }
+  return [
+    ['laptop', queries.laptop],
+    ['mobile', queries.mobile],
+  ].map(([name, query]) =>
+    block(`@custom-variant ${name ?? ''}`, [`@media ${query ?? ''} {`, '  @slot;', '}']),
+  );
+}
+
+/**
+ * 노트북 모드 값을 `@media` 안 `:root`로 만든다. 기본 값과 다른 변수만 tokens.json에 있다.
+ * `:root`는 층 밖이라 `@theme` 변수(층 안)보다 앞서고, `:root` 블록보다 뒤에 와서 그 값도 덮는다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param tokens 변수 토큰
+ * @param breakpoints 경계값
+ * @param context 변환 표
+ * @returns `@media` 블록
+ */
+function laptopModeBlock(
+  tokens: readonly FlatToken[],
+  breakpoints: Breakpoints,
+  context: Context,
+): string[] {
+  const lines: string[] = [];
+  for (const token of [...tokens].sort((a, b) =>
+    naturalCompare(cssName(a.path), cssName(b.path)),
+  )) {
+    const source = token.path.join('/');
+    const extension = token.extensions[SEOJAEWAN_EXTENSION];
+    const modes = isRecord(extension) ? extension.modes : undefined;
+    if (!isRecord(modes)) {
+      continue;
+    }
+    for (const [mode, value] of Object.entries(modes)) {
+      if (mode !== LAPTOP_MODE) {
+        throw new TokenFormatError(source, `모드 ${mode}는 변환 규칙이 없다.`);
+      }
+      const css = aliasReference(value, context, source) ?? rawValue({ ...token, value }, source);
+      lines.push(`${cssName(token.path)}: ${css};`);
+    }
+  }
+  if (lines.length === 0) {
+    return [];
+  }
+  if (breakpoints.queries === undefined) {
+    throw new TokenFormatError(LAPTOP_MODE, '모드 값을 쓰려면 경계값 변수가 있어야 한다.');
+  }
+  return [block(`@media ${breakpoints.queries.laptop}`, block(':root', lines).split('\n'))];
 }
 
 /**
@@ -367,6 +613,12 @@ function namespaceUtilities(
   }
   if (hasNamespace('--stroke-width')) {
     add('--stroke-width', strokeWidthUtilities);
+  }
+  for (const group of pathGroups) {
+    const [namespace] = group.namespaces;
+    if (group.utility !== undefined && namespace !== undefined && hasNamespace(namespace)) {
+      add(namespace, [propertyUtility(group.utility.prefix, [group.utility.property])]);
+    }
   }
   // motion/* 변수로는 유틸리티를 만들지 않는다. motion.css의 motion-* 클래스가 var()로 쓴다(:root에 남는다).
   return result.sort(([, a], [, b]) => naturalCompare(a.prefix, b.prefix));
@@ -496,11 +748,13 @@ function propertyUtility(prefix: string, properties: readonly string[]): Namespa
  * 생성 파일 머리 주석(클래스 이름 표)을 만든다.
  * @param namespaces 이름공간 유틸리티
  * @param colorGroups 색 묶음
+ * @param isPathActive 새 규칙을 쓰는지
  * @returns 주석
  */
 function header(
   namespaces: readonly [string, NamespaceUtility][],
   colorGroups: readonly string[],
+  isPathActive: boolean,
 ): string {
   const rows = new Map<string, string>();
   for (const [namespace, utility] of namespaces) {
@@ -524,6 +778,7 @@ function header(
     '| `type-<글자 스타일>` | 서체, 크기, 굵기, 줄 높이, 자간 | 글자 스타일 |',
     '| `<효과 스타일>`(배경 흐림이 있는 것) | box-shadow, backdrop-filter | `--<효과 스타일>-shadow`, `-backdrop-blur` |',
     '| `material-<재질>` | background-color, backdrop-filter | `Material/*` 칠·효과 스타일 |',
+    ...(isPathActive ? pathGroups.map(pathGroupRow) : []),
     '',
     `색 묶음: ${colorGroups.join(', ')}`,
   ];
@@ -531,14 +786,33 @@ function header(
 }
 
 /**
+ * 머리 주석 표에 새 규칙 묶음 한 줄을 만든다.
+ * @param group 경로 규칙 묶음
+ * @returns 표 한 줄
+ */
+function pathGroupRow(group: PathGroup): string {
+  const variables = group.namespaces.map((namespace) => `\`${namespace}-<경로 전체>\``).join(', ');
+  const css = group.utility?.property ?? 'Tailwind 기본 유틸리티';
+  return `| 유틸리티 + \`${group.prefix}\` 경로 전체 | ${css} | ${variables} |`;
+}
+
+/**
  * Tailwind 기본 테마 지우기와 기본 서체 블록을 만든다. 토큰보다 앞에 와야 한다.
  * @codocs [[피그마 연동:토큰 생성]]
  * @param texts 글자 스타일
+ * @param breakpoints 경계값. 있으면 Tailwind 기본 구간도 지운다
  * @param context 변환 표
  * @returns `@theme` 블록
  */
-function clearingBlock(texts: readonly FlatToken[], context: Context): string {
+function clearingBlock(
+  texts: readonly FlatToken[],
+  breakpoints: Breakpoints,
+  context: Context,
+): string {
   const lines: string[] = CLEARED_NAMESPACES.map((namespace) => `${namespace}: initial;`);
+  if (breakpoints.queries !== undefined) {
+    lines.push('--breakpoint-*: initial;');
+  }
   const defaults: [string, string][] = [
     ['--default-font-family', DEFAULT_TEXT_STYLE],
     ['--default-mono-font-family', DEFAULT_MONO_TEXT_STYLE],
@@ -579,19 +853,42 @@ function block(selector: string, lines: readonly string[]): string {
 }
 
 /**
- * 변수 토큰 하나를 CSS 변수로 바꾼다.
+ * 변수 토큰 하나를 CSS 변수로 바꾼다. 새 규칙 토큰은 경로 이름 변수를 :root에 두어 옛 클래스(`p-sm`)가 생기지 않게 하고,
+ * 클래스는 이름공간 + 경로 전체 별칭 변수(`--spacing-spacing-sm`)가 만든다. 값을 바꾸는 `@media`는 경로 이름 변수를 덮는다.
+ * @codocs [[피그마 연동:토큰 생성]]
  * @param token 변수 토큰
+ * @param isPathActive 새 규칙을 쓰는지
  * @param context 변환 표
- * @returns CSS 변수
+ * @returns CSS 변수(자신과 새 규칙 별칭)
  */
-function variableCss(token: FlatToken, context: Context): CssVariable {
+function variableCss(token: FlatToken, isPathActive: boolean, context: Context): CssVariable[] {
   const source = token.path.join('/');
   const reference = aliasReference(token.value, context, source);
-  return {
-    name: cssName(token.path),
+  const rule = classRuleOf(source);
+  const name = cssName(token.path);
+  const own: CssVariable = {
+    name,
     value: reference ?? rawValue(token, source),
     source,
+    ...(rule === 'path' ? { isRootOnly: true } : {}),
   };
+  if (rule !== 'path' && !(rule === 'kept' && isPathActive)) {
+    return [own];
+  }
+  const aliases = (pathGroupOf(source)?.namespaces ?? []).map(
+    /**
+     * 이름공간 하나의 별칭 변수를 만든다.
+     * @param namespace 이름공간
+     * @returns 별칭 변수
+     */
+    (namespace): CssVariable => ({
+      name: `${namespace}-${kebabPath(token.path)}`,
+      value: `var(${name})`,
+      source,
+      isThemeOnly: true,
+    }),
+  );
+  return [own, ...aliases];
 }
 
 /**
@@ -614,10 +911,15 @@ function rawValue(token: FlatToken, source: string): string {
       return formatNumber(numberValue(token.value, source));
     case 'cubicBezier':
       return easingValue(token.value, source);
+    case 'string':
+      return cssText(token.value, source);
     case 'number': {
       const value = numberValue(token.value, source);
       // 피그마 불투명도 변수(0~100)는 백분율이다.
-      return scopesOf(token).includes('OPACITY') ? `${formatNumber(value)}%` : formatNumber(value);
+      if (scopesOf(token).includes('OPACITY')) {
+        return `${formatNumber(value)}%`;
+      }
+      return `${formatNumber(value)}${pathGroupOf(source)?.unit ?? ''}`;
     }
     default:
       throw new TokenFormatError(source, `$type ${token.type}은 변환 규칙이 없다.`);
@@ -793,7 +1095,7 @@ function paintVariable(token: FlatToken, context: Context): CssVariable {
     case 'gradient':
       return {
         name,
-        value: linearGradient(token.value, gradientTransform(token, source), context, source),
+        value: gradientValue(token, context, source),
         source,
       };
     default:
@@ -1004,13 +1306,16 @@ function textFamily(token: FlatToken, texts: readonly FlatToken[], context: Cont
  * 그라데이션 칠 스타일의 첫 그라데이션 층에서 피그마 gradientTransform을 꺼낸다.
  * 토큰 값(정지점)이 첫 그라데이션 층의 것이므로 방향도 그 층을 쓴다.
  * 층 정보나 변환이 없는 옛 tokens.json은 위→아래로 읽는다.
- * 선형이 아닌 그라데이션(방사형, 각도, 다이아몬드)은 CSS 규칙이 없어 실패한다.
+ * 다이아몬드는 CSS에 대응하는 그라데이션이 없어 실패한다(구조 검사도 막는다).
  * @codocs [[피그마 연동:토큰 생성]]
  * @param token 그라데이션 칠 스타일
  * @param source 오류 메시지에 쓸 경로
- * @returns 2×3 변환 행렬
+ * @returns 그라데이션 종류와 2×3 변환 행렬
  */
-function gradientTransform(token: FlatToken, source: string): GradientTransform {
+function gradientLayer(
+  token: FlatToken,
+  source: string,
+): { type: string; transform: GradientTransform } {
   const extension = token.extensions[SEOJAEWAN_EXTENSION];
   const layers: unknown[] =
     isRecord(extension) && Array.isArray(extension.layers) ? extension.layers : [];
@@ -1021,16 +1326,17 @@ function gradientTransform(token: FlatToken, source: string): GradientTransform 
       candidate.type.startsWith('GRADIENT_'),
   );
   if (layer === undefined) {
-    return toBottomTransform;
+    return { type: LINEAR_GRADIENT, transform: toBottomTransform };
   }
-  if (layer.type !== 'GRADIENT_LINEAR') {
+  const type = String(layer.type);
+  if (!gradientTypes.includes(type)) {
     throw new TokenFormatError(
       source,
-      `${String(layer.type)} 그라데이션은 변환 규칙이 없다(선형만 옮긴다).`,
+      `${type} 그라데이션은 변환 규칙이 없다(선형·방사형·각도형만 옮긴다).`,
     );
   }
   if (layer.gradientTransform === undefined) {
-    return toBottomTransform;
+    return { type, transform: toBottomTransform };
   }
   const rows = layer.gradientTransform;
   if (!Array.isArray(rows) || rows.length !== 2) {
@@ -1050,7 +1356,130 @@ function gradientTransform(token: FlatToken, source: string): GradientTransform 
       return [a ?? 0, b ?? 0, c ?? 0] as const;
     },
   );
-  return [first ?? toBottomTransform[0], second ?? toBottomTransform[1]];
+  return { type, transform: [first ?? toBottomTransform[0], second ?? toBottomTransform[1]] };
+}
+
+/**
+ * 그라데이션 칠 스타일을 CSS 값으로 바꾼다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param token 그라데이션 칠 스타일
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns CSS 그라데이션
+ */
+function gradientValue(token: FlatToken, context: Context, source: string): string {
+  const { type, transform } = gradientLayer(token, source);
+  if (type === RADIAL_GRADIENT) {
+    return radialGradient(token.value, transform, context, source);
+  }
+  if (type === ANGULAR_GRADIENT) {
+    return conicGradient(token.value, transform, context, source);
+  }
+  return linearGradient(token.value, transform, context, source);
+}
+
+/**
+ * 피그마 변환의 역변환으로 그라데이션 공간의 점을 도형의 정규화 좌표로 옮긴다.
+ * 방사형·각도형은 그라데이션 공간의 (0.5, 0.5)가 가운데이고, (1, 0.5)가 첫 손잡이, (0.5, 1)이 둘째 손잡이다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param transform 피그마 gradientTransform
+ * @param source 오류 메시지에 쓸 경로
+ * @returns 가운데, 첫 손잡이 벡터, 둘째 손잡이 벡터, 뒤집혔는지
+ */
+function gradientHandles(
+  transform: GradientTransform,
+  source: string,
+): { center: Point; first: Point; second: Point; isFlipped: boolean } {
+  const [[a, b, c], [d, e, f]] = transform;
+  const determinant = a * e - b * d;
+  if (Math.abs(determinant) < 1e-9) {
+    throw new TokenFormatError(source, 'gradientTransform을 뒤집을 수 없다.');
+  }
+  /**
+   * 그라데이션 공간의 점을 정규화 좌표로 옮긴다.
+   * @param u 그라데이션 공간 x
+   * @param v 그라데이션 공간 y
+   * @returns 정규화 좌표
+   */
+  function toObject(u: number, v: number): Point {
+    const x = u - c;
+    const y = v - f;
+    return { x: (e * x - b * y) / determinant, y: (a * y - d * x) / determinant };
+  }
+  const center = toObject(0.5, 0.5);
+  const edgeFirst = toObject(1, 0.5);
+  const edgeSecond = toObject(0.5, 1);
+  return {
+    center,
+    first: { x: edgeFirst.x - center.x, y: edgeFirst.y - center.y },
+    second: { x: edgeSecond.x - center.x, y: edgeSecond.y - center.y },
+    isFlipped: determinant < 0,
+  };
+}
+
+/**
+ * 피그마 방사형을 `radial-gradient(ellipse ...)`로 바꾼다. 반지름·위치가 상자 비율이라 어느 상자에서나 피그마와 같다.
+ * 정규화 좌표에서 축이 기울어진 타원은 CSS로 그릴 수 없어 실패한다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param stops `[{color, position}]`
+ * @param transform 피그마 gradientTransform
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns `radial-gradient(ellipse 50% 50% at 50% 50%, ...)`
+ */
+function radialGradient(
+  stops: unknown,
+  transform: GradientTransform,
+  context: Context,
+  source: string,
+): string {
+  const { center, first, second } = gradientHandles(transform, source);
+  const firstLength = Math.hypot(first.x, first.y);
+  const secondLength = Math.hypot(second.x, second.y);
+  const isCircle = Math.abs(firstLength - secondLength) < AXIS_TOLERANCE;
+  const isUpright = Math.abs(first.y) < AXIS_TOLERANCE && Math.abs(second.x) < AXIS_TOLERANCE;
+  const isTurned = Math.abs(first.x) < AXIS_TOLERANCE && Math.abs(second.y) < AXIS_TOLERANCE;
+  if (!isCircle && !isUpright && !isTurned) {
+    throw new TokenFormatError(source, '축이 기울어진 방사형 그라데이션은 CSS로 옮길 수 없다.');
+  }
+  const [radiusX, radiusY] =
+    isTurned && !isCircle ? [secondLength, firstLength] : [firstLength, secondLength];
+  const shape = `ellipse ${percent(radiusX)} ${percent(radiusY)} at ${percent(center.x)} ${percent(center.y)}`;
+  return `radial-gradient(${shape}, ${stopList(stops, (position) => position, context, source)})`;
+}
+
+/**
+ * 피그마 각도형을 `conic-gradient()`로 바꾼다. 첫 손잡이 쪽에서 시작해 시계 방향으로 돈다.
+ * 정사각형 상자에서는 피그마와 같고, 아니면 근사다(선형과 같다). 뒤집힌 각도형은 CSS로 그릴 수 없어 실패한다.
+ * @codocs [[피그마 연동:토큰 생성]]
+ * @param stops `[{color, position}]`
+ * @param transform 피그마 gradientTransform
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns `conic-gradient(from 90deg at 50% 50%, ...)`
+ */
+function conicGradient(
+  stops: unknown,
+  transform: GradientTransform,
+  context: Context,
+  source: string,
+): string {
+  const { center, first, isFlipped } = gradientHandles(transform, source);
+  if (isFlipped) {
+    throw new TokenFormatError(source, '뒤집힌 각도형 그라데이션은 CSS로 옮길 수 없다.');
+  }
+  const angle = roundAngle((Math.atan2(first.x, -first.y) * 180) / Math.PI);
+  const from = `from ${formatNumber(angle)}deg at ${percent(center.x)} ${percent(center.y)}`;
+  return `conic-gradient(${from}, ${stopList(stops, (position) => position, context, source)})`;
+}
+
+/**
+ * 비율(0~1)을 CSS 백분율로 쓴다.
+ * @param ratio 비율
+ * @returns `50%`
+ */
+function percent(ratio: number): string {
+  return `${formatNumber(round(ratio * 100))}%`;
 }
 
 /**
@@ -1120,10 +1549,31 @@ function linearGradient(
   context: Context,
   source: string,
 ): string {
+  const direction = gradientDirection(transform, source);
+  const angle =
+    direction.angle === TO_BOTTOM_ANGLE ? 'to bottom' : `${formatNumber(direction.angle)}deg`;
+  return `linear-gradient(${angle}, ${stopList(stops, direction.toCss, context, source)})`;
+}
+
+/**
+ * 정지점 목록을 CSS 정지점 글자로 바꾼다.
+ * 피그마는 정지점 사이 색을 투명도와 따로 섞고 CSS는 투명도를 곱해 섞으므로, 투명도와 RGB가 모두 다른 두 정지점 사이에 중간 정지점을 넣는다.
+ * @codocs [[피그마 연동:컨트롤 테두리 구현]]
+ * @param stops `[{color, position}]`
+ * @param toCss 피그마 위치(0~1) → CSS 위치(0~1)
+ * @param context 변환 표
+ * @param source 오류 메시지에 쓸 경로
+ * @returns `#000 0%, #fff 100%`
+ */
+function stopList(
+  stops: unknown,
+  toCss: (position: number) => number,
+  context: Context,
+  source: string,
+): string {
   if (!Array.isArray(stops) || stops.length === 0) {
     throw new TokenFormatError(source, '그라데이션 정지점은 비어 있지 않은 배열이어야 한다.');
   }
-  const direction = gradientDirection(transform, source);
   const parsed = stops.map(
     /**
      * 정지점 하나를 읽는다.
@@ -1136,7 +1586,7 @@ function linearGradient(
       }
       return {
         css: aliasReference(stop.color, context, source) ?? colorValue(stop.color, source),
-        percent: round(direction.toCss(numberValue(stop.position, source)) * 100),
+        percent: round(toCss(numberValue(stop.position, source)) * 100),
         rgba: resolvedRgba(stop.color, context),
       };
     },
@@ -1149,9 +1599,7 @@ function linearGradient(
       parts.push(...interpolatedStops(stop, next));
     }
   }
-  const angle =
-    direction.angle === TO_BOTTOM_ANGLE ? 'to bottom' : `${formatNumber(direction.angle)}deg`;
-  return `linear-gradient(${angle}, ${parts.join(', ')})`;
+  return parts.join(', ');
 }
 
 /**
@@ -1461,6 +1909,20 @@ function easingValue(value: unknown, source: string): string {
     return 'linear';
   }
   return `cubic-bezier(${numbers.join(', ')})`;
+}
+
+/**
+ * 코드 전용 문자 변수 값을 그대로 쓸 수 있는지 확인한다.
+ * @param value 토큰 값
+ * @param source 오류 메시지에 쓸 경로
+ * @returns CSS 값 글자
+ */
+function cssText(value: unknown, source: string): string {
+  const text = stringValue(value, source).trim();
+  if (text === '' || /[;{}]/u.test(text)) {
+    throw new TokenFormatError(source, `CSS 값으로 쓸 수 없는 글자다(${JSON.stringify(value)}).`);
+  }
+  return text;
 }
 
 /**

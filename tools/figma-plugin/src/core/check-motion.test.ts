@@ -129,7 +129,57 @@ describe('모션', () => {
     expect(translation?.keyframes.map((item) => item.valueToken)).toEqual([null, null]);
   });
 
-  it('json에 견본 이름, 노드 ID, 견본 링크, 반복(알 수 없어 null)을 담는다', () => {
+  it('@repeat·@trigger 줄이 없으면 막는다', () => {
+    const reasons = reasonsAfter((sample) => {
+      sample.annotations = ['@repeat 1'];
+    });
+    expect(reasons).toEqual([expect.stringContaining('`@trigger` 줄이 없다') as string]);
+  });
+
+  it('모르는 키와 잘못된 반복 값을 막는다', () => {
+    const reasons = reasonsAfter((sample) => {
+      sample.annotations = ['@repeat twice\n@trigger open\n@loop 1'];
+    });
+    expect(reasons.filter((reason) => reason.startsWith('주석의'))).toEqual([
+      expect.stringContaining('`@repeat twice`') as string,
+      expect.stringContaining('`@loop 1`') as string,
+    ]);
+  });
+
+  it('@ 줄 값을 json에 담고 @repeat로 반복 횟수를 정한다', () => {
+    const sample = structuredClone(windowOpenSample());
+    sample.annotations = ['@repeat infinite\n@trigger open\n@trigger hover'];
+    const result = checkMotionSample(sample, motionVariables, FILE_KEY);
+    expect(result.ok && result.motion.iterations).toBe('infinite');
+    expect(result.ok && result.motion.directives).toEqual({
+      repeat: ['infinite'],
+      trigger: ['open', 'hover'],
+    });
+  });
+
+  it('견본 길이를 넘는 트랙은 견본 길이까지만 담고 전체 길이에 넣지 않는다', () => {
+    const sample = structuredClone(windowOpenSample());
+    sample.lengthMs = 250;
+    sample.tracks.push(
+      track('ROTATION', [
+        keyframe(0, 0, unbound),
+        keyframe(1, 180, easing('fade')),
+        keyframe(2, 360, easing('fade')),
+      ]),
+    );
+    const result = checkMotionSample(sample, motionVariables, FILE_KEY);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.motion.duration).toEqual({ ms: 250, token: 'motion/duration/normal' });
+      const clipped = result.motion.tracks.find((item) => item.isTruncated === true);
+      expect(clipped?.keyframes.map((item) => item.time)).toEqual([0]);
+      expect(
+        result.motion.tracks.filter((item) => item.isTruncated !== true).length,
+      ).toBeGreaterThan(0);
+    }
+  });
+
+  it('json에 견본 이름, 노드 ID, 견본 링크, 반복(@repeat)을 담는다', () => {
     const { motion } = exported(windowOpenSample());
     expect(motion).toMatchObject({
       name: 'motion-window-open',
@@ -137,7 +187,7 @@ describe('모션', () => {
       url: 'https://www.figma.com/design/FILEKEY?node-id=12-34',
       duration: { ms: 250, token: 'motion/duration/normal' },
       delay: { ms: 0, token: null },
-      iterations: null,
+      iterations: 1,
     });
   });
 

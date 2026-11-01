@@ -15,7 +15,8 @@ function motion(time: number, value: number): MotionExport {
     url: motionUrl('KEY', '1:2'),
     duration: { ms: time, token: 'motion/duration/progress-ring' },
     delay: { ms: 0, token: null },
-    iterations: null,
+    iterations: 1,
+    directives: { repeat: ['1'], trigger: ['open'] },
     tracks: [
       {
         node: 'progress-ring/Arc',
@@ -49,6 +50,7 @@ describe('모션', () => {
     expect(text).not.toContain('-0');
     expect(Object.keys(JSON.parse(text) as object)).toEqual([
       'delay',
+      'directives',
       'duration',
       'iterations',
       'name',

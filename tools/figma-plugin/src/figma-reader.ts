@@ -1,7 +1,12 @@
 import { type CanvasBox, compareRankPaths, readingOrder } from './canvas-order';
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
 import type { CheckContext } from './core/check-structure';
-import { isMotionApiError } from './core/read-motion';
+import {
+  CODE_VARIABLE_PREFIXES,
+  type CodeVariable,
+  type CodeVariables,
+} from './core/code-variables';
+import { defaultFloatValue, isMotionApiError, readMotionVariables } from './core/read-motion';
 import type {
   DesignTokensInput,
   EffectInput,
@@ -189,6 +194,7 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
       throw new Error(`변수 ${variable.name}의 컬렉션을 찾을 수 없다.`);
     }
     const value = variable.valuesByMode[collection.defaultModeId];
+    const modes = otherModeValues(variable, collection);
     inputs.push({
       id: variable.id,
       name: variable.name,
@@ -196,6 +202,8 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
       resolvedType: variable.resolvedType,
       scopes: [...variable.scopes],
       value: value === undefined ? unsupported('기본 모드 값 없음') : variableValue(value),
+      ...(Object.keys(modes).length === 0 ? {} : { modes }),
+      ...(variable.description === '' ? {} : { description: variable.description }),
     });
   }
 
@@ -207,18 +215,61 @@ export async function readDesignTokensInput(): Promise<DesignTokensInput> {
     variables: inputs,
     aliasNames,
     textStyles: textStyles.map(textStyleInput),
-    effectStyles: effectStyles.map((style) => ({
-      name: style.name,
-      effects: style.effects.map(effectInput),
-    })),
-    paintStyles: paintStyles.map((style) => ({
-      name: style.name,
-      paints: style.paints.map(paintInput),
-    })),
+    effectStyles: effectStyles.map(
+      /**
+       * 효과 스타일을 변환 입력으로 옮긴다.
+       * @param style 피그마 효과 스타일
+       * @returns 변환 입력
+       */
+      (style) => ({
+        name: style.name,
+        effects: style.effects.map(effectInput),
+        description: style.description,
+      }),
+    ),
+    paintStyles: paintStyles.map(
+      /**
+       * 칠 스타일을 변환 입력으로 옮긴다.
+       * @param style 피그마 칠 스타일
+       * @returns 변환 입력
+       */
+      (style) => ({
+        name: style.name,
+        paints: style.paints.map(paintInput),
+        description: style.description,
+      }),
+    ),
     imageAssets: Object.fromEntries([...images].map(([hash, image]) => [hash, image.name])),
   };
   await addRemoteAliasNames(input, aliasNames);
   return input;
+}
+
+/**
+ * 기본 모드가 아닌 모드의 값을 읽는다. 기본 값과 같은 모드는 적지 않고, 값이 없는 모드는 지원하지 않는 값으로 표시해 막는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param variable 변수
+ * @param collection 변수의 컬렉션
+ * @returns 모드 이름 → 값
+ */
+function otherModeValues(
+  variable: Variable,
+  collection: VariableCollection,
+): Record<string, VariableValueInput> {
+  const base = JSON.stringify(variable.valuesByMode[collection.defaultModeId]);
+  const result: Record<string, VariableValueInput> = {};
+  for (const mode of collection.modes) {
+    const value = variable.valuesByMode[mode.modeId];
+    if (mode.modeId === collection.defaultModeId) {
+      continue;
+    }
+    if (value === undefined) {
+      result[mode.name] = unsupported(`모드 ${mode.name} 값 없음`);
+    } else if (JSON.stringify(value) !== base) {
+      result[mode.name] = variableValue(value);
+    }
+  }
+  return result;
 }
 
 /**
@@ -471,13 +522,52 @@ export async function readImageAssets(): Promise<Map<string, ImageAsset>> {
 }
 
 /**
- * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시)를 읽는다.
+ * 구조 검사에 쓰는 파일 정보(이름 있는 이미지 자산의 해시, 코드 전용 변수, 모션 변수)를 읽는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @returns 검사 정보
  */
 export async function readCheckContext(): Promise<CheckContext> {
   return {
     imageHashes: new Set((await readImageAssets()).keys()),
+    codeVariables: await readCodeVariables(),
+    motionVariables: await readMotionVariables(),
+  };
+}
+
+/**
+ * 값 짝을 찾는 코드 전용 변수(회전·최대 줄 수·비율)를 읽는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @returns 묶음마다 변수
+ */
+async function readCodeVariables(): Promise<CodeVariables> {
+  const collections = new Map(
+    (await figma.variables.getLocalVariableCollectionsAsync()).map((collection) => [
+      collection.id,
+      collection,
+    ]),
+  );
+  const variables = await figma.variables.getLocalVariablesAsync('FLOAT');
+  /**
+   * 묶음의 변수를 값과 함께 읽는다.
+   * @param prefix 변수 이름 앞부분
+   * @returns 변수
+   */
+  async function group(prefix: string): Promise<CodeVariable[]> {
+    const result: CodeVariable[] = [];
+    for (const variable of variables) {
+      const value = variable.name.startsWith(prefix)
+        ? await defaultFloatValue(variable, collections)
+        : null;
+      if (value !== null) {
+        result.push({ name: variable.name, value });
+      }
+    }
+    return result;
+  }
+  return {
+    rotate: await group(CODE_VARIABLE_PREFIXES.rotate),
+    lineClamp: await group(CODE_VARIABLE_PREFIXES.lineClamp),
+    ratio: await group(CODE_VARIABLE_PREFIXES.ratio),
   };
 }
 
@@ -543,6 +633,7 @@ function textStyleInput(style: TextStyle): TextStyleInput {
   const bound = style.boundVariables ?? {};
   return {
     name: style.name,
+    description: style.description,
     fontFamily: style.fontName.family,
     fontStyle: style.fontName.style,
     fontSize: style.fontSize,

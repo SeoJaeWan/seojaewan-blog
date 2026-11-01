@@ -83,6 +83,15 @@ const builtinPrefixes: Readonly<Record<string, readonly string[]>> = {
   opacity: ['opacity'],
   blur: ['blur', 'backdrop-blur'],
   'font-weight': ['font'],
+  rotate: ['rotate'],
+  'z-index': ['z'],
+  'line-clamp': ['line-clamp'],
+  aspect: ['aspect'],
+  inset: ['inset', 'inset-x', 'inset-y', 'top', 'right', 'bottom', 'left', 'start', 'end'],
+  translate: ['translate', 'translate-x', 'translate-y'],
+  'grid-column-start': ['col-start'],
+  'grid-row-start': ['row-start'],
+  'border-spacing': ['border-spacing'],
 };
 const CSS_VARIABLE_REFERENCE = /var\((--[a-z0-9-]+)/gu;
 const VALUE_NAMESPACE = /--value\(--([a-z0-9-]+)-\*\)/gu;

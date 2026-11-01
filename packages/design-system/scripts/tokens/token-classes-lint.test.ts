@@ -33,12 +33,14 @@ const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
  * @param className 검사할 클래스
  * @param ruleId 모을 규칙
  * @param isCnArgument true면 `className` 속성 대신 `cn()` 인자로 넘긴다
+ * @param prelude 컴포넌트 앞에 넣는 코드
  * @returns 오류 메시지
  */
 async function lintClassErrors(
   className: string,
   ruleId: string,
   isCnArgument = false,
+  prelude = '',
 ): Promise<string[]> {
   const eslint = new ESLint({ cwd: repositoryRoot });
   const element = isCnArgument
@@ -47,6 +49,8 @@ async function lintClassErrors(
   const source = [
     "import type { JSX } from 'react';",
     "import { cn } from '../../cn';",
+    '',
+    prelude,
     '',
     '/**',
     ' * 검사용 요소를 그린다.',
@@ -161,6 +165,19 @@ describe('토큰 사용 강제', () => {
     await expect(
       lintClassErrors('bg-accent-fill-missing w-320', UNKNOWN_CLASS_RULE, true),
     ).resolves.toEqual(['Unknown class detected: bg-accent-fill-missing']);
+  }, 60_000);
+
+  it('이름이 ClassNames·CLASS_NAMES로 끝나는 객체의 값도 lint가 검사한다', async () => {
+    const prelude = [
+      "const SIZE_CLASS_NAMES = { wide: 'w-missing-a', narrow: 'w-320' } as const;",
+      "const toneClassNames: Readonly<Record<string, string>> = { on: 'bg-accent-fill-missing' };",
+      "const toneStyles = { on: 'bg-not-class-object' };",
+      'export const probe = [SIZE_CLASS_NAMES, toneClassNames, toneStyles];',
+    ].join('\n');
+    await expect(lintClassErrors('w-320', UNKNOWN_CLASS_RULE, false, prelude)).resolves.toEqual([
+      'Unknown class detected: w-missing-a',
+      'Unknown class detected: bg-accent-fill-missing',
+    ]);
   }, 60_000);
 
   it('text-shadow 값 변수를 box-shadow로 읽은 shadow-text-* 클래스는 lint가 막는다', async () => {

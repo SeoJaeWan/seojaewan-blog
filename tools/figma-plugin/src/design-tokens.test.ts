@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { aliasReference, buildDesignTokens, parseCubicBezier } from './design-tokens';
+import {
+  aliasReference,
+  buildDesignTokens,
+  parseCubicBezier,
+  type VariableInput,
+} from './design-tokens';
 import {
   acrylicPaintStyle,
   aliasTo,
@@ -544,5 +549,81 @@ describe('글자·효과·칠 스타일은 style 그룹 아래 같은 파일에 
       }),
     );
     expect(at(tokens, ['style', 'paint', 'Hidden', '$value'])).toBe('{layer-fill.default}');
+  });
+});
+
+// @codocs [[피그마 연동:토큰 생성]]
+describe('코드 전용 변수와 모드', () => {
+  /**
+   * 변수 하나로 토큰을 만든다.
+   * @param overrides 바꿀 값
+   * @returns 토큰 트리
+   */
+  function tokensOf(overrides: Partial<VariableInput>): JsonObject {
+    const variable: VariableInput = {
+      id: 'v',
+      name: 'spacing/sm',
+      collection: 'Dimension',
+      resolvedType: 'FLOAT',
+      scopes: [],
+      value: 8,
+      ...overrides,
+    };
+    return buildDesignTokens({
+      variables: [variable],
+      aliasNames: {},
+      textStyles: [],
+      effectStyles: [],
+      paintStyles: [],
+      imageAssets: {},
+    }).tokens;
+  }
+
+  it.each([
+    ['rotate/half', 180, 'number'],
+    ['layer/window', 10, 'number'],
+    ['shrink/none', 0, 'number'],
+    ['position/half', 50, 'number'],
+    ['line-clamp/two', 2, 'number'],
+    ['size/none', 0, 'dimension'],
+    ['breakpoint/mobile/width', 768, 'dimension'],
+  ])('%s FLOAT 변수의 $type은 이름으로 정한다', (name, value, type) => {
+    const [group, ...rest] = name.split('/');
+    let token: unknown = tokensOf({ name, value })[group ?? ''];
+    for (const key of rest) {
+      token = (token as JsonObject)[key];
+    }
+    expect((token as JsonObject).$type).toBe(type);
+  });
+
+  it('코드 전용 묶음과 motion의 STRING 변수는 값을 그대로 담고, 그 밖은 막는다', () => {
+    const tokens = tokensOf({
+      name: 'motion/repeat/forever',
+      resolvedType: 'STRING',
+      value: 'infinite',
+    });
+    expect(JSON.stringify(tokens)).toContain('"$type":"string"');
+    expect(() => tokensOf({ name: 'spacing/sm', resolvedType: 'STRING', value: '8px' })).toThrow(
+      '문자 변수는',
+    );
+  });
+
+  it('다른 모드의 값을 확장 필드에 담는다', () => {
+    const tokens = tokensOf({ modes: { Laptop: 6 } });
+    expect(JSON.stringify(tokens)).toContain('"modes":{"Laptop":{"value":6,"unit":"px"}}');
+  });
+
+  it('값이 없는 모드는 막는다', () => {
+    expect(() =>
+      tokensOf({ modes: { Laptop: { type: 'UNSUPPORTED', description: '모드 Laptop 값 없음' } } }),
+    ).toThrow('모드 Laptop 값 없음');
+  });
+
+  it('description의 @ 줄만 담고 설명 글은 담지 않는다', () => {
+    const plain = JSON.stringify(tokensOf({ description: '설명 글' }));
+    expect(plain).not.toContain('설명 글');
+    const lined = JSON.stringify(tokensOf({ description: '설명 글\n@runtime 창 위치' }));
+    expect(lined).toContain('"directives":{"runtime":["창 위치"]}');
+    expect(() => tokensOf({ description: '@loop 1' })).toThrow('모르는 키');
   });
 });

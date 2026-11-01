@@ -43,6 +43,10 @@ export type TextSegmentData = {
 export type TextData = {
   autoResize: string;
   hasMissingFont: boolean;
+  /** 말줄임(`DISABLED`, `ENDING`) */
+  truncation: string;
+  /** 최대 줄 수. 없으면 null */
+  maxLines: number | null;
   segments: TextSegmentData[];
 };
 
@@ -50,6 +54,7 @@ export type LayoutData = {
   mode: string;
   wrap: string;
   primaryAlign: string;
+  counterAlign: string;
   primarySizing: string;
   counterSizing: string;
   padding: Sides<Bound>;
@@ -76,6 +81,11 @@ export type AssetData = {
   /** 원본 컴포넌트가 든 자산 묶음 이름(Icons, Shapes, Illustrations, Images) */
   group: string;
   kind: AssetKind;
+  /** 원본 컴포넌트 크기. 이미지 자산의 비율 검사에 쓴다 */
+  sourceWidth: number;
+  sourceHeight: number;
+  /** 한 가지 색 자산에 칠한 색 변수 이름 */
+  color?: string;
   /** 자산으로 쓸 수 없는 이유 */
   problems: string[];
 };
@@ -98,6 +108,33 @@ export type InstanceData = {
   scaleFactor: number;
   /** 이 인스턴스에서 직접 덮어쓴 레이어(물려받은 덮어쓰기는 없다) */
   overrides: OverrideData[];
+  /** 컴포넌트 속성(속성 이름 → 값). 구현 참고용이다 */
+  properties: Record<string, string | boolean>;
+};
+
+/** 변형 전환의 움직임 */
+export type TransitionData = {
+  /** 피그마 전환 종류(`SMART_ANIMATE` 등) */
+  type: string;
+  durationMs: number;
+  easing: {
+    /** 피그마 이징 종류(`LINEAR`, `CUSTOM_CUBIC_BEZIER` 등) */
+    type: string;
+    /** 곡선 네 점. 직선은 `[0, 0, 1, 1]`, 곡선이 아닌 이징은 null */
+    bezier: number[] | null;
+  };
+};
+
+/** 변형 전환 하나(`reactions`의 노드 이동 항목) */
+export type ReactionData = {
+  /** 피그마 트리거(`ON_HOVER`, `ON_PRESS`, `ON_CLICK` 등) */
+  trigger: string;
+  /** 목적지 노드 이름(변형 이름) */
+  destination: string | null;
+  /** 이동 방식(`CHANGE_TO` 등) */
+  navigation: string;
+  /** 전환. 바로 바뀌면 null */
+  transition: TransitionData | null;
 };
 
 export type NodeData = {
@@ -130,6 +167,14 @@ export type NodeData = {
   effects: EffectData[] | null;
   effectStyle?: string;
   layout: LayoutData | null;
+  /** 선이 레이아웃에 들어가는지(strokes included in layout) */
+  strokesIncludedInLayout: boolean;
+  /** 잠긴 비율(너비 ÷ 높이). 잠기지 않았으면 null */
+  aspectRatio: number | null;
+  /** 주석 글 */
+  annotations: string[];
+  /** 변형 전환. 변형 루트에서만 읽는다 */
+  reactions: ReactionData[];
   child: ChildLayoutData | null;
   text: TextData | null;
   asset: AssetData | null;

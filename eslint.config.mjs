@@ -5,6 +5,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier/flat';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
+import { getDefaultSelectors } from 'eslint-plugin-better-tailwindcss/api/defaults';
 import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
 import { importX } from 'eslint-plugin-import-x';
@@ -228,6 +229,13 @@ const themeVariableNames = [
 const misreadTokenClasses = themeVariableNames.filter((name) =>
   misreadNamespaces.some((namespace) => name.startsWith(`${namespace}-`)),
 );
+
+// @codocs [[피그마 연동:토큰 사용 강제]]
+// 이름이 `ClassNames`·`CLASS_NAMES`로 끝나는 객체 안의 문자열도 클래스로 검사한다.
+const classSelectors = [
+  ...getDefaultSelectors(),
+  { kind: 'variable', name: '.*(?:ClassNames|CLASS_NAMES)', match: [{ type: 'objectValues' }] },
+];
 
 // 도구가 이름을 정하거나 process.env를 직접 읽어야 하는 파일.
 const configFiles = [
@@ -627,11 +635,18 @@ export default defineConfig(
   },
   {
     files: [`${WEB_SRC}/**/*.tsx`],
-    settings: { 'better-tailwindcss': { entryPoint: `${WEB_SRC}/app/globals.css` } },
+    settings: {
+      'better-tailwindcss': { entryPoint: `${WEB_SRC}/app/globals.css`, selectors: classSelectors },
+    },
   },
   {
     files: [`${DESIGN_SYSTEM}/src/**/*.tsx`],
-    settings: { 'better-tailwindcss': { entryPoint: `${DESIGN_SYSTEM}/.storybook/preview.css` } },
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: `${DESIGN_SYSTEM}/.storybook/preview.css`,
+        selectors: classSelectors,
+      },
+    },
   },
 
   // apps/web: Next.js 규칙과 `../` 금지
