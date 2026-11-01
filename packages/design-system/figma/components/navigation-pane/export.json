@@ -1,8 +1,15 @@
 {
+  "description": "폴더 트리 영역으로, 파일 탐색기 본문 왼쪽에 쓴다.",
   "name": "NavigationPane",
   "nodeId": "439:5773",
+  "propertyDefinitions": {
+    "items": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 208,
         "width": 248,
@@ -10,7 +17,57 @@
         "y": 0
       },
       "nodeId": "439:5773",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "items",
+            "size": {
+              "h": 192,
+              "w": 240
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/xs",
+            "spacing/sm",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "NavigationPane",
+        "size": {
+          "h": 208,
+          "w": 248
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }
