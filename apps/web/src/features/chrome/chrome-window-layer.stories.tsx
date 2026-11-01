@@ -92,13 +92,11 @@ const meta = {
     layout: 'fullscreen',
     // 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
     // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다.
-    // 새 탭 검색창은 디자인 시스템 SearchBox가 role을 searchbox로 고정해 combobox용 aria-expanded가 허용되지 않는다. 사람이 정할 때까지 이 규칙만 끈다.
     a11y: {
       config: {
         rules: [
           { id: 'color-contrast', enabled: false },
           { id: 'aria-required-children', enabled: false },
-          { id: 'aria-allowed-attr', enabled: false },
         ],
       },
     },
@@ -379,9 +377,9 @@ export const NewTabSearch: Story = {
      * @returns 검색창
      */
     function getSearch(): HTMLElement {
-      return screen.getByRole('searchbox', { name: '글 검색 또는 URL 입력' });
+      return screen.getByRole('combobox', { name: '글 검색 또는 URL 입력' });
     }
-    await screen.findByRole('searchbox', { name: '글 검색 또는 URL 입력' });
+    await screen.findByRole('combobox', { name: '글 검색 또는 URL 입력' });
 
     await step('검색창에 주소를 입력하면 주소창과 같이 그 글로 간다', async () => {
       await userEvent.type(getSearch(), '/posts/rsc{Enter}');
@@ -783,7 +781,7 @@ export const TrashedPost: Story = {
     return mockPostBodies({});
   },
   play: async ({ step }) => {
-    await screen.findByRole('searchbox', { name: '글 검색 또는 URL 입력' });
+    await screen.findByRole('combobox', { name: '글 검색 또는 URL 입력' });
 
     await step('최신 글 바로가기와 추천에서 휴지통에 든 글은 뺀다', async () => {
       await expect(
