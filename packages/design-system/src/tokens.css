@@ -309,7 +309,10 @@
   --size-progress-ring-md: 32px;
   --size-progress-ring-sm: 16px;
   --size-screen-height: 1080px;
+  --size-screen-min-height: 568px;
+  --size-screen-min-width: 768px;
   --size-screen-mobile-height: 844px;
+  --size-screen-mobile-min-width: 320px;
   --size-screen-mobile-width: 390px;
   --size-screen-width: 1920px;
   --size-scrollbar-length: 200px;
@@ -637,7 +640,10 @@
   --size-size-progress-ring-md: var(--size-progress-ring-md);
   --size-size-progress-ring-sm: var(--size-progress-ring-sm);
   --size-size-screen-height: var(--size-screen-height);
+  --size-size-screen-min-height: var(--size-screen-min-height);
+  --size-size-screen-min-width: var(--size-screen-min-width);
   --size-size-screen-mobile-height: var(--size-screen-mobile-height);
+  --size-size-screen-mobile-min-width: var(--size-screen-mobile-min-width);
   --size-size-screen-mobile-width: var(--size-screen-mobile-width);
   --size-size-screen-width: var(--size-screen-width);
   --size-size-scrollbar-length: var(--size-scrollbar-length);
@@ -767,6 +773,27 @@
 @custom-variant mobile {
   @media (max-width: 767px) {
     @slot;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1599px), (min-width: 768px) and (max-height: 899px) {
+  :root {
+    --font-line-height-body-large: 22px;
+    --font-line-height-title: 32px;
+    --font-size-body-large: 16px;
+    --font-size-title: 24px;
+    --size-chrome-page-wide-height: 552px;
+    --size-chrome-page-wide-width: 1118px;
+    --size-image-viewer-image-height: 400px;
+    --size-image-viewer-image-width: 640px;
+    --size-post-cover-height: 180px;
+    --size-screen-height: 768px;
+    --size-screen-width: 1366px;
+    --size-shell-height: 640px;
+    --size-snap-preview-height: 704px;
+    --size-snap-preview-width: 675px;
+    --size-window-chrome-height: 640px;
+    --size-window-chrome-width: 1120px;
   }
 }
 
