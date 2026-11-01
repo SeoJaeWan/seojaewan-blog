@@ -38,7 +38,7 @@ CI: |
   PR과 `main` push마다 GitHub Actions에서 실행한다. 워크플로를 나누는 기준과 각 워크플로가 도는 범위는 [[피그마 연동:CI]]에 있다.
 
   - 브랜치 이름 검사(`ci.yml`): PR 브랜치 이름이 규칙에 맞는지 본다([[Git 작업 규칙:브랜치]]).
-  - 검사 작업(`ci.yml`): 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, Chromium 설치, 단위·컴포넌트·스토리 테스트(`pnpm test`), Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
+  - 검사 작업(`ci.yml`): 포맷 검사, 전체 lint(ESLint와 Stylelint), 타입 검사, Chromium 설치, 단위·스토리 테스트(`pnpm test`), Next.js 빌드, 디자인 시스템과 앱의 Storybook 빌드
   - E2E 작업(`ci.yml`)
   - 생성 검사(`figma-generated.yml`): 토큰 생성 확인(`generate:tokens --check`)과 자산 생성 확인(`generate:assets --check`)
   - 피그마 캡처(`figma-parity.yml`): 일반 CI와 나눈 워크플로다. PR(초안 포함)에서 바뀐 파일로 캡처 범위를 정하고, 범위가 있을 때만 캡처 표를 PR 댓글로 남긴다. `main` push에서는 영향받은 컴포넌트와 조립을 캡처해 `parity-captures` 브랜치에 저장한다([[피그마 연동:캡처 범위]], [[피그마 연동:CI]]).

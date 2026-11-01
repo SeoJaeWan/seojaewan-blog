@@ -24,7 +24,7 @@ _codocs:
   4. 테스트 기반(끝남)
   5. `Parity` → `Figma`(끝남)
   6. 폴더 이동(끝남)
-  7. 컴포넌트 테스트 → `play`(영역별)
+  7. 컴포넌트 테스트 → `play`(영역별)(끝남)
   8. 피그마 디자인 수정 6건 → 사람이 내보냄 → 처리
   9. 플러그인 개선, 캡처 도구(SHA 주소, 빈 HUG 제외, 캡처 화면을 1600×900 이상으로 고정). 이 묶음이 병합된 뒤 10이 끝날 때까지 내보내지 않는다
   10. 피그마 변수 전환: 생성기가 옛 규칙과 새 규칙을 함께 쓰게 함 → 새 변수 추가(옛 변수 유지) → 노드 재연결 → code syntax·코드 전용 변수·`@` 줄 → 사람이 내보냄(옛·새 토큰이 함께 들어감)
@@ -144,7 +144,10 @@ _codocs:
 
   접근성 검사에서 임시로 끈 규칙(작업 차례 13에서 처리):
   - `BrowserTab`·`ExplorerTab`의 `aria-required-children`: 닫기 버튼이 `tablist` 안에 있어 Figma 스토리 4개에서 껐다. Base UI 탭으로 바꿀 때 구조를 정한다(대안은 [[임의 작업]])
-  - 미리보기 카드의 `label-content-name-mismatch`: 축소 화면 글자 때문으로 보인다
+  - 미리보기 카드의 `label-content-name-mismatch`: 축소 화면 글자 때문으로 보인다. 컴포넌트 테스트를 `play`로 옮길 때 축소 화면의 내용 확인(보이는 글자 확인)이 이 때문에 옮겨지지 못했다
+  - `shell` 스토리 3개의 `aria-allowed-attr`·`aria-required-children`(`WINDOW_STORY_A11Y`): `SearchBox`의 role과 탭 구조 때문이다
+  - `scrollable-region-focusable`: start-menu `TinyScreen`(높이 100에서 본문이 스크롤 영역으로만 남음)에서 껐다. 구조를 바꿀지 정한다
+  - `chrome-window-layer` 스토리의 `aria-allowed-attr`: 새 탭 검색창에 `aria-expanded`가 붙는데 디자인 시스템 `SearchBox`가 role을 `searchbox`로 고정해 허용되지 않는다
   - 색 대비: 사람 판단이 필요하다. `text-fill-tertiary` 보조 글자 3.23, `code-syntax-type` 4.35, 바탕화면 아이콘 이름 1.58, 비활성 창 제목 3.31, 잘라낸 항목 이름 3.2~3.3. 스토리별로 규칙을 껐다. `ListItem`의 보조 글자와 `FileRow`의 잘라낸 상태 확인은 색 대비 때문에 스토리로 못 옮겨 빠졌으니, 색을 정한 뒤 되살린다
 
   시험 자원(작업 차례 15에 정리):
