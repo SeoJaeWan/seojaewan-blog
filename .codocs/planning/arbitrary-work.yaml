@@ -319,3 +319,18 @@ _codocs:
   선택자를 `ClassNames`·`CLASS_NAMES` 객체에서 `ClassName`·`CLASS_NAME`(복수 포함) 변수의 문자열·배열·객체 값과 `*ClassName` 속성으로 넓혔다. 객체만 보던 탓에 `*_CLASS_NAME` 상수, `INDENT_CLASS_NAMES` 배열, `baseClassName`·`itemClassName` 속성이 빠졌기 때문이다. `ZONE_CLASS`는 `ZONE_CLASS_NAME`으로, `SNAP_CLASS`는 `SNAP_CLASS_NAME`으로, `dim`은 `dimClassName`으로 바꿨다. `SNAP_CLASS_NAME`이 `.ts` 파일이라 better-tailwindcss 규칙을 `.ts`로 넓혔고 `*.test.*`는 뺐다. `className` 안의 `.join()`을 막는 `no-restricted-syntax`도 더했다. 숫자 규칙은 값이 아니라 끝 글자로 판정한다(`^.*[0-9]%?!?$`). 토큰 이름이 숫자로 끝나지 않음을 테스트가 지키므로 토큰 예외 목록은 두지 않았다. 규칙은 움직임 규칙 뒤에 두어 `duration-150`은 `motion-*` 안내가 나온다.
 "토큰 PR #349: 부팅 화면 견본의 배율과 Actions 칸": |
   `motion/scale/half`는 클래스가 없는 변수라 `sample-boot-screen`의 `scale-50`을 인라인 `style={{ scale: 'var(--motion-scale-half)' }}`로 바꿨다. `search-body.tsx`의 `w-240`을 `w-full`로만 바꾸면 BestMatchCard의 Actions 칸이 HUG라 채워지지 않아, `best-match-card.tsx`의 칸에도 `w-full`을 두었다. 앞의 "토큰 클래스 이름 바꾸기: MenuItem 너비를 w-full로"의 `w-240` 설명은 이 항목이 대신한다. Figma 스토리의 빈 슬롯은 칠이 없어 모양이 그대로다. `tokens-css.test`의 `TOKEN_NAMES`, `cn.test`의 목록은 전환 기간 표본을 지우고 새 이름으로 바꿨다. `token-classes-lint.test`의 `intendedBuiltIn`에는 처음 생긴 테마 변수 `--aspect-ratio-video` 때문에 `--aspect-`를 더했다.
+"반응형: Chrome 페이지 모양은 ResizeObserver와 flushSync로 가름": |
+  `useChromePageLayout`이 페이지 영역(`ChromePageArea`)을 재어 `wide`·`narrow`를 고른다. 시험은 1920×1080·1366×768에서 크기 조절 핸들을 끌어 경계를 12번 넘나들고 칠한 뒤의 상태를 프레임마다 쟀다(더미 글).
+  - 그냥 `setState`: 넘을 때마다 옛 모양이 한 프레임 보였다(12번 중 12번). `flushSync`를 붙이니 0번이다. 프레임 간격은 둘 다 중앙 16.7ms·최대 17ms이고 50ms 넘는 긴 작업은 없었다. 제목 표시줄 끌기는 알림이 없어 모양 바뀜도 0번이다.
+  - 컨테이너 쿼리: 페이지 영역에 `container-type`을 넣은 시험에서도 칠한 뒤 어긋남은 0번이었다. 고르지 않은 이유는 속도가 아니라 구조다. 넓은·좁은 모양은 목차 자리, `PostNavCard`의 `device` prop, 글자 스타일 클래스처럼 JSX와 prop이 달라 CSS만으로 바꾸려면 두 벌을 그려야 하고, `tokens.css` 밖 `@custom-variant`는 stylelint가 막으며 숫자 클래스도 lint가 막는다.
+  - 창 저장소의 자리(`getWindowRect`)로 계산하는 안은 끄는 중 크기를 요소에 직접 넣는 경로와 축소 화면까지 따로 다뤄야 해 고르지 않았다.
+  - 숨긴 창은 너비가 0이라 모양을 그대로 둔다. 상태 확인용으로 페이지 영역에 `data-layout`을 더했다. 좁은 모양이 768 이상 너비에서도 나오게 되어, 글이 왼쪽에 붙지 않게 `PostPage`의 narrow 줄에 `items-center`를 더했다(문서의 "가운데 정렬"대로).
+  - 경계는 글 화면만이 아니라 Chrome 탭 내용 전체(새 탭, 검색 결과, 찾을 수 없음)에 건다. 한 줄의 `layout`을 모두가 나눠 쓰던 구조이기 때문이다. 찾기 막대는 지시 범위 밖이라 화면 구간을 그대로 따른다. 그래서 PC에서 좁은 창이어도 찾기 막대는 데스크톱 모양이다.
+"반응형: 구간 이름과 값 읽기": |
+  - 타입을 `Device`(`pc | laptop | mobile`)와 `DeviceVariant`(`desktop | mobile`)로 나누고 변환은 `toDeviceVariant`다. `=== 'mobile'`만 보는 곳(`desktop-icons-layer`, `use-open-item`, `taskbar-apps-layer`)은 바꾸지 않았다.
+  - 창 기본 크기는 탐색기도 함께 `:root` 변수에서 읽는다. 대체 값은 두지 않았다. 창은 브라우저에서만 열리고 `tokens.css`가 늘 있기 때문이다. jsdom은 `tokens.css`를 읽지 않아 `apps/web/vitest.setup.ts`에서 PC 값 네 개를 넣는다.
+  - 패널 높이 720은 `panel-rules.ts`에 주석으로만 있었다. 실제 높이는 `ShellSurface`의 토큰 클래스라 코드 변경 없이 노트북 값을 따른다. 글 영역 1118×552, 이미지 크게 보기 640×400, 스냅 미리보기 675×704 토큰은 스토리 크기로만 쓰이고 실행 중 크기는 창과 작업 영역이 정한다.
+"반응형: 시험의 화면": |
+  - 스토리 기본 화면은 두 `preview.ts`의 `initialGlobals`로 `pc`(`BREAKPOINTS` 노트북 경계값)로 두었다. Storybook 화면의 기본 뷰포트도 함께 이 크기가 된다. 앱 스토리의 `laptop`(1366×768)은 피그마 Laptop 모드의 `size/screen/*` 값이다. TS 상수가 없어 `preview.ts`에 숫자로 적었다.
+  - `playwright.config.ts`도 패키지 진입점의 `BREAKPOINTS`를 읽는다. `window.test.ts`·`start-menu.test.ts`의 1280×720·1280×200은 화면이 바뀌는 흐름 자체를 보는 값이라 그대로 두었다.
+  - `Laptop` 스토리는 창(`window-layer`)과 Start 패널(`start-menu-layer`) 둘에 두고, 경계 전환은 `WindowWidthLayout`(`chrome-window-layer`)으로 본다.

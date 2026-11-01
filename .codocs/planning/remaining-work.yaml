@@ -29,7 +29,7 @@ _codocs:
   9. 플러그인 개선(캡처 도구는 끝남). 이 묶음이 병합된 뒤 10이 끝날 때까지 내보내지 않는다
   10. 피그마 변수 전환(끝남)
   11. 영역별 클래스 교체, 옛 변수 삭제, 생성기의 옛 규칙 삭제, 숫자 lint(끝남)
-  12. 노트북 값과 Screens, 반응형 코드. 앱 E2E(1280×720)와 스토리 테스트(Vitest 기본 화면)의 뷰포트도 정한다. 노트북 구간이 들어오면 지금 값으로는 노트북 코드를 돌리게 된다
+  12. 노트북 값과 Screens, 반응형 코드, 앱 E2E와 스토리 테스트의 뷰포트(끝남)
   13. 개별 수정, 접근성
   14. 바뀐 컴포넌트·조립 내보내기와 처리: 빈 HUG 컴포넌트, `Figure`, `MenuItem`, `TableCell`, `menu`(Post·TaskbarApp·ChromeMore·ChromeMoreMobile), `chrome`(Page·PostBlocks), `window`(Chrome·SnapAssist), `taskbar`(AppMenu). 개별 수정 중 이 내보내기가 필요한 것(Figure, Zoom, TableCell, pin_off, Menu/Post)은 여기서 한다. `post-blocks` 스토리 데이터를 새 CodeBlock 견본 두 줄과 맞추고 `figma/components/menu-zoom-item`을 정리한다
   15. Guide로 모양 설명을 옮기고 문서에서 지움, 중복 20곳 재확인, [[임의 작업]] 정리, 시험 자원 정리
@@ -73,7 +73,6 @@ _codocs:
 
   문서 고침:
   - [[컴포넌트 목록]]: 용도 표를 지운다(피그마 description에 있음)
-  - [[반응형:기준]]: 768 숫자를 지우고 Foundations 변수를 가리킴
   - [[기술 스택:동작 기반 라이브러리]]: Base UI에 맡기는 범위를 실제와 맞게 고치고 접근성 문서를 가리킴
   - [[피그마 연동:PR 흐름]]·[[피그마 연동:자산]]과 PR 스킬: 아이콘·이미지 자산은 토큰 내보내기(기반 PR)로 내보내고, 새 자산을 쓰는 컴포넌트는 기반 PR을 먼저 병합(23·27번)
   - [[기술 스택:글 본문 처리]]: 색 갈래에 Light+ 7가지를 더하고 Light+와 똑같이 칠함(`const` 변수 포함)(63번)
@@ -91,7 +90,7 @@ _codocs:
   - `ItemListRow`가 받은 속성과 ref를 줄에 넘기게 하고, 우클릭용으로 감싼 `div`를 지움. 우클릭·길게 누르기·Shift+F10 시험(57번)
   - Shiki 테마를 새 `code-syntax` 갈래로 칠함(63번)
   - Menu/Post 스토리의 잘라내기 거르기와 주석을 지움(75번)
-  - `use-device`가 생성된 경계값을 읽고 `pc | laptop | mobile`을 돌려줌. Chrome 글 화면이 창 내용 너비로 넓은·좁은 모양을 가름
+  - `use-device`가 생성된 경계값을 읽고 `pc | laptop | mobile`을 돌려줌. Chrome 글 화면이 창 내용 너비로 넓은·좁은 모양을 가름(끝남)
   - 접근성:
     - Base UI로 바꿈: 탭(닫기 버튼의 키 전파만 막음), 확대/축소 줄, 버튼 역할 `div`(`item-list-row.tsx`, `taskbar-window-preview-list.tsx`, `snap-assist.tsx`), Start·검색 패널(비모달 Dialog, Start 버튼·검색칸 누르기는 닫지 않게 거름)
     - 탐색 창 트리에 ↑↓·Home/End·부모/자식 이동을 구현(지금 없음을 시험으로 확인)
@@ -108,7 +107,7 @@ _codocs:
   - 노트북 모드 값을 넣은 Screens로 경계값(1600·900)과 가장 작은 크기(노트북 768 폭, 모바일 320×568)에서 잘리는 곳이 없는지
   - 단독 캡처에서 빠지는 빈 HUG 슬롯 컴포넌트가 모두 어떤 조립 안에서 비교되는지. 안 쓰이는 것은 보고
   - 플러그인 구현 뒤 시험용 파일로 description·주석·모드·`reactions`·코드 전용 변수가 실제로 내보내지는지
-  - Chrome 창 너비 판정(컨테이너 쿼리 등)이 창 크기 조절과 스냅에서 바로 따라가는지
+  - Chrome 창 너비 판정(컨테이너 쿼리 등)이 창 크기 조절과 스냅에서 바로 따라가는지(끝남. 결과는 [[임의 작업]])
 
   접근성 검사에서 임시로 끈 규칙(작업 차례 13에서 처리):
   - `BrowserTab`·`ExplorerTab`의 `aria-required-children`: 닫기 버튼이 `tablist` 안에 있어 Figma 스토리 4개에서 껐다. Base UI 탭으로 바꿀 때 구조를 정한다(대안은 [[임의 작업]])
