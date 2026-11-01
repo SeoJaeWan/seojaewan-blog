@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { BREAKPOINTS } from '@seojaewan/design-system';
+
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 const isCi = Boolean(process.env.CI);
@@ -20,7 +22,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      // 기본 화면(1280×720)은 노트북 구간이라 PC 구간의 가장 작은 크기로 고정한다. 다른 구간은 시험마다 화면을 바꾼다.
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: BREAKPOINTS.laptopWidth, height: BREAKPOINTS.laptopHeight },
+      },
     },
   ],
   webServer: {
