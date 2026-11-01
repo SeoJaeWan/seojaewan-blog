@@ -10,6 +10,8 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   icon: ReactNode;
   /** 피그마 TEXT 속성 Title. 탭에 보일 폴더 이름이다 */
   title?: string;
+  /** 피그마 불리언 속성 Show separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다 */
+  showSeparator?: boolean;
   /** 닫기 버튼의 접근성 이름 */
   closeLabel?: string;
   /** 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다 */
@@ -18,7 +20,7 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 
 /**
  * 탐색기 제목 표시줄의 폴더 탭(피그마 ExplorerTab)을 그린다. 크기는 Windows가 정한 220×32로 고정한다.
- * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다. Rest에만 오른쪽 구분선이 있고 Hover·Selected에서는 없다.
+ * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다. Rest에만 오른쪽 구분선이 있고 Hover·Selected에서는 없다. 선택된 탭 바로 왼쪽 탭은 쓰는 곳이 `showSeparator`를 꺼 구분선을 없앤다.
  * 탭 묶음(바깥 상자) 안에 탭(`role="tab"`, 아이콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
  * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖고, `tabIndex`는 탭이 받는다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
@@ -30,6 +32,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
     selected: isSelected = false,
     icon,
     title = '폴더 이름',
+    showSeparator: hasSeparator = true,
     closeLabel = '탭 닫기',
     onClose,
     className,
@@ -40,7 +43,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
     <div
       {...divProps}
       // 오른쪽 구분선을 그리는 상태다.
-      data-separator={!isSelected}
+      data-separator={!isSelected && hasSeparator}
       className={cn(
         'group relative flex h-size-control-height w-size-explorer-tab-width items-center gap-spacing-sm rounded-t-radius-overlay py-spacing-sm pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
@@ -77,7 +80,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       >
         <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-size-icon-sm" />
       </button>
-      {!isSelected && (
+      {!isSelected && hasSeparator && (
         <span
           aria-hidden
           className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-divider-stroke-default group-hover:hidden"

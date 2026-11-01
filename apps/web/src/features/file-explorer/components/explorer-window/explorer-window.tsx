@@ -178,6 +178,8 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
                   <ExplorerTab
                     key={tab.id ?? `${String(index)}-${tab.title}`}
                     selected={tab.selected}
+                    // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
+                    showSeparator={tabs[index + 1]?.selected !== true}
                     icon={tab.icon ?? folderTabIcon}
                     title={tab.title}
                     tabIndex={getTabIndex(index)}

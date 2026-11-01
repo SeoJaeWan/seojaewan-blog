@@ -14,6 +14,8 @@ type FigmaArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Title */
   title: string;
+  /** 피그마 불리언 속성 Show separator */
+  showSeparator: boolean;
   /** 동작 스토리가 쓴다 */
   tabIndex?: number;
   onClick?: ComponentProps<typeof ExplorerTab>['onClick'];
@@ -29,10 +31,11 @@ const closeButtonA11y = {
 const meta = {
   title: 'Components/ExplorerTab',
   // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { state: 'rest', title: '폴더 이름' },
+  args: { state: 'rest', title: '폴더 이름', showSeparator: true },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
     title: { control: 'text' },
+    showSeparator: { control: 'boolean' },
   },
   // 탭은 tablist 안에서만 쓴다. 감싸는 요소는 크기를 더하지 않는다.
   render: (args) => {
@@ -42,6 +45,7 @@ const meta = {
         <ExplorerTab
           selected={args.state === 'selected'}
           title={args.title}
+          showSeparator={args.showSeparator}
           tabIndex={args.tabIndex}
           icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
           onClick={handleClick}
@@ -110,6 +114,20 @@ export const Selected: Story = {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
     await step('selected면 선택된 탭이고 오른쪽 구분선을 그리지 않는다', async () => {
       await expect(tab).toHaveAttribute('aria-selected', 'true');
+      await expect(tab.parentElement).toHaveAttribute('data-separator', 'false');
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const WithoutSeparator: Story = {
+  args: { showSeparator: false },
+  parameters: closeButtonA11y,
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('showSeparator=false면 선택되지 않은 탭도 구분선을 그리지 않는다', async () => {
+      const tab = within(canvasElement).getByRole('tab');
+      await expect(tab).toHaveAttribute('aria-selected', 'false');
       await expect(tab.parentElement).toHaveAttribute('data-separator', 'false');
     });
   },
