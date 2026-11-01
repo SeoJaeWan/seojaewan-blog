@@ -1,8 +1,38 @@
 {
+  "description": "트리거에 팝업을 붙여 여는 공통 틀로, 메뉴·툴팁·주소창 추천처럼 트리거와 팝업이 한 쌍인 조립에 쓴다.",
   "name": "Popover",
   "nodeId": "414:5614",
+  "propertyDefinitions": {
+    "Placement": {
+      "default": "Bottom-Start",
+      "options": [
+        "Bottom-Start",
+        "Bottom-Center",
+        "Bottom-End",
+        "Top-Center",
+        "Top-End",
+        "Right-Start"
+      ],
+      "type": "VARIANT"
+    },
+    "Popup": {
+      "type": "SLOT"
+    },
+    "State": {
+      "default": "Closed",
+      "options": [
+        "Closed",
+        "Open"
+      ],
+      "type": "VARIANT"
+    },
+    "Trigger": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "placement=bottom-center,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -13,9 +43,60 @@
       "properties": {
         "Placement": "Bottom-Center",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-Center, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=bottom-center,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -26,9 +107,89 @@
       "properties": {
         "Placement": "Bottom-Center",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "height": "size/popover/slot",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 4,
+              "w": 120
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-Center, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=bottom-end,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -39,9 +200,60 @@
       "properties": {
         "Placement": "Bottom-End",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-End, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=bottom-end,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -52,9 +264,89 @@
       "properties": {
         "Placement": "Bottom-End",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "height": "size/popover/slot",
+            "layout": {
+              "counterAlign": "MAX",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 4,
+              "w": 120
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-End, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=bottom-start,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -65,9 +357,60 @@
       "properties": {
         "Placement": "Bottom-Start",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-Start, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=bottom-start,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -78,9 +421,89 @@
       "properties": {
         "Placement": "Bottom-Start",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "height": "size/popover/slot",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/xs",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 4,
+              "w": 120
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Bottom-Start, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=right-start,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -91,9 +514,60 @@
       "properties": {
         "Placement": "Right-Start",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Right-Start, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=right-start,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -104,9 +578,89 @@
       "properties": {
         "Placement": "Right-Start",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "MAX",
+              "vertical": "STRETCH"
+            },
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 32,
+              "w": 4
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "DERIVED"
+            },
+            "type": "SLOT",
+            "width": "size/popover/slot"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Right-Start, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=top-center,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -117,9 +671,60 @@
       "properties": {
         "Placement": "Top-Center",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Top-Center, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=top-center,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -130,9 +735,89 @@
       "properties": {
         "Placement": "Top-Center",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MIN"
+            },
+            "height": "size/popover/slot",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/xs",
+                "spacing/none"
+              ],
+              "primaryAlign": "MAX"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 4,
+              "w": 120
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Top-Center, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=top-end,state=closed": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -143,9 +828,60 @@
       "properties": {
         "Placement": "Top-End",
         "State": "Closed"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Top-End, State=Closed",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "placement=top-end,state=open": {
+      "emptyHugSlot": true,
       "node": {
         "height": 32,
         "width": 120,
@@ -156,6 +892,85 @@
       "properties": {
         "Placement": "Top-End",
         "State": "Open"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Trigger",
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MIN"
+            },
+            "height": "size/popover/slot",
+            "layout": {
+              "counterAlign": "MAX",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/xs",
+                "spacing/none"
+              ],
+              "primaryAlign": "MAX"
+            },
+            "name": "Popup",
+            "size": {
+              "h": 4,
+              "w": 120
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Placement=Top-End, State=Open",
+        "size": {
+          "h": 32,
+          "w": 120
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }

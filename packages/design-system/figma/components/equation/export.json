@@ -1,8 +1,15 @@
 {
+  "description": "글 본문의 블록 수식 자리로, 글 페이지에 쓴다.",
   "name": "Equation",
   "nodeId": "1380:1119",
+  "propertyDefinitions": {
+    "Formula": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 116,
         "width": 720,
@@ -10,7 +17,58 @@
         "y": 0
       },
       "nodeId": "1380:1119",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Formula",
+            "size": {
+              "h": 100,
+              "w": 100
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/none",
+            "spacing/sm",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Equation",
+        "size": {
+          "h": 116,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }

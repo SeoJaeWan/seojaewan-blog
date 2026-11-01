@@ -26,3 +26,7 @@ _codocs:
   스토리 감싸기처럼 역할이 뚜렷하지 않은 크기는 실제 쓰임이 가까운 변수로 옮겼다. Flyout 스토리의 `w-320`은 Chrome 새 탭 검색 추천을 따라 `w-size-search-box-wide-width`, 빈 자리 `h-16`은 `h-spacing-lg`다. Popover 스토리의 트리거는 `h-size-control-height`·`w-size-button-min-width`, 빈 슬롯은 `size/popover/slot`이다. `sample-jump-list`의 `w-400`은 안에 든 ListItem 너비, `chrome-post-tab` 스토리의 `w-720`은 글 폭으로 보았다. `post-blocks`의 할 일 표시 칸도 목록 표시와 같은 `size-size-post-block-marker`로 두었다. 맞는 역할이 없는 값(스토리 캔버스, 모션 견본의 무대)은 그대로 두고 코드 전용 변수 후보로 보고했다.
 "코드 일괄 작업: ItemListRow가 속성과 ref를 넘김": |
   `ItemListRow`가 div 속성과 `ref`(`useImperativeHandle`)를 줄에 넘기고 `onClick`·`onKeyDown`은 열기와 함께 부른다. 모두 목록 줄이 `ContextMenuArea`의 `area`가 된다. Shift+F10은 브라우저가 보내는 `contextmenu`를 포커스한 줄에 보내는 것으로, 길게 누르기는 `touchstart` 500ms로 스토리에서 시험했다(실제 키 입력은 사람이 한 번 확인).
+"8단계 E2E: 핵심 흐름을 5~10개보다 많이 둠": |
+  [[테스트 작성 규칙:E2E]]는 핵심 흐름 5~10개를 두라고 하지만, 8단계에서 흐름을 영역별로 나눠 15개를 더해 E2E가 41개가 됐다. 흐름 하나가 문서 섹션 하나씩에 대응하게 쓰다 보니 넘었다. 실제 CI에서 13초 안에 도는 크기다. 5~10개로 줄일지 문서를 41개 수준으로 고칠지 검토가 필요하다.
+"8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
+  모바일 입력(길게 누르기 메뉴, 선택 없음)은 Playwright 기본 설정이 터치 장치가 아니라 합성 이벤트로 흉내 내야 해서 믿기 어렵다고 보고, 모바일은 폭 390 화면의 열기·전환·검색 흐름만 넣었다. 길게 누르기는 스토리 `play`가 맡는다.

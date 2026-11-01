@@ -1,8 +1,11 @@
 {
+  "description": "메뉴 항목을 담는 떠 있는 메뉴 틀로, 우클릭 메뉴와 드롭다운 메뉴 조립에 쓴다.",
   "name": "Menu",
   "nodeId": "517:16134",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 22,
         "width": 250,
@@ -10,7 +13,113 @@
         "y": 8
       },
       "nodeId": "517:16134",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "Content",
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 16,
+                  "w": 248
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Flyout",
+            "effectStyle": "Surface/Flyout (Acrylic)",
+            "fillStyle": "Material/Acrylic Default",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/none",
+                "spacing/2xs",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Flyout",
+            "properties": {
+              "Material": "Acrylic",
+              "Padding": "Compact"
+            },
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 22,
+              "w": 250
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "surface-stroke/flyout"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Menu",
+        "size": {
+          "h": 22,
+          "w": 250
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/menu/width"
+      }
     }
   }
 }

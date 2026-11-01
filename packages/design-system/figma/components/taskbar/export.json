@@ -1,8 +1,26 @@
 {
+  "description": "화면 아래 작업 표시줄의 재질 바탕으로, Taskbar/Default 조립에 쓴다.",
   "name": "Taskbar",
   "nodeId": "26:353",
+  "propertyDefinitions": {
+    "Center": {
+      "type": "SLOT"
+    },
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    },
+    "Right": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "material=acrylic": {
+      "emptyHugSlot": true,
       "node": {
         "height": 48,
         "width": 1280,
@@ -12,9 +30,123 @@
       "nodeId": "26:281",
       "properties": {
         "Material": "Acrylic"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "left space",
+            "size": {
+              "h": 48,
+              "w": 474
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "FRAME"
+          },
+          {
+            "height": "size/taskbar/item",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Center",
+            "size": {
+              "h": 40,
+              "w": 308
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          },
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MAX"
+            },
+            "name": "Right",
+            "size": {
+              "h": 48,
+              "w": 474
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Material/Acrylic",
+        "fillStyle": "Material/Acrylic Base",
+        "height": "size/taskbar/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/md",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic",
+        "size": {
+          "h": 48,
+          "w": 1280
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          0,
+          0,
+          0
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/taskbar/width"
       }
     },
     "material=solid": {
+      "emptyHugSlot": true,
       "node": {
         "height": 48,
         "width": 1280,
@@ -24,6 +156,118 @@
       "nodeId": "26:317",
       "properties": {
         "Material": "Solid"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "left space",
+            "size": {
+              "h": 48,
+              "w": 474
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "FRAME"
+          },
+          {
+            "height": "size/taskbar/item",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Center",
+            "size": {
+              "h": 40,
+              "w": 308
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          },
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MAX"
+            },
+            "name": "Right",
+            "size": {
+              "h": 48,
+              "w": 474
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "fillStyle": "Material/Fallback/Acrylic Base",
+        "height": "size/taskbar/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/md",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid",
+        "size": {
+          "h": 48,
+          "w": 1280
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          0,
+          0,
+          0
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/taskbar/width"
       }
     }
   }
