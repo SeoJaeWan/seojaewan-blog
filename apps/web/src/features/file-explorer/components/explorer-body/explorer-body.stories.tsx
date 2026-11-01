@@ -253,6 +253,21 @@ async function findOpenPopup(role: 'menu' | 'alertdialog', name?: string): Promi
 }
 
 /**
+ * 메시지 상자의 확인을 눌러 닫고, 닫는 애니메이션이 끝나 이름 바꾸기 입력창이 포커스를 돌려받을 때까지 기다린다.
+ * 확인 직후에는 포커스가 닫히는 상자의 버튼에 남아 있어, 곧바로 키를 누르면 입력창이 아니라 상자가 받는다.
+ * @param dialog 열린 메시지 상자
+ */
+async function confirmMessageBox(dialog: HTMLElement): Promise<void> {
+  await userEvent.click(within(dialog).getByRole('button', { name: '확인' }), {
+    pointerEventsCheck: 0,
+  });
+  await waitFor(async () => {
+    await expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+    await expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveFocus();
+  });
+}
+
+/**
  * 열린 메뉴의 항목을 찾는다.
  * @param name 항목 이름
  * @returns 메뉴 항목
@@ -439,7 +454,7 @@ export const RenameAndDelete: Story = {
       await expect(
         within(dialog).getByText('이 위치에 같은 이름의 폴더가 이미 있습니다.'),
       ).toBeInTheDocument();
-      await user.click(within(dialog).getByRole('button', { name: '확인' }));
+      await confirmMessageBox(dialog);
     });
 
     // @codocs [[항목과 폴더:폴더 이름]]
@@ -450,7 +465,7 @@ export const RenameAndDelete: Story = {
       await expect(
         within(dialog).getByText('지정한 장치 이름이 잘못되었습니다.'),
       ).toBeInTheDocument();
-      await user.click(within(dialog).getByRole('button', { name: '확인' }));
+      await confirmMessageBox(dialog);
       await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('LPT1');
       await expect(useWorkspaceStore.getState().items['folder:React']?.name).toBe('React');
       await user.keyboard('{Escape}');
