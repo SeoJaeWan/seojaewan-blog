@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { ShellSurface } from './shell-surface';
 
@@ -31,3 +32,26 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** Start 패널처럼 역할과 접근성 이름을 붙여 쓰고, 내용은 children 자리에 그린다 */
+export const Default: Story = {
+  render: () => (
+    <ShellSurface role="dialog" aria-label="Start" material="solid">
+      <p>Start 내용</p>
+    </ShellSurface>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('역할과 접근성 이름 같은 div 속성을 그대로 넘긴다', async () => {
+      await expect(canvas.getByRole('dialog', { name: 'Start' })).toBeInTheDocument();
+    });
+
+    await step('내용을 children 자리(피그마 슬롯)에 그린다', async () => {
+      await expect(
+        within(canvas.getByRole('dialog', { name: 'Start' })).getByText('Start 내용'),
+      ).toBeInTheDocument();
+    });
+  },
+};

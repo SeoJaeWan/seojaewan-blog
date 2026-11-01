@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { Tooltip } from './tooltip';
 
@@ -34,3 +35,27 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 글자를 담은 tooltip 역할 요소다 */
+export const Default: Story = {
+  render: () => <Tooltip text="도움말" />,
+  play: async ({ canvasElement, step }) => {
+    await step('글자를 담은 tooltip 역할 요소다', async () => {
+      await expect(within(canvasElement).getByRole('tooltip')).toHaveTextContent('도움말');
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** balloon은 메시지를 그리고 id 같은 div 속성을 넘긴다 */
+export const Balloon: Story = {
+  render: () => <Tooltip type="balloon" message="메시지 내용" id="tip" />,
+  play: async ({ canvasElement, step }) => {
+    await step('메시지를 그리고 div 속성을 넘긴다', async () => {
+      const tooltip = within(canvasElement).getByRole('tooltip');
+      await expect(tooltip).toHaveAttribute('id', 'tip');
+      await expect(tooltip).toHaveTextContent('메시지 내용');
+    });
+  },
+};

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { TaskbarPreviewList } from './taskbar-preview-list';
 
@@ -30,3 +31,26 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 미리보기를 children 자리에 그리고, 역할과 접근성 이름 같은 div 속성을 넘긴다 */
+export const Default: Story = {
+  render: () => (
+    <TaskbarPreviewList role="list" aria-label="창 미리보기 목록">
+      <div role="listitem">창 미리보기</div>
+    </TaskbarPreviewList>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('역할과 접근성 이름 같은 div 속성을 그대로 넘긴다', async () => {
+      await expect(canvas.getByRole('list', { name: '창 미리보기 목록' })).toBeInTheDocument();
+    });
+
+    await step('미리보기를 children 자리(피그마 슬롯)에 그린다', async () => {
+      await expect(within(canvas.getByRole('list')).getByRole('listitem')).toHaveTextContent(
+        '창 미리보기',
+      );
+    });
+  },
+};

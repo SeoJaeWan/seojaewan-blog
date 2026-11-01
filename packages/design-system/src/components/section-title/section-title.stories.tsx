@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { SectionTitle } from './section-title';
 
@@ -20,3 +21,41 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나(default)를 그린다.
 export const Parity: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** showAction이 꺼져 있으면 action을 그리지 않는다 */
+export const Default: Story = {
+  render: () => (
+    <div className="w-574">
+      <SectionTitle title="고정됨" action={<button type="button">보기</button>} />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('title로 바꾼 글자를 그린다', async () => {
+      await expect(canvas.getByText('고정됨')).toBeInTheDocument();
+    });
+
+    await step('action을 그리지 않는다', async () => {
+      await expect(canvas.queryByRole('button')).not.toBeInTheDocument();
+    });
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** showAction이 켜지면 action을 그린다 */
+export const WithAction: Story = {
+  render: () => (
+    <div className="w-574">
+      <SectionTitle showAction action={<button type="button">보기</button>} />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('action을 그린다', async () => {
+      await expect(canvas.getByRole('button', { name: '보기' })).toBeInTheDocument();
+    });
+  },
+};
