@@ -1,6 +1,13 @@
 {
+  "description": "목록 안 항목 묶음의 머리글로, Start 메뉴 목록과 검색 결과에 쓴다.",
   "name": "SectionHeader",
   "nodeId": "386:13783",
+  "propertyDefinitions": {
+    "Label": {
+      "default": "머리글",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +17,61 @@
         "y": 0
       },
       "nodeId": "386:13783",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 37
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "머리글",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/md",
+            "spacing/xs",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "SectionHeader",
+        "size": {
+          "h": 32,
+          "w": 61
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }
