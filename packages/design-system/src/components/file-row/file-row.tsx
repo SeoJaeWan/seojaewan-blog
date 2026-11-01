@@ -83,7 +83,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
     className,
     ...divProps
   } = props;
-  const dim = isCut ? 'opacity-opacity-cut' : undefined;
+  const dimClassName = isCut ? 'opacity-opacity-cut' : undefined;
   return (
     <div
       data-state={fileRowState({ isSelected, isCut, isRenaming })}
@@ -102,7 +102,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
         <span
           className={cn(
             'flex size-size-icon-sm shrink-shrink-none items-center justify-center',
-            dim,
+            dimClassName,
           )}
         >
           {icon}
@@ -113,7 +113,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
           <span
             className={cn(
               'min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary',
-              dim,
+              dimClassName,
             )}
           >
             {name}

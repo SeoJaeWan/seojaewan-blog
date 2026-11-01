@@ -1,5 +1,7 @@
 import type { JSX, ReactNode } from 'react';
 
+import { cn } from '@seojaewan/design-system';
+
 type WindowThumbnailProps = {
   /** 실제 창의 너비(px). 줄이기 전 크기다 */
   width: number;
@@ -27,7 +29,7 @@ export function WindowThumbnail(props: WindowThumbnailProps): JSX.Element {
     <div
       aria-hidden
       inert
-      className={['relative shrink-shrink-none', className].filter(Boolean).join(' ')}
+      className={cn('relative shrink-shrink-none', className)}
       style={{ width: width * scale, height: height * scale }}
     >
       <div

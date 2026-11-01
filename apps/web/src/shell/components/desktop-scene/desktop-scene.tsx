@@ -1,5 +1,7 @@
 import type { JSX, ReactNode } from 'react';
 
+import { cn } from '@seojaewan/design-system';
+
 import { DesktopWallpaper } from '@/features/desktop/desktop-wallpaper';
 
 type DesktopSceneProps = {
@@ -30,10 +32,7 @@ type DesktopSceneProps = {
 export function DesktopScene(props: DesktopSceneProps): JSX.Element {
   const { icons, children, taskbar, inert: isInert, className } = props;
   return (
-    <div
-      inert={isInert}
-      className={['relative flex flex-col overflow-clip', className].filter(Boolean).join(' ')}
-    >
+    <div inert={isInert} className={cn('relative flex flex-col overflow-clip', className)}>
       {/* 배경화면은 맨 아래에 깔고, 뒤에 오는 자리(relative)가 그 위에 그려진다 */}
       <DesktopWallpaper />
       <div className="relative min-h-size-none flex-flex-fill">

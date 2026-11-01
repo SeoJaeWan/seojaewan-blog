@@ -29,7 +29,7 @@ const layoutLabels = {
 } as const satisfies Record<SnapLayoutOptionLayout, string>;
 
 // SnapZone은 고정 크기를 가지므로, 열 안에서 남는 자리를 채우도록 크기를 덮어쓴다.
-const ZONE_CLASS = 'h-auto min-h-size-none w-full flex-flex-fill';
+const ZONE_CLASS_NAME = 'h-auto min-h-size-none w-full flex-flex-fill';
 
 /**
  * 스냅 레이아웃 선택지 안의 레이아웃 하나(피그마 SnapLayoutOption)를 그린다. SnapLayoutFlyout에 쓴다.
@@ -52,7 +52,7 @@ export function SnapLayoutOption(props: SnapLayoutOptionProps): JSX.Element {
       <SnapZone
         label={labels[index] ?? ''}
         onClick={() => handleSelectZone?.(index)}
-        className={ZONE_CLASS}
+        className={ZONE_CLASS_NAME}
       />
     );
   }

@@ -1,6 +1,6 @@
 import { type ComponentProps, type JSX, type MouseEventHandler, useState } from 'react';
 
-import { Button, IconButton, Separator } from '@seojaewan/design-system';
+import { Button, cn, IconButton, Separator } from '@seojaewan/design-system';
 
 import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
@@ -155,9 +155,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
   const [openMenu, setOpenMenu] = useState<'onSort' | 'onView' | null>(null);
   const menus = { onSort: sortMenu, onView: viewMenu } as const;
   return (
-    <div
-      className={['flex w-fit items-center gap-spacing-xs', className].filter(Boolean).join(' ')}
-    >
+    <div className={cn('flex w-fit items-center gap-spacing-xs', className)}>
       {commandsByLocation[location].map(
         /**
          * 명령 버튼이나 구분선 하나를 그린다.

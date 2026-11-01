@@ -1,6 +1,6 @@
 import type { JSX, KeyboardEvent, ReactNode } from 'react';
 
-import { SnapPreview, WindowPreview } from '@seojaewan/design-system';
+import { cn, SnapPreview, WindowPreview } from '@seojaewan/design-system';
 
 /** Snap Assist가 제안하는 창 하나 */
 export type SnapAssistSuggestion = {
@@ -37,9 +37,7 @@ export function SnapAssist(props: SnapAssistProps): JSX.Element {
   const { suggestions, onSelect, onClose, className } = props;
   const isSelectable = onSelect !== undefined;
   return (
-    <div
-      className={['relative flex items-center justify-center', className].filter(Boolean).join(' ')}
-    >
+    <div className={cn('relative flex items-center justify-center', className)}>
       <SnapPreview className="absolute inset-spacing-none" />
       {/* 피그마 `suggestions` 배치 프레임(가로, 간격 8)이다 */}
       <div className="relative flex items-start gap-spacing-sm overflow-clip">

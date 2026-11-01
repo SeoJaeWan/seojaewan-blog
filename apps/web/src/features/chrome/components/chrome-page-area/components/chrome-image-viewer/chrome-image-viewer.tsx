@@ -1,6 +1,6 @@
 import type { JSX, KeyboardEvent, MouseEvent, ReactNode, Ref } from 'react';
 
-import { IconButton } from '@seojaewan/design-system';
+import { cn, IconButton } from '@seojaewan/design-system';
 
 export type ChromeImageViewerLayout = 'wide' | 'narrow';
 
@@ -70,12 +70,10 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       tabIndex={-1}
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
-      className={[
+      className={cn(
         'flex flex-col items-start gap-spacing-lg bg-chrome-image-viewer-backdrop p-spacing-lg outline-none',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
     >
       {/* 피그마 `toolbar` 배치 프레임. 닫기 버튼을 오른쪽 끝에 둔다 */}
       <div data-backdrop className="flex w-full justify-end">
@@ -88,10 +86,10 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       {/* 피그마 `stage` 배치 프레임. 남은 높이를 채우고 이미지와 캡션을 가운데에 둔다 */}
       <div
         data-backdrop
-        className={[
+        className={cn(
           'flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center gap-spacing-md',
           layout === 'wide' ? 'px-spacing-3xl' : 'px-spacing-none',
-        ].join(' ')}
+        )}
       >
         {image}
         {caption !== undefined && (
