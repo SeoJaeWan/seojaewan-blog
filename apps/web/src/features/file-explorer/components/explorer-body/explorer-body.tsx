@@ -897,6 +897,9 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       name: item.name,
       selected: isSelected || item.id === dragTargetId,
       cut: cutSet.has(item.id),
+      // 잘라낸 항목과 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다.
+      'data-cut': cutSet.has(item.id) ? 'true' : undefined,
+      'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
       renaming: isRenaming,
       renameFieldProps: isRenaming ? rename.renameFieldProps : undefined,
     };

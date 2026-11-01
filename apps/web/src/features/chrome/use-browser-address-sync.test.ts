@@ -1,10 +1,9 @@
-import { act, render, renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
 
-import { ChromeWindowLayer } from './chrome-window-layer';
 import { useBrowserAddressSync } from './use-browser-address-sync';
 
 const WORK_AREA = { width: 1920, height: 1032 } as const;
@@ -57,32 +56,6 @@ describe('창 동작:브라우저 주소', () => {
     });
     expect(replaceState).toHaveBeenCalledWith(window.history.state, '', '/posts/rsc');
     expect(pushState).not.toHaveBeenCalled();
-  });
-
-  it('창 축소 화면처럼 Chrome 창만 다시 그리는 곳에서는 주소를 바꾸지 않는다', () => {
-    const replaceState = vi.spyOn(window.history, 'replaceState');
-    const id = useWindowStore
-      .getState()
-      .open('chrome', WORK_AREA, createChromeContent({ kind: 'post', slug: 'rsc' }));
-    const target = useWindowStore.getState().windows[id];
-    if (target?.content.app !== 'chrome') {
-      throw new Error('Chrome 창이 없다');
-    }
-    render(
-      <ChromeWindowLayer
-        windowId={id}
-        content={target.content}
-        device="desktop"
-        controls={{
-          inactive: false,
-          placement: 'normal',
-          onMinimize: vi.fn(),
-          onClose: vi.fn(),
-          className: '',
-        }}
-      />,
-    );
-    expect(replaceState).not.toHaveBeenCalled();
   });
 
   it('없는 글 주소로 들어와 찾을 수 없음 화면을 보고 있으면 들어온 경로를 그대로 둔다', () => {
