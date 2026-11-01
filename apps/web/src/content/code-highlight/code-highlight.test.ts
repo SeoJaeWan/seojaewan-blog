@@ -56,6 +56,13 @@ const lightPlusColors: Readonly<Record<string, CodeSyntax>> = {
   '#800000': 'tag',
   '#e50000': 'attribute',
   '#001080': 'variable',
+  '#811f3f': 'regexp',
+  '#d16969': 'regexp-group',
+  '#ee0000': 'escape',
+  '#0070c1': 'variable-constant',
+  '#0451a5': 'key-value',
+  '#cd3131': 'invalid',
+  '#000080': 'variable-navy',
 };
 
 /**
@@ -103,10 +110,21 @@ describe('기술 스택:글 본문 처리', () => {
     expect(syntaxOf(lines, 'boolean')).toBe('type');
     expect(syntaxOf(lines, 'count')).toBe('parameter');
     expect(syntaxOf(lines, 'slug')).toBe('variable');
-    expect(syntaxOf(lines, 'post')).toBe('variable'); // const로 선언한 변수도 쓰는 곳과 같은 변수 색이다
+    expect(syntaxOf(lines, 'post')).toBe('variable-constant'); // Light+처럼 const로 선언한 변수는 따로 칠한다
     expect(syntaxOf(lines, '===')).toBe('punctuation');
     expect(syntaxOf(lines, '/>')).toBe('tag');
     expect(syntaxOf(lines, 'data')).toBe('attribute');
+  });
+
+  it('정규식·이스케이프·JSON 키를 Light+처럼 각자의 갈래로 칠한다', async () => {
+    const regexp = await highlightCode('const re = /a(b)\\d/;', 'ts');
+    const flat = regexp?.flat() ?? [];
+    expect(flat.some((token) => token.syntax === 'regexp')).toBe(true);
+    expect(flat.some((token) => token.syntax === 'regexp-group')).toBe(true);
+    const escaped = await highlightCode("const text = 'a\\n';", 'ts');
+    expect(escaped?.flat().some((token) => token.syntax === 'escape')).toBe(true);
+    const json = await highlightCode('{ "name": 1 }', 'json');
+    expect(json?.flat().find((token) => token.text.includes('name'))?.syntax).toBe('key-value');
   });
 
   it('줄마다 글자 조각으로 나누고, 조각을 이으면 원래 코드다', async () => {
@@ -125,19 +143,23 @@ describe('기술 스택:글 본문 처리', () => {
 
   it('Light+의 scope를 모두 갈래에 묶고, Light+와 같은 색이면 그 색의 갈래로 묶는다', async () => {
     const lightPlus = (await bundledThemes['light-plus']()).default;
+    // 같은 scope가 여러 규칙에 나오면 Light+에서는 뒤의 규칙이 이긴다
+    const effectiveColors = new Map<string, string>();
     for (const rule of lightPlus.tokenColors ?? []) {
       const foreground = rule.settings.foreground?.toLowerCase();
       if (foreground === undefined) {
         continue; // 글자 모양(굵게·기울임)만 바꾸는 규칙은 따르지 않는다
       }
       for (const scope of [rule.scope ?? []].flat()) {
-        const group = groupOf(scope);
-        expect(group, scope).toBeDefined();
-        const expected = lightPlusColors[foreground];
-        // keyword.control은 Light+에서 뒤의 흐름 키워드 규칙이 이긴다
-        if (expected !== undefined && !(scope === 'keyword.control' && expected === 'keyword')) {
-          expect(group, scope).toBe(expected);
-        }
+        effectiveColors.set(scope, foreground);
+      }
+    }
+    for (const [scope, foreground] of effectiveColors) {
+      const group = groupOf(scope);
+      expect(group, scope).toBeDefined();
+      const expected = lightPlusColors[foreground];
+      if (expected !== undefined) {
+        expect(group, scope).toBe(expected);
       }
     }
   });

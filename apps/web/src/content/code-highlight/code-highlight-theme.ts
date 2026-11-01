@@ -9,15 +9,14 @@ export const CODE_HIGHLIGHT_THEME_NAME = 'seojaewan-code-syntax';
 
 /**
  * 색 갈래마다 칠할 문법 범위(TextMate scope). VS Code 기본 밝은 테마(Light+)의 scope 목록을 보고 묶었다.
- * Light+에서 같은 색인 scope를 그 색의 갈래로 묶고, 우리 갈래에 없는 Light+ 색은 쓰임이 가까운 갈래로 옮겼다.
+ * Light+에서 같은 색인 scope를 그 색의 갈래로 묶는다.
  * - `true`·`false`·`null`(`constant.language`)은 Light+처럼 키워드다.
  * - 흐름 키워드(`keyword.control`)는 Light+에서 키워드 규칙보다 뒤에 와 흐름 키워드 색을 이기므로 흐름 키워드에만 둔다.
  * - Light+가 따로 칠하지 않는 매개변수(`variable.parameter`)와 구두점(`punctuation`)은 갈래가 있어 더했다.
  *   문자열의 따옴표와 주석 기호는 Light+처럼 문자열·주석 색이 되도록 구두점보다 자세한 scope를 더했다.
- * - 정규식(`#811f3f`·`#d16969`)과 이스케이프 글자(`#ee0000`)는 문자열로 옮겼다.
- *   `#0070c1`은 상수로 선언한 변수(`variable.other.constant`)면 변수·속성(선언과 쓰는 곳의 색을 맞춘다), 열거형 멤버면 숫자·상수다.
- *   `#0451a5`는 속성 이름이면 변수·속성, 값이면 숫자·상수, 마크다운 기호면 연산자·구두점으로 옮겼다.
- *   잘못된 글자(`invalid`)는 빨간 태그 속성 이름, 남색(`#000080`)은 변수·속성, 검정은 기본 글자나 연산자·구두점이다.
+ * - Light+가 따로 칠하는 색(정규식 `#811f3f`·`#d16969`, 이스케이프 `#ee0000`, 열거형 멤버·`const` 변수 `#0070c1`,
+ *   JSON 키·CSS 값 `#0451a5`, 잘못된 문법 `#cd3131`, 남색 변수 `#000080`)은 각각 자기 갈래(`regexp`, `regexp-group`, `escape`,
+ *   `variable-constant`, `key-value`, `invalid`, `variable-navy`)로 칠한다. 같은 scope가 Light+에서 여러 번 나오면 뒤의 규칙이 이긴다.
  * 기본 글자(`text`)는 테마의 기본 글자색이고, 바깥 색을 기본 글자색으로 되돌리는 scope만 둔다.
  * Light+의 글자 모양(굵게·기울임)은 따르지 않는다.
  * @codocs [[기술 스택:글 본문 처리]]
@@ -29,26 +28,21 @@ export const codeSyntaxScopes = {
     'support.type.property-name',
     'source.css variable',
     'source.coffee.embedded',
-    'invalid',
   ],
   comment: ['comment', 'punctuation.definition.comment'],
   constant: [
     'constant.numeric',
-    'variable.other.enummember',
     'keyword.operator.plus.exponent',
     'keyword.operator.minus.exponent',
     'markup.inserted',
-    'markup.changed',
     'meta.preprocessor.numeric',
-    'support.constant.property-value',
-    'support.constant.font-name',
-    'support.constant.media-type',
-    'support.constant.media',
-    'constant.other.color.rgb-value',
-    'constant.other.rgb-value',
-    'support.constant.color',
     'keyword.other.unit',
     'constant.sha.git-rebase',
+  ],
+  escape: [
+    'keyword.operator.or.regexp',
+    'keyword.control.anchor.regexp',
+    'constant.character.escape',
   ],
   function: [
     'entity.name.function',
@@ -56,6 +50,21 @@ export const codeSyntaxScopes = {
     'support.constant.handlebars',
     'source.powershell variable.other.member',
     'entity.name.operator.custom-literal',
+  ],
+  invalid: ['invalid'],
+  'key-value': [
+    'markup.changed',
+    'punctuation.definition.quote.begin.markdown',
+    'punctuation.definition.list.begin.markdown',
+    'meta.structure.dictionary.key.python',
+    'support.constant.property-value',
+    'support.constant.font-name',
+    'support.constant.media-type',
+    'support.constant.media',
+    'constant.other.color.rgb-value',
+    'constant.other.rgb-value',
+    'support.constant.color',
+    'support.type.property-name.json',
     'support.function.git-rebase',
   ],
   keyword: [
@@ -109,21 +118,16 @@ export const codeSyntaxScopes = {
     'entity.name.operator',
   ],
   parameter: ['variable.parameter'],
-  punctuation: [
-    'punctuation',
-    'keyword.operator',
-    'keyword.operator.quantifier.regexp',
-    'punctuation.definition.quote.begin.markdown',
-    'punctuation.definition.list.begin.markdown',
-  ],
-  string: [
-    'string',
-    'punctuation.definition.string',
-    'meta.embedded.assembly',
-    'markup.deleted',
-    'meta.preprocessor.string',
+  punctuation: ['punctuation', 'keyword.operator', 'keyword.operator.quantifier.regexp'],
+  regexp: [
     'constant.regexp',
     'string.regexp',
+    'constant.character.character-class.regexp',
+    'constant.other.character-class.set.regexp',
+    'constant.other.character-class.regexp',
+    'constant.character.set.regexp',
+  ],
+  'regexp-group': [
     'punctuation.definition.group.regexp',
     'punctuation.definition.group.assertion.regexp',
     'punctuation.definition.character-class.regexp',
@@ -131,13 +135,13 @@ export const codeSyntaxScopes = {
     'punctuation.character.set.end.regexp',
     'keyword.operator.negation.regexp',
     'support.other.parenthesis.regexp',
-    'constant.character.character-class.regexp',
-    'constant.other.character-class.set.regexp',
-    'constant.other.character-class.regexp',
-    'constant.character.set.regexp',
-    'keyword.operator.or.regexp',
-    'keyword.control.anchor.regexp',
-    'constant.character.escape',
+  ],
+  string: [
+    'string',
+    'punctuation.definition.string',
+    'meta.embedded.assembly',
+    'markup.deleted',
+    'meta.preprocessor.string',
   ],
   tag: [
     'entity.name.tag',
@@ -201,16 +205,13 @@ export const codeSyntaxScopes = {
   variable: [
     'variable',
     'meta.definition.variable.name',
-    'variable.other.constant',
     'support.variable',
     'entity.name.variable',
     'constant.other.placeholder',
     'meta.object-literal.key',
-    'meta.structure.dictionary.key.python',
-    'support.type.property-name.json',
-    'meta.diff.header',
-    'markup.bold',
   ],
+  'variable-constant': ['variable.other.constant', 'variable.other.enummember'],
+  'variable-navy': ['meta.diff.header', 'markup.bold'],
   // 기본 글자색으로 되돌리는 scope다. Light+가 검정으로 칠해 바깥 색을 덮는 곳이다.
   text: [
     'meta.embedded',

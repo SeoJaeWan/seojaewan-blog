@@ -95,16 +95,23 @@ const codeSyntaxClassNames = {
   attribute: 'text-code-syntax-attribute',
   comment: 'text-code-syntax-comment',
   constant: 'text-code-syntax-constant',
+  escape: 'text-code-syntax-escape',
   function: 'text-code-syntax-function',
+  invalid: 'text-code-syntax-invalid',
+  'key-value': 'text-code-syntax-key-value',
   keyword: 'text-code-syntax-keyword',
   'keyword-control': 'text-code-syntax-keyword-control',
   parameter: 'text-code-syntax-parameter',
   punctuation: 'text-code-syntax-punctuation',
+  regexp: 'text-code-syntax-regexp',
+  'regexp-group': 'text-code-syntax-regexp-group',
   string: 'text-code-syntax-string',
   tag: 'text-code-syntax-tag',
   text: 'text-code-syntax-text',
   type: 'text-code-syntax-type',
   variable: 'text-code-syntax-variable',
+  'variable-constant': 'text-code-syntax-variable-constant',
+  'variable-navy': 'text-code-syntax-variable-navy',
 } as const satisfies Record<CodeSyntax, string>;
 
 // 서버가 그린 수식 HTML을 넣는 부품이다. KaTeX CSS를 품어 수식이 있을 때만 받는다.

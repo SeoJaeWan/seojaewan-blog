@@ -41,16 +41,23 @@ export const CODE_SYNTAXES = [
   'attribute',
   'comment',
   'constant',
+  'escape',
   'function',
+  'invalid',
+  'key-value',
   'keyword',
   'keyword-control',
   'parameter',
   'punctuation',
+  'regexp',
+  'regexp-group',
   'string',
   'tag',
   'text',
   'type',
   'variable',
+  'variable-constant',
+  'variable-navy',
 ] as const;
 
 /** 코드 강조 색의 이름 */
