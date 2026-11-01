@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node", "@testing-library/jest-dom/vitest"],
+    "types": ["node"],
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "plugins": [{ "name": "next" }],
     "paths": {

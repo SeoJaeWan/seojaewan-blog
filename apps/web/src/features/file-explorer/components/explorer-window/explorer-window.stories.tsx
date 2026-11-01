@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { PointerEvent } from 'react';
+import { clearAllMocks, expect, fireEvent, fn, within } from 'storybook/test';
 
 import { ExplorerCommands } from '@/features/file-explorer/components/explorer-body/components/explorer-commands/explorer-commands';
 import { ExplorerContent } from '@/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content';
+import {
+  getStoryCenter,
+  holdStoryDrag,
+} from '@/features/file-explorer/utils/story-drag/story-drag';
 
 import { ExplorerWindow, type ExplorerWindowTab } from './explorer-window';
 import { getExplorerWindowParts } from './story-explorer-window-parts';
@@ -23,6 +29,12 @@ type FigmaArgs = {
   folder: (typeof FOLDERS)[number];
   selection: (typeof SELECTIONS)[number];
   tabs: (typeof TABS)[number];
+  /** 동작 스토리: 창 층의 누르기 처리를 대신하는 함수(탭에서 올라온 누르기를 받는다) */
+  onWindowPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
+  /** 동작 스토리: 제목 표시줄을 눌러 창 끌기를 시작할 때 */
+  onTitleBarPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
+  /** 동작 스토리: 탭을 끌어 순서를 바꿀 때 */
+  onTabMove?: (from: number, to: number) => void;
 };
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -37,6 +49,11 @@ const meta = {
     tabs: { control: 'inline-radio', options: TABS },
   },
   render: (args) => {
+    const {
+      onWindowPointerDown: handleWindowPointerDown,
+      onTitleBarPointerDown: handleTitleBarPointerDown,
+      onTabMove: handleTabMove,
+    } = args;
     const parts = getExplorerWindowParts(args);
     const currentTab: ExplorerWindowTab = {
       title: parts.tabTitle,
@@ -48,22 +65,30 @@ const meta = {
         ? [currentTab]
         : MULTIPLE_TAB_TITLES.map((title) => (title === parts.tabTitle ? currentTab : { title }));
     return (
-      <ExplorerWindow device={args.device} tabs={tabs} className={SIZE_CLASS_NAMES[args.device]}>
-        <ExplorerContent
+      <div onPointerDown={handleWindowPointerDown}>
+        <ExplorerWindow
           device={args.device}
-          className="min-h-0 w-full flex-1"
-          locationIcon={parts.locationIcon}
-          searchPlaceholder={parts.searchPlaceholder}
-          path={parts.path}
-          commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
-          navigation={parts.navigation}
-          itemCount={parts.itemCount}
-          selection={parts.selection}
-          showSelection={parts.showSelection}
+          tabs={tabs}
+          className={SIZE_CLASS_NAMES[args.device]}
+          onTitleBarPointerDown={handleTitleBarPointerDown}
+          onTabMove={handleTabMove}
         >
-          {parts.items}
-        </ExplorerContent>
-      </ExplorerWindow>
+          <ExplorerContent
+            device={args.device}
+            className="min-h-0 w-full flex-1"
+            locationIcon={parts.locationIcon}
+            searchPlaceholder={parts.searchPlaceholder}
+            path={parts.path}
+            commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
+            navigation={parts.navigation}
+            itemCount={parts.itemCount}
+            selection={parts.selection}
+            showSelection={parts.showSelection}
+          >
+            {parts.items}
+          </ExplorerContent>
+        </ExplorerWindow>
+      </div>
     );
   },
 } satisfies Meta<FigmaArgs>;
@@ -76,4 +101,66 @@ type Story = StoryObj<typeof meta>;
 // (임의 작업 문서의 "탭 닫기 버튼" 항목).
 export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
+};
+
+// 닫기 버튼이 tablist 안에 있는 구조는 Figma 스토리와 같아 같은 규칙을 끈다.
+/** 탭 줄에서 누른 것은 창을 맨 앞으로 가져오되 창 끌기는 시작하지 않고, 탭을 끌면 순서를 바꾼다 */
+export const TabPointer: Story = {
+  parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
+  args: {
+    tabs: 'multiple',
+    onWindowPointerDown: fn(),
+    onTitleBarPointerDown: fn(),
+    onTabMove: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const {
+      onWindowPointerDown: handleWindowPointerDown,
+      onTitleBarPointerDown: handleTitleBarPointerDown,
+      onTabMove: handleTabMove,
+    } = args;
+    const canvas = within(canvasElement);
+    const react = canvas.getByRole('tab', { name: /React/ });
+    function clearCalls(): void {
+      clearAllMocks();
+    }
+
+    // @codocs [[파일 탐색기:탭]]
+    await step('탭을 누르면 창 층의 누르기 처리(창을 맨 앞으로)까지 전해진다', async () => {
+      clearCalls();
+      await fireEvent.pointerDown(react);
+      await expect(handleWindowPointerDown).toHaveBeenCalledTimes(1);
+    });
+
+    await step('탭의 ×를 누르면 창 층의 누르기 처리까지 전해진다', async () => {
+      clearCalls();
+      await fireEvent.pointerDown(canvas.getAllByRole('button', { name: '탭 닫기' })[0] ?? react);
+      await expect(handleWindowPointerDown).toHaveBeenCalledTimes(1);
+    });
+
+    await step('탭 위에서 누른 것은 창 끌기를 시작하지 않는다', async () => {
+      clearCalls();
+      await fireEvent.pointerDown(react);
+      await expect(handleTitleBarPointerDown).not.toHaveBeenCalled();
+    });
+
+    await step('탭 묶음의 여백(탭 옆)에서 누른 것도 창 끌기를 시작하지 않는다', async () => {
+      clearCalls();
+      await fireEvent.pointerDown(react.parentElement ?? canvasElement);
+      await expect(handleTitleBarPointerDown).not.toHaveBeenCalled();
+    });
+
+    await step('탭 줄 밖의 제목 표시줄을 누르면 창 끌기를 시작한다', async () => {
+      clearCalls();
+      await fireEvent.pointerDown(canvas.getByRole('tablist'));
+      await expect(handleTitleBarPointerDown).toHaveBeenCalledTimes(1);
+    });
+
+    await step('탭을 끌어 다른 탭 자리로 가면 그 자리로 옮긴다', async () => {
+      const last = canvas.getAllByRole('tab')[2] ?? react;
+      const held = await holdStoryDrag(react, [getStoryCenter(react), getStoryCenter(last)]);
+      await held.release();
+      await expect(handleTabMove).toHaveBeenCalledWith(0, 2);
+    });
+  },
 };

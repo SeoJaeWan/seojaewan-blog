@@ -63,6 +63,17 @@ const resizeHandles = [
   { direction: 'se', className: '-right-8 -bottom-8 size-16 cursor-nwse-resize' },
 ] as const satisfies readonly { direction: ResizeDirection; className: string }[];
 
+/** 바깥 요소에서 재생하는 창 모션 */
+type WindowMotion = 'open' | 'restore' | 'minimize' | 'close';
+
+// 동작 줄이기 규칙이 글자 그대로의 클래스에만 걸리므로 변형 클래스를 쓰지 않는다.
+const windowMotionClassNames: Readonly<Record<WindowMotion, string>> = {
+  open: 'motion-window-open',
+  restore: 'motion-window-restore',
+  minimize: 'motion-window-minimize',
+  close: 'motion-window-close',
+};
+
 /**
  * 열린 창 하나를 작업 영역 위 제자리에 그리고, 열기·닫기·최소화·복원·최대화·스냅 모션 클래스를 붙인다.
  * - 열림과 최소화를 presence 하나로 다룬다. 처음 나타날 때 `motion-window-open`, 최소화에서 돌아올 때 `motion-window-restore`,
@@ -171,6 +182,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
         }
       : undefined,
   });
+  const motion = getWindowMotion(presence.status, isClosing, isRestoring);
 
   /** 창을 누르면 맨 앞으로 가져온다. */
   function handlePointerDown(): void {
@@ -221,6 +233,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       role="region"
       aria-label={title}
       data-window-state={isActive ? 'active' : 'inactive'}
+      data-window-motion={motion}
       hidden={presence.isHidden}
       inert={presence.isHidden || isClosing}
       onPointerDown={handlePointerDown}
@@ -228,7 +241,7 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       className={[
         'pointer-events-auto absolute flex',
         isMobile && 'inset-0',
-        getMotionClassName(presence.status, isClosing, isRestoring),
+        windowMotionClassNames[motion],
       ]
         .filter(Boolean)
         .join(' ')}
@@ -320,21 +333,21 @@ function ResizeHandle(props: ResizeHandleProps): JSX.Element {
 }
 
 /**
- * 지금 단계에 맞는 창 모션 클래스를 고른다. 동작 줄이기 규칙이 글자 그대로의 클래스에만 걸리므로 변형 클래스를 쓰지 않는다.
+ * 지금 단계에 맞는 창 모션을 고른다. 모션 클래스와 `data-window-motion`이 이 값을 따른다.
  * 최소화가 끝난 뒤(exited)에도 최소화 클래스를 두어 끝 모습(투명도 0)을 붙든다. 숨김은 `hidden`이 맡는다.
  * @codocs [[디자인 기반:모션]]
  * @param status presence 단계
  * @param isClosing 닫히는 창인지
  * @param isRestoring 최소화에서 돌아오는 창인지
- * @returns 모션 클래스
+ * @returns 창 모션
  */
-function getMotionClassName(
+function getWindowMotion(
   status: ReturnType<typeof usePresence>['status'],
   isClosing: boolean,
   isRestoring: boolean,
-): string {
+): WindowMotion {
   if (status === 'exiting' || status === 'exited') {
-    return isClosing ? 'motion-window-close' : 'motion-window-minimize';
+    return isClosing ? 'close' : 'minimize';
   }
-  return isRestoring ? 'motion-window-restore' : 'motion-window-open';
+  return isRestoring ? 'restore' : 'open';
 }

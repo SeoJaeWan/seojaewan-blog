@@ -1,4 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
+import { createElement } from 'react';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { formatClock, useClock } from './use-clock';
@@ -56,5 +58,12 @@ describe('작업 표시줄:시계', () => {
       vi.advanceTimersByTime(10_000);
     });
     expect(result.current).toEqual({ time: '오전 12:00', date: '2026-10-21' });
+  });
+
+  it('서버에서는 시계를 모르므로 null을 돌려준다', () => {
+    function Probe() {
+      return createElement('span', null, useClock() === null ? 'server-null' : 'has-clock');
+    }
+    expect(renderToString(createElement(Probe))).toContain('server-null');
   });
 });

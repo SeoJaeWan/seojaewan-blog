@@ -511,6 +511,8 @@ export function DesktopIconsLayer(): JSX.Element {
       role: 'option',
       'aria-selected': icon.selected === true,
       tabIndex: id === tabbableId ? 0 : -1,
+      // 찬 모양(휴지통)은 그림으로만 드러나므로 상태를 속성으로도 남긴다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
+      'data-full': icon.full === undefined ? undefined : String(icon.full),
       [ICON_ATTRIBUTE]: id,
       [DROP_TARGET_ATTRIBUTE]: isDropTarget ? id : undefined,
       [DROP_TARGET_NAME_ATTRIBUTE]: isDropTarget ? icon.name : undefined,
