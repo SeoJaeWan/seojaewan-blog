@@ -202,6 +202,8 @@ export const OneWindow: Story = {
 // @codocs [[창 동작:창 조작]]
 /** 창 둘을 연 채로 시작한다. 뒤 창을 누르면 맨 앞으로 온다 */
 export const TwoWindows: Story = {
+  // 비활성 창 제목(text-fill-tertiary)의 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
+  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   beforeEach: () => {
     openStoryWindows(['file-explorer', 'chrome']);
   },

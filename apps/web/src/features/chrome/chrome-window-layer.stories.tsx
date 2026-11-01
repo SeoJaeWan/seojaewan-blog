@@ -863,6 +863,11 @@ export const Mobile: Story = {
         '새로고침',
       ]);
       await userEvent.keyboard('{Escape}');
+      // 닫는 애니메이션이 끝날 때까지 메뉴가 남는다. 남은 메뉴는 `pointer-events: none`이라
+      // 다음 단계가 다시 연 메뉴 대신 이 메뉴의 항목을 집으면 클릭이 막힌다.
+      await waitFor(async () => {
+        await expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+      });
     });
 
     await step('⋮ 메뉴의 앞으로는 탭 기록의 다음 페이지로 간다', async () => {
