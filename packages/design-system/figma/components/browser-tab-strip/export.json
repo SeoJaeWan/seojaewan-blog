@@ -1,8 +1,15 @@
 {
+  "description": "Chrome 창 맨 위의 탭 줄로, Chrome 창 제목 표시줄에 쓴다.",
   "name": "BrowserTabStrip",
   "nodeId": "36:431",
+  "propertyDefinitions": {
+    "Tabs": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 100,
         "width": 136,
@@ -10,7 +17,142 @@
         "y": 0
       },
       "nodeId": "36:431",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MAX",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Tabs",
+            "size": {
+              "h": 100,
+              "w": 100
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "chrome/text-secondary",
+                      "path": "icons/ic_fluent_add_20_regular"
+                    },
+                    "component": "ic_fluent_add_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "new tab",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Chrome"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/2xs",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "new tab wrap",
+            "size": {
+              "h": 34,
+              "w": 32
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MAX",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "BrowserTabStrip",
+        "size": {
+          "h": 100,
+          "w": 136
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }
