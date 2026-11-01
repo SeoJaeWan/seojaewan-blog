@@ -1,8 +1,23 @@
 {
+  "description": "작업 표시줄 앱 버튼 위에 뜨는 창 미리보기 목록 판으로, 작업 표시줄 창 미리보기 조립에 쓴다.",
   "name": "TaskbarPreviewList",
   "nodeId": "70:1593",
+  "propertyDefinitions": {
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    },
+    "Previews": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "material=acrylic": {
+      "emptyHugSlot": true,
       "node": {
         "height": 174,
         "width": 218,
@@ -12,9 +27,78 @@
       "nodeId": "70:1435",
       "properties": {
         "Material": "Acrylic"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Previews",
+            "size": {
+              "h": 164,
+              "w": 208
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Surface/Shell (Acrylic)",
+        "fillStyle": "Material/Acrylic Base",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 174,
+          "w": 218
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "material=solid": {
+      "emptyHugSlot": true,
       "node": {
         "height": 174,
         "width": 218,
@@ -24,6 +108,74 @@
       "nodeId": "70:1515",
       "properties": {
         "Material": "Solid"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Previews",
+            "size": {
+              "h": 164,
+              "w": 208
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Elevation/Shell Surface",
+        "fillStyle": "Material/Fallback/Acrylic Base",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 174,
+          "w": 218
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     }
   }
