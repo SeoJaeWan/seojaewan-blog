@@ -113,11 +113,6 @@ describe('토큰 생성', () => {
     expect(utilityBlock('type-caption')).toContain('  letter-spacing: 0.5px;');
   });
 
-  it('숫자로 된 크기 이름도 --size-<숫자> 변수가 되고 w-* 클래스가 읽는다', () => {
-    expect(css).toContain('  --size-240: 240px;');
-    expect(utilityBlock('w-*')).toBe('@utility w-* {\n  width: --value(--size-*);\n}');
-  });
-
   it('투명도가 같거나 RGB가 같은 정지점 사이에는 중간 정지점을 넣지 않는다', () => {
     expect(css).toContain(
       '  --border-same-alpha: linear-gradient(to bottom, var(--color-gray-200) 0%, var(--color-white) 100%);',
@@ -181,8 +176,10 @@ describe('토큰 생성', () => {
     expect(root).toContain('--font-size-body:');
     expect(root).toContain('--surface-flyout-acrylic-backdrop-blur:');
     expect(theme).toContain('--text-fill-primary:');
-    expect(theme).toContain('--spacing-2:');
-    expect(theme).toContain('--font-weight-regular:');
+    expect(root).toContain('--spacing-2xs:');
+    expect(theme).toContain('--spacing-spacing-2xs:');
+    expect(root).toContain('--font-weight-regular:');
+    expect(theme).toContain('--font-weight-font-weight-regular:');
   });
 
   it('글자 스타일은 변수로 서체·크기·굵기·줄 높이·자간을 정하는 type-* 유틸리티가 되고 Hangul 스타일은 서체 목록에 합친다', () => {
@@ -274,7 +271,7 @@ describe('토큰 생성', () => {
   });
 
   it('변수는 이름 순(숫자는 크기 순)이고 같은 입력이면 같은 결과다', () => {
-    expect(css.indexOf('--spacing-2:')).toBeLessThan(css.indexOf('--spacing-10:'));
+    expect(css.indexOf('--spacing-2xs:')).toBeLessThan(css.indexOf('--spacing-sm:'));
     expect(tokensJsonToCss(structuredClone(TOKENS_FIXTURE))).toBe(css);
     expect(['b-10', 'b-2', 'a'].sort(naturalCompare)).toEqual(['a', 'b-2', 'b-10']);
   });
@@ -555,17 +552,15 @@ function numberToken(value: number): Record<string, unknown> {
   return { $type: 'number', $value: value };
 }
 
-// 옛 이름과 새 이름, 코드 전용 변수, 경계값, 노트북 모드가 함께 든 tokens.json이다.
-const mixedTokens = {
+// 경로 규칙 묶음, 코드 전용 변수, 경계값, 노트북 모드가 함께 든 tokens.json이다.
+const pathTokens = {
   spacing: {
-    '16': dimensionToken(16),
     sm: {
       ...dimensionToken(8),
       $extensions: { 'com.seojaewan': { modes: { Laptop: { value: 6, unit: 'px' } } } },
     },
   },
   size: {
-    '240': dimensionToken(240),
     none: dimensionToken(0),
     control: { height: dimensionToken(32) },
   },
@@ -587,27 +582,21 @@ const mixedTokens = {
 };
 
 // @codocs [[피그마 연동:토큰 생성]]
-describe('옛·새 규칙이 함께 있는 tokens.json', () => {
-  const mixed = tokensJsonToCss(mixedTokens);
-  const [, theme = ''] = mixed.split('@theme static {');
+describe('경로 규칙', () => {
+  const pathCss = tokensJsonToCss(pathTokens);
+  const [, theme = ''] = pathCss.split('@theme static {');
   const [themeBlock = ''] = theme.split('\n}');
-  const [, root = ''] = mixed.split('\n:root {');
+  const [, root = ''] = pathCss.split('\n:root {');
   const [rootBlock = ''] = root.split('\n}');
 
-  it('옛 이름은 옛 클래스만, 새 이름은 경로 전체 클래스만 만든다', () => {
-    expect(themeBlock).toContain('--spacing-16: 16px;');
+  it('경로 이름 변수는 :root에, 클래스가 읽는 별칭은 테마에 둔다', () => {
     expect(themeBlock).toContain('--spacing-spacing-sm: var(--spacing-sm);');
-    expect(themeBlock).not.toContain('--spacing-spacing-16');
     expect(themeBlock).not.toMatch(/--spacing-sm:/u);
     expect(rootBlock).toContain('--spacing-sm: 8px;');
-    expect(themeBlock).toContain('--size-240: 240px;');
     expect(themeBlock).toContain('--size-size-none: var(--size-none);');
-  });
-
-  it('이름이 그대로인 토큰은 옛 클래스와 새 클래스를 함께 만든다', () => {
-    expect(themeBlock).toContain('--radius-control: 4px;');
     expect(themeBlock).toContain('--radius-radius-control: var(--radius-control);');
-    expect(themeBlock).toContain('--size-control-height: 32px;');
+    expect(themeBlock).not.toMatch(/--radius-control:/u);
+    expect(rootBlock).toContain('--radius-control: 4px;');
     expect(themeBlock).toContain('--size-size-control-height: var(--size-control-height);');
     expect(themeBlock).toContain(
       '--stroke-width-stroke-width-default: var(--stroke-width-default);',
@@ -622,8 +611,8 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
     expect(themeBlock).toContain('--grid-column-start-grid-start: var(--grid-start);');
     expect(themeBlock).toContain('--grid-row-start-grid-start: var(--grid-start);');
     expect(themeBlock).toContain('--aspect-ratio-wide: var(--ratio-wide);');
-    expect(mixed).toContain('@utility shrink-* {\n  flex-shrink: --value(--shrink-*);\n}');
-    expect(mixed).toContain('@utility flex-* {\n  flex: --value(--flex-*);\n}');
+    expect(pathCss).toContain('@utility shrink-* {\n  flex-shrink: --value(--shrink-*);\n}');
+    expect(pathCss).toContain('@utility flex-* {\n  flex: --value(--flex-*);\n}');
   });
 
   it('값의 단위를 묶음에서 정한다', () => {
@@ -636,17 +625,17 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
   it('경계값으로 구간 변형과 모드 값의 @media를 만들고 기본 구간을 지운다', () => {
     const laptop =
       '(min-width: 768px) and (max-width: 1599px), (min-width: 768px) and (max-height: 899px)';
-    expect(mixed).toContain('--breakpoint-*: initial;');
-    expect(mixed).toContain(`@custom-variant laptop {\n  @media ${laptop} {\n    @slot;\n  }\n}`);
-    expect(mixed).toContain(
+    expect(pathCss).toContain('--breakpoint-*: initial;');
+    expect(pathCss).toContain(`@custom-variant laptop {\n  @media ${laptop} {\n    @slot;\n  }\n}`);
+    expect(pathCss).toContain(
       '@custom-variant mobile {\n  @media (max-width: 767px) {\n    @slot;\n  }\n}',
     );
-    expect(mixed).toContain(`@media ${laptop} {\n  :root {\n    --spacing-sm: 6px;\n  }\n}`);
+    expect(pathCss).toContain(`@media ${laptop} {\n  :root {\n    --spacing-sm: 6px;\n  }\n}`);
     expect(rootBlock).toContain('--breakpoint-laptop-height: 900px;');
   });
 
-  it('Tailwind가 옛·새 클래스와 음수, 구간 변형을 만들고 기본 구간은 만들지 않는다', async () => {
-    const designSystem = await loadDesignSystem(`@import 'tailwindcss';\n${mixed}`, {
+  it('Tailwind가 경로 전체 클래스와 음수, 구간 변형을 만들고 이름공간을 뺀 클래스와 기본 구간은 만들지 않는다', async () => {
+    const designSystem = await loadDesignSystem(`@import 'tailwindcss';\n${pathCss}`, {
       base: packageRoot,
       loadStylesheet: async (id, base) => {
         const file = require.resolve(id === 'tailwindcss' ? 'tailwindcss/index.css' : id);
@@ -654,11 +643,9 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
       },
     });
     const classes = [
-      'p-16',
       'p-spacing-sm',
       '-mt-spacing-sm',
       '-top-spacing-sm',
-      'rounded-control',
       'rounded-radius-control',
       'w-size-none',
       'min-w-size-none',
@@ -675,20 +662,19 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
       'shrink-shrink-none',
       'flex-flex-fill',
       'laptop:p-spacing-sm',
-      'mobile:p-16',
+      'mobile:p-spacing-sm',
     ];
     expect(classes.filter((name) => designSystem.candidatesToCss([name])[0] === null)).toEqual([]);
     expect(
-      ['p-sm', 'w-none', 'md:p-16', 'sm:p-16'].filter(
+      ['p-sm', 'w-none', 'rounded-control', 'md:p-spacing-sm', 'sm:p-spacing-sm'].filter(
         (name) => designSystem.candidatesToCss([name])[0] !== null,
       ),
     ).toEqual([]);
   });
 
   it('이름 목록과 경계값 상수를 만든다', () => {
-    const names = tokensJsonToNames(mixedTokens);
+    const names = tokensJsonToNames(pathTokens);
     expect(names).toContain("    'spacing-sm',");
-    expect(names).toContain("    '16',");
     expect(names).toContain("  rotate: [\n    'rotate-half',\n  ],");
     expect(names).toContain("  zIndex: [\n    'layer-window',\n  ],");
     expect(names).toContain(
@@ -703,7 +689,7 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
   });
 
   it('경계값 없이 모드 값이 있으면 실패한다', () => {
-    expect(() => tokensJsonToCss({ spacing: { sm: mixedTokens.spacing.sm } })).toThrow(
+    expect(() => tokensJsonToCss({ spacing: { sm: pathTokens.spacing.sm } })).toThrow(
       TokenFormatError,
     );
   });
@@ -713,7 +699,7 @@ describe('옛·새 규칙이 함께 있는 tokens.json', () => {
       ...dimensionToken(8),
       $extensions: { 'com.seojaewan': { modes: { Tablet: { value: 6, unit: 'px' } } } },
     };
-    expect(() => tokensJsonToCss({ ...mixedTokens, spacing: { sm: token } })).toThrow(
+    expect(() => tokensJsonToCss({ ...pathTokens, spacing: { sm: token } })).toThrow(
       TokenFormatError,
     );
   });
@@ -815,6 +801,6 @@ describe('생성한 이름 목록', () => {
   it('커밋된 src/token-names.ts가 figma/tokens.json에서 만든 결과와 같다', () => {
     const json: unknown = JSON.parse(readFileSync(tokensJsonPath, 'utf8'));
     expect(readFileSync(tokenNamesPath, 'utf8')).toBe(tokensJsonToNames(json));
-    expect(TOKEN_NAMES.spacing).toContain('16');
+    expect(TOKEN_NAMES.spacing).toContain('spacing-sm');
   });
 });

@@ -4,14 +4,7 @@
  * 파일 입출력은 generate-tokens.ts가 맡는다.
  */
 
-import {
-  BREAKPOINT_GROUP,
-  classRuleOf,
-  isPathRuleActive,
-  type PathGroup,
-  pathGroupOf,
-  pathGroups,
-} from './token-naming.ts';
+import { BREAKPOINT_GROUP, type PathGroup, pathGroupOf, pathGroups } from './token-naming.ts';
 
 // 한글 전용 글자 스타일 묶음이다. 웹에서는 서체 목록으로 글자마다 서체가 나뉘므로 짝인 라틴 스타일에 합친다.
 const HANGUL_STYLE_GROUP = 'Hangul';
@@ -158,7 +151,7 @@ type CssVariable = {
   source: string;
   /** 유틸리티가 읽지 않아 이름공간과 상관없이 :root에 두는지 */
   isRootOnly?: boolean;
-  /** 새 규칙 별칭이라 이름공간과 상관없이 테마에 두는지 */
+  /** 클래스가 읽는 별칭이라 이름공간과 상관없이 테마에 두는지 */
   isThemeOnly?: boolean;
 };
 
@@ -320,10 +313,9 @@ function convertTokens(json: unknown): Converted {
   const effects = flattenTokens(asGroup(styles.effect, 'style/effect'), [], undefined);
   const texts = flattenTokens(asGroup(styles.text, 'style/text'), [], undefined);
 
-  const isPathActive = isPathRuleActive(variableTokens.map((token) => token.path.join('/')));
   const breakpoints = breakpointsOf(variableTokens);
   const variables = [
-    ...variableTokens.flatMap((token) => variableCss(token, isPathActive, context)),
+    ...variableTokens.flatMap((token) => variableCss(token, context)),
     ...effects.flatMap((token) => effectVariables(token, context)),
     ...paints.map((token) => paintVariable(token, context)),
   ];
@@ -373,7 +365,7 @@ function convertTokens(json: unknown): Converted {
 
   const themeVariables = variables.filter(isThemeVariable);
   const blocks = [
-    header(namespaces, colorGroups, isPathActive),
+    header(namespaces, colorGroups),
     clearingBlock(texts, breakpoints, context),
     block(':root', declarationLines(variables.filter((variable) => !isThemeVariable(variable)))),
     block('@theme static', declarationLines(themeVariables)),
@@ -748,13 +740,11 @@ function propertyUtility(prefix: string, properties: readonly string[]): Namespa
  * 생성 파일 머리 주석(클래스 이름 표)을 만든다.
  * @param namespaces 이름공간 유틸리티
  * @param colorGroups 색 묶음
- * @param isPathActive 새 규칙을 쓰는지
  * @returns 주석
  */
 function header(
   namespaces: readonly [string, NamespaceUtility][],
   colorGroups: readonly string[],
-  isPathActive: boolean,
 ): string {
   const rows = new Map<string, string>();
   for (const [namespace, utility] of namespaces) {
@@ -778,7 +768,7 @@ function header(
     '| `type-<글자 스타일>` | 서체, 크기, 굵기, 줄 높이, 자간 | 글자 스타일 |',
     '| `<효과 스타일>`(배경 흐림이 있는 것) | box-shadow, backdrop-filter | `--<효과 스타일>-shadow`, `-backdrop-blur` |',
     '| `material-<재질>` | background-color, backdrop-filter | `Material/*` 칠·효과 스타일 |',
-    ...(isPathActive ? pathGroups.map(pathGroupRow) : []),
+    ...pathGroups.map(pathGroupRow),
     '',
     `색 묶음: ${colorGroups.join(', ')}`,
   ];
@@ -786,7 +776,7 @@ function header(
 }
 
 /**
- * 머리 주석 표에 새 규칙 묶음 한 줄을 만든다.
+ * 머리 주석 표에 경로 규칙 묶음 한 줄을 만든다.
  * @param group 경로 규칙 묶음
  * @returns 표 한 줄
  */
@@ -853,29 +843,25 @@ function block(selector: string, lines: readonly string[]): string {
 }
 
 /**
- * 변수 토큰 하나를 CSS 변수로 바꾼다. 새 규칙 토큰은 경로 이름 변수를 :root에 두어 옛 클래스(`p-sm`)가 생기지 않게 하고,
+ * 변수 토큰 하나를 CSS 변수로 바꾼다. 경로 규칙 토큰은 경로 이름 변수를 :root에 두어 이름공간을 뺀 클래스(`p-sm`)가 생기지 않게 하고,
  * 클래스는 이름공간 + 경로 전체 별칭 변수(`--spacing-spacing-sm`)가 만든다. 값을 바꾸는 `@media`는 경로 이름 변수를 덮는다.
  * @codocs [[피그마 연동:토큰 생성]]
  * @param token 변수 토큰
- * @param isPathActive 새 규칙을 쓰는지
  * @param context 변환 표
- * @returns CSS 변수(자신과 새 규칙 별칭)
+ * @returns CSS 변수(자신과 경로 규칙 별칭)
  */
-function variableCss(token: FlatToken, isPathActive: boolean, context: Context): CssVariable[] {
+function variableCss(token: FlatToken, context: Context): CssVariable[] {
   const source = token.path.join('/');
   const reference = aliasReference(token.value, context, source);
-  const rule = classRuleOf(source);
+  const group = pathGroupOf(source);
   const name = cssName(token.path);
   const own: CssVariable = {
     name,
     value: reference ?? rawValue(token, source),
     source,
-    ...(rule === 'path' ? { isRootOnly: true } : {}),
+    ...(group === undefined ? {} : { isRootOnly: true }),
   };
-  if (rule !== 'path' && !(rule === 'kept' && isPathActive)) {
-    return [own];
-  }
-  const aliases = (pathGroupOf(source)?.namespaces ?? []).map(
+  const aliases = (group?.namespaces ?? []).map(
     /**
      * 이름공간 하나의 별칭 변수를 만든다.
      * @param namespace 이름공간

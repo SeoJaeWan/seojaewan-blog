@@ -86,6 +86,8 @@
 }
 
 :root {
+  --blur-acrylic: 60px;
+  --blur-mica: 240px;
   --border-spacing-none: 0px;
   --breakpoint-chrome-page-width: 1020px;
   --breakpoint-laptop-height: 900px;
@@ -180,6 +182,9 @@
   --font-size-subtitle: 20px;
   --font-size-title: 28px;
   --font-size-title-large: 40px;
+  --font-weight-bold: 700;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
   --grid-start: 1;
   --layer-balloon: 1;
   --layer-drag-ghost: 10;
@@ -205,8 +210,15 @@
   --motion-scale-search-icon: 1.1;
   --motion-scale-window-enter: 0.96;
   --motion-scale-window-minimize: 0.12;
+  --opacity-cut: 50%;
+  --opacity-drag-ghost: 60%;
   --position-full: 100%;
   --position-half: 50%;
+  --radius-circular: 9999px;
+  --radius-control: 4px;
+  --radius-none: 0px;
+  --radius-overlay: 8px;
+  --radius-small: 2px;
   --ratio-video: 1.7778;
   --rotate-half: 180deg;
   --rotate-quarter: 90deg;
@@ -238,6 +250,7 @@
   --size-chrome-page-top-space: 96px;
   --size-chrome-page-wide-height: 712px;
   --size-chrome-page-wide-width: 1278px;
+  --size-control-height: 32px;
   --size-details-header-name-width: 316px;
   --size-details-header-narrow-width: 148px;
   --size-details-header-wide-width: 188px;
@@ -386,6 +399,9 @@
   --spacing-sm-nudge: 6px;
   --spacing-xl: 20px;
   --spacing-xs: 4px;
+  --stroke-width-default: 1px;
+  --stroke-width-focus-outer: 2px;
+  --stroke-width-indicator: 3px;
   --surface-flyout-acrylic-backdrop-blur: var(--blur-acrylic);
   --surface-flyout-acrylic-shadow: 0px 8px 16px 0px #00000024;
   --surface-shell-acrylic-backdrop-blur: var(--blur-acrylic);
@@ -410,10 +426,8 @@
   --acrylic-background-fill-default: var(--color-gray-200-85);
   --acrylic-background-fill-default-fallback: var(--color-gray-300);
   --aspect-ratio-video: var(--ratio-video);
-  --blur-acrylic: 60px;
   --blur-blur-acrylic: var(--blur-acrylic);
   --blur-blur-mica: var(--blur-mica);
-  --blur-mica: 240px;
   --boot-screen-background: var(--color-black);
   --boot-screen-foreground: var(--color-white);
   --border-spacing-border-spacing-none: var(--border-spacing-none);
@@ -495,12 +509,9 @@
   --file-item-explorer-stroke-focus: var(--color-explorer-blue-focus);
   --flex-flex-fill: var(--flex-fill);
   --focus-stroke-outer: var(--color-black-90);
-  --font-weight-bold: 700;
   --font-weight-font-weight-bold: var(--font-weight-bold);
   --font-weight-font-weight-regular: var(--font-weight-regular);
   --font-weight-font-weight-semibold: var(--font-weight-semibold);
-  --font-weight-regular: 400;
-  --font-weight-semibold: 600;
   --grid-column-start-grid-start: var(--grid-start);
   --grid-row-start-grid-start: var(--grid-start);
   --icon-color-search-focus: linear-gradient(60deg, var(--color-search-gradient-cyan) 0%, var(--color-search-gradient-cyan) 20%, var(--color-search-gradient-blue) 40%, var(--color-search-gradient-blue) 100%);
@@ -520,21 +531,14 @@
   --mica-background-fill-base: var(--color-gray-500-95);
   --mica-background-fill-base-alt-fallback: var(--color-gray-800);
   --mica-background-fill-base-fallback: var(--color-gray-500);
-  --opacity-cut: 50%;
-  --opacity-drag-ghost: 60%;
   --opacity-opacity-cut: var(--opacity-cut);
   --opacity-opacity-drag-ghost: var(--opacity-drag-ghost);
   --post-inline-code: var(--color-red-dark-1);
-  --radius-circular: 9999px;
-  --radius-control: 4px;
-  --radius-none: 0px;
-  --radius-overlay: 8px;
   --radius-radius-circular: var(--radius-circular);
   --radius-radius-control: var(--radius-control);
   --radius-radius-none: var(--radius-none);
   --radius-radius-overlay: var(--radius-overlay);
   --radius-radius-small: var(--radius-small);
-  --radius-small: 2px;
   --rotate-rotate-half: var(--rotate-half);
   --rotate-rotate-quarter: var(--rotate-quarter);
   --rotate-rotate-three-quarter: var(--rotate-three-quarter);
@@ -548,7 +552,6 @@
   --shadow-text-elevation-window-active: 0px 2px 21px #00000038, 0px 32px 64px #00000047;
   --shadow-text-elevation-window-inactive: 0px 2px 10.67px #00000026, 0px 16px 32px #00000030;
   --shrink-shrink-none: var(--shrink-none);
-  --size-control-height: 32px;
   --size-size-address-bar-height: var(--size-address-bar-height);
   --size-size-address-bar-width: var(--size-address-bar-width);
   --size-size-avatar-profile: var(--size-avatar-profile);
@@ -727,9 +730,6 @@
   --spacing-spacing-sm-nudge: var(--spacing-sm-nudge);
   --spacing-spacing-xl: var(--spacing-xl);
   --spacing-spacing-xs: var(--spacing-xs);
-  --stroke-width-default: 1px;
-  --stroke-width-focus-outer: 2px;
-  --stroke-width-indicator: 3px;
   --stroke-width-stroke-width-default: var(--stroke-width-default);
   --stroke-width-stroke-width-focus-outer: var(--stroke-width-focus-outer);
   --stroke-width-stroke-width-indicator: var(--stroke-width-indicator);

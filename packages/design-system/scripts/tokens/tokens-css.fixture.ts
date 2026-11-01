@@ -85,9 +85,9 @@ export const TOKENS_FIXTURE = {
     'on-accent-secondary': variable('color', '{color.black.40}', ['STROKE_COLOR']),
   },
   'acrylic-background-fill': { default: variable('color', '{color.gray.200}') },
-  spacing: { '2': variable('dimension', px(2)), '10': variable('dimension', px(10)) },
+  spacing: { '2xs': variable('dimension', px(2)), sm: variable('dimension', px(10)) },
   size: {
-    '240': variable('dimension', px(240)),
+    'menu-width': variable('dimension', px(240)),
     control: { height: variable('dimension', px(32)) },
   },
   'stroke-width': { default: variable('dimension', px(1)) },
