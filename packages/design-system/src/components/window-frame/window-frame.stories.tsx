@@ -8,7 +8,7 @@ const STATES = ['active', 'inactive'] as const;
 const PLACEMENTS = ['normal', 'maximized', 'snapped'] as const;
 const MATERIALS = ['mica', 'solid', 'chrome'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   titleBar: (typeof TITLE_BARS)[number];
   state: (typeof STATES)[number];
   placement: (typeof PLACEMENTS)[number];
@@ -45,7 +45,7 @@ const meta = {
       />
     );
   },
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -53,4 +53,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

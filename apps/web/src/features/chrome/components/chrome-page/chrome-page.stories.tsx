@@ -19,7 +19,7 @@ const SIZE_CLASS_NAMES = { wide: 'w-1278 h-711', narrow: 'w-388 h-720' } as cons
 // 피그마 `figure`의 이미지 칸 높이다(그림 448·240에서 간격 8과 캡션 20을 뺀 값). 크기 토큰에 없는 값이라 인라인으로 준다.
 const FIGURE_IMAGE_HEIGHTS = { wide: 420, narrow: 212 } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   page: (typeof PAGES)[number];
   layout: (typeof LAYOUTS)[number];
 };
@@ -29,7 +29,7 @@ type ParityArgs = {
  * @param args 변형 속성
  * @returns ChromePage
  */
-function renderPage(args: ParityArgs): JSX.Element {
+function renderPage(args: FigmaArgs): JSX.Element {
   const className = SIZE_CLASS_NAMES[args.layout];
   switch (args.page) {
     case 'post': {
@@ -101,13 +101,13 @@ const meta = {
     layout: { control: 'inline-radio', options: LAYOUTS },
   },
   render: renderPage,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 // 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
-export const Parity: Story = {
+export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
 };

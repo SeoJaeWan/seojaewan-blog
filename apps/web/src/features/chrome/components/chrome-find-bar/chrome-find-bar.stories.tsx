@@ -5,7 +5,7 @@ import { ChromeFindBar } from './chrome-find-bar';
 // 피그마 Chrome/FindBar의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
@@ -41,10 +41,10 @@ const meta = {
         total={FIND_COUNT.total}
       />
     ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

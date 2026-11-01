@@ -11,7 +11,7 @@ const SEARCHES = ['box', 'button'] as const;
 // 너비는 쓰는 곳이 정하므로 피그마 원본 너비(size/1280, size/390)로 그린다.
 const WIDTH_CLASS_NAMES = { box: 'w-1280', button: 'w-390' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   search: (typeof SEARCHES)[number];
 };
 
@@ -39,10 +39,10 @@ const meta = {
       }
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

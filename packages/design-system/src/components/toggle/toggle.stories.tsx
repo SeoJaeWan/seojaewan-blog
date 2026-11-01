@@ -23,6 +23,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-export const Parity: Story = {
+export const Figma: Story = {
   args: { state: 'expanded' },
 };

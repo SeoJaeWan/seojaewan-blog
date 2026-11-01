@@ -13,7 +13,7 @@ const DEVICES = ['desktop', 'mobile'] as const;
 // 본문은 크기를 갖지 않고 창이 정하므로 피그마 원본 크기(size/798×458, size/388×716)로 감싸 그린다.
 const SIZE_CLASS_NAMES = { desktop: 'w-798 h-458', mobile: 'w-388 h-716' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
@@ -37,10 +37,10 @@ const meta = {
       selection={STATUS_BAR_TEXT.selection}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

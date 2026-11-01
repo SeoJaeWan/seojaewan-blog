@@ -12,7 +12,7 @@ const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
 const LABEL = '메뉴 항목';
 const SHORTCUT = 'Ctrl+O';
 
-type ParityArgs = {
+type FigmaArgs = {
   kind: (typeof KINDS)[number];
   state: (typeof STATES)[number];
   /** 피그마 BOOLEAN 속성 Show icon */
@@ -32,10 +32,10 @@ const meta = {
   },
   render: (args) => (
     <OpenMenu>
-      <ParityMenuItem {...args} />
+      <FigmaMenuItem {...args} />
     </OpenMenu>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -45,7 +45,7 @@ type Story = StoryObj<typeof meta>;
 // 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
 // MenuItem은 열린 Base UI 메뉴 안에서만 동작하므로, 메뉴를 스토리 루트 안에 열고 항목 하나만 담는다.
 // Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다. 외부 라이브러리 구조라 이 규칙만 끈다.
-export const Parity: Story = {
+export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } } },
 };
 
@@ -53,7 +53,7 @@ export const Parity: Story = {
  * 피그마 변형에 맞는 MenuItem을 그린다.
  * @param props 스토리 args
  */
-function ParityMenuItem(props: ParityArgs): JSX.Element {
+function FigmaMenuItem(props: FigmaArgs): JSX.Element {
   const common = {
     label: LABEL,
     disabled: props.state === 'disabled',

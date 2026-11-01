@@ -9,7 +9,7 @@ const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.met
 const INDICATORS = ['none', 'running', 'active'] as const;
 const STATES = ['rest', 'hover', 'pressed'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   indicator: (typeof INDICATORS)[number];
   state: (typeof STATES)[number];
 };
@@ -28,7 +28,7 @@ const meta = {
       icon={<img src={appIcon} alt="" className="size-full object-contain" />}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -37,4 +37,4 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
-export const Parity: Story = {};
+export const Figma: Story = {};

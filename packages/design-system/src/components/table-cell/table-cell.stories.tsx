@@ -32,4 +32,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형은 args로 고른다(`Type=Body` → `type: 'body'`).
-export const Parity: Story = {};
+export const Figma: Story = {};

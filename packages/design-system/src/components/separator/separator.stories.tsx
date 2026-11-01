@@ -5,7 +5,7 @@ import { Separator } from './separator';
 // 피그마 Separator의 변형 속성 값이다(정규화한 이름).
 const ORIENTATIONS = ['horizontal', 'vertical'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   orientation: (typeof ORIENTATIONS)[number];
 };
 
@@ -24,7 +24,7 @@ const meta = {
       className={args.orientation === 'horizontal' ? 'w-240' : undefined}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -32,4 +32,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

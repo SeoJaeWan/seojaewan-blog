@@ -6,7 +6,7 @@ import { PreviewListStory } from '@/shell/stories/preview-list-story/preview-lis
 // 피그마 Taskbar/AppPreview의 변형 속성 값이다(정규화한 이름).
 const STATES = ['closed', 'open'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   state: (typeof STATES)[number];
 };
 
@@ -35,10 +35,10 @@ const meta = {
       </div>
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

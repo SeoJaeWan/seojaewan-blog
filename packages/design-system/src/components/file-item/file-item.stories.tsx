@@ -11,7 +11,7 @@ const SURFACES = ['desktop', 'explorer'] as const;
 const VIEWS = ['large', 'medium', 'small'] as const;
 const STATES = ['rest', 'hover', 'selected', 'focused', 'rename', 'cut', 'cut-selected'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   surface: (typeof SURFACES)[number];
   view: (typeof VIEWS)[number];
   state: (typeof STATES)[number];
@@ -27,7 +27,7 @@ type ParityArgs = {
  * @param props.children 그릴 항목
  * @returns 항목
  */
-function Backdrop(props: { surface: ParityArgs['surface']; children: ReactNode }): JSX.Element {
+function Backdrop(props: { surface: FigmaArgs['surface']; children: ReactNode }): JSX.Element {
   const { surface, children } = props;
   useLayoutEffect(() => {
     if (surface !== 'desktop') {
@@ -66,7 +66,7 @@ const meta = {
       />
     </Backdrop>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -74,4 +74,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

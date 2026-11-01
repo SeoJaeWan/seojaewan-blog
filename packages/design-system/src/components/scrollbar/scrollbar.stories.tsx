@@ -7,7 +7,7 @@ const ORIENTATIONS = ['vertical', 'horizontal'] as const;
 const STATES = ['rest', 'expanded'] as const;
 const MATERIALS = ['acrylic', 'solid'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   orientation: (typeof ORIENTATIONS)[number];
   state: (typeof STATES)[number];
   material: (typeof MATERIALS)[number];
@@ -30,7 +30,7 @@ const meta = {
       className={args.orientation === 'vertical' ? 'h-200' : 'w-200'}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -38,4 +38,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

@@ -18,7 +18,7 @@ const MULTIPLE_TAB_TITLES = ['React', 'Blog', 'TypeScript'] as const;
 // 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1024×640, size/390×796)로 그린다.
 const SIZE_CLASS_NAMES = { desktop: 'w-1024 h-640', mobile: 'w-390 h-796' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
   folder: (typeof FOLDERS)[number];
   selection: (typeof SELECTIONS)[number];
@@ -66,7 +66,7 @@ const meta = {
       </ExplorerWindow>
     );
   },
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -74,6 +74,6 @@ type Story = StoryObj<typeof meta>;
 
 // 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
 // (임의 작업 문서의 "탭 닫기 버튼" 항목).
-export const Parity: Story = {
+export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
 };

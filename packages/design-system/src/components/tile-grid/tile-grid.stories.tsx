@@ -5,7 +5,7 @@ import { TileGrid } from './tile-grid';
 // 피그마 TileGrid의 변형 속성 값이다(정규화한 이름).
 const ALIGNS = ['start', 'center'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   align: (typeof ALIGNS)[number];
 };
 
@@ -24,7 +24,7 @@ const meta = {
       </TileGrid>
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -32,4 +32,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

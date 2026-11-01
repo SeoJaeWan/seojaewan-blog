@@ -18,4 +18,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 Menu는 변형이 하나(default)라 args가 없다.
-export const Parity: Story = {};
+export const Figma: Story = {};

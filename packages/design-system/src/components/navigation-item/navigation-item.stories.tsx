@@ -10,7 +10,7 @@ const EXPANDS = ['none', 'collapsed', 'expanded'] as const;
 const STATES = ['rest', 'hover', 'selected'] as const;
 const LEVELS = ['0', '1', '2', '3'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   expand: (typeof EXPANDS)[number];
   state: (typeof STATES)[number];
   level: (typeof LEVELS)[number];
@@ -40,7 +40,7 @@ const meta = {
       />
     </div>
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -49,4 +49,4 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 // 피그마 변형 하나를 args 하나로 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

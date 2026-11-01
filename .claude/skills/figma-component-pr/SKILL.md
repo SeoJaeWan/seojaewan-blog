@@ -26,7 +26,7 @@ description: 피그마 플러그인이 연 컴포넌트 PR(`feat/figma-<컴포�
 3. 피그마에서 대상의 변형과 속성, 쓰는 변수·스타일을 확인한다(피그마 MCP). 쓰는 토큰이 `figma/tokens.json`에 없으면 멈추고, 토큰 PR을 먼저 처리·병합한 뒤 이 PR에 `main`을 받아 와야 한다고 보고한다(@codocs [[피그마 연동:PR 흐름]]). 조립 PR이면 쓰는 디자인 시스템 컴포넌트가 코드에 모두 있는지도 확인한다.
 4. `pnpm --filter @seojaewan/design-system generate:assets`를 실행하고, 바뀐 `src/assets/`를 커밋한다.
 5. 구현한다.
-   - 컴포넌트 PR: `src/components/<컴포넌트>/`에 코드와 `Parity` 스토리를 만들거나 고친다.
+   - 컴포넌트 PR: `src/components/<컴포넌트>/`에 코드와 `Figma` 스토리를 만들거나 고친다.
    - 조립 PR: 그 영역의 기능 폴더에 앱 컴포넌트와 피그마 조립과 같은 데이터의 스토리를 만든다.
    - 값은 토큰 클래스로만 쓴다(@codocs [[피그마 연동:토큰 생성]]의 이름 규칙).
 6. 캡처 도구를 로컬에서 돌려 변형마다 `피그마 | 코드 | 차이`를 본다(@codocs [[피그마 연동:CI]]). `pnpm --filter @seojaewan/figma-parity capture --target <컴포넌트 폴더나 조립 이름>`(예: `--target button`, `--target Menu/Folder`)을 실행하면 Storybook을 빌드하고 `tools/figma-parity/parity-results/<대상>/<변형>/`에 `figma.png`, `code.png`, `diff.png`를 남긴다. Chromium이 없으면 `pnpm --filter @seojaewan/figma-parity exec playwright install chromium`을 먼저 실행한다. 차이 그림에서 엔진 차이가 아닌 차이가 보이면 5로 돌아가 고친다. 스토리 짝을 찾지 못한 변형이 없어야 한다.

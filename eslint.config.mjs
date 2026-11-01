@@ -152,7 +152,7 @@ const namingConventionOptions = [
 ];
 
 // @codocs [[코드 작성 규칙:식별자 이름]]
-// Storybook CSF는 export 이름이 스토리 이름이 되며 PascalCase(`export const Parity`)가 관례다.
+// Storybook CSF는 export 이름이 스토리 이름이 되며 PascalCase(`export const Figma`)가 관례다.
 // 스토리 파일에서 내보내는 모듈 최상위 const는 PascalCase도 쓸 수 있다(export default meta는 camelCase).
 const storyNamingConventionOptions = [
   ...namingConventionOptions,

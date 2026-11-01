@@ -16,7 +16,7 @@ const SIZE_CLASS_NAMES = { desktop: 'w-1920 h-1080', mobile: 'w-390 h-844' } as 
 // 피그마 조립의 Taskbar/Default 변형이다. 좁은 화면은 검색 입력칸 대신 검색 버튼을 둔다.
 const TASKBAR_SEARCHES = { desktop: 'box', mobile: 'button' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   device: (typeof DEVICES)[number];
 };
 
@@ -49,10 +49,10 @@ const meta = {
       }
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

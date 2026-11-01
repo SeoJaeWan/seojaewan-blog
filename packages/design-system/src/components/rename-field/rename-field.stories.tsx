@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { RenameField } from './rename-field';
 
-type ParityArgs = {
+type FigmaArgs = {
   /** 피그마 변형 속성 State */
   state: 'selected' | 'rest';
   /** 피그마 TEXT 속성 text */
@@ -29,7 +29,7 @@ const meta = {
       shouldSelectOnMount={args.state === 'selected'}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -37,4 +37,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // args의 state로 피그마 변형(Selected, Rest)을 고른다.
-export const Parity: Story = {};
+export const Figma: Story = {};

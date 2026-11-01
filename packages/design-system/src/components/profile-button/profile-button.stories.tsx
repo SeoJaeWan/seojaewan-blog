@@ -6,7 +6,7 @@ import { ProfileButton } from './profile-button';
 const profilePhoto = new URL('../../assets/images/avatar-profile-placeholder.webp', import.meta.url)
   .href;
 
-type ParityArgs = {
+type FigmaArgs = {
   /** 피그마 TEXT 속성 Name */
   name: string;
 };
@@ -26,7 +26,7 @@ const meta = {
       photo={<img src={profilePhoto} alt="" className="size-32 object-contain" />}
     />
   ),
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
@@ -34,4 +34,4 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-export const Parity: Story = {};
+export const Figma: Story = {};

@@ -17,7 +17,7 @@ const DEVICES = ['desktop', 'mobile'] as const;
 // 본문은 크기를 갖지 않고 Start 메뉴가 정하므로 피그마 원본 크기(size/574×569, size/356×489)로 감싸 그린다.
 const SIZE_CLASS_NAMES = { desktop: 'w-574 h-569', mobile: 'w-356 h-489' } as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   view: (typeof VIEWS)[number];
   device: (typeof DEVICES)[number];
 };
@@ -77,10 +77,10 @@ const meta = {
         );
     }
   },
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};

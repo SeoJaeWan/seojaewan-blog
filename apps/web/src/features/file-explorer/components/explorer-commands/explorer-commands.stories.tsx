@@ -6,7 +6,7 @@ import { ExplorerCommands } from './explorer-commands';
 const LOCATIONS = ['folder', 'recycle-bin'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
-type ParityArgs = {
+type FigmaArgs = {
   location: (typeof LOCATIONS)[number];
   device: (typeof DEVICES)[number];
 };
@@ -23,10 +23,10 @@ const meta = {
     device: { control: 'inline-radio', options: DEVICES },
   },
   render: (args) => <ExplorerCommands location={args.location} device={args.device} />,
-} satisfies Meta<ParityArgs>;
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Parity: Story = {};
+export const Figma: Story = {};
