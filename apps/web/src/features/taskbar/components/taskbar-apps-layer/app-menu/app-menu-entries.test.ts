@@ -44,6 +44,21 @@ describe('작업 표시줄:우클릭 메뉴', () => {
     ]);
   });
 
+  it('고정 해제 항목은 pin_off 아이콘, 고정 항목은 pin 아이콘을 쓴다', () => {
+    const unpin = getAppMenuEntries(menuOptions);
+    const pin = getAppMenuEntries({ ...menuOptions, isPinned: false });
+    expect(
+      unpin.find((entry) => 'label' in entry && entry.label === '작업 표시줄에서 고정 해제'),
+    ).toMatchObject({
+      icon: 'icons/ic_fluent_pin_off_20_regular.svg',
+    });
+    expect(
+      pin.find((entry) => 'label' in entry && entry.label === '작업 표시줄에 고정'),
+    ).toMatchObject({
+      icon: 'icons/ic_fluent_pin_20_regular.svg',
+    });
+  });
+
   it('앱 이름 줄을 고르면 새 창을 연다', () => {
     const onAction = vi.fn();
     const entries = getAppMenuEntries({ ...menuOptions, app: 'chrome', onAction });
