@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { type JSX, type ReactNode, useLayoutEffect } from 'react';
+import { type ComponentProps, type JSX, type ReactNode, useLayoutEffect } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { FileItem } from './file-item';
 
@@ -17,6 +18,8 @@ type ParityArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Name */
   name: string;
+  /** 동작 스토리가 이름 바꾸기 입력창에 접근성 이름을 달려고 받는다 */
+  renameFieldProps?: ComponentProps<typeof FileItem>['renameFieldProps'];
 };
 
 /**
@@ -63,6 +66,7 @@ const meta = {
         selected={args.state === 'selected' || args.state === 'cut-selected'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
+        renameFieldProps={args.renameFieldProps}
       />
     </Backdrop>
   ),
@@ -75,3 +79,68 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const Default: Story = {
+  args: { surface: 'explorer', name: '긴 이름' },
+  play: async ({ canvasElement, step }) => {
+    const item = canvasElement.firstElementChild;
+
+    // @codocs [[컴포넌트 목록:상태]]
+    await step('포커스를 받아도 선택 모습은 바뀌지 않는다', async () => {
+      await userEvent.tab();
+      await expect(item).toHaveFocus();
+      await expect(item).toHaveAttribute('data-selected', 'false');
+      await expect(item).toHaveAttribute('data-cut', 'false');
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const Selected: Story = {
+  args: { surface: 'explorer', state: 'selected', name: '긴 이름' },
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('selected면 선택된 항목으로 알린다', async () => {
+      await expect(canvasElement.firstElementChild).toHaveAttribute('data-selected', 'true');
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+// 잘라낸 항목은 아이콘과 이름을 흐리게 그려 이름 글자의 색 대비가 모자라다(피그마 값이다).
+// 피그마 값을 바꿀지 사람이 정할 때까지 이 규칙만 끈다(임의 작업 문서의 "잘라낸 항목 색 대비" 항목).
+export const Cut: Story = {
+  args: { surface: 'explorer', state: 'cut', name: '긴 이름' },
+  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
+  play: async ({ canvasElement, step }) => {
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('cut이면 잘라낸 항목으로 알린다', async () => {
+      await expect(canvasElement.firstElementChild).toHaveAttribute('data-cut', 'true');
+    });
+  },
+};
+
+// @codocs [[컴포넌트 목록:Windows 화면 요소]]
+export const Renaming: Story = {
+  args: {
+    surface: 'explorer',
+    state: 'rename',
+    name: '문서',
+    renameFieldProps: { 'aria-label': '새 이름' },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('renaming이면 이름 대신 name을 처음 값으로 가진 입력창을 그린다', async () => {
+      await expect(canvas.getByRole('textbox')).toHaveValue('문서');
+      await expect(canvas.queryByText('문서')).not.toBeInTheDocument();
+    });
+
+    // @codocs [[컴포넌트 목록:Windows 화면 요소]]
+    await step('renameFieldProps를 이름 바꾸기 입력창에 넘긴다', async () => {
+      await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('문서');
+    });
+  },
+};
