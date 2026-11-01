@@ -17,7 +17,10 @@ const VIEWS = ['list', 'grid', 'category', 'results', 'jumplist'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
 // 본문은 크기를 갖지 않고 Start 메뉴가 정하므로 피그마 원본 크기(size/574×569, size/356×489)로 감싸 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-574 h-569', mobile: 'w-356 h-489' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-shell-body-width h-size-start-body-height',
+  mobile: 'w-size-shell-mobile-body-width h-size-start-body-mobile-height',
+} as const;
 
 type FigmaArgs = {
   view: (typeof VIEWS)[number];
@@ -109,7 +112,12 @@ function findScrollArea(element: HTMLElement): HTMLElement | null {
 /** 간단히 보기에서 글자 머리글을 눌러 글자 격자로 목록을 옮긴다 */
 export const ListJump: Story = {
   render: () => (
-    <StartBody view="list" pinned={START_PINNED} groups={START_LETTER_GROUPS} className="h-569" />
+    <StartBody
+      view="list"
+      pinned={START_PINNED}
+      groups={START_LETTER_GROUPS}
+      className="h-size-start-body-height"
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -205,7 +213,7 @@ export const OpenFromList: Story = {
         view="list"
         pinned={START_PINNED}
         groups={START_LETTER_GROUPS}
-        className="h-569"
+        className="h-size-start-body-height"
         onItemOpen={handleItemOpen}
       />
     );

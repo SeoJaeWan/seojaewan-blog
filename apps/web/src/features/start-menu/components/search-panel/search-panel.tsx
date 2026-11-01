@@ -38,14 +38,14 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
       <div
         className={
           isMobile
-            ? 'flex size-full flex-col items-start gap-16 px-16 py-32'
-            : 'flex size-full flex-col items-start gap-16 p-32'
+            ? 'flex size-full flex-col items-start gap-spacing-lg px-spacing-lg py-spacing-3xl'
+            : 'flex size-full flex-col items-start gap-spacing-lg p-spacing-3xl'
         }
       >
         {isMobile && (
-          <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-0" />
+          <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-shrink-none" />
         )}
-        <div className="flex min-h-px w-full flex-1 flex-col">{children}</div>
+        <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col">{children}</div>
       </div>
     </ShellSurface>
   );

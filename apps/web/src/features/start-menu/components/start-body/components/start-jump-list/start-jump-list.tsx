@@ -39,7 +39,11 @@ export function StartJumpList(props: StartJumpListProps): JSX.Element {
       aria-label="글자로 이동"
       {...divProps}
       data-jump-list="grid"
-      className={className === undefined ? 'w-160' : `w-160 ${className}`}
+      className={
+        className === undefined
+          ? 'w-size-jump-list-grid-width'
+          : `w-size-jump-list-grid-width ${className}`
+      }
     >
       {JUMP_LIST_LETTERS.map(
         /**
