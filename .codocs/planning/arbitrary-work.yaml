@@ -368,3 +368,27 @@ _codocs:
   열 제목 버튼이 listbox 안에 있어 `aria-required-children`을 끄고 있었다. 자세히 보기에서는 listbox가 항목만 감싸는 안쪽 요소(바깥 줄과 같은 세로 배치)가 되고 바깥 항목 자리는 역할 없는 요소로 남아 선택·끌기 이벤트를 그대로 받는다. 비면 크기가 없어 E2E는 `toBeAttached`로 본다.
 "접근성 코드: 낮은 화면 E2E를 고침": |
   `화면이 아주 낮아도 …` E2E가 패널 하한(151)을 기대해 실패했다. 하한은 앞 작업에서 지웠으므로([[Start 메뉴:구성]]) 높이 300에서 240으로 줄고 위아래 줄이 남는지 보게 고쳤다.
+"마지막 맞춤: PinnedTile 테두리를 안쪽 선으로": |
+  전체 캡처에서 새 탭 타일의 `React 19 훅 정리`가 코드에서만 잘렸다. 피그마 Rest·Pressed는 선이 없어 글자 폭이 87인데, 코드는 투명 테두리 자리를 늘 둬 85였다. 피그마 Hover는 선이 자리를 차지하지만(`strokesIncludedInLayout`) 그대로 옮기면 가리킬 때 글자가 잘리므로, 선을 `inner-border`로 그려 자리를 차지하지 않게 했다. 그래서 Hover의 글자 폭만 피그마(85)와 다른 87이다.
+"마지막 맞춤: 빈 HUG 단독 스토리를 지운 범위": |
+  전 변형이 빈 HUG인 17개(BestMatchCard, BrowserTabStrip, Callout, CodeBlock, Equation, Flyout, ListGroup, Menu, NavigationPane, Popover, Quote, SearchResults, StartMenuFooter, Table, Taskbar, TaskbarPreviewList, TileGrid)의 `Figma` 스토리를 지웠다. `Figma`만 있던 Callout, Equation, NavigationPane, TileGrid에는 내용을 채운 `Default`(TileGrid는 `Center`도)를 새로 뒀다. 파일을 지우면 카탈로그에서 빠지기 때문이다.
+  일부 변형만 빈 HUG인 4개는 `Figma` 스토리를 뒀다. 표시 없는 변형(Breadcrumb `Editing`, ExplorerAddressRow `Mobile`·`Open`, Toc `Collapsed`, Toggle `Collapsed`)을 단독 캡처가 아직 찍기 때문이다.
+"마지막 맞춤: 조립 캡처에 없는 빈 HUG 변형": |
+  조립 `export.json`의 인스턴스 속성으로 빈 HUG 변형이 어느 조립에서 찍히는지 세었다. 42개 중 아래 6개는 어떤 조립에도 없다. 조립 캡처는 피그마 조립 그림이 있어야 찍히고 `figma/`는 고치지 않으므로, 조립 스토리를 더해도 비교되지 않는다. 그래서 앱 코드가 쓰지 않는 네 변형은 디자인 시스템에 내용을 채운 일반 스토리만 뒀다.
+
+  | 변형 | 앱 사용 | 처리 |
+  |---|---|---|
+  | Flyout `Acrylic`·`Default` | 없음(모두 `Compact`) | `Acrylic` 스토리 |
+  | Flyout `Solid`·`Default` | 없음 | 기존 `Default` 스토리 |
+  | Taskbar `Solid` | 없음 | `Solid` 스토리 |
+  | TaskbarPreviewList `Solid` | 없음 | `Solid` 스토리 |
+  | Popover `Bottom-Center`·`Closed` | 있음(SnapLayoutMenu) | 스토리 없음. 닫히면 트리거만 그려 배치와 상관없고, 다른 닫힌 변형이 조립에서 찍힌다 |
+  | Popover `Right-Start`·`Closed` | 있음(MenuPopup) | 위와 같다 |
+
+  나머지 빈 HUG 변형은 모두 조립에서 찍힌다.
+"마지막 맞춤: 고치지 않은 캡처 차이": |
+  전체 캡처 493개 변형(단독 451개, 조립에서 확인 42개)의 차이 그림 중 남은 것은 코드로 고치지 않았다.
+  - 어두운 바탕의 밝은 글자가 코드에서 더 굵어 보인다(accent 버튼, 바탕화면 아이콘 이름). 글자 스타일은 피그마와 같아 글자를 그리는 엔진의 차이로 봤다.
+  - 한글 글자 폭이 소수라 피그마가 올림한 HUG 폭과 0.5~1px 다르다(Breadcrumb, DropDownButton, SectionHeader). 명령 모음(Explorer/Commands)은 이 차이가 쌓여 오른쪽 끝이 2px쯤 어긋난다.
+  - 하위 메뉴 그림자가 피그마 조립 그림에서만 진하다(Menu/Desktop 등 5개 조립). 위 메뉴와 같은 효과 스타일이고 코드도 같은 토큰이라, 피그마가 중첩을 그린 결과로 봤다.
+  - PostBlocks의 코드 줄 높이: 피그마 글자 상자는 10줄에 201, 코드는 200이다. 코드 블록 위쪽 전체가 1px 어긋나 보이는 원인이다.
