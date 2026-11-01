@@ -1,6 +1,17 @@
 {
+  "description": "글 본문 할 일 목록의 읽기 전용 체크 표시로, 글 페이지에 쓴다.",
   "name": "Checkbox",
   "nodeId": "1380:1100",
+  "propertyDefinitions": {
+    "Checked": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "checked=false": {
       "node": {
@@ -12,6 +23,51 @@
       "nodeId": "1380:1096",
       "properties": {
         "Checked": "False"
+      },
+      "tree": {
+        "fills": [
+          "control-alt-fill/secondary"
+        ],
+        "height": "size/checkbox/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Checked=False",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 20,
+          "w": 20
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-strong-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/checkbox/box"
       }
     },
     "checked=true": {
@@ -24,6 +80,62 @@
       "nodeId": "1380:1097",
       "properties": {
         "Checked": "True"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-on-accent-fill/primary",
+              "path": "icons/ic_fluent_checkmark_20_regular"
+            },
+            "component": "ic_fluent_checkmark_20_regular",
+            "height": "size/icon/sm",
+            "name": "checkmark",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "accent-fill/default"
+        ],
+        "height": "size/checkbox/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Checked=True",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 20,
+          "w": 20
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/checkbox/box"
       }
     }
   }

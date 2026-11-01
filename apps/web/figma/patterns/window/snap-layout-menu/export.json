@@ -1,6 +1,8 @@
 {
+  "description": "창 최대화 버튼에 마우스를 올리면 뜨는 스냅 레이아웃 메뉴로, 창 제목 표시줄 오른쪽 위에 쓴다.",
   "name": "Window/SnapLayoutMenu",
   "nodeId": "594:9021",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,948 @@
         "y": 0
       },
       "nodeId": "594:9021",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "text-fill/primary",
+                          "path": "icons/ic_fluent_maximize_20_regular"
+                        },
+                        "component": "ic_fluent_maximize_20_regular",
+                        "height": "size/icon/sm",
+                        "name": "icon",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "CaptionButton",
+                    "fills": [
+                      "subtle-fill/secondary"
+                    ],
+                    "height": "size/caption-button/height",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "maximize button",
+                    "properties": {
+                      "Kind": "Default",
+                      "State": "Hover"
+                    },
+                    "size": {
+                      "h": 32,
+                      "w": 46
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/caption-button/width"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Trigger",
+                "size": {
+                  "h": 32,
+                  "w": 46
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              },
+              {
+                "absolute": {
+                  "horizontal": "STRETCH",
+                  "vertical": "MAX"
+                },
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "height": "size/snap-option/height",
+                                "name": "zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 56,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "left column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          },
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "height": "size/snap-option/height",
+                                "name": "zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 56,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "right column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "component": "SnapLayoutOption",
+                        "height": "size/snap-option/height",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "layout/반반",
+                        "properties": {
+                          "Layout": "Half"
+                        },
+                        "size": {
+                          "h": 56,
+                          "w": 88
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/snap-option/width"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "height": "size/snap-option/height",
+                                "name": "zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 56,
+                                  "w": 56
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "left column",
+                            "size": {
+                              "h": 56,
+                              "w": 56
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME",
+                            "width": "size/snap-option/column-width"
+                          },
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "height": "size/snap-option/height",
+                                "name": "zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 56,
+                                  "w": 28
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "right column",
+                            "size": {
+                              "h": 56,
+                              "w": 28
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "component": "SnapLayoutOption",
+                        "height": "size/snap-option/height",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "layout/2:1",
+                        "properties": {
+                          "Layout": "TwoThirds"
+                        },
+                        "size": {
+                          "h": 56,
+                          "w": 88
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/snap-option/width"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "height": "size/snap-option/height",
+                                "name": "zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 56,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "left column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          },
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "top zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              },
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "bottom zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "right column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "component": "SnapLayoutOption",
+                        "height": "size/snap-option/height",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "layout/반 + 4분의 1 두 칸",
+                        "properties": {
+                          "Layout": "HalfQuarter"
+                        },
+                        "size": {
+                          "h": 56,
+                          "w": 88
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/snap-option/width"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "top zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              },
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "bottom zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "left column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          },
+                          {
+                            "children": [
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "top zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              },
+                              {
+                                "component": "SnapZone",
+                                "fills": [
+                                  "control-alt-fill/secondary"
+                                ],
+                                "name": "bottom zone",
+                                "properties": {
+                                  "State": "Rest"
+                                },
+                                "radius": [
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control",
+                                  "radius/control"
+                                ],
+                                "size": {
+                                  "h": 26,
+                                  "w": 42
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "FILL"
+                                },
+                                "strokeWeight": [
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default",
+                                  "stroke-width/default"
+                                ],
+                                "strokes": [
+                                  "control-stroke/default"
+                                ],
+                                "strokesIncludedInLayout": false,
+                                "type": "INSTANCE"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/xs",
+                              "mode": "VERTICAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "right column",
+                            "size": {
+                              "h": 56,
+                              "w": 42
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "FILL"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "component": "SnapLayoutOption",
+                        "height": "size/snap-option/height",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "layout/4분할",
+                        "properties": {
+                          "Layout": "Quad"
+                        },
+                        "size": {
+                          "h": 56,
+                          "w": 88
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/snap-option/width"
+                      }
+                    ],
+                    "component": "SnapLayoutFlyout",
+                    "effectStyle": "Surface/Flyout (Acrylic)",
+                    "fillStyle": "Material/Acrylic Default",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/md",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/md",
+                        "spacing/md",
+                        "spacing/md",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "SnapLayoutFlyout",
+                    "radius": [
+                      "radius/overlay",
+                      "radius/overlay",
+                      "radius/overlay",
+                      "radius/overlay"
+                    ],
+                    "size": {
+                      "h": 82,
+                      "w": 414
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "surface-stroke/flyout"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  }
+                ],
+                "height": "size/popover/slot",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/xs",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Popup",
+                "size": {
+                  "h": 4,
+                  "w": 46
+                },
+                "sizing": {
+                  "h": "DERIVED",
+                  "v": "FIXED"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Popover",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "popover",
+            "properties": {
+              "Placement": "Bottom-Center",
+              "State": "Open"
+            },
+            "size": {
+              "h": 32,
+              "w": 46
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Window/SnapLayoutMenu",
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }
