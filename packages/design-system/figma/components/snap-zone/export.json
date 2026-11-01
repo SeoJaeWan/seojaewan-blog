@@ -1,6 +1,17 @@
 {
+  "description": "스냅 레이아웃 선택지의 칸 하나로, SnapLayoutOption 안에서 쓴다.",
   "name": "SnapZone",
   "nodeId": "90:2711",
+  "propertyDefinitions": {
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "state=hover": {
       "node": {
@@ -12,6 +23,39 @@
       "nodeId": "90:2710",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "fills": [
+          "accent-fill/default"
+        ],
+        "height": "size/snap-option/height",
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 56,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/on-accent-default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/snap-option/zone-width"
       }
     },
     "state=rest": {
@@ -24,6 +68,57 @@
       "nodeId": "90:2709",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "fills": [
+          "control-alt-fill/secondary"
+        ],
+        "height": "size/snap-option/height",
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 56,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/snap-option/zone-width"
       }
     }
   }
