@@ -7,11 +7,13 @@ import type { OpenPanel } from '@/shared/utils/panel-rules/panel-rules';
 import { getSearchOrderIds } from './utils/search-order/search-order';
 
 /**
+ * 작업 표시줄 검색칸은 패널보다 DOM 뒤에 있어, Tab을 누르면 패널 안 첫 항목으로 옮긴다. 그대로 두면 패널을 건너뛰어 포커스가 나가고 패널이 닫힌다.
  * 검색 입력칸에서 ↑·↓로 결과를 고르고 Enter로 고른 항목을 열게 한다. 입력칸마다 핸들러를 달지 않고(작업 표시줄 검색칸은 다른 기능이 그린다)
  * 패널이 열려 있는 동안 문서에서 검색 입력칸(`role="searchbox"`)이 받은 키를 듣는다. 한글 조합 중인 키는 무시한다.
  * 검색어가 없거나 메뉴가 열려 있으면 하지 않는다. 검색어와 고른 항목은 열린 패널의 것이다(Start와 검색 패널의 검색어는 따로다).
  * @codocs [[검색:결과 화면]]
  * @codocs [[검색:입력칸]]
+ * @codocs [[접근성:포커스]]
  * @param openPanel 열린 패널. 없으면 null
  * @param openItem 고른 항목을 여는 함수
  */
@@ -49,6 +51,10 @@ export function useSearchKeyboard(openPanel: OpenPanel, openItem: (id: string) =
         if (!isSearchBox || event.isComposing || document.querySelector('[role="menu"]') !== null) {
           return;
         }
+        if (event.key === 'Tab' && !event.shiftKey && focusPanelFromTaskbar(target)) {
+          event.preventDefault();
+          return;
+        }
         const { panels, moveSelection } = useSearchStore.getState();
         const { query, selectedIndex } = panels[panel];
         if (query.trim() === '') {
@@ -83,4 +89,19 @@ export function useSearchKeyboard(openPanel: OpenPanel, openItem: (id: string) =
     },
     [openPanel],
   );
+}
+
+/**
+ * 작업 표시줄 검색칸에서 누른 Tab이면 열린 패널 안 첫 항목으로 포커스를 옮긴다.
+ * @param input 키를 받은 검색 입력칸
+ * @returns 옮겼으면 true
+ */
+function focusPanelFromTaskbar(input: HTMLInputElement): boolean {
+  const panel = input.ownerDocument.querySelector('[data-layer="panels"] [role="dialog"]');
+  if (panel === null || panel.contains(input)) {
+    return false;
+  }
+  const first = panel.querySelector<HTMLElement>('button, [role="button"]');
+  first?.focus();
+  return first !== null;
 }

@@ -49,10 +49,10 @@ test('검색칸에 입력해 글을 찾고 방향키로 골라 Enter로 열면 C
 });
 
 // @codocs [[Start 메뉴:구성]]
-test('화면이 아주 낮아도 Start 패널은 검색칸과 프로필·전원 줄을 더한 높이보다 줄지 않는다', async ({
+test('화면이 낮으면 Start 패널은 작업 영역에서 틈을 뺀 높이로 줄고 검색칸과 프로필·전원 줄은 남는다', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1280, height: 200 });
+  await page.setViewportSize({ width: 1280, height: 300 });
   await page.goto('/');
 
   await page.getByRole('button', { name: '시작' }).click();
@@ -67,8 +67,8 @@ test('화면이 아주 낮아도 Start 패널은 검색칸과 프로필·전원 
   if (panel === null || searchBox === null || powerButton === null) {
     throw new Error('Start 패널을 찾지 못했다');
   }
-  // 작업 영역(200 - 작업 표시줄 48)에서 틈 12를 빼면 140이지만, 위쪽과 아래쪽을 더한 높이(151)에서 멈춘다
-  expect(panel.height).toBe(151);
+  // 작업 영역(300 - 작업 표시줄 48)에서 틈 12를 뺀 높이다
+  expect(panel.height).toBe(240);
   expect(searchBox.y).toBeGreaterThanOrEqual(panel.y);
   expect(powerButton.y).toBeGreaterThanOrEqual(searchBox.y + searchBox.height);
   expect(powerButton.y + powerButton.height).toBeLessThanOrEqual(panel.y + panel.height);

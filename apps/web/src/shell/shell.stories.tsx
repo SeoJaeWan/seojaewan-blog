@@ -292,6 +292,16 @@ export const Search: Story = {
       await expect(body.getByRole('searchbox', { name: '검색' })).toHaveFocus();
     });
 
+    // @codocs [[접근성:포커스]]
+    await step('작업 표시줄 검색칸에서 Tab을 누르면 패널 안 첫 항목으로 간다', async () => {
+      await userEvent.click(body.getByRole('searchbox', { name: '검색' }));
+      const panel = await body.findByRole('dialog', { name: '검색' });
+      await userEvent.tab();
+      await expect(panel).toContainElement(document.activeElement as HTMLElement);
+      await userEvent.keyboard('{Escape}');
+      await expectSearchClosed();
+    });
+
     // @codocs [[접근성:역할]]
     await step('포커스가 검색칸에서 패널 밖으로 나가면 닫힌다', async () => {
       await userEvent.click(body.getByRole('searchbox', { name: '검색' }));

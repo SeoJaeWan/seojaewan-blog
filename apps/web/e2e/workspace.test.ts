@@ -42,7 +42,8 @@ test('Blog 폴더도 휴지통에 보낼 수 있고, 새로고침하면 휴지�
   const recycleBin = page
     .getByRole('region', { name: '휴지통 - 파일 탐색기' })
     .getByRole('listbox', { name: '폴더 내용' });
-  await expect(recycleBin).toBeVisible();
+  // 자세히 보기의 listbox는 항목만 감싸 비면 크기가 없으므로 보이는지가 아니라 있는지를 본다
+  await expect(recycleBin).toBeAttached();
   await expect(recycleBin.getByRole('option')).toHaveCount(0);
 });
 

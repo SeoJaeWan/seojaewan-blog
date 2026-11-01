@@ -1161,7 +1161,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}
             />
-            <div {...itemsListProps} className="contents">
+            <div {...itemsListProps} className="flex w-full flex-col items-start">
               {listItems}
             </div>
           </div>
