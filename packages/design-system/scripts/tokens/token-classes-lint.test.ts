@@ -26,6 +26,13 @@ const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
   ['--blur-', /blur\(/u],
   ['--font-weight-', /font-weight:/u],
   ['--stroke-width-', /stroke-width:/u],
+  ['--rotate-', /rotate/u],
+  ['--z-index-', /z-index:/u],
+  ['--inset-', /inset|top:|right:|bottom:|left:/u],
+  ['--translate-', /translate/u],
+  ['--line-clamp-', /line-clamp/u],
+  ['--grid-column-start-', /grid-column-start:/u],
+  ['--grid-row-start-', /grid-row-start:/u],
 ];
 
 /**
