@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { SnapZone } from './snap-zone';
 
@@ -27,3 +28,28 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Hover는 캡처 도구가 마우스로 재현한다.
 export const Figma: Story = {};
+
+type ClickArgs = { onClick: () => void };
+type ClickStory = StoryObj<ClickArgs>;
+
+// @codocs [[컴포넌트 목록:상태]]
+/** label을 접근성 이름으로 갖는 버튼이다. 누르면 onClick을 부른다 */
+export const Default: ClickStory = {
+  args: { onClick: fn() },
+  render: (args) => {
+    const { onClick: handleClick } = args;
+    return <SnapZone label="왼쪽 절반" onClick={handleClick} />;
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('label을 접근성 이름으로 갖는 버튼이다', async () => {
+      await expect(canvas.getByRole('button', { name: '왼쪽 절반' })).toBeInTheDocument();
+    });
+
+    await step('누르면 onClick을 부른다', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: '왼쪽 절반' }));
+      await expect(args.onClick).toHaveBeenCalledOnce();
+    });
+  },
+};

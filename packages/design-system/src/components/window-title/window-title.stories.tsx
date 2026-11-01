@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 
 import { WindowTitle } from './window-title';
 
@@ -40,3 +41,46 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 앱 아이콘과 title을 그린다 */
+export const Default: Story = {
+  render: () => (
+    <WindowTitle appIcon={<span role="img" aria-label="앱 아이콘" />} title="파일 탐색기" />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('앱 아이콘을 그린다', async () => {
+      await expect(canvas.getByRole('img', { name: '앱 아이콘' })).toBeInTheDocument();
+    });
+
+    await step('title로 바꾼 글자를 그린다', async () => {
+      await expect(canvas.getByText('파일 탐색기')).toBeInTheDocument();
+    });
+
+    await step('활성 상태다', async () => {
+      await expect(canvas.getByText('파일 탐색기').parentElement).toHaveAttribute(
+        'data-state',
+        'active',
+      );
+    });
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** inactive면 비활성 상태가 된다 */
+export const Inactive: Story = {
+  // 비활성 제목의 text-fill-tertiary는 흰 바탕에서 3.31:1이다. 색 대비는 피그마 값 문제라 사람이 정할 때까지 이 규칙만 끈다
+  // (임의 작업 문서의 "색 대비 위반" 항목).
+  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
+  render: () => <WindowTitle appIcon={null} inactive />,
+  play: async ({ canvasElement, step }) => {
+    await step('비활성 상태다', async () => {
+      await expect(within(canvasElement).getByText('창 제목').parentElement).toHaveAttribute(
+        'data-state',
+        'inactive',
+      );
+    });
+  },
+};
