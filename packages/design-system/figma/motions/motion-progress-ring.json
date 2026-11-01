@@ -4,6 +4,9 @@
     "token": null
   },
   "directives": {
+    "reduced-motion": [
+      "그대로 돈다. 진행 정보라서"
+    ],
     "repeat": [
       "infinite"
     ],
@@ -41,14 +44,14 @@
           "offset": 0.5,
           "time": 1000,
           "value": 0.5,
-          "valueToken": null
+          "valueToken": "motion/scale/half"
         },
         {
           "easing": "motion/easing/progress-ring",
           "offset": 1,
           "time": 2000,
           "value": 0.5,
-          "valueToken": null
+          "valueToken": "motion/scale/half"
         }
       ],
       "node": "Arc",
@@ -86,7 +89,7 @@
           "offset": 1,
           "time": 2000,
           "value": 0.5,
-          "valueToken": null
+          "valueToken": "motion/scale/half"
         }
       ],
       "node": "Arc",
