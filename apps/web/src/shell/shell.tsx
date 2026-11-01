@@ -1,0 +1,119 @@
+'use client';
+
+import { type JSX, useEffect, useRef } from 'react';
+
+import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-sync';
+import { DesktopIconsLayer } from '@/features/desktop/desktop-icons-layer';
+import { StartMenuLayer } from '@/features/start-menu/start-menu-layer';
+import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
+import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
+import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { DesktopScene } from './components/desktop-scene/desktop-scene';
+import { RestartScreen } from './components/restart-screen/restart-screen';
+import { ShellWindows } from './components/shell-windows/shell-windows';
+import { useAppWindowRenderer } from './hooks/use-app-window-renderer/use-app-window-renderer';
+import { useAppWindowTitle } from './hooks/use-app-window-title/use-app-window-title';
+import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/use-initial-window';
+
+/**
+ * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.
+ * 다시 시작하면 데스크톱 하위 트리의 `key`(세대)를 바꿔 새로고침 없이 다시 마운트한다. 그래서 저장소 밖의 지역 상태도 사라진다.
+ * 세대와 다시 시작 단계는 다시 마운트하는 트리 바깥의 저장소(`useRestartStore`)가 가져 다시 마운트한 뒤에도 남는다.
+ * 다시 시작 단계(`idle`이 아닌 동안) 데스크톱 하위 트리는 `inert`라 재부팅 화면 뒤에서 키보드·보조 기술로 닿지 않는다.
+ * 다시 시작이 끝나면 포커스가 사라진 자리(다시 마운트한 트리) 대신 바탕화면(`main`)으로 옮긴다.
+ * 서버가 읽은 글 색인을 받아, 마운트한 뒤 작업 공간 저장소가 브라우저 저장분을 읽고 글 색인과 맞추게 한다.
+ * 그래서 서버 HTML과 첫 클라이언트 렌더는 저장분 없이 초기 구조로 같게 그리고(수화 불일치 없음), 저장된 배치는 그 뒤에 보인다.
+ * @codocs [[다시 시작:초기화 방법]]
+ * @codocs [[다시 시작:순서]]
+ * @codocs [[방문자 저장:저장분 읽기]]
+ * 주소로 처음 들어왔으면(`initialPage`) 그 주소의 Chrome 창 하나를 연 채로 시작하고, 그 창을 열 때까지 브라우저 주소를 그대로 둔다.
+ * @codocs [[창 동작:브라우저 주소]]
+ * @codocs [[창 동작:새로고침과 첫 진입]]
+ * @param props
+ */
+export function Shell(props: ShellProps): JSX.Element {
+  const { posts, initialPage = null } = props;
+  const generation = useRestartStore((state) => state.generation);
+  const phase = useRestartStore((state) => state.phase);
+  const mainRef = useRef<HTMLElement>(null);
+  const wasRestartingRef = useRef(false);
+  const isRestarting = phase !== 'idle';
+  const isInitialWindowPending = useInitialWindow(initialPage);
+  // 브라우저 주소는 화면 전체에서 한 번만 맞춘다(창 축소 화면이 창을 여러 번 그려도 한 번).
+  useBrowserAddressSync(!isInitialWindowPending);
+
+  useEffect(
+    /** 마운트한 뒤 브라우저 저장분을 읽어 작업 공간을 되살린다. */
+    () => {
+      hydrateWorkspaceStore(posts);
+    },
+    [posts],
+  );
+
+  useEffect(
+    /** 다시 시작이 끝나면 포커스를 바탕화면으로 옮긴다. */
+    () => {
+      if (wasRestartingRef.current && !isRestarting) {
+        mainRef.current?.focus();
+      }
+      wasRestartingRef.current = isRestarting;
+    },
+    [isRestarting],
+  );
+
+  return (
+    <main
+      ref={mainRef}
+      tabIndex={-1}
+      aria-label="바탕화면"
+      className="fixed inset-0 overflow-hidden outline-none"
+    >
+      <ShellDesktop key={generation} isInert={isRestarting} />
+      <RestartScreen />
+    </main>
+  );
+}
+
+type ShellProps = {
+  /** 서버(`content/`)가 읽은 글 색인 */
+  posts: readonly PostSummary[];
+  /** 주소로 처음 들어왔을 때 열어 둘 Chrome 페이지(`/posts/<slug>`, 찾을 수 없음). `/`이면 없다 */
+  initialPage?: InitialPage;
+};
+
+type ShellDesktopProps = {
+  /** 다시 시작하는 중이라 데스크톱 하위 트리를 조작할 수 없게 할지 */
+  isInert: boolean;
+};
+
+/**
+ * 데스크톱 하위 트리를 그린다. 화면을 꽉 채우는 바탕화면(`Desktop/Scene`) 위에 아래에서부터 차례로
+ * 배경화면·아이콘, 창 층, 패널 층(Start·검색), 작업 표시줄을 쌓는다. 작업 표시줄이 맨 위라 패널은 그 뒤에서 올라온다.
+ * 각 층은 자기 기능의 층 컴포넌트가 저장소를 직접 읽고 불러 그리므로, shell은 층을 순서대로 쌓기만 하고 기능 사이를 콜백으로 잇지 않는다.
+ * 창 안에 무엇을 그릴지(앱 등록표)는 shell이 창 층과 작업 표시줄 창 미리보기에 넘긴다. 각 층은 비어 있는 곳의 클릭을 아래(아이콘)로 넘긴다.
+ * @codocs [[저장소 구성:앱 폴더 구조]]
+ * @codocs [[기술 스택:상태 관리]]
+ * @param props
+ * @returns 데스크톱 하위 트리
+ */
+function ShellDesktop(props: ShellDesktopProps): JSX.Element {
+  const renderWindow = useAppWindowRenderer();
+  const getWindowTitle = useAppWindowTitle();
+  return (
+    <DesktopScene
+      inert={props.isInert}
+      className="size-full"
+      icons={<DesktopIconsLayer />}
+      taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}
+    >
+      {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
+      <ShellWindows />
+      {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
+      <div data-layer="panels" className="pointer-events-none absolute inset-0">
+        <StartMenuLayer />
+      </div>
+    </DesktopScene>
+  );
+}

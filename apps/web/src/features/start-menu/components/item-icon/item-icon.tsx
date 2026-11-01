@@ -2,11 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Asset, ImageAsset } from '@seojaewan/design-system';
 
-/** Start와 검색에 보이는 앱 */
-export type StartApp = 'file-explorer' | 'chrome';
-
-/** 아이콘을 정하는 항목 종류. 폴더·글·외부 링크는 종류만으로, 앱은 어느 앱인지로 아이콘이 정해진다 */
-export type ItemIconSource = { kind: 'folder' | 'post' | 'link' } | { kind: 'app'; app: StartApp };
+import type { ItemIconSource, StartApp } from '@/features/start-menu/utils/start-items/start-items';
 
 // 앱별 아이콘(피그마 app/File Explorer, app/Chrome)이다.
 const appIconNames = {

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { ChromeWindowLayer } from '@/features/chrome/chrome';
-import { ExplorerWindowLayer } from '@/features/file-explorer/file-explorer';
+import { ChromeWindowLayer } from '@/features/chrome/chrome-window-layer';
+import { ExplorerWindowLayer } from '@/features/file-explorer/explorer-window-layer';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 

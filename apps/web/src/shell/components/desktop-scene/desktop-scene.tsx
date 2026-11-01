@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from 'react';
 
-import { DesktopWallpaper } from '@/features/desktop/desktop';
+import { DesktopWallpaper } from '@/features/desktop/desktop-wallpaper';
 
 type DesktopSceneProps = {
   /** 피그마 icons 프레임 자리. `DesktopIcons`(앱은 저장소에 이은 `DesktopIconsLayer`)를 넣는다 */

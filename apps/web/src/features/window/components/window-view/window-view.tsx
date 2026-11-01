@@ -1,9 +1,6 @@
 import type { JSX, PointerEvent } from 'react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
-import { SnapLayoutMenu } from '@/features/window/components/snap-layout-menu/snap-layout-menu';
-import { useWindowDrag } from '@/features/window/hooks/use-window-drag/use-window-drag';
-import { useWindowSnapMotion } from '@/features/window/hooks/use-window-snap-motion/use-window-snap-motion';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -20,6 +17,10 @@ import type {
   WindowWorkArea,
 } from '@/shared/utils/window-rules/window-rules';
 import { getWindowRect } from '@/shared/utils/window-rules/window-rules';
+
+import { SnapLayoutMenu } from './components/snap-layout-menu/snap-layout-menu';
+import { useWindowDrag } from './hooks/use-window-drag/use-window-drag';
+import { useWindowSnapMotion } from './hooks/use-window-snap-motion/use-window-snap-motion';
 
 type WindowViewProps = {
   /** 그릴 창. 닫힌 창은 저장소에서 지우기 직전의 모습이다 */

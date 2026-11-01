@@ -1,14 +1,15 @@
 import { type JSX, type KeyboardEvent, type ReactNode, useEffect, useRef } from 'react';
 
-import { ChromeFindBar } from '@/features/chrome/components/chrome-find-bar/chrome-find-bar';
-import { ChromeImageViewer } from '@/features/chrome/components/chrome-image-viewer/chrome-image-viewer';
 import {
   type PostImageBlock,
   renderTemporaryImage,
 } from '@/features/chrome/components/post-blocks/post-blocks';
-import { usePageFind } from '@/features/chrome/hooks/use-page-find/use-page-find';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { getPlainText } from '@/shared/utils/post-body/post-body';
+
+import { ChromeFindBar } from './components/chrome-find-bar/chrome-find-bar';
+import { ChromeImageViewer } from './components/chrome-image-viewer/chrome-image-viewer';
+import { usePageFind } from './hooks/use-page-find/use-page-find';
 
 /** 열린 찾기 막대 */
 export type ChromePageFind = {

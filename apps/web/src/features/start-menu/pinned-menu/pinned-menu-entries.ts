@@ -1,0 +1,47 @@
+import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+import {
+  copyLinkMenuItem,
+  MENU_ICONS,
+  MENU_SEPARATOR,
+  openMenuItem,
+  startPinMenuItem,
+} from '@/shared/utils/menu-items/menu-items';
+
+/** 고정 항목 메뉴가 보이는 상태와 동작 */
+type PinnedMenuOptions = {
+  /** 맨 앞으로 옮길 수 있는지(이미 맨 앞이면 옮길 수 없다) */
+  canMoveToFront: boolean;
+  /** 링크를 복사할 수 있는 항목인지(글과 외부 링크) */
+  canCopyLink: boolean;
+  /** 열기 */
+  onOpen: () => void;
+  /** 맨 앞으로 이동 */
+  onMoveToFront: () => void;
+  /** 링크 복사 */
+  onCopyLink: () => void;
+  /** 시작 화면에서 고정 해제 */
+  onUnpin: () => void;
+};
+
+/**
+ * 고정 항목의 우클릭 메뉴(피그마 `Menu/StartTile`) 항목을 만든다. 열기, 맨 앞으로 이동(이미 맨 앞이면 고를 수 없다),
+ * 링크 복사(글과 외부 링크만), 고정 해제다. 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
+ * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[디자인 시스템:조립]]
+ * @param options 고정 항목의 상태와 동작
+ * @returns 메뉴 항목
+ */
+export function getPinnedMenuEntries(options: PinnedMenuOptions): MenuPopupEntry[] {
+  return [
+    openMenuItem(options.onOpen),
+    {
+      label: '맨 앞으로 이동',
+      icon: MENU_ICONS.arrowUp,
+      disabled: !options.canMoveToFront,
+      onClick: options.onMoveToFront,
+    },
+    ...(options.canCopyLink ? [copyLinkMenuItem(options.onCopyLink)] : []),
+    MENU_SEPARATOR,
+    startPinMenuItem(true, options.onUnpin),
+  ];
+}

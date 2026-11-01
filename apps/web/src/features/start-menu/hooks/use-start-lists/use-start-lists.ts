@@ -1,17 +1,15 @@
+import { getListMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
+import { getPinnedMenuEntries } from '@/features/start-menu/pinned-menu/pinned-menu-entries';
 import type {
   StartAllView,
   StartItem,
   StartItemGroup,
-} from '@/features/start-menu/components/start-body/start-body';
+} from '@/features/start-menu/utils/start-items/start-items';
 import {
   getAllStartItems,
   getPinnedStartItems,
   groupStartItems,
 } from '@/features/start-menu/utils/start-items/start-items';
-import {
-  getListMenuEntries,
-  getPinnedMenuEntries,
-} from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import { copyItemLink } from '@/shared/utils/item-link/item-link';

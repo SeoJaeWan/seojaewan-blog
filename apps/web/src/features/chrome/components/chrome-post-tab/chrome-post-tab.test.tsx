@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { clearPostBodyCache } from '@/features/chrome/hooks/use-post-body/use-post-body';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import type { PostBlock } from '@/shared/utils/post-body/post-body';
 import {
@@ -11,6 +10,7 @@ import {
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import { ChromePostTab } from './chrome-post-tab';
+import { clearPostBodyCache } from './hooks/use-post-body/use-post-body';
 
 const workspace = createInitialWorkspace({
   posts: [

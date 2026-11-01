@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, waitFor, within } from 'storybook/test';
 
-import { HOVER_PREVIEW_OPEN_DELAY } from '@/features/taskbar/hooks/use-hover-preview/use-hover-preview';
-import { installStoryClock } from '@/shared/stories/story-clock/story-clock';
-import { openStoryWindows, resetStoryStores } from '@/shared/stories/story-stores/story-stores';
-import { getStoryWindowTitle, renderStoryWindow } from '@/shared/stories/story-window/story-window';
+import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
+import { getStoryWindowTitle, renderStoryWindow } from '@/shared/utils/window-rules/story-window';
 
+import { HOVER_PREVIEW_OPEN_DELAY } from './hooks/use-hover-preview/use-hover-preview';
+import { installStoryClock } from './story-clock';
 import { TaskbarAppsLayer } from './taskbar-apps-layer';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]

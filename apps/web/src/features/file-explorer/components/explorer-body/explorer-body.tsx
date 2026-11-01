@@ -22,24 +22,11 @@ import {
   Tooltip,
 } from '@seojaewan/design-system';
 
-import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
-import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
 import {
   formatDeletedDate,
   getExplorerLocationName,
   getOriginalLocation,
 } from '@/features/file-explorer/utils/explorer-location/explorer-location';
-import {
-  getEmptyMenuEntries,
-  getItemMenuEntries,
-  getRecycleBinSortMenuEntries,
-  getSortMenuEntries,
-  getViewMenuEntries,
-} from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
-import {
-  getItemLocationLabel,
-  searchItems,
-} from '@/features/file-explorer/utils/explorer-search/explorer-search';
 import {
   type ExplorerDetailsColumn,
   formatModifiedDate,
@@ -98,6 +85,15 @@ import {
   trashItems,
   type WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { ExplorerCommands } from './components/explorer-commands/explorer-commands';
+import { ExplorerContent } from './components/explorer-content/explorer-content';
+import { getEmptyMenuEntries } from './empty-menu/empty-menu-entries';
+import { getItemMenuEntries } from './item-menu/item-menu-entries';
+import { getRecycleBinSortMenuEntries } from './recycle-bin-sort-submenu/recycle-bin-sort-submenu-entries';
+import { getSortMenuEntries } from './sort-submenu/sort-submenu-entries';
+import { getItemLocationLabel, searchItems } from './utils/explorer-search/explorer-search';
+import { getViewMenuEntries } from './view-submenu/view-submenu-entries';
 
 type ExplorerContentProps = ComponentProps<typeof ExplorerContent>;
 

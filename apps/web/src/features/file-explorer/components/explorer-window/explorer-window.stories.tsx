@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
-import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
-import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
+import { ExplorerCommands } from '@/features/file-explorer/components/explorer-body/components/explorer-commands/explorer-commands';
+import { ExplorerContent } from '@/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content';
 
 import { ExplorerWindow, type ExplorerWindowTab } from './explorer-window';
+import { getExplorerWindowParts } from './story-explorer-window-parts';
 
 // 피그마 Window/Explorer의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;

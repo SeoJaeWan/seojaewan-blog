@@ -22,10 +22,173 @@ const tsFiles = ['**/*.{ts,tsx}'];
 const WEB_SRC = 'apps/web/src';
 const DESIGN_SYSTEM = 'packages/design-system';
 // 앱 `shared/`의 종류. 종류마다 boundaries 요소가 된다.
-const sharedKinds = ['components', 'hooks', 'utils', 'stores', 'stories'];
+const sharedKinds = ['components', 'hooks', 'utils', 'stores'];
 const sharedTypes = sharedKinds.map((kind) => `web-shared-${kind}`);
 // 종류 폴더 밖에 둔 `shared/` 파일도 층 방향은 지키도록 `web-shared`로 묶는다.
 const sharedLayerTypes = [...sharedTypes, 'web-shared'];
+
+// @codocs [[저장소 구성:앱 폴더 구조]]
+// 기능 폴더(`features/<기능>/`)와 `shell/`은 칸(unit)으로 나뉘고, 칸마다 안쪽 구조가 같다(자기 파일, `components/`, `hooks/`, `utils/`, `stores/`, `data/`).
+// 칸은 세 가지다. 뿌리(`r`, 기능 폴더나 `shell/`), 컴포넌트 폴더(`c`, `<칸>/components/<이름>/`), 컴포넌트 없는 메뉴 폴더(`m`, `<칸>/<이름>/`).
+// 칸 사슬은 `r`, `rc`, `rm`, `rcc`, `rcm`, ...으로 쓰고 boundaries 요소를 뿌리·사슬마다 하나씩 만든다(`web-feature-rc`, `web-shell-rc`).
+// 파일은 가장 깊은 칸 하나에 속한다. 설정이 만드는 깊이를 넘는 폴더는 마지막 칸의 안쪽으로 본다.
+const cellKinds = ['components', 'hooks', 'utils', 'stores', 'data'];
+const cellFileKinds = cellKinds.filter((kind) => kind !== 'components');
+const CELL_MAX_DEPTH = 5;
+// 뿌리 패턴의 첫 캡처(`n1`)는 기능 이름이다. `shell`은 하나뿐이지만 사슬을 같은 모양으로 맞추려고 캡처로 둔다.
+const cellScopes = [
+  { type: 'web-feature', root: `${WEB_SRC}/features/*` },
+  { type: 'web-shell', root: `${WEB_SRC}/@(shell)` },
+];
+
+/**
+ * 깊이 `depth` 이하의 모든 칸 사슬(`r`, `rc`, `rm`, `rcc`, ...)을 만든다.
+ * @param depth 최대 깊이(뿌리가 1)
+ * @returns 칸 사슬 목록(짧은 것부터)
+ */
+function cellChains(depth) {
+  let level = ['r'];
+  const all = [...level];
+  for (let step = 1; step < depth; step += 1) {
+    level = level.flatMap((chain) => [`${chain}c`, `${chain}m`]);
+    all.push(...level);
+  }
+  return all;
+}
+const allChains = cellChains(CELL_MAX_DEPTH);
+
+/**
+ * 칸 사슬의 boundaries 요소 이름을 만든다.
+ * @param scope 뿌리 종류(`cellScopes`의 항목)
+ * @param chain 칸 사슬
+ * @returns 요소 type
+ */
+function chainType(scope, chain) {
+  return `${scope.type}-${chain}`;
+}
+const [featureScope, shellScope] = cellScopes;
+const featureTypes = allChains.map((chain) => chainType(featureScope, chain));
+const shellTypes = allChains.map((chain) => chainType(shellScope, chain));
+
+/**
+ * 칸 사슬의 boundaries 요소를 만든다. 각 칸 폴더가 캡처 하나(`n1`이 뿌리, `n2`가 다음 칸의 이름, ...)다.
+ * @param scope 뿌리 종류
+ * @param chain 칸 사슬
+ * @returns boundaries 요소 설명
+ */
+function cellElement(scope, chain) {
+  const segments = [...chain]
+    .slice(1)
+    .map((kind) => (kind === 'c' ? '/components/*' : `/!(${cellKinds.join('|')})`));
+  return {
+    type: chainType(scope, chain),
+    pattern: `${scope.root}${segments.join('')}`,
+    capture: [...chain].map((_, index) => `n${index + 1}`),
+    partialMatch: false,
+    exclusive: true,
+  };
+}
+
+/**
+ * 도착 칸이 출발 칸의 앞 `depth`개 칸과 같다는 captured 조건을 만든다.
+ * @param depth 앞에서부터 맞출 칸 개수
+ * @returns boundaries captured 선택자
+ */
+function sameBranch(depth) {
+  return Object.fromEntries(
+    Array.from({ length: depth }, (_, index) => [
+      `n${index + 1}`,
+      `{{from.element.captured.n${index + 1}}}`,
+    ]),
+  );
+}
+
+/**
+ * 칸이 바깥에 여는 파일 하나의 fileInternalPath 패턴을 만든다. 컴포넌트는 폴더 이름과 같은 파일, 메뉴는 `<폴더>-entries.ts`다.
+ * @param depth 도착 칸 깊이
+ * @param suffix 폴더 이름 뒤에 붙는 이름
+ * @returns fileInternalPath 패턴
+ */
+function mainFileOf(depth, suffix) {
+  return `{{to.element.captured.n${depth}}}${suffix}.@(ts|tsx)`;
+}
+
+/**
+ * 칸 안에서 허용하는 import 정책을 만든다(변수 스코프처럼 안에서 바깥으로 보인다).
+ * - 어떤 칸이든 자기 칸과 조상 칸 각각의 `components/` 바로 아래 컴포넌트의 주 파일과 메뉴 폴더의 `-entries` 파일을 import한다.
+ * - 조상 칸 각각의 `hooks`·`utils`·`stores`·`data` 바로 아래 대상의 파일을 import한다. 대상 안에 중첩한 `utils/`는 그 대상의 것이라 보이지 않는다.
+ * - 부모 컴포넌트·메뉴의 주 파일은 막는다(자식이 부모를 알지 않는다).
+ * 같은 칸 안은 boundaries가 같은 요소 안의 import로 보아 검사하지 않는다.
+ * 다른 컴포넌트·메뉴의 안쪽으로 들어가는 import는 어느 정책에도 걸리지 않아 막힌 채로 남는다.
+ * @param scope 뿌리 종류
+ * @returns boundaries 정책 목록
+ */
+function cellPolicies(scope) {
+  const allowed = [];
+  const parentBans = [];
+  for (const prefix of allChains) {
+    const depth = prefix.length;
+    const insidePrefix = allChains.filter((chain) => chain.startsWith(prefix));
+    const deeperThanPrefix = insidePrefix.filter((chain) => chain.length > depth);
+    const fromPrefix = { element: { type: insidePrefix.map((chain) => chainType(scope, chain)) } };
+    const fromDeeper = {
+      element: { type: deeperThanPrefix.map((chain) => chainType(scope, chain)) },
+    };
+    if (depth < CELL_MAX_DEPTH) {
+      for (const [kind, suffix] of [
+        ['c', ''],
+        ['m', '-entries'],
+      ]) {
+        allowed.push({
+          from: fromPrefix,
+          allow: {
+            to: {
+              element: {
+                type: chainType(scope, `${prefix}${kind}`),
+                captured: sameBranch(depth),
+                fileInternalPath: mainFileOf(depth + 1, suffix),
+              },
+            },
+          },
+        });
+      }
+    }
+    if (deeperThanPrefix.length > 0) {
+      allowed.push({
+        from: fromDeeper,
+        allow: {
+          to: {
+            element: {
+              type: chainType(scope, prefix),
+              captured: sameBranch(depth),
+              fileInternalPath: `@(${cellFileKinds.join('|')})/*/*`,
+            },
+          },
+        },
+      });
+      if (depth > 1) {
+        parentBans.push({
+          from: fromDeeper,
+          disallow: {
+            to: {
+              element: {
+                type: chainType(scope, prefix),
+                captured: sameBranch(depth),
+                fileInternalPath: [mainFileOf(depth, ''), mainFileOf(depth, '-entries')],
+              },
+            },
+          },
+          message: '부모 컴포넌트·메뉴는 import하지 않는다. 필요한 값은 부모가 props로 넘긴다.',
+        });
+      }
+    }
+  }
+  return [...allowed, ...parentBans];
+}
+
+// 스토리 파일·스토리 데이터·스토리 도우미(`story-*`). 기능 경계를 넘어 어디든 import할 수 있다.
+const storyFilePatterns = [`${WEB_SRC}/**/*.stories.{ts,tsx}`, `${WEB_SRC}/**/story-*.{ts,tsx}`];
+const testFilePatterns = [`${WEB_SRC}/**/*.test.{ts,tsx}`];
 
 // 테스트·fixture·스토리 파일. JSDoc 규칙에서 제외한다.
 const testLikeFiles = [
@@ -192,6 +355,21 @@ const processEnvRestriction = {
   object: 'process',
   property: 'env',
   message: '환경 변수는 Zod로 검증하는 env 모듈(apps/web/src/env.ts)에서만 읽는다.',
+};
+
+const webImportPatterns = [
+  {
+    regex: '^\\.\\./',
+    message: '앱 안에서 상위 폴더는 `@/` 별칭으로 import한다.',
+  },
+  {
+    group: ['@seojaewan/design-system/*', '!@seojaewan/design-system/theme.css'],
+    message: '디자인 시스템은 공개 이름 `@seojaewan/design-system`으로만 import한다.',
+  },
+];
+const storyImportPattern = {
+  group: ['**/*.stories', '**/story-*'],
+  message: '스토리 파일과 스토리 데이터·도우미는 스토리와 테스트에서만 import한다.',
 };
 
 /**
@@ -465,16 +643,17 @@ export default defineConfig(
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
       // @codocs [[코드 작성 규칙:export와 import]]
-      'no-restricted-imports': restrictedImports([
-        {
-          regex: '^\\.\\./',
-          message: '앱 안에서 상위 폴더는 `@/` 별칭으로 import한다.',
-        },
-        {
-          group: ['@seojaewan/design-system/*', '!@seojaewan/design-system/theme.css'],
-          message: '디자인 시스템은 공개 이름 `@seojaewan/design-system`으로만 import한다.',
-        },
-      ]),
+      'no-restricted-imports': restrictedImports(webImportPatterns),
+    },
+  },
+  // 스토리 파일·스토리 데이터는 스토리와 테스트에서만 import한다. boundaries는 같은 칸 안의 import를 검사하지 않아
+  // (같은 칸의 앱 코드가 그 칸의 스토리 데이터를 import하는 경우) 여기서 막는다.
+  // @codocs [[저장소 구성:의존 방향]]
+  {
+    files: [`${WEB_SRC}/**/*.{ts,tsx}`],
+    ignores: [...storyFilePatterns, ...testFilePatterns],
+    rules: {
+      'no-restricted-imports': restrictedImports([...webImportPatterns, storyImportPattern]),
     },
   },
 
@@ -494,16 +673,20 @@ export default defineConfig(
         },
       },
       'boundaries/root-path': rootDir,
+      // 요소와 별개로 파일을 분류한다.
+      'boundaries/files': [
+        { category: 'story', pattern: storyFilePatterns },
+        { category: 'test', pattern: testFilePatterns },
+      ],
       'boundaries/elements': [
         { type: 'design-system', pattern: DESIGN_SYSTEM, partialMatch: false },
         { type: 'web-app', pattern: `${WEB_SRC}/app`, partialMatch: false },
-        { type: 'web-shell', pattern: `${WEB_SRC}/shell`, partialMatch: false },
-        {
-          type: 'web-feature',
-          pattern: `${WEB_SRC}/features/*`,
-          capture: ['featureName'],
-          partialMatch: false,
-        },
+        // 가장 깊은 칸부터 놓는다. 먼저 맞은 요소가 `exclusive`로 나머지를 막아, 파일은 가장 깊은 칸 하나에 속한다.
+        ...cellScopes.flatMap((scope) =>
+          [...allChains]
+            .sort((a, b) => b.length - a.length)
+            .map((chain) => cellElement(scope, chain)),
+        ),
         ...sharedKinds.map((kind) => ({
           type: `web-shared-${kind}`,
           pattern: `${WEB_SRC}/shared/${kind}`,
@@ -527,8 +710,8 @@ export default defineConfig(
                   element: {
                     type: [
                       'web-app',
-                      'web-shell',
-                      'web-feature',
+                      ...shellTypes,
+                      ...featureTypes,
                       ...sharedLayerTypes,
                       'web-content',
                       'web-root',
@@ -551,73 +734,69 @@ export default defineConfig(
               },
             },
 
-            // 위 층은 `shell/`과 기능을 공개 진입점으로만 import한다. `shared/`는 진입점 없이 대상 파일을 바로 import한다.
+            // `app/`은 `shell/shell.tsx`만 import한다.
             {
               from: { element: { type: 'web-app' } },
-              disallow: { to: { element: { type: 'web-shell' } } },
-              message: '`shell/`은 공개 진입점(`shell/shell.ts`)으로만 import한다.',
-            },
-            {
-              from: { element: { type: ['web-app', 'web-shell'] } },
-              disallow: { to: { element: { type: 'web-feature' } } },
-              message:
-                '기능은 공개 진입점(`features/{{to.element.captured.featureName}}/{{to.element.captured.featureName}}.ts`)으로만 import한다.',
+              disallow: { to: { element: { type: shellTypes } } },
+              message: '`shell/`은 `shell/shell.tsx`로만 import한다.',
             },
             {
               from: { element: { type: 'web-app' } },
-              allow: { to: { element: { type: 'web-shell', fileInternalPath: 'shell.ts' } } },
+              allow: { to: { element: { type: 'web-shell-r', fileInternalPath: 'shell.tsx' } } },
             },
+            // 바깥(`app/`, `shell/`)은 기능 폴더 바로 아래 파일만 import한다. 컴포넌트·메뉴·종류 폴더는 가져오지 못한다.
             {
-              from: { element: { type: ['web-app', 'web-shell'] } },
-              allow: {
-                to: {
-                  element: {
-                    type: 'web-feature',
-                    fileInternalPath: [
-                      '{{to.element.captured.featureName}}.ts',
-                      '{{to.element.captured.featureName}}.tsx',
-                    ],
-                  },
-                },
-              },
-            },
-            // 기능끼리는 import하지 않는다. 기능 사이에 오가는 상태는 `shared/stores`에 둔다.
-            {
-              from: { element: { type: 'web-feature' } },
-              disallow: { to: { element: { type: 'web-feature' } } },
+              from: { element: { type: ['web-app', ...shellTypes] } },
+              disallow: { to: { element: { type: featureTypes } } },
               message:
-                '`features/`의 다른 기능(`{{to.element.captured.featureName}}`)은 import하지 않는다. 기능 사이에 오가는 상태는 `shared/stores`에, 함께 쓰는 화면·함수는 `shared/`에 둔다.',
+                '기능은 기능 폴더 바로 아래 파일(`features/{{to.element.captured.n1}}/*.ts(x)`)만 import한다. 컴포넌트·메뉴·종류 폴더(`components`·`hooks`·`utils`·`stores`·`data`)는 가져오지 못한다.',
             },
-            // 기능 안은 자유롭게 import한다.
             {
-              from: { element: { type: 'web-feature' } },
-              allow: {
-                to: {
-                  element: {
-                    type: 'web-feature',
-                    captured: { featureName: '{{from.element.captured.featureName}}' },
-                  },
-                },
-              },
+              from: { element: { type: ['web-app', ...shellTypes] } },
+              allow: { to: { element: { type: 'web-feature-r', fileInternalPath: '*' } } },
             },
+            // 칸 사이는 막는다. 다른 기능이나 다른 컴포넌트·메뉴의 안쪽은 못 쓴다.
+            ...[featureTypes, shellTypes].map((types) => ({
+              from: { element: { type: types } },
+              disallow: { to: { element: { type: types } } },
+              message:
+                '`{{to.element.path}}`은(는) 여기서 쓸 수 없다. 칸(기능·컴포넌트·메뉴 폴더)은 자기·조상 칸의 `components/` 바로 아래 컴포넌트 주 파일, 메뉴 폴더의 `-entries` 파일, 조상 칸의 `hooks`·`utils`·`stores`·`data` 파일만 import한다. 다른 컴포넌트·메뉴의 안쪽과 부모, 다른 기능은 import하지 않는다. 함께 쓰는 화면·함수·상태는 `shared/`나 공통 조상 칸에 둔다.',
+            })),
+            // 칸 안: 변수 스코프처럼 자기·조상 칸의 부품만 보인다.
+            ...cellScopes.flatMap(cellPolicies),
 
             // 아래 층은 위 층을 import하지 않는다.
             {
-              from: { element: { type: ['web-shell', 'web-feature', ...sharedLayerTypes] } },
+              from: { element: { type: [...shellTypes, ...featureTypes, ...sharedLayerTypes] } },
               disallow: { to: { element: { type: 'web-app' } } },
               message: '아래 층은 `app/`을 import하지 않는다(`app → shell → features → shared`).',
             },
             {
-              from: { element: { type: ['web-feature', ...sharedLayerTypes] } },
-              disallow: { to: { element: { type: 'web-shell' } } },
+              from: { element: { type: [...featureTypes, ...sharedLayerTypes] } },
+              disallow: { to: { element: { type: shellTypes } } },
               message: '아래 층은 `shell/`을 import하지 않는다(`app → shell → features → shared`).',
             },
             {
               from: { element: { type: sharedLayerTypes } },
-              disallow: { to: { element: { type: 'web-feature' } } },
+              disallow: { to: { element: { type: featureTypes } } },
               message:
                 '`shared/`는 `features/`를 import하지 않는다(`app → shell → features → shared`).',
             },
+
+            // 스토리 파일은 어느 기능의 안쪽이든 import한다(위 정책보다 뒤라 우선한다).
+            {
+              from: { file: { categories: 'story' } },
+              allow: { to: { element: { type: featureTypes } } },
+            },
+            {
+              from: { element: { type: shellTypes }, file: { categories: 'story' } },
+              allow: { to: { element: { type: shellTypes } } },
+            },
+            // 테스트는 같은 기능(또는 shell)의 칸 안쪽(모듈 캐시 비우기 등)과 부모를 import한다.
+            ...[featureTypes, shellTypes].map((types) => ({
+              from: { element: { type: types }, file: { categories: 'test' } },
+              allow: { to: { element: { type: types, captured: sameBranch(1) } } },
+            })),
           ],
         },
       ],

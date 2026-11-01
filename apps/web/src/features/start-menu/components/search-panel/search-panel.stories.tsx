@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import {
-  SEARCH_PLACEHOLDER,
   SEARCH_RECENT,
   SEARCH_RECOMMENDED,
   SEARCH_RECOMMENDED_MOBILE_COUNT,
-} from '@/features/start-menu/stories/search-data/search-data';
+} from '@/features/start-menu/components/search-body/story-data';
 
 import { SearchPanel } from './search-panel';
+import { SEARCH_PLACEHOLDER } from './story-data';
 
 // 피그마 Search/Panel의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;

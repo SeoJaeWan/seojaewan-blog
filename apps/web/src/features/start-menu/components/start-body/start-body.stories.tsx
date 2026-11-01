@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { SEARCH_RESULTS } from '@/features/start-menu/stories/search-data/search-data';
+import { SEARCH_RESULTS } from '@/features/start-menu/components/search-body/story-data';
 import {
   START_LETTER_GROUPS,
   START_PINNED,
   startAvailableLetters,
-} from '@/features/start-menu/stories/start-data/start-data';
+} from '@/features/start-menu/components/start-body/story-data';
 
 import { StartBody } from './start-body';
 import { START_CATEGORY_GROUPS } from './story-data';

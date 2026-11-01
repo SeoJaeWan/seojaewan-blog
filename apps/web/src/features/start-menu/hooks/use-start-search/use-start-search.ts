@@ -3,7 +3,7 @@ import type {
   SearchRecommendedPost,
   SearchResultGroups,
   SearchResultItem,
-} from '@/features/start-menu/components/search-body/search-body';
+} from '@/features/start-menu/utils/start-items/start-items';
 import { toSearchItem } from '@/features/start-menu/utils/start-items/start-items';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
