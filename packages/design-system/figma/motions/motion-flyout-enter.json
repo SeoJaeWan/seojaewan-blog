@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
+  "directives": {
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "우클릭 메뉴·메시지 상자가 열릴 때"
+    ]
+  },
   "duration": {
     "ms": 167,
     "token": "motion/duration/fast"
   },
-  "iterations": null,
+  "iterations": 1,
   "name": "motion-flyout-enter",
   "nodeId": "758:186",
   "tracks": [
