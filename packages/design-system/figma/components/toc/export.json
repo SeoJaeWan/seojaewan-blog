@@ -1,6 +1,20 @@
 {
+  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.",
   "name": "Toc",
   "nodeId": "398:5502",
+  "propertyDefinitions": {
+    "Items": {
+      "type": "SLOT"
+    },
+    "State": {
+      "default": "Expanded",
+      "options": [
+        "Expanded",
+        "Collapsed"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "state=collapsed": {
       "node": {
@@ -12,9 +26,103 @@
       "nodeId": "398:5500",
       "properties": {
         "State": "Collapsed"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 20,
+              "w": 174
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_chevron_down_20_regular"
+            },
+            "component": "ic_fluent_chevron_down_20_regular",
+            "height": "size/icon/md",
+            "name": "chevron",
+            "size": {
+              "h": 20,
+              "w": 20
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/md"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/md",
+            "spacing/sm",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Collapsed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 38,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/toc/width"
       }
     },
     "state=expanded": {
+      "emptyHugSlot": true,
       "node": {
         "height": 132,
         "width": 220,
@@ -24,6 +132,116 @@
       "nodeId": "398:5496",
       "properties": {
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "heading",
+                "size": {
+                  "h": 20,
+                  "w": 220
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "목차",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Strong"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "SectionTitle",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "title",
+            "properties": {
+              "Show action": false,
+              "Title": "목차"
+            },
+            "size": {
+              "h": 20,
+              "w": 220
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Items",
+            "size": {
+              "h": 100,
+              "w": 220
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Expanded",
+        "size": {
+          "h": 132,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/toc/width"
       }
     }
   }
