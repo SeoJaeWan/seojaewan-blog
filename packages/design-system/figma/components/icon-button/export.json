@@ -1,6 +1,32 @@
 {
+  "description": "아이콘만 있는 버튼으로, 도구 모음·이동 버튼·새 탭·⋮ 메뉴처럼 좁은 자리의 동작에 쓴다.",
   "name": "IconButton",
   "nodeId": "13:105",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Pressed",
+        "Disabled",
+        "Focused"
+      ],
+      "type": "VARIANT"
+    },
+    "Style": {
+      "default": "Standard",
+      "options": [
+        "Standard",
+        "Subtle",
+        "Chrome"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "style=chrome,state=disabled": {
       "node": {
@@ -13,6 +39,60 @@
       "properties": {
         "State": "Disabled",
         "Style": "Chrome"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Chrome, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=chrome,state=focused": {
@@ -26,6 +106,70 @@
       "properties": {
         "State": "Focused",
         "Style": "Chrome"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Chrome, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=chrome,state=hover": {
@@ -39,6 +183,60 @@
       "properties": {
         "State": "Hover",
         "Style": "Chrome"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Chrome, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=chrome,state=pressed": {
@@ -52,6 +250,60 @@
       "properties": {
         "State": "Pressed",
         "Style": "Chrome"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Chrome, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=chrome,state=rest": {
@@ -65,6 +317,60 @@
       "properties": {
         "State": "Rest",
         "Style": "Chrome"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "chrome/text-secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Chrome, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=disabled": {
@@ -78,6 +384,70 @@
       "properties": {
         "State": "Disabled",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Standard, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=focused": {
@@ -91,6 +461,70 @@
       "properties": {
         "State": "Focused",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Standard, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=hover": {
@@ -104,6 +538,86 @@
       "properties": {
         "State": "Hover",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Standard, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Standard, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=pressed": {
@@ -117,6 +631,70 @@
       "properties": {
         "State": "Pressed",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Standard, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=standard,state=rest": {
@@ -130,6 +708,86 @@
       "properties": {
         "State": "Rest",
         "Style": "Standard"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Standard, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Standard, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeStyle": "Elevation/Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=disabled": {
@@ -143,6 +801,60 @@
       "properties": {
         "State": "Disabled",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/disabled"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Subtle, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=focused": {
@@ -156,6 +868,70 @@
       "properties": {
         "State": "Focused",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Subtle, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=hover": {
@@ -169,6 +945,78 @@
       "properties": {
         "State": "Hover",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Subtle, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Subtle, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=pressed": {
@@ -182,6 +1030,60 @@
       "properties": {
         "State": "Pressed",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Subtle, State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "style=subtle,state=rest": {
@@ -195,6 +1097,78 @@
       "properties": {
         "State": "Rest",
         "Style": "Subtle"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_more_horizontal_20_regular"
+            },
+            "component": "ic_fluent_more_horizontal_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Style=Subtle, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Style=Subtle, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 32
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }

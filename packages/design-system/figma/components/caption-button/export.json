@@ -1,61 +1,593 @@
 {
+  "description": "창 제목 표시줄의 최소화·최대화·닫기 버튼 하나로, CaptionButtonGroup 안에서 쓴다.",
   "name": "CaptionButton",
   "nodeId": "18:185",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Kind": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Close"
+      ],
+      "type": "VARIANT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Pressed",
+        "Inactive"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "kind=close,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:176",
       "properties": {
         "Kind": "Close",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "caption-button/close-glyph-hover",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "caption-button/close-fill-hover"
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Close, State=Hover",
+        "reactions": [
+          {
+            "destination": "Kind=Close, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=close,state=inactive": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:182",
       "properties": {
         "Kind": "Close",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Close, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=close,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:179",
       "properties": {
         "Kind": "Close",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "caption-button/close-glyph-pressed",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "caption-button/close-fill-pressed"
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Close, State=Pressed",
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=close,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:173",
       "properties": {
         "Kind": "Close",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Close, State=Rest",
+        "reactions": [
+          {
+            "destination": "Kind=Close, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=default,state=hover": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:140",
       "properties": {
         "Kind": "Default",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Default, State=Hover",
+        "reactions": [
+          {
+            "destination": "Kind=Default, State=Pressed",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_PRESS"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=default,state=inactive": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:146",
       "properties": {
         "Kind": "Default",
         "State": "Inactive"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Default, State=Inactive",
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=default,state=pressed": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:143",
       "properties": {
         "Kind": "Default",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "subtle-fill/tertiary"
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Default, State=Pressed",
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     },
     "kind=default,state=rest": {
+      "node": {
+        "height": 32,
+        "width": 46,
+        "x": 0,
+        "y": 0
+      },
       "nodeId": "18:137",
       "properties": {
         "Kind": "Default",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_subtract_20_regular"
+            },
+            "component": "ic_fluent_subtract_20_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "height": "size/caption-button/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Kind=Default, State=Rest",
+        "reactions": [
+          {
+            "destination": "Kind=Default, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 46
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/caption-button/width"
       }
     }
   }
