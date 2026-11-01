@@ -25,7 +25,7 @@ description: 피그마 플러그인이 연 토큰 PR(`feat/figma-tokens` 브랜�
    - @codocs [[피그마 연동:PR 흐름]]
 2. PR 브랜치를 받는다(`gh pr checkout <번호>`). `main` 대비 바뀐 파일이 @codocs [[피그마 연동:피그마 플러그인]]에서 토큰 PR이 바꾸는 파일뿐인지 확인한다. 예상 밖 파일이 있으면 멈추고 보고한다.
 3. `figma/tokens.json`의 `main` 대비 변경을 세 묶음으로 정리한다: 더해짐, 값 바뀜, 이름 바뀜·지워짐.
-4. `pnpm --filter @seojaewan/design-system generate:tokens --check`로 저장소의 `src/tokens.css`가 변환 스크립트 결과와 같은지 확인한다. 다르면 고치지 말고 멈추고 보고한다.
+4. `pnpm --filter @seojaewan/design-system generate:tokens --check`로 저장소의 `src/tokens.css`·`src/token-names.ts`가 변환 스크립트 결과와 같은지 확인한다. 다르면 고치지 말고 멈추고 보고한다.
 5. 생성이 실패하면(규칙이 없는 변수 묶음, 같은 CSS 이름이 되는 토큰 등) 피그마나 문서를 고쳐야 하므로 멈추고 보고한다.
 6. 토큰이 이미지를 쓰면 `pnpm --filter @seojaewan/design-system generate:assets`를 실행하고 결과를 함께 커밋한다.
 7. `pnpm lint`를 실행한다. 이름이 바뀌거나 지워진 토큰의 옛 클래스를 쓰는 코드가 모르는 클래스로 나오면, 새 이름의 클래스로 고친다(@codocs [[피그마 연동:PR 흐름]]). 바꿀 새 이름이 분명하지 않으면 멈추고 보고한다.

@@ -38,7 +38,7 @@ description: 피그마 플러그인이 연 애니메이션 PR(`feat/figma-motion
 3. json과 표를 읽는다.
    - json(`packages/design-system/figma/motions/<이름>.json`)에서 트랙마다 노드, 항목, 키프레임(시간, 위치, 값, 이징 토큰, 값 토큰), 트랙 길이와 시작 지연의 토큰을 정리한다. PR 본문의 키프레임 표와 토큰 짝 표도 같은 내용이다.
    - @codocs [[디자인 기반:모션]] 표에서 이 클래스의 행을 찾아 "실행 중 값" 열과 반복 여부를 읽는다. json에는 반복이 없다(피그마에서 읽을 수 없다).
-   - 피그마 견본(PR 본문 링크)을 열어 키프레임 모양을 확인한다(피그마 MCP).
+   - 내보낸 json의 키프레임과 `directives`를 먼저 보고, 그래도 모르는 것만 피그마 견본(PR 본문 링크)을 열어 확인한다(피그마 MCP, @codocs [[피그마 연동:스킬]]).
 4. `packages/design-system/src/motion.css`에 `@keyframes`와 `@utility <이름>` 클래스를 만든다(@codocs [[피그마 연동:모션 클래스]]).
    - 클래스 이름은 json `name`(견본 이름)이다.
    - 토큰 짝(트랙 길이, 시작 지연, 이징, 값 토큰)은 `var(--motion-*)`로 쓴다. CSS 이름은 @codocs [[피그마 연동:토큰 생성]]의 규칙이다.
