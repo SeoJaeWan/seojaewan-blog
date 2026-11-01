@@ -275,7 +275,7 @@ export function tokensPullRequestBody(summary: TokensSummary): string {
     '',
     '## 확인',
     '',
-    '- `src/tokens.css`는 `figma/tokens.json`에서 변환 스크립트와 같은 함수로 만들었다. 손으로 고치지 않는다.',
+    '- `src/tokens.css`와 `src/token-names.ts`는 `figma/tokens.json`에서 변환 스크립트와 같은 함수로 만들었다. 손으로 고치지 않는다.',
     '- 토큰 이름이 바뀌거나 지워져 lint가 모르는 클래스로 실패하면, 같은 PR에서 옛 클래스를 쓰는 코드를 고친다.',
     '- 새 토큰을 쓰는 컴포넌트 PR보다 먼저 병합한다.',
   ].join('\n');

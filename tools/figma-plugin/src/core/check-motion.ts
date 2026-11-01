@@ -7,6 +7,7 @@ import {
   motionUrl,
 } from '../motion-file';
 import type { Violation } from './check-structure';
+import { type Directives, parseDirectiveTexts } from './directives';
 import type {
   EasingData,
   KeyframeData,
@@ -17,7 +18,8 @@ import type {
 } from './motion-data';
 
 // 모션 견본의 구조 검사와 내보낼 자료 만들기. 피그마 API를 쓰지 않는 순수 함수다.
-// 막는 것: 모션 변수 값이 아닌 트랙 길이·시작 지연, 변수에 연결되지 않은 키프레임 이징([[피그마 연동:구조 검사]] 4번).
+// 막는 것: 모션 변수 값이 아닌 트랙 길이·시작 지연, 변수에 연결되지 않은 키프레임 이징([[피그마 연동:구조 검사]] 4번),
+// 잘못되거나 빠진 `@` 줄(`@repeat`·`@trigger`는 필수다).
 // 막지 않는 것: 배율·투명도·회전 등이 모션 변수 값과 같으면 짝을 적는다. 이동과 그 밖의 숫자는 보지 않는다.
 
 /** 검사와 내보내기 결과 */
@@ -32,6 +34,8 @@ export const DELAY_PREFIX = 'motion/delay/';
 export const EASING_PREFIX = 'motion/easing/';
 /** 값 짝을 찾는 변수 이름 앞부분 */
 const MOTION_PREFIX = 'motion/';
+/** 모션 견본에 꼭 있어야 하는 `@` 줄 */
+const REQUIRED_KEYS = ['repeat', 'trigger'] as const;
 /** 짝을 찾지 않는 항목(이동은 실행 중 값이거나 구성이다) */
 const UNPAIRED_PROPERTY_PATTERN = /^TRANSLATION_/u;
 
@@ -84,6 +88,19 @@ export function checkMotionSample(
   for (const problem of sample.problems) {
     add(problem.path, problem.reason, problem.fix, problem.nodeId);
   }
+  const { directives, problems } = parseDirectiveTexts(sample.annotations);
+  for (const problem of problems) {
+    add('', `주석의 ${problem}`, '견본 프레임 주석을 고친다.');
+  }
+  for (const key of REQUIRED_KEYS) {
+    if (directives[key] === undefined) {
+      add(
+        '',
+        `견본 주석에 \`@${key}\` 줄이 없다. 반복과 재생 시작 조건은 API로 읽을 수 없다`,
+        `견본 프레임 주석에 \`@${key} <값>\`을 적는다. 값은 [[디자인 기반:모션]] 표를 본다.`,
+      );
+    }
+  }
   if (sample.tracks.length === 0 && sample.problems.length === 0) {
     add(
       '',
@@ -98,8 +115,12 @@ export function checkMotionSample(
   const tracks: MotionTrack[] = [];
   for (const track of sortedTracks(sample.tracks)) {
     const where = `${track.path === '' ? track.node : track.path} / ${track.property}`;
-    const first = track.keyframes[0];
-    const last = track.keyframes.at(-1);
+    const clipped = clipTrack(track, sample.lengthMs);
+    const first = clipped.keyframes[0];
+    const last = clipped.keyframes.at(-1);
+    if (track.keyframes.length > 0 && first === undefined) {
+      continue;
+    }
     if (first === undefined || last === undefined) {
       add(
         where,
@@ -109,10 +130,13 @@ export function checkMotionSample(
       );
       continue;
     }
-    const durationMs = (last.time - first.time) * MS_PER_SECOND;
+    const durationMs =
+      clipped.isTruncated && sample.lengthMs !== null
+        ? sample.lengthMs - first.time * MS_PER_SECOND
+        : (last.time - first.time) * MS_PER_SECOND;
     const delayMs = first.time * MS_PER_SECOND;
     const duration = matchTime(durationMs, durations, notices, where);
-    if (duration.token === null) {
+    if (duration.token === null && !clipped.isTruncated) {
       add(
         where,
         `트랙 길이(첫 키프레임 → 끝 키프레임) ${formatMs(durationMs)}가 \`${DURATION_PREFIX}*\` 변수 값(${listValues(durations)}) 가운데 어느 것과도 같지 않다`,
@@ -133,7 +157,7 @@ export function checkMotionSample(
       );
     }
     const keyframes: MotionKeyframe[] = [];
-    for (const [index, keyframe] of track.keyframes.entries()) {
+    for (const [index, keyframe] of clipped.keyframes.entries()) {
       const easing =
         index === 0
           ? null
@@ -142,7 +166,7 @@ export function checkMotionSample(
             });
       keyframes.push({
         time: keyframe.time * MS_PER_SECOND,
-        offset: durationMs === 0 ? 0 : (keyframe.time - first.time) / (last.time - first.time),
+        offset: durationMs === 0 ? 0 : ((keyframe.time - first.time) * MS_PER_SECOND) / durationMs,
         value: keyframe.value,
         easing,
         valueToken: UNPAIRED_PROPERTY_PATTERN.test(track.property)
@@ -164,6 +188,7 @@ export function checkMotionSample(
       duration,
       delay,
       keyframes,
+      ...(clipped.isTruncated ? { isTruncated: true } : {}),
     });
   }
   if (violations.length > 0) {
@@ -181,10 +206,45 @@ export function checkMotionSample(
       url: motionUrl(fileKey, sample.nodeId),
       duration: matchTime(end - start, durations, notices, '애니메이션 전체'),
       delay: start === 0 ? { ms: 0, token: null } : matchTime(start, delays, notices, '애니메이션'),
-      iterations: null,
+      iterations: iterationsOf(directives),
+      directives,
       tracks,
     },
   };
+}
+
+/**
+ * 트랙을 견본 길이까지만 남긴다. 견본 안 컴포넌트가 가진 더 긴 움직임은 그 견본에서 잘려 재생되므로 이 견본의 값이 아니다.
+ * @codocs [[피그마 연동:모션]]
+ * @param track 트랙
+ * @param lengthMs 견본 길이(ms). 모르면 null
+ * @returns 남은 키프레임과 잘렸는지
+ */
+function clipTrack(
+  track: TrackData,
+  lengthMs: number | null,
+): { keyframes: KeyframeData[]; isTruncated: boolean } {
+  if (lengthMs === null) {
+    return { keyframes: track.keyframes, isTruncated: false };
+  }
+  const keyframes = track.keyframes.filter(
+    (keyframe) => keyframe.time * MS_PER_SECOND <= lengthMs + TIME_TOLERANCE_MS,
+  );
+  return { keyframes, isTruncated: keyframes.length < track.keyframes.length };
+}
+
+/**
+ * `@repeat`를 반복 횟수로 바꾼다.
+ * @codocs [[피그마 연동:모션]]
+ * @param directives `@` 줄
+ * @returns 횟수나 `infinite`, 없으면 null
+ */
+function iterationsOf(directives: Directives): number | 'infinite' | null {
+  const [repeat] = directives.repeat ?? [];
+  if (repeat === undefined) {
+    return null;
+  }
+  return repeat === 'infinite' ? repeat : Number(repeat);
 }
 
 /**

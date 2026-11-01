@@ -43,6 +43,7 @@ import {
   PATTERNS_DIR,
   SCALE,
   SETTINGS_PATH,
+  TOKEN_NAMES_PATH,
   TOKENS_CSS_PATH,
   TOKENS_PATH,
 } from './plugin-config';
@@ -677,6 +678,7 @@ async function commitTokens(
   const desired = new Map<string, string>([
     [TOKENS_PATH, await textBlob(token, tokens.text)],
     [TOKENS_CSS_PATH, await textBlob(token, tokens.css)],
+    [TOKEN_NAMES_PATH, await textBlob(token, tokens.names)],
   ]);
   for (const [file, bytes] of tokens.images) {
     desired.set(assetFilePath(file), await bytesBlob(token, bytes));

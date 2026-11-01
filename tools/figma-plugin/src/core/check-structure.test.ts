@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkClippingAncestors, checkVariant } from './check-structure';
-import type { NodeData } from './node-data';
+import { checkClippingAncestors, type CheckContext, checkVariant } from './check-structure';
+import type { Directives } from './directives';
+import type { MotionVariable } from './motion-data';
+import type { NodeData, ReactionData } from './node-data';
 import { buttonRoot, node, segment, solid } from './node-data.fixture';
 
 const context = {
@@ -170,6 +172,8 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
               mainComponentId: '1:1',
               group: 'Icons',
               kind: 'mono',
+              sourceWidth: 16,
+              sourceHeight: 16,
               problems: ['한 가지 색 자산인데 색이 여럿이다'],
             },
           }),
@@ -343,6 +347,7 @@ function instance(
     instance: {
       component,
       scaleFactor,
+      properties: {},
       overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
     },
     children,
@@ -359,7 +364,13 @@ function textChild(path: string): NodeData {
     path,
     type: 'TEXT',
     fills: 'mixed',
-    text: { autoResize: 'WIDTH_AND_HEIGHT', hasMissingFont: false, segments: [segment()] },
+    text: {
+      autoResize: 'WIDTH_AND_HEIGHT',
+      hasMissingFont: false,
+      truncation: 'DISABLED',
+      maxLines: null,
+      segments: [segment()],
+    },
   });
 }
 
@@ -540,11 +551,14 @@ function assetInstance(path: string, overrides: { id: string; fields: string[] }
       mainComponentId: '1:1',
       group: 'Icons',
       kind: 'mono',
+      sourceWidth: 16,
+      sourceHeight: 16,
       problems: [],
     },
     instance: {
       component: 'ic_fluent_add_20_regular',
       scaleFactor: 1,
+      properties: {},
       overrides: overrides.map((item) => ({ changedBindings: [], ...item })),
     },
   });
@@ -837,5 +851,245 @@ describe('구조 검사: 변형을 자르는 조상', () => {
         { id: '4:1', name: 'Buttons', type: 'SECTION', clipsContent: true },
       ]),
     ).toEqual([]);
+  });
+});
+
+/**
+ * 이미지 자산 인스턴스를 만든다.
+ * @param overrides 바꿀 값
+ * @returns 노드 데이터
+ */
+function imageAsset(overrides: Partial<NodeData>): NodeData {
+  return node({
+    path: 'image',
+    type: 'INSTANCE',
+    asset: {
+      name: 'wallpaper/Bloom',
+      mainComponentId: 'main',
+      group: 'Images',
+      kind: 'raster',
+      sourceWidth: 480,
+      sourceHeight: 300,
+      problems: [],
+    },
+    ...overrides,
+  });
+}
+
+/**
+ * 크기를 변수에 연결한 변형 루트를 만든다.
+ * @param overrides 바꿀 값
+ * @returns 변형 루트
+ */
+function fixedRoot(overrides: Partial<NodeData>): NodeData {
+  return node({
+    path: '',
+    type: 'COMPONENT',
+    child: null,
+    width: { value: 16, variable: 'size/16' },
+    height: { value: 16, variable: 'size/16' },
+    ...overrides,
+  });
+}
+
+/**
+ * 변형 루트 아래에 노드를 두고 위반 이유를 모은다.
+ * @param child 검사할 노드
+ * @param extra 더할 검사 정보
+ * @returns 위반 이유
+ */
+function reasonsOf(child: NodeData, extra: Partial<CheckContext> = {}): string[] {
+  return checkVariant(fixedRoot({ children: [child] }), 'Figure', { ...context, ...extra }).map(
+    (violation) => violation.reason,
+  );
+}
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('이미지 자산 비율', () => {
+  it('비율이 원본과 다른 이미지 자산을 막는다', () => {
+    const reasons = reasonsOf(
+      imageAsset({
+        width: { value: 720, variable: 'size/720' },
+        height: { value: 420, variable: 'size/420' },
+      }),
+    );
+    expect(reasons.some((reason) => reason.includes('비율이 원본과 다르다'))).toBe(true);
+  });
+
+  it('비율을 잠근 FILL 이미지의 높이는 변수 없는 고정 높이로 막지 않는다', () => {
+    const reasons = reasonsOf(
+      imageAsset({
+        width: { value: 720 },
+        height: { value: 450 },
+        aspectRatio: 1.6,
+        child: {
+          sizingHorizontal: 'FILL',
+          sizingVertical: 'FIXED',
+          positioning: 'AUTO',
+          constraints: { horizontal: 'MIN', vertical: 'MIN' },
+        },
+      }),
+    );
+    expect(reasons).toEqual([]);
+  });
+
+  it('비율을 잠갔어도 어느 축도 정해지지 않으면 막는다', () => {
+    const reasons = reasonsOf(
+      imageAsset({
+        width: { value: 720 },
+        height: { value: 450 },
+        aspectRatio: 1.6,
+        child: {
+          sizingHorizontal: 'FIXED',
+          sizingVertical: 'FIXED',
+          positioning: 'AUTO',
+          constraints: { horizontal: 'MIN', vertical: 'MIN' },
+        },
+      }),
+    );
+    expect(reasons).toHaveLength(2);
+  });
+
+  it('두 축을 부모가 정하면 틀에 맞춰 자르는 그림이라 막지 않는다', () => {
+    const reasons = reasonsOf(
+      imageAsset({
+        width: { value: 720 },
+        height: { value: 240 },
+        child: {
+          sizingHorizontal: 'FILL',
+          sizingVertical: 'FILL',
+          positioning: 'AUTO',
+          constraints: { horizontal: 'MIN', vertical: 'MIN' },
+        },
+      }),
+    );
+    expect(reasons).toEqual([]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('코드 전용 변수 짝', () => {
+  const codeVariables = {
+    rotate: [{ name: 'rotate/quarter', value: 90 }],
+    lineClamp: [{ name: 'line-clamp/two', value: 2 }],
+    ratio: [{ name: 'ratio/wide', value: 1.6 }],
+  };
+
+  it('묶음에 변수가 없으면 짝을 보지 않는다', () => {
+    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: -180 }))).toEqual([]);
+  });
+
+  it('피그마 회전은 부호를 뒤집어 CSS 각도로 짝짓는다', () => {
+    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: -90 }), { codeVariables })).toEqual(
+      [],
+    );
+    expect(reasonsOf(node({ path: 'a', type: 'FRAME', rotation: 90 }), { codeVariables })).toEqual([
+      '회전 90°와 같은 값의 코드 전용 변수가 없다',
+    ]);
+  });
+
+  it('비율에 짝이 없으면 막는다', () => {
+    expect(
+      reasonsOf(node({ path: 'a', type: 'FRAME', aspectRatio: 2 }), { codeVariables }),
+    ).toEqual(['비율 2.000와 같은 값의 코드 전용 변수가 없다']);
+  });
+
+  it('둘 이상의 최대 줄 수만 짝을 찾는다. 한 줄 말줄임은 truncate다', () => {
+    /**
+     * 최대 줄 수가 있는 글자를 만든다.
+     * @param maxLines 최대 줄 수
+     * @returns 노드 데이터
+     */
+    function text(maxLines: number): NodeData {
+      return node({
+        path: 'a',
+        type: 'TEXT',
+        text: {
+          autoResize: 'HEIGHT',
+          hasMissingFont: false,
+          truncation: 'ENDING',
+          maxLines,
+          segments: [],
+        },
+      });
+    }
+    expect(reasonsOf(text(1), { codeVariables })).toEqual([]);
+    expect(reasonsOf(text(2), { codeVariables })).toEqual([]);
+    expect(reasonsOf(text(3), { codeVariables })).toEqual([
+      '최대 줄 수 3와 같은 값의 코드 전용 변수가 없다',
+    ]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('다이아몬드 그라데이션', () => {
+  it('구조 검사가 막는다', () => {
+    const reasons = reasonsOf(
+      node({
+        path: 'a',
+        type: 'FRAME',
+        fillStyle: 'Diamond',
+        fills: [{ type: 'GRADIENT_DIAMOND', visible: true, blendMode: 'NORMAL' }],
+      }),
+    );
+    expect(reasons).toEqual(['칠 종류 GRADIENT_DIAMOND는 CSS로 그릴 수 없다']);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('변형 전환', () => {
+  const motionVariables: MotionVariable[] = [
+    { name: 'motion/duration/faster', resolvedType: 'FLOAT', value: 83 },
+    { name: 'motion/easing/fade', resolvedType: 'EASING', value: null, curve: [0, 0, 1, 1] },
+  ];
+
+  /**
+   * 전환이 있는 변형을 검사한다.
+   * @param reaction 전환
+   * @param directives 컴포넌트 `@` 줄
+   * @returns 위반 이유
+   */
+  function check(reaction: ReactionData, directives: Directives = {}): string[] {
+    return checkVariant(
+      fixedRoot({ reactions: [reaction] }),
+      'SearchBox',
+      { ...context, motionVariables },
+      directives,
+    ).map((violation) => violation.reason);
+  }
+
+  const hover: ReactionData = {
+    trigger: 'ON_HOVER',
+    destination: 'State=Hover',
+    navigation: 'CHANGE_TO',
+    transition: {
+      type: 'SMART_ANIMATE',
+      durationMs: 83,
+      easing: { type: 'LINEAR', bezier: [0, 0, 1, 1] },
+    },
+  };
+
+  it('모션 변수 값이면 막지 않는다', () => {
+    expect(check(hover)).toEqual([]);
+  });
+
+  it('모션 변수 값이 아닌 시간과 이징을 막는다', () => {
+    const reasons = check({
+      ...hover,
+      transition: {
+        type: 'SMART_ANIMATE',
+        durationMs: 100,
+        easing: { type: 'EASE_OUT', bezier: null },
+      },
+    });
+    expect(reasons).toHaveLength(2);
+  });
+
+  it('Focused 변형으로 가는 전환은 @trigger focus-visible이 있어야 한다', () => {
+    const focused = { ...hover, trigger: 'ON_CLICK', destination: 'Filled=False, State=Focused' };
+    expect(check(focused)).toEqual([
+      expect.stringContaining('`@trigger focus-visible` 줄이 없다') as string,
+    ]);
+    expect(check(focused, { trigger: ['focus-visible'] })).toEqual([]);
   });
 });

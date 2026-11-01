@@ -47,6 +47,10 @@ export function node(overrides: Partial<NodeData> & Pick<NodeData, 'path' | 'typ
     cornerSmoothing: 0,
     effects: [],
     layout: null,
+    strokesIncludedInLayout: false,
+    aspectRatio: null,
+    annotations: [],
+    reactions: [],
     child: {
       sizingHorizontal: 'HUG',
       sizingVertical: 'HUG',
@@ -88,7 +92,13 @@ export function buttonRoot(): NodeData {
     path: 'label',
     type: 'TEXT',
     fills: 'mixed',
-    text: { autoResize: 'WIDTH_AND_HEIGHT', hasMissingFont: false, segments: [segment()] },
+    text: {
+      autoResize: 'WIDTH_AND_HEIGHT',
+      hasMissingFont: false,
+      truncation: 'DISABLED',
+      maxLines: null,
+      segments: [segment()],
+    },
   });
   return node({
     path: '',
@@ -112,6 +122,7 @@ export function buttonRoot(): NodeData {
       mode: 'HORIZONTAL',
       wrap: 'NO_WRAP',
       primaryAlign: 'CENTER',
+      counterAlign: 'CENTER',
       primarySizing: 'AUTO',
       counterSizing: 'AUTO',
       padding: {

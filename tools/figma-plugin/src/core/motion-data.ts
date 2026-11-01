@@ -1,3 +1,5 @@
+import type { Directives } from './directives';
+
 // 모션 견본에서 읽은 순수 데이터. read-motion.ts가 피그마 API로 채우고, 모션 검사(check-motion.ts)는 이 데이터만 쓴다.
 // 피그마 API 없이 테스트할 수 있게 하기 위해서다.
 
@@ -73,6 +75,10 @@ export type MotionSampleData = {
   nodeId: string;
   tracks: TrackData[];
   problems: ReadProblem[];
+  /** 견본 프레임 주석의 글 */
+  annotations: string[];
+  /** 견본 타임라인 길이(ms). 읽지 못했으면 null */
+  lengthMs: number | null;
 };
 
 /** `motion/*` 변수 하나 */
@@ -82,4 +88,8 @@ export type MotionVariable = {
   resolvedType: string;
   /** FLOAT 변수의 값(별칭을 푼 기본 모드 값). FLOAT가 아니거나 읽지 못했으면 null */
   value: number | null;
+  /** EASING 변수의 곡선 네 점 */
+  curve?: readonly number[] | null;
 };
+
+export type { Directives };

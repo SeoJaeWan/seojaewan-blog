@@ -78,6 +78,8 @@ export function windowOpenSample(): MotionSampleData {
     name: 'motion-window-open',
     nodeId: '12:34',
     problems: [],
+    annotations: ['@repeat 1\n@trigger open'],
+    lengthMs: null,
     tracks: [
       track('SCALE_XY', [
         keyframe(0, { x: 0.96, y: 0.96 }),

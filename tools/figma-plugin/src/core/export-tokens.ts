@@ -1,4 +1,7 @@
-import { tokensJsonToCss } from '../../../../packages/design-system/scripts/tokens/tokens-css';
+import {
+  tokensJsonToCss,
+  tokensJsonToNames,
+} from '../../../../packages/design-system/scripts/tokens/tokens-css';
 import { buildDesignTokens } from '../design-tokens';
 import { readDesignTokensInput, readImageAssets, readUsageInput } from '../figma-reader';
 import { assetFile } from '../naming';
@@ -12,6 +15,8 @@ export type TokensExport = {
   text: string;
   /** tokens.json에서 변환 함수로 만든 tokens.css 내용 */
   css: string;
+  /** tokens.json에서 변환 함수로 만든 token-names.ts 내용 */
+  names: string;
   /** 토큰으로 옮기지 않은 칠 스타일 이름 */
   skippedStyles: string[];
   /** 토큰의 이미지 칠이 가리키는 이미지 자산 파일(`images/<자산>.<실제 형식의 확장자>`) → 바이트 */
@@ -67,10 +72,22 @@ export async function exportTokensText(): Promise<TokensExport> {
   return {
     text,
     css: tokensCssText(text),
+    names: tokenNamesText(text),
     skippedStyles: [...skippedStyles],
     images,
     notices,
   };
+}
+
+/**
+ * tokens.json 내용으로 token-names.ts 내용을 만든다. 변환 스크립트와 같은 함수다.
+ * @codocs [[피그마 연동:토큰 검사]]
+ * @param text tokens.json 내용
+ * @returns token-names.ts 내용
+ */
+export function tokenNamesText(text: string): string {
+  const json: unknown = JSON.parse(text);
+  return tokensJsonToNames(json);
 }
 
 /**

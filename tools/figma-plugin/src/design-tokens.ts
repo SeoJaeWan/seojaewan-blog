@@ -1,4 +1,6 @@
+import { isCodeOnlyPath } from '../../../packages/design-system/scripts/tokens/token-naming';
 import { colorToHex, type FigmaColor } from './color';
+import { parseDirectives } from './core/directives';
 import type { JsonObject, JsonValue } from './stable-json';
 
 // 피그마 API 값을 옮겨 담은 순수 데이터 모양. figma-reader.ts가 피그마 객체를 이 모양으로 바꾼다.
@@ -29,6 +31,10 @@ export type VariableInput = {
   scopes: readonly string[];
   /** 컬렉션 기본 모드의 값 */
   value: VariableValueInput;
+  /** 기본 값과 다른 다른 모드의 값(모드 이름 → 값) */
+  modes?: Readonly<Record<string, VariableValueInput>>;
+  /** 변수 description. `@` 줄만 토큰에 담는다 */
+  description?: string;
 };
 
 export type TextStyleField =
@@ -45,6 +51,8 @@ export type TextStyleInput = {
   /** 피그마 글자 장식(`NONE`, `UNDERLINE`, `STRIKETHROUGH`) */
   textDecoration: string;
   boundVariables: Partial<Record<TextStyleField, VariableAlias>>;
+  /** 스타일 description. `@` 줄만 토큰에 담는다 */
+  description?: string;
 };
 
 export type ShadowEffectInput = {
@@ -70,7 +78,12 @@ export type BlurEffectInput = {
 export type EffectInput =
   ShadowEffectInput | BlurEffectInput | (UnsupportedValue & { visible: boolean });
 
-export type EffectStyleInput = { name: string; effects: readonly EffectInput[] };
+export type EffectStyleInput = {
+  name: string;
+  effects: readonly EffectInput[];
+  /** 스타일 description. `@` 줄만 토큰에 담는다 */
+  description?: string;
+};
 
 export type SolidPaintInput = {
   type: 'SOLID';
@@ -113,7 +126,12 @@ export type PaintInput =
   | GradientPaintInput
   | (UnsupportedValue & { visible: boolean });
 
-export type PaintStyleInput = { name: string; paints: readonly PaintInput[] };
+export type PaintStyleInput = {
+  name: string;
+  paints: readonly PaintInput[];
+  /** 스타일 description. `@` 줄만 토큰에 담는다 */
+  description?: string;
+};
 
 /** 변환 결과. 토큰이 아니라서 넣지 않은 스타일(이미지만 있는 칠 스타일)을 함께 돌려준다. */
 export type DesignTokensResult = {
@@ -181,17 +199,28 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
     }
   }
   for (const style of input.textStyles) {
-    insertStyle(root, 'text', style.name, textStyleToken(style, context), problems);
+    const label = `글자 스타일 ${style.name}`;
+    const token = withDirectives(textStyleToken(style, context), style, label, context);
+    insertStyle(root, 'text', style.name, token, problems);
   }
   for (const style of input.effectStyles) {
-    insertStyle(root, 'effect', style.name, effectStyleToken(style, context), problems);
+    const label = `효과 스타일 ${style.name}`;
+    const token = withDirectives(effectStyleToken(style, context), style, label, context);
+    insertStyle(root, 'effect', style.name, token, problems);
   }
   for (const style of input.paintStyles) {
     const token = paintStyleToken(style, context);
     if (token === null) {
       skippedStyles.push(style.name);
     } else {
-      insertStyle(root, 'paint', style.name, token, problems);
+      const label = `칠 스타일 ${style.name}`;
+      insertStyle(
+        root,
+        'paint',
+        style.name,
+        withDirectives(token, style, label, context),
+        problems,
+      );
     }
   }
 
@@ -199,6 +228,44 @@ export function buildDesignTokens(input: DesignTokensInput): DesignTokensResult 
     throw new Error(`토큰을 내보낼 수 없다.\n- ${problems.join('\n- ')}`);
   }
   return { tokens: root, skippedStyles, notices };
+}
+
+/**
+ * description의 `@` 줄을 토큰 확장 필드에 담는다. 줄이 없으면 토큰은 그대로다(설명 글은 내보내지 않는다).
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param token 토큰
+ * @param source description이 있는 입력
+ * @param source.description description
+ * @param label 오류 메시지에 쓸 이름
+ * @param context 문제 목록
+ * @returns 토큰
+ */
+function withDirectives(
+  token: JsonObject,
+  source: { description?: string },
+  label: string,
+  context: ConversionContext,
+): JsonObject {
+  const { directives, problems } = parseDirectives(source.description ?? '');
+  for (const problem of problems) {
+    context.problems.push(`${label}: description의 ${problem}`);
+  }
+  if (Object.keys(directives).length === 0) {
+    return token;
+  }
+  const extensions: JsonValue = token.$extensions ?? {};
+  const own = isGroup(extensions) ? extensions : {};
+  const project = own[PROJECT_EXTENSION];
+  return {
+    ...token,
+    $extensions: {
+      ...own,
+      [PROJECT_EXTENSION]: {
+        ...(isGroup(project ?? {}) ? (project as JsonObject) : {}),
+        directives,
+      },
+    },
+  };
 }
 
 /**
@@ -273,13 +340,26 @@ function variableToken(variable: VariableInput, context: ConversionContext): Jso
   if (typed === null) {
     return null;
   }
-  return {
+  const modes: JsonObject = {};
+  for (const [mode, value] of Object.entries(variable.modes ?? {})) {
+    const typedMode = variableTypeAndValue(
+      { ...variable, value },
+      `${label} 모드 ${mode}`,
+      context,
+    );
+    if (typedMode !== null) {
+      modes[mode] = typedMode.value;
+    }
+  }
+  const token: JsonObject = {
     $type: typed.type,
     $value: typed.value,
     $extensions: {
       [FIGMA_EXTENSION]: { collection: variable.collection, scopes: [...variable.scopes] },
+      ...(Object.keys(modes).length === 0 ? {} : { [PROJECT_EXTENSION]: { modes } }),
     },
   };
+  return withDirectives(token, variable, label, context);
 }
 
 /**
@@ -336,7 +416,7 @@ function variableType(
     if (name.startsWith('motion/duration/') || name.startsWith('motion/delay/')) {
       return 'duration';
     }
-    if (name.startsWith('opacity/') || name.startsWith('motion/scale/')) {
+    if (name.startsWith('opacity/') || name.startsWith('motion/scale/') || isCodeOnlyPath(name)) {
       return 'number';
     }
     return 'dimension';
@@ -362,7 +442,13 @@ function variableType(
   if (name.startsWith('motion/easing/')) {
     return 'cubicBezier';
   }
-  context.problems.push(`${label}: 이 이름의 ${variable.resolvedType} 변수는 계약에 없다`);
+  // 코드 전용 문자 변수는 값을 CSS에 그대로 옮긴다.
+  if (isCodeOnlyPath(name) || name.startsWith('motion/')) {
+    return 'string';
+  }
+  context.problems.push(
+    `${label}: 이 이름의 ${variable.resolvedType} 변수는 계약에 없다. 문자 변수는 font/family, font/weight, motion, 코드 전용 묶음에만 쓴다`,
+  );
   return null;
 }
 
@@ -394,7 +480,7 @@ function literalValue(
   if (typeof value !== 'string') {
     return null;
   }
-  if (type === 'fontFamily') {
+  if (type === 'fontFamily' || type === 'string') {
     return value;
   }
   if (type === 'fontWeight') {

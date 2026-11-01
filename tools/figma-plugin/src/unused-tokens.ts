@@ -31,6 +31,9 @@ export type UsageInput = {
   nodeStyleIds: ReadonlySet<string>;
 };
 
+// 쓰지 않는 단계도 남기는 단계 이름 묶음이다. 알리지 않는다.
+const STEP_NAME_PATTERN = /^(?:spacing|size\/icon)\/(?!\d+$)/u;
+
 const STYLE_KIND_LABEL = {
   paint: '칠 스타일',
   text: '글자 스타일',
@@ -41,7 +44,7 @@ const STYLE_KIND_LABEL = {
  * 쓰는 곳이 없는 변수와 스타일을 알림 문장으로 만든다.
  * - 스타일: 그 스타일을 쓰는 노드도, 입힌 글자 구간도 없으면 알린다.
  * - 변수: 노드나 쓰는 스타일이 직접 연결한 변수, 그리고 그 변수가 별칭으로 가리키는 변수(끝까지)를 쓴다고 본다.
- *   코드에서만 쓰는 변수(범위가 비어 있음)는 알리지 않는다.
+ *   코드에서만 쓰는 변수(범위가 비어 있음)와 단계 이름 묶음(`spacing/*`, `size/icon/*`의 이름 단계)은 알리지 않는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param input 변수·스타일·노드 연결 정보
  * @returns 알림 문장(이름 순)
@@ -70,7 +73,12 @@ export function unusedNotices(input: UsageInput): string[] {
     .filter((style) => !usedStyles.includes(style))
     .map((style) => `${STYLE_KIND_LABEL[style.kind]} ${style.name}: 쓰는 곳이 없다`);
   const variableNotices = input.variables
-    .filter((variable) => variable.scopes.length > 0 && !used.has(variable.id))
+    .filter(
+      (variable) =>
+        variable.scopes.length > 0 &&
+        !STEP_NAME_PATTERN.test(variable.name) &&
+        !used.has(variable.id),
+    )
     .map((variable) => `변수 ${variable.name}: 쓰는 곳이 없다`);
   return [...styleNotices.sort(), ...variableNotices.sort()];
 }

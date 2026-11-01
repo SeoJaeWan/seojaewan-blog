@@ -1,7 +1,7 @@
 import { exportTokensText } from './core/export-tokens';
 import type { McpFile } from './mcp-entry';
 import { assetFilePath } from './naming';
-import { TOKENS_CSS_PATH, TOKENS_PATH } from './plugin-config';
+import { TOKEN_NAMES_PATH, TOKENS_CSS_PATH, TOKENS_PATH } from './plugin-config';
 import { sha256Hex, utf8Encode } from './sha256';
 
 // 피그마 MCP(use_figma)에서 tokens.json과 tokens.css를 만드는 진입점. 플러그인과 같은 토큰 변환 코드를 쓴다.
@@ -30,6 +30,12 @@ export async function runMcpTokens(): Promise<{
       encoding: 'utf8',
       content: tokens.css,
       sha256: sha256Hex(utf8Encode(tokens.css)),
+    },
+    {
+      path: TOKEN_NAMES_PATH,
+      encoding: 'utf8',
+      content: tokens.names,
+      sha256: sha256Hex(utf8Encode(tokens.names)),
     },
   ];
   for (const [file, bytes] of tokens.images) {

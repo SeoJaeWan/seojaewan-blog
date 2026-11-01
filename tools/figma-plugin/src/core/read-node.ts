@@ -18,9 +18,11 @@ import type {
   NodeData,
   OverrideData,
   PaintData,
+  ReactionData,
   Sides,
   TextData,
   TextSegmentData,
+  TransitionData,
 } from './node-data';
 
 // 피그마 노드를 node-data.ts의 순수 데이터로 읽는다. 변수·스타일은 이름으로 바꿔 둔다.
@@ -97,6 +99,10 @@ async function readNode(
     cornerSmoothing: 'cornerSmoothing' in node ? node.cornerSmoothing : 0,
     effects: null,
     layout: null,
+    strokesIncludedInLayout: 'strokesIncludedInLayout' in node && node.strokesIncludedInLayout,
+    aspectRatio: aspectRatioOf(node),
+    annotations: annotationTexts(node),
+    reactions: parent === null ? await reactionsOf(node) : [],
     child: null,
     text: null,
     asset: null,
@@ -182,7 +188,100 @@ async function instanceData(node: InstanceNode): Promise<InstanceData> {
     }
     overrides.push({ id: override.id, fields, changedBindings });
   }
-  return { component, scaleFactor: node.scaleFactor, overrides };
+  return {
+    component,
+    scaleFactor: node.scaleFactor,
+    overrides,
+    properties: componentProperties(node),
+  };
+}
+
+/**
+ * 인스턴스의 컴포넌트 속성을 읽는다. 속성 키의 `#id`는 뗀다. 인스턴스 교체 값은 노드 ID라 담지 않는다.
+ * @param node 인스턴스
+ * @returns 속성 이름 → 값
+ */
+function componentProperties(node: InstanceNode): Record<string, string | boolean> {
+  const result: Record<string, string | boolean> = {};
+  for (const [key, property] of Object.entries(node.componentProperties)) {
+    if (property.type !== 'INSTANCE_SWAP') {
+      result[key.split('#')[0] ?? key] = property.value;
+    }
+  }
+  return result;
+}
+
+/**
+ * 잠긴 비율을 읽는다. 자동 크기 글자처럼 비율을 쓸 수 없는 노드는 null이다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @returns 너비 ÷ 높이, 잠기지 않았으면 null
+ */
+function aspectRatioOf(node: SceneNode): number | null {
+  if (!('targetAspectRatio' in node) || node.targetAspectRatio === null) {
+    return null;
+  }
+  const { x, y } = node.targetAspectRatio;
+  return y === 0 ? null : x / y;
+}
+
+/**
+ * 노드 주석의 글을 읽는다. 평문(`label`)을 먼저 쓴다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @returns 주석 글
+ */
+export function annotationTexts(node: BaseNode): string[] {
+  if (!('annotations' in node)) {
+    return [];
+  }
+  return node.annotations
+    .map((annotation) => annotation.label ?? annotation.labelMarkdown ?? '')
+    .filter((text) => text !== '');
+}
+
+/**
+ * 변형 전환을 읽는다. 노드로 이동하는 항목만 담는다.
+ * @codocs [[피그마 연동:모션]]
+ * @param node 변형 루트
+ * @returns 전환 목록
+ */
+async function reactionsOf(node: SceneNode): Promise<ReactionData[]> {
+  if (!('reactions' in node)) {
+    return [];
+  }
+  const result: ReactionData[] = [];
+  for (const reaction of node.reactions) {
+    for (const action of reaction.actions ?? []) {
+      if (action.type !== 'NODE' || action.destinationId === null) {
+        continue;
+      }
+      const destination = await figma.getNodeByIdAsync(action.destinationId);
+      result.push({
+        trigger: reaction.trigger?.type ?? 'NONE',
+        destination: destination?.name ?? null,
+        navigation: action.navigation,
+        transition: action.transition === null ? null : transitionData(action.transition),
+      });
+    }
+  }
+  return result;
+}
+
+/**
+ * 전환을 순수 데이터로 옮긴다.
+ * @param transition 피그마 전환
+ * @returns 전환 데이터
+ */
+function transitionData(transition: Transition): TransitionData {
+  const { easing } = transition;
+  const curve = easing.easingFunctionCubicBezier;
+  const bezier = curve === undefined ? null : [curve.x1, curve.y1, curve.x2, curve.y2];
+  return {
+    type: transition.type,
+    durationMs: Math.round(transition.duration * 1000 * 1000) / 1000,
+    easing: { type: easing.type, bezier: easing.type === 'LINEAR' ? [0, 0, 1, 1] : bezier },
+  };
 }
 
 /**
@@ -513,6 +612,7 @@ async function layoutData(
     mode: node.layoutMode,
     wrap: node.layoutWrap,
     primaryAlign: node.primaryAxisAlignItems,
+    counterAlign: node.counterAxisAlignItems,
     primarySizing: node.primaryAxisSizingMode,
     counterSizing: node.counterAxisSizingMode,
     padding: {
@@ -574,7 +674,13 @@ async function textData(node: TextNode, names: NameCache): Promise<TextData> {
       hasOpenTypeFeatures: Object.values(segment.openTypeFeatures).some(Boolean),
     });
   }
-  return { autoResize: node.textAutoResize, hasMissingFont: node.hasMissingFont, segments };
+  return {
+    autoResize: node.textAutoResize,
+    hasMissingFont: node.hasMissingFont,
+    truncation: node.textTruncation,
+    maxLines: node.maxLines,
+    segments,
+  };
 }
 
 /**
@@ -596,8 +702,8 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
   }
   const { group, kind } = found;
   const problems: string[] = [];
+  const colors = new Set<string | undefined>();
   if (kind === 'mono') {
-    const colors = new Set<string | undefined>();
     for (const shape of node.findAll(() => true)) {
       if (!shape.visible) {
         continue;
@@ -627,7 +733,16 @@ async function assetData(node: InstanceNode, names: NameCache): Promise<AssetDat
       );
     }
   }
-  return { name: main.name, mainComponentId: main.id, group, kind, problems };
+  return {
+    name: main.name,
+    mainComponentId: main.id,
+    group,
+    kind,
+    problems,
+    sourceWidth: main.width,
+    sourceHeight: main.height,
+    ...(colors.size === 1 && [...colors][0] !== undefined ? { color: [...colors][0] } : {}),
+  };
 }
 
 /**

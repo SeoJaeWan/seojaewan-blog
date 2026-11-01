@@ -4,11 +4,12 @@ import {
   compareMotion,
   findMotionStoryId,
   type ObservedAnimation,
+  ownAnimations,
   parseEasing,
   tokenCurve,
   tokenDuration,
 } from './motion-compare.ts';
-import { parseMotionSpec } from './motion-spec.ts';
+import { parseMotionSpec, parseValueTracks } from './motion-spec.ts';
 
 /**
  * tokens.json의 시간 토큰을 만든다.
@@ -205,5 +206,33 @@ describe('모션', () => {
       },
     ];
     expect(() => parseMotionSpec(json, 'a.json')).toThrow('a.json.tracks[0].keyframes[1].easing');
+  });
+});
+
+// @codocs [[피그마 연동:모션]]
+describe('@repeat와 잘린 트랙', () => {
+  it('json의 infinite를 CSS 반복과 대조한다', () => {
+    const spec = parseMotionSpec({ ...windowOpenJson(), iterations: 'infinite' }, 'a.json');
+    const forever = { ...fadeAnimation, iterations: 'infinite' } as const;
+    expect(
+      compareMotion(spec, tokensJson, [observed({ iterations: 'infinite' }), forever]),
+    ).toEqual([]);
+    expect(compareMotion(spec, tokensJson, [observed(), forever])).toEqual([
+      'div.motion-window-open motion-window-open-scale: 반복 횟수 1가 json의 infinite와 다르다.',
+    ]);
+  });
+
+  it('잘린 트랙은 검사하지 않고 견본 클래스의 애니메이션만 본다', () => {
+    const json = windowOpenJson();
+    const tracks = json.tracks as object[];
+    const truncated = { ...tracks[0], node: 'Arc', property: 'ROTATION', isTruncated: true };
+    const file = { ...json, tracks: [...tracks, truncated] };
+    const spec = parseMotionSpec(file, 'a.json');
+    expect(spec.hasTruncatedTracks).toBe(true);
+    expect(spec.tracks).toHaveLength(tracks.length);
+    expect(parseValueTracks({ ...json, tracks: [truncated] }, 'a.json')).toEqual([]);
+    const ring = observed({ name: 'motion-progress-ring', duration: 2000 });
+    expect(compareMotion(spec, tokensJson, [observed(), fadeAnimation, ring])).toEqual([]);
+    expect(ownAnimations(spec, [ring])).toEqual([]);
   });
 });

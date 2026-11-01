@@ -9,7 +9,7 @@ import type {
   ReadProblem,
   TrackData,
 } from './motion-data';
-import { assetGroupOf } from './read-node';
+import { annotationTexts, assetGroupOf } from './read-node';
 
 // 피그마 Motion 섹션의 견본과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
 // 플러그인과 피그마 MCP(use_figma) 양쪽에서 같은 코드가 실행된다.
@@ -110,9 +110,35 @@ export async function readMotionVariables(): Promise<MotionVariable[]> {
       resolvedType: variable.resolvedType,
       value:
         variable.resolvedType === 'FLOAT' ? await defaultFloatValue(variable, collections) : null,
+      curve: easingCurve(variable, collections),
     });
   }
   return result.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+}
+
+/**
+ * EASING 변수의 기본 모드 곡선을 읽는다.
+ * @param variable 변수
+ * @param collections 컬렉션 ID → 컬렉션
+ * @returns 곡선 네 점, EASING이 아니거나 곡선이 없으면 null
+ */
+function easingCurve(
+  variable: Variable,
+  collections: ReadonlyMap<string, VariableCollection>,
+): number[] | null {
+  if (variable.resolvedType !== 'EASING') {
+    return null;
+  }
+  const modeId = collections.get(variable.variableCollectionId)?.defaultModeId;
+  const value = modeId === undefined ? undefined : variable.valuesByMode[modeId];
+  if (typeof value !== 'object' || !('type' in value)) {
+    return null;
+  }
+  if (value.type === 'LINEAR') {
+    return [0, 0, 1, 1];
+  }
+  const curve = 'easingFunctionCubicBezier' in value ? value.easingFunctionCubicBezier : undefined;
+  return curve === undefined ? null : [curve.x1, curve.y1, curve.x2, curve.y2];
 }
 
 /**
@@ -135,11 +161,25 @@ export async function readMotionSample(sampleId: string): Promise<MotionSampleDa
     nodeId: frame.id,
     tracks: [],
     problems: [],
+    annotations: annotationTexts(frame),
+    lengthMs: timelineLength(frame),
   };
   for (const child of frame.children) {
     await readTracks(child, child.name, sample);
   }
   return sample;
+}
+
+/**
+ * 견본 타임라인 길이를 읽는다. 견본 안 컴포넌트의 트랙이 더 길면 이 길이에서 잘려 재생된다.
+ * `playbackSettings.loop`는 뜻을 알 수 없어 보지 않는다.
+ * @codocs [[피그마 연동:모션]]
+ * @param frame 견본 프레임
+ * @returns 길이(ms), 읽지 못했으면 null
+ */
+function timelineLength(frame: FrameNode): number | null {
+  const [timeline] = frame.timelines;
+  return timeline === undefined ? null : timeline.duration * 1000;
 }
 
 /**

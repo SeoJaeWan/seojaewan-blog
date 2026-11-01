@@ -1,9 +1,19 @@
-import type { Bound, NodeData, PaintData } from './node-data';
+import {
+  type CodeVariable,
+  type CodeVariables,
+  cssAngle,
+  noCodeVariables,
+  pairedVariable,
+} from './code-variables';
+import { type Directives, FOCUS_TRIGGER, parseDirectives } from './directives';
+import type { MotionVariable } from './motion-data';
+import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 
-// 내보내기 전 구조 검사. 컴포넌트·조립의 변형에서 세 가지만 막는다.
-// 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값 포함)
+// 내보내기 전 구조 검사. 컴포넌트·조립의 변형에서 다음을 막는다.
+// 1. 변수·스타일에 연결되지 않은 시각 값(토큰 클래스로 쓸 수 없는 값, 코드 전용 변수와 짝이 없는 값 포함)
 // 2. CSS로 그릴 수 없는 피그마 기능
 // 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
+// 6. 이미지 자산의 비율 바꾸기, 7. 잘못된 `@` 줄과 빠진 필수 줄, 모션 변수 값이 아닌 변형 전환
 // 5번(변형을 자르는 조상)은 변형 트리가 아니라 대상의 조상을 보므로 checkClippingAncestors가 대상마다 한 번 검사한다.
 // 4번(모션 변수 값이 아닌 키프레임 시간·지연, 변수에 연결되지 않은 키프레임 이징)은 모션 견본을 보는 check-motion.ts에 있다.
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
@@ -26,6 +36,10 @@ type Add = (node: NodeData, reason: string, fix: string) => void;
 export type CheckContext = {
   /** 이름 있는 이미지 자산(Foundations `group/Images`)의 이미지 해시 */
   imageHashes: ReadonlySet<string>;
+  /** 회전·최대 줄 수·비율과 짝짓는 코드 전용 변수 */
+  codeVariables?: CodeVariables;
+  /** 변형 전환과 대조하는 `motion/*` 변수. 없으면 전환 시간·이징을 대조하지 않는다 */
+  motionVariables?: readonly MotionVariable[];
 };
 
 // 반올림 오차로 본 값의 차이다.
@@ -62,6 +76,15 @@ const HANGUL_PATTERN = /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD
 const HANGUL_FONT_FAMILY = 'Pretendard';
 
 const BIND_FIX = '변수에 연결한다.';
+// 이미지 자산의 원본 비율과 같다고 보는 상대 차이다. 크기를 정수로 둔 반올림을 넘긴다.
+const RATIO_TOLERANCE = 0.01;
+// 곡선이 같다고 보는 차이다.
+const CURVE_TOLERANCE = 1e-3;
+const TIME_TOLERANCE_MS = 0.5;
+const MOTION_DURATION_PREFIX = 'motion/duration/';
+const MOTION_EASING_PREFIX = 'motion/easing/';
+// 변형 속성 값 `Focused`로 가는 전환을 찾는다.
+const FOCUSED_VARIANT_PATTERN = /=\s*Focused\b/u;
 
 /**
  * 변형 하나의 구조를 검사한다. 숨긴 노드는 이미 빠져 있다.
@@ -69,10 +92,16 @@ const BIND_FIX = '변수에 연결한다.';
  * @codocs [[피그마 연동:구조 검사]]
  * @param root 변형 루트 노드 데이터
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
- * @param context 이름 있는 이미지 자산
+ * @param context 이름 있는 이미지 자산과 코드 전용 변수
+ * @param directives 컴포넌트·변형 description의 `@` 줄
  * @returns 위반 목록(모두)
  */
-export function checkVariant(root: NodeData, where: string, context: CheckContext): Violation[] {
+export function checkVariant(
+  root: NodeData,
+  where: string,
+  context: CheckContext,
+  directives: Directives = {},
+): Violation[] {
   const violations: Violation[] = [];
   /**
    * 위반을 더한다.
@@ -90,7 +119,99 @@ export function checkVariant(root: NodeData, where: string, context: CheckContex
   }
   checkNode(root, true, context, add);
   checkInstanceOverrides(root, add);
+  checkTransitions(root, context.motionVariables, directives, add);
   return violations;
+}
+
+/**
+ * 변형 전환을 검사한다. 시간과 이징은 `motion/*` 변수 값이어야 하고, Focused 변형으로 가는 전환은 피그마에 포커스 트리거가 없어
+ * `@trigger focus-visible`이 있어야 한다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[피그마 연동:모션]]
+ * @param root 변형 루트
+ * @param variables 모션 변수. 없으면 시간·이징을 대조하지 않는다
+ * @param directives 컴포넌트·변형 description의 `@` 줄
+ * @param add 위반을 더하는 함수
+ */
+function checkTransitions(
+  root: NodeData,
+  variables: readonly MotionVariable[] | undefined,
+  directives: Directives,
+  add: Add,
+): void {
+  for (const reaction of root.reactions) {
+    const label = `${reaction.trigger} → ${reaction.destination ?? '알 수 없는 노드'} 전환`;
+    if (
+      FOCUSED_VARIANT_PATTERN.test(reaction.destination ?? '') &&
+      directives.trigger?.includes(FOCUS_TRIGGER) !== true
+    ) {
+      add(
+        root,
+        `${label}이 Focused 변형으로 가는데 \`@trigger ${FOCUS_TRIGGER}\` 줄이 없다`,
+        `피그마에 포커스 트리거가 없으니 컴포넌트 description에 \`@trigger ${FOCUS_TRIGGER}\`를 적는다.`,
+      );
+    }
+    if (variables !== undefined) {
+      checkTransitionValues(root, reaction, label, variables, add);
+    }
+  }
+}
+
+/**
+ * 전환 시간과 이징이 모션 변수 값인지 본다.
+ * @param root 변형 루트
+ * @param reaction 전환
+ * @param label 메시지에 쓸 이름
+ * @param variables 모션 변수
+ * @param add 위반을 더하는 함수
+ */
+function checkTransitionValues(
+  root: NodeData,
+  reaction: ReactionData,
+  label: string,
+  variables: readonly MotionVariable[],
+  add: Add,
+): void {
+  const { transition } = reaction;
+  if (transition === null) {
+    return;
+  }
+  const isDuration = variables.some(
+    (variable) =>
+      variable.name.startsWith(MOTION_DURATION_PREFIX) &&
+      variable.value !== null &&
+      Math.abs(variable.value - transition.durationMs) <= TIME_TOLERANCE_MS,
+  );
+  if (!isDuration) {
+    add(
+      root,
+      `${label}의 시간 ${String(transition.durationMs)}ms가 \`${MOTION_DURATION_PREFIX}*\` 변수 값이 아니다`,
+      '전환 시간을 모션 변수 값으로 맞춘다([[디자인 기반:모션]] 표).',
+    );
+  }
+  const { bezier } = transition.easing;
+  const isEasing =
+    bezier !== null &&
+    variables.some(
+      /**
+       * 곡선이 전환 이징과 같은 이징 변수인지 본다.
+       * @param variable 모션 변수
+       * @returns 같으면 true
+       */
+      (variable) =>
+        variable.name.startsWith(MOTION_EASING_PREFIX) &&
+        variable.curve?.length === bezier.length &&
+        variable.curve.every(
+          (value, index) => Math.abs(value - (bezier[index] ?? 0)) <= CURVE_TOLERANCE,
+        ),
+    );
+  if (!isEasing) {
+    add(
+      root,
+      `${label}의 이징 ${transition.easing.type}이 \`${MOTION_EASING_PREFIX}*\` 변수 값이 아니다`,
+      '전환 이징을 모션 변수의 곡선으로 맞춘다([[디자인 기반:모션]] 표).',
+    );
+  }
 }
 
 /** 내보내는 변형의 조상 하나. 컴포넌트 세트의 변형이면 세트가 가장 가까운 조상이다 */
@@ -329,9 +450,10 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
   if (!isRoot && !checkType(node, add)) {
     return;
   }
-  checkCommon(node, add);
+  checkCommon(node, context.codeVariables ?? noCodeVariables, add);
   checkSizes(node, isRoot, add);
   if (node.asset !== null) {
+    checkImageRatio(node, isRoot, add);
     for (const problem of node.asset.problems) {
       add(
         node,
@@ -390,11 +512,96 @@ function checkType(node: NodeData, add: Add): boolean {
 }
 
 /**
- * 불투명도·회전·제약·마스크를 검사한다.
- * @param node 노드
+ * 이미지 자산 인스턴스의 비율이 원본과 같은지 본다. 높이는 칸 너비와 자산 비율에서 나오므로 숫자를 정하지 않는다.
+ * 두 축 모두 부모가 크기를 정하면(FILL, 양쪽 늘이기) 틀에 맞춰 자르는 그림(커버, 바탕화면)이라 막지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 자산 인스턴스
+ * @param isRoot 변형 루트인지
  * @param add 위반을 더하는 함수
  */
-function checkCommon(node: NodeData, add: Add): void {
+function checkImageRatio(node: NodeData, isRoot: boolean, add: Add): void {
+  const { asset } = node;
+  if (asset === null || asset.kind !== 'raster' || asset.sourceHeight === 0) {
+    return;
+  }
+  const { horizontal, vertical } = sizingOf(node, isRoot);
+  const isFramed =
+    ['FILL', 'DERIVED'].includes(horizontal) && ['FILL', 'DERIVED'].includes(vertical);
+  const source = asset.sourceWidth / asset.sourceHeight;
+  const ratio = node.width.value / node.height.value;
+  if (!isFramed && Math.abs(ratio / source - 1) > RATIO_TOLERANCE) {
+    add(
+      node,
+      `이미지 자산 ${asset.name}의 비율이 원본과 다르다(${String(node.width.value)}×${String(node.height.value)}, 원본 비율 ${source.toFixed(3)})`,
+      '비율을 잠그고 원본 비율로 되돌린다. 틀에 맞춰 잘라야 하면 두 축을 FILL로 둔다.',
+    );
+  }
+}
+
+/**
+ * 노드에 변수를 연결할 수 없는 값이 코드 전용 변수와 짝이 있는지 본다. 묶음에 변수가 없으면 아직 만들지 않은 것이라 보지 않는다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @param label 메시지에 쓸 이름
+ * @param value 짝을 찾는 값
+ * @param shown 메시지에 쓸 값
+ * @param variables 묶음의 변수
+ * @param add 위반을 더하는 함수
+ */
+function requirePair(
+  node: NodeData,
+  label: string,
+  value: number,
+  shown: string,
+  variables: readonly CodeVariable[],
+  add: Add,
+): void {
+  if (variables.length > 0 && pairedVariable(value, variables) === undefined) {
+    add(
+      node,
+      `${label} ${shown}와 같은 값의 코드 전용 변수가 없다`,
+      `값을 ${variables.map((variable) => variable.name).join(', ')} 가운데 하나로 맞추거나 코드 전용 변수를 더한다.`,
+    );
+  }
+}
+
+/**
+ * 불투명도·회전·비율·제약·마스크와 주석의 `@` 줄을 검사한다.
+ * @param node 노드
+ * @param codeVariables 코드 전용 변수
+ * @param add 위반을 더하는 함수
+ */
+function checkCommon(node: NodeData, codeVariables: CodeVariables, add: Add): void {
+  for (const text of node.annotations) {
+    for (const problem of parseDirectives(text).problems) {
+      add(node, `주석의 ${problem}`, '주석 줄을 고친다.');
+    }
+  }
+  if (node.rotation !== 0) {
+    requirePair(
+      node,
+      '회전',
+      cssAngle(node.rotation),
+      `${String(node.rotation)}°`,
+      codeVariables.rotate,
+      add,
+    );
+  }
+  if (node.aspectRatio !== null && node.asset?.kind !== 'raster') {
+    requirePair(
+      node,
+      '비율',
+      node.aspectRatio,
+      node.aspectRatio.toFixed(3),
+      codeVariables.ratio,
+      add,
+    );
+  }
+  // 한 줄 말줄임은 `truncate` 클래스라 짝이 필요 없다.
+  const maxLines = node.text?.maxLines ?? null;
+  if (maxLines !== null && maxLines > 1) {
+    requirePair(node, '최대 줄 수', maxLines, String(maxLines), codeVariables.lineClamp, add);
+  }
   requireBound(node, '불투명도', node.opacity, 'opacity', add, 1);
   const quarter = node.rotation / 90;
   if (Math.abs(quarter - Math.round(quarter)) > EPSILON) {
@@ -621,14 +828,18 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
  * @param add 위반을 더하는 함수
  */
 function checkFixedSizes(node: NodeData, horizontal: string, vertical: string, add: Add): void {
-  if (horizontal === 'FIXED' && node.width.variable === undefined) {
+  // 비율을 잠근 레이어는 한 축이 정해지면 나머지 축이 비율에서 나온다.
+  const isLocked = node.aspectRatio !== null;
+  const isWidthDerived = isLocked && (vertical !== 'FIXED' || node.height.variable !== undefined);
+  const isHeightDerived = isLocked && (horizontal !== 'FIXED' || node.width.variable !== undefined);
+  if (horizontal === 'FIXED' && node.width.variable === undefined && !isWidthDerived) {
     add(
       node,
       `고정 너비 ${String(node.width.value)}가 크기 변수에 연결되어 있지 않다`,
       '너비를 size 변수에 연결하거나 HUG·FILL로 바꾼다.',
     );
   }
-  if (vertical === 'FIXED' && node.height.variable === undefined) {
+  if (vertical === 'FIXED' && node.height.variable === undefined && !isHeightDerived) {
     add(
       node,
       `고정 높이 ${String(node.height.value)}가 크기 변수에 연결되어 있지 않다`,

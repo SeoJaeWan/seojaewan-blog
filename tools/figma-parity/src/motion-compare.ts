@@ -49,19 +49,20 @@ const CUBIC_BEZIER_PATTERN = /^cubic-bezier\(([^)]*)\)$/u;
  * - 시간: CSS 애니메이션 시간 모음과 json 트랙 길이 토큰 값 모음이 같아야 한다.
  * - 지연: CSS 지연 모음과 json 시작 지연 토큰 값(없으면 0) 모음이 같아야 한다.
  * - 이징: CSS 키프레임 이징 모음과 json 이징 토큰 곡선 모음이 같아야 한다.
- * - 반복: json에 반복 횟수가 있으면 모든 CSS 애니메이션이 같아야 한다. 피그마에서 알 수 없으면(null) 검사하지 않는다.
+ * - 반복: json에 반복 횟수(견본의 `@repeat`)가 있으면 모든 CSS 애니메이션이 같아야 한다. 옛 내보내기(null)는 검사하지 않는다.
  * @codocs [[피그마 연동:모션]]
  * @param spec json 값
  * @param tokens figma/tokens.json을 파싱한 값
- * @param observed 모션 스토리에서 읽은 CSS 애니메이션
+ * @param allObserved 모션 스토리에서 읽은 CSS 애니메이션
  * @returns 오류 메시지(같으면 빈 목록)
  */
 export function compareMotion(
   spec: MotionSpec,
   tokens: unknown,
-  observed: readonly ObservedAnimation[],
+  allObserved: readonly ObservedAnimation[],
 ): string[] {
   const errors: string[] = [];
+  const observed = ownAnimations(spec, allObserved);
   if (observed.length === 0) {
     return [
       `Motion/${spec.name} 스토리에서 재생 중인 CSS 애니메이션을 찾지 못했다. 스토리가 ${spec.name} 클래스를 걸었는지 확인한다.`,
@@ -128,6 +129,22 @@ export function compareMotion(
     }
   }
   return errors;
+}
+
+/**
+ * 잘린 트랙이 있는 견본의 애니메이션만 고른다. 잘린 트랙은 견본 안 컴포넌트의 움직임이라, 그 컴포넌트의 애니메이션은 이 견본의 값이 아니다.
+ * @codocs [[피그마 연동:모션]]
+ * @param spec json 값
+ * @param observed 모션 스토리에서 읽은 애니메이션
+ * @returns 견본 클래스의 애니메이션(잘린 트랙이 없으면 모두)
+ */
+export function ownAnimations<T extends { name: string }>(
+  spec: Pick<MotionSpec, 'name' | 'hasTruncatedTracks'>,
+  observed: readonly T[],
+): readonly T[] {
+  return spec.hasTruncatedTracks
+    ? observed.filter((animation) => animation.name.startsWith(spec.name))
+    : observed;
 }
 
 /**
