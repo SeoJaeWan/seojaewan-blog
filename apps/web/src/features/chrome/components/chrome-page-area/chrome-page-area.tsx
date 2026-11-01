@@ -133,6 +133,8 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
     <div ref={areaRef} className="relative flex min-h-size-none w-full flex-flex-fill flex-col">
       <div
         ref={contentRef}
+        // 창을 열면 포커스가 여기로 온다.
+        data-window-focus
         tabIndex={-1}
         className="flex min-h-size-none w-full flex-flex-fill flex-col outline-none"
       >

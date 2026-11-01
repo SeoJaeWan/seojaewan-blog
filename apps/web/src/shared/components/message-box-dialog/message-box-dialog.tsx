@@ -19,8 +19,13 @@ type MessageBoxDialogProps = MessageBoxContentProps & {
   onPrimaryClick?: () => void;
   /** 기본 버튼(취소)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다 */
   onSecondaryClick?: () => void;
-  /** 닫힌 뒤 포커스를 둘 요소. 없으면 열기 전에 포커스가 있던 요소로 돌려준다 */
-  finalFocus?: RefObject<HTMLElement | null>;
+  /**
+   * 닫힌 뒤 포커스를 둘 요소. 없으면 열기 전에 포커스가 있던 요소로 돌려준다. Base UI는 Tab으로 닿는 요소만 받으므로,
+   * 그렇지 않은 요소로 옮길 때는 `false`를 주고 `onCloseComplete`에서 옮긴다
+   */
+  finalFocus?: RefObject<HTMLElement | null> | false;
+  /** 닫기가 끝난 뒤 부른다 */
+  onCloseComplete?: () => void;
 };
 
 /**
@@ -39,6 +44,7 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
     onPrimaryClick,
     onSecondaryClick,
     finalFocus,
+    onCloseComplete,
     ...contentProps
   } = props;
   const actionsRef = useRef<AlertDialog.Root.Actions | null>(null);
@@ -49,6 +55,16 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
    */
   function handleOpenChange(isNextOpen: boolean): void {
     onOpenChange?.(isNextOpen);
+  }
+
+  /**
+   * 닫기가 끝나면 쓰는 곳에 알린다.
+   * @param isNextOpen 끝난 열림 여부
+   */
+  function handleOpenChangeComplete(isNextOpen: boolean): void {
+    if (!isNextOpen) {
+      onCloseComplete?.();
+    }
   }
 
   /** 강조 버튼 핸들러를 부르고 닫는다. */
@@ -91,6 +107,7 @@ export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
       open={isOpen}
       defaultOpen={isDefaultOpen}
       onOpenChange={handleOpenChange}
+      onOpenChangeComplete={handleOpenChangeComplete}
       actionsRef={actionsRef}
     >
       <AlertDialog.Portal>

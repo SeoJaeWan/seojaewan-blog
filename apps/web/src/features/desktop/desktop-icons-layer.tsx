@@ -50,6 +50,7 @@ import {
   getPasteIds,
   isRecycleBinFull,
   moveItems,
+  RECYCLE_BIN_ID,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
 
@@ -670,6 +671,14 @@ export function DesktopIconsLayer(): JSX.Element {
   }
 
   /**
+   * 휴지통 비우기 메시지 상자는 휴지통 메뉴에서 열고 메뉴는 사라졌으므로, 닫은 뒤 포커스를 휴지통 아이콘에 둔다.
+   * @codocs [[접근성:포커스]]
+   */
+  function handleEmptyDialogCloseComplete(): void {
+    focusIcon(RECYCLE_BIN_ID);
+  }
+
+  /**
    * 휴지통 비우기 메시지 상자가 닫히면(확인, Esc) 닫힌 상태로 둔다.
    * @param isOpen 열림 여부
    */
@@ -723,6 +732,7 @@ export function DesktopIconsLayer(): JSX.Element {
       )}
       {rename.errorMessage !== null && renamingCell !== undefined && (
         <Tooltip
+          {...rename.errorBalloonProps}
           type="balloon"
           message={rename.errorMessage}
           className="absolute z-layer-balloon"
@@ -771,6 +781,8 @@ export function DesktopIconsLayer(): JSX.Element {
         {...EMPTY_RECYCLE_BIN_MESSAGE}
         open={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
+        finalFocus={false}
+        onCloseComplete={handleEmptyDialogCloseComplete}
       />
       <MessageBoxDialog {...rename.messageBoxProps} />
     </>

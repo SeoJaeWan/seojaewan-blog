@@ -1,5 +1,5 @@
 import type { ComponentProps, FocusEvent, KeyboardEvent, RefObject } from 'react';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
 import type { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { DUPLICATE_FOLDER_NAME_MESSAGE } from '@/shared/components/message-box-duplicate-folder-name/message-box-duplicate-folder-name';
@@ -54,6 +54,8 @@ type RenameFieldProps = {
   'aria-label': string;
   /** 말풍선으로 이유를 보이는 중이면 true */
   'aria-invalid': boolean;
+  /** 말풍선으로 이유를 보이는 중이면 말풍선의 id */
+  'aria-describedby': string | undefined;
 };
 
 /** 메시지 상자 대화 상자(MessageBoxDialog)에 넘길 속성 */
@@ -65,6 +67,13 @@ type FolderRenameControls = {
   renamingId: string | null;
   /** 말풍선 문구. 없으면 null */
   errorMessage: string | null;
+  /** 말풍선(`Tooltip`)에 넘길 속성. 입력창이 이 말풍선을 설명으로 가리키고 스크린 리더가 뜨는 즉시 읽는다 */
+  errorBalloonProps: {
+    /** 말풍선 id */
+    id: string;
+    /** 뜨는 즉시 읽는 역할 */
+    role: 'alert';
+  };
   /** 폴더 이름 바꾸기를 시작한다 */
   startRename: (id: string, name: string) => void;
   /** 입력창에 넘길 속성 */
@@ -94,8 +103,10 @@ const messageBoxContents = {
  * - 예약 이름이거나 같은 위치에 같은 이름의 폴더가 있으면 메시지 상자를 띄우고, 닫으면 입력값을 그대로 둔 채 이름 바꾸기로 돌아간다.
  * - Enter·Esc로 끝내면 `onKeyboardEnd`로 알려 키보드 포커스를 항목에 돌려주게 한다. 바깥을 눌러 끝내면 누른 곳에 포커스를 둔다.
  * - 입력창 안의 키는 바깥(바탕화면의 Delete, 방향키, Ctrl + A 등)으로 넘기지 않는다.
+ * - 말풍선은 `role="alert"`라 스크린 리더가 뜨는 즉시 읽고, 입력창의 `aria-describedby`가 가리킨다.
  * @codocs [[항목과 폴더:폴더 이름]]
  * @codocs [[항목 조작:단축키]]
+ * @codocs [[접근성:역할]]
  * @param options 끝났을 때 부를 함수
  * @returns 이름 바꾸기 상태와 조작
  */
@@ -107,6 +118,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
   // 메시지 상자가 포커스를 가져가며 오는 포커스 잃음으로 다시 확정하지 않게, 메시지 상자가 열린 것을 바로 기억한다.
   const isMessageBoxOpenRef = useRef(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const errorId = useId();
 
   /**
    * 이름 바꾸기를 시작한다.
@@ -240,9 +252,11 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
   }
 
   const messageBox = rename?.messageBox ?? null;
+  const errorMessage = rename?.error ?? null;
   return {
     renamingId: rename?.id ?? null,
-    errorMessage: rename?.error ?? null,
+    errorMessage,
+    errorBalloonProps: { id: errorId, role: 'alert' },
     startRename,
     renameFieldProps: {
       ref: inputRef,
@@ -252,7 +266,8 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
       onBlur: handleBlur,
       maxLength: FOLDER_NAME_MAX_LENGTH,
       'aria-label': RENAME_FIELD_LABEL,
-      'aria-invalid': rename?.error !== null && rename?.error !== undefined,
+      'aria-invalid': errorMessage !== null,
+      'aria-describedby': errorMessage === null ? undefined : errorId,
     },
     messageBoxProps: {
       ...messageBoxContents[messageBox ?? 'reserved-name'],

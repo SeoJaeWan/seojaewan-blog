@@ -422,7 +422,13 @@ export const RenameAndDelete: Story = {
       await user.clear(field);
       await user.type(field, 'a*');
       await expect(field).toHaveValue('a');
-      await expect(screen.getByRole('tooltip')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+      // @codocs [[접근성:역할]]
+      const balloon = screen.getByRole('alert');
+      await expect(balloon).toHaveTextContent('다음 문자를 사용할 수 없습니다');
+      await expect(screen.getByRole('textbox', { name: '새 이름' })).toHaveAttribute(
+        'aria-describedby',
+        balloon.id,
+      );
     });
 
     // @codocs [[파일 탐색기:조작]]
@@ -625,22 +631,35 @@ export const RecycleBin: Story = {
       }
     });
 
-    await step('휴지통 비우기를 고르면 메시지 상자를 보인다', async () => {
-      await userEvent.pointer({ keys: '[MouseRight]', target: getList(canvasElement) });
-      await user.click(await findMenuItem(/휴지통 비우기/));
-      await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
-      await expect(getNamesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
-      await user.keyboard('{Escape}');
-      await waitForPopupGone('alertdialog');
-    });
+    // @codocs [[접근성:포커스]]
+    await step(
+      '휴지통 비우기를 고르면 메시지 상자를 보이고 닫으면 항목 자리로 돌아온다',
+      async () => {
+        await userEvent.pointer({ keys: '[MouseRight]', target: getList(canvasElement) });
+        await user.click(await findMenuItem(/휴지통 비우기/));
+        await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
+        await expect(getNamesIn(RECYCLE_BIN_ID)).toEqual(['회고']);
+        await user.keyboard('{Escape}');
+        await waitForPopupGone('alertdialog');
+        await waitFor(() =>
+          expect(canvasElement.querySelector('[data-window-focus]')).toHaveFocus(),
+        );
+      },
+    );
 
     // @codocs [[파일 탐색기:휴지통 보기]]
-    await step('휴지통 비우기 버튼을 누르면 메시지 상자를 보인다', async () => {
-      await user.click(canvas.getByRole('button', { name: '휴지통 비우기' }));
-      await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
-      await user.keyboard('{Escape}');
-      await waitForPopupGone('alertdialog');
-    });
+    // @codocs [[접근성:포커스]]
+    await step(
+      '휴지통 비우기 버튼을 누르면 메시지 상자를 보이고 취소하면 버튼으로 돌아온다',
+      async () => {
+        const emptyButton = canvas.getByRole('button', { name: '휴지통 비우기' });
+        await user.click(emptyButton);
+        await expect(await findOpenPopup('alertdialog', '휴지통 비우기')).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await waitForPopupGone('alertdialog');
+        await waitFor(() => expect(emptyButton).toHaveFocus());
+      },
+    );
 
     await step('복원을 누르면 고른 항목을 원래 위치로 돌려놓는다', async () => {
       await user.click(within(getList(canvasElement)).getByRole('option', { name: /^회고/ }));
