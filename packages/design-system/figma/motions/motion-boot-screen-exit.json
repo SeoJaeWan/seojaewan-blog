@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
-  "duration": {
-    "ms": 2000,
-    "token": "motion/duration/progress-ring"
+  "directives": {
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "재부팅 화면이 사라질 때"
+    ]
   },
-  "iterations": null,
+  "duration": {
+    "ms": 250,
+    "token": "motion/duration/normal"
+  },
+  "iterations": 1,
   "name": "motion-boot-screen-exit",
   "nodeId": "758:208",
   "tracks": [
@@ -48,29 +56,16 @@
         "token": null
       },
       "duration": {
-        "ms": 2000,
-        "token": "motion/duration/progress-ring"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
+      "isTruncated": true,
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
           "time": 0,
           "value": 0.0001,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 0.5,
-          "time": 1000,
-          "value": 0.5,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 1,
-          "time": 2000,
-          "value": 0.5,
           "valueToken": null
         }
       ],
@@ -86,29 +81,16 @@
         "token": null
       },
       "duration": {
-        "ms": 2000,
-        "token": "motion/duration/progress-ring"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
+      "isTruncated": true,
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
           "time": 0,
           "value": 0,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 0.5,
-          "time": 1000,
-          "value": 0,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 1,
-          "time": 2000,
-          "value": 0.5,
           "valueToken": null
         }
       ],
@@ -124,29 +106,16 @@
         "token": null
       },
       "duration": {
-        "ms": 2000,
-        "token": "motion/duration/progress-ring"
+        "ms": 250,
+        "token": "motion/duration/normal"
       },
+      "isTruncated": true,
       "keyframes": [
         {
           "easing": null,
           "offset": 0,
           "time": 0,
           "value": 0,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 0.5,
-          "time": 1000,
-          "value": -450,
-          "valueToken": null
-        },
-        {
-          "easing": "motion/easing/progress-ring",
-          "offset": 1,
-          "time": 2000,
-          "value": -900,
           "valueToken": null
         }
       ],
