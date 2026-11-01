@@ -2,7 +2,7 @@ import { type JSX, useEffect, useRef } from 'react';
 
 import { BootScreen } from '@seojaewan/design-system';
 
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
@@ -22,7 +22,7 @@ const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';
  * @returns 재부팅 화면, 다시 시작하는 중이 아니면 null
  */
 export function RestartScreen(): JSX.Element | null {
-  const device = useDevice();
+  const device = toDeviceVariant(useDevice());
   const phase = useRestartStore((state) => state.phase);
   const finishCovering = useRestartStore((state) => state.finishCovering);
   const finishShowing = useRestartStore((state) => state.finishShowing);

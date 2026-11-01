@@ -43,7 +43,7 @@ import {
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import { EMPTY_RECYCLE_BIN_MESSAGE } from '@/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { useFolderRename } from '@/shared/hooks/use-folder-rename/use-folder-rename';
 import {
   DESKTOP_DROP_TARGET,
@@ -112,7 +112,7 @@ type ExplorerBodyProps = Pick<
   | 'onKeyDown'
 > & {
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
   /** 보고 있는 위치(폴더 id, 휴지통 id, 바탕화면은 null) */
   location: ExplorerLocation;
   /** 같은 탭에서 폴더로 간다 */

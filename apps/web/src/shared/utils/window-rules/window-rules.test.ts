@@ -63,6 +63,20 @@ describe('창 동작:창 조작', () => {
     });
   });
 
+  it('기본 크기는 지금 구간의 `:root` 변수를 읽는다(노트북 구간에서 값이 바뀐다)', () => {
+    const root = document.documentElement.style;
+    const pc = {
+      width: root.getPropertyValue('--size-window-chrome-width'),
+      height: root.getPropertyValue('--size-window-chrome-height'),
+    };
+    root.setProperty('--size-window-chrome-width', '1120px');
+    root.setProperty('--size-window-chrome-height', '640px');
+    const { state, ids } = openAll(['chrome']);
+    root.setProperty('--size-window-chrome-width', pc.width);
+    root.setProperty('--size-window-chrome-height', pc.height);
+    expect(state.windows[ids[0] ?? '']?.bounds).toMatchObject({ width: 1120, height: 640 });
+  });
+
   it('새 창은 맨 앞 창보다 오른쪽 아래로 32px씩 비켜 놓는다(계단식)', () => {
     const { state, ids } = openAll(['file-explorer', 'file-explorer']);
     expect(state.windows[ids[1] ?? '']?.bounds).toMatchObject({ x: 480, y: 228 });

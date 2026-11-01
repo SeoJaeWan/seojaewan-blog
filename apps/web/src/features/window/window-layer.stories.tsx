@@ -3,6 +3,7 @@ import type { ComponentProps, JSX } from 'react';
 import { useState } from 'react';
 import { expect, fireEvent, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { MOBILE_MEDIA_QUERY } from '@/shared/hooks/use-device/use-device';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
@@ -865,6 +866,20 @@ export const DragOffSnapped: Story = {
   },
 };
 
+// @codocs [[창 동작:창 조작]]
+/** 노트북 구간에서는 앱 기본 크기가 피그마 Laptop 모드 값이다 */
+export const Laptop: Story = {
+  globals: { viewport: { value: 'laptop', isRotated: false } },
+  beforeEach: () => {
+    openStoryWindows(['chrome']);
+  },
+  play: async ({ canvasElement }) => {
+    const { region } = getWindowParts(canvasElement, 'Chrome 1');
+    await expect(region.offsetWidth).toBe(1120);
+    await expect(region.offsetHeight).toBe(640);
+  },
+};
+
 // @codocs [[창 동작:모바일]]
 /** 모바일 폭에서는 창이 작업 영역을 가득 채운다. 뷰포트는 addon-vitest가 실제 브라우저 크기로 바꾼다 */
 export const Mobile: Story = {
@@ -873,7 +888,7 @@ export const Mobile: Story = {
     openStoryWindows(['chrome']);
   },
   play: async ({ canvasElement, step }) => {
-    await expect(window.matchMedia('(max-width: 767px)').matches).toBe(true);
+    await expect(window.matchMedia(MOBILE_MEDIA_QUERY).matches).toBe(true);
     const { region, title } = getWindowParts(canvasElement, 'Chrome 1');
 
     await step('창이 화면 너비를 채운다', async () => {

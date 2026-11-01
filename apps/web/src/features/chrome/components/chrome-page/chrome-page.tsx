@@ -28,7 +28,7 @@ export type ChromePageLatestPost = { id?: string; title: string };
 export type ChromePageSearchResult = { id?: string; title: string; date: string; url: string };
 
 type ChromePageCommonProps = {
-  /** 피그마 Layout. wide는 넓은 창, narrow는 좁은 창(모바일 폭)의 배치다 */
+  /** 피그마 Layout. wide는 넓은 창, narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다 */
   layout?: ChromePageLayout;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다 */
   className?: string;
@@ -171,7 +171,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
       className={
         isWide
           ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl'
-          : 'flex flex-col px-spacing-lg pt-spacing-2xl'
+          : 'flex flex-col items-center px-spacing-lg pt-spacing-2xl'
       }
     >
       <article className="flex w-full max-w-size-post-width min-w-size-none flex-col items-start gap-spacing-lg">

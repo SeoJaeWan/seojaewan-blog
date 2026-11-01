@@ -26,6 +26,9 @@ export type WindowBounds = {
   height: number;
 };
 
+/** 창 크기(px) */
+type WindowSize = Pick<WindowBounds, 'width' | 'height'>;
+
 /** 창 배치. normal은 떠 있는 창, maximized는 작업 영역을 채운 창, snapped는 스냅 칸을 채운 창이다 */
 export type WindowPlacement = 'normal' | 'maximized' | 'snapped';
 
@@ -169,11 +172,14 @@ export type TaskbarAppAction =
 /** 작업 표시줄 앱 버튼 아래 표시. none은 열린 창 없음, running은 실행 중, active는 맨 앞 창이 이 앱 */
 export type TaskbarAppIndicator = 'none' | 'running' | 'active';
 
-/** 앱별 기본 크기(px). 피그마 Screens(1920×1080) 기준이다 */
-export const DEFAULT_WINDOW_SIZES = {
-  'file-explorer': { width: 1024, height: 640 },
-  chrome: { width: 1280, height: 800 },
-} as const;
+// 앱별 기본 크기를 담은 `:root` 변수다. 값은 피그마 `size/window/*`이고 노트북 구간에서는 `tokens.css`의 `@media`가 덮는다.
+const defaultWindowSizeVariables = {
+  'file-explorer': {
+    width: '--size-window-explorer-width',
+    height: '--size-window-explorer-height',
+  },
+  chrome: { width: '--size-window-chrome-width', height: '--size-window-chrome-height' },
+} as const satisfies Record<WindowApp, Record<keyof WindowSize, string>>;
 
 /** 앱별 최소 크기(px). 크기 조절로 이보다 작게 줄일 수 없다 */
 export const MIN_WINDOW_SIZES = {
@@ -192,6 +198,21 @@ export const VISIBLE_TITLE_BAR = { width: 200, height: 40 } as const;
 
 /** 창이 하나도 없는 처음 상태 */
 export const INITIAL_WINDOW_STATE = { windows: {}, order: [], lastSerial: 0 } as const;
+
+/**
+ * 지금 화면 구간의 앱별 기본 크기를 `:root` 변수에서 읽는다. 창은 브라우저에서만 여니 문서가 늘 있다.
+ * @codocs [[창 동작:창 조작]]
+ * @param app 앱
+ * @returns 기본 크기(px)
+ */
+function getDefaultWindowSize(app: WindowApp): WindowSize {
+  const variables = defaultWindowSizeVariables[app];
+  const rootStyle = getComputedStyle(document.documentElement);
+  return {
+    width: Number.parseFloat(rootStyle.getPropertyValue(variables.width)),
+    height: Number.parseFloat(rootStyle.getPropertyValue(variables.height)),
+  };
+}
 
 /**
  * 앱을 처음 열 때의 창 내용. 탐색기는 위치 없이 열면 늘 "바탕 화면" 위치(새 탭(+)과 같다), Chrome은 새 탭 페이지 하나다.
@@ -241,7 +262,7 @@ export function openWindow(
 ): { state: WindowState; id: string } {
   const serial = state.lastSerial + 1;
   const id = `window-${String(serial)}`;
-  const defaultSize = DEFAULT_WINDOW_SIZES[app];
+  const defaultSize = getDefaultWindowSize(app);
   const width = Math.min(defaultSize.width, workArea.width);
   const height = Math.min(defaultSize.height, workArea.height);
   const centered = {
