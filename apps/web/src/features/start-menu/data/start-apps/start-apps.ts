@@ -1,4 +1,4 @@
-import type { StartItem } from '@/features/start-menu/components/start-body/start-body';
+import type { StartItem } from '@/features/start-menu/utils/start-items/start-items';
 import { APP_ITEM_IDS } from '@/shared/utils/workspace-rules/workspace-rules';
 
 /**

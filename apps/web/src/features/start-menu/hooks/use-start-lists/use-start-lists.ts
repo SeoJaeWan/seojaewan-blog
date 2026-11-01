@@ -2,7 +2,7 @@ import type {
   StartAllView,
   StartItem,
   StartItemGroup,
-} from '@/features/start-menu/components/start-body/start-body';
+} from '@/features/start-menu/utils/start-items/start-items';
 import {
   getAllStartItems,
   getPinnedStartItems,

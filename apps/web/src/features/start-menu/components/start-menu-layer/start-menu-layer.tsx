@@ -6,10 +6,6 @@ import { ImageAsset } from '@seojaewan/design-system';
 
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import { SearchPanel } from '@/features/start-menu/components/search-panel/search-panel';
-import type {
-  StartAllView,
-  StartItem,
-} from '@/features/start-menu/components/start-body/start-body';
 import { StartBody } from '@/features/start-menu/components/start-body/start-body';
 import { StartMenuPanel } from '@/features/start-menu/components/start-menu-panel/start-menu-panel';
 import { StartPowerButton } from '@/features/start-menu/components/start-power-button/start-power-button';
@@ -17,6 +13,7 @@ import { START_PROFILE } from '@/features/start-menu/data/start-apps/start-apps'
 import { useSearchKeyboard } from '@/features/start-menu/hooks/use-search-keyboard/use-search-keyboard';
 import { useStartLists } from '@/features/start-menu/hooks/use-start-lists/use-start-lists';
 import { useStartSearch } from '@/features/start-menu/hooks/use-start-search/use-start-search';
+import type { StartAllView, StartItem } from '@/features/start-menu/utils/start-items/start-items';
 import { getPowerMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';

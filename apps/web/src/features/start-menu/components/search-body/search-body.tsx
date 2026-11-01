@@ -4,47 +4,13 @@ import { ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/desig
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
-
-/** 검색 대상의 종류. 폴더, 글, 외부 링크다 */
-export type SearchItemKind = 'folder' | 'post' | 'link';
-
-/** 검색 패널에 보이는 항목 하나 */
-export type SearchItem = {
-  /** 작업 공간 항목 id. 목록의 key이고, 열거나 링크를 복사할 때 어느 항목인지 알린다 */
-  id: string;
-  /** 항목 종류. 아이콘과 종류 이름을 정한다 */
-  kind: SearchItemKind;
-  /** 항목 이름(글은 제목) */
-  title: string;
-};
-
-/** 추천 글 하나 */
-export type SearchRecommendedPost = {
-  /** 글 항목 id */
-  id: string;
-  /** 글 제목 */
-  title: string;
-  /** 글 날짜(예: `2026-10-20`) */
-  date: string;
-};
-
-/** 결과 항목 하나. 글이면 카드에 날짜를 함께 보인다 */
-export type SearchResultItem = SearchItem & {
-  /** 글 날짜. 카드의 부가 정보에 종류 이름과 함께 보인다 */
-  date?: string;
-};
-
-/** 검색 결과. 최고 일치 하나와 나머지 결과를 종류별로 묶은 것이다 */
-export type SearchResultGroups = {
-  /** 결과 목록 맨 위의 최고 일치. 처음에 카드가 보이는 항목이다 */
-  bestMatch: SearchResultItem;
-  /** 나머지 폴더 결과 */
-  folders: readonly SearchResultItem[];
-  /** 나머지 글 결과 */
-  posts: readonly SearchResultItem[];
-  /** 나머지 외부 링크 결과 */
-  links: readonly SearchResultItem[];
-};
+import type {
+  SearchItem,
+  SearchItemKind,
+  SearchRecommendedPost,
+  SearchResultGroups,
+  SearchResultItem,
+} from '@/features/start-menu/utils/start-items/start-items';
 
 export type SearchBodyDevice = 'desktop' | 'mobile';
 

@@ -11,18 +11,18 @@ import {
   TileGrid,
 } from '@seojaewan/design-system';
 
-import {
-  type ItemIconSource,
-  renderItemIcon,
-} from '@/features/start-menu/components/item-icon/item-icon';
+import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
-import {
-  SearchBody,
-  type SearchResultGroups,
-} from '@/features/start-menu/components/search-body/search-body';
+import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import { StartJumpList } from '@/features/start-menu/components/start-jump-list/start-jump-list';
 import { StartTile } from '@/features/start-menu/components/start-tile/start-tile';
 import { StartViewMenu } from '@/features/start-menu/components/start-view-menu/start-view-menu';
+import type {
+  SearchResultGroups,
+  StartAllView,
+  StartItem,
+  StartItemGroup,
+} from '@/features/start-menu/utils/start-items/start-items';
 import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
 import { getViewMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
@@ -30,25 +30,6 @@ import { ContextMenuArea } from '@/shared/components/context-menu-area/context-m
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
-
-/** Start 고정됨과 모두 목록에 보이는 항목 하나 */
-export type StartItem = ItemIconSource & {
-  /** 작업 공간 항목 id(앱은 `APP_ITEM_IDS`의 id). 목록의 key이고, 열거나 고정을 바꿀 때 어느 항목인지 알린다 */
-  id: string;
-  /** 항목 이름(글은 제목) */
-  title: string;
-};
-
-/** 모두 목록의 묶음 하나. 간단히·그리드는 첫 글자, 범주는 항목 종류로 묶는다 */
-export type StartItemGroup = {
-  /** 묶음 머리글(첫 글자나 종류 이름) */
-  label: string;
-  /** 묶음 안의 항목. 이름순이다 */
-  items: readonly StartItem[];
-};
-
-/** 모두 목록의 보기. 간단히(list), 그리드(grid), 범주(category)다 */
-export type StartAllView = 'list' | 'grid' | 'category';
 
 export type StartBodyDevice = 'desktop' | 'mobile';
 

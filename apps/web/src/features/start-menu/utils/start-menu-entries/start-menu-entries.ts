@@ -1,4 +1,4 @@
-import type { StartAllView } from '@/features/start-menu/components/start-body/start-body';
+import type { StartAllView } from '@/features/start-menu/utils/start-items/start-items';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import {
   copyLinkMenuItem,
