@@ -1,6 +1,29 @@
 {
+  "description": "탐색기 제목 표시줄의 폴더 탭으로, 탐색기 창 제목 표시줄에 쓴다.",
   "name": "ExplorerTab",
   "nodeId": "18:367",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Show separator": {
+      "default": true,
+      "type": "BOOLEAN"
+    },
+    "State": {
+      "default": "Selected",
+      "options": [
+        "Selected",
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
+    },
+    "Title": {
+      "default": "폴더 이름",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=hover": {
       "node": {
@@ -12,6 +35,121 @@
       "nodeId": "18:361",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 152
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "폴더",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "layer-on-mica-base-alt-fill/secondary"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          0,
+          0
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer-tab/width"
       }
     },
     "state=rest": {
@@ -24,6 +162,157 @@
       "nodeId": "18:355",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 152
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "폴더",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "MAX",
+              "vertical": "CENTER"
+            },
+            "fills": [
+              "divider-stroke/default"
+            ],
+            "height": "size/separator/height",
+            "name": "separator",
+            "size": {
+              "h": 16,
+              "w": 1
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE",
+            "width": "stroke-width/default"
+          }
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          0,
+          0
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer-tab/width"
       }
     },
     "state=selected": {
@@ -36,6 +325,121 @@
       "nodeId": "18:349",
       "properties": {
         "State": "Selected"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 16,
+              "w": 152
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "폴더",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_dismiss_20_regular"
+            },
+            "component": "ic_fluent_dismiss_20_regular",
+            "height": "size/icon/sm",
+            "name": "close",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "layer-on-mica-base-alt-fill/default"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Selected",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          0,
+          0
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer-tab/width"
       }
     }
   }

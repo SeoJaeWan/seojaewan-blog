@@ -1,16 +1,4858 @@
 {
+  "description": "글 본문 Notion 블록을 한 번씩 담은 견본으로, Chrome 글 페이지 본문에 쓴다.",
   "name": "Chrome/PostBlocks",
   "nodeId": "1382:6346",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
-        "height": 1754,
+        "height": 1844,
         "width": 720,
         "x": 0,
         "y": 0
       },
       "nodeId": "1382:6346",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "SOLID"
+            ],
+            "name": "heading 1",
+            "size": {
+              "h": 36,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "Notion ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Title"
+                },
+                {
+                  "characters": "블록",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Title"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Title"
+                },
+                {
+                  "characters": "견본",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Title"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "heading 2",
+            "size": {
+              "h": 28,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Subtitle"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Subtitle"
+                },
+                {
+                  "characters": "서식과",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Subtitle"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Subtitle"
+                },
+                {
+                  "characters": "목록",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Subtitle"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "name": "paragraph with formatting",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "문단에는",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "굵게",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Strong"
+                },
+                {
+                  "characters": ", ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "italic",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large Italic"
+                },
+                {
+                  "characters": ", ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "밑줄",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Underline"
+                },
+                {
+                  "characters": ", ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "취소선",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Strikethrough"
+                },
+                {
+                  "characters": ", ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "inlineCode()",
+                  "fill": "post/inline-code",
+                  "textStyle": "Code"
+                },
+                {
+                  "characters": ", ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "링크",
+                  "fill": "accent-text-fill/primary",
+                  "textStyle": "Hangul/Body Large Link"
+                },
+                {
+                  "characters": "를",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "섞어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "쓸",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "수",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                },
+                {
+                  "characters": "있다",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large"
+                },
+                {
+                  "characters": ".",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "marker text",
+                            "size": {
+                              "h": 24,
+                              "w": 7
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "•",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body Large"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "글머리",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "목록",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "항목",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "children": [
+                                  {
+                                    "fills": [
+                                      "text-fill/primary"
+                                    ],
+                                    "name": "marker text",
+                                    "size": {
+                                      "h": 24,
+                                      "w": 7
+                                    },
+                                    "sizing": {
+                                      "h": "HUG",
+                                      "v": "HUG"
+                                    },
+                                    "text": {
+                                      "autoResize": "WIDTH_AND_HEIGHT",
+                                      "maxLines": null,
+                                      "maxLinesVariable": null,
+                                      "segments": [
+                                        {
+                                          "characters": "◦",
+                                          "fill": "text-fill/primary",
+                                          "textStyle": "Body Large"
+                                        }
+                                      ],
+                                      "truncation": "DISABLED"
+                                    },
+                                    "type": "TEXT"
+                                  }
+                                ],
+                                "height": "size/post-block/marker",
+                                "layout": {
+                                  "counterAlign": "CENTER",
+                                  "gap": 0,
+                                  "mode": "HORIZONTAL",
+                                  "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ],
+                                  "primaryAlign": "CENTER"
+                                },
+                                "name": "marker",
+                                "size": {
+                                  "h": 24,
+                                  "w": 24
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "FRAME",
+                                "width": "size/post-block/marker"
+                              },
+                              {
+                                "fills": [
+                                  "text-fill/primary"
+                                ],
+                                "name": "text",
+                                "size": {
+                                  "h": 24,
+                                  "w": 656
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": null,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "한",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "단계",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "들여쓴",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "항목",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    }
+                                  ],
+                                  "truncation": "DISABLED"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/sm",
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "row",
+                            "size": {
+                              "h": 24,
+                              "w": 688
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "VERTICAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "list item",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/xs",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/3xl"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "children",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 52,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "marker text",
+                            "size": {
+                              "h": 24,
+                              "w": 7
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "•",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body Large"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "글머리",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "목록",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "두",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "번째",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "항목",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "bulleted list",
+            "size": {
+              "h": 80,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "marker text",
+                            "size": {
+                              "h": 24,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "1.",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body Large"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MAX"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "번호",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "목록",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "항목",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "children": [
+                                  {
+                                    "fills": [
+                                      "text-fill/primary"
+                                    ],
+                                    "name": "marker text",
+                                    "size": {
+                                      "h": 24,
+                                      "w": 15
+                                    },
+                                    "sizing": {
+                                      "h": "HUG",
+                                      "v": "HUG"
+                                    },
+                                    "text": {
+                                      "autoResize": "WIDTH_AND_HEIGHT",
+                                      "maxLines": null,
+                                      "maxLinesVariable": null,
+                                      "segments": [
+                                        {
+                                          "characters": "a.",
+                                          "fill": "text-fill/primary",
+                                          "textStyle": "Body Large"
+                                        }
+                                      ],
+                                      "truncation": "DISABLED"
+                                    },
+                                    "type": "TEXT"
+                                  }
+                                ],
+                                "height": "size/post-block/marker",
+                                "layout": {
+                                  "counterAlign": "CENTER",
+                                  "gap": 0,
+                                  "mode": "HORIZONTAL",
+                                  "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ],
+                                  "primaryAlign": "MAX"
+                                },
+                                "name": "marker",
+                                "size": {
+                                  "h": 24,
+                                  "w": 24
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "FRAME",
+                                "width": "size/post-block/marker"
+                              },
+                              {
+                                "fills": [
+                                  "text-fill/primary"
+                                ],
+                                "name": "text",
+                                "size": {
+                                  "h": 24,
+                                  "w": 656
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": null,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "한",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "단계",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "들여쓴",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "항목",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    }
+                                  ],
+                                  "truncation": "DISABLED"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/sm",
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "row",
+                            "size": {
+                              "h": 24,
+                              "w": 688
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "VERTICAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "list item",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/xs",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/3xl"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "children",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 52,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "marker text",
+                            "size": {
+                              "h": 24,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "2.",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body Large"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MAX"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "번호",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "목록",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "두",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "번째",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "항목",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "numbered list",
+            "size": {
+              "h": 80,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "heading 3",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "할",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large Strong"
+                },
+                {
+                  "characters": "일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Strong"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Body Large Strong"
+                },
+                {
+                  "characters": "목록",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Large Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "asset": {
+                                  "color": "text-on-accent-fill/primary",
+                                  "path": "icons/ic_fluent_checkmark_20_regular"
+                                },
+                                "component": "ic_fluent_checkmark_20_regular",
+                                "height": "size/icon/sm",
+                                "name": "checkmark",
+                                "size": {
+                                  "h": 16,
+                                  "w": 16
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/sm"
+                              }
+                            ],
+                            "component": "Checkbox",
+                            "fills": [
+                              "accent-fill/default"
+                            ],
+                            "height": "size/checkbox/box",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": 0,
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                "spacing/none",
+                                "spacing/none",
+                                "spacing/none",
+                                "spacing/none"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "checkbox",
+                            "properties": {
+                              "Checked": "True"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 20,
+                              "w": 20
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/checkbox/box"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/secondary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "끝낸",
+                              "fill": "text-fill/secondary",
+                              "textStyle": "Hangul/Body Large Strikethrough"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/secondary",
+                              "textStyle": "Body Large Strikethrough"
+                            },
+                            {
+                              "characters": "할",
+                              "fill": "text-fill/secondary",
+                              "textStyle": "Hangul/Body Large Strikethrough"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/secondary",
+                              "textStyle": "Body Large Strikethrough"
+                            },
+                            {
+                              "characters": "일",
+                              "fill": "text-fill/secondary",
+                              "textStyle": "Hangul/Body Large Strikethrough"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "component": "Checkbox",
+                            "fills": [
+                              "control-alt-fill/secondary"
+                            ],
+                            "height": "size/checkbox/box",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": 0,
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                "spacing/none",
+                                "spacing/none",
+                                "spacing/none",
+                                "spacing/none"
+                              ],
+                              "primaryAlign": "CENTER"
+                            },
+                            "name": "checkbox",
+                            "properties": {
+                              "Checked": "False"
+                            },
+                            "radius": [
+                              "radius/control",
+                              "radius/control",
+                              "radius/control",
+                              "radius/control"
+                            ],
+                            "size": {
+                              "h": 20,
+                              "w": 20
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "strokeWeight": [
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default"
+                            ],
+                            "strokes": [
+                              "control-strong-stroke/default"
+                            ],
+                            "strokesIncludedInLayout": true,
+                            "type": "INSTANCE",
+                            "width": "size/checkbox/box"
+                          }
+                        ],
+                        "height": "size/post-block/marker",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "marker",
+                        "size": {
+                          "h": 24,
+                          "w": 24
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/post-block/marker"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "남은",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "할",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Large"
+                            },
+                            {
+                              "characters": "일",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Large"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "children": [
+                                  {
+                                    "component": "Checkbox",
+                                    "fills": [
+                                      "control-alt-fill/secondary"
+                                    ],
+                                    "height": "size/checkbox/box",
+                                    "layout": {
+                                      "counterAlign": "CENTER",
+                                      "gap": 0,
+                                      "mode": "HORIZONTAL",
+                                      "padding": [
+                                        "spacing/none",
+                                        "spacing/none",
+                                        "spacing/none",
+                                        "spacing/none"
+                                      ],
+                                      "primaryAlign": "CENTER"
+                                    },
+                                    "name": "checkbox",
+                                    "properties": {
+                                      "Checked": "False"
+                                    },
+                                    "radius": [
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control",
+                                      "radius/control"
+                                    ],
+                                    "size": {
+                                      "h": 20,
+                                      "w": 20
+                                    },
+                                    "sizing": {
+                                      "h": "FIXED",
+                                      "v": "FIXED"
+                                    },
+                                    "strokeWeight": [
+                                      "stroke-width/default",
+                                      "stroke-width/default",
+                                      "stroke-width/default",
+                                      "stroke-width/default"
+                                    ],
+                                    "strokes": [
+                                      "control-strong-stroke/default"
+                                    ],
+                                    "strokesIncludedInLayout": true,
+                                    "type": "INSTANCE",
+                                    "width": "size/checkbox/box"
+                                  }
+                                ],
+                                "height": "size/post-block/marker",
+                                "layout": {
+                                  "counterAlign": "CENTER",
+                                  "gap": 0,
+                                  "mode": "HORIZONTAL",
+                                  "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  ],
+                                  "primaryAlign": "CENTER"
+                                },
+                                "name": "marker",
+                                "size": {
+                                  "h": 24,
+                                  "w": 24
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "FRAME",
+                                "width": "size/post-block/marker"
+                              },
+                              {
+                                "fills": [
+                                  "text-fill/primary"
+                                ],
+                                "name": "text",
+                                "size": {
+                                  "h": 24,
+                                  "w": 656
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": null,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "한",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "단계",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "들여쓴",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "할",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Body Large"
+                                    },
+                                    {
+                                      "characters": "일",
+                                      "fill": "text-fill/primary",
+                                      "textStyle": "Hangul/Body Large"
+                                    }
+                                  ],
+                                  "truncation": "DISABLED"
+                                },
+                                "type": "TEXT"
+                              }
+                            ],
+                            "layout": {
+                              "counterAlign": "MIN",
+                              "gap": "spacing/sm",
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "row",
+                            "size": {
+                              "h": 24,
+                              "w": 688
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "type": "FRAME"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/xs",
+                          "mode": "VERTICAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "list item",
+                        "size": {
+                          "h": 24,
+                          "w": 688
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/xs",
+                      "mode": "VERTICAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/3xl"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "children",
+                    "size": {
+                      "h": 24,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/xs",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "list item",
+                "size": {
+                  "h": 52,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "to-do list",
+            "size": {
+              "h": 80,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 24,
+                      "w": 701
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "인용",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "블록의",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "글이다",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": ". ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "출처나",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "강조할",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "문장을",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "담는다",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": ".",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Content",
+                "size": {
+                  "h": 24,
+                  "w": 701
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Quote",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/none",
+                "spacing/2xs",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "quote",
+            "properties": {},
+            "size": {
+              "h": 28,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              0,
+              0,
+              0,
+              "stroke-width/indicator"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_info_24_regular"
+                    },
+                    "component": "ic_fluent_info_24_regular",
+                    "height": "size/icon/md",
+                    "name": "icon",
+                    "size": {
+                      "h": 20,
+                      "w": 20
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/md"
+                  }
+                ],
+                "height": "size/post-block/icon-box",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "icon box",
+                "size": {
+                  "h": 24,
+                  "w": 20
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "FIXED"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "SOLID"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 24,
+                      "w": 654
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "콜아웃은",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "아이콘과",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "함께",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "눈에",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "띄게",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "보여",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "줄",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "글을",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "담는다",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": ". ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "글자",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large Strong"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large Strong"
+                        },
+                        {
+                          "characters": "서식",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large Strong"
+                        },
+                        {
+                          "characters": "도",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "쓸",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "수",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "있다",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": ".",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Content",
+                "size": {
+                  "h": 24,
+                  "w": 654
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Callout",
+            "fills": [
+              "card-background-fill/secondary"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/md",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/lg",
+                "spacing/lg",
+                "spacing/lg",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "callout",
+            "properties": {},
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 58,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "language",
+                    "size": {
+                      "h": 16,
+                      "w": 662
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "tsx",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  },
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "text-fill/primary",
+                          "path": "icons/ic_fluent_copy_20_regular"
+                        },
+                        "component": "ic_fluent_copy_20_regular",
+                        "height": "size/icon/sm",
+                        "name": "icon",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "IconButton",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "copy",
+                    "properties": {
+                      "State": "Rest",
+                      "Style": "Subtle"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "code header",
+                "size": {
+                  "h": 32,
+                  "w": 694
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "name": "code",
+                    "size": {
+                      "h": 201,
+                      "w": 435
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "// ",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "글을",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Hangul/Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "읽어",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Hangul/Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "제목을",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Hangul/Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "그린다\n",
+                          "fill": "code-syntax/comment",
+                          "textStyle": "Hangul/Code"
+                        },
+                        {
+                          "characters": "import",
+                          "fill": "code-syntax/keyword-control",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "{",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "use",
+                          "fill": "code-syntax/variable",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "}",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "from",
+                          "fill": "code-syntax/keyword-control",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "'react'",
+                          "fill": "code-syntax/string",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ";\n",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "\n",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "export",
+                          "fill": "code-syntax/keyword-control",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "function",
+                          "fill": "code-syntax/keyword",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "PostTitle",
+                          "fill": "code-syntax/function",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "({",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "post",
+                          "fill": "code-syntax/parameter",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "}:",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "{",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "post",
+                          "fill": "code-syntax/variable",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ":",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "Post",
+                          "fill": "code-syntax/type",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "})",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "{\n",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "  ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "const",
+                          "fill": "code-syntax/keyword",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "count",
+                          "fill": "code-syntax/variable",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "=",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "3",
+                          "fill": "code-syntax/constant",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ";\n",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "  ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "return",
+                          "fill": "code-syntax/keyword-control",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "<h1",
+                          "fill": "code-syntax/tag",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "className",
+                          "fill": "code-syntax/attribute",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "=",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "\"title\"",
+                          "fill": "code-syntax/string",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ">",
+                          "fill": "code-syntax/tag",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "{",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "post",
+                          "fill": "code-syntax/variable",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ".",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "title",
+                          "fill": "code-syntax/variable",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "}",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "</h1>",
+                          "fill": "code-syntax/tag",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ";\n}\n",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "\n",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "const",
+                          "fill": "code-syntax/keyword",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "SLUG",
+                          "fill": "code-syntax/variable-constant",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "=",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "/",
+                          "fill": "code-syntax/regexp",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "^",
+                          "fill": "code-syntax/escape",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "(",
+                          "fill": "code-syntax/regexp-group",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "post",
+                          "fill": "code-syntax/regexp",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "|",
+                          "fill": "code-syntax/escape",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "page",
+                          "fill": "code-syntax/regexp",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ")",
+                          "fill": "code-syntax/regexp-group",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "\\n$",
+                          "fill": "code-syntax/escape",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "/",
+                          "fill": "code-syntax/regexp",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ";\n",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "const",
+                          "fill": "code-syntax/keyword",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "META",
+                          "fill": "code-syntax/variable-constant",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "=",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "{",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "\"slug\"",
+                          "fill": "code-syntax/key-value",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ":",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "$slug",
+                          "fill": "code-syntax/variable-navy",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": ",",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "@",
+                          "fill": "code-syntax/invalid",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "code-syntax/text",
+                          "textStyle": "Code"
+                        },
+                        {
+                          "characters": "};",
+                          "fill": "code-syntax/punctuation",
+                          "textStyle": "Code"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Code",
+                "size": {
+                  "h": 201,
+                  "w": 694
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "CodeBlock",
+            "fills": [
+              "solid-background-fill/tertiary"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/sm",
+                "spacing/lg",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "code block",
+            "properties": {
+              "Language": "tsx"
+            },
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 263,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "aspectRatio": {
+                      "value": 1.6,
+                      "variable": null
+                    },
+                    "asset": {
+                      "path": "images/wallpaper-bloom"
+                    },
+                    "component": "wallpaper/Bloom",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "name": "image",
+                    "radius": [
+                      "radius/overlay",
+                      "radius/overlay",
+                      "radius/overlay",
+                      "radius/overlay"
+                    ],
+                    "size": {
+                      "h": 450,
+                      "w": 720
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "image frame",
+                "size": {
+                  "h": 450,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "caption",
+                "size": {
+                  "h": 20,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "이미지",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "아래에",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "붙는",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "캡션",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "Figure",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "figure",
+            "properties": {
+              "Caption": "이미지 아래에 붙는 캡션",
+              "Show caption": true
+            },
+            "size": {
+              "h": 478,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "component": "Separator",
+            "fills": [
+              "divider-stroke/default"
+            ],
+            "height": "stroke-width/default",
+            "name": "divider",
+            "properties": {
+              "Orientation": "Horizontal"
+            },
+            "size": {
+              "h": 1,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "text-fill/primary",
+                          "path": "icons/ic_fluent_chevron_right_16_regular"
+                        },
+                        "component": "ic_fluent_chevron_right_16_regular",
+                        "height": "size/icon/sm",
+                        "name": "chevron",
+                        "rotation": {
+                          "value": -90,
+                          "variable": "rotate/quarter"
+                        },
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "height": "size/post-block/icon-box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "chevron box",
+                    "size": {
+                      "h": 24,
+                      "w": 24
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/post-block/icon-box"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 24,
+                      "w": 696
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "펼친",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "토글",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "header",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 24,
+                      "w": 696
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "토글을",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "펼치면",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "보이는",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "글이다",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": ".",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/2xl"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Content",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Toggle",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "toggle (expanded)",
+            "properties": {
+              "State": "Expanded",
+              "Title": "펼친 토글"
+            },
+            "size": {
+              "h": 52,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "text-fill/primary",
+                          "path": "icons/ic_fluent_chevron_right_16_regular"
+                        },
+                        "component": "ic_fluent_chevron_right_16_regular",
+                        "height": "size/icon/sm",
+                        "name": "chevron",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "height": "size/post-block/icon-box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "chevron box",
+                    "size": {
+                      "h": 24,
+                      "w": 24
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/post-block/icon-box"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 24,
+                      "w": 696
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "접힌",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Body Large"
+                        },
+                        {
+                          "characters": "토글",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "header",
+                "size": {
+                  "h": 24,
+                  "w": 720
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "Toggle",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "toggle (collapsed)",
+            "properties": {
+              "State": "Collapsed",
+              "Title": "접힌 토글"
+            },
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "훅",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body Strong"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "fills": [
+                          "subtle-fill/secondary"
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "칸 내용",
+                          "Text": "훅",
+                          "Type": "Header"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      },
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "하는",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body Strong"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body Strong"
+                                },
+                                {
+                                  "characters": "일",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body Strong"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "fills": [
+                          "subtle-fill/secondary"
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "칸 내용",
+                          "Text": "하는 일",
+                          "Type": "Header"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 37,
+                      "w": 719
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "use",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "use",
+                          "Text": "use",
+                          "Type": "Body"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      },
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "Promise",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "와",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " Context",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "를",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "렌더링",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "중에",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "읽는다",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "Promise와 Context를 렌더링 중에 읽는다",
+                          "Text": "Promise와 Context를 렌더링 중에 읽는다",
+                          "Type": "Body"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 37,
+                      "w": 719
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "useActionState",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "useActionState",
+                          "Text": "useActionState",
+                          "Type": "Body"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      },
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "text",
+                            "size": {
+                              "h": 20,
+                              "w": 342.5
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "폼",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "제출",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "결과와",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "대기",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "상태를",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Body"
+                                },
+                                {
+                                  "characters": "다룬다",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Body"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "TableCell",
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm",
+                            "spacing/sm"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "cell",
+                        "properties": {
+                          "Body Text": "폼 제출 결과와 대기 상태를 다룬다",
+                          "Text": "폼 제출 결과와 대기 상태를 다룬다",
+                          "Type": "Body"
+                        },
+                        "size": {
+                          "h": 37,
+                          "w": 359.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "strokeWeight": [
+                          0,
+                          "stroke-width/default",
+                          "stroke-width/default",
+                          0
+                        ],
+                        "strokes": [
+                          "divider-stroke/default"
+                        ],
+                        "strokesIncludedInLayout": true,
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "row",
+                    "size": {
+                      "h": 37,
+                      "w": 719
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Rows",
+                "size": {
+                  "h": 111,
+                  "w": 719
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Table",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "table",
+            "properties": {},
+            "size": {
+              "h": 112,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              0,
+              0,
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "title",
+                "size": {
+                  "h": 20,
+                  "w": 686
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "React ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Strong"
+                    },
+                    {
+                      "characters": "공식",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Strong"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Strong"
+                    },
+                    {
+                      "characters": "문서",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Strong"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "description",
+                "size": {
+                  "h": 16,
+                  "w": 686
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "React",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "로",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "사용자",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "인터페이스를",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "만드는",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "방법을",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "배운다",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": ".",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_link_20_regular"
+                    },
+                    "component": "ic_fluent_link_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "link icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "address",
+                    "size": {
+                      "h": 16,
+                      "w": 664
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "https://react.dev",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm-nudge",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "url",
+                "size": {
+                  "h": 16,
+                  "w": 686
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "Bookmark",
+            "fills": [
+              "card-background-fill/secondary"
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/xs",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/md",
+                "spacing/lg",
+                "spacing/md",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "bookmark",
+            "properties": {
+              "Description": "React로 사용자 인터페이스를 만드는 방법을 배운다.",
+              "Title": "React 공식 문서",
+              "URL": "https://react.dev"
+            },
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 86,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/equation-quadratic-formula"
+                    },
+                    "component": "equation/Quadratic Formula",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/snap-option/height",
+                    "name": "formula",
+                    "size": {
+                      "h": 56,
+                      "w": 200
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/scrollbar/length"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "Formula",
+                "size": {
+                  "h": 56,
+                  "w": 200
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "Equation",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "equation",
+            "properties": {},
+            "size": {
+              "h": 72,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_warning_24_regular"
+                },
+                "component": "ic_fluent_warning_24_regular",
+                "height": "size/icon/sm",
+                "name": "icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "message",
+                "size": {
+                  "h": 20,
+                  "w": 662
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "지원하지",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "않는",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    },
+                    {
+                      "characters": "블록",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Body"
+                    },
+                    {
+                      "characters": "(embed)",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Body"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "UnsupportedBlock",
+            "fills": [
+              "subtle-fill/secondary"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/md",
+                "spacing/lg",
+                "spacing/md",
+                "spacing/lg"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "unsupported block",
+            "properties": {
+              "Message": "지원하지 않는 블록(embed)"
+            },
+            "radius": [
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay",
+              "radius/overlay"
+            ],
+            "size": {
+              "h": 46,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "card-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "fills": [
+          "chrome/page-fill"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/lg",
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Chrome/PostBlocks",
+        "size": {
+          "h": 1844,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }

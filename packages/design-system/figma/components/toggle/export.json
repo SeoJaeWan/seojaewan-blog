@@ -1,6 +1,24 @@
 {
+  "description": "글 본문의 펼치고 접는 블록으로, 글 페이지에 쓴다.",
   "name": "Toggle",
   "nodeId": "1380:6849",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    },
+    "State": {
+      "default": "Expanded",
+      "options": [
+        "Expanded",
+        "Collapsed"
+      ],
+      "type": "VARIANT"
+    },
+    "Title": {
+      "default": "제목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=collapsed": {
       "node": {
@@ -12,9 +30,138 @@
       "nodeId": "1380:6843",
       "properties": {
         "State": "Collapsed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "chevron",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/post-block/icon-box",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "chevron box",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/icon-box"
+              },
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "title",
+                "size": {
+                  "h": 24,
+                  "w": 696
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "제목",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "header",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Collapsed",
+        "size": {
+          "h": 24,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
       }
     },
     "state=expanded": {
+      "emptyHugSlot": true,
       "node": {
         "height": 128,
         "width": 720,
@@ -24,6 +171,162 @@
       "nodeId": "1380:6836",
       "properties": {
         "State": "Expanded"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "chevron",
+                    "rotation": {
+                      "value": -90,
+                      "variable": "rotate/quarter"
+                    },
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "height": "size/post-block/icon-box",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "chevron box",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/icon-box"
+              },
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "title",
+                "size": {
+                  "h": 24,
+                  "w": 696
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "제목",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "header",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/2xl"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 100,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "State=Expanded",
+        "size": {
+          "h": 128,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/post/width"
       }
     }
   }

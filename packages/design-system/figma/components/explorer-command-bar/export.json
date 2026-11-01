@@ -1,6 +1,12 @@
 {
+  "description": "현재 위치에서 쓸 수 있는 명령 버튼을 담는 막대로, 파일 탐색기 본문의 주소 줄 아래에 쓴다.",
   "name": "ExplorerCommandBar",
   "nodeId": "439:5732",
+  "propertyDefinitions": {
+    "Commands": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +16,59 @@
         "y": 0
       },
       "nodeId": "439:5732",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Commands",
+            "size": {
+              "h": 32,
+              "w": 774
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/md",
+            "spacing/sm",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "ExplorerCommandBar",
+        "size": {
+          "h": 48,
+          "w": 798
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/explorer/content-width"
+      }
     }
   }
 }
