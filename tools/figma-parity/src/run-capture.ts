@@ -88,10 +88,14 @@ function main(): void {
     path.join(resultsDir, SELECTION_FILE),
     `${JSON.stringify(selected.targets.map((target) => target.id))}\n`,
   );
-  const status = run('pnpm', ['exec', 'playwright', 'test', '-c', 'playwright.config.ts'], {
-    cwd: toolRoot,
-    env: { [RESULTS_DIR_ENV]: resultsDir },
-  });
+  const status = run(
+    'pnpm',
+    ['exec', 'playwright', 'test', '-c', 'playwright.config.ts', '--pass-with-no-tests'],
+    {
+      cwd: toolRoot,
+      env: { [RESULTS_DIR_ENV]: resultsDir },
+    },
+  );
   rmSync(path.join(resultsDir, SELECTION_FILE), { force: true });
   const rows = selected.targets.flatMap((target) =>
     target.variants.map((variant) => captureRow(resultsDir, target, variant)),
