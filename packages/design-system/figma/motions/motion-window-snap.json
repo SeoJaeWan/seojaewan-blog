@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
+  "directives": {
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "창을 최대화·복원·스냅할 때"
+    ]
+  },
   "duration": {
     "ms": 250,
     "token": "motion/duration/normal"
   },
-  "iterations": null,
+  "iterations": 1,
   "name": "motion-window-snap",
   "nodeId": "758:131",
   "tracks": [
