@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import { ChromePage, ChromeWindow, PostBlocks } from '@/features/chrome/chrome';
+import { ChromePage } from '@/features/chrome/components/chrome-page/chrome-page';
+import { ChromeWindow } from '@/features/chrome/components/chrome-window/chrome-window';
+import { PostBlocks } from '@/features/chrome/components/post-blocks/post-blocks';
 import { SnapAssist } from '@/features/window/window';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { POST_PAGE, POST_WINDOW, postPageBlocks } from '@/shared/stories/post/post';

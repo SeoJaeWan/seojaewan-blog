@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useState } from 'react';
 
-import { getActiveHeadingIndex } from '@/features/chrome/utils/reading-position/reading-position';
+import { getActiveHeadingIndex } from './utils/reading-position/reading-position';
 
 /**
  * 글을 스크롤하는 동안 지금 읽는 제목의 차례를 돌려준다. 스크롤 상자의 스크롤과 크기 변화를 듣고, 제목 요소의 자리로 정한다.

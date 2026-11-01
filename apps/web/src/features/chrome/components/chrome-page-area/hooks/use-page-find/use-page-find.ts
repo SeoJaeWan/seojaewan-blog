@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useId, useState } from 'react';
 
-import { findTextRanges, stepMatchIndex } from '@/features/chrome/utils/page-find/page-find';
+import { findTextRanges, stepMatchIndex } from './utils/page-find/page-find';
 
 /** 찾기 결과와 이동 */
 export type PageFind = {

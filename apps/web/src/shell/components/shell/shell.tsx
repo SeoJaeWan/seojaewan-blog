@@ -2,7 +2,7 @@
 
 import { type JSX, useEffect, useRef } from 'react';
 
-import { useBrowserAddressSync } from '@/features/chrome/chrome';
+import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-sync';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
 import { TaskbarLayer } from '@/features/taskbar/taskbar';

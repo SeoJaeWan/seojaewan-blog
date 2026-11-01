@@ -1,4 +1,4 @@
-import { useChromeWindowTitle } from '@/features/chrome/chrome';
+import { useChromeWindowTitle } from '@/features/chrome/use-chrome-window-title';
 import { useExplorerWindowTitle } from '@/features/file-explorer/file-explorer';
 import type { OpenWindow } from '@/shared/utils/window-rules/window-rules';
 

@@ -673,8 +673,11 @@ export default defineConfig(
         },
       },
       'boundaries/root-path': rootDir,
-      // 요소와 별개로 파일을 분류한다. 스토리 파일·스토리 데이터·도우미.
-      'boundaries/files': [{ category: 'story', pattern: storyFilePatterns }],
+      // 요소와 별개로 파일을 분류한다.
+      'boundaries/files': [
+        { category: 'story', pattern: storyFilePatterns },
+        { category: 'test', pattern: testFilePatterns },
+      ],
       'boundaries/elements': [
         { type: 'design-system', pattern: DESIGN_SYSTEM, partialMatch: false },
         { type: 'web-app', pattern: `${WEB_SRC}/app`, partialMatch: false },
@@ -788,6 +791,13 @@ export default defineConfig(
             {
               from: { element: { type: shellTypes }, file: { categories: 'story' } },
               allow: { to: { element: { type: shellTypes } } },
+            },
+            // 테스트는 같은 기능의 칸 안쪽(모듈 캐시 비우기 등)을 import한다.
+            {
+              from: { element: { type: featureTypes }, file: { categories: 'test' } },
+              allow: {
+                to: { element: { type: featureTypes, captured: sameBranch(1) } },
+              },
             },
           ],
         },

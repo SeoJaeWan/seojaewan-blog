@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
-import { getChromeMoreMenuEntries } from './chrome-more-menu';
+import { getChromeMoreMenuEntries } from './more-menu-entries';
 
 const options = {
   isMobile: false,

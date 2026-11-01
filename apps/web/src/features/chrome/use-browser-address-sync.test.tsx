@@ -1,10 +1,10 @@
 import { act, render, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ChromeWindowLayer } from '@/features/chrome/components/chrome-window-layer/chrome-window-layer';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { createChromeContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
 
+import { ChromeWindowLayer } from './chrome-window-layer';
 import { useBrowserAddressSync } from './use-browser-address-sync';
 
 const WORK_AREA = { width: 1920, height: 1032 } as const;

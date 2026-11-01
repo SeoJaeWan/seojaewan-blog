@@ -5,10 +5,7 @@ import {
   PostBlocks,
   type PostImageBlock,
 } from '@/features/chrome/components/post-blocks/post-blocks';
-import { usePostBody } from '@/features/chrome/hooks/use-post-body/use-post-body';
-import { useReadingPosition } from '@/features/chrome/hooks/use-reading-position/use-reading-position';
 import { getPostAddress } from '@/features/chrome/utils/chrome-address/chrome-address';
-import { getPostNeighbors } from '@/features/chrome/utils/post-neighbors/post-neighbors';
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import { getTocHeadings } from '@/shared/utils/post-body/post-body';
 import {
@@ -16,6 +13,10 @@ import {
   type PostItem,
   type WorkspaceState,
 } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { usePostBody } from './hooks/use-post-body/use-post-body';
+import { useReadingPosition } from './hooks/use-reading-position/use-reading-position';
+import { getPostNeighbors } from './utils/post-neighbors/post-neighbors';
 
 // 글 머리의 폴더 경로 사이와 경로·작성일 사이 글자다(피그마 Chrome/Page `Page=Post`의 `Blog › React · 2026-10-20`).
 const META_PATH_SEPARATOR = ' › ';

@@ -1,42 +1,5 @@
 import { type JSX, type KeyboardEvent, useRef, useState } from 'react';
 
-import { ChromeAddressField } from '@/features/chrome/components/chrome-address-field/chrome-address-field';
-import { ChromeNewTabSearchField } from '@/features/chrome/components/chrome-new-tab-search-field/chrome-new-tab-search-field';
-import {
-  ChromePage,
-  type ChromePageLatestPost,
-  type ChromePageSearchResult,
-} from '@/features/chrome/components/chrome-page/chrome-page';
-import {
-  ChromePageArea,
-  type ChromePageFind,
-  type ChromePageImage,
-} from '@/features/chrome/components/chrome-page-area/chrome-page-area';
-import { ChromePostTab } from '@/features/chrome/components/chrome-post-tab/chrome-post-tab';
-import { ChromeWindow } from '@/features/chrome/components/chrome-window/chrome-window';
-import { TRASHED_POST_MESSAGE } from '@/features/chrome/components/message-box-trashed-post/message-box-trashed-post';
-import type { PostImageBlock } from '@/features/chrome/components/post-blocks/post-blocks';
-import { useChromeZoomStore } from '@/features/chrome/stores/chrome-zoom-store/chrome-zoom-store';
-import {
-  type AddressSuggestionTarget,
-  getAddressSuggestions,
-  getPageAddress,
-  getPostAddress,
-  resolveAddress,
-  searchPosts,
-} from '@/features/chrome/utils/chrome-address/chrome-address';
-import { getChromeMoreMenuEntries } from '@/features/chrome/utils/chrome-more-menu/chrome-more-menu';
-import {
-  canGoBack,
-  canGoForward,
-  closeTab,
-  goBack,
-  goForward,
-  moveTab,
-  selectTab,
-} from '@/features/chrome/utils/chrome-navigation/chrome-navigation';
-import { getChromeTabTitle } from '@/features/chrome/utils/chrome-tab-title/chrome-tab-title';
-import { DEFAULT_ZOOM } from '@/features/chrome/utils/chrome-zoom/chrome-zoom';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
 import type { Device } from '@/shared/hooks/use-device/use-device';
@@ -59,6 +22,44 @@ import {
   type PostItem,
   type WorkspaceState,
 } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { ChromeAddressField } from './components/chrome-address-field/chrome-address-field';
+import { ChromeNewTabSearchField } from './components/chrome-new-tab-search-field/chrome-new-tab-search-field';
+import {
+  ChromePage,
+  type ChromePageLatestPost,
+  type ChromePageSearchResult,
+} from './components/chrome-page/chrome-page';
+import {
+  ChromePageArea,
+  type ChromePageFind,
+  type ChromePageImage,
+} from './components/chrome-page-area/chrome-page-area';
+import { ChromePostTab } from './components/chrome-post-tab/chrome-post-tab';
+import { ChromeWindow } from './components/chrome-window/chrome-window';
+import { TRASHED_POST_MESSAGE } from './components/message-box-trashed-post/message-box-trashed-post';
+import type { PostImageBlock } from './components/post-blocks/post-blocks';
+import { getChromeMoreMenuEntries } from './more-menu/more-menu-entries';
+import { useChromeZoomStore } from './stores/chrome-zoom-store/chrome-zoom-store';
+import {
+  type AddressSuggestionTarget,
+  getAddressSuggestions,
+  getPageAddress,
+  getPostAddress,
+  resolveAddress,
+  searchPosts,
+} from './utils/chrome-address/chrome-address';
+import {
+  canGoBack,
+  canGoForward,
+  closeTab,
+  goBack,
+  goForward,
+  moveTab,
+  selectTab,
+} from './utils/chrome-navigation/chrome-navigation';
+import { getChromeTabTitle } from './utils/chrome-tab-title/chrome-tab-title';
+import { DEFAULT_ZOOM } from './utils/chrome-zoom/chrome-zoom';
 
 // Chrome 새 탭 페이지에 보이는 최신 글 개수(피그마 Chrome/Page `Page=New tab`).
 const NEW_TAB_LATEST_POST_COUNT = 6;

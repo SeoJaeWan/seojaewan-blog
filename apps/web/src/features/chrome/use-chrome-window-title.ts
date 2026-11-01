@@ -1,6 +1,7 @@
-import { getChromeWindowTitle } from '@/features/chrome/utils/chrome-tab-title/chrome-tab-title';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { ChromeWindowContent } from '@/shared/utils/chrome-tabs/chrome-tabs';
+
+import { getChromeWindowTitle } from './utils/chrome-tab-title/chrome-tab-title';
 
 /**
  * Chrome 창 제목을 정하는 함수를 돌려준다. 제목은 고른 탭의 글 제목이라 글 색인을 담은 작업 공간을 읽는다.

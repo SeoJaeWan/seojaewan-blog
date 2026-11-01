@@ -1,8 +1,9 @@
 import { type JSX, useRef, useState } from 'react';
 
-import { ChromeAddressSuggestions } from '@/features/chrome/components/chrome-address-suggestions/chrome-address-suggestions';
 import { useAddressInput } from '@/features/chrome/hooks/use-address-input/use-address-input';
 import type { AddressSuggestionTarget } from '@/features/chrome/utils/chrome-address/chrome-address';
+
+import { ChromeAddressSuggestions } from './components/chrome-address-suggestions/chrome-address-suggestions';
 
 type ChromeAddressFieldProps = {
   /** 지금 페이지의 주소창 글자(입력하지 않을 때 보인다) */

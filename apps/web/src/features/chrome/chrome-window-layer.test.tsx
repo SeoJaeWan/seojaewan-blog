@@ -3,8 +3,6 @@ import { userEvent } from '@testing-library/user-event';
 import type { JSX } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { clearPostBodyCache } from '@/features/chrome/hooks/use-post-body/use-post-body';
-import { useChromeZoomStore } from '@/features/chrome/stores/chrome-zoom-store/chrome-zoom-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
   hydrateWorkspaceStore,
@@ -17,6 +15,8 @@ import {
 } from '@/shared/utils/chrome-tabs/chrome-tabs';
 
 import { ChromeWindowLayer } from './chrome-window-layer';
+import { clearPostBodyCache } from './components/chrome-post-tab/hooks/use-post-body/use-post-body';
+import { useChromeZoomStore } from './stores/chrome-zoom-store/chrome-zoom-store';
 
 const POSTS = [
   { slug: 'react-19-hooks', title: '리액트 19 훅 정리', folderPath: ['React'], date: '2026-10-20' },
