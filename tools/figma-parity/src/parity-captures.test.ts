@@ -45,4 +45,13 @@ describe('parity-captures 브랜치', () => {
     expect([...plan.files.keys()]).toEqual(['menu-item/state=rest.png']);
     expect(plan.replaced).toEqual([]);
   });
+
+  it('빈 HUG 슬롯이라 뺀 변형은 실패로 보지 않아, 나머지를 모두 캡처했으면 폴더를 다시 쓴다', () => {
+    const plan = capturePublishPlan([
+      row('equation', 'state=rest'),
+      row('equation', 'state=empty', { code: null, emptyHugSlot: true }),
+    ]);
+    expect([...plan.files.keys()]).toEqual(['equation/state=rest.png']);
+    expect(plan.replaced).toEqual(['equation']);
+  });
 });

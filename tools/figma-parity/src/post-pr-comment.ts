@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import { readCommentArgs, upsertComments } from './github-comments.ts';
 import { defaultResultsDir } from './paths.ts';
-import { COMMENT_MARKER, renderComments } from './pr-comment.ts';
+import { COMMENT_MARKER, renderComments, reportImageUrl } from './pr-comment.ts';
 import { CAPTURES_FILE, type CaptureSummary } from './results.ts';
 
 // CI에서 실행한다:
@@ -13,6 +13,7 @@ import { CAPTURES_FILE, type CaptureSummary } from './results.ts';
 // 캡처 결과(captures.json)로 `피그마 | 코드 | 차이` 표를 PR 댓글로 남긴다.
 // gh CLI가 GH_TOKEN으로 GitHub API를 부르고, git push도 gh가 설정한 자격 증명(gh auth setup-git)을 쓴다.
 // 댓글에 쓰는 이미지는 이력 없는 브랜치 parity-report/pr-<번호>에 올리고(매번 덮어씀), 댓글은 숨은 표시로 찾아 고친다.
+// 그림 주소는 브랜치 이름이 아니라 그 커밋의 SHA로 만든다. 그림을 먼저 커밋해 SHA를 읽은 뒤 그 SHA로 댓글을 만든다.
 
 /** 이미지를 올리는 브랜치 이름의 앞부분 */
 export const REPORT_BRANCH_PREFIX = 'parity-report/pr-';
@@ -35,14 +36,14 @@ function main(): void {
       };
   const branch = `${REPORT_BRANCH_PREFIX}${env.pr}`;
   const runUrl = `${env.server}/${env.repository}/actions/runs/${env.runId}`;
-  const { bodies, images } = renderComments(captures, {
+  // 올릴 그림은 주소와 상관없이 정해지므로, 주소를 비워 한 번 그려 그림 목록만 읽는다.
+  const { images } = renderComments(captures, { runUrl, imageUrl: () => '' });
+  const sha = images.length > 0 ? pushImages(branch, images) : '';
+  const { bodies } = renderComments(captures, {
     runUrl,
     imageUrl: (file) =>
-      `${env.server}/${env.repository}/blob/${branch}/${file.split('/').map(encodeURIComponent).join('/')}?raw=true`,
+      reportImageUrl({ server: env.server, repository: env.repository, sha }, file),
   });
-  if (images.length > 0) {
-    pushImages(branch, images);
-  }
   upsertComments(env, bodies, COMMENT_MARKER);
   console.log(
     `[figma-parity] PR 댓글 ${String(bodies.length)}개를 남겼다(이미지 ${String(images.length)}개).`,
@@ -53,8 +54,9 @@ function main(): void {
  * 댓글에 쓰는 이미지만 담은 orphan 커밋을 만들어 보고 브랜치에 강제로 올린다.
  * @param branch 보고 브랜치
  * @param images parity-results 기준 이미지 경로
+ * @returns 올린 보고 커밋의 SHA
  */
-function pushImages(branch: string, images: readonly string[]): void {
+function pushImages(branch: string, images: readonly string[]): string {
   const dir = mkdtempSync(path.join(tmpdir(), 'parity-report-'));
   try {
     for (const image of images) {
@@ -69,6 +71,14 @@ function pushImages(branch: string, images: readonly string[]): void {
     function git(args: string[]): void {
       execFileSync('git', args, { cwd: dir, stdio: 'inherit' });
     }
+    /**
+     * 보고 폴더에서 git을 실행하고 출력을 읽는다.
+     * @param args git 인자
+     * @returns 출력(앞뒤 공백 제외)
+     */
+    function gitOutput(args: string[]): string {
+      return execFileSync('git', args, { cwd: dir, encoding: 'utf8' }).trim();
+    }
     git(['init', '--quiet', '--initial-branch', 'report']);
     git(['add', '.']);
     git([
@@ -82,7 +92,10 @@ function pushImages(branch: string, images: readonly string[]): void {
       `chore: figma capture report for #${env.pr}`,
     ]);
     const remote = `${env.server}/${env.repository}.git`;
+    // 푸시할 커밋의 SHA다. 다음 실행이 브랜치를 덮어써도 이 SHA 주소의 그림은 그대로다.
+    const sha = gitOutput(['rev-parse', 'HEAD']);
     git(['push', '--quiet', '--force', remote, `report:refs/heads/${branch}`]);
+    return sha;
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

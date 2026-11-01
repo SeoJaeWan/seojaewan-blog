@@ -5,6 +5,7 @@ import {
   COMMENT_LIMIT,
   markerIndex,
   renderComments,
+  reportImageUrl,
 } from './pr-comment.ts';
 import type { CaptureRow } from './results.ts';
 
@@ -74,6 +75,26 @@ describe('PR 댓글 캡처 표', () => {
     expect(bodies[0]).toContain('캡처 실패: 스토리가 없다');
   });
 
+  it('빈 HUG 슬롯이라 뺀 변형은 그림 없이 "조립에서 확인"을 쓰고 실패로 세지 않는다', () => {
+    const { bodies, images } = renderComments(
+      {
+        rows: [
+          row('equation', 'state=empty', {
+            figma: null,
+            code: null,
+            diff: null,
+            emptyHugSlot: true,
+          }),
+        ],
+        fileErrors: [],
+      },
+      commentOptions,
+    );
+    expect(bodies[0]).toContain('| `state=empty` | | 조립에서 확인 | |');
+    expect(bodies[0]).not.toContain('캡처 실패');
+    expect(images).toEqual([]);
+  });
+
   it('대상 폴더 오류를 쓴다', () => {
     const { bodies } = renderComments(
       { rows: [], fileErrors: ['packages/design-system/figma/components/button/x.png이 없다'] },
@@ -89,6 +110,23 @@ describe('PR 댓글 캡처 표', () => {
     const all = renderComments({ rows, fileErrors: [] }, commentOptions).bodies.join('\n');
     expect(all.split('| 변형 | 피그마 | 코드 | 차이 |')).toHaveLength(3);
     expect(all).toContain(`<details open><summary>search-box (계속) (${String(rows.length)}개)`);
+  });
+});
+
+// @codocs [[피그마 연동:CI]]
+describe('PR 댓글 그림 주소', () => {
+  const base = { server: 'https://github.com', repository: 'o/r', sha: 'a'.repeat(40) };
+
+  it('브랜치 이름이 아니라 보고 커밋 SHA로 주소를 만든다', () => {
+    expect(reportImageUrl(base, 'button/state=rest/code.png')).toBe(
+      `https://github.com/o/r/blob/${'a'.repeat(40)}/button/state%3Drest/code.png?raw=true`,
+    );
+  });
+
+  it('SHA가 다르면 같은 파일이어도 주소가 다르다', () => {
+    expect(reportImageUrl(base, 'a.png')).not.toBe(
+      reportImageUrl({ ...base, sha: 'b'.repeat(40) }, 'a.png'),
+    );
   });
 });
 
