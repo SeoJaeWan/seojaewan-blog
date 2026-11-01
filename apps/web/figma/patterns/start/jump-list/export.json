@@ -1,6 +1,8 @@
 {
+  "description": "Start 모두 목록의 첫 글자 머리글을 누르면 목록 자리에 열리는 글자 격자로, 글자를 골라 목록을 그 글자로 옮길 때 쓴다.",
   "name": "Start/JumpList",
   "nodeId": "755:5254",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,3031 @@
         "y": 0
       },
       "nodeId": "755:5254",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "&",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter &",
+                    "properties": {
+                      "Label": "&",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "#",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter #",
+                    "properties": {
+                      "Label": "#",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "A",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter A",
+                    "properties": {
+                      "Label": "A",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "B",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter B",
+                    "properties": {
+                      "Label": "B",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "C",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter C",
+                    "properties": {
+                      "Label": "C",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "D",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter D",
+                    "properties": {
+                      "Label": "D",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "E",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter E",
+                    "properties": {
+                      "Label": "E",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "F",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter F",
+                    "properties": {
+                      "Label": "F",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "G",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter G",
+                    "properties": {
+                      "Label": "G",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "H",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter H",
+                    "properties": {
+                      "Label": "H",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 4
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "I",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter I",
+                    "properties": {
+                      "Label": "I",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "J",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter J",
+                    "properties": {
+                      "Label": "J",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "K",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter K",
+                    "properties": {
+                      "Label": "K",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 8
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "L",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter L",
+                    "properties": {
+                      "Label": "L",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 12
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "M",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter M",
+                    "properties": {
+                      "Label": "M",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 11
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "N",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter N",
+                    "properties": {
+                      "Label": "N",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 11
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "O",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter O",
+                    "properties": {
+                      "Label": "O",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "P",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter P",
+                    "properties": {
+                      "Label": "P",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 11
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "Q",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter Q",
+                    "properties": {
+                      "Label": "Q",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "R",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter R",
+                    "properties": {
+                      "Label": "R",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "S",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter S",
+                    "properties": {
+                      "Label": "S",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "T",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter T",
+                    "properties": {
+                      "Label": "T",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "U",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter U",
+                    "properties": {
+                      "Label": "U",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 10
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "V",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter V",
+                    "properties": {
+                      "Label": "V",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "W",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter W",
+                    "properties": {
+                      "Label": "W",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "X",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter X",
+                    "properties": {
+                      "Label": "X",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "Y",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter Y",
+                    "properties": {
+                      "Label": "Y",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 9
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "Z",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter Z",
+                    "properties": {
+                      "Label": "Z",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㄱ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㄱ",
+                    "properties": {
+                      "Label": "ㄱ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㄴ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㄴ",
+                    "properties": {
+                      "Label": "ㄴ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㄷ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㄷ",
+                    "properties": {
+                      "Label": "ㄷ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㄹ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㄹ",
+                    "properties": {
+                      "Label": "ㄹ",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅁ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅁ",
+                    "properties": {
+                      "Label": "ㅁ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅂ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅂ",
+                    "properties": {
+                      "Label": "ㅂ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅅ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅅ",
+                    "properties": {
+                      "Label": "ㅅ",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅇ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅇ",
+                    "properties": {
+                      "Label": "ㅇ",
+                      "State": "Rest"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅈ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅈ",
+                    "properties": {
+                      "Label": "ㅈ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅊ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅊ",
+                    "properties": {
+                      "Label": "ㅊ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅋ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅋ",
+                    "properties": {
+                      "Label": "ㅋ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅌ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅌ",
+                    "properties": {
+                      "Label": "ㅌ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅍ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅍ",
+                    "properties": {
+                      "Label": "ㅍ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/disabled"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 13
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "ㅎ",
+                              "fill": "text-fill/disabled",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "JumpListLetter",
+                    "fills": [
+                      "subtle-fill/disabled"
+                    ],
+                    "height": "size/jump-list-letter/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "letter ㅎ",
+                    "properties": {
+                      "Label": "ㅎ",
+                      "State": "Disabled"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 40,
+                      "w": 40
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/jump-list-letter/box"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN",
+                  "wrap": true
+                },
+                "name": "tiles",
+                "size": {
+                  "h": 440,
+                  "w": 160
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "SLOT"
+              }
+            ],
+            "component": "TileGrid",
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "letter grid",
+            "properties": {
+              "Align": "Start"
+            },
+            "size": {
+              "h": 440,
+              "w": 160
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "HUG"
+            },
+            "type": "INSTANCE",
+            "width": "size/jump-list/grid-width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Start/JumpList",
+        "size": {
+          "h": 440,
+          "w": 160
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
     }
   }
 }
