@@ -54,7 +54,9 @@ export const Overflow: Story = {
 
     await step('넘치는 내용을 재면 스크롤바가 나타난다', async () => {
       await waitFor(() => expect(scrollbar).toBeVisible());
-      await expect(scrollbar).toHaveAttribute('data-state', 'rest');
+      // 앞 스토리의 포인터가 같은 자리에 남아 있을 수 있어 먼저 치운다
+      await userEvent.unhover(canvas.getByText('긴 내용'));
+      await waitFor(() => expect(scrollbar).toHaveAttribute('data-state', 'rest'));
     });
 
     await step('마우스를 올리면 펼치고 내리면 접는다', async () => {
