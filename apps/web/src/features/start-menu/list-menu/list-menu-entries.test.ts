@@ -2,21 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
-import {
-  getListMenuEntries,
-  getPinnedMenuEntries,
-  getPowerMenuEntries,
-  getViewMenuEntries,
-} from './list-menu-entries';
-
-const pinnedOptions = {
-  canMoveToFront: true,
-  canCopyLink: true,
-  onOpen: vi.fn(),
-  onMoveToFront: vi.fn(),
-  onCopyLink: vi.fn(),
-  onUnpin: vi.fn(),
-};
+import { getListMenuEntries } from './list-menu-entries';
 
 const listOptions = {
   isPinnedToStart: false,
@@ -36,30 +22,6 @@ const listOptions = {
 function labels(entries: readonly MenuPopupEntry[]): string[] {
   return entries.map((entry) => ('label' in entry ? entry.label : '-'));
 }
-
-// @codocs [[Start 메뉴:고정됨]]
-describe('Start 메뉴:고정됨', () => {
-  it('고정 항목 메뉴는 열기·맨 앞으로 이동·링크 복사·시작 화면에서 고정 해제다', () => {
-    expect(labels(getPinnedMenuEntries(pinnedOptions))).toEqual([
-      '열기',
-      '맨 앞으로 이동',
-      '링크 복사',
-      '-',
-      '시작 화면에서 고정 해제',
-    ]);
-  });
-
-  it('링크 복사는 글과 외부 링크에만 있다', () => {
-    expect(labels(getPinnedMenuEntries({ ...pinnedOptions, canCopyLink: false }))).not.toContain(
-      '링크 복사',
-    );
-  });
-
-  it('맨 앞 항목에서는 맨 앞으로 이동을 고를 수 없다', () => {
-    const [, moveToFront] = getPinnedMenuEntries({ ...pinnedOptions, canMoveToFront: false });
-    expect(moveToFront).toMatchObject({ label: '맨 앞으로 이동', disabled: true });
-  });
-});
 
 // @codocs [[Start 메뉴:모두]]
 describe('Start 메뉴:모두', () => {
@@ -88,20 +50,5 @@ describe('Start 메뉴:모두', () => {
     expect(labels(getListMenuEntries({ ...listOptions, isPinnedToTaskbar: true })).at(-1)).toBe(
       '작업 표시줄에서 고정 해제',
     );
-  });
-
-  it('보기 메뉴는 범주·그리드·간단히 차례이고 지금 보기에 확인 표시를 한다', () => {
-    expect(getViewMenuEntries('grid', vi.fn())).toEqual([
-      expect.objectContaining({ kind: 'checkbox', label: '범주', checked: false }),
-      expect.objectContaining({ kind: 'checkbox', label: '그리드', checked: true }),
-      expect.objectContaining({ kind: 'checkbox', label: '간단히', checked: false }),
-    ]);
-  });
-});
-
-// @codocs [[다시 시작:개요]]
-describe('다시 시작:개요', () => {
-  it('전원 메뉴는 다시 시작 하나다', () => {
-    expect(labels(getPowerMenuEntries(vi.fn()))).toEqual(['다시 시작']);
   });
 });

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { startAvailableLetters } from '@/features/start-menu/stories/start-data/start-data';
+import { startAvailableLetters } from '@/features/start-menu/components/start-body/story-data';
 
 import { StartJumpList } from './start-jump-list';
 

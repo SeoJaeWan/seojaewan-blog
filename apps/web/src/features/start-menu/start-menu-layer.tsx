@@ -21,7 +21,7 @@ import { START_PROFILE } from './data/start-apps/start-apps';
 import { useSearchKeyboard } from './hooks/use-search-keyboard/use-search-keyboard';
 import { useStartLists } from './hooks/use-start-lists/use-start-lists';
 import { useStartSearch } from './hooks/use-start-search/use-start-search';
-import { getPowerMenuEntries } from './list-menu/list-menu-entries';
+import { getPowerMenuEntries } from './power-menu/power-menu-entries';
 import type { StartAllView, StartItem } from './utils/start-items/start-items';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.

@@ -14,7 +14,6 @@ import {
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
-import { getViewMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
 import type {
   SearchResultGroups,
   StartAllView,
@@ -31,6 +30,7 @@ import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { StartJumpList } from './components/start-jump-list/start-jump-list';
 import { StartTile } from './components/start-tile/start-tile';
 import { StartViewMenu } from './components/start-view-menu/start-view-menu';
+import { getViewMenuEntries } from './view-menu/view-menu-entries';
 
 export type StartBodyDevice = 'desktop' | 'mobile';
 

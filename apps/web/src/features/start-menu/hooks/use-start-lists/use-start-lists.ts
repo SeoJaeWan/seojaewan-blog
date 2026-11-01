@@ -1,7 +1,5 @@
-import {
-  getListMenuEntries,
-  getPinnedMenuEntries,
-} from '@/features/start-menu/list-menu/list-menu-entries';
+import { getListMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
+import { getPinnedMenuEntries } from '@/features/start-menu/pinned-menu/pinned-menu-entries';
 import type {
   StartAllView,
   StartItem,

@@ -5,7 +5,7 @@ import {
   START_LETTER_GROUPS,
   START_PINNED,
   startAvailableLetters,
-} from '@/features/start-menu/stories/start-data/start-data';
+} from '@/features/start-menu/components/start-body/story-data';
 
 import { StartBody } from './start-body';
 import { START_CATEGORY_GROUPS } from './story-data';

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   START_LETTER_GROUPS,
   START_PINNED,
-} from '@/features/start-menu/stories/start-data/start-data';
+} from '@/features/start-menu/components/start-body/story-data';
 
 import { StartBody } from './start-body';
 
