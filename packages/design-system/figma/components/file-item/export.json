@@ -1,6 +1,46 @@
 {
+  "description": "아이콘과 이름으로 된 파일 항목으로, 바탕화면 아이콘과 탐색기 아이콘 보기에 쓴다.",
   "name": "FileItem",
   "nodeId": "29:527",
+  "propertyDefinitions": {
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Name": {
+      "default": "파일 이름",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Selected",
+        "Focused",
+        "Rename",
+        "Cut",
+        "Cut selected"
+      ],
+      "type": "VARIANT"
+    },
+    "Surface": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Explorer"
+      ],
+      "type": "VARIANT"
+    },
+    "View": {
+      "default": "Large",
+      "options": [
+        "Large",
+        "Medium",
+        "Small"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "surface=desktop,view=large,state=cut": {
       "node": {
@@ -14,6 +54,101 @@
         "State": "Cut",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Cut",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=cut-selected": {
@@ -28,6 +163,104 @@
         "State": "Cut selected",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Cut selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=focused": {
@@ -42,6 +275,109 @@
         "State": "Focused",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "file-item/desktop/stroke-focus"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=hover": {
@@ -56,6 +392,102 @@
         "State": "Hover",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=rename": {
@@ -70,6 +502,161 @@
         "State": "Rename",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-on-accent-fill/selected-text"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 16,
+                      "w": 45
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "파일 이름",
+                          "fill": "text-on-accent-fill/selected-text",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "accent-fill/selected-text-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "RenameField",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/xs",
+                "spacing/2xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "rename field",
+            "properties": {
+              "State": "Selected",
+              "Text": "파일 이름"
+            },
+            "size": {
+              "h": 22,
+              "w": 55
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Rename",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 128,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=rest": {
@@ -84,6 +671,99 @@
         "State": "Rest",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=large,state=selected": {
@@ -98,6 +778,102 @@
         "State": "Selected",
         "Surface": "Desktop",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 108
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Large, State=Selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 122,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=desktop,view=medium,state=cut": {
@@ -112,6 +888,101 @@
         "State": "Cut",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Cut",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=cut-selected": {
@@ -126,6 +997,104 @@
         "State": "Cut selected",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Cut selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=focused": {
@@ -140,6 +1109,109 @@
         "State": "Focused",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "file-item/desktop/stroke-focus"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=hover": {
@@ -154,6 +1226,102 @@
         "State": "Hover",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=rename": {
@@ -168,6 +1336,161 @@
         "State": "Rename",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-on-accent-fill/selected-text"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 16,
+                      "w": 45
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "파일 이름",
+                          "fill": "text-on-accent-fill/selected-text",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "accent-fill/selected-text-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "RenameField",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/xs",
+                "spacing/2xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "rename field",
+            "properties": {
+              "State": "Selected",
+              "Text": "파일 이름"
+            },
+            "size": {
+              "h": 22,
+              "w": 55
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Rename",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 80,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=rest": {
@@ -182,6 +1505,99 @@
         "State": "Rest",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=medium,state=selected": {
@@ -196,6 +1612,102 @@
         "State": "Selected",
         "Surface": "Desktop",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Medium, State=Selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 74,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=cut": {
@@ -210,6 +1722,101 @@
         "State": "Cut",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Cut",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=cut-selected": {
@@ -224,6 +1831,104 @@
         "State": "Cut selected",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Cut selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=focused": {
@@ -238,6 +1943,109 @@
         "State": "Focused",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "file-item/desktop/stroke-focus"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=hover": {
@@ -252,6 +2060,102 @@
         "State": "Hover",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=rename": {
@@ -266,6 +2170,161 @@
         "State": "Rename",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-on-accent-fill/selected-text"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 16,
+                      "w": 45
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "파일 이름",
+                          "fill": "text-on-accent-fill/selected-text",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "accent-fill/selected-text-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "RenameField",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/xs",
+                "spacing/2xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "rename field",
+            "properties": {
+              "State": "Selected",
+              "Text": "파일 이름"
+            },
+            "size": {
+              "h": 22,
+              "w": 55
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Rename",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 64,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=rest": {
@@ -280,6 +2339,99 @@
         "State": "Rest",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=desktop,view=small,state=selected": {
@@ -294,6 +2446,102 @@
         "State": "Selected",
         "Surface": "Desktop",
         "View": "Small"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/xl",
+            "name": "item icon",
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/xl"
+          },
+          {
+            "effectStyle": "Elevation/Desktop Label",
+            "fills": [
+              "file-item/desktop/label"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 72
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "file-item/desktop/label",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/desktop/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/2xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/2xs",
+            "spacing/xs",
+            "spacing/2xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Desktop, View=Small, State=Selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 58,
+          "w": 76
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/desktop-width"
       }
     },
     "surface=explorer,view=large,state=cut": {
@@ -308,6 +2556,100 @@
         "State": "Cut",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Cut",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=cut-selected": {
@@ -322,6 +2664,103 @@
         "State": "Cut selected",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Cut selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=focused": {
@@ -336,6 +2775,108 @@
         "State": "Focused",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "file-item/explorer/stroke-focus"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=hover": {
@@ -350,6 +2891,101 @@
         "State": "Hover",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=rename": {
@@ -364,6 +3000,164 @@
         "State": "Rename",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-on-accent-fill/selected-text"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 16,
+                      "w": 45
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "파일 이름",
+                          "fill": "text-on-accent-fill/selected-text",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "accent-fill/selected-text-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "RenameField",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/xs",
+                "spacing/2xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "rename field",
+            "properties": {
+              "State": "Selected",
+              "Text": "파일 이름"
+            },
+            "size": {
+              "h": 22,
+              "w": 55
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Rename",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 130,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=rest": {
@@ -378,6 +3172,116 @@
         "State": "Rest",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Surface=Explorer, View=Large, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=large,state=selected": {
@@ -392,6 +3296,101 @@
         "State": "Selected",
         "Surface": "Explorer",
         "View": "Large"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/4xl",
+            "name": "item icon",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/4xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 104
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Large, State=Selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 124,
+          "w": 112
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/large-width"
       }
     },
     "surface=explorer,view=medium,state=cut": {
@@ -406,6 +3405,100 @@
         "State": "Cut",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Cut",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=cut-selected": {
@@ -420,6 +3513,103 @@
         "State": "Cut selected",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "opacity": "opacity/cut",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Cut selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=focused": {
@@ -434,6 +3624,108 @@
         "State": "Focused",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "file-item/explorer/stroke-focus"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=hover": {
@@ -448,6 +3740,101 @@
         "State": "Hover",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-hover"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=rename": {
@@ -462,6 +3849,164 @@
         "State": "Rename",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "text-on-accent-fill/selected-text"
+                    ],
+                    "name": "text",
+                    "size": {
+                      "h": 16,
+                      "w": 45
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "파일 이름",
+                          "fill": "text-on-accent-fill/selected-text",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "fills": [
+                  "accent-fill/selected-text-background"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "selection",
+                "size": {
+                  "h": 16,
+                  "w": 45
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
+            "component": "RenameField",
+            "fills": [
+              "control-fill/input-active"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/2xs",
+                "spacing/xs",
+                "spacing/2xs",
+                "spacing/xs"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "rename field",
+            "properties": {
+              "State": "Selected",
+              "Text": "파일 이름"
+            },
+            "size": {
+              "h": 22,
+              "w": 55
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokes": [
+              "control-strong-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Rename",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 82,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=rest": {
@@ -476,6 +4021,116 @@
         "State": "Rest",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Surface=Explorer, View=Medium, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     },
     "surface=explorer,view=medium,state=selected": {
@@ -490,6 +4145,101 @@
         "State": "Selected",
         "Surface": "Explorer",
         "View": "Medium"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-folder"
+            },
+            "component": "file/Folder",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/2xl",
+            "name": "item icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "name",
+            "size": {
+              "h": 16,
+              "w": 80
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 2,
+              "maxLinesVariable": "line-clamp/two",
+              "segments": [
+                {
+                  "characters": "파일",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "file-item/explorer/fill-selected"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs",
+            "spacing/xs"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Surface=Explorer, View=Medium, State=Selected",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 76,
+          "w": 88
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/file-item/explorer-width"
       }
     }
   }

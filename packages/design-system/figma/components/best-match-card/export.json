@@ -1,8 +1,26 @@
 {
+  "description": "가장 일치하는 검색 결과의 미리보기 카드로, 검색 결과 옆(모바일은 위)에 쓴다.",
   "name": "BestMatchCard",
   "nodeId": "399:15535",
+  "propertyDefinitions": {
+    "Actions": {
+      "type": "SLOT"
+    },
+    "Icon": {
+      "type": "INSTANCE_SWAP"
+    },
+    "Meta": {
+      "default": "부가 정보",
+      "type": "TEXT"
+    },
+    "Title": {
+      "default": "제목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 283,
         "width": 258,
@@ -10,7 +28,184 @@
         "y": 0
       },
       "nodeId": "399:15535",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "images/file-document"
+            },
+            "component": "file/Document",
+            "fills": [
+              "IMAGE"
+            ],
+            "height": "size/icon/3xl",
+            "name": "preview icon",
+            "size": {
+              "h": 64,
+              "w": 64
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/3xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "preview title",
+            "size": {
+              "h": 28,
+              "w": 35
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Subtitle"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "preview meta",
+            "size": {
+              "h": 16,
+              "w": 45
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "부가",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "정보",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "component": "Separator",
+            "fills": [
+              "divider-stroke/default"
+            ],
+            "height": "stroke-width/default",
+            "name": "divider",
+            "properties": {
+              "Orientation": "Horizontal"
+            },
+            "size": {
+              "h": 1,
+              "w": 224
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          },
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Actions",
+            "size": {
+              "h": 100,
+              "w": 224
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "fills": [
+          "card-background-fill/default"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xl",
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "BestMatchCard",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 283,
+          "w": 258
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/best-match-card/width"
+      }
     }
   }
 }
