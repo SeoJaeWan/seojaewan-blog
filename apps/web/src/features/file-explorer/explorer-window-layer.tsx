@@ -2,13 +2,33 @@ import { type JSX, type KeyboardEvent, type ReactNode, useEffect } from 'react';
 
 import { Asset, BreadcrumbItem, ImageAsset, NavigationItem } from '@seojaewan/design-system';
 
-import { ExplorerBody } from '@/features/file-explorer/components/explorer-body/explorer-body';
-import { ExplorerWindow } from '@/features/file-explorer/components/explorer-window/explorer-window';
+import type { Device } from '@/shared/hooks/use-device/use-device';
+import {
+  DROP_TARGET_ATTRIBUTE,
+  DROP_TARGET_NAME_ATTRIBUTE,
+} from '@/shared/hooks/use-item-drag/use-item-drag';
+import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
+import { useWindowStore } from '@/shared/stores/window-store/window-store';
+import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
+import type {
+  ExplorerLocation,
+  ExplorerWindowContent,
+  WindowFrameControls,
+} from '@/shared/utils/window-rules/window-rules';
+import {
+  DEFAULT_EXPLORER_VIEW,
+  DESKTOP_LOCATION_KEY,
+  isRecycleBinFull,
+  RECYCLE_BIN_ID,
+} from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { ExplorerBody } from './components/explorer-body/explorer-body';
+import { ExplorerWindow } from './components/explorer-window/explorer-window';
 import {
   type ExplorerWorkspace,
   getExplorerLocationName,
   getExplorerLocationTrail,
-} from '@/features/file-explorer/utils/explorer-location/explorer-location';
+} from './utils/explorer-location/explorer-location';
 import {
   canGoBack,
   canGoForward,
@@ -30,27 +50,8 @@ import {
   resolveExplorerContent,
   selectTab,
   setTreeNodeExpanded,
-} from '@/features/file-explorer/utils/explorer-navigation/explorer-navigation';
-import { sortExplorerItems } from '@/features/file-explorer/utils/explorer-sort/explorer-sort';
-import type { Device } from '@/shared/hooks/use-device/use-device';
-import {
-  DROP_TARGET_ATTRIBUTE,
-  DROP_TARGET_NAME_ATTRIBUTE,
-} from '@/shared/hooks/use-item-drag/use-item-drag';
-import { useItemDragStore } from '@/shared/stores/item-drag-store/item-drag-store';
-import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
-import type {
-  ExplorerLocation,
-  ExplorerWindowContent,
-  WindowFrameControls,
-} from '@/shared/utils/window-rules/window-rules';
-import {
-  DEFAULT_EXPLORER_VIEW,
-  DESKTOP_LOCATION_KEY,
-  isRecycleBinFull,
-  RECYCLE_BIN_ID,
-} from '@/shared/utils/workspace-rules/workspace-rules';
+} from './utils/explorer-navigation/explorer-navigation';
+import { sortExplorerItems } from './utils/explorer-sort/explorer-sort';
 
 type ExplorerWindowLayerProps = {
   /** 창 id. 창 내용(탭과 위치 기록)을 바꿀 때 쓴다 */

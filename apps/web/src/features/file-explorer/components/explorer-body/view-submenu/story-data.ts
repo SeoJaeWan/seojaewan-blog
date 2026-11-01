@@ -6,11 +6,11 @@
 import type {
   getEmptyMenuEntries,
   getItemMenuEntries,
-} from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
+} from '@/features/file-explorer/components/explorer-body/empty-menu/empty-menu-entries';
 import {
   getSortMenuEntries,
   getViewMenuEntries,
-} from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
+} from '@/features/file-explorer/components/explorer-body/empty-menu/empty-menu-entries';
 import { ignoreMenuAction } from '@/shared/stories/menu-preview/menu-preview';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 import { DEFAULT_EXPLORER_VIEW } from '@/shared/utils/workspace-rules/workspace-rules';

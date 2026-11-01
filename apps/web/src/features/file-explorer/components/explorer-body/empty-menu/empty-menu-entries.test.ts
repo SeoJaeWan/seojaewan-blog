@@ -3,11 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { DEFAULT_EXPLORER_VIEW } from '@/shared/utils/workspace-rules/workspace-rules';
 
-import {
-  getEmptyMenuEntries,
-  getItemMenuEntries,
-  getSortMenuEntries,
-} from './explorer-menu-entries';
+import { getEmptyMenuEntries, getItemMenuEntries, getSortMenuEntries } from './empty-menu-entries';
 
 const ITEM_OPTIONS = {
   kind: 'folder',

@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { menuExplorerSortSubmenu } from '@/features/file-explorer/stories/explorer-submenu-data/explorer-submenu-data';
+import { menuExplorerPost } from '@/features/file-explorer/components/menu-explorer-post/story-data';
 import { MenuStory, menuStoryA11y } from '@/shared/stories/menu-story/menu-story';
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
 const meta = {
-  title: 'Patterns/Menu/ExplorerSortSubmenu',
+  title: 'Patterns/Menu/ExplorerPost',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded', a11y: menuStoryA11y },
-  render: () => <MenuStory items={menuExplorerSortSubmenu} />,
+  render: () => <MenuStory items={menuExplorerPost} />,
 } satisfies Meta;
 
 export default meta;

@@ -1,12 +1,10 @@
 import type { JSX } from 'react';
 
-import {
-  ExplorerCommands,
-  ExplorerContent,
-  ExplorerWindow,
-} from '@/features/file-explorer/file-explorer';
+import { ExplorerCommands } from '@/features/file-explorer/components/explorer-body/components/explorer-commands/explorer-commands';
+import { ExplorerContent } from '@/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content';
+import { ExplorerWindow } from '@/features/file-explorer/components/explorer-window/explorer-window';
+import { getExplorerWindowParts } from '@/features/file-explorer/components/explorer-window/story-explorer-window-parts';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
-import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
 
 import { PREVIEW_THUMBNAIL, PREVIEW_WINDOWS } from './story-data';
 import { TaskbarWindowPreviewList } from './taskbar-window-preview-list';

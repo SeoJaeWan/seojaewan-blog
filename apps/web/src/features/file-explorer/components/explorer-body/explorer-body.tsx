@@ -22,24 +22,11 @@ import {
   Tooltip,
 } from '@seojaewan/design-system';
 
-import { ExplorerCommands } from '@/features/file-explorer/components/explorer-commands/explorer-commands';
-import { ExplorerContent } from '@/features/file-explorer/components/explorer-content/explorer-content';
 import {
   formatDeletedDate,
   getExplorerLocationName,
   getOriginalLocation,
 } from '@/features/file-explorer/utils/explorer-location/explorer-location';
-import {
-  getEmptyMenuEntries,
-  getItemMenuEntries,
-  getRecycleBinSortMenuEntries,
-  getSortMenuEntries,
-  getViewMenuEntries,
-} from '@/features/file-explorer/utils/explorer-menu-entries/explorer-menu-entries';
-import {
-  getItemLocationLabel,
-  searchItems,
-} from '@/features/file-explorer/utils/explorer-search/explorer-search';
 import {
   type ExplorerDetailsColumn,
   formatModifiedDate,
@@ -98,6 +85,17 @@ import {
   trashItems,
   type WorkspaceItem,
 } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { ExplorerCommands } from './components/explorer-commands/explorer-commands';
+import { ExplorerContent } from './components/explorer-content/explorer-content';
+import {
+  getEmptyMenuEntries,
+  getItemMenuEntries,
+  getRecycleBinSortMenuEntries,
+  getSortMenuEntries,
+  getViewMenuEntries,
+} from './empty-menu/empty-menu-entries';
+import { getItemLocationLabel, searchItems } from './utils/explorer-search/explorer-search';
 
 type ExplorerContentProps = ComponentProps<typeof ExplorerContent>;
 

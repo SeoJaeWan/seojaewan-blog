@@ -1,7 +1,8 @@
-import { getExplorerWindowTitle } from '@/features/file-explorer/utils/explorer-location/explorer-location';
-import { getCurrentLocation } from '@/features/file-explorer/utils/explorer-navigation/explorer-navigation';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { ExplorerWindowContent } from '@/shared/utils/window-rules/window-rules';
+
+import { getExplorerWindowTitle } from './utils/explorer-location/explorer-location';
+import { getCurrentLocation } from './utils/explorer-navigation/explorer-navigation';
 
 /**
  * 탐색기 창 제목을 정하는 함수를 돌려준다. 제목은 고른 탭이 보고 있는 위치 이름이라, 폴더 이름이 바뀌면 다시 그리도록 작업 공간을 읽는다.

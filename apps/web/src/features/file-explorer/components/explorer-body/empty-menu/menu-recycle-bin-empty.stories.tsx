@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { menuRecycleBinEmpty } from '@/features/file-explorer/components/menu-recycle-bin-empty/story-data';
 import { MenuStory, menuStoryA11y } from '@/shared/stories/menu-story/menu-story';
-
-import { menuRecycleBinEmpty } from './story-data';
 
 // 피그마 Menu/RecycleBinEmpty의 변형 속성 값이다(정규화한 이름).
 const SUBMENUS = ['none', 'sort'] as const;
