@@ -130,7 +130,8 @@ export const Structure: Story = {
     });
 
     await step('서버가 KaTeX로 그린 수식 HTML을 Equation 자리에 넣는다', async () => {
-      await expect(await canvas.findByText('수식 그림')).toBeVisible();
+      // KaTeX 그림 부품은 lazy라 첫 조각을 받는 시간까지 기다린다
+      await expect(await canvas.findByText('수식 그림', {}, { timeout: 5000 })).toBeVisible();
     });
 
     await step('서버가 그리지 못한 수식은 식 글자를 보인다', async () => {
