@@ -634,7 +634,7 @@ export default defineConfig(
             {
               pattern: '(^|:)(transition(-[^:]*)?|(duration|ease|delay|animate)-[^:]*)$',
               message:
-                '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]] 표).',
+                '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]]).',
             },
             // @codocs [[피그마 연동:토큰 사용 강제]]
             // 클래스에는 숫자 값이 들어가지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 토큰 이름도 숫자로 끝나지 않으므로

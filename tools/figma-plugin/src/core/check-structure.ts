@@ -186,7 +186,7 @@ function checkTransitionValues(
     add(
       root,
       `${label}의 시간 ${String(transition.durationMs)}ms가 \`${MOTION_DURATION_PREFIX}*\` 변수 값이 아니다`,
-      '전환 시간을 모션 변수 값으로 맞춘다([[디자인 기반:모션]] 표).',
+      '전환 시간을 모션 변수 값으로 맞춘다(00 · Guide의 Motion).',
     );
   }
   const { bezier } = transition.easing;
@@ -209,7 +209,7 @@ function checkTransitionValues(
     add(
       root,
       `${label}의 이징 ${transition.easing.type}이 \`${MOTION_EASING_PREFIX}*\` 변수 값이 아니다`,
-      '전환 이징을 모션 변수의 곡선으로 맞춘다([[디자인 기반:모션]] 표).',
+      '전환 이징을 모션 변수의 곡선으로 맞춘다(00 · Guide의 Motion).',
     );
   }
 }

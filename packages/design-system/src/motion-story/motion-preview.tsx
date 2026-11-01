@@ -5,7 +5,7 @@ import { Button } from '../components/button/button';
 type MotionPreviewProps = {
   /** 재생할 모션 클래스 이름(`motion-progress-ring`). 모션 스토리 제목 `Motion/<이름>`의 이름과 같다 */
   motionClass: string;
-  /** 실행 중 값 CSS 변수와 견본의 대표값([[디자인 기반:모션]] 표의 "실행 중 값" 열). 예: `{ '--motion-target-x': '120px' }` */
+  /** 실행 중 값 CSS 변수와 견본의 대표값(견본 주석의 `@runtime`). 예: `{ '--motion-target-x': '120px' }` */
   runtimeValues?: Readonly<Record<string, string>>;
   /** 모션 클래스를 받아 견본과 같은 컴포넌트를 그린다. 클래스는 움직일 요소에 붙인다 */
   children: (motionClassName: string) => ReactNode;

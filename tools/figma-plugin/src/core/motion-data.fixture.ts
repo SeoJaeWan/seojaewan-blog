@@ -6,7 +6,7 @@ import type {
   TrackData,
 } from './motion-data';
 
-// 모션 검사 테스트 데이터. Windows 모션 값([[디자인 기반:모션]] 표)을 쓴다.
+// 모션 검사 테스트 데이터. Windows 모션 값(00 · Guide의 Motion)을 쓴다.
 
 export const motionVariables: MotionVariable[] = [
   { name: 'motion/delay/boot-screen', resolvedType: 'FLOAT', value: 2500 },

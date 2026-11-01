@@ -3,10 +3,10 @@
 /** 내보내는 피그마 파일 키 */
 export const FILE_KEY = 'XV9Y1UT5UH4tC5hSqLVipZ';
 
-/** 컴포넌트가 있는 "01 · Components" 페이지 */
+/** 컴포넌트가 있는 "02 · Components" 페이지 */
 export const COMPONENTS_PAGE_ID = '1:2';
 
-/** 조립이 있는 "02 · Patterns" 페이지. 이름은 바뀔 수 있어 ID로 찾는다 */
+/** 조립이 있는 "03 · Patterns" 페이지. 이름은 바뀔 수 있어 ID로 찾는다 */
 export const PATTERNS_PAGE_ID = '517:16130';
 
 /** PNG 내보내기 배율. figma.json에 함께 기록한다. */

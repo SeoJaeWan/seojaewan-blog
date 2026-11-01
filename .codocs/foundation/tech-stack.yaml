@@ -23,7 +23,7 @@ _codocs:
 
   디자인 시스템을 CSS Modules로, 앱을 Tailwind로 나누는 방식도 검토했다. 스타일링을 하나로 통일하고, 피그마 MCP가 넘겨주는 React + Tailwind 출력과 맞추기 위해 둘 다 Tailwind를 골랐다.
 동작 기반 라이브러리: |
-  메뉴, 다이얼로그, 탭, 툴팁 같은 컴포넌트의 키보드 조작·포커스·접근성은 Base UI(`@base-ui/react`)에 맡긴다.
+  메뉴, 다이얼로그, 탭 같은 컴포넌트의 키보드 조작·포커스·접근성은 Base UI(`@base-ui/react`)에 맡긴다. 어디까지 맡기고 무엇을 직접 만드는지는 [[접근성:역할]]과 [[접근성:직접 만든 부품]]에 있다.
   상태를 `data-*` 속성으로 노출해 Tailwind 변형과 맞고, 이전 프로젝트에서 써 본 경험이 있다.
 
   Radix UI는 개발이 느려져서, React Aria는 API가 무겁고 익히는 비용이 커서 고르지 않았다.
@@ -56,7 +56,7 @@ _codocs:
   글 본문은 앱의 서버 경로가 Notion 블록에서 만들어 브라우저로 보낸다([[코드 작성 규칙:React와 Next.js]]). 코드 문법 강조와 수식은 이때 서버에서 처리해 보낸다.
 
   - 코드 문법 강조는 Shiki를 쓴다. VS Code와 같은 TextMate 문법으로 강조해 언어별 강조가 정확하다.
-  - 수식은 KaTeX를 쓴다. 가볍고 빠르며 서버에서 미리 그려 보낼 수 있다.
+  - 수식은 KaTeX를 쓴다. 가볍고 빠르며 서버에서 미리 그려 보낼 수 있다. 위험한 명령을 막고(`trust: false`) 화면 읽기 프로그램을 위해 MathML도 함께 낸다(`output: 'htmlAndMathml'`). KaTeX CSS·폰트는 수식이 있는 글을 열 때만 받는다.
 
   둘 다 서버에서 처리해 보내므로 브라우저에서 강조·수식 계산을 돌리지 않는다. 설치할 때 공식 문서로 버전과 서버에서 쓰는 방법을 확인한다.
 
@@ -64,7 +64,7 @@ _codocs:
   - 테마는 문법 범위(TextMate scope)를 어느 `code-syntax` 변수로 칠할지만 적고, 색 값은 CSS 변수(`var(...)`)로 넣는다. Shiki는 hex가 아닌 색 값을 테마에 넣는 것을 지원한다.
   - 색 갈래는 기본 글자, 주석, 키워드, 흐름 키워드(`import`·`return`·`if` 등 `keyword.control`), 문자열, 숫자·상수, 함수, 타입·클래스, 변수·속성, 매개변수, 연산자·구두점, 태그(JSX·HTML), 태그 속성 이름에 Light+가 따로 칠하는 일곱 가지를 더한다: 정규식(`regexp`·`regexp-group`), 이스케이프 글자(`escape`), 열거형 멤버·`const` 변수(`variable-constant`), JSON 키·CSS 값(`key-value`), 잘못된 문법(`invalid`), 남색 변수(`variable-navy`). 색 값은 VS Code 기본 밝은 테마(Light+)에서 가져오고 scope도 Light+와 똑같이 칠한다(`const`로 선언한 변수 포함).
   - 색을 피그마 변수에 두면 토큰 PR이 CSS 변수를 만들고, CodeBlock 견본을 이 변수로 칠해 캡처 표가 코드 색까지 비교한다. 내장 테마를 그대로 쓰면 피그마에 일부 색만 손으로 옮겨 두 곳이 어긋나도 검사로 잡을 수 없기 때문이다.
-  - 갈래마다 묶을 scope는 Shiki를 설치할 때 Light+ 테마의 scope 목록을 보고 정한다. `true`·`false`·`null`(`constant.language`)은 Light+처럼 키워드 갈래로 칠한다.
+  - 갈래마다 묶을 scope는 Light+ 테마의 scope 목록을 보고 정했고, 테스트가 Light+의 scope가 모두 갈래에 묶였는지 지킨다. `true`·`false`·`null`(`constant.language`)은 Light+처럼 키워드 갈래로 칠한다. Light+의 글자 모양(굵게·기울임)은 따르지 않는다.
 검토한 대안: |
   - Prism·highlight.js(코드 문법 강조): Shiki보다 강조가 덜 정확하고 보통 브라우저에서 돌려 고르지 않았다.
   - MathJax(수식): KaTeX보다 무거워 고르지 않았다.

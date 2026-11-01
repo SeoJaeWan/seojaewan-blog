@@ -28,7 +28,7 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 const UNGROUPED = '묶음 밖';
 
 /**
- * "01 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다. 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
+ * "02 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다. 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
  * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
@@ -37,7 +37,7 @@ export async function listComponents(): Promise<ComponentSummary[]> {
 }
 
 /**
- * "02 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 캔버스 순서로 찾는다. 묶음은 이름의 영역(조립 PR 단위)이다.
+ * "03 · Patterns" 페이지의 조립(컴포넌트 세트와 단독 컴포넌트)을 캔버스 순서로 찾는다. 묶음은 이름의 영역(조립 PR 단위)이다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 조립 목록
@@ -329,7 +329,7 @@ export type ComponentTokenUsage = {
 };
 
 /**
- * "01 · Components" 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
+ * "02 · Components" 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
  * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @returns 컴포넌트마다 쓰는 토큰 이름

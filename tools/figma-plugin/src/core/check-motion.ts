@@ -82,7 +82,7 @@ export function checkMotionSample(
     add(
       '',
       '견본 이름이 모션 클래스 이름 꼴(`motion-` + 소문자·숫자·`-`)이 아니라 파일과 클래스 이름을 정할 수 없다',
-      '견본 프레임 이름을 [[디자인 기반:모션]] 표의 클래스 이름(예: `motion-window-open`)으로 바꾼다.',
+      '견본 프레임 이름을 00 · Guide Motion의 클래스 이름(예: `motion-window-open`)으로 바꾼다.',
     );
   }
   for (const problem of sample.problems) {
@@ -97,7 +97,7 @@ export function checkMotionSample(
       add(
         '',
         `견본 주석에 \`@${key}\` 줄이 없다. 반복과 재생 시작 조건은 API로 읽을 수 없다`,
-        `견본 프레임 주석에 \`@${key} <값>\`을 적는다. 값은 [[디자인 기반:모션]] 표를 본다.`,
+        `견본 프레임 주석에 \`@${key} <값>\`을 적는다. 값은 [[피그마 연동:구조 검사]]의 @ 줄 표를 본다.`,
       );
     }
   }
@@ -269,7 +269,7 @@ function easingToken(
   add(
     label,
     reason ?? '이징을 읽지 못했다',
-    `키프레임 이징을 \`${EASING_PREFIX}*\` 변수(EASING 타입)에 연결한다. 동작별 이징은 [[디자인 기반:모션]] 표를 본다.`,
+    `키프레임 이징을 \`${EASING_PREFIX}*\` 변수(EASING 타입)에 연결한다. 동작별 이징은 00 · Guide의 Motion을 본다.`,
   );
   return null;
 }

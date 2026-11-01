@@ -8,7 +8,7 @@ export type ComponentSummary = {
   name: string;
   kind: 'COMPONENT_SET' | 'COMPONENT';
   variantCount: number;
-  /** 묶음 이름. 컴포넌트는 01 · Components의 영역 섹션, 조립은 이름의 영역(`Menu/Folder` → `Menu`) */
+  /** 묶음 이름. 컴포넌트는 02 · Components의 영역 섹션, 조립은 이름의 영역(`Menu/Folder` → `Menu`) */
   group: string;
 };
 
