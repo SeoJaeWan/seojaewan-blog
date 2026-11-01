@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import { FOLDER_LOCATION_ICON } from '@/shared/stories/explorer/explorer';
+import { FOLDER_LOCATION_ICON } from '@/features/file-explorer/components/explorer-window/story-data';
 
 import { ExplorerContent } from './explorer-content';
 import { EMPTY_SLOT_SIZE, STATUS_BAR_TEXT } from './story-data';

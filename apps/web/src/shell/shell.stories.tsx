@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { resetStoryStores } from '@/shared/stories/story-stores/story-stores';
+import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 
 import { Shell } from './shell';
 import { SHELL_STORY_POSTS } from './story-data';

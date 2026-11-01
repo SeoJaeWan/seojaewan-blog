@@ -3,7 +3,7 @@
 // @codocs [[디자인 시스템:조립]]
 // 메뉴 조립 Menu/Desktop 스토리의 항목이다. 하위 메뉴 스토리도 같은 상태를 쓴다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
-import { ignoreMenuAction, previewMenu } from '@/shared/stories/menu-preview/menu-preview';
+import { ignoreMenuAction, previewMenu } from '@/shared/components/menu-popup/story-menu-preview';
 
 import { getDesktopMenuEntries } from './empty-menu-entries';
 

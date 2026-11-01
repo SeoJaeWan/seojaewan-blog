@@ -1,9 +1,10 @@
 import { getWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
-import { resetRegisteredStores } from '@/shared/stores/store-reset/store-reset';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { initialRestartState } from '@/shared/utils/restart-rules/restart-rules';
 import type { WindowApp } from '@/shared/utils/window-rules/window-rules';
+
+import { resetRegisteredStores } from './store-reset';
 
 /**
  * 동작 스토리를 그리기 전에 저장소를 모두 처음 상태로 돌린다. 스토리 meta의 `beforeEach`에 넘긴다.

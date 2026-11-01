@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { resetStoryStores } from '@/shared/stories/story-stores/story-stores';
-import { getStoryWindowTitle, renderStoryWindow } from '@/shared/stories/story-window/story-window';
+import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
+import { getStoryWindowTitle, renderStoryWindow } from '@/shared/utils/window-rules/story-window';
 
 import { TaskbarLayer } from './taskbar-layer';
 

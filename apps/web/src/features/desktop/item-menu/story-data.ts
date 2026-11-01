@@ -2,7 +2,7 @@
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:조립]]
 // 아이콘 메뉴 조립(Menu/Folder·Post·Link·RecycleBin·Multiple) 스토리의 항목이다. 실제 메뉴 함수에 피그마 조립과 같은 상태를 넣어 만든다.
-import { ignoreMenuAction } from '@/shared/stories/menu-preview/menu-preview';
+import { ignoreMenuAction } from '@/shared/components/menu-popup/story-menu-preview';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
 import { getItemMenuEntries } from './item-menu-entries';

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
-import { resetStoryStores } from '@/shared/stories/story-stores/story-stores';
+import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 
 import { StartMenuLayer } from './start-menu-layer';
 

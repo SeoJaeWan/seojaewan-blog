@@ -2,11 +2,7 @@ import type { ReactNode } from 'react';
 
 import { WindowFrame } from '@seojaewan/design-system';
 
-import type {
-  OpenWindow,
-  WindowApp,
-  WindowFrameControls,
-} from '@/shared/utils/window-rules/window-rules';
+import type { OpenWindow, WindowApp, WindowFrameControls } from './window-rules';
 
 /** 스토리 창 제목에 쓰는 앱 이름 */
 const storyAppNames: Readonly<Record<WindowApp, string>> = {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MenuStory, menuStoryA11y } from '@/shared/stories/menu-story/menu-story';
+import { MenuStory, menuStoryA11y } from '@/shared/components/menu-popup/story-menu';
 
 import { menuPost } from './story-data';
 

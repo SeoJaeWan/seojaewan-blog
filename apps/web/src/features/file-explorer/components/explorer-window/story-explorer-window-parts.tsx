@@ -18,7 +18,7 @@ import {
   WINDOW_RECYCLE_BIN_ITEMS,
   WINDOW_SEARCH_PLACEHOLDERS,
   WINDOW_STATUS_TEXT,
-} from '@/shared/stories/explorer/explorer';
+} from './story-data';
 
 /** 피그마 Window/Explorer 변형 속성 */
 type ExplorerWindowVariant = {

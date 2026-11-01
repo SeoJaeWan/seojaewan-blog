@@ -2,7 +2,7 @@ import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX } from 'react';
 import { useState } from 'react';
 
-import { MenuPopup } from '@/shared/components/menu-popup/menu-popup';
+import { MenuPopup } from './menu-popup';
 
 type MenuStoryProps = Pick<
   ComponentProps<typeof MenuPopup>,

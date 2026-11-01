@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, waitFor, within } from 'storybook/test';
 
-import { openStoryWindows, resetStoryStores } from '@/shared/stories/story-stores/story-stores';
-import { getStoryWindowTitle, renderStoryWindow } from '@/shared/stories/story-window/story-window';
+import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
+import { getStoryWindowTitle, renderStoryWindow } from '@/shared/utils/window-rules/story-window';
 
 import { HOVER_PREVIEW_OPEN_DELAY } from './hooks/use-hover-preview/use-hover-preview';
 import { installStoryClock } from './story-clock';

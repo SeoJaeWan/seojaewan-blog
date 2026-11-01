@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/taskbar-app/taskbar-app';
-import { TASKBAR_CLOCK } from '@/shared/stories/taskbar/taskbar';
 
+import { TASKBAR_CLOCK } from './story-data';
 import { TaskbarDefault } from './taskbar-default';
 
 // 피그마 Taskbar/Default의 변형 속성 값이다(정규화한 이름).

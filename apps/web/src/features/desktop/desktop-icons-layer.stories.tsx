@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
-import { resetStoryStores } from '@/shared/stories/story-stores/story-stores';
 
 import { DesktopIconsLayer } from './desktop-icons-layer';
 

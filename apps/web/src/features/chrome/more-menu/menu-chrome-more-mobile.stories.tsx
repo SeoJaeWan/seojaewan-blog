@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { menuChromeMoreMobile } from '@/features/chrome/components/menu-chrome-more-mobile/story-data';
-import { MenuStory, menuStoryA11y } from '@/shared/stories/menu-story/menu-story';
+import { MenuStory, menuStoryA11y } from '@/shared/components/menu-popup/story-menu';
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.

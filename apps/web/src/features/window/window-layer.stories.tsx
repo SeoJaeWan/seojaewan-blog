@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { openStoryWindows, resetStoryStores } from '@/shared/stories/story-stores/story-stores';
 import {
   getStoryWindowTitle,
   renderNoStoryWindowIcon,
   renderStoryWindow,
-} from '@/shared/stories/story-window/story-window';
+} from '@/shared/utils/window-rules/story-window';
 
 import { dragStoryPointer } from './story-pointer';
 import { WindowLayer } from './window-layer';
