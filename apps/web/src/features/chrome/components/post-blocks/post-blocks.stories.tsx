@@ -139,3 +139,54 @@ export const Structure: Story = {
     });
   },
 };
+
+const annotationBlocks: PostBlock[] = [
+  {
+    type: 'paragraph',
+    richText: [
+      {
+        text: '모두',
+        link: null,
+        annotations: { bold: true, italic: true, underline: true, strikethrough: true },
+      },
+      { text: '굵은 코드', link: null, annotations: { bold: true, code: true } },
+    ],
+  },
+  {
+    type: 'table',
+    hasColumnHeader: false,
+    rows: [[[{ text: '표 칸 굵게', link: null, annotations: { bold: true } }]]],
+  },
+];
+
+// @codocs [[Notion 블록:모양]]
+/** 글자 서식은 겹쳐 그린다: 굵게+기울임+밑줄+취소선이 한 조각에 모두 적용되고 표 칸에도 적용된다 */
+export const Annotations: Story = {
+  render: () => <PostBlocks blocks={annotationBlocks} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('한 조각의 굵게·기울임·밑줄·취소선을 모두 적용한다', async () => {
+      const strong = canvas.getByText('모두').closest('strong');
+      const style = getComputedStyle(canvas.getByText('모두'));
+      await expect(strong).not.toBeNull();
+      await expect(Number(getComputedStyle(strong ?? canvasElement).fontWeight)).toBeGreaterThan(
+        500,
+      );
+      await expect(style.fontStyle).toBe('italic');
+      const decorated = canvas.getByText('모두').closest('em');
+      await expect(decorated?.closest('u')).not.toBeNull();
+      await expect(decorated?.closest('s')).not.toBeNull();
+    });
+
+    await step('굵은 인라인 코드는 코드 서체로 굵게 그린다', async () => {
+      const strong = canvas.getByText('굵은 코드');
+      await expect(Number(getComputedStyle(strong).fontWeight)).toBeGreaterThan(500);
+      await expect(strong.closest('span')).not.toBeNull();
+    });
+
+    await step('표 칸 글자에도 굵게를 적용한다', async () => {
+      await expect(canvas.getByText('표 칸 굵게').tagName).toBe('STRONG');
+    });
+  },
+};

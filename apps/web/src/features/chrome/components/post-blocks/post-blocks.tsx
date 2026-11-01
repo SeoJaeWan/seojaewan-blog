@@ -87,6 +87,7 @@ const headingClassNames = {
 const BODY_TEXT_CLASS_NAME = 'type-body-large text-text-fill-primary';
 const LINK_CLASS_NAME = 'type-body-large-link text-accent-text-fill-primary underline';
 const INLINE_CODE_CLASS_NAME = 'type-code text-post-inline-code';
+const BOLD_CLASS_NAME = 'font-font-weight-semibold';
 const SMALL_LINK_CLASS_NAME = 'text-accent-text-fill-primary underline';
 
 // 강조된 코드 글자 조각의 색이다(디자인 시스템 `code-syntax/*` 토큰).
@@ -145,7 +146,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
   /**
    * 글자 조각들을 그린다. 링크가 있는 조각은 링크다.
    * @param richText 글자 조각
-   * @param isBodyLarge 본문 글자(Body Large) 자리인지. 아니면(표 칸) 서식 글자 스타일을 바꾸지 않는다
+   * @param isBodyLarge 본문 글자(Body Large) 자리인지. 아니면(표 칸) 링크를 작은 글자 링크로 그린다
    * @returns 글자와 링크
    */
   function renderRichText(richText: readonly RichText[], isBodyLarge = true): ReactNode {
@@ -157,12 +158,9 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
        * @returns 글자나 링크
        */
       (part, index) => {
+        const content = renderAnnotatedText(part);
         if (part.link === null) {
-          return (
-            <span key={index} className={getTextClassName(part, isBodyLarge)}>
-              {part.text}
-            </span>
-          );
+          return <Fragment key={index}>{content}</Fragment>;
         }
         const linkClassName = isBodyLarge ? LINK_CLASS_NAME : SMALL_LINK_CLASS_NAME;
         const page = resolveLink?.(part.link) ?? null;
@@ -175,7 +173,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               rel="noopener noreferrer"
               className={linkClassName}
             >
-              {part.text}
+              {content}
             </a>
           );
         }
@@ -189,7 +187,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
             }}
             className={linkClassName}
           >
-            {part.text}
+            {content}
           </a>
         );
       },
@@ -489,38 +487,35 @@ function isListItemBlock(block: PostBlock): block is ListItemBlock {
 }
 
 /**
- * 서식 있는 글자 조각의 클래스. 본문 글자 자리에서는 서식마다의 글자 스타일(Body Large Strong·Italic·Underline·
- * Strikethrough)을 쓰고, 인라인 코드는 코드 서체와 `post/inline-code` 글자색이다. 서식이 여럿이면 인라인 코드, 굵게,
- * 기울임, 밑줄, 취소선 차례로 하나만 쓴다(글자 스타일이 한 조각에 하나라서다).
+ * 글자 조각을 서식대로 겹쳐 그린다. Notion처럼 굵게, 기울임, 밑줄, 취소선이 함께 걸리면 모두 적용한다. 서식마다
+ * 요소 하나(`strong`, `em`, `u`, `s`)로 감싸 굵기·기울임·줄 하나씩만 바꾸므로, 글자 크기가 다른 자리(본문, 표 칸)에서도
+ * 같고 밑줄과 취소선도 함께 그려진다. 인라인 코드는 가장 바깥에서 코드 서체와 `post/inline-code` 글자색을 입힌다.
  * @codocs [[Notion 블록:모양]]
  * @param part 글자 조각
- * @param isBodyLarge 본문 글자(Body Large) 자리인지
- * @returns 클래스. 서식이 없으면 undefined
+ * @returns 서식이 입혀진 글자. 서식이 없으면 글자 그대로
  */
-function getTextClassName(part: RichText, isBodyLarge: boolean): string | undefined {
+function renderAnnotatedText(part: RichText): ReactNode {
   const annotations = part.annotations;
+  let content: ReactNode = part.text;
   if (annotations === undefined) {
-    return undefined;
-  }
-  if (annotations.code === true) {
-    return INLINE_CODE_CLASS_NAME;
-  }
-  if (!isBodyLarge) {
-    return undefined;
+    return content;
   }
   if (annotations.bold === true) {
-    return 'type-body-large-strong';
+    content = <strong className={BOLD_CLASS_NAME}>{content}</strong>;
   }
   if (annotations.italic === true) {
-    return 'type-body-large-italic';
+    content = <em className="italic">{content}</em>;
   }
   if (annotations.underline === true) {
-    return 'type-body-large-underline';
+    content = <u className="underline">{content}</u>;
   }
   if (annotations.strikethrough === true) {
-    return 'type-body-large-strikethrough';
+    content = <s className="line-through">{content}</s>;
   }
-  return undefined;
+  if (annotations.code === true) {
+    content = <span className={INLINE_CODE_CLASS_NAME}>{content}</span>;
+  }
+  return content;
 }
 
 /**
