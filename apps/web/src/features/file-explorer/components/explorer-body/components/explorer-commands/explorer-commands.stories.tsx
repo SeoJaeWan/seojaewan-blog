@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { ExplorerCommands } from './explorer-commands';
 
@@ -30,3 +31,23 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Figma: Story = {};
+
+// @codocs [[접근성:Tab]]
+/** 명령 모음은 Tab 한 번에 닿고 안에서 ←/→로 옮기며 비활성 버튼은 건너뛴다 */
+export const Keyboard: Story = {
+  render: () => <ExplorerCommands location="folder" disabledCommands={['onCut']} />,
+  play: async ({ canvasElement }) => {
+    const toolbar = within(canvasElement).getByRole('toolbar', { name: '명령 모음' });
+    const canvas = within(toolbar);
+    const newButton = canvas.getByRole('button', { name: '새로 만들기' });
+    await expect(canvas.getByRole('button', { name: '잘라내기' })).toBeDisabled();
+    await expect(
+      canvas.getAllByRole('button').filter((button) => button.tabIndex === 0),
+    ).toHaveLength(1);
+    newButton.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(canvas.getByRole('button', { name: '붙여넣기' })).toHaveFocus();
+    await userEvent.keyboard('{ArrowLeft}');
+    await expect(newButton).toHaveFocus();
+  },
+};

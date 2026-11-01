@@ -64,12 +64,20 @@ export const Default: CloseStory = {
       await expect(canvas.getByText('문서')).toBeInTheDocument();
     });
 
-    await step('thumbnail 자리에 받은 내용을 그린다', async () => {
-      await expect(canvas.getByText('축소 화면')).toBeInTheDocument();
+    // @codocs [[접근성:Tab]]
+    await step('thumbnail 자리에 받은 내용을 그리고 보조 기술에는 숨긴다', async () => {
+      await expect(canvas.getByText('축소 화면')).toBeVisible();
+      await expect(canvas.getByText('축소 화면').closest('[aria-hidden]')).not.toBeNull();
+    });
+
+    // @codocs [[접근성:Tab]]
+    await step('닫기 버튼은 마우스 전용이다', async () => {
+      await expect(canvas.getByLabelText('창 닫기')).toHaveAttribute('tabindex', '-1');
+      await expect(canvas.getByLabelText('창 닫기')).toHaveAttribute('aria-hidden', 'true');
     });
 
     await step('닫기 버튼은 onClose만 부르고 카드의 onClick은 부르지 않는다', async () => {
-      // 닫기 버튼은 CSS :hover·:focus-within일 때만 보인다. 합성 이벤트는 :hover를 만들지 않고, 숨은 요소는 역할 이름이 비므로 aria-label로 찾는다.
+      // 닫기 버튼은 마우스 전용이라 보조 기술에 숨겨져 역할 이름이 비므로 aria-label로 찾는다.
       await userEvent.click(canvas.getByLabelText('창 닫기'));
       await expect(args.onClose).toHaveBeenCalledTimes(1);
       await expect(args.onClick).not.toHaveBeenCalled();

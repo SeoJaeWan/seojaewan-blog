@@ -1,9 +1,10 @@
-import type { JSX, PointerEvent as ReactPointerEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { JSX, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
+import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
@@ -63,10 +64,14 @@ export type TaskbarAppsLayerProps = {
  * - 모바일은 미리보기 목록을 화면 폭(좌우 12px 여백)에 맞춰 작업 표시줄 위 가운데에 띄우고, 카드가 많으면 카드를 같은 너비로 줄인다.
  * - 미리보기 목록은 실제 창을 `WindowThumbnail`로 줄여 보여 주고, 고르면 그 창을 맨 앞으로, 닫기를 누르면 그 창을 닫는다.
  *   바깥을 누르거나 Esc를 누르면 닫힌다. 축소 화면 안의 창 내용과 제목은 앱을 아는 쓰는 곳이 `renderWindow`·`getWindowTitle`로 넘긴다.
+ * - 앱 버튼들은 Tab 한 번에 닿고(맨 앞 창의 앱, 없으면 첫 버튼) 안에서 ←/→로 옮긴다.
+ * - 키보드로 목록을 열면 첫 카드로 포커스를 옮기고, Esc로 닫거나 마지막 카드를 닫으면 앱 버튼으로 돌려준다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @codocs [[작업 표시줄:창 미리보기]]
  * @codocs [[작업 표시줄:고정과 순서]]
  * @codocs [[작업 표시줄:우클릭 메뉴]]
+ * @codocs [[접근성:Tab]]
+ * @codocs [[접근성:포커스]]
  * @param props
  * @returns 앱 버튼들
  */
@@ -92,6 +97,15 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   // 앱 버튼을 끄는 중인지, 방금 끌었는지(끌기 뒤에 따라오는 클릭을 거른다)다.
   const isDraggingRef = useRef(false);
   const isDraggedRef = useRef(false);
+  // 키보드로 연 미리보기 목록의 첫 카드로 포커스를 옮길지.
+  const shouldFocusPreviewRef = useRef(false);
+  // 앱 버튼으로 포커스를 돌려줄 앱. 미리보기의 마지막 카드를 닫으면 카드가 사라진 뒤 옮긴다.
+  const focusReturnAppRef = useRef<WindowApp | null>(null);
+  const rovingProps = useRovingFocus(containerRef, {
+    orientation: 'horizontal',
+    itemSelector: '[data-taskbar-app]',
+    selectedSelector: '[data-indicator="active"]',
+  });
   const state = { windows, order, lastSerial: 0 };
   // 창을 모두 닫으면 목록도 닫힌다.
   const openPreviewApp =
@@ -123,6 +137,20 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
     setPreview(null);
   }
 
+  useLayoutEffect(
+    /** 키보드로 연 목록의 첫 카드로, 마지막 카드를 닫았으면 앱 버튼으로 포커스를 옮긴다. */
+    () => {
+      if (shouldFocusPreviewRef.current && openPreviewApp !== null) {
+        shouldFocusPreviewRef.current = false;
+        containerRef.current?.querySelector<HTMLElement>('[role="button"]')?.focus();
+      }
+      if (focusReturnAppRef.current !== null) {
+        findAppButton(containerRef.current, focusReturnAppRef.current)?.focus();
+        focusReturnAppRef.current = null;
+      }
+    },
+  );
+
   useEffect(
     /** 미리보기 목록이 열려 있는 동안 바깥 누르기와 Esc를 받아 닫는다. */
     () => {
@@ -140,13 +168,17 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
         setPreview(null);
       }
       /**
-       * Esc를 누르면 목록을 닫는다.
+       * Esc를 누르면 목록을 닫는다. 포커스가 목록 안에 있었으면 앱 버튼으로 돌려준다.
        * @param event 키 이벤트
        */
       function handleDocumentKeyDown(event: KeyboardEvent): void {
-        if (event.key === 'Escape') {
-          setPreview(null);
+        if (event.key !== 'Escape') {
+          return;
         }
+        if (containerRef.current?.contains(document.activeElement) === true) {
+          focusReturnAppRef.current = openPreviewApp;
+        }
+        setPreview(null);
       }
       document.addEventListener('pointerdown', handleDocumentPointerDown);
       document.addEventListener('keydown', handleDocumentKeyDown);
@@ -161,8 +193,9 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   /**
    * 앱 버튼을 누르면 할 일을 정해 한다. 미리보기 목록이 열린 앱 버튼을 다시 누르면 목록을 닫는다.
    * @param app 누른 버튼의 앱
+   * @param isKeyboard 키보드로 눌렀는지
    */
-  function handleAppClick(app: WindowApp): void {
+  function handleAppClick(app: WindowApp, isKeyboard: boolean): void {
     hover.cancel();
     if (isDraggedRef.current) {
       isDraggedRef.current = false;
@@ -171,9 +204,9 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
     const action = getTaskbarAppAction(useWindowStore.getState(), app);
     if (action.type === 'preview') {
       // 클릭으로 연 목록을 다시 누르면 닫는다. 마우스를 올려 연 목록은 누르면 클릭으로 연 것으로 바꿔 그대로 둔다.
-      setPreview(
-        preview?.app === app && preview.source === 'click' ? null : { app, source: 'click' },
-      );
+      const isClosing = preview?.app === app && preview.source === 'click';
+      shouldFocusPreviewRef.current = isKeyboard && !isClosing;
+      setPreview(isClosing ? null : { app, source: 'click' });
       return;
     }
     setPreview(null);
@@ -286,10 +319,14 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
    */
   function handlePreviewClose(id: string): void {
     const closed = useWindowStore.getState().windows[id];
+    const isFocusInList = containerRef.current?.contains(document.activeElement) === true;
     close(id);
     if (closed !== undefined && getAppWindows(useWindowStore.getState(), closed.app).length === 0) {
       hover.cancel();
       setPreview(null);
+      if (isFocusInList) {
+        focusReturnAppRef.current = closed.app;
+      }
     }
   }
 
@@ -326,9 +363,12 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
    * @returns TaskbarAppItem
    */
   function renderAppButton(app: WindowApp): JSX.Element {
-    /** 앱 버튼을 누르면 할 일을 한다. */
-    function handleButtonClick(): void {
-      handleAppClick(app);
+    /**
+     * 앱 버튼을 누르면 할 일을 한다.
+     * @param event 누르기 이벤트. 키보드로 누른 클릭은 `detail`이 0이다
+     */
+    function handleButtonClick(event: ReactMouseEvent): void {
+      handleAppClick(app, event.detail === 0);
     }
     /**
      * 포인터가 버튼이나 미리보기에 들어오면 창이 있는 앱일 때 열기를 기다린다.
@@ -424,7 +464,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   }
 
   return (
-    <div ref={containerRef} className="contents">
+    <div ref={containerRef} {...rovingProps} className="contents">
       {apps.map(renderAppButton)}
     </div>
   );
@@ -432,3 +472,13 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
 
 /** 축소 화면 안의 창은 조작할 수 없어(`inert`) 창 버튼 동작을 비워 둔다. */
 function ignoreControl(): void {}
+
+/**
+ * 앱 버튼 요소를 찾는다.
+ * @param container 앱 버튼들을 담은 요소
+ * @param app 앱
+ * @returns 앱 버튼. 없으면 null
+ */
+function findAppButton(container: HTMLElement | null, app: WindowApp): HTMLElement | null {
+  return container?.querySelector<HTMLElement>(`[data-taskbar-app="${app}"]`) ?? null;
+}

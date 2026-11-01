@@ -1,6 +1,6 @@
 'use client';
 
-import { type JSX, type PointerEvent, useEffect, useRef, useState } from 'react';
+import { type JSX, type PointerEvent, useEffect, useId, useRef, useState } from 'react';
 
 import {
   Button,
@@ -27,6 +27,7 @@ import { ContextMenuArea } from '@/shared/components/context-menu-area/context-m
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
 import { StartJumpList } from './components/start-jump-list/start-jump-list';
 import { StartTile } from './components/start-tile/start-tile';
@@ -92,11 +93,11 @@ type StartBodyProps =
           }
       ));
 
-// 보기마다 `보기:` 버튼 글자다.
+// 보기마다 `보기:` 버튼의 값 글자다.
 const viewLabels = {
-  list: '보기: 간단히',
-  grid: '보기: 그리드',
-  category: '보기: 범주',
+  list: '간단히',
+  grid: '그리드',
+  category: '범주',
 } as const satisfies Record<StartAllView, string>;
 
 // 기기별 고정 항목 칸 너비다. 데스크톱은 PinnedTile 기본(95)으로 6열, 모바일은 89로 4열이다.
@@ -210,6 +211,7 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
  * 닫기 시작하면 `invisible`을 풀어, 투명도 0에서 시작하는 목록 페이드 인이 보이게 한다.
  * @codocs [[Start 메뉴:모두]]
  * @codocs [[피그마 연동:모션 클래스]]
+ * @codocs [[접근성:영역 이름]]
  * @param props
  */
 function StartListView(props: StartListViewProps): JSX.Element {
@@ -230,6 +232,9 @@ function StartListView(props: StartListViewProps): JSX.Element {
   // 격자가 열리거나 닫힌 뒤 포커스를 옮길 글자. 연 머리글의 글자 칸, 닫으면 고른(뒤로면 연) 글자의 머리글로 옮긴다.
   const pendingFocusLetterRef = useRef<string | null>(null);
   const jumpList = usePresence(bodyRef, isGridOpen, { subtree: true });
+  const pinnedRovingProps = useRovingFocus(pinnedGridRef, { orientation: 'grid' });
+  const pinnedTitleId = useId();
+  const allTitleId = useId();
 
   useEffect(
     /** 격자가 열리거나 닫히면 포커스를 격자의 글자 칸이나 목록의 머리글로 옮긴다. 누른 요소가 inert가 되거나 빠지기 때문이다. */
@@ -336,7 +341,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
    */
   function renderViewControl(): JSX.Element {
     if (props.onViewChange === undefined) {
-      return <DropDownButton label={viewLabels[view]} />;
+      return <DropDownButton subject="보기" label={viewLabels[view]} />;
     }
     return (
       <StartViewMenu
@@ -376,13 +381,21 @@ function StartListView(props: StartListViewProps): JSX.Element {
           <div
             className={`flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl ${scrollContentClassNames[device]}`}
           >
-            {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 영역마다 이름을 단다 */}
+            {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 보이는 제목을 영역 이름으로 쓴다 */}
             <section
-              aria-label="고정됨"
+              aria-labelledby={pinnedTitleId}
               className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg"
             >
-              <SectionTitle title="고정됨" className="w-full shrink-shrink-none" />
-              <TileGrid ref={pinnedGridRef} className="w-full shrink-shrink-none">
+              <SectionTitle
+                title="고정됨"
+                titleId={pinnedTitleId}
+                className="w-full shrink-shrink-none"
+              />
+              <TileGrid
+                ref={pinnedGridRef}
+                {...pinnedRovingProps}
+                className="w-full shrink-shrink-none"
+              >
                 {props.pinned.map(
                   /**
                    * 고정 항목 칸 하나를 그린다.
@@ -404,11 +417,12 @@ function StartListView(props: StartListViewProps): JSX.Element {
               </TileGrid>
             </section>
             <section
-              aria-label="모두"
+              aria-labelledby={allTitleId}
               className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg"
             >
               <SectionTitle
                 title="모두"
+                titleId={allTitleId}
                 showAction
                 action={renderViewControl()}
                 className="w-full shrink-shrink-none"
@@ -455,12 +469,22 @@ type StartAllListProps = {
 
 /**
  * 모두 목록을 묶음마다 ListGroup으로 그린다. 그리드 보기는 묶음 안을 PinnedTile 격자로, 나머지는 ListItem 줄로 채운다.
+ * 목록 전체(머리글 포함)가 Tab 한 번에 닿고 안에서 방향키로 옮긴다.
+ * @codocs [[접근성:Tab]]
  * @param props
  */
 function StartAllList(props: StartAllListProps): JSX.Element {
   const { view, groups, tileClassName } = props;
+  const listRef = useRef<HTMLDivElement>(null);
+  const rovingProps = useRovingFocus(listRef, {
+    orientation: view === 'grid' ? 'grid' : 'vertical',
+  });
   return (
-    <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">
+    <div
+      ref={listRef}
+      {...rovingProps}
+      className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs"
+    >
       {groups.map(
         /**
          * 묶음 하나를 그린다.

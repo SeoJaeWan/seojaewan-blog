@@ -141,6 +141,27 @@ export const PinnedTiles: Story = {
     const canvas = within(canvasElement);
     const panel = await canvas.findByRole('dialog', { name: '시작' });
 
+    // @codocs [[접근성:포커스]]
+    await step('열면 위쪽 검색칸에 포커스를 둔다', async () => {
+      await waitFor(() =>
+        expect(within(panel).getByRole('searchbox', { name: '시작 메뉴 검색' })).toHaveFocus(),
+      );
+    });
+
+    // @codocs [[접근성:Tab]]
+    await step('고정됨 칸은 Tab 한 번에 닿고 안에서 방향키로 옮긴다', async () => {
+      const tiles = [...panel.querySelectorAll<HTMLElement>('[data-start-tile-id]')];
+      await expect(tiles.filter((tile) => tile.tabIndex === 0)).toHaveLength(1);
+      tiles[0]?.focus();
+      await userEvent.keyboard('{ArrowRight}');
+      await expect(tiles[1]).toHaveFocus();
+      await userEvent.keyboard('{End}');
+      await expect(tiles.at(-1)).toHaveFocus();
+      await userEvent.keyboard('{Home}');
+      await expect(tiles[0]).toHaveFocus();
+      await expect(tiles[0]).toHaveAttribute('tabindex', '0');
+    });
+
     // @codocs [[Start 메뉴:고정됨]]
     await step('저장소의 고정 목록과 순서로 그린다', async () => {
       const tiles = within(panel).getAllByRole('button', {
@@ -260,6 +281,36 @@ export const AllList: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+
+    // @codocs [[접근성:영역 이름]]
+    await step('고정됨과 모두 영역은 보이는 제목을 이름으로 쓴다', async () => {
+      const panel = await canvas.findByRole('dialog', { name: '시작' });
+      await expect(within(panel).getByRole('region', { name: '고정됨' })).toHaveAttribute(
+        'aria-labelledby',
+        within(panel).getByRole('heading', { name: '고정됨' }).id,
+      );
+      await expect(within(panel).getByRole('region', { name: '모두' })).toHaveAttribute(
+        'aria-labelledby',
+        within(panel).getByRole('heading', { name: '모두' }).id,
+      );
+    });
+
+    // @codocs [[접근성:버튼 이름]]
+    await step('보기 버튼 이름은 무엇: 값이다', async () => {
+      await expect(canvas.getByRole('button', { name: '보기: 범주' })).toBeInTheDocument();
+    });
+
+    // @codocs [[접근성:Tab]]
+    await step('모두 목록은 Tab 한 번에 닿고 안에서 ↑↓로 옮긴다', async () => {
+      const list = canvas.getByRole('region', { name: '모두' });
+      const rows = [...list.querySelectorAll<HTMLElement>('[role="button"]')];
+      await expect(rows.filter((row) => row.tabIndex === 0)).toHaveLength(1);
+      rows[0]?.focus();
+      await userEvent.keyboard('{ArrowDown}');
+      await expect(rows[1]).toHaveFocus();
+      await userEvent.keyboard('{ArrowUp}');
+      await expect(rows[0]).toHaveFocus();
+    });
     const panel = await canvas.findByRole('dialog', { name: '시작' });
     /**
      * 모두 영역.
@@ -512,7 +563,7 @@ export const StartSearch: Story = {
       const scrollIntoView = spyOn(Element.prototype, 'scrollIntoView');
       scrollIntoView.mockClear();
       await userEvent.keyboard('{ArrowDown}');
-      await expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+      await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' }));
       await expect(panel.querySelector('[aria-current="true"]')).toHaveTextContent(
         'React 19 훅 정리',
       );
@@ -615,7 +666,7 @@ export const SearchResults: Story = {
       '검색어로 찾은 결과를 최고 일치와 종류별 묶음으로 보이고 최고 일치가 선택돼 있다',
       async () => {
         await expect(await within(panel).findByText('최고 일치')).toBeInTheDocument();
-        await expect(within(panel).getByText('글', { selector: 'p' })).toBeInTheDocument();
+        await expect(within(panel).getByRole('heading', { name: '글' })).toBeInTheDocument();
         await expect(
           within(panel).getByRole('button', { name: /^React 19 훅 정리/ }),
         ).toBeInTheDocument();

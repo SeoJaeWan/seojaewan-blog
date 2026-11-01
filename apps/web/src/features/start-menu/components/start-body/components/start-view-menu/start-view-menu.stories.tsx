@@ -23,11 +23,7 @@ const meta = {
   },
   render: (args) => (
     <div data-parity-target className="inline-flex">
-      <StartViewMenu
-        label="보기: 간단히"
-        open={args.state === 'open'}
-        menuItems={menuViewOptions}
-      />
+      <StartViewMenu label="간단히" open={args.state === 'open'} menuItems={menuViewOptions} />
     </div>
   ),
 } satisfies Meta<FigmaArgs>;

@@ -1,9 +1,11 @@
-import type { JSX, KeyboardEvent, ReactNode } from 'react';
+import { Button } from '@base-ui/react/button';
+import { type JSX, type KeyboardEvent, type ReactNode, useRef } from 'react';
 
 import { TaskbarPreviewList, WindowPreview } from '@seojaewan/design-system';
 
 import { TaskbarAppIcon } from '@/features/taskbar/components/taskbar-app-icon/taskbar-app-icon';
 import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
+import { useRovingFocus } from '@/shared/hooks/use-roving-focus/use-roving-focus';
 
 /** 창 미리보기 목록의 창 하나 */
 export type TaskbarWindowPreview = {
@@ -22,7 +24,7 @@ type TaskbarWindowPreviewListProps = {
   windows: readonly TaskbarWindowPreview[];
   /** 미리보기를 눌렀을 때 부른다. 그 창을 맨 앞으로 가져온다. 주면 미리보기가 버튼 역할을 한다 */
   onSelect?: (id: string) => void;
-  /** 미리보기의 닫기 버튼을 눌렀을 때 부른다. 그 창을 닫는다 */
+  /** 미리보기의 닫기 버튼을 누르거나 미리보기에서 Delete를 눌렀을 때 부른다. 그 창을 닫는다 */
   onClose?: (id: string) => void;
   /** 목록 판의 너비(px). 주면 창 개수에 맞추지 않고 이 너비로 둔다. 모바일에서 화면 폭에 맞출 때 쓴다 */
   listWidth?: number;
@@ -36,15 +38,22 @@ type TaskbarWindowPreviewListProps = {
  * 작업 표시줄 앱 버튼 위에 뜨는 창 미리보기 목록(피그마 조립 `Taskbar/PreviewList`)을 그린다.
  * 너비는 창 개수에 맞춘다(피그마 HUG). TaskbarPreviewList 판에 창마다 WindowPreview 카드(앱 아이콘, 제목, 축소 화면)를 가로로 늘어놓는다.
  * 모바일은 `listWidth`·`cardWidth`로 목록을 화면 폭에 맞추고 카드를 줄인다(너비는 실행 중에 정해지는 값이라 인라인 스타일이다).
- * 미리보기를 누르면(`onSelect`) 그 창을 맨 앞으로 가져오고, 닫기 버튼을 누르면(`onClose`) 그 창을 닫는다. 동작은 쓰는 곳이 넣는다.
+ * 미리보기를 누르면(`onSelect`) 그 창을 맨 앞으로 가져오고, 닫기 버튼이나 Delete로(`onClose`) 그 창을 닫는다. 동작은 쓰는 곳이 넣는다.
+ * 카드는 Base UI Button이고 목록은 Tab 한 번에 닿으며 안에서 ←/→로 옮긴다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[작업 표시줄:창 미리보기]]
+ * @codocs [[접근성:Tab]]
+ * @codocs [[접근성:역할]]
  * @param props
  */
 export function TaskbarWindowPreviewList(props: TaskbarWindowPreviewListProps): JSX.Element {
   const { app, windows, onSelect, onClose, listWidth, cardWidth, className } = props;
+  const listRef = useRef<HTMLDivElement>(null);
+  const rovingProps = useRovingFocus(listRef, { orientation: 'horizontal' });
   return (
     <TaskbarPreviewList
+      ref={listRef}
+      {...rovingProps}
       className={className === undefined ? 'w-max' : `w-max ${className}`}
       style={listWidth === undefined ? undefined : { width: listWidth }}
     >
@@ -60,39 +69,39 @@ export function TaskbarWindowPreviewList(props: TaskbarWindowPreviewListProps): 
             onSelect?.(item.id);
           }
           /**
-           * Enter·Space를 누르면 미리보기를 누른 것으로 본다.
+           * Delete를 누르면 그 창을 닫는다.
            * @param event 키 이벤트
            */
-          function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-            if (
-              event.target === event.currentTarget &&
-              (event.key === 'Enter' || event.key === ' ')
-            ) {
+          function handleKeyDown(event: KeyboardEvent<HTMLElement>): void {
+            if (event.key === 'Delete') {
               event.preventDefault();
-              onSelect?.(item.id);
+              onClose?.(item.id);
             }
           }
           /** 닫기 버튼을 누르면 쓰는 곳에 알린다. */
           function handleClose(): void {
             onClose?.(item.id);
           }
-          const isSelectable = onSelect !== undefined;
-          const handleSelectClick = isSelectable ? handleClick : undefined;
-          const handleSelectKeyDown = isSelectable ? handleKeyDown : undefined;
-          return (
+          const card = (
             <WindowPreview
               key={item.id}
-              role={isSelectable ? 'button' : undefined}
-              tabIndex={isSelectable ? 0 : undefined}
-              aria-label={isSelectable ? item.title : undefined}
-              onClick={handleSelectClick}
-              onKeyDown={handleSelectKeyDown}
               onClose={handleClose}
               appIcon={<TaskbarAppIcon app={app} />}
               title={item.title}
               thumbnail={item.thumbnail}
               style={cardWidth === undefined ? undefined : { width: cardWidth }}
               className="shrink-shrink-none"
+            />
+          );
+          return onSelect === undefined ? (
+            card
+          ) : (
+            <Button
+              key={item.id}
+              nativeButton={false}
+              onClick={handleClick}
+              onKeyDown={handleKeyDown}
+              render={card}
             />
           );
         },

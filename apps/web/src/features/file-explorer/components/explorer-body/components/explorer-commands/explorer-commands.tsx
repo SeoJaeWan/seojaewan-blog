@@ -1,3 +1,4 @@
+import { Toolbar } from '@base-ui/react/toolbar';
 import { type ComponentProps, type JSX, type MouseEventHandler, useState } from 'react';
 
 import { Button, cn, IconButton, Separator } from '@seojaewan/design-system';
@@ -137,8 +138,11 @@ const MOBILE_NEW_ICON: IconName = 'icons/ic_fluent_folder_add_20_regular.svg';
 /**
  * 탐색기 명령 막대(ExplorerCommandBar)의 Commands 자리에 넣는 명령 버튼 묶음(피그마 조립 `Explorer/Commands`)을 그린다.
  * 쓸 수 없는 명령은 비활성으로 그린다. 정렬·보기는 메뉴 항목을 주면 버튼 아래에 그 메뉴를 연다.
+ * 버튼 줄은 Base UI Toolbar라 Tab 한 번에 닿고 안에서 ←/→·Home/End로 옮긴다. 비활성 버튼은 건너뛴다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
+ * @codocs [[접근성:Tab]]
+ * @codocs [[접근성:역할]]
  * @param props
  */
 export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
@@ -155,7 +159,11 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
   const [openMenu, setOpenMenu] = useState<'onSort' | 'onView' | null>(null);
   const menus = { onSort: sortMenu, onView: viewMenu } as const;
   return (
-    <div className={cn('flex w-fit items-center gap-spacing-xs', className)}>
+    <Toolbar.Root
+      aria-label="명령 모음"
+      loopFocus={false}
+      className={cn('flex w-fit items-center gap-spacing-xs', className)}
+    >
       {commandsByLocation[location].map(
         /**
          * 명령 버튼이나 구분선 하나를 그린다.
@@ -183,35 +191,38 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
           const button =
             isDesktop && command.isLabeledOnDesktop ? (
               <Button
-                key={command.handler}
                 variant="subtle"
                 label={command.label}
                 showIcon
                 icon={command.icon}
                 className="min-w-size-none"
-                disabled={isDisabled}
-                onClick={handleClick}
               />
             ) : (
               <IconButton
-                key={command.handler}
                 variant="subtle"
                 label={command.label}
                 icon={!isDesktop && command.handler === 'onNew' ? MOBILE_NEW_ICON : command.icon}
-                disabled={isDisabled}
-                onClick={handleClick}
               />
             );
+          const toolbarButton = (
+            <Toolbar.Button
+              key={command.handler}
+              render={button}
+              disabled={isDisabled}
+              focusableWhenDisabled={false}
+              onClick={handleClick}
+            />
+          );
           const menuName =
             command.handler === 'onSort' || command.handler === 'onView' ? command.handler : null;
           const menu = menuName === null ? undefined : menus[menuName];
           if (menuName === null || menu === undefined) {
-            return button;
+            return toolbarButton;
           }
           return (
             <MenuButton
               key={command.handler}
-              trigger={button}
+              trigger={toolbarButton}
               items={closeOnSelect(menu, () => {
                 setOpenMenu(null);
               })}
@@ -223,7 +234,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
           );
         },
       )}
-    </div>
+    </Toolbar.Root>
   );
 }
 

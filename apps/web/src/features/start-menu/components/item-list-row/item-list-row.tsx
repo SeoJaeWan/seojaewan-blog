@@ -1,7 +1,7 @@
+import { Button } from '@base-ui/react/button';
 import {
   type ComponentProps,
   type JSX,
-  type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
   type Ref,
@@ -33,13 +33,14 @@ type ItemListRowProps = Omit<
 };
 
 /**
- * Start 목록과 검색 화면의 항목 한 줄(`ListItem`)을 열 수 있는 버튼으로 그린다. 클릭·Enter·Space로 열고, 열면 `onOpen`을 부른다.
+ * Start 목록과 검색 화면의 항목 한 줄(`ListItem`)을 Base UI Button으로 그린다. 클릭·Enter·Space로 열고, 열면 `onOpen`을 부른다.
  * 고른 줄이 보이는 영역 밖이면 스크롤해 보이게 한다(방향키로 고르는 검색 결과).
  * 고른 줄은 `aria-current`로 알린다.
  * 받은 속성과 ref는 줄 요소에 그대로 넘기므로, 쓰는 곳이 줄을 우클릭 영역(`ContextMenuArea`의 `area`)으로 바로 쓸 수 있다.
- * 줄의 `onClick`·`onKeyDown`은 열기와 함께 부른다.
+ * 줄의 `onClick`은 열기와 함께 부른다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
+ * @codocs [[접근성:역할]]
  * @param props
  */
 export function ItemListRow(props: ItemListRowProps): JSX.Element {
@@ -52,7 +53,6 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
     onOpen: handleOpenItem,
     ref: forwardedRef,
     onClick: handleClickProp,
-    onKeyDown: handleKeyDownProp,
     ...rowAttributes
   } = props;
   const rowRef = useRef<HTMLDivElement>(null);
@@ -96,33 +96,25 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
     handleOpen();
   }
 
-  /**
-   * 받은 `onKeyDown`을 부르고, Enter·Space를 누르면 줄을 누른 것으로 본다.
-   * @param event 키 이벤트
-   */
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-    handleKeyDownProp?.(event);
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleOpen();
-    }
-  }
-
   const rowProps = {
     ...rowAttributes,
     ref: rowRef,
-    role: 'button',
-    tabIndex: 0,
     'aria-current': isSelected ? ('true' as const) : undefined,
     selected: isSelected,
     title,
     icon,
     onClick: handleClick,
-    onKeyDown: handleKeyDown,
   };
-  return subtitle === undefined ? (
-    <ListItem {...rowProps} />
-  ) : (
-    <ListItem {...rowProps} size="two-line" subtitle={subtitle} />
+  return (
+    <Button
+      nativeButton={false}
+      render={
+        subtitle === undefined ? (
+          <ListItem {...rowProps} />
+        ) : (
+          <ListItem {...rowProps} size="two-line" subtitle={subtitle} />
+        )
+      }
+    />
   );
 }
