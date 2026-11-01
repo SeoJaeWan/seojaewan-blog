@@ -3,8 +3,8 @@ import type { JSX } from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
+import { POST_PAGE, postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
 import { PostBlocks } from '@/features/chrome/components/post-blocks/post-blocks';
-import { POST_PAGE, postPageBlocks } from '@/shared/stories/post/post';
 
 import { ChromePage } from './chrome-page';
 import { NEW_TAB_LATEST_POSTS, NOT_FOUND_URL, SEARCH_RESULTS } from './story-data';

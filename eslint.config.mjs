@@ -22,7 +22,7 @@ const tsFiles = ['**/*.{ts,tsx}'];
 const WEB_SRC = 'apps/web/src';
 const DESIGN_SYSTEM = 'packages/design-system';
 // 앱 `shared/`의 종류. 종류마다 boundaries 요소가 된다.
-const sharedKinds = ['components', 'hooks', 'utils', 'stores', 'stories'];
+const sharedKinds = ['components', 'hooks', 'utils', 'stores'];
 const sharedTypes = sharedKinds.map((kind) => `web-shared-${kind}`);
 // 종류 폴더 밖에 둔 `shared/` 파일도 층 방향은 지키도록 `web-shared`로 묶는다.
 const sharedLayerTypes = [...sharedTypes, 'web-shared'];

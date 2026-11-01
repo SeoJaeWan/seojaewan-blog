@@ -1,7 +1,7 @@
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // @codocs [[피그마 연동:스토리 규칙]]
 // 탐색기 창(Window/Explorer)을 그리는 조립 스토리가 함께 쓰는 고정 데이터다. 피그마 조립과 같은 값을 둔다.
-// 탐색기 창 스토리와, 그 창을 줄여 넣는 작업 표시줄 창 미리보기(Taskbar/PreviewList 등)가 같은 창을 그려서 기능 사이에 둔다.
+// 탐색기 창 스토리와, 그 창을 줄여 넣는 작업 표시줄 창 미리보기(Taskbar/PreviewList 등)가 같은 창을 그린다. 미리보기 스토리는 이 파일을 바로 가져온다.
 
 /** 피그마 Breadcrumb `Location icon` 기본 인스턴스(file/Folder)의 자산 */
 export const FOLDER_LOCATION_ICON = 'images/file-folder';

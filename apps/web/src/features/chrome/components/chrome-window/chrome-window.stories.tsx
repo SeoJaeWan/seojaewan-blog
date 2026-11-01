@@ -3,8 +3,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ImageAsset } from '@seojaewan/design-system';
 
 import { ChromePage } from '@/features/chrome/components/chrome-page/chrome-page';
+import { POST_PAGE, postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
+import { POST_WINDOW } from '@/features/chrome/components/chrome-window/story-data';
 import { PostBlocks } from '@/features/chrome/components/post-blocks/post-blocks';
-import { POST_PAGE, POST_WINDOW, postPageBlocks } from '@/shared/stories/post/post';
 
 import { ChromeWindow } from './chrome-window';
 import { MULTIPLE_TAB_TITLES } from './story-data';

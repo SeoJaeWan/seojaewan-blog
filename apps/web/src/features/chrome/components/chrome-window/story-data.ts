@@ -2,7 +2,11 @@
 // @codocs [[피그마 연동:스토리 규칙]]
 // Chrome 창 조립 스토리가 쓰는 고정 데이터다. 피그마 Window/Chrome과 같은 값을 둔다.
 
-import { POST_WINDOW } from '@/shared/stories/post/post';
+/** 피그마 Window/Chrome의 탭 제목과 주소창 주소 */
+export const POST_WINDOW = {
+  tabTitle: 'React 19 훅 정리',
+  url: 'seojaewan.com/posts/react-19-hooks',
+} as const;
 
 /** 피그마 Window/Chrome `Tabs=Multiple`의 탭 제목들. 가운데 탭(지금 글)이 활성이다 */
 export const MULTIPLE_TAB_TITLES = [

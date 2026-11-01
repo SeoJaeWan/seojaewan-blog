@@ -3,10 +3,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ImageAsset } from '@seojaewan/design-system';
 
 import { ChromePage } from '@/features/chrome/components/chrome-page/chrome-page';
+import { POST_PAGE, postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
 import { ChromeWindow } from '@/features/chrome/components/chrome-window/chrome-window';
+import { POST_WINDOW } from '@/features/chrome/components/chrome-window/story-data';
 import { PostBlocks } from '@/features/chrome/components/post-blocks/post-blocks';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
-import { POST_PAGE, POST_WINDOW, postPageBlocks } from '@/shared/stories/post/post';
 
 import { SnapAssist } from './snap-assist';
 import { SNAP_ASSIST_CHROME } from './story-data';
@@ -14,8 +15,6 @@ import { SNAP_ASSIST_CHROME } from './story-data';
 // 피그마 `figure`의 이미지 칸 높이다(Window/Chrome 스토리와 같다). 축소 화면은 desktop 창이라 wide 값이다.
 const FIGURE_IMAGE_HEIGHT = 420;
 
-// @codocs [[저장소 구성:앱 폴더 구조]]
-// 컴포넌트(`SnapAssist`)는 `features/window`에 두고, 자리를 다른 기능(Chrome)의 조립으로 채운 이 스토리만 shell에 둔다.
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 남은 칸 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/952×1016)로 그린다.
 // 제안 창의 축소 화면은 피그마 조립처럼 실제 Chrome 창 조립(Window/Chrome)을 줄여 넣는다.
