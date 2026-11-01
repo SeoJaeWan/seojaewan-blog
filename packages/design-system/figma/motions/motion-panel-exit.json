@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
+  "directives": {
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "Start·검색 패널을 닫을 때"
+    ]
+  },
   "duration": {
     "ms": 167,
     "token": "motion/duration/fast"
   },
-  "iterations": null,
+  "iterations": 1,
   "name": "motion-panel-exit",
   "nodeId": "758:180",
   "tracks": [
