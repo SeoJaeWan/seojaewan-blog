@@ -1,3 +1,4 @@
+import { Tabs } from '@base-ui/react/tabs';
 import type { ComponentProps, JSX, MouseEvent, ReactNode } from 'react';
 
 import { cn } from '../../cn';
@@ -12,7 +13,9 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   title?: string;
   /** 피그마 불리언 속성 Show separator. 선택되지 않은 탭 오른쪽의 구분선을 그린다 */
   showSeparator?: boolean;
-  /** 닫기 버튼의 접근성 이름 */
+  /** Base UI 탭 값. 탭 줄(`Tabs.Root`)의 값과 같으면 선택된 탭으로 알린다 */
+  value: number;
+  /** 닫기 버튼의 이름. 버튼은 마우스 전용이라 보조 기술에는 드러나지 않는다 */
   closeLabel?: string;
   /** 닫기 버튼을 눌렀을 때 부른다. 탭 자체의 onClick은 부르지 않는다 */
   onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -21,8 +24,11 @@ type ExplorerTabProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 /**
  * 탐색기 제목 표시줄의 폴더 탭(피그마 ExplorerTab)을 그린다. 크기는 Windows가 정한 220×32로 고정한다.
  * Rest·Hover·Selected 모양은 선택 여부(selected)와 CSS hover로 바꾼다. Rest에만 오른쪽 구분선이 있고 Hover·Selected에서는 없다. 선택된 탭 바로 왼쪽 탭은 쓰는 곳이 `showSeparator`를 꺼 구분선을 없앤다.
- * 탭 묶음(바깥 상자) 안에 탭(`role="tab"`, 아이콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
- * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖고, `tabIndex`는 탭이 받는다.
+ * 탭 묶음(바깥 상자) 안에 Base UI `Tabs.Tab`(아이콘과 제목)과 닫기 버튼을 형제로 둔다. 탭 안에 버튼을 넣으면 대화형 요소가
+ * 겹치기 때문이다. 바깥 상자가 생김새와 누르기 동작(`onClick` 등)을 갖는다. 그래서 탭 줄(`Tabs.List`) 안에서만 쓴다.
+ * 닫기 버튼은 마우스 전용이다(`tablist`에는 탭만 있어야 한다). 키보드는 탭에서 Delete로 닫는다(쓰는 곳이 `onKeyDown`으로 받는다).
+ * 눌러도 포커스를 가져오지 않는다.
+ * @codocs [[접근성:역할]]
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
@@ -35,8 +41,8 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
     showSeparator: hasSeparator = true,
     closeLabel = '탭 닫기',
     onClose,
+    value,
     className,
-    tabIndex,
     ...divProps
   } = props;
   return (
@@ -53,10 +59,10 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         className,
       )}
     >
-      <div
-        role="tab"
-        aria-selected={isSelected}
-        tabIndex={tabIndex}
+      <Tabs.Tab
+        value={value}
+        nativeButton={false}
+        render={<div />}
         className={cn(
           'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
           'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
@@ -68,10 +74,13 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
           {title}
         </span>
-      </div>
+      </Tabs.Tab>
       <button
         type="button"
+        aria-hidden
         aria-label={closeLabel}
+        tabIndex={-1}
+        onMouseDown={handleCloseMouseDown}
         onClick={(event) => {
           event.stopPropagation();
           onClose?.(event);
@@ -88,4 +97,12 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       )}
     </div>
   );
+}
+
+/**
+ * 닫기 버튼을 눌러도 포커스를 옮기지 않는다. 버튼은 마우스 전용이고 곧 사라진다.
+ * @param event 누르기 이벤트
+ */
+function handleCloseMouseDown(event: MouseEvent<HTMLButtonElement>): void {
+  event.preventDefault();
 }

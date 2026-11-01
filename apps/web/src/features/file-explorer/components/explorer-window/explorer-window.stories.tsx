@@ -100,16 +100,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 닫기 버튼이 tablist 안에 있어 aria-required-children에 걸린다. 구조를 바꿀지 사람이 정할 때까지 이 규칙만 끈다
-// (임의 작업 문서의 "탭 닫기 버튼" 항목).
-export const Figma: Story = {
-  parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
-};
+export const Figma: Story = {};
 
-// 닫기 버튼이 tablist 안에 있는 구조는 Figma 스토리와 같아 같은 규칙을 끈다.
 /** 탭 줄에서 누른 것은 창을 맨 앞으로 가져오되 창 끌기는 시작하지 않고, 탭을 끌면 순서를 바꾼다 */
 export const TabPointer: Story = {
-  parameters: { a11y: { config: { rules: [{ id: 'aria-required-children', enabled: false }] } } },
   args: {
     tabs: 'multiple',
     onWindowPointerDown: fn(),
@@ -150,7 +144,7 @@ export const TabPointer: Story = {
 
     await step('탭의 ×를 누르면 창 층의 누르기 처리까지 전해진다', async () => {
       clearCalls();
-      await fireEvent.pointerDown(canvas.getAllByRole('button', { name: '탭 닫기' })[0] ?? react);
+      await fireEvent.pointerDown(canvas.getAllByLabelText('탭 닫기')[0] ?? react);
       await expect(handleWindowPointerDown).toHaveBeenCalledTimes(1);
     });
 

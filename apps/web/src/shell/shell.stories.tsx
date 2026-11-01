@@ -7,7 +7,7 @@ import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { readCssTimeVariable } from '@/shared/utils/motion-time/motion-time';
 
 import { Shell } from './shell';
-import { SHELL_STORY_POSTS, WINDOW_STORY_A11Y } from './story-data';
+import { SHELL_STORY_POSTS } from './story-data';
 import { chooseRestartInStory } from './story-restart';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
@@ -39,7 +39,6 @@ async function openBlogFolder(documentBody: HTMLElement): Promise<void> {
 
 /** 처음 화면. 바탕화면 항목을 보이고, 작업 표시줄 앱 버튼으로 창을 열고 최소화·복원한다 */
 export const DesktopAndTaskbar: Story = {
-  parameters: { a11y: WINDOW_STORY_A11Y },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
 
@@ -83,7 +82,6 @@ export const DesktopAndTaskbar: Story = {
 
 /** Blog 탐색기 창 둘을 연 채 작업 표시줄 버튼을 눌러 창 미리보기를 연다 */
 export const WindowPreview: Story = {
-  parameters: { a11y: WINDOW_STORY_A11Y },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
     await openBlogFolder(canvasElement.ownerDocument.body);
@@ -137,7 +135,6 @@ export const WindowPreview: Story = {
 
 /** Start 버튼으로 Start 메뉴를 열고 닫는다. Esc·바깥 클릭·항목 열기가 닫고, 전원 메뉴는 Esc로 먼저 닫힌다 */
 export const StartMenu: Story = {
-  parameters: { a11y: WINDOW_STORY_A11Y },
   play: async ({ canvasElement, step }) => {
     const body = within(canvasElement.ownerDocument.body);
     const startButton = body.getByRole('button', { name: '시작' });
