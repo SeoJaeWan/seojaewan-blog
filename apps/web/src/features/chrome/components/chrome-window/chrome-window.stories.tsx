@@ -23,9 +23,6 @@ const SIZE_CLASS_NAMES = {
 // 피그마 조립이 Chrome/Page를 넣은 배치다. desktop 창은 넓은 글 화면, mobile 창은 좁은 글 화면을 쓴다.
 const PAGE_LAYOUTS = { desktop: 'wide', mobile: 'narrow' } as const;
 
-// 피그마 `figure`의 이미지 칸 높이다(Chrome/Page 스토리와 같다). 크기 토큰에 없는 값이라 인라인으로 준다.
-const FIGURE_IMAGE_HEIGHTS = { wide: 420, narrow: 212 } as const;
-
 // 탭 수 변형마다 탭 목록이다. 지금 글 탭이 활성이다.
 const TAB_LISTS = {
   single: [{ title: POST_WINDOW.tabTitle, active: true }],
@@ -72,12 +69,7 @@ const meta = {
         >
           <PostBlocks
             blocks={postPageBlocks[layout]}
-            renderImage={() => (
-              <ImageAsset
-                name="images/wallpaper-bloom"
-                style={{ height: FIGURE_IMAGE_HEIGHTS[layout] }}
-              />
-            )}
+            renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
           />
         </ChromePage>
       </ChromeWindow>
