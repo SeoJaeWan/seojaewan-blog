@@ -25,7 +25,7 @@ const meta = {
   },
   render: (args) => (
     // PostNavCard는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(354)로 감싼다.
-    <div className="w-354">
+    <div className="w-size-post-nav-card-width">
       <PostNavCard direction={args.direction} device={args.device} title={args.title} />
     </div>
   ),
@@ -43,7 +43,7 @@ export const Figma: Story = {};
 /** 방향에 따라 이전 글·다음 글 라벨을 보이고, title로 제목을 바꾼다 */
 export const Default: Story = {
   render: () => (
-    <div className="flex w-354 flex-col gap-8">
+    <div className="flex w-size-post-nav-card-width flex-col gap-spacing-sm">
       <PostNavCard title="앞선 글" />
       <PostNavCard direction="next" title="뒤따르는 글" />
     </div>

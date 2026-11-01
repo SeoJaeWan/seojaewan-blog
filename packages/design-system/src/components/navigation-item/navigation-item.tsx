@@ -4,7 +4,7 @@ import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
 // 피그마 Level별 들여쓰기(indent) 너비다. 한 단계가 16px이다.
-const INDENT_CLASS_NAMES = ['', 'w-16', 'w-32', 'w-48'] as const;
+const INDENT_CLASS_NAMES = ['', 'w-spacing-lg', 'w-spacing-3xl', 'w-spacing-5xl'] as const;
 
 type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   /** 피그마 Level. 폴더 트리 깊이(0~3)이며 깊을수록 들여 쓴다 */
@@ -56,7 +56,10 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
   const defaultChevron = (
     <Asset
       name="icons/ic_fluent_chevron_right_16_regular.svg"
-      className={cn('size-icon-16 text-text-fill-secondary', expand === 'expanded' && 'rotate-90')}
+      className={cn(
+        'size-size-icon-sm text-text-fill-secondary',
+        expand === 'expanded' && 'rotate-rotate-quarter',
+      )}
     />
   );
   return (
@@ -66,8 +69,8 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
       aria-selected={isSelected}
       aria-expanded={expand === 'none' ? undefined : expand === 'expanded'}
       className={cn(
-        'flex h-control-height items-center gap-4 rounded-control py-0 select-none',
-        level === 0 ? 'px-8' : 'pr-8 pl-4',
+        'flex h-size-control-height items-center gap-spacing-xs rounded-radius-control py-spacing-none select-none',
+        level === 0 ? 'px-spacing-sm' : 'pr-spacing-sm pl-spacing-xs',
         'motion-control-state',
         isSelected
           ? 'bg-control-alt-fill-tertiary'
@@ -75,15 +78,21 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
         className,
       )}
     >
-      {level > 0 && <span className={cn('h-16 shrink-0', INDENT_CLASS_NAMES[level])} />}
+      {level > 0 && (
+        <span className={cn('h-spacing-lg shrink-shrink-none', INDENT_CLASS_NAMES[level])} />
+      )}
       <span
         onClick={handleChevronClick}
-        className="flex size-icon-16 shrink-0 items-center justify-center"
+        className="flex size-size-icon-sm shrink-shrink-none items-center justify-center"
       >
         {expand !== 'none' && (chevron ?? defaultChevron)}
       </span>
-      <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>
-      <span className="min-w-0 flex-1 truncate type-caption text-text-fill-primary">{label}</span>
+      <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+        {icon}
+      </span>
+      <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
+        {label}
+      </span>
     </div>
   );
 }

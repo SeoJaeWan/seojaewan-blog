@@ -30,13 +30,15 @@ export function PostNavCard(props: PostNavCardProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex flex-col gap-4 overflow-clip rounded-overlay border-default border-card-stroke-default bg-card-background-fill-secondary px-16 py-12',
+        'flex flex-col gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary px-spacing-lg py-spacing-md',
         direction === 'next' && device === 'desktop' ? 'items-end' : 'items-start',
         className,
       )}
     >
-      <p className="shrink-0 type-caption text-text-fill-secondary">{LABELS[direction]}</p>
-      <p className="shrink-0 type-body-strong text-text-fill-primary">{title}</p>
+      <p className="shrink-shrink-none type-caption text-text-fill-secondary">
+        {LABELS[direction]}
+      </p>
+      <p className="shrink-shrink-none type-body-strong text-text-fill-primary">{title}</p>
     </div>
   );
 }

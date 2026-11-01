@@ -20,7 +20,7 @@ export function PostCover(props: PostCoverProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex h-240 flex-col items-start overflow-hidden rounded-overlay [&>*]:block [&>*]:size-full [&>*]:object-cover',
+        'flex h-size-post-cover-height flex-col items-start overflow-hidden rounded-radius-overlay [&>*]:block [&>*]:size-full [&>*]:object-cover',
         className,
       )}
     >

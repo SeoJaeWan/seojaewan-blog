@@ -59,12 +59,12 @@ type MenuItemProps = MenuItemCommonProps &
 
 // 행(피그마 MenuItem 루트). 위아래 2·좌우 4 들여 쓴 강조 영역(base)을 담는다.
 const ROW_CLASS_NAME =
-  'group flex w-240 items-center justify-start px-4 py-2 outline-none select-none cursor-default';
+  'group flex w-full items-center justify-start px-spacing-xs py-spacing-2xs outline-none select-none cursor-default';
 
 // 강조 영역(피그마 base)과 상태 색이다. 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다.
 // 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
 const baseClassName = [
-  'flex flex-1 items-center justify-start gap-12 self-stretch overflow-hidden rounded-control px-12 py-4',
+  'flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch overflow-hidden rounded-radius-control px-spacing-md py-spacing-xs',
   'bg-subtle-fill-transparent text-text-fill-primary motion-control-state',
   'group-data-highlighted:bg-subtle-fill-secondary group-data-popup-open:bg-subtle-fill-secondary',
   'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
@@ -110,7 +110,10 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.CheckboxItemIndicator className="flex">
-                <Asset name="icons/ic_fluent_checkmark_20_regular.svg" className="size-icon-16" />
+                <Asset
+                  name="icons/ic_fluent_checkmark_20_regular.svg"
+                  className="size-size-icon-sm"
+                />
               </Menu.CheckboxItemIndicator>
             }
           />
@@ -128,7 +131,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.RadioItemIndicator className="flex">
-                <span className="size-6 rounded-full bg-text-fill-primary motion-control-state group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
+                <span className="size-size-menu-item-bullet rounded-full bg-text-fill-primary motion-control-state group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
               </Menu.RadioItemIndicator>
             }
           />
@@ -169,9 +172,9 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
  */
 function MenuItemIcon(props: { name: SvgAssetName | ImageAssetName }): JSX.Element {
   if (isImageAssetName(props.name)) {
-    return <ImageAsset name={props.name} className="size-icon-16 object-contain" />;
+    return <ImageAsset name={props.name} className="size-size-icon-sm object-contain" />;
   }
-  return <Asset name={props.name} className="size-icon-16" />;
+  return <Asset name={props.name} className="size-size-icon-sm" />;
 }
 
 /**
@@ -200,20 +203,20 @@ function MenuItemContent(props: MenuItemContentProps): JSX.Element {
   return (
     <span className={cn(baseClassName, props.baseClassName)}>
       {props.leading !== undefined && (
-        <span className="flex size-icon-16 shrink-0 items-center justify-center overflow-hidden p-0">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center overflow-hidden p-spacing-none">
           {props.leading}
         </span>
       )}
-      <span className="min-w-0 flex-1 truncate type-body">{props.label}</span>
+      <span className="min-w-size-none flex-flex-fill truncate type-body">{props.label}</span>
       {props.shortcut !== undefined && (
-        <span className={cn('shrink-0 type-caption', SECONDARY_TEXT_CLASS_NAME)}>
+        <span className={cn('shrink-shrink-none type-caption', SECONDARY_TEXT_CLASS_NAME)}>
           {props.shortcut}
         </span>
       )}
       {props.kind === 'submenu' && (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
-          className={cn('size-icon-16 shrink-0', SECONDARY_TEXT_CLASS_NAME)}
+          className={cn('size-size-icon-sm shrink-shrink-none', SECONDARY_TEXT_CLASS_NAME)}
         />
       )}
     </span>

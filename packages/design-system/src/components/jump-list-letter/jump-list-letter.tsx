@@ -31,8 +31,8 @@ export function JumpListLetter(props: JumpListLetterProps): JSX.Element {
     <BaseButton
       {...buttonProps}
       className={cn(
-        'inline-flex size-40 items-center justify-center rounded-control select-none',
-        'focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'inline-flex size-size-jump-list-letter-box items-center justify-center rounded-radius-control select-none',
+        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         'motion-control-state',
         ...stateClassNames,
         className,

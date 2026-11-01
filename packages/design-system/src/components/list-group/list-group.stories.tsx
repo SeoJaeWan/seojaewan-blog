@@ -15,9 +15,9 @@ const meta = {
   // 컴포넌트는 너비를 갖지 않으므로, 피그마 원본 너비 574로 감싸 그린다.
   // 컴포넌트의 items 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 높이 74만 칠 없는 빈 내용으로 둔다.
   render: (args) => (
-    <div className="w-574">
+    <div className="w-size-shell-body-width">
       <ListGroup showHeader={args.showHeader}>
-        <div className="w-full shrink-0" style={{ height: 74 }} />
+        <div className="w-full shrink-shrink-none" style={{ height: 74 }} />
       </ListGroup>
     </div>
   ),

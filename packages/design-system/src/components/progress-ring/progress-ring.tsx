@@ -16,15 +16,15 @@ type ProgressRingProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 // Windows가 정한 크기라 고정 크기 변수(size/16·32·64)로 둔다. 호 자산도 같은 크기로 그린다.
 const sizeClassNames = {
-  '16': 'size-16',
-  '32': 'size-32',
-  '64': 'size-64',
+  '16': 'size-size-progress-ring-sm',
+  '32': 'size-size-progress-ring-md',
+  '64': 'size-size-progress-ring-lg',
 } as const satisfies Record<ProgressRingSize, string>;
 
 // 호 자산(progress-ring/Arc)은 한 가지 색이라 쓰는 곳의 색 변수로 칠한다.
 const toneClassNames = {
   accent: 'text-accent-fill-default',
-  'on-dark': 'rounded-control text-boot-screen-foreground',
+  'on-dark': 'rounded-radius-control text-boot-screen-foreground',
 } as const satisfies Record<ProgressRingTone, string>;
 
 /**
@@ -40,7 +40,7 @@ export function ProgressRing(props: ProgressRingProps): JSX.Element {
       role="progressbar"
       {...divProps}
       className={cn(
-        'flex shrink-0 items-center justify-center',
+        'flex shrink-shrink-none items-center justify-center',
         sizeClassNames[size],
         toneClassNames[tone],
         className,

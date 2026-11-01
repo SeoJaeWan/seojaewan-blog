@@ -52,7 +52,7 @@ export function RenameField(props: RenameFieldProps): JSX.Element {
       value={value}
       defaultValue={value === undefined ? text : undefined}
       className={cn(
-        'block field-sizing-content border-default border-control-strong-stroke-default bg-control-fill-input-active px-4 py-2',
+        'block field-sizing-content border-stroke-width-default border-control-strong-stroke-default bg-control-fill-input-active px-spacing-xs py-spacing-2xs',
         'type-caption whitespace-nowrap text-text-fill-primary outline-none',
         'selection:bg-accent-fill-selected-text-background selection:text-text-on-accent-fill-selected-text',
         className,

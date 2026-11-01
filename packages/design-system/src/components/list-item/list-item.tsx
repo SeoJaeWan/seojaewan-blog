@@ -64,8 +64,8 @@ export function ListItem(props: ListItemProps): JSX.Element {
       aria-selected={role === 'option' ? isSelected : undefined}
       {...divProps}
       className={cn(
-        'flex items-center gap-12 rounded-control px-12 py-4 select-none',
-        isTwoLine ? 'h-52' : 'h-36',
+        'flex items-center gap-spacing-md rounded-radius-control px-spacing-md py-spacing-xs select-none',
+        isTwoLine ? 'h-size-list-item-two-line-height' : 'h-size-list-item-compact-height',
         'motion-control-state',
         isSelected
           ? 'bg-control-alt-fill-tertiary'
@@ -75,20 +75,20 @@ export function ListItem(props: ListItemProps): JSX.Element {
     >
       <span
         className={cn(
-          'flex shrink-0 items-center justify-center',
-          isTwoLine ? 'size-icon-32' : 'size-icon-16',
+          'flex shrink-shrink-none items-center justify-center',
+          isTwoLine ? 'size-size-icon-xl' : 'size-size-icon-sm',
         )}
       >
         {icon}
       </span>
-      <div className="flex min-w-0 flex-1 flex-col items-start overflow-clip">
+      <div className="flex min-w-size-none flex-flex-fill flex-col items-start overflow-clip">
         <p className="w-full truncate type-body text-text-fill-primary">{title}</p>
         {isTwoLine && isSubtitleShown && (
           <p className="w-full truncate type-caption text-text-fill-secondary">{subtitle}</p>
         )}
       </div>
       {isTrailingShown && (
-        <p className="shrink-0 type-caption whitespace-nowrap text-text-fill-tertiary">
+        <p className="shrink-shrink-none type-caption whitespace-nowrap text-text-fill-tertiary">
           {trailing}
         </p>
       )}

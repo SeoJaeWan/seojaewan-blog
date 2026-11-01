@@ -30,11 +30,11 @@ export function ListGroup(props: ListGroupProps): JSX.Element {
     ...divProps
   } = props;
   return (
-    <div {...divProps} className={cn('flex flex-col items-start gap-2', className)}>
+    <div {...divProps} className={cn('flex flex-col items-start gap-spacing-2xs', className)}>
       {hasHeader && (
-        <SectionHeader label={label} onClick={handleHeaderClick} className="shrink-0" />
+        <SectionHeader label={label} onClick={handleHeaderClick} className="shrink-shrink-none" />
       )}
-      <div className="flex w-full shrink-0 flex-col gap-2">{children}</div>
+      <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">{children}</div>
     </div>
   );
 }

@@ -20,11 +20,11 @@ export function Quote(props: QuoteProps): JSX.Element {
       {...divProps}
       // 피그마에서 왼쪽 막대가 레이아웃에 들어가므로 CSS border를 쓴다.
       className={cn(
-        'flex flex-col items-start border-l-indicator border-control-strong-stroke-default py-2 pr-0 pl-16',
+        'flex flex-col items-start border-l-stroke-width-indicator border-control-strong-stroke-default py-spacing-2xs pr-spacing-none pl-spacing-lg',
         className,
       )}
     >
-      <div className="w-full min-w-0">{children}</div>
+      <div className="w-full min-w-size-none">{children}</div>
     </div>
   );
 }

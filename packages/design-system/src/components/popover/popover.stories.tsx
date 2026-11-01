@@ -35,8 +35,16 @@ const meta = {
     <Popover
       placement={args.placement}
       open={args.state === 'open'}
-      trigger={<div className="h-32 w-120" />}
-      popup={<div className={args.placement === 'right-start' ? 'h-32 w-4' : 'h-4 w-120'} />}
+      trigger={<div className="h-size-control-height w-size-button-min-width" />}
+      popup={
+        <div
+          className={
+            args.placement === 'right-start'
+              ? 'h-size-control-height w-size-popover-slot'
+              : 'h-size-popover-slot w-size-button-min-width'
+          }
+        />
+      }
     />
   ),
 } satisfies Meta<FigmaArgs>;
