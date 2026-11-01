@@ -3,28 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { SelectionMarquee, Tooltip } from '@seojaewan/design-system';
 
-import { DesktopIconImage } from '@/features/desktop/components/desktop-icon-image/desktop-icon-image';
-import type {
-  DesktopIcon,
-  DesktopIconProps,
-} from '@/features/desktop/components/desktop-icons/desktop-icons';
-import { DesktopIcons } from '@/features/desktop/components/desktop-icons/desktop-icons';
-import {
-  arrangeInGridOrder,
-  getCellGeometry,
-  getCellOrigin,
-  getFirstFreeCell,
-  getGridOrder,
-  getGridSize,
-  getNearestCell,
-  layoutDesktopIcons,
-  moveIconsToCell,
-  sortDesktopItems,
-} from '@/features/desktop/utils/desktop-grid/desktop-grid';
-import {
-  getDesktopMenuEntries,
-  getItemMenuEntries,
-} from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import {
   ItemDragGhost,
@@ -74,6 +52,23 @@ import {
   moveItems,
   trashItems,
 } from '@/shared/utils/workspace-rules/workspace-rules';
+
+import { DesktopIconImage } from './components/desktop-icon-image/desktop-icon-image';
+import type { DesktopIcon, DesktopIconProps } from './components/desktop-icons/desktop-icons';
+import { DesktopIcons } from './components/desktop-icons/desktop-icons';
+import { getDesktopMenuEntries, getItemMenuEntries } from './empty-menu/empty-menu-entries';
+import {
+  arrangeInGridOrder,
+  getCellGeometry,
+  getCellOrigin,
+  getFirstFreeCell,
+  getGridOrder,
+  getGridSize,
+  getNearestCell,
+  layoutDesktopIcons,
+  moveIconsToCell,
+  sortDesktopItems,
+} from './utils/desktop-grid/desktop-grid';
 
 /** 열린 우클릭 메뉴. 빈 곳 메뉴거나 아이콘 메뉴(우클릭한 항목들)다 */
 type OpenMenu = { kind: 'desktop' } | { kind: 'items'; ids: readonly string[] };

@@ -5,11 +5,11 @@
 import type {
   getDesktopMenuEntries,
   getItemMenuEntries,
-} from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
+} from '@/features/desktop/empty-menu/empty-menu-entries';
 import {
   getDesktopSortMenuEntries,
   getDesktopViewMenuEntries,
-} from '@/features/desktop/utils/desktop-menu-entries/desktop-menu-entries';
+} from '@/features/desktop/empty-menu/empty-menu-entries';
 import { ignoreMenuAction } from '@/shared/stories/menu-preview/menu-preview';
 import type { WorkspaceItemKind } from '@/shared/utils/workspace-rules/workspace-rules';
 
