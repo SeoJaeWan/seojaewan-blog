@@ -1,6 +1,13 @@
 {
+  "description": "지원하지 않는 Notion 블록 자리의 안내 상자로, 글 페이지에 쓴다.",
   "name": "UnsupportedBlock",
   "nodeId": "1380:6880",
+  "propertyDefinitions": {
+    "Message": {
+      "default": "지원하지 않는 블록(유형 이름)",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +17,145 @@
         "y": 0
       },
       "nodeId": "1380:6880",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_warning_24_regular"
+            },
+            "component": "ic_fluent_warning_24_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "message",
+            "size": {
+              "h": 20,
+              "w": 662
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "지원하지",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "않는",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "블록",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": "(",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "유형",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "이름",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": ")",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "UnsupportedBlock",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 46,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }

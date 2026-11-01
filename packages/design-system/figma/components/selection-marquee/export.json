@@ -1,6 +1,8 @@
 {
+  "description": "끌어서 여러 항목을 고르는 선택 사각형으로, 바탕화면과 탐색기에 쓴다.",
   "name": "SelectionMarquee",
   "nodeId": "90:2738",
+  "propertyDefinitions": {},
   "variants": {
     "default": {
       "node": {
@@ -10,7 +12,34 @@
         "y": 0
       },
       "nodeId": "90:2738",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "fills": [
+          "selection-marquee/fill"
+        ],
+        "height": "size/selection-marquee/height",
+        "name": "SelectionMarquee",
+        "size": {
+          "h": 160,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "selection-marquee/stroke"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/selection-marquee/width"
+      }
     }
   }
 }

@@ -1,6 +1,21 @@
 {
+  "description": "글 목차의 항목 하나로, Toc의 Items 슬롯에 쓴다.",
   "name": "TocItem",
   "nodeId": "398:5460",
+  "propertyDefinitions": {
+    "Active": {
+      "default": "True",
+      "options": [
+        "True",
+        "False"
+      ],
+      "type": "VARIANT"
+    },
+    "Label": {
+      "default": "목차 항목",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "active=false": {
       "node": {
@@ -12,6 +27,87 @@
       "nodeId": "398:5459",
       "properties": {
         "Active": "False"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "divider-stroke/default"
+            ],
+            "name": "indicator",
+            "size": {
+              "h": 20,
+              "w": 3
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FILL"
+            },
+            "type": "RECTANGLE",
+            "width": "stroke-width/indicator"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 53
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=False",
+        "size": {
+          "h": 20,
+          "w": 64
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
       }
     },
     "active=true": {
@@ -24,6 +120,87 @@
       "nodeId": "398:5455",
       "properties": {
         "Active": "True"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "accent-fill/default"
+            ],
+            "name": "indicator",
+            "size": {
+              "h": 20,
+              "w": 3
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FILL"
+            },
+            "type": "RECTANGLE",
+            "width": "stroke-width/indicator"
+          },
+          {
+            "fills": [
+              "accent-text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 53
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "목차",
+                  "fill": "accent-text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "accent-text-fill/primary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "항목",
+                  "fill": "accent-text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "height": "size/toc-item/height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Active=True",
+        "size": {
+          "h": 20,
+          "w": 64
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
       }
     }
   }

@@ -1,6 +1,25 @@
 {
+  "description": "내용을 보여 줄 수 없을 때의 안내로, 페이지를 찾을 수 없음 화면에 쓴다.",
   "name": "EmptyState",
   "nodeId": "399:5549",
+  "propertyDefinitions": {
+    "Code": {
+      "default": "오류 코드",
+      "type": "TEXT"
+    },
+    "Heading": {
+      "default": "제목",
+      "type": "TEXT"
+    },
+    "Message": {
+      "default": "메시지 내용",
+      "type": "TEXT"
+    },
+    "Show button": {
+      "default": true,
+      "type": "BOOLEAN"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +29,236 @@
         "y": 0
       },
       "nodeId": "399:5549",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/primary",
+              "path": "icons/ic_fluent_document_20_regular"
+            },
+            "component": "ic_fluent_document_20_regular",
+            "height": "size/icon/2xl",
+            "name": "icon",
+            "size": {
+              "h": 48,
+              "w": 48
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/2xl"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "heading",
+            "size": {
+              "h": 28,
+              "w": 600
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Subtitle"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "message",
+            "size": {
+              "h": 20,
+              "w": 600
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "메시지",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Body"
+                },
+                {
+                  "characters": "내용",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "code",
+            "size": {
+              "h": 16,
+              "w": 600
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "오류",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                },
+                {
+                  "characters": " ",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Caption"
+                },
+                {
+                  "characters": "코드",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-on-accent-fill/primary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 20,
+                  "w": 49
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "새로고침",
+                      "fill": "text-on-accent-fill/primary",
+                      "textStyle": "Hangul/Body"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "Button",
+            "fills": [
+              "accent-fill/default"
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/sm-nudge",
+                "spacing/md",
+                "spacing/sm-nudge",
+                "spacing/md"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "minWidth": "size/button/min-width",
+            "name": "reload",
+            "properties": {
+              "Label": "새로고침",
+              "Show icon": false,
+              "State": "Rest",
+              "Style": "Accent"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 120
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "strokeStyle": "Elevation/Accent Control Border",
+            "strokeWeight": [
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default",
+              "stroke-width/default"
+            ],
+            "strokesIncludedInLayout": false,
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/lg",
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "EmptyState",
+        "size": {
+          "h": 208,
+          "w": 600
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/empty-state/width"
+      }
     }
   }
 }

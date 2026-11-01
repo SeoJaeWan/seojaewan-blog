@@ -1,6 +1,46 @@
 {
+  "description": "검색어를 입력하는 상자로, 탐색기 폴더 검색·Start·검색 패널·작업 표시줄에 쓴다.\n@trigger focus-visible",
   "name": "SearchBox",
   "nodeId": "14:92",
+  "propertyDefinitions": {
+    "Appearance": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Pill",
+        "Taskbar",
+        "Web"
+      ],
+      "type": "VARIANT"
+    },
+    "Filled": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
+    "Placeholder": {
+      "default": "검색",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Focused",
+        "Disabled",
+        "Pressed"
+      ],
+      "type": "VARIANT"
+    },
+    "Value": {
+      "default": "검색어",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "appearance=default,filled=false,state=disabled": {
       "node": {
@@ -14,6 +54,120 @@
         "Appearance": "Default",
         "Filled": "False",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "fills": [
+              "control-stroke/default"
+            ],
+            "height": "stroke-width/default",
+            "name": "bottom border",
+            "size": {
+              "h": 1,
+              "w": 240
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=False, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=false,state=focused": {
@@ -28,6 +182,120 @@
         "Appearance": "Default",
         "Filled": "False",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "fills": [
+              "accent-fill/default"
+            ],
+            "height": "stroke-width/focus-outer",
+            "name": "bottom border",
+            "size": {
+              "h": 2,
+              "w": 240
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=False, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=false,state=hover": {
@@ -42,6 +310,98 @@
         "Appearance": "Default",
         "Filled": "False",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=False, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeStyle": "Elevation/Text Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=false,state=rest": {
@@ -56,6 +416,116 @@
         "Appearance": "Default",
         "Filled": "False",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=False, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Default, Filled=False, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeStyle": "Elevation/Text Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=true,state=disabled": {
@@ -70,6 +540,120 @@
         "Appearance": "Default",
         "Filled": "True",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "fills": [
+              "control-stroke/default"
+            ],
+            "height": "stroke-width/default",
+            "name": "bottom border",
+            "size": {
+              "h": 1,
+              "w": 240
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=True, State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=true,state=focused": {
@@ -84,6 +668,120 @@
         "Appearance": "Default",
         "Filled": "True",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "absolute": {
+              "horizontal": "STRETCH",
+              "vertical": "MAX"
+            },
+            "fills": [
+              "accent-fill/default"
+            ],
+            "height": "stroke-width/focus-outer",
+            "name": "bottom border",
+            "size": {
+              "h": 2,
+              "w": 240
+            },
+            "sizing": {
+              "h": "DERIVED",
+              "v": "FIXED"
+            },
+            "type": "RECTANGLE"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=True, State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=true,state=hover": {
@@ -98,6 +796,98 @@
         "Appearance": "Default",
         "Filled": "True",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=True, State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeStyle": "Elevation/Text Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=default,filled=true,state=rest": {
@@ -112,6 +902,116 @@
         "Appearance": "Default",
         "Filled": "True",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 196
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          },
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/sm",
+            "spacing/sm-nudge",
+            "spacing/md"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Default, Filled=True, State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Default, Filled=True, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 240
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeStyle": "Elevation/Text Control Border",
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/width"
       }
     },
     "appearance=pill,filled=false,state=disabled": {
@@ -126,6 +1026,100 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=False, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=false,state=focused": {
@@ -140,6 +1134,126 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=False, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=false,state=hover": {
@@ -154,6 +1268,126 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=False, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=false,state=pressed": {
@@ -168,6 +1402,126 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=False, State=Pressed",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=false,state=rest": {
@@ -182,6 +1536,134 @@
         "Appearance": "Pill",
         "Filled": "False",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=False, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Pill, Filled=False, State=Focused",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "durationMs": 167,
+              "easing": "CUSTOM_CUBIC_BEZIER",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_CLICK"
+          },
+          {
+            "destination": "Appearance=Pill, Filled=False, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=true,state=disabled": {
@@ -196,6 +1678,100 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=True, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=true,state=focused": {
@@ -210,6 +1786,126 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=True, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=true,state=hover": {
@@ -224,6 +1920,126 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=True, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=true,state=pressed": {
@@ -238,6 +2054,126 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=True, State=Pressed",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=pill,filled=true,state=rest": {
@@ -252,6 +2188,134 @@
         "Appearance": "Pill",
         "Filled": "True",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Pill, Filled=True, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Pill, Filled=True, State=Focused",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "durationMs": 167,
+              "easing": "CUSTOM_CUBIC_BEZIER",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_CLICK"
+          },
+          {
+            "destination": "Appearance=Pill, Filled=True, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=taskbar,filled=false,state=disabled": {
@@ -266,6 +2330,100 @@
         "Appearance": "Taskbar",
         "Filled": "False",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=False, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=false,state=focused": {
@@ -280,6 +2438,126 @@
         "Appearance": "Taskbar",
         "Filled": "False",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=False, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=false,state=hover": {
@@ -294,6 +2572,126 @@
         "Appearance": "Taskbar",
         "Filled": "False",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=False, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=false,state=pressed": {
@@ -308,6 +2706,126 @@
         "Appearance": "Taskbar",
         "Filled": "False",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=False, State=Pressed",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=false,state=rest": {
@@ -322,6 +2840,134 @@
         "Appearance": "Taskbar",
         "Filled": "False",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=False, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Taskbar, Filled=False, State=Focused",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "durationMs": 167,
+              "easing": "CUSTOM_CUBIC_BEZIER",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_CLICK"
+          },
+          {
+            "destination": "Appearance=Taskbar, Filled=False, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=true,state=disabled": {
@@ -336,6 +2982,100 @@
         "Appearance": "Taskbar",
         "Filled": "True",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=True, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=true,state=focused": {
@@ -350,6 +3090,126 @@
         "Appearance": "Taskbar",
         "Filled": "True",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=True, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=true,state=hover": {
@@ -364,6 +3224,126 @@
         "Appearance": "Taskbar",
         "Filled": "True",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=True, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=true,state=pressed": {
@@ -378,6 +3358,126 @@
         "Appearance": "Taskbar",
         "Filled": "True",
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "asset": {
+                  "path": "illustrations/icon-color-search-focus"
+                },
+                "component": "icon-color/Search Focus",
+                "name": "icon",
+                "scaleFactor": 1.100000023841858,
+                "size": {
+                  "h": 17.6,
+                  "w": 17.6
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "height": "size/icon/sm",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "icon box",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "FRAME",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=True, State=Pressed",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=taskbar,filled=true,state=rest": {
@@ -392,6 +3492,134 @@
         "Appearance": "Taskbar",
         "Filled": "True",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 164
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/control/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm-nudge",
+            "spacing/lg",
+            "spacing/sm-nudge",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Taskbar, Filled=True, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "reactions": [
+          {
+            "destination": "Appearance=Taskbar, Filled=True, State=Focused",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                0,
+                1
+              ],
+              "durationMs": 167,
+              "easing": "CUSTOM_CUBIC_BEZIER",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_CLICK"
+          },
+          {
+            "destination": "Appearance=Taskbar, Filled=True, State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 32,
+          "w": 220
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/taskbar-width"
       }
     },
     "appearance=web,filled=false,state=disabled": {
@@ -406,6 +3634,100 @@
         "Appearance": "Web",
         "Filled": "False",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=False, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=false,state=focused": {
@@ -420,6 +3742,100 @@
         "Appearance": "Web",
         "Filled": "False",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=False, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=false,state=hover": {
@@ -434,6 +3850,100 @@
         "Appearance": "Web",
         "Filled": "False",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=False, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=false,state=rest": {
@@ -448,6 +3958,100 @@
         "Appearance": "Web",
         "Filled": "False",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=False, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=true,state=disabled": {
@@ -462,6 +4066,100 @@
         "Appearance": "Web",
         "Filled": "True",
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/disabled",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/disabled"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=True, State=Disabled",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=true,state=focused": {
@@ -476,6 +4174,100 @@
         "Appearance": "Web",
         "Filled": "True",
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/input-active"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=True, State=Focused",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=true,state=hover": {
@@ -490,6 +4282,100 @@
         "Appearance": "Web",
         "Filled": "True",
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/secondary"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=True, State=Hover",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     },
     "appearance=web,filled=true,state=rest": {
@@ -504,6 +4390,100 @@
         "Appearance": "Web",
         "Filled": "True",
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "color": "text-fill/secondary",
+              "path": "icons/ic_fluent_search_16_regular"
+            },
+            "component": "ic_fluent_search_16_regular",
+            "height": "size/icon/sm",
+            "name": "icon",
+            "size": {
+              "h": 16,
+              "w": 16
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/icon/sm"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 264
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": 1,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "검색어",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "ENDING"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/search-box/tall-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/sm",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/sm",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Appearance=Web, Filled=True, State=Rest",
+        "radius": [
+          "radius/circular",
+          "radius/circular",
+          "radius/circular",
+          "radius/circular"
+        ],
+        "size": {
+          "h": 36,
+          "w": 320
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": false,
+        "type": "COMPONENT",
+        "width": "size/search-box/wide-width"
       }
     }
   }
