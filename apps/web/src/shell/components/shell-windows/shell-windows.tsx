@@ -1,7 +1,7 @@
 import type { JSX, ReactNode } from 'react';
 
 import { renderTaskbarAppIcon } from '@/features/taskbar/taskbar';
-import { WindowLayer } from '@/features/window/window';
+import { WindowLayer } from '@/features/window/window-layer';
 import type { OpenWindow } from '@/shared/utils/window-rules/window-rules';
 import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-app-window-renderer';
 import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-window-title';

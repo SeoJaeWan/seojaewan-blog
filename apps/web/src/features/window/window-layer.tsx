@@ -3,8 +3,6 @@ import { useState } from 'react';
 
 import { SnapPreview } from '@seojaewan/design-system';
 
-import { WindowSnapAssist } from '@/features/window/components/window-snap-assist/window-snap-assist';
-import { WindowView } from '@/features/window/components/window-view/window-view';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -17,6 +15,9 @@ import type {
   WindowState,
 } from '@/shared/utils/window-rules/window-rules';
 import { getFrontWindowId, getRemainingSnapZones } from '@/shared/utils/window-rules/window-rules';
+
+import { WindowSnapAssist } from './components/window-snap-assist/window-snap-assist';
+import { WindowView } from './components/window-view/window-view';
 
 type WindowLayerProps = {
   /** 앱 창을 그린다. 앱마다 다른 창 조립은 쓰는 곳이 고른다 */

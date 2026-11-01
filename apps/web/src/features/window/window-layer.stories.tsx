@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { dragStoryPointer } from '@/shared/stories/story-pointer/story-pointer';
 import { openStoryWindows, resetStoryStores } from '@/shared/stories/story-stores/story-stores';
 import {
   getStoryWindowTitle,
@@ -10,6 +9,7 @@ import {
   renderStoryWindow,
 } from '@/shared/stories/story-window/story-window';
 
+import { dragStoryPointer } from './story-pointer';
 import { WindowLayer } from './window-layer';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
