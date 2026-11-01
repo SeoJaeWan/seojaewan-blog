@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
+  "directives": {
+    "repeat": [
+      "1"
+    ],
+    "trigger": [
+      "작업 표시줄에서 창을 복원할 때"
+    ]
+  },
   "duration": {
     "ms": 333,
     "token": "motion/duration/slow"
   },
-  "iterations": null,
+  "iterations": 1,
   "name": "motion-window-restore",
   "nodeId": "758:102",
   "tracks": [

@@ -3,11 +3,19 @@
     "ms": 0,
     "token": null
   },
+  "directives": {
+    "repeat": [
+      "infinite"
+    ],
+    "trigger": [
+      "ProgressRing이 화면에 있는 동안"
+    ]
+  },
   "duration": {
     "ms": 2000,
     "token": "motion/duration/progress-ring"
   },
-  "iterations": null,
+  "iterations": "infinite",
   "name": "motion-progress-ring",
   "nodeId": "739:8230",
   "tracks": [
