@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { Scrollbar } from './scrollbar';
 
@@ -39,3 +40,35 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** rest는 얇은 막대만 그린다 */
+export const Default: Story = {
+  render: () => <Scrollbar className="h-200" />,
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'rest');
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** expanded는 양 끝 화살표와 바탕을 함께 그린다 */
+export const Expanded: Story = {
+  render: () => <Scrollbar state="expanded" material="solid" className="h-200" />,
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'expanded');
+  },
+};
+
+// @codocs [[컴포넌트 목록:기본 컨트롤]]
+/** 막대의 위치와 길이를 방향에 맞춰 정한다 */
+export const Horizontal: Story = {
+  render: () => (
+    <Scrollbar orientation="horizontal" thumbOffset={12} thumbLength={30} className="w-200" />
+  ),
+  play: async ({ canvasElement }) => {
+    const thumb = canvasElement.firstElementChild?.querySelector<HTMLElement>(':scope > div');
+
+    await expect(thumb?.offsetLeft).toBe(12);
+    await expect(thumb?.offsetWidth).toBe(30);
+  },
+};

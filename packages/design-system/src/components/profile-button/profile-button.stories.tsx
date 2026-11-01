@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fn } from 'storybook/test';
 
 import { ProfileButton } from './profile-button';
 
@@ -9,6 +10,8 @@ const profilePhoto = new URL('../../assets/images/avatar-profile-placeholder.web
 type ParityArgs = {
   /** 피그마 TEXT 속성 Name */
   name: string;
+  /** 동작 스토리에서 호출 횟수를 확인하는 핸들러 */
+  onClick?: () => void;
 };
 
 const meta = {
@@ -35,3 +38,25 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
 export const Parity: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+// @codocs [[디자인 시스템:아이콘 자리]]
+/** name을 이름으로 갖는 버튼이고, photo 자리에 넘긴 사진을 그린다. 누르면 onClick을 부른다 */
+export const Default: Story = {
+  args: { onClick: fn() },
+  render: ({ onClick: handleClick }) => (
+    <ProfileButton
+      name="서재완"
+      photo={<img src={profilePhoto} alt="" className="size-32 object-contain" />}
+      onClick={handleClick}
+    />
+  ),
+  play: async ({ args, canvas, userEvent }) => {
+    const button = canvas.getByRole('button', { name: '서재완' });
+    await expect(button.querySelector('img')).not.toBeNull();
+
+    await userEvent.click(button);
+
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
+  },
+};

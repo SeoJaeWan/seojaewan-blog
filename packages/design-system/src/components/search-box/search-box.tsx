@@ -1,8 +1,9 @@
 import { Input } from '@base-ui/react/input';
-import { type ComponentProps, type JSX, useSyncExternalStore } from 'react';
+import type { ComponentProps, JSX } from 'react';
 
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
+import { useSolidSearchIcon } from './use-solid-search-icon';
 
 export type SearchBoxAppearance = 'default' | 'pill' | 'taskbar' | 'web';
 
@@ -100,11 +101,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
  * @returns 겹친 두 돋보기
  */
 function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
-  const shouldUseSolidIcon = useSyncExternalStore(
-    subscribeBrowser,
-    usesSolidSearchIcon,
-    serverUsesSolidSearchIcon,
-  );
+  const shouldUseSolidIcon = useSolidSearchIcon();
   return (
     <span className="grid size-icon-16 shrink-0 place-items-center">
       <span className="grid size-icon-16">
@@ -129,34 +126,4 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
       </span>
     </span>
   );
-}
-
-/**
- * 브라우저 종류는 실행 중 바뀌지 않아 구독할 이벤트가 없다.
- * @returns 구독 해제 함수
- */
-function subscribeBrowser(): () => void {
-  return () => undefined;
-}
-
-/**
- * Safari와 iOS의 WebKit 브라우저는 검색 돋보기를 단색으로 그린다.
- * @codocs [[검색:입력칸]]
- * @returns 단색 대체 여부
- */
-function usesSolidSearchIcon(): boolean {
-  const userAgent = navigator.userAgent;
-  return (
-    /AppleWebKit/u.test(userAgent) &&
-    /Safari/u.test(userAgent) &&
-    !/Chrome\/|Chromium\/|Edg\/|OPR\//u.test(userAgent)
-  );
-}
-
-/**
- * 서버와 첫 수화에서는 같은 SVG를 사용하고 브라우저 종류는 수화 뒤 확인한다.
- * @returns 서버의 단색 대체 여부
- */
-function serverUsesSolidSearchIcon(): boolean {
-  return false;
 }

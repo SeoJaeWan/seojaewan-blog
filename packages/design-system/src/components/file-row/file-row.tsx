@@ -36,6 +36,24 @@ type FileRowProps = Omit<ComponentProps<'div'>, 'children'> & {
 };
 
 /**
+ * 줄의 상태를 피그마 State 이름으로 돌려준다. 겉모습이 상태에 따라 바뀌므로 `data-state`로도 알린다.
+ * @param flags 상태 플래그
+ * @param flags.isSelected 선택 여부
+ * @param flags.isCut 잘라냄 여부
+ * @param flags.isRenaming 이름 바꾸기 여부
+ * @returns 상태 이름
+ */
+function fileRowState(flags: {
+  isSelected: boolean;
+  isCut: boolean;
+  isRenaming: boolean;
+}): 'rest' | 'selected' | 'cut' | 'cut-selected' | 'rename' {
+  if (flags.isRenaming) return 'rename';
+  if (flags.isCut) return flags.isSelected ? 'cut-selected' : 'cut';
+  return flags.isSelected ? 'selected' : 'rest';
+}
+
+/**
  * 탐색기 자세히 보기의 파일 한 줄(피그마 FileRow)을 그린다. 이름·수정한 날짜·유형·위치 칸을 가진다.
  * 휴지통 보기(view='recycle-bin')는 이름·원래 위치·삭제한 날짜 칸을 가진다.
  * 너비는 쓰는 곳이 정한다(피그마 원본은 840). 칸 너비는 DetailsHeader의 열과 맞춰 고정한다.
@@ -68,6 +86,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
   const dim = isCut ? 'opacity-cut' : undefined;
   return (
     <div
+      data-state={fileRowState({ isSelected, isCut, isRenaming })}
       {...divProps}
       className={cn(
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.

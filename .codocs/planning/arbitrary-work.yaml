@@ -210,3 +210,13 @@ _codocs:
   Base UI 포커스 가드(`aria-hidden`이면서 `tabindex=0`인 span)가 `aria-hidden-focus`에 걸린다. 알려진 `MenuItem` 외에 앱의 메뉴 조립 스토리 25개도 같아서, `shared/stories/menu-story`의 `menuStoryA11y`를 스토리마다 `parameters.a11y`로 넘긴다. 이유 주석을 한곳에 두기 위해서다. Base UI를 올릴 때 지울 수 있는지 확인이 필요하다.
 "Storybook 테스트 기반 PR: 앱 play 시험과 공용 도우미": |
   `WindowLayer`의 `DragAndClose`·`Mobile`, `TaskbarAppsLayer`의 `HoverPreview`를 시험으로 쓰고 그대로 뒀다. 저장소 초기화는 기존 `resetStoryStores`·`openStoryWindows`로 된다. 끌기는 `dragStoryPointer`(`setPointerCapture`를 끄는 동안 바꿈), 시간은 `installStoryClock`을 만들었다. 시계는 고른 지연만 잡는다. 전부 잡으면 Storybook의 `await`가 끝나지 않았다. 스토리에서 `vitest`의 `vi`는 쓰지 않았다. Storybook 화면에서도 돌아야 하기 때문이다. `HoverPreview`는 창 내용을 그리지 않는다(`renderWindow: () => null`). 미리보기 카드를 열면 축소 화면 글자가 카드 이름에 없다고 `label-content-name-mismatch`에 걸린다. 축소 화면은 그림이라 오탐으로 보이지만, 열린 상태의 실제 카드에는 남아 있으므로 다음 묶음에서 처리를 정해야 한다. `aria-hidden`으로는 없어지지 않았다(axe가 보이는 글자를 본다).
+"디자인 시스템 play 묶음 B: FileRow와 Scrollbar에 data-state를 더함": |
+  클래스로만 보이던 상태를 속성으로 확인하려고 `FileRow`에 `data-state`(`rest`·`selected`·`cut`·`cut-selected`·`rename`, 피그마 State 이름)를, `Scrollbar`에 `data-state`(`rest`·`expanded`)를 더했다. 둘 다 `...props`보다 앞에 두어 쓰는 곳이 덮어쓸 수 있다. 포커스는 prop 없이 `:focus-visible`이라 속성을 더하지 않고, 포커스를 받아도 줄 크기가 같은지(offset 크기)로 확인한다.
+"디자인 시스템 play 묶음 B: 순수 로직을 파일로 뺌": |
+  `scrollbar/scroll-area.tsx`의 `scrollThumb`·`Thumb`을 `scrollbar/scroll-thumb.ts`로 옮겼다. 이 함수는 `export *`로 공개 진입점에 나가던 이름이지만 쓰는 곳이 없었다. 이제 공개되지 않는다. `search-box`의 Safari 판정과 서버·수화 값은 `search-box/use-solid-search-icon.ts` 훅으로 빼고 `use-solid-search-icon.test.ts`가 확인한다(`search-box.test.tsx`의 서버 HTML·수화 검사는 이 훅 테스트가 대신한다). `image-asset`의 WebP 자산 목록 확인은 렌더가 없는 파일시스템 확인이라 `image-asset.test.ts`로 옮겼다.
+"디자인 시스템 play 묶음 B: 색 대비 위반 때문에 스토리로 옮기지 못한 확인": |
+  `ListItem`의 오른쪽 보조 글자(`text-text-fill-tertiary`, 대비 3.31)와 `FileRow`의 `cut`(`opacity-cut`으로 흐린 이름, 대비 3.31)는 보이는 순간 axe `color-contrast` 위반이라 스토리로 만들 수 없었다. 규칙을 끄는 것은 외부 라이브러리 때문일 때만 허용되고 색 대비는 피그마 값 문제라([[테스트 작성 규칙:스토리 테스트]]) 두 확인(`trailing`이 켜졌을 때 보임, `cut` 상태)을 뺐다. 피그마 색을 바꿀지 사람이 판단해야 한다. 바뀔 때까지 `showTrailing`·`cut`은 `Parity`(캡처)로만 확인된다.
+"디자인 시스템 play 묶음 B: 모션 미리보기 동작 스토리는 Tools 제목에 둠": |
+  `MotionPreview`의 다시 재생·느리게 보기·실행 중 값 확인을 `src/motion-story/motion-preview.stories.tsx`(제목 `Tools/MotionPreview`)로 옮겼다. 제목이 `Motion/`으로 시작하면 모션 시간 검사가 모션 스토리로 읽고 `play`의 클릭이 재생을 흔들 수 있어서다. 기존 `Motion/*` 스토리에는 `play`를 넣지 않았다. `ProgressRing`의 모션 클래스 확인은 클래스 이름 대신 실제 애니메이션이 도는지(`getAnimations`)로 바꿨다.
+"디자인 시스템 play 묶음 B: 스토리 이름 Parity 유지": |
+  `Parity`→`Figma` 이름 바꾸기는 다른 브랜치(`refactor/figma-story-name`)가 맡아 이 묶음은 기존 `Parity` 이름을 그대로 두고 옆에 동작 스토리만 더했다. 병합 순서에 따라 `Parity` 줄에서 충돌이 날 수 있다. 동작 스토리가 쓰는 핸들러를 받으려고 meta 인자 타입(`ParityArgs`)에 선택 항목 `onClick` 등을 더했다.

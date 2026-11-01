@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { PostNavCard } from './post-nav-card';
 
@@ -37,3 +38,20 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Parity: Story = {};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 방향에 따라 이전 글·다음 글 라벨을 보이고, title로 제목을 바꾼다 */
+export const Default: Story = {
+  render: () => (
+    <div className="flex w-354 flex-col gap-8">
+      <PostNavCard title="앞선 글" />
+      <PostNavCard direction="next" title="뒤따르는 글" />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('이전 글')).toBeInTheDocument();
+    await expect(canvas.getByText('앞선 글')).toBeInTheDocument();
+    await expect(canvas.getByText('다음 글')).toBeInTheDocument();
+    await expect(canvas.getByText('뒤따르는 글')).toBeInTheDocument();
+  },
+};
