@@ -22,7 +22,10 @@ const TABS = ['single', 'multiple'] as const;
 const MULTIPLE_TAB_TITLES = ['React', 'Blog', 'TypeScript'] as const;
 
 // 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1024×640, size/390×796)로 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-1024 h-640', mobile: 'w-390 h-796' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-window-explorer-width h-size-window-explorer-height',
+  mobile: 'w-size-screen-mobile-width h-size-window-mobile-height',
+} as const;
 
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
@@ -75,7 +78,7 @@ const meta = {
         >
           <ExplorerContent
             device={args.device}
-            className="min-h-0 w-full flex-1"
+            className="min-h-size-none w-full flex-flex-fill"
             locationIcon={parts.locationIcon}
             searchPlaceholder={parts.searchPlaceholder}
             path={parts.path}

@@ -23,8 +23,9 @@ const materialClassNames = {
 
 // 기기별 크기와 모서리다. 모바일은 화면 아래에 붙어 위쪽 모서리만 둥글다.
 const deviceClassNames = {
-  desktop: 'h-720 w-640 rounded-overlay',
-  mobile: 'h-640 w-390 rounded-t-overlay rounded-b-none',
+  desktop: 'h-size-shell-height w-size-shell-width rounded-radius-overlay',
+  mobile:
+    'h-size-shell-mobile-height w-size-screen-mobile-width rounded-t-radius-overlay rounded-b-radius-none',
 } as const satisfies Record<ShellSurfaceDevice, string>;
 
 /**
@@ -40,13 +41,13 @@ export function ShellSurface(props: ShellSurfaceProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex flex-col items-start border-default border-surface-stroke-default',
+        'relative flex flex-col items-start border-stroke-width-default border-surface-stroke-default',
         materialClassNames[material],
         deviceClassNames[device],
         className,
       )}
     >
-      <div className="min-h-px w-full flex-1">{children}</div>
+      <div className="min-h-size-hairline w-full flex-flex-fill">{children}</div>
     </div>
   );
 }

@@ -49,27 +49,29 @@ export function Toggle(props: ToggleProps): JSX.Element {
   }
 
   return (
-    <div {...divProps} className={cn('flex flex-col items-start gap-4', className)}>
+    <div {...divProps} className={cn('flex flex-col items-start gap-spacing-xs', className)}>
       <button
         type="button"
         aria-expanded={isExpanded}
         aria-controls={isExpanded ? contentId : undefined}
         onClick={handleHeaderClick}
-        className="flex min-h-24 w-full cursor-pointer items-start gap-0 rounded-control p-0 text-left outline-none focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid"
+        className="flex min-h-size-post-block-icon-box w-full cursor-pointer items-start gap-spacing-none rounded-radius-control p-spacing-none text-left outline-none focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid"
       >
-        <span className="flex size-24 shrink-0 items-center justify-center">
+        <span className="flex size-size-post-block-icon-box shrink-shrink-none items-center justify-center">
           <Asset
             name="icons/ic_fluent_chevron_right_16_regular.svg"
             className={cn(
-              'size-icon-16 shrink-0 text-text-fill-primary',
-              isExpanded && 'rotate-90',
+              'size-size-icon-sm shrink-shrink-none text-text-fill-primary',
+              isExpanded && 'rotate-rotate-quarter',
             )}
           />
         </span>
-        <span className="min-w-0 flex-1 type-body-large text-text-fill-primary">{title}</span>
+        <span className="min-w-size-none flex-flex-fill type-body-large text-text-fill-primary">
+          {title}
+        </span>
       </button>
       {isExpanded ? (
-        <div id={contentId} className="w-full min-w-0">
+        <div id={contentId} className="w-full min-w-size-none">
           {children}
         </div>
       ) : null}

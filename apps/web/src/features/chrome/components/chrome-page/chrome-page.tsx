@@ -167,12 +167,19 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
   const device = isWide ? 'desktop' : 'mobile';
   return (
     <div
-      className={isWide ? 'flex justify-center gap-48 px-16 pt-48' : 'flex flex-col px-16 pt-24'}
+      className={
+        isWide
+          ? 'flex justify-center gap-spacing-5xl px-spacing-lg pt-spacing-5xl'
+          : 'flex flex-col px-spacing-lg pt-spacing-2xl'
+      }
     >
-      <article className="flex w-full max-w-720 min-w-0 flex-col items-start gap-16">
+      <article className="flex w-full max-w-size-post-width min-w-size-none flex-col items-start gap-spacing-lg">
         {cover !== undefined && (
           // 피그마 `cover`는 wide에서 PostCover 높이 그대로(240), narrow에서 140으로 줄여 쓴다
-          <PostCover image={cover} className={isWide ? 'w-full' : 'h-140 w-full'} />
+          <PostCover
+            image={cover}
+            className={isWide ? 'w-full' : 'h-size-post-cover-narrow-height w-full'}
+          />
         )}
         <p className="w-full type-caption text-text-fill-secondary">{meta}</p>
         <h1
@@ -196,9 +203,10 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         <Separator className="w-full" />
         {/* 피그마 `prev / next` 배치 프레임이다. wide는 가로로 반씩, narrow는 세로로 쌓는다 */}
         <nav
-          className={['flex w-full gap-12 overflow-clip', isWide ? 'items-start' : 'flex-col'].join(
-            ' ',
-          )}
+          className={[
+            'flex w-full gap-spacing-md overflow-clip',
+            isWide ? 'items-start' : 'flex-col',
+          ].join(' ')}
         >
           {previousTitle !== undefined && (
             <PostNavCard
@@ -206,7 +214,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
               device={device}
               title={previousTitle}
               {...(onPreviousOpen === undefined ? {} : getOpenableRowProps(onPreviousOpen))}
-              className={isWide ? 'min-w-0 flex-1' : 'w-full'}
+              className={isWide ? 'min-w-size-none flex-flex-fill' : 'w-full'}
             />
           )}
           {nextTitle !== undefined && (
@@ -215,13 +223,15 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
               device={device}
               title={nextTitle}
               {...(onNextOpen === undefined ? {} : getOpenableRowProps(onNextOpen))}
-              className={isWide ? 'min-w-0 flex-1' : 'w-full'}
+              className={isWide ? 'min-w-size-none flex-flex-fill' : 'w-full'}
             />
           )}
         </nav>
       </article>
       {isWide && hasToc && (
-        <Toc className="sticky top-48 w-220 shrink-0 self-start">{tocItems}</Toc>
+        <Toc className="sticky top-spacing-5xl w-size-toc-width shrink-shrink-none self-start">
+          {tocItems}
+        </Toc>
       )}
     </div>
   );
@@ -237,15 +247,21 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
   const isWide = layout === 'wide';
   return (
     <div
-      className={['flex flex-col items-center gap-24 px-16', isWide ? 'pt-48' : 'pt-40'].join(' ')}
+      className={[
+        'flex flex-col items-center gap-spacing-2xl px-spacing-lg',
+        isWide ? 'pt-spacing-5xl' : 'pt-spacing-4xl',
+      ].join(' ')}
     >
       {/* 피그마 `top space` 배치 프레임. wide에서 로고 자리를 아래로 내린다 */}
-      {isWide && <div className="h-96 self-stretch" />}
+      {isWide && <div className="h-size-chrome-page-top-space self-stretch" />}
       <p className={['text-text-fill-primary', isWide ? 'type-display' : 'type-title'].join(' ')}>
         {WORDMARK}
       </p>
       {search}
-      <TileGrid align="center" className={isWide ? 'w-576' : 'w-full max-w-720'}>
+      <TileGrid
+        align="center"
+        className={isWide ? 'w-size-new-tab-grid-width' : 'w-full max-w-size-post-width'}
+      >
         {latestPosts.map(
           /**
            * 최신 글 바로가기 하나를 그린다.
@@ -284,12 +300,17 @@ function SearchResultsPage(
   const { layout, query, results, onResultOpen } = props;
   const isWide = layout === 'wide';
   return (
-    <div className={['flex flex-col items-center px-16', isWide ? 'pt-48' : 'pt-24'].join(' ')}>
-      <section className="flex w-full max-w-720 flex-col items-start gap-8">
+    <div
+      className={[
+        'flex flex-col items-center px-spacing-lg',
+        isWide ? 'pt-spacing-5xl' : 'pt-spacing-2xl',
+      ].join(' ')}
+    >
+      <section className="flex w-full max-w-size-post-width flex-col items-start gap-spacing-sm">
         <h1 className="w-full type-subtitle text-text-fill-primary">
           {`‘${query}’ 검색 결과 ${String(results.length)}개`}
         </h1>
-        <div className="flex w-full flex-col gap-8 overflow-clip">
+        <div className="flex w-full flex-col gap-spacing-sm overflow-clip">
           {results.map(
             /**
              * 검색 결과 글 하나를 그린다.
@@ -333,13 +354,13 @@ function SearchResultsPage(
 function NotFoundPage(props: ChromeNotFoundPageProps & { layout: ChromePageLayout }): JSX.Element {
   const { url, onReload: handleReload } = props;
   return (
-    <div className="flex flex-1 items-center justify-center px-24">
+    <div className="flex flex-flex-fill items-center justify-center px-spacing-2xl">
       <EmptyState
         heading={`${WORDMARK} 페이지를 찾을 수 없음`}
         message={`다음 웹 주소에 대한 웹페이지를 찾을 수 없습니다: ${url}`}
         code="HTTP ERROR 404"
         onReload={handleReload}
-        className="w-full max-w-600"
+        className="w-full max-w-size-empty-state-width"
       />
     </div>
   );

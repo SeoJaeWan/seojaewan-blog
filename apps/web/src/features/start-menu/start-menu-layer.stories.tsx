@@ -22,7 +22,7 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   beforeEach: resetStoryStores,
   render: () => (
-    <div className="fixed inset-0">
+    <div className="fixed inset-spacing-none">
       <StartMenuLayer />
     </div>
   ),

@@ -54,7 +54,7 @@ export function CaptionButton(props: CaptionButtonProps): JSX.Element {
       {...buttonProps}
       aria-label={label}
       className={cn(
-        'inline-flex h-32 w-46 items-center justify-center select-none',
+        'inline-flex h-size-caption-button-height w-size-caption-button-width items-center justify-center select-none',
         'motion-control-state',
         isInactive ? 'text-text-fill-disabled' : 'text-text-fill-primary',
         ...kindClassNames[kind],
@@ -63,7 +63,7 @@ export function CaptionButton(props: CaptionButtonProps): JSX.Element {
     >
       <Asset
         name={kind === 'close' ? 'icons/ic_fluent_dismiss_20_regular.svg' : icon}
-        className="size-icon-16"
+        className="size-size-icon-sm"
       />
     </BaseButton>
   );

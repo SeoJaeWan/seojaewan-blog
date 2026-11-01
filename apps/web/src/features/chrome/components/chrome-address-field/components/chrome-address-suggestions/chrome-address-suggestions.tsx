@@ -47,13 +47,13 @@ const suggestionIcons = {
   search: (
     <Asset
       name="icons/ic_fluent_search_16_regular.svg"
-      className="size-icon-16 text-text-fill-primary"
+      className="size-size-icon-sm text-text-fill-primary"
     />
   ),
 } as const satisfies Record<ChromeAddressSuggestion['kind'], ReactNode>;
 
 // 피그마 조립의 주소창·추천 목록 너비(size/640)다.
-const FIGMA_WIDTH_CLASS_NAME = 'w-640';
+const FIGMA_WIDTH_CLASS_NAME = 'w-size-address-bar-width';
 
 /**
  * Chrome 주소창에 입력하는 중 아래에 추천 목록을 연 모습(피그마 조립 `Chrome/AddressSuggestions`)을 그린다.
@@ -100,12 +100,12 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
           style={width === undefined ? undefined : { width }}
         >
           {/* 피그마 `list inset`(안쪽 여백)과 `items`(줄 사이 간격 2) 배치 프레임이다 */}
-          <div className="flex w-full flex-col px-8 pt-2 pb-6">
+          <div className="flex w-full flex-col px-spacing-sm pt-spacing-2xs pb-spacing-sm-nudge">
             <div
               id={listId}
               role="listbox"
               aria-label="추천"
-              className="flex w-full flex-col gap-2 overflow-clip"
+              className="flex w-full flex-col gap-spacing-2xs overflow-clip"
             >
               {suggestions.map(
                 /**

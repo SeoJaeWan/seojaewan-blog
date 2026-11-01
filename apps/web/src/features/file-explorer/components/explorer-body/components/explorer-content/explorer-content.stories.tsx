@@ -11,7 +11,10 @@ import { EMPTY_SLOT_SIZE, STATUS_BAR_TEXT } from './story-data';
 const DEVICES = ['desktop', 'mobile'] as const;
 
 // 본문은 크기를 갖지 않고 창이 정하므로 피그마 원본 크기(size/798×458, size/388×716)로 감싸 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-798 h-458', mobile: 'w-388 h-716' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-explorer-content-width h-size-explorer-content-height',
+  mobile: 'w-size-window-mobile-content-width h-size-explorer-mobile-content-height',
+} as const;
 
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
@@ -31,7 +34,7 @@ const meta = {
       device={args.device}
       className={SIZE_CLASS_NAMES[args.device]}
       locationIcon={<ImageAsset name={FOLDER_LOCATION_ICON} className="size-full object-contain" />}
-      path={<div className="shrink-0" style={EMPTY_SLOT_SIZE.breadcrumbItems} />}
+      path={<div className="shrink-shrink-none" style={EMPTY_SLOT_SIZE.breadcrumbItems} />}
       navigation={<div style={EMPTY_SLOT_SIZE.navigationItems} />}
       itemCount={STATUS_BAR_TEXT.itemCount}
       selection={STATUS_BAR_TEXT.selection}

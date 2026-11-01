@@ -40,14 +40,19 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'group flex w-208 flex-col gap-8 rounded-control p-8 select-none',
+        'group flex w-size-window-preview-width flex-col gap-spacing-sm rounded-radius-control p-spacing-sm select-none',
         'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
         'motion-control-state',
         className,
       )}
     >
-      <div className="flex h-control-height items-center gap-8 overflow-clip pl-4">
-        <WindowTitle kind="preview" appIcon={appIcon} title={title} className="min-w-px flex-1" />
+      <div className="flex h-size-control-height items-center gap-spacing-sm overflow-clip pl-spacing-xs">
+        <WindowTitle
+          kind="preview"
+          appIcon={appIcon}
+          title={title}
+          className="min-w-size-hairline flex-flex-fill"
+        />
         <IconButton
           variant="subtle"
           label={closeLabel}
@@ -56,11 +61,11 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
             event.stopPropagation();
             onClose?.(event);
           }}
-          className="hidden shrink-0 group-focus-within:inline-flex group-hover:inline-flex"
+          className="hidden shrink-shrink-none group-focus-within:inline-flex group-hover:inline-flex"
         />
       </div>
       {/* 피그마 안쪽 선은 레이아웃에 들어가지 않아, CSS border 대신 내용 위에 겹친 고리(inner-border)로 그린다. */}
-      <div className="inner-border-card-stroke-default relative isolate flex h-108 flex-col items-center justify-center overflow-clip rounded-control bg-solid-background-fill-base inner-border-w-default">
+      <div className="inner-border-card-stroke-default relative isolate flex h-size-window-preview-thumbnail-height flex-col items-center justify-center overflow-clip rounded-radius-control bg-solid-background-fill-base inner-border-w-stroke-width-default">
         {thumbnail}
       </div>
     </div>

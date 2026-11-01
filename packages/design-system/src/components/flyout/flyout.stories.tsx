@@ -22,9 +22,9 @@ const meta = {
   render: (args) => (
     // 컴포넌트의 Content 슬롯은 언제나 비어 있다. 피그마는 빈 슬롯을 높이 16px로 그리므로 같은 높이의 빈 자리를 둔다.
     // Flyout은 너비가 없어 부모를 채운다. 피그마 미리보기 너비(320)의 부모로 감싸고, 캡처 대상은 Flyout으로 표시한다.
-    <div className="w-320">
+    <div className="w-size-search-box-wide-width">
       <Flyout material={args.material} padding={args.padding} data-parity-target>
-        <div className="h-16" />
+        <div className="h-spacing-lg" />
       </Flyout>
     </div>
   ),

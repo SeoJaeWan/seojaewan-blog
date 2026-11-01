@@ -36,13 +36,13 @@ const meta = {
   },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 240으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]). treeitem은 tree 안에서만 쓴다.
   render: (args) => (
-    <div role="tree" aria-label="탐색 창" className="w-240">
+    <div role="tree" aria-label="탐색 창" className="w-size-navigation-item-width">
       <NavigationItem
         expand={args.expand}
         selected={args.state === 'selected'}
         level={Number(args.level) as 0 | 1 | 2 | 3}
         label={args.label}
-        icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
+        icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
       />
     </div>
   ),
@@ -65,7 +65,7 @@ export const Figma: Story = {};
  */
 function TreeFrame(props: { children: ReactNode }): JSX.Element {
   return (
-    <div role="tree" aria-label="탐색 창" className="w-240">
+    <div role="tree" aria-label="탐색 창" className="w-size-navigation-item-width">
       {props.children}
     </div>
   );

@@ -22,7 +22,7 @@ const meta = {
   title: 'Patterns/Window/SnapAssist',
   render: () => (
     <SnapAssist
-      className="h-1016 w-952"
+      className="h-size-snap-preview-height w-size-snap-preview-width"
       suggestions={[
         {
           id: SNAP_ASSIST_CHROME.id,
@@ -42,7 +42,7 @@ const meta = {
                 <ChromePage
                   page="post"
                   layout="wide"
-                  className="min-h-0 w-full flex-1"
+                  className="min-h-size-none w-full flex-flex-fill"
                   cover={<ImageAsset name="images/wallpaper-bloom" />}
                   meta={POST_PAGE.meta}
                   title={POST_PAGE.title}

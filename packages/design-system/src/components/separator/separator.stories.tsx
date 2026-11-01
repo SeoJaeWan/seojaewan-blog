@@ -22,7 +22,7 @@ const meta = {
   render: (args) => (
     <Separator
       orientation={args.orientation}
-      className={args.orientation === 'horizontal' ? 'w-240' : undefined}
+      className={args.orientation === 'horizontal' ? 'w-size-separator-width' : undefined}
     />
   ),
 } satisfies Meta<FigmaArgs>;
@@ -38,7 +38,7 @@ export const Figma: Story = {};
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** 기본은 가로선이다 */
 export const Default: Story = {
-  render: () => <Separator className="w-240" />,
+  render: () => <Separator className="w-size-separator-width" />,
   play: async ({ canvasElement, step }) => {
     await step('가로선이다', async () => {
       await expect(within(canvasElement).getByRole('separator')).toHaveAttribute(

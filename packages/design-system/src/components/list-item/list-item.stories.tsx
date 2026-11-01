@@ -56,7 +56,7 @@ const meta = {
       showTrailing: args.showTrailing,
     };
     return (
-      <div className="w-400">
+      <div className="w-size-list-item-width">
         {args.size === 'two-line' ? (
           <ListItem
             {...common}

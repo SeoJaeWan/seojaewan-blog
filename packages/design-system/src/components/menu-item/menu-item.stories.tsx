@@ -254,7 +254,7 @@ function OpenMenu(props: { children: ReactNode }): JSX.Element {
           <Menu.Portal container={anchor}>
             <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
               {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
-              <Menu.Popup data-parity-target className="outline-none">
+              <Menu.Popup data-parity-target className="w-size-menu-width outline-none">
                 {props.children}
               </Menu.Popup>
             </Menu.Positioner>

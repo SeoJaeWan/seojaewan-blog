@@ -51,16 +51,20 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
         <div
           className={
             isMobile
-              ? 'flex min-h-px w-full flex-1 flex-col items-start gap-16 px-16 pt-32'
-              : 'flex min-h-px w-full flex-1 flex-col items-start gap-16 px-32 pt-32'
+              ? 'flex min-h-size-hairline w-full flex-flex-fill flex-col items-start gap-spacing-lg px-spacing-lg pt-spacing-3xl'
+              : 'flex min-h-size-hairline w-full flex-flex-fill flex-col items-start gap-spacing-lg px-spacing-3xl pt-spacing-3xl'
           }
         >
-          <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-0" />
-          <div className="flex min-h-px w-full flex-1 flex-col">{children}</div>
+          <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-shrink-none" />
+          <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col">{children}</div>
         </div>
-        <StartMenuFooter className="w-full shrink-0">
+        <StartMenuFooter className="w-full shrink-shrink-none">
           <div className="flex w-full items-center">
-            <ProfileButton photo={profilePhoto} name={profileName} className="min-w-px flex-1" />
+            <ProfileButton
+              photo={profilePhoto}
+              name={profileName}
+              className="min-w-size-hairline flex-flex-fill"
+            />
             {powerButton}
           </div>
         </StartMenuFooter>

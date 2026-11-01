@@ -534,7 +534,7 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
     onImageOpen: handleImageOpen,
   } = props;
   const layout = device === 'mobile' ? 'narrow' : 'wide';
-  const className = 'min-h-0 w-full flex-1';
+  const className = 'min-h-size-none w-full flex-flex-fill';
   const posts =
     page.kind === 'new-tab'
       ? getLatestPosts(workspace, NEW_TAB_LATEST_POST_COUNT)

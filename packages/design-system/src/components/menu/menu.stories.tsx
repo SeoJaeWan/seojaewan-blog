@@ -8,7 +8,7 @@ const meta = {
   render: () => (
     // 컴포넌트의 Content 슬롯은 언제나 비어 있다. 피그마는 빈 슬롯을 높이 16px로 그리므로 같은 높이의 빈 자리를 둔다.
     <Menu>
-      <div className="h-16" />
+      <div className="h-spacing-lg" />
     </Menu>
   ),
 } satisfies Meta;

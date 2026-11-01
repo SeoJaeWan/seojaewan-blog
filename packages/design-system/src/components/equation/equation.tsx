@@ -16,7 +16,7 @@ type EquationProps = ComponentProps<'div'> & {
 export function Equation(props: EquationProps): JSX.Element {
   const { children, className, ...divProps } = props;
   return (
-    <div {...divProps} className={cn('flex items-center justify-center py-8', className)}>
+    <div {...divProps} className={cn('flex items-center justify-center py-spacing-sm', className)}>
       {children}
     </div>
   );

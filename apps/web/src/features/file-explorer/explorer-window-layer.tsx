@@ -295,7 +295,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
                 onLabelClick={() => {
                   handleNavigate(entry.location);
                 }}
-                className="shrink-0"
+                className="shrink-shrink-none"
               />
             );
           },
@@ -392,7 +392,7 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
       onChevronClick={() => {
         onToggle(row, row.expand !== 'expanded');
       }}
-      className="w-240"
+      className="w-size-search-box-width"
     />
   );
 }
@@ -402,7 +402,7 @@ const NAVIGATION_ICONS = {
   desktop: (
     <Asset
       name="icons/ic_fluent_desktop_20_regular.svg"
-      className="size-icon-16 text-text-fill-primary"
+      className="size-size-icon-sm text-text-fill-primary"
     />
   ),
   folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,

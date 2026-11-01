@@ -60,14 +60,14 @@ export function IconButton(props: IconButtonProps): JSX.Element {
       {...buttonProps}
       aria-label={label}
       className={cn(
-        'relative isolate inline-flex size-control-height items-center justify-center rounded-control select-none',
-        'inner-border-w-default focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'relative isolate inline-flex size-size-control-height items-center justify-center rounded-radius-control select-none',
+        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         'motion-control-state',
         ...variantClassNames[variant],
         className,
       )}
     >
-      <Asset name={icon} className="size-icon-16" />
+      <Asset name={icon} className="size-size-icon-sm" />
     </BaseButton>
   );
 }

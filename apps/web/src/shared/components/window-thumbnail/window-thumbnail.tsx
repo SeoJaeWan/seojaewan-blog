@@ -27,11 +27,11 @@ export function WindowThumbnail(props: WindowThumbnailProps): JSX.Element {
     <div
       aria-hidden
       inert
-      className={['relative shrink-0', className].filter(Boolean).join(' ')}
+      className={['relative shrink-shrink-none', className].filter(Boolean).join(' ')}
       style={{ width: width * scale, height: height * scale }}
     >
       <div
-        className="absolute top-0 left-0 flex origin-top-left"
+        className="absolute top-spacing-none left-spacing-none flex origin-top-left"
         style={{ width, height, transform: `scale(${String(scale)})` }}
       >
         {children}

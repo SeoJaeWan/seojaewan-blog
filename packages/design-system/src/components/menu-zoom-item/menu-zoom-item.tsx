@@ -47,14 +47,19 @@ export function MenuZoomItem(props: MenuZoomItemProps): JSX.Element {
     <div
       role="group"
       aria-label={label}
-      className={cn('flex w-240 items-center justify-start px-4 py-0 select-none', className)}
+      className={cn(
+        'flex w-full items-center justify-start px-spacing-xs py-spacing-none select-none',
+        className,
+      )}
     >
-      <div className="flex flex-1 items-center justify-start gap-12 self-stretch pr-4 pl-12">
-        <span className="flex size-icon-16 shrink-0 items-center justify-center text-text-fill-primary">
-          <Asset name={icon} className="size-icon-16" />
+      <div className="flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch pr-spacing-xs pl-spacing-md">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-primary">
+          <Asset name={icon} className="size-size-icon-sm" />
         </span>
-        <span className="min-w-0 flex-1 truncate type-body text-text-fill-primary">{label}</span>
-        <div className="flex shrink-0 items-center justify-start gap-4">
+        <span className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary">
+          {label}
+        </span>
+        <div className="flex shrink-shrink-none items-center justify-start gap-spacing-xs">
           <IconButton
             role="menuitem"
             variant="subtle"
@@ -63,7 +68,7 @@ export function MenuZoomItem(props: MenuZoomItemProps): JSX.Element {
             disabled={isZoomOutDisabled}
             onClick={handleZoomOut}
           />
-          <span className="w-40 shrink-0 text-center type-body text-text-fill-primary">
+          <span className="w-size-menu-item-value-width shrink-shrink-none text-center type-body text-text-fill-primary">
             {value}
           </span>
           <IconButton

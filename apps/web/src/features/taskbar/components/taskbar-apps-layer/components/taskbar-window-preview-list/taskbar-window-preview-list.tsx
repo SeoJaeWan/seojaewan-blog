@@ -92,7 +92,7 @@ export function TaskbarWindowPreviewList(props: TaskbarWindowPreviewListProps): 
               title={item.title}
               thumbnail={item.thumbnail}
               style={cardWidth === undefined ? undefined : { width: cardWidth }}
-              className="shrink-0"
+              className="shrink-shrink-none"
             />
           );
         },

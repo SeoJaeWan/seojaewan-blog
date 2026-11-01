@@ -9,10 +9,10 @@ const STATES = ['rest', 'hover', 'focused', 'pressed', 'disabled'] as const;
 
 // SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 모양별로 감싼다.
 const previewWidthClassNames = {
-  default: 'w-240',
-  pill: 'w-320',
-  taskbar: 'w-220',
-  web: 'w-320',
+  default: 'w-size-search-box-width',
+  pill: 'w-size-search-box-wide-width',
+  taskbar: 'w-size-search-box-taskbar-width',
+  web: 'w-size-search-box-wide-width',
 } as const satisfies Record<(typeof APPEARANCES)[number], string>;
 
 type FigmaArgs = {

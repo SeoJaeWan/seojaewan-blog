@@ -26,7 +26,9 @@ export function SectionTitle(props: SectionTitleProps): JSX.Element {
   } = props;
   return (
     <div {...divProps} className={cn('flex items-center overflow-clip', className)}>
-      <p className="min-w-px flex-1 type-body-strong text-text-fill-primary">{title}</p>
+      <p className="min-w-size-hairline flex-flex-fill type-body-strong text-text-fill-primary">
+        {title}
+      </p>
       {hasAction ? action : null}
     </div>
   );

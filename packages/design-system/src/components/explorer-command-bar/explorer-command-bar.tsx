@@ -17,9 +17,12 @@ export function ExplorerCommandBar(props: ExplorerCommandBarProps): JSX.Element 
   return (
     <div
       {...divProps}
-      className={cn('flex items-center gap-4 overflow-clip px-12 py-8', className)}
+      className={cn(
+        'flex items-center gap-spacing-xs overflow-clip px-spacing-md py-spacing-sm',
+        className,
+      )}
     >
-      <div className="min-w-px flex-1">{children}</div>
+      <div className="min-w-size-hairline flex-flex-fill">{children}</div>
     </div>
   );
 }

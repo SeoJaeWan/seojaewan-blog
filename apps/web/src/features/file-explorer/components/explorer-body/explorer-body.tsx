@@ -876,7 +876,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           <Tooltip
             type="balloon"
             message={rename.errorMessage}
-            className="absolute left-0 z-1"
+            className="absolute left-spacing-none z-layer-balloon"
             style={{ top: `calc(100% + ${String(BALLOON_OFFSET)}px)` }}
           />
         )}
@@ -981,7 +981,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       )}
       {marquee.marquee !== null && (
         <SelectionMarquee
-          className="pointer-events-none absolute z-1"
+          className="pointer-events-none absolute z-layer-marquee"
           style={{
             left: marquee.marquee.x,
             top: marquee.marquee.y,
@@ -1077,7 +1077,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       <ExplorerContent
         {...contentProps}
         device={device}
-        className="min-h-0 w-full flex-1"
+        className="min-h-size-none w-full flex-flex-fill"
         // 같은 탭에서 위치를 옮기면 항목 자리를 새로 그려 스크롤을 맨 위로 돌린다.
         itemsKey={location ?? DESKTOP_LOCATION_KEY}
         onRefresh={() => {

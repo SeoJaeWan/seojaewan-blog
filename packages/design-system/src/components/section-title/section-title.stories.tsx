@@ -8,7 +8,7 @@ const meta = {
   // 변형 속성이 없다. 글자는 피그마 Title 속성의 기본값이다.
   // 부모가 너비를 정하는 컴포넌트라 피그마 원본 너비 574로 감싼다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
   render: () => (
-    <div className="w-574">
+    <div className="w-size-shell-body-width">
       <SectionTitle />
     </div>
   ),
@@ -26,7 +26,7 @@ export const Figma: Story = {};
 /** showAction이 꺼져 있으면 action을 그리지 않는다 */
 export const Default: Story = {
   render: () => (
-    <div className="w-574">
+    <div className="w-size-shell-body-width">
       <SectionTitle title="고정됨" action={<button type="button">보기</button>} />
     </div>
   ),
@@ -47,7 +47,7 @@ export const Default: Story = {
 /** showAction이 켜지면 action을 그린다 */
 export const WithAction: Story = {
   render: () => (
-    <div className="w-574">
+    <div className="w-size-shell-body-width">
       <SectionTitle showAction action={<button type="button">보기</button>} />
     </div>
   ),

@@ -68,7 +68,7 @@ export function Shell(props: ShellProps): JSX.Element {
       ref={mainRef}
       tabIndex={-1}
       aria-label="바탕화면"
-      className="fixed inset-0 overflow-hidden outline-none"
+      className="fixed inset-spacing-none overflow-hidden outline-none"
     >
       <ShellDesktop key={generation} isInert={isRestarting} />
       <RestartScreen />
@@ -111,7 +111,7 @@ function ShellDesktop(props: ShellDesktopProps): JSX.Element {
       {/* 창 층(data-layer="windows"). 아이콘 위, 패널 아래다 */}
       <ShellWindows />
       {/* 패널 층(Start·검색). 창보다 위, 작업 표시줄보다 아래다 */}
-      <div data-layer="panels" className="pointer-events-none absolute inset-0">
+      <div data-layer="panels" className="pointer-events-none absolute inset-spacing-none">
         <StartMenuLayer />
       </div>
     </DesktopScene>

@@ -42,7 +42,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       // 오른쪽 구분선을 그리는 상태다.
       data-separator={!isSelected}
       className={cn(
-        'group relative flex h-control-height w-220 items-center gap-8 rounded-t-overlay py-8 pr-8 pl-12 select-none',
+        'group relative flex h-size-control-height w-size-explorer-tab-width items-center gap-spacing-sm rounded-t-radius-overlay py-spacing-sm pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
         isSelected
           ? 'bg-layer-on-mica-base-alt-fill-default'
@@ -55,12 +55,16 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         aria-selected={isSelected}
         tabIndex={tabIndex}
         className={cn(
-          'flex min-w-0 flex-1 items-center gap-8 rounded-control',
-          'focus-visible:outline-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+          'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
+          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         )}
       >
-        <span className="flex size-icon-16 shrink-0 items-center justify-center">{icon}</span>
-        <span className="min-w-0 flex-1 truncate type-caption text-text-fill-primary">{title}</span>
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+          {icon}
+        </span>
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
+          {title}
+        </span>
       </div>
       <button
         type="button"
@@ -69,14 +73,14 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-icon-16 shrink-0 items-center justify-center text-text-fill-secondary"
+        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-secondary"
       >
-        <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-icon-16" />
+        <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-size-icon-sm" />
       </button>
       {!isSelected && (
         <span
           aria-hidden
-          className="absolute top-1/2 right-0 h-16 w-stroke-default -translate-y-1/2 bg-divider-stroke-default group-hover:hidden"
+          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-divider-stroke-default group-hover:hidden"
         />
       )}
     </div>

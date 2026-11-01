@@ -36,7 +36,7 @@ export function StartViewMenu(props: StartViewMenuProps): JSX.Element {
         side="bottom"
         align="end"
         items={menuItems}
-        className="w-104"
+        className="w-size-menu-view-options-width"
         itemClassName="w-full"
         trigger={<DropDownButton label={label} />}
       />

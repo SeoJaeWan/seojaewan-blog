@@ -52,7 +52,7 @@ type ExplorerWindowProps = WindowFrameControlProps & {
   onTabMove?: (from: number, to: number) => void;
   /** 새 탭(+) 버튼을 눌렀을 때 */
   onNewTab?: () => void;
-  /** 탭 내용 자리. 고른 탭의 `ExplorerContent`를 넣는다. 남는 자리를 채우도록 `min-h-0 w-full flex-1`을 준다 */
+  /** 탭 내용 자리. 고른 탭의 `ExplorerContent`를 넣는다. 남는 자리를 채우도록 `min-h-size-none w-full flex-flex-fill`을 준다 */
   children?: ReactNode;
   /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
   className?: string;
@@ -163,7 +163,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
             ref={tabListRef}
             role="tablist"
             aria-label="탭"
-            className="flex min-w-0 items-end overflow-x-auto"
+            className="flex min-w-size-none items-end overflow-x-auto"
             style={{ scrollbarWidth: 'none' }}
           >
             {tabs.map(
@@ -193,7 +193,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
                     onAuxClick={(event: MouseEvent<HTMLDivElement>) => {
                       handleTabAuxClick(event, index);
                     }}
-                    className="min-w-120"
+                    className="min-w-size-button-min-width"
                   />
                 );
               },
@@ -204,7 +204,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
             label="새 탭"
             icon="icons/ic_fluent_add_20_regular.svg"
             onClick={handleNewTab}
-            className="shrink-0"
+            className="shrink-shrink-none"
           />
         </>
       }

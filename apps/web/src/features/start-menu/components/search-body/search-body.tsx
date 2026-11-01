@@ -81,9 +81,9 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
     case 'before-typing':
       return (
         <ScrollArea className={className}>
-          <div className="flex w-full shrink-0 flex-col items-start gap-2">
+          <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-2xs">
             {props.recent.length > 0 && (
-              <ListGroup label="최근" className="w-full shrink-0">
+              <ListGroup label="최근" className="w-full shrink-shrink-none">
                 {props.recent.map(
                   /**
                    * 최근 항목 한 줄을 그린다.
@@ -103,7 +103,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
                 )}
               </ListGroup>
             )}
-            <ListGroup label="추천" className="w-full shrink-0">
+            <ListGroup label="추천" className="w-full shrink-shrink-none">
               {props.recommended.map(
                 /**
                  * 추천 글 한 줄을 그린다.
@@ -199,7 +199,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
       title={cardItem.title}
       meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
       actions={
-        <div className="flex flex-col items-start gap-8">
+        <div className="flex w-240 flex-col items-start gap-spacing-sm">
           <MenuItem
             standalone
             label="열기"
@@ -217,7 +217,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
         </div>
       }
     >
-      <ListGroup label="최고 일치" className="w-full shrink-0">
+      <ListGroup label="최고 일치" className="w-full shrink-shrink-none">
         <ItemListRow
           id={bestMatch.id}
           isSelected={selectedId === bestMatch.id}
@@ -237,7 +237,11 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
            * @returns ListGroup
            */
           (group) => (
-            <ListGroup key={group.kind} label={kindLabels[group.kind]} className="w-full shrink-0">
+            <ListGroup
+              key={group.kind}
+              label={kindLabels[group.kind]}
+              className="w-full shrink-shrink-none"
+            >
               {group.items.map(
                 /**
                  * 결과 한 줄을 그린다.

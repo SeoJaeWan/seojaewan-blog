@@ -101,7 +101,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
       <div
         ref={viewportRef}
         onScroll={handleMeasure}
-        className="flex flex-1 flex-col overflow-y-auto"
+        className="flex flex-flex-fill flex-col overflow-y-auto"
         style={{ scrollbarWidth: 'none' }}
       >
         {children}
@@ -116,7 +116,10 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
         thumbOffset={thumb?.offset}
         thumbLength={thumb?.length}
         // 오른쪽 거리 spacing/2, 위아래 거리 spacing/4로 세로 양쪽을 늘여 겹친다.
-        className={cn('absolute top-4 right-2 bottom-4', !thumb && 'invisible')}
+        className={cn(
+          'absolute top-spacing-xs right-spacing-2xs bottom-spacing-xs',
+          !thumb && 'invisible',
+        )}
       />
     </div>
   );

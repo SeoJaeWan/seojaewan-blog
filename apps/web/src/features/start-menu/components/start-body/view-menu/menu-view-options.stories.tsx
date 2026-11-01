@@ -11,7 +11,13 @@ const meta = {
   title: 'Patterns/Menu/ViewOptions',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
   parameters: { layout: 'padded', a11y: menuStoryA11y },
-  render: () => <MenuStory items={menuViewOptions} className="w-104" itemClassName="w-full" />,
+  render: () => (
+    <MenuStory
+      items={menuViewOptions}
+      className="w-size-menu-view-options-width"
+      itemClassName="w-full"
+    />
+  ),
 } satisfies Meta;
 
 export default meta;

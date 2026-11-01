@@ -57,7 +57,7 @@ const meta = {
   },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 840으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => (
-    <div className="w-840">
+    <div className="w-size-file-row-width">
       {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다. */}
       <FileRow
         tabIndex={0}
@@ -69,7 +69,7 @@ const meta = {
         showLocation={args.showLocation}
         originalLocation={args.originalLocation}
         deletedDate={args.deletedDate}
-        icon={<img src={folderIcon} alt="" className="size-icon-16 object-contain" />}
+        icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
         selected={args.state === 'selected' || args.state === 'cut-selected'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}
@@ -92,7 +92,7 @@ export const Figma: Story = {};
 /** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 showLocation을 켜기 전에는 없다 */
 export const Default: Story = {
   render: () => (
-    <div className="w-840">
+    <div className="w-size-file-row-width">
       <FileRow icon={<i>아이콘</i>} />
     </div>
   ),
@@ -109,7 +109,7 @@ export const Default: Story = {
 /** showLocation을 켜면 위치 칸을 그린다 */
 export const WithLocation: Story = {
   render: () => (
-    <div className="w-840">
+    <div className="w-size-file-row-width">
       <FileRow icon={<i />} showLocation />
     </div>
   ),
@@ -122,7 +122,7 @@ export const WithLocation: Story = {
 /** recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그리고 수정한 날짜·유형·위치 칸은 그리지 않는다 */
 export const RecycleBin: Story = {
   render: () => (
-    <div className="w-840">
+    <div className="w-size-file-row-width">
       <FileRow icon={<i />} view="recycle-bin" showLocation />
     </div>
   ),
@@ -139,7 +139,7 @@ export const RecycleBin: Story = {
 /** selected면 선택된 줄이다 */
 export const Selected: Story = {
   render: () => (
-    <div className="w-840" data-testid="row">
+    <div className="w-size-file-row-width" data-testid="row">
       <FileRow icon={<i />} selected />
     </div>
   ),
@@ -155,7 +155,7 @@ export const Selected: Story = {
 /** renaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
 export const Renaming: Story = {
   render: () => (
-    <div className="w-840" data-testid="row">
+    <div className="w-size-file-row-width" data-testid="row">
       <FileRow icon={<i />} name="보고서" renaming renameFieldProps={{ 'aria-label': '새 이름' }} />
     </div>
   ),
@@ -173,7 +173,7 @@ export const Renaming: Story = {
 /** 포커스 선은 prop 없이 키보드 포커스일 때만 그리고, 크기에 넣지 않으므로 포커스를 받아도 줄 크기가 같다 */
 export const Focused: Story = {
   render: () => (
-    <div className="w-840" data-testid="row">
+    <div className="w-size-file-row-width" data-testid="row">
       <FileRow icon={<i />} tabIndex={0} />
     </div>
   ),

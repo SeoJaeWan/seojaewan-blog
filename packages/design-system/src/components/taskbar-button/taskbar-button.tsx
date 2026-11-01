@@ -25,8 +25,8 @@ const surfaceClassNames = {
 } as const satisfies Record<TaskbarButtonIndicator, string>;
 
 const indicatorClassNames = {
-  running: 'w-6 bg-control-strong-fill-default',
-  active: 'w-16 bg-accent-fill-default',
+  running: 'w-size-taskbar-button-indicator-running bg-control-strong-fill-default',
+  active: 'w-size-taskbar-button-indicator-active bg-accent-fill-default',
 } as const satisfies Record<Exclude<TaskbarButtonIndicator, 'none'>, string>;
 
 /**
@@ -44,7 +44,7 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
       aria-label={label}
       data-indicator={indicator}
       className={cn(
-        'group relative inline-flex size-40 items-center justify-center rounded-control border-default select-none',
+        'group relative inline-flex size-size-taskbar-item items-center justify-center rounded-radius-control border-stroke-width-default select-none',
         'motion-control-state',
         'border-transparent hover:border-control-stroke-default active:border-control-stroke-default',
         surfaceClassNames[indicator],
@@ -53,14 +53,14 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
         className,
       )}
     >
-      <span className="inline-flex size-24 items-center justify-center group-active:size-20">
+      <span className="inline-flex size-size-icon-lg items-center justify-center group-active:size-size-icon-md">
         {icon}
       </span>
       {indicator === 'none' ? null : (
         <span
           aria-hidden="true"
           className={cn(
-            'absolute -bottom-px left-1/2 h-stroke-indicator -translate-x-1/2 rounded-circular',
+            'absolute -bottom-spacing-hairline left-position-half h-stroke-stroke-width-indicator -translate-x-position-half rounded-radius-circular',
             indicatorClassNames[indicator],
           )}
         />

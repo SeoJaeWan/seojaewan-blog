@@ -155,7 +155,9 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
   const [openMenu, setOpenMenu] = useState<'onSort' | 'onView' | null>(null);
   const menus = { onSort: sortMenu, onView: viewMenu } as const;
   return (
-    <div className={['flex w-fit items-center gap-4', className].filter(Boolean).join(' ')}>
+    <div
+      className={['flex w-fit items-center gap-spacing-xs', className].filter(Boolean).join(' ')}
+    >
       {commandsByLocation[location].map(
         /**
          * 명령 버튼이나 구분선 하나를 그린다.
@@ -173,7 +175,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
               <Separator
                 key={`separator-${String(index)}`}
                 orientation="vertical"
-                className="h-24"
+                className="h-size-separator-command-height"
               />
             );
           }
@@ -188,7 +190,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
                 label={command.label}
                 showIcon
                 icon={command.icon}
-                className="min-w-0"
+                className="min-w-size-none"
                 disabled={isDisabled}
                 onClick={handleClick}
               />

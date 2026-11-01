@@ -36,14 +36,16 @@ export function Toc(props: TocProps): JSX.Element {
         {...divProps}
         data-state={state}
         className={cn(
-          'flex items-center overflow-clip rounded-control border-default border-card-stroke-default bg-card-background-fill-secondary px-12 py-8',
+          'flex items-center overflow-clip rounded-radius-control border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary px-spacing-md py-spacing-sm',
           className,
         )}
       >
-        <p className="min-w-px flex-1 type-body-strong text-text-fill-primary">{title}</p>
+        <p className="min-w-size-hairline flex-flex-fill type-body-strong text-text-fill-primary">
+          {title}
+        </p>
         <Asset
           name="icons/ic_fluent_chevron_down_20_regular.svg"
-          className="size-icon-20 shrink-0 text-text-fill-primary"
+          className="size-size-icon-md shrink-shrink-none text-text-fill-primary"
         />
       </div>
     );
@@ -52,11 +54,13 @@ export function Toc(props: TocProps): JSX.Element {
     <div
       {...divProps}
       data-state={state}
-      className={cn('flex flex-col items-start gap-8 pt-4', className)}
+      className={cn('flex flex-col items-start gap-spacing-sm pt-spacing-xs', className)}
     >
-      <SectionTitle {...titleProps} title={title} className="w-full shrink-0" />
+      <SectionTitle {...titleProps} title={title} className="w-full shrink-shrink-none" />
       {/* 피그마 Items 슬롯의 배치(세로, 간격 spacing/8)다 */}
-      <div className="flex w-full shrink-0 flex-col items-start gap-8">{children}</div>
+      <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-sm">
+        {children}
+      </div>
     </div>
   );
 }

@@ -18,12 +18,12 @@ type PopoverProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 // 자리별 팝업 위치다. 트리거와 팝업 사이 간격은 spacing/4 하나다.
 const placementClassNames = {
-  'bottom-start': 'top-full left-0 mt-4',
-  'bottom-center': 'top-full left-1/2 mt-4 -translate-x-1/2',
-  'bottom-end': 'top-full right-0 mt-4',
-  'top-center': 'bottom-full left-1/2 mb-4 -translate-x-1/2',
-  'top-end': 'bottom-full right-0 mb-4',
-  'right-start': 'top-0 left-full ml-4',
+  'bottom-start': 'top-position-full left-spacing-none mt-spacing-xs',
+  'bottom-center': 'top-position-full left-position-half mt-spacing-xs -translate-x-position-half',
+  'bottom-end': 'top-position-full right-spacing-none mt-spacing-xs',
+  'top-center': 'bottom-position-full left-position-half mb-spacing-xs -translate-x-position-half',
+  'top-end': 'bottom-position-full right-spacing-none mb-spacing-xs',
+  'right-start': 'top-spacing-none left-position-full ml-spacing-xs',
 } as const satisfies Record<PopoverPlacement, string>;
 
 /**
@@ -47,7 +47,7 @@ export function Popover(props: PopoverProps): JSX.Element {
     <div {...divProps} className={cn('relative inline-flex', className)}>
       {trigger}
       {isOpen && (
-        <div className={cn('absolute z-10 flex w-max', placementClassNames[placement])}>
+        <div className={cn('absolute z-layer-popover flex w-max', placementClassNames[placement])}>
           {popup}
         </div>
       )}

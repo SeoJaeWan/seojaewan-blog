@@ -33,18 +33,18 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
   return (
     <div
       className={cn(
-        'group relative isolate flex items-center justify-start gap-8 overflow-hidden inner-border-w-default',
+        'group relative isolate flex items-center justify-start gap-spacing-sm overflow-hidden inner-border-w-stroke-width-default',
         isDisabled
           ? 'bg-control-fill-disabled'
           : 'bg-control-fill-default focus-within:bg-control-fill-input-active hover:not-focus-within:bg-control-fill-secondary',
         isDefault &&
-          'inner-border-control-stroke-default h-control-height rounded-control py-6 pr-8 pl-12 motion-control-state',
+          'inner-border-control-stroke-default h-size-control-height rounded-radius-control py-spacing-sm-nudge pr-spacing-sm pl-spacing-md motion-control-state',
         appearance === 'pill' &&
-          'inner-border-control-stroke-default h-36 rounded-circular px-16 py-8 motion-search-box-focus-state',
+          'inner-border-control-stroke-default h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-search-box-focus-state',
         appearance === 'taskbar' &&
-          'inner-border-control-stroke-default h-control-height rounded-circular px-16 py-6 motion-search-box-focus-state',
+          'inner-border-control-stroke-default h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
         appearance === 'web' &&
-          'inner-border-control-stroke-default h-36 rounded-circular px-16 py-8 motion-control-state',
+          'inner-border-control-stroke-default h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-control-state',
         isWindowsSearch && !isDisabled && 'active:bg-control-fill-input-active',
         className,
       )}
@@ -54,7 +54,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
-            'size-icon-16 shrink-0',
+            'size-size-icon-sm shrink-shrink-none',
             isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
           )}
         />
@@ -64,13 +64,13 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         type="text"
         role="searchbox"
         disabled={isDisabled}
-        className="min-w-0 flex-1 truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
+        className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
       />
       {isDefault && (
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
-            'size-icon-16 shrink-0',
+            'size-size-icon-sm shrink-shrink-none',
             isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
           )}
         />
@@ -80,10 +80,10 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         <span
           aria-hidden
           className={cn(
-            'pointer-events-none absolute inset-x-0 bottom-0',
+            'pointer-events-none absolute inset-x-spacing-none bottom-spacing-none',
             isDisabled
-              ? 'h-stroke-default bg-control-stroke-default'
-              : 'hidden group-focus-within:block group-focus-within:h-stroke-focus-outer group-focus-within:bg-accent-fill-default',
+              ? 'h-stroke-stroke-width-default bg-control-stroke-default'
+              : 'hidden group-focus-within:block group-focus-within:h-stroke-stroke-width-focus-outer group-focus-within:bg-accent-fill-default',
           )}
         />
       )}
@@ -103,16 +103,16 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
 function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
   const shouldUseSolidIcon = useSolidSearchIcon();
   return (
-    <span className="grid size-icon-16 shrink-0 place-items-center">
-      <span className="grid size-icon-16">
+    <span className="grid size-size-icon-sm shrink-shrink-none place-items-center">
+      <span className="grid size-size-icon-sm">
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
-            'col-start-1 row-start-1 size-icon-16',
+            'col-start-grid-start row-start-grid-start size-size-icon-sm',
             isDisabled
               ? 'text-text-fill-disabled'
               : shouldUseSolidIcon
-                ? 'text-text-fill-secondary group-focus-within:scale-110 group-focus-within:text-accent-fill-default group-hover:scale-110 group-hover:text-accent-fill-default'
+                ? 'text-text-fill-secondary group-focus-within:motion-search-box-focus-rest group-focus-within:text-accent-fill-default group-hover:motion-search-box-focus-rest group-hover:text-accent-fill-default'
                 : 'text-text-fill-secondary group-focus-within:hidden group-hover:hidden',
           )}
         />
@@ -120,7 +120,7 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
           // 호버·포커스에서만 보이므로 보일 때마다 강조 모션이 처음부터 재생된다. 배율 1.1은 끝 모습이다.
           <Asset
             name="illustrations/icon-color-search-focus.svg"
-            className="col-start-1 row-start-1 hidden size-icon-16 motion-search-box-focus scale-110 group-focus-within:block group-hover:block"
+            className="col-start-grid-start row-start-grid-start hidden size-size-icon-sm motion-search-box-focus motion-search-box-focus-rest group-focus-within:block group-hover:block"
           />
         )}
       </span>

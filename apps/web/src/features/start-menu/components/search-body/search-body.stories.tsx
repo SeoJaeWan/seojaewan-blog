@@ -13,7 +13,10 @@ const VIEWS = ['before-typing', 'results', 'no-results'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
 // 본문은 크기를 갖지 않고 검색 패널이 정하므로 피그마 원본 크기(size/574×654, size/356×522)로 감싸 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-574 h-654', mobile: 'w-356 h-522' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-shell-body-width h-size-search-body-height',
+  mobile: 'w-size-shell-mobile-body-width h-size-search-body-mobile-height',
+} as const;
 
 type FigmaArgs = {
   view: (typeof VIEWS)[number];

@@ -22,14 +22,14 @@ export function Callout(props: CalloutProps): JSX.Element {
       {...divProps}
       // 피그마에서 테두리가 레이아웃에 들어가므로 CSS border를 쓴다.
       className={cn(
-        'flex items-start gap-12 rounded-overlay border-default border-card-stroke-default bg-card-background-fill-secondary p-16',
+        'flex items-start gap-spacing-md rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary p-spacing-lg',
         className,
       )}
     >
-      <div className="flex h-24 shrink-0 items-center justify-center">
-        <div className="size-icon-20 shrink-0 text-text-fill-primary">{icon}</div>
+      <div className="flex h-size-post-block-icon-box shrink-shrink-none items-center justify-center">
+        <div className="size-size-icon-md shrink-shrink-none text-text-fill-primary">{icon}</div>
       </div>
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-size-none flex-flex-fill">{children}</div>
     </div>
   );
 }

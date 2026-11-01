@@ -12,7 +12,10 @@ const SEARCHES = ['box', 'button'] as const;
 const DEFAULT_SEARCH: (typeof SEARCHES)[number] = 'box';
 
 // 너비는 쓰는 곳이 정하므로 피그마 원본 너비(size/1280, size/390)로 그린다.
-const WIDTH_CLASS_NAMES = { box: 'w-1280', button: 'w-390' } as const;
+const WIDTH_CLASS_NAMES = {
+  box: 'w-size-taskbar-width',
+  button: 'w-size-screen-mobile-width',
+} as const;
 
 type TaskbarArgs = ComponentProps<typeof TaskbarDefault>;
 

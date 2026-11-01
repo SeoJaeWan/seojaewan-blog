@@ -20,7 +20,7 @@ const meta = {
   },
   render: (args) => (
     // Breadcrumb은 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비 480으로 감싼다.
-    <div className="w-480">
+    <div className="w-size-breadcrumb-width">
       <Breadcrumb
         key={args.state}
         locationIcon={<img src={folderIcon} alt="" className="size-full object-contain" />}
@@ -29,7 +29,7 @@ const meta = {
         address={String.raw`바탕 화면\Blog\React`}
       >
         {/* 피그마 Items 슬롯의 미리보기 크기다. 칠 없는 빈 요소로 채운다 */}
-        <div className="shrink-0" style={{ width: 100, height: 100 }} />
+        <div className="shrink-shrink-none" style={{ width: 100, height: 100 }} />
       </Breadcrumb>
     </div>
   ),
@@ -46,7 +46,7 @@ export const Figma: Story = {};
 // @codocs [[컴포넌트 목록:상태]]
 export const Default: Story = {
   render: () => (
-    <div className="w-480">
+    <div className="w-size-breadcrumb-width">
       <Breadcrumb locationIcon={<img src={folderIcon} alt="현재 위치" className="size-full" />}>
         <span>경로 칸</span>
       </Breadcrumb>
@@ -67,7 +67,7 @@ export const Default: Story = {
 // @codocs [[컴포넌트 목록:상태]]
 export const Editing: Story = {
   render: () => (
-    <div className="w-480">
+    <div className="w-size-breadcrumb-width">
       <Breadcrumb
         locationIcon={<img src={folderIcon} alt="현재 위치" className="size-full" />}
         editing

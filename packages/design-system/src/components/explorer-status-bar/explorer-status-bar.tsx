@@ -47,13 +47,15 @@ export function ExplorerStatusBar(props: ExplorerStatusBarProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex items-center gap-16 overflow-clip bg-layer-fill-default py-2 pr-8 pl-16 type-caption text-text-fill-primary',
+        'flex items-center gap-spacing-lg overflow-clip bg-layer-fill-default py-spacing-2xs pr-spacing-sm pl-spacing-lg type-caption text-text-fill-primary',
         className,
       )}
     >
-      <span className="shrink-0 whitespace-nowrap">{itemCount}</span>
-      {isSelectionShown && <span className="shrink-0 whitespace-nowrap">{selection}</span>}
-      <div className="h-px min-w-px flex-1" />
+      <span className="shrink-shrink-none whitespace-nowrap">{itemCount}</span>
+      {isSelectionShown && (
+        <span className="shrink-shrink-none whitespace-nowrap">{selection}</span>
+      )}
+      <div className="h-size-status-bar-spacer-height min-w-size-hairline flex-flex-fill" />
       {device === 'desktop' && (
         <>
           <IconButton

@@ -11,7 +11,7 @@ const meta = {
   parameters: { layout: 'padded' },
   // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다. 슬롯은 비어 있고, 피그마 빈 슬롯의 높이 100을 빈 행으로 맞춘다.
   render: (args) => (
-    <div className="w-720">
+    <div className="w-size-post-width">
       <Table {...args} data-parity-target>
         <tr style={{ height: 100 }} />
       </Table>

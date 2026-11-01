@@ -25,7 +25,7 @@ type SnapLayoutMenuProps = {
   className?: string;
 };
 
-// 최대화 버튼과 선택지 사이 간격(px)이다. 고정 모습(Popover)의 mt-4와 같다.
+// 최대화 버튼과 선택지 사이 간격(px)이다. 고정 모습(Popover)의 mt-spacing-xs와 같다.
 const FLYOUT_OFFSET = 4;
 
 // 선택지가 열려 있는 동안(aria-expanded) 최대화 버튼을 CaptionButton Hover 모습(바탕 subtle-fill/secondary, 아이콘

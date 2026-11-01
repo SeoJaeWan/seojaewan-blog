@@ -21,17 +21,20 @@ export function TocItem(props: TocItemProps): JSX.Element {
     <div
       {...divProps}
       aria-current={isActive ? 'location' : undefined}
-      className={cn('flex h-20 items-start gap-8 overflow-clip', className)}
+      className={cn(
+        'flex h-size-toc-item-height items-start gap-spacing-sm overflow-clip',
+        className,
+      )}
     >
       <div
         className={cn(
-          'h-full w-stroke-indicator shrink-0',
+          'h-full w-stroke-stroke-width-indicator shrink-shrink-none',
           isActive ? 'bg-accent-fill-default' : 'bg-divider-stroke-default',
         )}
       />
       <p
         className={cn(
-          'shrink-0 type-body whitespace-nowrap',
+          'shrink-shrink-none type-body whitespace-nowrap',
           isActive ? 'text-accent-text-fill-primary' : 'text-text-fill-secondary',
         )}
       >

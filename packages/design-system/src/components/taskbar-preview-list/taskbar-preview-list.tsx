@@ -31,7 +31,7 @@ export function TaskbarPreviewList(props: TaskbarPreviewListProps): JSX.Element 
     <div
       {...divProps}
       className={cn(
-        'relative flex items-start gap-4 overflow-clip rounded-overlay border-default border-surface-stroke-default p-4',
+        'relative flex items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-surface-stroke-default p-spacing-xs',
         materialClassNames[material],
         className,
       )}

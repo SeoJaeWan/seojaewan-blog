@@ -25,7 +25,7 @@ const meta = {
   },
   render: (args) =>
     args.device === 'mobile' ? (
-      <div className="w-390">
+      <div className="w-size-screen-mobile-width">
         <ChromeFindBar
           device="mobile"
           defaultValue={FIND_QUERY}

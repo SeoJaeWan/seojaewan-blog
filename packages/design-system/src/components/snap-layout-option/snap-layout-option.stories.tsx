@@ -60,7 +60,7 @@ export const Default: SelectZoneStory = {
 /** 네 가지 레이아웃의 칸은 칸 번호 순서로 접근성 이름을 갖는다. layout을 주지 않으면 half다 */
 export const Layouts: Story = {
   render: () => (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-spacing-sm">
       <SnapLayoutOption />
       <SnapLayoutOption layout="twothirds" />
       <SnapLayoutOption layout="halfquarter" />
