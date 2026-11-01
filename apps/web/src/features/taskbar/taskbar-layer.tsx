@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useSearchStore } from '@/shared/stores/search-store/search-store';
 
@@ -31,7 +31,7 @@ type TaskbarLayerProps = TaskbarAppsLayerProps;
  */
 export function TaskbarLayer(props: TaskbarLayerProps): JSX.Element {
   const { renderWindow, getWindowTitle } = props;
-  const device = useDevice();
+  const device = toDeviceVariant(useDevice());
   const clock = useClock();
   const openPanel = usePanelStore((state) => state.openPanel);
   const toggleStart = usePanelStore((state) => state.toggleStart);

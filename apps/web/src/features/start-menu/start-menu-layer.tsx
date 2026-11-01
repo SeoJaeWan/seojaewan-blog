@@ -5,8 +5,8 @@ import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef, useSta
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import type { Device } from '@/shared/hooks/use-device/use-device';
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
+import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
@@ -54,7 +54,7 @@ const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
  * @returns 패널 층
  */
 export function StartMenuLayer(): JSX.Element {
-  const device = useDevice();
+  const device = toDeviceVariant(useDevice());
   // Start 위쪽 검색칸과 검색 패널(작업 표시줄 검색칸)의 검색어는 따로다.
   const startSearch = useStartSearch(device, 'start');
   const panelSearch = useStartSearch(device, 'search');
@@ -340,7 +340,7 @@ type PanelDialogProps = {
   /** 패널의 접근성 이름 */
   label: string;
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
   /** 패널을 닫아야 할 때 부른다(Esc, 바깥 누르기, 포커스가 밖으로 나감) */
   onClose: () => void;
   /** 패널을 그린다. 받은 클래스와 최대 높이를 패널 바탕(ShellSurface)에 넘긴다 */

@@ -807,6 +807,19 @@ function panelHeightOf(panel: HTMLElement): number {
   return surface.offsetHeight;
 }
 
+/** 노트북 구간의 Start·검색 패널 높이는 피그마 Laptop 모드 값이다 */
+export const Laptop: Story = {
+  globals: { viewport: { value: 'laptop', isRotated: false } },
+  beforeEach: () => {
+    usePanelStore.getState().toggleStart();
+  },
+  play: async ({ canvasElement }) => {
+    // @codocs [[Start 메뉴:구성]]
+    const panel = await within(canvasElement).findByRole('dialog', { name: '시작' });
+    await expect(panelHeightOf(panel)).toBe(640);
+  },
+};
+
 /** 화면이 낮으면 Start 패널 높이를 작업 영역에서 틈(12)을 뺀 값으로 줄인다 */
 export const LowScreen: Story = {
   parameters: { viewport: { options: LOW_VIEWPORTS } },

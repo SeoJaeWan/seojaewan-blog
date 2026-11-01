@@ -5,7 +5,7 @@ import type {
   SearchResultItem,
 } from '@/features/start-menu/utils/start-items/start-items';
 import { toSearchItem } from '@/features/start-menu/utils/start-items/start-items';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { useOpenItem } from '@/shared/hooks/use-open-item/use-open-item';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useSearchStore } from '@/shared/stores/search-store/search-store';
@@ -26,7 +26,10 @@ import {
 
 // 입력 전 화면의 최근 항목 최대 개수와 추천 글 개수(데스크톱 6, 모바일 3)다.
 const RECENT_COUNT = 5;
-const recommendedCounts = { desktop: 6, mobile: 3 } as const satisfies Record<Device, number>;
+const recommendedCounts = { desktop: 6, mobile: 3 } as const satisfies Record<
+  DeviceVariant,
+  number
+>;
 
 /** 검색 패널과 Start 검색 화면이 그리는 데이터와 동작 */
 export type StartSearch = {
@@ -62,7 +65,7 @@ export type StartSearch = {
  * @param panel 검색어를 쓰는 패널
  * @returns 검색 데이터와 동작
  */
-export function useStartSearch(device: Device, panel: PanelKind): StartSearch {
+export function useStartSearch(device: DeviceVariant, panel: PanelKind): StartSearch {
   const workspace = useWorkspaceStore((state) => state);
   const query = useSearchStore((state) => state.panels[panel].query);
   const selectedIndex = useSearchStore((state) => state.panels[panel].selectedIndex);

@@ -1,6 +1,17 @@
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
+// jsdom은 `tokens.css`를 읽지 않는다. 창을 열 때 읽는 기본 크기 변수를 PC 값으로 둔다.
+const WINDOW_SIZE_VARIABLES = {
+  '--size-window-explorer-width': '1024px',
+  '--size-window-explorer-height': '640px',
+  '--size-window-chrome-width': '1280px',
+  '--size-window-chrome-height': '800px',
+} as const;
+for (const [name, value] of Object.entries(WINDOW_SIZE_VARIABLES)) {
+  document.documentElement.style.setProperty(name, value);
+}
+
 // 훅 단위 테스트(renderHook)가 만든 트리를 시험마다 치운다.
 afterEach(() => {
   cleanup();

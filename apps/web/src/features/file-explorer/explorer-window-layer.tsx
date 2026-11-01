@@ -2,7 +2,7 @@ import { type JSX, type KeyboardEvent, type ReactNode, useEffect } from 'react';
 
 import { Asset, BreadcrumbItem, ImageAsset, NavigationItem } from '@seojaewan/design-system';
 
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import {
   DROP_TARGET_ATTRIBUTE,
   DROP_TARGET_NAME_ATTRIBUTE,
@@ -62,7 +62,7 @@ type ExplorerWindowLayerProps = {
   /** 창 층이 넘기는 창 동작 속성 */
   controls: WindowFrameControls;
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
 };
 
 /**

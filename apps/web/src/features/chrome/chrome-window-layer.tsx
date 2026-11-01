@@ -2,7 +2,7 @@ import { type JSX, type KeyboardEvent, useRef, useState } from 'react';
 
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { MessageBoxDialog } from '@/shared/components/message-box-dialog/message-box-dialog';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import {
@@ -28,6 +28,7 @@ import { ChromeNewTabSearchField } from './components/chrome-new-tab-search-fiel
 import {
   ChromePage,
   type ChromePageLatestPost,
+  type ChromePageLayout,
   type ChromePageSearchResult,
 } from './components/chrome-page/chrome-page';
 import {
@@ -39,6 +40,7 @@ import { ChromePostTab } from './components/chrome-post-tab/chrome-post-tab';
 import { ChromeWindow } from './components/chrome-window/chrome-window';
 import { TRASHED_POST_MESSAGE } from './components/message-box-trashed-post/message-box-trashed-post';
 import type { PostImageBlock } from './components/post-blocks/post-blocks';
+import { useChromePageLayout } from './hooks/use-chrome-page-layout/use-chrome-page-layout';
 import { getChromeMoreMenuEntries } from './more-menu/more-menu-entries';
 import { useChromeZoomStore } from './stores/chrome-zoom-store/chrome-zoom-store';
 import {
@@ -84,7 +86,7 @@ type ChromeWindowLayerProps = {
   /** 창 층이 넘기는 창 동작 속성 */
   controls: WindowFrameControls;
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
 };
 
 /**
@@ -129,6 +131,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
     activeTab === undefined ? { kind: 'new-tab' } : getChromeTabPage(activeTab);
   const pageKey = `${activeTab?.id ?? ''}-${String(activeTab?.historyIndex ?? 0)}`;
   const isMobile = device === 'mobile';
+  const { areaRef, layout } = useChromePageLayout();
   const post = page.kind === 'post' ? findPost(workspace, page.slug) : undefined;
   // 다른 페이지로 가면(창 밖에서 창 내용을 바꾼 경우 포함) 찾기 막대와 크게 보기를 닫는다.
   const activeFind = find?.pageKey === pageKey ? find : null;
@@ -447,7 +450,9 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
       moreMenuFinalFocus={getMenuFinalFocus}
     >
       <ChromePageArea
+        areaRef={areaRef}
         device={device}
+        layout={layout}
         find={activeFind}
         onFindQueryChange={handleFindQueryChange}
         onFindClose={handleFindClose}
@@ -460,7 +465,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
           page={page}
           post={post}
           workspace={workspace}
-          device={device}
+          layout={layout}
           zoom={zoom / DEFAULT_ZOOM}
           onNavigate={handleNavigate}
           onAddressSubmit={handleAddressSubmit}
@@ -488,8 +493,8 @@ type ChromeTabContentProps = {
   post: PostItem | undefined;
   /** 작업 공간 */
   workspace: Pick<WorkspaceState, 'items'>;
-  /** 화면 방식 */
-  device: Device;
+  /** 페이지 모양. 창 내용 너비로 정한다 */
+  layout: ChromePageLayout;
   /** 페이지 본문 배율(1이 100%) */
   zoom: number;
   /** 탭 안에서 페이지로 갈 때 */
@@ -523,7 +528,7 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
     page,
     post,
     workspace,
-    device,
+    layout,
     zoom,
     onNavigate: handleNavigate,
     onAddressSubmit: handleAddressSubmit,
@@ -533,7 +538,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
     resolveLink,
     onImageOpen: handleImageOpen,
   } = props;
-  const layout = device === 'mobile' ? 'narrow' : 'wide';
   const className = 'min-h-size-none w-full flex-flex-fill';
   const posts =
     page.kind === 'new-tab'

@@ -1,10 +1,18 @@
-import { type JSX, type KeyboardEvent, type ReactNode, useEffect, useRef } from 'react';
+import {
+  type JSX,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+} from 'react';
 
+import type { ChromePageLayout } from '@/features/chrome/components/chrome-page/chrome-page';
 import {
   type PostImageBlock,
   renderTemporaryImage,
 } from '@/features/chrome/components/post-blocks/post-blocks';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { getPlainText } from '@/shared/utils/post-body/post-body';
 
 import { ChromeFindBar } from './components/chrome-find-bar/chrome-find-bar';
@@ -28,8 +36,12 @@ export type ChromePageImage = {
 };
 
 type ChromePageAreaProps = {
-  /** 화면 방식. 모바일은 찾기 막대가 도구 모음 아래 전체 폭이고 크게 보기가 좁은 배치다 */
-  device: Device;
+  /** 페이지 영역 요소. 쓰는 곳이 이 영역의 너비로 페이지 모양을 정한다 */
+  areaRef: RefObject<HTMLDivElement | null>;
+  /** 화면 방식. 모바일은 찾기 막대가 도구 모음 아래 전체 폭이다 */
+  device: DeviceVariant;
+  /** 페이지 모양. 크게 보기가 이 배치를 따른다 */
+  layout: ChromePageLayout;
   /** 탭 내용(고른 탭의 페이지) */
   children: ReactNode;
   /** 열린 찾기 막대. 닫혀 있으면 null */
@@ -48,7 +60,7 @@ type ChromePageAreaProps = {
 const findBarClassNames = {
   desktop: 'absolute top-spacing-none right-spacing-lg',
   mobile: 'absolute inset-x-spacing-none top-spacing-none',
-} as const satisfies Record<Device, string>;
+} as const satisfies Record<DeviceVariant, string>;
 
 // 크게 보는 이미지는 페이지 영역 안에 맞추되 원본보다 키우지 않는다.
 const VIEWER_IMAGE_CLASS_NAME = 'min-h-size-none max-h-full max-w-full object-contain';
@@ -65,7 +77,9 @@ const VIEWER_IMAGE_CLASS_NAME = 'min-h-size-none max-h-full max-w-full object-co
  */
 export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
   const {
+    areaRef,
     device,
+    layout,
     children,
     find,
     onFindQueryChange: handleFindQueryChange,
@@ -73,7 +87,6 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
     image,
     onImageClose: handleImageClose,
   } = props;
-  const areaRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const {
@@ -94,7 +107,7 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
       input?.focus();
       input?.select();
     },
-    [focusRequest],
+    [areaRef, focusRequest],
   );
 
   useEffect(
@@ -130,7 +143,11 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
 
   const caption = image === null ? '' : getPlainText(image.block.caption);
   return (
-    <div ref={areaRef} className="relative flex min-h-size-none w-full flex-flex-fill flex-col">
+    <div
+      ref={areaRef}
+      data-layout={layout}
+      className="relative flex min-h-size-none w-full flex-flex-fill flex-col"
+    >
       <div
         ref={contentRef}
         // 창을 열면 포커스가 여기로 온다.
@@ -157,7 +174,7 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
       {image !== null && (
         <ChromeImageViewer
           ref={viewerRef}
-          layout={device === 'mobile' ? 'narrow' : 'wide'}
+          layout={layout}
           image={renderTemporaryImage(image.block, VIEWER_IMAGE_CLASS_NAME)}
           caption={caption.length > 0 ? caption : undefined}
           onClose={handleImageClose}
