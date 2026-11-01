@@ -7,6 +7,7 @@
     "capture": "node src/run-capture.ts",
     "motion-check": "node src/run-motion-check.ts",
     "test": "vitest run",
+    "test:unit": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

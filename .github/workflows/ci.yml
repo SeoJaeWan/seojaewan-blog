@@ -65,7 +65,11 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Unit and component tests
+      # 스토리 테스트(`storybook-*` project)가 Chromium에서 돈다
+      - name: Install Playwright browsers
+        run: pnpm --filter @seojaewan/web exec playwright install --with-deps chromium
+
+      - name: Unit and storybook tests
         run: pnpm test
 
       - name: Build

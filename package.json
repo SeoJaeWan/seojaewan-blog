@@ -15,6 +15,8 @@
     "lint:css": "stylelint \"**/*.css\" --max-warnings=0 --cache --cache-location node_modules/.cache/stylelint/",
     "typecheck": "turbo run typecheck && tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
+    "test:unit": "vitest run --project \"unit-*\"",
+    "test:storybook": "vitest run --project \"storybook-*\"",
     "test:e2e": "turbo run test:e2e",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
