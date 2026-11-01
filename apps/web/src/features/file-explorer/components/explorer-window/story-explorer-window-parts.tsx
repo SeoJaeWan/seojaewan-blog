@@ -74,7 +74,7 @@ const NAVIGATION_ICONS = {
   desktop: (
     <Asset
       name="icons/ic_fluent_desktop_20_regular.svg"
-      className="size-icon-16 text-text-fill-primary"
+      className="size-size-icon-sm text-text-fill-primary"
     />
   ),
   folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
@@ -182,7 +182,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
             label={label}
             current={isCurrent}
             showSeparator={!isCurrent}
-            className="shrink-0"
+            className="shrink-shrink-none"
           />
         );
       },
@@ -201,7 +201,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
           selected={'selected' in item}
           label={item.label}
           icon={NAVIGATION_ICONS[item.icon]}
-          className="w-240"
+          className="w-size-search-box-width"
         />
       ),
     ),

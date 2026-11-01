@@ -11,6 +11,9 @@ import { ImageAsset } from '@seojaewan/design-system';
  */
 export function DesktopWallpaper(): JSX.Element {
   return (
-    <ImageAsset name="images/wallpaper-bloom" className="absolute inset-0 size-full object-cover" />
+    <ImageAsset
+      name="images/wallpaper-bloom"
+      className="absolute inset-spacing-none size-full object-cover"
+    />
   );
 }

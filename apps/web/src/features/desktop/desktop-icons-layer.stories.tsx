@@ -241,7 +241,7 @@ const meta = {
   },
   beforeEach: resetStoryStores,
   render: () => (
-    <div className="fixed inset-0">
+    <div className="fixed inset-spacing-none">
       <DesktopIconsLayer />
     </div>
   ),
@@ -621,7 +621,7 @@ export const DragToFolder: Story = {
     useWorkspaceStore.getState().createFolder(null);
   },
   render: () => (
-    <div className="fixed inset-0">
+    <div className="fixed inset-spacing-none">
       <DesktopIconsLayer />
       <div
         data-testid="explorer-body"
