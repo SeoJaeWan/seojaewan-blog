@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, waitFor } from 'storybook/test';
+import { expect, fireEvent, waitFor } from 'storybook/test';
 
 import { ScrollArea } from './scroll-area';
 
@@ -49,20 +49,21 @@ export const Overflow: Story = {
       <div className="h-600 shrink-0">긴 내용</div>
     </ScrollArea>
   ),
-  play: async ({ canvas, canvasElement, userEvent, step }) => {
+  play: async ({ canvas, canvasElement, step }) => {
     const scrollbar = getScrollbar(canvasElement);
+    const content = canvas.getByText('긴 내용');
+    // CI의 실제 포인터 위치와 상관없도록 포인터 사건을 직접 보낸다
+    await fireEvent.pointerOut(content, { relatedTarget: document.body });
 
     await step('넘치는 내용을 재면 스크롤바가 나타난다', async () => {
       await waitFor(() => expect(scrollbar).toBeVisible());
-      // 앞 스토리의 포인터가 같은 자리에 남아 있을 수 있어 먼저 치운다
-      await userEvent.unhover(canvas.getByText('긴 내용'));
-      await waitFor(() => expect(scrollbar).toHaveAttribute('data-state', 'rest'));
+      await expect(scrollbar).toHaveAttribute('data-state', 'rest');
     });
 
     await step('마우스를 올리면 펼치고 내리면 접는다', async () => {
-      await userEvent.hover(canvas.getByText('긴 내용'));
+      await fireEvent.pointerOver(content);
       await expect(scrollbar).toHaveAttribute('data-state', 'expanded');
-      await userEvent.unhover(canvas.getByText('긴 내용'));
+      await fireEvent.pointerOut(content, { relatedTarget: document.body });
       await expect(scrollbar).toHaveAttribute('data-state', 'rest');
     });
   },
