@@ -11,7 +11,7 @@ const meta = {
   // 상자(피그마 노드)를 캡처 대상으로 표시한다.
   parameters: { layout: 'padded' },
   render: () => (
-    <div className="p-48">
+    <div className="p-spacing-5xl">
       <div data-parity-target className="flex">
         <MessageBoxDuplicateFolderName />
       </div>

@@ -190,7 +190,7 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
     case 'separator':
       // 피그마 `separator` 배치 프레임: 위 2·아래 6 여백 안에 메뉴 안쪽 너비를 채우는 가로선이다.
       return (
-        <div className="flex w-full flex-col pt-2 pb-6">
+        <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
           <Separator className="w-full" />
         </div>
       );
@@ -307,11 +307,11 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu; itemClassName?: string }
     return trigger;
   }
   return (
-    // 피그마 Popover는 트리거(항목) 너비로 줄어든다. 메뉴 안쪽 너비로 늘어나지 않게 줄 정렬을 시작에 둔다.
+    // 트리거(항목)가 메뉴 폭을 채우므로 Popover도 같은 폭으로 둔다.
     <Popover
       open
       placement="right-start"
-      className="self-start"
+      className="w-full"
       trigger={trigger}
       popup={<MenuPanel items={entry.submenu} />}
     />
