@@ -1,8 +1,19 @@
 {
+  "description": "글 본문의 코드 블록으로, 글 페이지에 쓴다.",
   "name": "CodeBlock",
   "nodeId": "399:5519",
+  "propertyDefinitions": {
+    "Code": {
+      "type": "SLOT"
+    },
+    "Language": {
+      "default": "언어",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 162,
         "width": 720,
@@ -10,7 +21,190 @@
         "y": 0
       },
       "nodeId": "399:5519",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "language",
+                "size": {
+                  "h": 16,
+                  "w": 662
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "언어",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_copy_20_regular"
+                    },
+                    "component": "ic_fluent_copy_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "copy",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "code header",
+            "size": {
+              "h": 32,
+              "w": 694
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          },
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Code",
+            "size": {
+              "h": 100,
+              "w": 694
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "fills": [
+          "solid-background-fill/tertiary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/sm",
+            "spacing/sm",
+            "spacing/lg",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "CodeBlock",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 162,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }
