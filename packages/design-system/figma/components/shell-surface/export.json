@@ -1,6 +1,28 @@
 {
+  "description": "Start와 검색 패널의 셸 바탕으로, Start와 검색 조립에 쓴다.",
   "name": "ShellSurface",
   "nodeId": "509:5938",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    },
+    "Device": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Mobile"
+      ],
+      "type": "VARIANT"
+    },
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "material=acrylic,device=desktop": {
       "node": {
@@ -13,6 +35,76 @@
       "properties": {
         "Device": "Desktop",
         "Material": "Acrylic"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 718,
+              "w": 638
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Surface/Shell (Acrylic)",
+        "fillStyle": "Material/Acrylic Base",
+        "height": "size/shell/height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic, Device=Desktop",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 720,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/shell/width"
       }
     },
     "material=acrylic,device=mobile": {
@@ -26,6 +118,76 @@
       "properties": {
         "Device": "Mobile",
         "Material": "Acrylic"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 638,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Surface/Shell (Acrylic)",
+        "fillStyle": "Material/Acrylic Base",
+        "height": "size/shell/mobile-height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic, Device=Mobile",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/none",
+          "radius/none"
+        ],
+        "size": {
+          "h": 640,
+          "w": 390
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/screen/mobile-width"
       }
     },
     "material=solid,device=desktop": {
@@ -39,6 +201,76 @@
       "properties": {
         "Device": "Desktop",
         "Material": "Solid"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 718,
+              "w": 638
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Elevation/Shell Surface",
+        "fillStyle": "Material/Fallback/Acrylic Base",
+        "height": "size/shell/height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid, Device=Desktop",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 720,
+          "w": 640
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/shell/width"
       }
     },
     "material=solid,device=mobile": {
@@ -52,6 +284,76 @@
       "properties": {
         "Device": "Mobile",
         "Material": "Solid"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 638,
+              "w": 388
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Elevation/Shell Surface",
+        "fillStyle": "Material/Fallback/Acrylic Base",
+        "height": "size/shell/mobile-height",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid, Device=Mobile",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/none",
+          "radius/none"
+        ],
+        "size": {
+          "h": 640,
+          "w": 390
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/screen/mobile-width"
       }
     }
   }
