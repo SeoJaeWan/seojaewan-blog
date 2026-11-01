@@ -56,7 +56,8 @@ import {
 import { DesktopIconImage } from './components/desktop-icon-image/desktop-icon-image';
 import type { DesktopIcon, DesktopIconProps } from './components/desktop-icons/desktop-icons';
 import { DesktopIcons } from './components/desktop-icons/desktop-icons';
-import { getDesktopMenuEntries, getItemMenuEntries } from './empty-menu/empty-menu-entries';
+import { getDesktopMenuEntries } from './empty-menu/empty-menu-entries';
+import { getItemMenuEntries } from './item-menu/item-menu-entries';
 import {
   arrangeInGridOrder,
   getCellGeometry,

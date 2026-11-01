@@ -88,14 +88,12 @@ import {
 
 import { ExplorerCommands } from './components/explorer-commands/explorer-commands';
 import { ExplorerContent } from './components/explorer-content/explorer-content';
-import {
-  getEmptyMenuEntries,
-  getItemMenuEntries,
-  getRecycleBinSortMenuEntries,
-  getSortMenuEntries,
-  getViewMenuEntries,
-} from './empty-menu/empty-menu-entries';
+import { getEmptyMenuEntries } from './empty-menu/empty-menu-entries';
+import { getItemMenuEntries } from './item-menu/item-menu-entries';
+import { getRecycleBinSortMenuEntries } from './recycle-bin-sort-submenu/recycle-bin-sort-submenu-entries';
+import { getSortMenuEntries } from './sort-submenu/sort-submenu-entries';
 import { getItemLocationLabel, searchItems } from './utils/explorer-search/explorer-search';
+import { getViewMenuEntries } from './view-submenu/view-submenu-entries';
 
 type ExplorerContentProps = ComponentProps<typeof ExplorerContent>;
 
