@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { ChromeWindowLayer } from '@/features/chrome/chrome-window-layer';
 import { ExplorerWindowLayer } from '@/features/file-explorer/explorer-window-layer';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rules/window-rules';
 
 /**
@@ -18,7 +18,7 @@ import type { OpenWindow, WindowFrameControls } from '@/shared/utils/window-rule
 export function renderAppWindow(
   window: OpenWindow,
   controls: WindowFrameControls,
-  device: Device,
+  device: DeviceVariant,
 ): ReactNode {
   const { content } = window;
   if (content.app === 'chrome') {

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device';
 import type {
   OpenWindow,
   RenderWindow,
@@ -14,7 +14,7 @@ import { renderAppWindow } from '@/shell/components/app-windows/app-windows';
  * @returns 열린 창과 창 동작 속성을 받아 앱 창을 그리는 함수
  */
 export function useAppWindowRenderer(): RenderWindow {
-  const device = useDevice();
+  const device = toDeviceVariant(useDevice());
   /**
    * 열린 창의 앱 창을 그린다.
    * @param target 열린 창

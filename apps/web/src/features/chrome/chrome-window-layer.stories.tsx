@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 import { expect, fireEvent, fn, screen, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { BREAKPOINTS } from '@seojaewan/design-system';
+
 import { dragStoryPointer } from '@/features/window/story-pointer';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
@@ -42,7 +44,7 @@ const replaceStateCalls: string[] = [];
 
 type ChromeLayerHostProps = {
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
   /** 마지막 탭을 닫아 창을 닫을 때 */
   onClose: () => void;
 };
@@ -828,6 +830,41 @@ export const TrashedPost: Story = {
         await expect(currentPage()).toEqual({ kind: 'post', slug: 'rsc' });
       });
       await expect(useWorkspaceStore.getState().items['post:rsc']?.trash).toBeNull();
+    });
+  },
+};
+
+// @codocs [[Chrome:글 화면]]
+/** 페이지 모양은 기기가 아니라 창 내용 너비를 따라, 창 너비가 경계를 넘으면 바로 바뀐다 */
+export const WindowWidthLayout: Story = {
+  beforeEach: async () => {
+    await hydratePosts();
+    openChromeWindow({ kind: 'post', slug: 'rsc' });
+    return mockPostBodies({});
+  },
+  play: async ({ canvasElement, step }) => {
+    const area = canvasElement.querySelector<HTMLElement>('[data-layout]');
+    const host = canvasElement.firstElementChild;
+    if (area === null || !(host instanceof HTMLElement)) {
+      throw new Error('페이지 영역이 없다');
+    }
+
+    await step('넓은 창은 wide다', async () => {
+      await expect(area.dataset.layout).toBe('wide');
+    });
+
+    await step('창 내용 너비가 경계 아래로 내려가면 narrow다', async () => {
+      host.style.width = `${String(BREAKPOINTS.chromePageWidth - 1)}px`;
+      await waitFor(async () => {
+        await expect(area.dataset.layout).toBe('narrow');
+      });
+    });
+
+    await step('경계를 다시 넘으면 wide로 돌아온다', async () => {
+      host.style.width = '';
+      await waitFor(async () => {
+        await expect(area.dataset.layout).toBe('wide');
+      });
     });
   },
 };

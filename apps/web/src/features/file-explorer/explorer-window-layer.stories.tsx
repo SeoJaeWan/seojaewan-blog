@@ -7,7 +7,7 @@ import {
   holdStoryDrag,
 } from '@/features/file-explorer/utils/story-drag/story-drag';
 import { hydrateStoryWorkspace } from '@/features/file-explorer/utils/story-workspace/story-workspace';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { getWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -23,7 +23,7 @@ import { LAYER_STORY_POSTS } from './story-data';
 
 type LayerStoryArgs = {
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
   /** 처음 보는 위치 */
   location: ExplorerLocation;
   /** 마지막 탭을 닫아 창을 닫을 때 */

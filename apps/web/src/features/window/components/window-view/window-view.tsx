@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 import { cn } from '@seojaewan/design-system';
 
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import type {
@@ -36,7 +36,7 @@ type WindowViewProps = {
   /** 쌓는 차례. 클수록 위다 */
   zIndex: number;
   /** 화면 방식. 모바일은 창이 늘 작업 영역을 채운다 */
-  device: Device;
+  device: DeviceVariant;
   /** 작업 영역 크기. 최대화·스냅한 창의 자리를 구한다. 마운트 전에는 null이다 */
   workArea: WindowWorkArea | null;
   /** 앱 창을 그린다 */

@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { SnapPreview } from '@seojaewan/design-system';
 
-import { useDevice } from '@/shared/hooks/use-device/use-device';
+import { toDeviceVariant, useDevice } from '@/shared/hooks/use-device/use-device';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import type { DragSnapTarget } from '@/shared/utils/window-drag-rules/window-drag-rules';
@@ -77,7 +77,7 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
   const order = useWindowStore((state) => state.order);
   const snap = useWindowStore((state) => state.snap);
   const close = useWindowStore((state) => state.close);
-  const device = useDevice();
+  const device = toDeviceVariant(useDevice());
   const workArea = useWorkArea();
   const [snapAssist, setSnapAssist] = useState<SnapAssistProgress | null>(null);
   const [leaving, setLeaving] = useState<readonly LeavingWindow[]>([]);

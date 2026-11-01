@@ -5,7 +5,7 @@ import { cn, IconButton } from '@seojaewan/design-system';
 export type ChromeImageViewerLayout = 'wide' | 'narrow';
 
 type ChromeImageViewerProps = {
-  /** 피그마 Layout. wide는 넓은 창(이미지 칸 좌우 여백 32), narrow는 좁은 창(모바일 폭)의 배치다 */
+  /** 피그마 Layout. wide는 넓은 창(이미지 칸 좌우 여백 32), narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다 */
   layout?: ChromeImageViewerLayout;
   /**
    * 크게 볼 이미지(피그마 `image`). 페이지 영역 안에 맞추되 원본보다 키우지 않도록 쓰는 곳이 크기를 정한다

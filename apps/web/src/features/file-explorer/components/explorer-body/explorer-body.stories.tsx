@@ -8,7 +8,7 @@ import {
 } from '@/features/file-explorer/utils/story-drag/story-drag';
 import { hydrateStoryWorkspace } from '@/features/file-explorer/utils/story-workspace/story-workspace';
 import { installStoryClock } from '@/features/taskbar/components/taskbar-apps-layer/story-clock';
-import type { Device } from '@/shared/hooks/use-device/use-device';
+import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
 import {
   DESKTOP_DROP_TARGET,
   DRAG_REJECTED_ATTRIBUTE,
@@ -31,7 +31,7 @@ import { BODY_STORY_POSTS } from './story-data';
 
 type ExplorerBodyHostProps = {
   /** 화면 방식 */
-  device: Device;
+  device: DeviceVariant;
   /** 처음 보는 위치 */
   location: ExplorerLocation;
   /** 같은 탭에서 폴더로 갈 때 */
