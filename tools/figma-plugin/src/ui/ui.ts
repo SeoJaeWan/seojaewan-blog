@@ -48,6 +48,8 @@ const KIND_TITLES = {
 } as const;
 // 결과 화면에서 PR을 묶는 순서
 const RESULT_ORDER = ['tokens', 'component', 'pattern', 'motion'] as const;
+/** 로그의 맨 아래로 치는 여유(px) */
+const LOG_END_SLACK = 4;
 
 const ui = {
   openSettings: element('open-settings', HTMLButtonElement),
@@ -89,6 +91,8 @@ type State = {
   selected: Set<string>;
   /** 펼친 묶음 키 */
   expanded: Set<string>;
+  /** 펼쳐 둔 결과 영역 키. 다시 그려도 펼친 채로 둔다 */
+  openDetails: Set<string>;
   isTokenDetailOpen: boolean;
   /** 목록 안 찾기 글자 */
   filter: string;
@@ -105,6 +109,7 @@ const state: State = {
   motionUnavailable: null,
   selected: new Set(),
   expanded: new Set(),
+  openDetails: new Set(),
   isTokenDetailOpen: false,
   filter: '',
   repoStatus: { kind: 'missing-token' },
@@ -679,6 +684,7 @@ function renderRun(): void {
             '',
             run.notices.map((notice) => make('li', '', notice)),
           ),
+          'notices',
         ),
       );
     }
@@ -695,10 +701,27 @@ function renderRun(): void {
       collapsible(
         `자세한 로그 ${String(run.logs.length)}줄`,
         make('pre', 'log', run.logs.join('\n')),
+        'logs',
       ),
     );
   }
+  const previousLog = ui.run.querySelector<HTMLElement>('pre.log');
   ui.run.replaceChildren(...nodes);
+  keepLogScroll(previousLog);
+}
+
+/**
+ * 로그를 다시 그려도 읽던 자리를 지킨다. 맨 아래를 보고 있었으면 새 줄을 따라간다.
+ * @param previousLog 다시 그리기 전 로그 요소. 없으면 null
+ */
+function keepLogScroll(previousLog: HTMLElement | null): void {
+  const log = ui.run.querySelector<HTMLElement>('pre.log');
+  if (previousLog === null || log === null) {
+    return;
+  }
+  const isAtEnd =
+    previousLog.scrollTop + previousLog.clientHeight >= previousLog.scrollHeight - LOG_END_SLACK;
+  log.scrollTop = isAtEnd ? log.scrollHeight : previousLog.scrollTop;
 }
 
 /**
@@ -783,6 +806,7 @@ function resultBlocks(commits: readonly PullRequestCommit[], unchanged: readonly
           '',
           unchanged.map((name) => make('li', '', name)),
         ),
+        'unchanged',
       ),
     );
   }
@@ -871,11 +895,30 @@ function violationItem(violation: ViolationLine): HTMLLIElement {
  * 접어 둔 영역을 만든다.
  * @param summary 접힌 줄 내용
  * @param body 펼친 내용
+ * @param openKey 다시 그려도 펼친 상태를 지킬 키. 없으면 지키지 않는다
  * @returns details 요소
  */
-function collapsible(summary: string | (Node | string)[], body: Node): HTMLDetailsElement {
+function collapsible(
+  summary: string | (Node | string)[],
+  body: Node,
+  openKey?: string,
+): HTMLDetailsElement {
   const details = document.createElement('details');
   details.append(make('summary', '', summary), make('div', 'body', [body]));
+  if (openKey !== undefined) {
+    details.open = state.openDetails.has(openKey);
+    /**
+     * 펼친 상태를 기억한다.
+     */
+    function handleToggle(): void {
+      if (details.open) {
+        state.openDetails.add(openKey as string);
+      } else {
+        state.openDetails.delete(openKey as string);
+      }
+    }
+    details.addEventListener('toggle', handleToggle);
+  }
   return details;
 }
 
