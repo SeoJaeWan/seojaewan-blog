@@ -1,35 +1,34 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { TileGrid } from './tile-grid';
 
-// 피그마 TileGrid의 변형 속성 값이다(정규화한 이름).
-const ALIGNS = ['start', 'center'] as const;
-
-type FigmaArgs = {
-  align: (typeof ALIGNS)[number];
-};
-
 const meta = {
   title: 'Components/TileGrid',
-  args: { align: 'start' },
-  argTypes: {
-    align: { control: 'inline-radio', options: ALIGNS },
-  },
-  // 컴포넌트는 너비를 갖지 않으므로, 피그마 원본 너비 574로 감싸 그린다.
-  // 컴포넌트의 tiles 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 높이 100만 칠 없는 빈 내용으로 둔다.
   render: (args) => (
     <div className="w-size-new-tab-grid-width">
       <TileGrid align={args.align}>
-        <div className="w-full shrink-shrink-none" style={{ height: 100 }} />
+        <span>칸</span>
       </TileGrid>
     </div>
   ),
-} satisfies Meta<FigmaArgs>;
+} satisfies Meta<{ align: 'start' | 'center' }>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다.
-export const Figma: Story = {};
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 칸을 tiles 슬롯(children)에 채운다 */
+export const Default: Story = {
+  args: { align: 'start' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('칸')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 칸을 가운데로 모은다 */
+export const Center: Story = {
+  args: { align: 'center' },
+};
