@@ -20,7 +20,13 @@ export const Figma: Story = {};
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** 역할과 접근성 이름 같은 div 속성을 그대로 넘긴다 */
 export const Default: Story = {
-  render: () => <SnapPreview role="img" aria-label="스냅 미리보기" className="h-160 w-240" />,
+  render: () => (
+    <SnapPreview
+      role="img"
+      aria-label="스냅 미리보기"
+      className="h-size-story-md w-size-story-xl"
+    />
+  ),
   play: async ({ canvasElement, step }) => {
     await step('역할과 접근성 이름을 그대로 넘긴다', async () => {
       await expect(

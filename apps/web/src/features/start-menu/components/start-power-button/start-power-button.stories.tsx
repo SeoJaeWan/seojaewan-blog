@@ -22,7 +22,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <div className="flex h-120 w-320 items-end justify-end">
+    <div className="flex h-size-story-sm w-size-story-2xl items-end justify-end">
       <div data-parity-target className="flex">
         <StartPowerButton open={args.state === 'open'} menuItems={menuPower} />
       </div>

@@ -38,7 +38,7 @@ export function BestMatchCard(props: BestMatchCardProps): JSX.Element {
         {meta}
       </p>
       <Separator className="w-full" />
-      <div className="shrink-shrink-none">{children}</div>
+      <div className="w-full shrink-shrink-none">{children}</div>
     </div>
   );
 }

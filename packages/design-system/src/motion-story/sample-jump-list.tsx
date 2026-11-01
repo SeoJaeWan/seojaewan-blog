@@ -51,7 +51,12 @@ type SampleJumpListProps = {
 export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
   const { motionClassName } = props;
   return (
-    <div className={cn('relative h-600 w-size-list-item-width overflow-hidden', motionClassName)}>
+    <div
+      className={cn(
+        'relative h-size-story-5xl w-size-list-item-width overflow-hidden',
+        motionClassName,
+      )}
+    >
       <div data-jump-list="list" data-motion-node="list" className="flex flex-col">
         {listItems.map((item) => renderListItem(item))}
       </div>
@@ -60,7 +65,7 @@ export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
         data-motion-node="Start/JumpList"
         className="absolute inset-spacing-none flex justify-center"
       >
-        <TileGrid align="center" className="w-200">
+        <TileGrid align="center" className="w-size-story-lg">
           {letters.map((letter) => renderLetter(letter))}
         </TileGrid>
       </div>

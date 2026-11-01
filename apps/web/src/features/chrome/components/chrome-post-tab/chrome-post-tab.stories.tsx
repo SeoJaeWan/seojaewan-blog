@@ -30,7 +30,7 @@ const meta = {
     onReload: fn(),
   },
   render: (args) => (
-    <div className="flex h-569 w-size-post-width">
+    <div className="flex h-size-story-4xl w-size-post-width">
       <ChromePostTab {...args} />
     </div>
   ),

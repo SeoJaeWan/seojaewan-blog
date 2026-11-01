@@ -24,7 +24,7 @@ const meta = {
           <ImageAsset
             name="images/equation-quadratic-formula"
             alt="x = (-b ± √(b² - 4ac)) / 2a"
-            className="h-56 w-200"
+            className="h-size-story-xs w-size-story-lg"
           />
         )}
       />

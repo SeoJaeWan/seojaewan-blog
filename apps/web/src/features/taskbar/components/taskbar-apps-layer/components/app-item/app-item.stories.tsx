@@ -23,7 +23,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <div className="flex h-240 w-480 items-end justify-center">
+    <div className="flex h-size-story-xl w-size-story-3xl items-end justify-center">
       <div data-parity-target className="flex">
         <TaskbarAppItem
           app="file-explorer"
