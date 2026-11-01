@@ -1,6 +1,24 @@
 {
+  "description": "Start 모두 목록의 글자 격자에서 이동할 글자 하나를 고르는 칸으로, Start 글자 목록에 쓴다.",
   "name": "JumpListLetter",
   "nodeId": "755:678",
+  "propertyDefinitions": {
+    "Label": {
+      "default": "글자",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover",
+        "Pressed",
+        "Disabled",
+        "Focused"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "state=disabled": {
       "node": {
@@ -12,6 +30,71 @@
       "nodeId": "755:676",
       "properties": {
         "State": "Disabled"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/disabled"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/disabled",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/disabled"
+        ],
+        "height": "size/jump-list-letter/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Disabled",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/jump-list-letter/box"
       }
     },
     "state=focused": {
@@ -24,6 +107,81 @@
       "nodeId": "761:1209",
       "properties": {
         "State": "Focused"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "height": "size/jump-list-letter/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Focused",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer",
+          "stroke-width/focus-outer"
+        ],
+        "strokes": [
+          "focus-stroke/outer"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/jump-list-letter/box"
       }
     },
     "state=hover": {
@@ -36,6 +194,71 @@
       "nodeId": "755:672",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/secondary"
+        ],
+        "height": "size/jump-list-letter/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/jump-list-letter/box"
       }
     },
     "state=pressed": {
@@ -48,6 +271,71 @@
       "nodeId": "755:674",
       "properties": {
         "State": "Pressed"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/tertiary"
+        ],
+        "height": "size/jump-list-letter/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Pressed",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/jump-list-letter/box"
       }
     },
     "state=rest": {
@@ -60,6 +348,71 @@
       "nodeId": "755:670",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "label",
+            "size": {
+              "h": 20,
+              "w": 25
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "글자",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "subtle-fill/transparent"
+        ],
+        "height": "size/jump-list-letter/box",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 40
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/jump-list-letter/box"
       }
     }
   }

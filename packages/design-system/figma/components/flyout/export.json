@@ -1,8 +1,31 @@
 {
+  "description": "떠 있는 패널의 공통 바탕으로, 메뉴·주소창 추천처럼 트리거에 붙여 여는 팝업에 쓴다.",
   "name": "Flyout",
   "nodeId": "16:195",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    },
+    "Material": {
+      "default": "Acrylic",
+      "options": [
+        "Acrylic",
+        "Solid"
+      ],
+      "type": "VARIANT"
+    },
+    "Padding": {
+      "default": "Default",
+      "options": [
+        "Compact",
+        "Default"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "material=acrylic,padding=compact": {
+      "emptyHugSlot": true,
       "node": {
         "height": 22,
         "width": 320,
@@ -13,9 +36,84 @@
       "properties": {
         "Material": "Acrylic",
         "Padding": "Compact"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "Content",
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 16,
+              "w": 318
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Surface/Flyout (Acrylic)",
+        "fillStyle": "Material/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/none",
+            "spacing/2xs",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic, Padding=Compact",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 22,
+          "w": 320
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "material=acrylic,padding=default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 98,
         "width": 320,
@@ -26,9 +124,84 @@
       "properties": {
         "Material": "Acrylic",
         "Padding": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xl",
+                "spacing/lg",
+                "spacing/2xl",
+                "spacing/lg"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "Content",
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 64,
+              "w": 286
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Surface/Flyout (Acrylic)",
+        "fillStyle": "Material/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Acrylic, Padding=Default",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 98,
+          "w": 320
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "material=solid,padding=compact": {
+      "emptyHugSlot": true,
       "node": {
         "height": 22,
         "width": 320,
@@ -39,9 +212,84 @@
       "properties": {
         "Material": "Solid",
         "Padding": "Compact"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "Content",
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 16,
+              "w": 318
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Elevation/Flyout",
+        "fillStyle": "Material/Fallback/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/none",
+            "spacing/2xs",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid, Padding=Compact",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 22,
+          "w": 320
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "material=solid,padding=default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 98,
         "width": 320,
@@ -52,6 +300,80 @@
       "properties": {
         "Material": "Solid",
         "Padding": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "VERTICAL",
+              "padding": [
+                "spacing/2xl",
+                "spacing/lg",
+                "spacing/2xl",
+                "spacing/lg"
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "Content",
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 64,
+              "w": 286
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "effectStyle": "Elevation/Flyout",
+        "fillStyle": "Material/Fallback/Acrylic Default",
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/sm",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Material=Solid, Padding=Default",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 98,
+          "w": 320
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "surface-stroke/flyout"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     }
   }

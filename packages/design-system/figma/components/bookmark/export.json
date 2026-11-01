@@ -1,6 +1,21 @@
 {
+  "description": "글 본문의 링크 카드로, 글 페이지에 쓴다.",
   "name": "Bookmark",
   "nodeId": "1380:6869",
+  "propertyDefinitions": {
+    "Description": {
+      "default": "설명",
+      "type": "TEXT"
+    },
+    "Title": {
+      "default": "제목",
+      "type": "TEXT"
+    },
+    "URL": {
+      "default": "주소",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "default": {
       "node": {
@@ -10,7 +25,182 @@
         "y": 0
       },
       "nodeId": "1380:6869",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "title",
+            "size": {
+              "h": 20,
+              "w": 686
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "제목",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Body Strong"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/secondary"
+            ],
+            "name": "description",
+            "size": {
+              "h": 16,
+              "w": 686
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "설명",
+                  "fill": "text-fill/secondary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_link_20_regular"
+                },
+                "component": "ic_fluent_link_20_regular",
+                "height": "size/icon/sm",
+                "name": "link icon",
+                "size": {
+                  "h": 16,
+                  "w": 16
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/sm"
+              },
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "address",
+                "size": {
+                  "h": 16,
+                  "w": 664
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "주소",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/sm-nudge",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "url",
+            "size": {
+              "h": 16,
+              "w": 686
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "fills": [
+          "card-background-fill/secondary"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/md",
+            "spacing/lg",
+            "spacing/md",
+            "spacing/lg"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Bookmark",
+        "radius": [
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay",
+          "radius/overlay"
+        ],
+        "size": {
+          "h": 86,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "card-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }
