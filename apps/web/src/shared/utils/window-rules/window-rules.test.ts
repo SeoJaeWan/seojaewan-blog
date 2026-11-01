@@ -203,8 +203,9 @@ describe('창 동작:창 조작 (최대화)', () => {
   });
 });
 
-// @codocs [[창 동작:스냅]]
-describe('창 동작:스냅', () => {
+// @codocs [[스냅:스냅 레이아웃]]
+// @codocs [[스냅:Snap Assist]]
+describe('스냅', () => {
   const area = { width: 1920, height: 1032 };
 
   it('반반은 작업 영역을 좌우 절반으로 나눈다', () => {
@@ -372,8 +373,8 @@ describe('창 동작:창 조작 - 끌어서 옮기기와 크기 조절', () => {
   });
 });
 
-// @codocs [[창 동작:스냅]]
-describe('창 동작:스냅 - 끌어서 떼기', () => {
+// @codocs [[스냅:스냅된 창]]
+describe('스냅:스냅된 창 - 끌어서 떼기', () => {
   it('스냅된 창을 떼면 떠 있는 창으로 돌아가 받은 자리에 놓인다', () => {
     const { state, ids } = openAll(['file-explorer']);
     const id = ids[0] ?? '';
@@ -478,8 +479,8 @@ describe('파일 탐색기:탭', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[창 동작:모바일]]
+describe('창 동작:모바일', () => {
   it('모바일은 다른 곳에서 연 글을 새 탭 대신 가장 최근 Chrome 창의 고른 탭에서 연다', () => {
     const { state, ids } = openAll(['chrome']);
     const result = openPostInChrome(state, 'a', WORK_AREA, true);

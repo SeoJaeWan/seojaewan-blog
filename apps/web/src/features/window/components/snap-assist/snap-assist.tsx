@@ -30,7 +30,7 @@ type SnapAssistProps = {
  * 남은 칸 전체를 SnapPreview로 덮고, 그 가운데에 제안 창마다 WindowPreview 카드를 가로로 늘어놓는다.
  * 카드를 누르면(`onSelect`) 그 창이 남은 칸을 채운다. Esc나 빈 곳으로 닫는 동작은 쓰는 곳(창 층)이 맡는다.
  * @codocs [[디자인 시스템:조립]]
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:Snap Assist]]
  * @param props
  */
 export function SnapAssist(props: SnapAssistProps): JSX.Element {

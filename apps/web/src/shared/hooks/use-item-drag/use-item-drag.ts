@@ -85,7 +85,7 @@ type ItemDragControls = {
  * 놓을 곳은 항목 끌기 저장소에도 알려, 그곳을 그린 쪽(다른 창 포함)이 강조하게 한다.
  * 옮길 수 없는 놓을 곳 위에서는 강조와 툴팁 없이 커서를 `not-allowed`로 바꾸고(`DRAG_REJECTED_ATTRIBUTE`), 끌기가 끝나면 되돌린다.
  * 끄는 복제본처럼 포인터를 따라가는 요소는 `pointer-events: none`이어야 그 아래를 찾는다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:끌기]]
  * @codocs [[파일 탐색기:조작]]
  * @param options 놓을 때 부를 함수
  * @returns 끄는 상태와 시작 핸들러
@@ -175,7 +175,7 @@ export function useItemDrag(options: UseItemDragOptions): ItemDragControls {
 /**
  * 옮길 수 없는 곳 위를 끄는 중인지 문서에 표시한다. 전역 CSS가 표시를 보고 어디서나 `not-allowed` 커서를 보인다.
  * 끄는 요소가 포인터를 붙잡고 있어 그 아래 요소의 커서가 아니라 문서 전체에 건다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:끌기]]
  * @param isRejected 옮길 수 없는 곳 위면 true
  */
 function setRejectedCursor(isRejected: boolean): void {

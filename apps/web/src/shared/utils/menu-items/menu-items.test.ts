@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { emptyRecycleBinMenuItem, startPinMenuItem, taskbarPinMenuItem } from './menu-items';
 
-// @codocs [[바탕화면:아이콘 우클릭 메뉴]]
-describe('바탕화면:아이콘 우클릭 메뉴', () => {
+// @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+describe('바탕화면 우클릭 메뉴:아이콘', () => {
   it('이미 Start에 고정된 항목은 시작 화면에 고정 대신 시작 화면에서 고정 해제를 보인다', () => {
     expect(startPinMenuItem(false, vi.fn()).label).toBe('시작 화면에 고정');
     expect(startPinMenuItem(true, vi.fn()).label).toBe('시작 화면에서 고정 해제');

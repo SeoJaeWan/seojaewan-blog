@@ -33,8 +33,10 @@ function sortedIds(sortBy: 'name' | 'type' | 'modified'): string[] {
   return sortDesktopItems(ITEMS, sortBy).map((item) => item.id);
 }
 
-// @codocs [[바탕화면:아이콘 배치]]
-describe('바탕화면:아이콘 배치', () => {
+// @codocs [[바탕화면 아이콘:격자 자리]]
+// @codocs [[바탕화면 아이콘:격자 순서]]
+// @codocs [[바탕화면 아이콘:칸 크기]]
+describe('바탕화면 아이콘', () => {
   it('격자 순서는 위에서 아래, 그다음 왼쪽에서 오른쪽(열 우선)이다', () => {
     expect([0, 1, 2, 3].map((index) => getCellAtIndex(index, GRID))).toEqual([
       { column: 0, row: 0 },
@@ -120,8 +122,8 @@ describe('바탕화면:아이콘 배치', () => {
   });
 });
 
-// @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
-describe('바탕화면:빈 곳 우클릭 메뉴', () => {
+// @codocs [[항목 정렬:비교 규칙]]
+describe('항목 정렬:비교 규칙', () => {
   it('이름순은 휴지통을 맨 앞, 폴더를 먼저 두고, 영어가 한글보다 앞이다', () => {
     expect(sortedIds('name')).toEqual(['recycle-bin', 'blog', 'folder:z', 'link:b', 'post:a']);
   });

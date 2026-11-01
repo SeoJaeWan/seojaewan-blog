@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { compareDatesNewestFirst, compareItemKinds, compareItemNames } from './item-sort';
 
-// @codocs [[파일 탐색기:보기와 정렬]]
-describe('파일 탐색기:보기와 정렬', () => {
+// @codocs [[항목 정렬:비교 규칙]]
+describe('항목 정렬:비교 규칙', () => {
   it('이름은 숫자를 값으로 비교한다', () => {
     expect(['10', '2'].sort(compareItemNames)).toEqual(['2', '10']);
   });
@@ -21,8 +21,8 @@ describe('파일 탐색기:보기와 정렬', () => {
   });
 });
 
-// @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
-describe('바탕화면:빈 곳 우클릭 메뉴', () => {
+// @codocs [[항목 정렬:비교 규칙]]
+describe('항목 정렬:비교 규칙', () => {
   it('날짜는 최근 것이 앞이고 날짜가 없으면 뒤다', () => {
     expect([null, '2026-01-01', '2026-02-01'].sort(compareDatesNewestFirst)).toEqual([
       '2026-02-01',

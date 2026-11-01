@@ -102,7 +102,8 @@ type ChromeWindowLayerProps = {
  * @codocs [[Chrome:페이지에서 찾기]]
  * @codocs [[Chrome:확대/축소]]
  * @codocs [[Chrome:휴지통에 있는 글]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
+ * @codocs [[Chrome:모바일]]
  * @param props
  */
 export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {

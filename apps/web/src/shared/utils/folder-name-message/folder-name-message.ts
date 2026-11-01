@@ -13,7 +13,7 @@ const folderNameErrorMessages = {
 
 /**
  * 폴더 이름이 맞지 않는 이유를 말풍선 문구로 바꾼다. 바탕화면·탐색기의 이름 바꾸기가 쓴다.
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param reason 이유
  * @returns 말풍선 문구
  */

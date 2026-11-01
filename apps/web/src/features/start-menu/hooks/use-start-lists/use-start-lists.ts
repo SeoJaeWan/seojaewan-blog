@@ -39,7 +39,7 @@ export type StartLists = {
  * 보기는 저장소에 저장하고, 다시 시작하면 처음 상태(범주)로 돌아간다.
  * @codocs [[Start 메뉴:고정됨]]
  * @codocs [[Start 메뉴:모두]]
- * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[방문자 저장:저장하는 것]]
  * @param onOpen 메뉴의 `열기`를 골랐을 때 항목을 여는 함수
  * @returns 목록 데이터와 동작
  */

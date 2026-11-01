@@ -17,7 +17,7 @@ const BOOT_SCREEN_DELAY = '--motion-delay-boot-screen';
  * 3. `--motion-delay-boot-screen` 동안 보여 준다. 그동안 안의 ProgressRing이 돈다.
  * 4. `motion-boot-screen-exit`로 페이드 아웃하고, 끝나면 빼고 `idle`로 돌아간다.
  * 로고 크기와 간격은 화면 방식에 따라 고른다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @codocs [[피그마 연동:모션 클래스]]
  * @returns 재부팅 화면, 다시 시작하는 중이 아니면 null
  */

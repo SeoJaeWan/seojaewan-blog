@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// @codocs [[작업 공간:다시 시작]]
+// @codocs [[다시 시작:순서]]
 test('Start 전원 메뉴에서 다시 시작하면 재부팅 화면이 보였다 사라지고 열린 창이 모두 닫힌다', async ({
   page,
 }) => {

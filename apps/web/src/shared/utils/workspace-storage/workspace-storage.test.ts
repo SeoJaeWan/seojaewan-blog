@@ -15,8 +15,8 @@ const catalog: WorkspaceCatalog = {
   links: [],
 };
 
-// @codocs [[작업 공간:Notion과 맞추기]]
-describe('작업 공간:Notion과 맞추기', () => {
+// @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+describe('작업 공간 맞추기:Notion과 맞추기', () => {
   it('저장분이 없으면 초기 구조에서 시작한다', () => {
     expect(restoreWorkspace(undefined, catalog)).toEqual(createInitialWorkspace(catalog));
   });

@@ -77,7 +77,8 @@ const MIDDLE_BUTTON = 1;
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[파일 탐색기:구성]]
  * @codocs [[파일 탐색기:탭]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
+ * @codocs [[파일 탐색기:모바일]]
  * @param props
  */
 export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {

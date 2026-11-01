@@ -22,7 +22,7 @@ type ToggleProps = Omit<ComponentProps<'div'>, 'children' | 'title' | 'defaultVa
  * 제목 줄은 `aria-expanded`를 가진 버튼이고, 접힌 동안은 내용을 그리지 않는다(피그마 Collapsed 변형).
  * 너비는 쓰는 곳이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * 꺾쇠는 쓰는 곳마다 바뀌지 않는 기능 아이콘이라 속성으로 열지 않고 고정한다(@codocs [[디자인 시스템:아이콘 자리]]).
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:모양]]
  * @param props
  */
 export function Toggle(props: ToggleProps): JSX.Element {

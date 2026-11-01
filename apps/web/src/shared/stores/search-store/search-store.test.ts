@@ -45,8 +45,8 @@ describe('검색:결과 화면', () => {
   });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:되돌리는 상태]]
+describe('다시 시작:되돌리는 상태', () => {
   it('다시 시작하면 두 검색어를 모두 지운다', () => {
     useSearchStore.getState().setQuery('start', 'react');
     useSearchStore.getState().setQuery('search', 'next');

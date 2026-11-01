@@ -355,8 +355,8 @@ const blogFolderItem: FolderItem = {
 /**
  * Notion `폴더` 경로에서 만든 폴더의 고정 id를 만든다. 경로가 비어 있으면 `Blog` 폴더다.
  * 경로가 같으면 늘 같은 id라, 방문자가 이름을 바꾸거나 옮겨도 새 글이 그 폴더를 찾는다.
- * @codocs [[항목 모델:식별]]
- * @codocs [[작업 공간:Notion과 맞추기]]
+ * @codocs [[항목과 폴더:식별]]
+ * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
  * @param path 폴더 경로
  * @returns 폴더 id
  */
@@ -366,7 +366,7 @@ export function getNotionFolderId(path: readonly string[]): string {
 
 /**
  * 글 항목 id를 만든다.
- * @codocs [[항목 모델:식별]]
+ * @codocs [[항목과 폴더:식별]]
  * @param slug 글 slug
  * @returns `post:<slug>`
  */
@@ -376,7 +376,7 @@ export function getPostItemId(slug: string): string {
 
 /**
  * 외부 링크 항목 id를 만든다.
- * @codocs [[항목 모델:식별]]
+ * @codocs [[항목과 폴더:식별]]
  * @param configId 설정의 id
  * @returns `link:<id>`
  */
@@ -387,7 +387,7 @@ export function getLinkItemId(configId: string): string {
 /**
  * 화면에 보이는 외부 링크 설정. 주소가 없는(빈) 링크는 작업 공간에 항목으로 만들지 않아 바탕화면·탐색기·Start·검색 어디에도 보이지 않는다.
  * 저장된 상태에 있던 그 링크 항목도 맞추기에서 지워지고, 주소가 생기면 초기 위치에 다시 나타난다.
- * @codocs [[항목 모델:외부 링크]]
+ * @codocs [[항목과 폴더:외부 링크]]
  * @param catalog 글 색인과 외부 링크 설정
  * @returns 주소가 있는 외부 링크 설정
  */
@@ -399,10 +399,10 @@ function getVisibleLinks(catalog: WorkspaceCatalog): readonly ExternalLinkConfig
  * 저장된 상태가 없을 때의 초기 구조를 만든다. 바탕화면에 휴지통과 `Blog` 폴더를 두고, 글의 `폴더` 경로대로
  * `Blog` 아래에 폴더를 만들어 글을 넣는다(경로가 비면 `Blog`). 외부 링크는 설정의 초기 위치에 둔다.
  * Start 고정됨은 File Explorer, Chrome, `Blog` 폴더, 처음부터 고정하도록 정한 외부 링크다. Start 모두 목록의 처음 보기는 범주다.
- * @codocs [[작업 공간:초기 구조]]
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[작업 공간 맞추기:초기 구조]]
+ * @codocs [[고정:시작 화면 고정]]
  * @codocs [[Start 메뉴:모두]]
- * @codocs [[작업 표시줄:고정과 순서]]
+ * @codocs [[고정:작업 표시줄 고정]]
  * @param catalog 글 색인과 외부 링크 설정
  * @returns 초기 상태
  */
@@ -451,7 +451,7 @@ export function createInitialWorkspace(catalog: WorkspaceCatalog): WorkspaceStat
  * - 색인에서 사라진 글과 설정에서 사라진 외부 링크는 지운다. 외부 링크의 이름·주소·아이콘은 설정을 따른다.
  * - 새 외부 링크는 설정의 초기 위치(없거나 휴지통에 있으면 바탕화면)에 둔다.
  * 맞추기 전에 깨진 배치를 고친다(`repairWorkspace`). 글·외부 링크 id를 차지한 폴더는 먼저 버린다.
- * @codocs [[작업 공간:Notion과 맞추기]]
+ * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
  * @param saved 저장된 상태(배치만 있는 형태)
  * @param catalog 글 색인과 외부 링크 설정
  * @returns 맞춘 상태
@@ -551,8 +551,8 @@ export type SavedItemShape =
  * 배치만 남긴 저장 형태로 바꾼다. 글과 외부 링크의 이름·주소는 원본(색인, 설정)이 갖으므로 저장하지 않는다. 휴지통은 늘 있어 빼다.
  * 휴지통은 메모리에만 두므로, 휴지통에 보낸 항목을 모두 복원한 배치(`restoreItems`와 같은 규칙)를 저장한다.
  * 그래서 새로고침하거나 다시 들어오면 휴지통에 있던 항목은 원래 자리로 돌아오고 휴지통은 빈다.
- * @codocs [[작업 공간:방문자별 저장]]
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[방문자 저장:저장하지 않는 것]]
+ * @codocs [[휴지통:기본 규칙]]
  * @param state 작업 공간 상태
  * @returns 저장 형태
  */
@@ -579,8 +579,8 @@ export function toSavedWorkspace(state: WorkspaceState): SavedWorkspaceShape {
  * 깨진 배치를 고친다. 상위 폴더가 없거나 폴더가 아니면, 또는 상위로 올라가다 자기에게 돌아오면 바탕화면으로 옮긴다.
  * 휴지통 자리와 휴지통 기록이 어긋나면(기록 없이 휴지통에 있거나, 기록이 있는데 휴지통 밖에 있으면) 바탕화면 쪽으로 맞춘다.
  * 없는 항목을 가리키는 고정·최근·아이콘 칸·폴더 보기도 지운다.
- * @codocs [[작업 공간:Notion과 맞추기]]
- * @codocs [[작업 공간:방문자별 저장]]
+ * @codocs [[작업 공간 맞추기:Notion과 맞추기]]
+ * @codocs [[방문자 저장:저장분 읽기]]
  * @param state 작업 공간 상태
  * @returns 고친 상태
  */
@@ -618,7 +618,7 @@ export function repairWorkspace(state: WorkspaceState): WorkspaceState {
 /**
  * 폴더 이름이 Windows 11 파일 이름 규칙에 맞는지 본다. 같은 위치의 다른 폴더 이름과 겹치는지도 본다
  * (대소문자와 유니코드 정규화 차이는 무시한다).
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param name 입력한 이름
  * @param siblingNames 같은 위치에 있는 다른 폴더의 이름
  * @returns 맞으면 ok, 아니면 이유
@@ -653,7 +653,7 @@ export function validateFolderName(
 
 /**
  * 새 폴더의 이름을 고른다. `새 폴더`가 비어 있으면 그 이름, 아니면 `새 폴더 (2)`부터 가장 작은 빈 번호다.
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param siblingNames 같은 위치에 있는 폴더의 이름
  * @returns 새 폴더 이름
  */
@@ -672,7 +672,7 @@ export type FolderNameInput = {
 /**
  * 폴더 이름을 입력하는 순간 쓸 수 없는 문자(`< > : " / \ | ? *`와 제어 문자)를 빼고, 최대 길이(UTF-16 단위 255자)를 넘는 부분을 잘라
  * 입력되지 않게 한다. 자르는 자리가 서로게이트 쌍 가운데면 그 앞에서 자른다.
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param value 입력창의 새 값
  * @returns 남길 이름과 쓸 수 없는 문자를 뺐는지
  */
@@ -695,7 +695,7 @@ export function filterFolderNameInput(value: string): FolderNameInput {
 /**
  * 확정할 폴더 이름을 만든다. 끝의 공백과 마침표는 잘라낸다. 비었거나 공백만 있으면(잘라낸 뒤 비어도) null이고,
  * 쓰는 곳은 이름을 원래대로 되돌린다.
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param value 입력한 이름
  * @returns 확정할 이름. 되돌려야 하면 null
  */
@@ -706,8 +706,8 @@ export function getFolderNameToCommit(value: string): string | null {
 
 /**
  * 위치에 새 폴더를 만든다. 이름은 `getNewFolderName`이 고른다. 위치가 없거나 휴지통 안이면 거부한다.
- * @codocs [[작업 공간:폴더 이름]]
- * @codocs [[작업 공간:배치]]
+ * @codocs [[항목과 폴더:폴더 이름]]
+ * @codocs [[항목과 폴더:위치와 옮기기]]
  * @param state 작업 공간 상태
  * @param parentId 만들 위치(폴더 id, 바탕화면은 null)
  * @param folder 새 폴더의 id(방문자 폴더는 `crypto.randomUUID()`)와 만든 시각
@@ -738,8 +738,8 @@ export function createFolder(
 /**
  * 폴더 이름을 바꾼다. 폴더만 바꿀 수 있고(휴지통·글·외부 링크는 거부), 휴지통 안의 폴더도 거부한다.
  * 이름은 `validateFolderName`으로 검증한다. 이름을 바꿔도 id는 그대로다.
- * @codocs [[작업 공간:폴더 이름]]
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[항목과 폴더:폴더 이름]]
+ * @codocs [[휴지통:기본 규칙]]
  * @param state 작업 공간 상태
  * @param id 폴더 id
  * @param name 새 이름
@@ -768,8 +768,8 @@ export function renameFolder(state: WorkspaceState, id: string, name: string): W
  * 휴지통·휴지통 안의 항목은 옮길 수 없고, 폴더를 자기 자신이나 하위 폴더로 옮길 수 없다.
  * 같은 위치에 같은 이름의 폴더가 생기면 거부한다. 하나라도 거부되면 아무것도 옮기지 않는다.
  * 바탕화면을 떠나는 항목의 아이콘 칸은 지운다.
- * @codocs [[작업 공간:배치]]
- * @codocs [[작업 공간:폴더 이름]]
+ * @codocs [[항목과 폴더:위치와 옮기기]]
+ * @codocs [[항목과 폴더:폴더 이름]]
  * @param state 작업 공간 상태
  * @param ids 옮길 항목 id
  * @param targetId 옮길 위치(폴더 id, 바탕화면은 null, 휴지통 id)
@@ -825,7 +825,7 @@ export function moveItems(
  * 잘라낸 항목 가운데 위치에 붙여넣을 항목을 고른다. 그사이 휴지통에 들어갔거나 사라진 항목은 뺀다.
  * 붙여넣을 것이 없거나, 모두 이미 그 위치에 있거나, 위치가 휴지통이거나, 옮길 수 없으면(`moveItems`가 거부) null이다.
  * 바탕화면과 탐색기의 붙여넣기가 함께 쓰고, null이면 붙여넣기를 비활성으로 둔다.
- * @codocs [[작업 공간:배치]]
+ * @codocs [[항목 조작:잘라내기와 붙여넣기]]
  * @param state 작업 공간 상태
  * @param cutIds 잘라낸 항목 id
  * @param targetId 붙여넣을 위치(폴더 id, 바탕화면은 null)
@@ -850,7 +850,7 @@ export function getPasteIds(
  * 항목들을 휴지통으로 보낸다. 폴더를 보내면 안의 항목도 함께 간다(하위 항목은 폴더 안에 그대로 있다).
  * 휴지통은 보낼 수 없다(`Blog` 폴더는 보낼 수 있다). 이미 휴지통에 있는 항목도 거부한다. 하나라도 거부되면 아무것도 보내지 않는다.
  * 고른 항목 가운데 다른 고른 폴더 안에 있는 것은 그 폴더와 함께 가므로 따로 보내지 않는다.
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:기본 규칙]]
  * @param state 작업 공간 상태
  * @param ids 보낼 항목 id
  * @param now 지금 시각(ISO 8601). 삭제한 날짜로 쓴다
@@ -891,7 +891,7 @@ export function trashItems(
  * 함께 복원하는 폴더가 원래 상위 폴더면 그 폴더를 먼저 복원해 그 안으로 돌려보낸다.
  * 돌아간 자리에 같은 이름의 폴더가 있으면 `이름 (2)`처럼 가장 작은 빈 번호를 붙인다.
  * 휴지통에 바로 들어 있지 않은 항목은 거부한다.
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:복원]]
  * @param state 작업 공간 상태
  * @param ids 복원할 항목 id
  * @returns 새 상태
@@ -937,7 +937,7 @@ export function restoreItems(state: WorkspaceState, ids: readonly string[]): Wor
  * 휴지통에 있는 글 하나를 주소로 열 때 복원한다. 휴지통에 바로 든 글은 `restoreItems`의 복원 규칙을 따르고,
  * 휴지통에 든 폴더 안의 글은 원래 상위 폴더가 휴지통에 있으므로 그 글만 바탕화면으로 꺼낸다. 폴더는 휴지통에 그대로 둔다.
  * @codocs [[Chrome:휴지통에 있는 글]]
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:복원]]
  * @param state 작업 공간 상태
  * @param id 글 id
  * @returns 새 상태. 글이 아니거나 휴지통에 없으면 거부한다
@@ -961,7 +961,7 @@ export function restoreTrashedPost(state: WorkspaceState, id: string): Workspace
 
 /**
  * 위치에 바로 들어 있는 항목을 넣은 차례대로 돌려준다. 바탕화면(null)에는 휴지통도 있다. 휴지통 id를 주면 휴지통에 보낸 항목이다.
- * @codocs [[작업 공간:배치]]
+ * @codocs [[항목과 폴더:위치와 옮기기]]
  * @param state 작업 공간 상태
  * @param parentId 위치(폴더 id, 바탕화면은 null, 휴지통 id)
  * @returns 바로 아래 항목
@@ -985,7 +985,7 @@ export function getDesktopItems(state: Pick<WorkspaceState, 'items'>): Workspace
 
 /**
  * 휴지통에 바로 들어 있는 항목(지운 항목)을 돌려준다.
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:기본 규칙]]
  * @param state 작업 공간 상태
  * @returns 지운 항목
  */
@@ -1007,7 +1007,7 @@ export function isRecycleBinFull(state: Pick<WorkspaceState, 'items'>): boolean 
 
 /**
  * 항목이 휴지통 안에 있는지(자신이나 상위 폴더 하나가 휴지통에 있는지) 본다.
- * @codocs [[작업 공간:휴지통]]
+ * @codocs [[휴지통:기본 규칙]]
  * @param state 작업 공간 상태
  * @param id 항목 id
  * @returns 휴지통 안이면 true
@@ -1028,7 +1028,7 @@ export function isItemInTrash(state: Pick<WorkspaceState, 'items'>, id: string):
 /**
  * 폴더의 경로(바탕화면 바로 아래 폴더부터 그 폴더까지)를 돌려준다. 탐색기 위치 칸에 쓴다.
  * 휴지통 안의 폴더는 휴지통 아래부터다. 없는 폴더는 빈 목록이다.
- * @codocs [[작업 공간:배치]]
+ * @codocs [[항목과 폴더:위치와 옮기기]]
  * @param state 작업 공간 상태
  * @param folderId 폴더 id
  * @returns 위에서부터의 폴더
@@ -1060,7 +1060,7 @@ export function getFolderTree(state: Pick<WorkspaceState, 'items'>): FolderTreeN
 
 /**
  * 폴더 안의 모든 하위 항목 id를 돌려준다(폴더 자신은 빼고).
- * @codocs [[작업 공간:배치]]
+ * @codocs [[항목과 폴더:위치와 옮기기]]
  * @param state 작업 공간 상태
  * @param folderId 폴더 id
  * @returns 하위 항목 id
@@ -1100,7 +1100,7 @@ export function getLatestPosts(state: Pick<WorkspaceState, 'items'>, count: numb
  * 항목을 열 때 할 일을 정한다. 폴더와 휴지통은 그 위치의 새 탐색기 창, 글은 Chrome, 외부 링크는 실제 브라우저의 새 탭,
  * 앱(`APP_ITEM_IDS`)은 그 앱의 창이다. 휴지통 안의 항목은 열 수 없고 복원만 된다.
  * @codocs [[창 동작:열기 규칙]]
- * @codocs [[항목 모델:종류]]
+ * @codocs [[항목과 폴더:종류]]
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @param state 작업 공간 상태
  * @param id 항목 id
@@ -1176,7 +1176,7 @@ export function getRecentItems(state: WorkspaceState, count: number): PlacedItem
 
 /**
  * Start 고정됨에 넣는다. 맨 뒤에 붙이고, 이미 있거나 없는 항목·휴지통이면 그대로다.
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[고정:시작 화면 고정]]
  * @param state 작업 공간 상태
  * @param id 항목 id(앱은 `APP_ITEM_IDS`의 id)
  * @returns 새 상태
@@ -1193,7 +1193,7 @@ export function pinToStart(state: WorkspaceState, id: string): WorkspaceState {
 
 /**
  * Start 고정됨에서 뺀다.
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[고정:시작 화면 고정]]
  * @param state 작업 공간 상태
  * @param id 항목 id
  * @returns 새 상태
@@ -1218,7 +1218,7 @@ export function moveStartPin(state: WorkspaceState, id: string, index: number): 
 
 /**
  * Start 고정됨에 보이는 항목 id를 돌려준다. 휴지통에 들어간 항목은 숨기고, 복원하면 다시 보인다.
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[고정:시작 화면 고정]]
  * @param state 작업 공간 상태
  * @returns 보이는 고정 항목 id
  */
@@ -1230,7 +1230,7 @@ export function getVisibleStartPins(state: WorkspaceState): string[] {
 
 /**
  * 작업 표시줄에 앱을 고정한다. 맨 뒤에 붙이고 이미 있으면 그대로다.
- * @codocs [[작업 표시줄:고정과 순서]]
+ * @codocs [[고정:작업 표시줄 고정]]
  * @param state 작업 공간 상태
  * @param app 앱
  * @returns 새 상태
@@ -1243,7 +1243,7 @@ export function pinToTaskbar(state: WorkspaceState, app: WindowApp): WorkspaceSt
 
 /**
  * 작업 표시줄에서 앱 고정을 해제한다.
- * @codocs [[작업 표시줄:고정과 순서]]
+ * @codocs [[고정:작업 표시줄 고정]]
  * @param state 작업 공간 상태
  * @param app 앱
  * @returns 새 상태
@@ -1309,7 +1309,7 @@ export function setExplorerView(
 
 /**
  * 바탕화면 아이콘의 격자 칸을 정한다(자동 정렬을 끄고 옮겼을 때). 바탕화면에 없는 항목은 무시한다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 자리]]
  * @param state 작업 공간 상태
  * @param positions 항목 id별 칸
  * @returns 새 상태

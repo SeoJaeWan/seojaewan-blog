@@ -99,8 +99,8 @@ describe('Start 메뉴:모두', () => {
   });
 });
 
-// @codocs [[작업 공간:다시 시작]]
-describe('작업 공간:다시 시작', () => {
+// @codocs [[다시 시작:개요]]
+describe('다시 시작:개요', () => {
   it('전원 메뉴는 다시 시작 하나다', () => {
     expect(labels(getPowerMenuEntries(vi.fn()))).toEqual(['다시 시작']);
   });

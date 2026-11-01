@@ -26,7 +26,7 @@ type SearchPanelProps = {
  * 열고 닫기와 입력은 기능을 구현할 때 붙인다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:개요]]
- * @codocs [[모바일:차이]]
+ * @codocs [[검색:모바일]]
  * @param props
  */
 export function SearchPanel(props: SearchPanelProps): JSX.Element {

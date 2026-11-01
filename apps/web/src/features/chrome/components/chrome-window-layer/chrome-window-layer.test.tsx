@@ -710,8 +710,9 @@ describe('Chrome:주소창', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[창 동작:모바일]]
+// @codocs [[Chrome:모바일]]
+describe('창 동작:모바일', () => {
   it('모바일은 탭 줄이 없다', () => {
     renderChrome({ kind: 'new-tab' }, 'mobile');
     expect(screen.queryByRole('tab')).not.toBeInTheDocument();

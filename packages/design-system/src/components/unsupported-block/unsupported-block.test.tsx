@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { UnsupportedBlock } from './unsupported-block';
 
-// @codocs [[Chrome:Notion 블록]]
+// @codocs [[Notion 블록:지원하지 않는 블록]]
 describe('UnsupportedBlock', () => {
   it('유형 이름을 안내 글에 넣는다', () => {
     render(<UnsupportedBlock typeName="synced_block" />);

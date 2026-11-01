@@ -71,7 +71,7 @@ function equation(expression: string): PostBlock {
  * 코드 강조와 수식 HTML은 넣지 않는다. Notion 블록처럼 서버가 본문을 보낼 때 채운다(`getPostBody`).
  * Notion을 붙이면 이 파일을 지운다.
  * @codocs [[콘텐츠 원천:결정]]
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:지원 블록]]
  */
 export const temporaryPostBodies: Readonly<Record<string, readonly PostBlock[]>> = {
   'notion-blog-migration': [

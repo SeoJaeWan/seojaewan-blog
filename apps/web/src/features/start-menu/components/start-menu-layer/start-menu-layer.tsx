@@ -45,7 +45,7 @@ const SEARCH_PLACEHOLDER = '검색하려면 여기에 입력하세요';
  * @codocs [[검색:개요]]
  * @codocs [[검색:입력칸]]
  * @codocs [[검색:결과 화면]]
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @returns 패널 층
  */
 export function StartMenuLayer(): JSX.Element {
@@ -357,7 +357,7 @@ type PanelPresenceProps = {
  * 위쪽과 아래쪽을 더한 높이보다는 줄이지 않는다.
  * @codocs [[Start 메뉴:구성]]
  * @codocs [[디자인 기반:모션]]
- * @codocs [[모바일:차이]]
+ * @codocs [[Start 메뉴:모바일]]
  * @param props
  */
 function PanelPresence(props: PanelPresenceProps): ReactNode {

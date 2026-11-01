@@ -62,8 +62,8 @@ export function copyLinkMenuItem(onClick: () => void, isDisabled = false): MenuP
 /**
  * Start 고정됨에 넣거나 빼는 항목을 만든다. 이미 고정된 항목은 `시작 화면에 고정` 대신 `시작 화면에서 고정 해제`다.
  * 바탕화면·탐색기·Start 메뉴가 쓴다.
- * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
+ * @codocs [[고정:시작 화면 고정]]
  * @param isPinned 이미 Start에 고정됐는지
  * @param onClick 골랐을 때 할 일
  * @returns 메뉴 항목
@@ -176,7 +176,7 @@ export function newSubmenuItem(onNewFolder: () => void): MenuPopupSubmenu {
 /**
  * `휴지통 비우기` 항목을 만든다. 휴지통이 비었으면 고를 수 없다. 바탕화면 휴지통 아이콘 메뉴와 탐색기 휴지통 빈 곳 메뉴가 쓴다.
  * @codocs [[파일 탐색기:구성]]
- * @codocs [[바탕화면:아이콘 우클릭 메뉴]]
+ * @codocs [[바탕화면 우클릭 메뉴:아이콘]]
  * @param isRecycleBinEmpty 휴지통이 비었는지
  * @param onClick 골랐을 때 할 일
  * @returns 메뉴 항목

@@ -56,7 +56,7 @@ export function formatModifiedDate(date: string | null): string {
  * 탐색기 항목을 정렬한다. Windows처럼 폴더를 늘 앞에 두고, 그 안에서 정렬 기준과 방향을 따른다.
  * 같으면 이름 오름차순이다. 날짜가 없는 항목은 방향과 상관없이 뒤에 둔다.
  * 휴지통은 수정한 날짜 대신 삭제한 날짜, 유형 대신 원래 위치로 정렬한다(휴지통 자세히 보기의 열).
- * @codocs [[파일 탐색기:보기와 정렬]]
+ * @codocs [[항목 정렬:방향 정렬]]
  * @codocs [[파일 탐색기:휴지통 보기]]
  * @param items 항목
  * @param view 폴더 보기(정렬 기준, 방향)

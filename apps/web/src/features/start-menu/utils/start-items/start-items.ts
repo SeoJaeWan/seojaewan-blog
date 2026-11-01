@@ -56,7 +56,7 @@ export function getStartItem(state: Pick<WorkspaceState, 'items'>, id: string): 
 
 /**
  * Start 고정됨에 그릴 항목을 고정한 순서대로 돌려준다. 휴지통에 들어간 항목은 빠지고, 복원하면 다시 보인다.
- * @codocs [[Start 메뉴:고정됨]]
+ * @codocs [[고정:시작 화면 고정]]
  * @param state 작업 공간 상태
  * @returns 고정 항목
  */

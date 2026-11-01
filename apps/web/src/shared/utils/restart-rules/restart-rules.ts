@@ -20,7 +20,7 @@ export const initialRestartState: RestartState = { phase: 'idle', generation: 0 
 
 /**
  * 전원 메뉴의 `다시 시작`을 눌렀을 때의 상태. 재부팅 화면이 덮기 시작한다. 다시 시작하는 중이면 그대로다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
@@ -31,7 +31,7 @@ export function startRestart(state: RestartState): RestartState {
 /**
  * 재부팅 화면이 화면을 다 덮었을 때의 상태. 세대를 올려 데스크톱 하위 트리를 다시 마운트하고 재부팅 화면을 보여 준다.
  * 덮는 중이 아니면 그대로다. 저장소를 지우는 일은 이 상태로 넘어갈 때 저장소가 한다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
@@ -43,7 +43,7 @@ export function finishRestartCovering(state: RestartState): RestartState {
 
 /**
  * 재부팅 화면을 보여 주는 시간이 지났을 때의 상태. 재부팅 화면이 사라지기 시작한다. 보여 주는 중이 아니면 그대로다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
@@ -53,7 +53,7 @@ export function finishRestartShowing(state: RestartState): RestartState {
 
 /**
  * 재부팅 화면이 사라졌을 때의 상태. 다시 시작이 끝난다. 사라지는 중이 아니면 그대로다.
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:순서]]
  * @param state 지금 상태
  * @returns 바뀐 상태
  */

@@ -66,7 +66,8 @@ type WindowSnapshot = Pick<WindowState, 'windows' | 'order'>;
  * 창의 z-index가 뒤에 오는 패널 층과 작업 표시줄(미리보기 목록 포함) 위로 올라가지 않게 한다.
  * @codocs [[피그마 연동:모션 클래스]]
  * @codocs [[창 동작:창 조작]]
- * @codocs [[창 동작:스냅]]
+ * @codocs [[스냅:끌어서 스냅]]
+ * @codocs [[스냅:Snap Assist]]
  * @param props
  */
 export function WindowLayer(props: WindowLayerProps): JSX.Element {

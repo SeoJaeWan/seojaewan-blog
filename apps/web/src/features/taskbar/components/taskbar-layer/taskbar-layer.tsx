@@ -24,7 +24,7 @@ type TaskbarLayerProps = TaskbarAppsLayerProps;
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:개요]]
  * @codocs [[검색:입력칸]]
- * @codocs [[모바일:차이]]
+ * @codocs [[작업 표시줄:모바일]]
  * @param props
  * @returns 작업 표시줄
  */

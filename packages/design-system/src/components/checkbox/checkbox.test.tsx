@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Checkbox } from './checkbox';
 
-// @codocs [[Chrome:Notion 블록]]
+// @codocs [[Notion 블록:지원 블록]]
 describe('Checkbox', () => {
   it('기본은 체크되지 않은 읽기 전용 표시다', () => {
     render(<Checkbox />);

@@ -45,7 +45,7 @@ function Opener(props: { onPrimaryClick?: () => void }): ReactNode {
   );
 }
 
-// @codocs [[작업 공간:휴지통]]
+// @codocs [[휴지통:비우기]]
 describe('MessageBoxDialog', () => {
   it('열면 제목을 이름으로, 메시지를 설명으로 갖는 alertdialog가 뜬다', async () => {
     const user = userEvent.setup();

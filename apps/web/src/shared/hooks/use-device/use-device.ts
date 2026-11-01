@@ -10,7 +10,7 @@ export const MOBILE_MEDIA_QUERY = '(max-width: 767px)';
  * 지금 화면 폭이 모바일 방식인지 데스크톱 방식인지 돌려주고, 폭이 기준을 넘나들면 다시 그린다.
  * 서버와 수화(hydration) 첫 렌더는 화면 폭을 모르므로 desktop으로 그린다. 수화가 끝난 뒤 실제 값으로 바뀌어
  * 서버 HTML과 첫 렌더가 어긋나지 않는다(`useSyncExternalStore`의 서버 값).
- * @codocs [[모바일:기준]]
+ * @codocs [[반응형:기준]]
  * @returns 화면 방식
  */
 export function useDevice(): Device {
@@ -35,7 +35,7 @@ function subscribeDevice(onChange: () => void): () => void {
 
 /**
  * 지금 화면 방식. `matchMedia`가 없으면(jsdom) desktop이다.
- * @codocs [[모바일:기준]]
+ * @codocs [[반응형:기준]]
  * @returns 화면 방식
  */
 function getDevice(): Device {

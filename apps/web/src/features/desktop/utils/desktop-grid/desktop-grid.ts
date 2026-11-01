@@ -54,7 +54,7 @@ const cellGeometries = {
 
 /**
  * 아이콘 크기에 맞는 칸 하나의 크기를 돌려준다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:칸 크기]]
  * @param iconSize 아이콘 크기
  * @returns 아이콘 너비·높이와 칸 간격(다음 칸까지의 거리)
  */
@@ -74,7 +74,7 @@ export function getCellGeometry(iconSize: DesktopIconSize): CellGeometry & {
 
 /**
  * 아이콘 영역 크기에 들어가는 격자 칸 수를 구한다. 아이콘이 영역 밖으로 잘리지 않는 칸만 센다. 영역이 작아도 1×1이다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:칸 크기]]
  * @param area 아이콘 영역 크기
  * @param area.width 너비
  * @param area.height 높이
@@ -94,7 +94,7 @@ export function getGridSize(
 
 /**
  * 칸의 왼쪽 위 자리를 구한다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:칸 크기]]
  * @param cell 칸
  * @param iconSize 아이콘 크기
  * @returns 칸 왼쪽 위(px)
@@ -106,7 +106,7 @@ export function getCellOrigin(cell: GridCell, iconSize: DesktopIconSize): GridPo
 
 /**
  * 자리에 가장 가까운 칸을 구한다. 끌어 놓은 아이콘의 왼쪽 위 자리로 놓일 칸을 찾는 데 쓴다. 격자 밖이면 가장자리 칸이다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 자리]]
  * @param point 아이콘 왼쪽 위 자리
  * @param iconSize 아이콘 크기
  * @param grid 격자 크기
@@ -126,7 +126,7 @@ export function getNearestCell(
 
 /**
  * 격자 순서(위에서 아래, 그다음 왼쪽에서 오른쪽, 열 우선)의 n번째 칸을 구한다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param index 순서(0부터)
  * @param grid 격자 크기
  * @returns 칸
@@ -137,7 +137,7 @@ export function getCellAtIndex(index: number, grid: GridSize): GridCell {
 
 /**
  * 칸의 격자 순서를 구한다(열 우선).
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param cell 칸
  * @param grid 격자 크기
  * @returns 순서(0부터)
@@ -152,7 +152,7 @@ export function getCellIndex(cell: GridCell, grid: GridSize): number {
  * - 이름: 폴더를 먼저, 그 안에서 이름순(Windows 바탕화면처럼)
  * - 항목 유형: 폴더, 글, 외부 링크 차례, 같은 유형은 이름순
  * - 수정한 날짜: 최근 것을 먼저, 날짜가 없는 항목(Notion 폴더, 외부 링크)은 뒤에 이름순
- * @codocs [[바탕화면:빈 곳 우클릭 메뉴]]
+ * @codocs [[항목 정렬:비교 규칙]]
  * @param items 바탕화면 항목
  * @param sortBy 정렬 기준
  * @returns 정렬한 항목
@@ -188,7 +188,7 @@ export function sortDesktopItems<Item extends Pick<WorkspaceItem, 'kind' | 'name
 
 /**
  * 항목을 차례대로 격자 순서의 칸에 채운다(자동 정렬).
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param orderedIds 차례대로 놓을 항목 id
  * @param grid 격자 크기
  * @returns 항목 id별 칸
@@ -203,7 +203,7 @@ export function arrangeInGridOrder(
 /**
  * 바탕화면 아이콘의 칸을 정한다. 자동 정렬이 켜져 있으면 정렬 기준의 차례로 격자 순서대로 채우고,
  * 꺼져 있으면 저장한 칸에 둔다(`placeIcons`).
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 자리]]
  * @param items 바탕화면 항목(넣은 차례)
  * @param settings 바탕화면 설정
  * @param settings.isAutoArrange 자동 정렬을 하는지(모바일은 늘 한다)
@@ -236,7 +236,7 @@ export function layoutDesktopIcons(
 
 /**
  * 칸에 놓인 항목 id를 격자 순서(열 우선)로 늘어놓는다. Shift 범위 선택과 Ctrl + A가 이 순서를 쓴다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param cells 항목 id별 칸
  * @param grid 격자 크기
  * @returns 격자 순서의 항목 id
@@ -253,7 +253,7 @@ export function getGridOrder(cells: Readonly<Record<string, GridCell>>, grid: Gr
  * 2. 화면이 작아져 저장한 칸이 격자 밖이면 그 칸에서 가장 가까운 빈 칸으로 옮긴다(저장한 칸은 바꾸지 않아 화면이 커지면 돌아간다).
  * 3. 칸이 없는 항목(새 항목)은 격자 순서로 첫 빈 칸에 둔다.
  * 빈 칸이 없으면 격자 오른쪽 밖으로 이어 놓는다.
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 자리]]
  * @param ids 바탕화면 항목 id(넣은 차례)
  * @param positions 저장한 칸
  * @param grid 격자 크기
@@ -295,7 +295,7 @@ export function placeIcons(
 
 /**
  * 격자 순서로 첫 빈 칸을 찾는다(자동 정렬을 끈 바탕화면에 새 항목을 놓을 칸).
- * @codocs [[바탕화면:아이콘 배치]]
+ * @codocs [[바탕화면 아이콘:격자 순서]]
  * @param cells 지금 놓인 칸
  * @param grid 격자 크기
  * @returns 빈 칸
@@ -310,7 +310,7 @@ export function getFirstFreeCell(
 /**
  * 끈 아이콘들을 놓은 칸으로 옮긴다(자동 정렬을 끈 바탕화면). 잡은 아이콘이 놓은 칸에 가고, 함께 끈 아이콘은 잡은 아이콘과의 칸 차이를 지킨다.
  * 그 칸이 격자 밖이거나 다른 아이콘이 차지했으면 가장 가까운 빈 칸으로 간다. 끌지 않은 아이콘은 그대로다.
- * @codocs [[바탕화면:아이콘 조작]]
+ * @codocs [[항목 조작:끌기]]
  * @param cells 지금 놓인 칸
  * @param movingIds 끈 아이콘 id(차례대로 칸을 정한다)
  * @param anchorId 잡은 아이콘 id

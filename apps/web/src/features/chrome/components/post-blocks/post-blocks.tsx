@@ -73,7 +73,7 @@ type PostBlocksProps = {
   className?: string;
 };
 
-// 제목 단계마다의 요소와 글자 스타일이다. 글 제목이 h1이라 본문 제목은 h2부터다([[Chrome:Notion 블록]]).
+// 제목 단계마다의 요소와 글자 스타일이다. 글 제목이 h1이라 본문 제목은 h2부터다([[Notion 블록:지원 블록]]).
 const HEADING_TAGS = { heading_1: 'h2', heading_2: 'h3', heading_3: 'h4' } as const;
 const headingClassNames = {
   heading_1: 'w-full type-title text-text-fill-primary',
@@ -122,7 +122,8 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 `code-syntax` 색으로 칠하고, 없으면 글자 그대로다.
  * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다. `onImageOpen`을 주면 이미지를 눌러 크게 보기를 연다.
  * @codocs [[디자인 시스템:조립]]
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:지원 블록]]
+ * @codocs [[Notion 블록:모양]]
  * @codocs [[Chrome:글 화면]]
  * @param props
  */
@@ -495,7 +496,7 @@ function isListItemBlock(block: PostBlock): block is ListItemBlock {
  * 서식 있는 글자 조각의 클래스. 본문 글자 자리에서는 서식마다의 글자 스타일(Body Large Strong·Italic·Underline·
  * Strikethrough)을 쓰고, 인라인 코드는 코드 서체와 `post/inline-code` 글자색이다. 서식이 여럿이면 인라인 코드, 굵게,
  * 기울임, 밑줄, 취소선 차례로 하나만 쓴다(글자 스타일이 한 조각에 하나라서다).
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:모양]]
  * @param part 글자 조각
  * @param isBodyLarge 본문 글자(Body Large) 자리인지
  * @returns 클래스. 서식이 없으면 undefined

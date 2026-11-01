@@ -100,7 +100,8 @@ const MIDDLE_BUTTON = 1;
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Chrome:구성]]
  * @codocs [[파일 탐색기:탭]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
+ * @codocs [[Chrome:모바일]]
  * @param props
  */
 export function ChromeWindow(props: ChromeWindowProps): JSX.Element {

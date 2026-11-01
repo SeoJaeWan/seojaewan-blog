@@ -41,7 +41,7 @@ const initialPanels = {
  * 두 기능이 함께 쓰도록 `shared/stores/`에 둔다. 새로고침 뒤에 남지 않아 `persist`를 쓰지 않고, 다시 시작하면 지운다.
  * @codocs [[검색:입력칸]]
  * @codocs [[기술 스택:상태 관리]]
- * @codocs [[작업 공간:다시 시작]]
+ * @codocs [[다시 시작:되돌리는 상태]]
  */
 export const useSearchStore = create<SearchStore>()(createSearchStore);
 

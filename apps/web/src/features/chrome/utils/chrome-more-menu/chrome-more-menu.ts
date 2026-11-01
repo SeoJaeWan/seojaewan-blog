@@ -32,7 +32,7 @@ type ChromeMoreMenuOptions = {
  * 실제 메뉴와 메뉴 조립 스토리가 함께 쓴다.
  * @codocs [[Chrome:구성]]
  * @codocs [[Chrome:확대/축소]]
- * @codocs [[모바일:차이]]
+ * @codocs [[Chrome:모바일]]
  * @codocs [[디자인 시스템:조립]]
  * @param options 지금 상태와 동작
  * @returns 메뉴 항목

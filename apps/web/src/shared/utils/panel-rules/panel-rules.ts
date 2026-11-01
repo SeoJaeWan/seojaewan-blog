@@ -43,7 +43,7 @@ export function openSearchPanel(state: PanelState): PanelState {
 
 /**
  * 좁은 화면의 검색 버튼을 눌렀을 때의 상태. 검색 패널이 열려 있으면 닫고, 아니면 연다.
- * @codocs [[모바일:차이]]
+ * @codocs [[작업 표시줄:모바일]]
  * @param state 지금 상태
  * @returns 바뀐 상태
  */
@@ -77,7 +77,7 @@ const panelMinHeights = {
  * 화면이 낮아도 패널 위쪽이 잘리지 않는다. 패널의 원래 높이(데스크톱 720, 모바일 640)보다 작을 때만 줄어든다.
  * 줄어도 위쪽(검색칸)과 아래쪽(Start의 프로필·전원 줄)을 더한 높이보다 작아지지 않고, 가운데 본문만 줄며 스크롤된다.
  * @codocs [[Start 메뉴:구성]]
- * @codocs [[모바일:차이]]
+ * @codocs [[Start 메뉴:모바일]]
  * @param workAreaHeight 작업 영역 높이(화면에서 작업 표시줄을 뺀 곳)
  * @param device 화면 방식
  * @param panel 패널 종류

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /**
  * 글자 서식. Notion의 굵게·기울임·밑줄·취소선·인라인 코드다. 없는 서식은 빼도 된다.
- * Notion 색 지정(글자색, 형광펜)은 따르지 않으므로 받지 않는다([[Chrome:Notion 블록]]).
+ * Notion 색 지정(글자색, 형광펜)은 따르지 않으므로 받지 않는다([[Notion 블록:모양]]).
  */
 export const richTextAnnotationsSchema = z.object({
   /** 굵게 */
@@ -108,9 +108,10 @@ const richTextsSchema = z.array(richTextSchema);
 const childrenSchema = z.array(z.lazy(() => postBlockSchema)).optional();
 
 /**
- * 본문 블록 하나의 스키마. [[Chrome:Notion 블록]]의 지원 블록과, 지원하지 않는 블록 자리(`unsupported`)를 받는다.
+ * 본문 블록 하나의 스키마. [[Notion 블록:지원 블록]]의 지원 블록과, 지원하지 않는 블록 자리(`unsupported`)를 받는다.
  * 목록·할 일·토글은 하위 블록을 가져 스키마가 스스로를 가리킨다.
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:지원 블록]]
+ * @codocs [[Notion 블록:지원하지 않는 블록]]
  */
 export const postBlockSchema: z.ZodType<PostBlock> = z.discriminatedUnion('type', [
   z.object({ type: z.literal('heading_1'), richText: richTextsSchema.min(1) }),

@@ -23,9 +23,9 @@ export type OpenItemOptions = {
  * 휴지통 안의 항목은 열지 않는다. 연 항목은 최근 항목에 넣는다(앱·휴지통은 빼는 규칙은 `recordRecentItem`이 갖는다).
  * 창은 작업 영역 안에 놓이므로 수화가 끝나 작업 영역 크기를 알기 전에는 열지 않는다.
  * @codocs [[창 동작:열기 규칙]]
- * @codocs [[항목 모델:종류]]
+ * @codocs [[항목과 폴더:종류]]
  * @codocs [[검색:입력 전 화면]]
- * @codocs [[모바일:차이]]
+ * @codocs [[창 동작:모바일]]
  * @returns 항목 id를 받아 그 항목을 여는 함수
  */
 export function useOpenItem(): (id: string, options?: OpenItemOptions) => void {

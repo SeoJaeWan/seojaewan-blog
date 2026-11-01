@@ -9,7 +9,7 @@ import type { PostBlock } from '@/shared/utils/post-body/post-body';
  * 그린 HTML(`html`)을 더한다. 목록·할 일·토글 안의 하위 블록도 같이 처리한다.
  * 브라우저는 이 결과를 그리기만 하고 강조·수식 계산을 돌리지 않는다.
  * @codocs [[기술 스택:글 본문 처리]]
- * @codocs [[Chrome:Notion 블록]]
+ * @codocs [[Notion 블록:지원 블록]]
  * @param blocks 본문 블록
  * @returns 강조와 수식을 채운 본문 블록
  */

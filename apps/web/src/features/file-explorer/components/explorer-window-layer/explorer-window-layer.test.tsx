@@ -408,8 +408,9 @@ describe('파일 탐색기:구성', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[창 동작:모바일]]
+// @codocs [[파일 탐색기:조작]]
+describe('창 동작:모바일', () => {
   it('모바일은 탭 하나만 써서 탭 줄과 새 탭 버튼이 없다', () => {
     renderExplorer(BLOG_FOLDER_ID, 'mobile');
     expect(screen.queryByRole('tab')).not.toBeInTheDocument();

@@ -47,8 +47,8 @@ describe('Chrome:구성', () => {
   });
 });
 
-// @codocs [[모바일:차이]]
-describe('모바일:차이', () => {
+// @codocs [[Chrome:모바일]]
+describe('Chrome:모바일', () => {
   it('모바일 ⋮ 메뉴는 앞으로·새로고침을 맨 위에 두고 찾기 단축키 글자를 보이지 않는다', () => {
     const entries = getChromeMoreMenuEntries({ ...options, isMobile: true });
     expect(labels(entries)).toEqual([

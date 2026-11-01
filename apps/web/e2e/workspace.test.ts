@@ -21,8 +21,8 @@ test('바탕화면의 Blog 폴더와 휴지통을 열면 그 위치를 보는 �
   await expect(page.getByRole('region', { name: '휴지통 - 파일 탐색기' })).toBeVisible();
 });
 
-// @codocs [[작업 공간:방문자별 저장]]
-// @codocs [[작업 공간:휴지통]]
+// @codocs [[방문자 저장:저장하지 않는 것]]
+// @codocs [[휴지통:기본 규칙]]
 test('Blog 폴더도 휴지통에 보낼 수 있고, 새로고침하면 휴지통의 항목은 원래 자리로 돌아온다', async ({
   page,
 }) => {
@@ -46,8 +46,8 @@ test('Blog 폴더도 휴지통에 보낼 수 있고, 새로고침하면 휴지�
   await expect(recycleBin.getByRole('option')).toHaveCount(0);
 });
 
-// @codocs [[작업 공간:방문자별 저장]]
-// @codocs [[작업 공간:다시 시작]]
+// @codocs [[방문자 저장:저장하는 것]]
+// @codocs [[다시 시작:되돌리는 상태]]
 test('브라우저에 저장한 작업 공간은 새로고침 뒤에도 남고, 다시 시작하면 처음 상태로 돌아간다', async ({
   page,
 }) => {
