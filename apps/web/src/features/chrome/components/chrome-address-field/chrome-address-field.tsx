@@ -50,7 +50,7 @@ export function ChromeAddressField(props: ChromeAddressFieldProps): JSX.Element 
   }
 
   return (
-    <div ref={rootRef} className="flex min-w-0 flex-1">
+    <div ref={rootRef} className="flex min-w-size-none flex-flex-fill">
       <ChromeAddressSuggestions
         {...inputProps}
         aria-label={ADDRESS_FIELD_LABEL}

@@ -15,7 +15,10 @@ const DEVICES = ['desktop', 'mobile'] as const;
 const TABS = ['single', 'multiple'] as const;
 
 // 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1280×800, size/390×796)로 그린다.
-const SIZE_CLASS_NAMES = { desktop: 'w-1280 h-800', mobile: 'w-390 h-796' } as const;
+const SIZE_CLASS_NAMES = {
+  desktop: 'w-size-window-chrome-width h-size-window-chrome-height',
+  mobile: 'w-size-screen-mobile-width h-size-window-mobile-height',
+} as const;
 
 // 피그마 조립이 Chrome/Page를 넣은 배치다. desktop 창은 넓은 글 화면, mobile 창은 좁은 글 화면을 쓴다.
 const PAGE_LAYOUTS = { desktop: 'wide', mobile: 'narrow' } as const;
@@ -59,7 +62,7 @@ const meta = {
         <ChromePage
           page="post"
           layout={layout}
-          className="min-h-0 w-full flex-1"
+          className="min-h-size-none w-full flex-flex-fill"
           cover={<ImageAsset name="images/wallpaper-bloom" />}
           meta={POST_PAGE.meta}
           title={POST_PAGE.title}

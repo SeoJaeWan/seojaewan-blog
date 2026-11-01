@@ -15,7 +15,7 @@ import { expandedToggleIndexes, sampleBlocks } from './story-data';
 const meta = {
   title: 'Patterns/Chrome/PostBlocks',
   render: () => (
-    <div className="w-720 bg-chrome-page-fill">
+    <div className="w-size-post-width bg-chrome-page-fill">
       <PostBlocks
         blocks={sampleBlocks}
         expandedToggleIndexes={expandedToggleIndexes}

@@ -50,7 +50,7 @@ const suggestionIcons = {
   search: (
     <Asset
       name="icons/ic_fluent_search_16_regular.svg"
-      className="size-icon-16 text-text-fill-primary"
+      className="size-size-icon-sm text-text-fill-primary"
     />
   ),
 } as const satisfies Record<ChromeNewTabSuggestion['kind'], ReactNode>;
@@ -99,18 +99,18 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
           appearance="web"
           placeholder={PLACEHOLDER}
           aria-label={PLACEHOLDER}
-          className="w-320"
+          className="w-size-search-box-wide-width"
         />
       }
       popup={
-        <Flyout material="solid" padding="compact" className="w-320">
+        <Flyout material="solid" padding="compact" className="w-size-search-box-wide-width">
           {/* 피그마 `list inset`(안쪽 여백)과 `items`(줄 사이 간격 2) 배치 프레임이다 */}
-          <div className="flex w-full flex-col px-8 pt-2 pb-6">
+          <div className="flex w-full flex-col px-spacing-sm pt-spacing-2xs pb-spacing-sm-nudge">
             <div
               id={listId}
               role="listbox"
               aria-label="추천"
-              className="flex w-full flex-col gap-2 overflow-clip"
+              className="flex w-full flex-col gap-spacing-2xs overflow-clip"
             >
               {suggestions.map(
                 /**

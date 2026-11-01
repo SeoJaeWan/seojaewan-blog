@@ -59,10 +59,10 @@ function ChromeLayerHost(props: ChromeLayerHostProps): JSX.Element {
   const { device, onClose: handleClose } = props;
   const windows = useWindowStore((state) => state.windows);
   return (
-    <div className="fixed inset-0 flex flex-col">
+    <div className="fixed inset-spacing-none flex flex-col">
       {Object.entries(windows).map(([id, target]) =>
         target.content.app === 'chrome' ? (
-          <div key={id} className="flex min-h-0 flex-1">
+          <div key={id} className="flex min-h-size-none flex-flex-fill">
             <ChromeWindowLayer
               windowId={id}
               content={target.content}

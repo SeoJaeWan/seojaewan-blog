@@ -69,7 +69,7 @@ export function ChromePostTab(props: ChromePostTabProps): JSX.Element {
     headings.map((heading) => heading.id),
   );
   const { previous, next } = getPostNeighbors(workspace, post.slug);
-  const className = 'min-h-0 w-full flex-1';
+  const className = 'min-h-size-none w-full flex-flex-fill';
 
   if (body.status === 'failed') {
     return (

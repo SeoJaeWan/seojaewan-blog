@@ -71,7 +71,7 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       className={[
-        'flex flex-col items-start gap-16 bg-chrome-image-viewer-backdrop p-16 outline-none',
+        'flex flex-col items-start gap-spacing-lg bg-chrome-image-viewer-backdrop p-spacing-lg outline-none',
         className,
       ]
         .filter(Boolean)
@@ -89,8 +89,8 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       <div
         data-backdrop
         className={[
-          'flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-12',
-          layout === 'wide' ? 'px-32' : 'px-0',
+          'flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center gap-spacing-md',
+          layout === 'wide' ? 'px-spacing-3xl' : 'px-spacing-none',
         ].join(' ')}
       >
         {image}
