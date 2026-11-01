@@ -328,6 +328,35 @@ export const AllList: Story = {
     );
 
     // @codocs [[Start 메뉴:모두]]
+    await step(
+      '포커스한 줄에 contextmenu를 보내면(Shift+F10·메뉴 키) 같은 메뉴가 열린다',
+      async () => {
+        const row = within(all()).getByRole('button', { name: 'Next.js 캐시' });
+        row.focus();
+        await expect(await openContextMenu(row)).toEqual(['열기', '시작 화면에 고정', '링크 복사']);
+        await closeContextMenu();
+      },
+    );
+
+    // @codocs [[Start 메뉴:모두]]
+    await step('줄을 길게 누르면(500ms) 같은 메뉴가 열린다', async () => {
+      const row = within(all()).getByRole('button', { name: 'Next.js 캐시' });
+      const touch = new Touch({ identifier: 1, target: row, clientX: 10, clientY: 10 });
+      await fireEvent(
+        row,
+        new TouchEvent('touchstart', { bubbles: true, cancelable: true, touches: [touch] }),
+      );
+      const items = await screen.findAllByRole('menuitem');
+      await expect(items.map((item) => item.textContent)).toEqual([
+        '열기',
+        '시작 화면에 고정',
+        '링크 복사',
+      ]);
+      await fireEvent(row, new TouchEvent('touchend', { bubbles: true, cancelable: true }));
+      await closeContextMenu();
+    });
+
+    // @codocs [[Start 메뉴:모두]]
     await step('줄 우클릭 메뉴의 시작 화면에 고정은 그 항목을 고정됨 맨 뒤에 더한다', async () => {
       await openContextMenu(within(all()).getByRole('button', { name: 'Next.js 캐시' }));
       await userEvent.click(screen.getByRole('menuitem', { name: '시작 화면에 고정' }));

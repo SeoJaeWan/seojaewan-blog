@@ -1,8 +1,21 @@
-import { type JSX, type KeyboardEvent, type ReactNode, useEffect, useRef } from 'react';
+import {
+  type ComponentProps,
+  type JSX,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  type Ref,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 
 import { ListItem } from '@seojaewan/design-system';
 
-type ItemListRowProps = {
+type ItemListRowProps = Omit<
+  ComponentProps<'div'>,
+  'id' | 'title' | 'children' | 'ref' | 'role' | 'tabIndex'
+> & {
   /** 항목 id. 열 때 `onOpen`에 넘긴다 */
   id: string;
   /** 항목 이름 */
@@ -15,21 +28,49 @@ type ItemListRowProps = {
   isSelected?: boolean;
   /** 줄을 열었을 때(클릭·Enter·Space) 그 항목의 id로 부른다 */
   onOpen?: (id: string) => void;
-  /** 바깥 배치 클래스 */
-  className?: string;
+  /** 줄 요소의 ref. 우클릭 메뉴(`ContextMenu.Trigger`)처럼 줄에 동작을 붙이는 쪽이 넘긴다 */
+  ref?: Ref<HTMLDivElement>;
 };
 
 /**
  * Start 목록과 검색 화면의 항목 한 줄(`ListItem`)을 열 수 있는 버튼으로 그린다. 클릭·Enter·Space로 열고, 열면 `onOpen`을 부른다.
  * 고른 줄이 보이는 영역 밖이면 스크롤해 보이게 한다(방향키로 고르는 검색 결과).
  * 고른 줄은 `aria-current`로 알린다.
+ * 받은 속성과 ref는 줄 요소에 그대로 넘기므로, 쓰는 곳이 줄을 우클릭 영역(`ContextMenuArea`의 `area`)으로 바로 쓸 수 있다.
+ * 줄의 `onClick`·`onKeyDown`은 열기와 함께 부른다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[검색:결과 화면]]
  * @param props
  */
 export function ItemListRow(props: ItemListRowProps): JSX.Element {
-  const { id, title, subtitle, icon, isSelected = false, className } = props;
+  const {
+    id,
+    title,
+    subtitle,
+    icon,
+    isSelected = false,
+    onOpen: handleOpenItem,
+    ref: forwardedRef,
+    onClick: handleClickProp,
+    onKeyDown: handleKeyDownProp,
+    ...rowAttributes
+  } = props;
   const rowRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(
+    forwardedRef,
+    /**
+     * 받은 ref에 줄 요소를 넘긴다.
+     * @returns 줄 요소
+     */
+    () => {
+      if (rowRef.current === null) {
+        throw new Error('항목 줄 요소가 없다');
+      }
+      return rowRef.current;
+    },
+    [],
+  );
 
   useEffect(
     /** 고른 줄이 되면 보이는 영역 밖일 때만 스크롤해 보이게 한다. */
@@ -43,14 +84,24 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
 
   /** 줄을 열면 쓰는 곳에 항목 id를 알린다. */
   function handleOpen(): void {
-    props.onOpen?.(id);
+    handleOpenItem?.(id);
   }
 
   /**
-   * Enter·Space를 누르면 줄을 누른 것으로 본다.
+   * 줄을 누르면 받은 `onClick`을 부르고 연다.
+   * @param event 마우스 이벤트
+   */
+  function handleClick(event: MouseEvent<HTMLDivElement>): void {
+    handleClickProp?.(event);
+    handleOpen();
+  }
+
+  /**
+   * 받은 `onKeyDown`을 부르고, Enter·Space를 누르면 줄을 누른 것으로 본다.
    * @param event 키 이벤트
    */
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    handleKeyDownProp?.(event);
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleOpen();
@@ -58,6 +109,7 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
   }
 
   const rowProps = {
+    ...rowAttributes,
     ref: rowRef,
     role: 'button',
     tabIndex: 0,
@@ -65,8 +117,7 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
     selected: isSelected,
     title,
     icon,
-    className,
-    onClick: handleOpen,
+    onClick: handleClick,
     onKeyDown: handleKeyDown,
   };
   return subtitle === undefined ? (
