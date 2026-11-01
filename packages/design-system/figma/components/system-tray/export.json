@@ -1,6 +1,25 @@
 {
+  "description": "작업 표시줄 오른쪽의 시간과 날짜 표시로, Taskbar에 쓴다.",
   "name": "SystemTray",
   "nodeId": "26:274",
+  "propertyDefinitions": {
+    "Date": {
+      "default": "날짜",
+      "type": "TEXT"
+    },
+    "State": {
+      "default": "Rest",
+      "options": [
+        "Rest",
+        "Hover"
+      ],
+      "type": "VARIANT"
+    },
+    "Time": {
+      "default": "시간",
+      "type": "TEXT"
+    }
+  },
   "variants": {
     "state=hover": {
       "node": {
@@ -12,6 +31,108 @@
       "nodeId": "26:271",
       "properties": {
         "State": "Hover"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "time",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "시간",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "date",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "날짜",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "fills": [
+          "control-fill/default"
+        ],
+        "height": "size/taskbar/item",
+        "layout": {
+          "counterAlign": "MAX",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/md",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Hover",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "size": {
+          "h": 40,
+          "w": 47
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default",
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "control-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
       }
     },
     "state=rest": {
@@ -24,6 +145,113 @@
       "nodeId": "26:268",
       "properties": {
         "State": "Rest"
+      },
+      "tree": {
+        "children": [
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "time",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "시간",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          },
+          {
+            "fills": [
+              "text-fill/primary"
+            ],
+            "name": "date",
+            "size": {
+              "h": 16,
+              "w": 21
+            },
+            "sizing": {
+              "h": "HUG",
+              "v": "HUG"
+            },
+            "text": {
+              "autoResize": "WIDTH_AND_HEIGHT",
+              "maxLines": null,
+              "maxLinesVariable": null,
+              "segments": [
+                {
+                  "characters": "날짜",
+                  "fill": "text-fill/primary",
+                  "textStyle": "Hangul/Caption"
+                }
+              ],
+              "truncation": "DISABLED"
+            },
+            "type": "TEXT"
+          }
+        ],
+        "height": "size/taskbar/item",
+        "layout": {
+          "counterAlign": "MAX",
+          "gap": 0,
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/md",
+            "spacing/none",
+            "spacing/md"
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "State=Rest",
+        "radius": [
+          "radius/control",
+          "radius/control",
+          "radius/control",
+          "radius/control"
+        ],
+        "reactions": [
+          {
+            "destination": "State=Hover",
+            "navigation": "CHANGE_TO",
+            "transition": {
+              "bezier": [
+                0,
+                0,
+                1,
+                1
+              ],
+              "durationMs": 83,
+              "easing": "LINEAR",
+              "type": "SMART_ANIMATE"
+            },
+            "trigger": "ON_HOVER"
+          }
+        ],
+        "size": {
+          "h": 40,
+          "w": 45
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT"
       }
     }
   }

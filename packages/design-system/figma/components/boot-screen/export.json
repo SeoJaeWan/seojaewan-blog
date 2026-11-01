@@ -1,6 +1,17 @@
 {
+  "description": "다시 시작할 때 보이는 재부팅 화면으로, 다시 시작 화면에 쓴다.",
   "name": "BootScreen",
   "nodeId": "38:1122",
+  "propertyDefinitions": {
+    "Device": {
+      "default": "Desktop",
+      "options": [
+        "Desktop",
+        "Mobile"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "device=desktop": {
       "node": {
@@ -12,6 +23,111 @@
       "nodeId": "38:1106",
       "properties": {
         "Device": "Desktop"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "illustrations/logo-windows"
+            },
+            "component": "logo/Windows",
+            "height": "size/boot-screen/logo",
+            "name": "windows logo",
+            "size": {
+              "h": 120,
+              "w": 120
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/boot-screen/logo"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "boot-screen/foreground",
+                  "path": "shapes/progress-ring-arc"
+                },
+                "component": "progress-ring/Arc",
+                "name": "arc",
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FILL"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "component": "ProgressRing",
+            "height": "size/progress-ring/md",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "progress ring",
+            "properties": {
+              "Size": "32",
+              "Tone": "On dark"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/progress-ring/md"
+          }
+        ],
+        "fills": [
+          "boot-screen/background"
+        ],
+        "height": "size/boot-screen/height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "size/boot-screen/gap",
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Device=Desktop",
+        "size": {
+          "h": 720,
+          "w": 1280
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/boot-screen/width"
       }
     },
     "device=mobile": {
@@ -24,6 +140,111 @@
       "nodeId": "38:1114",
       "properties": {
         "Device": "Mobile"
+      },
+      "tree": {
+        "children": [
+          {
+            "asset": {
+              "path": "illustrations/logo-windows"
+            },
+            "component": "logo/Windows",
+            "height": "size/boot-screen/logo-mobile",
+            "name": "windows logo",
+            "size": {
+              "h": 96,
+              "w": 96
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/boot-screen/logo-mobile"
+          },
+          {
+            "children": [
+              {
+                "asset": {
+                  "color": "boot-screen/foreground",
+                  "path": "shapes/progress-ring-arc"
+                },
+                "component": "progress-ring/Arc",
+                "name": "arc",
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FILL"
+                },
+                "type": "INSTANCE"
+              }
+            ],
+            "component": "ProgressRing",
+            "height": "size/progress-ring/md",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": 0,
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "CENTER"
+            },
+            "name": "progress ring",
+            "properties": {
+              "Size": "32",
+              "Tone": "On dark"
+            },
+            "radius": [
+              "radius/control",
+              "radius/control",
+              "radius/control",
+              "radius/control"
+            ],
+            "size": {
+              "h": 32,
+              "w": 32
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE",
+            "width": "size/progress-ring/md"
+          }
+        ],
+        "fills": [
+          "boot-screen/background"
+        ],
+        "height": "size/screen/mobile-height",
+        "layout": {
+          "counterAlign": "CENTER",
+          "gap": "size/boot-screen/mobile-gap",
+          "mode": "VERTICAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "CENTER"
+        },
+        "name": "Device=Mobile",
+        "size": {
+          "h": 844,
+          "w": 390
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "type": "COMPONENT",
+        "width": "size/screen/mobile-width"
       }
     }
   }

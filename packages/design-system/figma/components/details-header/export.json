@@ -1,6 +1,21 @@
 {
+  "description": "자세히 보기 표의 열 제목 줄로, 탐색기와 휴지통 자세히 보기 목록 위에 쓴다.",
   "name": "DetailsHeader",
   "nodeId": "870:9324",
+  "propertyDefinitions": {
+    "Show location": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
+    "View": {
+      "default": "Default",
+      "options": [
+        "Recycle bin",
+        "Default"
+      ],
+      "type": "VARIANT"
+    }
+  },
   "variants": {
     "view=default": {
       "node": {
@@ -12,6 +27,281 @@
       "nodeId": "31:369",
       "properties": {
         "View": "Default"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 283
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "이름",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_chevron_down_16_regular"
+                },
+                "component": "ic_fluent_chevron_down_16_regular",
+                "height": "size/icon/xs",
+                "name": "sort glyph",
+                "rotation": {
+                  "value": 180,
+                  "variable": "rotate/half"
+                },
+                "size": {
+                  "h": 12,
+                  "w": 12
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/xs"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/이름",
+            "properties": {
+              "Label": "이름",
+              "Sort": "Ascending",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 171
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "수정한",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Caption"
+                    },
+                    {
+                      "characters": "날짜",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/수정한 날짜",
+            "properties": {
+              "Label": "수정한 날짜",
+              "Sort": "None",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 131
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "유형",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/유형",
+            "properties": {
+              "Label": "유형",
+              "Sort": "None",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Default",
+        "size": {
+          "h": 32,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     },
     "view=recycle-bin": {
@@ -24,6 +314,271 @@
       "nodeId": "870:9314",
       "properties": {
         "View": "Recycle bin"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 283
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "이름",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              },
+              {
+                "asset": {
+                  "color": "text-fill/secondary",
+                  "path": "icons/ic_fluent_chevron_down_16_regular"
+                },
+                "component": "ic_fluent_chevron_down_16_regular",
+                "height": "size/icon/xs",
+                "name": "sort glyph",
+                "rotation": {
+                  "value": 180,
+                  "variable": "rotate/half"
+                },
+                "size": {
+                  "h": 12,
+                  "w": 12
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/icon/xs"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/이름",
+            "properties": {
+              "Label": "이름",
+              "Sort": "Ascending",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 316
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/name-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 171
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "원래 위치",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/원래 위치",
+            "properties": {
+              "Label": "원래 위치",
+              "Sort": "None",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 188
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/wide-width"
+          },
+          {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/secondary"
+                ],
+                "name": "label",
+                "size": {
+                  "h": 16,
+                  "w": 131
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": 1,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "삭제한 날짜",
+                      "fill": "text-fill/secondary",
+                      "textStyle": "Hangul/Caption"
+                    }
+                  ],
+                  "truncation": "ENDING"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "component": "ColumnHeader",
+            "height": "size/control/height",
+            "layout": {
+              "counterAlign": "CENTER",
+              "gap": "spacing/xs",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/sm",
+                "spacing/none",
+                "spacing/sm"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "col/삭제한 날짜",
+            "properties": {
+              "Label": "삭제한 날짜",
+              "Sort": "None",
+              "State": "Rest"
+            },
+            "size": {
+              "h": 32,
+              "w": 148
+            },
+            "sizing": {
+              "h": "FIXED",
+              "v": "FIXED"
+            },
+            "strokeWeight": [
+              0,
+              "stroke-width/default",
+              0,
+              0
+            ],
+            "strokes": [
+              "divider-stroke/default"
+            ],
+            "strokesIncludedInLayout": true,
+            "type": "INSTANCE",
+            "width": "size/details-header/narrow-width"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": 0,
+          "mode": "HORIZONTAL",
+          "padding": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "View=Recycle bin",
+        "size": {
+          "h": 32,
+          "w": 652
+        },
+        "sizing": {
+          "h": "HUG",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
       }
     }
   }
