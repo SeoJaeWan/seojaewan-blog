@@ -560,7 +560,7 @@ type StartListRowProps = {
 /**
  * 모두 목록의 항목 한 줄을 그린다. 고정 항목 칸처럼 클릭·Enter·Space로 열 수 있어, 열면 그 항목으로 `onItemOpen`을 부른다.
  * 메뉴 항목을 주면 줄을 우클릭(모바일은 길게 누르기, 키보드는 Shift+F10·메뉴 키)할 때 그 메뉴를 띄운다.
- * 줄(`ItemListRow`)이 받은 속성을 넘기지 않아, 우클릭을 받는 영역은 줄을 감싼 요소로 둔다(줄의 `contextmenu`가 올라온다).
+ * 줄(`ItemListRow`)이 받은 속성과 ref를 줄 요소에 넘기므로, 줄 자체가 우클릭을 받는 영역이다.
  * @codocs [[Start 메뉴:열기와 닫기]]
  * @codocs [[Start 메뉴:모두]]
  * @param props
@@ -599,7 +599,7 @@ function StartListRow(props: StartListRowProps): JSX.Element {
       open={isMenuOpen}
       onOpenChange={handleMenuOpenChange}
       items={menuItems}
-      area={<div className="w-full">{row}</div>}
+      area={row}
     />
   );
 }

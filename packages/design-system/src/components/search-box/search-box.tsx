@@ -20,6 +20,7 @@ type SearchBoxProps = Omit<ComponentProps<typeof Input>, 'className' | 'type'> &
 /**
  * 검색 상자(피그마 SearchBox)를 그린다. 입력값이 있으면 피그마 Filled=True 모양이 된다.
  * 입력과 접근성은 Base UI Input이 맡는다. 접근성 이름은 `aria-label`이나 label 요소로 붙인다.
+ * 역할은 기본이 `searchbox`이고, `combobox`처럼 `aria-expanded`가 필요한 역할은 `role`로 넘기면 그대로 따른다.
  * Hover·Focused는 실제 CSS 상태(hover, focus-within)로 바꾸고, 안쪽 선은 피그마 안쪽 선처럼 ::before 고리
  * (border-gradient-*, inner-border-*)로 그린다. 상태 전환은 피그마 프로토타입 전환과 같은 모션 클래스를 쓴다:
  * default·web은 Rest→Hover(motion-control-state), pill·taskbar는 Rest→Focused(motion-search-box-focus-state)다.
@@ -60,9 +61,10 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         />
       )}
       <Input
+        // 기본 역할은 searchbox다. 추천 목록을 거느리는 쓰는 곳은 넘겨받은 role(combobox 등)로 덮는다.
+        role="searchbox"
         {...inputProps}
         type="text"
-        role="searchbox"
         disabled={isDisabled}
         className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
       />

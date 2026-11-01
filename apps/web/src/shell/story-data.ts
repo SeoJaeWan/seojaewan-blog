@@ -2,16 +2,13 @@
 // 화면 전체 동작 스토리(Features/Shell/Shell)가 서버 대신 넘기는 글 색인이다. 앱의 임시 글 원천과 같은 글 이름을 쓴다.
 
 /**
- * Chrome·탐색기 창을 연 동작 스토리가 끄는 axe 규칙. Chrome 새 탭 검색칸의 `aria-expanded`(aria-allowed-attr)와
- * 탭 목록 안의 닫기 버튼(aria-required-children)이 걸린다. 창 안 기능의 구조 문제라 사람이 정할 때까지 끈다
+ * Chrome·탐색기 창을 연 동작 스토리가 끄는 axe 규칙. 탭 목록 안의 닫기 버튼(aria-required-children)이 걸린다.
+ * 창 안 기능의 구조 문제라 사람이 정할 때까지 끈다
  * (`Patterns/Window/Chrome`도 같은 이유로 aria-required-children을 끈다).
  */
 export const WINDOW_STORY_A11Y = {
   config: {
-    rules: [
-      { id: 'aria-allowed-attr', enabled: false },
-      { id: 'aria-required-children', enabled: false },
-    ],
+    rules: [{ id: 'aria-required-children', enabled: false }],
   },
 } as const;
 

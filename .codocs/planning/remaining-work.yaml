@@ -76,21 +76,8 @@ _codocs:
   - [[반응형:기준]]: 768 숫자를 지우고 Foundations 변수를 가리킴
   - [[기술 스택:동작 기반 라이브러리]]: Base UI에 맡기는 범위를 실제와 맞게 고치고 접근성 문서를 가리킴
   - [[피그마 연동:PR 흐름]]·[[피그마 연동:자산]]과 PR 스킬: 아이콘·이미지 자산은 토큰 내보내기(기반 PR)로 내보내고, 새 자산을 쓰는 컴포넌트는 기반 PR을 먼저 병합(23·27번)
-  - [[기술 스택:글 본문 처리]]: 색 갈래에 Light+ 7가지를 더하고 Light+와 똑같이 칠함(`const` 변수 포함)(63번)
 
   코드 작업:
-  - 스토리의 인라인 이미지 높이 420·212를 지우고 자산 원본 비율로 그림: Figure, Chrome page, Window/Chrome, SnapAssist, PostBlocks(10·27번)
-  - ExplorerTab에 `showSeparator` prop을 만들고, 탐색기·Chrome 창 모두 선택된 탭 바로 왼쪽 탭의 구분선을 끔. 피그마 `Show separator`와 조립 값으로 확인함(11·50번)
-  - (차례 13) MenuZoomItem을 MenuItem의 `zoom` 종류로 합치고 `MenuPopup`이 그것으로 그림. −·+를 Base UI `Menu.Item`(`closeOnClick={false}`)으로 두어 ↑↓로 닿게 함(시험으로 확인)(16·34번)
-  - TableCell 본문을 regular로 하고 조립의 `type-body` 덮어쓰기를 지움(21·28번)
-  - `generate:assets`가 이미지 주소·너비·높이 지도를 만들어 손으로 쓴 `IMAGE_ASSET_URLS`를 대신하고, `getImageAsset(name)`을 내보내며, 앱은 큰 이미지(바탕화면 배경)에 `next/image`를 씀(23·27번)
-  - 글자 꾸밈을 Notion처럼 겹쳐 그림(굵게+기울임 등). 피그마 글자 스타일을 먼저 확인(28번)
-  - SearchBox가 넘겨받은 `role`을 따름(`role="searchbox"`를 펼치기 앞에). 새 탭 검색창의 `combobox`가 덮이는 문제도 같이 풂(44번)
-  - `panel-rules.ts`의 `panelMinHeights`와 하한 계산을 지움(53번)
-  - 작업 표시줄 고정 해제 아이콘을 `pin_off`로(57번)
-  - `ItemListRow`가 받은 속성과 ref를 줄에 넘기게 하고, 우클릭용으로 감싼 `div`를 지움. 우클릭·길게 누르기·Shift+F10 시험(57번)
-  - Shiki 테마를 새 `code-syntax` 갈래로 칠함(63번)
-  - Menu/Post 스토리의 잘라내기 거르기와 주석을 지움(75번)
   - `use-device`가 생성된 경계값을 읽고 `pc | laptop | mobile`을 돌려줌. Chrome 글 화면이 창 내용 너비로 넓은·좁은 모양을 가름
   - 접근성:
     - Base UI로 바꿈: 탭(닫기 버튼의 키 전파만 막음), 확대/축소 줄, 버튼 역할 `div`(`item-list-row.tsx`, `taskbar-window-preview-list.tsx`, `snap-assist.tsx`), Start·검색 패널(비모달 Dialog, Start 버튼·검색칸 누르기는 닫지 않게 거름)
@@ -100,9 +87,6 @@ _codocs:
     - 영역 이름: `SectionTitle`·`SectionHeader`가 제목 태그로 그리고, Start 두 영역을 `aria-labelledby`로. 창 영역이 창 제목을 가리키는지 확인(56번)
     - `DropDownButton`이 `무엇: 값` 이름을 만들고 Start 모두 보기 버튼 두 곳이 "보기"를 넘김
     - 포커스 규칙대로인지 확인하고 고침: 창 열기·닫기·최소화, Start·검색 패널 닫기, 탭 닫기, 휴지통 비우기 메시지 상자(68번은 규칙으로 정리됨)
-  - Bookmark 링크 아이콘 색을 피그마대로 `text-fill/secondary`로(지금 `primary`. 레이어 트리 실험에서 찾음)
-  - 폴더 이동과 진입점 없애기: [[논의 2026-11-01 코드 폴더 구조]]대로
-  - 테스트 전환: [[논의 2026-11-01 테스트 전략]]대로. 클라이언트에서만 아는 값은 훅이 맡고 그 훅을 단위 테스트한다(`search-box`의 Safari 판정을 훅으로 뺌). `*.test.tsx`는 예외 없이 없앤다. pre-commit은 단위 테스트와 영향 범위 스토리 테스트를 돌린다
 
   일괄 작업 전과 중에 할 시험·확인:
   - 노트북 모드 값을 넣은 Screens로 경계값(1600·900)과 가장 작은 크기(노트북 768 폭, 모바일 320×568)에서 잘리는 곳이 없는지
@@ -113,9 +97,7 @@ _codocs:
   접근성 검사에서 임시로 끈 규칙(작업 차례 13에서 처리):
   - `BrowserTab`·`ExplorerTab`의 `aria-required-children`: 닫기 버튼이 `tablist` 안에 있어 Figma 스토리 4개에서 껐다. Base UI 탭으로 바꿀 때 구조를 정한다(대안은 [[임의 작업]])
   - 미리보기 카드의 `label-content-name-mismatch`: 축소 화면 글자 때문으로 보인다. 컴포넌트 테스트를 `play`로 옮길 때 축소 화면의 내용 확인(보이는 글자 확인)이 이 때문에 옮겨지지 못했다
-  - `shell` 스토리 3개의 `aria-allowed-attr`·`aria-required-children`(`WINDOW_STORY_A11Y`): `SearchBox`의 role과 탭 구조 때문이다
-  - `scrollable-region-focusable`: start-menu `TinyScreen`(높이 100에서 본문이 스크롤 영역으로만 남음)에서 껐다. 구조를 바꿀지 정한다
-  - `chrome-window-layer` 스토리의 `aria-allowed-attr`: 새 탭 검색창에 `aria-expanded`가 붙는데 디자인 시스템 `SearchBox`가 role을 `searchbox`로 고정해 허용되지 않는다
+  - `shell` 스토리 3개의 `aria-required-children`(`WINDOW_STORY_A11Y`): 탭 구조 때문이다
   - 색 대비: 사람 판단이 필요하다. `text-fill-tertiary` 보조 글자 3.23, `code-syntax-type` 4.35, 바탕화면 아이콘 이름 1.58, 비활성 창 제목 3.31, 잘라낸 항목 이름 3.2~3.3. 스토리별로 규칙을 껐다. `ListItem`의 보조 글자와 `FileRow`의 잘라낸 상태 확인은 색 대비 때문에 스토리로 못 옮겨 빠졌으니, 색을 정한 뒤 되살린다
 
   시험 자원(작업 차례 15에 정리):

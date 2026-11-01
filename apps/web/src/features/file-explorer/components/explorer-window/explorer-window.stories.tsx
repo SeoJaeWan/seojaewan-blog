@@ -129,6 +129,19 @@ export const TabPointer: Story = {
     }
 
     // @codocs [[파일 탐색기:탭]]
+    await step('선택된 탭과 그 바로 왼쪽 탭은 오른쪽 구분선을 그리지 않는다', async () => {
+      const tabs = canvas.getAllByRole('tab');
+      for (const [index, tab] of tabs.entries()) {
+        const isSelected = tab.getAttribute('aria-selected') === 'true';
+        const isBeforeSelected = tabs[index + 1]?.getAttribute('aria-selected') === 'true';
+        await expect(tab.parentElement).toHaveAttribute(
+          'data-separator',
+          String(!isSelected && !isBeforeSelected),
+        );
+      }
+    });
+
+    // @codocs [[파일 탐색기:탭]]
     await step('탭을 누르면 창 층의 누르기 처리(창을 맨 앞으로)까지 전해진다', async () => {
       clearCalls();
       await fireEvent.pointerDown(react);

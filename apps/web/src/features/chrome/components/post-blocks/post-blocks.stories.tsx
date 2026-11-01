@@ -11,7 +11,7 @@ import { expandedToggleIndexes, sampleBlocks } from './story-data';
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
 // 본문은 크기를 갖지 않고 글 화면이 정하므로 피그마 원본 너비(size/720)와 페이지 바탕으로 감싼다.
-// 이미지는 피그마처럼 배경화면 Bloom을 이미지 칸 높이 420(크기 토큰에 없는 값)으로, 수식은 근의 공식 그림(200×56)으로 넣는다.
+// 이미지는 피그마처럼 배경화면 Bloom을 자산 원본 비율로, 수식은 근의 공식 그림(200×56)으로 넣는다.
 const meta = {
   title: 'Patterns/Chrome/PostBlocks',
   render: () => (
@@ -19,7 +19,7 @@ const meta = {
       <PostBlocks
         blocks={sampleBlocks}
         expandedToggleIndexes={expandedToggleIndexes}
-        renderImage={() => <ImageAsset name="images/wallpaper-bloom" style={{ height: 420 }} />}
+        renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
         renderEquation={() => (
           <ImageAsset
             name="images/equation-quadratic-formula"
@@ -136,6 +136,57 @@ export const Structure: Story = {
 
     await step('서버가 그리지 못한 수식은 식 글자를 보인다', async () => {
       await expect(canvas.getByText(String.raw`\frac{1`)).toBeVisible();
+    });
+  },
+};
+
+const annotationBlocks: PostBlock[] = [
+  {
+    type: 'paragraph',
+    richText: [
+      {
+        text: '모두',
+        link: null,
+        annotations: { bold: true, italic: true, underline: true, strikethrough: true },
+      },
+      { text: '굵은 코드', link: null, annotations: { bold: true, code: true } },
+    ],
+  },
+  {
+    type: 'table',
+    hasColumnHeader: false,
+    rows: [[[{ text: '표 칸 굵게', link: null, annotations: { bold: true } }]]],
+  },
+];
+
+// @codocs [[Notion 블록:모양]]
+/** 글자 서식은 겹쳐 그린다: 굵게+기울임+밑줄+취소선이 한 조각에 모두 적용되고 표 칸에도 적용된다 */
+export const Annotations: Story = {
+  render: () => <PostBlocks blocks={annotationBlocks} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('한 조각의 굵게·기울임·밑줄·취소선을 모두 적용한다', async () => {
+      const strong = canvas.getByText('모두').closest('strong');
+      const style = getComputedStyle(canvas.getByText('모두'));
+      await expect(strong).not.toBeNull();
+      await expect(Number(getComputedStyle(strong ?? canvasElement).fontWeight)).toBeGreaterThan(
+        500,
+      );
+      await expect(style.fontStyle).toBe('italic');
+      const decorated = canvas.getByText('모두').closest('em');
+      await expect(decorated?.closest('u')).not.toBeNull();
+      await expect(decorated?.closest('s')).not.toBeNull();
+    });
+
+    await step('굵은 인라인 코드는 코드 서체로 굵게 그린다', async () => {
+      const strong = canvas.getByText('굵은 코드');
+      await expect(Number(getComputedStyle(strong).fontWeight)).toBeGreaterThan(500);
+      await expect(strong.closest('span')).not.toBeNull();
+    });
+
+    await step('표 칸 글자에도 굵게를 적용한다', async () => {
+      await expect(canvas.getByText('표 칸 굵게').tagName).toBe('STRONG');
     });
   },
 };

@@ -19,9 +19,6 @@ const SIZE_CLASS_NAMES = {
   narrow: 'w-size-chrome-page-narrow-width h-size-chrome-page-narrow-height',
 } as const;
 
-// 피그마 `figure`의 이미지 칸 높이다(그림 448·240에서 간격 8과 캡션 20을 뺀 값). 크기 토큰에 없는 값이라 인라인으로 준다.
-const FIGURE_IMAGE_HEIGHTS = { wide: 420, narrow: 212 } as const;
-
 type FigmaArgs = {
   page: (typeof PAGES)[number];
   layout: (typeof LAYOUTS)[number];
@@ -50,12 +47,7 @@ function renderPage(args: FigmaArgs): JSX.Element {
         >
           <PostBlocks
             blocks={postPageBlocks[args.layout]}
-            renderImage={() => (
-              <ImageAsset
-                name="images/wallpaper-bloom"
-                style={{ height: FIGURE_IMAGE_HEIGHTS[args.layout] }}
-              />
-            )}
+            renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
           />
         </ChromePage>
       );

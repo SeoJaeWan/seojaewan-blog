@@ -7,11 +7,10 @@ import { Figure } from './figure';
 const meta = {
   title: 'Components/Figure',
   // 이미지는 글마다 달라 필수 prop이므로, Figma 스토리가 피그마 기본 인스턴스(wallpaper/Bloom)를 넣는다.
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다. 피그마의 이미지 칸은 720x420 고정이고
-  // 코드는 이미지 높이를 따르므로 같은 높이를 인라인으로 준다(토큰에 없는 값).
+  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다. 이미지 높이는 정하지 않고 자산 원본 비율로 그린다.
   render: () => (
     <div className="w-size-post-width">
-      <Figure image={<ImageAsset name="images/wallpaper-bloom" style={{ height: 420 }} />} />
+      <Figure image={<ImageAsset name="images/wallpaper-bloom" />} />
     </div>
   ),
 } satisfies Meta;
@@ -29,10 +28,7 @@ export const Figma: Story = {};
 export const WithCaption: Story = {
   render: () => (
     <div className="w-size-post-width">
-      <Figure
-        image={<ImageAsset name="images/wallpaper-bloom" alt="그림" style={{ height: 420 }} />}
-        caption="설명"
-      />
+      <Figure image={<ImageAsset name="images/wallpaper-bloom" alt="그림" />} caption="설명" />
     </div>
   ),
   play: async ({ canvasElement, step }) => {
@@ -51,10 +47,7 @@ export const WithCaption: Story = {
 export const WithoutCaption: Story = {
   render: () => (
     <div className="w-size-post-width">
-      <Figure
-        showCaption={false}
-        image={<ImageAsset name="images/wallpaper-bloom" style={{ height: 420 }} />}
-      />
+      <Figure showCaption={false} image={<ImageAsset name="images/wallpaper-bloom" />} />
     </div>
   ),
   play: async ({ canvasElement, step }) => {

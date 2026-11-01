@@ -207,7 +207,8 @@ const defaultExportFiles = [
   `${WEB_SRC}/app/**/{opengraph-image,twitter-image,icon,apple-icon,sitemap,robots,manifest}.{ts,tsx}`,
   // 설정 파일
   '**/*.config.{ts,mjs,js,cjs}',
-  '**/.storybook/{main,preview}.{ts,tsx}',
+  // next-image는 Storybook에서 `next/image`를 대신하는 연결 파일이라 `next/image`처럼 default export를 한다
+  '**/.storybook/{main,preview,next-image}.{ts,tsx}',
   // Storybook CSF는 meta를 default export로 요구한다
   '**/*.stories.{ts,tsx}',
 ];

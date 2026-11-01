@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { sourceAssetsDir } from '../package-paths.ts';
 import { expectedAssetFiles, staleAssetFiles } from './asset-files.ts';
-import { assetDataModule, parseSvgAsset } from './assets-code.ts';
+import { assetDataModule, imageDataModule, parseSvgAsset } from './assets-code.ts';
 import { rasterFormat, WEBP_PHOTO_QUALITY, webpEncoding } from './raster-code.ts';
 
 const SVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -126,6 +126,20 @@ describe('자산 생성', () => {
         'icons/path.svg',
       ),
     ).toThrow(/style/u);
+  });
+
+  it('래스터 자산 지도는 이름마다 파일 주소와 원본 너비·높이를 담는다', () => {
+    const source = imageDataModule(
+      new Map([
+        ['images/b', { width: 20, height: 10 }],
+        ['images/a', { width: 4, height: 3 }],
+      ]),
+    );
+    expect(source).toContain(
+      "'images/a': {\n    src: new URL('./images/a.webp', import.meta.url).href,\n    width: 4,\n    height: 3,\n  },",
+    );
+    expect(source.indexOf("'images/a'")).toBeLessThan(source.indexOf("'images/b'"));
+    expect(source).toContain('export type ImageAssetName = keyof typeof imageAssets;');
   });
 
   it('래스터 원본의 형식은 확장자가 아니라 바이트 앞부분으로 알아낸다', () => {

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor } from 'storybook/test';
 
 import { DesktopIcons } from '@/features/desktop/components/desktop-icons/desktop-icons';
 import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/app-item/components/taskbar-app/taskbar-app';
@@ -60,3 +61,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Figma: Story = {};
+
+// @codocs [[바탕화면:배경화면]]
+/** 배경화면은 `next/image`로 그려지고 불러와진다 */
+export const Wallpaper: Story = {
+  play: async ({ canvasElement, step }) => {
+    await step('배경화면 이미지를 next/image로 그려 불러온다', async () => {
+      const wallpaper = canvasElement.querySelector('img[data-nimg]');
+      await expect(wallpaper).not.toBeNull();
+      await waitFor(() =>
+        expect(
+          wallpaper instanceof HTMLImageElement && wallpaper.complete && wallpaper.naturalWidth > 0,
+        ).toBe(true),
+      );
+    });
+  },
+};

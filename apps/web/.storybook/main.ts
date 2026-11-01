@@ -1,6 +1,7 @@
 import path from 'node:path';
 import type { StorybookConfig } from '@storybook/react-vite';
 import tailwindcss from '@tailwindcss/vite';
+import { imageConfigDefault } from 'next/dist/shared/lib/image-config.js';
 import { mergeConfig } from 'vite';
 
 // @codocs [[저장소 구성:앱 폴더 구조]]
@@ -16,7 +17,20 @@ const config: StorybookConfig = {
   viteFinal(viteConfig) {
     return mergeConfig(viteConfig, {
       plugins: [tailwindcss()],
-      resolve: { alias: { '@': path.resolve(import.meta.dirname, '../src') } },
+      resolve: {
+        alias: {
+          '@': path.resolve(import.meta.dirname, '../src'),
+          'next/image': path.resolve(import.meta.dirname, 'next-image.ts'),
+        },
+      },
+      // `next/image`는 Next.js 빌드가 채우는 `process.env.__NEXT_IMAGE_OPTS`를 읽는다. Vite에는 `process`가 없으므로 직접 채운다.
+      // Storybook에는 Next.js의 이미지 최적화 서버가 없으므로 최적화를 끄고 원본 주소를 그대로 쓴다.
+      define: {
+        'process.env.__NEXT_IMAGE_OPTS': JSON.stringify({
+          ...imageConfigDefault,
+          unoptimized: true,
+        }),
+      },
     });
   },
 };
