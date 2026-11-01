@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { DesktopIcons } from '@/features/desktop/desktop';
-import { TaskbarAppButton, TaskbarDefault } from '@/features/taskbar/taskbar';
+import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/taskbar-app/taskbar-app';
+import { TaskbarDefault } from '@/features/taskbar/components/taskbar-default/taskbar-default';
 import { TASKBAR_CLOCK } from '@/shared/stories/taskbar/taskbar';
 
 import { DesktopScene } from './desktop-scene';

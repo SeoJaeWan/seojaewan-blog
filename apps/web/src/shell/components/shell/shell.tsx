@@ -5,7 +5,7 @@ import { type JSX, useEffect, useRef } from 'react';
 import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-sync';
 import { DesktopIconsLayer } from '@/features/desktop/desktop';
 import { StartMenuLayer } from '@/features/start-menu/start-menu';
-import { TaskbarLayer } from '@/features/taskbar/taskbar';
+import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';

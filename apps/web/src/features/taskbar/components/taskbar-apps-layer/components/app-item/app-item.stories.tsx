@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { TaskbarAppPreview } from '@/features/taskbar/taskbar';
-import { PreviewListStory } from '@/shell/stories/preview-list-story/preview-list-story';
+import { PreviewListStory } from '@/features/taskbar/components/taskbar-apps-layer/components/taskbar-window-preview-list/story-preview-list';
+
+import { TaskbarAppPreview } from './app-item';
 
 // 피그마 Taskbar/AppPreview의 변형 속성 값이다(정규화한 이름).
 const STATES = ['closed', 'open'] as const;

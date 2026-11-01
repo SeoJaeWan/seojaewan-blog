@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { PreviewListStory } from '@/shell/stories/preview-list-story/preview-list-story';
+import { PreviewListStory } from './story-preview-list';
 
 // 피그마 Taskbar/PreviewList의 변형 속성 값이다(정규화한 이름).
 const COUNTS = ['1', '2', '3'] as const;

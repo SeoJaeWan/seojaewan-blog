@@ -5,13 +5,11 @@ import {
   ExplorerContent,
   ExplorerWindow,
 } from '@/features/file-explorer/file-explorer';
-import { TaskbarWindowPreviewList } from '@/features/taskbar/taskbar';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { getExplorerWindowParts } from '@/shared/stories/explorer-window-parts/explorer-window-parts';
-import {
-  PREVIEW_THUMBNAIL,
-  PREVIEW_WINDOWS,
-} from '@/shell/stories/preview-list-data/preview-list-data';
+
+import { PREVIEW_THUMBNAIL, PREVIEW_WINDOWS } from './story-data';
+import { TaskbarWindowPreviewList } from './taskbar-window-preview-list';
 
 type PreviewListStoryProps = {
   /** 보일 창 개수(피그마 Taskbar/PreviewList Count) */

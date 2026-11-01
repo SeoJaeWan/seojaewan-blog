@@ -1,18 +1,8 @@
 import type { JSX, PointerEvent as ReactPointerEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import { TaskbarAppPreview } from '@/features/taskbar/components/taskbar-app-preview/taskbar-app-preview';
-import { TaskbarWindowPreviewList } from '@/features/taskbar/components/taskbar-window-preview-list/taskbar-window-preview-list';
-import { useHoverPreview } from '@/features/taskbar/hooks/use-hover-preview/use-hover-preview';
-import { findTaskbarAppAt } from '@/features/taskbar/utils/taskbar-app-drag/taskbar-app-drag';
-import type { TaskbarAppMenuAction } from '@/features/taskbar/utils/taskbar-app-rules/taskbar-app-rules';
-import {
-  getTaskbarAppMenu,
-  getTaskbarApps,
-} from '@/features/taskbar/utils/taskbar-app-rules/taskbar-app-rules';
 import { WindowThumbnail } from '@/shared/components/window-thumbnail/window-thumbnail';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
-import { useOpenApp } from '@/shared/hooks/use-open-app/use-open-app';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -28,6 +18,14 @@ import {
   getTaskbarAppIndicator,
   getWindowRect,
 } from '@/shared/utils/window-rules/window-rules';
+
+import { TaskbarAppPreview } from './components/app-item/app-item';
+import { TaskbarWindowPreviewList } from './components/taskbar-window-preview-list/taskbar-window-preview-list';
+import { useHoverPreview } from './hooks/use-hover-preview/use-hover-preview';
+import { useOpenApp } from './hooks/use-open-app/use-open-app';
+import { findTaskbarAppAt } from './utils/taskbar-app-drag/taskbar-app-drag';
+import type { TaskbarAppMenuAction } from './utils/taskbar-app-rules/taskbar-app-rules';
+import { getTaskbarAppMenu, getTaskbarApps } from './utils/taskbar-app-rules/taskbar-app-rules';
 
 /** 창 미리보기 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
 const PREVIEW_THUMBNAIL_BOX = { width: 192, height: 108 } as const;

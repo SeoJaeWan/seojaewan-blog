@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { menuTaskbarApp } from '@/features/taskbar/stories/taskbar-app-menu-data/taskbar-app-menu-data';
+import { menuTaskbarApp } from '@/features/taskbar/components/taskbar-apps-layer/app-menu/story-data';
 
 import { TaskbarAppMenu } from './taskbar-app-menu';
 
