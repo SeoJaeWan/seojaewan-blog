@@ -100,6 +100,17 @@ export const Default: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+// 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
+/** showTrailing을 켜면 오른쪽 보조 글자를 보인다 */
+export const Trailing: Story = {
+  render: () => <ListItem icon={<i aria-hidden="true" />} showTrailing trailing="오늘" />,
+  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('오늘')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** 제목과 부제 두 줄이다. showSubtitle을 끄면 부제를 숨긴다 */
 export const TwoLine: Story = {
   render: () => (

@@ -108,8 +108,8 @@ export const Selected: Story = {
 };
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-// 잘라낸 항목은 아이콘과 이름을 흐리게 그려 이름 글자의 색 대비가 모자라다(피그마 값이다).
-// 피그마 값을 바꿀지 사람이 정할 때까지 이 규칙만 끈다(임의 작업 문서의 "잘라낸 항목 색 대비" 항목).
+// 잘라낸 항목은 아이콘과 이름을 흐리게 그려 이름 글자의 색 대비가 모자라다.
+// 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 export const Cut: Story = {
   args: { surface: 'explorer', state: 'cut', name: '긴 이름' },
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },

@@ -234,7 +234,7 @@ async function holdDrag(target: Element, over: Point): Promise<void> {
 const meta = {
   title: 'Features/Desktop/DesktopIconsLayer',
   component: DesktopIconsLayer,
-  // 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
+  // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
   parameters: {
     layout: 'fullscreen',
     a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } },
@@ -547,9 +547,7 @@ export const RenameFolder: Story = {
         await expect(field).toHaveFocus();
         await user.clear(field);
         await user.type(field, 'a:');
-        await expect(page().getByRole('tooltip')).toHaveTextContent(
-          '다음 문자를 사용할 수 없습니다',
-        );
+        await expect(page().getByRole('alert')).toHaveTextContent('다음 문자를 사용할 수 없습니다');
         await expect(field).toHaveValue('a');
         await user.type(field, 'b{Enter}');
         await expect(useWorkspaceStore.getState().items[BLOG_FOLDER_ID]?.name).toBe('ab');

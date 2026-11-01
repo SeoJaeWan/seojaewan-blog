@@ -24,7 +24,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 색 대비는 피그마 값을 사람이 판단할 때까지 이 스토리에서 끈다(임의 작업 문서의 "색 대비 위반" 항목).
+// 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 export const Figma: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
 };
