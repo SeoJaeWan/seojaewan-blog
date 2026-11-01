@@ -1,7 +1,7 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX } from 'react';
 
-import { Menu, MenuItem, MenuZoomItem, Popover, Separator } from '@seojaewan/design-system';
+import { Menu, MenuItem, Popover, Separator } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -73,7 +73,7 @@ export type MenuPopupRadioGroup = {
   onValueChange?: (value: string) => void;
 };
 
-/** 확대/축소 조절 줄(피그마 MenuZoomItem). −·+ 버튼은 메뉴 항목이 아니라 일반 버튼이라 눌러도 메뉴가 닫히지 않는다 */
+/** 확대/축소 조절 줄(피그마 MenuItem `Kind=Zoom`). −·+ 버튼은 메뉴 항목이지만 눌러도 메뉴가 닫히지 않는다 */
 export type MenuPopupZoom = {
   kind: 'zoom';
   /** 지금 배율 글자(예: `100%`) */
@@ -199,7 +199,9 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
-        <MenuZoomItem
+        <MenuItem
+          kind="zoom"
+          label="확대/축소"
           value={entry.value}
           onZoomOut={handleZoomOut}
           onZoomIn={handleZoomIn}

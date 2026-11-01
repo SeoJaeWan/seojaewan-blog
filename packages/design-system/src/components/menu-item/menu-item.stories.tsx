@@ -7,7 +7,15 @@ import { expect, fn } from 'storybook/test';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
-const KINDS = ['default', 'submenu', 'toggle-on', 'toggle-off', 'radio-on', 'radio-off'] as const;
+const KINDS = [
+  'default',
+  'submenu',
+  'toggle-on',
+  'toggle-off',
+  'radio-on',
+  'radio-off',
+  'zoom',
+] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled'] as const;
 // 피그마 예시 글자다([[피그마 연동:스토리 규칙]]).
 const LABEL = '메뉴 항목';
@@ -142,6 +150,37 @@ export const Submenu: Story = {
   },
 };
 
+// @codocs [[Chrome:확대/축소]]
+/** 확대/축소 줄은 −·+가 ↑↓로 닿는 menuitem이고, 눌러도 메뉴가 닫히지 않고 콜백을 부른다 */
+export const Zoom: Story = {
+  parameters: baseUiFocusGuardParameters,
+  args: { onClick: fn() },
+  render: ({ onClick: handleClick }) => (
+    <OpenMenu>
+      <MenuItem label="열기" onClick={handleClick} />
+      <MenuItem kind="zoom" label="확대/축소" value="110%" isZoomInDisabled />
+    </OpenMenu>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const zoomOut = await canvas.findByRole('menuitem', { name: '축소' });
+    const zoomIn = canvas.getByRole('menuitem', { name: '확대' });
+
+    await step('배율 글자를 보이고 끝 단계의 버튼은 비활성이다', async () => {
+      await expect(canvas.getByText('110%')).toBeInTheDocument();
+      await expect(zoomIn).toHaveAttribute('aria-disabled', 'true');
+      await expect(zoomOut).not.toHaveAttribute('aria-disabled', 'true');
+    });
+
+    await step('↑↓로 −·+에 닿고 누르면 메뉴를 닫지 않는다', async () => {
+      canvas.getByRole('menuitem', { name: '열기' }).focus();
+      await userEvent.keyboard('{ArrowDown}');
+      await expect(zoomOut).toHaveFocus();
+      await userEvent.keyboard('{Enter}');
+      await expect(canvas.getByRole('menu')).toBeInTheDocument();
+    });
+  },
+};
+
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** 비활성이면 골라도 onClick을 부르지 않는다 */
 export const Disabled: Story = {
@@ -230,6 +269,8 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
           <MenuItem {...common} kind="radio" value={LABEL} />
         </Menu.RadioGroup>
       );
+    case 'zoom':
+      return <MenuItem {...common} kind="zoom" value="100%" />;
     case 'radio-off':
       // 묶음의 값이 이 항목과 달라 골라지지 않은 라디오 항목이다.
       return (

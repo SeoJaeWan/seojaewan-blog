@@ -673,7 +673,10 @@ export const Zoom: Story = {
       await waitFor(async () => {
         await expect(zoomRow()).toHaveTextContent('200%');
       });
-      await expect(screen.getByRole('menuitem', { name: '확대' })).toBeDisabled();
+      await expect(screen.getByRole('menuitem', { name: '확대' })).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
       await expect(screen.getByRole('menuitem', { name: '축소' })).toBeEnabled();
     });
   },
