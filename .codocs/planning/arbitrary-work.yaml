@@ -236,3 +236,13 @@ _codocs:
   실제 Chromium에서 `userEvent.click`은 눌린 자리에 커서를 놓아 `AddressBar`가 포커스에서 만든 주소 전체 선택을 풀어 버린다(jsdom에서는 풀리지 않아 옛 테스트가 통과했다). 실제 사람의 클릭은 `mouseup`의 `preventDefault`가 선택을 지켜 주므로 컴포넌트 문제가 아니다. `Default`의 클릭 step은 `mousedown`, 포커스, `mouseup` 순서를 `fireEvent`로 보내고 `mouseup`이 막혔는지(`false`)와 선택이 남았는지를 본다. 합성 클릭으로는 이 동작을 확인할 수 없다.
 "컴포넌트 테스트 전환 A: Parity 이름은 그대로 둠": |
   지시문은 `Figma` 스토리라고 쓰지만 이 브랜치의 스토리 이름은 아직 `Parity`다(이름 바꾸기는 `refactor/figma-story-name` 브랜치가 따로 한다). 충돌을 피하려고 `Parity` export는 이름도 주석도 바꾸지 않았다(탭 스토리의 a11y 매개변수를 상수로 뺀 것 외에). 동작 스토리는 같은 파일에 상황 이름으로 더했다.
+"디자인 시스템 play 묶음 B: FileRow와 Scrollbar에 data-state를 더함": |
+  클래스로만 보이던 상태를 속성으로 확인하려고 `FileRow`에 `data-state`(`rest`·`selected`·`cut`·`cut-selected`·`rename`, 피그마 State 이름)를, `Scrollbar`에 `data-state`(`rest`·`expanded`)를 더했다. 둘 다 `...props`보다 앞에 두어 쓰는 곳이 덮어쓸 수 있다. 포커스는 prop 없이 `:focus-visible`이라 속성을 더하지 않고, 포커스를 받아도 줄 크기가 같은지(offset 크기)로 확인한다.
+"디자인 시스템 play 묶음 B: 순수 로직을 파일로 뺌": |
+  `scrollbar/scroll-area.tsx`의 `scrollThumb`·`Thumb`을 `scrollbar/scroll-thumb.ts`로 옮겼다. 이 함수는 `export *`로 공개 진입점에 나가던 이름이지만 쓰는 곳이 없었다. 이제 공개되지 않는다. `search-box`의 Safari 판정과 서버·수화 값은 `search-box/use-solid-search-icon.ts` 훅으로 빼고 `use-solid-search-icon.test.ts`가 확인한다(`search-box.test.tsx`의 서버 HTML·수화 검사는 이 훅 테스트가 대신한다). `image-asset`의 WebP 자산 목록 확인은 렌더가 없는 파일시스템 확인이라 `image-asset.test.ts`로 옮겼다.
+"디자인 시스템 play 묶음 B: 색 대비 위반 때문에 스토리로 옮기지 못한 확인": |
+  `ListItem`의 오른쪽 보조 글자(`text-text-fill-tertiary`, 대비 3.31)와 `FileRow`의 `cut`(`opacity-cut`으로 흐린 이름, 대비 3.31)는 보이는 순간 axe `color-contrast` 위반이라 스토리로 만들 수 없었다. 규칙을 끄는 것은 외부 라이브러리 때문일 때만 허용되고 색 대비는 피그마 값 문제라([[테스트 작성 규칙:스토리 테스트]]) 두 확인(`trailing`이 켜졌을 때 보임, `cut` 상태)을 뺐다. 피그마 색을 바꿀지 사람이 판단해야 한다. 바뀔 때까지 `showTrailing`·`cut`은 `Parity`(캡처)로만 확인된다.
+"디자인 시스템 play 묶음 B: 모션 미리보기 동작 스토리는 Tools 제목에 둠": |
+  `MotionPreview`의 다시 재생·느리게 보기·실행 중 값 확인을 `src/motion-story/motion-preview.stories.tsx`(제목 `Tools/MotionPreview`)로 옮겼다. 제목이 `Motion/`으로 시작하면 모션 시간 검사가 모션 스토리로 읽고 `play`의 클릭이 재생을 흔들 수 있어서다. 기존 `Motion/*` 스토리에는 `play`를 넣지 않았다. `ProgressRing`의 모션 클래스 확인은 클래스 이름 대신 실제 애니메이션이 도는지(`getAnimations`)로 바꿨다.
+"디자인 시스템 play 묶음 B: 스토리 이름 Parity 유지": |
+  `Parity`→`Figma` 이름 바꾸기는 다른 브랜치(`refactor/figma-story-name`)가 맡아 이 묶음은 기존 `Parity` 이름을 그대로 두고 옆에 동작 스토리만 더했다. 병합 순서에 따라 `Parity` 줄에서 충돌이 날 수 있다. 동작 스토리가 쓰는 핸들러를 받으려고 meta 인자 타입(`ParityArgs`)에 선택 항목 `onClick` 등을 더했다.

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { Popover } from './popover';
 
@@ -47,3 +48,25 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다.
 export const Figma: Story = {};
+
+// @codocs [[디자인 시스템:팝업]]
+/** 닫혀 있으면 트리거만 그린다 */
+export const Default: Story = {
+  render: () => <Popover trigger={<button type="button">열기</button>} popup={<p>팝업 내용</p>} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('button', { name: '열기' })).toBeInTheDocument();
+    await expect(canvas.queryByText('팝업 내용')).not.toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:팝업]]
+/** 열려 있으면 트리거와 함께 팝업을 그린다 */
+export const Open: Story = {
+  render: () => (
+    <Popover open trigger={<button type="button">열기</button>} popup={<p>팝업 내용</p>} />
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('button', { name: '열기' })).toBeInTheDocument();
+    await expect(canvas.getByText('팝업 내용')).toBeVisible();
+  },
+};
