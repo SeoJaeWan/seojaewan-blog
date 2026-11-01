@@ -1,29 +1,149 @@
 {
+  "description": "타일을 가로로 늘어놓고 줄바꿈하는 묶음으로, Start 고정됨·그리드 보기와 새 탭 최신 글에 쓴다.",
   "name": "TileGrid",
   "nodeId": "389:5073",
+  "propertyDefinitions": {
+    "Align": {
+      "default": "Start",
+      "options": [
+        "Start",
+        "Center"
+      ],
+      "type": "VARIANT"
+    },
+    "tiles": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "align=center": {
+      "emptyHugSlot": true,
       "node": {
         "height": 100,
-        "width": 574,
+        "width": 576,
         "x": 0,
         "y": 0
       },
       "nodeId": "389:5072",
       "properties": {
         "Align": "Center"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "CENTER",
+              "wrap": true
+            },
+            "name": "tiles",
+            "size": {
+              "h": 100,
+              "w": 576
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Align=Center",
+        "size": {
+          "h": 100,
+          "w": 576
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/new-tab/grid-width"
       }
     },
     "align=start": {
+      "emptyHugSlot": true,
       "node": {
         "height": 100,
-        "width": 574,
+        "width": 576,
         "x": 0,
         "y": 0
       },
       "nodeId": "389:5071",
       "properties": {
         "Align": "Start"
+      },
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN",
+              "wrap": true
+            },
+            "name": "tiles",
+            "size": {
+              "h": 100,
+              "w": 576
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Align=Start",
+        "size": {
+          "h": 100,
+          "w": 576
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/new-tab/grid-width"
       }
     }
   }
