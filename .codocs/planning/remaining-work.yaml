@@ -30,7 +30,7 @@ _codocs:
   10. 피그마 변수 전환(끝남)
   11. 영역별 클래스 교체, 옛 변수 삭제, 생성기의 옛 규칙 삭제, 숫자 lint(끝남)
   12. 노트북 값과 Screens, 반응형 코드. 앱 E2E(1280×720)와 스토리 테스트(Vitest 기본 화면)의 뷰포트도 정한다. 노트북 구간이 들어오면 지금 값으로는 노트북 코드를 돌리게 된다
-  13. 개별 수정, 접근성
+  13. 개별 수정, 접근성(접근성 코드는 끝남)
   14. 바뀐 컴포넌트·조립 내보내기와 처리: 빈 HUG 컴포넌트, `Figure`, `MenuItem`, `TableCell`, `menu`(Post·TaskbarApp·ChromeMore·ChromeMoreMobile), `chrome`(Page·PostBlocks), `window`(Chrome·SnapAssist), `taskbar`(AppMenu). 개별 수정 중 이 내보내기가 필요한 것(Figure, Zoom, TableCell, pin_off, Menu/Post)은 여기서 한다. `post-blocks` 스토리 데이터를 새 CodeBlock 견본 두 줄과 맞추고 `figma/components/menu-zoom-item`을 정리한다
   15. Guide로 모양 설명을 옮기고 문서에서 지움, 중복 20곳 재확인, [[임의 작업]] 정리, 시험 자원 정리
 
@@ -79,26 +79,12 @@ _codocs:
 
   코드 작업:
   - `use-device`가 생성된 경계값을 읽고 `pc | laptop | mobile`을 돌려줌. Chrome 글 화면이 창 내용 너비로 넓은·좁은 모양을 가름
-  - 접근성:
-    - Base UI로 바꿈: 탭(닫기 버튼의 키 전파만 막음), 확대/축소 줄, 버튼 역할 `div`(`item-list-row.tsx`, `taskbar-window-preview-list.tsx`, `snap-assist.tsx`), Start·검색 패널(비모달 Dialog, Start 버튼·검색칸 누르기는 닫지 않게 거름)
-    - 탐색 창 트리에 ↑↓·Home/End·부모/자식 이동을 구현(지금 없음을 시험으로 확인)
-    - 이름 오류 말풍선을 스크린 리더가 읽게 함
-    - Tab이 항목마다 걸리는 여섯 곳을 묶음 한 번으로: Start 모두 목록 줄, Start 고정됨 칸, 작업 표시줄 앱 버튼, 창 미리보기 카드, Snap Assist 창 목록, 탐색기 명령 모음
-    - 영역 이름: `SectionTitle`·`SectionHeader`가 제목 태그로 그리고, Start 두 영역을 `aria-labelledby`로. 창 영역이 창 제목을 가리키는지 확인(56번)
-    - `DropDownButton`이 `무엇: 값` 이름을 만들고 Start 모두 보기 버튼 두 곳이 "보기"를 넘김
-    - 포커스 규칙대로인지 확인하고 고침: 창 열기·닫기·최소화, Start·검색 패널 닫기, 탭 닫기, 휴지통 비우기 메시지 상자(68번은 규칙으로 정리됨)
 
   일괄 작업 전과 중에 할 시험·확인:
   - 노트북 모드 값을 넣은 Screens로 경계값(1600·900)과 가장 작은 크기(노트북 768 폭, 모바일 320×568)에서 잘리는 곳이 없는지
   - 단독 캡처에서 빠지는 빈 HUG 슬롯 컴포넌트가 모두 어떤 조립 안에서 비교되는지. 안 쓰이는 것은 보고
   - 플러그인 구현 뒤 시험용 파일로 description·주석·모드·`reactions`·코드 전용 변수가 실제로 내보내지는지
   - Chrome 창 너비 판정(컨테이너 쿼리 등)이 창 크기 조절과 스냅에서 바로 따라가는지
-
-  접근성 검사에서 임시로 끈 규칙(작업 차례 13에서 처리):
-  - `BrowserTab`·`ExplorerTab`의 `aria-required-children`: 닫기 버튼이 `tablist` 안에 있어 Figma 스토리 4개에서 껐다. Base UI 탭으로 바꿀 때 구조를 정한다(대안은 [[임의 작업]])
-  - 미리보기 카드의 `label-content-name-mismatch`: 축소 화면 글자 때문으로 보인다. 컴포넌트 테스트를 `play`로 옮길 때 축소 화면의 내용 확인(보이는 글자 확인)이 이 때문에 옮겨지지 못했다
-  - `shell` 스토리 3개의 `aria-required-children`(`WINDOW_STORY_A11Y`): 탭 구조 때문이다
-  - 색 대비: 사람 판단이 필요하다. `text-fill-tertiary` 보조 글자 3.23, `code-syntax-type` 4.35, 바탕화면 아이콘 이름 1.58, 비활성 창 제목 3.31, 잘라낸 항목 이름 3.2~3.3. 스토리별로 규칙을 껐다. `ListItem`의 보조 글자와 `FileRow`의 잘라낸 상태 확인은 색 대비 때문에 스토리로 못 옮겨 빠졌으니, 색을 정한 뒤 되살린다
 
   시험 자원(작업 차례 15에 정리):
   - 시험용 피그마 파일: https://www.figma.com/design/kAGzeg3UkhiIEk5326Redk (개인 팀 "서재완")
