@@ -792,13 +792,11 @@ export default defineConfig(
               from: { element: { type: shellTypes }, file: { categories: 'story' } },
               allow: { to: { element: { type: shellTypes } } },
             },
-            // 테스트는 같은 기능의 칸 안쪽(모듈 캐시 비우기 등)을 import한다.
-            {
-              from: { element: { type: featureTypes }, file: { categories: 'test' } },
-              allow: {
-                to: { element: { type: featureTypes, captured: sameBranch(1) } },
-              },
-            },
+            // 테스트는 같은 기능(또는 shell)의 칸 안쪽(모듈 캐시 비우기 등)과 부모를 import한다.
+            ...[featureTypes, shellTypes].map((types) => ({
+              from: { element: { type: types }, file: { categories: 'test' } },
+              allow: { to: { element: { type: types, captured: sameBranch(1) } } },
+            })),
           ],
         },
       ],

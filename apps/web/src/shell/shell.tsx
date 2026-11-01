@@ -9,15 +9,13 @@ import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { PostSummary } from '@/shared/utils/workspace-rules/workspace-rules';
-import { DesktopScene } from '@/shell/components/desktop-scene/desktop-scene';
-import { RestartScreen } from '@/shell/components/restart-screen/restart-screen';
-import { ShellWindows } from '@/shell/components/shell-windows/shell-windows';
-import { useAppWindowRenderer } from '@/shell/hooks/use-app-window-renderer/use-app-window-renderer';
-import { useAppWindowTitle } from '@/shell/hooks/use-app-window-title/use-app-window-title';
-import {
-  type InitialPage,
-  useInitialWindow,
-} from '@/shell/hooks/use-initial-window/use-initial-window';
+
+import { DesktopScene } from './components/desktop-scene/desktop-scene';
+import { RestartScreen } from './components/restart-screen/restart-screen';
+import { ShellWindows } from './components/shell-windows/shell-windows';
+import { useAppWindowRenderer } from './hooks/use-app-window-renderer/use-app-window-renderer';
+import { useAppWindowTitle } from './hooks/use-app-window-title/use-app-window-title';
+import { type InitialPage, useInitialWindow } from './hooks/use-initial-window/use-initial-window';
 
 /**
  * 앱 화면 전체(작업 공간)를 그린다. 데스크톱 하위 트리와 그 위를 덮는 재부팅 화면이다.

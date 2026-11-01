@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
-import { Shell } from '@/shell/components/shell/shell';
+import { Shell } from '@/shell/shell';
 
 // 테스트에서 재부팅 화면을 보여 주는 시간. jsdom에는 토큰 CSS가 없어 문서 루트에 직접 넣는다.
 const BOOT_SCREEN_DELAY_MS = 2500;
