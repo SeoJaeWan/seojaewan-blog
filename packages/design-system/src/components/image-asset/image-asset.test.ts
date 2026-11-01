@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import type { ImageAssetName } from './image-asset';
+import { getImageAsset, type ImageAssetName } from './image-asset';
 
 // @codocs [[피그마 연동:자산]]
 describe('ImageAsset', () => {
@@ -23,5 +23,12 @@ describe('ImageAsset', () => {
       'images/wallpaper-bloom',
     ];
     expect(names).toEqual(known);
+  });
+
+  it('getImageAsset은 생성된 WebP의 원본 너비·높이를 파일 주소와 함께 돌려준다', () => {
+    const asset = getImageAsset('images/wallpaper-bloom');
+    expect(asset.src).toContain('wallpaper-bloom.webp');
+    expect(asset.width).toBeGreaterThan(0);
+    expect(asset.height).toBeGreaterThan(0);
   });
 });

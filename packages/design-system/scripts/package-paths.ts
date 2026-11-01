@@ -19,3 +19,4 @@ export const sourceDir = path.join(packageRoot, 'src');
 export const figmaAssetsDir = path.join(figmaDir, 'assets');
 export const sourceAssetsDir = path.join(sourceDir, 'assets');
 export const assetDataPath = path.join(sourceAssetsDir, 'asset-data.ts');
+export const imageDataPath = path.join(sourceAssetsDir, 'image-data.ts');
