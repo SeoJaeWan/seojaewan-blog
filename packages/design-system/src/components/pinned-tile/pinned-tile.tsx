@@ -15,7 +15,8 @@ type PinnedTileProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'ch
 /**
  * 아이콘과 이름으로 된 고정 항목 칸(피그마 PinnedTile)을 그린다. 동작과 접근성은 Base UI Button이 맡는다.
  * 크기는 Windows가 정한 95×84로 고정한다. Rest·Hover·Pressed는 CSS hover·active로 바꾼다.
- * 테두리 자리는 항상 두어 상태가 바뀌어도 아이콘과 글자가 움직이지 않게 한다.
+ * 테두리는 안쪽 선 고리로 그려 자리를 차지하지 않는다. 글자 폭이 피그마 Rest와 같은 87px로 늘 같아, 상태가 바뀌어도
+ * 아이콘과 글자가 움직이지 않고 글자가 먼저 잘리지도 않는다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @param props
  */
@@ -25,11 +26,11 @@ export function PinnedTile(props: PinnedTileProps): JSX.Element {
     <BaseButton
       {...buttonProps}
       className={cn(
-        'inline-flex h-size-pinned-tile-height w-size-pinned-tile-width flex-col items-center justify-center gap-spacing-sm rounded-radius-control border-stroke-width-default px-spacing-xs py-spacing-sm select-none',
+        'relative inline-flex h-size-pinned-tile-height w-size-pinned-tile-width flex-col items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-xs py-spacing-sm select-none inner-border-w-stroke-width-default',
         'motion-control-state',
-        'border-transparent bg-subtle-fill-transparent',
-        'hover:border-control-stroke-default hover:bg-control-fill-secondary',
-        'active:border-transparent active:bg-control-fill-tertiary',
+        'bg-subtle-fill-transparent',
+        'hover:bg-control-fill-secondary hover:not-active:inner-border-control-stroke-default',
+        'active:bg-control-fill-tertiary',
         className,
       )}
     >
