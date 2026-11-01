@@ -377,8 +377,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                   <tr key={rowIndex}>
                     {row.map(
                       /**
-                       * 표 칸 하나를 그린다. 머리 행의 칸은 열 머리(`th`)다. 피그마 조립은 본문 칸 글자를
-                       * Body(Regular)로 덮어쓰므로 본문 칸 글자는 Body로 감싼다.
+                       * 표 칸 하나를 그린다. 머리 행의 칸은 열 머리(`th`)다.
                        * @param cell 칸 글자 조각
                        * @param cellIndex 칸 차례
                        * @returns 칸
@@ -389,11 +388,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                           type={isHeader ? 'header' : 'body'}
                           scope={isHeader ? 'col' : undefined}
                         >
-                          {isHeader ? (
-                            renderRichText(cell, false)
-                          ) : (
-                            <span className="type-body">{renderRichText(cell, false)}</span>
-                          )}
+                          {renderRichText(cell, false)}
                         </TableCell>
                       ),
                     )}
