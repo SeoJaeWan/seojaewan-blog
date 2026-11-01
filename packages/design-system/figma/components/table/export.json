@@ -1,8 +1,15 @@
 {
+  "description": "글 본문의 표로, 글 페이지에 쓴다.",
   "name": "Table",
   "nodeId": "1380:6863",
+  "propertyDefinitions": {
+    "Rows": {
+      "type": "SLOT"
+    }
+  },
   "variants": {
     "default": {
+      "emptyHugSlot": true,
       "node": {
         "height": 101,
         "width": 720,
@@ -10,7 +17,68 @@
         "y": 0
       },
       "nodeId": "1380:6863",
-      "properties": {}
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "VERTICAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Rows",
+            "size": {
+              "h": 100,
+              "w": 719
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Table",
+        "size": {
+          "h": 101,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          0,
+          0,
+          "stroke-width/default"
+        ],
+        "strokes": [
+          "divider-stroke/default"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT",
+        "width": "size/post/width"
+      }
     }
   }
 }
