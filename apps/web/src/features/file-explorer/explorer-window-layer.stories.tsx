@@ -451,6 +451,27 @@ export const Tree: Story = {
       await expect(getTreeItem(canvasElement, 'React')).toHaveAttribute('aria-expanded', 'true');
     });
 
+    // @codocs [[파일 탐색기:탐색 창]]
+    await step('탐색 창에서 ↑↓·Home/End·부모/자식 이동으로 포커스를 옮긴다', async () => {
+      const items = within(canvas.getByRole('tree')).getAllByRole('treeitem');
+      const react = getTreeItem(canvasElement, 'React');
+      const hooks = getTreeItem(canvasElement, 'Hooks');
+      react.focus();
+      await user.keyboard('{ArrowDown}');
+      await expect(hooks).toHaveFocus();
+      await user.keyboard('{ArrowUp}');
+      await expect(react).toHaveFocus();
+      await user.keyboard('{ArrowRight}');
+      await expect(hooks).toHaveFocus();
+      await user.keyboard('{ArrowLeft}');
+      await expect(react).toHaveFocus();
+      await user.keyboard('{End}');
+      await expect(items.at(-1)).toHaveFocus();
+      await user.keyboard('{Home}');
+      await expect(items[0]).toHaveFocus();
+      await expect(getTabTitles(canvasElement)).toEqual(['Blog']);
+    });
+
     await step('탐색 창은 현재 위치를 고른 칸으로 표시한다', async () => {
       await user.dblClick(within(getFolderContent(canvasElement)).getByText('React'));
       const selected = within(canvas.getByRole('tree'))

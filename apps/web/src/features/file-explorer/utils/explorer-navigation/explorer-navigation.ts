@@ -441,6 +441,45 @@ export function getFocusableTreeKey(
 }
 
 /**
+ * 탐색 창 트리에서 키로 옮겨 갈 칸을 찾는다. ↑↓는 보이는 앞뒤 칸, Home/End는 처음·끝 칸, →는 펼친 칸의 첫 자식, ←는 펼치지 않은 칸의 부모다.
+ * 접힌 칸의 →와 펼친 칸의 ←는 펼치고 접는 키라 옮기지 않는다.
+ * @codocs [[파일 탐색기:탐색 창]]
+ * @param rows 보이는 트리 칸(깊이 우선 차례)
+ * @param key 지금 칸의 열쇠
+ * @param pressedKey 누른 키
+ * @returns 옮겨 갈 칸의 열쇠. 옮기지 않으면 null
+ */
+export function getTreeMoveTarget(
+  rows: readonly NavigationRow[],
+  key: string,
+  pressedKey: string,
+): string | null {
+  const index = rows.findIndex((row) => row.key === key);
+  const row = rows[index];
+  if (row === undefined) {
+    return null;
+  }
+  switch (pressedKey) {
+    case 'ArrowDown':
+      return rows[index + 1]?.key ?? null;
+    case 'ArrowUp':
+      return rows[index - 1]?.key ?? null;
+    case 'Home':
+      return rows[0]?.key ?? null;
+    case 'End':
+      return rows.at(-1)?.key ?? null;
+    case 'ArrowRight':
+      return row.expand === 'expanded' ? (rows[index + 1]?.key ?? null) : null;
+    case 'ArrowLeft':
+      return row.expand === 'expanded'
+        ? null
+        : (rows.slice(0, index).findLast((candidate) => candidate.level < row.level)?.key ?? null);
+    default:
+      return null;
+  }
+}
+
+/**
  * 폴더 트리 칸을 깊이 우선으로 더한다. 펼친 폴더만 하위 폴더를 더한다.
  * @param rows 더할 목록
  * @param nodes 폴더 트리

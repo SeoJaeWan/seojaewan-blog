@@ -21,12 +21,14 @@ import {
   getFocusableTreeKey,
   getNavigationRows,
   getParentLocation,
+  getTreeMoveTarget,
   goBack,
   goForward,
   goUp,
   isTreeNodeExpanded,
   moveTab,
   navigateTo,
+  type NavigationRow,
   openNewTab,
   resolveExplorerContent,
   selectTab,
@@ -302,5 +304,47 @@ describe('파일 탐색기:구성', () => {
       'React',
       '휴지통',
     ]);
+  });
+});
+
+// @codocs [[파일 탐색기:탐색 창]]
+describe('파일 탐색기:탐색 창 키보드', () => {
+  const treeRows = [
+    { key: 'desktop', level: 0, expand: 'expanded' },
+    { key: 'blog', level: 1, expand: 'expanded' },
+    { key: 'react', level: 2, expand: 'none' },
+    { key: 'next', level: 2, expand: 'collapsed' },
+    { key: 'bin', level: 0, expand: 'none' },
+  ].map((row) => ({
+    ...row,
+    location: row.key,
+    label: row.key,
+    selected: false,
+    icon: 'folder',
+  })) as NavigationRow[];
+
+  it('↑↓는 보이는 앞뒤 칸으로 옮기고 끝에서는 멈춘다', () => {
+    expect(getTreeMoveTarget(treeRows, 'blog', 'ArrowDown')).toBe('react');
+    expect(getTreeMoveTarget(treeRows, 'blog', 'ArrowUp')).toBe('desktop');
+    expect(getTreeMoveTarget(treeRows, 'bin', 'ArrowDown')).toBeNull();
+    expect(getTreeMoveTarget(treeRows, 'desktop', 'ArrowUp')).toBeNull();
+  });
+
+  it('Home·End는 처음·끝 칸이다', () => {
+    expect(getTreeMoveTarget(treeRows, 'react', 'Home')).toBe('desktop');
+    expect(getTreeMoveTarget(treeRows, 'react', 'End')).toBe('bin');
+  });
+
+  it('펼친 칸의 →는 첫 자식이고 접힌 칸과 하위가 없는 칸의 →는 옮기지 않는다', () => {
+    expect(getTreeMoveTarget(treeRows, 'blog', 'ArrowRight')).toBe('react');
+    expect(getTreeMoveTarget(treeRows, 'next', 'ArrowRight')).toBeNull();
+    expect(getTreeMoveTarget(treeRows, 'react', 'ArrowRight')).toBeNull();
+  });
+
+  it('펼치지 않은 칸의 ←는 부모이고 펼친 칸의 ←는 옮기지 않는다', () => {
+    expect(getTreeMoveTarget(treeRows, 'next', 'ArrowLeft')).toBe('blog');
+    expect(getTreeMoveTarget(treeRows, 'react', 'ArrowLeft')).toBe('blog');
+    expect(getTreeMoveTarget(treeRows, 'blog', 'ArrowLeft')).toBeNull();
+    expect(getTreeMoveTarget(treeRows, 'bin', 'ArrowLeft')).toBeNull();
   });
 });
