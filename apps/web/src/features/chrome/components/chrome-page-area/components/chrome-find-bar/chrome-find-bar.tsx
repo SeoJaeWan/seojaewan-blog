@@ -1,6 +1,6 @@
 import { type ComponentProps, type JSX, useEffect, useRef } from 'react';
 
-import { Flyout, IconButton, SearchBox, Separator } from '@seojaewan/design-system';
+import { cn, Flyout, IconButton, SearchBox, Separator } from '@seojaewan/design-system';
 
 type SearchBoxProps = ComponentProps<typeof SearchBox>;
 
@@ -65,7 +65,7 @@ export function ChromeFindBar(props: ChromeFindBarProps): JSX.Element {
       padding="compact"
       role="search"
       aria-label={FIND_LABEL}
-      className={[deviceClassNames[device], className].filter(Boolean).join(' ')}
+      className={cn(deviceClassNames[device], className)}
     >
       {/* 피그마 `find row` 배치 프레임이다 */}
       <div className="flex w-full items-center gap-spacing-xs py-spacing-xs pr-spacing-xs pl-spacing-sm">

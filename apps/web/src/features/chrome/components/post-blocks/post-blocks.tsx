@@ -13,6 +13,7 @@ import {
   Bookmark,
   Callout,
   Checkbox,
+  cn,
   CodeBlock,
   Equation,
   Figure,
@@ -227,21 +228,21 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                 ) : (
                   <span
                     aria-hidden
-                    className={[
+                    className={cn(
                       'flex size-size-post-block-marker shrink-shrink-none items-center type-body-large text-text-fill-primary',
                       isNumbered ? 'justify-end' : 'justify-center',
-                    ].join(' ')}
+                    )}
                   >
                     {isNumbered ? getNumberMarker(index, depth) : getBullet(depth)}
                   </span>
                 )}
                 <p
-                  className={[
+                  className={cn(
                     'min-w-size-none flex-flex-fill',
                     isDone
                       ? 'type-body-large-strikethrough text-text-fill-secondary'
                       : BODY_TEXT_CLASS_NAME,
-                  ].join(' ')}
+                  )}
                 >
                   {renderRichText(item.richText)}
                 </p>
@@ -473,11 +474,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
   }
 
   return (
-    <div
-      className={['flex w-full flex-col items-start gap-spacing-lg', className]
-        .filter(Boolean)
-        .join(' ')}
-    >
+    <div className={cn('flex w-full flex-col items-start gap-spacing-lg', className)}>
       {renderBlocks(blocks, 0)}
     </div>
   );

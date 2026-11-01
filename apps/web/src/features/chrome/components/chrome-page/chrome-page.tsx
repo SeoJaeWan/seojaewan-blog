@@ -1,6 +1,7 @@
 import type { ComponentProps, JSX, KeyboardEvent, MouseEventHandler, ReactNode, Ref } from 'react';
 
 import {
+  cn,
   EmptyState,
   ImageAsset,
   ListItem,
@@ -183,10 +184,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         )}
         <p className="w-full type-caption text-text-fill-secondary">{meta}</p>
         <h1
-          className={[
-            'w-full text-text-fill-primary',
-            isWide ? 'type-title' : 'type-subtitle',
-          ].join(' ')}
+          className={cn('w-full text-text-fill-primary', isWide ? 'type-title' : 'type-subtitle')}
         >
           {title}
         </h1>
@@ -203,10 +201,10 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         <Separator className="w-full" />
         {/* 피그마 `prev / next` 배치 프레임이다. wide는 가로로 반씩, narrow는 세로로 쌓는다 */}
         <nav
-          className={[
+          className={cn(
             'flex w-full gap-spacing-md overflow-clip',
             isWide ? 'items-start' : 'flex-col',
-          ].join(' ')}
+          )}
         >
           {previousTitle !== undefined && (
             <PostNavCard
@@ -247,14 +245,14 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
   const isWide = layout === 'wide';
   return (
     <div
-      className={[
+      className={cn(
         'flex flex-col items-center gap-spacing-2xl px-spacing-lg',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-4xl',
-      ].join(' ')}
+      )}
     >
       {/* 피그마 `top space` 배치 프레임. wide에서 로고 자리를 아래로 내린다 */}
       {isWide && <div className="h-size-chrome-page-top-space self-stretch" />}
-      <p className={['text-text-fill-primary', isWide ? 'type-display' : 'type-title'].join(' ')}>
+      <p className={cn('text-text-fill-primary', isWide ? 'type-display' : 'type-title')}>
         {WORDMARK}
       </p>
       {search}
@@ -301,10 +299,10 @@ function SearchResultsPage(
   const isWide = layout === 'wide';
   return (
     <div
-      className={[
+      className={cn(
         'flex flex-col items-center px-spacing-lg',
         isWide ? 'pt-spacing-5xl' : 'pt-spacing-2xl',
-      ].join(' ')}
+      )}
     >
       <section className="flex w-full max-w-size-post-width flex-col items-start gap-spacing-sm">
         <h1 className="w-full type-subtitle text-text-fill-primary">
@@ -401,9 +399,7 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
   return (
     <div
       ref={scrollRef}
-      className={['flex flex-col overflow-y-auto bg-chrome-page-fill', className]
-        .filter(Boolean)
-        .join(' ')}
+      className={cn('flex flex-col overflow-y-auto bg-chrome-page-fill', className)}
     >
       {zoom === undefined ? (
         content

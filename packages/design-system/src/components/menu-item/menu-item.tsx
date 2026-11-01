@@ -63,13 +63,13 @@ const ROW_CLASS_NAME =
 
 // 강조 영역(피그마 base)과 상태 색이다. 마우스·키보드로 강조된 항목은 Base UI가 data-highlighted를 단다.
 // 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
-const baseClassName = [
+const baseClassName = cn(
   'flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch overflow-hidden rounded-radius-control px-spacing-md py-spacing-xs',
   'bg-subtle-fill-transparent text-text-fill-primary motion-control-state',
   'group-data-highlighted:bg-subtle-fill-secondary group-data-popup-open:bg-subtle-fill-secondary',
   'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
   'group-data-disabled:text-text-fill-disabled',
-].join(' ');
+);
 
 // 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
 const STANDALONE_BASE_CLASS_NAME =

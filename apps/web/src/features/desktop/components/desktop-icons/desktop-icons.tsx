@@ -1,6 +1,6 @@
 import type { ComponentProps, JSX, ReactNode } from 'react';
 
-import { FileItem } from '@seojaewan/design-system';
+import { cn, FileItem } from '@seojaewan/design-system';
 
 import { DesktopIconImage } from '@/features/desktop/components/desktop-icon-image/desktop-icon-image';
 import { getCellOrigin } from '@/features/desktop/utils/desktop-grid/desktop-grid';
@@ -82,16 +82,14 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
   return (
     <div
       {...divProps}
-      className={[
+      className={cn(
         'size-full',
         // 칸에 놓을 때는 선택된 아이콘을 위로 올리는 쌓임 순서가 이 영역 안에서만 정해지게 한다(창 층 위로 올라오지 않게).
         isPlaced
           ? 'relative isolate'
           : 'flex flex-col flex-wrap content-start items-start gap-spacing-lg p-spacing-sm',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
     >
       {icons.map(
         /**

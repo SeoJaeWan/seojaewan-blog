@@ -68,7 +68,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
     ...divProps
   } = props;
   const isDesktop = surface === 'desktop';
-  const dim = isCut ? 'opacity-opacity-cut' : undefined;
+  const dimClassName = isCut ? 'opacity-opacity-cut' : undefined;
   return (
     <div
       {...divProps}
@@ -100,7 +100,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
         className={cn(
           'flex shrink-shrink-none items-center justify-center',
           ICON_SIZE_CLASS_NAMES[view],
-          dim,
+          dimClassName,
         )}
       >
         {icon}
@@ -115,7 +115,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
               ? 'text-file-item-desktop-label text-shadow-elevation-desktop-label'
               : 'text-text-fill-primary',
             isSelected ? undefined : 'line-clamp-line-clamp-two',
-            dim,
+            dimClassName,
           )}
         >
           {name}

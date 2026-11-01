@@ -4,6 +4,7 @@ import { type JSX, type PointerEvent, useEffect, useRef, useState } from 'react'
 
 import {
   Button,
+  cn,
   DropDownButton,
   ListGroup,
   ScrollArea,
@@ -116,16 +117,6 @@ const scrollContentClassNames = {
 } as const satisfies Record<StartBodyDevice, string>;
 
 /**
- * 기본 클래스와 바깥 배치 클래스를 잇는다.
- * @param base 기본 클래스
- * @param className 바깥 배치 클래스
- * @returns 이은 클래스
- */
-function joinClassNames(base: string, className: string | undefined): string {
-  return className === undefined ? base : `${base} ${className}`;
-}
-
-/**
  * Start 메뉴 안의 본문(피그마 조립 `Start/Body`)을 그린다. 고정됨과 모두 목록(간단히·그리드·범주), 글자 격자, 검색 결과 중 하나다.
  * 간단히·그리드 목록은 글자 머리글을 누르면 그 자리에 글자 격자(`View=JumpList`와 같은 내용)를 겹쳐 연다([[Start 메뉴:모두]]).
  * `view="jump-list"`는 격자만 그린 피그마 변형 그대로의 모습이다.
@@ -141,7 +132,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
   switch (props.view) {
     case 'results':
       return (
-        <div className={joinClassNames('flex flex-col pb-spacing-2xl', props.className)}>
+        <div className={cn('flex flex-col pb-spacing-2xl', props.className)}>
           <SearchBody
             view="results"
             device={props.device}
@@ -155,7 +146,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
       );
     case 'no-results':
       return (
-        <div className={joinClassNames('flex flex-col pb-spacing-2xl', props.className)}>
+        <div className={cn('flex flex-col pb-spacing-2xl', props.className)}>
           <SearchBody view="no-results" className="min-h-size-hairline w-full flex-flex-fill" />
         </div>
       );
@@ -163,10 +154,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
       return (
         <StartJumpListView
           availableLetters={props.availableLetters}
-          className={joinClassNames(
-            'flex flex-col items-start gap-spacing-lg overflow-clip',
-            props.className,
-          )}
+          className={cn('flex flex-col items-start gap-spacing-lg overflow-clip', props.className)}
         />
       );
     case 'list':
@@ -361,19 +349,19 @@ function StartListView(props: StartListViewProps): JSX.Element {
   }
 
   const isListHidden = jumpList.status === 'entered';
-  let motionClassName = '';
-  if (jumpList.isMounted) {
-    motionClassName =
-      jumpList.status === 'exiting'
-        ? 'motion-start-jump-list-exit'
-        : 'motion-start-jump-list-enter';
-  }
 
   return (
     <div
       ref={bodyRef}
       {...jumpList.presenceProps}
-      className={joinClassNames(`relative ${motionClassName}`, className)}
+      className={cn(
+        'relative',
+        jumpList.isMounted &&
+          (jumpList.status === 'exiting'
+            ? 'motion-start-jump-list-exit'
+            : 'motion-start-jump-list-enter'),
+        className,
+      )}
     >
       <div
         ref={listRef}

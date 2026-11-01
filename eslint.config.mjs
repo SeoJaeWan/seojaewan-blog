@@ -231,10 +231,25 @@ const misreadTokenClasses = themeVariableNames.filter((name) =>
 );
 
 // @codocs [[피그마 연동:토큰 사용 강제]]
-// 이름이 `ClassNames`·`CLASS_NAMES`로 끝나는 객체 안의 문자열도 클래스로 검사한다.
+// 이름이 `ClassName`·`CLASS_NAME`(복수 포함)로 끝나는 변수의 문자열·배열·객체 값과 `*ClassName` 속성도 클래스로 검사한다.
 const classSelectors = [
   ...getDefaultSelectors(),
-  { kind: 'variable', name: '.*(?:ClassNames|CLASS_NAMES)', match: [{ type: 'objectValues' }] },
+  { kind: 'attribute', name: '.*ClassName', match: [{ type: 'strings' }] },
+  {
+    kind: 'variable',
+    name: '.*(?:ClassNames?|CLASS_NAMES?)',
+    match: [{ type: 'strings' }, { type: 'objectValues' }],
+  },
+];
+
+// @codocs [[피그마 연동:토큰 사용 강제]]
+// lint는 `.join()` 앞의 배열을 읽지 못하므로 className 안에서는 `cn`으로 조합한다.
+const classJoinRestrictions = [
+  {
+    selector:
+      'JSXAttribute[name.name=/(?:^class|ClassName)(?:Name)?$/] CallExpression[callee.property.name="join"]',
+    message: '클래스 문자열을 `.join()`으로 이으면 lint가 읽지 못한다. `cn`으로 조합한다.',
+  },
 ];
 
 // 도구가 이름을 정하거나 process.env를 직접 읽어야 하는 파일.
@@ -395,7 +410,7 @@ function restrictedImports(patterns) {
  * @returns no-restricted-syntax 규칙 설정
  */
 function restrictedSyntax(restrictions) {
-  return ['error', ...namingSyntaxRestrictions, ...restrictions];
+  return ['error', ...namingSyntaxRestrictions, ...classJoinRestrictions, ...restrictions];
 }
 
 /**
@@ -593,7 +608,8 @@ export default defineConfig(
   // @codocs [[피그마 연동:토큰 사용 강제]]
   // 임의 값(`bg-[#fff]`, `p-[13px]`, `bg-(--x)`)을 막고, 토큰에 없는 클래스(`bg-red-500`)를 막는다.
   {
-    files: [`${WEB_SRC}/**/*.tsx`, `${DESIGN_SYSTEM}/src/**/*.tsx`],
+    files: [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/src/**/*.{ts,tsx}`],
+    ignores: ['**/*.test.{ts,tsx}'],
     plugins: { 'better-tailwindcss': betterTailwindcss },
     rules: {
       ...betterTailwindcss.configs['correctness-error'].rules,
@@ -619,6 +635,14 @@ export default defineConfig(
               message:
                 '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]] 표).',
             },
+            // @codocs [[피그마 연동:토큰 사용 강제]]
+            // 클래스에는 숫자 값이 들어가지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 토큰 이름도 숫자로 끝나지 않으므로
+            // 값이 숫자인 Tailwind 기본 유틸리티(`shrink-0`, `rotate-180`, `z-10`)와 비율(`w-1/2`), 투명도(`bg-x/50`)만 걸린다.
+            {
+              pattern: '^.*[0-9]%?!?$',
+              message:
+                '숫자 값 클래스("$0")는 쓰지 않는다. 피그마 토큰 이름의 클래스를 쓰고, 없으면 피그마에 변수를 더한다.',
+            },
             ...(misreadTokenClasses.length === 0
               ? []
               : [
@@ -634,13 +658,13 @@ export default defineConfig(
     },
   },
   {
-    files: [`${WEB_SRC}/**/*.tsx`],
+    files: [`${WEB_SRC}/**/*.{ts,tsx}`],
     settings: {
       'better-tailwindcss': { entryPoint: `${WEB_SRC}/app/globals.css`, selectors: classSelectors },
     },
   },
   {
-    files: [`${DESIGN_SYSTEM}/src/**/*.tsx`],
+    files: [`${DESIGN_SYSTEM}/src/**/*.{ts,tsx}`],
     settings: {
       'better-tailwindcss': {
         entryPoint: `${DESIGN_SYSTEM}/.storybook/preview.css`,

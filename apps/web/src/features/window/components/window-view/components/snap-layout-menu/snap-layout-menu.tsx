@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import {
   CaptionButton,
+  cn,
   Popover,
   SnapLayoutFlyout,
   type SnapLayoutOptionLayout,
@@ -99,7 +100,7 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
   }
 
   return (
-    <div className={['relative inline-flex', className].filter(Boolean).join(' ')}>
+    <div className={cn('relative inline-flex', className)}>
       <BasePopover.Root open={isHoverOpen} onOpenChange={handleOpenChange}>
         <BasePopover.Trigger
           openOnHover

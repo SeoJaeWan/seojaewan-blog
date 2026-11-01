@@ -1,6 +1,7 @@
 import type { ComponentProps, JSX, KeyboardEvent, ReactElement, ReactNode } from 'react';
 
 import {
+  cn,
   ExplorerAddressRow,
   ExplorerCommandBar,
   ExplorerStatusBar,
@@ -128,12 +129,10 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
             [DROP_TARGET_ATTRIBUTE]: dropTarget.id,
             [DROP_TARGET_NAME_ATTRIBUTE]: dropTarget.name,
           })}
-      className={[
+      className={cn(
         'flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
     >
       <ExplorerAddressRow
         device={device}
@@ -177,12 +176,10 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
               role="group"
               aria-label="폴더 내용"
               {...itemsAreaProps}
-              className={[
+              className={cn(
                 'relative flex flex-flex-fill flex-wrap content-start items-start gap-spacing-xs px-spacing-md py-spacing-sm',
                 itemsAreaProps?.className,
-              ]
-                .filter(Boolean)
-                .join(' ')}
+              )}
             >
               {children}
             </div>,

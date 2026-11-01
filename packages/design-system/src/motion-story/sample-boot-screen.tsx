@@ -18,8 +18,8 @@ type SampleBootScreenProps = {
 export function SampleBootScreen(props: SampleBootScreenProps): JSX.Element {
   const { motionClassName } = props;
   return (
-    <div className="aspect-video w-640 overflow-hidden">
-      <div className="origin-top-left scale-50">
+    <div className="aspect-ratio-video w-size-boot-screen-stage-width overflow-hidden">
+      <div className="origin-top-left" style={{ scale: 'var(--motion-scale-half)' }}>
         <BootScreen className={motionClassName} aria-label="재부팅 화면" />
       </div>
     </div>

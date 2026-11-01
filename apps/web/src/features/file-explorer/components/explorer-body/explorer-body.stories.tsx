@@ -58,7 +58,10 @@ function StoryDropTarget(props: StoryDropTargetProps): JSX.Element {
   const { id, name, label } = props;
   const attributes = { [DROP_TARGET_ATTRIBUTE]: id, [DROP_TARGET_NAME_ATTRIBUTE]: name };
   return (
-    <div {...attributes} className="h-48 w-160 border border-dashed p-spacing-xs text-center">
+    <div
+      {...attributes}
+      className="h-size-story-2xs w-size-story-md border border-dashed p-spacing-xs text-center"
+    >
       {label}
     </div>
   );

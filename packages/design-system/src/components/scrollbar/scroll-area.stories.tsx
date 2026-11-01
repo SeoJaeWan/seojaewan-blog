@@ -46,7 +46,7 @@ export const Default: Story = {
 export const Overflow: Story = {
   render: () => (
     <ScrollArea material="solid" className="h-size-scrollbar-length w-size-scrollbar-length">
-      <div className="h-600 shrink-shrink-none">긴 내용</div>
+      <div className="h-size-story-5xl shrink-shrink-none">긴 내용</div>
     </ScrollArea>
   ),
   play: async ({ canvas, canvasElement, step }) => {

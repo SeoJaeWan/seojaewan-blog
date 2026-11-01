@@ -5,7 +5,7 @@ import type { WindowBounds } from '@/shared/utils/window-rules/window-rules';
 import { getSnapFlip } from '@/shared/utils/window-rules/window-rules';
 
 // 최대화·복원·스냅 모션 클래스와 그 실행 중 값(motion.css)이다.
-const SNAP_CLASS = 'motion-window-snap';
+const SNAP_CLASS_NAME = 'motion-window-snap';
 const SNAP_FROM_X = '--motion-window-snap-from-x';
 const SNAP_FROM_Y = '--motion-window-snap-from-y';
 const SNAP_FROM_SCALE_X = '--motion-window-snap-from-scale-x';
@@ -61,9 +61,9 @@ export function useWindowSnapMotion(
       element.style.setProperty(SNAP_FROM_Y, `${String(flip.y)}px`);
       element.style.setProperty(SNAP_FROM_SCALE_X, String(flip.scaleX));
       element.style.setProperty(SNAP_FROM_SCALE_Y, String(flip.scaleY));
-      element.classList.remove(SNAP_CLASS);
+      element.classList.remove(SNAP_CLASS_NAME);
       element.getBoundingClientRect();
-      element.classList.add(SNAP_CLASS);
+      element.classList.add(SNAP_CLASS_NAME);
       element.dataset.windowMotion = 'snap';
     },
     [ref, x, y, width, height, layoutKey, isEnabled],

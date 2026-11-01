@@ -9,7 +9,7 @@ const meta = {
   title: 'Patterns/Window/SnapLayoutMenu',
   parameters: { layout: 'padded' },
   render: () => (
-    <div className="flex h-120 w-480 justify-center">
+    <div className="flex h-size-story-sm w-size-story-3xl justify-center">
       <div data-parity-target className="flex h-fit">
         <SnapLayoutMenu open />
       </div>

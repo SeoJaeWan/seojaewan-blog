@@ -1,6 +1,8 @@
 import type { JSX, PointerEvent } from 'react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
+import { cn } from '@seojaewan/design-system';
+
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -240,13 +242,11 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       inert={presence.isHidden || isClosing}
       onPointerDown={handlePointerDown}
       {...presence.presenceProps}
-      className={[
+      className={cn(
         'pointer-events-auto absolute flex',
         isMobile && 'inset-spacing-none',
         windowMotionClassNames[motion],
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
       style={isMobile ? { zIndex } : { zIndex, left: x, top: y, width, height }}
     >
       {/* 최대화·스냅 FLIP 전용 요소. 모션 클래스는 classList로만 붙여 바깥의 열기·최소화 클래스와 겹치지 않는다 */}

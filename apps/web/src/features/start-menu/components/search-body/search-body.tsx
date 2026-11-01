@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
+import { cn, ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
@@ -55,16 +55,6 @@ const kindLabels = {
   post: '글',
   link: '외부 링크',
 } as const satisfies Record<SearchItemKind, string>;
-
-/**
- * 기본 클래스와 바깥 배치 클래스를 잇는다.
- * @param base 기본 클래스
- * @param className 바깥 배치 클래스
- * @returns 이은 클래스
- */
-function joinClassNames(base: string, className: string | undefined): string {
-  return className === undefined ? base : `${base} ${className}`;
-}
 
 /**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
@@ -139,7 +129,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
       );
     case 'no-results':
       return (
-        <div className={joinClassNames('flex items-center justify-center', className)}>
+        <div className={cn('flex items-center justify-center', className)}>
           <p className="type-body whitespace-nowrap text-text-fill-secondary">검색 결과 없음</p>
         </div>
       );
@@ -199,7 +189,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
       title={cardItem.title}
       meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
       actions={
-        <div className="flex w-240 flex-col items-start gap-spacing-sm">
+        <div className="flex w-full flex-col items-start gap-spacing-sm">
           <MenuItem
             standalone
             label="열기"

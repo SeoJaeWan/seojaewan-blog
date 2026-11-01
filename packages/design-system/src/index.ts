@@ -1,4 +1,5 @@
 // @seojaewan/design-system 공개 진입점이다.
+export { cn } from './cn';
 export * from './components/address-bar/address-bar';
 export * from './components/asset/asset';
 export * from './components/best-match-card/best-match-card';
