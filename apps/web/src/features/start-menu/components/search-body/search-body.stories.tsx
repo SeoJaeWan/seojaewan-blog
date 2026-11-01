@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { SearchBody } from './search-body';
 import {
   SEARCH_RECENT,
   SEARCH_RECOMMENDED,
   SEARCH_RECOMMENDED_MOBILE_COUNT,
   SEARCH_RESULTS,
-} from '@/features/start-menu/stories/search-data/search-data';
-
-import { SearchBody } from './search-body';
+} from './story-data';
 
 // 피그마 Search/Body의 변형 속성 값이다(정규화한 이름).
 const VIEWS = ['before-typing', 'results', 'no-results'] as const;

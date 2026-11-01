@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { menuViewOptions } from '@/features/start-menu/stories/view-options-menu-data/view-options-menu-data';
+import { menuViewOptions } from '@/features/start-menu/components/start-body/view-menu/story-data';
 
 import { StartViewMenu } from './start-view-menu';
 

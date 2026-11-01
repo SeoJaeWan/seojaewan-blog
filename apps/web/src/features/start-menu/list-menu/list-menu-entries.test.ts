@@ -7,7 +7,7 @@ import {
   getPinnedMenuEntries,
   getPowerMenuEntries,
   getViewMenuEntries,
-} from './start-menu-entries';
+} from './list-menu-entries';
 
 const pinnedOptions = {
   canMoveToFront: true,

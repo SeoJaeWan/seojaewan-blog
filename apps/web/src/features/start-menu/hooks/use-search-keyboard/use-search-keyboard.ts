@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { getSearchOrderIds } from '@/features/start-menu/utils/search-order/search-order';
 import { useSearchStore } from '@/shared/stores/search-store/search-store';
 import { useWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';
 import type { OpenPanel } from '@/shared/utils/panel-rules/panel-rules';
+
+import { getSearchOrderIds } from './utils/search-order/search-order';
 
 /**
  * 검색 입력칸에서 ↑·↓로 결과를 고르고 Enter로 고른 항목을 열게 한다. 입력칸마다 핸들러를 달지 않고(작업 표시줄 검색칸은 다른 기능이 그린다)

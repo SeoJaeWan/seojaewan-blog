@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
 
+import { SEARCH_PLACEHOLDER } from '@/features/start-menu/components/search-body/story-data';
 import { StartBody } from '@/features/start-menu/components/start-body/start-body';
 import { StartPowerButton } from '@/features/start-menu/components/start-power-button/start-power-button';
-import { menuPower } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
-import { SEARCH_PLACEHOLDER } from '@/features/start-menu/stories/search-data/search-data';
+import { menuPower } from '@/features/start-menu/power-menu/story-data';
 import {
   START_LETTER_GROUPS,
   START_PINNED,

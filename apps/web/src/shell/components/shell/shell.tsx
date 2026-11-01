@@ -4,7 +4,7 @@ import { type JSX, useEffect, useRef } from 'react';
 
 import { useBrowserAddressSync } from '@/features/chrome/use-browser-address-sync';
 import { DesktopIconsLayer } from '@/features/desktop/desktop-icons-layer';
-import { StartMenuLayer } from '@/features/start-menu/start-menu';
+import { StartMenuLayer } from '@/features/start-menu/start-menu-layer';
 import { TaskbarLayer } from '@/features/taskbar/taskbar-layer';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { hydrateWorkspaceStore } from '@/shared/stores/workspace-store/workspace-store';

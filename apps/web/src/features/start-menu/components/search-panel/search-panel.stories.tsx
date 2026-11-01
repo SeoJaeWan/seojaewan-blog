@@ -6,7 +6,7 @@ import {
   SEARCH_RECENT,
   SEARCH_RECOMMENDED,
   SEARCH_RECOMMENDED_MOBILE_COUNT,
-} from '@/features/start-menu/stories/search-data/search-data';
+} from '@/features/start-menu/components/search-body/story-data';
 
 import { SearchPanel } from './search-panel';
 

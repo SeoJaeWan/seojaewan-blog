@@ -4,17 +4,6 @@ import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef } from 
 
 import { ImageAsset } from '@seojaewan/design-system';
 
-import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
-import { SearchPanel } from '@/features/start-menu/components/search-panel/search-panel';
-import { StartBody } from '@/features/start-menu/components/start-body/start-body';
-import { StartMenuPanel } from '@/features/start-menu/components/start-menu-panel/start-menu-panel';
-import { StartPowerButton } from '@/features/start-menu/components/start-power-button/start-power-button';
-import { START_PROFILE } from '@/features/start-menu/data/start-apps/start-apps';
-import { useSearchKeyboard } from '@/features/start-menu/hooks/use-search-keyboard/use-search-keyboard';
-import { useStartLists } from '@/features/start-menu/hooks/use-start-lists/use-start-lists';
-import { useStartSearch } from '@/features/start-menu/hooks/use-start-search/use-start-search';
-import type { StartAllView, StartItem } from '@/features/start-menu/utils/start-items/start-items';
-import { getPowerMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import type { Device } from '@/shared/hooks/use-device/use-device';
 import { useDevice } from '@/shared/hooks/use-device/use-device';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
@@ -22,6 +11,18 @@ import { useWorkArea } from '@/shared/hooks/use-work-area/use-work-area';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
 import { getPanelMaxHeight, type PanelKind } from '@/shared/utils/panel-rules/panel-rules';
+
+import { SearchBody } from './components/search-body/search-body';
+import { SearchPanel } from './components/search-panel/search-panel';
+import { StartBody } from './components/start-body/start-body';
+import { StartMenuPanel } from './components/start-menu-panel/start-menu-panel';
+import { StartPowerButton } from './components/start-power-button/start-power-button';
+import { START_PROFILE } from './data/start-apps/start-apps';
+import { useSearchKeyboard } from './hooks/use-search-keyboard/use-search-keyboard';
+import { useStartLists } from './hooks/use-start-lists/use-start-lists';
+import { useStartSearch } from './hooks/use-start-search/use-start-search';
+import { getPowerMenuEntries } from './list-menu/list-menu-entries';
+import type { StartAllView, StartItem } from './utils/start-items/start-items';
 
 // 바깥 클릭으로 보지 않는 요소. 작업 표시줄의 Start 버튼과 검색칸(`TaskbarDefault`가 단다)은 스스로 패널을 열고 닫는다.
 const PANEL_TRIGGER_SELECTOR = '[data-panel-trigger]';

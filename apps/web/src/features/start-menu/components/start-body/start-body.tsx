@@ -14,9 +14,7 @@ import {
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
-import { StartJumpList } from '@/features/start-menu/components/start-jump-list/start-jump-list';
-import { StartTile } from '@/features/start-menu/components/start-tile/start-tile';
-import { StartViewMenu } from '@/features/start-menu/components/start-view-menu/start-view-menu';
+import { getViewMenuEntries } from '@/features/start-menu/list-menu/list-menu-entries';
 import type {
   SearchResultGroups,
   StartAllView,
@@ -25,11 +23,14 @@ import type {
 } from '@/features/start-menu/utils/start-items/start-items';
 import { findPinnedIdAt } from '@/features/start-menu/utils/start-items/start-items';
 import { getAvailableLetters } from '@/features/start-menu/utils/start-letter-rules/start-letter-rules';
-import { getViewMenuEntries } from '@/features/start-menu/utils/start-menu-entries/start-menu-entries';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 import { usePointerDrag } from '@/shared/hooks/use-pointer-drag/use-pointer-drag';
 import { usePresence } from '@/shared/hooks/use-presence/use-presence';
+
+import { StartJumpList } from './components/start-jump-list/start-jump-list';
+import { StartTile } from './components/start-tile/start-tile';
+import { StartViewMenu } from './components/start-view-menu/start-view-menu';
 
 export type StartBodyDevice = 'desktop' | 'mobile';
 

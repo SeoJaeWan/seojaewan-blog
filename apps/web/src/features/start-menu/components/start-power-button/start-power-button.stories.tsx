@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { menuPower } from '@/features/start-menu/stories/power-menu-data/power-menu-data';
+import { menuPower } from '@/features/start-menu/power-menu/story-data';
 
 import { StartPowerButton } from './start-power-button';
 
