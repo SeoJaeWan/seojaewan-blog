@@ -26,6 +26,30 @@ _codocs:
   스토리 감싸기처럼 역할이 뚜렷하지 않은 크기는 실제 쓰임이 가까운 변수로 옮겼다. Flyout 스토리의 `w-320`은 Chrome 새 탭 검색 추천을 따라 `w-size-search-box-wide-width`, 빈 자리 `h-16`은 `h-spacing-lg`다. Popover 스토리의 트리거는 `h-size-control-height`·`w-size-button-min-width`, 빈 슬롯은 `size/popover/slot`이다. `sample-jump-list`의 `w-400`은 안에 든 ListItem 너비, `chrome-post-tab` 스토리의 `w-720`은 글 폭으로 보았다. `post-blocks`의 할 일 표시 칸도 목록 표시와 같은 `size-size-post-block-marker`로 두었다. 맞는 역할이 없는 값(스토리 캔버스, 모션 견본의 무대)은 그대로 두고 코드 전용 변수 후보로 보고했다.
 "코드 일괄 작업: ItemListRow가 속성과 ref를 넘김": |
   `ItemListRow`가 div 속성과 `ref`(`useImperativeHandle`)를 줄에 넘기고 `onClick`·`onKeyDown`은 열기와 함께 부른다. 모두 목록 줄이 `ContextMenuArea`의 `area`가 된다. Shift+F10은 브라우저가 보내는 `contextmenu`를 포커스한 줄에 보내는 것으로, 길게 누르기는 `touchstart` 500ms로 스토리에서 시험했다(실제 키 입력은 사람이 한 번 확인).
+"마지막 맞춤: PinnedTile 테두리를 안쪽 선으로": |
+  전체 캡처에서 새 탭 타일의 `React 19 훅 정리`가 코드에서만 잘렸다. 피그마 Rest·Pressed는 선이 없어 글자 폭이 87인데, 코드는 투명 테두리 자리를 늘 둬 85였다. 피그마 Hover는 선이 자리를 차지하지만(`strokesIncludedInLayout`) 그대로 옮기면 가리킬 때 글자가 잘리므로, 선을 `inner-border`로 그려 자리를 차지하지 않게 했다. 그래서 Hover의 글자 폭만 피그마(85)와 다른 87이다.
+"마지막 맞춤: 빈 HUG 단독 스토리를 지운 범위": |
+  전 변형이 빈 HUG인 17개(BestMatchCard, BrowserTabStrip, Callout, CodeBlock, Equation, Flyout, ListGroup, Menu, NavigationPane, Popover, Quote, SearchResults, StartMenuFooter, Table, Taskbar, TaskbarPreviewList, TileGrid)의 `Figma` 스토리를 지웠다. `Figma`만 있던 Callout, Equation, NavigationPane, TileGrid에는 내용을 채운 `Default`(TileGrid는 `Center`도)를 새로 뒀다. 파일을 지우면 카탈로그에서 빠지기 때문이다.
+  일부 변형만 빈 HUG인 4개는 `Figma` 스토리를 뒀다. 표시 없는 변형(Breadcrumb `Editing`, ExplorerAddressRow `Mobile`·`Open`, Toc `Collapsed`, Toggle `Collapsed`)을 단독 캡처가 아직 찍기 때문이다.
+"마지막 맞춤: 조립 캡처에 없는 빈 HUG 변형": |
+  조립 `export.json`의 인스턴스 속성으로 빈 HUG 변형이 어느 조립에서 찍히는지 세었다. 42개 중 아래 6개는 어떤 조립에도 없다. 조립 캡처는 피그마 조립 그림이 있어야 찍히고 `figma/`는 고치지 않으므로, 조립 스토리를 더해도 비교되지 않는다. 그래서 앱 코드가 쓰지 않는 네 변형은 디자인 시스템에 내용을 채운 일반 스토리만 뒀다.
+
+  | 변형 | 앱 사용 | 처리 |
+  |---|---|---|
+  | Flyout `Acrylic`·`Default` | 없음(모두 `Compact`) | `Acrylic` 스토리 |
+  | Flyout `Solid`·`Default` | 없음 | 기존 `Default` 스토리 |
+  | Taskbar `Solid` | 없음 | `Solid` 스토리 |
+  | TaskbarPreviewList `Solid` | 없음 | `Solid` 스토리 |
+  | Popover `Bottom-Center`·`Closed` | 있음(SnapLayoutMenu) | 스토리 없음. 닫히면 트리거만 그려 배치와 상관없고, 다른 닫힌 변형이 조립에서 찍힌다 |
+  | Popover `Right-Start`·`Closed` | 있음(MenuPopup) | 위와 같다 |
+
+  나머지 빈 HUG 변형은 모두 조립에서 찍힌다.
+"마지막 맞춤: 고치지 않은 캡처 차이": |
+  전체 캡처 493개 변형(단독 451개, 조립에서 확인 42개)의 차이 그림 중 남은 것은 코드로 고치지 않았다.
+  - 어두운 바탕의 밝은 글자가 코드에서 더 굵어 보인다(accent 버튼, 바탕화면 아이콘 이름). 글자 스타일은 피그마와 같아 글자를 그리는 엔진의 차이로 봤다.
+  - 한글 글자 폭이 소수라 피그마가 올림한 HUG 폭과 0.5~1px 다르다(Breadcrumb, DropDownButton, SectionHeader). 명령 모음(Explorer/Commands)은 이 차이가 쌓여 오른쪽 끝이 2px쯤 어긋난다.
+  - 하위 메뉴 그림자가 피그마 조립 그림에서만 진하다(Menu/Desktop 등 5개 조립). 위 메뉴와 같은 효과 스타일이고 코드도 같은 토큰이라, 피그마가 중첩을 그린 결과로 봤다.
+  - PostBlocks의 코드 줄 높이: 피그마 글자 상자는 10줄에 201, 코드는 200이다. 코드 블록 위쪽 전체가 1px 어긋나 보이는 원인이다.
 "8단계 E2E: 핵심 흐름을 5~10개보다 많이 둠": |
   [[테스트 작성 규칙:E2E]]는 핵심 흐름 5~10개를 두라고 하지만, 8단계에서 흐름을 영역별로 나눠 15개를 더해 E2E가 41개가 됐다. 흐름 하나가 문서 섹션 하나씩에 대응하게 쓰다 보니 넘었다. 실제 CI에서 13초 안에 도는 크기다. 5~10개로 줄일지 문서를 41개 수준으로 고칠지 검토가 필요하다.
 "8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
