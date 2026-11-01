@@ -1,5 +1,5 @@
 /**
- * 피그마 플러그인이 쓴 export.json의 변형 이름, 속성, PNG 안 노드 위치를 읽는다.
+ * 피그마 플러그인이 쓴 export.json의 변형 이름, 속성, PNG 안 노드 위치, 빈 HUG 슬롯 표시를 읽는다.
  * 이름 규칙은 플러그인과의 계약이며, 여기서는 그 규칙대로 쓰였는지 다시 확인만 한다.
  */
 
@@ -11,6 +11,11 @@ export type VariantEntry = {
   properties: [string, string][];
   /** 변형 PNG 안 노드 위치(배율 1의 px). 노드 위치가 없는 예전 내보내기는 null이다 */
   node: NodeBox | null;
+  /**
+   * 빈 HUG 슬롯이 있는 변형이면 true. 슬롯이 비면 피그마가 100×100으로 그려 코드와 크기가 달라지므로
+   * 단독 캡처에서 빼고 내용이 채워진 조립 캡처에서 확인한다. 표시가 없는 예전 내보내기는 false다
+   */
+  emptyHugSlot: boolean;
 };
 
 /** 변형 PNG 안에서 노드가 놓인 자리(배율 1의 px) */
@@ -27,7 +32,7 @@ export type TargetManifest = {
 export const DEFAULT_VARIANT = 'default';
 
 /**
- * export.json을 검증하고 변형 목록으로 바꾼다. 이름, 변형 이름, 변형 속성, PNG 안 노드 위치만 읽는다.
+ * export.json을 검증하고 변형 목록으로 바꾼다. 이름, 변형 이름, 변형 속성, PNG 안 노드 위치, 빈 HUG 슬롯 표시만 읽는다.
  * @codocs [[피그마 연동:스토리 규칙]]
  * @codocs [[피그마 연동:캡처 표]]
  * @param value export.json을 파싱한 값
@@ -57,7 +62,11 @@ export function parseManifest(value: unknown, where: string): TargetManifest {
       throw new Error(`${variantWhere}: 속성으로 만든 파일 이름은 "${expectedName}"이다.`);
     }
     const node = item.node === undefined ? null : parseNodeBox(item.node, `${variantWhere}.node`);
-    variants.push({ variant, properties, node });
+    const isEmptyHugSlot =
+      item.emptyHugSlot === undefined
+        ? false
+        : expectBoolean(item.emptyHugSlot, `${variantWhere}.emptyHugSlot`);
+    variants.push({ variant, properties, node, emptyHugSlot: isEmptyHugSlot });
   }
   variants.sort((a, b) => a.variant.localeCompare(b.variant));
   return { name, variants };
@@ -135,6 +144,19 @@ function parseNodeBox(value: unknown, where: string): NodeBox {
 function expectNumber(value: unknown, where: string): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) {
     throw new Error(`${where}: 숫자여야 한다.`);
+  }
+  return value;
+}
+
+/**
+ * 불리언인지 확인한다.
+ * @param value 확인할 값
+ * @param where 오류 메시지에 쓸 위치
+ * @returns 불리언
+ */
+function expectBoolean(value: unknown, where: string): boolean {
+  if (typeof value !== 'boolean') {
+    throw new Error(`${where}: true나 false여야 한다.`);
   }
   return value;
 }
