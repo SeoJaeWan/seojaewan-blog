@@ -13,8 +13,8 @@ describe('MenuZoomItem', () => {
     render(<MenuZoomItem value="110%" onZoomOut={handleZoomOut} onZoomIn={handleZoomIn} />);
 
     expect(screen.getByText('110%')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '축소' }));
-    await user.click(screen.getByRole('button', { name: '확대' }));
+    await user.click(screen.getByRole('menuitem', { name: '축소' }));
+    await user.click(screen.getByRole('menuitem', { name: '확대' }));
 
     expect(handleZoomOut).toHaveBeenCalledTimes(1);
     expect(handleZoomIn).toHaveBeenCalledTimes(1);
@@ -23,7 +23,7 @@ describe('MenuZoomItem', () => {
   it('끝 단계에서는 해당 버튼이 비활성이다', () => {
     render(<MenuZoomItem value="200%" isZoomInDisabled />);
 
-    expect(screen.getByRole('button', { name: '확대' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: '축소' })).toBeEnabled();
+    expect(screen.getByRole('menuitem', { name: '확대' })).toBeDisabled();
+    expect(screen.getByRole('menuitem', { name: '축소' })).toBeEnabled();
   });
 });

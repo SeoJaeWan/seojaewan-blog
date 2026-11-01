@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { MenuStory } from '@/shared/stories/menu-story/menu-story';
+import { MenuStory, menuStoryA11y } from '@/shared/stories/menu-story/menu-story';
 
 import { menuRecycleBin } from './story-data';
 
@@ -9,7 +9,7 @@ import { menuRecycleBin } from './story-data';
 const meta = {
   title: 'Patterns/Menu/RecycleBin',
   // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
-  parameters: { layout: 'padded' },
+  parameters: { layout: 'padded', a11y: menuStoryA11y },
   render: () => <MenuStory items={menuRecycleBin} />,
 } satisfies Meta;
 

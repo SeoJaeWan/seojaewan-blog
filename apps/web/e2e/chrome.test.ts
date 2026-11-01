@@ -75,6 +75,6 @@ test('글에서 Ctrl+F로 찾아 다음으로 옮기고, ⋮ 메뉴에서 배율
 
   await post.getByRole('button', { name: '더보기' }).click();
   const zoom = page.getByRole('group', { name: '확대/축소' });
-  await zoom.getByRole('button', { name: '확대' }).click();
+  await zoom.getByRole('menuitem', { name: '확대' }).click();
   await expect(zoom).toContainText('110%');
 });

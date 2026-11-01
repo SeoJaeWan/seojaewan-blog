@@ -52,13 +52,16 @@ export function ListItem(props: ListItemProps): JSX.Element {
     size = 'compact',
     subtitle = '보조 설명',
     showSubtitle: isSubtitleShown = true,
+    role,
     className,
     ...divProps
   } = props;
   const isTwoLine = size === 'two-line';
   return (
     <div
-      aria-selected={isSelected}
+      role={role}
+      // aria-selected는 option 역할에서만 뜻이 있다. 다른 역할의 줄은 쓰는 곳이 aria-current 등으로 알린다.
+      aria-selected={role === 'option' ? isSelected : undefined}
       {...divProps}
       className={cn(
         'flex items-center gap-12 rounded-control px-12 py-4 select-none',

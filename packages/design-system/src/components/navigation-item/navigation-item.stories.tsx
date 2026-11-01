@@ -28,9 +28,9 @@ const meta = {
     level: { control: 'inline-radio', options: LEVELS },
     label: { control: 'text' },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 240으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 240으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]). treeitem은 tree 안에서만 쓴다.
   render: (args) => (
-    <div className="w-240">
+    <div role="tree" aria-label="탐색 창" className="w-240">
       <NavigationItem
         expand={args.expand}
         selected={args.state === 'selected'}

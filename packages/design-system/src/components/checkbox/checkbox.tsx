@@ -6,6 +6,8 @@ import { Asset } from '../asset/asset';
 type CheckboxProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Checked. 체크 표시가 있는지 정한다 */
   checked?: boolean;
+  /** 접근성 이름. 할 일 글자처럼 무엇을 표시하는지 적는다. 그려지지 않는다 */
+  label: string;
 };
 
 /**
@@ -16,10 +18,11 @@ type CheckboxProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @param props
  */
 export function Checkbox(props: CheckboxProps): JSX.Element {
-  const { checked: isChecked = false, className, ...divProps } = props;
+  const { checked: isChecked = false, label, className, ...divProps } = props;
   return (
     <div
       role="checkbox"
+      aria-label={label}
       aria-checked={isChecked}
       aria-readonly
       {...divProps}

@@ -10,7 +10,7 @@ export default defineProject({
     },
   },
   test: {
-    name: 'web',
+    name: 'unit-web',
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],

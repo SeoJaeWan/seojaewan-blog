@@ -12,7 +12,7 @@ const meta = {
   argTypes: {
     checked: { control: 'boolean' },
   },
-  render: (args) => <Checkbox checked={args.checked} />,
+  render: (args) => <Checkbox checked={args.checked} label="할 일" />,
 } satisfies Meta<ParityArgs>;
 
 export default meta;

@@ -32,6 +32,7 @@ import {
   getHeadingId,
   getPlainText,
   type HeadingBlock,
+  isHeadingBlock,
   type ListItemBlock,
   type PostBlock,
   type RichText,
@@ -73,8 +74,8 @@ type PostBlocksProps = {
   className?: string;
 };
 
-// 제목 단계마다의 요소와 글자 스타일이다. 글 제목이 h1이라 본문 제목은 h2부터다([[Notion 블록:지원 블록]]).
-const HEADING_TAGS = { heading_1: 'h2', heading_2: 'h3', heading_3: 'h4' } as const;
+// 제목 단계와 단계마다의 글자 스타일이다([[Notion 블록:지원 블록]]).
+const HEADING_LEVELS = { heading_1: 1, heading_2: 2, heading_3: 3 } as const;
 const headingClassNames = {
   heading_1: 'w-full type-title text-text-fill-primary',
   heading_2: 'w-full type-subtitle text-text-fill-primary',
@@ -138,6 +139,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
     expandedToggleIndexes = [],
     className,
   } = props;
+  const topHeadingLevel = getTopHeadingLevel(blocks);
 
   /**
    * 글자 조각들을 그린다. 링크가 있는 조각은 링크다.
@@ -220,7 +222,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               <div className="flex w-full items-start gap-8">
                 {item.type === 'to_do' ? (
                   <span className="flex size-24 shrink-0 items-center justify-center">
-                    <Checkbox checked={item.checked} />
+                    <Checkbox checked={item.checked} label={getPlainText(item.richText)} />
                   </span>
                 ) : (
                   <span
@@ -275,7 +277,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
       case 'heading_2':
       case 'heading_3':
         return createElement(
-          HEADING_TAGS[block.type],
+          `h${String(HEADING_LEVELS[block.type] - topHeadingLevel + 2)}`,
           {
             key: index,
             id: isTopLevel ? getHeadingId(index) : undefined,
@@ -669,4 +671,14 @@ function renderServerEquation(block: PostEquationBlock): ReactNode {
     return text;
   }
   return <Suspense fallback={text}>{createElement(katexHtml, { html: block.html })}</Suspense>;
+}
+
+/**
+ * 본문 맨 위 블록에서 가장 높은 제목 단계를 찾는다. 글 제목이 h1이고 이 단계를 h2로 그려, 제목 2부터 쓴 글도 단계를 건너뛰지 않는다.
+ * @param blocks 본문 블록
+ * @returns 가장 높은 제목 단계(제목이 없으면 1)
+ */
+function getTopHeadingLevel(blocks: readonly PostBlock[]): number {
+  const levels = blocks.filter(isHeadingBlock).map((block) => HEADING_LEVELS[block.type]);
+  return levels.length > 0 ? Math.min(...levels) : 1;
 }

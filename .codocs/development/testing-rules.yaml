@@ -11,6 +11,7 @@ _codocs:
   |---|---|---|---|
   | 단위 | 상태 규칙, 순수 함수 | Vitest | pre-commit(영향받는 것만) + CI |
   | 컴포넌트 | 키보드 조작, 접근성, 상태 표시 | Vitest + Testing Library | pre-commit(영향받는 것만) + CI |
+  | 스토리 | 스토리가 그려지는지, `play` 동작, axe 접근성 검사 | Vitest 브라우저 모드(Chromium) + Storybook | pre-commit(영향받는 것만) + CI |
   | E2E | 기능이 연결됐을 때의 동작 | Playwright, 스크린샷 없음 | 로컬(직접 실행) + CI |
   | 토큰·자산 생성 확인 | `tokens.css`와 코드 자산이 피그마 내보내기 자료에서 다시 만든 결과와 같은지 | 생성 스크립트 `--check` | CI |
   | 모션 | 모션 클래스의 시간·이징·지연·반복 횟수와 키프레임 값이 피그마에서 내보낸 값과 같은지([[피그마 연동:모션]]). 실제 움직임의 느낌은 사람이 Storybook 모션 스토리의 느리게 보기로 본다 | Playwright(모션 스토리) | CI |
@@ -31,9 +32,9 @@ _codocs:
   - 테스트 데이터는 테스트 옆의 `*.fixture.ts`에 둔다.
   - 테스트에서 Notion API를 실제로 호출하지 않고 고정된 가짜 응답으로 대체한다. Notion 내용이 바뀌어도 테스트 결과가 바뀌지 않게 하기 위해서다.
 실행 시점: |
-  - pre-commit: 바뀐 파일에 영향받는 테스트만 실행한다(`vitest related`). 바뀐 파일을 import하는 테스트까지 의존 관계를 따라 찾아야, 고친 파일과 깨지는 테스트가 다른 경우를 놓치지 않는다.
-  - 설정·전역 파일(`vitest.config`, Tailwind 테마, 전역 setup, `package.json`)은 import 관계로 연결되지 않으므로, 이런 파일이 바뀌면 전체 테스트를 실행한다.
-  - CI: 단위·컴포넌트 테스트 전체, E2E 전체, 토큰·자산 생성 확인, 바뀐 모션 클래스의 시간·키프레임 값 검사를 실행하고, 영향받는 컴포넌트와 조립의 캡처 표를 남긴다([[Git 작업 규칙:CI]], [[피그마 연동:캡처 범위]]).
+  - pre-commit: 바뀐 파일에 영향받는 단위·컴포넌트·스토리 테스트만 실행한다(`vitest related`). 바뀐 파일을 import하는 테스트까지 의존 관계를 따라 찾아야, 고친 파일과 깨지는 테스트가 다른 경우를 놓치지 않는다. 스토리도 vitest project라 같은 명령으로 찾는다.
+  - 설정·전역 파일(`vitest.config`, `vitest.storybook.config`, `.storybook` 설정, Tailwind 테마, 전역 setup, `package.json`)은 import 관계로 연결되지 않으므로, 이런 파일이 바뀌면 전체 테스트를 실행한다.
+  - CI: 단위·컴포넌트·스토리 테스트 전체, E2E 전체, 토큰·자산 생성 확인, 바뀐 모션 클래스의 시간·키프레임 값 검사를 실행하고, 영향받는 컴포넌트와 조립의 캡처 표를 남긴다([[Git 작업 규칙:CI]], [[피그마 연동:캡처 범위]]).
 
   E2E는 스크린샷을 비교하지 않으므로 운영체제에 따른 렌더링 차이의 영향을 받지 않는다. 그래서 로컬 Windows에서도 그대로 실행할 수 있다.
 E2E: |
@@ -43,3 +44,19 @@ E2E: |
   화면까지 가는 준비(예: 글이 열린 상태로 시작)는 공통 fixture로 묶는다.
 
   Playwright는 기본으로 `reducedMotion: 'reduce'`로 돌려 동작 줄이기 상태에서 확인한다([[피그마 연동:모션 클래스]]). 애니메이션을 켜고 도는 것은 모션 검사(시간·키프레임 값)뿐이다([[피그마 연동:모션]]). Vitest(jsdom)에는 애니메이션이 없어 사라지는 요소가 바로 빠진다.
+스토리 테스트: |
+  `*.stories.tsx`의 스토리 하나가 테스트 하나다. 실제 Chromium에서 그려 오류가 없는지 보고, `play`가 있으면 돌리고, axe 접근성 검사를 오류로 돌린다.
+
+  - 피그마와 맞추는 스토리(`Parity`)에는 `play`를 넣지 않는다. 동작 스토리는 쓰는 상황 하나에 하나를 만들어 같은 파일에 두고, 안에서 `step()`으로 나눈다.
+  - 도구는 `storybook/test`에서 가져온다(`expect`, `userEvent`, `fireEvent`, `waitFor`, `within`, `fn`). `vitest`는 스토리에서 가져오지 않는다. 스토리는 Storybook 화면에서도 돌아야 한다. `fireEvent`는 Promise를 돌려주므로 `await`한다.
+  - 스토리의 핸들러는 앱 코드처럼 `onClick: handleClick`으로 바꿔 받는다.
+  - 저장소는 스토리 meta의 `beforeEach`에서 처음 상태로 돌리고(`resetStoryStores`), 미리 열 창은 스토리의 `beforeEach`에서 연다(`openStoryWindows`).
+  - 뷰포트는 스토리의 `globals: { viewport: { value: 'mobile1', isRotated: false } }`로 고른다. 실제 브라우저 크기가 바뀌므로 `matchMedia`를 가짜로 두지 않는다.
+  - 끌기는 `dragStoryPointer`를 쓴다. 실제 브라우저의 `setPointerCapture`는 합성 포인터 id를 받지 않는다.
+  - 마우스 올리기는 `userEvent.hover`나 `fireEvent.pointerOver`로 보낸다. React의 `onPointerEnter`는 `pointerover`로 동작해 `fireEvent.pointerEnter`로는 닿지 않는다.
+  - 시간은 진짜로 기다리는 것(`waitFor`)이 먼저다. 지연 전후를 나눠 봐야 할 때만 `installStoryClock`으로 그 지연만 잡아 `play` 안에서 흘린다.
+  - 실제 브라우저라 애니메이션이 돈다. 크기는 `getBoundingClientRect`(scale이 들어감) 대신 `offsetWidth`로 본다.
+
+  axe 위반은 코드와 스토리를 고쳐 없앤다. 부모 역할이 필요한 컴포넌트의 스토리는 그 역할로 감싼다(`tablist`, `tree`, `menu`). 규칙을 끄는 것은 외부 라이브러리 때문일 때만 스토리별로 하고 이유를 주석으로 적는다. 색 대비 위반은 피그마 값 문제라 사람이 판단한다.
+
+  실행 명령: `pnpm test`(전부, CI도 이것), `pnpm test:unit`, `pnpm test:storybook`. 패키지 폴더에서도 같은 이름으로 돈다. vitest project 이름은 `unit-*`, `storybook-*`로 시작해 `vitest run --project "storybook-*"`처럼 고른다. 처음 한 번 `pnpm --filter @seojaewan/web exec playwright install chromium`이 필요하다.

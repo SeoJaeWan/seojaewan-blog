@@ -256,7 +256,12 @@ describe('Chrome:구성', () => {
     renderChrome({ kind: 'post', slug: 'rsc' });
     await userEvent.click(screen.getByRole('button', { name: '더보기' }));
     const items = await screen.findAllByRole('menuitem');
-    expect(items.map((item) => item.textContent)).toEqual(['링크 복사', '페이지에서 찾기Ctrl+F']);
+    expect(items.map((item) => item.getAttribute('aria-label') ?? item.textContent)).toEqual([
+      '링크 복사',
+      '페이지에서 찾기Ctrl+F',
+      '축소',
+      '확대',
+    ]);
     expect(screen.getByRole('group', { name: '확대/축소' })).toHaveTextContent('100%');
   });
 });
@@ -337,10 +342,10 @@ describe('Chrome:확대/축소', () => {
   it('⋮ 메뉴의 −·+로 배율을 바꾸고 눌러도 메뉴가 닫히지 않는다', async () => {
     renderChrome();
     await userEvent.click(screen.getByRole('button', { name: '더보기' }));
-    await userEvent.click(await screen.findByRole('button', { name: '확대' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: '확대' }));
     expect(zoomRow()).toHaveTextContent('110%');
-    await userEvent.click(screen.getByRole('button', { name: '축소' }));
-    await userEvent.click(screen.getByRole('button', { name: '축소' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '축소' }));
+    await userEvent.click(screen.getByRole('menuitem', { name: '축소' }));
     expect(zoomRow()).toHaveTextContent('90%');
     expect(screen.getByRole('menu')).toBeInTheDocument();
   });
@@ -354,8 +359,8 @@ describe('Chrome:확대/축소', () => {
     renderChrome();
     await userEvent.click(screen.getByRole('button', { name: '더보기' }));
     expect(await screen.findByRole('group', { name: '확대/축소' })).toHaveTextContent('200%');
-    expect(screen.getByRole('button', { name: '확대' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: '축소' })).toBeEnabled();
+    expect(screen.getByRole('menuitem', { name: '확대' })).toBeDisabled();
+    expect(screen.getByRole('menuitem', { name: '축소' })).toBeEnabled();
   });
 
   it('Ctrl + `+`·`-`·`0`으로 배율을 바꾸고 실제 브라우저의 확대는 막는다', () => {
