@@ -17,7 +17,7 @@ type TaskbarAppButtonProps = Omit<
 /**
  * 작업 표시줄 앱 버튼 하나(피그마 조립의 `File Explorer`, `Chrome` TaskbarButton 인스턴스)를 그린다.
  * 최소화·복원 모션이 버튼 자리를 찾을 수 있게 `data-taskbar-app`에 앱 id를 단다.
- * 우클릭 메뉴나 창 미리보기를 여는 조립(`TaskbarAppMenu`, `TaskbarAppPreview`)의 트리거로도 쓴다.
+ * 우클릭 메뉴나 창 미리보기를 여는 조립(`TaskbarAppItem`)의 트리거로도 쓴다.
  * @codocs [[작업 표시줄:앱 버튼]]
  * @param props
  */

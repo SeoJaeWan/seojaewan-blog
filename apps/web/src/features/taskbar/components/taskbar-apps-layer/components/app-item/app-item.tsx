@@ -17,7 +17,7 @@ const OPEN_TRIGGER_CLASS_NAME =
 // 우클릭 메뉴(Menu/TaskbarApp)는 피그마 Popover `Top-Center`처럼 버튼 위 가운데에 붙는다. 버튼과 메뉴 사이 간격은 spacing/4다.
 const MENU_PLACEMENT = { side: 'top', align: 'center', offset: 4 } as const;
 
-type TaskbarAppPreviewProps = {
+type TaskbarAppItemProps = {
   /** 버튼이 가리키는 앱 */
   app: TaskbarAppId;
   /** 앱 버튼 아래 표시(피그마 TaskbarButton Indicator) */
@@ -47,7 +47,7 @@ type TaskbarAppPreviewProps = {
 };
 
 /**
- * 작업 표시줄 앱 버튼과 그 창 미리보기 목록(피그마 조립 `Taskbar/AppPreview`)을 그린다.
+ * 작업 표시줄 앱 하나의 버튼과 그 창 미리보기 목록(피그마 조립 `Taskbar/AppPreview`), 우클릭 메뉴(피그마 조립 `Taskbar/AppMenu`)를 그린다.
  * 목록은 버튼 위 가운데 맞춤(피그마 Popover `Top-Center`)으로 띄운다. 열림 여부와 버튼 클릭 동작은 쓰는 곳이 prop으로 넣는다.
  * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스, [[컴포넌트 목록:상태]]의 예외). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
  * `menuItems`를 주면 버튼을 우클릭(모바일은 길게 누르기)할 때 같은 `Top-Center` 자리에 우클릭 메뉴를 연다(`isMenuAtPointer`면 누른 자리 근처). 메뉴가 열려 있는 동안 버튼은 `Rest` 모양 그대로다
@@ -59,7 +59,7 @@ type TaskbarAppPreviewProps = {
  * @codocs [[작업 표시줄:우클릭 메뉴]]
  * @param props
  */
-export function TaskbarAppPreview(props: TaskbarAppPreviewProps): JSX.Element {
+export function TaskbarAppItem(props: TaskbarAppItemProps): JSX.Element {
   const { app, indicator, open: isOpen = false, previews, centered: isCentered = false } = props;
   // 버튼 동작을 받으면 목록을 여닫는 버튼이라 열림 상태를 알린다.
   const isToggle = props.onButtonClick !== undefined;

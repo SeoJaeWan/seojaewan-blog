@@ -19,13 +19,14 @@ import {
   getWindowRect,
 } from '@/shared/utils/window-rules/window-rules';
 
-import { TaskbarAppPreview } from './components/app-item/app-item';
+import type { TaskbarAppMenuAction } from './app-menu/app-menu-entries';
+import { getAppMenuEntries } from './app-menu/app-menu-entries';
+import { TaskbarAppItem } from './components/app-item/app-item';
 import { TaskbarWindowPreviewList } from './components/taskbar-window-preview-list/taskbar-window-preview-list';
 import { useHoverPreview } from './hooks/use-hover-preview/use-hover-preview';
 import { useOpenApp } from './hooks/use-open-app/use-open-app';
 import { findTaskbarAppAt } from './utils/taskbar-app-drag/taskbar-app-drag';
-import type { TaskbarAppMenuAction } from './utils/taskbar-app-rules/taskbar-app-rules';
-import { getTaskbarAppMenu, getTaskbarApps } from './utils/taskbar-app-rules/taskbar-app-rules';
+import { getTaskbarApps } from './utils/taskbar-app-rules/taskbar-app-rules';
 
 /** 창 미리보기 축소 화면 자리(WindowPreview Thumbnail, 208 너비에서 안쪽 여백을 뺀 192×108) */
 const PREVIEW_THUMBNAIL_BOX = { width: 192, height: 108 } as const;
@@ -322,7 +323,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
   /**
    * 앱 버튼 하나와 그 창 미리보기 목록을 그린다.
    * @param app 앱
-   * @returns TaskbarAppPreview
+   * @returns TaskbarAppItem
    */
   function renderAppButton(app: WindowApp): JSX.Element {
     /** 앱 버튼을 누르면 할 일을 한다. */
@@ -357,7 +358,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
       handleMenuOpenChange(app, isOpen);
     }
     const appWindows = getAppWindows(state, app);
-    const menuItems = getTaskbarAppMenu({
+    const menuItems = getAppMenuEntries({
       app,
       isPinned: taskbarPins.includes(app),
       windowCount: appWindows.length,
@@ -392,7 +393,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
       }),
     );
     return (
-      <TaskbarAppPreview
+      <TaskbarAppItem
         key={app}
         app={app}
         indicator={getTaskbarAppIndicator(state, app)}
