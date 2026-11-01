@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/taskbar-app/taskbar-app';
+import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/app-item/components/taskbar-app/taskbar-app';
 
 import { TASKBAR_CLOCK } from './story-data';
 import { TaskbarDefault } from './taskbar-default';

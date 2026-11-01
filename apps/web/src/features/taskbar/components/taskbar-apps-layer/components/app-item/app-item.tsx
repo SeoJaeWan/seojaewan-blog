@@ -3,10 +3,11 @@ import type { DragEvent, JSX, MouseEventHandler, PointerEventHandler, ReactNode 
 
 import { Popover } from '@seojaewan/design-system';
 
-import { TaskbarAppButton } from '@/features/taskbar/components/taskbar-apps-layer/components/taskbar-app/taskbar-app';
 import type { TaskbarAppId } from '@/features/taskbar/data/taskbar-apps/taskbar-apps';
 import { ContextMenuArea } from '@/shared/components/context-menu-area/context-menu-area';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
+
+import { TaskbarAppButton } from './components/taskbar-app/taskbar-app';
 
 // 목록이 열려 있는 동안(data-preview-open) 앱 버튼을 TaskbarButton Hover 모습(테두리 control-stroke/default, 바탕 control-fill/default)으로
 // 둔다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다. 버튼 동작이 없는 조립(스토리)에서도
