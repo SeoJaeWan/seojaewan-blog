@@ -102,7 +102,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
         ref={viewportRef}
         onScroll={handleMeasure}
         className="flex flex-flex-fill flex-col overflow-y-auto"
-        style={{ scrollbarWidth: 'none' }}
+        data-scrollbar-hidden
       >
         {children}
       </div>

@@ -5,11 +5,11 @@ import { ExplorerCommandBar } from './explorer-command-bar';
 const meta = {
   title: 'Components/ExplorerCommandBar',
   // 부모가 너비를 정하는 컴포넌트라 피그마 원본 너비 798로 감싼다.
-  // Commands 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 높이 32만 칠 없는 빈 내용으로 둔다.
+  // Commands 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯의 높이(size/control/height)만 칠 없는 빈 내용으로 둔다.
   render: () => (
     <div className="w-size-explorer-content-width">
       <ExplorerCommandBar>
-        <div className="w-full" style={{ height: 32 }} />
+        <div className="h-size-control-height w-full" />
       </ExplorerCommandBar>
     </div>
   ),

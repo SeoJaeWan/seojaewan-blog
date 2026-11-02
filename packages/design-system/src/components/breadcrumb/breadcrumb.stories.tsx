@@ -27,10 +27,9 @@ const meta = {
         editing={args.state === 'editing'}
         // 피그마 Editing 변형의 글자다.
         address={String.raw`바탕 화면\Blog\React`}
-      >
-        {/* 피그마 Items 슬롯의 미리보기 크기다. 칠 없는 빈 요소로 채운다 */}
-        <div className="shrink-shrink-none" style={{ width: 100, height: 100 }} />
-      </Breadcrumb>
+        // 피그마 Items 슬롯은 비워 둔다. 빈 슬롯의 미리보기 크기(100×100)는 토큰이 없고, 슬롯이 보이는 Rest는
+        // 빈 HUG 변형이라 조립 캡처가 확인한다.
+      />
     </div>
   ),
 } satisfies Meta<FigmaArgs>;
