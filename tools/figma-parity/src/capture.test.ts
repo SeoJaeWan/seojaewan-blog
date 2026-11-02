@@ -6,7 +6,10 @@ import {
   captureViewport,
   commonCanvas,
   figmaNodeLayout,
+  integerShift,
   outlineExtents,
+  overflowExtents,
+  paintedBox,
   parseBoxShadow,
   pngSize,
   shadowExtents,
@@ -138,5 +141,72 @@ describe('캡처 영역', () => {
       width: 98,
       height: 78,
     });
+  });
+});
+
+// @codocs [[피그마 연동:캡처 표]]
+describe('대상 밖으로 나간 자손', () => {
+  const root = { left: 100, right: 200, top: 100, bottom: 140 };
+
+  it('가로·세로가 모두 1px 이하인 상자는 건너뛴다', () => {
+    const focusGuard = { left: 0, right: 1, top: 0, bottom: 1 };
+    expect(paintedBox({ box: focusGuard, clips: [] })).toBeUndefined();
+    expect(overflowExtents(root, [{ box: focusGuard, clips: [] }])).toEqual({
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    });
+  });
+
+  it('한 방향만 1px 이하인 얇은 상자는 센다', () => {
+    const line = { left: 50, right: 51, top: 100, bottom: 140 };
+    expect(overflowExtents(root, [{ box: line, clips: [] }])).toEqual({
+      left: 50,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    });
+  });
+
+  it('<svg> 상자 밖으로 잘린 도형 부분은 뺀다', () => {
+    const path = { left: 100, right: 8826, top: 110, bottom: 120 };
+    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: true, y: true };
+    expect(overflowExtents(root, [{ box: path, clips: [svg] }]).right).toBe(0);
+  });
+
+  it('overflow가 visible인 방향은 자르지 않는다', () => {
+    const path = { left: 100, right: 260, top: 110, bottom: 120 };
+    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: false, y: true };
+    expect(overflowExtents(root, [{ box: path, clips: [svg] }]).right).toBe(60);
+  });
+
+  it('모두 잘려 나가면 건너뛴다', () => {
+    const path = { left: 300, right: 400, top: 110, bottom: 120 };
+    const svg = { left: 100, right: 140, top: 100, bottom: 140, x: true, y: true };
+    expect(paintedBox({ box: path, clips: [svg] })).toBeUndefined();
+  });
+
+  it('대상 밖으로 나간 일반 상자는 그대로 센다', () => {
+    const tail = { left: 90, right: 210, top: 95, bottom: 150 };
+    expect(overflowExtents(root, [{ box: tail, clips: [] }])).toEqual({
+      left: 10,
+      right: 10,
+      top: 5,
+      bottom: 10,
+    });
+  });
+});
+
+// @codocs [[피그마 연동:캡처 표]]
+describe('정수 픽셀 위치', () => {
+  it('소수 위치를 가장 가까운 정수로 옮길 거리를 구한다', () => {
+    const shift = integerShift({ x: 757.84, y: 100.25, width: 84, height: 32 });
+    expect(shift.x).toBeCloseTo(0.16);
+    expect(shift.y).toBeCloseTo(-0.25);
+  });
+
+  it('이미 정수면 옮기지 않는다', () => {
+    expect(integerShift({ x: 10, y: 20, width: 5, height: 5 })).toEqual({ x: 0, y: 0 });
   });
 });
