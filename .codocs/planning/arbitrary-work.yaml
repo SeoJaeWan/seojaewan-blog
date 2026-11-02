@@ -61,3 +61,9 @@ _codocs:
   - 찍기 전에 `<html>`에 `translate`를 줘 대상의 왼쪽 위를 가장 가까운 정수 픽셀에 놓는다(`integerShift`). 레이아웃(크기·배치)을 바꾸지 않고, 포털로 그린 팝업이 대상과 함께 움직이게 하려고 대상 요소가 아니라 문서 루트를 골랐다. 스토리 루트만 옮기면 포털 팝업이 소수 위치에 남는다. 옮기는 거리는 반올림이라 0.5px 이하다.
   - 전체 캡처 451개(단독) 전후 비교: 크기가 바뀐 것은 17개. 16개는 정수 위치 덕분에 코드 그림이 1px 작아져 피그마 노드 크기와 같아진 것(Breadcrumb 항목, DropDownButton, MessageBox, SectionHeader, SystemTray), 1개는 `patterns/start/power-button` open이 640×640에서 500×500으로 줄었다(포커스 가드 제외). 차이 그림의 밝기 합(abs)은 22개가 달라졌고 21개가 줄었다(SectionHeader 20290→4854, DropDownButton rest 21997→7959). 하나는 늘었다: `patterns/chrome/post-blocks`가 3988534→4542653이다. 안쪽 줄 높이가 소수로 쌓여 이미지 아래 가장자리가 정수 위치로 옮기면 피그마보다 1px 위에 놓이는데, 전에는 소수 위치 덕에 우연히 맞았다. accent 버튼 등 이미 정수 위치였던 대상은 그대로다.
   - 고치지 않고 보고만 하는 것: [[피그마 연동:캡처 표]]의 범위 줄은 "노드 밖으로 나온 자식"만 말하고 1px 이하 상자·`<svg>` 잘림 제외, 정수 위치 맞춤을 적지 않았다.
+"스토리 테스트 부하 대응: 화면 크기 값과 선불러오기 방법": |
+  [[테스트 작성 규칙:스토리 테스트]]의 스토리 테스트가 CPU 부하에서 15초 제한을 넘기지 않게 한 수정에서 스스로 정한 것이다.
+  - 화면 크기: `vitest.storybook.config.ts`의 `test.browser.viewport`를 1600×900으로 두었다. `BREAKPOINTS`를 쓰려 했으나, 패키지 진입점은 Vite 설정 로더가 읽지 못하고(확장자 없는 import), 앱에서 상위 폴더 파일을 직접 가리키면 lint가 막고(`no-restricted-imports`, 인라인 예외도 꺼져 있다), 디자인 시스템 안에서 `./src/token-names`를 쓰면 로더 경고가 매번 나서 두 패키지 모두 값을 직접 적고 주석으로 `BREAKPOINTS`와 같은 값임을 밝혔다.
+  - 선불러오기: 의존 패키지(`react-dom/client`, `axe-core`)는 Vitest의 `optimizeDeps.include`로 미리 묶게 했다. `axe-core`는 pnpm 구조상 `@storybook/addon-a11y > axe-core`로 적었다. 앱 소스인 `katex-html` 지연 조각은 묶을 의존이 아니라 우리 모듈이라 `apps/web/vitest.storybook.setup.ts`(`setupFiles`)에서 먼저 `import()`한다.
+  - 정리: `.storybook/preview.ts`의 `beforeEach`가 `animation-play-state: paused !important`를 가진 `<head>`의 `<style>`을 지운다. Storybook `pauseAnimations`(`storybook/dist/preview/runtime.js`)가 넣는 멈춤 스타일은 속성이나 id가 없어 내용으로만 구별된다.
+  - 시험: 디자인 시스템 Button의 첫 스토리에 alt 없는 `<img>`를 넣으면 그 스토리 하나만 실패하고(`image-alt`) 뒤 두 스토리는 통과함을 확인하고 되돌렸다. 연쇄 실패를 직접 재현한 CPU 부하 시험은 하지 않았다.
