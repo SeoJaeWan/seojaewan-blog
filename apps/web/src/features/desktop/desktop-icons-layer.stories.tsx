@@ -625,7 +625,7 @@ export const DragToFolder: Story = {
         data-testid="explorer-body"
         data-drop-target={BLOG_FOLDER_ID}
         data-drop-target-name="Blog"
-        style={{ position: 'fixed', right: 0, bottom: 0, width: 200, height: 200 }}
+        className="fixed right-spacing-none bottom-spacing-none h-size-explorer-content-height w-size-explorer-content-width"
       />
     </div>
   ),

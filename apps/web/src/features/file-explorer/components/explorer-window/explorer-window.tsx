@@ -180,7 +180,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
               activateOnFocus
               aria-label="탭"
               className="flex min-w-size-none items-end overflow-x-auto"
-              style={{ scrollbarWidth: 'none' }}
+              data-scrollbar-hidden
             >
               {tabs.map(
                 /**

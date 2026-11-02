@@ -78,9 +78,6 @@ type OpenMenu = { kind: 'desktop' } | { kind: 'items'; ids: readonly string[] };
 // 아이콘을 표시하는 속성. 우클릭·길게 누른 자리와 방향키로 옮길 아이콘을 찾는 데 쓴다.
 const ICON_ATTRIBUTE = 'data-desktop-icon';
 
-// 이름 바꾸기 말풍선과 아이콘 사이 간격(px). 말풍선 꼬리(높이 8)가 이 사이에 들어간다.
-const BALLOON_OFFSET = 8;
-
 /**
  * 바탕화면 아이콘(`DesktopIcons`)을 작업 공간 저장소에 잇는 층이다.
  * - 배치: 작업 영역 크기로 격자를 정하고, 자동 정렬이면 정렬 기준의 차례로, 아니면 저장한 칸에 아이콘을 놓는다. 모바일은 늘 자동 정렬이다.
@@ -735,13 +732,11 @@ export function DesktopIconsLayer(): JSX.Element {
           {...rename.errorBalloonProps}
           type="balloon"
           message={rename.errorMessage}
-          className="absolute z-layer-balloon"
+          // 아이콘 바로 아래에 두고, 말풍선 꼬리가 Tooltip 위로 나온 만큼(spacing/sm) 띄운다.
+          className="absolute z-layer-balloon mt-spacing-sm"
           style={{
             left: getCellOrigin(renamingCell, iconSize).x,
-            top:
-              getCellOrigin(renamingCell, iconSize).y +
-              getCellGeometry(iconSize).itemHeight +
-              BALLOON_OFFSET,
+            top: getCellOrigin(renamingCell, iconSize).y + getCellGeometry(iconSize).itemHeight,
           }}
         />
       )}

@@ -393,6 +393,7 @@ function PanelDialog(props: PanelDialogProps): ReactNode {
   // 작업 영역은 화면 크기에 따라 실행 중에 정해지는 값이라 토큰 클래스가 아닌 인라인 스타일로 준다.
   const panelStyle: CSSProperties | undefined =
     workArea === null ? undefined : { maxHeight: getPanelMaxHeight(workArea.height, device) };
+  const panelClassName = isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto';
   return (
     <div
       ref={setContainer}
@@ -407,7 +408,7 @@ function PanelDialog(props: PanelDialogProps): ReactNode {
               `outline-none ${isMobile ? 'w-full' : 'pb-spacing-md'} ${state.transitionStatus === 'ending' ? 'motion-panel-exit' : 'motion-panel-enter'}`
             }
           >
-            {children(isMobile ? 'pointer-events-auto w-full' : 'pointer-events-auto', panelStyle)}
+            {children(panelClassName, panelStyle)}
           </Dialog.Popup>
         </Dialog.Portal>
       </Dialog.Root>
