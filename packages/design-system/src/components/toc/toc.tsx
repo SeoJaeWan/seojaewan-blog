@@ -34,7 +34,6 @@ export function Toc(props: TocProps): JSX.Element {
     return (
       <div
         {...divProps}
-        data-state={state}
         className={cn(
           'flex items-center overflow-clip rounded-radius-control border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary px-spacing-md py-spacing-sm',
           className,
@@ -53,7 +52,6 @@ export function Toc(props: TocProps): JSX.Element {
   return (
     <div
       {...divProps}
-      data-state={state}
       className={cn('flex flex-col items-start gap-spacing-sm pt-spacing-xs', className)}
     >
       <SectionTitle {...titleProps} title={title} className="w-full shrink-shrink-none" />

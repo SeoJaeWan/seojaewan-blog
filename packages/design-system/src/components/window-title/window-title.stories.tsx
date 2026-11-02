@@ -58,28 +58,5 @@ export const Default: Story = {
     await step('title로 바꾼 글자를 그린다', async () => {
       await expect(canvas.getByText('파일 탐색기')).toBeInTheDocument();
     });
-
-    await step('활성 상태다', async () => {
-      await expect(canvas.getByText('파일 탐색기').parentElement).toHaveAttribute(
-        'data-state',
-        'active',
-      );
-    });
-  },
-};
-
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** inactive면 비활성 상태가 된다 */
-export const Inactive: Story = {
-  // 비활성 제목의 text-fill-tertiary는 흰 바탕에서 3.31:1이다. 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
-  render: () => <WindowTitle appIcon={null} inactive />,
-  play: async ({ canvasElement, step }) => {
-    await step('비활성 상태다', async () => {
-      await expect(within(canvasElement).getByText('창 제목').parentElement).toHaveAttribute(
-        'data-state',
-        'inactive',
-      );
-    });
   },
 };

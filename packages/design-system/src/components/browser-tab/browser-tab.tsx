@@ -68,6 +68,9 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
         value={value}
         nativeButton={false}
         render={<div />}
+        // @codocs [[접근성:역할]]
+        // 탭에서 Delete로 닫을 수 있다고 알린다(키 처리는 useTabStrip).
+        aria-keyshortcuts="Delete"
         className={cn(
           'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
           'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
