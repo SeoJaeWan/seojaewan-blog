@@ -255,7 +255,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
               activateOnFocus
               aria-label="탭"
               className="flex min-w-size-none overflow-x-auto"
-              style={{ scrollbarWidth: 'none' }}
+              data-scrollbar-hidden
             >
               {tabs.map(
                 /**

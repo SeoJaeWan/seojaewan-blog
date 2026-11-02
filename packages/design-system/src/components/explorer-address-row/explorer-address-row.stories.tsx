@@ -11,15 +11,18 @@ const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.u
 const DEVICES = ['desktop', 'mobile'] as const;
 const SEARCHES = ['closed', 'open'] as const;
 
-// 컴포넌트는 너비를 갖지 않으므로 피그마 원본 너비로 감싸 그린다.
-const WIDTHS = { desktop: 798, mobile: 388 } as const;
+// 컴포넌트는 너비를 갖지 않으므로 실제로 놓이는 탐색기 본문 너비(피그마 원본 너비 798, 388과 같다)로 감싸 그린다.
+const WIDTH_CLASS_NAMES = {
+  desktop: 'w-size-explorer-content-width',
+  mobile: 'w-size-window-mobile-content-width',
+} as const;
 
 type RowProps = ComponentProps<typeof ExplorerAddressRow>;
 
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
   search: (typeof SEARCHES)[number];
-  /** 동작 스토리가 쓴다. 주지 않으면 피그마 Items 슬롯의 미리보기 크기 100×100의 빈 요소를 넣는다 */
+  /** 동작 스토리가 쓴다. 주지 않으면 피그마처럼 Items 슬롯을 비워 둔다 */
   items?: ReactNode;
   backDisabled?: boolean;
   forwardDisabled?: boolean;
@@ -54,7 +57,7 @@ const meta = {
       onSearchClose: handleSearchClose,
     } = args;
     return (
-      <div style={{ width: WIDTHS[args.device] }}>
+      <div className={WIDTH_CLASS_NAMES[args.device]}>
         <ExplorerAddressRow
           device={args.device}
           search={args.search}
@@ -72,10 +75,8 @@ const meta = {
           onSearch={handleSearch}
           onSearchClose={handleSearchClose}
         >
-          {args.items ?? (
-            // 피그마 Items 슬롯의 미리보기 크기다. 칠 없는 빈 요소로 채운다
-            <div className="shrink-shrink-none" style={{ width: 100, height: 100 }} />
-          )}
+          {/* 빈 슬롯의 미리보기 크기(100×100)는 토큰이 없다. 슬롯이 보이는 변형은 빈 HUG라 조립 캡처가 확인한다 */}
+          {args.items}
         </ExplorerAddressRow>
       </div>
     );

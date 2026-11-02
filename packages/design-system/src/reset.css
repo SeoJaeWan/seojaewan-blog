@@ -1,0 +1,6 @@
+/* 토큰이 될 수 없는 CSS 기능(값이 아닌 브라우저 동작)을 속성 선택자로 둔다. 손으로 쓰는 파일이다. */
+
+/* 스크롤 막대를 감춘다. 스크롤은 그대로 되고, 막대는 컴포넌트가 따로 그린다(ScrollArea 등). */
+[data-scrollbar-hidden] {
+  scrollbar-width: none;
+}

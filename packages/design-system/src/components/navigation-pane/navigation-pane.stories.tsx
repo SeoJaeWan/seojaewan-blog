@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>;
 /** 항목을 items 슬롯(children)에 채운다 */
 export const Default: Story = {
   render: () => (
-    <NavigationPane style={{ width: 248 }}>
+    <NavigationPane>
       <span>항목</span>
     </NavigationPane>
   ),

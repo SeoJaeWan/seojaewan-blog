@@ -137,9 +137,6 @@ type ExplorerSearchState = {
 // 항목을 표시하는 속성. 우클릭·길게 누른 자리와 방향키로 옮길 항목을 찾는 데 쓴다.
 const ITEM_ATTRIBUTE = 'data-explorer-item';
 
-// 이름 바꾸기 말풍선과 항목 사이 간격(px). 말풍선 꼬리(높이 8)가 이 사이에 들어간다.
-const BALLOON_OFFSET = 8;
-
 // 아이콘 보기의 FileItem View다.
 const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
 
@@ -876,12 +873,12 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       <div key={item.id} className={isDetails ? 'relative w-full' : 'relative'}>
         {element}
         {rename.errorMessage !== null && (
+          // 항목 바로 아래에 두고, 말풍선 꼬리가 Tooltip 위로 나온 만큼(spacing/sm) 띄운다.
           <Tooltip
             {...rename.errorBalloonProps}
             type="balloon"
             message={rename.errorMessage}
-            className="absolute left-spacing-none z-layer-balloon"
-            style={{ top: `calc(100% + ${String(BALLOON_OFFSET)}px)` }}
+            className="absolute top-full left-spacing-none z-layer-balloon mt-spacing-sm"
           />
         )}
       </div>

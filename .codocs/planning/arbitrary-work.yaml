@@ -54,6 +54,18 @@ _codocs:
   [[테스트 작성 규칙:E2E]]는 핵심 흐름 5~10개를 두라고 하지만, 8단계에서 흐름을 영역별로 나눠 15개를 더해 E2E가 41개가 됐다. 흐름 하나가 문서 섹션 하나씩에 대응하게 쓰다 보니 넘었다. 실제 CI에서 13초 안에 도는 크기다. 5~10개로 줄일지 문서를 41개 수준으로 고칠지 검토가 필요하다.
 "8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
   모바일 입력(길게 누르기 메뉴, 선택 없음)은 Playwright 기본 설정이 터치 장치가 아니라 합성 이벤트로 흉내 내야 해서 믿기 어렵다고 보고, 모바일은 폭 390 화면의 열기·전환·검색 흐름만 넣었다. 길게 누르기는 스토리 `play`가 맡는다.
+"인라인 style lint: 규칙을 거는 범위와 구현": |
+  - `style` 값 제한은 `no-restricted-syntax`로 구현했다. JSX `style={{ … }}`의 속성 값이 문자열·숫자 리터럴, 음수 리터럴(`-1`), 식이 없는 템플릿이면 막는다. `style={조건 ? { … } : …}`·`style={조건 && { … }}`처럼 조건식·논리식이 고른 객체도 본다. 변수에 담아 넘긴 객체(`style={panelStyle}`)는 보지 않는다.
+  - 범위는 토큰 클래스 검사와 같게 앱·디자인 시스템 소스(`*.test.*` 제외)로 했다. `no-restricted-syntax`는 블록마다 목록을 통째로 바꾸므로, default export 예외 파일(스토리, Next.js 예약 파일)에는 `files: [[범위, 예외 파일]]`로 따로 걸었다.
+  - 객체 `className` 키 값은 better-tailwindcss 셀렉터 설정으로 넣었다(플러그인 4.9.1의 `objectValues` 매처와 `path`). 함수 인자(`callee`), 변수 초기값(`variable`), JSX 속성 값(`attribute`)의 객체에서 경로가 `className`으로 끝나는 값을 검사한다. 셀렉터 종류에 `objectKey`는 없고, 매처가 함수 호출·함수 경계를 넘지 않아 `return { className: '…' }`처럼 이 셋 밖의 객체는 여전히 검사하지 않는다(지금 저장소에는 없다).
+  - [[피그마 연동:토큰 사용 강제]]의 "lint는 … 넷 중 한 곳에 쓴다" 문단은 객체 `className` 키와 `style` 값 제한을 아직 적지 않았다. 문서를 고치지 않았으므로 반영이 필요하다.
+"인라인 style lint: 토큰이 없는 값의 처리": |
+  - 스토리의 빈 슬롯 미리보기 크기(Breadcrumb·ExplorerAddressRow·Explorer/Content의 Items 100×100, Toc·Toggle 슬롯 높이 100, NavigationPane items 높이 192)는 피그마 내보내기에서 토큰이 아닌 숫자라 맞는 토큰이 없다. 이 슬롯이 보이는 변형은 모두 빈 HUG라 단독 캡처하지 않으므로 빈 요소를 지웠다. NavigationPane items 너비 240은 NavigationItem 너비(`w-size-navigation-item-width`)로 남겼다.
+  - NavigationPane `Default` 스토리의 너비 248은 토큰이 없고 실제 자리(탐색기 본문)도 너비를 주지 않아 지웠다(내용 HUG).
+  - ExplorerCommandBar 빈 슬롯 높이 32는 피그마 트리의 `size/control/height`로, ExplorerAddressRow·Toc 감싸기 너비는 `w-size-explorer-content-width`·`w-size-window-mobile-content-width`·`w-size-toc-width`로 바꿨다(값이 같다).
+  - `DragToFolder` 스토리의 끌어 놓을 탐색기 본문(고정 200×200)은 실제 자리인 탐색기 본문 크기 `size/explorer/content-*`(798×458)로 바꿨다. 스토리 테스트는 그대로 통과한다.
+  - 이름 바꾸기 말풍선 간격 `BALLOON_OFFSET = 8`(탐색기·바탕화면)은 이름 있는 피그마 변수는 없지만, Tooltip이 꼬리를 `-top-spacing-sm`(8)에 두므로 같은 `mt-spacing-sm` 클래스로 바꾸고 상수를 지웠다. 탐색기는 `top-full mt-spacing-sm`, 바탕화면은 계산한 `top`에 `mt-spacing-sm`을 더한다. 주석에 적힌 꼬리 높이 8은 실제 토큰(`size/tooltip/tail-height`) 9와 다르다.
+  - `scrollbar-width: none`은 디자인 시스템 `src/reset.css`의 `[data-scrollbar-hidden]`으로 옮겼다. 모션 견본 무대 배율은 `motion.css`의 `motion-stage-half`이고, 움직임이 아니라 동작 줄이기 목록에는 넣지 않았다.
 "캡처 도구: 여백 계산에서 안 보이는 상자 제외, 대상을 정수 위치에 놓음": |
   - 여백에 쓰는 자손 상자(`readOverflowExtents`)에서 가로·세로가 모두 1px 이하인 상자를 뺐다(전에는 둘 다 0일 때만). Base UI 메뉴의 포커스 가드(1×1 `position: fixed` SPAN, 뷰포트 (0,0))가 대상 밖에 있다고 여백을 수천 px로 키웠기 때문이다. 속성(fixed, aria-hidden, Base UI 전용 속성)으로 거르면 너무 좁거나 정당한 팝업까지 빠져 크기로 정했다. 한 방향만 얇은 상자(선 등)는 그대로 센다.
   - `<svg>` 안 도형은 `overflow`가 `visible`이 아닌 가장 가까운 바깥 `<svg>`들의 상자로 잘라서 잰다(KaTeX 근호 `<path>`가 폭 8726px인데 `<svg>`가 잘라 보여 주는데 잘리기 전 상자로 여백이 8000px 넘게 커졌다). 일반 HTML `overflow` 조상 잘림까지 하면 캡처 31개의 크기가 바뀌어 SVG만 처리했다.

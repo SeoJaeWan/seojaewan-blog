@@ -227,6 +227,49 @@ describe('토큰 사용 강제', () => {
     ).resolves.toHaveLength(1);
   }, 60_000);
 
+  it('객체의 className 키 값은 함수 인자·변수 초기값·JSX 속성 값 어디서든 lint가 검사한다', async () => {
+    const prelude = [
+      'declare function renderWindow(target: string, options: { className: string }): JSX.Element;',
+      'declare function Story(props: { args: { className: string; name: string } }): JSX.Element;',
+      "const meta = { args: { name: 'w-not-class-key', className: 'w-missing-b' } };",
+      "export const probe = [meta, renderWindow('a', { className: 'w-missing-a' })];",
+    ].join('\n');
+    await expect(
+      lintElementErrors(
+        "<Story args={{ name: 'w-not-class-key', className: 'w-missing-c' }} />",
+        UNKNOWN_CLASS_RULE,
+        prelude,
+      ),
+    ).resolves.toEqual([
+      'Unknown class detected: w-missing-b',
+      'Unknown class detected: w-missing-a',
+      'Unknown class detected: w-missing-c',
+    ]);
+  }, 60_000);
+
+  it('style 객체에 값을 직접(리터럴, 식 없는 템플릿) 쓰면 lint가 막는다', async () => {
+    const element = [
+      '<>',
+      "  <div style={{ scrollbarWidth: 'none', width: 100, left: -1, top: `calc(100% + 8px)` }} />",
+      '  <div style={Math.random() > 0 ? { height: 32 } : undefined} />',
+      '</>',
+    ].join('\n');
+    const errors = await lintElementErrors(element, RESTRICTED_SYNTAX_RULE);
+    expect(errors).toHaveLength(5);
+    expect(errors.every((message) => message.includes('style에 값을 직접 쓰지 않는다'))).toBe(true);
+  }, 60_000);
+
+  it('style 객체의 실행 중 계산한 값(식별자, 멤버 접근, 함수 호출, 식이 든 템플릿)은 막지 않는다', async () => {
+    const prelude = [
+      'declare const origin: { x: number; y: number };',
+      'declare const zIndex: number;',
+      'declare function getHeight(): number;',
+    ].join('\n');
+    const element =
+      '<div style={{ zIndex, left: origin.x, top: origin.y + 1, height: getHeight(), transform: `scale(${String(zIndex)})` }} />';
+    await expect(lintElementErrors(element, RESTRICTED_SYNTAX_RULE, prelude)).resolves.toEqual([]);
+  }, 60_000);
+
   it('숫자 값 클래스는 lint가 막는다', async () => {
     const classes = [
       'shrink-0',

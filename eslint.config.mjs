@@ -188,6 +188,10 @@ function cellPolicies(scope) {
 }
 
 // 스토리 파일·스토리 데이터·스토리 도우미(`story-*`). 기능 경계를 넘어 어디든 import할 수 있다.
+// 토큰 클래스 검사(better-tailwindcss)와 style 값 제한을 거는 파일.
+const tokenScopeFiles = [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/src/**/*.{ts,tsx}`];
+const tokenScopeIgnores = ['**/*.test.{ts,tsx}'];
+
 const storyFilePatterns = [`${WEB_SRC}/**/*.stories.{ts,tsx}`, `${WEB_SRC}/**/story-*.{ts,tsx}`];
 const testFilePatterns = [`${WEB_SRC}/**/*.test.{ts,tsx}`];
 
@@ -233,6 +237,10 @@ const misreadTokenClasses = themeVariableNames.filter((name) =>
 
 // @codocs [[피그마 연동:토큰 사용 강제]]
 // 이름이 `ClassName`·`CLASS_NAME`(복수 포함)로 끝나는 변수의 문자열·배열·객체 값과 `*ClassName` 속성도 클래스로 검사한다.
+// 객체의 `className` 키 값(`createElement('ul', { className: '…' })`, 스토리 `args: { className: '…' }`)도 검사한다.
+// 함수 인자, 변수 초기값, JSX 속성 값 안의 객체를 본다. 셀렉터는 함수 호출·함수 경계를 넘어가지 않는다.
+const CLASS_NAME_KEY_PATH = '(?:^|\\.)className$';
+const classNameKeyMatch = [{ type: 'objectValues', path: CLASS_NAME_KEY_PATH }];
 const classSelectors = [
   ...getDefaultSelectors(),
   { kind: 'attribute', name: '.*ClassName', match: [{ type: 'strings' }] },
@@ -241,7 +249,30 @@ const classSelectors = [
     name: '.*(?:ClassNames?|CLASS_NAMES?)',
     match: [{ type: 'strings' }, { type: 'objectValues' }],
   },
+  { kind: 'callee', name: '.*', match: classNameKeyMatch },
+  { kind: 'variable', name: '.*', match: classNameKeyMatch },
+  { kind: 'attribute', name: '.*', match: classNameKeyMatch },
 ];
+
+// @codocs [[피그마 연동:토큰 사용 강제]]
+// JSX `style` 객체에 값을 직접(문자열·숫자 리터럴, 식이 없는 템플릿) 쓰지 않는다. 값은 토큰 클래스로 주고, style에는
+// 실행 중 계산한 값(식별자, 멤버 접근, 함수 호출, `${}`가 든 템플릿)만 둔다. 조건식·논리식으로 고른 객체도 본다.
+const styleObjects = ['', 'ConditionalExpression > ', 'LogicalExpression > '].map(
+  (wrapper) =>
+    `JSXAttribute[name.name="style"] > JSXExpressionContainer > ${wrapper}ObjectExpression > Property`,
+);
+const styleLiteralValues = [
+  'Literal.value',
+  'TemplateLiteral.value[expressions.length=0]',
+  'UnaryExpression.value > Literal.argument',
+];
+const styleValueRestrictions = styleObjects.flatMap((object) =>
+  styleLiteralValues.map((value) => ({
+    selector: `${object} > ${value}`,
+    message:
+      'style에 값을 직접 쓰지 않는다. 토큰 클래스를 쓰고, style에는 실행 중 계산한 값(끌기 위치 등)만 둔다.',
+  })),
+);
 
 // @codocs [[피그마 연동:토큰 사용 강제]]
 // lint는 `.join()` 앞의 배열을 읽지 못하므로 className 안에서는 `cn`으로 조합한다.
@@ -609,8 +640,8 @@ export default defineConfig(
   // @codocs [[피그마 연동:토큰 사용 강제]]
   // 임의 값(`bg-[#fff]`, `p-[13px]`, `bg-(--x)`)을 막고, 토큰에 없는 클래스(`bg-red-500`)를 막는다.
   {
-    files: [`${WEB_SRC}/**/*.{ts,tsx}`, `${DESIGN_SYSTEM}/src/**/*.{ts,tsx}`],
-    ignores: ['**/*.test.{ts,tsx}'],
+    files: tokenScopeFiles,
+    ignores: tokenScopeIgnores,
     plugins: { 'better-tailwindcss': betterTailwindcss },
     rules: {
       ...betterTailwindcss.configs['correctness-error'].rules,
@@ -896,6 +927,27 @@ export default defineConfig(
     files: defaultExportFiles,
     rules: {
       'no-restricted-syntax': restrictedSyntax([]),
+    },
+  },
+
+  // @codocs [[피그마 연동:토큰 사용 강제]]
+  // style 값 제한은 토큰 클래스 검사와 같은 파일(앱·디자인 시스템 소스, `*.test.*` 제외)에 건다.
+  // no-restricted-syntax는 블록마다 목록을 통째로 바꾸므로 default export 예외 파일은 따로 둔다(`[[a, b]]`는 둘 다 맞는 파일).
+  {
+    files: tokenScopeFiles,
+    ignores: [...tokenScopeIgnores, ...defaultExportFiles],
+    rules: {
+      'no-restricted-syntax': restrictedSyntax([
+        ...defaultExportRestrictions,
+        ...styleValueRestrictions,
+      ]),
+    },
+  },
+  {
+    files: tokenScopeFiles.flatMap((scope) => defaultExportFiles.map((file) => [scope, file])),
+    ignores: tokenScopeIgnores,
+    rules: {
+      'no-restricted-syntax': restrictedSyntax(styleValueRestrictions),
     },
   },
 
