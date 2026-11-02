@@ -66,3 +66,9 @@ _codocs:
   - `DragToFolder` 스토리의 끌어 놓을 탐색기 본문(고정 200×200)은 실제 자리인 탐색기 본문 크기 `size/explorer/content-*`(798×458)로 바꿨다. 스토리 테스트는 그대로 통과한다.
   - 이름 바꾸기 말풍선 간격 `BALLOON_OFFSET = 8`(탐색기·바탕화면)은 이름 있는 피그마 변수는 없지만, Tooltip이 꼬리를 `-top-spacing-sm`(8)에 두므로 같은 `mt-spacing-sm` 클래스로 바꾸고 상수를 지웠다. 탐색기는 `top-full mt-spacing-sm`, 바탕화면은 계산한 `top`에 `mt-spacing-sm`을 더한다. 주석에 적힌 꼬리 높이 8은 실제 토큰(`size/tooltip/tail-height`) 9와 다르다.
   - `scrollbar-width: none`은 디자인 시스템 `src/reset.css`의 `[data-scrollbar-hidden]`으로 옮겼다. 모션 견본 무대 배율은 `motion.css`의 `motion-stage-half`이고, 움직임이 아니라 동작 줄이기 목록에는 넣지 않았다.
+"스토리 테스트 부하 대응: 화면 크기 값과 선불러오기 방법": |
+  [[테스트 작성 규칙:스토리 테스트]]의 스토리 테스트가 CPU 부하에서 15초 제한을 넘기지 않게 한 수정에서 스스로 정한 것이다.
+  - 화면 크기: `vitest.storybook.config.ts`의 `test.browser.viewport`를 1600×900으로 두었다. `BREAKPOINTS`를 쓰려 했으나, 패키지 진입점은 Vite 설정 로더가 읽지 못하고(확장자 없는 import), 앱에서 상위 폴더 파일을 직접 가리키면 lint가 막고(`no-restricted-imports`, 인라인 예외도 꺼져 있다), 디자인 시스템 안에서 `./src/token-names`를 쓰면 로더 경고가 매번 나서 두 패키지 모두 값을 직접 적고 주석으로 `BREAKPOINTS`와 같은 값임을 밝혔다.
+  - 선불러오기: 의존 패키지(`react-dom/client`, `axe-core`)는 Vitest의 `optimizeDeps.include`로 미리 묶게 했다. `axe-core`는 pnpm 구조상 `@storybook/addon-a11y > axe-core`로 적었다. 앱 소스인 `katex-html` 지연 조각은 묶을 의존이 아니라 우리 모듈이라 `apps/web/vitest.storybook.setup.ts`(`setupFiles`)에서 먼저 `import()`한다.
+  - 정리: `.storybook/preview.ts`의 `beforeEach`가 `animation-play-state: paused !important`를 가진 `<head>`의 `<style>`을 지운다. Storybook `pauseAnimations`(`storybook/dist/preview/runtime.js`)가 넣는 멈춤 스타일은 속성이나 id가 없어 내용으로만 구별된다.
+  - 시험: 디자인 시스템 Button의 첫 스토리에 alt 없는 `<img>`를 넣으면 그 스토리 하나만 실패하고(`image-alt`) 뒤 두 스토리는 통과함을 확인하고 되돌렸다. 연쇄 실패를 직접 재현한 CPU 부하 시험은 하지 않았다.
