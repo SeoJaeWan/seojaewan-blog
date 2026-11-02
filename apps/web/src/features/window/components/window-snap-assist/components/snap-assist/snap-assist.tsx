@@ -96,6 +96,8 @@ export function SnapAssist(props: SnapAssistProps): JSX.Element {
                 nativeButton={false}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
+                // @codocs [[접근성:역할]]
+                aria-keyshortcuts="Delete"
                 render={card}
               />
             );

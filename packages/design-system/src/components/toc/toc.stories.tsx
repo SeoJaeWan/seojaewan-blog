@@ -38,10 +38,6 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     await step('펼친 상태로 제목과 children을 보인다', async () => {
-      await expect(canvas.getByText('목차').closest('[data-state]')).toHaveAttribute(
-        'data-state',
-        'expanded',
-      );
       await expect(canvas.getByText('항목')).toBeInTheDocument();
     });
 
@@ -66,10 +62,6 @@ export const Collapsed: Story = {
     const canvas = within(canvasElement);
 
     await step('바꾼 제목만 보이고 children은 그리지 않는다', async () => {
-      await expect(canvas.getByText('이 글의 목차').closest('[data-state]')).toHaveAttribute(
-        'data-state',
-        'collapsed',
-      );
       await expect(canvas.queryByText('항목')).not.toBeInTheDocument();
     });
   },

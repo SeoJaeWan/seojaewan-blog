@@ -143,8 +143,6 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
   return (
     <div
       {...divProps}
-      data-state={isInactive ? 'inactive' : 'active'}
-      data-placement={placement}
       className={cn(
         'flex flex-col overflow-clip',
         materialClassNames[material],

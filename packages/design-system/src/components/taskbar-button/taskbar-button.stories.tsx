@@ -45,17 +45,13 @@ type ClickStory = StoryObj<ClickArgs>;
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-/** label을 접근성 이름으로 갖는 버튼이고, 누르면 onClick을 부르며, icon으로 받은 아이콘을 그린다 */
+/** label을 접근성 이름으로 갖는 버튼이고, 누르면 onClick을 부른다 */
 export const Default: ClickStory = {
   args: { onClick: fn() },
   render: (args) => {
     const { onClick: handleClick } = args;
     return (
-      <TaskbarButton
-        label="파일 탐색기"
-        icon={<svg data-testid="custom-icon" aria-hidden="true" />}
-        onClick={handleClick}
-      />
+      <TaskbarButton label="파일 탐색기" icon={<svg aria-hidden="true" />} onClick={handleClick} />
     );
   },
   play: async ({ args, canvasElement, step }) => {
@@ -63,10 +59,6 @@ export const Default: ClickStory = {
 
     await step('label을 접근성 이름으로 갖는 버튼이다', async () => {
       await expect(canvas.getByRole('button', { name: '파일 탐색기' })).toBeInTheDocument();
-    });
-
-    await step('icon으로 받은 아이콘을 그린다', async () => {
-      await expect(canvas.getByTestId('custom-icon')).toBeInTheDocument();
     });
 
     await step('누르면 onClick을 부른다', async () => {

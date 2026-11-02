@@ -79,3 +79,8 @@ _codocs:
   - 선불러오기: 의존 패키지(`react-dom/client`, `axe-core`)는 Vitest의 `optimizeDeps.include`로 미리 묶게 했다. `axe-core`는 pnpm 구조상 `@storybook/addon-a11y > axe-core`로 적었다. 앱 소스인 `katex-html` 지연 조각은 묶을 의존이 아니라 우리 모듈이라 `apps/web/vitest.storybook.setup.ts`(`setupFiles`)에서 먼저 `import()`한다.
   - 정리: `.storybook/preview.ts`의 `beforeEach`가 `animation-play-state: paused !important`를 가진 `<head>`의 `<style>`을 지운다. Storybook `pauseAnimations`(`storybook/dist/preview/runtime.js`)가 넣는 멈춤 스타일은 속성이나 id가 없어 내용으로만 구별된다.
   - 시험: 디자인 시스템 Button의 첫 스토리에 alt 없는 `<img>`를 넣으면 그 스토리 하나만 실패하고(`image-alt`) 뒤 두 스토리는 통과함을 확인하고 되돌렸다. 연쇄 실패를 직접 재현한 CPU 부하 시험은 하지 않았다.
+"상태 속성 제거와 임시 역할 스토리 정리, Delete 키 힌트": |
+  - 위 "컴포넌트 테스트 전환(묶음 C)"에서 더한 `data-state`(WindowTitle·WindowFrame·Toc)와 `data-placement`(WindowFrame)를 지웠다. 스토리가 넘긴 값을 되돌려 보는 용도뿐이었고 제품 코드·CSS 선택자·E2E는 읽지 않았다. `data-indicator`(TaskbarButton)는 `taskbar-apps-layer.tsx`가 선택 표시로 쓰므로 남겼다. 이 항목이 말한 속성 이름 검토는 필요 없어졌다.
+  - 그 속성만 보던 스토리(WindowTitle·WindowFrame의 `Inactive`)를 지우고, `Default`·`Maximized`·`Toc`의 속성 확인 줄만 뺐다. SnapPreview `Default`, TaskbarPreviewList `Default`의 `play`, TaskbarButton `Default`의 아이콘 확인 단계와 `data-testid`를 지웠다.
+  - [[접근성:역할]]이 말하는 Delete 닫기에 `aria-keyshortcuts="Delete"`를 달았다. 요청에는 Chrome 탭과 창 미리보기 카드만 있었으나 같은 Delete 처리가 있는 탐색기 탭(`ExplorerTab`)과 Snap Assist 카드에도 같이 달았다. 탭은 div 속성이 바깥 상자로 가서 `role="tab"`인 `Tabs.Tab`에 닿지 않으므로 `BrowserTab`·`ExplorerTab` 컴포넌트에 직접 넣었고, 카드는 포커스를 받는 `Button`(쓰는 곳)에 달았다.
+  - `aria-keyshortcuts`는 스토리 `play`에서 확인하지 않는다. 넘긴 값이 그대로 나오는지만 보는 검사라서다. Delete로 닫히는 동작은 `chrome-window-layer.stories.tsx`와 `taskbar-apps-layer.stories.tsx`의 `play`가 이미 확인한다(탐색기 탭과 Snap Assist 카드 쪽은 확인하는 스토리가 있는지 따로 찾지 않았다).

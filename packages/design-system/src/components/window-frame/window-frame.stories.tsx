@@ -94,38 +94,6 @@ export const Default: Story = {
     await step('children을 내용 자리에 그린다', async () => {
       await expect(canvas.getByText('내용')).toBeInTheDocument();
     });
-
-    await step('떠 있는 활성 창이다', async () => {
-      const frame = canvas.getByText('내용').closest('[data-state]');
-      await expect(frame).toHaveAttribute('data-state', 'active');
-      await expect(frame).toHaveAttribute('data-placement', 'normal');
-    });
-  },
-};
-
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** inactive면 창과 제목이 비활성 상태다 */
-export const Inactive: Story = {
-  // 비활성 제목의 text-fill-tertiary는 흰 바탕에서 3.31:1이다. 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-  parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
-  render: () => (
-    <WindowFrame appIcon={null} inactive className="h-size-window-height w-size-window-width">
-      <p>내용</p>
-    </WindowFrame>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step('창과 제목이 비활성 상태다', async () => {
-      await expect(canvas.getByText('내용').closest('[data-state]')).toHaveAttribute(
-        'data-state',
-        'inactive',
-      );
-      await expect(canvas.getByText('창 제목').parentElement).toHaveAttribute(
-        'data-state',
-        'inactive',
-      );
-    });
   },
 };
 
@@ -149,13 +117,6 @@ export const Maximized: MaximizedStory = {
   },
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
-
-    await step('최대화된 창이다', async () => {
-      await expect(canvas.getByText('내용').closest('[data-placement]')).toHaveAttribute(
-        'data-placement',
-        'maximized',
-      );
-    });
 
     await step('복원 버튼과 닫기 버튼이 핸들러를 부른다', async () => {
       await userEvent.click(canvas.getByRole('button', { name: '이전 크기로 복원' }));
