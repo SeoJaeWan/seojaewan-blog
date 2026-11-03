@@ -20,9 +20,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 283,
+        "height": 255,
         "width": 258,
         "x": 0,
         "y": 0
@@ -139,6 +138,310 @@
             "type": "INSTANCE"
           },
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "asset": {
+                              "color": "text-fill/primary",
+                              "path": "icons/ic_fluent_open_20_regular"
+                            },
+                            "component": "ic_fluent_open_20_regular",
+                            "height": "size/icon/sm",
+                            "name": "icon",
+                            "size": {
+                              "h": 16,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/icon/sm"
+                          }
+                        ],
+                        "height": "size/icon/sm",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "leading",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/icon/sm"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 164
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": 1,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "열기",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "ENDING"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/md",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/xs",
+                        "spacing/md",
+                        "spacing/xs",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "base",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 28,
+                      "w": 216
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "MenuItem",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/2xs",
+                    "spacing/xs",
+                    "spacing/2xs",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "open action",
+                "properties": {
+                  "Kind": "Default",
+                  "Label": "열기",
+                  "Shortcut": "Ctrl+O",
+                  "Show icon": true,
+                  "Show shortcut": false,
+                  "State": "Rest",
+                  "Value": "100%"
+                },
+                "size": {
+                  "h": 32,
+                  "w": 224
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "asset": {
+                              "color": "text-fill/primary",
+                              "path": "icons/ic_fluent_link_20_regular"
+                            },
+                            "component": "ic_fluent_link_20_regular",
+                            "height": "size/icon/sm",
+                            "name": "icon",
+                            "size": {
+                              "h": 16,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/icon/sm"
+                          }
+                        ],
+                        "height": "size/icon/sm",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": "spacing/none",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "leading",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "FRAME",
+                        "width": "size/icon/sm"
+                      },
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 20,
+                          "w": 164
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": 1,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "링크",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "복사",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "ENDING"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "fills": [
+                      "subtle-fill/transparent"
+                    ],
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/md",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/xs",
+                        "spacing/md",
+                        "spacing/xs",
+                        "spacing/md"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "base",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 28,
+                      "w": 216
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "MenuItem",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/2xs",
+                    "spacing/xs",
+                    "spacing/2xs",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "copy link action",
+                "properties": {
+                  "Kind": "Default",
+                  "Label": "링크 복사",
+                  "Shortcut": "Ctrl+O",
+                  "Show icon": true,
+                  "Show shortcut": false,
+                  "State": "Rest",
+                  "Value": "100%"
+                },
+                "size": {
+                  "h": 32,
+                  "w": 224
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/sm",
@@ -153,7 +456,7 @@
             },
             "name": "Actions",
             "size": {
-              "h": 100,
+              "h": 72,
               "w": 224
             },
             "sizing": {
@@ -186,7 +489,7 @@
           "radius/overlay"
         ],
         "size": {
-          "h": 283,
+          "h": 255,
           "w": 258
         },
         "sizing": {

@@ -11,6 +11,11 @@ _codocs:
   - `shouldSelectOnMount` prop은 `State=Rest` 변형(선택하지 않은 모습)만을 위한 것이었고 앱과 FileItem·FileRow는 넘기지 않아(기본값 true) 지웠다. 마운트하면 늘 포커스를 주고 이름 전체를 선택한다. 앱 동작은 그대로다.
   - 그 prop만 보던 `NotSelected` 스토리를 지웠다. 선택·입력을 보는 `Default`, ref 합치기와 키 입력을 보는 `Controlled`는 남겼다.
   - 로컬 E2E는 돌리지 않았다. 앱 E2E가 3000번 포트를 고정으로 쓰는데 다른 작업자가 같은 컴퓨터에서 동시에 작업 중이라 다른 worktree의 서버를 시험할 수 있어서다. 이름 바꾸기를 지나는 E2E(`desktop-new-folder` 등)는 CI의 E2E 결과로 확인했다.
+"NavigationPane PR #481: Figma 스토리 되살림": |
+  - 피그마 `items` 슬롯 기본 내용(NavigationItem 여섯: 바탕 화면·Blog·React·Next.js·TypeScript·휴지통)과 같은 항목으로 `Figma` 스토리를 다시 만들었다. 아이콘은 앱 탐색 창과 같게 바탕 화면은 `ic_fluent_desktop_20_regular`(`text-text-fill-primary`), 폴더는 `images/file-folder`, 휴지통은 `images/file-recycle-bin-full`이다.
+  - 항목 너비는 피그마 원본 너비 240인 `w-size-navigation-item-width`를 항목마다 줬다. 탐색 창이 HUG라 항목이 너비를 정한다. 앱(`explorer-window-layer.tsx`)은 같은 자리에 값이 같은(240) `w-size-search-box-width`를 쓰고 있어 `w-size-navigation-item-width`로 바꿨다. 값이 같아 모양은 바뀌지 않는다.
+  - treeitem이 tree 안에 있어야 하므로 스토리에서 `NavigationPane`에 앱과 같은 `role="tree"`·`aria-label="탐색 창"`을 줬다.
+  - 넘긴 항목이 그려지는지만 보던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠다.
 "ExplorerAddressRow PR #479: 슬롯 기본 내용과 스토리 정리": |
   - 모든 스토리의 Items 슬롯에 피그마 Breadcrumb 기본 내용(`BreadcrumbItem` 바탕 화면·Blog)을 meta `args.items`로 넣었다. 동작 스토리가 쓰던 `경로 칸` 글자 상자는 지웠다.
   - [[테스트 작성 규칙:테스트 지침]] 4번(넘긴 값이 그대로 나오는지만 보는 검사)과 1번(모양은 캡처)에 따라 정리했다. `Disabled`(비활성 prop이 버튼에 넘어감), `Searching`(`searchValue`가 입력값이 됨) 스토리와, `Default`의 "desktop은 버튼 넷·검색 상자·경로를 그린다"·"`searchPlaceholder`로 안내 글자를 바꾼다" 단계, `Mobile`의 "뒤로·검색 버튼만 그린다" 단계를 지웠다. 버튼·검색 입력이 동작을 부르는 배선 검사와 모바일 검색 열기(포커스), desktop이 `search`를 무시하는 검사는 남겼다.
@@ -70,6 +75,10 @@ _codocs:
   - 한글 글자 폭이 소수라 피그마가 올림한 HUG 폭과 0.5~1px 다르다(Breadcrumb, DropDownButton, SectionHeader). 명령 모음(Explorer/Commands)은 이 차이가 쌓여 오른쪽 끝이 2px쯤 어긋난다.
   - 하위 메뉴 그림자가 피그마 조립 그림에서만 진하다(Menu/Desktop 등 5개 조립). 위 메뉴와 같은 효과 스타일이고 코드도 같은 토큰이라, 피그마가 중첩을 그린 결과로 봤다.
   - PostBlocks의 코드 줄 높이: 피그마 글자 상자는 10줄에 201, 코드는 200이다. 코드 블록 위쪽 전체가 1px 어긋나 보이는 원인이다.
+"Menu PR #468: 슬롯 기본 내용 스토리와 쓰지 않는 material prop": |
+  - `Figma` 스토리의 children(Flyout Content 슬롯)은 피그마 슬롯 기본 내용대로 Flyout과 같은 메뉴 항목 넷과 구분선이다. Base UI 메뉴 밖이라 항목은 `MenuItem standalone`으로 그렸다. 너비는 Menu가 가진 `size/menu/width`라 감싸지 않았다.
+  - 옛 `Default` 스토리(children에 넣은 항목이 메뉴 안에 있는지 보는 `play`)는 `Figma` 스토리가 다루므로 지웠다.
+  - 피그마 Menu는 안쪽 Flyout의 `Material`을 노출하지 않고(속성 정의가 비어 있다) 앱에서도 넘기는 곳이 없어, 코드 Menu의 `material` prop을 지웠다. Menu는 늘 Flyout 기본값(아크릴)이다. 이 PR에서 피그마가 바뀐 것은 아니고 전부터 그랬다.
 "8단계 E2E: 핵심 흐름을 5~10개보다 많이 둠": |
   [[테스트 작성 규칙:E2E]]는 핵심 흐름 5~10개를 두라고 하지만, 8단계에서 흐름을 영역별로 나눠 15개를 더해 E2E가 41개가 됐다. 흐름 하나가 문서 섹션 하나씩에 대응하게 쓰다 보니 넘었다. 실제 CI에서 13초 안에 도는 크기다. 5~10개로 줄일지 문서를 41개 수준으로 고칠지 검토가 필요하다.
 "8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
@@ -160,6 +169,13 @@ _codocs:
   - 피그마 `Content` 슬롯은 가로 자동 배치(세로 가운데)인데 코드의 슬롯 상자는 블록이라, 앱이 안에 `flex w-full items-center` 상자를 하나 더 두고 있었다. 슬롯 상자를 `flex items-center`로 바꾸고 `start-menu-panel.tsx`의 덧상자를 지웠다(ProfileButton은 그대로 부모 채움).
   - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 ProfileButton(`images/avatar-profile`, "서재완", 부모 채움)과 전원 IconButton(`subtle`, `ic_fluent_power_20_regular`, 이름 "전원" — 앱 `StartPowerButton`과 같다)을 넣었다. 너비는 `w-size-start-menu-footer-width`(638)다. 내용 글자 하나만 확인하던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]]대로 지웠다.
   - 스토리 배치를 `padded`로 두었다(PinnedTile과 같은 이유). 기본 `centered`에서는 높이 65가 y=.5에 놓여 위 선과 아래 가장자리가 두 줄로 번졌다. 캡처 도구의 정수 위치 맞춤(`integerShift`)이 꼭 0.5만큼 옮길 때는 효과가 없는 것으로 보이나, 도구는 고치지 않았다.
+"컴포넌트 PR #478 BestMatchCard: Actions 슬롯 세로 배치와 Figma 스토리": |
+  - 피그마 `Actions` 슬롯은 세로 자동 배치(간격 `spacing/sm`)인데 코드의 슬롯 상자는 블록이라, 쓰는 곳(앱 `search-body.tsx`)이 `flex flex-col items-start gap-spacing-sm` 상자를 따로 두고 있었다. 슬롯 상자를 `flex flex-col gap-spacing-sm`으로 바꾸고 앱의 덧상자를 조각(`<>`)으로 바꿨다. MenuItem은 원래 `w-full`이라 `items-start`를 빼도 모양이 같다. SearchResults `Figma` 스토리의 같은 덧상자도 지웠다.
+  - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 MenuItem 둘(열기 `ic_fluent_open_20_regular`, 링크 복사 `ic_fluent_link_20_regular`, `standalone`)을 넣었다. 제목·부가 정보는 기본값이라 넘기지 않고, 아이콘은 `ImageAsset`(`images/file-document`)이다. 배치는 `padded`다(높이 255가 홀수라서다).
+  - 자리 단추를 넣던 `WithAction` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 넘긴 글자·구분선·단추가 나오는지만 보았다.
 "PR #474 ShellSurface: Material 속성 삭제": |
   `ShellSurface`의 `material` prop과 `ShellSurfaceMaterial` 타입, `solid` 분기를 지우고 아크릴 칠·효과(`material-acrylic-base surface-shell-acrylic`)를 상수 하나로 고정했다. Start·검색 패널 조립의 `material="acrylic"`도 지웠다. `Default` 동작 스토리는 `material="solid"`를 쓰고 있어 속성만 뺐다(동작 확인은 같다). Content 슬롯은 모든 변형에서 비어 있어 `Figma` 스토리는 슬롯을 비운 채 둔다.
   [[디자인 시스템:컴포넌트 조립 규칙]]의 `Material` 변형 예 목록에서 ShellSurface를 빼 "(Flyout, WindowFrame 등)"으로 고쳤다(허락받은 작은 문서 맞춤).
+"PR #472 Taskbar: Material 속성 삭제와 Figma 스토리 다시 만들기": |
+  `Taskbar`의 `material` prop과 `TaskbarMaterial` 타입, `solid` 분기를 지우고 `material-acrylic-base`를 바로 건다. 조립이 쓰지 않아 있던 `Solid` 동작 스토리도 지웠다. `Default`·`Empty` 동작 스토리는 슬롯 prop의 동작을 보므로 남겼다.
+  지웠던 `Figma` 스토리를 다시 만들었다. 슬롯은 `export.json`의 기본 내용과 같게 가운데에 시작 버튼(`logo-windows`)·검색상자(`appearance=taskbar`, 문구 "검색")·파일 탐색기·Chrome(`TaskbarButton`), 오른쪽에 `SystemTray`(오후 3:24, 2026-10-20)를 넣었다. 너비는 `w-size-taskbar-width`, 아이콘 라벨은 접근성 이름("시작", "파일 탐색기", "Chrome")이다. 앱 아이콘은 다른 `Figma` 스토리처럼 `ImageAsset`을 쓴다. 코드 `Taskbar`의 `center`·`right`에는 기본값을 두지 않았다.
