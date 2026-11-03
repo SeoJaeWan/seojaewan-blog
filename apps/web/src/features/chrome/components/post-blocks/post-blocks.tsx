@@ -360,10 +360,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
             title={renderRichText(block.richText)}
             defaultExpanded={isTopLevel && expandedToggleIndexes.includes(index)}
           >
-            {/* 토글 내용은 꺾쇠 자리(24)만큼 들여 쓴다 */}
-            <div className="flex w-full flex-col gap-spacing-xs pl-spacing-2xl">
-              {renderBlocks(block.children ?? [], depth + 1)}
-            </div>
+            {renderBlocks(block.children ?? [], depth + 1)}
           </Toggle>
         );
       case 'table':

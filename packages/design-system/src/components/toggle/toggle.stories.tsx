@@ -9,11 +9,12 @@ const meta = {
     state: { control: 'inline-radio', options: ['expanded', 'collapsed'] },
   },
   // 피그마 State 변형(Expanded/Collapsed)을 isExpanded로 옮긴다. 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다.
-  // 피그마처럼 Content 슬롯은 비워 둔다. 빈 슬롯의 미리보기 높이(100)는 토큰이 없고, 슬롯이 보이는 Expanded는
-  // 빈 HUG 변형이라 조립 캡처가 확인한다.
+  // Content 슬롯에는 피그마 슬롯 기본 내용(글 본문 글자)을 넣는다. Collapsed는 내용을 그리지 않는다.
   render: ({ state }: { state: 'expanded' | 'collapsed' }) => (
     <div className="w-size-post-width">
-      <Toggle isExpanded={state === 'expanded'} />
+      <Toggle isExpanded={state === 'expanded'}>
+        <p className="type-body-large text-text-fill-primary">토글을 펼치면 보이는 글이다.</p>
+      </Toggle>
     </div>
   ),
 } satisfies Meta<{ state: 'expanded' | 'collapsed' }>;
