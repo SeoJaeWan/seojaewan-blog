@@ -94,7 +94,6 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
       popup={
         <Flyout
           material="solid"
-          padding="compact"
           className={width === undefined ? FIGMA_WIDTH_CLASS_NAME : undefined}
           // 주소창 너비는 창 크기에 따라 실행 중에 정해지는 값이라 인라인 스타일로 준다.
           style={width === undefined ? undefined : { width }}
