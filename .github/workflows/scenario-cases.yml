@@ -58,10 +58,13 @@ jobs:
         id: pages
 
       # 앞서 올린 보고서의 실행 기록을 읽는다. 처음이거나 읽지 못하면 이번 실행부터 쌓는다.
+      # Pages는 응답을 10분 캐시하므로, 바로 앞 배포의 기록을 받도록 실행마다 다른 쿼리를 붙인다.
       - name: Download run history
         env:
           PAGES_URL: ${{ steps.pages.outputs.base_url }}
-        run: curl -fsSL "$PAGES_URL/history.json" -o tools/scenario-cases/history.json || echo '[]' > tools/scenario-cases/history.json
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          curl -fsSL -H 'Cache-Control: no-cache' "$PAGES_URL/history.json?run=$RUN_ID" -o tools/scenario-cases/history.json || echo '[]' > tools/scenario-cases/history.json
 
       - name: Build report page
         env:
