@@ -710,7 +710,7 @@ function filmStrip(row) {
       h(
         'figure',
         { class: frame.failed ? 'frame failed' : 'frame' },
-        h('img', { src: frame.src, alt: `${formatDuration(frame.atMs)} 화면`, loading: 'lazy' }),
+        h('img', { src: frame.src, alt: `${formatDuration(frame.atMs)} 화면` }),
         h(
           'figcaption',
           { class: 'mono' },
