@@ -112,11 +112,6 @@ const contentInsetClassNames = {
   desktop: 'px-spacing-3xl',
   mobile: 'px-spacing-lg',
 } as const satisfies Record<StartBodyDevice, string>;
-// 검색 결과 화면의 내용 여백이다. 좌우 여백과 아래 24를 검색 본문의 내용 칸(모바일은 스크롤되는 칸)에 준다.
-const resultsContentClassNames = {
-  desktop: 'px-spacing-3xl pb-spacing-2xl',
-  mobile: 'px-spacing-lg pb-spacing-2xl',
-} as const satisfies Record<StartBodyDevice, string>;
 
 /**
  * Start 메뉴 안의 본문(피그마 조립 `Start/Body`)을 그린다. 고정됨과 모두 목록(간단히·그리드·범주), 글자 격자, 검색 결과 중 하나다.
@@ -133,6 +128,7 @@ const resultsContentClassNames = {
 export function StartBody(props: StartBodyProps): JSX.Element {
   const { device = 'desktop' } = props;
   switch (props.view) {
+    // 검색 결과 화면은 검색 본문을 그대로 쓴다. 좌우 여백은 검색 본문이 갖고, Start는 아래 24만 같은 칸(모바일은 스크롤되는 칸)에 더한다.
     case 'results':
       return (
         <SearchBody
@@ -143,7 +139,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
           onItemOpen={props.onItemOpen}
           onCopyLink={props.onCopyLink}
           className={props.className}
-          contentClassName={resultsContentClassNames[device]}
+          contentClassName="pb-spacing-2xl"
         />
       );
     case 'no-results':
@@ -152,7 +148,7 @@ export function StartBody(props: StartBodyProps): JSX.Element {
           view="no-results"
           device={props.device}
           className={props.className}
-          contentClassName={resultsContentClassNames[device]}
+          contentClassName="pb-spacing-2xl"
         />
       );
     case 'jump-list':
