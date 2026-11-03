@@ -351,7 +351,6 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
           placement: device === 'mobile' ? 'maximized' : target.placement,
           onMinimize: ignoreControl,
           onClose: ignoreControl,
-          className: 'size-full',
         })}
       </WindowThumbnail>
     );

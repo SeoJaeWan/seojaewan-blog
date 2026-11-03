@@ -1094,7 +1094,6 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       <ExplorerContent
         {...contentProps}
         device={device}
-        className="min-h-size-none w-full flex-flex-fill"
         // 같은 탭에서 위치를 옮기면 항목 자리를 새로 그려 스크롤을 맨 위로 돌린다.
         itemsKey={location ?? DESKTOP_LOCATION_KEY}
         onRefresh={() => {

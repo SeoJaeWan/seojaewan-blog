@@ -1,6 +1,9 @@
+import windowExplorerExport from '@figma/patterns/window/explorer/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 import { expect, fireEvent, fn, screen, userEvent, waitFor, within } from 'storybook/test';
+
+import { FigmaFrame } from '@seojaewan/design-system/story';
 
 import {
   getStoryCenter,
@@ -59,10 +62,6 @@ function ExplorerWindowLayerHost(props: ExplorerWindowLayerHostProps): JSX.Eleme
         placement: 'normal',
         onMinimize: handleMinimize,
         onClose,
-        className:
-          device === 'mobile'
-            ? 'h-size-window-explorer-height w-full'
-            : 'h-size-window-explorer-height w-size-window-explorer-width',
       }}
     />
   );
@@ -70,7 +69,7 @@ function ExplorerWindowLayerHost(props: ExplorerWindowLayerHostProps): JSX.Eleme
 
 // @codocs [[테스트 작성 규칙:스토리 테스트]]
 // 동작 스토리다. 실제 창 저장소와 작업 공간 저장소에 이은 탐색기 창 층을 그린다. 창 층이 하는 일(창 내용을 저장소에서 읽어 넘기기)은
-// 스토리의 틀이 대신한다.
+// 스토리의 틀이 대신한다. 창 크기는 창 층이 정하므로 FigmaFrame이 피그마 `Window/Explorer` 크기로 감싼다.
 const meta = {
   title: 'Behavior/FileExplorer/ExplorerWindowLayer',
   parameters: {
@@ -89,7 +88,11 @@ const meta = {
   args: { device: 'desktop', location: BLOG_FOLDER_ID, onClose: fn() },
   render: (args) => {
     const { device, onClose: handleClose } = args;
-    return <ExplorerWindowLayerHost device={device} onClose={handleClose} />;
+    return (
+      <FigmaFrame source={windowExplorerExport} args={{ device }}>
+        <ExplorerWindowLayerHost device={device} onClose={handleClose} />
+      </FigmaFrame>
+    );
   },
 } satisfies Meta<LayerStoryArgs>;
 

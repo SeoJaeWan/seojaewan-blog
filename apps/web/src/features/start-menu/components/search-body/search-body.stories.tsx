@@ -1,4 +1,7 @@
+import searchBodyExport from '@figma/patterns/search/body/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { SearchBody } from './search-body';
 import {
@@ -12,12 +15,6 @@ import {
 const VIEWS = ['before-typing', 'results', 'no-results'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
-// 본문은 크기를 갖지 않고 검색 패널이 정하므로 피그마 원본 크기(size/638×654, size/388×522)로 감싸 그린다.
-const SIZE_CLASS_NAMES = {
-  desktop: 'w-size-shell-content-width h-size-search-body-height',
-  mobile: 'w-size-shell-mobile-content-width h-size-search-body-mobile-height',
-} as const;
-
 type FigmaArgs = {
   view: (typeof VIEWS)[number];
   device: (typeof DEVICES)[number];
@@ -25,6 +22,7 @@ type FigmaArgs = {
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 데이터는 피그마 조립과 같다.
+// 본문은 크기를 갖지 않고 검색 패널이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다.
 const meta = {
   title: 'Patterns/Search/Body',
   args: { view: 'before-typing', device: 'desktop' },
@@ -32,15 +30,14 @@ const meta = {
     view: { control: 'inline-radio', options: VIEWS },
     device: { control: 'inline-radio', options: DEVICES },
   },
+  decorators: [figmaFrame(searchBodyExport)],
   render: (args) => {
-    const className = SIZE_CLASS_NAMES[args.device];
     switch (args.view) {
       case 'before-typing':
         return (
           <SearchBody
             view="before-typing"
             device={args.device}
-            className={className}
             recent={SEARCH_RECENT}
             recommended={
               args.device === 'mobile'
@@ -50,16 +47,9 @@ const meta = {
           />
         );
       case 'results':
-        return (
-          <SearchBody
-            view="results"
-            device={args.device}
-            className={className}
-            results={SEARCH_RESULTS}
-          />
-        );
+        return <SearchBody view="results" device={args.device} results={SEARCH_RESULTS} />;
       case 'no-results':
-        return <SearchBody view="no-results" device={args.device} className={className} />;
+        return <SearchBody view="no-results" device={args.device} />;
     }
   },
 } satisfies Meta<FigmaArgs>;

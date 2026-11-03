@@ -64,7 +64,10 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
               className="min-w-size-none flex-flex-fill"
             />
           </div>
-          <div className="flex min-h-size-none w-full flex-flex-fill flex-col">{children}</div>
+          {/* 본문 자리다. 피그마 `Start/Body`는 FILL이라 넣은 본문을 남는 높이로 늘린다(너비는 세로 배치가 늘린다) */}
+          <div className="flex min-h-size-none w-full flex-flex-fill flex-col [&>*]:min-h-size-none [&>*]:flex-flex-fill">
+            {children}
+          </div>
         </div>
         <StartMenuFooter className="w-full shrink-shrink-none">
           <ProfileButton

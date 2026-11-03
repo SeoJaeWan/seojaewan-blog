@@ -39,8 +39,6 @@ export type StartBodyDevice = 'desktop' | 'mobile';
 type StartBodyCommonProps = {
   /** 피그마 Device. 모바일은 고정 항목 칸(89)과 내용 좌우 여백(16)이 좁다 */
   device?: StartBodyDevice;
-  /** 바깥 배치 클래스. 크기는 쓰는 곳(Start 메뉴)이 정한다 */
-  className?: string;
 };
 
 type StartListViewProps = StartBodyCommonProps & {
@@ -138,18 +136,12 @@ export function StartBody(props: StartBodyProps): JSX.Element {
           selectedId={props.selectedId}
           onItemOpen={props.onItemOpen}
           onCopyLink={props.onCopyLink}
-          className={props.className}
           contentClassName="pb-spacing-2xl"
         />
       );
     case 'no-results':
       return (
-        <SearchBody
-          view="no-results"
-          device={props.device}
-          className={props.className}
-          contentClassName="pb-spacing-2xl"
-        />
+        <SearchBody view="no-results" device={props.device} contentClassName="pb-spacing-2xl" />
       );
     case 'jump-list':
       return (
@@ -158,7 +150,6 @@ export function StartBody(props: StartBodyProps): JSX.Element {
           className={cn(
             'flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
             contentInsetClassNames[device],
-            props.className,
           )}
         />
       );
@@ -219,7 +210,7 @@ function StartJumpListView(props: StartJumpListViewProps): JSX.Element {
  * @param props
  */
 function StartListView(props: StartListViewProps): JSX.Element {
-  const { view, groups, device = 'desktop', className } = props;
+  const { view, groups, device = 'desktop' } = props;
   const tileClassName = tileClassNames[device];
   // 첫 글자로 묶은 보기(간단히·그리드)만 글자 격자로 이동한다. 범주 보기의 머리글은 종류 이름이라 누를 수 없다.
   const isJumpListEnabled = view !== 'category';
@@ -360,16 +351,16 @@ function StartListView(props: StartListViewProps): JSX.Element {
   const isListHidden = jumpList.status === 'entered';
 
   return (
+    // 본문은 쓰는 곳이 준 높이를 넘지 않고 안의 ScrollArea로 스크롤하므로, 내용 높이보다 줄어들 수 있게 최소 높이를 0으로 둔다.
     <div
       ref={bodyRef}
       {...jumpList.presenceProps}
       className={cn(
-        'relative',
+        'relative min-h-size-none',
         jumpList.isMounted &&
           (jumpList.status === 'exiting'
             ? 'motion-start-jump-list-exit'
             : 'motion-start-jump-list-enter'),
-        className,
       )}
     >
       <div

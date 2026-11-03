@@ -74,8 +74,6 @@ type ExplorerContentProps = Pick<
     itemsKey?: string;
     /** 본문에서 키를 눌렀을 때(Backspace, Alt + ← / → 같은 이동 단축키). 본문 어디를 눌러도 키를 받도록 본문이 포커스를 받는다 */
     onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
-    /** 바깥 배치 클래스. 크기는 쓰는 곳(창)이 정한다 */
-    className?: string;
   };
 
 /**
@@ -115,7 +113,6 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
     dropTarget,
     itemsAreaProps,
     renderItemsArea,
-    className,
   } = props;
   const isDesktop = device === 'desktop';
   return (
@@ -129,10 +126,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
             [DROP_TARGET_ATTRIBUTE]: dropTarget.id,
             [DROP_TARGET_NAME_ATTRIBUTE]: dropTarget.name,
           })}
-      className={cn(
-        'flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none',
-        className,
-      )}
+      className="flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none"
     >
       <ExplorerAddressRow
         device={device}

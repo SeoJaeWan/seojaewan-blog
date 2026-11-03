@@ -26,8 +26,6 @@ type TaskbarDefaultProps = {
   onSearchClick?: MouseEventHandler<HTMLButtonElement>;
   /** 검색 패널이 열려 있는지. 검색 버튼(search=button)의 `aria-expanded`가 된다. 주지 않으면 달지 않는다 */
   isSearchOpen?: boolean;
-  /** 바깥 배치 클래스. 너비는 쓰는 곳이 정한다 */
-  className?: string;
 };
 
 /**
@@ -41,19 +39,9 @@ type TaskbarDefaultProps = {
  * @param props
  */
 export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
-  const {
-    search = 'box',
-    apps,
-    time,
-    date,
-    isStartOpen,
-    searchBoxProps,
-    isSearchOpen,
-    className,
-  } = props;
+  const { search = 'box', apps, time, date, isStartOpen, searchBoxProps, isSearchOpen } = props;
   return (
     <Taskbar
-      className={className}
       center={
         <>
           <TaskbarButton

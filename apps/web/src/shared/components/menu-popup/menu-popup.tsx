@@ -100,13 +100,21 @@ export type MenuPopupEntry =
   | MenuPopupZoom
   | MenuPopupSeparator;
 
+export type MenuPopupWidth = 'default' | 'view-options';
+
+// 메뉴 바탕(Menu) 너비다. 피그마 메뉴 조립이 Menu 인스턴스에 연결한 너비 변수로, 기본은 Menu 자신의 너비(size/menu/width)이고
+// `Menu/ViewOptions`만 size/menu/view-options-width다. 항목(MenuItem)은 늘 바탕 너비를 채운다.
+const menuWidthClassNames = {
+  default: undefined,
+  'view-options': 'w-size-menu-view-options-width',
+} as const satisfies Record<MenuPopupWidth, string | undefined>;
+const DEFAULT_MENU_WIDTH: MenuPopupWidth = 'default';
+
 type MenuPanelProps = {
   /** 메뉴 항목과 구분선. 위에서부터 그린다 */
   items: readonly MenuPopupEntry[];
-  /** 메뉴 바탕(Menu) 너비를 바꾸는 클래스. 없으면 Menu 기본 너비다 */
-  className?: string;
-  /** 항목 줄 너비를 바꾸는 클래스. 없으면 MenuItem 기본 너비다 */
-  itemClassName?: string;
+  /** 메뉴 바탕 너비(피그마 메뉴 조립의 Menu 너비). 없으면 Menu 기본 너비다 */
+  width?: MenuPopupWidth;
 };
 
 // 피그마 Popover의 트리거(하위 메뉴 항목)와 팝업(하위 메뉴) 사이 간격(spacing/4)이다.
@@ -125,10 +133,10 @@ type MenuPopupProps = MenuPanelProps &
  * @param props
  */
 export function MenuPopup(props: MenuPopupProps): JSX.Element {
-  const { items, className, itemClassName, ...popupProps } = props;
+  const { items, width, ...popupProps } = props;
   return (
     <BaseMenu.Popup {...popupProps} className="motion-flyout-enter outline-none">
-      <MenuPanel items={items} className={className} itemClassName={itemClassName} />
+      <MenuPanel items={items} width={width} />
     </BaseMenu.Popup>
   );
 }
@@ -139,7 +147,7 @@ export function MenuPopup(props: MenuPopupProps): JSX.Element {
  */
 function MenuPanel(props: MenuPanelProps): JSX.Element {
   return (
-    <Menu className={props.className}>
+    <Menu className={menuWidthClassNames[props.width ?? DEFAULT_MENU_WIDTH]}>
       {props.items.map(
         /**
          * 메뉴 한 줄을 그린다.
@@ -148,11 +156,7 @@ function MenuPanel(props: MenuPanelProps): JSX.Element {
          * @returns 메뉴 요소
          */
         (entry, index) => (
-          <MenuEntry
-            key={entryKey(entry, index)}
-            entry={entry}
-            itemClassName={props.itemClassName}
-          />
+          <MenuEntry key={entryKey(entry, index)} entry={entry} />
         ),
       )}
     </Menu>
@@ -182,16 +186,15 @@ function entryKey(entry: MenuPopupEntry, index: number): string {
  * 메뉴 한 줄을 종류에 맞는 MenuItem이나 구분선으로 그린다.
  * @param props
  * @param props.entry 메뉴 한 줄
- * @param props.itemClassName 항목 줄 너비 클래스
  */
-function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JSX.Element {
-  const { entry, itemClassName } = props;
+function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
+  const { entry } = props;
   switch (entry.kind) {
     case 'separator':
       // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다. 너비는 메뉴 바탕(Flyout)이 채운다.
       return <MenuSeparator />;
     case 'submenu':
-      return <SubmenuEntry entry={entry} itemClassName={itemClassName} />;
+      return <SubmenuEntry entry={entry} />;
     case 'zoom': {
       const { onZoomOut: handleZoomOut, onZoomIn: handleZoomIn } = entry;
       return (
@@ -215,7 +218,6 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
           checked={entry.checked}
           disabled={entry.disabled}
           onCheckedChange={handleCheckedChange}
-          className={itemClassName}
         />
       );
     }
@@ -231,13 +233,7 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
              * @returns 라디오 항목
              */
             (option) => (
-              <MenuItem
-                key={option.value}
-                kind="radio"
-                label={option.label}
-                value={option.value}
-                className={itemClassName}
-              />
+              <MenuItem key={option.value} kind="radio" label={option.label} value={option.value} />
             ),
           )}
         </BaseMenu.RadioGroup>
@@ -253,7 +249,6 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
           shortcut={entry.shortcut}
           disabled={entry.disabled}
           onClick={handleClick}
-          className={itemClassName}
         />
       );
     }
@@ -266,21 +261,14 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
  * 같은 자리에 두는데, 코드는 하위 메뉴가 부모 메뉴 바탕 밖의 팝업이라 그림자를 한 번만 그려 모습이 같다.
  * @param props
  * @param props.entry 하위 메뉴 항목
- * @param props.itemClassName 항목 줄 너비 클래스
  */
-function SubmenuEntry(props: { entry: MenuPopupSubmenu; itemClassName?: string }): JSX.Element {
-  const { entry, itemClassName } = props;
+function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
+  const { entry } = props;
   if (entry.entries !== undefined) {
     return (
       // 실제 하위 메뉴다. Base UI가 마우스·키보드로 여닫고, 피그마 Popover `Right-Start`처럼 항목 오른쪽에 위를 맞춰 간격(spacing/4)을 두고 붙인다.
       <BaseMenu.SubmenuRoot>
-        <MenuItem
-          kind="submenu"
-          label={entry.label}
-          icon={entry.icon}
-          disabled={entry.disabled}
-          className={itemClassName}
-        />
+        <MenuItem kind="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
             <MenuPopup items={entry.entries} />
@@ -293,13 +281,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu; itemClassName?: string }
   const trigger = (
     // 하위 메뉴를 연 상태면 Base UI가 항목에 data-popup-open을 달아 MenuItem이 강조 색을 칠한다.
     <BaseMenu.SubmenuRoot open={isExpanded}>
-      <MenuItem
-        kind="submenu"
-        label={entry.label}
-        icon={entry.icon}
-        disabled={entry.disabled}
-        className={itemClassName}
-      />
+      <MenuItem kind="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
     </BaseMenu.SubmenuRoot>
   );
   if (entry.submenu === undefined) {

@@ -1,4 +1,7 @@
+import searchPanelExport from '@figma/patterns/search/panel/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { SearchBody } from '@/features/start-menu/components/search-body/search-body';
 import {
@@ -26,6 +29,7 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: DEVICES },
   },
+  decorators: [figmaFrame(searchPanelExport)],
   render: (args) => (
     <SearchPanel
       device={args.device}
@@ -34,7 +38,6 @@ const meta = {
       <SearchBody
         view="before-typing"
         device={args.device}
-        className="min-h-size-none w-full flex-flex-fill"
         recent={SEARCH_RECENT}
         recommended={
           args.device === 'mobile'
