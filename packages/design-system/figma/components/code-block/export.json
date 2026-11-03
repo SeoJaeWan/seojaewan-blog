@@ -13,9 +13,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 162,
+        "height": 102,
         "width": 720,
         "x": 0,
         "y": 0
@@ -138,6 +137,148 @@
             "type": "FRAME"
           },
           {
+            "children": [
+              {
+                "name": "code",
+                "size": {
+                  "h": 40,
+                  "w": 238
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "const",
+                      "fill": "code-syntax/keyword",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "post",
+                      "fill": "code-syntax/variable",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "=",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "use",
+                      "fill": "code-syntax/function",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "(",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "fetchPost",
+                      "fill": "code-syntax/function",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "(",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "slug",
+                      "fill": "code-syntax/variable",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "));\n",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "return",
+                      "fill": "code-syntax/keyword-control",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "<",
+                      "fill": "code-syntax/tag",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "Article",
+                      "fill": "code-syntax/type",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "post",
+                      "fill": "code-syntax/attribute",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "={",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "post",
+                      "fill": "code-syntax/variable",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "}",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "code-syntax/text",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": "/>",
+                      "fill": "code-syntax/tag",
+                      "textStyle": "Code"
+                    },
+                    {
+                      "characters": ";",
+                      "fill": "code-syntax/punctuation",
+                      "textStyle": "Code"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/none",
@@ -152,7 +293,7 @@
             },
             "name": "Code",
             "size": {
-              "h": 100,
+              "h": 40,
               "w": 694
             },
             "sizing": {
@@ -185,7 +326,7 @@
           "radius/overlay"
         ],
         "size": {
-          "h": 162,
+          "h": 102,
           "w": 720
         },
         "sizing": {
