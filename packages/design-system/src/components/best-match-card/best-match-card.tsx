@@ -10,7 +10,7 @@ type BestMatchCardProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   title?: string;
   /** 피그마 TEXT 속성 Meta. 제목 아래 부가 정보다 */
   meta?: string;
-  /** 피그마 `Actions` 슬롯. 구분선 아래에 결과의 동작 목록을 넣는다 */
+  /** 피그마 `Actions` 슬롯. 구분선 아래에 결과의 동작 목록을 세로로 넣는다 */
   children?: ReactNode;
 };
 
@@ -38,7 +38,7 @@ export function BestMatchCard(props: BestMatchCardProps): JSX.Element {
         {meta}
       </p>
       <Separator className="w-full" />
-      <div className="w-full shrink-shrink-none">{children}</div>
+      <div className="flex w-full shrink-shrink-none flex-col gap-spacing-sm">{children}</div>
     </div>
   );
 }

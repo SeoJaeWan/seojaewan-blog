@@ -78,8 +78,7 @@ test.afterAll(
 test.use({ deviceScaleFactor: scale });
 
 for (const target of targets) {
-  // 빈 HUG 슬롯이 있는 변형은 단독 캡처에서 뺀다(run-capture.ts가 "조립에서 확인" 줄을 만든다).
-  for (const variant of target.variants.filter((item) => !item.emptyHugSlot)) {
+  for (const variant of target.variants) {
     test(`${target.id} ${variant.variant}`, async ({ page }) => {
       const row = await captureVariant(page, target, variant);
       expect(row.error ?? '').toBe('');

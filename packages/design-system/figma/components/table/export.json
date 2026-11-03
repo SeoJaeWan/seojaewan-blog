@@ -9,9 +9,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 101,
+        "height": 112,
         "width": 720,
         "x": 0,
         "y": 0
@@ -21,6 +20,617 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "훅",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Strong"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "fills": [
+                      "subtle-fill/secondary"
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "칸 내용",
+                      "Text": "훅",
+                      "Type": "Header"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "하는",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Strong"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body Strong"
+                            },
+                            {
+                              "characters": "일",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body Strong"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "fills": [
+                      "subtle-fill/secondary"
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "칸 내용",
+                      "Text": "하는 일",
+                      "Type": "Header"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "row",
+                "size": {
+                  "h": 37,
+                  "w": 719
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "use",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "use",
+                      "Text": "use",
+                      "Type": "Body"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "Promise",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "와",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " Context",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "를",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "렌더링",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "중에",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "읽는다",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "Promise와 Context를 렌더링 중에 읽는다",
+                      "Text": "Promise와 Context를 렌더링 중에 읽는다",
+                      "Type": "Body"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "row",
+                "size": {
+                  "h": 37,
+                  "w": 719
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "useActionState",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "useActionState",
+                      "Text": "useActionState",
+                      "Type": "Body"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "text",
+                        "size": {
+                          "h": 20,
+                          "w": 342.5
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "폼",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "제출",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "결과와",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "대기",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "상태를",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Body"
+                            },
+                            {
+                              "characters": "다룬다",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Body"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "component": "TableCell",
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm",
+                        "spacing/sm"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "cell",
+                    "properties": {
+                      "Body Text": "폼 제출 결과와 대기 상태를 다룬다",
+                      "Text": "폼 제출 결과와 대기 상태를 다룬다",
+                      "Type": "Body"
+                    },
+                    "size": {
+                      "h": 37,
+                      "w": 359.5
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FILL"
+                    },
+                    "strokeWeight": [
+                      0,
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      0
+                    ],
+                    "strokes": [
+                      "divider-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE"
+                  }
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "row",
+                "size": {
+                  "h": 37,
+                  "w": 719
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "FRAME"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/none",
@@ -35,7 +645,7 @@
             },
             "name": "Rows",
             "size": {
-              "h": 100,
+              "h": 111,
               "w": 719
             },
             "sizing": {
@@ -59,7 +669,7 @@
         },
         "name": "Table",
         "size": {
-          "h": 101,
+          "h": 112,
           "w": 720
         },
         "sizing": {

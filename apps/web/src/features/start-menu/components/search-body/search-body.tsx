@@ -1,6 +1,13 @@
 import type { JSX } from 'react';
 
-import { cn, ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
+import {
+  BestMatchCard,
+  cn,
+  ListGroup,
+  MenuItem,
+  ScrollArea,
+  SearchResults,
+} from '@seojaewan/design-system';
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
@@ -181,15 +188,17 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     { kind: 'post', items: results.posts },
     { kind: 'link', items: results.links },
   ] as const;
-  return (
+  const searchResults = (
     <SearchResults
       device={device}
-      className={className}
-      icon={renderItemIcon({ kind: cardItem.kind })}
-      title={cardItem.title}
-      meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
-      actions={
-        <div className="flex w-full flex-col items-start gap-spacing-sm">
+      className={device === 'mobile' ? 'w-full' : className}
+      card={
+        <BestMatchCard
+          icon={renderItemIcon({ kind: cardItem.kind })}
+          title={cardItem.title}
+          meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
+          className={device === 'mobile' ? 'w-full' : 'shrink-shrink-none'}
+        >
           <MenuItem
             standalone
             label="열기"
@@ -204,7 +213,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
               onClick={handleCopyCardItemLink}
             />
           )}
-        </div>
+        </BestMatchCard>
       }
     >
       <ListGroup label="최고 일치" className="w-full shrink-shrink-none">
@@ -255,6 +264,15 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
         )}
     </SearchResults>
   );
+  // 모바일 SearchResults는 높이가 내용에 맞으므로, 넘치면 카드와 목록을 함께 스크롤하도록 ScrollArea로 감싼다.
+  if (device === 'mobile') {
+    return (
+      <ScrollArea className={cn('size-full rounded-radius-control', className)}>
+        {searchResults}
+      </ScrollArea>
+    );
+  }
+  return searchResults;
 }
 
 /**

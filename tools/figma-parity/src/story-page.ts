@@ -7,6 +7,8 @@ import { storyArgsParam } from './story-target.ts';
 const RENDER_TIMEOUT_MS = 15_000;
 // 포털로 그리거나 감싸는 요소가 필요한 스토리가 캡처 대상에 다는 속성이다.
 export const PARITY_TARGET_ATTRIBUTE = 'data-parity-target';
+// 마우스를 대상 가운데가 아닌 안쪽 요소에 올려야 하는 스토리가 캡처 대상에 다는 속성이다. 값은 그 요소의 CSS 선택자다.
+export const PARITY_HOVER_ATTRIBUTE = 'data-parity-hover';
 
 // Storybook 미리보기가 스토리 렌더링을 마쳤는지 확인하는 브라우저 코드다.
 // 내부 API(__STORYBOOK_PREVIEW__)가 없으면 루트에 요소가 생겼는지로 판단한다.
@@ -160,10 +162,10 @@ async function interact(
     case 'none':
       return undefined;
     case 'hover':
-      await target.hover();
+      await (await pointerTarget(target)).hover();
       return undefined;
     case 'pressed':
-      await target.hover();
+      await (await pointerTarget(target)).hover();
       await page.mouse.down();
       return undefined;
     case 'focus': {
@@ -175,6 +177,18 @@ async function interact(
       return isFocused ? undefined : 'Tab으로 캡처 대상에 포커스를 줄 수 없다.';
     }
   }
+}
+
+/**
+ * Hover·Pressed를 재현할 때 마우스를 올릴 요소를 고른다. 대상에 `data-parity-hover`가 있으면 그 선택자로 찾은 안쪽 첫 요소,
+ * 없으면 대상 자신이다. 대상 가운데가 다른 부품의 Hover를 부르는 경우(ScrollArea 가운데의 목록 항목)에 쓴다.
+ * @codocs [[피그마 연동:스토리 규칙]]
+ * @param target 캡처 대상
+ * @returns 마우스를 올릴 요소
+ */
+export async function pointerTarget(target: Locator): Promise<Locator> {
+  const selector = await target.getAttribute(PARITY_HOVER_ATTRIBUTE);
+  return selector === null || selector.trim() === '' ? target : target.locator(selector).first();
 }
 
 /**

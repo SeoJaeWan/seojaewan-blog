@@ -1,52 +1,81 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
-import { SearchResults } from './search-results';
+import { Asset } from '../asset/asset';
+import { BestMatchCard } from '../best-match-card/best-match-card';
+import { ImageAsset } from '../image-asset/image-asset';
+import { ListGroup } from '../list-group/list-group';
+import { ListItem } from '../list-item/list-item';
+import { MenuItem } from '../menu-item/menu-item';
+import { SearchResults, type SearchResultsDevice } from './search-results';
+
+// 피그마 SearchResults의 변형 속성 값이다(정규화한 이름).
+const DEVICES = ['desktop', 'mobile'] as const;
+
+// 변형마다 피그마 원본 크기이자 Start 검색 본문 자리의 크기 토큰이다. 모바일은 높이가 내용에 맞춰 너비만 준다.
+const sizeClassNames: Record<SearchResultsDevice, string> = {
+  desktop: 'h-size-search-results-height w-size-shell-body-width',
+  mobile: 'w-size-shell-mobile-body-width',
+};
+
+const documentIcon = (
+  <ImageAsset name="images/file-document" className="size-full object-contain" />
+);
 
 const meta = {
   title: 'Components/SearchResults',
-} satisfies Meta;
+  args: { device: 'desktop' },
+  argTypes: {
+    device: { control: 'inline-radio', options: DEVICES },
+  },
+  // `Results` 슬롯과 안쪽 BestMatchCard에는 피그마 기본 내용과 같은 컴포넌트를 넣는다.
+  render: (args) => (
+    <div className={sizeClassNames[args.device]}>
+      <SearchResults
+        device={args.device}
+        card={
+          <BestMatchCard
+            icon={documentIcon}
+            className={args.device === 'mobile' ? 'w-full' : 'shrink-shrink-none'}
+          >
+            <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+            <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
+          </BestMatchCard>
+        }
+      >
+        <ListGroup label="최고 일치" className="w-full shrink-shrink-none">
+          <ListItem
+            size="two-line"
+            selected
+            title="리액트 19 훅 정리"
+            subtitle="글"
+            icon={documentIcon}
+          />
+        </ListGroup>
+        <ListGroup label="폴더" className="w-full shrink-shrink-none">
+          <ListItem
+            title="리액트"
+            icon={<ImageAsset name="images/file-folder" className="size-full object-contain" />}
+          />
+        </ListGroup>
+        <ListGroup label="글" className="w-full shrink-shrink-none">
+          <ListItem title="리액트 서버 컴포넌트 이해하기" icon={documentIcon} />
+          <ListItem title="리액트 쿼리 캐시 전략" icon={documentIcon} />
+        </ListGroup>
+        <ListGroup label="외부 링크" className="w-full shrink-shrink-none">
+          <ListItem
+            title="리액트 스터디 노트"
+            icon={<Asset name="illustrations/file-link.svg" className="size-full" />}
+          />
+        </ListGroup>
+      </SearchResults>
+    </div>
+  ),
+} satisfies Meta<{ device: SearchResultsDevice }>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 데스크톱은 결과 슬롯과 카드를 나란히 그리고, title·meta·icon·actions를 카드로 넘긴다 */
-export const Default: Story = {
-  render: () => (
-    <div className="h-size-search-results-height w-size-shell-body-width">
-      <SearchResults
-        icon={<span>아이콘</span>}
-        title="글"
-        meta="블로그"
-        actions={<button type="button">열기</button>}
-      >
-        <span>결과</span>
-      </SearchResults>
-    </div>
-  ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('결과')).toBeInTheDocument();
-    await expect(canvas.getByText('글')).toBeInTheDocument();
-    await expect(canvas.getByText('블로그')).toBeInTheDocument();
-    await expect(canvas.getByText('아이콘')).toBeInTheDocument();
-    await expect(canvas.getByRole('button', { name: '열기' })).toBeInTheDocument();
-  },
-};
-
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 모바일은 카드 아래에 결과를 그리고 ScrollArea로 감싼다. 내용이 넘치지 않으면 스크롤바는 보이지 않는다 */
-export const Mobile: Story = {
-  render: () => (
-    <div className="h-size-search-results-mobile-height w-size-shell-mobile-body-width">
-      <SearchResults device="mobile" icon={null}>
-        <span>결과</span>
-      </SearchResults>
-    </div>
-  ),
-  play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByText('결과')).toBeInTheDocument();
-    await expect(canvasElement.querySelector('[data-state]')).not.toBeVisible();
-  },
-};
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나를 args 하나로 고른다.
+export const Figma: Story = {};

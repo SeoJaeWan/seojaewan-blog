@@ -3,7 +3,7 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 import { cn } from '../../cn';
 
 type StartMenuFooterProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 `Content` 슬롯. 프로필과 전원 버튼을 넣는다 */
+  /** 피그마 `Content` 슬롯. 프로필과 전원 버튼을 넣는다. 가로로 늘어놓고 세로 가운데에 맞춘다 */
   children?: ReactNode;
 };
 
@@ -22,7 +22,7 @@ export function StartMenuFooter(props: StartMenuFooterProps): JSX.Element {
         className,
       )}
     >
-      <div className="min-w-size-hairline flex-flex-fill">{children}</div>
+      <div className="flex min-w-size-none flex-flex-fill items-center">{children}</div>
     </div>
   );
 }

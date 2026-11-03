@@ -112,7 +112,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
         ) : (
           <span
             className={cn(
-              'min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary',
+              'min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary',
               dimClassName,
             )}
           >

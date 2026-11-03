@@ -111,6 +111,93 @@ describe('구조 검사: 변수·스타일에 연결되지 않은 시각 값', (
     ]);
   });
 
+  describe('내용 맞춤 축의 크기를 정하는 자식', () => {
+    const widthReason =
+      '내용 맞춤 너비를 정하는 자식이 없어 너비가 변수 없이 정해진다(자식이 모두 너비에서 부모 채움이거나 절대 위치)';
+
+    /**
+     * 루트 최소 너비를 없애고 라벨을 부모 채움 글자로 바꾼다. Flyout처럼 너비가 저장된 값으로만 정해지는 구조다.
+     * @param root 루트
+     */
+    function fillLabel(root: NodeData): void {
+      root.minWidth = null;
+      const label = must(root.children[0]);
+      must(label.text).autoResize = 'HEIGHT';
+      must(label.child).sizingHorizontal = 'FILL';
+    }
+
+    it('자식이 모두 그 축에서 부모 채움이면 막는다', () => {
+      expect(reasonsAfter(fillLabel)).toEqual([widthReason]);
+    });
+
+    it('최소 너비가 변수에 연결돼 있으면 크기가 변수로 정해지므로 막지 않는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          fillLabel(root);
+          root.minWidth = { value: 120, variable: 'size/button/min-width' };
+        }),
+      ).toEqual([]);
+    });
+
+    it('쌓는 방향은 자식이 하나라도 정하지 못하면 막고, 고정 크기 자식만으로는 정해졌다고 보지 않는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          fillLabel(root);
+          root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
+        }),
+      ).toEqual([widthReason]);
+    });
+
+    it('가로지르는 방향은 자식 하나만 정해도 된다', () => {
+      expect(
+        reasonsAfter((root) => {
+          fillLabel(root);
+          must(root.layout).mode = 'VERTICAL';
+          root.children.push(fixedChild({ path: 'icon', type: 'RECTANGLE' }));
+        }),
+      ).toEqual([]);
+    });
+
+    it('절대 위치 자식은 크기를 정하지 않는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          root.minWidth = null;
+          must(root.children[0]).child = {
+            sizingHorizontal: 'HUG',
+            sizingVertical: 'HUG',
+            positioning: 'ABSOLUTE',
+            constraints: { horizontal: 'MIN', vertical: 'MIN' },
+          };
+        }),
+      ).toEqual([
+        widthReason,
+        '내용 맞춤 높이를 정하는 자식이 없어 높이가 변수 없이 정해진다(자식이 모두 높이에서 부모 채움이거나 절대 위치)',
+      ]);
+    });
+
+    it('부모 채움 자식이어도 안쪽이 고정 크기나 내용 맞춤 글자로 정하면 막지 않는다', () => {
+      expect(
+        reasonsAfter((root) => {
+          root.minWidth = null;
+          const wrapper = node({
+            path: 'wrapper',
+            type: 'FRAME',
+            layout: must(root.layout),
+            child: {
+              sizingHorizontal: 'FILL',
+              sizingVertical: 'HUG',
+              positioning: 'AUTO',
+              constraints: { horizontal: 'MIN', vertical: 'MIN' },
+            },
+            children: root.children.map((child) => ({ ...child, path: `wrapper/${child.path}` })),
+          });
+          wrapper.layout = { ...must(root.layout), padding: must(root.layout).padding };
+          root.children = [wrapper];
+        }),
+      ).toEqual([]);
+    });
+  });
+
   it('그라데이션과 이미지는 칠 스타일로만, 효과는 효과 스타일로만 쓴다', () => {
     expect(
       reasonsAfter((root) => {
@@ -313,6 +400,17 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
         must(label(root).text).segments = [
           segment({ characters: 'OK 123', fontFamily: 'Open Sans', textStyle: 'Body' }),
           segment({ characters: '확인', fontFamily: 'Pretendard' }),
+        ];
+      }),
+    ).toEqual([]);
+  });
+
+  // @codocs [[디자인 기반:서체]]
+  it('코드 서체 NanumGothicCoding은 한글이 들어 있어 한글 구간에도 허용한다', () => {
+    expect(
+      reasonsAfter((root) => {
+        must(label(root).text).segments = [
+          segment({ characters: '// 글을 읽어 제목을', fontFamily: 'NanumGothicCoding' }),
         ];
       }),
     ).toEqual([]);

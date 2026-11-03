@@ -21,6 +21,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "turbo run storybook",
+    "cases": "pnpm --filter @seojaewan/scenario-cases cases",
     "verify": "pnpm lint && pnpm typecheck && pnpm test",
     "prepare": "husky"
   },

@@ -36,3 +36,9 @@ Thumbs.db
 
 # figma parity
 parity-results/
+
+# scenario cases(실행해보기 결과, 정적 결과 페이지)
+tools/scenario-cases/runs/
+tools/scenario-cases/report/
+tools/scenario-cases/results.json
+tools/scenario-cases/history.json

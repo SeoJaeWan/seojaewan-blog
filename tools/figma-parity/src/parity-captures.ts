@@ -27,8 +27,7 @@ export function capturePublishPlan(rows: readonly CaptureRow[]): CapturePublishP
   const files = new Map<string, string>();
   const replaced: string[] = [];
   for (const target of new Set(rows.map((row) => row.target))) {
-    // 빈 HUG 슬롯이라 단독 캡처에서 뺀 변형은 캡처가 없는 것이 정상이다. 폴더를 다시 쓸 때 옛 캡처도 지운다.
-    const own = rows.filter((row) => row.target === target && row.emptyHugSlot !== true);
+    const own = rows.filter((row) => row.target === target);
     for (const row of own) {
       if (row.code !== null) {
         files.set(`${target}/${row.variant}.png`, row.code);

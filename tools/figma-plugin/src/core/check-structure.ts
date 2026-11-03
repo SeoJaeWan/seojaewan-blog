@@ -72,8 +72,9 @@ const EFFECT_TYPES = ['DROP_SHADOW', 'INNER_SHADOW', 'LAYER_BLUR', 'BACKGROUND_B
 
 // 한글 음절·자모(호환 자모·확장 자모 포함) 범위
 const HANGUL_PATTERN = /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD7B0-\uD7FF]/u;
-// 한글을 그리는 글꼴
+// 한글을 그리는 글꼴. 본문 한글은 Pretendard, 코드는 한글이 든 고정폭 서체 하나로 그린다.
 const HANGUL_FONT_FAMILY = 'Pretendard';
+const hangulFontFamilies: readonly string[] = [HANGUL_FONT_FAMILY, 'NanumGothicCoding'];
 
 const BIND_FIX = '변수에 연결한다.';
 // 이미지 자산의 원본 비율과 같다고 보는 상대 차이다. 크기를 정수로 둔 반올림을 넘긴다.
@@ -803,6 +804,7 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
   if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
     checkFixedSizes(node, horizontal, vertical, add);
+    checkHugSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [
     ['최소 너비', node.minWidth],
@@ -818,6 +820,71 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
       );
     }
   }
+}
+
+/**
+ * 내용 맞춤(HUG) 축의 크기를 정하는 자식이 있는지 검사한다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면
+ * 그 축의 크기가 어떤 변수에도 묶이지 않은 채 피그마에 저장된 값으로 정해진다.
+ * @param node 노드
+ * @param horizontal 가로 크기 방식
+ * @param vertical 세로 크기 방식
+ * @param add 위반을 더하는 함수
+ */
+function checkHugSizes(node: NodeData, horizontal: string, vertical: string, add: Add): void {
+  if (node.text !== null || node.asset !== null || node.children.length === 0) {
+    return;
+  }
+  for (const [axis, sizing, label, bound] of [
+    ['horizontal', horizontal, '너비', node.minWidth],
+    ['vertical', vertical, '높이', node.minHeight],
+  ] as const) {
+    if (sizing === 'HUG' && bound?.variable === undefined && !isChildrenSized(node, axis, sizing)) {
+      add(
+        node,
+        `내용 맞춤 ${label}를 정하는 자식이 없어 ${label}가 변수 없이 정해진다(자식이 모두 ${label}에서 부모 채움이거나 절대 위치)`,
+        `${label}를 size 변수에 연결한 고정 크기로 바꾸거나, ${label}를 정하는 자식(고정 크기나 내용 맞춤 글자)을 둔다.`,
+      );
+    }
+  }
+}
+
+/**
+ * 노드의 한 축 크기가 고정 크기나 내용 맞춤 글자로 정해지는지 본다. 부모 채움 글자와 내용이 없는 채움 노드는 정하지 못한다.
+ * @param node 노드
+ * @param axis 축
+ * @returns 정해지면 true
+ */
+function isSized(node: NodeData, axis: 'horizontal' | 'vertical'): boolean {
+  const own = sizingOf(node, false)[axis];
+  if (own === 'FIXED' || own === 'DERIVED') {
+    return true;
+  }
+  if (node.text !== null) {
+    return own === 'HUG';
+  }
+  return isChildrenSized(node, axis, own);
+}
+
+/**
+ * 자식이 노드의 한 축 크기를 정하는지 본다. 쌓는 방향(주축)은 자식이 모두 정해야 하고, 가로지르는 방향은 하나만 정해도 된다.
+ * 절대 위치 자식은 크기에 들어가지 않는다. 자식이 아예 없으면 내용 맞춤은 정해지고 채움은 정해지지 않는다. 자식이 모두 절대 위치이면 정해지지 않는다.
+ * @param node 노드
+ * @param axis 축
+ * @param sizing 노드의 그 축 크기 방식
+ * @returns 정해지면 true
+ */
+function isChildrenSized(node: NodeData, axis: 'horizontal' | 'vertical', sizing: string): boolean {
+  const live = node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE');
+  if (live.length === 0) {
+    return node.children.length === 0 && sizing !== 'FILL';
+  }
+  const mode = node.layout?.mode;
+  const isPrimary =
+    (mode === 'HORIZONTAL' && axis === 'horizontal') ||
+    (mode === 'VERTICAL' && axis === 'vertical');
+  return isPrimary
+    ? live.every((child) => isSized(child, axis))
+    : live.some((child) => isSized(child, axis));
 }
 
 /**
@@ -918,7 +985,10 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
   for (const segment of text.segments) {
     const label = `"${segment.characters.slice(0, 12)}" 구간`;
     // hasMissingFont가 false여도 피그마가 한글을 알 수 없는 대체 글꼴로 그리는 경우가 있어 구간 글꼴로 막는다.
-    if (HANGUL_PATTERN.test(segment.characters) && segment.fontFamily !== HANGUL_FONT_FAMILY) {
+    if (
+      HANGUL_PATTERN.test(segment.characters) &&
+      !hangulFontFamilies.includes(segment.fontFamily ?? '')
+    ) {
       add(
         node,
         `${label}에 한글이 있는데 글꼴이 ${segment.fontFamily ?? '알 수 없음'}라 대체 글꼴로 그려질 수 있다`,

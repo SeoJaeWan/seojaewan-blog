@@ -33,7 +33,7 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
   const { device = 'desktop', searchBoxProps, children, className, style } = props;
   const isMobile = device === 'mobile';
   return (
-    <ShellSurface material="acrylic" device={device} className={className} style={style}>
+    <ShellSurface device={device} className={className} style={style}>
       {/* 피그마 `padding` 배치 프레임이다. 모바일은 입력칸과 본문 사이 간격 16을 둔다 */}
       <div
         className={
@@ -45,7 +45,7 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
         {isMobile && (
           <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-shrink-none" />
         )}
-        <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col">{children}</div>
+        <div className="flex min-h-size-none w-full flex-flex-fill flex-col">{children}</div>
       </div>
     </ShellSurface>
   );

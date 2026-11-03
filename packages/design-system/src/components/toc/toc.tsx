@@ -39,7 +39,7 @@ export function Toc(props: TocProps): JSX.Element {
           className,
         )}
       >
-        <p className="min-w-size-hairline flex-flex-fill type-body-strong text-text-fill-primary">
+        <p className="min-w-size-none flex-flex-fill type-body-strong text-text-fill-primary">
           {title}
         </p>
         <Asset

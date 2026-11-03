@@ -2,24 +2,17 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 
-export type ShellSurfaceMaterial = 'acrylic' | 'solid';
-
 export type ShellSurfaceDevice = 'desktop' | 'mobile';
 
 type ShellSurfaceProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Material. acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
-  material?: ShellSurfaceMaterial;
   /** 피그마 Device. desktop은 네 모서리가 둥글고, mobile은 아래쪽 모서리가 각진 화면 크기다 */
   device?: ShellSurfaceDevice;
   /** 피그마 `Content` 슬롯. Start와 검색 조립이 채운다 */
   children?: ReactNode;
 };
 
-// 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다.
-const materialClassNames = {
-  acrylic: 'material-acrylic-base surface-shell-acrylic',
-  solid: 'bg-material-fallback-acrylic-base shadow-elevation-shell-surface',
-} as const satisfies Record<ShellSurfaceMaterial, string>;
+// 재질 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다. 앱은 아크릴만 쓴다.
+const MATERIAL_CLASS_NAME = 'material-acrylic-base surface-shell-acrylic';
 
 // 기기별 크기와 모서리다. 모바일은 화면 아래에 붙어 위쪽 모서리만 둥글다.
 const deviceClassNames = {
@@ -36,18 +29,18 @@ const deviceClassNames = {
  * @param props
  */
 export function ShellSurface(props: ShellSurfaceProps): JSX.Element {
-  const { material = 'acrylic', device = 'desktop', className, children, ...divProps } = props;
+  const { device = 'desktop', className, children, ...divProps } = props;
   return (
     <div
       {...divProps}
       className={cn(
         'relative flex flex-col items-start border-stroke-width-default border-surface-stroke-default',
-        materialClassNames[material],
+        MATERIAL_CLASS_NAME,
         deviceClassNames[device],
         className,
       )}
     >
-      <div className="min-h-size-hairline w-full flex-flex-fill">{children}</div>
+      <div className="min-h-size-none w-full flex-flex-fill">{children}</div>
     </div>
   );
 }

@@ -114,7 +114,6 @@ describe('export.json', () => {
           ['State', 'Hover'],
         ],
         node: null,
-        emptyHugSlot: false,
       },
       {
         variant: 'style=accent,state=rest',
@@ -123,12 +122,11 @@ describe('export.json', () => {
           ['State', 'Rest'],
         ],
         node: { x: 8, y: 4, width: 120, height: 32 },
-        emptyHugSlot: false,
       },
     ]);
   });
 
-  it('변형의 emptyHugSlot 표시를 읽고, 표시가 없는 예전 내보내기는 false로 읽는다', () => {
+  it('예전 내보내기에 남은 emptyHugSlot 표시는 읽지 않는다', () => {
     const marked = structuredClone(manifestFixture) as Record<string, unknown> & {
       variants: Record<string, Record<string, unknown>>;
     };
@@ -137,21 +135,11 @@ describe('export.json', () => {
       emptyHugSlot: true,
     };
     const manifest = parseManifest(marked, 'export.json');
-    expect(manifest.variants.map((item) => [item.variant, item.emptyHugSlot])).toEqual([
-      ['style=accent,state=hover', true],
-      ['style=accent,state=rest', false],
+    expect(manifest.variants.map((item) => item.variant)).toEqual([
+      'style=accent,state=hover',
+      'style=accent,state=rest',
     ]);
-  });
-
-  it('emptyHugSlot이 불리언이 아니면 실패한다', () => {
-    const broken = structuredClone(manifestFixture) as Record<string, unknown> & {
-      variants: Record<string, Record<string, unknown>>;
-    };
-    broken.variants['style=accent,state=rest'] = {
-      ...broken.variants['style=accent,state=rest'],
-      emptyHugSlot: 'yes',
-    };
-    expect(() => parseManifest(broken, 'export.json')).toThrow(/emptyHugSlot: true나 false/u);
+    expect(manifest.variants.every((item) => !('emptyHugSlot' in item))).toBe(true);
   });
 
   it('PNG 안 노드 위치가 숫자가 아니거나 크기가 0이면 실패한다', () => {

@@ -1,148 +1,17 @@
 {
   "description": "현재 위치 경로를 보여 주는 줄로, 탐색기 주소 줄에 쓴다.",
   "name": "Breadcrumb",
-  "nodeId": "31:454",
+  "nodeId": "31:430",
   "propertyDefinitions": {
     "Items": {
       "type": "SLOT"
     },
     "Location icon": {
       "type": "INSTANCE_SWAP"
-    },
-    "State": {
-      "default": "Rest",
-      "options": [
-        "Rest",
-        "Editing"
-      ],
-      "type": "VARIANT"
     }
   },
   "variants": {
-    "state=editing": {
-      "node": {
-        "height": 32,
-        "width": 480,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "31:451",
-      "properties": {
-        "State": "Editing"
-      },
-      "tree": {
-        "children": [
-          {
-            "fills": [
-              "text-fill/primary"
-            ],
-            "name": "path",
-            "size": {
-              "h": 16,
-              "w": 462
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": null,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "바탕",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": " ",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Caption"
-                },
-                {
-                  "characters": "화면",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Hangul/Caption"
-                },
-                {
-                  "characters": "\\Blog\\React",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Caption"
-                }
-              ],
-              "truncation": "DISABLED"
-            },
-            "type": "TEXT"
-          },
-          {
-            "absolute": {
-              "horizontal": "STRETCH",
-              "vertical": "MAX"
-            },
-            "fills": [
-              "accent-fill/default"
-            ],
-            "height": "stroke-width/focus-outer",
-            "name": "bottom border",
-            "size": {
-              "h": 2,
-              "w": 480
-            },
-            "sizing": {
-              "h": "DERIVED",
-              "v": "FIXED"
-            },
-            "type": "RECTANGLE"
-          }
-        ],
-        "fills": [
-          "control-fill/input-active"
-        ],
-        "height": "size/control/height",
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/none",
-            "spacing/sm",
-            "spacing/none",
-            "spacing/sm"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "State=Editing",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "size": {
-          "h": 32,
-          "w": 480
-        },
-        "sizing": {
-          "h": "FIXED",
-          "v": "FIXED"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "control-stroke/default"
-        ],
-        "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/breadcrumb/width"
-      }
-    },
-    "state=rest": {
-      "emptyHugSlot": true,
+    "default": {
       "node": {
         "height": 32,
         "width": 480,
@@ -150,9 +19,7 @@
         "y": 0
       },
       "nodeId": "31:430",
-      "properties": {
-        "State": "Rest"
-      },
+      "properties": {},
       "tree": {
         "children": [
           {
@@ -196,6 +63,225 @@
             "width": "size/icon/sm"
           },
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 16,
+                          "w": 45
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "바탕",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Caption"
+                            },
+                            {
+                              "characters": " ",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Caption"
+                            },
+                            {
+                              "characters": "화면",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Hangul/Caption"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/xs",
+                        "spacing/sm-nudge",
+                        "spacing/xs",
+                        "spacing/sm-nudge"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "maxWidth": "size/breadcrumb-item/max-width",
+                    "name": "hit",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 24,
+                      "w": 57
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "separator",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "BreadcrumbItem",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "crumb/바탕 화면",
+                "properties": {
+                  "Current": "False",
+                  "Label": "바탕 화면",
+                  "Show separator": true,
+                  "State": "Rest"
+                },
+                "size": {
+                  "h": 24,
+                  "w": 73
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "fills": [
+                          "text-fill/primary"
+                        ],
+                        "name": "label",
+                        "size": {
+                          "h": 16,
+                          "w": 25
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "text": {
+                          "autoResize": "WIDTH_AND_HEIGHT",
+                          "maxLines": null,
+                          "maxLinesVariable": null,
+                          "segments": [
+                            {
+                              "characters": "Blog",
+                              "fill": "text-fill/primary",
+                              "textStyle": "Caption"
+                            }
+                          ],
+                          "truncation": "DISABLED"
+                        },
+                        "type": "TEXT"
+                      }
+                    ],
+                    "layout": {
+                      "counterAlign": "MIN",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/xs",
+                        "spacing/sm-nudge",
+                        "spacing/xs",
+                        "spacing/sm-nudge"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "maxWidth": "size/breadcrumb-item/max-width",
+                    "name": "hit",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 24,
+                      "w": 37
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "BreadcrumbItem",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/none",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "crumb/Blog",
+                "properties": {
+                  "Current": "True",
+                  "Label": "Blog",
+                  "Show separator": false,
+                  "State": "Rest"
+                },
+                "size": {
+                  "h": 24,
+                  "w": 37
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": "spacing/xs",
@@ -210,8 +296,8 @@
             },
             "name": "Items",
             "size": {
-              "h": 100,
-              "w": 100
+              "h": 24,
+              "w": 114
             },
             "sizing": {
               "h": "HUG",
@@ -236,7 +322,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Rest",
+        "name": "Breadcrumb",
         "radius": [
           "radius/control",
           "radius/control",

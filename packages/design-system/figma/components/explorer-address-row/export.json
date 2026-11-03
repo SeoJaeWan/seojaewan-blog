@@ -22,7 +22,6 @@
   },
   "variants": {
     "device=desktop,search=closed": {
-      "emptyHugSlot": true,
       "node": {
         "height": 44,
         "width": 798,
@@ -315,6 +314,225 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "label",
+                            "size": {
+                              "h": 16,
+                              "w": 45
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "바탕",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                },
+                                {
+                                  "characters": "화면",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/xs",
+                            "spacing/sm-nudge",
+                            "spacing/xs",
+                            "spacing/sm-nudge"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "maxWidth": "size/breadcrumb-item/max-width",
+                        "name": "hit",
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
+                        "size": {
+                          "h": 24,
+                          "w": 57
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      },
+                      {
+                        "asset": {
+                          "color": "text-fill/secondary",
+                          "path": "icons/ic_fluent_chevron_right_16_regular"
+                        },
+                        "component": "ic_fluent_chevron_right_16_regular",
+                        "height": "size/icon/sm",
+                        "name": "separator",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "BreadcrumbItem",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "crumb/바탕 화면",
+                    "properties": {
+                      "Current": "False",
+                      "Label": "바탕 화면",
+                      "Show separator": true,
+                      "State": "Rest"
+                    },
+                    "size": {
+                      "h": 24,
+                      "w": 73
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "label",
+                            "size": {
+                              "h": 16,
+                              "w": 25
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "Blog",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/xs",
+                            "spacing/sm-nudge",
+                            "spacing/xs",
+                            "spacing/sm-nudge"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "maxWidth": "size/breadcrumb-item/max-width",
+                        "name": "hit",
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
+                        "size": {
+                          "h": 24,
+                          "w": 37
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      }
+                    ],
+                    "component": "BreadcrumbItem",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "crumb/Blog",
+                    "properties": {
+                      "Current": "True",
+                      "Label": "Blog",
+                      "Show separator": false,
+                      "State": "Rest"
+                    },
+                    "size": {
+                      "h": 24,
+                      "w": 37
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
                 "layout": {
                   "counterAlign": "CENTER",
                   "gap": "spacing/xs",
@@ -329,8 +547,8 @@
                 },
                 "name": "Items",
                 "size": {
-                  "h": 100,
-                  "w": 100
+                  "h": 24,
+                  "w": 114
                 },
                 "sizing": {
                   "h": "HUG",
@@ -357,9 +575,7 @@
               "primaryAlign": "MIN"
             },
             "name": "breadcrumb",
-            "properties": {
-              "State": "Rest"
-            },
+            "properties": {},
             "radius": [
               "radius/control",
               "radius/control",
@@ -513,7 +729,6 @@
       }
     },
     "device=mobile,search=closed": {
-      "emptyHugSlot": true,
       "node": {
         "height": 44,
         "width": 388,
@@ -629,6 +844,225 @@
                 "width": "size/icon/sm"
               },
               {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "label",
+                            "size": {
+                              "h": 16,
+                              "w": 45
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "바탕",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                },
+                                {
+                                  "characters": "화면",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/xs",
+                            "spacing/sm-nudge",
+                            "spacing/xs",
+                            "spacing/sm-nudge"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "maxWidth": "size/breadcrumb-item/max-width",
+                        "name": "hit",
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
+                        "size": {
+                          "h": 24,
+                          "w": 57
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      },
+                      {
+                        "asset": {
+                          "color": "text-fill/secondary",
+                          "path": "icons/ic_fluent_chevron_right_16_regular"
+                        },
+                        "component": "ic_fluent_chevron_right_16_regular",
+                        "height": "size/icon/sm",
+                        "name": "separator",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "BreadcrumbItem",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "crumb/바탕 화면",
+                    "properties": {
+                      "Current": "False",
+                      "Label": "바탕 화면",
+                      "Show separator": true,
+                      "State": "Rest"
+                    },
+                    "size": {
+                      "h": 24,
+                      "w": 73
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  },
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "label",
+                            "size": {
+                              "h": 16,
+                              "w": 25
+                            },
+                            "sizing": {
+                              "h": "HUG",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "WIDTH_AND_HEIGHT",
+                              "maxLines": null,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "Blog",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                }
+                              ],
+                              "truncation": "DISABLED"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "layout": {
+                          "counterAlign": "MIN",
+                          "gap": 0,
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/xs",
+                            "spacing/sm-nudge",
+                            "spacing/xs",
+                            "spacing/sm-nudge"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "maxWidth": "size/breadcrumb-item/max-width",
+                        "name": "hit",
+                        "radius": [
+                          "radius/control",
+                          "radius/control",
+                          "radius/control",
+                          "radius/control"
+                        ],
+                        "size": {
+                          "h": 24,
+                          "w": 37
+                        },
+                        "sizing": {
+                          "h": "HUG",
+                          "v": "HUG"
+                        },
+                        "type": "FRAME"
+                      }
+                    ],
+                    "component": "BreadcrumbItem",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/none",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "crumb/Blog",
+                    "properties": {
+                      "Current": "True",
+                      "Label": "Blog",
+                      "Show separator": false,
+                      "State": "Rest"
+                    },
+                    "size": {
+                      "h": 24,
+                      "w": 37
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "type": "INSTANCE"
+                  }
+                ],
                 "layout": {
                   "counterAlign": "CENTER",
                   "gap": "spacing/xs",
@@ -643,8 +1077,8 @@
                 },
                 "name": "Items",
                 "size": {
-                  "h": 100,
-                  "w": 100
+                  "h": 24,
+                  "w": 114
                 },
                 "sizing": {
                   "h": "HUG",
@@ -671,9 +1105,7 @@
               "primaryAlign": "MIN"
             },
             "name": "breadcrumb",
-            "properties": {
-              "State": "Rest"
-            },
+            "properties": {},
             "radius": [
               "radius/control",
               "radius/control",

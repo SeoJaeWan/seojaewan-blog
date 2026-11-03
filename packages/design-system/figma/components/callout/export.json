@@ -12,9 +12,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 134,
+        "height": 58,
         "width": 720,
         "x": 0,
         "y": 0
@@ -70,6 +69,176 @@
             "type": "FRAME"
           },
           {
+            "children": [
+              {
+                "fills": [
+                  "SOLID"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 654
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "콜아웃은",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "아이콘과",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "함께",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "눈에",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "띄게",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "보여",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "줄",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "글을",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "담는다",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": ". ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "글자",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large Strong"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large Strong"
+                    },
+                    {
+                      "characters": "서식",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large Strong"
+                    },
+                    {
+                      "characters": "도",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "쓸",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "수",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "있다",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": ".",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/sm",
@@ -84,7 +253,7 @@
             },
             "name": "Content",
             "size": {
-              "h": 100,
+              "h": 24,
               "w": 654
             },
             "sizing": {
@@ -117,7 +286,7 @@
           "radius/overlay"
         ],
         "size": {
-          "h": 134,
+          "h": 58,
           "w": 720
         },
         "sizing": {

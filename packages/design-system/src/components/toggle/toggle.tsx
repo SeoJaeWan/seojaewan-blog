@@ -71,7 +71,11 @@ export function Toggle(props: ToggleProps): JSX.Element {
         </span>
       </button>
       {isExpanded ? (
-        <div id={contentId} className="w-full min-w-size-none">
+        // 피그마 Content 슬롯의 배치다. 꺾쇠 자리(spacing/2xl)만큼 들여 쓰고 블록 사이를 spacing/sm로 띄운다.
+        <div
+          id={contentId}
+          className="flex w-full min-w-size-none flex-col gap-spacing-sm pl-spacing-2xl"
+        >
           {children}
         </div>
       ) : null}

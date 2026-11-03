@@ -161,9 +161,8 @@
       }
     },
     "state=expanded": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 128,
+        "height": 52,
         "width": 720,
         "x": 0,
         "y": 0
@@ -280,6 +279,71 @@
             "type": "FRAME"
           },
           {
+            "children": [
+              {
+                "fills": [
+                  "text-fill/primary"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 696
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "토글을",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "펼치면",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "보이는",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": " ",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    },
+                    {
+                      "characters": "글이다",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Hangul/Body Large"
+                    },
+                    {
+                      "characters": ".",
+                      "fill": "text-fill/primary",
+                      "textStyle": "Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/sm",
@@ -294,7 +358,7 @@
             },
             "name": "Content",
             "size": {
-              "h": 100,
+              "h": 24,
               "w": 720
             },
             "sizing": {
@@ -318,7 +382,7 @@
         },
         "name": "State=Expanded",
         "size": {
-          "h": 128,
+          "h": 52,
           "w": 720
         },
         "sizing": {

@@ -82,7 +82,7 @@
 
   /* 기본 서체는 글자 스타일 Body·Code의 서체(라틴 + 한글)를 따른다. */
   --default-font-family: var(--font-family-base), var(--font-family-korean);
-  --default-mono-font-family: var(--font-family-code), var(--font-family-korean);
+  --default-mono-font-family: var(--font-family-code);
 }
 
 :root {
@@ -104,6 +104,7 @@
   --color-black-36: #0000005c;
   --color-black-40: #00000066;
   --color-black-45: #00000072;
+  --color-black-56: #0000008f;
   --color-black-61: #0000009b;
   --color-black-80: #000000cc;
   --color-black-90: #000000e4;
@@ -142,20 +143,20 @@
   --color-vscode-0000ff: #0000ff;
   --color-vscode-0070c1: #0070c1;
   --color-vscode-000080: #000080;
-  --color-vscode-267f99: #267f99;
+  --color-vscode-257c96: #257c96;
   --color-vscode-0451a5: #0451a5;
   --color-vscode-795e26: #795e26;
   --color-vscode-811f3f: #811f3f;
   --color-vscode-001080: #001080;
   --color-vscode-008000: #008000;
-  --color-vscode-098658: #098658;
+  --color-vscode-098456: #098456;
   --color-vscode-800000: #800000;
   --color-vscode-a31515: #a31515;
   --color-vscode-af00db: #af00db;
+  --color-vscode-b15959: #b15959;
   --color-vscode-cd3131: #cd3131;
-  --color-vscode-d16969: #d16969;
   --color-vscode-e50000: #e50000;
-  --color-vscode-ee0000: #ee0000;
+  --color-vscode-e80000: #e80000;
   --color-white: #ffffff;
   --color-white-0: #ffffff00;
   --color-white-8: #ffffff14;
@@ -166,11 +167,12 @@
   --color-yellow-dark-1: #9d5d00;
   --flex-fill: 1;
   --font-family-base: 'Open Sans';
-  --font-family-code: 'Cascadia Mono';
+  --font-family-code: 'NanumGothicCoding';
   --font-family-korean: 'Pretendard';
   --font-line-height-body: 20px;
   --font-line-height-body-large: 24px;
   --font-line-height-caption: 16px;
+  --font-line-height-code-inline: 16px;
   --font-line-height-display: 92px;
   --font-line-height-subtitle: 28px;
   --font-line-height-title: 36px;
@@ -210,7 +212,7 @@
   --motion-scale-search-icon: 1.1;
   --motion-scale-window-enter: 0.96;
   --motion-scale-window-minimize: 0.12;
-  --opacity-cut: 50%;
+  --opacity-cut: 62%;
   --opacity-drag-ghost: 60%;
   --position-full: 100%;
   --position-half: 50%;
@@ -255,6 +257,8 @@
   --size-details-header-narrow-width: 148px;
   --size-details-header-wide-width: 188px;
   --size-empty-state-width: 600px;
+  --size-equation-height: 50px;
+  --size-equation-width: 194px;
   --size-explorer-content-height: 458px;
   --size-explorer-content-width: 798px;
   --size-explorer-mobile-content-height: 716px;
@@ -318,7 +322,7 @@
   --size-scrollbar-length: 200px;
   --size-scrollbar-thickness: 12px;
   --size-scrollbar-thumb-hover: 6px;
-  --size-scrollbar-thumb-length: 80px;
+  --size-scrollbar-thumb-length: 119.4444px;
   --size-scrollbar-thumb-rest: 2px;
   --size-search-body-height: 654px;
   --size-search-body-mobile-height: 522px;
@@ -328,15 +332,16 @@
   --size-search-box-width: 240px;
   --size-search-results-height: 545px;
   --size-search-results-list-width: 300px;
-  --size-search-results-mobile-height: 465px;
   --size-selection-marquee-height: 160px;
   --size-selection-marquee-width: 240px;
   --size-separator-command-height: 24px;
   --size-separator-height: 16px;
   --size-separator-width: 240px;
   --size-shell-body-width: 574px;
+  --size-shell-content-width: 638px;
   --size-shell-height: 720px;
   --size-shell-mobile-body-width: 356px;
+  --size-shell-mobile-content-width: 388px;
   --size-shell-mobile-height: 640px;
   --size-shell-width: 640px;
   --size-snap-option-column-width: 56px;
@@ -349,16 +354,6 @@
   --size-start-body-mobile-height: 489px;
   --size-start-menu-footer-width: 638px;
   --size-status-bar-spacer-height: 1px;
-  --size-story-2xl: 320px;
-  --size-story-2xs: 48px;
-  --size-story-3xl: 480px;
-  --size-story-4xl: 569px;
-  --size-story-5xl: 600px;
-  --size-story-lg: 200px;
-  --size-story-md: 160px;
-  --size-story-sm: 120px;
-  --size-story-xl: 240px;
-  --size-story-xs: 56px;
   --size-submenu-offset-x: 300px;
   --size-submenu-offset-y: 80px;
   --size-table-cell-width: 240px;
@@ -459,8 +454,8 @@
   --chrome-toolbar-fill: var(--color-white);
   --code-syntax-attribute: var(--color-vscode-e50000);
   --code-syntax-comment: var(--color-vscode-008000);
-  --code-syntax-constant: var(--color-vscode-098658);
-  --code-syntax-escape: var(--color-vscode-ee0000);
+  --code-syntax-constant: var(--color-vscode-098456);
+  --code-syntax-escape: var(--color-vscode-e80000);
   --code-syntax-function: var(--color-vscode-795e26);
   --code-syntax-invalid: var(--color-vscode-cd3131);
   --code-syntax-key-value: var(--color-vscode-0451a5);
@@ -469,11 +464,11 @@
   --code-syntax-parameter: var(--color-vscode-001080);
   --code-syntax-punctuation: var(--color-black);
   --code-syntax-regexp: var(--color-vscode-811f3f);
-  --code-syntax-regexp-group: var(--color-vscode-d16969);
+  --code-syntax-regexp-group: var(--color-vscode-b15959);
   --code-syntax-string: var(--color-vscode-a31515);
   --code-syntax-tag: var(--color-vscode-800000);
   --code-syntax-text: var(--color-black);
-  --code-syntax-type: var(--color-vscode-267f99);
+  --code-syntax-type: var(--color-vscode-257c96);
   --code-syntax-variable: var(--color-vscode-001080);
   --code-syntax-variable-constant: var(--color-vscode-0070c1);
   --code-syntax-variable-navy: var(--color-vscode-000080);
@@ -586,6 +581,8 @@
   --size-size-details-header-narrow-width: var(--size-details-header-narrow-width);
   --size-size-details-header-wide-width: var(--size-details-header-wide-width);
   --size-size-empty-state-width: var(--size-empty-state-width);
+  --size-size-equation-height: var(--size-equation-height);
+  --size-size-equation-width: var(--size-equation-width);
   --size-size-explorer-content-height: var(--size-explorer-content-height);
   --size-size-explorer-content-width: var(--size-explorer-content-width);
   --size-size-explorer-mobile-content-height: var(--size-explorer-mobile-content-height);
@@ -659,15 +656,16 @@
   --size-size-search-box-width: var(--size-search-box-width);
   --size-size-search-results-height: var(--size-search-results-height);
   --size-size-search-results-list-width: var(--size-search-results-list-width);
-  --size-size-search-results-mobile-height: var(--size-search-results-mobile-height);
   --size-size-selection-marquee-height: var(--size-selection-marquee-height);
   --size-size-selection-marquee-width: var(--size-selection-marquee-width);
   --size-size-separator-command-height: var(--size-separator-command-height);
   --size-size-separator-height: var(--size-separator-height);
   --size-size-separator-width: var(--size-separator-width);
   --size-size-shell-body-width: var(--size-shell-body-width);
+  --size-size-shell-content-width: var(--size-shell-content-width);
   --size-size-shell-height: var(--size-shell-height);
   --size-size-shell-mobile-body-width: var(--size-shell-mobile-body-width);
+  --size-size-shell-mobile-content-width: var(--size-shell-mobile-content-width);
   --size-size-shell-mobile-height: var(--size-shell-mobile-height);
   --size-size-shell-width: var(--size-shell-width);
   --size-size-snap-option-column-width: var(--size-snap-option-column-width);
@@ -680,16 +678,6 @@
   --size-size-start-body-mobile-height: var(--size-start-body-mobile-height);
   --size-size-start-menu-footer-width: var(--size-start-menu-footer-width);
   --size-size-status-bar-spacer-height: var(--size-status-bar-spacer-height);
-  --size-size-story-2xl: var(--size-story-2xl);
-  --size-size-story-2xs: var(--size-story-2xs);
-  --size-size-story-3xl: var(--size-story-3xl);
-  --size-size-story-4xl: var(--size-story-4xl);
-  --size-size-story-5xl: var(--size-story-5xl);
-  --size-size-story-lg: var(--size-story-lg);
-  --size-size-story-md: var(--size-story-md);
-  --size-size-story-sm: var(--size-story-sm);
-  --size-size-story-xl: var(--size-story-xl);
-  --size-size-story-xs: var(--size-story-xs);
   --size-size-submenu-offset-x: var(--size-submenu-offset-x);
   --size-size-submenu-offset-y: var(--size-submenu-offset-y);
   --size-size-table-cell-width: var(--size-table-cell-width);
@@ -750,7 +738,7 @@
   --text-fill-disabled: var(--color-black-36);
   --text-fill-primary: var(--color-black-90);
   --text-fill-secondary: var(--color-black-61);
-  --text-fill-tertiary: var(--color-black-45);
+  --text-fill-tertiary: var(--color-black-56);
   --text-on-accent-fill-disabled: var(--color-white);
   --text-on-accent-fill-primary: var(--color-white);
   --text-on-accent-fill-secondary: var(--color-white-70);
@@ -784,6 +772,8 @@
     --font-size-title: 24px;
     --size-chrome-page-wide-height: 552px;
     --size-chrome-page-wide-width: 1118px;
+    --size-equation-height: 44px;
+    --size-equation-width: 173px;
     --size-image-viewer-image-height: 400px;
     --size-image-viewer-image-width: 640px;
     --size-post-cover-height: 180px;
@@ -1939,10 +1929,18 @@
 }
 
 @utility type-code {
-  font-family: var(--font-family-code), var(--font-family-korean);
+  font-family: var(--font-family-code);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--font-line-height-body);
+  letter-spacing: 0em;
+}
+
+@utility type-code-inline {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-code-inline);
   letter-spacing: 0em;
 }
 
