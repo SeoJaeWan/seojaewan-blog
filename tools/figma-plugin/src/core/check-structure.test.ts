@@ -318,6 +318,17 @@ describe('구조 검사: CSS로 그릴 수 없는 기능', () => {
     ).toEqual([]);
   });
 
+  // @codocs [[디자인 기반:서체]]
+  it('코드 서체 NanumGothicCoding은 한글이 들어 있어 한글 구간에도 허용한다', () => {
+    expect(
+      reasonsAfter((root) => {
+        must(label(root).text).segments = [
+          segment({ characters: '// 글을 읽어 제목을', fontFamily: 'NanumGothicCoding' }),
+        ];
+      }),
+    ).toEqual([]);
+  });
+
   it('CSS로 그리지 않는 노드 종류를 막는다', () => {
     expect(
       reasonsAfter((root) => root.children.push(node({ path: 'x', type: 'TEXT_PATH' }))),

@@ -53,7 +53,7 @@ export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
   return (
     <div
       className={cn(
-        'relative h-size-story-5xl w-size-list-item-width overflow-hidden',
+        'relative h-size-start-body-height w-size-list-item-width overflow-hidden',
         motionClassName,
       )}
     >
@@ -65,7 +65,7 @@ export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
         data-motion-node="Start/JumpList"
         className="absolute inset-spacing-none flex justify-center"
       >
-        <TileGrid align="center" className="w-size-story-lg">
+        <TileGrid align="center" className="w-size-jump-list-grid-width">
           {letters.map((letter) => renderLetter(letter))}
         </TileGrid>
       </div>
@@ -95,14 +95,10 @@ function renderListItem(item: SampleListItem): JSX.Element {
 }
 
 /**
- * 글자 격자의 칸 하나를 그린다. 칸 사이 간격은 감싼 요소의 안쪽 여백이다.
+ * 글자 격자의 칸 하나를 그린다.
  * @param letter 글자
  * @returns JumpListLetter
  */
 function renderLetter(letter: string): JSX.Element {
-  return (
-    <div key={letter} className="p-spacing-xs">
-      <JumpListLetter label={letter} disabled={disabledLetters.has(letter)} />
-    </div>
-  );
+  return <JumpListLetter key={letter} label={letter} disabled={disabledLetters.has(letter)} />;
 }

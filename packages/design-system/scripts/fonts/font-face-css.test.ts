@@ -55,7 +55,7 @@ describe('서체', () => {
     ).toThrow(FontCssError);
   });
 
-  it('src/의 웹 폰트 CSS(Pretendard, Open Sans, Cascadia Mono)가 패키지 CSS와 맞고 woff2만 가리킨다', () => {
+  it('src/의 웹 폰트 CSS(Pretendard, Open Sans, Nanum Gothic Coding)가 패키지 CSS와 맞고 woff2만 가리킨다', () => {
     for (const source of fontSources) {
       const css = readFileSync(path.join(sourceDir, source.output), 'utf8');
       expect(css).toBe(fontSourceCss(source));
@@ -66,13 +66,22 @@ describe('서체', () => {
   it('본문 서체는 Regular·SemiBold·Bold만, 코드 블록 서체는 Regular만 담는다', () => {
     expect(weights('pretendard.css')).toEqual(['400', '600', '700']);
     expect(weights('open-sans.css')).toEqual(['400', '600', '700']);
-    expect(weights('cascadia-mono.css')).toEqual(['400']);
+    expect(weights('nanum-gothic-coding.css')).toEqual(['400']);
   });
 
   it('기울임은 Open Sans Italic Regular만 웹 폰트로 담고, 한글(Pretendard)과 코드 서체는 기울임 글꼴이 없다', () => {
     expect(italicWeights('open-sans.css')).toEqual(['400']);
     expect(italicWeights('pretendard.css')).toEqual([]);
-    expect(italicWeights('cascadia-mono.css')).toEqual([]);
+    expect(italicWeights('nanum-gothic-coding.css')).toEqual([]);
+  });
+
+  // @codocs [[피그마 연동:서체 구현]]
+  it('코드 서체 @font-face 이름은 피그마 서체 이름(font/family/code 토큰 값)과 같다', () => {
+    const css = readFileSync(path.join(sourceDir, 'nanum-gothic-coding.css'), 'utf8');
+    const tokens = readFileSync(path.join(sourceDir, 'tokens.css'), 'utf8');
+    const families = new Set([...css.matchAll(/font-family: ([^;]+);/gu)].map((match) => match[1]));
+    expect([...families]).toEqual(["'NanumGothicCoding'"]);
+    expect(tokens).toContain("--font-family-code: 'NanumGothicCoding';");
   });
 
   it('브라우저가 기울임 글꼴이 없는 글자(한글)를 기울여 흉내 내지 않는다', () => {
