@@ -57,30 +57,6 @@ export function layerTree(node: NodeData, codeVariables: CodeVariables, isRoot =
 }
 
 /**
- * 변형에 빈 HUG 슬롯이 있는지 본다. 슬롯이 비어 있고 내용에 맞추는 축이 있으면 피그마가 그리는 크기는 디자인 값이 아니다.
- * 이런 변형은 단독 캡처에서 빠진다.
- * @codocs [[피그마 연동:구조 검사]]
- * @param root 변형 루트
- * @returns 있으면 true
- */
-export function hasEmptyHugSlot(root: NodeData): boolean {
-  return root.children.some(
-    /**
-     * 자식이나 그 아래에 빈 HUG 슬롯이 있는지 본다.
-     * @param child 자식
-     * @returns 있으면 true
-     */
-    (child) => {
-      if (child.type === 'SLOT' && child.children.length === 0) {
-        const { horizontal, vertical } = sizingOf(child, false);
-        return horizontal === 'HUG' || vertical === 'HUG' || hasEmptyHugSlot(child);
-      }
-      return hasEmptyHugSlot(child);
-    },
-  );
-}
-
-/**
  * 값 하나를 적는다. 변수에 연결했으면 변수 이름, 아니면 숫자다.
  * @param bound 값과 변수
  * @returns 변수 이름이나 숫자

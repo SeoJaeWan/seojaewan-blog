@@ -14,7 +14,7 @@ import {
 } from './check-structure';
 import { noCodeVariables } from './code-variables';
 import { parseDirectiveTexts } from './directives';
-import { hasEmptyHugSlot, layerTree } from './layer-tree';
+import { layerTree } from './layer-tree';
 import type { AssetData, NodeData } from './node-data';
 import { isMotionApiError } from './read-motion';
 import { type NameCache, readNodeTree } from './read-node';
@@ -85,7 +85,6 @@ export async function exportTargetCore(
       nodeId: variant.id,
       properties,
       node: nodeBox(box, variant.absoluteRenderBounds),
-      ...(hasEmptyHugSlot(tree) ? { emptyHugSlot: true } : {}),
       tree: layerTree(tree, codeVariables),
     };
     nodes.set(slug, variant);
