@@ -56,7 +56,7 @@ _codocs:
   모바일 입력(길게 누르기 메뉴, 선택 없음)은 Playwright 기본 설정이 터치 장치가 아니라 합성 이벤트로 흉내 내야 해서 믿기 어렵다고 보고, 모바일은 폭 390 화면의 열기·전환·검색 흐름만 넣었다. 길게 누르기는 스토리 `play`가 맡는다.
 "인라인 style lint: 규칙을 거는 범위와 구현": |
   - `style` 값 제한은 `no-restricted-syntax`로 구현했다. JSX `style={{ … }}`의 속성 값이 문자열·숫자 리터럴, 음수 리터럴(`-1`), 식이 없는 템플릿이면 막는다. `style={조건 ? { … } : …}`·`style={조건 && { … }}`처럼 조건식·논리식이 고른 객체도 본다. 변수에 담아 넘긴 객체(`style={panelStyle}`)는 보지 않는다.
-  - 범위는 토큰 클래스 검사와 같게 앱·디자인 시스템 소스(`*.test.*` 제외)로 했다. `no-restricted-syntax`는 블록마다 목록을 통째로 바꾸므로, default export 예외 파일(스토리, Next.js 예약 파일)에는 `files: [[범위, 예외 파일]]`로 따로 걸었다.
+  - 범위는 토큰 클래스 검사와 같게 앱·디자인 시스템 소스(`*.test.*` 제외)로 했다. `no-restricted-syntax`는 블록마다 목록을 통째로 바꾸므로, default export 예외 파일(스토리, Next.js 예약 파일)에는 `files: \[[범위, 예외 파일]]`로 따로 걸었다.
   - 객체 `className` 키 값은 better-tailwindcss 셀렉터 설정으로 넣었다(플러그인 4.9.1의 `objectValues` 매처와 `path`). 함수 인자(`callee`), 변수 초기값(`variable`), JSX 속성 값(`attribute`)의 객체에서 경로가 `className`으로 끝나는 값을 검사한다. 셀렉터 종류에 `objectKey`는 없고, 매처가 함수 호출·함수 경계를 넘지 않아 `return { className: '…' }`처럼 이 셋 밖의 객체는 여전히 검사하지 않는다(지금 저장소에는 없다).
   - [[피그마 연동:토큰 사용 강제]]의 "lint는 … 넷 중 한 곳에 쓴다" 문단은 객체 `className` 키와 `style` 값 제한을 아직 적지 않았다. 문서를 고치지 않았으므로 반영이 필요하다.
 "인라인 style lint: 토큰이 없는 값의 처리": |
