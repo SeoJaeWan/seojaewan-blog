@@ -1,5 +1,5 @@
 {
-  "description": "경로의 한 칸으로, Breadcrumb의 Items 슬롯에 쓴다.",
+  "description": "경로의 한 칸으로, Breadcrumb의 Items 슬롯에 쓴다.\n@runtime 공간이 모자라면 위치 이름 끝을 …로 줄인다",
   "name": "BreadcrumbItem",
   "nodeId": "31:420",
   "propertyDefinitions": {
@@ -56,12 +56,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -80,7 +80,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
@@ -206,12 +206,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -230,7 +230,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
@@ -338,12 +338,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -362,7 +362,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
@@ -485,12 +485,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -509,7 +509,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
@@ -635,12 +635,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -659,7 +659,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
@@ -767,12 +767,12 @@
                   "w": 45
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "HUG",
                   "v": "HUG"
                 },
                 "text": {
-                  "autoResize": "HEIGHT",
-                  "maxLines": 1,
+                  "autoResize": "WIDTH_AND_HEIGHT",
+                  "maxLines": null,
                   "maxLinesVariable": null,
                   "segments": [
                     {
@@ -791,7 +791,7 @@
                       "textStyle": "Hangul/Caption"
                     }
                   ],
-                  "truncation": "ENDING"
+                  "truncation": "DISABLED"
                 },
                 "type": "TEXT"
               }
