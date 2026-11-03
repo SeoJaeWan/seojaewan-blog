@@ -1745,7 +1745,7 @@
     },
     "device=mobile": {
       "node": {
-        "height": 465,
+        "height": 611,
         "width": 356,
         "x": 0,
         "y": 0
@@ -3464,17 +3464,16 @@
               "radius/control"
             ],
             "size": {
-              "h": 465,
+              "h": 611,
               "w": 356
             },
             "sizing": {
               "h": "FILL",
-              "v": "FILL"
+              "v": "HUG"
             },
             "type": "FRAME"
           }
         ],
-        "height": "size/search-results/mobile-height",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -3489,12 +3488,12 @@
         },
         "name": "Device=Mobile",
         "size": {
-          "h": 465,
+          "h": 611,
           "w": 356
         },
         "sizing": {
           "h": "FIXED",
-          "v": "FIXED"
+          "v": "HUG"
         },
         "type": "COMPONENT",
         "width": "size/shell/mobile-body-width"
