@@ -7,6 +7,11 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"NavigationPane PR #481: Figma 스토리 되살림": |
+  - 피그마 `items` 슬롯 기본 내용(NavigationItem 여섯: 바탕 화면·Blog·React·Next.js·TypeScript·휴지통)과 같은 항목으로 `Figma` 스토리를 다시 만들었다. 아이콘은 앱 탐색 창과 같게 바탕 화면은 `ic_fluent_desktop_20_regular`(`text-text-fill-primary`), 폴더는 `images/file-folder`, 휴지통은 `images/file-recycle-bin-full`이다.
+  - 항목 너비는 피그마 원본 너비 240인 `w-size-navigation-item-width`를 항목마다 줬다. 탐색 창이 HUG라 항목이 너비를 정한다. 앱(`explorer-window-layer.tsx`)은 같은 자리에 값이 같은(240) `w-size-search-box-width`를 쓰고 있어 `w-size-navigation-item-width`로 바꿨다. 값이 같아 모양은 바뀌지 않는다.
+  - treeitem이 tree 안에 있어야 하므로 스토리에서 `NavigationPane`에 앱과 같은 `role="tree"`·`aria-label="탐색 창"`을 줬다.
+  - 넘긴 항목이 그려지는지만 보던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠다.
 "Breadcrumb PR #480: 변형 정리와 스토리": |
   - `State=Editing`을 지우며 코드의 `editing`·`address` prop과 주소 입력창 분기를 지웠다. 앱은 이 prop을 쓰지 않았다(주소 입력은 아직 구현하지 않음). 루트에 `relative`가 필요하던 아래 파란 선도 함께 없앴다.
   - 스토리는 `Figma` 하나만 남겼다. `Default`(위치 아이콘과 넘긴 경로 칸이 그려지는지)는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠고, `Editing`은 변형과 함께 지웠다.
