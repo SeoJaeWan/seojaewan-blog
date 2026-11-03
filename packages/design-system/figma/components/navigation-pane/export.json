@@ -9,7 +9,6 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
         "height": 208,
         "width": 248,
@@ -21,6 +20,722 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "chevron",
+                    "rotation": {
+                      "value": -90,
+                      "variable": "rotate/quarter"
+                    },
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_desktop_20_regular"
+                    },
+                    "component": "ic_fluent_desktop_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "item icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 184
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "바탕",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "화면",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/바탕 화면",
+                "properties": {
+                  "Expand": "Expanded",
+                  "Label": "바탕 화면",
+                  "Level": "0",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              },
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "indent",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "spacing/lg"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "chevron",
+                    "rotation": {
+                      "value": -90,
+                      "variable": "rotate/quarter"
+                    },
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "file/Folder",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 168
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Blog",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "fills": [
+                  "control-alt-fill/tertiary"
+                ],
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/Blog",
+                "properties": {
+                  "Expand": "Expanded",
+                  "Label": "Blog",
+                  "Level": "1",
+                  "State": "Selected"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              },
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "indent",
+                    "size": {
+                      "h": 16,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "spacing/3xl"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/secondary",
+                      "path": "icons/ic_fluent_chevron_right_16_regular"
+                    },
+                    "component": "ic_fluent_chevron_right_16_regular",
+                    "height": "size/icon/sm",
+                    "name": "chevron",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "file/Folder",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 152
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "React",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/React",
+                "properties": {
+                  "Expand": "Collapsed",
+                  "Label": "React",
+                  "Level": "2",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              },
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "indent",
+                    "size": {
+                      "h": 16,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "spacing/3xl"
+                  },
+                  {
+                    "height": "size/icon/sm",
+                    "name": "chevron space",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "file/Folder",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 152
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Next.js",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/Next.js",
+                "properties": {
+                  "Expand": "None",
+                  "Label": "Next.js",
+                  "Level": "2",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              },
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "indent",
+                    "size": {
+                      "h": 16,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "spacing/3xl"
+                  },
+                  {
+                    "height": "size/icon/sm",
+                    "name": "chevron space",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "file/Folder",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 152
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "TypeScript",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/TypeScript",
+                "properties": {
+                  "Expand": "None",
+                  "Label": "TypeScript",
+                  "Level": "2",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              },
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "chevron space",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-recycle-bin-full"
+                    },
+                    "component": "file/Recycle Bin Full",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "item icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 184
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "휴지통",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "nav/휴지통",
+                "properties": {
+                  "Expand": "None",
+                  "Label": "휴지통",
+                  "Level": "0",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/none",

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
+import { MenuItem } from '../menu-item/menu-item';
+import { Separator } from '../separator/separator';
 import { Menu } from './menu';
 
 const meta = {
@@ -11,19 +12,28 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 항목을 children 자리(Flyout Content 슬롯)에 그린다 */
-export const Default: Story = {
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 Menu는 변형이 하나다. Flyout Content 슬롯(children)에는 피그마 슬롯 기본 내용과 같은 메뉴 항목과 구분선을 넣는다.
+export const Figma: Story = {
   render: () => (
-    <Menu role="menu" aria-label="메뉴">
-      <div role="menuitem" tabIndex={-1}>
-        메뉴 항목
+    <Menu>
+      <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+      <MenuItem standalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
+      <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
+        <Separator className="w-full" />
       </div>
+      <MenuItem
+        standalone
+        label="이름 바꾸기"
+        icon="icons/ic_fluent_rename_20_regular.svg"
+        shortcut="F2"
+      />
+      <MenuItem
+        standalone
+        label="삭제"
+        icon="icons/ic_fluent_delete_20_regular.svg"
+        shortcut="Delete"
+      />
     </Menu>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('menu', { name: '메뉴' })).toContainElement(
-      canvas.getByRole('menuitem', { name: '메뉴 항목' }),
-    );
-  },
 };

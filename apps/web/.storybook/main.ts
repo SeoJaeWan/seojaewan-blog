@@ -20,6 +20,7 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           '@': path.resolve(import.meta.dirname, '../src'),
+          'server-only': path.resolve(import.meta.dirname, 'server-only.ts'),
           'next/image': path.resolve(import.meta.dirname, 'next-image.ts'),
         },
       },
