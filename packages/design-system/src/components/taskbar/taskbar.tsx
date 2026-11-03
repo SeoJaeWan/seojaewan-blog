@@ -2,22 +2,12 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 
-export type TaskbarMaterial = 'acrylic' | 'solid';
-
 type TaskbarProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Material. acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
-  material?: TaskbarMaterial;
   /** 피그마 Center 슬롯. 시작 버튼·검색·앱 버튼을 넣는다 */
   center?: ReactNode;
   /** 피그마 Right 슬롯. SystemTray를 넣는다 */
   right?: ReactNode;
 };
-
-// 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 배경 흐림)다.
-const materialClassNames = {
-  acrylic: 'material-acrylic-base',
-  solid: 'bg-material-fallback-acrylic-base',
-} as const satisfies Record<TaskbarMaterial, string>;
 
 /**
  * 화면 아래 작업 표시줄(피그마 Taskbar)의 재질 바탕과 자리를 그린다.
@@ -29,13 +19,14 @@ const materialClassNames = {
  * @param props
  */
 export function Taskbar(props: TaskbarProps): JSX.Element {
-  const { material = 'acrylic', center, right, className, ...divProps } = props;
+  const { center, right, className, ...divProps } = props;
   return (
     <div
       {...divProps}
       className={cn(
         'relative flex h-size-taskbar-height items-center px-spacing-md',
-        materialClassNames[material],
+        // 재질 칠이다(피그마 칠 스타일). 앱은 아크릴만 쓴다.
+        'material-acrylic-base',
         className,
       )}
     >

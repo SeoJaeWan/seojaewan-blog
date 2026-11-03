@@ -189,7 +189,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
       title={cardItem.title}
       meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
       actions={
-        <div className="flex w-full flex-col items-start gap-spacing-sm">
+        <>
           <MenuItem
             standalone
             label="열기"
@@ -204,7 +204,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
               onClick={handleCopyCardItemLink}
             />
           )}
-        </div>
+        </>
       }
     >
       <ListGroup label="최고 일치" className="w-full shrink-shrink-none">

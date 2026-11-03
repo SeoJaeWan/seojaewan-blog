@@ -14,7 +14,7 @@ type TileGridProps = Omit<ComponentProps<'div'>, 'children'> & {
 /**
  * 타일을 가로로 늘어놓고 줄바꿈하는 묶음(피그마 TileGrid)을 그린다.
  * 타일은 `children` 슬롯으로 채우고, 타일 사이 간격은 타일이 정한다.
- * 너비는 갖지 않는다. 피그마 원본 너비 574는 미리보기 크기로만 두고, 쓰는 곳이 `className`으로 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
+ * 너비는 갖지 않는다. 피그마 원본 너비(`size/new-tab/grid-width`)는 미리보기 크기로만 두고, 쓰는 곳이 `className`으로 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * @param props
  */
 export function TileGrid(props: TileGridProps): JSX.Element {
