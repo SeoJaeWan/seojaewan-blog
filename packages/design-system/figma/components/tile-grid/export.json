@@ -17,9 +17,8 @@
   },
   "variants": {
     "align=center": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 100,
+        "height": 84,
         "width": 576,
         "x": 0,
         "y": 0
@@ -31,6 +30,596 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "React 19 ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "훅",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "정리",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "React 19 훅 정리",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "리액트",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "서버",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "컴포넌트",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "리액트 서버 컴포넌트",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Next.js ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "캐시",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "Next.js 캐시",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "TypeScript 5.6",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "TypeScript 5.6",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Vitest ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "테스트",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "Vitest 테스트",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Figma ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "일치",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "검사",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "Figma 일치 검사",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/none",
@@ -46,7 +635,7 @@
             },
             "name": "tiles",
             "size": {
-              "h": 100,
+              "h": 84,
               "w": 576
             },
             "sizing": {
@@ -70,7 +659,7 @@
         },
         "name": "Align=Center",
         "size": {
-          "h": 100,
+          "h": 84,
           "w": 576
         },
         "sizing": {
@@ -82,9 +671,8 @@
       }
     },
     "align=start": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 100,
+        "height": 168,
         "width": 576,
         "x": 0,
         "y": 0
@@ -96,6 +684,728 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/app-file-explorer"
+                    },
+                    "component": "app/File Explorer",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "File Explorer",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "File Explorer",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/app-chrome"
+                    },
+                    "component": "app/Chrome",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Chrome",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "Chrome",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "Blog",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "Blog",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "illustrations/file-link"
+                    },
+                    "component": "file/Link",
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "GitHub",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "GitHub",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "illustrations/file-link"
+                    },
+                    "component": "file/Link",
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "이력서",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "이력서",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "illustrations/file-link"
+                    },
+                    "component": "file/Link",
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "사이드",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "프로젝트",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "사이드 프로젝트",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "React",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "React",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/xl",
+                    "name": "item icon",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/xl"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 87
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "React 19 ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "훅",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "정리",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "PinnedTile",
+                "height": "size/pinned-tile/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/xs",
+                    "spacing/sm",
+                    "spacing/xs"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "PinnedTile",
+                "properties": {
+                  "Label": "React 19 훅 정리",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 84,
+                  "w": 95
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/pinned-tile/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/none",
@@ -111,7 +1421,7 @@
             },
             "name": "tiles",
             "size": {
-              "h": 100,
+              "h": 168,
               "w": 576
             },
             "sizing": {
@@ -135,7 +1445,7 @@
         },
         "name": "Align=Start",
         "size": {
-          "h": 100,
+          "h": 168,
           "w": 576
         },
         "sizing": {
