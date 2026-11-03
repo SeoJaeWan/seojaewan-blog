@@ -239,6 +239,10 @@ _codocs:
   - 빠진 값 줄의 결과 칸은 비운다. 시안의 손으로 쓴 예상 결과는 정의에 없는 내용이라 옮기지 않았다.
   - 화면에서 없앤 것에 맞춰 도구 코드도 지웠다: 빠진 값 제안(`suggest.ts`), 필름 띠(`trace-film.ts`, `zip.ts`), 이번 PR 거르기(`changed-files.ts`), 케이스별 최근 실행. `history.json`은 실행 기록 링크와 다음 기능을 위해 그대로 쌓는다. 화면은 어두운 모드 색도 둔다.
   - 저장소의 행위 정의 전체가 "기준 + 조건 하나씩" 규칙(바꾼 조건 하나, 기준값과 같은 change 없음, 없는 값 없음, combine 이유)을 지키는지 도구 단위 테스트가 본다.
+"토큰 PR #522: size/search-results/mobile-height 삭제 반영": |
+  - 지운 변수 `size/search-results/mobile-height`의 클래스(`h-size-search-results-mobile-height`)는 SearchResults `Figma` 스토리의 모바일 크기 상자만 썼다. 피그마 SearchResults 모바일이 높이를 내용에 맞추게 바뀌어, 대신할 토큰 없이 높이 클래스를 지우고 너비(`w-size-shell-mobile-body-width`)만 남겼다. 컴포넌트(모바일의 `ScrollArea size-full`)와 스크롤 시험은 다음 SearchResults 컴포넌트 PR에 맡기고 고치지 않았다.
+  - `size/scrollbar/thumb-length` 값(80 → 119.4444)과 새 변수(`font/line-height/code-inline`, `size/shell/content-width`, `size/shell/mobile-content-width`), 새 글자 스타일 `Code/Inline`(`type-code-inline`)은 코드에서 고칠 곳이 없다. `type-code-inline`을 쓰는 코드는 다른 PR이 만든다.
+  - 전체 `pnpm test`에서 `unit-scenario-cases`의 `read-behaviors.test.ts` 저장소 규칙 테스트가 5초 제한에 걸려 한 번 실패했다. 이 PR과 관계없는 파일이고 그 프로젝트만 다시 돌리니 통과해 부하로 인한 시간 초과로 보고 손대지 않았다.
 "컴포넌트 PR #477 SearchResults: Figma 스토리 되살림": |
   - `Figma` 스토리를 다시 만들고 `device` 변형마다 `Results` 슬롯에 `export.json` 기본 내용과 같은 ListGroup 넷(최고 일치: Two-line·Selected "리액트 19 훅 정리"/"글", 폴더: "리액트", 글: 두 항목, 외부 링크: "리액트 스터디 노트")을 넣었다. 안쪽 BestMatchCard는 기본값(제목·부가 정보, 문서 아이콘)에 동작 MenuItem 둘(열기, 링크 복사, `standalone`)을 넣었다. 동작 목록은 앱 `search-body.tsx`와 같이 `flex flex-col items-start gap-spacing-sm` 상자로 감쌌다(BestMatchCard `Actions` 슬롯 상자가 아직 블록이라서다).
   - 크기는 변형마다 `h-size-search-results-height w-size-shell-body-width`, `h-size-search-results-mobile-height w-size-shell-mobile-body-width`로 감쌌다. 배치는 `padded`다(높이 545·465가 홀수라 가운데 배치에서 반 픽셀에 놓여 선과 글자가 번졌다).
