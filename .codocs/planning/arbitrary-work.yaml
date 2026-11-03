@@ -266,6 +266,12 @@ _codocs:
   - 손가락 표시는 모든 시험에 `addInitScript`로 넣는다. 터치 이벤트가 없으면 보이지 않는다.
   - 휠 함수(`wheelScroll`)는 만들었지만 지금 휠을 쓰는 케이스는 없다.
   - 위 "8단계 E2E" 두 항목(5~10개보다 많이 둠, 길게 누르기와 터치 끌기는 E2E에 넣지 않음)은 이 PR과 바뀐 [[테스트 작성 규칙:E2E]]로 지난 내용이 됐지만, 사람이 검토할 항목이라 지우지 않았다.
+"스토리 스타일 금지 ⑤: 모션 견본 스토리": |
+  - 모션 스토리 13개(`src/motion-story/*.stories.tsx`)에서 `className`을 모두 없앴다. 남은 것은 lint가 경로 단위로 허용한 `motionClassName` 속성과 `className={motionClassName}`(Flyout)뿐이다.
+  - 견본 둘레 여백(`p-spacing-2xl`, 검색 돋보기만 `p-spacing-lg`)은 스토리에서 지우고 모션 견본 도우미 `motion-preview.tsx`의 무대가 갖게 했다. 피그마 모션 견본 프레임이 모두 같은 `spacing/2xl` 안쪽 여백을 가져(검색 돋보기 견본도 `get_design_context`로 확인) 모든 모션 스토리에 같은 무대 역할이다. StoryStage `padded`(`p-spacing-5xl`)는 메시지 상자 그림자가 나갈 여백이라 값과 뜻이 달라, 새 배치를 만들지 않고 모션 무대에 두었다. 이 도우미는 모션 스토리 전용이라 일반 스토리 도우미(`story/`)로 옮기지 않았다.
+  - 검색 돋보기 스토리는 `size-size-icon-2xl`(48)과 `p-spacing-lg`를 썼는데, 피그마 견본은 돋보기 64x64(`size-icon-3xl`)에 여백 `spacing/2xl`이다. 그래서 크기와 여백이 피그마와 달랐다. 도우미 `sample-search-icon.tsx`(`SampleWindow` 등과 같은 견본 도우미)가 자산 크기를 64로 주고 스토리는 `motionClassName`만 넘긴다. 모션 json에는 크기가 없어 피그마 견본 노드 크기를 근거로 했다. 모션 시간·키프레임 검사 결과는 같다.
+  - Flyout 모션 스토리의 MenuItem `w-size-menu-width`는 MenuItem `export.json`의 `FigmaFrame`(루트 FIXED 폭 `size/menu/width`)으로 바꿨다.
+  - 위 둘로 모션 스토리 화면의 견본 위치와 돋보기 크기가 바뀐다(여백 통일, 64px). 움직임과 시간 값은 같다.
 "토큰 PR #495: 스토리 크기 토큰 삭제 대응, 코드 서체 교체에서 정한 것": |
   - PR 브랜치가 옛 `main`(#460)에서 갈라져 있어, 코드 서체 토큰 생성이 바뀐 지금 `main`을 병합 커밋으로 받아 왔다. 플러그인 커밋은 다시 쓰지 않았다.
   - `@fontsource/nanum-gothic-coding`은 `@fontsource/cascadia-mono`가 있던 `dependencies`에 5.3.0으로 넣었다. 패키지의 family 이름은 `Nanum Gothic Coding`이라, `generate-fonts.ts`의 웹 폰트 항목에 `family`(선택)를 더해 생성하는 `@font-face` 이름을 `'NanumGothicCoding'`으로 바꿨다. 이름이 토큰 값과 같은지 `font-face-css.test.ts`가 확인한다.
