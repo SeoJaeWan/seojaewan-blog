@@ -265,8 +265,9 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
 }
 
 /**
- * 하위 메뉴 항목을 그린다. 펼칠 하위 메뉴가 있으면 피그마처럼 Popover(오른쪽, 위 맞춤)로 항목 옆에 하위 메뉴를 붙이고,
- * 항목은 하위 메뉴가 열린 모습(강조)으로 그린다.
+ * 하위 메뉴 항목을 그린다. 펼칠 하위 메뉴가 있으면 Popover(오른쪽, 위 맞춤)로 항목 옆에 하위 메뉴를 붙이고,
+ * 항목은 하위 메뉴가 열린 모습(강조)으로 그린다. 피그마 조립은 하위 메뉴를 Popover `Popup` 슬롯이 아니라 조립 최상위의 형제로
+ * 같은 자리에 두는데, 코드는 하위 메뉴가 부모 메뉴 바탕 밖의 팝업이라 그림자를 한 번만 그려 모습이 같다.
  * @param props
  * @param props.entry 하위 메뉴 항목
  * @param props.itemClassName 항목 줄 너비 클래스
