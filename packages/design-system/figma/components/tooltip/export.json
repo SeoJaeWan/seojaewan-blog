@@ -3,14 +3,6 @@
   "name": "Tooltip",
   "nodeId": "14:345",
   "propertyDefinitions": {
-    "Material": {
-      "default": "Acrylic",
-      "options": [
-        "Acrylic",
-        "Solid"
-      ],
-      "type": "VARIANT"
-    },
     "Message": {
       "default": "메시지 내용",
       "type": "TEXT"
@@ -29,7 +21,7 @@
     }
   },
   "variants": {
-    "type=balloon,material=solid": {
+    "type=balloon": {
       "node": {
         "height": 42,
         "width": 300,
@@ -38,7 +30,6 @@
       },
       "nodeId": "14:339",
       "properties": {
-        "Material": "Solid",
         "Type": "Balloon"
       },
       "tree": {
@@ -179,7 +170,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Type=Balloon, Material=Solid",
+        "name": "Type=Balloon",
         "radius": [
           "radius/control",
           "radius/control",
@@ -208,7 +199,7 @@
         "width": "size/tooltip/balloon-width"
       }
     },
-    "type=default,material=acrylic": {
+    "type=default": {
       "node": {
         "height": 30,
         "width": 50,
@@ -217,7 +208,6 @@
       },
       "nodeId": "14:337",
       "properties": {
-        "Material": "Acrylic",
         "Type": "Default"
       },
       "tree": {
@@ -266,93 +256,7 @@
           "primaryAlign": "MIN"
         },
         "maxWidth": "size/tooltip/max-width",
-        "name": "Type=Default, Material=Acrylic",
-        "radius": [
-          "radius/control",
-          "radius/control",
-          "radius/control",
-          "radius/control"
-        ],
-        "size": {
-          "h": 30,
-          "w": 50
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "surface-stroke/flyout"
-        ],
-        "strokesIncludedInLayout": true,
-        "type": "COMPONENT"
-      }
-    },
-    "type=default,material=solid": {
-      "node": {
-        "height": 30,
-        "width": 50,
-        "x": 8,
-        "y": 4
-      },
-      "nodeId": "58:883",
-      "properties": {
-        "Material": "Solid",
-        "Type": "Default"
-      },
-      "tree": {
-        "children": [
-          {
-            "fills": [
-              "text-fill/primary"
-            ],
-            "name": "label",
-            "size": {
-              "h": 16,
-              "w": 32
-            },
-            "sizing": {
-              "h": "FILL",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "HEIGHT",
-              "maxLines": null,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "도움말",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "DISABLED"
-            },
-            "type": "TEXT"
-          }
-        ],
-        "effectStyle": "Elevation/Tooltip",
-        "fillStyle": "Material/Fallback/Acrylic Default",
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": 0,
-          "mode": "VERTICAL",
-          "padding": [
-            "spacing/sm-nudge",
-            "spacing/sm",
-            "spacing/sm-nudge",
-            "spacing/sm"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "maxWidth": "size/tooltip/max-width",
-        "name": "Type=Default, Material=Solid",
+        "name": "Type=Default",
         "radius": [
           "radius/control",
           "radius/control",

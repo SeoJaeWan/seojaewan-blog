@@ -2,20 +2,10 @@ import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
 
-export type TaskbarPreviewListMaterial = 'acrylic' | 'solid';
-
 type TaskbarPreviewListProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Material. acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
-  material?: TaskbarPreviewListMaterial;
   /** 피그마 `Previews` 슬롯. 작업 표시줄 창 미리보기 조립이 채운다 */
   children?: ReactNode;
 };
-
-// 재질별 칠(피그마 칠 스타일)과 효과(피그마 효과 스타일: 그림자와 배경 흐림)다.
-const materialClassNames = {
-  acrylic: 'material-acrylic-base surface-shell-acrylic',
-  solid: 'bg-material-fallback-acrylic-base shadow-elevation-shell-surface',
-} as const satisfies Record<TaskbarPreviewListMaterial, string>;
 
 /**
  * 작업 표시줄 앱 버튼 위에 뜨는 창 미리보기 목록 판(피그마 TaskbarPreviewList)을 그린다.
@@ -26,13 +16,14 @@ const materialClassNames = {
  * @param props
  */
 export function TaskbarPreviewList(props: TaskbarPreviewListProps): JSX.Element {
-  const { material = 'acrylic', className, children, ...divProps } = props;
+  const { className, children, ...divProps } = props;
   return (
     <div
       {...divProps}
       className={cn(
         'relative flex items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-surface-stroke-default p-spacing-xs',
-        materialClassNames[material],
+        // 재질 칠과 효과(피그마 칠·효과 스타일: 그림자와 배경 흐림)다. 앱은 아크릴만 쓴다.
+        'material-acrylic-base surface-shell-acrylic',
         className,
       )}
     >

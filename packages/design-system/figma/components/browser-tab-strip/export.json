@@ -9,10 +9,9 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 100,
-        "width": 136,
+        "height": 34,
+        "width": 276,
         "x": 0,
         "y": 0
       },
@@ -21,6 +20,134 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/file-document"
+                    },
+                    "component": "file/Document",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "file/Document",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "chrome/text-primary"
+                    ],
+                    "name": "title",
+                    "size": {
+                      "h": 16,
+                      "w": 172
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "React 19 ",
+                          "fill": "chrome/text-primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "훅",
+                          "fill": "chrome/text-primary",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "chrome/text-primary",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "정리",
+                          "fill": "chrome/text-primary",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  },
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_dismiss_20_regular"
+                    },
+                    "component": "ic_fluent_dismiss_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "ic_fluent_dismiss_20_regular",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "BrowserTab",
+                "fills": [
+                  "chrome/toolbar-fill"
+                ],
+                "height": "size/browser-tab/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/md"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "tab",
+                "properties": {
+                  "Show separator": true,
+                  "State": "Active",
+                  "Title": "React 19 훅 정리"
+                },
+                "radius": [
+                  "radius/overlay",
+                  "radius/overlay",
+                  0,
+                  0
+                ],
+                "size": {
+                  "h": 34,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/browser-tab/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MAX",
               "gap": "spacing/none",
@@ -35,8 +162,8 @@
             },
             "name": "Tabs",
             "size": {
-              "h": 100,
-              "w": 100
+              "h": 34,
+              "w": 240
             },
             "sizing": {
               "h": "HUG",
@@ -144,8 +271,8 @@
         },
         "name": "BrowserTabStrip",
         "size": {
-          "h": 100,
-          "w": 136
+          "h": 34,
+          "w": 276
         },
         "sizing": {
           "h": "HUG",
