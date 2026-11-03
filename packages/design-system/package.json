@@ -8,6 +8,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./story": "./src/story.ts",
     "./theme.css": "./src/theme.css"
   },
   "scripts": {

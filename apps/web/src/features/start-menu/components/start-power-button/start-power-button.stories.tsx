@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { menuPower } from '@/features/start-menu/power-menu/story-data';
 
 import { StartPowerButton } from './start-power-button';
@@ -22,11 +24,9 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <div className="flex h-screen items-end justify-end p-spacing-lg">
-      <div data-parity-target className="flex">
-        <StartPowerButton open={args.state === 'open'} menuItems={menuPower} />
-      </div>
-    </div>
+    <StoryStage placement="bottom-end" target>
+      <StartPowerButton open={args.state === 'open'} menuItems={menuPower} />
+    </StoryStage>
   ),
 } satisfies Meta<FigmaArgs>;
 

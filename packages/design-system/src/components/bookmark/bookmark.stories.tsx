@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import bookmarkExport from '../../../figma/components/bookmark/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { Bookmark } from './bookmark';
 
 type FigmaArgs = {
@@ -19,12 +21,9 @@ const meta = {
     description: { control: 'text' },
     url: { control: 'text' },
   },
-  render: (args) => (
-    // Bookmark는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(720)로 감싼다.
-    <div className="w-size-post-width">
-      <Bookmark title={args.title} description={args.description} url={args.url} />
-    </div>
-  ),
+  // Bookmark는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
+  decorators: [figmaFrame(bookmarkExport)],
+  render: (args) => <Bookmark title={args.title} description={args.description} url={args.url} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;

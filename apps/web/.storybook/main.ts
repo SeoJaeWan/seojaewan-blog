@@ -20,6 +20,8 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           '@': path.resolve(import.meta.dirname, '../src'),
+          // 피그마 플러그인이 내보낸 조립 자료(export.json). 스토리의 FigmaFrame이 크기를 읽는다.
+          '@figma': path.resolve(import.meta.dirname, '../figma'),
           'server-only': path.resolve(import.meta.dirname, 'server-only.ts'),
           'next/image': path.resolve(import.meta.dirname, 'next-image.ts'),
         },
