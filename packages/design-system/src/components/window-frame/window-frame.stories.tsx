@@ -8,7 +8,7 @@ import { WindowFrame } from './window-frame';
 const TITLE_BARS = ['default', 'custom'] as const;
 const STATES = ['active', 'inactive'] as const;
 const PLACEMENTS = ['normal', 'maximized', 'snapped'] as const;
-const MATERIALS = ['mica', 'solid', 'chrome'] as const;
+const MATERIALS = ['mica', 'chrome'] as const;
 
 type FigmaArgs = {
   titleBar: (typeof TITLE_BARS)[number];
