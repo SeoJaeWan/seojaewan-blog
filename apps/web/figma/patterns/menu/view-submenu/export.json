@@ -468,6 +468,7 @@
                             "type": "INSTANCE"
                           }
                         ],
+                        "component": "MenuSeparator",
                         "layout": {
                           "counterAlign": "MIN",
                           "gap": "spacing/none",
@@ -480,7 +481,7 @@
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "separator",
+                        "name": "MenuSeparator",
                         "size": {
                           "h": 9,
                           "w": 248
@@ -489,7 +490,7 @@
                           "h": "FILL",
                           "v": "HUG"
                         },
-                        "type": "FRAME"
+                        "type": "INSTANCE"
                       },
                       {
                         "children": [
@@ -705,8 +706,7 @@
                 },
                 "name": "Flyout",
                 "properties": {
-                  "Material": "Acrylic",
-                  "Padding": "Compact"
+                  "Material": "Acrylic"
                 },
                 "radius": [
                   "radius/overlay",
