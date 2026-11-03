@@ -21,6 +21,9 @@ _codocs:
   - `export.json`에서 메뉴 구분선(`separator` 프레임)이 `MenuSeparator` 인스턴스로 바뀐 것과 안쪽 값 일부만 반영됐다. 앱 `menu-popup.tsx`가 이미 MenuSeparator를 쓰고 있고 메뉴 항목 목록 함수와 스토리는 그대로라 코드를 바꾸지 않았다.
   - 서른 변형 캡처의 차이 그림에서 구분선 자리는 검정이다. 남은 차이는 단축키 글자(`Ctrl+X`, `F2`, `Delete`)의 1px 세로·가로 어긋남과 글자 가장자리뿐이라 [[한계:글자 기준선]]·[[한계:HUG 글자 폭 올림]]으로 보고 넘겼다.
   - PR 브랜치에 `main`을 받아 합쳤다. 스토리 테스트는 로컬에서 돌리지 않고 CI 결과로 확인한다(제품 코드 변경 없음).
+"Window 조립 PR #519: 안쪽 BreadcrumbItem·RenameField 변경 반영": |
+  - `export.json`에서 `Window/Explorer`의 안쪽 BreadcrumbItem `label`이 FILL·줄임에서 HUG·줄임 없음으로, RenameField의 `State=Rest` 속성이 없어진 것만 반영됐다. 코드는 이미 같은 모양(#514·#515·#482)이라 앱 코드와 스토리를 바꾸지 않았다.
+  - 여섯 변형(desktop 다섯, mobile 하나) 캡처의 차이 그림에는 글자 가장자리와 글자 1~2px 어긋남(탐색 창 항목, 명령 모음 글자 폭 누적)만 남아 [[한계:글자 기준선]]·[[한계:HUG 글자 폭 올림]]으로 보고 넘겼다.
 "BrowserTabStrip PR #483: Figma 스토리 되살림": |
   - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
   - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
