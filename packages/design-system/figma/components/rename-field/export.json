@@ -1,102 +1,15 @@
 {
   "description": "이름 바꾸기 입력 상자로, FileItem과 FileRow의 이름 바꾸기 상태에 쓴다.",
   "name": "RenameField",
-  "nodeId": "692:8253",
+  "nodeId": "29:276",
   "propertyDefinitions": {
-    "State": {
-      "default": "Selected",
-      "options": [
-        "Selected",
-        "Rest"
-      ],
-      "type": "VARIANT"
-    },
     "Text": {
       "default": "이름",
       "type": "TEXT"
     }
   },
   "variants": {
-    "state=rest": {
-      "node": {
-        "height": 22,
-        "width": 31,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "692:8250",
-      "properties": {
-        "State": "Rest"
-      },
-      "tree": {
-        "children": [
-          {
-            "fills": [
-              "text-fill/primary"
-            ],
-            "name": "text",
-            "size": {
-              "h": 16,
-              "w": 21
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "text": {
-              "autoResize": "WIDTH_AND_HEIGHT",
-              "maxLines": null,
-              "maxLinesVariable": null,
-              "segments": [
-                {
-                  "characters": "이름",
-                  "fill": "text-fill/primary",
-                  "textStyle": "Hangul/Caption"
-                }
-              ],
-              "truncation": "DISABLED"
-            },
-            "type": "TEXT"
-          }
-        ],
-        "fills": [
-          "control-fill/input-active"
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": 0,
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/2xs",
-            "spacing/xs",
-            "spacing/2xs",
-            "spacing/xs"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "State=Rest",
-        "size": {
-          "h": 22,
-          "w": 31
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "control-strong-stroke/default"
-        ],
-        "strokesIncludedInLayout": true,
-        "type": "COMPONENT"
-      }
-    },
-    "state=selected": {
+    "default": {
       "node": {
         "height": 22,
         "width": 31,
@@ -104,9 +17,7 @@
         "y": 0
       },
       "nodeId": "29:276",
-      "properties": {
-        "State": "Selected"
-      },
+      "properties": {},
       "tree": {
         "children": [
           {
@@ -182,7 +93,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Selected",
+        "name": "RenameField",
         "size": {
           "h": 22,
           "w": 31

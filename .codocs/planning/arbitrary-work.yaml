@@ -7,6 +7,10 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"RenameField PR #482: State=Rest 삭제 정리": |
+  - `shouldSelectOnMount` prop은 `State=Rest` 변형(선택하지 않은 모습)만을 위한 것이었고 앱과 FileItem·FileRow는 넘기지 않아(기본값 true) 지웠다. 마운트하면 늘 포커스를 주고 이름 전체를 선택한다. 앱 동작은 그대로다.
+  - 그 prop만 보던 `NotSelected` 스토리를 지웠다. 선택·입력을 보는 `Default`, ref 합치기와 키 입력을 보는 `Controlled`는 남겼다.
+  - 로컬 E2E는 돌리지 않았다. 앱 E2E가 3000번 포트를 고정으로 쓰는데 다른 작업자가 같은 컴퓨터에서 동시에 작업 중이라 다른 worktree의 서버를 시험할 수 있어서다. 이름 바꾸기를 지나는 E2E(`desktop-new-folder` 등)는 CI의 E2E 결과로 확인했다.
 "NavigationPane PR #481: Figma 스토리 되살림": |
   - 피그마 `items` 슬롯 기본 내용(NavigationItem 여섯: 바탕 화면·Blog·React·Next.js·TypeScript·휴지통)과 같은 항목으로 `Figma` 스토리를 다시 만들었다. 아이콘은 앱 탐색 창과 같게 바탕 화면은 `ic_fluent_desktop_20_regular`(`text-text-fill-primary`), 폴더는 `images/file-folder`, 휴지통은 `images/file-recycle-bin-full`이다.
   - 항목 너비는 피그마 원본 너비 240인 `w-size-navigation-item-width`를 항목마다 줬다. 탐색 창이 HUG라 항목이 너비를 정한다. 앱(`explorer-window-layer.tsx`)은 같은 자리에 값이 같은(240) `w-size-search-box-width`를 쓰고 있어 `w-size-navigation-item-width`로 바꿨다. 값이 같아 모양은 바뀌지 않는다.
