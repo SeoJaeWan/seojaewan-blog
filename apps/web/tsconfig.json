@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node"],
+    "allowImportingTsExtensions": true,
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "plugins": [{ "name": "next" }],
     "paths": {
