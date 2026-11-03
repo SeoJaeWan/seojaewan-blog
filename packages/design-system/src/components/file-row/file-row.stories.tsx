@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 
+import fileRowExport from '../../../figma/components/file-row/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { FileRow } from './file-row';
 
 // 피그마 FileRow Icon 속성의 기본 인스턴스(폴더 이미지)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
@@ -55,26 +57,25 @@ const meta = {
     originalLocation: { control: 'text' },
     deletedDate: { control: 'text' },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 840으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/file-row/width)로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  decorators: [figmaFrame(fileRowExport)],
+  // Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다.
   render: (args) => (
-    <div className="w-size-file-row-width">
-      {/* Focused는 캡처 도구가 Tab으로 포커스를 옮기므로 줄이 포커스를 받을 수 있게 한다. 선은 :focus-visible로 그린다. */}
-      <FileRow
-        tabIndex={0}
-        view={args.view}
-        name={args.name}
-        date={args.date}
-        type={args.type}
-        location={args.location}
-        showLocation={args.showLocation}
-        originalLocation={args.originalLocation}
-        deletedDate={args.deletedDate}
-        icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
-        selected={args.state === 'selected' || args.state === 'cut-selected'}
-        cut={args.state === 'cut' || args.state === 'cut-selected'}
-        renaming={args.state === 'rename'}
-      />
-    </div>
+    <FileRow
+      tabIndex={0}
+      view={args.view}
+      name={args.name}
+      date={args.date}
+      type={args.type}
+      location={args.location}
+      showLocation={args.showLocation}
+      originalLocation={args.originalLocation}
+      deletedDate={args.deletedDate}
+      icon={<img src={folderIcon} alt="" />}
+      selected={args.state === 'selected' || args.state === 'cut-selected'}
+      cut={args.state === 'cut' || args.state === 'cut-selected'}
+      renaming={args.state === 'rename'}
+    />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -91,11 +92,7 @@ export const Figma: Story = {};
 // @codocs [[디자인 시스템:아이콘 자리]]
 /** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 showLocation을 켜기 전에는 없다 */
 export const Default: Story = {
-  render: () => (
-    <div className="w-size-file-row-width">
-      <FileRow icon={<i>아이콘</i>} />
-    </div>
-  ),
+  render: () => <FileRow icon={<i>아이콘</i>} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText('파일 이름')).toBeInTheDocument();
     await expect(canvas.getByText('수정한 날짜')).toBeInTheDocument();
@@ -108,11 +105,7 @@ export const Default: Story = {
 // @codocs [[컴포넌트 목록:상태]]
 /** showLocation을 켜면 위치 칸을 그린다 */
 export const WithLocation: Story = {
-  render: () => (
-    <div className="w-size-file-row-width">
-      <FileRow icon={<i />} showLocation />
-    </div>
-  ),
+  render: () => <FileRow icon={<i />} showLocation />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText('위치')).toBeInTheDocument();
   },
@@ -121,11 +114,7 @@ export const WithLocation: Story = {
 // @codocs [[컴포넌트 목록:상태]]
 /** recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그리고 수정한 날짜·유형·위치 칸은 그리지 않는다 */
 export const RecycleBin: Story = {
-  render: () => (
-    <div className="w-size-file-row-width">
-      <FileRow icon={<i />} view="recycle-bin" showLocation />
-    </div>
-  ),
+  render: () => <FileRow icon={<i />} view="recycle-bin" showLocation />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText('원래 위치')).toBeInTheDocument();
     await expect(canvas.getByText('삭제한 날짜')).toBeInTheDocument();
@@ -138,16 +127,9 @@ export const RecycleBin: Story = {
 // @codocs [[컴포넌트 목록:상태]]
 /** selected면 선택된 줄이다 */
 export const Selected: Story = {
-  render: () => (
-    <div className="w-size-file-row-width" data-testid="row">
-      <FileRow icon={<i />} selected />
-    </div>
-  ),
+  render: () => <FileRow data-testid="row" icon={<i />} selected />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute(
-      'data-state',
-      'selected',
-    );
+    await expect(canvas.getByTestId('row')).toHaveAttribute('data-state', 'selected');
   },
 };
 
@@ -155,14 +137,10 @@ export const Selected: Story = {
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 /** cut이면 잘라낸 줄이다 */
 export const Cut: Story = {
-  render: () => (
-    <div className="w-size-file-row-width" data-testid="row">
-      <FileRow icon={<i />} cut />
-    </div>
-  ),
+  render: () => <FileRow data-testid="row" icon={<i />} cut />,
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   play: async ({ canvas }) => {
-    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute('data-state', 'cut');
+    await expect(canvas.getByTestId('row')).toHaveAttribute('data-state', 'cut');
   },
 };
 
@@ -170,30 +148,27 @@ export const Cut: Story = {
 /** renaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
 export const Renaming: Story = {
   render: () => (
-    <div className="w-size-file-row-width" data-testid="row">
-      <FileRow icon={<i />} name="보고서" renaming renameFieldProps={{ 'aria-label': '새 이름' }} />
-    </div>
+    <FileRow
+      data-testid="row"
+      icon={<i />}
+      name="보고서"
+      renaming
+      renameFieldProps={{ 'aria-label': '새 이름' }}
+    />
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('textbox', { name: '새 이름' })).toHaveValue('보고서');
     await expect(canvas.queryByText('보고서')).not.toBeInTheDocument();
-    await expect(canvas.getByTestId('row').firstElementChild).toHaveAttribute(
-      'data-state',
-      'rename',
-    );
+    await expect(canvas.getByTestId('row')).toHaveAttribute('data-state', 'rename');
   },
 };
 
 // @codocs [[컴포넌트 목록:상태]]
 /** 포커스 선은 prop 없이 키보드 포커스일 때만 그리고, 크기에 넣지 않으므로 포커스를 받아도 줄 크기가 같다 */
 export const Focused: Story = {
-  render: () => (
-    <div className="w-size-file-row-width" data-testid="row">
-      <FileRow icon={<i />} tabIndex={0} />
-    </div>
-  ),
+  render: () => <FileRow data-testid="row" icon={<i />} tabIndex={0} />,
   play: async ({ canvas, userEvent }) => {
-    const row = canvas.getByTestId('row').firstElementChild as HTMLElement;
+    const row = canvas.getByTestId('row');
     const { offsetWidth, offsetHeight } = row;
 
     await userEvent.tab();

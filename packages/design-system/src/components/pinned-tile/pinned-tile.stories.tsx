@@ -22,12 +22,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
     label: { control: 'text' },
   },
-  render: (args) => (
-    <PinnedTile
-      label={args.label}
-      icon={<img src={appIcon} alt="" className="size-full object-contain" />}
-    />
-  ),
+  render: (args) => <PinnedTile label={args.label} icon={<img src={appIcon} alt="" />} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;

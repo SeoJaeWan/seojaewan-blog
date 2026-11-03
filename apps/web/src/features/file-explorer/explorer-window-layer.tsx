@@ -427,13 +427,8 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
 
 // 탐색 창 아이콘이다. 피그마 Window/Explorer의 탐색 창 인스턴스(데스크톱 아이콘, file/Folder)와 같다. 휴지통은 찬·빈 모양을 고른다.
 const NAVIGATION_ICONS = {
-  desktop: (
-    <Asset
-      name="icons/ic_fluent_desktop_20_regular.svg"
-      className="size-size-icon-sm text-text-fill-primary"
-    />
-  ),
-  folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
+  desktop: <Asset name="icons/ic_fluent_desktop_20_regular.svg" />,
+  folder: <ImageAsset name="images/file-folder" />,
 } as const;
 
 /**
@@ -451,9 +446,8 @@ function renderLocationIcon(workspace: ExplorerWorkspace, folderId: string | nul
             ? 'images/file-recycle-bin-full'
             : 'images/file-recycle-bin-empty'
         }
-        className="size-full object-contain"
       />
     );
   }
-  return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
+  return <ImageAsset name="images/file-folder" />;
 }

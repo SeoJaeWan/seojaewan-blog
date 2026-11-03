@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX, ReactNode } from 'react';
 import { expect, fn } from 'storybook/test';
 
+import navigationItemExport from '../../../figma/components/navigation-item/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { NavigationItem } from './navigation-item';
 
 // 피그마 Item icon 속성의 기본 인스턴스(폴더 아이콘)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
@@ -34,15 +36,17 @@ const meta = {
     level: { control: 'inline-radio', options: LEVELS },
     label: { control: 'text' },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 240으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]). treeitem은 tree 안에서만 쓴다.
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
+  // treeitem은 tree 안에서만 쓴다. 동작 스토리도 같은 크기로 감싼다.
+  decorators: [figmaFrame(navigationItemExport)],
   render: (args) => (
-    <div role="tree" aria-label="탐색 창" className="w-size-navigation-item-width">
+    <div role="tree" aria-label="탐색 창">
       <NavigationItem
         expand={args.expand}
         selected={args.state === 'selected'}
         level={Number(args.level) as 0 | 1 | 2 | 3}
         label={args.label}
-        icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
+        icon={<img src={folderIcon} alt="" />}
       />
     </div>
   ),
@@ -65,7 +69,7 @@ export const Figma: Story = {};
  */
 function TreeFrame(props: { children: ReactNode }): JSX.Element {
   return (
-    <div role="tree" aria-label="탐색 창" className="w-size-navigation-item-width">
+    <div role="tree" aria-label="탐색 창">
       {props.children}
     </div>
   );

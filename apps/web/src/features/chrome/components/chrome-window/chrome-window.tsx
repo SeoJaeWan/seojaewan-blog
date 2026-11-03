@@ -85,8 +85,8 @@ type ChromeWindowProps = WindowFrameControlProps &
   };
 
 // 탭 파비콘과 모바일 앱 아이콘은 피그마 Window/Chrome의 인스턴스(file/Document, app/Chrome) 그대로다.
-const tabFavicon = <ImageAsset name="images/file-document" className="size-full object-contain" />;
-const chromeAppIcon = <ImageAsset name="images/app-chrome" className="size-full object-contain" />;
+const tabFavicon = <ImageAsset name="images/file-document" />;
+const chromeAppIcon = <ImageAsset name="images/app-chrome" />;
 
 // 가운데 버튼의 `button` 값이다.
 const MIDDLE_BUTTON = 1;

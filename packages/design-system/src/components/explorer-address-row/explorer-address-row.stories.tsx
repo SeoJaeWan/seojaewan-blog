@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, ReactNode } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import explorerAddressRowExport from '../../../figma/components/explorer-address-row/export.json';
+import { FigmaFrame } from '../../story/figma-frame';
 import { BreadcrumbItem } from '../breadcrumb-item/breadcrumb-item';
 import { ExplorerAddressRow } from './explorer-address-row';
 
@@ -11,12 +13,6 @@ const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.u
 // 피그마 ExplorerAddressRow의 변형 속성 값이다(정규화한 이름). desktop에는 search=open 변형이 없다.
 const DEVICES = ['desktop', 'mobile'] as const;
 const SEARCHES = ['closed', 'open'] as const;
-
-// 컴포넌트는 너비를 갖지 않으므로 실제로 놓이는 탐색기 본문 너비(피그마 원본 너비 798, 388과 같다)로 감싸 그린다.
-const WIDTH_CLASS_NAMES = {
-  desktop: 'w-size-explorer-content-width',
-  mobile: 'w-size-window-mobile-content-width',
-} as const;
 
 // 피그마 Breadcrumb Items 슬롯의 기본 내용이다.
 const figmaItems = (
@@ -49,6 +45,8 @@ const meta = {
     device: { control: 'inline-radio', options: DEVICES },
     search: { control: 'inline-radio', options: SEARCHES },
   },
+  // 컴포넌트는 너비를 갖지 않으므로 FigmaFrame이 피그마 원본 너비(실제로 놓이는 탐색기 본문 너비)로 감싼다.
+  // 너비는 device만 가르고, desktop에는 search=open 변형이 없어 device로만 고른다.
   render: (args) => {
     const {
       onBack: handleBack,
@@ -60,11 +58,11 @@ const meta = {
       onSearchClose: handleSearchClose,
     } = args;
     return (
-      <div className={WIDTH_CLASS_NAMES[args.device]}>
+      <FigmaFrame source={explorerAddressRowExport} args={{ device: args.device }}>
         <ExplorerAddressRow
           device={args.device}
           search={args.search}
-          locationIcon={<img src={folderIcon} alt="" className="size-full object-contain" />}
+          locationIcon={<img src={folderIcon} alt="" />}
           onBack={handleBack}
           onForward={handleForward}
           onUp={handleUp}
@@ -75,7 +73,7 @@ const meta = {
         >
           {args.items}
         </ExplorerAddressRow>
-      </div>
+      </FigmaFrame>
     );
   },
 } satisfies Meta<FigmaArgs>;

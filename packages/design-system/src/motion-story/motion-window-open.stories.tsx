@@ -17,11 +17,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-window-open">
-      {(motionClassName) => (
-        <div className="p-spacing-2xl">
-          <SampleWindow motionClassName={motionClassName} />
-        </div>
-      )}
+      {(motionClassName) => <SampleWindow motionClassName={motionClassName} />}
     </MotionPreview>
   ),
 };

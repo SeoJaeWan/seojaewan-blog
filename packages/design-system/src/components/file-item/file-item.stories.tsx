@@ -62,7 +62,7 @@ const meta = {
         surface={args.surface}
         view={args.view}
         name={args.name}
-        icon={<img src={folderIcon} alt="" className="size-full object-contain" />}
+        icon={<img src={folderIcon} alt="" />}
         selected={args.state === 'selected' || args.state === 'cut-selected'}
         cut={args.state === 'cut' || args.state === 'cut-selected'}
         renaming={args.state === 'rename'}

@@ -24,7 +24,7 @@ export function ProfileButton(props: ProfileButtonProps): JSX.Element {
       type={type}
       className={cn('flex items-center gap-spacing-md text-left select-none', className)}
     >
-      <span className="flex size-size-avatar-profile shrink-shrink-none items-center justify-center">
+      <span className="flex size-size-avatar-profile shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {photo}
       </span>
       <span className="type-body whitespace-nowrap text-text-fill-primary">{name}</span>

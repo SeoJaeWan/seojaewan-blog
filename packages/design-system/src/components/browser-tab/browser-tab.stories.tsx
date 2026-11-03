@@ -41,7 +41,7 @@ const meta = {
             active={args.state === 'active'}
             title={args.title}
             showSeparator={args.showSeparator}
-            favicon={<img src={faviconImage} alt="" className="size-size-icon-sm object-contain" />}
+            favicon={<img src={faviconImage} alt="" />}
             onClick={handleClick}
             onClose={handleClose}
           />

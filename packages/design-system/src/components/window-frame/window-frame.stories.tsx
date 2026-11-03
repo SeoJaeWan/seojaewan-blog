@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { createPortal } from 'react-dom';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import windowFrameExport from '../../../figma/components/window-frame/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { WindowFrame } from './window-frame';
 
 // 피그마 WindowFrame의 변형 속성 값이다(정규화한 이름).
@@ -29,22 +31,20 @@ const meta = {
     placement: { control: 'inline-radio', options: PLACEMENTS },
     material: { control: 'inline-radio', options: MATERIALS },
   },
-  // 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기 800x500을 준다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
+  // 창 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/window/width × height)로 감싼다
+  // (@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). 동작 스토리도 같은 크기로 감싼다.
+  decorators: [figmaFrame(windowFrameExport)],
   // 컴포넌트의 Content·Title bar content 슬롯은 언제나 비어 있다.
   render: (args) => {
     const common = {
       inactive: args.state === 'inactive',
       placement: args.placement,
       material: args.material,
-      className: 'h-size-window-height w-size-window-width',
     };
     return args.titleBar === 'custom' ? (
       <WindowFrame {...common} titleBar="custom" />
     ) : (
-      <WindowFrame
-        {...common}
-        appIcon={<img src={appIcon} alt="" className="size-full object-contain" />}
-      />
+      <WindowFrame {...common} appIcon={<img src={appIcon} alt="" />} />
     );
   },
 } satisfies Meta<FigmaArgs>;
@@ -72,11 +72,7 @@ type CustomTitleBarStory = StoryObj<CustomTitleBarArgs>;
 /** 기본 제목 표시줄은 앱 아이콘, 창 제목과 창 버튼을 그리고 children을 내용 자리에 그린다 */
 export const Default: Story = {
   render: () => (
-    <WindowFrame
-      appIcon={<span role="img" aria-label="앱 아이콘" />}
-      title="파일 탐색기"
-      className="h-size-window-height w-size-window-width"
-    >
+    <WindowFrame appIcon={<span role="img" aria-label="앱 아이콘" />} title="파일 탐색기">
       <p>내용</p>
     </WindowFrame>
   ),
@@ -109,7 +105,6 @@ export const Maximized: MaximizedStory = {
         placement="maximized"
         onRestore={handleRestore}
         onClose={handleClose}
-        className="h-size-window-height w-size-window-width"
       >
         <p>내용</p>
       </WindowFrame>
@@ -130,13 +125,7 @@ export const Maximized: MaximizedStory = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** showMaximize가 false면 창 버튼에서 최대화 버튼을 뺀다 */
 export const WithoutMaximize: Story = {
-  render: () => (
-    <WindowFrame
-      appIcon={null}
-      showMaximize={false}
-      className="h-size-window-height w-size-window-width"
-    />
-  ),
+  render: () => <WindowFrame appIcon={null} showMaximize={false} />,
   play: async ({ canvasElement, step }) => {
     await step('최대화 버튼이 없다', async () => {
       await expect(
@@ -149,13 +138,7 @@ export const WithoutMaximize: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** maximizeSlot을 기본 최대화 버튼 대신 그린다 */
 export const MaximizeSlot: Story = {
-  render: () => (
-    <WindowFrame
-      appIcon={null}
-      maximizeSlot={<button type="button">스냅</button>}
-      className="h-size-window-height w-size-window-width"
-    />
-  ),
+  render: () => <WindowFrame appIcon={null} maximizeSlot={<button type="button">스냅</button>} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -183,7 +166,6 @@ export const TitleBar: TitleBarStory = {
         onMaximize={handleMaximize}
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
         onTitleBarPointerDown={handleTitleBarPointerDown}
-        className="h-size-window-height w-size-window-width"
       >
         <p>내용</p>
       </WindowFrame>
@@ -231,7 +213,6 @@ export const CustomTitleBar: CustomTitleBarStory = {
         titleBar="custom"
         titleBarContent={<span>탭 목록</span>}
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
-        className="h-size-window-height w-size-window-width"
       />
     );
   },
@@ -265,7 +246,6 @@ export const PortalPopup: TitleBarStory = {
         onTitleBarDoubleClick={handleTitleBarDoubleClick}
         onTitleBarPointerDown={handleTitleBarPointerDown}
         maximizeSlot={createPortal(<p>스냅 레이아웃</p>, document.body)}
-        className="h-size-window-height w-size-window-width"
       />
     );
   },
