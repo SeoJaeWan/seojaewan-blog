@@ -170,7 +170,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
           </>
         )}
         {/* 항목이 넘치면 세로로 스크롤한다. */}
-        <ScrollArea key={itemsKey} material="solid" className="min-w-size-hairline flex-flex-fill">
+        <ScrollArea key={itemsKey} material="solid" className="min-w-size-none flex-flex-fill">
           {(renderItemsArea ?? renderAsIs)(
             <div
               role="group"

@@ -22,7 +22,7 @@ export function ExplorerCommandBar(props: ExplorerCommandBarProps): JSX.Element 
         className,
       )}
     >
-      <div className="min-w-size-hairline flex-flex-fill">{children}</div>
+      <div className="min-w-size-none flex-flex-fill">{children}</div>
     </div>
   );
 }

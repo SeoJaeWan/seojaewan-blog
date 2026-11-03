@@ -13,7 +13,7 @@ const meta = {
       <ProfileButton
         photo={<ImageAsset name="images/avatar-profile" className="size-full" />}
         name="서재완"
-        className="min-w-size-hairline flex-flex-fill"
+        className="min-w-size-none flex-flex-fill"
       />
       <IconButton variant="subtle" label="전원" icon="icons/ic_fluent_power_20_regular.svg" />
     </StartMenuFooter>

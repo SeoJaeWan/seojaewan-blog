@@ -22,7 +22,7 @@ export function StartMenuFooter(props: StartMenuFooterProps): JSX.Element {
         className,
       )}
     >
-      <div className="flex min-w-size-hairline flex-flex-fill items-center">{children}</div>
+      <div className="flex min-w-size-none flex-flex-fill items-center">{children}</div>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export function ColumnHeader(props: ColumnHeaderProps): JSX.Element {
         className,
       )}
     >
-      <span className="min-w-size-hairline flex-flex-fill overflow-hidden text-start type-caption text-ellipsis whitespace-nowrap text-text-fill-secondary">
+      <span className="min-w-size-none flex-flex-fill overflow-hidden text-start type-caption text-ellipsis whitespace-nowrap text-text-fill-secondary">
         {label}
       </span>
       {sort !== 'none' && (
