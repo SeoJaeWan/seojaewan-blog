@@ -96,6 +96,10 @@ describe('figmaFrameStyle', () => {
       minWidth: 0,
     });
     expect(() => figmaFrameStyle(footer, {}, 'Content/없음')).toThrow('노드가 없다');
+    expect(figmaFrameStyle(footer, {}, ['Content', 'ProfileButton'])).toEqual({
+      flex: '1 1 0',
+      minWidth: 0,
+    });
   });
 
   it('피그마 변수 경로를 토큰 생성 규칙대로 CSS 변수 이름으로 바꾼다', () => {

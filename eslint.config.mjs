@@ -281,7 +281,8 @@ const storyStyleMotionFiles = [`${DESIGN_SYSTEM}/src/motion-story/*.stories.tsx`
 // 모션 견본 스토리에서만 허용하는 것: `motionClassName` 속성과 `className={motionClassName}`
 const MOTION_CLASS_NAME_EXCEPTION =
   ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
-// 아직 도우미로 바꾸지 않은 스토리다. 영역별 PR이 바꾸면서 지운다(임시).
+// 규칙으로 풀리지 않아 결정을 기다리는 스토리다(임시). 이유는 임의 작업 문서의 "스토리 스타일 금지 ⑥·⑦"에 있다.
+// ImageViewer: 피그마 고정 이미지 크기와 앱의 "맞추되 키우지 않는다" 규칙이 다르다. Explorer/Content: 피그마 빈 HUG 슬롯 너비.
 const storyStylePendingFiles = [
   'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content.stories.tsx',

@@ -23,6 +23,9 @@ export type FigmaExport = {
   >;
 };
 
+/** 루트 아래 노드 이름 경로. 문자열은 `/`로 나누고, 이름에 `/`가 든 노드는 이름 배열로 준다 */
+export type FigmaNodePath = string | readonly string[];
+
 /** 노드 하나의 크기와 그 노드를 담은 부모의 방향 */
 type NodeSizing = {
   node: FigmaNode;
@@ -84,16 +87,16 @@ function kebabSegment(segment: string): string {
 /**
  * 경로(`Content/ProfileButton`)의 노드와 그 부모의 방향을 찾는다. 경로가 없으면 루트다.
  * @param root 변형의 루트 노드
- * @param node `/`로 나눈 노드 이름 경로
+ * @param node 노드 이름 경로
  * @returns 노드와 부모의 방향
  */
-function findNode(root: FigmaNode, node: string | undefined): NodeSizing | undefined {
+function findNode(root: FigmaNode, node: FigmaNodePath | undefined): NodeSizing | undefined {
   if (node === undefined) {
     return { node: root, parentMode: undefined };
   }
   let parent: FigmaNode | undefined;
   let current: FigmaNode | undefined = root;
-  for (const name of node.split('/')) {
+  for (const name of typeof node === 'string' ? node.split('/') : node) {
     parent = current;
     current = current?.children?.find((child) => child.name === name);
   }
@@ -148,15 +151,18 @@ function sizingStyle(sizing: NodeSizing, label: string): CSSProperties {
  * @codocs [[피그마 연동:스토리 규칙]]
  * @param source 컴포넌트·조립의 export.json
  * @param args 스토리 args(변형 속성)
- * @param node 루트가 아닌 안쪽 노드를 감쌀 때 `/`로 나눈 노드 이름 경로
+ * @param node 루트가 아닌 안쪽 노드를 감쌀 때 노드 이름 경로(`/`로 나눈 문자열이나 이름 배열)
  * @returns 감싸는 요소의 style
  */
 export function figmaFrameStyle(
   source: FigmaExport,
   args: Readonly<Record<string, unknown>>,
-  node?: string,
+  node?: FigmaNodePath,
 ): CSSProperties {
-  const label = node === undefined ? source.name : `${source.name} ${node}`;
+  const label =
+    node === undefined
+      ? source.name
+      : `${source.name} ${typeof node === 'string' ? node : node.join(' > ')}`;
   const matched = Object.values(source.variants).filter((variant) => matchesArgs(variant, args));
   if (matched.length === 0) {
     throw new Error(`${label}: args에 맞는 피그마 변형이 없다`);
@@ -196,7 +202,7 @@ function matchesArgs(
  */
 function variantStyle(
   variant: FigmaExport['variants'][string],
-  node: string | undefined,
+  node: FigmaNodePath | undefined,
   label: string,
 ): CSSProperties {
   const sizing = findNode(variant.tree, node);

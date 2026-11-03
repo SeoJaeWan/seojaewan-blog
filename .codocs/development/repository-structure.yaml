@@ -142,7 +142,7 @@ _codocs:
   packages/design-system/
   ├─ src/
   │  ├─ index.ts          # 공개 진입점. 컴포넌트 파일을 `export *`로 다시 내보낸다
-  │  ├─ story.ts          # 스토리 전용 진입점(`@seojaewan/design-system/story`). 스토리만 가져온다
+  │  ├─ story.ts          # 스토리 전용 진입점(`@seojaewan/design-system/story`). 스토리와 테스트만 가져온다
   │  ├─ story/            # 스토리 도우미(FigmaFrame, StoryStage)([[테스트 작성 규칙:스토리 테스트]])
   │  ├─ theme.css         # 손으로 쓰는 전역 스타일. fonts.css, tokens.css, reset.css를 불러온다
   │  ├─ reset.css         # 토큰이 될 수 없는 CSS 기능을 속성 선택자로 둔다([[피그마 연동:토큰 사용 강제]])
