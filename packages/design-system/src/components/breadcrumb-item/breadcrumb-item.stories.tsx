@@ -78,3 +78,21 @@ export const Current: Story = {
     });
   },
 };
+
+// 피그마 컴포넌트 설명의 `@runtime` 줄: 공간이 모자라면 위치 이름 끝을 …로 줄인다.
+// @codocs [[테스트 작성 규칙:테스트 지침]]
+export const Truncated: Story = {
+  args: {
+    label:
+      '아주 긴 폴더 이름은 최대 너비를 넘으면 끝이 줄어든다 아주 긴 폴더 이름은 최대 너비를 넘으면 끝이 줄어든다',
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const button = within(canvasElement).getByRole('button', { name: args.label });
+    const text = button.firstElementChild as HTMLElement;
+
+    await step('이름이 최대 너비를 넘으면 끝을 …로 줄인다', async () => {
+      await expect(text.scrollWidth).toBeGreaterThan(text.clientWidth);
+      await expect(getComputedStyle(text).textOverflow).toBe('ellipsis');
+    });
+  },
+};
