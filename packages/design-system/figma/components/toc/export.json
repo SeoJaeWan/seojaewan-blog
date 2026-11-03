@@ -122,9 +122,8 @@
       }
     },
     "state=expanded": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 132,
+        "height": 136,
         "width": 220,
         "x": 0,
         "y": 0
@@ -195,6 +194,317 @@
             "type": "INSTANCE"
           },
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "accent-fill/default"
+                    ],
+                    "name": "indicator",
+                    "size": {
+                      "h": 20,
+                      "w": 3
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "RECTANGLE",
+                    "width": "stroke-width/indicator"
+                  },
+                  {
+                    "fills": [
+                      "accent-text-fill/primary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 20,
+                      "w": 39
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "use ",
+                          "fill": "accent-text-fill/primary",
+                          "textStyle": "Body"
+                        },
+                        {
+                          "characters": "훅",
+                          "fill": "accent-text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "TocItem",
+                "height": "size/file-row/name-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "toc item 1",
+                "properties": {
+                  "Active": "True",
+                  "Label": "use 훅"
+                },
+                "size": {
+                  "h": 20,
+                  "w": 220
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "divider-stroke/default"
+                    ],
+                    "name": "indicator",
+                    "size": {
+                      "h": 20,
+                      "w": 3
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "RECTANGLE",
+                    "width": "stroke-width/indicator"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 20,
+                      "w": 98
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "useActionState",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "TocItem",
+                "height": "size/file-row/name-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "toc item 2",
+                "properties": {
+                  "Active": "False",
+                  "Label": "useActionState"
+                },
+                "size": {
+                  "h": 20,
+                  "w": 220
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "divider-stroke/default"
+                    ],
+                    "name": "indicator",
+                    "size": {
+                      "h": 20,
+                      "w": 3
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "RECTANGLE",
+                    "width": "stroke-width/indicator"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 20,
+                      "w": 90
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "useOptimistic",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "TocItem",
+                "height": "size/file-row/name-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "toc item 3",
+                "properties": {
+                  "Active": "False",
+                  "Label": "useOptimistic"
+                },
+                "size": {
+                  "h": 20,
+                  "w": 220
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "divider-stroke/default"
+                    ],
+                    "name": "indicator",
+                    "size": {
+                      "h": 20,
+                      "w": 3
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FILL"
+                    },
+                    "type": "RECTANGLE",
+                    "width": "stroke-width/indicator"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/secondary"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 20,
+                      "w": 73
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "마이그레이션",
+                          "fill": "text-fill/secondary",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "TocItem",
+                "height": "size/file-row/name-height",
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "toc item 4",
+                "properties": {
+                  "Active": "False",
+                  "Label": "마이그레이션"
+                },
+                "size": {
+                  "h": 20,
+                  "w": 220
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/sm",
@@ -209,7 +519,7 @@
             },
             "name": "Items",
             "size": {
-              "h": 100,
+              "h": 104,
               "w": 220
             },
             "sizing": {
@@ -233,7 +543,7 @@
         },
         "name": "State=Expanded",
         "size": {
-          "h": 132,
+          "h": 136,
           "w": 220
         },
         "sizing": {
