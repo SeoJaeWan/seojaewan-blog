@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
+import { WindowPreview } from '../window-preview/window-preview';
 import { TaskbarPreviewList } from './taskbar-preview-list';
 
 const meta = {
@@ -11,6 +11,26 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+// 피그마 WindowPreview의 App icon 기본 인스턴스(app/File Explorer)다. 앱 아이콘 이미지 자산이다.
+const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.meta.url).href;
+
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 TaskbarPreviewList는 변형이 하나다. Previews 슬롯에는 피그마 슬롯 기본 내용과 같은 WindowPreview 둘을 넣는다.
+// WindowPreview의 thumbnail 슬롯은 피그마에서 비어 있어, 빈 슬롯이 차지하는 크기만 칠 없는 빈 내용으로 둔다.
+export const Figma: Story = {
+  render: () => (
+    <TaskbarPreviewList>
+      {[0, 1].map((index) => (
+        <WindowPreview
+          key={index}
+          appIcon={<img src={appIcon} alt="" className="size-full object-contain" />}
+          thumbnail={<div className="size-full" />}
+        />
+      ))}
+    </TaskbarPreviewList>
+  ),
+};
+
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** 미리보기를 children 자리에 그리고, 역할과 접근성 이름 같은 div 속성을 넘긴다 */
 export const Default: Story = {
@@ -19,17 +39,4 @@ export const Default: Story = {
       <div role="listitem">창 미리보기</div>
     </TaskbarPreviewList>
   ),
-};
-
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 조립이 쓰지 않는 변형(Material=Solid)도 그린다 */
-export const Solid: Story = {
-  render: () => (
-    <TaskbarPreviewList material="solid" role="list" aria-label="창 미리보기 목록">
-      <div role="listitem">창 미리보기</div>
-    </TaskbarPreviewList>
-  ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('listitem')).toHaveTextContent('창 미리보기');
-  },
 };
