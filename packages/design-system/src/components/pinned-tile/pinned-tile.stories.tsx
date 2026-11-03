@@ -16,8 +16,6 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/PinnedTile',
-  // 가운데 정렬은 너비 95(홀수)가 반 픽셀에 놓여 글자와 아이콘이 흐려지므로, 왼쪽 위에 붙여 정수 위치에 그린다.
-  parameters: { layout: 'padded' },
   // 글자는 피그마 Label 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
   args: { state: 'rest', label: '앱 이름' },
   argTypes: {

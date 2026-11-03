@@ -7,8 +7,6 @@ import { StartMenuFooter } from './start-menu-footer';
 
 const meta = {
   title: 'Components/StartMenuFooter',
-  // 가운데 정렬은 높이 65(홀수)가 반 픽셀에 놓여 위아래 선이 흐려지므로, 왼쪽 위에 붙여 정수 위치에 그린다.
-  parameters: { layout: 'padded' },
   // 너비는 피그마 원본 너비이자 Start 메뉴 아래 줄 자리의 크기 토큰으로 준다.
   render: () => (
     <StartMenuFooter className="w-size-start-menu-footer-width">

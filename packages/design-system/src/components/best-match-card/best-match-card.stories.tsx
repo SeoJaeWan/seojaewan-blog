@@ -6,8 +6,6 @@ import { BestMatchCard } from './best-match-card';
 
 const meta = {
   title: 'Components/BestMatchCard',
-  // 가운데 정렬은 높이 255(홀수)가 반 픽셀에 놓여 선과 글자가 흐려지므로, 왼쪽 위에 붙여 정수 위치에 그린다.
-  parameters: { layout: 'padded' },
   // 제목·부가 정보는 피그마 TEXT 속성의 기본값이라 넘기지 않는다. 아이콘은 피그마 Icon의 기본 인스턴스다.
   render: () => (
     <BestMatchCard

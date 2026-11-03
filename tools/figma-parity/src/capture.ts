@@ -195,8 +195,11 @@ export function integerShift(box: Rect): { x: number; y: number } {
 }
 
 /**
- * 캡처 대상의 왼쪽 위 모서리를 정수 픽셀 위치에 놓고 그 테두리 상자를 돌려준다. 문서 루트(`<html>`)에 `translate`를 줘 페이지 전체를
- * 옮긴다. 레이아웃을 건드리지 않으므로 대상의 크기와 배치는 그대로고, 포털로 그린 팝업도 대상과 함께 움직여 서로의 위치가 유지된다.
+ * 캡처 대상의 왼쪽 위 모서리를 정수 픽셀 위치에 놓고 그 테두리 상자를 돌려준다. 문서 루트(`<html>`)를 상대 위치(`position: relative`와
+ * `left`·`top`)로 옮겨 페이지 전체의 레이아웃 좌표를 옮긴다. 대상의 크기와 안쪽 배치는 그대로고, 포털로 그린 팝업(문서 루트를
+ * 기준으로 놓이는 절대 위치)도 대상과 함께 움직여 서로의 위치가 유지된다.
+ * `translate`로 옮기지 않는다. Chromium은 소수 위치의 상자를 그릴 때 이미 가까운 정수 픽셀로 맞춰 그리므로, 그 위에 소수 `translate`를
+ * 더하면 맞춰 그린 선이 다시 소수 위치로 밀려 두 픽셀에 번진다(0.5px이면 두 줄이 같은 진하기가 된다).
  * @codocs [[피그마 연동:캡처 표]]
  * @param page 스토리 페이지
  * @param target 캡처 대상
@@ -216,7 +219,10 @@ async function snapToPixel(page: Page, target: Locator, box: Rect): Promise<Rect
      * @param offset.y 세로
      */
     (offset) => {
-      document.documentElement.style.translate = `${String(offset.x)}px ${String(offset.y)}px`;
+      const { style } = document.documentElement;
+      style.position = 'relative';
+      style.left = `${String(offset.x)}px`;
+      style.top = `${String(offset.y)}px`;
     },
     shift,
   );
