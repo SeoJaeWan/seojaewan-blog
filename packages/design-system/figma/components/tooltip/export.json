@@ -222,11 +222,11 @@
               "w": 32
             },
             "sizing": {
-              "h": "FILL",
+              "h": "HUG",
               "v": "HUG"
             },
             "text": {
-              "autoResize": "HEIGHT",
+              "autoResize": "WIDTH_AND_HEIGHT",
               "maxLines": null,
               "maxLinesVariable": null,
               "segments": [

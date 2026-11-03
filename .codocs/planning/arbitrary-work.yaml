@@ -7,6 +7,20 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"BreadcrumbItem PR #515: 글자 label HUG와 말줄임 동작 스토리": |
+  - 피그마 `label`이 내용 맞춤(HUG)이 되어 이름 전체가 보인다. 코드는 이미 "이름만큼 넓어지다 최대 너비(`size/breadcrumb-item/max-width`)에서 …로 줄임"이라 컴포넌트는 바꾸지 않았다. `Figma` 스토리 여섯 변형 캡처의 차이 그림에는 글자 가장자리 차이만 남았다.
+  - 줄임 동작을 보는 스토리가 없어 `Truncated` 동작 스토리를 더했다. 피그마에는 줄임 변형이 없어 캡처가 맡지 못하므로 [[테스트 작성 규칙:테스트 지침]] 5번(`play`)으로 두었다. 최대 너비를 넘는 긴 이름에서 글자 상자가 넘치고 `text-overflow: ellipsis`인지 본다. 새 크기 토큰이나 감싸는 상자는 쓰지 않았다.
+  - PR 브랜치에 `main`(토큰 PR #522)을 받아 합쳤다.
+"Breadcrumb PR #514: 안쪽 BreadcrumbItem 글자 HUG 반영": |
+  - `export.json`에서 안쪽 BreadcrumbItem의 `label`이 FILL·줄임에서 HUG·줄임 없음으로 바뀐 것만 반영됐다. 기본 내용(`바탕 화면`·`Blog`)의 글자와 크기는 그대로고 Breadcrumb 코드는 안쪽 항목의 크기를 정하지 않아 코드를 바꾸지 않았다. 캡처 차이 그림에는 글자 가장자리 차이만 남았다.
+  - 줄임 동작은 BreadcrumbItem 쪽(#515 `Truncated` 스토리)이 맡아 이 PR에는 스토리를 더하지 않았다.
+"ExplorerAddressRow PR #513: 안쪽 BreadcrumbItem 글자 HUG 반영": |
+  - `export.json`에서 안쪽 BreadcrumbItem `label`의 FILL·줄임이 HUG·줄임 없음으로 바뀐 것(네 곳)만 반영됐다. ExplorerAddressRow 코드는 안쪽 항목의 크기를 정하지 않아 코드와 스토리를 바꾸지 않았다. 세 변형(desktop, mobile 닫힘·열림) 캡처의 차이 그림에는 글자 가장자리 차이만 남았다.
+  - 로컬 `pnpm test`에서 `unit-scenario-cases`의 행위 정의 읽기 테스트가 5초 제한으로 시간 초과했다. 다른 작업자가 같은 컴퓨터를 쓰는 부하 때문이고 `pnpm test:unit`만 돌리면 통과한다. 이 PR이 건드린 파일과 상관없다.
+"Menu 조립 PR #516: 구분선 MenuSeparator 인스턴스 반영": |
+  - `export.json`에서 메뉴 구분선(`separator` 프레임)이 `MenuSeparator` 인스턴스로 바뀐 것과 안쪽 값 일부만 반영됐다. 앱 `menu-popup.tsx`가 이미 MenuSeparator를 쓰고 있고 메뉴 항목 목록 함수와 스토리는 그대로라 코드를 바꾸지 않았다.
+  - 서른 변형 캡처의 차이 그림에서 구분선 자리는 검정이다. 남은 차이는 단축키 글자(`Ctrl+X`, `F2`, `Delete`)의 1px 세로·가로 어긋남과 글자 가장자리뿐이라 [[한계:글자 기준선]]·[[한계:HUG 글자 폭 올림]]으로 보고 넘겼다.
+  - PR 브랜치에 `main`을 받아 합쳤다. 스토리 테스트는 로컬에서 돌리지 않고 CI 결과로 확인한다(제품 코드 변경 없음).
 "BrowserTabStrip PR #483: Figma 스토리 되살림": |
   - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
   - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
@@ -47,6 +61,18 @@ _codocs:
   - shell 스토리 `DesktopAndTaskbar`, `StartMenu`, `RestartWithOpenWindow`: Chrome 새 탭 검색칸이 `role="searchbox"`인데 `aria-expanded`를 가졌고(`aria-allowed-attr`), 탭 목록(`tablist`) 안에 닫기 버튼이 있다(`aria-required-children`). 모두 다른 묶음이 맡은 Chrome 코드의 문제라 고치지 않고 `shell/story-data.ts`의 `WINDOW_STORY_A11Y`로 그 스토리에서만 규칙을 껐다. 외부 라이브러리 때문이 아니므로 규칙상 임시이며, Chrome 쪽을 고치면 지운다. `WindowPreview`의 label-content-name-mismatch는 검사 전에 미리보기를 닫아 피했다.
   - 못 옮긴 검사: "쓰는 곳이 넘긴 창 내용(`renderWindow`)이 미리보기 축소 화면에 들어간다"(`getAllByText('창 내용 chrome')`). 공통 `renderStoryWindow`는 축소 화면 글자가 카드 이름과 달라 `label-content-name-mismatch`가 걸린다. `WithWindows`는 카드 제목과 개수만 확인한다. 살릴 방법을 정해야 한다.
   - 스토리 파일을 통째로 돌릴 때 앞 스토리가 axe로 실패하면 뒤 스토리가 이유 없이 실패한다(원인은 앞 실패의 잔여 상태로 보임).
+"Scrollbar PR #506: 손잡이 기본 위치 토큰": |
+  - 피그마 손잡이(thumb)는 절대 위치라 `export.json`에 위치 변수가 없다. PNG에서 잰 위치 10px에 맞는 토큰 `spacing/md-nudge`(10px)를 골라 `top-spacing-md-nudge`로 썼다. 길이는 이미 `size/scrollbar/thumb-length`(119.4444)를 쓰고 있어 그대로다. 실행 중 계산(`scroll-thumb.ts`)은 바꾸지 않았다.
+"ScrollArea PR #507: 폴더 옮김, 키보드 포커스, Hover 캡처 위치": |
+  - 캡처 도구가 `src/components/scroll-area/scroll-area.stories.tsx`에서 `Figma` 스토리를 찾으므로 `scroll-area.tsx`·스토리와 ScrollArea만 쓰는 `scroll-thumb.ts`(+테스트)를 `scrollbar/`에서 `scroll-area/`로 옮겼다. `index.ts`와 SearchResults의 import도 바꿨다.
+  - 스크롤 영역의 키보드 포커스는 "넘치는데 안에 포커스할 요소가 없을 때만" 영역에 `tabIndex=0`을 준다(`scroll-focus.ts`의 `needsScrollFocus`, 단위 테스트). 늘 주면 시작 메뉴·탐색기처럼 항목에 포커스가 닿는 곳에 Tab 차례가 하나 더 생겨 [[접근성:Tab]]의 묶음 규칙과 어긋나기 때문이다. axe `scrollable-region-focusable`도 안에 포커스할 요소가 있으면 통과한다(시험 결과). 포커스 고리는 루트가 내용을 잘라 영역에 그리면 보이지 않으므로 루트에 `has-[>[data-scrollbar-hidden]:focus-visible]:` 변형으로 그렸다(버튼과 같은 `outline-*-focus-outer` 토큰).
+  - Hover 캡처 위치는 저장소 관례(`data-parity-target`)를 따라 캡처 대상의 속성 `data-parity-hover`(안쪽 요소의 CSS 선택자)로 정했다. 도구(`story-page.ts`의 `pointerTarget`)는 이 속성이 있으면 그 요소 가운데에 마우스를 올린다(단위 테스트 `story-page.test.ts`). ScrollArea `Figma` 스토리는 `[data-state]`(스크롤바)를 적었다. [[피그마 연동:스토리 규칙]]의 Hover 문장에 이 경우를 더했다.
+  - 동작 스토리는 `Overflow`(넘치면 막대 보임·올리면 펼침·내리면 접힘·스크롤하면 막대 이동·포커스할 항목이 없으면 Tab이 영역에 닿음)와 `FitsContent`(넘치지 않으면 숨김·포커스 받지 않음)다. 둘 다 `Figma`와 같은 크기 토큰(`w-size-list-item-width`·`h-size-scrollbar-length`)과 ListItem 목록을 쓰고, 버튼 8개를 넣던 옛 `Overflow`와 `w/h-size-scrollbar-length` 정사각형의 `Default`는 지웠다. 방향키 스크롤은 합성 키 사건으로 일어나지 않아 포커스까지만 본다.
+  - children을 줄지 않는 틀로 감싼 뒤 쓰는 곳(시작 본문·메뉴, 검색 본문·패널, 탐색기 본문·창, SearchResults) 30개 변형의 코드 캡처가 바꾸기 전과 바이트까지 같았다.
+"SearchResults PR #512: 모바일 HUG와 스크롤을 쓰는 곳으로": |
+  - 피그마 모바일 루트와 안쪽 `scroll` 틀이 모두 높이 HUG가 되어, 코드의 모바일 SearchResults에서 ScrollArea를 걷어내고 두 프레임을 한 `div`(세로 간격 16, 반경 `radius/control`)로 그렸다. 너비는 그대로 쓰는 곳이 정한다.
+  - 쓰는 곳 `search-body`의 결과 화면은 같은 PR에서 모바일만 `ScrollArea`(`size-full rounded-radius-control` + 받은 className)로 감싸고 SearchResults에는 `w-full`을 줬다. 옛 SearchResults 안의 ScrollArea와 같은 구성이라 `contentClassName`(여백)은 주지 않았다. 조립 PR이 이 자리를 다시 바꿀 수 있다.
+  - 바꾸기 전후로 시작·검색·탐색기 조립과 SearchResults 데스크톱 29개 변형의 코드 캡처가 바이트까지 같았고, 달라진 것은 SearchResults `Device=Mobile` 단독 캡처(높이 465 → 내용 611)뿐이다. `Figma` 스토리는 이미 모바일에 너비만 주고 있어 고치지 않았다.
 "캡처 도구: SHA 주소, 캡처 화면 고정, 빈 HUG 제외": |
   - 캡처와 모션 검사의 화면을 `tools/figma-parity/src/capture-viewport.ts`의 1600×900으로 고정했다(두 `playwright*.config.ts`가 읽는다). 요청은 캡처 설정이었으나 모션 검사도 같은 `Desktop Chrome` 기본 화면(1280×720)을 쓰므로 함께 고쳤다. 전체 캡처 493개를 고치기 전후로 비교하니 크기가 바뀐 그림은 없고 373개는 픽셀까지 같았다. 나머지 120개는 글자·가장자리·이미지 크기 조정의 아주 작은 픽셀 차이였다(같은 설정으로 두 번 돌려도 3개가 달랐다).
   - `emptyHugSlot` 표시는 변형 항목의 불리언으로 읽고(`VariantEntry.emptyHugSlot`, 표시가 없으면 false), 불리언이 아니면 `export.json` 읽기가 실패하게 했다. 표에서는 그 변형의 코드 칸에 `조립에서 확인`을 쓰고(`CaptureRow.emptyHugSlot`), 캡처 실패로 세지 않으며 `parity-captures`에도 올리지 않는다. 그 대상 폴더를 다시 쓸 때 옛 캡처는 지워진다. 피그마 그림 파일은 폴더에 그대로 두고 `export.json`이 가리키는 파일 검사도 그대로다.
@@ -105,6 +131,25 @@ _codocs:
 "조립 PR #494 explorer: 빈 슬롯 크기 기록만 바뀜": |
   - `export.json`에서 Breadcrumb `Items` 빈 슬롯 크기 기록이 100×100에서 114×24로 바뀌고 Breadcrumb `State` 속성이 빠졌다(두 변형). PNG는 그대로이고 두 변형 모두 여전히 빈 HUG(`emptyHugSlot`)라 캡처 도구가 찍지 않는다. 그래서 코드는 바꾸지 않고 `Patterns/Explorer/Content` 스토리 주석의 크기만 고쳤다. 지운 prop(Breadcrumb `editing` 등)은 이 조립 코드가 쓰지 않았다.
   - 스토리는 피그마 조립처럼 자리(Commands, items, Items)를 비운 채 둔다([[피그마 연동:스토리 규칙]]의 "데이터는 피그마 조립과 같다"). 실제 앱 데이터로 채우지 않았다.
+"MenuSeparator PR #511: 새 컴포넌트와 바꾼 곳": |
+  - 디자인 시스템에 `MenuSeparator`를 만들었다. 위 `spacing/2xs`·아래 `spacing/sm-nudge` 여백 안에 가로 `Separator`(`w-full`)를 둔다. 피그마에서 루트 너비는 FILL이라 코드 루트는 너비를 갖지 않고, 쓰는 곳이 `className="w-full"`로 메뉴 안쪽을 채운다. 속성이 없어 prop은 div 속성(`children` 제외)뿐이다.
+  - `Figma` 스토리는 놓이는 자리인 메뉴 너비 `w-size-menu-width`(250)를 준다. 1px 선이 반 픽셀에 놓이지 않도록 Separator 스토리처럼 `layout: 'padded'`를 썼다.
+  - 같은 감싸기를 쓰던 곳 넷을 바꿨다: 앱 `MenuPopup`의 구분선 줄, Flyout·Menu·Popover `Figma` 스토리.
+  - Chrome 주소창 추천(`chrome-address-suggestions`)과 새 탭 검색 추천(`chrome-new-tab-search`)의 같은 여백 프레임은 `px-spacing-sm`이 더 있고 안에 구분선이 아니라 추천 목록(`listbox`)이 들어 있어 바꾸지 않았다.
+"Flyout PR #509: 감싸는 너비를 지우고 항목에 메뉴 너비": |
+  - 피그마 Flyout 너비가 320(맨숫자)에서 252(메뉴 항목 `size/menu/width` 250 + 테두리)로 바뀌어, `Figma` 스토리의 `w-size-search-box-wide-width`(320) 감싸기와 `data-parity-target`을 지웠다. Flyout이 스토리 루트의 첫 요소라 표시가 필요 없다. 메뉴 항목 넷에 `w-size-menu-width`를 주고 구분선(`MenuSeparator`)은 `w-full`로 그 너비를 채운다. 위 "Flyout PR #467"의 320 감싸기 항목은 이것으로 바뀌었다.
+  - 모션 스토리 `motion-flyout-enter`도 같은 원칙으로 감싸는 너비를 지우고(여백 `p-spacing-2xl`은 그대로) 항목에 `w-size-menu-width`를 줬다. 모션 시간 검사는 통과했다.
+  - Flyout 컴포넌트 코드는 바꾸지 않았다.
+"Menu PR #510: 코드 변경 없음": |
+  - 이 PR의 `export.json` 변경은 구분선이 `MenuSeparator` 인스턴스가 된 것뿐이다. `Figma` 스토리의 구분선은 #511에서 이미 `MenuSeparator`로 바꿨다.
+  - 슬롯 항목은 피그마에서 FILL로 덮어써 Menu 안쪽 248을 채운다(메뉴 너비 250 항목이 넘치지 않게). 코드 스토리의 `MenuItem standalone`은 원래 `w-full`이라 같아 스토리도 고치지 않았다. 캡처 차이는 글자 가장자리뿐이다.
+"Popover PR #508: 팝업 Flyout 감싸기 지움": |
+  - 피그마 기본 팝업(Flyout)이 252(메뉴 항목 `size/menu/width` 250 + 테두리)가 되어, `Figma` 스토리 Popup 슬롯의 `w-size-search-box-wide-width`(320) 감싸기를 지우고 메뉴 항목 넷에 `w-size-menu-width`를 줬다. 구분선은 `w-full`. 위 "Popover PR #466"의 320 감싸기 항목은 이것으로 바뀌었다.
+  - Popover 컴포넌트 코드는 바꾸지 않았다. 열린 변형 6개의 차이 그림에는 글자 가장자리와 팝업 테두리·그림자의 옅은 선만 남았다.
+"Tooltip PR #505: label HUG, 코드 변경 없음": |
+  - 피그마 `Type=Default`의 `label`이 FILL·높이 맞춤에서 HUG·너비와 높이 맞춤(`WIDTH_AND_HEIGHT`)으로 바뀌었다. 코드 Tooltip은 글자를 `inline-flex` 바탕에 바로 넣어 이미 글자 폭으로 너비가 정해지므로(HUG) 코드와 스토리를 바꾸지 않았다.
+  - 피그마 글자는 이제 줄을 바꾸지 않지만, 코드는 바탕의 `max-w-size-tooltip-max-width`에 닿으면 줄을 바꾸는 동작을 그대로 뒀다. 긴 글자가 최대 너비를 넘어 삐져나오지 않게 하기 위해서다. 기본 글자("도움말")에서는 둘이 같다.
+  - 차이 그림에는 한글 글자 가장자리만 남았다([[한계:HUG 글자 폭 올림]]).
 "Menu PR #468: 슬롯 기본 내용 스토리와 쓰지 않는 material prop": |
   - `Figma` 스토리의 children(Flyout Content 슬롯)은 피그마 슬롯 기본 내용대로 Flyout과 같은 메뉴 항목 넷과 구분선이다. Base UI 메뉴 밖이라 항목은 `MenuItem standalone`으로 그렸다. 너비는 Menu가 가진 `size/menu/width`라 감싸지 않았다.
   - 옛 `Default` 스토리(children에 넣은 항목이 메뉴 안에 있는지 보는 `play`)는 `Figma` 스토리가 다루므로 지웠다.
@@ -239,6 +284,10 @@ _codocs:
   - 빠진 값 줄의 결과 칸은 비운다. 시안의 손으로 쓴 예상 결과는 정의에 없는 내용이라 옮기지 않았다.
   - 화면에서 없앤 것에 맞춰 도구 코드도 지웠다: 빠진 값 제안(`suggest.ts`), 필름 띠(`trace-film.ts`, `zip.ts`), 이번 PR 거르기(`changed-files.ts`), 케이스별 최근 실행. `history.json`은 실행 기록 링크와 다음 기능을 위해 그대로 쌓는다. 화면은 어두운 모드 색도 둔다.
   - 저장소의 행위 정의 전체가 "기준 + 조건 하나씩" 규칙(바꾼 조건 하나, 기준값과 같은 change 없음, 없는 값 없음, combine 이유)을 지키는지 도구 단위 테스트가 본다.
+"토큰 PR #522: size/search-results/mobile-height 삭제 반영": |
+  - 지운 변수 `size/search-results/mobile-height`의 클래스(`h-size-search-results-mobile-height`)는 SearchResults `Figma` 스토리의 모바일 크기 상자만 썼다. 피그마 SearchResults 모바일이 높이를 내용에 맞추게 바뀌어, 대신할 토큰 없이 높이 클래스를 지우고 너비(`w-size-shell-mobile-body-width`)만 남겼다. 컴포넌트(모바일의 `ScrollArea size-full`)와 스크롤 시험은 다음 SearchResults 컴포넌트 PR에 맡기고 고치지 않았다.
+  - `size/scrollbar/thumb-length` 값(80 → 119.4444)과 새 변수(`font/line-height/code-inline`, `size/shell/content-width`, `size/shell/mobile-content-width`), 새 글자 스타일 `Code/Inline`(`type-code-inline`)은 코드에서 고칠 곳이 없다. `type-code-inline`을 쓰는 코드는 다른 PR이 만든다.
+  - 전체 `pnpm test`에서 `unit-scenario-cases`의 `read-behaviors.test.ts` 저장소 규칙 테스트가 5초 제한에 걸려 한 번 실패했다. 이 PR과 관계없는 파일이고 그 프로젝트만 다시 돌리니 통과해 부하로 인한 시간 초과로 보고 손대지 않았다.
 "컴포넌트 PR #477 SearchResults: Figma 스토리 되살림": |
   - `Figma` 스토리를 다시 만들고 `device` 변형마다 `Results` 슬롯에 `export.json` 기본 내용과 같은 ListGroup 넷(최고 일치: Two-line·Selected "리액트 19 훅 정리"/"글", 폴더: "리액트", 글: 두 항목, 외부 링크: "리액트 스터디 노트")을 넣었다. 안쪽 BestMatchCard는 기본값(제목·부가 정보, 문서 아이콘)에 동작 MenuItem 둘(열기, 링크 복사, `standalone`)을 넣었다. 동작 목록은 앱 `search-body.tsx`와 같이 `flex flex-col items-start gap-spacing-sm` 상자로 감쌌다(BestMatchCard `Actions` 슬롯 상자가 아직 블록이라서다).
   - 크기는 변형마다 `h-size-search-results-height w-size-shell-body-width`, `h-size-search-results-mobile-height w-size-shell-mobile-body-width`로 감쌌다. 배치는 `padded`다(높이 545·465가 홀수라 가운데 배치에서 반 픽셀에 놓여 선과 글자가 번졌다).
