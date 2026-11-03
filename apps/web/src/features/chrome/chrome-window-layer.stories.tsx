@@ -1,8 +1,10 @@
+import windowChromeExport from '@figma/patterns/window/chrome/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 import { expect, fireEvent, fn, screen, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
 import { BREAKPOINTS } from '@seojaewan/design-system';
+import { FigmaFrame, StoryStage } from '@seojaewan/design-system/story';
 
 import { dragStoryPointer } from '@/features/window/story-pointer';
 import type { DeviceVariant } from '@/shared/hooks/use-device/use-device';
@@ -54,6 +56,7 @@ function ignoreMinimize(): void {}
 
 /**
  * 창 저장소에서 Chrome 창 내용을 읽어 Chrome 층을 그린다(창 층이 하는 일). 저장소에 Chrome 창이 여럿이면 모두 그린다.
+ * 창 자리는 화면을 세로로 나눠 채운다. 피그마 Window/Chrome의 `window` 노드(창 틀, 가로·세로 FILL) 크기 방식을 FigmaFrame으로 준다.
  * @param props
  * @returns Chrome 층
  */
@@ -61,10 +64,10 @@ function ChromeLayerHost(props: ChromeLayerHostProps): JSX.Element {
   const { device, onClose: handleClose } = props;
   const windows = useWindowStore((state) => state.windows);
   return (
-    <div className="fixed inset-spacing-none flex flex-col">
+    <StoryStage placement="fill">
       {Object.entries(windows).map(([id, target]) =>
         target.content.app === 'chrome' ? (
-          <div key={id} className="flex min-h-size-none flex-flex-fill">
+          <FigmaFrame key={id} source={windowChromeExport} node="window">
             <ChromeWindowLayer
               windowId={id}
               content={target.content}
@@ -74,13 +77,12 @@ function ChromeLayerHost(props: ChromeLayerHostProps): JSX.Element {
                 placement: 'normal',
                 onMinimize: ignoreMinimize,
                 onClose: handleClose,
-                className: 'h-full w-full',
               }}
             />
-          </div>
+          </FigmaFrame>
         ) : null,
       )}
-    </div>
+    </StoryStage>
   );
 }
 

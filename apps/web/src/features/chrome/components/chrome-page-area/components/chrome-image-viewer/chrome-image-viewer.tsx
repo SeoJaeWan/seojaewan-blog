@@ -7,10 +7,7 @@ export type ChromeImageViewerLayout = 'wide' | 'narrow';
 type ChromeImageViewerProps = {
   /** 피그마 Layout. wide는 넓은 창(이미지 칸 좌우 여백 32), narrow는 좁은 창의 배치다. 쓰는 곳이 창 내용 너비로 고른다 */
   layout?: ChromeImageViewerLayout;
-  /**
-   * 크게 볼 이미지(피그마 `image`). 페이지 영역 안에 맞추되 원본보다 키우지 않도록 쓰는 곳이 크기를 정한다
-   * (예: `max-h-full max-w-full object-contain`)
-   */
+  /** 크게 볼 이미지(피그마 `image`). 크기는 이 자리가 정한다(페이지 영역 안에 맞추되 원본보다 키우지 않는다) */
   image: ReactNode;
   /** 이미지 아래 캡션. 없으면 그리지 않는다 */
   caption?: string;
@@ -71,7 +68,7 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'flex flex-col items-start gap-spacing-lg bg-chrome-image-viewer-backdrop p-spacing-lg outline-none',
+        'flex min-h-size-none min-w-size-none flex-col items-start gap-spacing-lg bg-chrome-image-viewer-backdrop p-spacing-lg outline-none',
         className,
       )}
     >
@@ -83,11 +80,13 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
           onClick={handleClose}
         />
       </div>
-      {/* 피그마 `stage` 배치 프레임. 남은 높이를 채우고 이미지와 캡션을 가운데에 둔다 */}
+      {/* 피그마 `stage` 배치 프레임. 남은 높이를 채우고 이미지와 캡션을 가운데에 둔다.
+          이미지(첫 자식)는 이 자리 안에 맞추되 원본보다 키우지 않는다 */}
       <div
         data-backdrop
         className={cn(
           'flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center gap-spacing-md',
+          '[&>:first-child]:max-h-full [&>:first-child]:min-h-size-none [&>:first-child]:max-w-full [&>:first-child]:object-contain',
           layout === 'wide' ? 'px-spacing-3xl' : 'px-spacing-none',
         )}
       >

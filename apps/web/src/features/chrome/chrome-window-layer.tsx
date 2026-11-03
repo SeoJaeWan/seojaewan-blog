@@ -538,7 +538,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
     resolveLink,
     onImageOpen: handleImageOpen,
   } = props;
-  const className = 'min-h-size-none w-full flex-flex-fill';
   const posts =
     page.kind === 'new-tab'
       ? getLatestPosts(workspace, NEW_TAB_LATEST_POST_COUNT)
@@ -563,7 +562,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
         <ChromePage
           page="new-tab"
           layout={layout}
-          className={className}
           zoom={zoom}
           latestPosts={posts.map(toLatestPost)}
           onLatestPostOpen={handlePostOpen}
@@ -581,7 +579,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
         <ChromePage
           page="search-results"
           layout={layout}
-          className={className}
           zoom={zoom}
           query={page.query}
           results={posts.map(toSearchResult)}
@@ -594,7 +591,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
           <ChromePage
             page="not-found"
             layout={layout}
-            className={className}
             zoom={zoom}
             url={getPostAddress(page.slug)}
             onReload={handleReload}
@@ -618,7 +614,6 @@ function ChromeTabContent(props: ChromeTabContentProps): JSX.Element {
         <ChromePage
           page="not-found"
           layout={layout}
-          className={className}
           zoom={zoom}
           url={page.url}
           onReload={handleReload}

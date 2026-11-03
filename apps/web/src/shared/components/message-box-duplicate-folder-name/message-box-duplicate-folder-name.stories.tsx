@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { MessageBoxDuplicateFolderName } from './message-box-duplicate-folder-name';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -11,11 +13,9 @@ const meta = {
   // 상자(피그마 노드)를 캡처 대상으로 표시한다.
   parameters: { layout: 'padded' },
   render: () => (
-    <div className="p-spacing-5xl">
-      <div data-parity-target className="flex">
-        <MessageBoxDuplicateFolderName />
-      </div>
-    </div>
+    <StoryStage placement="padded" target>
+      <MessageBoxDuplicateFolderName />
+    </StoryStage>
   ),
 } satisfies Meta;
 

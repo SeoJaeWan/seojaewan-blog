@@ -89,7 +89,7 @@ const katexHtml = lazy(async () => {
 const BULLETS = ['•', '◦', '▪'] as const;
 
 /**
- * 글 본문 블록을 피그마 조립 `Chrome/PostBlocks`의 모양으로 그린다. 블록 사이 간격은 16이다.
+ * 글 본문 블록을 피그마 조립 `Chrome/PostBlocks`의 모양으로 그린다. 블록 사이 간격은 16이고 바탕은 페이지 바탕(`chrome/page-fill`)이다.
  * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록의 제목에 id를 단다.
  * 이어진 같은 종류의 목록 항목은 한 목록으로 묶고, 하위 블록은 32 들여 그린다. 할 일은 읽기 전용 Checkbox다.
  * 글자 조각(문단, 제목, 목록, 인용, 콜아웃, 토글 제목, 표 칸)의 서식과 링크는 RichText가 그린다.
@@ -407,7 +407,12 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
   }
 
   return (
-    <div className={cn('flex w-full flex-col items-start gap-spacing-lg', className)}>
+    <div
+      className={cn(
+        'flex w-full flex-col items-start gap-spacing-lg bg-chrome-page-fill',
+        className,
+      )}
+    >
       {renderBlocks(blocks, 0)}
     </div>
   );

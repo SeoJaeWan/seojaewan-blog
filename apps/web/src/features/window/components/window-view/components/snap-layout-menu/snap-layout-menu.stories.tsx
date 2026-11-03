@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { SnapLayoutMenu } from './snap-layout-menu';
 
 // @codocs [[피그마 연동:스토리 규칙]]
@@ -9,11 +11,9 @@ const meta = {
   title: 'Patterns/Window/SnapLayoutMenu',
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <div className="flex h-screen justify-center">
-      <div data-parity-target className="flex h-fit">
-        <SnapLayoutMenu open />
-      </div>
-    </div>
+    <StoryStage placement="top-center" target>
+      <SnapLayoutMenu open />
+    </StoryStage>
   ),
 } satisfies Meta;
 

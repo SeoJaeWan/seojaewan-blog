@@ -283,15 +283,6 @@ const MOTION_CLASS_NAME_EXCEPTION =
   ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
 // 아직 도우미로 바꾸지 않은 스토리다. 영역별 PR이 바꾸면서 지운다(임시).
 const storyStylePendingFiles = [
-  'apps/web/src/features/chrome/chrome-window-layer.stories.tsx',
-  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-find-bar/chrome-find-bar.stories.tsx',
-  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
-  'apps/web/src/features/chrome/components/chrome-page/chrome-page.stories.tsx',
-  'apps/web/src/features/chrome/components/chrome-post-tab/chrome-post-tab.stories.tsx',
-  'apps/web/src/features/chrome/components/chrome-window/chrome-window.stories.tsx',
-  'apps/web/src/features/chrome/components/message-box-trashed-post/message-box-trashed-post.stories.tsx',
-  'apps/web/src/features/chrome/components/post-blocks/post-blocks.stories.tsx',
-  'apps/web/src/features/desktop/desktop-icons-layer.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-body/explorer-body.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-window/explorer-window.stories.tsx',
@@ -308,11 +299,6 @@ const storyStylePendingFiles = [
   'apps/web/src/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer.stories.tsx',
   'apps/web/src/features/taskbar/components/taskbar-default/taskbar-default.stories.tsx',
   'apps/web/src/features/taskbar/taskbar-layer.stories.tsx',
-  'apps/web/src/features/window/components/window-snap-assist/components/snap-assist/snap-assist.stories.tsx',
-  'apps/web/src/features/window/components/window-view/components/snap-layout-menu/snap-layout-menu.stories.tsx',
-  'apps/web/src/features/window/window-layer.stories.tsx',
-  'apps/web/src/shared/components/message-box-duplicate-folder-name/message-box-duplicate-folder-name.stories.tsx',
-  'apps/web/src/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin.stories.tsx',
 ];
 const STORY_STYLE_MESSAGE =
   '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';

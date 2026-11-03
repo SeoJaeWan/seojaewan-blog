@@ -1,7 +1,9 @@
+import postBlocksExport from '@figma/patterns/chrome/post-blocks/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
 import { ImageAsset } from '@seojaewan/design-system';
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import type { PostBlock } from '@/shared/utils/post-body/post-body';
 
@@ -10,18 +12,17 @@ import { expandedToggleIndexes, sampleBlocks } from './story-data';
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
-// 본문은 크기를 갖지 않고 글 화면이 정하므로 피그마 원본 너비(size/720)와 페이지 바탕으로 감싼다.
+// 본문은 너비를 갖지 않고 글 화면이 정하므로 FigmaFrame이 피그마 원본 너비(size/post/width)로 감싼다. 바탕은 PostBlocks가 갖는다(피그마 루트 칠 chrome/page-fill).
 // 이미지는 피그마처럼 배경화면 Bloom을 자산 원본 비율로 넣는다. 수식은 제품처럼 KaTeX가 그린 HTML(스토리 데이터의 `html`)로 그린다.
 const meta = {
   title: 'Patterns/Chrome/PostBlocks',
+  decorators: [figmaFrame(postBlocksExport)],
   render: () => (
-    <div className="w-size-post-width bg-chrome-page-fill">
-      <PostBlocks
-        blocks={sampleBlocks}
-        expandedToggleIndexes={expandedToggleIndexes}
-        renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
-      />
-    </div>
+    <PostBlocks
+      blocks={sampleBlocks}
+      expandedToggleIndexes={expandedToggleIndexes}
+      renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
+    />
   ),
 } satisfies Meta;
 

@@ -3,6 +3,8 @@ import type { ComponentProps, JSX } from 'react';
 import { useState } from 'react';
 import { expect, fireEvent, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { MOBILE_MEDIA_QUERY } from '@/shared/hooks/use-device/use-device';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -38,9 +40,9 @@ const meta = {
     renderWindowIcon: renderNoStoryWindowIcon,
   },
   render: (args) => (
-    <div className="fixed inset-spacing-none">
+    <StoryStage placement="fill">
       <WindowLayer {...args} />
-    </div>
+    </StoryStage>
   ),
 } satisfies Meta<typeof WindowLayer>;
 
@@ -185,12 +187,12 @@ function RemovableWindowLayer(props: ComponentProps<typeof WindowLayer>): JSX.El
   }
 
   return (
-    <div className="fixed inset-spacing-none">
+    <StoryStage placement="fill">
       {!isRemoved && <WindowLayer {...props} />}
       <button type="button" onClick={handleRemove}>
         창 층 빼기
       </button>
-    </div>
+    </StoryStage>
   );
 }
 

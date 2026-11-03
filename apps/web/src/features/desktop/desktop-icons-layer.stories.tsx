@@ -1,17 +1,30 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ReactNode } from 'react';
 import type { queries } from 'storybook/test';
 import { expect, fireEvent, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { WindowFrame } from '@seojaewan/design-system';
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { dragStoryPointer } from '@/features/window/story-pointer';
+import { WindowLayer } from '@/features/window/window-layer';
 import { DRAG_REJECTED_ATTRIBUTE } from '@/shared/hooks/use-item-drag/use-item-drag';
 import { useItemClipboardStore } from '@/shared/stores/item-clipboard-store/item-clipboard-store';
-import { resetStoryStores } from '@/shared/stores/store-reset/story-stores';
+import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
 import {
   hydrateWorkspaceStore,
   useWorkspaceStore,
 } from '@/shared/stores/workspace-store/workspace-store';
-import { createExplorerContent } from '@/shared/utils/window-rules/window-rules';
+import {
+  getStoryWindowTitle,
+  renderNoStoryWindowIcon,
+} from '@/shared/utils/window-rules/story-window';
+import {
+  createExplorerContent,
+  type OpenWindow,
+  type WindowFrameControls,
+} from '@/shared/utils/window-rules/window-rules';
 import {
   BLOG_FOLDER_ID,
   isItemInTrash,
@@ -241,9 +254,9 @@ const meta = {
   },
   beforeEach: resetStoryStores,
   render: () => (
-    <div className="fixed inset-spacing-none">
+    <StoryStage placement="fill">
       <DesktopIconsLayer />
-    </div>
+    </StoryStage>
   ),
 } satisfies Meta<typeof DesktopIconsLayer>;
 
@@ -254,6 +267,25 @@ type Story = StoryObj<typeof meta>;
 /** 글 색인을 넣어 글 `가`를 Blog 폴더에 둔다. */
 function hydratePost(): void {
   hydrateWorkspaceStore(POSTS);
+}
+
+/**
+ * Blog를 보는 탐색기 창 대신 창 층에 그리는 빈 창이다. 창 전체가 Blog 폴더로 놓는 자리다(탐색기 창 본문과 같은 끌어 놓기 속성).
+ * @param target 열린 창
+ * @param controls 창 층이 넘긴 창 동작 속성
+ * @returns WindowFrame
+ */
+function renderBlogDropWindow(target: OpenWindow, controls: WindowFrameControls): ReactNode {
+  return (
+    <WindowFrame
+      {...controls}
+      appIcon={null}
+      title={getStoryWindowTitle(target)}
+      data-testid="explorer-body"
+      data-drop-target={BLOG_FOLDER_ID}
+      data-drop-target-name="Blog"
+    />
+  );
 }
 
 /** 글 색인을 넣고 글 `가`를 바탕화면으로 옮긴다. */
@@ -611,23 +643,23 @@ export const InvalidFolderNames: Story = {
   },
 };
 
-// 아이콘을 폴더·휴지통·탐색기 창 위에 끌어 놓는다. 오른쪽 아래 상자는 Blog를 보는 탐색기 창 본문을 대신한다.
+// 아이콘을 폴더·휴지통·탐색기 창 위에 끌어 놓는다. 창 층에 연 창 하나가 Blog를 보는 탐색기 창 본문을 대신한다.
 // @codocs [[항목 조작:끌기]]
 export const DragToFolder: Story = {
   beforeEach: () => {
     showPostOnDesktop();
     useWorkspaceStore.getState().createFolder(null);
+    openStoryWindows(['file-explorer']);
   },
   render: () => (
-    <div className="fixed inset-spacing-none">
+    <StoryStage placement="fill">
       <DesktopIconsLayer />
-      <div
-        data-testid="explorer-body"
-        data-drop-target={BLOG_FOLDER_ID}
-        data-drop-target-name="Blog"
-        className="fixed right-spacing-none bottom-spacing-none h-size-explorer-content-height w-size-explorer-content-width"
+      <WindowLayer
+        renderWindow={renderBlogDropWindow}
+        getWindowTitle={getStoryWindowTitle}
+        renderWindowIcon={renderNoStoryWindowIcon}
       />
-    </div>
+    </StoryStage>
   ),
   play: async ({ step }) => {
     await step('폴더 위로 끄는 동안 이동 툴팁과 강조를 보이고, 놓으면 옮긴다', async () => {

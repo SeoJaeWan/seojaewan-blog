@@ -13,6 +13,7 @@ import {
   BrowserTab,
   BrowserTabStrip,
   BrowserToolbar,
+  cn,
   ImageAsset,
   WindowFrame,
 } from '@seojaewan/design-system';
@@ -78,7 +79,7 @@ type ChromeWindowProps = WindowFrameControlProps &
     onMoreMenuOpenChange?: (isOpen: boolean) => void;
     /** ⋮ 메뉴가 닫힌 뒤 포커스가 갈 곳(Base UI `finalFocus`). 주지 않으면 ⋮ 버튼으로 돌아간다 */
     moreMenuFinalFocus?: ComponentProps<typeof MenuButton>['finalFocus'];
-    /** 탭 내용 자리. 고른 탭의 `ChromePage`를 넣는다. 도구 모음 아래 남는 자리를 채우도록 `min-h-size-none w-full flex-flex-fill`을 준다 */
+    /** 탭 내용 자리. 고른 탭의 `ChromePage`(또는 그것을 담은 페이지 영역)를 넣는다. 이 자리가 도구 모음 아래 남는 자리를 채우게 한다 */
     children?: ReactNode;
     /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
     className?: string;
@@ -218,6 +219,14 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       className="w-full shrink-shrink-none"
     />
   );
+  // 창은 쓰는 곳이 준 자리 안에서 내용을 자른다. 내용(긴 글)이 창의 최소 크기를 키우지 않게 최소 크기를 0으로 둔다.
+  const frameClassName = cn('min-h-size-none min-w-size-none', className);
+  // 피그마 Content 슬롯에서 탭 내용(Chrome/Page)은 도구 모음 아래 남는 자리를 채운다(FILL).
+  const content = (
+    <div className="flex min-h-size-none w-full flex-flex-fill flex-col [&>*]:min-h-size-none [&>*]:flex-flex-fill">
+      {children}
+    </div>
+  );
   if (!isDesktop) {
     const activeTab = tabs[activeIndex] ?? tabs[0];
     return (
@@ -229,10 +238,10 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
         showMaximize={false}
         appIcon={chromeAppIcon}
         title={activeTab?.title}
-        className={className}
+        className={frameClassName}
       >
         {toolbar}
-        {children}
+        {content}
       </WindowFrame>
     );
   }
@@ -299,10 +308,10 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
           </Tabs.Root>
         </BrowserTabStrip>
       }
-      className={className}
+      className={frameClassName}
     >
       {toolbar}
-      {children}
+      {content}
     </WindowFrame>
   );
 }
