@@ -1607,9 +1607,9 @@
                           "mode": "VERTICAL",
                           "padding": [
                             "spacing/none",
+                            "spacing/3xl",
                             "spacing/none",
-                            "spacing/none",
-                            "spacing/none"
+                            "spacing/3xl"
                           ],
                           "primaryAlign": "MIN"
                         },
@@ -1620,7 +1620,7 @@
                         },
                         "size": {
                           "h": 654,
-                          "w": 574
+                          "w": 638
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1635,9 +1635,9 @@
                       "mode": "VERTICAL",
                       "padding": [
                         "spacing/3xl",
+                        "spacing/none",
                         "spacing/3xl",
-                        "spacing/3xl",
-                        "spacing/3xl"
+                        "spacing/none"
                       ],
                       "primaryAlign": "MIN"
                     },
@@ -1695,8 +1695,7 @@
             },
             "name": "ShellSurface",
             "properties": {
-              "Device": "Desktop",
-              "Material": "Acrylic"
+              "Device": "Desktop"
             },
             "radius": [
               "radius/overlay",
@@ -1772,123 +1771,149 @@
                       {
                         "children": [
                           {
-                            "asset": {
-                              "color": "text-fill/secondary",
-                              "path": "icons/ic_fluent_search_16_regular"
-                            },
-                            "component": "ic_fluent_search_16_regular",
-                            "height": "size/icon/sm",
-                            "name": "icon",
-                            "size": {
-                              "h": 16,
-                              "w": 16
-                            },
-                            "sizing": {
-                              "h": "FIXED",
-                              "v": "FIXED"
-                            },
-                            "type": "INSTANCE",
-                            "width": "size/icon/sm"
-                          },
-                          {
-                            "fills": [
-                              "text-fill/secondary"
+                            "children": [
+                              {
+                                "asset": {
+                                  "color": "text-fill/secondary",
+                                  "path": "icons/ic_fluent_search_16_regular"
+                                },
+                                "component": "ic_fluent_search_16_regular",
+                                "height": "size/icon/sm",
+                                "name": "icon",
+                                "size": {
+                                  "h": 16,
+                                  "w": 16
+                                },
+                                "sizing": {
+                                  "h": "FIXED",
+                                  "v": "FIXED"
+                                },
+                                "type": "INSTANCE",
+                                "width": "size/icon/sm"
+                              },
+                              {
+                                "fills": [
+                                  "text-fill/secondary"
+                                ],
+                                "name": "label",
+                                "size": {
+                                  "h": 20,
+                                  "w": 300
+                                },
+                                "sizing": {
+                                  "h": "FILL",
+                                  "v": "HUG"
+                                },
+                                "text": {
+                                  "autoResize": "HEIGHT",
+                                  "maxLines": 1,
+                                  "maxLinesVariable": null,
+                                  "segments": [
+                                    {
+                                      "characters": "검색하려면",
+                                      "fill": "text-fill/secondary",
+                                      "textStyle": "Hangul/Body"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/secondary",
+                                      "textStyle": "Body"
+                                    },
+                                    {
+                                      "characters": "여기에",
+                                      "fill": "text-fill/secondary",
+                                      "textStyle": "Hangul/Body"
+                                    },
+                                    {
+                                      "characters": " ",
+                                      "fill": "text-fill/secondary",
+                                      "textStyle": "Body"
+                                    },
+                                    {
+                                      "characters": "입력하세요",
+                                      "fill": "text-fill/secondary",
+                                      "textStyle": "Hangul/Body"
+                                    }
+                                  ],
+                                  "truncation": "ENDING"
+                                },
+                                "type": "TEXT"
+                              }
                             ],
-                            "name": "label",
+                            "component": "SearchBox",
+                            "fills": [
+                              "control-fill/default"
+                            ],
+                            "height": "size/search-box/tall-height",
+                            "layout": {
+                              "counterAlign": "CENTER",
+                              "gap": "spacing/sm",
+                              "mode": "HORIZONTAL",
+                              "padding": [
+                                "spacing/sm",
+                                "spacing/lg",
+                                "spacing/sm",
+                                "spacing/lg"
+                              ],
+                              "primaryAlign": "MIN"
+                            },
+                            "name": "SearchBox",
+                            "properties": {
+                              "Appearance": "Pill",
+                              "Filled": "False",
+                              "Placeholder": "검색하려면 여기에 입력하세요",
+                              "State": "Rest",
+                              "Value": "리액트"
+                            },
+                            "radius": [
+                              "radius/circular",
+                              "radius/circular",
+                              "radius/circular",
+                              "radius/circular"
+                            ],
                             "size": {
-                              "h": 20,
-                              "w": 300
+                              "h": 36,
+                              "w": 356
                             },
                             "sizing": {
                               "h": "FILL",
-                              "v": "HUG"
+                              "v": "FIXED"
                             },
-                            "text": {
-                              "autoResize": "HEIGHT",
-                              "maxLines": 1,
-                              "maxLinesVariable": null,
-                              "segments": [
-                                {
-                                  "characters": "검색하려면",
-                                  "fill": "text-fill/secondary",
-                                  "textStyle": "Hangul/Body"
-                                },
-                                {
-                                  "characters": " ",
-                                  "fill": "text-fill/secondary",
-                                  "textStyle": "Body"
-                                },
-                                {
-                                  "characters": "여기에",
-                                  "fill": "text-fill/secondary",
-                                  "textStyle": "Hangul/Body"
-                                },
-                                {
-                                  "characters": " ",
-                                  "fill": "text-fill/secondary",
-                                  "textStyle": "Body"
-                                },
-                                {
-                                  "characters": "입력하세요",
-                                  "fill": "text-fill/secondary",
-                                  "textStyle": "Hangul/Body"
-                                }
-                              ],
-                              "truncation": "ENDING"
-                            },
-                            "type": "TEXT"
+                            "strokeWeight": [
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default",
+                              "stroke-width/default"
+                            ],
+                            "strokes": [
+                              "control-stroke/default"
+                            ],
+                            "strokesIncludedInLayout": false,
+                            "type": "INSTANCE"
                           }
                         ],
-                        "component": "SearchBox",
-                        "fills": [
-                          "control-fill/default"
-                        ],
-                        "height": "size/search-box/tall-height",
                         "layout": {
-                          "counterAlign": "CENTER",
-                          "gap": "spacing/sm",
+                          "counterAlign": "MIN",
+                          "gap": "spacing/none",
                           "mode": "HORIZONTAL",
                           "padding": [
-                            "spacing/sm",
+                            "spacing/none",
                             "spacing/lg",
-                            "spacing/sm",
+                            "spacing/none",
                             "spacing/lg"
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "SearchBox",
-                        "properties": {
-                          "Appearance": "Pill",
-                          "Filled": "False",
-                          "Placeholder": "검색하려면 여기에 입력하세요",
-                          "State": "Rest",
-                          "Value": "리액트"
-                        },
-                        "radius": [
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular",
-                          "radius/circular"
-                        ],
+                        "name": "search row",
                         "size": {
                           "h": 36,
-                          "w": 356
+                          "w": 388
                         },
                         "sizing": {
                           "h": "FILL",
-                          "v": "FIXED"
+                          "v": "HUG"
                         },
-                        "strokeWeight": [
-                          "stroke-width/default",
-                          "stroke-width/default",
-                          "stroke-width/default",
-                          "stroke-width/default"
-                        ],
-                        "strokes": [
-                          "control-stroke/default"
-                        ],
-                        "strokesIncludedInLayout": false,
-                        "type": "INSTANCE"
+                        "type": "FRAME"
                       },
                       {
                         "children": [
@@ -2982,9 +3007,9 @@
                           "mode": "VERTICAL",
                           "padding": [
                             "spacing/none",
+                            "spacing/lg",
                             "spacing/none",
-                            "spacing/none",
-                            "spacing/none"
+                            "spacing/lg"
                           ],
                           "primaryAlign": "MIN"
                         },
@@ -2995,7 +3020,7 @@
                         },
                         "size": {
                           "h": 522,
-                          "w": 356
+                          "w": 388
                         },
                         "sizing": {
                           "h": "FILL",
@@ -3010,9 +3035,9 @@
                       "mode": "VERTICAL",
                       "padding": [
                         "spacing/3xl",
-                        "spacing/lg",
+                        "spacing/none",
                         "spacing/3xl",
-                        "spacing/lg"
+                        "spacing/none"
                       ],
                       "primaryAlign": "MIN"
                     },
@@ -3070,8 +3095,7 @@
             },
             "name": "ShellSurface",
             "properties": {
-              "Device": "Mobile",
-              "Material": "Acrylic"
+              "Device": "Mobile"
             },
             "radius": [
               "radius/overlay",

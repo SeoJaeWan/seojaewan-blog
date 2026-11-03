@@ -12,10 +12,10 @@ import {
 const VIEWS = ['before-typing', 'results', 'no-results'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
-// 본문은 크기를 갖지 않고 검색 패널이 정하므로 피그마 원본 크기(size/574×654, size/356×522)로 감싸 그린다.
+// 본문은 크기를 갖지 않고 검색 패널이 정하므로 피그마 원본 크기(size/638×654, size/388×522)로 감싸 그린다.
 const SIZE_CLASS_NAMES = {
-  desktop: 'w-size-shell-body-width h-size-search-body-height',
-  mobile: 'w-size-shell-mobile-body-width h-size-search-body-mobile-height',
+  desktop: 'w-size-shell-content-width h-size-search-body-height',
+  mobile: 'w-size-shell-mobile-content-width h-size-search-body-mobile-height',
 } as const;
 
 type FigmaArgs = {

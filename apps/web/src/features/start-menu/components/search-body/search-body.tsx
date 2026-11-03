@@ -27,8 +27,7 @@ type SearchBodyCommonProps = {
   /** 바깥 배치 클래스. 크기는 쓰는 곳(검색 패널, Start 메뉴)이 정한다 */
   className?: string;
   /**
-   * 내용 둘레 여백 클래스. 스크롤하는 화면은 ScrollArea의 내용 칸(스크롤되는 칸)에, 나머지는 내용을 담는 바탕에 준다.
-   * 본문이 패널 폭을 채우고 여백을 안에서 줘야 스크롤바가 본문 가장자리에 놓이기 때문이다
+   * 기기별 좌우 여백에 더할 내용 둘레 여백 클래스(예: Start 결과 화면의 아래 24). 좌우 여백과 같은 칸에 준다
    */
   contentClassName?: string;
   /** 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
@@ -68,9 +67,16 @@ const kindLabels = {
   link: '외부 링크',
 } as const satisfies Record<SearchItemKind, string>;
 
+// 기기별 내용 좌우 여백이다(데스크톱 32, 모바일 16). 본문은 패널 폭을 채우고, 스크롤하는 화면은 ScrollArea의 내용 칸(스크롤되는 칸)에,
+// 나머지는 내용을 담는 바탕에 이 여백을 준다. 그래서 스크롤바는 ScrollArea 기본 자리(본문 오른쪽 가장자리)에 놓인다.
+const contentInsetClassNames = {
+  desktop: 'px-spacing-3xl',
+  mobile: 'px-spacing-lg',
+} as const satisfies Record<SearchBodyDevice, string>;
+
 /**
  * 검색 패널 안의 본문(피그마 조립 `Search/Body`)을 그린다. 입력 전 최근·추천 목록, 검색 결과, 결과 없음 안내 중 하나다.
- * 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 고른 항목 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
+ * 본문은 패널 폭을 채우고 내용 좌우 여백은 안에서 준다. 입력 전 화면은 넘치면 ScrollArea로 스크롤한다. 결과 화면은 SearchResults에 고른 항목 카드의 동작(열기, 글과 외부 링크는 링크 복사)과 종류별 결과 묶음을 넣는다.
  * 항목 줄과 카드의 동작은 `onItemOpen`·`onCopyLink`로 알리고, 열거나 복사하는 일은 쓰는 곳이 한다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[검색:결과 화면]]
@@ -78,7 +84,8 @@ const kindLabels = {
  * @param props
  */
 export function SearchBody(props: SearchBodyProps): JSX.Element {
-  const { device = 'desktop', className, contentClassName } = props;
+  const { device = 'desktop', className } = props;
+  const contentClassName = cn(contentInsetClassNames[device], props.contentClassName);
   switch (props.view) {
     case 'before-typing':
       return (
@@ -158,7 +165,7 @@ type SearchBodyResultsProps = {
   selectedId?: string;
   /** 바깥 배치 클래스 */
   className?: string;
-  /** 내용 둘레 여백 클래스. 모바일은 스크롤되는 칸에, 데스크톱은 SearchResults를 담는 바탕에 준다 */
+  /** 내용 둘레 여백 클래스(좌우 여백 포함). 모바일은 스크롤되는 칸에, 데스크톱은 SearchResults를 담는 바탕에 준다 */
   contentClassName?: string;
   /** 항목 줄이나 카드의 `열기`를 눌렀을 때 부른다 */
   onItemOpen?: (id: string) => void;
