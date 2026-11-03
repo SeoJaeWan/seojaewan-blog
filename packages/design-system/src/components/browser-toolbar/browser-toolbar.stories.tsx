@@ -2,13 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import browserToolbarExport from '../../../figma/components/browser-toolbar/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { BrowserToolbar } from './browser-toolbar';
 
 const meta = {
   title: 'Components/BrowserToolbar',
   // 피그마 BrowserToolbar는 변형이 없다.
-  // 컴포넌트는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비 1000으로 감싼다.
-  // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. 컴포넌트와 같은 크기라 찍히는 범위가 같다.
+  // 컴포넌트는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
+  decorators: [figmaFrame(browserToolbarExport)],
   render: (args) => {
     const {
       onBack: handleBack,
@@ -19,16 +21,14 @@ const meta = {
       ...props
     } = args;
     return (
-      <div className="w-size-browser-toolbar-width">
-        <BrowserToolbar
-          {...props}
-          onBack={handleBack}
-          onForward={handleForward}
-          onRefresh={handleRefresh}
-          onMenu={handleMenu}
-          onUrlChange={handleUrlChange}
-        />
-      </div>
+      <BrowserToolbar
+        {...props}
+        onBack={handleBack}
+        onForward={handleForward}
+        onRefresh={handleRefresh}
+        onMenu={handleMenu}
+        onUrlChange={handleUrlChange}
+      />
     );
   },
 } satisfies Meta<ComponentProps<typeof BrowserToolbar>>;

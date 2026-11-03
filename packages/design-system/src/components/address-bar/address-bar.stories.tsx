@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { expect, fireEvent, fn, userEvent, within } from 'storybook/test';
 
+import addressBarExport from '../../../figma/components/address-bar/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { AddressBar } from './address-bar';
 
 // 피그마 AddressBar의 변형 속성 값이다(정규화한 이름).
@@ -35,22 +37,20 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
     url: { control: 'text' },
   },
+  // AddressBar는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
+  decorators: [figmaFrame(addressBarExport)],
   render: (args) => {
     const { onChange: handleChange } = args;
     return (
-      // AddressBar는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비 640으로 감싼다.
-      // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. AddressBar와 같은 크기라 찍히는 범위가 같다.
-      <div className="w-size-address-bar-width">
-        <AddressBar
-          // 상태나 글자를 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
-          key={`${args.state}-${args.url}-${args.query}`}
-          aria-label="주소"
-          url={args.url}
-          query={args.query}
-          suggesting={args.state === 'suggesting'}
-          onChange={handleChange}
-        />
-      </div>
+      <AddressBar
+        // 상태나 글자를 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
+        key={`${args.state}-${args.url}-${args.query}`}
+        aria-label="주소"
+        url={args.url}
+        query={args.query}
+        suggesting={args.state === 'suggesting'}
+        onChange={handleChange}
+      />
     );
   },
 } satisfies Meta<FigmaArgs>;

@@ -9,7 +9,7 @@ type ExplorerCommandBarProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 /**
  * 탐색기 주소 줄 아래의 명령 막대(피그마 ExplorerCommandBar)를 그린다.
- * 너비는 쓰는 곳이 정하고, 높이는 `children` 슬롯의 내용이 정한다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
+ * 너비는 쓰는 곳이 정하고, 슬롯은 가로로 놓고 간격 4, 높이 size/control/height다. 비어 있어도 높이를 지킨다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
  * @param props
  */
 export function ExplorerCommandBar(props: ExplorerCommandBarProps): JSX.Element {
@@ -22,7 +22,9 @@ export function ExplorerCommandBar(props: ExplorerCommandBarProps): JSX.Element 
         className,
       )}
     >
-      <div className="min-w-size-none flex-flex-fill">{children}</div>
+      <div className="flex h-size-control-height min-w-size-none flex-flex-fill items-center gap-spacing-xs">
+        {children}
+      </div>
     </div>
   );
 }

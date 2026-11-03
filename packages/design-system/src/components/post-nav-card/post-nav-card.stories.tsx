@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 
+import postNavCardExport from '../../../figma/components/post-nav-card/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { PostNavCard } from './post-nav-card';
 
 // 피그마 PostNavCard의 변형 속성 값이다(정규화한 이름).
@@ -23,11 +25,10 @@ const meta = {
     device: { control: 'inline-radio', options: DEVICES },
     title: { control: 'text' },
   },
+  // PostNavCard는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
+  decorators: [figmaFrame(postNavCardExport)],
   render: (args) => (
-    // PostNavCard는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(354)로 감싼다.
-    <div className="w-size-post-nav-card-width">
-      <PostNavCard direction={args.direction} device={args.device} title={args.title} />
-    </div>
+    <PostNavCard direction={args.direction} device={args.device} title={args.title} />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -40,17 +41,20 @@ type Story = StoryObj<typeof meta>;
 export const Figma: Story = {};
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 방향에 따라 이전 글·다음 글 라벨을 보이고, title로 제목을 바꾼다 */
+/** 이전 글 방향은 이전 글 라벨을 보이고, title로 제목을 바꾼다 */
 export const Default: Story = {
-  render: () => (
-    <div className="flex w-size-post-nav-card-width flex-col gap-spacing-sm">
-      <PostNavCard title="앞선 글" />
-      <PostNavCard direction="next" title="뒤따르는 글" />
-    </div>
-  ),
+  args: { title: '앞선 글' },
   play: async ({ canvas }) => {
     await expect(canvas.getByText('이전 글')).toBeInTheDocument();
     await expect(canvas.getByText('앞선 글')).toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 다음 글 방향은 다음 글 라벨을 보인다 */
+export const Next: Story = {
+  args: { direction: 'next', title: '뒤따르는 글' },
+  play: async ({ canvas }) => {
     await expect(canvas.getByText('다음 글')).toBeInTheDocument();
     await expect(canvas.getByText('뒤따르는 글')).toBeInTheDocument();
   },

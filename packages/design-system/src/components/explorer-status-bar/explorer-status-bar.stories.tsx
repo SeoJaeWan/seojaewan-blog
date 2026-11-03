@@ -2,16 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import explorerStatusBarExport from '../../../figma/components/explorer-status-bar/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { ExplorerStatusBar } from './explorer-status-bar';
 
 // 피그마 ExplorerStatusBar의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
-
-// 컴포넌트는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 기기별로 감싼다.
-const previewWidthClassNames = {
-  desktop: 'w-size-explorer-content-width',
-  mobile: 'w-size-window-mobile-content-width',
-} as const satisfies Record<(typeof DEVICES)[number], string>;
 
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
@@ -29,20 +25,19 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: DEVICES },
   },
+  // 컴포넌트는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비를 기기별로 감싼다.
+  decorators: [figmaFrame(explorerStatusBarExport)],
   render: (args) => {
     const { onDetailsView: handleDetailsView, onLargeIconsView: handleLargeIconsView } = args;
     return (
-      // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. 컴포넌트와 같은 크기라 찍히는 범위가 같다.
-      <div className={previewWidthClassNames[args.device]}>
-        <ExplorerStatusBar
-          device={args.device}
-          itemCount={args.itemCount}
-          selection={args.selection}
-          showSelection={args.showSelection}
-          onDetailsView={handleDetailsView}
-          onLargeIconsView={handleLargeIconsView}
-        />
-      </div>
+      <ExplorerStatusBar
+        device={args.device}
+        itemCount={args.itemCount}
+        selection={args.selection}
+        showSelection={args.showSelection}
+        onDetailsView={handleDetailsView}
+        onLargeIconsView={handleLargeIconsView}
+      />
     );
   },
 } satisfies Meta<FigmaArgs>;

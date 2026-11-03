@@ -1,19 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn } from 'storybook/test';
 
+import searchBoxExport from '../../../figma/components/search-box/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { SearchBox } from './search-box';
 
 // 피그마 SearchBox의 변형 속성 값이다(정규화한 이름).
 const APPEARANCES = ['default', 'pill', 'taskbar', 'web'] as const;
 const STATES = ['rest', 'hover', 'focused', 'pressed', 'disabled'] as const;
-
-// SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비를 모양별로 감싼다.
-const previewWidthClassNames = {
-  default: 'w-size-search-box-width',
-  pill: 'w-size-search-box-wide-width',
-  taskbar: 'w-size-search-box-taskbar-width',
-  web: 'w-size-search-box-wide-width',
-} as const satisfies Record<(typeof APPEARANCES)[number], string>;
 
 type FigmaArgs = {
   appearance: (typeof APPEARANCES)[number];
@@ -31,25 +25,24 @@ const meta = {
     filled: { control: 'boolean' },
     state: { control: 'inline-radio', options: STATES },
   },
+  // SearchBox는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비를 모양별로 감싼다.
+  decorators: [figmaFrame(searchBoxExport)],
   render: (args) => (
-    // 캡처 대상은 감싼 요소(#storybook-root의 첫 요소)다. SearchBox와 같은 크기라 찍히는 범위가 같다.
-    <div className={previewWidthClassNames[args.appearance]}>
-      <SearchBox
-        // 입력값을 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
-        key={String(args.filled)}
-        appearance={args.appearance}
-        aria-label="검색"
-        placeholder="검색"
-        defaultValue={args.filled ? '검색어' : undefined}
-        disabled={args.state === 'disabled'}
-        // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
-        // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
-        onFocus={(event) => {
-          const end = event.currentTarget.value.length;
-          event.currentTarget.setSelectionRange(end, end);
-        }}
-      />
-    </div>
+    <SearchBox
+      // 입력값을 바꾸면 처음 값부터 다시 그리도록 key를 바꾼다.
+      key={String(args.filled)}
+      appearance={args.appearance}
+      aria-label="검색"
+      placeholder="검색"
+      defaultValue={args.filled ? '검색어' : undefined}
+      disabled={args.state === 'disabled'}
+      // Tab으로 들어오면 브라우저가 입력값 전체를 선택한다. 피그마 Focused는 선택 없이 입력 중인 모양이라
+      // 커서를 끝으로 옮겨 선택을 푼다(캡처 도구는 커서를 숨기고 찍는다).
+      onFocus={(event) => {
+        const end = event.currentTarget.value.length;
+        event.currentTarget.setSelectionRange(end, end);
+      }}
+    />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -64,9 +57,14 @@ export const Figma: Story = {};
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** 접근성 이름을 갖는 검색 입력창이다. Tab으로 포커스를 받고, 입력하면 값이 바뀌고 onChange를 부른다 */
 export const Default: Story = {
-  args: { onChange: fn() },
-  render: ({ onChange: handleChange }) => (
-    <SearchBox appearance="pill" aria-label="검색" placeholder="검색" onChange={handleChange} />
+  args: { appearance: 'pill', onChange: fn() },
+  render: ({ appearance, onChange: handleChange }) => (
+    <SearchBox
+      appearance={appearance}
+      aria-label="검색"
+      placeholder="검색"
+      onChange={handleChange}
+    />
   ),
   play: async ({ args, canvas, userEvent, step }) => {
     const searchbox = canvas.getByRole('searchbox', { name: '검색' });

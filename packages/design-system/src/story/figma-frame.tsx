@@ -30,7 +30,7 @@ export function FigmaFrame(props: FigmaFrameProps): JSX.Element {
   return (
     <div
       data-figma-frame={node ?? ''}
-      className="inline-grid"
+      className="grid w-fit"
       style={figmaFrameStyle(source as FigmaExport, args, node)}
     >
       {children}
