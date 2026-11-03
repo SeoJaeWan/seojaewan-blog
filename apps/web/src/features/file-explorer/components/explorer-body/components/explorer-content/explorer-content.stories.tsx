@@ -23,7 +23,7 @@ type FigmaArgs = {
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마 조립처럼 자리(Commands, items, Items)는 비워 둔다.
 // 피그마가 빈 슬롯에 남기는 미리보기 크기 중 토큰이 있는 것(NavigationPane items 너비 = NavigationItem 너비)만
-// 칠 없는 빈 요소로 채운다. Breadcrumb Items(100×100)와 items 높이(192)는 토큰이 없고, 두 변형 모두 빈 HUG라
+// 칠 없는 빈 요소로 채운다. Breadcrumb Items(114×24)와 items 높이(192)는 토큰이 없고, 두 변형 모두 빈 HUG라
 // 단독 캡처하지 않는다.
 const meta = {
   title: 'Patterns/Explorer/Content',

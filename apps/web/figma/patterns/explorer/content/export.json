@@ -325,8 +325,8 @@
                     },
                     "name": "Items",
                     "size": {
-                      "h": 100,
-                      "w": 100
+                      "h": 24,
+                      "w": 114
                     },
                     "sizing": {
                       "h": "HUG",
@@ -353,9 +353,7 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "breadcrumb",
-                "properties": {
-                  "State": "Rest"
-                },
+                "properties": {},
                 "radius": [
                   "radius/control",
                   "radius/control",
@@ -1114,8 +1112,8 @@
                     },
                     "name": "Items",
                     "size": {
-                      "h": 100,
-                      "w": 100
+                      "h": 24,
+                      "w": 114
                     },
                     "sizing": {
                       "h": "HUG",
@@ -1142,9 +1140,7 @@
                   "primaryAlign": "MIN"
                 },
                 "name": "breadcrumb",
-                "properties": {
-                  "State": "Rest"
-                },
+                "properties": {},
                 "radius": [
                   "radius/control",
                   "radius/control",
