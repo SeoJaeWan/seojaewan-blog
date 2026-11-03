@@ -315,7 +315,6 @@ const storyStylePendingFiles = [
   'apps/web/src/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin.stories.tsx',
   'packages/design-system/src/components/address-bar/address-bar.stories.tsx',
   'packages/design-system/src/components/browser-toolbar/browser-toolbar.stories.tsx',
-  'packages/design-system/src/components/code-block/code-block.stories.tsx',
   'packages/design-system/src/components/column-header/column-header.stories.tsx',
   'packages/design-system/src/components/empty-state/empty-state.stories.tsx',
   'packages/design-system/src/components/equation/equation.stories.tsx',
@@ -893,9 +892,13 @@ export default defineConfig(
                 to: { element: { type: 'design-system', fileInternalPath: 'src/index.ts' } },
               },
             },
-            // 스토리 파일은 스토리 전용 진입점(`@seojaewan/design-system/story`)도 쓴다.
+            // 스토리 파일은 스토리 전용 진입점(`@seojaewan/design-system/story`)도 쓴다. 테스트도 스토리 데이터가
+            // 실제 결과와 같은지 확인하려고 쓴다(CodeBlock 강조 결과).
             {
-              from: { element: { type: '!design-system' }, file: { categories: 'story' } },
+              from: {
+                element: { type: '!design-system' },
+                file: { categories: ['story', 'test'] },
+              },
               allow: {
                 to: { element: { type: 'design-system', fileInternalPath: 'src/story.ts' } },
               },

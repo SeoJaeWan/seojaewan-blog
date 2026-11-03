@@ -84,21 +84,25 @@ function token(text: string, syntax: CodeSyntax | null = null): CodeToken {
   return { text, syntax };
 }
 
-/** 피그마 Chrome/Page `Page=Post` 코드 블록의 강조된 코드(`code-syntax` 색) */
+/**
+ * 피그마 Chrome/Page `Page=Post` 코드 블록의 코드를 실제 강조기(`highlightCode`, tsx)로 강조한 결과(`code-syntax` 색).
+ * 손으로 칠하지 않는다. 강조기 단위 테스트가 이 코드를 다시 강조해 같은지 확인한다.
+ */
 const postCodeLines: CodeToken[][] = [
   [
     token('const', 'keyword'),
     token(' '),
-    token('post', 'variable'),
+    token('post', 'variable-constant'),
     token(' '),
     token('=', 'punctuation'),
     token(' '),
     token('use', 'function'),
-    token('(', 'punctuation'),
+    token('('),
     token('fetchPost', 'function'),
-    token('(', 'punctuation'),
+    token('('),
     token('slug', 'variable'),
-    token('));', 'punctuation'),
+    token('))'),
+    token(';', 'punctuation'),
   ],
   [
     token('return', 'keyword-control'),
@@ -107,9 +111,10 @@ const postCodeLines: CodeToken[][] = [
     token('Article', 'type'),
     token(' '),
     token('post', 'attribute'),
-    token('={', 'punctuation'),
+    token('=', 'punctuation'),
+    token('{', 'keyword'),
     token('post', 'variable'),
-    token('}', 'punctuation'),
+    token('}', 'keyword'),
     token(' '),
     token('/>', 'tag'),
     token(';', 'punctuation'),
