@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { MenuItem } from '../menu-item/menu-item';
-import { Separator } from '../separator/separator';
+import { MenuSeparator } from '../menu-separator/menu-separator';
 import { Flyout } from './flyout';
 
 // 피그마 Flyout의 변형 속성 값이다(정규화한 이름).
@@ -24,9 +24,7 @@ const meta = {
       <Flyout material={args.material} data-parity-target>
         <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
         <MenuItem standalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
-        <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
-          <Separator className="w-full" />
-        </div>
+        <MenuSeparator className="w-full" />
         <MenuItem
           standalone
           label="이름 바꾸기"

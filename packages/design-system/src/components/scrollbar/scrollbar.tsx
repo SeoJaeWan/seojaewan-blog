@@ -12,9 +12,9 @@ type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
   state?: ScrollbarState;
   /** 피그마 Material(State=Expanded의 바탕). acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
   material?: ScrollbarMaterial;
-  /** 막대(thumb)가 트랙 위쪽에서 떨어진 거리(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 40이다 */
+  /** 막대(thumb)가 트랙 위쪽에서 떨어진 거리(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 10이다 */
   thumbOffset?: number;
-  /** 막대(thumb) 길이(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 80이다 */
+  /** 막대(thumb) 길이(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 size/scrollbar/thumb-length(약 119.44)다 */
   thumbLength?: number;
 };
 
@@ -58,10 +58,10 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
           className="size-size-icon-2xs shrink-shrink-none rotate-rotate-half text-control-strong-fill-default"
         />
       )}
-      {/* 막대는 가운데 정렬한 절대 위치 자식이다. 위치·길이의 피그마 기본값은 위에서 40, 길이 80이다. */}
+      {/* 막대는 가운데 정렬한 절대 위치 자식이다. 위치·길이의 피그마 기본값은 위에서 10(spacing/md-nudge), 길이 size/scrollbar/thumb-length다. */}
       <div
         className={cn(
-          'absolute top-spacing-4xl left-position-half h-size-scrollbar-thumb-length -translate-x-position-half rounded-radius-circular bg-control-strong-fill-default',
+          'absolute top-spacing-md-nudge left-position-half h-size-scrollbar-thumb-length -translate-x-position-half rounded-radius-circular bg-control-strong-fill-default',
           isExpanded ? 'w-size-scrollbar-thumb-hover' : 'w-size-scrollbar-thumb-rest',
         )}
         style={thumbStyle}
