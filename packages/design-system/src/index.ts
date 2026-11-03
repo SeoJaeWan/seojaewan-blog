@@ -48,7 +48,7 @@ export * from './components/profile-button/profile-button';
 export * from './components/progress-ring/progress-ring';
 export * from './components/quote/quote';
 export * from './components/rename-field/rename-field';
-export * from './components/scrollbar/scroll-area';
+export * from './components/scroll-area/scroll-area';
 export * from './components/scrollbar/scrollbar';
 export * from './components/search-box/search-box';
 export * from './components/search-results/search-results';
