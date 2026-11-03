@@ -45,7 +45,7 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
   } = props;
   const isMobile = device === 'mobile';
   return (
-    <ShellSurface material="acrylic" device={device} className={className} style={style}>
+    <ShellSurface device={device} className={className} style={style}>
       <div className="flex size-full flex-col">
         {/* 피그마 `body` 배치 프레임이다. 위 32와 좌우 여백(모바일 16) 안에 입력칸과 본문을 간격 16으로 쌓는다 */}
         <div

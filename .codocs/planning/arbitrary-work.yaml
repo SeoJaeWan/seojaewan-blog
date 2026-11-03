@@ -131,3 +131,6 @@ _codocs:
   - 피그마 `Content` 슬롯은 가로 자동 배치(세로 가운데)인데 코드의 슬롯 상자는 블록이라, 앱이 안에 `flex w-full items-center` 상자를 하나 더 두고 있었다. 슬롯 상자를 `flex items-center`로 바꾸고 `start-menu-panel.tsx`의 덧상자를 지웠다(ProfileButton은 그대로 부모 채움).
   - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 ProfileButton(`images/avatar-profile`, "서재완", 부모 채움)과 전원 IconButton(`subtle`, `ic_fluent_power_20_regular`, 이름 "전원" — 앱 `StartPowerButton`과 같다)을 넣었다. 너비는 `w-size-start-menu-footer-width`(638)다. 내용 글자 하나만 확인하던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]]대로 지웠다.
   - 스토리 배치를 `padded`로 두었다(PinnedTile과 같은 이유). 기본 `centered`에서는 높이 65가 y=.5에 놓여 위 선과 아래 가장자리가 두 줄로 번졌다. 캡처 도구의 정수 위치 맞춤(`integerShift`)이 꼭 0.5만큼 옮길 때는 효과가 없는 것으로 보이나, 도구는 고치지 않았다.
+"PR #474 ShellSurface: Material 속성 삭제": |
+  `ShellSurface`의 `material` prop과 `ShellSurfaceMaterial` 타입, `solid` 분기를 지우고 아크릴 칠·효과(`material-acrylic-base surface-shell-acrylic`)를 상수 하나로 고정했다. Start·검색 패널 조립의 `material="acrylic"`도 지웠다. `Default` 동작 스토리는 `material="solid"`를 쓰고 있어 속성만 뺐다(동작 확인은 같다). Content 슬롯은 모든 변형에서 비어 있어 `Figma` 스토리는 슬롯을 비운 채 둔다.
+  [[디자인 시스템:컴포넌트 조립 규칙]]의 `Material` 변형 예 목록에서 ShellSurface를 빼 "(Flyout, WindowFrame 등)"으로 고쳤다(허락받은 작은 문서 맞춤).
