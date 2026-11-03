@@ -85,6 +85,10 @@ _codocs:
   - 옛 `Default`·`Open` 스토리(닫히면 팝업이 없고 열리면 보이는지)는 `Figma` 스토리의 `state` 변형이 다루므로 지웠다.
 "8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
   모바일 입력(길게 누르기 메뉴, 선택 없음)은 Playwright 기본 설정이 터치 장치가 아니라 합성 이벤트로 흉내 내야 해서 믿기 어렵다고 보고, 모바일은 폭 390 화면의 열기·전환·검색 흐름만 넣었다. 길게 누르기는 스토리 `play`가 맡는다.
+"Tooltip PR #463: Material 삭제": |
+  - 피그마에서 `Material` 속성이 지워져 코드의 `material` prop과 `TooltipMaterial` 타입, 재질 분기를 지웠다. `Type=Default`는 아크릴(칠 `Material/Acrylic Default`, 효과 `Surface/Tooltip (Acrylic)`), `Type=Balloon`은 전처럼 단색이다. 앱에서 `material`을 넘기는 곳은 없었다.
+  - `Figma` 스토리의 args에서 `material`을 뺐다. Tooltip은 슬롯이 없어 스토리 내용은 그대로다.
+  - `Default`(tooltip 역할과 글자)·`Balloon`(div 속성 넘김과 메시지) 동작 스토리는 지워진 변형만 보던 스토리가 아니라 그대로 두었다.
 "인라인 style lint: 규칙을 거는 범위와 구현": |
   - `style` 값 제한은 `no-restricted-syntax`로 구현했다. JSX `style={{ … }}`의 속성 값이 문자열·숫자 리터럴, 음수 리터럴(`-1`), 식이 없는 템플릿이면 막는다. `style={조건 ? { … } : …}`·`style={조건 && { … }}`처럼 조건식·논리식이 고른 객체도 본다. 변수에 담아 넘긴 객체(`style={panelStyle}`)는 보지 않는다.
   - 범위는 토큰 클래스 검사와 같게 앱·디자인 시스템 소스(`*.test.*` 제외)로 했다. `no-restricted-syntax`는 블록마다 목록을 통째로 바꾸므로, default export 예외 파일(스토리, Next.js 예약 파일)에는 `files: \[[범위, 예외 파일]]`로 따로 걸었다.
