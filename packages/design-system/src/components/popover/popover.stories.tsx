@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Flyout } from '../flyout/flyout';
 import { IconButton } from '../icon-button/icon-button';
 import { MenuItem } from '../menu-item/menu-item';
-import { Separator } from '../separator/separator';
+import { MenuSeparator } from '../menu-separator/menu-separator';
 import { Popover } from './popover';
 
 // 피그마 Popover의 변형 속성 값이다(정규화한 이름).
@@ -49,9 +49,7 @@ const meta = {
               label="새 창에서 열기"
               icon="icons/ic_fluent_window_20_regular.svg"
             />
-            <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
-              <Separator className="w-full" />
-            </div>
+            <MenuSeparator className="w-full" />
             <MenuItem
               standalone
               label="이름 바꾸기"
