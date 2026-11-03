@@ -59,14 +59,12 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
           <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col">{children}</div>
         </div>
         <StartMenuFooter className="w-full shrink-shrink-none">
-          <div className="flex w-full items-center">
-            <ProfileButton
-              photo={profilePhoto}
-              name={profileName}
-              className="min-w-size-hairline flex-flex-fill"
-            />
-            {powerButton}
-          </div>
+          <ProfileButton
+            photo={profilePhoto}
+            name={profileName}
+            className="min-w-size-hairline flex-flex-fill"
+          />
+          {powerButton}
         </StartMenuFooter>
       </div>
     </ShellSurface>
