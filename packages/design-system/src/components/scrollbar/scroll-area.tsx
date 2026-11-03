@@ -110,7 +110,6 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
       <Scrollbar
         ref={scrollbarRef}
         aria-hidden
-        orientation="vertical"
         state={isHovered ? 'expanded' : 'rest'}
         material={material}
         thumbOffset={thumb?.offset}

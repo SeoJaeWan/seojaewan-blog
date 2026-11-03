@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type JSX, useState } from 'react';
 import { expect, fireEvent, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
+import { ImageAsset, NavigationItem } from '@seojaewan/design-system';
+
 import {
   getStoryCenter,
   holdStoryDrag,
@@ -50,7 +52,7 @@ type StoryDropTargetProps = {
 };
 
 /**
- * 다른 탐색기 창 본문이나 바탕화면처럼 본문 밖에 있는 놓을 곳 하나.
+ * 다른 탐색기 창 본문이나 바탕화면처럼 본문 밖에 있는 놓을 곳 하나. 탐색 창의 폴더 항목(NavigationItem)으로 그린다.
  * @param props
  * @returns 놓을 곳
  */
@@ -58,12 +60,11 @@ function StoryDropTarget(props: StoryDropTargetProps): JSX.Element {
   const { id, name, label } = props;
   const attributes = { [DROP_TARGET_ATTRIBUTE]: id, [DROP_TARGET_NAME_ATTRIBUTE]: name };
   return (
-    <div
+    <NavigationItem
       {...attributes}
-      className="h-size-story-2xs w-size-story-md border border-dashed p-spacing-xs text-center"
-    >
-      {label}
-    </div>
+      label={label}
+      icon={<ImageAsset name="images/file-folder" className="size-full object-contain" />}
+    />
   );
 }
 
@@ -126,7 +127,7 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
           onOpenInNewTab={handleOpenInNewTab}
         />
       </div>
-      <div className="flex gap-spacing-sm">
+      <div role="tree" aria-label="본문 밖의 놓을 곳" className="flex gap-spacing-sm">
         <StoryDropTarget id="folder:Next.js" name="Next.js" label="다른 창의 Next.js" />
         <StoryDropTarget id={DESKTOP_DROP_TARGET} name="바탕 화면" label="바탕 화면" />
         <StoryDropTarget id="folder:React" name="React" label="다른 창의 React" />

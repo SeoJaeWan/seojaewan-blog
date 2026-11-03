@@ -4,11 +4,9 @@ import { expect, within } from 'storybook/test';
 import { ShellSurface } from './shell-surface';
 
 // 피그마 ShellSurface의 변형 속성 값이다(정규화한 이름).
-const MATERIALS = ['acrylic', 'solid'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
 type FigmaArgs = {
-  material: (typeof MATERIALS)[number];
   device: (typeof DEVICES)[number];
 };
 
@@ -16,13 +14,12 @@ const meta = {
   title: 'Components/ShellSurface',
   // 높이·너비가 짝수라 0.5px 위치를 피하려고 padded로 둔다.
   parameters: { layout: 'padded' },
-  args: { material: 'acrylic', device: 'desktop' },
+  args: { device: 'desktop' },
   argTypes: {
-    material: { control: 'inline-radio', options: MATERIALS },
     device: { control: 'inline-radio', options: DEVICES },
   },
   // 컴포넌트의 Content 슬롯은 언제나 비어 있다.
-  render: (args) => <ShellSurface material={args.material} device={args.device} />,
+  render: (args) => <ShellSurface device={args.device} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
@@ -37,7 +34,7 @@ export const Figma: Story = {};
 /** Start 패널처럼 역할과 접근성 이름을 붙여 쓰고, 내용은 children 자리에 그린다 */
 export const Default: Story = {
   render: () => (
-    <ShellSurface role="dialog" aria-label="Start" material="solid">
+    <ShellSurface role="dialog" aria-label="Start">
       <p>Start 내용</p>
     </ShellSurface>
   ),

@@ -11,7 +11,7 @@ import { expandedToggleIndexes, sampleBlocks } from './story-data';
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 변형이 없는 조립이라 args가 없다.
 // 본문은 크기를 갖지 않고 글 화면이 정하므로 피그마 원본 너비(size/720)와 페이지 바탕으로 감싼다.
-// 이미지는 피그마처럼 배경화면 Bloom을 자산 원본 비율로, 수식은 근의 공식 그림(200×56)으로 넣는다.
+// 이미지는 피그마처럼 배경화면 Bloom을 자산 원본 비율로 넣는다. 수식은 제품처럼 KaTeX가 그린 HTML(스토리 데이터의 `html`)로 그린다.
 const meta = {
   title: 'Patterns/Chrome/PostBlocks',
   render: () => (
@@ -20,13 +20,6 @@ const meta = {
         blocks={sampleBlocks}
         expandedToggleIndexes={expandedToggleIndexes}
         renderImage={() => <ImageAsset name="images/wallpaper-bloom" />}
-        renderEquation={() => (
-          <ImageAsset
-            name="images/equation-quadratic-formula"
-            alt="x = (-b ± √(b² - 4ac)) / 2a"
-            className="h-size-story-xs w-size-story-lg"
-          />
-        )}
       />
     </div>
   ),
@@ -38,6 +31,10 @@ type Story = StoryObj<typeof meta>;
 
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 export const Figma: Story = {
+  // KaTeX 그림 부품(CSS 포함)은 PostBlocks가 지연해 불러온다. 캡처가 그 전에 찍히지 않게 미리 불러 둔다.
+  beforeEach: async () => {
+    await import('./katex-html');
+  },
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
 };
 
