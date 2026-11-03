@@ -19,7 +19,7 @@
     "material=acrylic": {
       "node": {
         "height": 143,
-        "width": 320,
+        "width": 252,
         "x": 16,
         "y": 8
       },
@@ -89,7 +89,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 258
+                          "w": 190
                         },
                         "sizing": {
                           "h": "FILL",
@@ -135,7 +135,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -169,13 +169,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -235,7 +236,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 258
+                          "w": 190
                         },
                         "sizing": {
                           "h": "FILL",
@@ -301,7 +302,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -335,13 +336,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -357,7 +359,7 @@
                     },
                     "size": {
                       "h": 1,
-                      "w": 318
+                      "w": 250
                     },
                     "sizing": {
                       "h": "FILL",
@@ -366,6 +368,7 @@
                     "type": "INSTANCE"
                   }
                 ],
+                "component": "MenuSeparator",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -378,16 +381,16 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "separator",
+                "name": "MenuSeparator",
                 "size": {
                   "h": 9,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               },
               {
                 "children": [
@@ -447,7 +450,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 232
+                          "w": 164
                         },
                         "sizing": {
                           "h": "FILL",
@@ -531,7 +534,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -565,13 +568,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -631,7 +635,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 209
+                          "w": 141
                         },
                         "sizing": {
                           "h": "FILL",
@@ -705,7 +709,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -739,13 +743,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               }
             ],
             "layout": {
@@ -769,7 +774,7 @@
             ],
             "size": {
               "h": 137,
-              "w": 318
+              "w": 250
             },
             "sizing": {
               "h": "FILL",
@@ -801,7 +806,7 @@
         ],
         "size": {
           "h": 143,
-          "w": 320
+          "w": 252
         },
         "sizing": {
           "h": "HUG",
@@ -823,7 +828,7 @@
     "material=solid": {
       "node": {
         "height": 143,
-        "width": 320,
+        "width": 252,
         "x": 16,
         "y": 8
       },
@@ -893,7 +898,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 258
+                          "w": 190
                         },
                         "sizing": {
                           "h": "FILL",
@@ -939,7 +944,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -973,13 +978,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -1039,7 +1045,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 258
+                          "w": 190
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1105,7 +1111,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1139,13 +1145,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -1161,7 +1168,7 @@
                     },
                     "size": {
                       "h": 1,
-                      "w": 318
+                      "w": 250
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1170,6 +1177,7 @@
                     "type": "INSTANCE"
                   }
                 ],
+                "component": "MenuSeparator",
                 "layout": {
                   "counterAlign": "MIN",
                   "gap": "spacing/none",
@@ -1182,16 +1190,16 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "separator",
+                "name": "MenuSeparator",
                 "size": {
                   "h": 9,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
                   "h": "FILL",
                   "v": "HUG"
                 },
-                "type": "FRAME"
+                "type": "INSTANCE"
               },
               {
                 "children": [
@@ -1251,7 +1259,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 232
+                          "w": 164
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1335,7 +1343,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1369,13 +1377,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               },
               {
                 "children": [
@@ -1435,7 +1444,7 @@
                         "name": "label",
                         "size": {
                           "h": 20,
-                          "w": 209
+                          "w": 141
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1509,7 +1518,7 @@
                     ],
                     "size": {
                       "h": 28,
-                      "w": 310
+                      "w": 242
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1543,13 +1552,14 @@
                 },
                 "size": {
                   "h": 32,
-                  "w": 318
+                  "w": 250
                 },
                 "sizing": {
-                  "h": "FILL",
+                  "h": "FIXED",
                   "v": "HUG"
                 },
-                "type": "INSTANCE"
+                "type": "INSTANCE",
+                "width": "size/menu/width"
               }
             ],
             "layout": {
@@ -1573,7 +1583,7 @@
             ],
             "size": {
               "h": 137,
-              "w": 318
+              "w": 250
             },
             "sizing": {
               "h": "FILL",
@@ -1605,7 +1615,7 @@
         ],
         "size": {
           "h": 143,
-          "w": 320
+          "w": 252
         },
         "sizing": {
           "h": "HUG",

@@ -1,7 +1,7 @@
 import type { ComponentProps, JSX, ReactNode } from 'react';
 
 import { cn } from '../../cn';
-import { ScrollArea } from '../scrollbar/scroll-area';
+import { ScrollArea } from '../scroll-area/scroll-area';
 
 export type SearchResultsDevice = 'desktop' | 'mobile';
 
