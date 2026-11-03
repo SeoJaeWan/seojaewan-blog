@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '창을 최대화했다가 되돌린다',
   area: '창',
+  summary: '화면 폭을 채웠다 원래 자리로',
   conditions: {
     maximize: {
       label: '최대화하는 법',
@@ -43,6 +44,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'button-and-restore',
+      result: '최대화했다 원래 크기·자리로',
       scenario:
         '파일 탐색기 창의 최대화 버튼을 눌러 최대화한 뒤, "이전 크기로 복원" 버튼을 눌러 되돌린다',
       expected: [

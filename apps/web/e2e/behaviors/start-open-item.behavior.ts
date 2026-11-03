@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: 'Start에서 항목을 연다',
   area: 'Start',
+  summary: 'Start에서 폴더가 열림',
   conditions: {
     section: {
       label: 'Start 안의 영역',
@@ -30,6 +31,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'pinned-folder',
+      result: 'Blog 탐색기가 열리고 Start 닫힘',
       scenario: 'Start 버튼을 눌러 Start 메뉴를 열고, 고정됨의 Blog 폴더를 마우스로 클릭한다',
       expected: ['Blog 폴더의 탐색기 창이 열린다', 'Start 메뉴가 닫힌다'],
       docs: ['[[Start 메뉴:열기와 닫기]]', '[[창 동작:열기 규칙]]'],

@@ -69,6 +69,8 @@ type CaseBase = {
   id: string;
   /** 사용자가 하는 일 한 문장. */
   scenario: string;
+  /** 결과를 짧은 구로(예: '바탕화면으로 옮겨짐'). 시나리오 케이스 표의 결과 칸에 보인다. */
+  result: string;
   /** 되어야 하는 결과. `run`이 항목마다 `check`로 확인한다. */
   expected: readonly [string, ...string[]];
   /** 근거 문서 섹션. 하나 이상이다. */
@@ -81,16 +83,40 @@ type CaseBase = {
 /** 1번 케이스. 모든 조건이 기준값이라 바꾼 것이 없다. */
 export type BaseCase = CaseBase & { change?: undefined };
 
-/** 기준에서 조건을 바꾼 케이스. 하나를 바꾸는 것이 기본이고, 둘 이상은 표에 표시된다. */
+/** 일부러 엮은 조합. 케이스가 바꾼 조건에 다른 조건 값을 더 엮고, 엮어야 하는 이유를 적는다. */
+export type CaseCombine<Conditions extends ConditionMap> = {
+  change: BehaviorChange<Conditions>;
+  /** 엮어야만 확인할 수 있는 이유 한 문장 */
+  reason: string;
+};
+
+/**
+ * 기준에서 조건 하나를 바꾼 케이스. `change`에는 조건 하나만 적는다. 그 값을 따라 함께 바뀌는 값은
+ * 행위의 `requires`가 채우고, 다른 조건과 일부러 엮을 때만 `combine`에 이유와 함께 적는다.
+ */
 export type ChangedCase<Conditions extends ConditionMap> = CaseBase & {
   change: BehaviorChange<Conditions>;
+  combine?: CaseCombine<Conditions>;
+};
+
+/**
+ * 조건 사이의 의존. `when`의 값(조건 하나)이면 `then`의 값도 함께 바뀐다(예: 입력 방식이 터치면 화면 크기는 모바일).
+ * 표에서 함께 진하게 보이고, `then`의 값 줄은 그 케이스와 같은 케이스로 보인다.
+ */
+export type ConditionRequirement<Conditions extends ConditionMap> = {
+  when: BehaviorChange<Conditions>;
+  then: BehaviorChange<Conditions>;
 };
 
 /** 행위 하나. 파일 하나가 행위 하나다. */
 export type Behavior<Conditions extends ConditionMap = ConditionMap> = {
   name: string;
   area: BehaviorArea;
+  /** 행위 제목의 '→' 뒤에 붙는, 확인하는 결과들을 짧게 이은 것(예: '탐색기로·바탕화면으로·길게 눌러 옮김') */
+  summary: string;
   conditions: Conditions;
+  /** 조건 사이의 의존 */
+  requires?: readonly ConditionRequirement<Conditions>[];
   /** 케이스를 두지 않는 값과 이유. 이유도 케이스도 없는 값이 빠진 값이다. */
   noCase?: NoCaseMap<Conditions>;
   cases: readonly [BaseCase, ...ChangedCase<Conditions>[]];

@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '탐색기에서 항목을 잘라 붙이고 만들고 지운다',
   area: '탐색기',
+  summary: '다른 폴더로 옮김·길게 눌러 옮김',
   conditions: {
     target: {
       label: '붙일 자리',
@@ -28,9 +29,11 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일', command: '없음' } }],
   cases: [
     {
       id: 'cut-paste-new-delete-details',
+      result: '옮기고, 만들고 지우고, 자세히 보기',
       scenario:
         'Blog 폴더 탐색기에서 React 폴더를 Ctrl+X로 잘라 Next.js 폴더 안에서 Ctrl+V로 붙이고, 새로 만들기로 "메모" 폴더를 만들어 우클릭 메뉴의 삭제로 지운 뒤 자세히 보기로 바꾼다',
       expected: [
@@ -82,7 +85,8 @@ export const behavior = defineBehavior({
     },
     {
       id: 'touch-long-press',
-      change: { input: '터치', screen: '모바일', command: '없음' },
+      result: '길게 눌러 메뉴로 옮김',
+      change: { input: '터치' },
       device: 'Pixel 7',
       scenario:
         '모바일에서 Blog 폴더를 탭해 연 탐색기의 React 폴더를 길게 눌러 메뉴의 잘라내기를 탭하고, Next.js 폴더를 탭해 들어가 빈 곳을 길게 눌러 메뉴의 붙여넣기를 탭한다',

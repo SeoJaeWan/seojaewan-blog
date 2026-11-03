@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: 'Start 메뉴를 열고 닫는다',
   area: 'Start',
+  summary: 'Esc로 하위 메뉴부터 닫힘·낮은 화면에 맞춰 줄어듦',
   conditions: {
     close: {
       label: '닫는 법',
@@ -38,6 +39,7 @@ export const behavior = defineBehavior({
       id: 'power-menu-and-esc',
       scenario:
         'Start 버튼을 눌러 Start 메뉴를 열고, 전원 버튼으로 전원 메뉴를 연 뒤 Esc를 두 번 누른다',
+      result: 'Esc로 하위 메뉴부터 닫힘',
       expected: [
         '첫 Esc는 전원 메뉴만 닫고 Start 메뉴는 열려 있다',
         '두 번째 Esc는 Start 메뉴를 닫는다',
@@ -67,14 +69,19 @@ export const behavior = defineBehavior({
     {
       id: 'low-screen',
       change: { height: '낮음' },
+      combine: {
+        change: { screen: '노트북' },
+        reason: '높이가 노트북 기준(900px)보다 낮으면 폭이 PC여도 화면 크기는 노트북 구간이다',
+      },
       scenario: '화면 높이가 300px인 브라우저에서 Start 버튼을 눌러 Start 메뉴를 연다',
+      result: '낮은 화면에 맞춰 줄어듦',
       expected: [
         'Start 패널 높이가 작업 영역에서 틈을 뺀 240px로 줄어든다',
         '검색칸과 프로필·전원 줄이 패널 안에 남는다',
       ],
       docs: ['[[Start 메뉴:구성]]'],
       async run({ page, check }) {
-        await page.setViewportSize({ width: 1280, height: 300 });
+        await page.setViewportSize({ width: 1600, height: 300 });
         await page.goto('/');
 
         await page.getByRole('button', { name: '시작' }).click();

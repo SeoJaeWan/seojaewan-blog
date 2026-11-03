@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '다시 시작한다',
   area: '공통',
+  summary: '열린 창이 닫힘·저장한 작업 공간이 지워짐',
   conditions: {
     state: {
       label: '바꿔 둔 상태',
@@ -21,6 +22,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'closes-windows',
+      result: '재부팅 뒤 창과 Start가 닫힘',
       scenario: '파일 탐색기 창을 연 채 시작 버튼의 전원 메뉴에서 다시 시작을 고른다',
       expected: [
         '재부팅 화면이 보였다 사라진다',
@@ -56,6 +58,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'resets-saved-workspace',
+      result: '폴더 이름이 처음으로 돌아감',
       change: { state: '폴더·배치' },
       scenario:
         'Blog 폴더 이름이 내 블로그로 저장된 상태에서 새로고침한 뒤, 시작 버튼의 전원 메뉴에서 다시 시작을 고른다',

@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '창이 열린 채 브라우저 화면 크기를 바꾼다',
   area: '창',
+  summary: '제목 표시줄이 남게 당겨졌다 돌아감',
   conditions: {
     resize: {
       label: '브라우저 크기 변화',
@@ -39,6 +40,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'pull-back-and-return',
+      result: '당겨졌다 원래 자리로',
       scenario:
         'PC 크기 화면(1800×1000)에서 파일 탐색기 창을 제목 표시줄로 오른쪽 500px 끌어 옮긴 뒤, 브라우저 폭을 800으로 줄였다가 1800으로 되돌린다',
       expected: [

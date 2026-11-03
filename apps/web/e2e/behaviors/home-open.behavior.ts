@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '홈을 연다',
   area: '공통',
+  summary: '오류 없이 열림·시계에 오후 시각',
   conditions: {
     screen: {
       label: '화면 크기',
@@ -20,6 +21,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'no-console-error',
+      result: '오류 없이 바탕화면이 보임',
       scenario: '주소 /로 들어와 홈 화면이 열리는 동안 콘솔 오류를 모은다',
       expected: [
         '홈 주소가 정상으로 응답한다',
@@ -54,6 +56,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'taskbar-clock',
+      result: '오후 3:24와 날짜가 보임',
       change: { clock: '오후' },
       scenario: '기기 시각을 2026-10-20 오후 3:24로 맞추고 주소 /로 들어온다',
       expected: [
