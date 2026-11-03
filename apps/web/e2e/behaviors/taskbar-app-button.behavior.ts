@@ -13,9 +13,9 @@ export const behavior = defineBehavior({
       base: '없음',
     },
     input: {
-      label: '입력',
-      values: ['클릭', '마우스 올리기', '키보드', '터치'],
-      base: '클릭',
+      label: '입력 방식',
+      values: ['마우스 클릭', '마우스 올리기', '키보드', '터치'],
+      base: '마우스 클릭',
     },
     app: {
       label: '앱',
@@ -23,7 +23,7 @@ export const behavior = defineBehavior({
       base: '파일 탐색기',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
@@ -31,32 +31,53 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'open-minimize-restore-close',
-      purpose: '작업 표시줄에서 탐색기를 열고, 최소화했다가 작업 표시줄 버튼으로 복원한 뒤 닫는다',
+      scenario:
+        '작업 표시줄의 파일 탐색기 버튼을 클릭해 창을 열고, 창의 최소화 버튼으로 숨긴 뒤 다시 버튼을 클릭하고, 창의 닫기 버튼을 누른다',
+      expected: [
+        '창이 없을 때 버튼을 클릭하면 바탕 화면 탐색기가 열린다',
+        '최소화하면 창이 숨는다',
+        '최소화된 창은 버튼을 클릭하면 복원된다',
+        '닫기를 누르면 창이 사라진다',
+      ],
       docs: ['[[작업 표시줄:앱 버튼]]', '[[창 동작:창 조작]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         const taskbarButton = page.getByRole('button', { name: '파일 탐색기' });
         const explorer = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
 
         await taskbarButton.click();
-        await expect(explorer).toBeVisible();
+        await check('창이 없을 때 버튼을 클릭하면 바탕 화면 탐색기가 열린다', async () => {
+          await expect(explorer).toBeVisible();
+        });
 
         await explorer.getByRole('button', { name: '최소화' }).click();
-        await expect(explorer).toBeHidden();
+        await check('최소화하면 창이 숨는다', async () => {
+          await expect(explorer).toBeHidden();
+        });
 
         await taskbarButton.click();
-        await expect(explorer).toBeVisible();
+        await check('최소화된 창은 버튼을 클릭하면 복원된다', async () => {
+          await expect(explorer).toBeVisible();
+        });
 
         await explorer.getByRole('button', { name: '닫기', exact: true }).click();
-        await expect(explorer).not.toBeAttached();
+        await check('닫기를 누르면 창이 사라진다', async () => {
+          await expect(explorer).not.toBeAttached();
+        });
       },
     },
     {
       id: 'preview-list',
       change: { windows: '여러 개' },
-      purpose: '같은 앱의 창이 둘이면 앱 버튼이 미리보기 목록을 띄우고, 고른 창이 앞으로 온다',
+      scenario:
+        '탐색기 창을 바탕 화면과 Blog 두 개 열어 둔 채 작업 표시줄의 파일 탐색기 버튼을 클릭하고, 미리보기 목록에서 바탕 화면 창을 클릭한다',
+      expected: [
+        '같은 앱의 창이 둘이면 버튼이 창 미리보기 목록을 띄운다',
+        '고른 바탕 화면 창이 맨 앞으로 온다',
+        'Blog 창은 뒤로 간다',
+      ],
       docs: ['[[작업 표시줄:앱 버튼]]', '[[작업 표시줄:창 미리보기]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         await page.getByRole('button', { name: '파일 탐색기' }).click();
         const desktopWindow = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
@@ -67,9 +88,17 @@ export const behavior = defineBehavior({
         await expect(blog).toHaveAttribute('data-window-state', 'active');
 
         await page.getByRole('button', { name: '파일 탐색기' }).click();
-        await page.getByRole('button', { name: '바탕 화면 - 파일 탐색기' }).click();
-        await expect(desktopWindow).toHaveAttribute('data-window-state', 'active');
-        await expect(blog).toHaveAttribute('data-window-state', 'inactive');
+        const preview = page.getByRole('button', { name: '바탕 화면 - 파일 탐색기' });
+        await check('같은 앱의 창이 둘이면 버튼이 창 미리보기 목록을 띄운다', async () => {
+          await expect(preview).toBeVisible();
+        });
+        await preview.click();
+        await check('고른 바탕 화면 창이 맨 앞으로 온다', async () => {
+          await expect(desktopWindow).toHaveAttribute('data-window-state', 'active');
+        });
+        await check('Blog 창은 뒤로 간다', async () => {
+          await expect(blog).toHaveAttribute('data-window-state', 'inactive');
+        });
       },
     },
   ],

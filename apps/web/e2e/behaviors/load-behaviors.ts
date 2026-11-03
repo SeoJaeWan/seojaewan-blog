@@ -10,7 +10,7 @@ const behaviorsDir = new URL('./', import.meta.url);
 
 /**
  * `e2e/behaviors/`의 정의 파일(`*.behavior.ts`)을 모두 읽는다. 파일마다 `behavior`를 내보낸다.
- * Playwright 시험과 행위 표 도구가 같은 함수로 읽어, 둘이 보는 행위가 어긋나지 않는다.
+ * Playwright 시험과 시나리오 케이스 도구가 같은 함수로 읽어, 둘이 보는 행위가 어긋나지 않는다.
  * @codocs [[테스트 작성 규칙:E2E]]
  * @param dir 정의 파일 폴더
  * @returns 파일 이름 순서의 행위 목록

@@ -7,38 +7,39 @@ export const behavior = defineBehavior({
   area: '바탕화면',
   conditions: {
     from: {
-      label: '잘라낸 곳',
+      label: '처음 잘라낸 곳',
       values: ['바탕화면', '탐색기'],
       base: '바탕화면',
     },
     input: {
-      label: '입력',
+      label: '입력 방식',
       values: ['마우스', '키보드', '터치'],
       base: '마우스',
     },
     between: {
-      label: '그사이',
-      values: ['창을 닫음', '없음', '잘라낸 항목이 휴지통에 들어감'],
-      base: '창을 닫음',
+      label: '붙이기 전에',
+      values: ['바로 붙임', '탐색기 창을 닫음', '잘라낸 항목을 휴지통에 보냄'],
+      base: '바로 붙임',
     },
     target: {
-      label: '붙여넣는 곳',
+      label: '붙일 자리',
       values: ['옮길 수 있는 곳', '옮길 수 없는 곳'],
       base: '옮길 수 있는 곳',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
   },
   cases: [
     {
-      id: 'desktop-explorer-round-trip',
-      purpose:
-        '바탕화면에서 잘라낸 아이콘을 탐색기에 붙여넣고, 탐색기에서 잘라낸 항목을 창을 닫은 뒤 바탕화면에 붙여넣는다',
+      id: 'desktop-to-explorer',
+      scenario:
+        '바탕화면 GitHub 아이콘을 우클릭 메뉴의 잘라내기로 잘라, Blog 폴더 탐색기에서 Ctrl+V로 붙여넣는다',
+      expected: ['GitHub이 탐색기 Blog 폴더에 나타난다', 'GitHub이 바탕화면에서 사라진다'],
       docs: ['[[항목 조작:잘라내기와 붙여넣기]]', '[[바탕화면 우클릭 메뉴:아이콘]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
         const github = icons.getByRole('option', { name: 'GitHub' });
@@ -50,39 +51,77 @@ export const behavior = defineBehavior({
         const content = explorer.getByRole('listbox', { name: '폴더 내용' });
         await content.getByRole('option', { name: 'React', exact: true }).click();
         await page.keyboard.press('Control+V');
-        await expect(content.getByRole('option', { name: 'GitHub' })).toBeVisible();
-        await expect(github).not.toBeAttached();
-
-        await content.getByRole('option', { name: 'GitHub' }).click();
+        await check('GitHub이 탐색기 Blog 폴더에 나타난다', async () => {
+          await expect(content.getByRole('option', { name: 'GitHub' })).toBeVisible();
+        });
+        await check('GitHub이 바탕화면에서 사라진다', async () => {
+          await expect(github).not.toBeAttached();
+        });
+      },
+    },
+    {
+      id: 'explorer-to-desktop-after-close',
+      change: { from: '탐색기', between: '탐색기 창을 닫음' },
+      scenario:
+        '탐색기 Blog 폴더에서 React 폴더를 Ctrl+X로 잘라 탐색기 창을 닫고, 바탕화면 빈 곳 우클릭 메뉴의 붙여넣기로 붙인다',
+      expected: [
+        '탐색기 창을 닫아도 잘라낸 React가 바탕화면에 붙는다',
+        'Blog 폴더를 다시 열면 React가 없다',
+      ],
+      docs: ['[[항목 조작:잘라내기와 붙여넣기]]', '[[바탕화면 우클릭 메뉴:빈 곳]]'],
+      async run({ page, check }) {
+        await page.goto('/');
+        const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
+        await icons.getByRole('option', { name: 'Blog' }).dblclick();
+        const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+        const content = explorer.getByRole('listbox', { name: '폴더 내용' });
+        await content.getByRole('option', { name: 'React', exact: true }).click();
         await page.keyboard.press('Control+X');
         // 잘라낸 항목은 창 밖에 두므로 창을 닫아도 바탕화면에 붙여넣을 수 있다.
         await explorer.getByRole('button', { name: '닫기', exact: true }).click();
         await icons.click({ button: 'right', position: { x: 500, y: 400 } });
         await page.getByRole('menuitem', { name: /^붙여넣기/ }).click();
-        await expect(github).toBeVisible();
+        await check('탐색기 창을 닫아도 잘라낸 React가 바탕화면에 붙는다', async () => {
+          await expect(icons.getByRole('option', { name: 'React', exact: true })).toBeVisible();
+        });
+
+        await icons.getByRole('option', { name: 'Blog' }).dblclick();
+        await check('Blog 폴더를 다시 열면 React가 없다', async () => {
+          await expect(content.getByRole('option', { name: 'Next.js' })).toBeVisible();
+          await expect(content.getByRole('option', { name: 'React', exact: true })).toHaveCount(0);
+        });
       },
     },
     {
       id: 'touch-long-press',
-      change: { input: '터치', screen: '모바일', between: '없음' },
+      change: { input: '터치', screen: '모바일' },
       device: 'Pixel 7',
-      purpose:
-        '모바일에서 아이콘을 길게 누르면 메뉴가 뜨고 따라오는 클릭은 항목을 열지 않으며, 잘라내기 → 탐색기 빈 곳 길게 누르기 → 붙여넣기로 옮긴다',
+      scenario:
+        '모바일에서 GitHub 아이콘을 길게 눌러 잘라내고, Blog를 탭해 연 탐색기의 빈 곳을 길게 눌러 붙여넣는다',
+      expected: [
+        '길게 누르면 메뉴가 뜨고, 손을 뗀 뒤의 클릭이 링크를 새 탭으로 열지 않는다',
+        '탐색기 빈 곳의 메뉴에서 붙여넣기를 쓸 수 있다',
+        'GitHub이 탐색기 Blog 폴더로 옮겨진다',
+      ],
       docs: [
         '[[반응형:입력 차이]]',
         '[[바탕화면 우클릭 메뉴:모바일]]',
         '[[항목 조작:잘라내기와 붙여넣기]]',
       ],
-      async run({ page, context, touch }) {
+      async run({ page, context, touch, check }) {
         await page.goto('/');
         const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
         const github = icons.getByRole('option', { name: 'GitHub' });
 
         await touch.longPress(github);
         const cut = page.getByRole('menuitem', { name: /^잘라내기/ });
-        await expect(cut).toBeVisible();
-        // 손가락을 뗀 뒤 따라오는 클릭이 외부 링크를 새 탭으로 열지 않았다.
-        expect(context.pages()).toHaveLength(1);
+        await check(
+          '길게 누르면 메뉴가 뜨고, 손을 뗀 뒤의 클릭이 링크를 새 탭으로 열지 않는다',
+          async () => {
+            await expect(cut).toBeVisible();
+            expect(context.pages()).toHaveLength(1);
+          },
+        );
         await touch.tap(cut);
         await expect(cut).toBeHidden();
 
@@ -96,9 +135,13 @@ export const behavior = defineBehavior({
         }
         await touch.longPress({ x: box.x + box.width / 2, y: box.y + box.height - 40 });
         const paste = page.getByRole('menuitem', { name: /^붙여넣기/ });
-        await expect(paste).toBeEnabled();
+        await check('탐색기 빈 곳의 메뉴에서 붙여넣기를 쓸 수 있다', async () => {
+          await expect(paste).toBeEnabled();
+        });
         await touch.tap(paste);
-        await expect(content.getByRole('option', { name: 'GitHub' })).toBeVisible();
+        await check('GitHub이 탐색기 Blog 폴더로 옮겨진다', async () => {
+          await expect(content.getByRole('option', { name: 'GitHub' })).toBeVisible();
+        });
       },
     },
   ],

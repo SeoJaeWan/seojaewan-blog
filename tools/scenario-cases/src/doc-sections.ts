@@ -102,11 +102,20 @@ export function splitDocLink(link: string): { doc: string; section: string } {
 }
 
 /**
- * 섹션 본문의 첫 줄을 보기 좋게 꺼낸다. 링크 표시의 `\[[`는 `[[`로 돌린다.
+ * 섹션 본문의 첫 문장 줄을 보기 좋게 꺼낸다. 표 줄과 코드 울타리는 건너뛰고, 링크 표시의 `\[[`는 `[[`로 돌린다.
  * @param body 섹션 본문
- * @returns 첫 줄(빈 줄 제외)
+ * @returns 첫 줄(빈 줄·표·코드 울타리 제외). 그런 줄이 없으면 빈 문자열
  */
 export function firstLineOf(body: string): string {
-  const line = body.split('\n').find((text) => text.trim() !== '') ?? '';
-  return line.replace(/\\\[\[/gu, '[[').trim();
+  const line =
+    body
+      .split('\n')
+      .find(
+        (text) =>
+          text.trim() !== '' && !text.trim().startsWith('|') && !text.trim().startsWith('```'),
+      ) ?? '';
+  return line
+    .replace(/\\\[\[/gu, '[[')
+    .replace(/^\s*(?:[-*]|\d+\.)\s+/u, '')
+    .trim();
 }

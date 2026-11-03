@@ -11,7 +11,7 @@ _codocs:
   - `packages/design-system`: 피그마 디자인 시스템과 대응하는 토큰과 컴포넌트. 공개 이름은 `@seojaewan/design-system`이다. 내부 구조는 [[저장소 구성:디자인 시스템 패키지 구조]]에서 정한다.
   - `tools/figma-plugin`: 구조를 검사하고 변형 그림·자산·토큰·애니메이션을 내보내는 피그마 개발용 플러그인([[피그마 연동:피그마 플러그인]]).
   - `tools/figma-parity`: 피그마 그림과 Storybook 스토리를 캡처해 캡처 표와 PR 댓글을 만드는 도구([[피그마 연동:CI]]). 디자인 시스템과 앱의 Storybook을 함께 다루므로 어느 한 패키지에 두지 않는다.
-  - `tools/behavior-cases`: E2E 행위 정의에서 행위 표를 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
+  - `tools/scenario-cases`: E2E 행위 정의에서 시나리오 케이스 화면을 만들어 띄우고, 케이스를 실행해 Trace Viewer로 여는 도구([[테스트 작성 규칙:E2E]]).
   - `tools/`의 도구는 다른 패키지가 가져다 쓰지 않는 개발 도구라 `apps/`·`packages/`와 나눈다.
   - `.codocs`: 기획·정책·컨벤션 문서
   - `.claude/skills`: 피그마 플러그인 PR을 처리하는 스킬처럼 반복 작업의 절차. 규칙은 옮겨 적지 않고 `.codocs`를 가리킨다([[피그마 연동:스킬]]).

@@ -7,22 +7,22 @@ export const behavior = defineBehavior({
   area: 'Start',
   conditions: {
     section: {
-      label: '영역',
+      label: 'Start 안의 영역',
       values: ['고정됨', '모두'],
       base: '고정됨',
     },
     item: {
-      label: '항목',
+      label: '여는 항목',
       values: ['폴더', '글', '외부 링크', '앱'],
       base: '폴더',
     },
     input: {
-      label: '입력',
-      values: ['클릭', 'Enter·Space', '우클릭 메뉴의 열기'],
-      base: '클릭',
+      label: '입력 방식',
+      values: ['마우스 클릭', 'Enter·Space', '우클릭 메뉴의 열기', '터치 탭'],
+      base: '마우스 클릭',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
@@ -30,9 +30,10 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'pinned-folder',
-      purpose: 'Start 고정됨의 Blog 폴더를 열면 탐색기 창이 열리고 Start가 닫힌다',
+      scenario: 'Start 버튼을 눌러 Start 메뉴를 열고, 고정됨의 Blog 폴더를 마우스로 클릭한다',
+      expected: ['Blog 폴더의 탐색기 창이 열린다', 'Start 메뉴가 닫힌다'],
       docs: ['[[Start 메뉴:열기와 닫기]]', '[[창 동작:열기 규칙]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
 
         await page.getByRole('button', { name: '시작' }).click();
@@ -42,8 +43,12 @@ export const behavior = defineBehavior({
           .getByRole('button', { name: 'Blog' })
           .click();
 
-        await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
-        await expect(startMenu).toBeHidden();
+        await check('Blog 폴더의 탐색기 창이 열린다', async () => {
+          await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
+        });
+        await check('Start 메뉴가 닫힌다', async () => {
+          await expect(startMenu).toBeHidden();
+        });
       },
     },
   ],

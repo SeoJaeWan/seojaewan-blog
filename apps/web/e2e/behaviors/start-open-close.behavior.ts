@@ -28,7 +28,7 @@ export const behavior = defineBehavior({
       base: '보통',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
@@ -36,9 +36,14 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'power-menu-and-esc',
-      purpose: 'Start 버튼으로 Start 메뉴를 열고, 전원 메뉴를 거쳐 Esc로 닫는다',
+      scenario:
+        'Start 버튼을 눌러 Start 메뉴를 열고, 전원 버튼으로 전원 메뉴를 연 뒤 Esc를 두 번 누른다',
+      expected: [
+        '첫 Esc는 전원 메뉴만 닫고 Start 메뉴는 열려 있다',
+        '두 번째 Esc는 Start 메뉴를 닫는다',
+      ],
       docs: ['[[Start 메뉴:열기와 닫기]]', '[[Start 메뉴:구성]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
 
         await page.getByRole('button', { name: '시작' }).click();
@@ -48,20 +53,27 @@ export const behavior = defineBehavior({
         await startMenu.getByRole('button', { name: '전원' }).click();
         await expect(page.getByRole('menuitem', { name: '다시 시작' })).toBeVisible();
         await page.keyboard.press('Escape');
-        await expect(page.getByRole('menuitem', { name: '다시 시작' })).toBeHidden();
-        await expect(startMenu).toBeVisible();
+        await check('첫 Esc는 전원 메뉴만 닫고 Start 메뉴는 열려 있다', async () => {
+          await expect(page.getByRole('menuitem', { name: '다시 시작' })).toBeHidden();
+          await expect(startMenu).toBeVisible();
+        });
 
         await page.keyboard.press('Escape');
-        await expect(startMenu).toBeHidden();
+        await check('두 번째 Esc는 Start 메뉴를 닫는다', async () => {
+          await expect(startMenu).toBeHidden();
+        });
       },
     },
     {
       id: 'low-screen',
       change: { height: '낮음' },
-      purpose:
-        '화면이 낮으면 Start 패널은 작업 영역에서 틈을 뺀 높이로 줄고 검색칸과 프로필·전원 줄은 남는다',
+      scenario: '화면 높이가 300px인 브라우저에서 Start 버튼을 눌러 Start 메뉴를 연다',
+      expected: [
+        'Start 패널 높이가 작업 영역에서 틈을 뺀 240px로 줄어든다',
+        '검색칸과 프로필·전원 줄이 패널 안에 남는다',
+      ],
       docs: ['[[Start 메뉴:구성]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.setViewportSize({ width: 1280, height: 300 });
         await page.goto('/');
 
@@ -77,11 +89,15 @@ export const behavior = defineBehavior({
         if (panel === null || searchBox === null || powerButton === null) {
           throw new Error('Start 패널을 찾지 못했다');
         }
-        // 작업 영역(300 - 작업 표시줄 48)에서 틈 12를 뺀 높이다
-        expect(panel.height).toBe(240);
-        expect(searchBox.y).toBeGreaterThanOrEqual(panel.y);
-        expect(powerButton.y).toBeGreaterThanOrEqual(searchBox.y + searchBox.height);
-        expect(powerButton.y + powerButton.height).toBeLessThanOrEqual(panel.y + panel.height);
+        await check('Start 패널 높이가 작업 영역에서 틈을 뺀 240px로 줄어든다', () => {
+          // 작업 영역(300 - 작업 표시줄 48)에서 틈 12를 뺀 높이다
+          expect(panel.height).toBe(240);
+        });
+        await check('검색칸과 프로필·전원 줄이 패널 안에 남는다', () => {
+          expect(searchBox.y).toBeGreaterThanOrEqual(panel.y);
+          expect(powerButton.y).toBeGreaterThanOrEqual(searchBox.y + searchBox.height);
+          expect(powerButton.y + powerButton.height).toBeLessThanOrEqual(panel.y + panel.height);
+        });
       },
     },
   ],

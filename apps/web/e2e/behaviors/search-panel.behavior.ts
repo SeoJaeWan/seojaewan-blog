@@ -17,7 +17,7 @@ export const behavior = defineBehavior({
       base: '바깥 클릭',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
@@ -25,17 +25,22 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'click-and-outside',
-      purpose: '작업 표시줄 검색칸을 누르면 검색 패널이 열리고, 바깥을 누르면 닫힌다',
+      scenario: '작업 표시줄 검색칸을 클릭해 검색 패널을 열고, 바탕화면의 휴지통 글자를 클릭한다',
+      expected: ['검색칸을 클릭하면 검색 패널이 열린다', '바깥을 클릭하면 검색 패널이 닫힌다'],
       docs: ['[[검색:개요]]', '[[검색:결과 화면]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
 
         await page.getByRole('searchbox', { name: '검색' }).click();
         const searchPanel = page.getByRole('dialog', { name: '검색' });
-        await expect(searchPanel).toBeVisible();
+        await check('검색칸을 클릭하면 검색 패널이 열린다', async () => {
+          await expect(searchPanel).toBeVisible();
+        });
 
         await page.getByText('휴지통').click();
-        await expect(searchPanel).toBeHidden();
+        await check('바깥을 클릭하면 검색 패널이 닫힌다', async () => {
+          await expect(searchPanel).toBeHidden();
+        });
       },
     },
   ],
