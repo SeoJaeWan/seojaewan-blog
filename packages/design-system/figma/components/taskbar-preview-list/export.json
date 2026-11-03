@@ -1,36 +1,483 @@
 {
   "description": "작업 표시줄 앱 버튼 위에 뜨는 창 미리보기 목록 판으로, 작업 표시줄 창 미리보기 조립에 쓴다.",
   "name": "TaskbarPreviewList",
-  "nodeId": "70:1593",
+  "nodeId": "70:1435",
   "propertyDefinitions": {
-    "Material": {
-      "default": "Acrylic",
-      "options": [
-        "Acrylic",
-        "Solid"
-      ],
-      "type": "VARIANT"
-    },
     "Previews": {
       "type": "SLOT"
     }
   },
   "variants": {
-    "material=acrylic": {
-      "emptyHugSlot": true,
+    "default": {
       "node": {
         "height": 174,
-        "width": 218,
+        "width": 430,
         "x": 18,
         "y": 9
       },
       "nodeId": "70:1435",
-      "properties": {
-        "Material": "Acrylic"
-      },
+      "properties": {},
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "asset": {
+                              "path": "images/app-file-explorer"
+                            },
+                            "component": "app/File Explorer",
+                            "fills": [
+                              "IMAGE"
+                            ],
+                            "height": "size/icon/sm",
+                            "name": "app icon",
+                            "size": {
+                              "h": 16,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/icon/sm"
+                          },
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "title",
+                            "size": {
+                              "h": 16,
+                              "w": 164
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": 1,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "창",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                },
+                                {
+                                  "characters": "제목",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                }
+                              ],
+                              "truncation": "ENDING"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "WindowTitle",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": "spacing/sm",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "icon + title",
+                        "properties": {
+                          "Kind": "Preview",
+                          "State": "Active",
+                          "Title": "창 제목"
+                        },
+                        "size": {
+                          "h": 16,
+                          "w": 188
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "height": "size/control/height",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/xs"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "header",
+                    "size": {
+                      "h": 32,
+                      "w": 192
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "VERTICAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "Thumbnail",
+                        "size": {
+                          "h": 108,
+                          "w": 192
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "type": "SLOT"
+                      }
+                    ],
+                    "fills": [
+                      "solid-background-fill/base"
+                    ],
+                    "height": "size/window-preview/thumbnail-height",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "VERTICAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "thumbnail frame",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 108,
+                      "w": 192
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FIXED"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "card-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": false,
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "WindowPreview",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "WindowPreview",
+                "properties": {
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 164,
+                  "w": 208
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE",
+                "width": "size/window-preview/width"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "asset": {
+                              "path": "images/app-file-explorer"
+                            },
+                            "component": "app/File Explorer",
+                            "fills": [
+                              "IMAGE"
+                            ],
+                            "height": "size/icon/sm",
+                            "name": "app icon",
+                            "size": {
+                              "h": 16,
+                              "w": 16
+                            },
+                            "sizing": {
+                              "h": "FIXED",
+                              "v": "FIXED"
+                            },
+                            "type": "INSTANCE",
+                            "width": "size/icon/sm"
+                          },
+                          {
+                            "fills": [
+                              "text-fill/primary"
+                            ],
+                            "name": "title",
+                            "size": {
+                              "h": 16,
+                              "w": 164
+                            },
+                            "sizing": {
+                              "h": "FILL",
+                              "v": "HUG"
+                            },
+                            "text": {
+                              "autoResize": "HEIGHT",
+                              "maxLines": 1,
+                              "maxLinesVariable": null,
+                              "segments": [
+                                {
+                                  "characters": "창",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                },
+                                {
+                                  "characters": " ",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Caption"
+                                },
+                                {
+                                  "characters": "제목",
+                                  "fill": "text-fill/primary",
+                                  "textStyle": "Hangul/Caption"
+                                }
+                              ],
+                              "truncation": "ENDING"
+                            },
+                            "type": "TEXT"
+                          }
+                        ],
+                        "component": "WindowTitle",
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": "spacing/sm",
+                          "mode": "HORIZONTAL",
+                          "padding": [
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none",
+                            "spacing/none"
+                          ],
+                          "primaryAlign": "MIN"
+                        },
+                        "name": "icon + title",
+                        "properties": {
+                          "Kind": "Preview",
+                          "State": "Active",
+                          "Title": "창 제목"
+                        },
+                        "size": {
+                          "h": 16,
+                          "w": 188
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "HUG"
+                        },
+                        "type": "INSTANCE"
+                      }
+                    ],
+                    "height": "size/control/height",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": "spacing/sm",
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/xs"
+                      ],
+                      "primaryAlign": "MIN"
+                    },
+                    "name": "header",
+                    "size": {
+                      "h": 32,
+                      "w": 192
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME"
+                  },
+                  {
+                    "children": [
+                      {
+                        "layout": {
+                          "counterAlign": "CENTER",
+                          "gap": 0,
+                          "mode": "VERTICAL",
+                          "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                          ],
+                          "primaryAlign": "CENTER"
+                        },
+                        "name": "Thumbnail",
+                        "size": {
+                          "h": 108,
+                          "w": 192
+                        },
+                        "sizing": {
+                          "h": "FILL",
+                          "v": "FILL"
+                        },
+                        "type": "SLOT"
+                      }
+                    ],
+                    "fills": [
+                      "solid-background-fill/base"
+                    ],
+                    "height": "size/window-preview/thumbnail-height",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "VERTICAL",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "thumbnail frame",
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 108,
+                      "w": 192
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "FIXED"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "card-stroke/default"
+                    ],
+                    "strokesIncludedInLayout": false,
+                    "type": "FRAME"
+                  }
+                ],
+                "component": "WindowPreview",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "MIN",
+                  "gap": "spacing/sm",
+                  "mode": "VERTICAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "WindowPreview",
+                "properties": {
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 164,
+                  "w": 208
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE",
+                "width": "size/window-preview/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": "spacing/xs",
@@ -46,7 +493,7 @@
             "name": "Previews",
             "size": {
               "h": 164,
-              "w": 208
+              "w": 420
             },
             "sizing": {
               "h": "HUG",
@@ -69,7 +516,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Material=Acrylic",
+        "name": "TaskbarPreviewList",
         "radius": [
           "radius/overlay",
           "radius/overlay",
@@ -78,88 +525,7 @@
         ],
         "size": {
           "h": 174,
-          "w": 218
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "strokeWeight": [
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default",
-          "stroke-width/default"
-        ],
-        "strokes": [
-          "surface-stroke/default"
-        ],
-        "strokesIncludedInLayout": true,
-        "type": "COMPONENT"
-      }
-    },
-    "material=solid": {
-      "emptyHugSlot": true,
-      "node": {
-        "height": 174,
-        "width": 218,
-        "x": 18,
-        "y": 9
-      },
-      "nodeId": "70:1515",
-      "properties": {
-        "Material": "Solid"
-      },
-      "tree": {
-        "children": [
-          {
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "HORIZONTAL",
-              "padding": [
-                0,
-                0,
-                0,
-                0
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "Previews",
-            "size": {
-              "h": 164,
-              "w": 208
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "SLOT"
-          }
-        ],
-        "effectStyle": "Elevation/Shell Surface",
-        "fillStyle": "Material/Fallback/Acrylic Base",
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/xs",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs",
-            "spacing/xs"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Material=Solid",
-        "radius": [
-          "radius/overlay",
-          "radius/overlay",
-          "radius/overlay",
-          "radius/overlay"
-        ],
-        "size": {
-          "h": 174,
-          "w": 218
+          "w": 430
         },
         "sizing": {
           "h": "HUG",
