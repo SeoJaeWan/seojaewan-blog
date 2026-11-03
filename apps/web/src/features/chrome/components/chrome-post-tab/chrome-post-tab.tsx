@@ -69,14 +69,12 @@ export function ChromePostTab(props: ChromePostTabProps): JSX.Element {
     headings.map((heading) => heading.id),
   );
   const { previous, next } = getPostNeighbors(workspace, post.slug);
-  const className = 'min-h-size-none w-full flex-flex-fill';
 
   if (body.status === 'failed') {
     return (
       <ChromePage
         page="not-found"
         layout={layout}
-        className={className}
         zoom={zoom}
         url={getPostAddress(post.slug)}
         onReload={handleReload}
@@ -121,7 +119,6 @@ export function ChromePostTab(props: ChromePostTabProps): JSX.Element {
     <ChromePage
       page="post"
       layout={layout}
-      className={className}
       scrollRef={scrollRef}
       zoom={zoom}
       meta={getPostMeta(workspace, post)}

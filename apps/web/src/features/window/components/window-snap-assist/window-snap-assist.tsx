@@ -148,7 +148,6 @@ export function WindowSnapAssist(props: WindowSnapAssistProps): JSX.Element {
                     placement: target.placement,
                     onMinimize: ignoreControl,
                     onClose: ignoreControl,
-                    className: 'size-full',
                   })}
                 </WindowThumbnail>
               ),

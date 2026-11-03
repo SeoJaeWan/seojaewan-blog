@@ -149,7 +149,7 @@ export type WindowFrameControls = {
   onTitleBarPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;
   /** 최대화 버튼 자리. 마우스를 올리면 스냅 레이아웃을 여는 `SnapLayoutMenu`다 */
   maximizeSlot?: ReactNode;
-  /** 창 자리를 채우는 크기 클래스. 넣은 창을 스스로 채우는 자리(WindowThumbnail)에서는 주지 않는다 */
+  /** 바깥 배치 클래스. 창 크기는 창을 담는 자리(창 층의 창 자리, 축소 화면)가 채워 정한다 */
   className?: string;
 };
 

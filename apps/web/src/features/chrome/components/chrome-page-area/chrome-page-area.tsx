@@ -143,17 +143,14 @@ export function ChromePageArea(props: ChromePageAreaProps): JSX.Element {
 
   const caption = image === null ? '' : getPlainText(image.block.caption);
   return (
-    <div
-      ref={areaRef}
-      data-layout={layout}
-      className="relative flex min-h-size-none w-full flex-flex-fill flex-col"
-    >
+    <div ref={areaRef} data-layout={layout} className="relative flex flex-col">
+      {/* 탭 내용 자리. 탭 내용(ChromePage)은 이 자리를 채운다 */}
       <div
         ref={contentRef}
         // 창을 열면 포커스가 여기로 온다.
         data-window-focus
         tabIndex={-1}
-        className="flex min-h-size-none w-full flex-flex-fill flex-col outline-none"
+        className="flex min-h-size-none w-full flex-flex-fill flex-col outline-none [&>*]:min-h-size-none [&>*]:flex-flex-fill"
       >
         {children}
       </div>

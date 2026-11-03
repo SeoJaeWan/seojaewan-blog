@@ -1,7 +1,9 @@
+import pageExport from '@figma/patterns/chrome/page/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 
 import { ImageAsset } from '@seojaewan/design-system';
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { POST_PAGE, postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
 import { PostBlocks } from '@/features/chrome/components/post-blocks/post-blocks';
@@ -12,12 +14,6 @@ import { NEW_TAB_LATEST_POSTS, NOT_FOUND_URL, SEARCH_RESULTS } from './story-dat
 // 피그마 Chrome/Page의 변형 속성 값이다(정규화한 이름).
 const PAGES = ['post', 'new-tab', 'search-results', 'not-found'] as const;
 const LAYOUTS = ['wide', 'narrow'] as const;
-
-// 본문은 크기를 갖지 않고 창이 정하므로 피그마 원본 크기(1278×712, 388×720)로 감싸 그린다.
-const SIZE_CLASS_NAMES = {
-  wide: 'w-size-chrome-page-wide-width h-size-chrome-page-wide-height',
-  narrow: 'w-size-chrome-page-narrow-width h-size-chrome-page-narrow-height',
-} as const;
 
 type FigmaArgs = {
   page: (typeof PAGES)[number];
@@ -30,14 +26,12 @@ type FigmaArgs = {
  * @returns ChromePage
  */
 function renderPage(args: FigmaArgs): JSX.Element {
-  const className = SIZE_CLASS_NAMES[args.layout];
   switch (args.page) {
     case 'post': {
       return (
         <ChromePage
           page="post"
           layout={args.layout}
-          className={className}
           cover={<ImageAsset name="images/wallpaper-bloom" />}
           meta={POST_PAGE.meta}
           title={POST_PAGE.title}
@@ -57,7 +51,6 @@ function renderPage(args: FigmaArgs): JSX.Element {
         <ChromePage
           page="new-tab"
           layout={args.layout}
-          className={className}
           latestPosts={NEW_TAB_LATEST_POSTS.map((title) => ({ title }))}
         />
       );
@@ -67,27 +60,20 @@ function renderPage(args: FigmaArgs): JSX.Element {
         <ChromePage
           page="search-results"
           layout={args.layout}
-          className={className}
           query={SEARCH_RESULTS.query}
           results={SEARCH_RESULTS.results}
         />
       );
     }
     case 'not-found': {
-      return (
-        <ChromePage
-          page="not-found"
-          layout={args.layout}
-          className={className}
-          url={NOT_FOUND_URL}
-        />
-      );
+      return <ChromePage page="not-found" layout={args.layout} url={NOT_FOUND_URL} />;
     }
   }
 }
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 캡처 도구가 이 제목으로 피그마 조립과 짝짓는다.
+// 본문은 크기를 갖지 않고 창이 정하므로 FigmaFrame이 피그마 원본 크기(size/chrome-page/*)로 감싼다.
 const meta = {
   title: 'Patterns/Chrome/Page',
   args: { page: 'post', layout: 'wide' },
@@ -95,6 +81,7 @@ const meta = {
     page: { control: 'inline-radio', options: PAGES },
     layout: { control: 'inline-radio', options: LAYOUTS },
   },
+  decorators: [figmaFrame(pageExport)],
   render: renderPage,
 } satisfies Meta<FigmaArgs>;
 

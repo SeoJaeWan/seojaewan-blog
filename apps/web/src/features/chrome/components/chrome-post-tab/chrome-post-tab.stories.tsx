@@ -1,5 +1,8 @@
+import pageExport from '@figma/patterns/chrome/page/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test';
+
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 
@@ -18,6 +21,7 @@ function resolveStoryLink(href: string): ChromeTabPage | null {
 
 // @codocs [[테스트 작성 규칙:스토리 테스트]]
 // 동작 스토리다. 글 본문은 서버 경로에서 받으므로 `fetch`를 가짜로 바꿔 상황마다의 본문을 준다.
+// 글 화면은 크기를 갖지 않고 창이 정하므로 FigmaFrame이 args의 layout에 맞는 Chrome/Page 원본 크기로 감싼다.
 const meta = {
   title: 'Behavior/Chrome/ChromePostTab',
   component: ChromePostTab,
@@ -29,11 +33,7 @@ const meta = {
     onNavigate: fn(),
     onReload: fn(),
   },
-  render: (args) => (
-    <div className="flex h-screen w-size-post-width">
-      <ChromePostTab {...args} />
-    </div>
-  ),
+  decorators: [figmaFrame(pageExport)],
 } satisfies Meta<typeof ChromePostTab>;
 
 export default meta;

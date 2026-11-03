@@ -252,8 +252,9 @@ export function WindowView(props: WindowViewProps): JSX.Element {
       )}
       style={isMobile ? { zIndex } : { zIndex, left: x, top: y, width, height }}
     >
-      {/* 최대화·스냅 FLIP 전용 요소. 모션 클래스는 classList로만 붙여 바깥의 열기·최소화 클래스와 겹치지 않는다 */}
-      <div ref={snapRef} className="absolute inset-spacing-none flex">
+      {/* 최대화·스냅 FLIP 전용 요소. 모션 클래스는 classList로만 붙여 바깥의 열기·최소화 클래스와 겹치지 않는다.
+          앱 창은 이 자리를 채운다 */}
+      <div ref={snapRef} className="absolute inset-spacing-none flex [&>*]:size-full">
         {renderWindow(
           target,
           isMobile
@@ -262,7 +263,6 @@ export function WindowView(props: WindowViewProps): JSX.Element {
                 placement: 'maximized',
                 onMinimize: handleMinimize,
                 onClose: handleClose,
-                className: 'size-full',
               }
             : {
                 inactive: !isActive,
@@ -280,7 +280,6 @@ export function WindowView(props: WindowViewProps): JSX.Element {
                     onSelectZone={handleSelectZone}
                   />
                 ),
-                className: 'size-full',
               },
         )}
       </div>
