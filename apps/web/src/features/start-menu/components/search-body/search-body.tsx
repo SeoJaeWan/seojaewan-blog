@@ -212,7 +212,6 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
           icon={renderItemIcon({ kind: cardItem.kind })}
           title={cardItem.title}
           meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
-          className={device === 'mobile' ? 'w-full' : 'shrink-shrink-none'}
         >
           <MenuItem
             standalone
@@ -231,7 +230,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
         </BestMatchCard>
       }
     >
-      <ListGroup label="최고 일치" className="w-full shrink-shrink-none">
+      <ListGroup label="최고 일치">
         <ItemListRow
           id={bestMatch.id}
           isSelected={selectedId === bestMatch.id}
@@ -251,11 +250,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
            * @returns ListGroup
            */
           (group) => (
-            <ListGroup
-              key={group.kind}
-              label={kindLabels[group.kind]}
-              className="w-full shrink-shrink-none"
-            >
+            <ListGroup key={group.kind} label={kindLabels[group.kind]}>
               {group.items.map(
                 /**
                  * 결과 한 줄을 그린다.

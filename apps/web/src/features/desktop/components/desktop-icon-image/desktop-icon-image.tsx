@@ -23,14 +23,13 @@ export function DesktopIconImage(props: DesktopIconImageProps): JSX.Element {
           name={
             props.full === true ? 'images/file-recycle-bin-full' : 'images/file-recycle-bin-empty'
           }
-          className="size-full object-contain"
         />
       );
     case 'folder':
-      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" />;
     case 'post':
-      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" />;
     case 'link':
-      return <Asset name="illustrations/file-link.svg" className="size-full" />;
+      return <Asset name="illustrations/file-link.svg" />;
   }
 }

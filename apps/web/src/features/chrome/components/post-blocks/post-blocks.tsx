@@ -258,7 +258,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
       case 'quote':
         return (
           <Quote key={index} className="w-full">
-            <p className={`w-full ${BODY_TEXT_CLASS_NAME}`}>{renderRichText(block.richText)}</p>
+            <p>{renderRichText(block.richText)}</p>
           </Quote>
         );
       case 'callout':
@@ -266,9 +266,9 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
           <Callout
             key={index}
             className="w-full"
-            icon={<Asset name="icons/ic_fluent_info_24_regular.svg" className="size-full" />}
+            icon={<Asset name="icons/ic_fluent_info_24_regular.svg" />}
           >
-            <p className={`w-full ${BODY_TEXT_CLASS_NAME}`}>{renderRichText(block.richText)}</p>
+            <p>{renderRichText(block.richText)}</p>
           </Callout>
         );
       case 'code':

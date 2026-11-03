@@ -23,12 +23,7 @@ const meta = {
   argTypes: {
     name: { control: 'text' },
   },
-  render: (args) => (
-    <ProfileButton
-      name={args.name}
-      photo={<img src={profilePhoto} alt="" className="size-size-avatar-profile object-contain" />}
-    />
-  ),
+  render: (args) => <ProfileButton name={args.name} photo={<img src={profilePhoto} alt="" />} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
@@ -45,11 +40,7 @@ export const Figma: Story = {};
 export const Default: Story = {
   args: { onClick: fn() },
   render: ({ onClick: handleClick }) => (
-    <ProfileButton
-      name="서재완"
-      photo={<img src={profilePhoto} alt="" className="size-size-avatar-profile object-contain" />}
-      onClick={handleClick}
-    />
+    <ProfileButton name="서재완" photo={<img src={profilePhoto} alt="" />} onClick={handleClick} />
   ),
   play: async ({ args, canvas, userEvent }) => {
     const button = canvas.getByRole('button', { name: '서재완' });

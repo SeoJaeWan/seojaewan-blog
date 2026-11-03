@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import taskbarExport from '../../../figma/components/taskbar/export.json';
+import { FigmaFrame, figmaFrame } from '../../story/figma-frame';
 import { Asset } from '../asset/asset';
 import { ImageAsset } from '../image-asset/image-asset';
 import { SearchBox } from '../search-box/search-box';
@@ -12,6 +14,8 @@ const meta = {
   title: 'Components/Taskbar',
   // 미리보기 너비(1280)에 기본 여백을 두면 오른쪽 끝이 화면 밖으로 잘린다.
   parameters: { layout: 'fullscreen' },
+  // 크기는 FigmaFrame이 피그마 원본 크기(size/taskbar/width × height)로 감싼다.
+  decorators: [figmaFrame(taskbarExport)],
 } satisfies Meta;
 
 export default meta;
@@ -20,35 +24,28 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 Taskbar는 변형이 하나다. 슬롯에는 피그마 슬롯 기본 내용과 같은 컴포넌트를 넣는다.
+// 검색칸(고정 너비)과 시스템 트레이(고정 높이)는 슬롯 안 노드의 크기로 감싼다.
 export const Figma: Story = {
   render: () => (
     <Taskbar
-      className="w-size-taskbar-width"
       center={
         <>
-          <TaskbarButton
-            label="시작"
-            icon={<Asset name="illustrations/logo-windows.svg" className="size-full" />}
-          />
-          <SearchBox
-            appearance="taskbar"
-            placeholder="검색"
-            aria-label="검색"
-            className="w-size-search-box-taskbar-width shrink-shrink-none"
-          />
+          <TaskbarButton label="시작" icon={<Asset name="illustrations/logo-windows.svg" />} />
+          <FigmaFrame source={taskbarExport} node="Center/검색">
+            <SearchBox appearance="taskbar" placeholder="검색" aria-label="검색" />
+          </FigmaFrame>
           <TaskbarButton
             label="파일 탐색기"
-            icon={
-              <ImageAsset name="images/app-file-explorer" className="size-full object-contain" />
-            }
+            icon={<ImageAsset name="images/app-file-explorer" />}
           />
-          <TaskbarButton
-            label="Chrome"
-            icon={<ImageAsset name="images/app-chrome" className="size-full object-contain" />}
-          />
+          <TaskbarButton label="Chrome" icon={<ImageAsset name="images/app-chrome" />} />
         </>
       }
-      right={<SystemTray time="오후 3:24" date="2026-10-20" className="shrink-shrink-none" />}
+      right={
+        <FigmaFrame source={taskbarExport} node="Right/SystemTray">
+          <SystemTray time="오후 3:24" date="2026-10-20" />
+        </FigmaFrame>
+      }
     />
   ),
 };
@@ -57,12 +54,10 @@ export const Figma: Story = {
 /** center와 right 자리에 넣은 내용을 그린다 */
 export const Default: Story = {
   render: () => (
-    <div className="w-size-taskbar-width">
-      <Taskbar
-        center={<button type="button">시작</button>}
-        right={<button type="button">시계</button>}
-      />
-    </div>
+    <Taskbar
+      center={<button type="button">시작</button>}
+      right={<button type="button">시계</button>}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -77,11 +72,7 @@ export const Default: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** 슬롯을 채우지 않으면 안쪽 부품을 그리지 않는다 */
 export const Empty: Story = {
-  render: () => (
-    <div className="w-size-taskbar-width">
-      <Taskbar />
-    </div>
-  ),
+  render: () => <Taskbar />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 

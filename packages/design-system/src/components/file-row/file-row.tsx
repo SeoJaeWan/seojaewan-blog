@@ -101,7 +101,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
       <div className="flex h-size-file-row-name-height w-size-file-row-name-width shrink-shrink-none items-center gap-spacing-sm overflow-clip">
         <span
           className={cn(
-            'flex size-size-icon-sm shrink-shrink-none items-center justify-center',
+            'flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain',
             dimClassName,
           )}
         >

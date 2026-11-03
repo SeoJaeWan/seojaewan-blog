@@ -27,9 +27,14 @@ export function Callout(props: CalloutProps): JSX.Element {
       )}
     >
       <div className="flex h-size-post-block-icon-box shrink-shrink-none items-center justify-center">
-        <div className="size-size-icon-md shrink-shrink-none text-text-fill-primary">{icon}</div>
+        <div className="size-size-icon-md shrink-shrink-none text-text-fill-primary [&>*]:size-full [&>*]:object-contain">
+          {icon}
+        </div>
       </div>
-      <div className="min-w-size-none flex-flex-fill">{children}</div>
+      {/* 피그마 Content 슬롯 글자는 글 본문 글자(Body Large, 굵은 글자는 Body Large Strong)다. */}
+      <div className="min-w-size-none flex-flex-fill type-body-large text-text-fill-primary [&_strong]:font-font-weight-semibold">
+        {children}
+      </div>
     </div>
   );
 }

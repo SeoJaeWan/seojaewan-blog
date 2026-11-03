@@ -24,7 +24,10 @@ export function Quote(props: QuoteProps): JSX.Element {
         className,
       )}
     >
-      <div className="w-full min-w-size-none">{children}</div>
+      {/* 피그마 Content 슬롯 글자는 글 본문 글자(Body Large)다. */}
+      <div className="w-full min-w-size-none type-body-large text-text-fill-primary">
+        {children}
+      </div>
     </div>
   );
 }

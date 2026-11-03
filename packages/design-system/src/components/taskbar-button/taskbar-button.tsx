@@ -53,7 +53,7 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
         className,
       )}
     >
-      <span className="inline-flex size-size-icon-lg items-center justify-center group-active:size-size-icon-md">
+      <span className="inline-flex size-size-icon-lg items-center justify-center group-active:size-size-icon-md [&>*]:size-full [&>*]:object-contain">
         {icon}
       </span>
       {indicator === 'none' ? null : (

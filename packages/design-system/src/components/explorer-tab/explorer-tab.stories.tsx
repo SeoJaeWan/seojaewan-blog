@@ -41,7 +41,7 @@ const meta = {
             selected={args.state === 'selected'}
             title={args.title}
             showSeparator={args.showSeparator}
-            icon={<img src={folderIcon} alt="" className="size-size-icon-sm object-contain" />}
+            icon={<img src={folderIcon} alt="" />}
             onClick={handleClick}
             onClose={handleClose}
           />

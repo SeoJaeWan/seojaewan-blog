@@ -19,13 +19,8 @@ const meta = {
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
   },
-  // 컴포넌트의 thumbnail 슬롯은 언제나 비어 있으므로, 피그마 빈 슬롯이 차지하는 크기만 칠 없는 빈 내용으로 둔다.
-  render: () => (
-    <WindowPreview
-      appIcon={<img src={appIcon} alt="" className="size-full object-contain" />}
-      thumbnail={<div className="size-full" />}
-    />
-  ),
+  // 컴포넌트의 thumbnail 슬롯은 피그마에서 언제나 비어 있어 넣지 않는다. 축소 화면 자리의 크기는 WindowPreview가 갖는다.
+  render: () => <WindowPreview appIcon={<img src={appIcon} alt="" />} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
