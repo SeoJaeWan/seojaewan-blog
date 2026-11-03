@@ -7,18 +7,21 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="top">
-      <h1>시나리오 케이스</h1>
-      <p id="run-meta" class="muted">불러오는 중…</p>
-    </header>
-    <section id="summary" class="summary" aria-label="요약"></section>
-    <section id="common" class="common" aria-label="여러 행위에서 함께 빠진 값"></section>
-    <section id="filters" class="filters" aria-label="거르기"></section>
+    <header class="top"><h1>시나리오 케이스</h1></header>
+    <section id="stats" class="stats" aria-label="요약"></section>
     <div class="layout">
-      <nav id="side" class="side" aria-label="영역과 행위"></nav>
-      <main id="main" class="main"></main>
+      <nav id="nav" class="nav" aria-label="행위"></nav>
+      <main>
+        <div class="tools" role="search">
+          <input type="search" id="query" placeholder="행위·결과·조건 값 찾기" aria-label="찾기" />
+          <button type="button" class="chip" id="only-failed" aria-pressed="false">실패만</button>
+          <button type="button" class="chip" id="only-missing" aria-pressed="false">
+            빠진 값만
+          </button>
+        </div>
+        <div id="list"></div>
+      </main>
     </div>
-    <aside id="panel" class="panel" aria-label="근거 문서" hidden></aside>
     <script type="module" src="app.js"></script>
   </body>
 </html>
