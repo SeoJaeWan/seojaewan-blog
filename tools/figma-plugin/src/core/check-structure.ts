@@ -72,8 +72,9 @@ const EFFECT_TYPES = ['DROP_SHADOW', 'INNER_SHADOW', 'LAYER_BLUR', 'BACKGROUND_B
 
 // 한글 음절·자모(호환 자모·확장 자모 포함) 범위
 const HANGUL_PATTERN = /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD7B0-\uD7FF]/u;
-// 한글을 그리는 글꼴
+// 한글을 그리는 글꼴. 본문 한글은 Pretendard, 코드는 한글이 든 고정폭 서체 하나로 그린다.
 const HANGUL_FONT_FAMILY = 'Pretendard';
+const hangulFontFamilies: readonly string[] = [HANGUL_FONT_FAMILY, 'NanumGothicCoding'];
 
 const BIND_FIX = '변수에 연결한다.';
 // 이미지 자산의 원본 비율과 같다고 보는 상대 차이다. 크기를 정수로 둔 반올림을 넘긴다.
@@ -918,7 +919,10 @@ function checkText(node: NodeData, context: CheckContext, add: Add): void {
   for (const segment of text.segments) {
     const label = `"${segment.characters.slice(0, 12)}" 구간`;
     // hasMissingFont가 false여도 피그마가 한글을 알 수 없는 대체 글꼴로 그리는 경우가 있어 구간 글꼴로 막는다.
-    if (HANGUL_PATTERN.test(segment.characters) && segment.fontFamily !== HANGUL_FONT_FAMILY) {
+    if (
+      HANGUL_PATTERN.test(segment.characters) &&
+      !hangulFontFamilies.includes(segment.fontFamily ?? '')
+    ) {
       add(
         node,
         `${label}에 한글이 있는데 글꼴이 ${segment.fontFamily ?? '알 수 없음'}라 대체 글꼴로 그려질 수 있다`,
