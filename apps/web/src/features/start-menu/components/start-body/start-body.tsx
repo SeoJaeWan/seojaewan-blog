@@ -37,7 +37,7 @@ import { getViewMenuEntries } from './view-menu/view-menu-entries';
 export type StartBodyDevice = 'desktop' | 'mobile';
 
 type StartBodyCommonProps = {
-  /** 피그마 Device. 모바일은 고정 항목 칸이 좁고(89) 스크롤바 자리가 다르다 */
+  /** 피그마 Device. 모바일은 고정 항목 칸(89)과 내용 좌우 여백(16)이 좁다 */
   device?: StartBodyDevice;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(Start 메뉴)이 정한다 */
   className?: string;
@@ -106,22 +106,23 @@ const tileClassNames = {
   mobile: 'w-size-pinned-tile-mobile-width',
 } as const satisfies Record<StartBodyDevice, string | undefined>;
 
-// 기기별 스크롤 영역의 오른쪽 확장과 그만큼의 안쪽 여백이다. 피그마는 스크롤바를 본문 오른쪽 바깥(Start 메뉴 안쪽 여백)에 그려,
-// 스크롤 영역을 안쪽 여백(데스크톱 24, 모바일 12)만큼 오른쪽으로 넓히고 내용에 같은 여백을 줘 내용 너비는 그대로 두고 스크롤바만 바깥에 놓는다.
-const scrollAreaClassNames = {
-  desktop: '-mr-spacing-2xl',
-  mobile: '-mr-spacing-md',
+// 기기별 내용의 좌우 여백이다(데스크톱 32, 모바일 16). 본문은 패널 폭을 채우고, 스크롤하는 보기는 ScrollArea의 내용 칸(피그마 Content 슬롯)에,
+// 글자 격자는 바탕 프레임에 이 여백을 준다. 그래서 스크롤바는 ScrollArea 기본 자리(본문 오른쪽 가장자리)에 놓인다.
+const contentInsetClassNames = {
+  desktop: 'px-spacing-3xl',
+  mobile: 'px-spacing-lg',
 } as const satisfies Record<StartBodyDevice, string>;
-const scrollContentClassNames = {
-  desktop: 'pr-spacing-2xl',
-  mobile: 'pr-spacing-md',
+// 검색 결과 화면의 내용 여백이다. 좌우 여백과 아래 24를 검색 본문의 내용 칸(모바일은 스크롤되는 칸)에 준다.
+const resultsContentClassNames = {
+  desktop: 'px-spacing-3xl pb-spacing-2xl',
+  mobile: 'px-spacing-lg pb-spacing-2xl',
 } as const satisfies Record<StartBodyDevice, string>;
 
 /**
  * Start 메뉴 안의 본문(피그마 조립 `Start/Body`)을 그린다. 고정됨과 모두 목록(간단히·그리드·범주), 글자 격자, 검색 결과 중 하나다.
  * 간단히·그리드 목록은 글자 머리글을 누르면 그 자리에 글자 격자(`View=JumpList`와 같은 내용)를 겹쳐 연다([[Start 메뉴:모두]]).
  * `view="jump-list"`는 격자만 그린 피그마 변형 그대로의 모습이다.
- * 고정됨과 모두 목록은 넘치면 ScrollArea로 아래로 스크롤하고, 스크롤바는 본문 오른쪽 바깥에 겹쳐 그린다. 보기 바꾸기는 기능을 구현할 때 붙인다.
+ * 본문은 Start 메뉴 폭을 채우고 내용 좌우 여백은 안에서 준다. 고정됨과 모두 목록은 넘치면 ScrollArea로 아래로 스크롤하고, 스크롤바는 본문 오른쪽 가장자리에 겹쳐 그린다. 보기 바꾸기는 기능을 구현할 때 붙인다.
  * 항목 칸과 목록 줄을 누르면 `onItemOpen`으로 알린다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Start 메뉴:고정됨]]
@@ -130,32 +131,39 @@ const scrollContentClassNames = {
  * @param props
  */
 export function StartBody(props: StartBodyProps): JSX.Element {
+  const { device = 'desktop' } = props;
   switch (props.view) {
     case 'results':
       return (
-        <div className={cn('flex flex-col pb-spacing-2xl', props.className)}>
-          <SearchBody
-            view="results"
-            device={props.device}
-            results={props.results}
-            selectedId={props.selectedId}
-            onItemOpen={props.onItemOpen}
-            onCopyLink={props.onCopyLink}
-            className="min-h-size-none w-full flex-flex-fill"
-          />
-        </div>
+        <SearchBody
+          view="results"
+          device={props.device}
+          results={props.results}
+          selectedId={props.selectedId}
+          onItemOpen={props.onItemOpen}
+          onCopyLink={props.onCopyLink}
+          className={props.className}
+          contentClassName={resultsContentClassNames[device]}
+        />
       );
     case 'no-results':
       return (
-        <div className={cn('flex flex-col pb-spacing-2xl', props.className)}>
-          <SearchBody view="no-results" className="min-h-size-none w-full flex-flex-fill" />
-        </div>
+        <SearchBody
+          view="no-results"
+          device={props.device}
+          className={props.className}
+          contentClassName={resultsContentClassNames[device]}
+        />
       );
     case 'jump-list':
       return (
         <StartJumpListView
           availableLetters={props.availableLetters}
-          className={cn('flex flex-col items-start gap-spacing-lg overflow-clip', props.className)}
+          className={cn(
+            'flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
+            contentInsetClassNames[device],
+            props.className,
+          )}
         />
       );
     case 'list':
@@ -375,10 +383,11 @@ function StartListView(props: StartListViewProps): JSX.Element {
         className={isListHidden ? 'invisible flex size-full flex-col' : 'flex size-full flex-col'}
       >
         {/* 넘치면 아래로 스크롤한다. 글자로 이동하기의 scrollIntoView도 이 스크롤 영역을 옮긴다 */}
-        <ScrollArea className={`min-h-size-none flex-flex-fill ${scrollAreaClassNames[device]}`}>
-          <div
-            className={`flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl ${scrollContentClassNames[device]}`}
-          >
+        <ScrollArea
+          className="min-h-size-none flex-flex-fill"
+          contentClassName={contentInsetClassNames[device]}
+        >
+          <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl">
             {/* 화면 읽기 프로그램이 "고정됨"과 "모두" 영역을 구분하도록 보이는 제목을 영역 이름으로 쓴다 */}
             <section
               aria-labelledby={pinnedTitleId}
@@ -441,7 +450,10 @@ function StartListView(props: StartListViewProps): JSX.Element {
         <StartJumpListView
           isInert={jumpList.status === 'exiting'}
           availableLetters={getAvailableLetters(groups)}
-          className="absolute inset-spacing-none flex flex-col items-start gap-spacing-lg overflow-clip"
+          className={cn(
+            'absolute inset-spacing-none flex flex-col items-start gap-spacing-lg overflow-clip pb-spacing-2xl',
+            contentInsetClassNames[device],
+          )}
           onBack={handleBack}
           onLetterSelect={handleLetterSelect}
         />
