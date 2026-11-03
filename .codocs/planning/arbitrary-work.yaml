@@ -14,6 +14,9 @@ _codocs:
 "Breadcrumb PR #514: 안쪽 BreadcrumbItem 글자 HUG 반영": |
   - `export.json`에서 안쪽 BreadcrumbItem의 `label`이 FILL·줄임에서 HUG·줄임 없음으로 바뀐 것만 반영됐다. 기본 내용(`바탕 화면`·`Blog`)의 글자와 크기는 그대로고 Breadcrumb 코드는 안쪽 항목의 크기를 정하지 않아 코드를 바꾸지 않았다. 캡처 차이 그림에는 글자 가장자리 차이만 남았다.
   - 줄임 동작은 BreadcrumbItem 쪽(#515 `Truncated` 스토리)이 맡아 이 PR에는 스토리를 더하지 않았다.
+"ExplorerAddressRow PR #513: 안쪽 BreadcrumbItem 글자 HUG 반영": |
+  - `export.json`에서 안쪽 BreadcrumbItem `label`의 FILL·줄임이 HUG·줄임 없음으로 바뀐 것(네 곳)만 반영됐다. ExplorerAddressRow 코드는 안쪽 항목의 크기를 정하지 않아 코드와 스토리를 바꾸지 않았다. 세 변형(desktop, mobile 닫힘·열림) 캡처의 차이 그림에는 글자 가장자리 차이만 남았다.
+  - 로컬 `pnpm test`에서 `unit-scenario-cases`의 행위 정의 읽기 테스트가 5초 제한으로 시간 초과했다. 다른 작업자가 같은 컴퓨터를 쓰는 부하 때문이고 `pnpm test:unit`만 돌리면 통과한다. 이 PR이 건드린 파일과 상관없다.
 "BrowserTabStrip PR #483: Figma 스토리 되살림": |
   - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
   - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
