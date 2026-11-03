@@ -28,7 +28,6 @@ Windows 화면 요소: |
   | `Active` | 활성 창이거나 지금 고른 탭임 | args |
   | `Expanded` | 펼쳐짐 | args |
   | `Collapsed` | 접힘 | args |
-  | `Editing` | 경로 대신 주소를 입력하는 중 | args |
   | `Suggesting` | 입력하는 중이고 추천 목록이 열려 있음 | args |
   | `Closed` | 팝업이 닫혀 트리거만 보임 | args |
   | `Open` | 팝업이나 하위 메뉴가 열려 있음 | args |

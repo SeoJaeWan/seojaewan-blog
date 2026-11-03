@@ -290,6 +290,7 @@ const configFiles = [
   '**/.storybook/**',
   'scripts/**',
   'tools/figma-parity/src/**',
+  'tools/behavior-cases/src/**',
 ];
 
 // @codocs [[코드 작성 규칙:식별자 이름]]

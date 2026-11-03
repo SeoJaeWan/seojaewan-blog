@@ -2,6 +2,7 @@
 // @codocs [[피그마 연동:스토리 규칙]]
 // Notion 블록 견본 조립(Chrome/PostBlocks) 스토리의 고정 데이터다. 피그마 조립과 같은 글자와 블록을 둔다.
 
+import { renderEquationHtml } from '@/content/equation-render/equation-render';
 import type {
   CodeSyntax,
   CodeToken,
@@ -231,7 +232,11 @@ export const sampleBlocks: PostBlock[] = [
     title: 'React 공식 문서',
     description: 'React로 사용자 인터페이스를 만드는 방법을 배운다.',
   },
-  { type: 'equation', expression: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
+  {
+    type: 'equation',
+    expression: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}',
+    html: renderEquationHtml('x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}'),
+  },
   { type: 'unsupported', typeName: 'embed' },
 ];
 
