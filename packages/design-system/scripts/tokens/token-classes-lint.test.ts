@@ -299,7 +299,7 @@ describe('토큰 사용 강제', () => {
   it('토큰 이름의 클래스와 숫자가 아닌 기본 클래스는 숫자 규칙에 걸리지 않는다', async () => {
     await expect(
       lintClassErrors(
-        'p-spacing-2xs w-size-story-2xl size-size-story-3xl shrink-shrink-none rotate-rotate-half rounded-full w-full',
+        'p-spacing-2xs w-size-icon-2xl size-size-icon-3xl shrink-shrink-none rotate-rotate-half rounded-full w-full',
         RESTRICTED_CLASS_RULE,
       ),
     ).resolves.toEqual([]);

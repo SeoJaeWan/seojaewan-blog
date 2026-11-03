@@ -1,7 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, waitFor } from 'storybook/test';
 
+import { Button } from '../button/button';
 import { ScrollArea } from './scroll-area';
+
+// 넘치는 내용으로 쓰는 버튼 이름이다. 스크롤 영역 안에 포커스할 수 있는 내용이 있어야 키보드로 스크롤할 수 있다(axe `scrollable-region-focusable`).
+const overflowLabels = [
+  '항목 1',
+  '항목 2',
+  '항목 3',
+  '항목 4',
+  '항목 5',
+  '항목 6',
+  '항목 7',
+  '항목 8',
+];
 
 const meta = {
   title: 'Components/ScrollArea',
@@ -46,12 +59,16 @@ export const Default: Story = {
 export const Overflow: Story = {
   render: () => (
     <ScrollArea material="solid" className="h-size-scrollbar-length w-size-scrollbar-length">
-      <div className="h-size-story-5xl shrink-shrink-none">긴 내용</div>
+      <div className="flex shrink-shrink-none flex-col gap-spacing-xs">
+        {overflowLabels.map((label) => (
+          <Button key={label} label={label} />
+        ))}
+      </div>
     </ScrollArea>
   ),
   play: async ({ canvas, canvasElement, step }) => {
     const scrollbar = getScrollbar(canvasElement);
-    const content = canvas.getByText('긴 내용');
+    const content = canvas.getByRole('button', { name: '항목 1' });
     // CI의 실제 포인터 위치와 상관없도록 포인터 사건을 직접 보낸다
     await fireEvent.pointerOut(content, { relatedTarget: document.body });
 
