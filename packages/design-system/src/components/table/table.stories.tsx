@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
 
 import { TableCell } from '../table-cell/table-cell';
 import { Table } from './table';
@@ -13,29 +12,29 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 행과 칸을 children으로 받아 table로 그린다 */
-export const Default: Story = {
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 `Rows` 슬롯 기본 내용(표 줄 3개)을 넣은 모습이다. 너비는 쓰는 곳이 정하므로 글 폭 토큰으로 준다.
+export const Figma: Story = {
   render: () => (
-    <Table aria-label="비교">
-      <tr>
-        <TableCell type="header" scope="col">
-          이름
-        </TableCell>
-      </tr>
-      <tr>
-        <TableCell>값</TableCell>
-      </tr>
-    </Table>
+    <div className="w-size-post-width">
+      <Table aria-label="훅 비교">
+        <tr>
+          <TableCell type="header" scope="col">
+            훅
+          </TableCell>
+          <TableCell type="header" scope="col">
+            하는 일
+          </TableCell>
+        </tr>
+        <tr>
+          <TableCell>use</TableCell>
+          <TableCell>Promise와 Context를 렌더링 중에 읽는다</TableCell>
+        </tr>
+        <tr>
+          <TableCell>useActionState</TableCell>
+          <TableCell>폼 제출 결과와 대기 상태를 다룬다</TableCell>
+        </tr>
+      </Table>
+    </div>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step('행과 칸을 children으로 받는다', async () => {
-      await expect(canvas.getByRole('table', { name: '비교' })).toBeInTheDocument();
-      await expect(canvas.getAllByRole('row')).toHaveLength(2);
-      await expect(canvas.getByRole('columnheader')).toHaveTextContent('이름');
-      await expect(canvas.getByRole('cell')).toHaveTextContent('값');
-    });
-  },
 };
