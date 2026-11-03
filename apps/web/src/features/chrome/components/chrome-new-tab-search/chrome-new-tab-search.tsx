@@ -103,7 +103,7 @@ export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element 
         />
       }
       popup={
-        <Flyout material="solid" padding="compact" className="w-size-search-box-wide-width">
+        <Flyout material="solid" className="w-size-search-box-wide-width">
           {/* 피그마 `list inset`(안쪽 여백)과 `items`(줄 사이 간격 2) 배치 프레임이다 */}
           <div className="flex w-full flex-col px-spacing-sm pt-spacing-2xs pb-spacing-sm-nudge">
             <div
