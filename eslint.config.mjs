@@ -283,22 +283,8 @@ const MOTION_CLASS_NAME_EXCEPTION =
   ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
 // 아직 도우미로 바꾸지 않은 스토리다. 영역별 PR이 바꾸면서 지운다(임시).
 const storyStylePendingFiles = [
+  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
   'apps/web/src/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content.stories.tsx',
-  'apps/web/src/features/file-explorer/components/explorer-body/explorer-body.stories.tsx',
-  'apps/web/src/features/file-explorer/components/explorer-window/explorer-window.stories.tsx',
-  'apps/web/src/features/file-explorer/explorer-window-layer.stories.tsx',
-  'apps/web/src/features/start-menu/components/search-body/search-body.stories.tsx',
-  'apps/web/src/features/start-menu/components/search-panel/search-panel.stories.tsx',
-  'apps/web/src/features/start-menu/components/start-body/components/start-view-menu/start-view-menu.stories.tsx',
-  'apps/web/src/features/start-menu/components/start-body/start-body.stories.tsx',
-  'apps/web/src/features/start-menu/components/start-body/view-menu/menu-view-options.stories.tsx',
-  'apps/web/src/features/start-menu/components/start-menu-panel/start-menu-panel.stories.tsx',
-  'apps/web/src/features/start-menu/start-menu-layer.stories.tsx',
-  'apps/web/src/features/taskbar/components/taskbar-apps-layer/components/app-item/app-item-menu.stories.tsx',
-  'apps/web/src/features/taskbar/components/taskbar-apps-layer/components/app-item/app-item.stories.tsx',
-  'apps/web/src/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer.stories.tsx',
-  'apps/web/src/features/taskbar/components/taskbar-default/taskbar-default.stories.tsx',
-  'apps/web/src/features/taskbar/taskbar-layer.stories.tsx',
 ];
 const STORY_STYLE_MESSAGE =
   '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';

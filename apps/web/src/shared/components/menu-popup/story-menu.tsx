@@ -4,10 +4,7 @@ import { useState } from 'react';
 
 import { MenuPopup } from './menu-popup';
 
-type MenuStoryProps = Pick<
-  ComponentProps<typeof MenuPopup>,
-  'items' | 'className' | 'itemClassName'
->;
+type MenuStoryProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'width'>;
 
 // Base UI 포커스 가드는 aria-hidden이면서 tabindex=0인 span이라 aria-hidden-focus에 걸린다.
 // 외부 라이브러리 구조라 메뉴 스토리에서만 이 규칙을 끈다.

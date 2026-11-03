@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { dragStoryPointer } from '@/features/window/story-pointer';
 import { openStoryWindows, resetStoryStores } from '@/shared/stores/store-reset/story-stores';
 import { useWindowStore } from '@/shared/stores/window-store/window-store';
@@ -24,9 +26,9 @@ const meta = {
   beforeEach: resetStoryStores,
   args: { renderWindow: renderStoryWindow, getWindowTitle: getStoryWindowTitle },
   render: (args) => (
-    <div className="fixed inset-x-spacing-none bottom-spacing-none flex justify-center">
+    <StoryStage placement="bottom">
       <TaskbarAppsLayer {...args} />
-    </div>
+    </StoryStage>
   ),
 } satisfies Meta<typeof TaskbarAppsLayer>;
 

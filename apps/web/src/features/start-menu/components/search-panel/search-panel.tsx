@@ -46,7 +46,10 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
             />
           </div>
         )}
-        <div className="flex min-h-size-none w-full flex-flex-fill flex-col">{children}</div>
+        {/* 본문 자리다. 피그마 `Search/Body`는 FILL이라 넣은 본문을 남는 높이로 늘린다(너비는 세로 배치가 늘린다) */}
+        <div className="flex min-h-size-none w-full flex-flex-fill flex-col [&>*]:min-h-size-none [&>*]:flex-flex-fill">
+          {children}
+        </div>
       </div>
     </ShellSurface>
   );

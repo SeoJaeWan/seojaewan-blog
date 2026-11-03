@@ -1,5 +1,8 @@
+import startBodyExport from '@figma/patterns/start/body/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test';
+
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { SEARCH_RESULTS } from '@/features/start-menu/components/search-body/story-data';
 import {
@@ -16,12 +19,6 @@ import { START_CATEGORY_GROUPS } from './story-data';
 const VIEWS = ['list', 'grid', 'category', 'results', 'jumplist'] as const;
 const DEVICES = ['desktop', 'mobile'] as const;
 
-// 본문은 크기를 갖지 않고 Start 메뉴가 정하므로 피그마 원본 크기(size/638×569, size/388×489)로 감싸 그린다.
-const SIZE_CLASS_NAMES = {
-  desktop: 'w-size-shell-content-width h-size-start-body-height',
-  mobile: 'w-size-shell-mobile-content-width h-size-start-body-mobile-height',
-} as const;
-
 type FigmaArgs = {
   view: (typeof VIEWS)[number];
   device: (typeof DEVICES)[number];
@@ -34,6 +31,7 @@ const handleStoryItemOpen = fn<(item: StartItem) => void>();
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 데이터는 피그마 조립과 같다.
+// 본문은 크기를 갖지 않고 Start 메뉴가 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다. 동작 스토리도 같은 크기로 감싼다.
 const meta = {
   title: 'Patterns/Start/Body',
   // 높이(569, 489)가 홀수라 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
@@ -43,8 +41,8 @@ const meta = {
     view: { control: 'inline-radio', options: VIEWS },
     device: { control: 'inline-radio', options: DEVICES },
   },
+  decorators: [figmaFrame(startBodyExport)],
   render: (args) => {
-    const className = SIZE_CLASS_NAMES[args.device];
     switch (args.view) {
       case 'list':
       case 'grid':
@@ -52,7 +50,6 @@ const meta = {
           <StartBody
             view={args.view}
             device={args.device}
-            className={className}
             pinned={START_PINNED}
             groups={START_LETTER_GROUPS}
           />
@@ -62,26 +59,17 @@ const meta = {
           <StartBody
             view="category"
             device={args.device}
-            className={className}
             pinned={START_PINNED}
             groups={START_CATEGORY_GROUPS}
           />
         );
       case 'results':
-        return (
-          <StartBody
-            view="results"
-            device={args.device}
-            className={className}
-            results={SEARCH_RESULTS}
-          />
-        );
+        return <StartBody view="results" device={args.device} results={SEARCH_RESULTS} />;
       case 'jumplist':
         return (
           <StartBody
             view="jump-list"
             device={args.device}
-            className={className}
             availableLetters={startAvailableLetters}
           />
         );
@@ -111,14 +99,7 @@ function findScrollArea(element: HTMLElement): HTMLElement | null {
 
 /** 간단히 보기에서 글자 머리글을 눌러 글자 격자로 목록을 옮긴다 */
 export const ListJump: Story = {
-  render: () => (
-    <StartBody
-      view="list"
-      pinned={START_PINNED}
-      groups={START_LETTER_GROUPS}
-      className="h-size-start-body-height"
-    />
-  ),
+  render: () => <StartBody view="list" pinned={START_PINNED} groups={START_LETTER_GROUPS} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const scrollIntoView = spyOn(Element.prototype, 'scrollIntoView');
@@ -184,6 +165,7 @@ export const ListJump: Story = {
 
 /** 범주 보기의 머리글은 종류 이름이라 누를 수 없다 */
 export const CategoryHeaders: Story = {
+  args: { view: 'category' },
   render: () => (
     <StartBody
       view="category"
@@ -213,7 +195,6 @@ export const OpenFromList: Story = {
         view="list"
         pinned={START_PINNED}
         groups={START_LETTER_GROUPS}
-        className="h-size-start-body-height"
         onItemOpen={handleItemOpen}
       />
     );

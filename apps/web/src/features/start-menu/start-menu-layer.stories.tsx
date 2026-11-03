@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fireEvent, screen, spyOn, userEvent, waitFor, within } from 'storybook/test';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { dragStoryPointer } from '@/features/window/story-pointer';
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useRestartStore } from '@/shared/stores/restart-store/restart-store';
@@ -22,9 +24,9 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   beforeEach: resetStoryStores,
   render: () => (
-    <div className="fixed inset-spacing-none">
+    <StoryStage placement="fill">
       <StartMenuLayer />
-    </div>
+    </StoryStage>
   ),
 } satisfies Meta<typeof StartMenuLayer>;
 

@@ -53,7 +53,7 @@ type ExplorerWindowProps = WindowFrameControlProps & {
   onTabMove?: (from: number, to: number) => void;
   /** 새 탭(+) 버튼을 눌렀을 때 */
   onNewTab?: () => void;
-  /** 탭 내용 자리. 고른 탭의 `ExplorerContent`를 넣는다. 남는 자리를 채우도록 `min-h-size-none w-full flex-flex-fill`을 준다 */
+  /** 탭 내용 자리. 고른 탭의 `ExplorerContent`를 넣는다. 넣은 내용은 창의 남는 자리를 채운다 */
   children?: ReactNode;
   /** 바깥 배치 클래스. 창 크기는 쓰는 곳이 정한다 */
   className?: string;
@@ -144,6 +144,13 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
       closeTab(index);
     }
   }
+  // 탭 내용 자리다. 피그마 Window/Explorer의 Content 슬롯 안 Explorer/Content는 가로·세로 모두 FILL이다.
+  // WindowFrame 내용 자리는 가운데 맞춤이라 이 자리가 남는 자리를 채우고, 넣은 내용을 남는 높이로 늘린다(너비는 세로 배치가 늘린다).
+  const contentSlot = (
+    <div className="flex min-h-size-none w-full flex-flex-fill flex-col [&>*]:min-h-size-none [&>*]:flex-flex-fill">
+      {children}
+    </div>
+  );
   if (device === 'mobile') {
     const selectedTab = tabs.find((tab) => tab.selected === true) ?? tabs[0];
     return (
@@ -156,7 +163,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
         title={selectedTab?.title}
         className={className}
       >
-        {children}
+        {contentSlot}
       </WindowFrame>
     );
   }
@@ -231,7 +238,7 @@ export function ExplorerWindow(props: ExplorerWindowProps): JSX.Element {
       }
       className={className}
     >
-      {children}
+      {contentSlot}
     </WindowFrame>
   );
 }

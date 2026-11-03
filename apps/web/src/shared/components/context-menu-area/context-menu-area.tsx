@@ -14,10 +14,7 @@ export type ContextMenuAreaPlacement = {
   offset: number;
 };
 
-type ContextMenuAreaProps = Pick<
-  ComponentProps<typeof MenuPopup>,
-  'items' | 'className' | 'itemClassName'
-> & {
+type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
   /**
    * 우클릭(모바일은 길게 누르기)을 받는 영역 요소. Base UI `ContextMenu.Trigger`가 이 요소에 여는 동작을 합쳐 그린다.
    * 요소의 ref와 이벤트 속성은 그대로 남는다
@@ -58,16 +55,7 @@ type ContextMenuAreaProps = Pick<
  * @param props
  */
 export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
-  const {
-    area,
-    placement,
-    open: isOpen,
-    onOpenChange,
-    onCloseComplete,
-    items,
-    className,
-    itemClassName,
-  } = props;
+  const { area, placement, open: isOpen, onOpenChange, onCloseComplete, items } = props;
   const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
   const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
 
@@ -117,12 +105,7 @@ export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
           align={placement?.align}
           sideOffset={placement?.offset}
         >
-          <MenuPopup
-            items={items}
-            className={className}
-            itemClassName={itemClassName}
-            finalFocus={false}
-          />
+          <MenuPopup items={items} finalFocus={false} />
         </ContextMenu.Positioner>
       </ContextMenu.Portal>
     </ContextMenu.Root>

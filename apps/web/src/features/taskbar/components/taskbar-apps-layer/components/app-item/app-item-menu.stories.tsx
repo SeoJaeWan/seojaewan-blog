@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { menuTaskbarApp } from '@/features/taskbar/components/taskbar-apps-layer/app-menu/story-data';
 
 import { TaskbarAppItem } from './app-item';
@@ -22,16 +24,14 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <div className="flex h-screen items-end justify-center">
-      <div data-parity-target className="flex">
-        <TaskbarAppItem
-          app="file-explorer"
-          indicator="active"
-          isMenuOpen={args.state === 'open'}
-          menuItems={menuTaskbarApp}
-        />
-      </div>
-    </div>
+    <StoryStage placement="bottom-center" target>
+      <TaskbarAppItem
+        app="file-explorer"
+        indicator="active"
+        isMenuOpen={args.state === 'open'}
+        menuItems={menuTaskbarApp}
+      />
+    </StoryStage>
   ),
 } satisfies Meta<FigmaArgs>;
 

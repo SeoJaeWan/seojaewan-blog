@@ -36,8 +36,7 @@ export function StartViewMenu(props: StartViewMenuProps): JSX.Element {
         side="bottom"
         align="end"
         items={menuItems}
-        className="w-size-menu-view-options-width"
-        itemClassName="w-full"
+        width="view-options"
         trigger={<DropDownButton subject="보기" label={label} />}
       />
     </div>
