@@ -1,20 +1,37 @@
+import { Tabs } from '@base-ui/react/tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ReactNode } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { BrowserTab } from '../browser-tab/browser-tab';
+import { ImageAsset } from '../image-asset/image-asset';
 import { BrowserTabStrip } from './browser-tab-strip';
 
 type StoryArgs = {
-  /** Tabs 슬롯에 넣을 내용이다 */
-  tabs: ReactNode;
   onNewTab?: () => void;
 };
 
 const meta = {
   title: 'Components/BrowserTabStrip',
+  // 변형 속성이 없다. Tabs 슬롯에는 피그마 기본 내용(선택된 BrowserTab 하나)을 넣는다.
+  // 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI 탭 줄로 감싼다. 감싸는 요소는 배치에 끼지 않는다.
   render: (args) => {
     const { onNewTab: handleNewTab } = args;
-    return <BrowserTabStrip onNewTab={handleNewTab}>{args.tabs}</BrowserTabStrip>;
+    return (
+      <BrowserTabStrip onNewTab={handleNewTab}>
+        <Tabs.Root value={0} className="contents">
+          <Tabs.List aria-label="탭" className="flex">
+            <BrowserTab
+              value={0}
+              active
+              title="React 19 훅 정리"
+              favicon={
+                <ImageAsset name="images/file-document" className="size-full object-contain" />
+              }
+            />
+          </Tabs.List>
+        </Tabs.Root>
+      </BrowserTabStrip>
+    );
   },
 } satisfies Meta<StoryArgs>;
 
@@ -22,16 +39,15 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나(default)를 그린다.
+export const Figma: Story = {};
+
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Default: Story = {
-  args: { tabs: <span>탭 자리</span>, onNewTab: fn() },
+  args: { onNewTab: fn() },
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
-
-    // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('Tabs 슬롯에 넣은 내용을 그린다', async () => {
-      await expect(canvas.getByText('탭 자리')).toBeInTheDocument();
-    });
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
     await step('새 탭 버튼을 누르면 onNewTab을 부른다', async () => {

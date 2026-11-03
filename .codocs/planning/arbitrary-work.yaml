@@ -7,6 +7,9 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"BrowserTabStrip PR #483: Figma 스토리 되살림": |
+  - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
+  - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
 "RenameField PR #482: State=Rest 삭제 정리": |
   - `shouldSelectOnMount` prop은 `State=Rest` 변형(선택하지 않은 모습)만을 위한 것이었고 앱과 FileItem·FileRow는 넘기지 않아(기본값 true) 지웠다. 마운트하면 늘 포커스를 주고 이름 전체를 선택한다. 앱 동작은 그대로다.
   - 그 prop만 보던 `NotSelected` 스토리를 지웠다. 선택·입력을 보는 `Default`, ref 합치기와 키 입력을 보는 `Controlled`는 남겼다.
