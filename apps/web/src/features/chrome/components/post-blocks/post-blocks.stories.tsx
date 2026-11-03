@@ -179,7 +179,7 @@ export const Annotations: Story = {
     await step('굵은 인라인 코드는 코드 서체로 굵게 그린다', async () => {
       const strong = canvas.getByText('굵은 코드');
       await expect(Number(getComputedStyle(strong).fontWeight)).toBeGreaterThan(500);
-      await expect(strong.closest('span')).not.toBeNull();
+      await expect(strong.closest('code')).not.toBeNull();
     });
 
     await step('표 칸 글자에도 굵게를 적용한다', async () => {
