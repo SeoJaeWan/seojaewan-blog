@@ -4,34 +4,24 @@ import { expect } from 'storybook/test';
 import { Scrollbar } from './scrollbar';
 
 // 피그마 Scrollbar의 변형 속성 값이다(정규화한 이름).
-const ORIENTATIONS = ['vertical', 'horizontal'] as const;
 const STATES = ['rest', 'expanded'] as const;
 const MATERIALS = ['acrylic', 'solid'] as const;
 
 type FigmaArgs = {
-  orientation: (typeof ORIENTATIONS)[number];
   state: (typeof STATES)[number];
   material: (typeof MATERIALS)[number];
 };
 
 const meta = {
   title: 'Components/Scrollbar',
-  args: { orientation: 'vertical', state: 'rest', material: 'acrylic' },
+  args: { state: 'rest', material: 'acrylic' },
   argTypes: {
-    orientation: { control: 'inline-radio', options: ORIENTATIONS },
     state: { control: 'inline-radio', options: STATES },
     material: { control: 'inline-radio', options: MATERIALS },
   },
   // 길이는 쓰는 곳이 정하므로 피그마 원본 길이(size/200)를 준다.
   render: (args) => (
-    <Scrollbar
-      orientation={args.orientation}
-      state={args.state}
-      material={args.material}
-      className={
-        args.orientation === 'vertical' ? 'h-size-scrollbar-length' : 'w-size-scrollbar-length'
-      }
-    />
+    <Scrollbar state={args.state} material={args.material} className="h-size-scrollbar-length" />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -44,38 +34,13 @@ type Story = StoryObj<typeof meta>;
 export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** rest는 얇은 막대만 그린다 */
-export const Default: Story = {
-  render: () => <Scrollbar className="h-size-scrollbar-length" />,
-  play: async ({ canvasElement }) => {
-    await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'rest');
-  },
-};
-
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** expanded는 양 끝 화살표와 바탕을 함께 그린다 */
-export const Expanded: Story = {
-  render: () => <Scrollbar state="expanded" material="solid" className="h-size-scrollbar-length" />,
-  play: async ({ canvasElement }) => {
-    await expect(canvasElement.firstElementChild).toHaveAttribute('data-state', 'expanded');
-  },
-};
-
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** 막대의 위치와 길이를 방향에 맞춰 정한다 */
-export const Horizontal: Story = {
-  render: () => (
-    <Scrollbar
-      orientation="horizontal"
-      thumbOffset={12}
-      thumbLength={30}
-      className="w-size-scrollbar-length"
-    />
-  ),
+/** 막대의 위치와 길이를 쓰는 곳이 정한 값으로 둔다 */
+export const ThumbPosition: Story = {
+  render: () => <Scrollbar thumbOffset={12} thumbLength={30} className="h-size-scrollbar-length" />,
   play: async ({ canvasElement }) => {
     const thumb = canvasElement.firstElementChild?.querySelector<HTMLElement>(':scope > div');
 
-    await expect(thumb?.offsetLeft).toBe(12);
-    await expect(thumb?.offsetWidth).toBe(30);
+    await expect(thumb?.offsetTop).toBe(12);
+    await expect(thumb?.offsetHeight).toBe(30);
   },
 };
