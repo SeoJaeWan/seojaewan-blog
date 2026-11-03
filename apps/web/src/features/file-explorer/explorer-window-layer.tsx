@@ -420,7 +420,7 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
       onChevronClick={() => {
         onToggle(row, row.expand !== 'expanded');
       }}
-      className="w-size-search-box-width"
+      className="w-size-navigation-item-width"
     />
   );
 }
