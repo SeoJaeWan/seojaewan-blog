@@ -21,6 +21,9 @@ _codocs:
   - `export.json`에서 메뉴 구분선(`separator` 프레임)이 `MenuSeparator` 인스턴스로 바뀐 것과 안쪽 값 일부만 반영됐다. 앱 `menu-popup.tsx`가 이미 MenuSeparator를 쓰고 있고 메뉴 항목 목록 함수와 스토리는 그대로라 코드를 바꾸지 않았다.
   - 서른 변형 캡처의 차이 그림에서 구분선 자리는 검정이다. 남은 차이는 단축키 글자(`Ctrl+X`, `F2`, `Delete`)의 1px 세로·가로 어긋남과 글자 가장자리뿐이라 [[한계:글자 기준선]]·[[한계:HUG 글자 폭 올림]]으로 보고 넘겼다.
   - PR 브랜치에 `main`을 받아 합쳤다. 스토리 테스트는 로컬에서 돌리지 않고 CI 결과로 확인한다(제품 코드 변경 없음).
+"Taskbar 조립 PR #520: AppMenu 구분선 MenuSeparator 인스턴스 반영": |
+  - `export.json`에서 `Taskbar/AppMenu`의 구분선이 `MenuSeparator` 인스턴스로 바뀌고 Flyout 속성에서 `Padding`이 빠진 것만 반영됐다. 앱 메뉴 코드(`menu-popup.tsx`)가 이미 MenuSeparator·252 HUG 너비를 쓰고 있어 코드와 스토리를 바꾸지 않았다.
+  - `state=closed`·`state=open` 두 변형 캡처의 차이 그림에는 글자 가장자리 외 차이가 없다(구분선 자리 검정).
 "Window 조립 PR #519: 안쪽 BreadcrumbItem·RenameField 변경 반영": |
   - `export.json`에서 `Window/Explorer`의 안쪽 BreadcrumbItem `label`이 FILL·줄임에서 HUG·줄임 없음으로, RenameField의 `State=Rest` 속성이 없어진 것만 반영됐다. 코드는 이미 같은 모양(#514·#515·#482)이라 앱 코드와 스토리를 바꾸지 않았다.
   - 여섯 변형(desktop 다섯, mobile 하나) 캡처의 차이 그림에는 글자 가장자리와 글자 1~2px 어긋남(탐색 창 항목, 명령 모음 글자 폭 누적)만 남아 [[한계:글자 기준선]]·[[한계:HUG 글자 폭 올림]]으로 보고 넘겼다.
