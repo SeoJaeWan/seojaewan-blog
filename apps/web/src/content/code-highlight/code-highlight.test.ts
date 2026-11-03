@@ -1,7 +1,16 @@
 import { bundledThemes } from 'shiki';
 import { describe, expect, it, vi } from 'vitest';
 
-import { CODE_SYNTAXES, type CodeSyntax, type CodeToken } from '@/shared/utils/post-body/post-body';
+import { codeBlockStorySample } from '@seojaewan/design-system/story';
+
+import { postPageBlocks } from '@/features/chrome/components/chrome-page/story-data';
+import { sampleBlocks } from '@/features/chrome/components/post-blocks/story-data';
+import {
+  CODE_SYNTAXES,
+  type CodeSyntax,
+  type CodeToken,
+  type PostBlock,
+} from '@/shared/utils/post-body/post-body';
 
 import { highlightCode } from './code-highlight';
 import { codeHighlightTheme, codeSyntaxScopes } from './code-highlight-theme';
@@ -167,5 +176,42 @@ describe('기술 스택:글 본문 처리', () => {
   it('한 scope는 한 갈래에만 둔다', () => {
     const scopes = Object.values(codeSyntaxScopes).flat();
     expect(new Set(scopes).size).toBe(scopes.length);
+  });
+});
+
+/**
+ * 견본 본문 블록에서 강조된 코드 블록을 꺼낸다.
+ * @param blocks 본문 블록
+ * @returns 강조된 코드 블록들
+ */
+function highlightedCodeBlocks(
+  blocks: readonly PostBlock[],
+): { code: string; language: string; highlighted: CodeToken[][] }[] {
+  return blocks.flatMap((block) =>
+    block.type === 'code' && block.highlighted !== undefined
+      ? [{ code: block.code, language: block.language, highlighted: block.highlighted }]
+      : [],
+  );
+}
+
+// 스토리는 강조기를 돌리지 못해(디자인 시스템은 강조기가 없고, 앱 강조기는 서버 전용이다) 강조 결과를 데이터로 둔다.
+// 그 데이터가 손으로 칠한 것이 아니라 실제 강조 결과인지 여기서 다시 강조해 확인한다.
+// @codocs [[기술 스택:글 본문 처리]]
+// @codocs [[피그마 연동:스토리 규칙]]
+describe('스토리의 강조된 코드는 실제 강조 결과다', () => {
+  it('CodeBlock 스토리(피그마 슬롯 기본 내용)', async () => {
+    const { code, language, lines } = codeBlockStorySample;
+    expect(await highlightCode(code, language)).toEqual(lines);
+  });
+
+  it.each([
+    ['Chrome/PostBlocks', sampleBlocks],
+    ['Chrome/Page Page=Post', postPageBlocks.wide],
+  ])('%s 견본 본문', async (_name, blocks) => {
+    const codeBlocks = highlightedCodeBlocks(blocks);
+    expect(codeBlocks).not.toHaveLength(0);
+    for (const { code, language, highlighted } of codeBlocks) {
+      expect(await highlightCode(code, language)).toEqual(highlighted);
+    }
   });
 });

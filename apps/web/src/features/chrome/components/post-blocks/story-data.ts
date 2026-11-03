@@ -30,7 +30,10 @@ function token(value: string, syntax: CodeSyntax | null = null): CodeToken {
   return { text: value, syntax };
 }
 
-/** 피그마 `code block`의 견본 코드(`code-syntax` 색) */
+/**
+ * 피그마 `code block`의 견본 코드를 실제 강조기(`highlightCode`, tsx)로 강조한 결과(`code-syntax` 색).
+ * 손으로 칠하지 않는다. 강조기 단위 테스트가 이 코드를 다시 강조해 같은지 확인한다.
+ */
 const sampleCodeLines: CodeToken[][] = [
   [token('// 글을 읽어 제목을 그린다', 'comment')],
   [
@@ -75,7 +78,7 @@ const sampleCodeLines: CodeToken[][] = [
     token('  '),
     token('const', 'keyword'),
     token(' '),
-    token('count', 'variable'),
+    token('count', 'variable-constant'),
     token(' '),
     token('=', 'punctuation'),
     token(' '),
@@ -86,21 +89,18 @@ const sampleCodeLines: CodeToken[][] = [
     token('  '),
     token('return', 'keyword-control'),
     token(' '),
-    token('<', 'tag'),
-    token('h1', 'tag'),
+    token('<h1', 'tag'),
     token(' '),
     token('className', 'attribute'),
     token('=', 'punctuation'),
     token('"title"', 'string'),
     token('>', 'tag'),
-    token('{', 'punctuation'),
+    token('{', 'keyword'),
     token('post', 'variable'),
     token('.', 'punctuation'),
     token('title', 'variable'),
-    token('}', 'punctuation'),
-    token('</', 'tag'),
-    token('h1', 'tag'),
-    token('>', 'tag'),
+    token('}', 'keyword'),
+    token('</h1>', 'tag'),
     token(';', 'punctuation'),
   ],
   [token('}', 'punctuation')],
@@ -111,16 +111,17 @@ const sampleCodeLines: CodeToken[][] = [
     token('SLUG', 'variable-constant'),
     token(' '),
     token('=', 'punctuation'),
-    token(' '),
-    token('/', 'regexp'),
+    token(' ', 'regexp'),
+    token('/', 'string'),
     token('^', 'escape'),
     token('(', 'regexp-group'),
     token('post', 'regexp'),
     token('|', 'escape'),
     token('page', 'regexp'),
     token(')', 'regexp-group'),
-    token('\\n$', 'escape'),
-    token('/', 'regexp'),
+    token('\\n', 'regexp'),
+    token('$', 'escape'),
+    token('/', 'string'),
     token(';', 'punctuation'),
   ],
   [
@@ -132,14 +133,12 @@ const sampleCodeLines: CodeToken[][] = [
     token(' '),
     token('{', 'punctuation'),
     token(' '),
-    token('"slug"', 'key-value'),
+    token('"slug"', 'string'),
     token(':', 'punctuation'),
     token(' '),
-    token('$slug', 'variable-navy'),
+    token('$slug', 'variable'),
     token(',', 'punctuation'),
-    token(' '),
-    token('@', 'invalid'),
-    token(' '),
+    token(' @ '),
     token('};', 'punctuation'),
   ],
 ];
