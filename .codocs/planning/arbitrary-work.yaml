@@ -106,6 +106,7 @@ _codocs:
   - 메뉴가 뜰 공간 스토리 중 전원 버튼만 `p-spacing-lg` 여백을 두고, `Taskbar/AppMenu`·`Taskbar/AppPreview`·`Window/SnapLayoutMenu`는 여백 없이 캔버스 전체(`h-screen`)에 두었다.
   - lint 시험(`token-classes-lint.test.ts`)의 "숫자로 끝나지 않는 토큰 이름" 예는 `size/story/*` 대신 `size/icon/2xl`·`3xl`로 바꿨다.
   - 새 크기 변수 `size/equation/width`·`height`는 아직 내보낸 컴포넌트·조립이 쓰지 않아 코드에서도 쓰지 않았다. 수식 그림 자산 `images/equation-quadratic-formula`는 피그마 조립이 쓰는 자산이라 남겼다(스토리는 더 쓰지 않는다).
+  - 위 "색 대비" 항목의 비활성 창 제목(`text-fill-tertiary`)은 이 PR에서 값이 56%로 바뀌어 대비가 고쳐졌다([[접근성:색 대비]]). `TwoWindows`의 `play`는 그대로 두었고, 끝 모습 밖의 상태를 axe로 다시 확인하지는 않았다. 옛 항목은 사람이 검토할 기록이라 고치지 않았다.
 "E2E 행위 표 ②: 표 도구와 Pages 결과 페이지": |
   - `tools/behavior-cases`는 앱의 읽기 함수(`apps/web/e2e/behaviors/load-behaviors.ts`)를 Node가 타입을 지우며 바로 import해 정의를 읽는다. [[저장소 구성:의존 방향]]은 `tools/`가 패키지의 공개 코드와 빌드 결과만 쓴다고 하지만, 행위 표는 E2E 정의 파일을 읽는 것이 목적이라([[저장소 구성:구성]]) 이 예외를 두었다. 검토가 필요하다.
   - 표 데이터는 순수 함수(`build-table.ts`)가 만들고 단위 테스트로 본다. 빠진 값, 영역 합계, 둘 이상 바꾼 케이스(×2 표시), 고칠 점(근거 없음, 문서에 없는 링크, 기준값과 같은 change, 바꾼 것이 없는 케이스)을 낸다. 영역 차례는 바탕화면 → 탐색기 → Start → 검색 → 작업 표시줄 → 창 → Chrome → 공통으로 정했다.
