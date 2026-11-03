@@ -9,9 +9,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 116,
+        "height": 66,
         "width": 720,
         "x": 0,
         "y": 0
@@ -21,6 +20,29 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "asset": {
+                  "path": "images/equation-quadratic-formula"
+                },
+                "component": "equation/Quadratic Formula",
+                "fills": [
+                  "IMAGE"
+                ],
+                "height": "size/equation/height",
+                "name": "formula",
+                "size": {
+                  "h": 50,
+                  "w": 194
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/equation/width"
+              }
+            ],
             "layout": {
               "counterAlign": "MIN",
               "gap": 0,
@@ -35,8 +57,8 @@
             },
             "name": "Formula",
             "size": {
-              "h": 100,
-              "w": 100
+              "h": 50,
+              "w": 194
             },
             "sizing": {
               "h": "HUG",
@@ -59,7 +81,7 @@
         },
         "name": "Equation",
         "size": {
-          "h": 116,
+          "h": 66,
           "w": 720
         },
         "sizing": {

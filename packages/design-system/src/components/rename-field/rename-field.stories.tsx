@@ -4,9 +4,7 @@ import { expect, fn } from 'storybook/test';
 import { RenameField } from './rename-field';
 
 type FigmaArgs = {
-  /** 피그마 변형 속성 State */
-  state: 'selected' | 'rest';
-  /** 피그마 TEXT 속성 text */
+  /** 피그마 TEXT 속성 Text */
   text: string;
   /** 동작 스토리에서 입력을 확인하는 핸들러 */
   onChange?: () => void;
@@ -20,21 +18,15 @@ const meta = {
   title: 'Components/RenameField',
   // 너비가 31로 홀수라 가운데 정렬하면 0.5px 위치에 놓여 그림이 밀리므로 여백 배치를 쓴다.
   parameters: { layout: 'padded' },
-  // 글자는 피그마 text 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { state: 'selected', text: '이름' },
+  // 변형 속성이 없다. 글자는 피그마 Text 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
+  args: { text: '이름' },
   argTypes: {
-    state: { control: 'inline-radio', options: ['selected', 'rest'] },
     text: { control: 'text' },
   },
   render: (args) => (
-    // text와 state는 마운트 때만 쓰는 값이라 바꾸면 처음부터 다시 그리도록 key를 바꾼다.
-    // selected는 마운트할 때 전체가 선택되어 피그마의 파랗게 선택된 이름과 같고, rest는 선택하지 않는다.
-    <RenameField
-      key={`${args.state}-${args.text}`}
-      aria-label="이름 바꾸기"
-      text={args.text}
-      shouldSelectOnMount={args.state === 'selected'}
-    />
+    // text는 마운트 때만 쓰는 값이라 바꾸면 처음부터 다시 그리도록 key를 바꾼다.
+    // 마운트할 때 전체가 선택되어 피그마의 파랗게 선택된 이름과 같다.
+    <RenameField key={args.text} aria-label="이름 바꾸기" text={args.text} />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -43,7 +35,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// args의 state로 피그마 변형(Selected, Rest)을 고른다.
+// 피그마 변형 하나(default)를 그린다.
 export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
@@ -68,18 +60,6 @@ export const Default: Story = {
       await expect(input).toHaveValue('메모');
       await expect(args.onChange).toHaveBeenCalled();
     });
-  },
-};
-
-// @codocs [[컴포넌트 목록:기본 컨트롤]]
-/** shouldSelectOnMount가 false면 포커스만 받고 선택하지 않는다 */
-export const NotSelected: Story = {
-  render: () => <RenameField aria-label="이름 바꾸기" text="문서" shouldSelectOnMount={false} />,
-  play: async ({ canvas }) => {
-    const input = canvas.getByRole<HTMLInputElement>('textbox', { name: '이름 바꾸기' });
-
-    await expect(input).toHaveFocus();
-    await expect(input.selectionStart).toBe(input.selectionEnd);
   },
 };
 

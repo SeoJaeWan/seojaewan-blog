@@ -7,6 +7,32 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"BrowserTabStrip PR #483: Figma 스토리 되살림": |
+  - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
+  - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
+"RenameField PR #482: State=Rest 삭제 정리": |
+  - `shouldSelectOnMount` prop은 `State=Rest` 변형(선택하지 않은 모습)만을 위한 것이었고 앱과 FileItem·FileRow는 넘기지 않아(기본값 true) 지웠다. 마운트하면 늘 포커스를 주고 이름 전체를 선택한다. 앱 동작은 그대로다.
+  - 그 prop만 보던 `NotSelected` 스토리를 지웠다. 선택·입력을 보는 `Default`, ref 합치기와 키 입력을 보는 `Controlled`는 남겼다.
+  - 로컬 E2E는 돌리지 않았다. 앱 E2E가 3000번 포트를 고정으로 쓰는데 다른 작업자가 같은 컴퓨터에서 동시에 작업 중이라 다른 worktree의 서버를 시험할 수 있어서다. 이름 바꾸기를 지나는 E2E(`desktop-new-folder` 등)는 CI의 E2E 결과로 확인했다.
+"NavigationPane PR #481: Figma 스토리 되살림": |
+  - 피그마 `items` 슬롯 기본 내용(NavigationItem 여섯: 바탕 화면·Blog·React·Next.js·TypeScript·휴지통)과 같은 항목으로 `Figma` 스토리를 다시 만들었다. 아이콘은 앱 탐색 창과 같게 바탕 화면은 `ic_fluent_desktop_20_regular`(`text-text-fill-primary`), 폴더는 `images/file-folder`, 휴지통은 `images/file-recycle-bin-full`이다.
+  - 항목 너비는 피그마 원본 너비 240인 `w-size-navigation-item-width`를 항목마다 줬다. 탐색 창이 HUG라 항목이 너비를 정한다. 앱(`explorer-window-layer.tsx`)은 같은 자리에 값이 같은(240) `w-size-search-box-width`를 쓰고 있어 `w-size-navigation-item-width`로 바꿨다. 값이 같아 모양은 바뀌지 않는다.
+  - treeitem이 tree 안에 있어야 하므로 스토리에서 `NavigationPane`에 앱과 같은 `role="tree"`·`aria-label="탐색 창"`을 줬다.
+  - 넘긴 항목이 그려지는지만 보던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠다.
+"ExplorerAddressRow PR #479: 슬롯 기본 내용과 스토리 정리": |
+  - 모든 스토리의 Items 슬롯에 피그마 Breadcrumb 기본 내용(`BreadcrumbItem` 바탕 화면·Blog)을 meta `args.items`로 넣었다. 동작 스토리가 쓰던 `경로 칸` 글자 상자는 지웠다.
+  - [[테스트 작성 규칙:테스트 지침]] 4번(넘긴 값이 그대로 나오는지만 보는 검사)과 1번(모양은 캡처)에 따라 정리했다. `Disabled`(비활성 prop이 버튼에 넘어감), `Searching`(`searchValue`가 입력값이 됨) 스토리와, `Default`의 "desktop은 버튼 넷·검색 상자·경로를 그린다"·"`searchPlaceholder`로 안내 글자를 바꾼다" 단계, `Mobile`의 "뒤로·검색 버튼만 그린다" 단계를 지웠다. 버튼·검색 입력이 동작을 부르는 배선 검사와 모바일 검색 열기(포커스), desktop이 `search`를 무시하는 검사는 남겼다.
+"Breadcrumb PR #480: 변형 정리와 스토리": |
+  - `State=Editing`을 지우며 코드의 `editing`·`address` prop과 주소 입력창 분기를 지웠다. 앱은 이 prop을 쓰지 않았다(주소 입력은 아직 구현하지 않음). 루트에 `relative`가 필요하던 아래 파란 선도 함께 없앴다.
+  - 스토리는 `Figma` 하나만 남겼다. `Default`(위치 아이콘과 넘긴 경로 칸이 그려지는지)는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠고, `Editing`은 변형과 함께 지웠다.
+  - `Figma` 스토리의 Items 슬롯에는 `export.json` 기본 내용대로 `BreadcrumbItem` 둘(`바탕 화면` 구분자 있음, `Blog` 현재 위치·구분자 없음)을 넣었다.
+  - 컴포넌트 JSDoc의 연결을 상태 섹션에서 [[디자인 시스템:컴포넌트 조립 규칙]]으로 바꿨다(상태 변형이 없어졌다).
+"Flyout PR #467: Padding 삭제와 슬롯 기본 내용 스토리에서 정한 것": |
+  - `Figma` 스토리의 Content 슬롯은 피그마 슬롯 기본 내용대로 메뉴 항목 넷(열기, 새 창에서 열기, 이름 바꾸기 `F2`, 삭제 `Delete`)과 구분선이다. Base UI 메뉴 밖이라 항목은 `MenuItem standalone`(버튼)으로 그렸고, 구분선은 `MenuPopup`의 구분선과 같은 배치 프레임(위 2·아래 6 여백) 안의 `Separator`다.
+  - Flyout은 HUG지만 슬롯 기본 내용이 모두 FILL이라 피그마 폭 320은 내용이 정하지 않는다. 그래서 스토리는 지난 토큰 이름 바꾸기 때처럼 `w-size-search-box-wide-width`(320)로 감쌌다. 역할이 맞는 크기 토큰은 아니다.
+  - `padding` prop을 지우며 Flyout은 옛 `compact` 모양(위아래 `spacing/2xs`, 좌우 0)만 남겼다. 옛 기본값이 `default`라 `padding`을 넘기지 않던 곳(모션 견본 `motion-flyout-enter`)은 이제 compact 여백으로 그린다. 앱에서 `padding`을 넘기지 않고 Flyout을 쓰는 곳은 없었다.
+  - 옛 `Default`·`Acrylic` 스토리는 `Figma` 스토리가 두 재질을 다루므로 지웠다. `Default`의 `play`는 넘긴 역할·이름이 그대로 나오는지만 보는 검사라 옮기지 않았다.
+  - [[디자인 시스템:컴포넌트 조립 규칙]]의 예 "Menu는 Flyout(`Padding=Compact`) 위에 쌓고"에서 지워진 속성 이름을 뺐다.
 "컴포넌트 테스트 전환(묶음 C): 상태 속성 data-state·data-placement·data-indicator를 더함": |
   클래스로 확인하던 상태 모양을 [[테스트 작성 규칙:스토리 테스트]]의 결정대로 상태 속성으로 바꾸기 위해, 속성이 없던 컴포넌트에 더했다. `WindowTitle`에 `data-state`(`active`·`inactive`), `WindowFrame`에 `data-state`와 `data-placement`(`normal`·`maximized`·`snapped`), `Toc`에 `data-state`(`expanded`·`collapsed`), `TaskbarButton`에 `data-indicator`(`none`·`running`·`active`)를 붙였다. 값은 prop 값을 그대로 쓴다. `aria-*`로 나타낼 수 있는 상태가 아니고(창 활성 여부, 배치, 목차 접힘, 표시줄 종류), 같은 저장소의 `data-window-state` 같은 `data-*` 관례가 있어 `data-*`로 정했다. 문서에 이 속성 이름을 정해 둔 곳은 없으므로 이름이 맞는지 검토가 필요하다.
 "컴포넌트 테스트 전환(묶음 C): 고정·변형 모양 확인은 빼고, 몇 가지는 스토리용으로 바꿈": |
@@ -44,16 +70,38 @@ _codocs:
   | Popover `Right-Start`·`Closed` | 있음(MenuPopup) | 위와 같다 |
 
   나머지 빈 HUG 변형은 모두 조립에서 찍힌다.
+"PR #484 Toc: 동작 확인용 임시 스토리를 지우고 Figma 스토리만 둠": |
+  `Toc`의 `Figma` 스토리 슬롯에 피그마 `Items` 기본 내용과 같은 `TocItem` 4개(`use 훅` 활성, `useActionState`, `useOptimistic`, `마이그레이션`)를 넣고 빈 슬롯 주석을 지웠다. 접힌 변형은 슬롯을 그리지 않으므로 같은 렌더를 쓴다. `Default`(제목 `titleProps`·children 전달 확인)와 `Collapsed`(children이 안 그려짐 확인) 스토리는 `<span>항목</span>` 가짜 내용으로 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 따라 지웠다. 앱 쪽 `Toc` 사용(`chrome-page`)은 prop이 그대로라 고치지 않았다. 캡처는 두 변형 모두 글자 가장자리 말고 차이가 없다.
+"PR #485 CodeBlock: Figma 스토리에 코드 2줄 기본 내용을 넣고 Highlighted를 대신함": |
+  피그마 `Code` 슬롯 기본 내용(`const post = use(fetchPost(slug));` / `return <Article post={post} />;`)의 글자별 색(`code-syntax/*`)을 같은 토큰 클래스의 span으로 옮겨 `Figma` 스토리에 넣었다. 언어 글자는 피그마 기본값 `언어`다. 예전 `Highlighted` 스토리(`const count = 1;` 가짜 코드)는 같은 일을 하는 임시 스토리라 지웠다. 동작 스토리 `Copy`는 복사 단추 동작을 보므로 남겼다. 컴포넌트 코드는 `children`에 기본값이 없어 바꾸지 않았다.
+"PR #486 Equation: Figma 스토리의 슬롯에 수식 자산을 크기 변수로 넣음, 제품 슬롯은 그대로": |
+  피그마 `Formula` 슬롯 기본 내용인 수식 자산 인스턴스(`images/equation-quadratic-formula`)를 `ImageAsset`으로 `Figma` 스토리에 넣고, 크기는 피그마와 같은 변수 클래스(`w-size-equation-width`·`h-size-equation-height`, PC 194×50)로 줬다. 자산이 KaTeX 렌더 그림(390×100)으로 바뀌어 `generate:assets`를 다시 돌렸고 `equation-quadratic-formula.webp`와 `image-data.ts`의 크기(400×112 → 390×100)가 바뀌었다. `Equation` 컴포넌트 코드는 `children` 슬롯 그대로 두었다. 제품은 `PostBlocks`가 서버에서 KaTeX로 그린 HTML을 같은 슬롯에 넣으므로 컴포넌트가 이미지나 KaTeX를 직접 알 필요가 없고, 기본 내용은 스토리가 넣는 것이 규칙이기 때문이다. `x = 1` 글자만 넣던 `Default` 스토리는 넘긴 값이 나오는지만 보는 임시 스토리라 지웠다. 차이 그림에 수식 가장자리가 남는다(같은 390×100 그림을 194×50으로 줄이는 엔진의 리샘플링 차이로 위치와 크기는 같다).
+"PR #487 Quote: Figma 스토리에 글 본문 글자를 넣고 임시 Default 스토리를 지움": |
+  `Quote`의 `Figma` 스토리를 새로 만들어 피그마 `Content` 슬롯 기본 내용 `인용 블록의 글이다. 출처나 강조할 문장을 담는다.`를 `type-body-large text-text-fill-primary` 문단으로 넣고, 너비는 피그마 노드 폭(720)과 같은 `w-size-post-width`로 줬다. `인용 글`만 넣어 값이 나오는지 보던 `Default` 스토리는 임시 스토리라 지웠다. 컴포넌트 코드는 바꾸지 않았다. 차이 그림에는 글자 가장자리만 남고 왼쪽 막대와 여백은 같다.
+"PR #488 Callout: Figma 스토리에 글 본문 글자를 넣고 임시 Default 스토리를 지움": |
+  `Callout`의 `Figma` 스토리를 새로 만들어 피그마 기본 `icon`(`ic_fluent_info_24_regular`)과 `Content` 슬롯 기본 내용 `콜아웃은 아이콘과 함께 눈에 띄게 보여 줄 글을 담는다. 글자 서식도 쓸 수 있다.`를 넣었다. 앞부분은 `type-body-large`, `글자 서식`은 피그마 `Body Large Strong`이라 `<strong className="type-body-large-strong">`으로 칠했다(앱의 굵게 클래스 `font-font-weight-semibold`가 아니라 글자 스타일 클래스를 쓴 것은 피그마가 굵기만이 아니라 스타일을 걸었기 때문이다). 너비는 `w-size-post-width`다. `콜아웃 글`만 넣던 `Default` 스토리는 임시 스토리라 지웠다. 컴포넌트 코드는 바꾸지 않았다.
 "마지막 맞춤: 고치지 않은 캡처 차이": |
   전체 캡처 493개 변형(단독 451개, 조립에서 확인 42개)의 차이 그림 중 남은 것은 코드로 고치지 않았다.
   - 어두운 바탕의 밝은 글자가 코드에서 더 굵어 보인다(accent 버튼, 바탕화면 아이콘 이름). 글자 스타일은 피그마와 같아 글자를 그리는 엔진의 차이로 봤다.
   - 한글 글자 폭이 소수라 피그마가 올림한 HUG 폭과 0.5~1px 다르다(Breadcrumb, DropDownButton, SectionHeader). 명령 모음(Explorer/Commands)은 이 차이가 쌓여 오른쪽 끝이 2px쯤 어긋난다.
   - 하위 메뉴 그림자가 피그마 조립 그림에서만 진하다(Menu/Desktop 등 5개 조립). 위 메뉴와 같은 효과 스타일이고 코드도 같은 토큰이라, 피그마가 중첩을 그린 결과로 봤다.
   - PostBlocks의 코드 줄 높이: 피그마 글자 상자는 10줄에 201, 코드는 200이다. 코드 블록 위쪽 전체가 1px 어긋나 보이는 원인이다.
+"Menu PR #468: 슬롯 기본 내용 스토리와 쓰지 않는 material prop": |
+  - `Figma` 스토리의 children(Flyout Content 슬롯)은 피그마 슬롯 기본 내용대로 Flyout과 같은 메뉴 항목 넷과 구분선이다. Base UI 메뉴 밖이라 항목은 `MenuItem standalone`으로 그렸다. 너비는 Menu가 가진 `size/menu/width`라 감싸지 않았다.
+  - 옛 `Default` 스토리(children에 넣은 항목이 메뉴 안에 있는지 보는 `play`)는 `Figma` 스토리가 다루므로 지웠다.
+  - 피그마 Menu는 안쪽 Flyout의 `Material`을 노출하지 않고(속성 정의가 비어 있다) 앱에서도 넘기는 곳이 없어, 코드 Menu의 `material` prop을 지웠다. Menu는 늘 Flyout 기본값(아크릴)이다. 이 PR에서 피그마가 바뀐 것은 아니고 전부터 그랬다.
 "8단계 E2E: 핵심 흐름을 5~10개보다 많이 둠": |
   [[테스트 작성 규칙:E2E]]는 핵심 흐름 5~10개를 두라고 하지만, 8단계에서 흐름을 영역별로 나눠 15개를 더해 E2E가 41개가 됐다. 흐름 하나가 문서 섹션 하나씩에 대응하게 쓰다 보니 넘었다. 실제 CI에서 13초 안에 도는 크기다. 5~10개로 줄일지 문서를 41개 수준으로 고칠지 검토가 필요하다.
+"Popover PR #466: 슬롯 기본 내용 스토리": |
+  - 변형(Placement 6 × State 2)은 그대로라 컴포넌트 코드는 고치지 않았다. `Figma` 스토리를 다시 만들어 Trigger에는 전원 버튼(`IconButton` Subtle, `ic_fluent_power_20_regular`, 이름 "전원"), Popup에는 Flyout(아크릴)에 메뉴 항목 넷과 구분선을 넣었다.
+  - 팝업 상자는 내용 너비(`w-max`)라 Flyout이 내용 폭으로 줄어든다. 피그마 원본 너비 320을 맞추려고 Flyout 스토리처럼 `w-size-search-box-wide-width`로 감쌌다.
+  - 옛 `Default`·`Open` 스토리(닫히면 팝업이 없고 열리면 보이는지)는 `Figma` 스토리의 `state` 변형이 다루므로 지웠다.
 "8단계 E2E: 모바일 길게 누르기와 터치 끌기는 E2E에 넣지 않음": |
   모바일 입력(길게 누르기 메뉴, 선택 없음)은 Playwright 기본 설정이 터치 장치가 아니라 합성 이벤트로 흉내 내야 해서 믿기 어렵다고 보고, 모바일은 폭 390 화면의 열기·전환·검색 흐름만 넣었다. 길게 누르기는 스토리 `play`가 맡는다.
+"Tooltip PR #463: Material 삭제": |
+  - 피그마에서 `Material` 속성이 지워져 코드의 `material` prop과 `TooltipMaterial` 타입, 재질 분기를 지웠다. `Type=Default`는 아크릴(칠 `Material/Acrylic Default`, 효과 `Surface/Tooltip (Acrylic)`), `Type=Balloon`은 전처럼 단색이다. 앱에서 `material`을 넘기는 곳은 없었다.
+  - `Figma` 스토리의 args에서 `material`을 뺐다. Tooltip은 슬롯이 없어 스토리 내용은 그대로다.
+  - `Default`(tooltip 역할과 글자)·`Balloon`(div 속성 넘김과 메시지) 동작 스토리는 지워진 변형만 보던 스토리가 아니라 그대로 두었다.
 "인라인 style lint: 규칙을 거는 범위와 구현": |
   - `style` 값 제한은 `no-restricted-syntax`로 구현했다. JSX `style={{ … }}`의 속성 값이 문자열·숫자 리터럴, 음수 리터럴(`-1`), 식이 없는 템플릿이면 막는다. `style={조건 ? { … } : …}`·`style={조건 && { … }}`처럼 조건식·논리식이 고른 객체도 본다. 변수에 담아 넘긴 객체(`style={panelStyle}`)는 보지 않는다.
   - 범위는 토큰 클래스 검사와 같게 앱·디자인 시스템 소스(`*.test.*` 제외)로 했다. `no-restricted-syntax`는 블록마다 목록을 통째로 바꾸므로, default export 예외 파일(스토리, Next.js 예약 파일)에는 `files: \[[범위, 예외 파일]]`로 따로 걸었다.
@@ -84,3 +132,89 @@ _codocs:
   - 그 속성만 보던 스토리(WindowTitle·WindowFrame의 `Inactive`)를 지우고, `Default`·`Maximized`·`Toc`의 속성 확인 줄만 뺐다. SnapPreview `Default`, TaskbarPreviewList `Default`의 `play`, TaskbarButton `Default`의 아이콘 확인 단계와 `data-testid`를 지웠다.
   - [[접근성:역할]]이 말하는 Delete 닫기에 `aria-keyshortcuts="Delete"`를 달았다. 요청에는 Chrome 탭과 창 미리보기 카드만 있었으나 같은 Delete 처리가 있는 탐색기 탭(`ExplorerTab`)과 Snap Assist 카드에도 같이 달았다. 탭은 div 속성이 바깥 상자로 가서 `role="tab"`인 `Tabs.Tab`에 닿지 않으므로 `BrowserTab`·`ExplorerTab` 컴포넌트에 직접 넣었고, 카드는 포커스를 받는 `Button`(쓰는 곳)에 달았다.
   - `aria-keyshortcuts`는 스토리 `play`에서 확인하지 않는다. 넘긴 값이 그대로 나오는지만 보는 검사라서다. Delete로 닫히는 동작은 `chrome-window-layer.stories.tsx`와 `taskbar-apps-layer.stories.tsx`의 `play`가 이미 확인한다(탐색기 탭과 Snap Assist 카드 쪽은 확인하는 스토리가 있는지 따로 찾지 않았다).
+"E2E 행위 표 ①: 정의 형식, 행위 묶기, 조건 고르기, 터치 케이스": |
+  - 정의 파일은 `apps/web/e2e/behaviors/<행위 id>.behavior.ts`이고, 같은 폴더에 형식(`define-behavior.ts`)·읽기(`load-behaviors.ts`)·Playwright `test`(`behavior-test.ts`)·터치(`touch-input.ts`)·휠(`wheel-scroll.ts`)·공통 단계(`app-steps.ts`)를 둔다. 앱 ESLint가 `../` import를 막아(`apps/web/**`) 도우미를 정의 파일과 한 폴더에 두었고, 정의 파일만 `.behavior.ts` 이름으로 골라 읽는다. 행위 id는 파일 이름이다.
+  - 행위 표 도구가 Node로 정의를 바로 읽도록(타입 지우기) 정의 쪽 import는 `.ts` 확장자를 쓴다. 그래서 `apps/web/tsconfig.json`에 `allowImportingTsExtensions`를 켰다. 정의 파일은 `@seojaewan/design-system`처럼 Node가 바로 못 읽는 것을 import하지 않는다.
+  - 시험은 `e2e/behaviors.test.ts` 하나가 모든 정의를 읽어 케이스마다 만든다. 제목은 `영역 › 행위 이름 › #번호 목적 [행위id#번호]`이고, 끝의 `[행위id#번호]`로 케이스 하나만 고른다. 케이스의 `docs`는 시험 annotation(`codocs`)으로도 붙인다.
+  - 조건 키는 영어(`input`), 보이는 이름은 `label`로 한국어다. 타입은 기준값이 값 목록에 없거나, 케이스가 없는 조건·값을 바꾸거나, 1번 케이스에 `change`가 있거나, `docs`가 비면 막는다. `change`가 기준값과 같거나 비어 있는 것은 타입으로 막지 못해 표 도구가 표시한다.
+  - 행위는 26개다. 기존 시험 41개를 한 시험이 한 케이스가 되게 옮겼고, 시험의 확인 줄은 그대로 두었다(같은 단계를 `app-steps.ts`의 `restart`·`openBlogFolder`·`dragMouse`로 묶은 것만 바꿨다). 예외로 `responsive.test.ts`의 "노트북/PC 기본 크기"는 서로 다른 화면 두 번이라 `window-default-size` 행위의 PC(1번)·노트북(2번) 두 케이스로 나눴다. 그래서 옮긴 케이스는 42개다.
+  - 기존 시험이 한 번에 여러 조건을 지나가는 경우가 많아, 1번 케이스의 기준값을 그 시험이 실제로 하는 값으로 정했다(예: `desktop-new-folder`의 "그 뒤" 기준값은 `Delete로 휴지통`, `taskbar-pinning`은 `다시 시작`). 한 시험이 새로고침과 다시 시작을 함께 지나가면 앞의 것 하나만 바꾼 값으로 적었다. 그래서 지나가지만 "빠진 값"으로 보이는 값이 있다(`start-pinning`의 다시 시작, `chrome-address-bar`의 뒤로 등).
+  - 둘 이상을 바꾼 케이스가 많다(옮긴 시험 가운데 여럿과 터치 6개 모두). 터치는 모바일에서만 있는 입력이라 `입력: 터치`와 `화면: 모바일`을 함께 바꾼다.
+  - 조건 값은 기능 문서의 표와 목록에서 뽑았다. 문서에 그대로 없는 값은 PR 보고에 적었다.
+  - 터치 케이스 6개(Pixel 7, `hasTouch`): 바탕화면 탭으로 열기, 바탕화면 길게 누르기 메뉴 → 따라오는 클릭이 외부 링크 새 탭을 열지 않음 → 잘라내기 → 탐색기 빈 곳 길게 누르기 → 붙여넣기, 바탕화면 터치 끌기로 옮겨지지 않음, 탐색기 폴더 탭으로 들어가기, 탐색기 길게 누르기 메뉴(새 탭에서 열기 없음) → 잘라내기 → 붙여넣기, 탐색기 터치 끌기로 옮겨지지 않음. 장치 설정의 `defaultBrowserType`·`screen`은 describe 안에서 쓸 수 없거나 타입에 없어 나머지 값만 쓴다.
+  - 동작 표시(`page.screencast.showActions`)는 동작마다 표시 시간만큼 걸린다. 기본 500ms로 켜니 로컬 전체 E2E가 13초에서 31초로 늘어, 시험은 100ms로 두고 실행해보기만 500ms로 늘린다(`BEHAVIOR_CASES_ACTION_MS`). `slowMo`는 `BEHAVIOR_CASES_SLOW_MO`로 실행해보기에서만 켠다. 두 값은 `playwright.config.ts`가 읽는다(ESLint가 그 밖에서 `process.env`를 막는다).
+  - 손가락 표시는 모든 시험에 `addInitScript`로 넣는다. 터치 이벤트가 없으면 보이지 않는다.
+  - 휠 함수(`wheelScroll`)는 만들었지만 지금 휠을 쓰는 케이스는 없다.
+  - 위 "8단계 E2E" 두 항목(5~10개보다 많이 둠, 길게 누르기와 터치 끌기는 E2E에 넣지 않음)은 이 PR과 바뀐 [[테스트 작성 규칙:E2E]]로 지난 내용이 됐지만, 사람이 검토할 항목이라 지우지 않았다.
+"토큰 PR #495: 스토리 크기 토큰 삭제 대응, 코드 서체 교체에서 정한 것": |
+  - PR 브랜치가 옛 `main`(#460)에서 갈라져 있어, 코드 서체 토큰 생성이 바뀐 지금 `main`을 병합 커밋으로 받아 왔다. 플러그인 커밋은 다시 쓰지 않았다.
+  - `@fontsource/nanum-gothic-coding`은 `@fontsource/cascadia-mono`가 있던 `dependencies`에 5.3.0으로 넣었다. 패키지의 family 이름은 `Nanum Gothic Coding`이라, `generate-fonts.ts`의 웹 폰트 항목에 `family`(선택)를 더해 생성하는 `@font-face` 이름을 `'NanumGothicCoding'`으로 바꿨다. 이름이 토큰 값과 같은지 `font-face-css.test.ts`가 확인한다.
+  - 탐색기 본문 동작 스토리의 본문 밖 놓을 곳 넷은 모두 폴더 그림의 `NavigationItem`으로 그리고 `role="tree"`(이름 "본문 밖의 놓을 곳")로 감쌌다. "바탕 화면"도 폴더 그림이다.
+  - `motion-flyout-enter` 견본의 Flyout 내용은 홀로 두는 메뉴 항목 셋(`MenuItem standalone`: 열기, 이름 바꾸기, 삭제)이다. `ScrollArea` `Overflow`의 버튼 이름은 `항목 1`~`항목 8`이고 사이를 `gap-spacing-xs`로 띄웠다.
+  - 메뉴가 뜰 공간 스토리 중 전원 버튼만 `p-spacing-lg` 여백을 두고, `Taskbar/AppMenu`·`Taskbar/AppPreview`·`Window/SnapLayoutMenu`는 여백 없이 캔버스 전체(`h-screen`)에 두었다.
+  - lint 시험(`token-classes-lint.test.ts`)의 "숫자로 끝나지 않는 토큰 이름" 예는 `size/story/*` 대신 `size/icon/2xl`·`3xl`로 바꿨다.
+  - 새 크기 변수 `size/equation/width`·`height`는 아직 내보낸 컴포넌트·조립이 쓰지 않아 코드에서도 쓰지 않았다. 수식 그림 자산 `images/equation-quadratic-formula`는 피그마 조립이 쓰는 자산이라 남겼다(스토리는 더 쓰지 않는다).
+  - 위 "색 대비" 항목의 비활성 창 제목(`text-fill-tertiary`)은 이 PR에서 값이 56%로 바뀌어 대비가 고쳐졌다([[접근성:색 대비]]). `TwoWindows`의 `play`는 그대로 두었고, 끝 모습 밖의 상태를 axe로 다시 확인하지는 않았다. 옛 항목은 사람이 검토할 기록이라 고치지 않았다.
+"E2E 행위 표 ②: 표 도구와 Pages 결과 페이지": |
+  - `tools/behavior-cases`는 앱의 읽기 함수(`apps/web/e2e/behaviors/load-behaviors.ts`)를 Node가 타입을 지우며 바로 import해 정의를 읽는다. [[저장소 구성:의존 방향]]은 `tools/`가 패키지의 공개 코드와 빌드 결과만 쓴다고 하지만, 행위 표는 E2E 정의 파일을 읽는 것이 목적이라([[저장소 구성:구성]]) 이 예외를 두었다. 검토가 필요하다.
+  - 표 데이터는 순수 함수(`build-table.ts`)가 만들고 단위 테스트로 본다. 빠진 값, 영역 합계, 둘 이상 바꾼 케이스(×2 표시), 고칠 점(근거 없음, 문서에 없는 링크, 기준값과 같은 change, 바꾼 것이 없는 케이스)을 낸다. 영역 차례는 바탕화면 → 탐색기 → Start → 검색 → 작업 표시줄 → 창 → Chrome → 공통으로 정했다.
+  - 코드 근거는 케이스 문서 링크와 같은 `@codocs` 주석이 달린 `apps/web/src`·`packages/design-system/src`의 TS 파일(스토리·테스트 제외)에서, 주석 묶음 다음 첫 줄의 선언 이름과 그 줄 번호, 주석의 첫 설명 줄(80자까지)을 뽑는다. 선언 이름을 못 찾으면 비워 둔다.
+  - codocs 문서는 YAML 파서 패키지를 새로 들이지 않고, codocs 문서 꼴(`_codocs` 메타데이터 + `섹션: |` 블록)만 읽는 작은 파서로 읽는다. 문서 이름은 `_codocs.name`, 섹션 첫 줄은 빈 줄을 건너뛴 첫 줄이다.
+  - 화면은 HTML·CSS·JS 세 파일(`tools/behavior-cases/page/`)이고 같은 폴더의 `table.json`을 읽는다. 로컬 서버(`pnpm cases`, 127.0.0.1:4173, `BEHAVIOR_CASES_PORT`로 바꿈)는 그 JSON을 요청마다 새로 만든다. 왼쪽은 영역(전체 포함)과 행위 링크, 오른쪽은 영역별 행위 카드다. 열 머리에 기준값을 함께 적고, 바뀐 칸만 진하게 칠한다. 빠진 값 줄은 "–"와 그 값만 보인다. 디자인 시스템과 무관한 내부 도구라 색은 CSS 변수로 두고 밝은·어두운 모드를 따른다. 토큰 lint(better-tailwindcss, style 값 제한)는 `apps/web/src`·`packages/design-system/src`에만 걸려 있어 따로 뺄 설정은 없었다. Stylelint는 이 CSS에도 돌지만 막는 at-rule을 쓰지 않는다.
+  - 실행해보기는 서버가 `playwright test --grep "\[행위id#번호\]" --trace on --retries 0 --workers 1`을 `slowMo` 300ms, 동작 표시 500ms로 돌리고, 끝나면 `playwright show-trace`로 Trace Viewer 창을 연다. 한 번에 하나만 돌린다. 앱 빌드(`apps/web/.next/BUILD_ID`)가 없으면 돌리지 않고 빌드하라고 알린다. 결과는 `tools/behavior-cases/runs/`(git 제외)에 둔다.
+  - 결과 페이지: `behavior-cases.yml`이 `main` push(와 수동 실행)마다 앱을 빌드하고 모든 케이스를 `--trace on`으로 돌려 JSON 보고서를 만들고, `build:report`가 trace zip을 `traces/`에 옮겨 담은 정적 페이지를 만들어 GitHub Pages에 올린다. 페이지의 "trace 보기"는 `https://trace.playwright.dev/?trace=<Pages의 zip 주소>`다. 케이스가 실패해도 페이지는 올리고 작업만 실패로 표시한다. 필수 검사(ruleset)에 넣지 않았다. 배포 동시 실행은 끊지 않고 차례로 한다.
+  - Pages 액션은 지금 나온 최신(`configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`)을 썼다.
+  - 루트 `pnpm cases` 스크립트와, ESLint의 `process.env` 허용 목록(`configFiles`)에 `tools/behavior-cases/src/**`를 더했다.
+"PR #471 WindowFrame: Material=Solid 삭제": |
+  `WindowFrame`의 `material` 값에서 `solid`와 그 분기(바탕 칠 `bg-material-fallback-mica-base`, 활성·비활성 그림자 표의 `solid` 줄)를 지우고 `Figma` 스토리의 `MATERIALS`를 `mica`·`chrome`으로 줄였다. `material="solid"`를 쓰는 앱 코드는 없어 앱은 고치지 않았다. `solid` 분기만 쓰던 토큰 클래스가 없어져도 `chrome`이 같은 그림자 클래스를 쓰므로 남는 토큰은 건드리지 않았다.
+  Content·Title bar content 슬롯은 `export.json`에서 모든 변형이 비어 있어(기본 내용 없음, FILL) `Figma` 스토리는 슬롯을 계속 비워 둔다. 임시 스토리로 정리할 것도 없었다(남은 스토리는 모두 동작 `play`다).
+"컴포넌트 PR #470 TileGrid: Figma 스토리 되살림": |
+  - `Figma` 스토리를 다시 만들고 `align` 변형마다 `tiles` 슬롯에 `export.json` 기본 내용과 같은 PinnedTile을 넣었다(Start 8개: File Explorer·Chrome·Blog·GitHub·이력서·사이드 프로젝트·React·React 19 훅 정리, Center 6개: 글 문서 아이콘). 아이콘은 앱의 `renderItemIcon`과 같이 이미지는 `ImageAsset`, 링크는 `Asset`(`illustrations/file-link.svg`)으로 그렸다. 감싸는 너비는 `w-size-new-tab-grid-width`(576)다.
+  - 빈 HUG 때 대신 둔 `Default`(글자 하나 넣고 보이는지만 확인)·`Center` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 모양은 캡처가, 실제 배치는 시작 메뉴·새 탭 스토리가 맡는다.
+  - 컴포넌트 주석의 "피그마 원본 너비 574"를 토큰 이름(`size/new-tab/grid-width`, 지금 576)으로 바꿨다. 코드의 `overflow-clip`은 `export.json`에 자르기 정보가 없어 그대로 두었다.
+"컴포넌트 PR #475 PinnedTile: Hover 글자 폭과 Default 스토리": |
+  - 피그마 Hover의 `strokesIncludedInLayout`이 꺼져 Hover도 글자 폭 87이 되었다. 코드는 이미 `inner-border`로 그려 고친 것이 없고, 캡처 표 세 변형 모두 테두리 차이가 없음을 확인했다. 위 "마지막 맞춤: PinnedTile 테두리를 안쪽 선으로"의 Hover 85·87 차이는 지난 내용이 됐지만 검토 기록이라 고치지 않았다. 컴포넌트 주석의 "피그마 Rest와 같은 87px"만 "피그마와 같은 87px"로 고쳤다.
+  - 컴포넌트만 보던 `Default` 스토리를 지웠다. 이름·아이콘·`onClick`이 넘긴 대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 걸리고, 고정 타일을 눌러 여는 동작은 `start-menu-layer.stories.tsx`의 `OpenItems`가 이미 본다.
+"시나리오 케이스 ①: 이름, 정의 필드, 케이스 나누기": |
+  - 정의 파일 이름·위치(`apps/web/e2e/behaviors/*.behavior.ts`, `defineBehavior`)는 바꾸지 않았다. 정의 단위는 조건·값·케이스를 가진 "행위"이고 [[테스트 작성 규칙:E2E]]도 "행위 정의"로 부른다. "시나리오 케이스"는 그 케이스와 화면의 이름이라 도구 폴더(`tools/scenario-cases`), 패키지(`@seojaewan/scenario-cases`), 워크플로(`scenario-cases.yml`, 이름 `Scenario cases`), 환경 변수(`SCENARIO_CASES_SLOW_MO`·`SCENARIO_CASES_ACTION_MS`·`SCENARIO_CASES_PORT`)만 바꿨다. 위 "E2E 행위 표 ①·②"의 옛 이름은 검토 기록이라 고치지 않았다.
+  - 실행 함수는 `check(기대 결과, 확인 함수)`를 받는다. `behaviors.test.ts`가 그 이름의 `test.step`으로 감싸고, `expected`에 없는 이름이면 실패, 끝까지 확인하지 않은 기대 결과가 있어도 실패한다. 확인 함수는 동기여도 된다(값을 이미 잰 `expect`). 다음 동작 전에 화면을 기다리기만 하는 `expect`(메뉴가 뜰 때까지 등)는 `check` 밖에 두었다.
+  - 26개 행위의 `scenario`·`expected`는 run 코드를 읽고 하위 에이전트(Sonnet 넷)가 나눠 썼다. 확인 순서·내용은 바꾸지 않았다. 바탕화면·탐색기 일부 문장은 시안의 손으로 쓴 문장을 run 코드에 맞춰 고쳐 썼다.
+  - 화면 크기 조건(PC·노트북·모바일)이 없던 행위 전부에 더했다(`chrome-address-bar`, `recycle-restore`, `search-open`, `start-pinning`, `taskbar-pinning`, `window-maximize`, `window-screen-resize`, `window-snap`, `explorer-mobile-search`). `window-default-size`의 화면 구간(PC·노트북)에는 모바일을 더했다.
+  - `noCase`는 문서상 그 행위에서 성립하지 않는 값에만 적었다(6개): `explorer-mobile-search`의 PC·노트북([[파일 탐색기:구성]], [[파일 탐색기:폴더 안 검색]]), `window-default-size`·`window-maximize`·`window-screen-resize`·`window-snap`의 모바일([[창 동작:모바일]], 스냅은 [[스냅:모바일]]도). 할 수 있지만 아직 케이스가 없는 값(노트북, 키보드 등)과, 다른 조건과 짝을 지어야만 성립하지 않는 값(`search-open`의 '모바일 검색 버튼'은 모바일 화면에서만, `start-pinning`·`taskbar-pinning`의 모바일 끌기 등)은 이유를 적지 않고 빠진 값으로 두었다.
+  - 모바일 전용 행위는 `explorer-mobile-search` 하나였다. 화면 크기 기준을 모바일, 입력 방식 기준을 터치로 하고 Pixel 7 장치에서 `touch.tap`으로 돈다. `setViewportSize`(390)로 모바일을 만들던 케이스(`url-entry`#3, `explorer-open-post` 모바일)도 Pixel 7 장치로 바꾸고 기대 너비를 412로 맞췄다.
+  - 케이스를 나눈 것: `desktop-cut-paste` 1번을 두 방향으로(바탕화면 → 탐색기 / 탐색기에서 잘라 창을 닫고 바탕화면에 붙임, 새 케이스는 처음 잘라낸 곳·붙이기 전에 두 조건이 함께 다름). 그래서 붙이기 전에 기준은 '바로 붙임'이다. `desktop-open-item` 2번(휴지통)이 Blog 창 내용도 확인하던 것을 1번으로 옮겼다. `explorer-browse` 1번(옮기는 법 여럿과 탭)을 폴더 더블클릭·뒤로/앞으로·탐색 창·위치 칸·탭 열고 닫기 다섯으로 나누고 탭 기준을 '탭 하나'로 했다. `explorer-open-post` 1번을 처음 엶·다시 엶으로 나누고 같은 글 기준을 '처음 엶'으로 했다. `start-pinning` 바탕화면 케이스를 고정·새로고침·다시 시작 셋으로 나눴다. `taskbar-pinning` 1번에서 새로고침을 빼고 '창 없이 해제 → 새로고침' 케이스를 더했다. 원래 1번이 지나가던 '창을 열었다 닫음 + 새로고침' 조합은 지금 어느 케이스도 돌지 않는다.
+  - 값을 고친 것: `start-open-item`·`taskbar-app-button`의 입력 '클릭'을 '마우스 클릭'으로, `start-open-item`에 '터치 탭'을 더했다. `window-screen-resize`는 기준 화면 PC에 맞춰 1800×1000에서 시작해 폭 800으로 줄였다(전에는 노트북 구간인 1280×720). `start-open-close`의 화면 높이 '낮음' 케이스는 1280×300으로 돌아 화면 크기 PC와 어긋나지만 그대로 두었다. 검토가 필요하다.
+"시나리오 케이스 ②: 화면, 필름 띠, 실행 기록, 이번 PR": |
+  - 로컬 도구와 Pages 보고서가 같은 `page/` 세 파일(HTML·CSS·JS)을 쓴다. 모양은 회색조에 강조색 하나(링크·선택)이고 색은 상태에만 쓴다(실패 빨강, 빠짐 주황, 통과 초록 점). 카드·그림자·둥근 꼬리표 없이 줄과 여백으로 나눴다. 조건 × 값 지도는 행위 안에서 값 칸 너비를 같게 맞췄고, 조건 이름 옆에 조건 키를 고정폭 글자로 보인다.
+  - 빠진 값 제안은 도구가 만든다. 제안 시나리오는 "기준 케이스에서 ○○만 '값'으로 바꿔 한다 — 기준 시나리오"이고, 근거 문장은 그 행위 케이스들의 근거 섹션 문장 가운데 값 전체가 든 문장, 없으면 값의 낱말이 많이 든 짧은 문장이다. 못 찾으면 비운다. 붙일 뼈대는 케이스와 `noCase` 두 가지를 보인다.
+  - 여러 행위에서 함께 빠진 값은 조건 이름과 값이 같은 것을 두 행위 이상에서 묶는다. 실패 목록은 영역·함께 빠진 값 거르기만 따르고 검색·결과 거르기는 케이스 목록과 같게 따른다.
+  - 필름 띠: trace zip을 새 패키지 없이 `node:zlib`로 읽는 작은 zip 리더(`zip.ts`)로 연다. trace의 `screencast-frame` 가운데 4장을 고르게 고르고, 실패하면 처음 오류가 난 시각까지에서 고르고 마지막 장을 실패 지점으로 표시한다. 이미지는 보고서를 만드는 단계에서 Playwright Chromium 캔버스로 320×200 안에 줄인다(JPEG 품질 0.7). 로컬에서 57케이스 보고서를 만들어 보니 228장, 1.8MB였다.
+  - 실행 기록: 보고서에 `history.json`(최근 10번, 케이스 결과는 `행위id/케이스id` 열쇠)을 남기고, 다음 실행이 `configure-pages`의 주소에서 내려받아 이어 쌓는다. 처음이거나 읽지 못하면 이번 실행부터 쌓는다. 화면은 요약에 최근 실행, 케이스에 최근 5번을 보인다. gh-pages 가지를 따로 두지 않았다.
+  - 이번 PR: Pages 보고서는 `main`에서만 만들어 넣지 않았다. PR마다 보고서를 따로 올리는 일은 무거워 하지 않았다. 대신 로컬 화면이 `origin/main`과 갈라진 곳부터 지금 작업 트리까지 바뀐 파일(커밋 안 한 것·새 파일 포함)로 영향받는 케이스를 계산해 "이번 PR만" 거르기와 표시를 붙인다. 정의 파일이나 정의 도우미(`behaviors/`의 다른 파일, `behaviors.test.ts`)가 바뀌었거나, 근거 섹션의 문서 파일 또는 그 섹션에 `@codocs`로 연결된 제품 코드가 바뀌면 영향받는다.
+  - 로컬 화면의 마지막 실행 칸은 비워 두고(실행해보기만 있다), 실행해보기 결과에도 기대 결과별 확인(단계)을 붙였다.
+"컴포넌트 PR #477 SearchResults: Figma 스토리 되살림": |
+  - `Figma` 스토리를 다시 만들고 `device` 변형마다 `Results` 슬롯에 `export.json` 기본 내용과 같은 ListGroup 넷(최고 일치: Two-line·Selected "리액트 19 훅 정리"/"글", 폴더: "리액트", 글: 두 항목, 외부 링크: "리액트 스터디 노트")을 넣었다. 안쪽 BestMatchCard는 기본값(제목·부가 정보, 문서 아이콘)에 동작 MenuItem 둘(열기, 링크 복사, `standalone`)을 넣었다. 동작 목록은 앱 `search-body.tsx`와 같이 `flex flex-col items-start gap-spacing-sm` 상자로 감쌌다(BestMatchCard `Actions` 슬롯 상자가 아직 블록이라서다).
+  - 크기는 변형마다 `h-size-search-results-height w-size-shell-body-width`, `h-size-search-results-mobile-height w-size-shell-mobile-body-width`로 감쌌다. 배치는 `padded`다(높이 545·465가 홀수라 가운데 배치에서 반 픽셀에 놓여 선과 글자가 번졌다).
+  - 자리 글자를 넣던 `Default`·`Mobile` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 넘긴 글자가 나오는지와 넘치지 않을 때 스크롤바가 숨는지만 보았다(뒤의 것은 ScrollArea의 동작이다).
+  - 코드는 피그마에 없는 BestMatchCard 속성(`icon`·`title`·`meta`)과 `Actions` 슬롯(`actions`)을 SearchResults prop으로 다시 연다. [[디자인 시스템:컴포넌트 조립 규칙]]의 "안쪽 바탕의 슬롯을 자기 슬롯으로 따로 열지 않는다"와 어긋나 보이지만 이 PR 전부터 있던 구조라 고치지 않고 보고만 한다.
+"컴포넌트 PR #469 ListGroup: Figma 스토리와 동작 스토리 정리": |
+  - `Figma` 스토리를 다시 만들고 `items` 슬롯에 `export.json` 기본 내용과 같은 Compact ListItem 둘("리액트 서버 컴포넌트 이해하기", "리액트 쿼리 캐시 전략", `images/file-document`)을 넣었다. 머리글 글자는 SectionHeader 기본값 "머리글"이라 넘기지 않았다. 컴포넌트 속성 `Show header`는 `showHeader` arg로 열었다. 너비는 `w-size-shell-body-width`(574)다. 기본 내용의 ListItem 속성에 `Show subtitle: true`·`Subtitle`이 있으나 Compact라 부제가 그려지지 않아 넘기지 않았다.
+  - 자리 글자(`<span>항목</span>`)를 넣던 `Default`·`HeaderClickable`·`HeaderHidden` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. `Default`·`HeaderHidden`은 넘긴 글자와 불리언이 그대로 나오는지만 보았고, `HeaderClickable`이 보던 머리글 누르기 배선은 앱 `start-body.stories.tsx`의 글자 머리글 스토리가 실제 ListGroup으로 본다.
+  - 컴포넌트 주석의 "피그마 원본 너비 574"를 토큰 이름(`size/shell/body-width`)으로 바꿨다.
+"컴포넌트 PR #476 StartMenuFooter: Content 슬롯 가로 배치와 Figma 스토리": |
+  - 피그마 `Content` 슬롯은 가로 자동 배치(세로 가운데)인데 코드의 슬롯 상자는 블록이라, 앱이 안에 `flex w-full items-center` 상자를 하나 더 두고 있었다. 슬롯 상자를 `flex items-center`로 바꾸고 `start-menu-panel.tsx`의 덧상자를 지웠다(ProfileButton은 그대로 부모 채움).
+  - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 ProfileButton(`images/avatar-profile`, "서재완", 부모 채움)과 전원 IconButton(`subtle`, `ic_fluent_power_20_regular`, 이름 "전원" — 앱 `StartPowerButton`과 같다)을 넣었다. 너비는 `w-size-start-menu-footer-width`(638)다. 내용 글자 하나만 확인하던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]]대로 지웠다.
+  - 스토리 배치를 `padded`로 두었다(PinnedTile과 같은 이유). 기본 `centered`에서는 높이 65가 y=.5에 놓여 위 선과 아래 가장자리가 두 줄로 번졌다. 캡처 도구의 정수 위치 맞춤(`integerShift`)이 꼭 0.5만큼 옮길 때는 효과가 없는 것으로 보이나, 도구는 고치지 않았다.
+"컴포넌트 PR #478 BestMatchCard: Actions 슬롯 세로 배치와 Figma 스토리": |
+  - 피그마 `Actions` 슬롯은 세로 자동 배치(간격 `spacing/sm`)인데 코드의 슬롯 상자는 블록이라, 쓰는 곳(앱 `search-body.tsx`)이 `flex flex-col items-start gap-spacing-sm` 상자를 따로 두고 있었다. 슬롯 상자를 `flex flex-col gap-spacing-sm`으로 바꾸고 앱의 덧상자를 조각(`<>`)으로 바꿨다. MenuItem은 원래 `w-full`이라 `items-start`를 빼도 모양이 같다. SearchResults `Figma` 스토리의 같은 덧상자도 지웠다.
+  - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 MenuItem 둘(열기 `ic_fluent_open_20_regular`, 링크 복사 `ic_fluent_link_20_regular`, `standalone`)을 넣었다. 제목·부가 정보는 기본값이라 넘기지 않고, 아이콘은 `ImageAsset`(`images/file-document`)이다. 배치는 `padded`다(높이 255가 홀수라서다).
+  - 자리 단추를 넣던 `WithAction` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 넘긴 글자·구분선·단추가 나오는지만 보았다.
+"PR #474 ShellSurface: Material 속성 삭제": |
+  `ShellSurface`의 `material` prop과 `ShellSurfaceMaterial` 타입, `solid` 분기를 지우고 아크릴 칠·효과(`material-acrylic-base surface-shell-acrylic`)를 상수 하나로 고정했다. Start·검색 패널 조립의 `material="acrylic"`도 지웠다. `Default` 동작 스토리는 `material="solid"`를 쓰고 있어 속성만 뺐다(동작 확인은 같다). Content 슬롯은 모든 변형에서 비어 있어 `Figma` 스토리는 슬롯을 비운 채 둔다.
+  [[디자인 시스템:컴포넌트 조립 규칙]]의 `Material` 변형 예 목록에서 ShellSurface를 빼 "(Flyout, WindowFrame 등)"으로 고쳤다(허락받은 작은 문서 맞춤).
+"PR #472 Taskbar: Material 속성 삭제와 Figma 스토리 다시 만들기": |
+  `Taskbar`의 `material` prop과 `TaskbarMaterial` 타입, `solid` 분기를 지우고 `material-acrylic-base`를 바로 건다. 조립이 쓰지 않아 있던 `Solid` 동작 스토리도 지웠다. `Default`·`Empty` 동작 스토리는 슬롯 prop의 동작을 보므로 남겼다.
+  지웠던 `Figma` 스토리를 다시 만들었다. 슬롯은 `export.json`의 기본 내용과 같게 가운데에 시작 버튼(`logo-windows`)·검색상자(`appearance=taskbar`, 문구 "검색")·파일 탐색기·Chrome(`TaskbarButton`), 오른쪽에 `SystemTray`(오후 3:24, 2026-10-20)를 넣었다. 너비는 `w-size-taskbar-width`, 아이콘 라벨은 접근성 이름("시작", "파일 탐색기", "Chrome")이다. 앱 아이콘은 다른 `Figma` 스토리처럼 `ImageAsset`을 쓴다. 코드 `Taskbar`의 `center`·`right`에는 기본값을 두지 않았다.
+"PR #473 TaskbarPreviewList: Material 속성 삭제와 Figma 스토리 다시 만들기": |
+  `TaskbarPreviewList`의 `material` prop과 `TaskbarPreviewListMaterial` 타입, `solid` 분기를 지우고 `material-acrylic-base surface-shell-acrylic`을 바로 건다. 조립이 쓰지 않아 있던 `Solid` 스토리도 지웠고, `Default` 스토리는 `children` 자리와 div 속성을 보여 주는 것이라 남겼다.
+  지웠던 `Figma` 스토리를 다시 만들었다. `Previews` 슬롯에는 `export.json`의 기본 내용과 같은 `WindowPreview`(`State=Rest`) 둘을 넣고, 앱 아이콘은 파일 탐색기 이미지 자산을 썼다. `WindowPreview`의 thumbnail 슬롯은 피그마에서 비어 있어 `WindowPreview`의 `Figma` 스토리와 같이 칠 없는 빈 내용만 넣었다. 코드 `TaskbarPreviewList`의 `children`에는 기본값을 두지 않았다. 창 제목 "창 제목"은 `WindowPreview`가 `title`을 주지 않으면 그리는 글자라 따로 넘기지 않았다.

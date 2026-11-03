@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
 import { Asset } from '../asset/asset';
 import { Callout } from './callout';
@@ -12,17 +11,19 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 아이콘과 글을 슬롯(children)에 채운다 */
-export const Default: Story = {
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 `Icon` 기본 인스턴스와 `Content` 슬롯 기본 내용(글 본문 글자)을 넣은 모습이다.
+// 너비는 쓰는 곳이 정하므로 글 폭 토큰으로 준다.
+export const Figma: Story = {
   render: () => (
-    <div className="w-size-post-width">
-      <Callout icon={<Asset name="icons/ic_fluent_info_24_regular.svg" className="size-full" />}>
-        <p>콜아웃 글</p>
-      </Callout>
-    </div>
+    <Callout
+      className="w-size-post-width"
+      icon={<Asset name="icons/ic_fluent_info_24_regular.svg" className="size-full" />}
+    >
+      <p className="type-body-large text-text-fill-primary">
+        콜아웃은 아이콘과 함께 눈에 띄게 보여 줄 글을 담는다.{' '}
+        <strong className="type-body-large-strong">글자 서식</strong>도 쓸 수 있다.
+      </p>
+    </Callout>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('콜아웃 글')).toBeInTheDocument();
-  },
 };

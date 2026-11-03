@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
+import { ImageAsset } from '../image-asset/image-asset';
 import { Equation } from './equation';
 
 const meta = {
@@ -11,17 +11,19 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 수식을 Formula 슬롯(children)에 채운다 */
-export const Default: Story = {
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 `Formula` 슬롯 기본 내용(수식 자산 인스턴스)을 같은 크기 변수(size/equation/*)로 넣은 모습이다.
+// 제품은 서버가 KaTeX로 그린 HTML을 같은 슬롯에 넣는다([[기술 스택:글 본문 처리]]).
+export const Figma: Story = {
   render: () => (
     <div className="w-size-post-width">
       <Equation>
-        <span>x = 1</span>
+        <ImageAsset
+          name="images/equation-quadratic-formula"
+          alt="근의 공식"
+          className="h-size-equation-height w-size-equation-width"
+        />
       </Equation>
     </div>
   ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText('x = 1')).toBeInTheDocument();
-  },
 };

@@ -62,7 +62,6 @@ export function ChromeFindBar(props: ChromeFindBarProps): JSX.Element {
   return (
     <Flyout
       material="solid"
-      padding="compact"
       role="search"
       aria-label={FIND_LABEL}
       className={cn(deviceClassNames[device], className)}
