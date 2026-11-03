@@ -62,7 +62,7 @@
             "name": "label",
             "size": {
               "h": 16,
-              "w": 85
+              "w": 87
             },
             "sizing": {
               "h": "FILL",
@@ -152,7 +152,7 @@
         "strokes": [
           "control-stroke/default"
         ],
-        "strokesIncludedInLayout": true,
+        "strokesIncludedInLayout": false,
         "type": "COMPONENT",
         "width": "size/pinned-tile/width"
       }
