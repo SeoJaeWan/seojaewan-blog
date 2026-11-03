@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Asset } from '../asset/asset';
+import { BestMatchCard } from '../best-match-card/best-match-card';
 import { ImageAsset } from '../image-asset/image-asset';
 import { ListGroup } from '../list-group/list-group';
 import { ListItem } from '../list-item/list-item';
@@ -31,12 +32,14 @@ const meta = {
     <div className={sizeClassNames[args.device]}>
       <SearchResults
         device={args.device}
-        icon={documentIcon}
-        actions={
-          <>
+        card={
+          <BestMatchCard
+            icon={documentIcon}
+            className={args.device === 'mobile' ? 'w-full' : 'shrink-shrink-none'}
+          >
             <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
             <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
-          </>
+          </BestMatchCard>
         }
       >
         <ListGroup label="최고 일치" className="w-full shrink-shrink-none">

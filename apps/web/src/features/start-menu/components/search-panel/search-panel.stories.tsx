@@ -34,7 +34,7 @@ const meta = {
       <SearchBody
         view="before-typing"
         device={args.device}
-        className="min-h-size-hairline w-full flex-flex-fill"
+        className="min-h-size-none w-full flex-flex-fill"
         recent={SEARCH_RECENT}
         recommended={
           args.device === 'mobile'

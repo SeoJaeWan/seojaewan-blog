@@ -41,7 +41,7 @@ const meta = {
       <StartBody
         view="list"
         device={args.device}
-        className="min-h-size-hairline w-full flex-flex-fill"
+        className="min-h-size-none w-full flex-flex-fill"
         pinned={START_PINNED}
         groups={START_LETTER_GROUPS}
       />

@@ -1,6 +1,13 @@
 import type { JSX } from 'react';
 
-import { cn, ListGroup, MenuItem, ScrollArea, SearchResults } from '@seojaewan/design-system';
+import {
+  BestMatchCard,
+  cn,
+  ListGroup,
+  MenuItem,
+  ScrollArea,
+  SearchResults,
+} from '@seojaewan/design-system';
 
 import { renderItemIcon } from '@/features/start-menu/components/item-icon/item-icon';
 import { ItemListRow } from '@/features/start-menu/components/item-list-row/item-list-row';
@@ -185,11 +192,13 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     <SearchResults
       device={device}
       className={className}
-      icon={renderItemIcon({ kind: cardItem.kind })}
-      title={cardItem.title}
-      meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
-      actions={
-        <>
+      card={
+        <BestMatchCard
+          icon={renderItemIcon({ kind: cardItem.kind })}
+          title={cardItem.title}
+          meta={cardItem.date === undefined ? cardKindLabel : `${cardKindLabel} · ${cardItem.date}`}
+          className={device === 'mobile' ? 'w-full' : 'shrink-shrink-none'}
+        >
           <MenuItem
             standalone
             label="열기"
@@ -204,7 +213,7 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
               onClick={handleCopyCardItemLink}
             />
           )}
-        </>
+        </BestMatchCard>
       }
     >
       <ListGroup label="최고 일치" className="w-full shrink-shrink-none">

@@ -54,7 +54,7 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
           kind="preview"
           appIcon={appIcon}
           title={title}
-          className="min-w-size-hairline flex-flex-fill"
+          className="min-w-size-none flex-flex-fill"
         />
         <IconButton
           variant="subtle"

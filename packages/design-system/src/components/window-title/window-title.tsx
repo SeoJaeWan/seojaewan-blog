@@ -45,7 +45,7 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
       </span>
       <p
         className={cn(
-          'min-w-size-hairline flex-flex-fill truncate type-caption',
+          'min-w-size-none flex-flex-fill truncate type-caption',
           isInactive ? 'text-text-fill-tertiary' : 'text-text-fill-primary',
         )}
       >

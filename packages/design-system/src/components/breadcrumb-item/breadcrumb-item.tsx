@@ -46,7 +46,7 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
           'motion-control-state',
         )}
       >
-        <span className="min-w-size-hairline flex-flex-fill truncate type-caption text-text-fill-primary">
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
           {label}
         </span>
       </button>

@@ -45,7 +45,7 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
         {isMobile && (
           <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-shrink-none" />
         )}
-        <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col">{children}</div>
+        <div className="flex min-h-size-none w-full flex-flex-fill flex-col">{children}</div>
       </div>
     </ShellSurface>
   );
