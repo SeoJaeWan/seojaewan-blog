@@ -61,7 +61,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
             label="시작"
             aria-expanded={isStartOpen}
             onClick={props.onStartClick}
-            icon={<Asset name="illustrations/logo-windows.svg" className="size-full" />}
+            icon={<Asset name="illustrations/logo-windows.svg" />}
           />
           {search === 'box' ? (
             // 돋보기 자리를 눌러도 검색칸으로 보도록 상자 전체를 감싼다. contents라 배치는 바뀌지 않는다
@@ -83,7 +83,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
               icon={
                 <Asset
                   name="icons/ic_fluent_search_20_regular.svg"
-                  className="size-full text-text-fill-primary"
+                  className="text-text-fill-primary"
                 />
               }
             />

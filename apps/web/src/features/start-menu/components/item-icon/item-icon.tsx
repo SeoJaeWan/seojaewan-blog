@@ -19,12 +19,12 @@ const appIconNames = {
 export function renderItemIcon(source: ItemIconSource): ReactNode {
   switch (source.kind) {
     case 'folder':
-      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" />;
     case 'post':
-      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" />;
     case 'link':
-      return <Asset name="illustrations/file-link.svg" className="size-full" />;
+      return <Asset name="illustrations/file-link.svg" />;
     case 'app':
-      return <ImageAsset name={appIconNames[source.app]} className="size-full object-contain" />;
+      return <ImageAsset name={appIconNames[source.app]} />;
   }
 }

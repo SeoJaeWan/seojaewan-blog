@@ -4,12 +4,16 @@ import { cn } from '../../cn';
 
 export type SearchResultsDevice = 'desktop' | 'mobile';
 
+// 카드 자리. 피그마에서 카드는 자리 너비를 채운다(FILL). 카드가 가진 너비(258) 대신 자리 너비를 따르도록
+// 카드의 flex 기준 크기를 0으로 두고 늘린다.
+const CARD_SLOT_CLASS_NAME = '[&>*]:min-w-size-none [&>*]:flex-flex-fill';
+
 type SearchResultsProps = Omit<ComponentProps<'div'>, 'title'> & {
   /** 피그마 Device. desktop은 결과 목록 옆에 카드를, mobile은 카드를 위에 두고 그 아래에 결과 목록을 쌓는다 */
   device?: SearchResultsDevice;
   /**
    * 안쪽 BestMatchCard. 피그마에서 카드는 SearchResults 안에 놓인 인스턴스이고, 카드의 속성(`Title`, `Meta`)과 `Actions` 슬롯은 조립이 바로 채운다.
-   * 카드의 속성과 슬롯을 SearchResults가 다시 열지 않는다. 카드 크기 클래스(데스크톱은 줄어들지 않게, 모바일은 너비 채움)는 쓰는 곳이 카드에 준다
+   * 카드의 속성과 슬롯을 SearchResults가 다시 열지 않는다. 카드 너비는 SearchResults가 카드 자리에서 채운다(피그마 FILL)
    */
   card: ReactNode;
   /** 피그마 `Results` 슬롯. 검색 결과 목록(ListGroup 등)을 넣는다 */
@@ -36,7 +40,7 @@ export function SearchResults(props: SearchResultsProps): JSX.Element {
           className,
         )}
       >
-        {card}
+        <div className={cn('flex w-full', CARD_SLOT_CLASS_NAME)}>{card}</div>
         <div className="flex w-full shrink-shrink-none flex-col gap-spacing-2xs">{children}</div>
       </div>
     );
@@ -46,7 +50,7 @@ export function SearchResults(props: SearchResultsProps): JSX.Element {
       <div className="flex w-size-search-results-list-width shrink-shrink-none flex-col gap-spacing-2xs">
         {children}
       </div>
-      {card}
+      <div className={cn('flex min-w-size-none flex-flex-fill', CARD_SLOT_CLASS_NAME)}>{card}</div>
     </div>
   );
 }

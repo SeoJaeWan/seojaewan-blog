@@ -75,7 +75,7 @@ export function ListItem(props: ListItemProps): JSX.Element {
     >
       <span
         className={cn(
-          'flex shrink-shrink-none items-center justify-center',
+          'flex shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain',
           isTwoLine ? 'size-size-icon-xl' : 'size-size-icon-sm',
         )}
       >

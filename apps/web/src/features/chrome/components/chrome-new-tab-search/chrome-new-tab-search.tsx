@@ -46,13 +46,8 @@ const PLACEHOLDER = '글 검색 또는 URL 입력';
 
 // 글 아이콘은 래스터 자산(file/Document), 검색은 돋보기 아이콘이다(피그마 추천 줄의 leading icon).
 const suggestionIcons = {
-  post: <ImageAsset name="images/file-document" className="size-full object-contain" />,
-  search: (
-    <Asset
-      name="icons/ic_fluent_search_16_regular.svg"
-      className="size-size-icon-sm text-text-fill-primary"
-    />
-  ),
+  post: <ImageAsset name="images/file-document" />,
+  search: <Asset name="icons/ic_fluent_search_16_regular.svg" className="text-text-fill-primary" />,
 } as const satisfies Record<ChromeNewTabSuggestion['kind'], ReactNode>;
 
 /**

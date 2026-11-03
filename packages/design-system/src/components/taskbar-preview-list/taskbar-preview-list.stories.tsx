@@ -16,16 +16,12 @@ const appIcon = new URL('../../assets/images/app-file-explorer.webp', import.met
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 TaskbarPreviewList는 변형이 하나다. Previews 슬롯에는 피그마 슬롯 기본 내용과 같은 WindowPreview 둘을 넣는다.
-// WindowPreview의 thumbnail 슬롯은 피그마에서 비어 있어, 빈 슬롯이 차지하는 크기만 칠 없는 빈 내용으로 둔다.
+// WindowPreview의 thumbnail 슬롯은 피그마에서 비어 있어 넣지 않는다. 축소 화면 자리의 크기는 WindowPreview가 갖는다.
 export const Figma: Story = {
   render: () => (
     <TaskbarPreviewList>
       {[0, 1].map((index) => (
-        <WindowPreview
-          key={index}
-          appIcon={<img src={appIcon} alt="" className="size-full object-contain" />}
-          thumbnail={<div className="size-full" />}
-        />
+        <WindowPreview key={index} appIcon={<img src={appIcon} alt="" />} />
       ))}
     </TaskbarPreviewList>
   ),

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import toggleExport from '../../../figma/components/toggle/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { Toggle } from './toggle';
 
 const meta = {
@@ -8,14 +10,12 @@ const meta = {
   argTypes: {
     state: { control: 'inline-radio', options: ['expanded', 'collapsed'] },
   },
-  // 피그마 State 변형(Expanded/Collapsed)을 isExpanded로 옮긴다. 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다.
-  // Content 슬롯에는 피그마 슬롯 기본 내용(글 본문 글자)을 넣는다. Collapsed는 내용을 그리지 않는다.
+  // 피그마 State 변형(Expanded/Collapsed)을 isExpanded로 옮긴다. 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다.
+  // Content 슬롯에는 피그마 슬롯 기본 내용(글 본문 글자)을 넣는다. 글자 스타일은 Toggle이 정한다. Collapsed는 내용을 그리지 않는다.
   render: ({ state }: { state: 'expanded' | 'collapsed' }) => (
-    <div className="w-size-post-width">
-      <Toggle isExpanded={state === 'expanded'}>
-        <p className="type-body-large text-text-fill-primary">토글을 펼치면 보이는 글이다.</p>
-      </Toggle>
-    </div>
+    <Toggle isExpanded={state === 'expanded'}>
+      <p>토글을 펼치면 보이는 글이다.</p>
+    </Toggle>
   ),
 } satisfies Meta<{ state: 'expanded' | 'collapsed' }>;
 
@@ -26,6 +26,7 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 export const Figma: Story = {
   args: { state: 'expanded' },
+  decorators: [figmaFrame(toggleExport)],
 };
 
 type PlainStory = StoryObj;

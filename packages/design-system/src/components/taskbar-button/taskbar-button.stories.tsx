@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { Taskbar } from '../taskbar/taskbar';
 import { TaskbarButton } from './taskbar-button';
 
 // 피그마 icon 속성의 기본 인스턴스(파일 탐색기 앱 아이콘)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
@@ -23,11 +24,7 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <TaskbarButton
-      indicator={args.indicator}
-      label="앱 이름"
-      icon={<img src={appIcon} alt="" className="size-full object-contain" />}
-    />
+    <TaskbarButton indicator={args.indicator} label="앱 이름" icon={<img src={appIcon} alt="" />} />
   ),
 } satisfies Meta<FigmaArgs>;
 
@@ -69,14 +66,18 @@ export const Default: ClickStory = {
 };
 
 // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-/** indicator에 따라 표시줄 상태가 바뀐다. 기본은 표시줄이 없다 */
+/** indicator에 따라 표시줄 상태가 바뀐다. 기본은 표시줄이 없다. 여러 버튼은 TaskbarButton을 담는 Taskbar의 가운데 자리에 놓는다 */
 export const Indicators: Story = {
   render: () => (
-    <div className="flex gap-spacing-sm">
-      <TaskbarButton label="표시줄 없음" icon={<svg aria-hidden="true" />} />
-      <TaskbarButton label="실행 중" icon={<svg aria-hidden="true" />} indicator="running" />
-      <TaskbarButton label="활성" icon={<svg aria-hidden="true" />} indicator="active" />
-    </div>
+    <Taskbar
+      center={
+        <>
+          <TaskbarButton label="표시줄 없음" icon={<svg aria-hidden="true" />} />
+          <TaskbarButton label="실행 중" icon={<svg aria-hidden="true" />} indicator="running" />
+          <TaskbarButton label="활성" icon={<svg aria-hidden="true" />} indicator="active" />
+        </>
+      }
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

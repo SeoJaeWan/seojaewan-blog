@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import listGroupExport from '../../../figma/components/list-group/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { ImageAsset } from '../image-asset/image-asset';
 import { ListItem } from '../list-item/list-item';
 import { ListGroup } from './list-group';
@@ -18,15 +20,12 @@ const meta = {
   argTypes: {
     showHeader: { control: 'boolean' },
   },
-  // 너비는 피그마 원본 너비이자 Start 본문 자리의 크기 토큰으로 준다. 머리글 글자는 SectionHeader 기본값과 같다.
+  // 너비는 FigmaFrame이 피그마 원본 너비(Start 본문 자리의 크기 토큰)로 감싼다. 머리글 글자는 SectionHeader 기본값과 같다.
+  decorators: [figmaFrame(listGroupExport)],
   render: (args) => (
-    <ListGroup showHeader={args.showHeader} className="w-size-shell-body-width">
+    <ListGroup showHeader={args.showHeader}>
       {defaultItems.map((title) => (
-        <ListItem
-          key={title}
-          title={title}
-          icon={<ImageAsset name="images/file-document" className="size-full object-contain" />}
-        />
+        <ListItem key={title} title={title} icon={<ImageAsset name="images/file-document" />} />
       ))}
     </ListGroup>
   ),

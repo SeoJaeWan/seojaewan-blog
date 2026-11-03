@@ -15,5 +15,5 @@ type TaskbarAppIconProps = {
  * @param props
  */
 export function TaskbarAppIcon(props: TaskbarAppIconProps): JSX.Element {
-  return <ImageAsset name={taskbarApps[props.app].icon} className="size-full object-contain" />;
+  return <ImageAsset name={taskbarApps[props.app].icon} />;
 }

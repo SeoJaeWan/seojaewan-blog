@@ -56,10 +56,7 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
   const defaultChevron = (
     <Asset
       name="icons/ic_fluent_chevron_right_16_regular.svg"
-      className={cn(
-        'size-size-icon-sm text-text-fill-secondary',
-        expand === 'expanded' && 'rotate-rotate-quarter',
-      )}
+      className={cn('text-text-fill-secondary', expand === 'expanded' && 'rotate-rotate-quarter')}
     />
   );
   return (
@@ -83,11 +80,12 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
       )}
       <span
         onClick={handleChevronClick}
-        className="flex size-size-icon-sm shrink-shrink-none items-center justify-center"
+        className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain"
       >
         {expand !== 'none' && (chevron ?? defaultChevron)}
       </span>
-      <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+      {/* 피그마 Item icon 자리. 한 가지 색 아이콘(바탕 화면 등)은 text/fill/primary로 칠한다. */}
+      <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-primary [&>*]:size-full [&>*]:object-contain">
         {icon}
       </span>
       <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">

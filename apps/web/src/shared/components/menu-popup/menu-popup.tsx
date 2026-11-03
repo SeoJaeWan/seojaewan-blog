@@ -188,8 +188,8 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
   const { entry, itemClassName } = props;
   switch (entry.kind) {
     case 'separator':
-      // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다.
-      return <MenuSeparator className="w-full" />;
+      // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다. 너비는 메뉴 바탕(Flyout)이 채운다.
+      return <MenuSeparator />;
     case 'submenu':
       return <SubmenuEntry entry={entry} itemClassName={itemClassName} />;
     case 'zoom': {

@@ -30,7 +30,9 @@ export function BestMatchCard(props: BestMatchCardProps): JSX.Element {
         className,
       )}
     >
-      <div className="size-size-icon-3xl shrink-shrink-none">{icon}</div>
+      <div className="size-size-icon-3xl shrink-shrink-none [&>*]:size-full [&>*]:object-contain">
+        {icon}
+      </div>
       <p className="shrink-shrink-none type-subtitle whitespace-nowrap text-text-fill-primary">
         {title}
       </p>

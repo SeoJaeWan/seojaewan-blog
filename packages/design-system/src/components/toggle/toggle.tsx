@@ -72,9 +72,10 @@ export function Toggle(props: ToggleProps): JSX.Element {
       </button>
       {isExpanded ? (
         // 피그마 Content 슬롯의 배치다. 꺾쇠 자리(spacing/2xl)만큼 들여 쓰고 블록 사이를 spacing/sm로 띄운다.
+        // 슬롯 글자는 글 본문 글자(Body Large)다. 제목·목록처럼 다른 글자 블록은 그 블록이 글자 스타일을 갖는다.
         <div
           id={contentId}
-          className="flex w-full min-w-size-none flex-col gap-spacing-sm pl-spacing-2xl"
+          className="flex w-full min-w-size-none flex-col gap-spacing-sm pl-spacing-2xl type-body-large text-text-fill-primary"
         >
           {children}
         </div>

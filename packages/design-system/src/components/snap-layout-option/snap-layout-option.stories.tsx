@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { SnapLayoutFlyout } from '../snap-layout-flyout/snap-layout-flyout';
 import { SnapLayoutOption } from './snap-layout-option';
 
 // 피그마 SnapLayoutOption의 변형 속성 값이다(정규화한 이름).
@@ -57,16 +58,19 @@ export const Default: SelectZoneStory = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 네 가지 레이아웃의 칸은 칸 번호 순서로 접근성 이름을 갖는다. layout을 주지 않으면 half다 */
+/** layout을 주지 않으면 half(반반)다 */
+export const DefaultLayout: Story = {
+  render: () => <SnapLayoutOption />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('group', { name: '반반' })).toBeInTheDocument();
+  },
+};
+
+// @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
+/** 네 가지 레이아웃의 칸은 칸 번호 순서로 접근성 이름을 갖는다. 네 레이아웃은 SnapLayoutOption을 담는 SnapLayoutFlyout으로 그린다 */
 export const Layouts: Story = {
-  render: () => (
-    <div className="flex flex-col gap-spacing-sm">
-      <SnapLayoutOption />
-      <SnapLayoutOption layout="twothirds" />
-      <SnapLayoutOption layout="halfquarter" />
-      <SnapLayoutOption layout="quad" />
-    </div>
-  ),
+  render: () => <SnapLayoutFlyout />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const cases = [

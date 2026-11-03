@@ -275,9 +275,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
                 onClick={() => {
                   onLatestPostOpen?.(index);
                 }}
-                icon={
-                  <ImageAsset name="images/file-document" className="size-full object-contain" />
-                }
+                icon={<ImageAsset name="images/file-document" />}
               />
             );
           },
@@ -330,9 +328,7 @@ function SearchResultsPage(
                   subtitle={result.date}
                   showTrailing={isWide}
                   trailing={result.url}
-                  icon={
-                    <ImageAsset name="images/file-document" className="size-full object-contain" />
-                  }
+                  icon={<ImageAsset name="images/file-document" />}
                   className="w-full"
                 />
               );

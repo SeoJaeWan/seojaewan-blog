@@ -60,10 +60,8 @@ type ExplorerWindowProps = WindowFrameControlProps & {
 };
 
 // 탭 기본 아이콘과 모바일 앱 아이콘은 피그마 Window/Explorer의 인스턴스(file/Folder, app/File Explorer) 그대로다.
-const folderTabIcon = <ImageAsset name="images/file-folder" className="size-full object-contain" />;
-const explorerAppIcon = (
-  <ImageAsset name="images/app-file-explorer" className="size-full object-contain" />
-);
+const folderTabIcon = <ImageAsset name="images/file-folder" />;
+const explorerAppIcon = <ImageAsset name="images/app-file-explorer" />;
 
 // 가운데 버튼의 `button` 값이다.
 const MIDDLE_BUTTON = 1;
