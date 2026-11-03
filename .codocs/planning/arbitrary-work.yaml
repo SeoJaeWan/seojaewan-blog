@@ -7,6 +7,17 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"Breadcrumb PR #480: 변형 정리와 스토리": |
+  - `State=Editing`을 지우며 코드의 `editing`·`address` prop과 주소 입력창 분기를 지웠다. 앱은 이 prop을 쓰지 않았다(주소 입력은 아직 구현하지 않음). 루트에 `relative`가 필요하던 아래 파란 선도 함께 없앴다.
+  - 스토리는 `Figma` 하나만 남겼다. `Default`(위치 아이콘과 넘긴 경로 칸이 그려지는지)는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠고, `Editing`은 변형과 함께 지웠다.
+  - `Figma` 스토리의 Items 슬롯에는 `export.json` 기본 내용대로 `BreadcrumbItem` 둘(`바탕 화면` 구분자 있음, `Blog` 현재 위치·구분자 없음)을 넣었다.
+  - 컴포넌트 JSDoc의 연결을 상태 섹션에서 [[디자인 시스템:컴포넌트 조립 규칙]]으로 바꿨다(상태 변형이 없어졌다).
+"Flyout PR #467: Padding 삭제와 슬롯 기본 내용 스토리에서 정한 것": |
+  - `Figma` 스토리의 Content 슬롯은 피그마 슬롯 기본 내용대로 메뉴 항목 넷(열기, 새 창에서 열기, 이름 바꾸기 `F2`, 삭제 `Delete`)과 구분선이다. Base UI 메뉴 밖이라 항목은 `MenuItem standalone`(버튼)으로 그렸고, 구분선은 `MenuPopup`의 구분선과 같은 배치 프레임(위 2·아래 6 여백) 안의 `Separator`다.
+  - Flyout은 HUG지만 슬롯 기본 내용이 모두 FILL이라 피그마 폭 320은 내용이 정하지 않는다. 그래서 스토리는 지난 토큰 이름 바꾸기 때처럼 `w-size-search-box-wide-width`(320)로 감쌌다. 역할이 맞는 크기 토큰은 아니다.
+  - `padding` prop을 지우며 Flyout은 옛 `compact` 모양(위아래 `spacing/2xs`, 좌우 0)만 남겼다. 옛 기본값이 `default`라 `padding`을 넘기지 않던 곳(모션 견본 `motion-flyout-enter`)은 이제 compact 여백으로 그린다. 앱에서 `padding`을 넘기지 않고 Flyout을 쓰는 곳은 없었다.
+  - 옛 `Default`·`Acrylic` 스토리는 `Figma` 스토리가 두 재질을 다루므로 지웠다. `Default`의 `play`는 넘긴 역할·이름이 그대로 나오는지만 보는 검사라 옮기지 않았다.
+  - [[디자인 시스템:컴포넌트 조립 규칙]]의 예 "Menu는 Flyout(`Padding=Compact`) 위에 쌓고"에서 지워진 속성 이름을 뺐다.
 "컴포넌트 테스트 전환(묶음 C): 상태 속성 data-state·data-placement·data-indicator를 더함": |
   클래스로 확인하던 상태 모양을 [[테스트 작성 규칙:스토리 테스트]]의 결정대로 상태 속성으로 바꾸기 위해, 속성이 없던 컴포넌트에 더했다. `WindowTitle`에 `data-state`(`active`·`inactive`), `WindowFrame`에 `data-state`와 `data-placement`(`normal`·`maximized`·`snapped`), `Toc`에 `data-state`(`expanded`·`collapsed`), `TaskbarButton`에 `data-indicator`(`none`·`running`·`active`)를 붙였다. 값은 prop 값을 그대로 쓴다. `aria-*`로 나타낼 수 있는 상태가 아니고(창 활성 여부, 배치, 목차 접힘, 표시줄 종류), 같은 저장소의 `data-window-state` 같은 `data-*` 관례가 있어 `data-*`로 정했다. 문서에 이 속성 이름을 정해 둔 곳은 없으므로 이름이 맞는지 검토가 필요하다.
 "컴포넌트 테스트 전환(묶음 C): 고정·변형 모양 확인은 빼고, 몇 가지는 스토리용으로 바꿈": |
@@ -117,6 +128,9 @@ _codocs:
   - 결과 페이지: `behavior-cases.yml`이 `main` push(와 수동 실행)마다 앱을 빌드하고 모든 케이스를 `--trace on`으로 돌려 JSON 보고서를 만들고, `build:report`가 trace zip을 `traces/`에 옮겨 담은 정적 페이지를 만들어 GitHub Pages에 올린다. 페이지의 "trace 보기"는 `https://trace.playwright.dev/?trace=<Pages의 zip 주소>`다. 케이스가 실패해도 페이지는 올리고 작업만 실패로 표시한다. 필수 검사(ruleset)에 넣지 않았다. 배포 동시 실행은 끊지 않고 차례로 한다.
   - Pages 액션은 지금 나온 최신(`configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`)을 썼다.
   - 루트 `pnpm cases` 스크립트와, ESLint의 `process.env` 허용 목록(`configFiles`)에 `tools/behavior-cases/src/**`를 더했다.
+"PR #471 WindowFrame: Material=Solid 삭제": |
+  `WindowFrame`의 `material` 값에서 `solid`와 그 분기(바탕 칠 `bg-material-fallback-mica-base`, 활성·비활성 그림자 표의 `solid` 줄)를 지우고 `Figma` 스토리의 `MATERIALS`를 `mica`·`chrome`으로 줄였다. `material="solid"`를 쓰는 앱 코드는 없어 앱은 고치지 않았다. `solid` 분기만 쓰던 토큰 클래스가 없어져도 `chrome`이 같은 그림자 클래스를 쓰므로 남는 토큰은 건드리지 않았다.
+  Content·Title bar content 슬롯은 `export.json`에서 모든 변형이 비어 있어(기본 내용 없음, FILL) `Figma` 스토리는 슬롯을 계속 비워 둔다. 임시 스토리로 정리할 것도 없었다(남은 스토리는 모두 동작 `play`다).
 "컴포넌트 PR #470 TileGrid: Figma 스토리 되살림": |
   - `Figma` 스토리를 다시 만들고 `align` 변형마다 `tiles` 슬롯에 `export.json` 기본 내용과 같은 PinnedTile을 넣었다(Start 8개: File Explorer·Chrome·Blog·GitHub·이력서·사이드 프로젝트·React·React 19 훅 정리, Center 6개: 글 문서 아이콘). 아이콘은 앱의 `renderItemIcon`과 같이 이미지는 `ImageAsset`, 링크는 `Asset`(`illustrations/file-link.svg`)으로 그렸다. 감싸는 너비는 `w-size-new-tab-grid-width`(576)다.
   - 빈 HUG 때 대신 둔 `Default`(글자 하나 넣고 보이는지만 확인)·`Center` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 모양은 캡처가, 실제 배치는 시작 메뉴·새 탭 스토리가 맡는다.
@@ -124,6 +138,15 @@ _codocs:
 "컴포넌트 PR #475 PinnedTile: Hover 글자 폭과 Default 스토리": |
   - 피그마 Hover의 `strokesIncludedInLayout`이 꺼져 Hover도 글자 폭 87이 되었다. 코드는 이미 `inner-border`로 그려 고친 것이 없고, 캡처 표 세 변형 모두 테두리 차이가 없음을 확인했다. 위 "마지막 맞춤: PinnedTile 테두리를 안쪽 선으로"의 Hover 85·87 차이는 지난 내용이 됐지만 검토 기록이라 고치지 않았다. 컴포넌트 주석의 "피그마 Rest와 같은 87px"만 "피그마와 같은 87px"로 고쳤다.
   - 컴포넌트만 보던 `Default` 스토리를 지웠다. 이름·아이콘·`onClick`이 넘긴 대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 걸리고, 고정 타일을 눌러 여는 동작은 `start-menu-layer.stories.tsx`의 `OpenItems`가 이미 본다.
+"컴포넌트 PR #477 SearchResults: Figma 스토리 되살림": |
+  - `Figma` 스토리를 다시 만들고 `device` 변형마다 `Results` 슬롯에 `export.json` 기본 내용과 같은 ListGroup 넷(최고 일치: Two-line·Selected "리액트 19 훅 정리"/"글", 폴더: "리액트", 글: 두 항목, 외부 링크: "리액트 스터디 노트")을 넣었다. 안쪽 BestMatchCard는 기본값(제목·부가 정보, 문서 아이콘)에 동작 MenuItem 둘(열기, 링크 복사, `standalone`)을 넣었다. 동작 목록은 앱 `search-body.tsx`와 같이 `flex flex-col items-start gap-spacing-sm` 상자로 감쌌다(BestMatchCard `Actions` 슬롯 상자가 아직 블록이라서다).
+  - 크기는 변형마다 `h-size-search-results-height w-size-shell-body-width`, `h-size-search-results-mobile-height w-size-shell-mobile-body-width`로 감쌌다. 배치는 `padded`다(높이 545·465가 홀수라 가운데 배치에서 반 픽셀에 놓여 선과 글자가 번졌다).
+  - 자리 글자를 넣던 `Default`·`Mobile` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. 넘긴 글자가 나오는지와 넘치지 않을 때 스크롤바가 숨는지만 보았다(뒤의 것은 ScrollArea의 동작이다).
+  - 코드는 피그마에 없는 BestMatchCard 속성(`icon`·`title`·`meta`)과 `Actions` 슬롯(`actions`)을 SearchResults prop으로 다시 연다. [[디자인 시스템:컴포넌트 조립 규칙]]의 "안쪽 바탕의 슬롯을 자기 슬롯으로 따로 열지 않는다"와 어긋나 보이지만 이 PR 전부터 있던 구조라 고치지 않고 보고만 한다.
+"컴포넌트 PR #469 ListGroup: Figma 스토리와 동작 스토리 정리": |
+  - `Figma` 스토리를 다시 만들고 `items` 슬롯에 `export.json` 기본 내용과 같은 Compact ListItem 둘("리액트 서버 컴포넌트 이해하기", "리액트 쿼리 캐시 전략", `images/file-document`)을 넣었다. 머리글 글자는 SectionHeader 기본값 "머리글"이라 넘기지 않았다. 컴포넌트 속성 `Show header`는 `showHeader` arg로 열었다. 너비는 `w-size-shell-body-width`(574)다. 기본 내용의 ListItem 속성에 `Show subtitle: true`·`Subtitle`이 있으나 Compact라 부제가 그려지지 않아 넘기지 않았다.
+  - 자리 글자(`<span>항목</span>`)를 넣던 `Default`·`HeaderClickable`·`HeaderHidden` 스토리를 [[테스트 작성 규칙:테스트 지침]]대로 지웠다. `Default`·`HeaderHidden`은 넘긴 글자와 불리언이 그대로 나오는지만 보았고, `HeaderClickable`이 보던 머리글 누르기 배선은 앱 `start-body.stories.tsx`의 글자 머리글 스토리가 실제 ListGroup으로 본다.
+  - 컴포넌트 주석의 "피그마 원본 너비 574"를 토큰 이름(`size/shell/body-width`)으로 바꿨다.
 "컴포넌트 PR #476 StartMenuFooter: Content 슬롯 가로 배치와 Figma 스토리": |
   - 피그마 `Content` 슬롯은 가로 자동 배치(세로 가운데)인데 코드의 슬롯 상자는 블록이라, 앱이 안에 `flex w-full items-center` 상자를 하나 더 두고 있었다. 슬롯 상자를 `flex items-center`로 바꾸고 `start-menu-panel.tsx`의 덧상자를 지웠다(ProfileButton은 그대로 부모 채움).
   - `Figma` 스토리를 다시 만들고 슬롯에 `export.json` 기본 내용과 같은 ProfileButton(`images/avatar-profile`, "서재완", 부모 채움)과 전원 IconButton(`subtle`, `ic_fluent_power_20_regular`, 이름 "전원" — 앱 `StartPowerButton`과 같다)을 넣었다. 너비는 `w-size-start-menu-footer-width`(638)다. 내용 글자 하나만 확인하던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]]대로 지웠다.
