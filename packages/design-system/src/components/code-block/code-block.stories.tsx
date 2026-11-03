@@ -11,18 +11,31 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// 강조된 코드를 슬롯에 넣은 모습이다. 색은 `code-syntax` 토큰 클래스다([[기술 스택:글 본문 처리]]).
-export const Highlighted: Story = {
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 슬롯 기본 내용(코드 2줄)을 넣은 모습이다. 색은 `code-syntax` 토큰 클래스다([[기술 스택:글 본문 처리]]).
+export const Figma: Story = {
   render: () => (
     <div className="w-size-post-width">
-      <CodeBlock language="ts">
-        <span className="text-code-syntax-keyword-control">const</span>{' '}
-        <span className="text-code-syntax-variable">count</span>{' '}
+      <CodeBlock language="언어">
+        <span className="text-code-syntax-keyword">const</span>{' '}
+        <span className="text-code-syntax-variable">post</span>{' '}
         <span className="text-code-syntax-punctuation">=</span>{' '}
-        <span className="text-code-syntax-constant">1</span>
-        <span className="text-code-syntax-punctuation">;</span>
+        <span className="text-code-syntax-function">use</span>
+        <span className="text-code-syntax-punctuation">(</span>
+        <span className="text-code-syntax-function">fetchPost</span>
+        <span className="text-code-syntax-punctuation">(</span>
+        <span className="text-code-syntax-variable">slug</span>
+        <span className="text-code-syntax-punctuation">));</span>
         {'\n'}
-        <span className="text-code-syntax-comment">// 한글 주석</span>
+        <span className="text-code-syntax-keyword-control">return</span>{' '}
+        <span className="text-code-syntax-tag">&lt;</span>
+        <span className="text-code-syntax-type">Article</span>{' '}
+        <span className="text-code-syntax-attribute">post</span>
+        <span className="text-code-syntax-punctuation">={'{'}</span>
+        <span className="text-code-syntax-variable">post</span>
+        <span className="text-code-syntax-punctuation">{'}'}</span>{' '}
+        <span className="text-code-syntax-tag">/&gt;</span>
+        <span className="text-code-syntax-punctuation">;</span>
       </CodeBlock>
     </div>
   ),

@@ -7,6 +7,11 @@ _codocs:
   사람에게 묻지 않고 작업 중에 정한 것과, 작업하며 바꾼 문서를 모아 둔다. 사람이 검토해 그대로 둘지, 되돌릴지, 원래 문서로 옮길지 고른다.
   검토가 끝난 항목은 원래 문서에 반영하거나 되돌리고 여기서 지운다.
   이어서 할 일은 [[남은 작업]]에 있다.
+"NavigationPane PR #481: Figma 스토리 되살림": |
+  - 피그마 `items` 슬롯 기본 내용(NavigationItem 여섯: 바탕 화면·Blog·React·Next.js·TypeScript·휴지통)과 같은 항목으로 `Figma` 스토리를 다시 만들었다. 아이콘은 앱 탐색 창과 같게 바탕 화면은 `ic_fluent_desktop_20_regular`(`text-text-fill-primary`), 폴더는 `images/file-folder`, 휴지통은 `images/file-recycle-bin-full`이다.
+  - 항목 너비는 피그마 원본 너비 240인 `w-size-navigation-item-width`를 항목마다 줬다. 탐색 창이 HUG라 항목이 너비를 정한다. 앱(`explorer-window-layer.tsx`)은 같은 자리에 값이 같은(240) `w-size-search-box-width`를 쓰고 있어 `w-size-navigation-item-width`로 바꿨다. 값이 같아 모양은 바뀌지 않는다.
+  - treeitem이 tree 안에 있어야 하므로 스토리에서 `NavigationPane`에 앱과 같은 `role="tree"`·`aria-label="탐색 창"`을 줬다.
+  - 넘긴 항목이 그려지는지만 보던 `Default` 스토리는 [[테스트 작성 규칙:테스트 지침]] 4번대로 지웠다.
 "ExplorerAddressRow PR #479: 슬롯 기본 내용과 스토리 정리": |
   - 모든 스토리의 Items 슬롯에 피그마 Breadcrumb 기본 내용(`BreadcrumbItem` 바탕 화면·Blog)을 meta `args.items`로 넣었다. 동작 스토리가 쓰던 `경로 칸` 글자 상자는 지웠다.
   - [[테스트 작성 규칙:테스트 지침]] 4번(넘긴 값이 그대로 나오는지만 보는 검사)과 1번(모양은 캡처)에 따라 정리했다. `Disabled`(비활성 prop이 버튼에 넘어감), `Searching`(`searchValue`가 입력값이 됨) 스토리와, `Default`의 "desktop은 버튼 넷·검색 상자·경로를 그린다"·"`searchPlaceholder`로 안내 글자를 바꾼다" 단계, `Mobile`의 "뒤로·검색 버튼만 그린다" 단계를 지웠다. 버튼·검색 입력이 동작을 부르는 배선 검사와 모바일 검색 열기(포커스), desktop이 `search`를 무시하는 검사는 남겼다.
@@ -60,6 +65,8 @@ _codocs:
   나머지 빈 HUG 변형은 모두 조립에서 찍힌다.
 "PR #484 Toc: 동작 확인용 임시 스토리를 지우고 Figma 스토리만 둠": |
   `Toc`의 `Figma` 스토리 슬롯에 피그마 `Items` 기본 내용과 같은 `TocItem` 4개(`use 훅` 활성, `useActionState`, `useOptimistic`, `마이그레이션`)를 넣고 빈 슬롯 주석을 지웠다. 접힌 변형은 슬롯을 그리지 않으므로 같은 렌더를 쓴다. `Default`(제목 `titleProps`·children 전달 확인)와 `Collapsed`(children이 안 그려짐 확인) 스토리는 `<span>항목</span>` 가짜 내용으로 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 따라 지웠다. 앱 쪽 `Toc` 사용(`chrome-page`)은 prop이 그대로라 고치지 않았다. 캡처는 두 변형 모두 글자 가장자리 말고 차이가 없다.
+"PR #485 CodeBlock: Figma 스토리에 코드 2줄 기본 내용을 넣고 Highlighted를 대신함": |
+  피그마 `Code` 슬롯 기본 내용(`const post = use(fetchPost(slug));` / `return <Article post={post} />;`)의 글자별 색(`code-syntax/*`)을 같은 토큰 클래스의 span으로 옮겨 `Figma` 스토리에 넣었다. 언어 글자는 피그마 기본값 `언어`다. 예전 `Highlighted` 스토리(`const count = 1;` 가짜 코드)는 같은 일을 하는 임시 스토리라 지웠다. 동작 스토리 `Copy`는 복사 단추 동작을 보므로 남겼다. 컴포넌트 코드는 `children`에 기본값이 없어 바꾸지 않았다.
 "마지막 맞춤: 고치지 않은 캡처 차이": |
   전체 캡처 493개 변형(단독 451개, 조립에서 확인 42개)의 차이 그림 중 남은 것은 코드로 고치지 않았다.
   - 어두운 바탕의 밝은 글자가 코드에서 더 굵어 보인다(accent 버튼, 바탕화면 아이콘 이름). 글자 스타일은 피그마와 같아 글자를 그리는 엔진의 차이로 봤다.
