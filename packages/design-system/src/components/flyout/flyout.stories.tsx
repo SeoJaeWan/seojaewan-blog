@@ -18,27 +18,38 @@ const meta = {
     material: { control: 'inline-radio', options: MATERIALS },
   },
   // Content 슬롯에는 피그마 슬롯 기본 내용과 같은 메뉴 항목과 구분선을 넣는다.
-  // Flyout은 너비가 없어 부모를 채우므로 피그마 원본 너비(320)의 부모로 감싸고 data-parity-target을 Flyout에 단다.
+  // Flyout은 너비가 없어 내용에 맞추므로(HUG) 감싸지 않는다. 피그마처럼 메뉴 항목이 메뉴 너비(size/menu/width)를 갖고
+  // 구분선은 그 너비를 채운다.
   render: (args) => (
-    <div className="w-size-search-box-wide-width">
-      <Flyout material={args.material} data-parity-target>
-        <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
-        <MenuItem standalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
-        <MenuSeparator className="w-full" />
-        <MenuItem
-          standalone
-          label="이름 바꾸기"
-          icon="icons/ic_fluent_rename_20_regular.svg"
-          shortcut="F2"
-        />
-        <MenuItem
-          standalone
-          label="삭제"
-          icon="icons/ic_fluent_delete_20_regular.svg"
-          shortcut="Delete"
-        />
-      </Flyout>
-    </div>
+    <Flyout material={args.material}>
+      <MenuItem
+        standalone
+        label="열기"
+        icon="icons/ic_fluent_open_20_regular.svg"
+        className="w-size-menu-width"
+      />
+      <MenuItem
+        standalone
+        label="새 창에서 열기"
+        icon="icons/ic_fluent_window_20_regular.svg"
+        className="w-size-menu-width"
+      />
+      <MenuSeparator className="w-full" />
+      <MenuItem
+        standalone
+        label="이름 바꾸기"
+        icon="icons/ic_fluent_rename_20_regular.svg"
+        shortcut="F2"
+        className="w-size-menu-width"
+      />
+      <MenuItem
+        standalone
+        label="삭제"
+        icon="icons/ic_fluent_delete_20_regular.svg"
+        shortcut="Delete"
+        className="w-size-menu-width"
+      />
+    </Flyout>
   ),
 } satisfies Meta<FigmaArgs>;
 
