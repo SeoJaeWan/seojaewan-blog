@@ -465,8 +465,7 @@
                 },
                 "name": "Flyout",
                 "properties": {
-                  "Material": "Acrylic",
-                  "Padding": "Compact"
+                  "Material": "Acrylic"
                 },
                 "radius": [
                   "radius/overlay",

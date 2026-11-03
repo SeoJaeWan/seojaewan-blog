@@ -5,7 +5,7 @@ import { ProfileButton, SearchBox, ShellSurface, StartMenuFooter } from '@seojae
 export type StartMenuPanelDevice = 'desktop' | 'mobile';
 
 type StartMenuPanelProps = {
-  /** 피그마 Device. 모바일은 좌우 안쪽 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다 */
+  /** 피그마 Device. 모바일은 검색 줄의 좌우 여백이 16으로 좁다. 패널 크기와 모서리는 ShellSurface가 정한다 */
   device?: StartMenuPanelDevice;
   /** 위쪽 검색 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성 */
   searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'appearance' | 'className'>;
@@ -47,15 +47,23 @@ export function StartMenuPanel(props: StartMenuPanelProps): JSX.Element {
   return (
     <ShellSurface device={device} className={className} style={style}>
       <div className="flex size-full flex-col">
-        {/* 피그마 `body` 배치 프레임이다. 위 32와 좌우 여백(모바일 16) 안에 입력칸과 본문을 간격 16으로 쌓는다 */}
-        <div
-          className={
-            isMobile
-              ? 'flex min-h-size-none w-full flex-flex-fill flex-col items-start gap-spacing-lg px-spacing-lg pt-spacing-3xl'
-              : 'flex min-h-size-none w-full flex-flex-fill flex-col items-start gap-spacing-lg px-spacing-3xl pt-spacing-3xl'
-          }
-        >
-          <SearchBox {...searchBoxProps} appearance="pill" className="w-full shrink-shrink-none" />
+        {/* 피그마 `body` 배치 프레임이다. 가로 여백 없이 위 32 아래에 검색 줄과 본문을 간격 16으로 쌓는다.
+            가로 여백은 줄마다 갖는다. 검색 줄(`search row`)은 자기 좌우 여백(데스크톱 32, 모바일 16)을 갖고,
+            본문은 패널 폭을 채워 스크롤바가 패널 가장자리에 붙고 내용 여백은 본문 안에서 준다 */}
+        <div className="flex min-h-size-none w-full flex-flex-fill flex-col items-start gap-spacing-lg pt-spacing-3xl">
+          <div
+            className={
+              isMobile
+                ? 'flex w-full shrink-shrink-none px-spacing-lg'
+                : 'flex w-full shrink-shrink-none px-spacing-3xl'
+            }
+          >
+            <SearchBox
+              {...searchBoxProps}
+              appearance="pill"
+              className="min-w-size-none flex-flex-fill"
+            />
+          </div>
           <div className="flex min-h-size-none w-full flex-flex-fill flex-col">{children}</div>
         </div>
         <StartMenuFooter className="w-full shrink-shrink-none">
