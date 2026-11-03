@@ -8,14 +8,14 @@ export type WindowFrameTitleBar = 'default' | 'custom';
 
 export type WindowFramePlacement = 'normal' | 'maximized' | 'snapped';
 
-export type WindowFrameMaterial = 'mica' | 'solid' | 'chrome';
+export type WindowFrameMaterial = 'mica' | 'chrome';
 
 type WindowFrameCommonProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   /** 피그마 State=Inactive. 창이 활성 상태가 아니면 그림자를 줄이고 제목과 창 버튼을 흐리게 그린다 */
   inactive?: boolean;
   /** 피그마 Placement. normal은 떠 있는 창, maximized·snapped는 화면에 붙어 모서리·테두리·그림자가 없다 */
   placement?: WindowFramePlacement;
-  /** 피그마 Material. mica는 창 재질, solid는 투명 효과를 끈 단색, chrome은 Chrome 창 틀 색이다 */
+  /** 피그마 Material. mica는 창 재질, chrome은 Chrome 창 틀 색이다 */
   material?: WindowFrameMaterial;
   /** 최대화(또는 복원) 버튼을 그린다(CaptionButtonGroup에 넘긴다). 늘 전체화면인 모바일 창은 끈다 */
   showMaximize?: boolean;
@@ -64,20 +64,17 @@ type WindowFrameProps = WindowFrameDefaultTitleBarProps | WindowFrameCustomTitle
 // 재질별 바탕 칠(피그마 칠 스타일)이다. 마이카 바탕은 반투명 색과 배경 흐림을 함께 건다.
 const materialClassNames = {
   mica: 'material-mica-base',
-  solid: 'bg-material-fallback-mica-base',
   chrome: 'bg-chrome-frame-fill',
 } as const satisfies Record<WindowFrameMaterial, string>;
 
 // 떠 있는 창(Placement=Normal)의 효과 스타일이다. 마이카는 그림자와 배경 흐림을 함께 거는 Surface 스타일을 쓴다.
 const activeShadowClassNames = {
   mica: 'surface-window-active-mica',
-  solid: 'shadow-elevation-window-active',
   chrome: 'shadow-elevation-window-active',
 } as const satisfies Record<WindowFrameMaterial, string>;
 
 const inactiveShadowClassNames = {
   mica: 'surface-window-inactive-mica',
-  solid: 'shadow-elevation-window-inactive',
   chrome: 'shadow-elevation-window-inactive',
 } as const satisfies Record<WindowFrameMaterial, string>;
 
