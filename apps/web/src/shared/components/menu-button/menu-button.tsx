@@ -3,10 +3,7 @@ import type { ComponentProps, JSX, ReactElement } from 'react';
 
 import { getMenuPortalContainer, MenuPopup } from '@/shared/components/menu-popup/menu-popup';
 
-type MenuButtonProps = Pick<
-  ComponentProps<typeof MenuPopup>,
-  'items' | 'className' | 'itemClassName' | 'finalFocus'
-> & {
+type MenuButtonProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'width' | 'finalFocus'> & {
   /** 메뉴를 여는 버튼. Base UI `Menu.Trigger`가 이 요소에 열림 상태와 동작 속성을 합쳐 그린다 */
   trigger: ReactElement;
   /** 메뉴가 열렸는지. 쓰는 곳이 정한다 */
@@ -41,8 +38,7 @@ export function MenuButton(props: MenuButtonProps): JSX.Element {
     side = 'bottom',
     align = 'start',
     items,
-    className,
-    itemClassName,
+    width,
     finalFocus,
   } = props;
   return (
@@ -50,12 +46,7 @@ export function MenuButton(props: MenuButtonProps): JSX.Element {
       <BaseMenu.Trigger render={trigger} />
       <BaseMenu.Portal container={getMenuPortalContainer()}>
         <BaseMenu.Positioner side={side} align={align} sideOffset={POPUP_OFFSET}>
-          <MenuPopup
-            items={items}
-            className={className}
-            itemClassName={itemClassName}
-            finalFocus={finalFocus}
-          />
+          <MenuPopup items={items} width={width} finalFocus={finalFocus} />
         </BaseMenu.Positioner>
       </BaseMenu.Portal>
     </BaseMenu.Root>

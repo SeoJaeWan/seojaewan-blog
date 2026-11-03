@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { StoryStage } from '@seojaewan/design-system/story';
+
 import { menuViewOptions } from '@/features/start-menu/components/start-body/view-menu/story-data';
 
 import { StartViewMenu } from './start-view-menu';
@@ -12,19 +14,19 @@ type FigmaArgs = {
 };
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 제목은 Patterns/ + 피그마 조립 이름이다. 버튼 자리(피그마 변형 노드)를 캡처 대상으로 표시하고, 메뉴는 그 둘레에 함께 찍힌다.
+// 제목은 Patterns/ + 피그마 조립 이름이다. 메뉴는 버튼 아래에 열리므로 캔버스 전체를 쓰고 버튼을 위 가운데에 두며,
+// 버튼 자리(피그마 변형 노드)를 캡처 대상으로 표시한다. 메뉴는 그 둘레에 함께 찍힌다.
 const meta = {
   title: 'Patterns/Start/ViewMenu',
-  // 가운데 놓으면 소수 px 위치에 놓여 캡처가 1px 밀리므로 정수 위치(padded)에 둔다.
-  parameters: { layout: 'padded' },
+  parameters: { layout: 'fullscreen' },
   args: { state: 'closed' },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => (
-    <div data-parity-target className="inline-flex">
+    <StoryStage placement="top-center" target>
       <StartViewMenu label="간단히" open={args.state === 'open'} menuItems={menuViewOptions} />
-    </div>
+    </StoryStage>
   ),
 } satisfies Meta<FigmaArgs>;
 

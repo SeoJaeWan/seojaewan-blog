@@ -1,6 +1,8 @@
+import startMenuExport from '@figma/patterns/start/menu/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { ImageAsset } from '@seojaewan/design-system';
+import { figmaFrame } from '@seojaewan/design-system/story';
 
 import { SEARCH_PLACEHOLDER } from '@/features/start-menu/components/search-panel/story-data';
 import { StartBody } from '@/features/start-menu/components/start-body/start-body';
@@ -30,18 +32,18 @@ const meta = {
   argTypes: {
     device: { control: 'inline-radio', options: DEVICES },
   },
+  decorators: [figmaFrame(startMenuExport)],
   render: (args) => (
     <StartMenuPanel
       device={args.device}
       searchBoxProps={{ 'aria-label': '검색', placeholder: SEARCH_PLACEHOLDER }}
       profileName={START_PROFILE_NAME}
-      profilePhoto={<ImageAsset name="images/avatar-profile" className="size-full" />}
+      profilePhoto={<ImageAsset name="images/avatar-profile" />}
       powerButton={<StartPowerButton menuItems={menuPower} />}
     >
       <StartBody
         view="list"
         device={args.device}
-        className="min-h-size-none w-full flex-flex-fill"
         pinned={START_PINNED}
         groups={START_LETTER_GROUPS}
       />

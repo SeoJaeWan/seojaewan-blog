@@ -1,8 +1,10 @@
+import contentExport from '@figma/patterns/explorer/content/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type JSX, useState } from 'react';
 import { expect, fireEvent, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
-import { ImageAsset, NavigationItem } from '@seojaewan/design-system';
+import { ImageAsset, NavigationItem, NavigationPane } from '@seojaewan/design-system';
+import { FigmaFrame } from '@seojaewan/design-system/story';
 
 import {
   getStoryCenter,
@@ -60,16 +62,13 @@ function StoryDropTarget(props: StoryDropTargetProps): JSX.Element {
   const { id, name, label } = props;
   const attributes = { [DROP_TARGET_ATTRIBUTE]: id, [DROP_TARGET_NAME_ATTRIBUTE]: name };
   return (
-    <NavigationItem
-      {...attributes}
-      label={label}
-      icon={<ImageAsset name="images/file-folder" className="size-full object-contain" />}
-    />
+    <NavigationItem {...attributes} label={label} icon={<ImageAsset name="images/file-folder" />} />
   );
 }
 
 /**
  * 창 층이 하는 일 중 위치를 따라가는 일만 하는 틀. 폴더를 열면 그 위치로 바꿔 다시 그리고, 본문 밖의 놓을 곳을 함께 둔다.
+ * 본문 크기는 창이 정하므로 FigmaFrame이 피그마 `Explorer/Content` 크기로 감싼다. 놓을 곳은 탐색 창(NavigationPane)에 담는다.
  * @param props
  * @returns 탐색기 본문
  */
@@ -102,22 +101,14 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col gap-spacing-sm">
-      <div className="flex gap-spacing-sm">
-        <button type="button" onClick={handleBlogClick}>
-          Blog 위치로
-        </button>
-        <button type="button" onClick={handleReactClick}>
-          React 위치로
-        </button>
-      </div>
-      <div
-        className={
-          device === 'mobile'
-            ? 'flex h-size-window-explorer-height w-full flex-col'
-            : 'flex h-size-window-explorer-height w-size-window-explorer-width flex-col'
-        }
-      >
+    <>
+      <button type="button" onClick={handleBlogClick}>
+        Blog 위치로
+      </button>
+      <button type="button" onClick={handleReactClick}>
+        React 위치로
+      </button>
+      <FigmaFrame source={contentExport} args={{ device }}>
         <ExplorerBody
           key={current ?? 'desktop'}
           device={device}
@@ -126,14 +117,14 @@ function ExplorerBodyHost(props: ExplorerBodyHostProps): JSX.Element {
           onNavigate={handleNavigate}
           onOpenInNewTab={handleOpenInNewTab}
         />
-      </div>
-      <div role="tree" aria-label="본문 밖의 놓을 곳" className="flex gap-spacing-sm">
+      </FigmaFrame>
+      <NavigationPane role="tree" aria-label="본문 밖의 놓을 곳">
         <StoryDropTarget id="folder:Next.js" name="Next.js" label="다른 창의 Next.js" />
         <StoryDropTarget id={DESKTOP_DROP_TARGET} name="바탕 화면" label="바탕 화면" />
         <StoryDropTarget id="folder:React" name="React" label="다른 창의 React" />
         <StoryDropTarget id="folder:React/Hooks" name="Hooks" label="다른 창의 Hooks" />
-      </div>
-    </div>
+      </NavigationPane>
+    </>
   );
 }
 

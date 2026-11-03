@@ -1,5 +1,9 @@
+import taskbarDefaultExport from '@figma/patterns/taskbar/default/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ComponentProps } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
+
+import { FigmaFrame, StoryStage } from '@seojaewan/design-system/story';
 
 import { usePanelStore } from '@/shared/stores/panel-store/panel-store';
 import { useSearchStore } from '@/shared/stores/search-store/search-store';
@@ -8,22 +12,33 @@ import { getStoryWindowTitle, renderStoryWindow } from '@/shared/utils/window-ru
 
 import { TaskbarLayer } from './taskbar-layer';
 
+type TaskbarLayerStoryArgs = ComponentProps<typeof TaskbarLayer> & {
+  /** 피그마 Taskbar/Default Search. 화면 폭에 따라 작업 표시줄이 고르는 검색 모양이고, 작업 표시줄 너비를 그 변형의 피그마 너비로 준다 */
+  search: 'box' | 'button';
+};
+
 // @codocs [[저장소 구성:앱 폴더 구조]]
 // 동작 스토리다. 실제 저장소(패널·창)에 이은 작업 표시줄을 그린다. Start 버튼·검색칸을 누르면 패널 저장소가 바뀌어
 // 버튼이 눌린 모습이 되고, 앱 버튼을 누르면 창 저장소에 창이 열려 아래 표시가 바뀐다.
 // 패널과 창은 다른 기능이라 그리지 않는다. 함께 보려면 `Features/Shell/Shell`을 본다.
+// 작업 표시줄은 화면 아래에 붙이고, 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 `Taskbar/Default` 너비로 감싼다.
 const meta = {
   title: 'Features/Taskbar/TaskbarLayer',
   component: TaskbarLayer,
   parameters: { layout: 'fullscreen' },
   beforeEach: resetStoryStores,
-  args: { renderWindow: renderStoryWindow, getWindowTitle: getStoryWindowTitle },
-  render: (args) => (
-    <div className="fixed inset-x-spacing-none bottom-spacing-none">
-      <TaskbarLayer {...args} />
-    </div>
-  ),
-} satisfies Meta<typeof TaskbarLayer>;
+  args: { renderWindow: renderStoryWindow, getWindowTitle: getStoryWindowTitle, search: 'box' },
+  render: (args) => {
+    const { search, ...layerProps } = args;
+    return (
+      <StoryStage placement="bottom">
+        <FigmaFrame source={taskbarDefaultExport} args={{ search }}>
+          <TaskbarLayer {...layerProps} />
+        </FigmaFrame>
+      </StoryStage>
+    );
+  },
+} satisfies Meta<TaskbarLayerStoryArgs>;
 
 export default meta;
 
@@ -94,6 +109,7 @@ export const StartSearchQuery: Story = {
 
 /** 모바일 폭이다. 검색 입력칸 대신 검색 버튼을 두고, 누르면 검색 패널을 열고 닫는다 */
 export const Mobile: Story = {
+  args: { search: 'button' },
   globals: { viewport: { value: 'mobile1', isRotated: false } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

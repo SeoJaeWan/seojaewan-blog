@@ -46,11 +46,9 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
               <ExplorerWindow
                 device="desktop"
                 tabs={[{ title: item.tabTitle, icon: parts.tabIcon, selected: true }]}
-                className="size-full"
               >
                 <ExplorerContent
                   device="desktop"
-                  className="min-h-size-none w-full flex-flex-fill"
                   locationIcon={parts.locationIcon}
                   searchPlaceholder={parts.searchPlaceholder}
                   path={parts.path}

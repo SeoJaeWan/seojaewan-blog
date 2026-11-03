@@ -72,21 +72,16 @@ const LOCATION_ICONS = {
 
 const NAVIGATION_ICONS = {
   desktop: (
-    <Asset
-      name="icons/ic_fluent_desktop_20_regular.svg"
-      className="size-size-icon-sm text-text-fill-primary"
-    />
+    <Asset name="icons/ic_fluent_desktop_20_regular.svg" className="text-text-fill-primary" />
   ),
-  folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
-  'recycle-bin': (
-    <ImageAsset name="images/file-recycle-bin-full" className="size-full object-contain" />
-  ),
+  folder: <ImageAsset name="images/file-folder" />,
+  'recycle-bin': <ImageAsset name="images/file-recycle-bin-full" />,
 } as const;
 
 const ITEM_ICONS = {
-  folder: <ImageAsset name="images/file-folder" className="size-full object-contain" />,
-  post: <ImageAsset name="images/file-document" className="size-full object-contain" />,
-  link: <Asset name="illustrations/file-link.svg" className="size-full" />,
+  folder: <ImageAsset name="images/file-folder" />,
+  post: <ImageAsset name="images/file-document" />,
+  link: <Asset name="illustrations/file-link.svg" />,
 } as const;
 
 /**
@@ -163,9 +158,9 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
   const locationIcon = LOCATION_ICONS[folder];
   return {
     tabTitle: LOCATION_NAMES[folder],
-    tabIcon: <ImageAsset name={locationIcon} className="size-full object-contain" />,
+    tabIcon: <ImageAsset name={locationIcon} />,
     commandsLocation: folder === 'recycle-bin' ? 'recycle-bin' : 'folder',
-    locationIcon: <ImageAsset name={locationIcon} className="size-full object-contain" />,
+    locationIcon: <ImageAsset name={locationIcon} />,
     searchPlaceholder: WINDOW_SEARCH_PLACEHOLDERS[folder],
     path: path.map(
       /**
@@ -201,7 +196,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
           selected={'selected' in item}
           label={item.label}
           icon={NAVIGATION_ICONS[item.icon]}
-          className="w-size-search-box-width"
+          className="w-size-navigation-item-width"
         />
       ),
     ),

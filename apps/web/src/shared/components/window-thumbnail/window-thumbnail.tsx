@@ -9,7 +9,7 @@ type WindowThumbnailProps = {
   height: number;
   /** 줄이는 비율. 창 크기와 넣을 자리에 따라 실행 중에 정해지므로 쓰는 곳이 넘긴다 */
   scale: number;
-  /** 줄여 그릴 실제 창 조립(`ChromeWindow`, `ExplorerWindow`). 이 상자의 원래 크기를 채우도록 `size-full`을 준다 */
+  /** 줄여 그릴 실제 창 조립(`ChromeWindow`, `ExplorerWindow`). 상자가 넣은 창을 원래 크기(width×height)로 채운다 */
   children: ReactNode;
   /** 바깥 배치 클래스 */
   className?: string;
@@ -33,7 +33,7 @@ export function WindowThumbnail(props: WindowThumbnailProps): JSX.Element {
       style={{ width: width * scale, height: height * scale }}
     >
       <div
-        className="absolute top-spacing-none left-spacing-none flex origin-top-left"
+        className="absolute top-spacing-none left-spacing-none flex origin-top-left [&>*]:size-full"
         style={{ width, height, transform: `scale(${String(scale)})` }}
       >
         {children}

@@ -1,6 +1,9 @@
+import windowExplorerExport from '@figma/patterns/window/explorer/export.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { PointerEvent } from 'react';
 import { clearAllMocks, expect, fireEvent, fn, within } from 'storybook/test';
+
+import { FigmaFrame } from '@seojaewan/design-system/story';
 
 import { ExplorerCommands } from '@/features/file-explorer/components/explorer-body/components/explorer-commands/explorer-commands';
 import { ExplorerContent } from '@/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content';
@@ -21,12 +24,6 @@ const TABS = ['single', 'multiple'] as const;
 // 피그마 `Tabs=Multiple`의 탭 제목들이다. 현재 폴더 탭(가운데)이 고른 탭이고, 나머지 탭은 기본 폴더 아이콘을 쓴다.
 const MULTIPLE_TAB_TITLES = ['React', 'Blog', 'TypeScript'] as const;
 
-// 창 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/1024×640, size/390×796)로 그린다.
-const SIZE_CLASS_NAMES = {
-  desktop: 'w-size-window-explorer-width h-size-window-explorer-height',
-  mobile: 'w-size-screen-mobile-width h-size-window-mobile-height',
-} as const;
-
 type FigmaArgs = {
   device: (typeof DEVICES)[number];
   folder: (typeof FOLDERS)[number];
@@ -42,6 +39,7 @@ type FigmaArgs = {
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // 제목은 Patterns/ + 피그마 조립 이름이다. 피그마에 있는 변형 조합(여섯)만 캡처 도구가 짝짓는다.
+// 창 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다. 바깥 요소는 창 층의 누르기 처리를 대신한다.
 const meta = {
   title: 'Patterns/Window/Explorer',
   args: { device: 'desktop', folder: 'blog', selection: 'none', tabs: 'single' },
@@ -69,28 +67,28 @@ const meta = {
         : MULTIPLE_TAB_TITLES.map((title) => (title === parts.tabTitle ? currentTab : { title }));
     return (
       <div onPointerDown={handleWindowPointerDown}>
-        <ExplorerWindow
-          device={args.device}
-          tabs={tabs}
-          className={SIZE_CLASS_NAMES[args.device]}
-          onTitleBarPointerDown={handleTitleBarPointerDown}
-          onTabMove={handleTabMove}
-        >
-          <ExplorerContent
+        <FigmaFrame source={windowExplorerExport} args={args}>
+          <ExplorerWindow
             device={args.device}
-            className="min-h-size-none w-full flex-flex-fill"
-            locationIcon={parts.locationIcon}
-            searchPlaceholder={parts.searchPlaceholder}
-            path={parts.path}
-            commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
-            navigation={parts.navigation}
-            itemCount={parts.itemCount}
-            selection={parts.selection}
-            showSelection={parts.showSelection}
+            tabs={tabs}
+            onTitleBarPointerDown={handleTitleBarPointerDown}
+            onTabMove={handleTabMove}
           >
-            {parts.items}
-          </ExplorerContent>
-        </ExplorerWindow>
+            <ExplorerContent
+              device={args.device}
+              locationIcon={parts.locationIcon}
+              searchPlaceholder={parts.searchPlaceholder}
+              path={parts.path}
+              commands={<ExplorerCommands device={args.device} location={parts.commandsLocation} />}
+              navigation={parts.navigation}
+              itemCount={parts.itemCount}
+              selection={parts.selection}
+              showSelection={parts.showSelection}
+            >
+              {parts.items}
+            </ExplorerContent>
+          </ExplorerWindow>
+        </FigmaFrame>
       </div>
     );
   },
