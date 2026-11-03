@@ -117,3 +117,5 @@ _codocs:
   - 결과 페이지: `behavior-cases.yml`이 `main` push(와 수동 실행)마다 앱을 빌드하고 모든 케이스를 `--trace on`으로 돌려 JSON 보고서를 만들고, `build:report`가 trace zip을 `traces/`에 옮겨 담은 정적 페이지를 만들어 GitHub Pages에 올린다. 페이지의 "trace 보기"는 `https://trace.playwright.dev/?trace=<Pages의 zip 주소>`다. 케이스가 실패해도 페이지는 올리고 작업만 실패로 표시한다. 필수 검사(ruleset)에 넣지 않았다. 배포 동시 실행은 끊지 않고 차례로 한다.
   - Pages 액션은 지금 나온 최신(`configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`)을 썼다.
   - 루트 `pnpm cases` 스크립트와, ESLint의 `process.env` 허용 목록(`configFiles`)에 `tools/behavior-cases/src/**`를 더했다.
+"PR #484 Toc: 동작 확인용 임시 스토리를 지우고 Figma 스토리만 둠": |
+  `Toc`의 `Figma` 스토리 슬롯에 피그마 `Items` 기본 내용과 같은 `TocItem` 4개(`use 훅` 활성, `useActionState`, `useOptimistic`, `마이그레이션`)를 넣고 빈 슬롯 주석을 지웠다. 접힌 변형은 슬롯을 그리지 않으므로 같은 렌더를 쓴다. `Default`(제목 `titleProps`·children 전달 확인)와 `Collapsed`(children이 안 그려짐 확인) 스토리는 `<span>항목</span>` 가짜 내용으로 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 따라 지웠다. 앱 쪽 `Toc` 사용(`chrome-page`)은 prop이 그대로라 고치지 않았다. 캡처는 두 변형 모두 글자 가장자리 말고 차이가 없다.
