@@ -51,7 +51,9 @@ export function MotionPreview(props: MotionPreviewProps): JSX.Element {
   return (
     <div className="flex flex-col items-center gap-spacing-lg">
       <div ref={stageRef}>
-        <div key={playCount}>{children(motionClass)}</div>
+        <div key={playCount} className="p-spacing-2xl">
+          {children(motionClass)}
+        </div>
       </div>
       <div className="flex gap-spacing-sm">
         <Button label="다시 재생" onClick={handleReplayClick} />

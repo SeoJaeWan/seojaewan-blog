@@ -367,19 +367,6 @@ const storyStylePendingFiles = [
   'packages/design-system/src/components/window-frame/window-frame.stories.tsx',
   'packages/design-system/src/components/window-preview/window-preview.stories.tsx',
   'packages/design-system/src/components/window-title/window-title.stories.tsx',
-  'packages/design-system/src/motion-story/motion-boot-screen-enter.stories.tsx',
-  'packages/design-system/src/motion-story/motion-boot-screen-exit.stories.tsx',
-  'packages/design-system/src/motion-story/motion-flyout-enter.stories.tsx',
-  'packages/design-system/src/motion-story/motion-panel-enter.stories.tsx',
-  'packages/design-system/src/motion-story/motion-panel-exit.stories.tsx',
-  'packages/design-system/src/motion-story/motion-search-box-focus.stories.tsx',
-  'packages/design-system/src/motion-story/motion-start-jump-list-enter.stories.tsx',
-  'packages/design-system/src/motion-story/motion-start-jump-list-exit.stories.tsx',
-  'packages/design-system/src/motion-story/motion-window-close.stories.tsx',
-  'packages/design-system/src/motion-story/motion-window-minimize.stories.tsx',
-  'packages/design-system/src/motion-story/motion-window-open.stories.tsx',
-  'packages/design-system/src/motion-story/motion-window-restore.stories.tsx',
-  'packages/design-system/src/motion-story/motion-window-snap.stories.tsx',
 ];
 const STORY_STYLE_MESSAGE =
   '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';
