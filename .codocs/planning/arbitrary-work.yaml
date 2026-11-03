@@ -108,6 +108,11 @@ _codocs:
   `ItemListRow`가 div 속성과 `ref`(`useImperativeHandle`)를 줄에 넘기고 `onClick`·`onKeyDown`은 열기와 함께 부른다. 모두 목록 줄이 `ContextMenuArea`의 `area`가 된다. Shift+F10은 브라우저가 보내는 `contextmenu`를 포커스한 줄에 보내는 것으로, 길게 누르기는 `touchstart` 500ms로 스토리에서 시험했다(실제 키 입력은 사람이 한 번 확인).
 "마지막 맞춤: PinnedTile 테두리를 안쪽 선으로": |
   전체 캡처에서 새 탭 타일의 `React 19 훅 정리`가 코드에서만 잘렸다. 피그마 Rest·Pressed는 선이 없어 글자 폭이 87인데, 코드는 투명 테두리 자리를 늘 둬 85였다. 피그마 Hover는 선이 자리를 차지하지만(`strokesIncludedInLayout`) 그대로 옮기면 가리킬 때 글자가 잘리므로, 선을 `inner-border`로 그려 자리를 차지하지 않게 했다. 그래서 Hover의 글자 폭만 피그마(85)와 다른 87이다.
+"스토리 스타일 금지 ⑧: 마무리(노드 이름 배열, 남은 예외)": |
+  - FigmaFrame `node`가 이름 배열도 받는다(`['items', 'nav/바탕 화면']`). 피그마 노드 이름에 `/`가 들어 있으면 문자열 경로로 고를 수 없어서다(#526 NavigationPane 보고). NavigationPane 스토리는 NavigationItem export.json으로 대신 감싸던 것을 자기 export.json의 `items` 안 노드로 바꿨다(크기가 같아 그림이 같다).
+  - #527이 감싸는 요소를 `grid w-fit`으로 바꾸면서 교차축 채움(`align-self: stretch`)이 늘어나지 않게 되어, 그 축 크기를 `auto`로 준다(#527 병합 때 고쳤다). 이 변경으로 #526에서 4픽셀 달랐던 `navigation-item` expanded 네 변형도 바꾸기 전 캡처와 같아졌다.
+  - #525가 앱 테스트도 `@seojaewan/design-system/story`를 가져오게 해서 [[저장소 구성:디자인 시스템 패키지 구조]]의 "스토리만 가져온다"를 "스토리와 테스트만 가져온다"로 맞췄다. [[테스트 작성 규칙:스토리 테스트]]의 `node` 설명에 이름 배열을 더했다.
+  - `storyStylePendingFiles`에는 결정이 필요한 두 파일만 남아 주석을 "결정을 기다리는 스토리"로 바꿨다: `Patterns/Chrome/ImageViewer`(⑥), `Patterns/Explorer/Content`의 빈 탐색 창 상자(⑦). 정해지면 목록을 없앤다.
 "마지막 맞춤: 빈 HUG 단독 스토리를 지운 범위": |
   전 변형이 빈 HUG인 17개(BestMatchCard, BrowserTabStrip, Callout, CodeBlock, Equation, Flyout, ListGroup, Menu, NavigationPane, Popover, Quote, SearchResults, StartMenuFooter, Table, Taskbar, TaskbarPreviewList, TileGrid)의 `Figma` 스토리를 지웠다. `Figma`만 있던 Callout, Equation, NavigationPane, TileGrid에는 내용을 채운 `Default`(TileGrid는 `Center`도)를 새로 뒀다. 파일을 지우면 카탈로그에서 빠지기 때문이다.
   일부 변형만 빈 HUG인 4개는 `Figma` 스토리를 뒀다. 표시 없는 변형(Breadcrumb `Editing`, ExplorerAddressRow `Mobile`·`Open`, Toc `Collapsed`, Toggle `Collapsed`)을 단독 캡처가 아직 찍기 때문이다.

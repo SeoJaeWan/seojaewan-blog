@@ -1,7 +1,7 @@
 import type { Decorator } from '@storybook/react-vite';
 import type { JSX, ReactNode } from 'react';
 
-import { type FigmaExport, figmaFrameStyle } from './figma-frame-style';
+import { type FigmaExport, figmaFrameStyle, type FigmaNodePath } from './figma-frame-style';
 
 // 스토리 제목이 피그마 이름을 담는 머리말이다. `Components/ListItem`, `Patterns/Menu/Folder`
 const FIGMA_TITLE_PREFIXES = ['Components/', 'Patterns/'] as const;
@@ -12,7 +12,7 @@ type FigmaFrameProps = {
   /** 스토리 args(피그마 변형 속성). 없는 속성은 아무 변형이나 맞는다 */
   args?: Readonly<Record<string, unknown>>;
   /** 안쪽 노드를 감쌀 때 루트 아래 노드 이름 경로(`Content/ProfileButton`). 없으면 루트다 */
-  node?: string;
+  node?: FigmaNodePath;
   /** 감쌀 내용 */
   children: ReactNode;
 };
@@ -29,7 +29,7 @@ export function FigmaFrame(props: FigmaFrameProps): JSX.Element {
   const { source, args = {}, node, children } = props;
   return (
     <div
-      data-figma-frame={node ?? ''}
+      data-figma-frame={typeof node === 'string' ? node : (node?.join(' > ') ?? '')}
       className="grid w-fit"
       style={figmaFrameStyle(source as FigmaExport, args, node)}
     >
