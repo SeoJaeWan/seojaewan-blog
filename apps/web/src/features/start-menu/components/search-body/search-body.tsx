@@ -26,6 +26,11 @@ type SearchBodyCommonProps = {
   device?: SearchBodyDevice;
   /** 바깥 배치 클래스. 크기는 쓰는 곳(검색 패널, Start 메뉴)이 정한다 */
   className?: string;
+  /**
+   * 내용 둘레 여백 클래스. 스크롤하는 화면은 ScrollArea의 내용 칸(스크롤되는 칸)에, 나머지는 내용을 담는 바탕에 준다.
+   * 본문이 패널 폭을 채우고 여백을 안에서 줘야 스크롤바가 본문 가장자리에 놓이기 때문이다
+   */
+  contentClassName?: string;
   /** 항목 줄(최근, 추천, 결과)이나 카드의 `열기`를 눌렀을 때 그 항목의 id로 부른다. 항목을 여는 일은 쓰는 곳이 한다 */
   onItemOpen?: (id: string) => void;
 };
@@ -73,11 +78,11 @@ const kindLabels = {
  * @param props
  */
 export function SearchBody(props: SearchBodyProps): JSX.Element {
-  const { device = 'desktop', className } = props;
+  const { device = 'desktop', className, contentClassName } = props;
   switch (props.view) {
     case 'before-typing':
       return (
-        <ScrollArea className={className}>
+        <ScrollArea className={className} contentClassName={contentClassName}>
           <div className="flex w-full shrink-shrink-none flex-col items-start gap-spacing-2xs">
             {props.recent.length > 0 && (
               <ListGroup label="최근" className="w-full shrink-shrink-none">
@@ -130,13 +135,14 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
           results={props.results}
           selectedId={props.selectedId}
           className={className}
+          contentClassName={contentClassName}
           onItemOpen={props.onItemOpen}
           onCopyLink={props.onCopyLink}
         />
       );
     case 'no-results':
       return (
-        <div className={cn('flex items-center justify-center', className)}>
+        <div className={cn('flex items-center justify-center', contentClassName, className)}>
           <p className="type-body whitespace-nowrap text-text-fill-secondary">검색 결과 없음</p>
         </div>
       );
@@ -152,6 +158,8 @@ type SearchBodyResultsProps = {
   selectedId?: string;
   /** 바깥 배치 클래스 */
   className?: string;
+  /** 내용 둘레 여백 클래스. 모바일은 스크롤되는 칸에, 데스크톱은 SearchResults를 담는 바탕에 준다 */
+  contentClassName?: string;
   /** 항목 줄이나 카드의 `열기`를 눌렀을 때 부른다 */
   onItemOpen?: (id: string) => void;
   /** 카드의 `링크 복사`를 눌렀을 때 부른다 */
@@ -165,7 +173,7 @@ type SearchBodyResultsProps = {
  * @param props
  */
 function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
-  const { device, results, className } = props;
+  const { device, results, className, contentClassName } = props;
   const { bestMatch } = results;
   const cardItem = findResultItem(results, props.selectedId) ?? bestMatch;
   const selectedId = cardItem.id;
@@ -188,10 +196,10 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     { kind: 'post', items: results.posts },
     { kind: 'link', items: results.links },
   ] as const;
-  return (
+  const searchResults = (
     <SearchResults
       device={device}
-      className={className}
+      className={device === 'mobile' ? 'w-full' : 'min-h-size-none w-full flex-flex-fill'}
       card={
         <BestMatchCard
           icon={renderItemIcon({ kind: cardItem.kind })}
@@ -264,6 +272,19 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
         )}
     </SearchResults>
   );
+  // 모바일 SearchResults는 높이가 내용에 맞으므로, 넘치면 카드와 목록을 함께 스크롤하도록 ScrollArea로 감싼다.
+  if (device === 'mobile') {
+    return (
+      <ScrollArea
+        className={cn('size-full rounded-radius-control', className)}
+        contentClassName={contentClassName}
+      >
+        {searchResults}
+      </ScrollArea>
+    );
+  }
+  // 데스크톱 SearchResults는 바탕을 채운다. 여백은 담는 바탕이 갖는다.
+  return <div className={cn('flex flex-col', contentClassName, className)}>{searchResults}</div>;
 }
 
 /**

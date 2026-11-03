@@ -172,6 +172,7 @@
   --font-line-height-body: 20px;
   --font-line-height-body-large: 24px;
   --font-line-height-caption: 16px;
+  --font-line-height-code-inline: 16px;
   --font-line-height-display: 92px;
   --font-line-height-subtitle: 28px;
   --font-line-height-title: 36px;
@@ -321,7 +322,7 @@
   --size-scrollbar-length: 200px;
   --size-scrollbar-thickness: 12px;
   --size-scrollbar-thumb-hover: 6px;
-  --size-scrollbar-thumb-length: 80px;
+  --size-scrollbar-thumb-length: 119.4444px;
   --size-scrollbar-thumb-rest: 2px;
   --size-search-body-height: 654px;
   --size-search-body-mobile-height: 522px;
@@ -331,15 +332,16 @@
   --size-search-box-width: 240px;
   --size-search-results-height: 545px;
   --size-search-results-list-width: 300px;
-  --size-search-results-mobile-height: 465px;
   --size-selection-marquee-height: 160px;
   --size-selection-marquee-width: 240px;
   --size-separator-command-height: 24px;
   --size-separator-height: 16px;
   --size-separator-width: 240px;
   --size-shell-body-width: 574px;
+  --size-shell-content-width: 638px;
   --size-shell-height: 720px;
   --size-shell-mobile-body-width: 356px;
+  --size-shell-mobile-content-width: 388px;
   --size-shell-mobile-height: 640px;
   --size-shell-width: 640px;
   --size-snap-option-column-width: 56px;
@@ -654,15 +656,16 @@
   --size-size-search-box-width: var(--size-search-box-width);
   --size-size-search-results-height: var(--size-search-results-height);
   --size-size-search-results-list-width: var(--size-search-results-list-width);
-  --size-size-search-results-mobile-height: var(--size-search-results-mobile-height);
   --size-size-selection-marquee-height: var(--size-selection-marquee-height);
   --size-size-selection-marquee-width: var(--size-selection-marquee-width);
   --size-size-separator-command-height: var(--size-separator-command-height);
   --size-size-separator-height: var(--size-separator-height);
   --size-size-separator-width: var(--size-separator-width);
   --size-size-shell-body-width: var(--size-shell-body-width);
+  --size-size-shell-content-width: var(--size-shell-content-width);
   --size-size-shell-height: var(--size-shell-height);
   --size-size-shell-mobile-body-width: var(--size-shell-mobile-body-width);
+  --size-size-shell-mobile-content-width: var(--size-shell-mobile-content-width);
   --size-size-shell-mobile-height: var(--size-shell-mobile-height);
   --size-size-shell-width: var(--size-shell-width);
   --size-size-snap-option-column-width: var(--size-snap-option-column-width);
@@ -1930,6 +1933,14 @@
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--font-line-height-body);
+  letter-spacing: 0em;
+}
+
+@utility type-code-inline {
+  font-family: var(--font-family-code);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-code-inline);
   letter-spacing: 0em;
 }
 
