@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '검색 패널을 열고 닫는다',
   area: '검색',
+  summary: '클릭으로 열고 바깥 클릭으로 닫음',
   conditions: {
     open: {
       label: '여는 법',
@@ -25,6 +26,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'click-and-outside',
+      result: '열렸다 바깥 클릭에 닫힘',
       scenario: '작업 표시줄 검색칸을 클릭해 검색 패널을 열고, 바탕화면의 휴지통 글자를 클릭한다',
       expected: ['검색칸을 클릭하면 검색 패널이 열린다', '바깥을 클릭하면 검색 패널이 닫힌다'],
       docs: ['[[검색:개요]]', '[[검색:결과 화면]]'],

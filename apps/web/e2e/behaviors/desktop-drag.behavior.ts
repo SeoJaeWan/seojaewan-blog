@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '바탕화면 아이콘을 끌어 옮긴다',
   area: '바탕화면',
+  summary: '폴더로 옮김·터치로는 안 옮겨짐',
   conditions: {
     drop: {
       label: '놓는 곳',
@@ -32,9 +33,11 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일' } }],
   cases: [
     {
       id: 'drop-on-folder',
+      result: '폴더 안으로 옮겨짐',
       scenario: '바탕화면 GitHub 아이콘을 마우스로 끌어 Blog 폴더 아이콘 위에 놓는다',
       expected: ['GitHub이 바탕화면에서 사라진다', 'Blog 폴더를 열면 GitHub이 들어 있다'],
       docs: ['[[항목 조작:끌기]]', '[[바탕화면:표시하는 항목]]'],
@@ -57,7 +60,8 @@ export const behavior = defineBehavior({
     },
     {
       id: 'touch-drag-does-not-move',
-      change: { input: '터치', screen: '모바일' },
+      result: '끌어도 제자리',
+      change: { input: '터치' },
       device: 'Pixel 7',
       scenario:
         '모바일에서 GitHub 아이콘을 손가락으로 끌어 Blog 폴더 아이콘 위에서 뗀 뒤, Blog를 탭해 연다',

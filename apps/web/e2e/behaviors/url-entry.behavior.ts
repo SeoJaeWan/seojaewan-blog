@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '주소로 들어온다',
   area: 'Chrome',
+  summary: '글이 열림·없는 주소는 404·모바일 전체 너비',
   conditions: {
     address: {
       label: '주소',
@@ -20,6 +21,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'post-address',
+      result: '글이 열린 Chrome 창 하나',
       scenario: '주소창에 /posts/react-19-hooks를 입력해 처음 들어온다',
       expected: [
         'React 19 훅 정리 글이 Chrome 창에 열린다',
@@ -47,6 +49,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'missing-post',
+      result: '404와 찾을 수 없음 창',
       change: { address: '없는 글 주소' },
       scenario: '주소창에 없는 글 주소 /posts/none을 입력해 처음 들어온다',
       expected: [
@@ -77,6 +80,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'mobile',
+      result: '탭 표시줄 없이 전체 너비',
       change: { screen: '모바일' },
       device: 'Pixel 7',
       scenario: '모바일에서 공유 링크 /posts/react-19-hooks로 처음 들어온다',

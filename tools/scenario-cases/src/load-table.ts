@@ -11,7 +11,7 @@ import type { TableData } from './table-types.ts';
  * @returns 화면 데이터와 읽은 행위 정의
  */
 export async function loadTable(
-  options: Pick<TableInputs, 'mode' | 'results' | 'run' | 'history' | 'changes'>,
+  options: Pick<TableInputs, 'mode' | 'results' | 'run'>,
 ): Promise<{ table: TableData; behaviors: BehaviorSource[] }> {
   const behaviors = await readBehaviors();
   const table = buildTable(behaviors, {

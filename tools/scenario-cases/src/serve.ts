@@ -2,7 +2,6 @@ import { createReadStream, existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import path from 'node:path';
 
-import { readChangedFiles } from './changed-files.ts';
 import { loadTable } from './load-table.ts';
 import { pageDir } from './paths.ts';
 import { type CaseRun, openTraceViewer, runCase } from './run-case.ts';
@@ -69,7 +68,7 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
     return;
   }
   if (request.method === 'GET' && pathname === '/table.json') {
-    const { table } = await loadTable({ mode: 'local', changes: readChangedFiles() });
+    const { table } = await loadTable({ mode: 'local' });
     sendJson(response, 200, table);
     return;
   }

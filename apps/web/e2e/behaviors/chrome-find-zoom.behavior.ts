@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '글에서 찾고 배율을 바꾼다',
   area: 'Chrome',
+  summary: '찾기 개수가 보이고 배율 110%',
   conditions: {
     findOpen: {
       label: '찾기 여는 법',
@@ -35,6 +36,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'ctrl-f-and-zoom-in',
+      result: '찾기 1/N, 배율 110%',
       scenario:
         'React 19 훅 정리 글에서 본문을 눌러 Ctrl+F로 찾기 막대를 열고 "useActionState"를 입력한 뒤 Esc로 닫고, ⋮ 메뉴의 확대(+)를 한 번 누른다',
       expected: [

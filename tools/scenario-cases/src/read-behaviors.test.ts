@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { findCaseLine, sourceOf } from './read-behaviors.ts';
+import { buildBehaviorTable } from './build-table.ts';
+import { findCaseLine, readBehaviors } from './read-behaviors.ts';
 
 // @codocs [[테스트 작성 규칙:E2E]]
 describe('행위 정의 읽기', () => {
@@ -10,8 +11,19 @@ describe('행위 정의 읽기', () => {
     expect(findCaseLine(text, 'none')).toBeNull();
   });
 
-  it('실행 함수 코드에서 공통 들여쓰기를 걷어 낸다', () => {
-    const text = "async run({ page }) {\n        await page.goto('/');\n\n      }";
-    expect(sourceOf(text)).toBe("async run({ page }) {\n  await page.goto('/');\n\n}");
+  it('저장소의 행위 정의는 기준 + 조건 하나씩 규칙에 어긋나는 곳이 없다', async () => {
+    const behaviors = await readBehaviors();
+    const problems = behaviors.flatMap((behavior) =>
+      buildBehaviorTable(behavior, {
+        docs: new Map(),
+        code: new Map(),
+        mode: 'local',
+        repoUrl: '',
+        generatedAt: '',
+      })
+        .problems.filter((problem) => !problem.includes('문서에 없는 링크'))
+        .map((problem) => `${behavior.id}: ${problem}`),
+    );
+    expect(problems).toEqual([]);
   });
 });

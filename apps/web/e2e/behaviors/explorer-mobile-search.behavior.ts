@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '모바일 탐색기에서 검색 줄로 찾는다',
   area: '탐색기',
+  summary: '초성으로 찾고 Esc로 닫음',
   conditions: {
     screen: {
       label: '화면 크기',
@@ -27,6 +28,10 @@ export const behavior = defineBehavior({
       base: '터치',
     },
   },
+  requires: [
+    { when: { screen: 'PC' }, then: { input: '마우스' } },
+    { when: { screen: '노트북' }, then: { input: '마우스' } },
+  ],
   noCase: {
     screen: {
       PC: {
@@ -42,6 +47,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'search-row-and-esc',
+      result: '초성으로 찾고 Esc로 닫힘',
       device: 'Pixel 7',
       scenario:
         '모바일에서 Blog 폴더를 탭해 연 탐색기의 검색 버튼을 탭해 검색 줄을 열고, "ㅎㄱ"을 입력한 뒤 Esc를 누른다',

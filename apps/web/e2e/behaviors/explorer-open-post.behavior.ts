@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '탐색기에서 글을 연다',
   area: '탐색기',
+  summary: 'Chrome에 열림·다시 열면 탭 추가·모바일 전체화면',
   conditions: {
     chrome: {
       label: '열린 Chrome 창',
@@ -31,6 +32,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'open-post',
+      result: 'Chrome 창 하나에 글이 열림',
       scenario:
         'Blog 폴더 탐색기에서 React 폴더를 더블클릭해 들어간 뒤 "React 19 훅 정리" 글을 더블클릭한다',
       expected: [
@@ -62,7 +64,12 @@ export const behavior = defineBehavior({
     },
     {
       id: 'reopen-post',
-      change: { chrome: '있음', again: '다시 엶' },
+      result: 'Chrome 하나, 같은 글 탭 2개',
+      change: { again: '다시 엶' },
+      combine: {
+        change: { chrome: '있음' },
+        reason: '같은 글을 다시 열 때 탭이 늘어나는지는 처음 연 Chrome 창이 남아 있어야 볼 수 있다',
+      },
       scenario:
         'Blog 폴더 탐색기에서 React 19 훅 정리 글을 열어 Chrome이 뜬 뒤, 작업 표시줄의 파일 탐색기 버튼으로 탐색기를 앞으로 가져와 같은 글을 다시 더블클릭한다',
       expected: ['Chrome 창은 여전히 하나다', '같은 글의 탭이 2개가 된다'],
@@ -89,6 +96,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'mobile-full-screen',
+      result: '탐색기·Chrome 모두 전체 너비',
       change: { screen: '모바일' },
       device: 'Pixel 7',
       scenario:

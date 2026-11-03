@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '바탕화면에서 폴더를 만들고 이름을 바꾼다',
   area: '바탕화면',
+  summary: '만들고 지움·F2로 바꿈·새로고침 뒤 남음',
   conditions: {
     start: {
       label: '이름 바꾸기를 시작하는 방법',
@@ -39,6 +40,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'new-rename-delete',
+      result: '만들어 이름 짓고 휴지통으로',
       scenario:
         '바탕화면 빈 곳을 우클릭해 새로 만들기 > 폴더로 폴더를 만들고, 이름을 메모로 바꿔 Enter한 뒤 Delete를 눌러 휴지통으로 보낸다',
       expected: [
@@ -83,18 +85,17 @@ export const behavior = defineBehavior({
       },
     },
     {
-      id: 'f2-then-reload',
-      change: { start: 'F2', after: '새로고침' },
-      scenario:
-        '바탕화면에서 만든 메모 폴더를 F2로 일기로 바꾸고 페이지를 새로고침한 뒤, 파일 탐색기의 바탕 화면 폴더를 연다',
+      id: 'f2-rename',
+      change: { start: 'F2' },
+      result: 'F2 입력칸에 원래 이름',
+      scenario: '바탕화면에서 만든 메모 폴더를 F2로 일기로 바꾸고, Delete를 눌러 휴지통으로 보낸다',
       expected: [
         'F2 이름 입력칸에 메모가 들어 있다',
         '바탕화면에 일기만 보이고 메모는 없다',
-        '바뀐 이름이 브라우저 저장분에 담긴다',
-        '새로고침 뒤에도 바탕화면에 일기가 있다',
-        '새로고침 뒤 탐색기 바탕 화면 폴더에도 일기가 보인다',
+        'Delete를 누르면 일기가 바탕화면에서 사라진다',
+        '휴지통을 열면 일기가 들어 있다',
       ],
-      docs: ['[[방문자 저장:저장하는 것]]', '[[항목 조작:단축키]]'],
+      docs: ['[[항목 조작:단축키]]', '[[항목과 폴더:폴더 이름]]'],
       async run({ page, check }) {
         await page.goto('/');
         const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
@@ -115,25 +116,62 @@ export const behavior = defineBehavior({
         });
         await renameField.fill('일기');
         await renameField.press('Enter');
+        const renamed = icons.getByRole('option', { name: '일기' });
         await check('바탕화면에 일기만 보이고 메모는 없다', async () => {
-          await expect(icons.getByRole('option', { name: '일기' })).toBeVisible();
+          await expect(renamed).toBeVisible();
           await expect(folder).not.toBeAttached();
         });
+
+        await page.keyboard.press('Delete');
+        await check('Delete를 누르면 일기가 바탕화면에서 사라진다', async () => {
+          await expect(renamed).not.toBeAttached();
+        });
+        await icons.getByRole('option', { name: '휴지통' }).dblclick();
+        await check('휴지통을 열면 일기가 들어 있다', async () => {
+          await expect(
+            page.getByRole('region', { name: '휴지통 - 파일 탐색기' }).getByText('일기'),
+          ).toBeVisible();
+        });
+      },
+    },
+    {
+      id: 'reload-keeps-folder',
+      change: { after: '새로고침' },
+      result: '새로고침 뒤에도 남음',
+      scenario:
+        '바탕화면 빈 곳을 우클릭해 새로 만들기 > 폴더로 폴더를 만들고 이름을 메모로 바꿔 Enter한 뒤 페이지를 새로고침하고, 파일 탐색기의 바탕 화면 폴더를 연다',
+      expected: [
+        '바뀐 이름이 브라우저 저장분에 담긴다',
+        '새로고침 뒤에도 바탕화면에 메모가 있다',
+        '새로고침 뒤 탐색기 바탕 화면 폴더에도 메모가 보인다',
+      ],
+      docs: ['[[방문자 저장:저장하는 것]]', '[[바탕화면 우클릭 메뉴:빈 곳]]'],
+      async run({ page, check }) {
+        await page.goto('/');
+        const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
+
+        await icons.click({ button: 'right', position: { x: 500, y: 400 } });
+        await page.getByRole('menuitem', { name: '새로 만들기' }).hover();
+        await page.getByRole('menuitem', { name: '폴더' }).click();
+        const field = page.getByRole('textbox', { name: '새 이름' });
+        await field.fill('메모');
+        await field.press('Enter');
+        await expect(icons.getByRole('option', { name: '메모' })).toBeFocused();
         await check('바뀐 이름이 브라우저 저장분에 담긴다', async () => {
-          await expect.poll(() => readWorkspaceStorage(page)).toContain('일기');
+          await expect.poll(() => readWorkspaceStorage(page)).toContain('메모');
         });
 
         await page.reload();
-        await check('새로고침 뒤에도 바탕화면에 일기가 있다', async () => {
-          await expect(icons.getByRole('option', { name: '일기' })).toBeVisible();
+        await check('새로고침 뒤에도 바탕화면에 메모가 있다', async () => {
+          await expect(icons.getByRole('option', { name: '메모' })).toBeVisible();
         });
         await page.getByRole('button', { name: '파일 탐색기' }).click();
         const explorer = page.getByRole('region', { name: '바탕 화면 - 파일 탐색기' });
-        await check('새로고침 뒤 탐색기 바탕 화면 폴더에도 일기가 보인다', async () => {
+        await check('새로고침 뒤 탐색기 바탕 화면 폴더에도 메모가 보인다', async () => {
           await expect(
             explorer
               .getByRole('listbox', { name: '폴더 내용' })
-              .getByRole('option', { name: '일기' }),
+              .getByRole('option', { name: '메모' }),
           ).toBeVisible();
         });
       },

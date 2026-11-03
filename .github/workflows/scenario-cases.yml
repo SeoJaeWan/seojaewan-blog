@@ -1,6 +1,6 @@
 # @codocs [[테스트 작성 규칙:E2E]]
 # 시나리오 케이스 보고서. `main` push마다 모든 케이스를 trace와 함께 돌려, 결과(통과·실패), 기대 결과별 확인,
-# trace zip, trace에서 뽑은 실행 화면 몇 장을 화면 데이터에 붙인 정적 페이지(tools/scenario-cases)를 GitHub Pages에 올린다.
+# trace zip을 화면 데이터에 붙인 정적 페이지(tools/scenario-cases)를 GitHub Pages에 올린다.
 # trace는 trace.playwright.dev 뷰어가 Pages 주소로 연다. 실행 기록은 앞서 올린 보고서의 history.json에 이어 쌓는다.
 # 필수 검사가 아니라 실패해도 다른 CI와 병합을 막지 않는다. E2E가 실패해도 보고서는 만들어 올리고, 마지막에 이 작업을 실패로 표시한다.
 name: Scenario cases

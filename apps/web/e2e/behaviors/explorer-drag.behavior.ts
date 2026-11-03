@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '탐색기 항목을 끌어 옮기고 찾는다',
   area: '탐색기',
+  summary: '탐색 창 폴더로 옮김·초성으로 찾음·터치로는 안 옮겨짐',
   conditions: {
     drop: {
       label: '놓는 곳',
@@ -33,9 +34,11 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일', search: '안 찾음' } }],
   cases: [
     {
       id: 'drag-to-tree-and-search',
+      result: '옮겨지고 초성으로 찾아짐',
       scenario:
         'Blog 폴더 탐색기의 "2026 상반기 회고" 글을 마우스로 끌어 왼쪽 탐색 창의 Next.js 폴더에 놓고, 검색 상자에 "ㅎㄱ"을 입력한다',
       expected: [
@@ -71,7 +74,12 @@ export const behavior = defineBehavior({
     },
     {
       id: 'touch-drag-does-not-move',
-      change: { drop: '같은 창의 폴더', search: '안 찾음', input: '터치', screen: '모바일' },
+      result: '끌어도 제자리',
+      change: { input: '터치' },
+      combine: {
+        change: { drop: '같은 창의 폴더' },
+        reason: '모바일 탐색기에는 왼쪽 탐색 창이 없어 같은 창의 폴더로 끈다',
+      },
       device: 'Pixel 7',
       scenario:
         '모바일에서 Blog 폴더를 탭해 연 탐색기의 "2026 상반기 회고" 글을 손가락으로 끌어 Next.js 폴더 위에서 뗀다',

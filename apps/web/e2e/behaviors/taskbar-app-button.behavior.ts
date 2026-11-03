@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '작업 표시줄 앱 버튼을 누른다',
   area: '작업 표시줄',
+  summary: '열고 최소화·복원·닫음·창이 여럿이면 미리보기',
   conditions: {
     windows: {
       label: '그 앱의 창',
@@ -31,6 +32,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'open-minimize-restore-close',
+      result: '열고 최소화·복원·닫힘',
       scenario:
         '작업 표시줄의 파일 탐색기 버튼을 클릭해 창을 열고, 창의 최소화 버튼으로 숨긴 뒤 다시 버튼을 클릭하고, 창의 닫기 버튼을 누른다',
       expected: [
@@ -68,6 +70,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'preview-list',
+      result: '미리보기에서 고른 창이 앞으로',
       change: { windows: '여러 개' },
       scenario:
         '탐색기 창을 바탕 화면과 Blog 두 개 열어 둔 채 작업 표시줄의 파일 탐색기 버튼을 클릭하고, 미리보기 목록에서 바탕 화면 창을 클릭한다',

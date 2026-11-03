@@ -6,6 +6,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '휴지통에 보냈다가 되살린다',
   area: '탐색기',
+  summary: '이름 겹치면 (2)로 복원·새로고침하면 되돌아옴',
   conditions: {
     item: {
       label: '보낸 항목',
@@ -36,6 +37,7 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'restore-with-number',
+      result: '"React (2)"로 복원, 다시 검색됨',
       scenario:
         'Blog 폴더 탐색기에서 React 폴더를 Delete로 휴지통에 보내 "react 19"를 검색해 보고, 같은 이름 "React" 폴더를 새로 만든 뒤 휴지통에서 React를 골라 복원 버튼을 누른다',
       expected: [
@@ -106,16 +108,12 @@ export const behavior = defineBehavior({
       },
     },
     {
-      id: 'reload-empties-bin',
-      change: { item: 'Blog 폴더', spot: '비어 있음', how: '새로고침', search: '찾지 않음' },
-      scenario:
-        '바탕화면에서 Blog 폴더를 골라 Delete로 휴지통에 보낸 뒤 페이지를 새로고침하고 휴지통을 연다',
-      expected: [
-        'Blog 폴더가 바탕화면에서 사라진다',
-        '새로고침하면 Blog 폴더가 바탕화면에 돌아온다',
-        '휴지통이 비어 있다',
-      ],
-      docs: ['[[방문자 저장:저장하지 않는 것]]', '[[휴지통:기본 규칙]]'],
+      id: 'blog-folder-to-bin',
+      change: { item: 'Blog 폴더' },
+      result: '바탕화면에서 사라짐',
+      scenario: '바탕화면에서 Blog 폴더를 골라 Delete로 휴지통에 보낸다',
+      expected: ['Blog 폴더가 바탕화면에서 사라진다'],
+      docs: ['[[휴지통:기본 규칙]]'],
       async run({ page, check }) {
         await page.goto('/');
         const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
@@ -125,11 +123,47 @@ export const behavior = defineBehavior({
         await check('Blog 폴더가 바탕화면에서 사라진다', async () => {
           await expect(blog).not.toBeAttached();
         });
+      },
+    },
+    {
+      id: 'reload-empties-bin',
+      change: { how: '새로고침' },
+      combine: {
+        change: { spot: '비어 있음' },
+        reason:
+          '같은 이름 폴더를 새로 만들면 새로고침 뒤 Blog 폴더에 "React (2)"가 함께 생겨 원래 자리로 돌아왔는지 가려지므로, 비어 있는 자리로 보낸 폴더가 그대로 돌아오는지 확인한다',
+      },
+      result: '원래 자리로, 휴지통은 빔',
+      scenario:
+        'Blog 폴더 탐색기에서 React 폴더를 Delete로 휴지통에 보내 "react 19"를 검색해 본 뒤 페이지를 새로고침하고, Blog 폴더와 휴지통을 연다',
+      expected: ['새로고침하면 React 폴더가 Blog 폴더에 돌아온다', '휴지통이 비어 있다'],
+      docs: ['[[방문자 저장:저장하지 않는 것]]', '[[휴지통:기본 규칙]]'],
+      async run({ page, check }) {
+        await page.goto('/');
+        const icons = page.getByRole('listbox', { name: '바탕화면 아이콘' });
+        await icons.getByRole('option', { name: 'Blog' }).dblclick();
+        const blog = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
+        const content = blog.getByRole('listbox', { name: '폴더 내용' });
+
+        await content.getByRole('option', { name: 'React', exact: true }).click();
+        await page.keyboard.press('Delete');
+        const searchBox = page.getByPlaceholder('검색', { exact: true });
+        await searchBox.fill('react 19');
+        await expect(
+          page.getByRole('dialog', { name: '검색' }).getByText('검색 결과 없음'),
+        ).toBeVisible();
+        await searchBox.fill('');
+        await page.keyboard.press('Escape');
+
         await expect.poll(() => readWorkspaceStorage(page)).not.toBeNull();
 
         await page.reload();
-        await check('새로고침하면 Blog 폴더가 바탕화면에 돌아온다', async () => {
-          await expect(blog).toBeVisible();
+        await icons.getByRole('option', { name: 'Blog' }).dblclick();
+        await check('새로고침하면 React 폴더가 Blog 폴더에 돌아온다', async () => {
+          await expect(content.getByRole('option', { name: 'React', exact: true })).toBeVisible();
+          await expect(content.getByRole('option', { name: 'React (2)', exact: true })).toHaveCount(
+            0,
+          );
         });
         await icons.getByRole('option', { name: '휴지통' }).dblclick();
         const recycleBin = page

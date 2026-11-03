@@ -5,6 +5,7 @@ import { defineBehavior } from './define-behavior.ts';
 export const behavior = defineBehavior({
   name: '바탕화면 항목을 연다',
   area: '바탕화면',
+  summary: '폴더·휴지통이 열림·탭 한 번으로 열림',
   conditions: {
     item: {
       label: '연 항목',
@@ -27,9 +28,11 @@ export const behavior = defineBehavior({
       base: 'PC',
     },
   },
+  requires: [{ when: { input: '터치' }, then: { screen: '모바일' } }],
   cases: [
     {
       id: 'folder-double-click',
+      result: 'Blog 탐색기 창이 열림',
       scenario: '바탕화면의 Blog 폴더 아이콘을 마우스로 더블클릭한다',
       expected: ['Blog 탐색기 창이 열린다', '창에 Blog 폴더의 글과 하위 폴더가 보인다'],
       docs: ['[[항목 조작:열기]]', '[[창 동작:열기 규칙]]'],
@@ -52,6 +55,7 @@ export const behavior = defineBehavior({
     },
     {
       id: 'recycle-bin',
+      result: '휴지통 창이 열림',
       change: { item: '휴지통' },
       scenario: '바탕화면의 휴지통 아이콘을 마우스로 더블클릭한다',
       expected: ['휴지통 탐색기 창이 열린다'],
@@ -70,7 +74,8 @@ export const behavior = defineBehavior({
     },
     {
       id: 'touch-tap',
-      change: { input: '터치', screen: '모바일' },
+      result: '한 번 탭에 전체 너비로 열림',
+      change: { input: '터치' },
       device: 'Pixel 7',
       scenario: '모바일에서 바탕화면의 Blog 폴더 아이콘을 손가락으로 한 번 탭한다',
       expected: ['한 번 탭하면 Blog 탐색기 창이 열린다', '창이 화면 전체 너비(412)를 채운다'],

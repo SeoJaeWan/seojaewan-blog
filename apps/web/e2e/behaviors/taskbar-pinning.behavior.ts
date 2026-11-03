@@ -1,11 +1,21 @@
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 import { restart } from './app-steps.ts';
 import { defineBehavior } from './define-behavior.ts';
 
+/**
+ * 작업 표시줄 Chrome 버튼을 우클릭해 메뉴의 작업 표시줄에서 고정 해제를 누른다.
+ * @param page 앱 페이지
+ */
+async function unpinChromeFromTaskbar(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Chrome' }).click({ button: 'right' });
+  await page.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }).click();
+}
+
 export const behavior = defineBehavior({
   name: '작업 표시줄 고정을 바꾼다',
   area: '작업 표시줄',
+  summary: '해제해도 창이 열린 동안 보임·다시 시작에 돌아옴·새로고침에 남음',
   conditions: {
     action: {
       label: '고정 조작',
@@ -38,6 +48,7 @@ export const behavior = defineBehavior({
       id: 'unpin-shows-while-open',
       scenario:
         '작업 표시줄 Chrome 버튼을 우클릭해 고정을 해제하고, Chrome 창을 열었다 닫은 뒤, 전원 메뉴로 다시 시작한다',
+      result: '창이 열린 동안만 보임',
       expected: [
         '고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다',
         'Chrome 창이 열려 있는 동안은 Chrome 버튼이 보인다',
@@ -53,8 +64,7 @@ export const behavior = defineBehavior({
       async run({ page, check }) {
         await page.goto('/');
         const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
-        await taskbarChrome.click({ button: 'right' });
-        await page.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }).click();
+        await unpinChromeFromTaskbar(page);
         await check('고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다', async () => {
           await expect(taskbarChrome).toBeHidden();
         });
@@ -79,14 +89,41 @@ export const behavior = defineBehavior({
       },
     },
     {
-      id: 'unpin-stays-after-reload',
-      change: { window: '없음', after: '새로고침' },
+      id: 'unpin-without-window',
+      change: { window: '없음' },
       scenario:
-        '작업 표시줄 Chrome 버튼을 우클릭해 고정을 해제하고 Chrome 창을 연 적 없이 페이지를 새로고침한다',
+        '작업 표시줄 Chrome 버튼을 우클릭해 고정을 해제하고, Chrome 창을 연 적 없이 전원 메뉴로 다시 시작한다',
+      result: '해제되고 다시 시작에 돌아옴',
       expected: [
         '고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다',
-        '새로고침 뒤에도 Chrome 고정은 해제된 채다',
+        '다시 시작하면 Chrome 고정이 돌아온다',
       ],
+      docs: [
+        '[[작업 표시줄:고정과 순서]]',
+        '[[고정:작업 표시줄 고정]]',
+        '[[다시 시작:되돌리는 상태]]',
+      ],
+      async run({ page, check }) {
+        await page.goto('/');
+        const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
+        await unpinChromeFromTaskbar(page);
+        await check('고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다', async () => {
+          await expect(taskbarChrome).toBeHidden();
+        });
+
+        await restart(page);
+        await check('다시 시작하면 Chrome 고정이 돌아온다', async () => {
+          await expect(taskbarChrome).toBeVisible();
+        });
+      },
+    },
+    {
+      id: 'unpin-stays-after-reload',
+      change: { after: '새로고침' },
+      scenario:
+        '작업 표시줄 Chrome 버튼을 우클릭해 고정을 해제하고, Chrome 창을 열었다 닫은 뒤 페이지를 새로고침한다',
+      result: '새로고침 뒤에도 해제된 채',
+      expected: ['새로고침 뒤에도 Chrome 고정은 해제된 채다'],
       docs: [
         '[[작업 표시줄:고정과 순서]]',
         '[[고정:작업 표시줄 고정]]',
@@ -95,11 +132,14 @@ export const behavior = defineBehavior({
       async run({ page, check }) {
         await page.goto('/');
         const taskbarChrome = page.getByRole('button', { name: 'Chrome' });
-        await taskbarChrome.click({ button: 'right' });
-        await page.getByRole('menuitem', { name: '작업 표시줄에서 고정 해제' }).click();
-        await check('고정을 해제하면 Chrome 버튼이 작업 표시줄에서 사라진다', async () => {
-          await expect(taskbarChrome).toBeHidden();
-        });
+        await unpinChromeFromTaskbar(page);
+        await expect(taskbarChrome).toBeHidden();
+
+        await page.goto('/posts/react-19-hooks');
+        const chrome = page.getByRole('region', { name: 'React 19 훅 정리 - Chrome' });
+        await expect(chrome).toBeVisible();
+        await chrome.getByRole('button', { name: '닫기', exact: true }).click();
+        await expect(chrome).not.toBeAttached();
 
         await page.reload();
         await expect(page.getByRole('button', { name: '파일 탐색기' })).toBeVisible();
