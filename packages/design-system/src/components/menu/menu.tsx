@@ -10,7 +10,7 @@ type MenuProps = ComponentProps<'div'> & {
 };
 
 /**
- * 메뉴 항목을 담는 떠 있는 메뉴 바탕(피그마 Menu)을 그린다. Flyout(`Padding=Compact`) 위에 메뉴 너비를 더한다.
+ * 메뉴 항목을 담는 떠 있는 메뉴 바탕(피그마 Menu)을 그린다. Flyout 위에 메뉴 너비를 더한다.
  * Base UI 메뉴 안에서는 `Menu.Popup`의 `render`로 넘겨 팝업 요소로 쓴다.
  * @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
  * @param props
@@ -18,11 +18,6 @@ type MenuProps = ComponentProps<'div'> & {
 export function Menu(props: MenuProps): JSX.Element {
   const { material, className, ...flyoutProps } = props;
   return (
-    <Flyout
-      {...flyoutProps}
-      material={material}
-      padding="compact"
-      className={cn('w-size-menu-width', className)}
-    />
+    <Flyout {...flyoutProps} material={material} className={cn('w-size-menu-width', className)} />
   );
 }
