@@ -162,7 +162,7 @@ export function StartMenuLayer(): JSX.Element {
         <StartBody
           view={lists.view}
           device={device}
-          className="min-h-size-hairline w-full flex-flex-fill"
+          className="min-h-size-none w-full flex-flex-fill"
           pinned={lists.pinned}
           groups={lists.groups}
           onItemOpen={handleItemOpen}
@@ -178,7 +178,7 @@ export function StartMenuLayer(): JSX.Element {
         <StartBody
           view="no-results"
           device={device}
-          className="min-h-size-hairline w-full flex-flex-fill"
+          className="min-h-size-none w-full flex-flex-fill"
         />
       );
     }
@@ -186,7 +186,7 @@ export function StartMenuLayer(): JSX.Element {
       <StartBody
         view="results"
         device={device}
-        className="min-h-size-hairline w-full flex-flex-fill"
+        className="min-h-size-none w-full flex-flex-fill"
         results={search.results}
         selectedId={search.selectedId}
         onItemOpen={handleResultOpen}
@@ -206,7 +206,7 @@ export function StartMenuLayer(): JSX.Element {
         <SearchBody
           view="before-typing"
           device={device}
-          className="min-h-size-hairline w-full flex-flex-fill"
+          className="min-h-size-none w-full flex-flex-fill"
           recent={search.recent}
           recommended={search.recommended}
           onItemOpen={handleResultOpen}
@@ -218,7 +218,7 @@ export function StartMenuLayer(): JSX.Element {
         <SearchBody
           view="no-results"
           device={device}
-          className="min-h-size-hairline w-full flex-flex-fill"
+          className="min-h-size-none w-full flex-flex-fill"
         />
       );
     }
@@ -226,7 +226,7 @@ export function StartMenuLayer(): JSX.Element {
       <SearchBody
         view="results"
         device={device}
-        className="min-h-size-hairline w-full flex-flex-fill"
+        className="min-h-size-none w-full flex-flex-fill"
         results={search.results}
         selectedId={search.selectedId}
         onItemOpen={handleResultOpen}

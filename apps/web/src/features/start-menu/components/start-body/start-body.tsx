@@ -141,14 +141,14 @@ export function StartBody(props: StartBodyProps): JSX.Element {
             selectedId={props.selectedId}
             onItemOpen={props.onItemOpen}
             onCopyLink={props.onCopyLink}
-            className="min-h-size-hairline w-full flex-flex-fill"
+            className="min-h-size-none w-full flex-flex-fill"
           />
         </div>
       );
     case 'no-results':
       return (
         <div className={cn('flex flex-col pb-spacing-2xl', props.className)}>
-          <SearchBody view="no-results" className="min-h-size-hairline w-full flex-flex-fill" />
+          <SearchBody view="no-results" className="min-h-size-none w-full flex-flex-fill" />
         </div>
       );
     case 'jump-list':
@@ -375,9 +375,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
         className={isListHidden ? 'invisible flex size-full flex-col' : 'flex size-full flex-col'}
       >
         {/* 넘치면 아래로 스크롤한다. 글자로 이동하기의 scrollIntoView도 이 스크롤 영역을 옮긴다 */}
-        <ScrollArea
-          className={`min-h-size-hairline flex-flex-fill ${scrollAreaClassNames[device]}`}
-        >
+        <ScrollArea className={`min-h-size-none flex-flex-fill ${scrollAreaClassNames[device]}`}>
           <div
             className={`flex w-full shrink-shrink-none flex-col items-start gap-spacing-lg pb-spacing-2xl ${scrollContentClassNames[device]}`}
           >

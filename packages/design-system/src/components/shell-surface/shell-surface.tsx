@@ -40,7 +40,7 @@ export function ShellSurface(props: ShellSurfaceProps): JSX.Element {
         className,
       )}
     >
-      <div className="min-h-size-hairline w-full flex-flex-fill">{children}</div>
+      <div className="min-h-size-none w-full flex-flex-fill">{children}</div>
     </div>
   );
 }

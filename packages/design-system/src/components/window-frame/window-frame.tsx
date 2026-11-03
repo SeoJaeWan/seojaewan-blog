@@ -163,7 +163,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
         )}
       >
         {isCustom ? (
-          <div className="flex min-w-size-hairline flex-flex-fill items-end self-stretch overflow-clip px-spacing-sm pt-spacing-sm">
+          <div className="flex min-w-size-none flex-flex-fill items-end self-stretch overflow-clip px-spacing-sm pt-spacing-sm">
             {titleBarContent}
           </div>
         ) : (
@@ -171,7 +171,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
             appIcon={appIcon}
             title={title}
             inactive={isInactive}
-            className="min-w-size-hairline flex-flex-fill"
+            className="min-w-size-none flex-flex-fill"
           />
         )}
         <CaptionButtonGroup
@@ -186,7 +186,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           className="shrink-shrink-none"
         />
       </div>
-      <div className="flex min-h-size-hairline w-full flex-flex-fill flex-col items-center justify-center overflow-clip">
+      <div className="flex min-h-size-none w-full flex-flex-fill flex-col items-center justify-center overflow-clip">
         {children}
       </div>
     </div>

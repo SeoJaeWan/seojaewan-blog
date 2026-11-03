@@ -55,7 +55,7 @@ export function ExplorerStatusBar(props: ExplorerStatusBarProps): JSX.Element {
       {isSelectionShown && (
         <span className="shrink-shrink-none whitespace-nowrap">{selection}</span>
       )}
-      <div className="h-size-status-bar-spacer-height min-w-size-hairline flex-flex-fill" />
+      <div className="h-size-status-bar-spacer-height min-w-size-none flex-flex-fill" />
       {device === 'desktop' && (
         <>
           <IconButton

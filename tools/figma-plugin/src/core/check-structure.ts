@@ -804,6 +804,7 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
   if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
     checkFixedSizes(node, horizontal, vertical, add);
+    checkHugSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [
     ['최소 너비', node.minWidth],
@@ -819,6 +820,71 @@ function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
       );
     }
   }
+}
+
+/**
+ * 내용 맞춤(HUG) 축의 크기를 정하는 자식이 있는지 검사한다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면
+ * 그 축의 크기가 어떤 변수에도 묶이지 않은 채 피그마에 저장된 값으로 정해진다.
+ * @param node 노드
+ * @param horizontal 가로 크기 방식
+ * @param vertical 세로 크기 방식
+ * @param add 위반을 더하는 함수
+ */
+function checkHugSizes(node: NodeData, horizontal: string, vertical: string, add: Add): void {
+  if (node.text !== null || node.asset !== null || node.children.length === 0) {
+    return;
+  }
+  for (const [axis, sizing, label, bound] of [
+    ['horizontal', horizontal, '너비', node.minWidth],
+    ['vertical', vertical, '높이', node.minHeight],
+  ] as const) {
+    if (sizing === 'HUG' && bound?.variable === undefined && !isChildrenSized(node, axis, sizing)) {
+      add(
+        node,
+        `내용 맞춤 ${label}를 정하는 자식이 없어 ${label}가 변수 없이 정해진다(자식이 모두 ${label}에서 부모 채움이거나 절대 위치)`,
+        `${label}를 size 변수에 연결한 고정 크기로 바꾸거나, ${label}를 정하는 자식(고정 크기나 내용 맞춤 글자)을 둔다.`,
+      );
+    }
+  }
+}
+
+/**
+ * 노드의 한 축 크기가 고정 크기나 내용 맞춤 글자로 정해지는지 본다. 부모 채움 글자와 내용이 없는 채움 노드는 정하지 못한다.
+ * @param node 노드
+ * @param axis 축
+ * @returns 정해지면 true
+ */
+function isSized(node: NodeData, axis: 'horizontal' | 'vertical'): boolean {
+  const own = sizingOf(node, false)[axis];
+  if (own === 'FIXED' || own === 'DERIVED') {
+    return true;
+  }
+  if (node.text !== null) {
+    return own === 'HUG';
+  }
+  return isChildrenSized(node, axis, own);
+}
+
+/**
+ * 자식이 노드의 한 축 크기를 정하는지 본다. 쌓는 방향(주축)은 자식이 모두 정해야 하고, 가로지르는 방향은 하나만 정해도 된다.
+ * 절대 위치 자식은 크기에 들어가지 않는다. 자식이 아예 없으면 내용 맞춤은 정해지고 채움은 정해지지 않는다. 자식이 모두 절대 위치이면 정해지지 않는다.
+ * @param node 노드
+ * @param axis 축
+ * @param sizing 노드의 그 축 크기 방식
+ * @returns 정해지면 true
+ */
+function isChildrenSized(node: NodeData, axis: 'horizontal' | 'vertical', sizing: string): boolean {
+  const live = node.children.filter((child) => child.child?.positioning !== 'ABSOLUTE');
+  if (live.length === 0) {
+    return node.children.length === 0 && sizing !== 'FILL';
+  }
+  const mode = node.layout?.mode;
+  const isPrimary =
+    (mode === 'HORIZONTAL' && axis === 'horizontal') ||
+    (mode === 'VERTICAL' && axis === 'vertical');
+  return isPrimary
+    ? live.every((child) => isSized(child, axis))
+    : live.some((child) => isSized(child, axis));
 }
 
 /**

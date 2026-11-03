@@ -101,7 +101,7 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
           aria-label="검색"
           placeholder={searchPlaceholder}
           value={searchValue}
-          className="min-w-size-hairline flex-flex-fill"
+          className="min-w-size-none flex-flex-fill"
           // 검색 줄이 나타나면 검색 상자에 포커스를 준다(피그마 SearchBox State=Focused).
           ref={focusOnMount}
           onChange={handleChange}
@@ -143,7 +143,7 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
           />
         </>
       ) : null}
-      <Breadcrumb locationIcon={locationIcon} className="min-w-size-hairline flex-flex-fill">
+      <Breadcrumb locationIcon={locationIcon} className="min-w-size-none flex-flex-fill">
         {children}
       </Breadcrumb>
       {isDesktop ? (

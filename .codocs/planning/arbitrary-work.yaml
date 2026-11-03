@@ -10,6 +10,11 @@ _codocs:
 "BrowserTabStrip PR #483: Figma 스토리 되살림": |
   - 피그마 `Tabs` 슬롯 기본 내용(선택된 BrowserTab 하나: `React 19 훅 정리`, `file/Document` 파비콘, 구분선 있음)과 같은 탭으로 `Figma` 스토리를 다시 만들었다. 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI `Tabs.Root`(`contents`)·`Tabs.List`로 감쌌다.
   - `Default`의 "Tabs 슬롯에 넣은 내용을 그린다" 단계는 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]] 4번대로 지우고, 새 탭 버튼 배선 단계만 남겼다. 슬롯의 `탭 자리` 글자 상자도 지웠다.
+"1px 우회 제거와 SearchResults 카드 구조, 구조 검사 HUG 축": |
+  - `min-w-size-hairline`·`min-h-size-hairline`(선 두께 토큰 1px)을 flex 자식이 줄어들게 하려는 우회로 쓰던 곳 34곳(21개 파일: 디자인 시스템 컴포넌트·스토리, 앱 start-menu·file-explorer)을 `min-w-size-none`·`min-h-size-none`(`--size-none: 0px`)으로 바꿨다. 피그마의 그 자리는 FILL이고 최소 크기 값이 없다. `taskbar-button`의 `hairline`은 최소 크기가 아니라 다른 쓰임이라 그대로 뒀다.
+  - `SearchResults`는 안쪽 BestMatchCard의 `icon`·`title`·`meta`와 `Actions` 슬롯(`actions`)을 자기 prop으로 다시 열지 않고, 카드 하나를 `card` prop(`ReactNode`)으로 받는다. 피그마 SearchResults의 속성은 `Device`와 `Results` 슬롯뿐이고 BestMatchCard는 그 안에 놓인 인스턴스이기 때문이다. 카드 크기 클래스(데스크톱은 `shrink-shrink-none`, 모바일은 `w-full`)는 쓰는 곳이 카드에 준다. 쓰는 곳은 `search-body`와 `Figma` 스토리다. `card`는 피그마에 없는 코드 쪽 자리라 필수 prop으로 뒀고 기본 내용은 없다.
+  - 플러그인 구조 검사에 "내용 맞춤(HUG) 축을 정하는 자식이 없는" 경우를 더했다. 자식이 모두 그 축에서 부모 채움(FILL)이거나 절대 위치이면 막는다. 단, 부모 채움 자식이어도 안쪽이 크기를 정하면(고정 크기, 내용 맞춤 글자, 또는 그런 자식으로 정해지는 채움 틀) 정해진 것으로 본다. 처음에는 직접 자식만 보았으나 MenuItem 높이처럼 채움 틀 안의 글자 높이가 정하는 경우가 오탐으로 걸려 안쪽까지 본다. 쌓는 방향(주축)은 자식이 모두, 가로지르는 방향은 하나만 정하면 된다. 부모 채움 글자의 너비는 저장된 값이라 정하지 못한 것으로 본다. 최소 너비·높이가 변수에 연결돼 있으면 검사하지 않는다.
+  - [[피그마 연동:구조 검사]] 문서는 고치지 않았다. 새 검사는 1번(고정 크기를 변수에 연결) 항목의 한 갈래로 읽히지만 "막는 것은 여덟 가지뿐"에 따라 명시하려면 문서 문구를 바꿔야 해서 허락을 받고 고친다.
 "RenameField PR #482: State=Rest 삭제 정리": |
   - `shouldSelectOnMount` prop은 `State=Rest` 변형(선택하지 않은 모습)만을 위한 것이었고 앱과 FileItem·FileRow는 넘기지 않아(기본값 true) 지웠다. 마운트하면 늘 포커스를 주고 이름 전체를 선택한다. 앱 동작은 그대로다.
   - 그 prop만 보던 `NotSelected` 스토리를 지웠다. 선택·입력을 보는 `Default`, ref 합치기와 키 입력을 보는 `Controlled`는 남겼다.
