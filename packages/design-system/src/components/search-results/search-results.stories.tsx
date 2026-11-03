@@ -35,10 +35,10 @@ const meta = {
         device={args.device}
         icon={documentIcon}
         actions={
-          <div className="flex w-full flex-col items-start gap-spacing-sm">
+          <>
             <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
             <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
-          </div>
+          </>
         }
       >
         <ListGroup label="최고 일치" className="w-full shrink-shrink-none">
