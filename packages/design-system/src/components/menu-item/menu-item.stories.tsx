@@ -4,6 +4,8 @@ import type { JSX, ReactNode } from 'react';
 import { useState } from 'react';
 import { expect, fn } from 'storybook/test';
 
+import menuItemExport from '../../../figma/components/menu-item/export.json';
+import { FigmaFrame } from '../../story/figma-frame';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
@@ -39,6 +41,10 @@ const baseUiFocusGuardParameters = {
   a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } },
 };
 
+// Base UI 1.9.0 `Menu.Popup`은 실행 중에 `initialFocus`를 받지만 타입 선언에는 없어, 속성 객체로 넘겨 타입 검사를 지난다.
+// 열릴 때 팝업으로 포커스가 옮겨 포커스 링이 그려지면 피그마 그림과 달라지므로 처음 포커스를 옮기지 않게 한다.
+const noInitialFocus: Record<string, unknown> = { initialFocus: false };
+
 const meta = {
   title: 'Components/MenuItem',
   args: { kind: 'default', state: 'rest', showIcon: true, showShortcut: false },
@@ -49,7 +55,7 @@ const meta = {
     showShortcut: { control: 'boolean' },
   },
   render: (args) => (
-    <OpenMenu>
+    <OpenMenu args={args}>
       <FigmaMenuItem {...args} />
     </OpenMenu>
   ),
@@ -282,11 +288,15 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
 }
 
 /**
- * 스토리 루트 안에 열린 메뉴를 그린다.
+ * 스토리 루트 안에 열린 메뉴를 그린다. 메뉴 너비는 피그마 MenuItem 원본의 너비(size/menu/width)로 FigmaFrame이 준다.
  * @param props
+ * @param props.args 피그마 변형을 고르는 스토리 args. 동작 스토리는 주지 않는다
  * @param props.children 메뉴 항목
  */
-function OpenMenu(props: { children: ReactNode }): JSX.Element {
+function OpenMenu(props: {
+  args?: Readonly<Record<string, unknown>>;
+  children: ReactNode;
+}): JSX.Element {
   const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
   return (
     <div ref={setAnchor}>
@@ -295,8 +305,10 @@ function OpenMenu(props: { children: ReactNode }): JSX.Element {
           <Menu.Portal container={anchor}>
             <Menu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={0}>
               {/* 포털 안에 그리므로 캡처 대상을 표시한다([[피그마 연동:스토리 규칙]]). */}
-              <Menu.Popup data-parity-target className="w-size-menu-width outline-none">
-                {props.children}
+              <Menu.Popup {...noInitialFocus} data-parity-target>
+                <FigmaFrame source={menuItemExport} args={props.args}>
+                  {props.children}
+                </FigmaFrame>
               </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>

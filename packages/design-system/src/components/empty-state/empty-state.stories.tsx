@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import emptyStateExport from '../../../figma/components/empty-state/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { EmptyState } from './empty-state';
 
 type FigmaArgs = {
@@ -27,19 +29,18 @@ const meta = {
     code: { control: 'text' },
     showButton: { control: 'boolean' },
   },
+  // EmptyState는 너비를 갖지 않고 쓰는 곳이 정한다. FigmaFrame이 피그마 원본의 미리보기 너비로 감싼다.
+  decorators: [figmaFrame(emptyStateExport)],
   render: (args) => {
     const { onReload: handleReload } = args;
     return (
-      // EmptyState는 너비를 갖지 않고 쓰는 곳이 정한다. 피그마 원본의 미리보기 너비(600)로 감싼다.
-      <div className="w-size-empty-state-width">
-        <EmptyState
-          heading={args.heading}
-          message={args.message}
-          code={args.code}
-          showButton={args.showButton}
-          onReload={handleReload}
-        />
-      </div>
+      <EmptyState
+        heading={args.heading}
+        message={args.message}
+        code={args.code}
+        showButton={args.showButton}
+        onReload={handleReload}
+      />
     );
   },
 } satisfies Meta<FigmaArgs>;

@@ -131,7 +131,9 @@ function sizingStyle(sizing: NodeSizing, label: string): CSSProperties {
         style.flex = '1 1 0';
         style[axis.size === 'width' ? 'minWidth' : 'minHeight'] = 0;
       } else if (parentMode === 'HORIZONTAL' || parentMode === 'VERTICAL') {
+        // 감싸는 요소는 내용 너비(w-fit)라, 크기를 auto로 돌려야 교차축으로 늘어난다.
         style.alignSelf = 'stretch';
+        style[axis.size] = 'auto';
       } else {
         throw new Error(`${label}: 채움(FILL) 노드의 부모가 가로·세로 자동 배치가 아니다`);
       }

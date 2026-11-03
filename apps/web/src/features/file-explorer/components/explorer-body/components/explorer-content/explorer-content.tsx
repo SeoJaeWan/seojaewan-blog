@@ -153,10 +153,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
       >
         {path}
       </ExplorerAddressRow>
-      <ExplorerCommandBar>
-        {/* 피그마 Commands 슬롯의 배치(가로, 간격 4, 높이 size/control/height)다. 비어 있어도 높이를 지킨다 */}
-        <div className="flex h-size-control-height items-center gap-spacing-xs">{commands}</div>
-      </ExplorerCommandBar>
+      <ExplorerCommandBar>{commands}</ExplorerCommandBar>
       <div className="flex min-h-size-none flex-flex-fill overflow-clip border-t-stroke-width-default border-card-stroke-default bg-layer-fill-default">
         {isDesktop && (
           <>

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import columnHeaderExport from '../../../figma/components/column-header/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { ColumnHeader } from './column-header';
 
 // 피그마 ColumnHeader의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로 재현한다.
@@ -21,14 +23,9 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
     sort: { control: 'inline-radio', options: SORTS },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 188로 감싼다.
-  render: (args) => (
-    <ColumnHeader
-      label={args.label}
-      sort={args.sort}
-      className="w-size-details-header-wide-width"
-    />
-  ),
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다.
+  decorators: [figmaFrame(columnHeaderExport)],
+  render: (args) => <ColumnHeader label={args.label} sort={args.sort} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;

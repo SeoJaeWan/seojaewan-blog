@@ -1,17 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import sectionTitleExport from '../../../figma/components/section-title/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { SectionTitle } from './section-title';
 
 const meta = {
   title: 'Components/SectionTitle',
   // 변형 속성이 없다. 글자는 피그마 Title 속성의 기본값이다.
-  // 부모가 너비를 정하는 컴포넌트라 피그마 원본 너비 574로 감싼다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
-  render: () => (
-    <div className="w-size-shell-body-width">
-      <SectionTitle />
-    </div>
-  ),
+  // 부모가 너비를 정하는 컴포넌트라 FigmaFrame이 피그마 원본 너비로 감싼다(@codocs [[디자인 시스템:컴포넌트 조립 규칙]]).
+  decorators: [figmaFrame(sectionTitleExport)],
+  render: () => <SectionTitle />,
 } satisfies Meta;
 
 export default meta;
@@ -25,11 +24,7 @@ export const Figma: Story = {};
 // @codocs [[접근성:영역 이름]]
 /** 제목은 제목 태그로 그리고 영역이 가리킬 id를 받는다 */
 export const Heading: Story = {
-  render: () => (
-    <div className="w-size-shell-body-width">
-      <SectionTitle title="고정됨" titleId="section-title" />
-    </div>
-  ),
+  render: () => <SectionTitle title="고정됨" titleId="section-title" />,
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('heading', { name: '고정됨' })).toHaveAttribute(
       'id',
@@ -41,11 +36,7 @@ export const Heading: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** showAction이 꺼져 있으면 action을 그리지 않는다 */
 export const Default: Story = {
-  render: () => (
-    <div className="w-size-shell-body-width">
-      <SectionTitle title="고정됨" action={<button type="button">보기</button>} />
-    </div>
-  ),
+  render: () => <SectionTitle title="고정됨" action={<button type="button">보기</button>} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -62,11 +53,7 @@ export const Default: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** showAction이 켜지면 action을 그린다 */
 export const WithAction: Story = {
-  render: () => (
-    <div className="w-size-shell-body-width">
-      <SectionTitle showAction action={<button type="button">보기</button>} />
-    </div>
-  ),
+  render: () => <SectionTitle showAction action={<button type="button">보기</button>} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 

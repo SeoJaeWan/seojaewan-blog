@@ -1,16 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import unsupportedBlockExport from '../../../figma/components/unsupported-block/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { UnsupportedBlock } from './unsupported-block';
 
 const meta = {
   title: 'Components/UnsupportedBlock',
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 720으로 감싼다.
-  render: () => (
-    <div className="w-size-post-width">
-      <UnsupportedBlock />
-    </div>
-  ),
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다.
+  decorators: [figmaFrame(unsupportedBlockExport)],
+  render: () => <UnsupportedBlock />,
 } satisfies Meta;
 
 export default meta;

@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
+import tableCellExport from '../../../figma/components/table-cell/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { TableCell } from './table-cell';
 
 const meta = {
@@ -12,10 +14,11 @@ const meta = {
   args: { type: 'body' },
   // 가운데 배치는 칸 위치를 반 픽셀로 만들어 선이 흐려지므로 위쪽 왼쪽에 둔다.
   parameters: { layout: 'padded' },
-  // 너비는 표와 쓰는 곳이 정하므로, 피그마 원본 너비 240으로 감싼다. 칸은 표 안에서만 쓸 수 있어 표 구조로 감싸고,
+  // 너비는 표와 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다. 칸은 표 안에서만 쓸 수 있어 표 구조로 감싸고,
   // 캡처 대상은 칸이다. Content는 피그마 기본 글자("칸 내용")를 넣는다.
+  decorators: [figmaFrame(tableCellExport)],
   render: (args) => (
-    <table className="w-size-table-cell-width table-fixed border-spacing-border-spacing-none">
+    <table>
       <tbody>
         <tr>
           <TableCell {...args} data-parity-target>

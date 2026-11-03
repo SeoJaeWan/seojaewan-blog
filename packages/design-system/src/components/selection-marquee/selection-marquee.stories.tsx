@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import selectionMarqueeExport from '../../../figma/components/selection-marquee/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { SelectionMarquee } from './selection-marquee';
 
 const meta = {
   title: 'Components/SelectionMarquee',
-  // 크기는 쓰는 곳이 정하므로 피그마 원본 크기(240 x 160)를 준다.
-  render: () => (
-    <SelectionMarquee className="h-size-selection-marquee-height w-size-selection-marquee-width" />
-  ),
+  // 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다.
+  decorators: [figmaFrame(selectionMarqueeExport)],
+  render: () => <SelectionMarquee />,
 } satisfies Meta;
 
 export default meta;
