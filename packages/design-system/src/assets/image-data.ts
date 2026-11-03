@@ -25,8 +25,8 @@ export const imageAssets = {
   },
   'images/equation-quadratic-formula': {
     src: new URL('./images/equation-quadratic-formula.webp', import.meta.url).href,
-    width: 400,
-    height: 112,
+    width: 390,
+    height: 100,
   },
   'images/file-document': {
     src: new URL('./images/file-document.webp', import.meta.url).href,
