@@ -1,0 +1,65 @@
+{
+  "description": "메뉴 안 구분선. 위 spacing/2xs · 아래 spacing/sm-nudge 여백 안에 가로 Separator를 담는다. 메뉴 항목 사이(Flyout · Menu의 Content 슬롯)에 넣고 너비는 쓰는 곳이 정한다(부모 채움).",
+  "name": "MenuSeparator",
+  "nodeId": "2215:7040",
+  "propertyDefinitions": {},
+  "variants": {
+    "default": {
+      "node": {
+        "height": 9,
+        "width": 250,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2215:7040",
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "component": "Separator",
+            "fills": [
+              "divider-stroke/default"
+            ],
+            "height": "stroke-width/default",
+            "name": "Separator",
+            "properties": {
+              "Orientation": "Horizontal"
+            },
+            "size": {
+              "h": 1,
+              "w": 250
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FIXED"
+            },
+            "type": "INSTANCE"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/2xs",
+            "spacing/none",
+            "spacing/sm-nudge",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "MenuSeparator",
+        "size": {
+          "h": 9,
+          "w": 250
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT",
+        "width": "size/menu/width"
+      }
+    }
+  }
+}
