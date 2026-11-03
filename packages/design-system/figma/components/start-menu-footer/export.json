@@ -9,9 +9,8 @@
   },
   "variants": {
     "default": {
-      "emptyHugSlot": true,
       "node": {
-        "height": 133,
+        "height": 65,
         "width": 638,
         "x": 0,
         "y": 0
@@ -21,6 +20,143 @@
       "tree": {
         "children": [
           {
+            "children": [
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "path": "images/avatar-profile"
+                    },
+                    "component": "avatar/Profile",
+                    "height": "size/avatar/profile",
+                    "name": "profile photo",
+                    "size": {
+                      "h": 32,
+                      "w": 32
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/avatar/profile"
+                  },
+                  {
+                    "fills": [
+                      "text-fill/primary"
+                    ],
+                    "name": "profile name",
+                    "size": {
+                      "h": 20,
+                      "w": 37
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "서재완",
+                          "fill": "text-fill/primary",
+                          "textStyle": "Hangul/Body"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "ProfileButton",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/md",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none",
+                    "spacing/none"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "ProfileButton",
+                "properties": {
+                  "Name": "서재완"
+                },
+                "size": {
+                  "h": 32,
+                  "w": 510
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              },
+              {
+                "children": [
+                  {
+                    "asset": {
+                      "color": "text-fill/primary",
+                      "path": "icons/ic_fluent_power_20_regular"
+                    },
+                    "component": "ic_fluent_power_20_regular",
+                    "height": "size/icon/sm",
+                    "name": "icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  }
+                ],
+                "component": "IconButton",
+                "fills": [
+                  "subtle-fill/transparent"
+                ],
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "power button",
+                "properties": {
+                  "State": "Rest",
+                  "Style": "Subtle"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 32
+                },
+                "sizing": {
+                  "h": "HUG",
+                  "v": "HUG"
+                },
+                "type": "INSTANCE"
+              }
+            ],
             "layout": {
               "counterAlign": "CENTER",
               "gap": 0,
@@ -35,7 +171,7 @@
             },
             "name": "Content",
             "size": {
-              "h": 100,
+              "h": 32,
               "w": 542
             },
             "sizing": {
@@ -62,7 +198,7 @@
         },
         "name": "StartMenuFooter",
         "size": {
-          "h": 133,
+          "h": 65,
           "w": 638
         },
         "sizing": {
