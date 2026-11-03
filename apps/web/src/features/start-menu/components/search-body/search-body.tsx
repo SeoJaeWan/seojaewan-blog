@@ -188,10 +188,10 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
     { kind: 'post', items: results.posts },
     { kind: 'link', items: results.links },
   ] as const;
-  return (
+  const searchResults = (
     <SearchResults
       device={device}
-      className={className}
+      className={device === 'mobile' ? 'w-full' : className}
       card={
         <BestMatchCard
           icon={renderItemIcon({ kind: cardItem.kind })}
@@ -264,6 +264,15 @@ function SearchBodyResults(props: SearchBodyResultsProps): JSX.Element {
         )}
     </SearchResults>
   );
+  // 모바일 SearchResults는 높이가 내용에 맞으므로, 넘치면 카드와 목록을 함께 스크롤하도록 ScrollArea로 감싼다.
+  if (device === 'mobile') {
+    return (
+      <ScrollArea className={cn('size-full rounded-radius-control', className)}>
+        {searchResults}
+      </ScrollArea>
+    );
+  }
+  return searchResults;
 }
 
 /**

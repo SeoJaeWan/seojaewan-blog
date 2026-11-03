@@ -65,6 +65,10 @@ _codocs:
   - Hover 캡처 위치는 저장소 관례(`data-parity-target`)를 따라 캡처 대상의 속성 `data-parity-hover`(안쪽 요소의 CSS 선택자)로 정했다. 도구(`story-page.ts`의 `pointerTarget`)는 이 속성이 있으면 그 요소 가운데에 마우스를 올린다(단위 테스트 `story-page.test.ts`). ScrollArea `Figma` 스토리는 `[data-state]`(스크롤바)를 적었다. [[피그마 연동:스토리 규칙]]의 Hover 문장에 이 경우를 더했다.
   - 동작 스토리는 `Overflow`(넘치면 막대 보임·올리면 펼침·내리면 접힘·스크롤하면 막대 이동·포커스할 항목이 없으면 Tab이 영역에 닿음)와 `FitsContent`(넘치지 않으면 숨김·포커스 받지 않음)다. 둘 다 `Figma`와 같은 크기 토큰(`w-size-list-item-width`·`h-size-scrollbar-length`)과 ListItem 목록을 쓰고, 버튼 8개를 넣던 옛 `Overflow`와 `w/h-size-scrollbar-length` 정사각형의 `Default`는 지웠다. 방향키 스크롤은 합성 키 사건으로 일어나지 않아 포커스까지만 본다.
   - children을 줄지 않는 틀로 감싼 뒤 쓰는 곳(시작 본문·메뉴, 검색 본문·패널, 탐색기 본문·창, SearchResults) 30개 변형의 코드 캡처가 바꾸기 전과 바이트까지 같았다.
+"SearchResults PR #512: 모바일 HUG와 스크롤을 쓰는 곳으로": |
+  - 피그마 모바일 루트와 안쪽 `scroll` 틀이 모두 높이 HUG가 되어, 코드의 모바일 SearchResults에서 ScrollArea를 걷어내고 두 프레임을 한 `div`(세로 간격 16, 반경 `radius/control`)로 그렸다. 너비는 그대로 쓰는 곳이 정한다.
+  - 쓰는 곳 `search-body`의 결과 화면은 같은 PR에서 모바일만 `ScrollArea`(`size-full rounded-radius-control` + 받은 className)로 감싸고 SearchResults에는 `w-full`을 줬다. 옛 SearchResults 안의 ScrollArea와 같은 구성이라 `contentClassName`(여백)은 주지 않았다. 조립 PR이 이 자리를 다시 바꿀 수 있다.
+  - 바꾸기 전후로 시작·검색·탐색기 조립과 SearchResults 데스크톱 29개 변형의 코드 캡처가 바이트까지 같았고, 달라진 것은 SearchResults `Device=Mobile` 단독 캡처(높이 465 → 내용 611)뿐이다. `Figma` 스토리는 이미 모바일에 너비만 주고 있어 고치지 않았다.
 "캡처 도구: SHA 주소, 캡처 화면 고정, 빈 HUG 제외": |
   - 캡처와 모션 검사의 화면을 `tools/figma-parity/src/capture-viewport.ts`의 1600×900으로 고정했다(두 `playwright*.config.ts`가 읽는다). 요청은 캡처 설정이었으나 모션 검사도 같은 `Desktop Chrome` 기본 화면(1280×720)을 쓰므로 함께 고쳤다. 전체 캡처 493개를 고치기 전후로 비교하니 크기가 바뀐 그림은 없고 373개는 픽셀까지 같았다. 나머지 120개는 글자·가장자리·이미지 크기 조정의 아주 작은 픽셀 차이였다(같은 설정으로 두 번 돌려도 3개가 달랐다).
   - `emptyHugSlot` 표시는 변형 항목의 불리언으로 읽고(`VariantEntry.emptyHugSlot`, 표시가 없으면 false), 불리언이 아니면 `export.json` 읽기가 실패하게 했다. 표에서는 그 변형의 코드 칸에 `조립에서 확인`을 쓰고(`CaptureRow.emptyHugSlot`), 캡처 실패로 세지 않으며 `parity-captures`에도 올리지 않는다. 그 대상 폴더를 다시 쓸 때 옛 캡처는 지워진다. 피그마 그림 파일은 폴더에 그대로 두고 `export.json`이 가리키는 파일 검사도 그대로다.
