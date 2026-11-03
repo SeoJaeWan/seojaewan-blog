@@ -17,7 +17,6 @@
   },
   "variants": {
     "device=desktop": {
-      "emptyHugSlot": true,
       "node": {
         "height": 458,
         "width": 798,
@@ -981,7 +980,6 @@
       }
     },
     "device=mobile": {
-      "emptyHugSlot": true,
       "node": {
         "height": 716,
         "width": 388,
