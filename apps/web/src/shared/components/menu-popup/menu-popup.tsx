@@ -1,7 +1,7 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX } from 'react';
 
-import { Menu, MenuItem, Popover, Separator } from '@seojaewan/design-system';
+import { Menu, MenuItem, MenuSeparator, Popover } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -88,7 +88,7 @@ export type MenuPopupZoom = {
   isZoomInDisabled?: boolean;
 };
 
-/** 항목 사이 구분선(피그마 조립의 `separator` 배치 프레임과 Separator) */
+/** 항목 사이 구분선(피그마 MenuSeparator) */
 export type MenuPopupSeparator = { kind: 'separator' };
 
 /** 메뉴 한 줄 */
@@ -188,12 +188,8 @@ function MenuEntry(props: { entry: MenuPopupEntry; itemClassName?: string }): JS
   const { entry, itemClassName } = props;
   switch (entry.kind) {
     case 'separator':
-      // 피그마 `separator` 배치 프레임: 위 2·아래 6 여백 안에 메뉴 안쪽 너비를 채우는 가로선이다.
-      return (
-        <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
-          <Separator className="w-full" />
-        </div>
-      );
+      // 메뉴 안쪽 너비를 채우는 구분선(피그마 MenuSeparator)이다.
+      return <MenuSeparator className="w-full" />;
     case 'submenu':
       return <SubmenuEntry entry={entry} itemClassName={itemClassName} />;
     case 'zoom': {

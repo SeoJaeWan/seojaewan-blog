@@ -11,10 +11,10 @@ import { SearchResults, type SearchResultsDevice } from './search-results';
 // 피그마 SearchResults의 변형 속성 값이다(정규화한 이름).
 const DEVICES = ['desktop', 'mobile'] as const;
 
-// 변형마다 피그마 원본 크기이자 Start 검색 본문 자리의 크기 토큰이다.
+// 변형마다 피그마 원본 크기이자 Start 검색 본문 자리의 크기 토큰이다. 모바일은 높이가 내용에 맞춰 너비만 준다.
 const sizeClassNames: Record<SearchResultsDevice, string> = {
   desktop: 'h-size-search-results-height w-size-shell-body-width',
-  mobile: 'h-size-search-results-mobile-height w-size-shell-mobile-body-width',
+  mobile: 'w-size-shell-mobile-body-width',
 };
 
 const documentIcon = (

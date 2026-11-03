@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Flyout } from '../flyout/flyout';
 import { IconButton } from '../icon-button/icon-button';
 import { MenuItem } from '../menu-item/menu-item';
-import { Separator } from '../separator/separator';
+import { MenuSeparator } from '../menu-separator/menu-separator';
 import { Popover } from './popover';
 
 // 피그마 Popover의 변형 속성 값이다(정규화한 이름).
@@ -32,7 +32,8 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
   },
   // Trigger·Popup 슬롯에는 피그마 슬롯 기본 내용과 같은 전원 버튼(IconButton Subtle)과
-  // 메뉴 항목 넷과 구분선을 담은 Flyout을 넣는다. Flyout은 너비가 없어 피그마 원본 너비(320)의 부모로 감싼다.
+  // 메뉴 항목 넷과 구분선을 담은 Flyout을 넣는다. Flyout은 너비가 없어 내용에 맞추므로,
+  // 피그마처럼 메뉴 항목이 메뉴 너비(size/menu/width)를 갖고 구분선은 그 너비를 채운다.
   render: (args) => (
     <Popover
       placement={args.placement}
@@ -41,31 +42,35 @@ const meta = {
         <IconButton variant="subtle" label="전원" icon="icons/ic_fluent_power_20_regular.svg" />
       }
       popup={
-        <div className="w-size-search-box-wide-width">
-          <Flyout>
-            <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
-            <MenuItem
-              standalone
-              label="새 창에서 열기"
-              icon="icons/ic_fluent_window_20_regular.svg"
-            />
-            <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
-              <Separator className="w-full" />
-            </div>
-            <MenuItem
-              standalone
-              label="이름 바꾸기"
-              icon="icons/ic_fluent_rename_20_regular.svg"
-              shortcut="F2"
-            />
-            <MenuItem
-              standalone
-              label="삭제"
-              icon="icons/ic_fluent_delete_20_regular.svg"
-              shortcut="Delete"
-            />
-          </Flyout>
-        </div>
+        <Flyout>
+          <MenuItem
+            standalone
+            label="열기"
+            icon="icons/ic_fluent_open_20_regular.svg"
+            className="w-size-menu-width"
+          />
+          <MenuItem
+            standalone
+            label="새 창에서 열기"
+            icon="icons/ic_fluent_window_20_regular.svg"
+            className="w-size-menu-width"
+          />
+          <MenuSeparator className="w-full" />
+          <MenuItem
+            standalone
+            label="이름 바꾸기"
+            icon="icons/ic_fluent_rename_20_regular.svg"
+            shortcut="F2"
+            className="w-size-menu-width"
+          />
+          <MenuItem
+            standalone
+            label="삭제"
+            icon="icons/ic_fluent_delete_20_regular.svg"
+            shortcut="Delete"
+            className="w-size-menu-width"
+          />
+        </Flyout>
       }
     />
   ),

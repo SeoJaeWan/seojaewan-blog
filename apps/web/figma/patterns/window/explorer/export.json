@@ -1003,12 +1003,12 @@
                                               "w": 45
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -1027,7 +1027,7 @@
                                                   "textStyle": "Hangul/Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -1126,12 +1126,12 @@
                                               "w": 25
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -1140,7 +1140,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -1249,9 +1249,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
@@ -4455,12 +4453,12 @@
                                               "w": 45
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -4479,7 +4477,7 @@
                                                   "textStyle": "Hangul/Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -4578,12 +4576,12 @@
                                               "w": 25
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -4592,7 +4590,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -4701,9 +4699,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
@@ -7907,12 +7903,12 @@
                                               "w": 45
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -7931,7 +7927,7 @@
                                                   "textStyle": "Hangul/Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -8030,12 +8026,12 @@
                                               "w": 25
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -8044,7 +8040,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -8153,9 +8149,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
@@ -11415,12 +11409,12 @@
                                               "w": 45
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -11439,7 +11433,7 @@
                                                   "textStyle": "Hangul/Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -11538,12 +11532,12 @@
                                               "w": 25
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -11552,7 +11546,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -11651,12 +11645,12 @@
                                               "w": 31
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -11665,7 +11659,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -11774,9 +11768,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
@@ -15028,12 +15020,12 @@
                                               "w": 32
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -15042,7 +15034,7 @@
                                                   "textStyle": "Hangul/Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -15151,9 +15143,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
@@ -18243,12 +18233,12 @@
                                               "w": 25
                                             },
                                             "sizing": {
-                                              "h": "FILL",
+                                              "h": "HUG",
                                               "v": "HUG"
                                             },
                                             "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
+                                              "autoResize": "WIDTH_AND_HEIGHT",
+                                              "maxLines": null,
                                               "maxLinesVariable": null,
                                               "segments": [
                                                 {
@@ -18257,7 +18247,7 @@
                                                   "textStyle": "Caption"
                                                 }
                                               ],
-                                              "truncation": "ENDING"
+                                              "truncation": "DISABLED"
                                             },
                                             "type": "TEXT"
                                           }
@@ -18366,9 +18356,7 @@
                               "primaryAlign": "MIN"
                             },
                             "name": "breadcrumb",
-                            "properties": {
-                              "State": "Rest"
-                            },
+                            "properties": {},
                             "radius": [
                               "radius/control",
                               "radius/control",
