@@ -23,11 +23,7 @@ const runtimeValues = {
 export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-window-minimize" runtimeValues={runtimeValues}>
-      {(motionClassName) => (
-        <div className="p-spacing-2xl">
-          <SampleWindow motionClassName={motionClassName} />
-        </div>
-      )}
+      {(motionClassName) => <SampleWindow motionClassName={motionClassName} />}
     </MotionPreview>
   ),
 };

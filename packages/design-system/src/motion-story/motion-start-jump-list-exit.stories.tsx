@@ -18,11 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <MotionPreview motionClass="motion-start-jump-list-exit">
-      {(motionClassName) => (
-        <div className="p-spacing-2xl">
-          <SampleJumpList motionClassName={motionClassName} />
-        </div>
-      )}
+      {(motionClassName) => <SampleJumpList motionClassName={motionClassName} />}
     </MotionPreview>
   ),
 };
