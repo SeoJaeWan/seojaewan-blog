@@ -2,7 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // @codocs [[저장소 구성:구성]]
-// 행위 표 도구가 읽는 저장소 경로를 한곳에 모은다.
+// 시나리오 케이스 도구가 읽는 저장소 경로를 한곳에 모은다.
 export const toolRoot = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 export const repoRoot = path.resolve(toolRoot, '..', '..');
 
@@ -16,6 +16,8 @@ export const productSourceDirs = [`${WEB_DIR}/src`, 'packages/design-system/src'
 export const pageDir = path.join(toolRoot, 'page');
 /** 정적 결과 페이지를 만드는 기본 폴더 */
 export const defaultReportDir = path.join(toolRoot, 'report');
+/** 정의 파일·코드 링크를 거는 GitHub 저장소 */
+export const REPO_URL = 'https://github.com/SeoJaeWan/seojaewan-blog';
 /** 실행해보기 결과를 두는 폴더 */
 export const runsDir = path.join(toolRoot, 'runs');
 

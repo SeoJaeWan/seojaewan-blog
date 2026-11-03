@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 
 import { fromRepo, runsDir, WEB_DIR } from './paths.ts';
-import { type JsonReport, readReportedCases } from './playwright-results.ts';
+import { type JsonReport, readReportedCases, type ReportedCase } from './playwright-results.ts';
 
 /** 실행해보기 한 번의 상태. */
 export type CaseRun = {
@@ -12,8 +12,10 @@ export type CaseRun = {
   status: 'running' | 'passed' | 'failed' | 'error';
   startedAt: string;
   finishedAt: string | null;
-  /** 실패·오류 내용 첫 줄 */
+  /** 실패·오류 내용 */
   message: string | null;
+  /** 기대 결과 단계(`test.step`)와 실패 여부 */
+  steps: ReportedCase['steps'];
   /** trace zip 절대 경로 */
   trace: string | null;
 };
@@ -79,6 +81,7 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
     finishedAt: null,
     message: null,
     trace: null,
+    steps: [],
   };
   onChange({ ...run });
 
@@ -87,9 +90,15 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
    * @param status 끝난 상태
    * @param message 실패·오류 내용
    * @param trace trace zip 경로
+   * @param steps 기대 결과 단계
    */
-  function finish(status: CaseRun['status'], message: string | null, trace: string | null): void {
-    onChange({ ...run, status, message, trace, finishedAt: new Date().toISOString() });
+  function finish(
+    status: CaseRun['status'],
+    message: string | null,
+    trace: string | null,
+    steps: CaseRun['steps'] = [],
+  ): void {
+    onChange({ ...run, status, message, trace, steps, finishedAt: new Date().toISOString() });
   }
 
   if (!existsSync(fromRepo(`${WEB_DIR}/.next/BUILD_ID`))) {
@@ -122,8 +131,8 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
       path.join(dir, 'results'),
     ],
     {
-      BEHAVIOR_CASES_SLOW_MO: String(SLOW_MO_MS),
-      BEHAVIOR_CASES_ACTION_MS: String(ACTION_ANNOTATION_MS),
+      SCENARIO_CASES_SLOW_MO: String(SLOW_MO_MS),
+      SCENARIO_CASES_ACTION_MS: String(ACTION_ANNOTATION_MS),
       PLAYWRIGHT_JSON_OUTPUT_NAME: reportPath,
     },
   );
@@ -143,7 +152,12 @@ export async function runCase(token: string, onChange: (run: CaseRun) => void): 
     finish('error', '그 케이스를 찾지 못했다', null);
     return;
   }
-  finish(result.status === 'passed' ? 'passed' : 'failed', result.error, result.tracePath);
+  finish(
+    result.status === 'passed' ? 'passed' : 'failed',
+    result.error,
+    result.tracePath,
+    result.steps,
+  );
 }
 
 /**

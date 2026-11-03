@@ -13,22 +13,22 @@ export const behavior = defineBehavior({
       base: '탐색 창의 폴더',
     },
     view: {
-      label: '보기',
+      label: '보기 방식',
       values: ['보통 아이콘', '큰 아이콘', '자세히'],
       base: '보통 아이콘',
     },
     search: {
-      label: '이어서 찾기',
+      label: '옮긴 뒤 찾기',
       values: ['한글 초성', '이름에 포함', '안 찾음'],
       base: '한글 초성',
     },
     input: {
-      label: '입력',
+      label: '입력 방식',
       values: ['마우스', '펜', '터치'],
       base: '마우스',
     },
     screen: {
-      label: '화면',
+      label: '화면 크기',
       values: ['PC', '노트북', '모바일'],
       base: 'PC',
     },
@@ -36,9 +36,15 @@ export const behavior = defineBehavior({
   cases: [
     {
       id: 'drag-to-tree-and-search',
-      purpose: '탐색기 항목을 탐색 창 폴더로 끌어 옮기고, 폴더 안에서 초성으로 찾는다',
+      scenario:
+        'Blog 폴더 탐색기의 "2026 상반기 회고" 글을 마우스로 끌어 왼쪽 탐색 창의 Next.js 폴더에 놓고, 검색 상자에 "ㅎㄱ"을 입력한다',
+      expected: [
+        '글이 Blog 폴더 내용에서 사라진다',
+        '초성 "ㅎㄱ"으로 "2026 상반기 회고"가 찾아진다',
+        '검색 결과에 "위치" 열이 보인다',
+      ],
       docs: ['[[파일 탐색기:조작]]', '[[파일 탐색기:폴더 안 검색]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         await openBlogFolder(page);
         const explorer = page.getByRole('region', { name: /- 파일 탐색기$/ });
@@ -48,22 +54,30 @@ export const behavior = defineBehavior({
         await content
           .getByRole('option', { name: '2026 상반기 회고', exact: true })
           .dragTo(tree.getByRole('treeitem', { name: 'Next.js' }));
-        await expect(
-          content.getByRole('option', { name: '2026 상반기 회고', exact: true }),
-        ).not.toBeAttached();
+        await check('글이 Blog 폴더 내용에서 사라진다', async () => {
+          await expect(
+            content.getByRole('option', { name: '2026 상반기 회고', exact: true }),
+          ).not.toBeAttached();
+        });
 
         await explorer.getByRole('searchbox', { name: '검색' }).fill('ㅎㄱ');
-        await expect(content.getByRole('option', { name: /^2026 상반기 회고/ })).toBeVisible();
-        await expect(explorer.getByRole('button', { name: '위치' })).toBeVisible();
+        await check('초성 "ㅎㄱ"으로 "2026 상반기 회고"가 찾아진다', async () => {
+          await expect(content.getByRole('option', { name: /^2026 상반기 회고/ })).toBeVisible();
+        });
+        await check('검색 결과에 "위치" 열이 보인다', async () => {
+          await expect(explorer.getByRole('button', { name: '위치' })).toBeVisible();
+        });
       },
     },
     {
       id: 'touch-drag-does-not-move',
       change: { drop: '같은 창의 폴더', search: '안 찾음', input: '터치', screen: '모바일' },
       device: 'Pixel 7',
-      purpose: '모바일 탐색기에서 항목을 터치로 끌어 폴더 위에 놓아도 옮겨지지 않는다',
+      scenario:
+        '모바일에서 Blog 폴더를 탭해 연 탐색기의 "2026 상반기 회고" 글을 손가락으로 끌어 Next.js 폴더 위에서 뗀다',
+      expected: ['창이 Blog 폴더에 그대로 있다', '글이 제자리에 남는다'],
       docs: ['[[반응형:입력 차이]]', '[[파일 탐색기:모바일]]'],
-      async run({ page, touch }) {
+      async run({ page, touch, check }) {
         await page.goto('/');
         await touch.tap(
           page
@@ -76,8 +90,12 @@ export const behavior = defineBehavior({
         await expect(post).toBeVisible();
 
         await touch.swipe(post, content.getByRole('option', { name: 'Next.js', exact: true }));
-        await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
-        await expect(post).toBeVisible();
+        await check('창이 Blog 폴더에 그대로 있다', async () => {
+          await expect(page.getByRole('region', { name: 'Blog - 파일 탐색기' })).toBeVisible();
+        });
+        await check('글이 제자리에 남는다', async () => {
+          await expect(post).toBeVisible();
+        });
       },
     },
   ],

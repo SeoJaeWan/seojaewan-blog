@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>시나리오 케이스</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <h1>시나리오 케이스</h1>
+      <p id="run-meta" class="muted">불러오는 중…</p>
+    </header>
+    <section id="summary" class="summary" aria-label="요약"></section>
+    <section id="common" class="common" aria-label="여러 행위에서 함께 빠진 값"></section>
+    <section id="filters" class="filters" aria-label="거르기"></section>
+    <div class="layout">
+      <nav id="side" class="side" aria-label="영역과 행위"></nav>
+      <main id="main" class="main"></main>
+    </div>
+    <aside id="panel" class="panel" aria-label="근거 문서" hidden></aside>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

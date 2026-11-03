@@ -2,13 +2,14 @@ import { createReadStream, existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import path from 'node:path';
 
+import { readChangedFiles } from './changed-files.ts';
 import { loadTable } from './load-table.ts';
 import { pageDir } from './paths.ts';
 import { type CaseRun, openTraceViewer, runCase } from './run-case.ts';
 
 // @codocs [[테스트 작성 규칙:E2E]]
-// 로컬에서 행위 표를 띄운다. 표의 "실행해보기"는 케이스 하나를 Playwright로 돌리고 Trace Viewer로 연다.
-const port = Number(process.env.BEHAVIOR_CASES_PORT ?? 4173);
+// 로컬에서 시나리오 케이스 화면을 띄운다. 화면의 "실행해보기"는 케이스 하나를 Playwright로 돌리고 Trace Viewer로 연다.
+const port = Number(process.env.SCENARIO_CASES_PORT ?? 4173);
 const pageFiles = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
@@ -68,7 +69,7 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
     return;
   }
   if (request.method === 'GET' && pathname === '/table.json') {
-    const { table } = await loadTable({ mode: 'local' });
+    const { table } = await loadTable({ mode: 'local', changes: readChangedFiles() });
     sendJson(response, 200, table);
     return;
   }
@@ -111,6 +112,7 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
           finishedAt: new Date().toISOString(),
           message: error instanceof Error ? error.message : String(error),
           trace: null,
+          steps: [],
         });
       },
     );
@@ -145,5 +147,5 @@ const server = createServer(
 );
 
 server.listen(port, '127.0.0.1', () => {
-  console.log(`행위 표: http://127.0.0.1:${port}/`);
+  console.log(`시나리오 케이스: http://127.0.0.1:${port}/`);
 });

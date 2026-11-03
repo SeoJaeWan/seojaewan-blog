@@ -13,7 +13,7 @@ export const behavior = defineBehavior({
       base: '새 탭 페이지',
     },
     input: {
-      label: '입력',
+      label: '주소창에 넣은 것',
       values: [
         '블로그 글 주소',
         '추천 고르기',
@@ -25,23 +25,35 @@ export const behavior = defineBehavior({
       base: '블로그 글 주소',
     },
     history: {
-      label: '기록 이동',
+      label: '창 기록 이동',
       values: ['없음', '뒤로', '뒤로·앞으로'],
       base: '뒤로',
     },
     after: {
-      label: '그 뒤',
+      label: '이동한 다음에',
       values: ['없음', '새로고침'],
       base: '없음',
+    },
+    screen: {
+      label: '화면 크기',
+      values: ['PC', '노트북', '모바일'],
+      base: 'PC',
     },
   },
   cases: [
     {
       id: 'post-address-and-back',
-      purpose:
-        'Chrome 주소창에 글 주소를 넣으면 그 글 탭이 되고 브라우저 주소가 글을 따라가며, 뒤로 가면 새 탭과 `/`로 돌아간다',
+      scenario:
+        'Chrome 새 탭의 주소창에 글 주소(seojaewan.com/posts/react-19-hooks)를 넣고 Enter를 누른 뒤, 뒤로 버튼을 누른다',
+      expected: [
+        '그 글이 열리고 글 탭이 선택된다',
+        '주소창이 그 글 주소를 보여준다',
+        '브라우저 주소가 그 글 주소를 따라간다',
+        '뒤로 가면 새 탭 페이지로 돌아온다',
+        '뒤로 가면 브라우저 주소가 /로 돌아온다',
+      ],
       docs: ['[[Chrome:주소창]]', '[[창 동작:브라우저 주소]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         await page.getByRole('button', { name: 'Chrome' }).click();
         const chrome = page.getByRole('region', { name: '새 탭 - Chrome' });
@@ -52,33 +64,50 @@ export const behavior = defineBehavior({
         await address.press('Enter');
 
         const post = page.getByRole('region', { name: 'React 19 훅 정리 - Chrome' });
-        await expect(post).toBeVisible();
-        await expect(post.getByRole('tab', { name: /React 19 훅 정리/ })).toHaveAttribute(
-          'aria-selected',
-          'true',
-        );
-        await expect(post.getByRole('combobox', { name: '주소 및 검색창' })).toHaveValue(
-          'seojaewan.com/posts/react-19-hooks',
-        );
-        await expect(page).toHaveURL(/\/posts\/react-19-hooks$/);
+        await check('그 글이 열리고 글 탭이 선택된다', async () => {
+          await expect(post).toBeVisible();
+          await expect(post.getByRole('tab', { name: /React 19 훅 정리/ })).toHaveAttribute(
+            'aria-selected',
+            'true',
+          );
+        });
+        await check('주소창이 그 글 주소를 보여준다', async () => {
+          await expect(post.getByRole('combobox', { name: '주소 및 검색창' })).toHaveValue(
+            'seojaewan.com/posts/react-19-hooks',
+          );
+        });
+        await check('브라우저 주소가 그 글 주소를 따라간다', async () => {
+          await expect(page).toHaveURL(/\/posts\/react-19-hooks$/);
+        });
 
         await post.getByRole('button', { name: '뒤로' }).click();
-        await expect(page.getByRole('region', { name: '새 탭 - Chrome' })).toBeVisible();
-        await expect(page).toHaveURL(/\/$/);
+        await check('뒤로 가면 새 탭 페이지로 돌아온다', async () => {
+          await expect(page.getByRole('region', { name: '새 탭 - Chrome' })).toBeVisible();
+        });
+        await check('뒤로 가면 브라우저 주소가 /로 돌아온다', async () => {
+          await expect(page).toHaveURL(/\/$/);
+        });
       },
     },
     {
       id: 'shared-link-history-reload',
       change: { from: '글', history: '뒤로·앞으로', after: '새로고침' },
-      purpose:
-        '공유 링크로 들어와 주소창으로 다른 글을 열고 뒤로·앞으로 가면 브라우저 주소가 따라가고, 새로고침하면 그 글 창 하나로 시작한다',
+      scenario:
+        '공유 링크(/posts/react-19-hooks)로 들어와 주소창에 다른 글 주소를 넣고 Enter를 누른 뒤, 뒤로·앞으로 버튼을 차례로 누르고 브라우저를 새로고침한다',
+      expected: [
+        '다른 글이 열리고 브라우저 주소가 그 글을 따라간다',
+        '뒤로 가면 처음 글이 열리고 브라우저 주소가 처음 글로 돌아간다',
+        '앞으로 가면 다른 글이 다시 열리고 브라우저 주소도 따라간다',
+        '새로고침하면 그 글 창 하나만 열린다',
+        '새로고침해도 브라우저 주소는 그 글 그대로다',
+      ],
       docs: [
         '[[Chrome:주소창]]',
         '[[Chrome:구성]]',
         '[[창 동작:브라우저 주소]]',
         '[[창 동작:새로고침과 첫 진입]]',
       ],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/posts/react-19-hooks');
         const first = page.getByRole('region', { name: 'React 19 훅 정리 - Chrome' });
         await expect(first).toBeVisible();
@@ -87,35 +116,51 @@ export const behavior = defineBehavior({
         await address.fill('seojaewan.com/posts/nextjs-app-router-cache');
         await address.press('Enter');
         const second = page.getByRole('region', { name: 'Next.js App Router 캐시 - Chrome' });
-        await expect(second).toBeVisible();
-        await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        await check('다른 글이 열리고 브라우저 주소가 그 글을 따라간다', async () => {
+          await expect(second).toBeVisible();
+          await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        });
 
         await second.getByRole('button', { name: '뒤로' }).click();
         const back = page.getByRole('region', { name: 'React 19 훅 정리 - Chrome' });
-        await expect(back).toBeVisible();
-        await expect(page).toHaveURL(/\/posts\/react-19-hooks$/);
+        await check('뒤로 가면 처음 글이 열리고 브라우저 주소가 처음 글로 돌아간다', async () => {
+          await expect(back).toBeVisible();
+          await expect(page).toHaveURL(/\/posts\/react-19-hooks$/);
+        });
 
         await back.getByRole('button', { name: '앞으로' }).click();
-        await expect(
-          page.getByRole('region', { name: 'Next.js App Router 캐시 - Chrome' }),
-        ).toBeVisible();
-        await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        await check('앞으로 가면 다른 글이 다시 열리고 브라우저 주소도 따라간다', async () => {
+          await expect(
+            page.getByRole('region', { name: 'Next.js App Router 캐시 - Chrome' }),
+          ).toBeVisible();
+          await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        });
 
         await page.reload();
-        await expect(
-          page.getByRole('region', { name: 'Next.js App Router 캐시 - Chrome' }),
-        ).toBeVisible();
-        await expect(page.getByRole('region', { name: /- Chrome$/ })).toHaveCount(1);
-        await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        await check('새로고침하면 그 글 창 하나만 열린다', async () => {
+          await expect(
+            page.getByRole('region', { name: 'Next.js App Router 캐시 - Chrome' }),
+          ).toBeVisible();
+          await expect(page.getByRole('region', { name: /- Chrome$/ })).toHaveCount(1);
+        });
+        await check('새로고침해도 브라우저 주소는 그 글 그대로다', async () => {
+          await expect(page).toHaveURL(/\/posts\/nextjs-app-router-cache$/);
+        });
       },
     },
     {
       id: 'trashed-post',
       change: { input: '휴지통에 있는 글 주소', history: '없음' },
-      purpose:
-        '휴지통에 보낸 글을 주소로 열면 복원할지 묻고, 취소하면 보던 페이지를 두고, 복원하면 글이 열리고 원래 폴더로 돌아온다',
+      scenario:
+        '탐색기 Blog 폴더에서 "Notion 블로그 이전기" 글을 Delete로 휴지통에 보낸 뒤, Chrome 새 탭 주소창에 그 글 주소를 넣고 Enter를 눌러 뜬 질문에서 취소하고, 다시 넣어 복원을 누른다',
+      expected: [
+        '휴지통에 있는 글 주소를 넣으면 복원할지 묻는다',
+        '취소하면 질문이 닫히고 새 탭 페이지가 그대로 남는다',
+        '복원하면 그 글이 열리고 브라우저 주소가 글을 따라간다',
+        '복원하면 글이 탐색기의 원래 폴더로 돌아온다',
+      ],
       docs: ['[[Chrome:휴지통에 있는 글]]', '[[휴지통:복원]]'],
-      async run({ page }) {
+      async run({ page, check }) {
         await page.goto('/');
         await openBlogFolder(page);
         const explorer = page.getByRole('region', { name: 'Blog - 파일 탐색기' });
@@ -132,10 +177,14 @@ export const behavior = defineBehavior({
         await address.press('Enter');
 
         const ask = page.getByRole('alertdialog', { name: '휴지통에 있는 글' });
-        await expect(ask).toBeVisible();
+        await check('휴지통에 있는 글 주소를 넣으면 복원할지 묻는다', async () => {
+          await expect(ask).toBeVisible();
+        });
         await ask.getByRole('button', { name: '취소' }).click();
-        await expect(ask).not.toBeAttached();
-        await expect(page.getByRole('region', { name: '새 탭 - Chrome' })).toBeVisible();
+        await check('취소하면 질문이 닫히고 새 탭 페이지가 그대로 남는다', async () => {
+          await expect(ask).not.toBeAttached();
+          await expect(page.getByRole('region', { name: '새 탭 - Chrome' })).toBeVisible();
+        });
 
         await address.fill('seojaewan.com/posts/notion-blog-migration');
         await address.press('Enter');
@@ -143,13 +192,17 @@ export const behavior = defineBehavior({
           .getByRole('alertdialog', { name: '휴지통에 있는 글' })
           .getByRole('button', { name: '복원' })
           .click();
-        await expect(
-          page.getByRole('region', { name: 'Notion 블로그 이전기 - Chrome' }),
-        ).toBeVisible();
-        await expect(page).toHaveURL(/\/posts\/notion-blog-migration$/);
+        await check('복원하면 그 글이 열리고 브라우저 주소가 글을 따라간다', async () => {
+          await expect(
+            page.getByRole('region', { name: 'Notion 블로그 이전기 - Chrome' }),
+          ).toBeVisible();
+          await expect(page).toHaveURL(/\/posts\/notion-blog-migration$/);
+        });
 
         await page.getByRole('button', { name: '파일 탐색기' }).click();
-        await expect(post).toBeVisible();
+        await check('복원하면 글이 탐색기의 원래 폴더로 돌아온다', async () => {
+          await expect(post).toBeVisible();
+        });
       },
     },
   ],
