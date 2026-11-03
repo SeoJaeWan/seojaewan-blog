@@ -1,36 +1,80 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
 
+import { Flyout } from '../flyout/flyout';
+import { IconButton } from '../icon-button/icon-button';
+import { MenuItem } from '../menu-item/menu-item';
+import { Separator } from '../separator/separator';
 import { Popover } from './popover';
+
+// 피그마 Popover의 변형 속성 값이다(정규화한 이름).
+const PLACEMENTS = [
+  'bottom-start',
+  'bottom-center',
+  'bottom-end',
+  'top-center',
+  'top-end',
+  'right-start',
+] as const;
+const STATES = ['closed', 'open'] as const;
+
+type FigmaArgs = {
+  placement: (typeof PLACEMENTS)[number];
+  state: (typeof STATES)[number];
+};
 
 const meta = {
   title: 'Components/Popover',
   // 위·오른쪽으로 뜨는 팝업이 화면 밖으로 나가지 않도록 가운데에 둔다.
   parameters: { layout: 'centered' },
-} satisfies Meta;
+  args: { placement: 'bottom-start', state: 'closed' },
+  argTypes: {
+    placement: { control: 'select', options: PLACEMENTS },
+    state: { control: 'inline-radio', options: STATES },
+  },
+  // Trigger·Popup 슬롯에는 피그마 슬롯 기본 내용과 같은 전원 버튼(IconButton Subtle)과
+  // 메뉴 항목 넷과 구분선을 담은 Flyout을 넣는다. Flyout은 너비가 없어 피그마 원본 너비(320)의 부모로 감싼다.
+  render: (args) => (
+    <Popover
+      placement={args.placement}
+      open={args.state === 'open'}
+      trigger={
+        <IconButton variant="subtle" label="전원" icon="icons/ic_fluent_power_20_regular.svg" />
+      }
+      popup={
+        <div className="w-size-search-box-wide-width">
+          <Flyout>
+            <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+            <MenuItem
+              standalone
+              label="새 창에서 열기"
+              icon="icons/ic_fluent_window_20_regular.svg"
+            />
+            <div className="flex w-full flex-col pt-spacing-2xs pb-spacing-sm-nudge">
+              <Separator className="w-full" />
+            </div>
+            <MenuItem
+              standalone
+              label="이름 바꾸기"
+              icon="icons/ic_fluent_rename_20_regular.svg"
+              shortcut="F2"
+            />
+            <MenuItem
+              standalone
+              label="삭제"
+              icon="icons/ic_fluent_delete_20_regular.svg"
+              shortcut="Delete"
+            />
+          </Flyout>
+        </div>
+      }
+    />
+  ),
+} satisfies Meta<FigmaArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// @codocs [[디자인 시스템:팝업]]
-/** 닫혀 있으면 트리거만 그린다 */
-export const Default: Story = {
-  render: () => <Popover trigger={<button type="button">열기</button>} popup={<p>팝업 내용</p>} />,
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: '열기' })).toBeInTheDocument();
-    await expect(canvas.queryByText('팝업 내용')).not.toBeInTheDocument();
-  },
-};
-
-// @codocs [[디자인 시스템:팝업]]
-/** 열려 있으면 트리거와 함께 팝업을 그린다 */
-export const Open: Story = {
-  render: () => (
-    <Popover open trigger={<button type="button">열기</button>} popup={<p>팝업 내용</p>} />
-  ),
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: '열기' })).toBeInTheDocument();
-    await expect(canvas.getByText('팝업 내용')).toBeVisible();
-  },
-};
+// @codocs [[피그마 연동:스토리 규칙]]
+// 피그마 변형 하나를 args 하나로 고른다.
+export const Figma: Story = {};
