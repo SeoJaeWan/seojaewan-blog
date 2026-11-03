@@ -120,6 +120,15 @@ _codocs:
   `Table`의 `Figma` 스토리를 새로 만들어 피그마 `Rows` 슬롯 기본 내용(머리 줄 `훅`·`하는 일`, 본문 줄 `use`·`Promise와 Context를 렌더링 중에 읽는다`, `useActionState`·`폼 제출 결과와 대기 상태를 다룬다`)을 `TableCell`로 넣었다. 너비는 `w-size-post-width`다. 접근성 이름은 피그마에 없어 `aria-label="훅 비교"`를 임의로 달았다(axe가 요구하는 것은 아니고 스크린 리더용 이름이다). 값이 나오는지만 보던 `Default` 스토리(행·칸 역할 확인)는 임시 스토리라 지웠다. 컴포넌트 코드는 바꾸지 않았다. 차이 그림에는 두 칸 사이 세로 선이 1px 남는다. 피그마 칸 너비가 359.5라 반 픽셀 위치를 엔진이 다르게 맞추는 것으로 보인다.
 "PR #493 window 조립: 코드 서체 교체 뒤 다시 내보낸 그림만 받음": |
   피그마 코드 서체가 Nanum Gothic Coding으로 바뀌어 `Window/Chrome` 세 변형과 `Window/SnapAssist` 그림이 다시 내보내졌다. 코드 서체는 토큰 PR #495에서 이미 바뀌었고, 이 조립들이 지운 prop(Flyout `padding`, `material` 등)을 쓰지 않아(typecheck 통과) 코드는 바꾸지 않고 `main`만 받아 왔다. 캡처 차이 그림에는 글자 가장자리만 남는다. `Window/SnapAssist`의 창 제목(`React 19 훅 정리 - Chrome`)은 코드가 1px 위에 있어 밝게 보이고([[한계:글자 기준선]]), 축소 화면 안은 줄인 글자의 가장자리 차이뿐이다.
+"조립 PR #492 chrome: RichText 컴포넌트와 인라인 코드 글자 스타일": |
+  - 글 블록들이 `PostBlocks` 안의 함수(`renderRichText`·`renderAnnotatedText`)로 글자 조각을 그리던 것을 `RichText` 컴포넌트로 옮겼다. 자리는 `features/chrome/components/post-blocks/components/rich-text/`다. 앱 코드에서 쓰는 곳이 `PostBlocks` 하나라 그 칸 아래에 두었다([[저장소 구성:앱 폴더 구조]]). 문단·제목·목록·인용·콜아웃·토글 제목·표 칸이 모두 이것을 쓴다.
+  - 인라인 코드는 `type-code`(줄 높이 20) 대신 `type-code-inline`(피그마 `Code/Inline`, 줄 높이 16)과 `text-post-inline-code`로 그린다. 감싸는 요소를 `span`에서 `code`로 바꿨고, `Annotations` 스토리의 확인도 `code`를 찾게 고쳤다.
+  - 단위 테스트는 컴포넌트 테스트 파일(`*.test.tsx`)을 두지 않는다는 규칙([[테스트 작성 규칙:테스트 종류]])에 맞춰, 서식을 고르는 순수 함수(`getRichTextMarks`: 서식별로 감쌀 요소와 겹치는 차례)와 링크가 가는 곳을 정하는 함수(`getRichTextLinkTarget`)를 `rich-text/utils/rich-text-format/`으로 빼서 `.test.ts`로 서식마다 확인했다. 겹쳐 그린 결과(굵게+기울임+밑줄+취소선, 굵은 코드, 표 칸)는 원래 있던 `Patterns/Chrome/PostBlocks`의 `Annotations` 스토리 `play`가 본다.
+  - Notion 색 지정(글자색·형광펜)은 [[Notion 블록:모양]]대로 받지 않고 그리지 않는다. 스키마에도 색 필드가 없다.
+  - 표 칸 링크를 고르던 불리언 인자(`isBodyLarge`)를 `RichText`의 `linkSize`(`body-large`·`inherit`) prop으로 바꿨다.
+  - 1px 어긋남: 같은 브랜치에서 인라인 코드만 `type-code`로 돌려 캡처하면 서식 문단이 1px 높아져 코드 그림이 1886px(피그마 1885px)이 되고, 그 아래가 모두 1px 내려간다. `type-code-inline`에서는 1885px로 같고 문단 아래 모든 줄 묶음이 어긋남 없이(위아래로 옮겨 봐도 0이 가장 맞음) 맞는다. 원인은 줄 높이 20인 코드 서체 인라인 상자가 본문 줄 상자(24)를 1px 넘긴 것이었다. 위 "마지막 맞춤: 고치지 않은 캡처 차이"의 PostBlocks 코드 줄 높이(201/200)도 이번 내보내기에서 피그마 코드 글자 상자가 200이 되어 풀렸다(한글 구간이 `Hangul/Code`가 아니라 `Code` 스타일로 바뀜). 검토 기록이라 그 항목은 고치지 않았다.
+  - 남은 차이: 제목 2(`글자 서식과 목록`)와 북마크 글자, `Chrome/Page`의 글 제목·검색 결과 제목이 1px 위아래로 보인다([[한계:글자 기준선]]). 밑줄과 링크 밑줄은 선의 세로 위치가 엔진마다 달라 밝게 보인다. 나머지는 글자 가장자리다.
+  - 이 PR의 `export.json`·PNG는 지금 피그마와 같다(`Chrome/PostBlocks` 1837 높이, 코드 글자 371×200, 수식 194×50을 피그마 MCP 메타데이터로 확인). 수식 자산(`equation-quadratic-formula.png`)은 이미 `main`에 있어 `generate:assets`가 바꾼 파일이 없다.
 "마지막 맞춤: 고치지 않은 캡처 차이": |
   전체 캡처 493개 변형(단독 451개, 조립에서 확인 42개)의 차이 그림 중 남은 것은 코드로 고치지 않았다.
   - 어두운 바탕의 밝은 글자가 코드에서 더 굵어 보인다(accent 버튼, 바탕화면 아이콘 이름). 글자 스타일은 피그마와 같아 글자를 그리는 엔진의 차이로 봤다.

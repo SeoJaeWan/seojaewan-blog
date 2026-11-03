@@ -6,7 +6,7 @@
   "variants": {
     "default": {
       "node": {
-        "height": 1844,
+        "height": 1837,
         "width": 720,
         "x": 0,
         "y": 0
@@ -174,7 +174,7 @@
                 {
                   "characters": "inlineCode()",
                   "fill": "post/inline-code",
-                  "textStyle": "Code"
+                  "textStyle": "Code/Inline"
                 },
                 {
                   "characters": ", ",
@@ -2567,8 +2567,8 @@
                   {
                     "name": "code",
                     "size": {
-                      "h": 201,
-                      "w": 435
+                      "h": 200,
+                      "w": 371
                     },
                     "sizing": {
                       "h": "HUG",
@@ -2580,44 +2580,9 @@
                       "maxLinesVariable": null,
                       "segments": [
                         {
-                          "characters": "// ",
+                          "characters": "// 글을 읽어 제목을 그린다\n",
                           "fill": "code-syntax/comment",
                           "textStyle": "Code"
-                        },
-                        {
-                          "characters": "글을",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Hangul/Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "읽어",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Hangul/Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "제목을",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Hangul/Code"
-                        },
-                        {
-                          "characters": " ",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Code"
-                        },
-                        {
-                          "characters": "그린다\n",
-                          "fill": "code-syntax/comment",
-                          "textStyle": "Hangul/Code"
                         },
                         {
                           "characters": "import",
@@ -3104,7 +3069,7 @@
                 },
                 "name": "Code",
                 "size": {
-                  "h": 201,
+                  "h": 200,
                   "w": 694
                 },
                 "sizing": {
@@ -3141,7 +3106,7 @@
               "radius/overlay"
             ],
             "size": {
-              "h": 263,
+              "h": 262,
               "w": 720
             },
             "sizing": {
@@ -4641,18 +4606,18 @@
                     "fills": [
                       "IMAGE"
                     ],
-                    "height": "size/snap-option/height",
+                    "height": "size/equation/height",
                     "name": "formula",
                     "size": {
-                      "h": 56,
-                      "w": 200
+                      "h": 50,
+                      "w": 194
                     },
                     "sizing": {
                       "h": "FIXED",
                       "v": "FIXED"
                     },
                     "type": "INSTANCE",
-                    "width": "size/scrollbar/length"
+                    "width": "size/equation/width"
                   }
                 ],
                 "layout": {
@@ -4669,8 +4634,8 @@
                 },
                 "name": "Formula",
                 "size": {
-                  "h": 56,
-                  "w": 200
+                  "h": 50,
+                  "w": 194
                 },
                 "sizing": {
                   "h": "HUG",
@@ -4695,7 +4660,7 @@
             "name": "equation",
             "properties": {},
             "size": {
-              "h": 72,
+              "h": 66,
               "w": 720
             },
             "sizing": {
@@ -4843,7 +4808,7 @@
         },
         "name": "Chrome/PostBlocks",
         "size": {
-          "h": 1844,
+          "h": 1837,
           "w": 720
         },
         "sizing": {

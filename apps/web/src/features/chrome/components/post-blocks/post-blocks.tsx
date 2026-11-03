@@ -1,12 +1,4 @@
-import {
-  createElement,
-  Fragment,
-  type JSX,
-  lazy,
-  type MouseEvent,
-  type ReactNode,
-  Suspense,
-} from 'react';
+import { createElement, Fragment, type JSX, lazy, type ReactNode, Suspense } from 'react';
 
 import {
   Asset,
@@ -36,8 +28,10 @@ import {
   isHeadingBlock,
   type ListItemBlock,
   type PostBlock,
-  type RichText,
+  type RichText as RichTextPart,
 } from '@/shared/utils/post-body/post-body';
+
+import { RichText } from './components/rich-text/rich-text';
 
 /** 이미지 블록 */
 export type PostImageBlock = Extract<PostBlock, { type: 'image' }>;
@@ -83,12 +77,8 @@ const headingClassNames = {
   heading_3: 'w-full type-body-large-strong text-text-fill-primary',
 } as const satisfies Record<HeadingBlock['type'], string>;
 
-// 본문 글자와 글자 서식의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`).
+// 본문 글자의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`). 글자 서식과 링크는 RichText가 그린다.
 const BODY_TEXT_CLASS_NAME = 'type-body-large text-text-fill-primary';
-const LINK_CLASS_NAME = 'type-body-large-link text-accent-text-fill-primary underline';
-const INLINE_CODE_CLASS_NAME = 'type-code text-post-inline-code';
-const BOLD_CLASS_NAME = 'font-font-weight-semibold';
-const SMALL_LINK_CLASS_NAME = 'text-accent-text-fill-primary underline';
 
 // 강조된 코드 글자 조각의 색이다(디자인 시스템 `code-syntax/*` 토큰).
 const codeSyntaxClassNames = {
@@ -127,8 +117,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * 글 본문 블록을 피그마 조립 `Chrome/PostBlocks`의 모양으로 그린다. 블록 사이 간격은 16이다.
  * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록의 제목에 id를 단다.
  * 이어진 같은 종류의 목록 항목은 한 목록으로 묶고, 하위 블록은 32 들여 그린다. 할 일은 읽기 전용 Checkbox다.
- * 글자 서식은 굵게·기울임·밑줄·취소선·인라인 코드(배경 없이 코드 서체와 `post/inline-code` 글자색)·링크다.
- * 링크는 블로그 글이면 같은 탭에서 그 글로 가고, 외부 주소면 실제 브라우저의 새 탭(noopener)에서 연다.
+ * 글자 조각(문단, 제목, 목록, 인용, 콜아웃, 토글 제목, 표 칸)의 서식과 링크는 RichText가 그린다.
  * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 `code-syntax` 색으로 칠하고, 없으면 글자 그대로다.
  * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다. `onImageOpen`을 주면 이미지를 눌러 크게 보기를 연다.
  * @codocs [[디자인 시스템:조립]]
@@ -151,53 +140,22 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
   const topHeadingLevel = getTopHeadingLevel(blocks);
 
   /**
-   * 글자 조각들을 그린다. 링크가 있는 조각은 링크다.
+   * 글자 조각들을 RichText로 그린다. 링크는 이 본문의 링크 처리를 따른다.
    * @param richText 글자 조각
-   * @param isBodyLarge 본문 글자(Body Large) 자리인지. 아니면(표 칸) 링크를 작은 글자 링크로 그린다
+   * @param linkSize 링크 글자 크기. 표 칸은 둘레 글자 크기를 따른다(`inherit`)
    * @returns 글자와 링크
    */
-  function renderRichText(richText: readonly RichText[], isBodyLarge = true): ReactNode {
-    return richText.map(
-      /**
-       * 글자 조각 하나를 그린다.
-       * @param part 글자 조각
-       * @param index 차례
-       * @returns 글자나 링크
-       */
-      (part, index) => {
-        const content = renderAnnotatedText(part);
-        if (part.link === null) {
-          return <Fragment key={index}>{content}</Fragment>;
-        }
-        const linkClassName = isBodyLarge ? LINK_CLASS_NAME : SMALL_LINK_CLASS_NAME;
-        const page = resolveLink?.(part.link) ?? null;
-        if (page === null) {
-          return (
-            <a
-              key={index}
-              href={part.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={linkClassName}
-            >
-              {content}
-            </a>
-          );
-        }
-        return (
-          <a
-            key={index}
-            href={part.link}
-            onClick={(event: MouseEvent<HTMLAnchorElement>) => {
-              event.preventDefault();
-              handlePageOpen?.(page);
-            }}
-            className={linkClassName}
-          >
-            {content}
-          </a>
-        );
-      },
+  function renderRichText(
+    richText: readonly RichTextPart[],
+    linkSize: 'body-large' | 'inherit' = 'body-large',
+  ): ReactNode {
+    return (
+      <RichText
+        richText={richText}
+        linkSize={linkSize}
+        resolveLink={resolveLink}
+        onPageOpen={handlePageOpen}
+      />
     );
   }
 
@@ -390,7 +348,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                           type={isHeader ? 'header' : 'body'}
                           scope={isHeader ? 'col' : undefined}
                         >
-                          {renderRichText(cell, false)}
+                          {renderRichText(cell, 'inherit')}
                         </TableCell>
                       ),
                     )}
@@ -488,38 +446,6 @@ function isListItemBlock(block: PostBlock): block is ListItemBlock {
     block.type === 'numbered_list_item' ||
     block.type === 'to_do'
   );
-}
-
-/**
- * 글자 조각을 서식대로 겹쳐 그린다. Notion처럼 굵게, 기울임, 밑줄, 취소선이 함께 걸리면 모두 적용한다. 서식마다
- * 요소 하나(`strong`, `em`, `u`, `s`)로 감싸 굵기·기울임·줄 하나씩만 바꾸므로, 글자 크기가 다른 자리(본문, 표 칸)에서도
- * 같고 밑줄과 취소선도 함께 그려진다. 인라인 코드는 가장 바깥에서 코드 서체와 `post/inline-code` 글자색을 입힌다.
- * @codocs [[Notion 블록:모양]]
- * @param part 글자 조각
- * @returns 서식이 입혀진 글자. 서식이 없으면 글자 그대로
- */
-function renderAnnotatedText(part: RichText): ReactNode {
-  const annotations = part.annotations;
-  let content: ReactNode = part.text;
-  if (annotations === undefined) {
-    return content;
-  }
-  if (annotations.bold === true) {
-    content = <strong className={BOLD_CLASS_NAME}>{content}</strong>;
-  }
-  if (annotations.italic === true) {
-    content = <em className="italic">{content}</em>;
-  }
-  if (annotations.underline === true) {
-    content = <u className="underline">{content}</u>;
-  }
-  if (annotations.strikethrough === true) {
-    content = <s className="line-through">{content}</s>;
-  }
-  if (annotations.code === true) {
-    content = <span className={INLINE_CODE_CLASS_NAME}>{content}</span>;
-  }
-  return content;
 }
 
 /**
