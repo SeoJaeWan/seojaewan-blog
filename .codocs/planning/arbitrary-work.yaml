@@ -119,3 +119,6 @@ _codocs:
   - 루트 `pnpm cases` 스크립트와, ESLint의 `process.env` 허용 목록(`configFiles`)에 `tools/behavior-cases/src/**`를 더했다.
 "PR #484 Toc: 동작 확인용 임시 스토리를 지우고 Figma 스토리만 둠": |
   `Toc`의 `Figma` 스토리 슬롯에 피그마 `Items` 기본 내용과 같은 `TocItem` 4개(`use 훅` 활성, `useActionState`, `useOptimistic`, `마이그레이션`)를 넣고 빈 슬롯 주석을 지웠다. 접힌 변형은 슬롯을 그리지 않으므로 같은 렌더를 쓴다. `Default`(제목 `titleProps`·children 전달 확인)와 `Collapsed`(children이 안 그려짐 확인) 스토리는 `<span>항목</span>` 가짜 내용으로 넘긴 값이 그대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 따라 지웠다. 앱 쪽 `Toc` 사용(`chrome-page`)은 prop이 그대로라 고치지 않았다. 캡처는 두 변형 모두 글자 가장자리 말고 차이가 없다.
+"컴포넌트 PR #475 PinnedTile: Hover 글자 폭과 Default 스토리": |
+  - 피그마 Hover의 `strokesIncludedInLayout`이 꺼져 Hover도 글자 폭 87이 되었다. 코드는 이미 `inner-border`로 그려 고친 것이 없고, 캡처 표 세 변형 모두 테두리 차이가 없음을 확인했다. 위 "마지막 맞춤: PinnedTile 테두리를 안쪽 선으로"의 Hover 85·87 차이는 지난 내용이 됐지만 검토 기록이라 고치지 않았다. 컴포넌트 주석의 "피그마 Rest와 같은 87px"만 "피그마와 같은 87px"로 고쳤다.
+  - 컴포넌트만 보던 `Default` 스토리를 지웠다. 이름·아이콘·`onClick`이 넘긴 대로 나오는지만 보는 검사라 [[테스트 작성 규칙:테스트 지침]]의 4번에 걸리고, 고정 타일을 눌러 여는 동작은 `start-menu-layer.stories.tsx`의 `OpenItems`가 이미 본다.
