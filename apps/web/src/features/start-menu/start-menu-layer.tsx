@@ -137,7 +137,7 @@ export function StartMenuLayer(): JSX.Element {
           onValueChange: startSearch.setQuery,
         }}
         profileName={START_PROFILE.name}
-        profilePhoto={<ImageAsset name={START_PROFILE.photo} className="size-full" />}
+        profilePhoto={<ImageAsset name={START_PROFILE.photo} />}
         powerButton={
           <StartPowerButton
             open={isPowerMenuOpen}

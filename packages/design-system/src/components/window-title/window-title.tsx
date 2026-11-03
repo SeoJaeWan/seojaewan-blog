@@ -40,7 +40,7 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
       {...divProps}
       className={cn('flex items-center overflow-clip', kindClassNames[kind], className)}
     >
-      <span className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+      <span className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {appIcon}
       </span>
       <p

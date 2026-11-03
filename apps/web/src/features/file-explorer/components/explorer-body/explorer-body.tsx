@@ -1215,15 +1215,13 @@ function getRectInArea(element: HTMLElement, area: HTMLElement | null): Selectio
 function renderItemIcon(item: WorkspaceItem): ReactNode {
   switch (item.kind) {
     case 'folder':
-      return <ImageAsset name="images/file-folder" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-folder" />;
     case 'post':
-      return <ImageAsset name="images/file-document" className="size-full object-contain" />;
+      return <ImageAsset name="images/file-document" />;
     case 'link':
-      return <Asset name={item.icon} className="size-full" />;
+      return <Asset name={item.icon} />;
     case 'recycle-bin':
-      return (
-        <ImageAsset name="images/file-recycle-bin-empty" className="size-full object-contain" />
-      );
+      return <ImageAsset name="images/file-recycle-bin-empty" />;
   }
 }
 

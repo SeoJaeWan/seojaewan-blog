@@ -26,7 +26,7 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
         className,
       )}
     >
-      <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+      <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {locationIcon}
       </span>
       <Asset

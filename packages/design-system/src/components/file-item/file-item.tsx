@@ -98,7 +98,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
     >
       <div
         className={cn(
-          'flex shrink-shrink-none items-center justify-center',
+          'flex shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain',
           ICON_SIZE_CLASS_NAMES[view],
           dimClassName,
         )}

@@ -40,9 +40,7 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
     active: isActive = false,
     favicon,
     title = '페이지 제목',
-    closeIcon = (
-      <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-size-icon-sm" />
-    ),
+    closeIcon = <Asset name="icons/ic_fluent_dismiss_20_regular.svg" />,
     showSeparator: hasSeparator = true,
     closeLabel = '탭 닫기',
     onClose,
@@ -76,7 +74,7 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
           'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         )}
       >
-        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
           {favicon}
         </span>
         <span className="min-w-size-none flex-flex-fill truncate type-caption text-chrome-text-primary">
@@ -93,7 +91,7 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-chrome-text-secondary"
+        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-chrome-text-secondary [&>*]:size-full [&>*]:object-contain"
       >
         {closeIcon}
       </button>

@@ -19,7 +19,7 @@ export const Figma: Story = {
     <Menu>
       <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
       <MenuItem standalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
-      <MenuSeparator className="w-full" />
+      <MenuSeparator />
       <MenuItem
         standalone
         label="이름 바꾸기"

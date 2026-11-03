@@ -91,6 +91,10 @@ describe('figmaFrameStyle', () => {
       minWidth: 0,
     });
     expect(figmaFrameStyle(footer, {}, 'Content/power button')).toEqual({});
+    expect(figmaFrameStyle(footer, {}, 'Content')).toEqual({
+      flex: '1 1 0',
+      minWidth: 0,
+    });
     expect(() => figmaFrameStyle(footer, {}, 'Content/없음')).toThrow('노드가 없다');
   });
 

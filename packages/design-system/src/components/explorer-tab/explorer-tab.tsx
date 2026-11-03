@@ -71,7 +71,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
           'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
         )}
       >
-        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
           {icon}
         </span>
         <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">

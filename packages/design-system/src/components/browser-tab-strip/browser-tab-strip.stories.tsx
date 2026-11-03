@@ -13,20 +13,19 @@ type StoryArgs = {
 const meta = {
   title: 'Components/BrowserTabStrip',
   // 변형 속성이 없다. Tabs 슬롯에는 피그마 기본 내용(선택된 BrowserTab 하나)을 넣는다.
-  // 탭은 tablist 안에서만 쓰므로 앱처럼 Base UI 탭 줄로 감싼다. 감싸는 요소는 배치에 끼지 않는다.
+  // 탭은 tablist 안에서만 쓰므로 Base UI 탭 줄로 감싼다. 피그마 기본 내용은 탭 하나라 탭 줄(Tabs.Root·Tabs.List)이
+  // 탭 하나 크기로 그려진다. 탭 여럿을 가로로 늘어놓고 넘치면 스크롤하는 배치는 앱의 탭 줄이 정한다.
   render: (args) => {
     const { onNewTab: handleNewTab } = args;
     return (
       <BrowserTabStrip onNewTab={handleNewTab}>
-        <Tabs.Root value={0} className="contents">
-          <Tabs.List aria-label="탭" className="flex">
+        <Tabs.Root value={0}>
+          <Tabs.List aria-label="탭">
             <BrowserTab
               value={0}
               active
               title="React 19 훅 정리"
-              favicon={
-                <ImageAsset name="images/file-document" className="size-full object-contain" />
-              }
+              favicon={<ImageAsset name="images/file-document" />}
             />
           </Tabs.List>
         </Tabs.Root>

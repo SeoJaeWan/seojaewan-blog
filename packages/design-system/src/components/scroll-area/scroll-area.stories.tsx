@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { JSX } from 'react';
 import { expect, fireEvent, waitFor } from 'storybook/test';
 
+import scrollAreaExport from '../../../figma/components/scroll-area/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { ImageAsset } from '../image-asset/image-asset';
 import { ListItem } from '../list-item/list-item';
 import { ScrollArea } from './scroll-area';
@@ -27,10 +29,7 @@ type FigmaArgs = {
  */
 function renderItems(count: number): JSX.Element[] {
   return Array.from({ length: count }, (_, index) => (
-    <ListItem
-      key={index}
-      icon={<ImageAsset name="images/file-document" className="size-full object-contain" />}
-    />
+    <ListItem key={index} icon={<ImageAsset name="images/file-document" />} />
   ));
 }
 
@@ -41,14 +40,12 @@ const meta = {
     state: { control: 'inline-radio', options: STATES },
     material: { control: 'inline-radio', options: MATERIALS },
   },
-  // 크기는 쓰는 곳이 정하므로 피그마 원본 크기(size/list-item/width × size/scrollbar/length)를 준다.
+  // 크기는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기(size/list-item/width × size/scrollbar/length)로 감싼다.
   // State=Hover는 캡처 도구가 마우스를 올려 재현한다. 가운데에 올리면 목록 항목이 Hover가 되므로 스크롤바([data-state])에 올린다.
+  // 감싸는 요소 안의 ScrollArea가 캡처 대상이라 data-parity-target을 단다.
+  decorators: [figmaFrame(scrollAreaExport)],
   render: (args) => (
-    <ScrollArea
-      material={args.material}
-      className="h-size-scrollbar-length w-size-list-item-width"
-      data-parity-hover="[data-state]"
-    >
+    <ScrollArea material={args.material} data-parity-target data-parity-hover="[data-state]">
       {renderItems(FIGMA_ITEM_COUNT)}
     </ScrollArea>
   ),
@@ -67,6 +64,17 @@ function getScrollbar(canvasElement: HTMLElement): HTMLElement {
   const scrollbar = canvasElement.querySelector<HTMLElement>('[data-state]');
   if (scrollbar === null) throw new Error('스크롤바를 찾지 못했다');
   return scrollbar;
+}
+
+/**
+ * ScrollArea 루트(스크롤되는 요소의 부모)를 찾는다. 스토리 루트의 첫 요소는 FigmaFrame이 감싼 요소다.
+ * @param canvasElement 스토리 루트
+ * @returns ScrollArea 루트
+ */
+function getRoot(canvasElement: HTMLElement): HTMLElement {
+  const root = getViewport(canvasElement).parentElement;
+  if (root === null) throw new Error('ScrollArea 루트를 찾지 못했다');
+  return root;
 }
 
 /**
@@ -100,7 +108,7 @@ export const Figma: Story = {};
 export const Overflow: Story = {
   args: { material: 'solid' },
   play: async ({ canvasElement, step, userEvent }) => {
-    const root = canvasElement.firstElementChild as HTMLElement;
+    const root = getRoot(canvasElement);
     const scrollbar = getScrollbar(canvasElement);
     const viewport = getViewport(canvasElement);
     // CI의 실제 포인터 위치와 상관없도록 포인터 사건을 직접 보낸다
@@ -141,12 +149,10 @@ export const Overflow: Story = {
 export const FitsContent: Story = {
   args: { material: 'solid' },
   render: (args) => (
-    <ScrollArea material={args.material} className="h-size-scrollbar-length w-size-list-item-width">
-      {renderItems(FITTING_ITEM_COUNT)}
-    </ScrollArea>
+    <ScrollArea material={args.material}>{renderItems(FITTING_ITEM_COUNT)}</ScrollArea>
   ),
   play: async ({ canvasElement }) => {
-    const root = canvasElement.firstElementChild as HTMLElement;
+    const root = getRoot(canvasElement);
     const scrollbar = getScrollbar(canvasElement);
 
     await expect(scrollbar).not.toBeVisible();

@@ -1,4 +1,4 @@
-import { createElement, Fragment, type JSX, lazy, type ReactNode, Suspense } from 'react';
+import { createElement, type JSX, lazy, type ReactNode, Suspense } from 'react';
 
 import {
   Asset,
@@ -20,7 +20,6 @@ import {
 
 import type { ChromeTabPage } from '@/shared/utils/chrome-tabs/chrome-tabs';
 import {
-  type CodeSyntax,
   type CodeToken,
   getHeadingId,
   getPlainText,
@@ -79,30 +78,6 @@ const headingClassNames = {
 
 // 본문 글자의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`). 글자 서식과 링크는 RichText가 그린다.
 const BODY_TEXT_CLASS_NAME = 'type-body-large text-text-fill-primary';
-
-// 강조된 코드 글자 조각의 색이다(디자인 시스템 `code-syntax/*` 토큰).
-const codeSyntaxClassNames = {
-  attribute: 'text-code-syntax-attribute',
-  comment: 'text-code-syntax-comment',
-  constant: 'text-code-syntax-constant',
-  escape: 'text-code-syntax-escape',
-  function: 'text-code-syntax-function',
-  invalid: 'text-code-syntax-invalid',
-  'key-value': 'text-code-syntax-key-value',
-  keyword: 'text-code-syntax-keyword',
-  'keyword-control': 'text-code-syntax-keyword-control',
-  parameter: 'text-code-syntax-parameter',
-  punctuation: 'text-code-syntax-punctuation',
-  regexp: 'text-code-syntax-regexp',
-  'regexp-group': 'text-code-syntax-regexp-group',
-  string: 'text-code-syntax-string',
-  tag: 'text-code-syntax-tag',
-  text: 'text-code-syntax-text',
-  type: 'text-code-syntax-type',
-  variable: 'text-code-syntax-variable',
-  'variable-constant': 'text-code-syntax-variable-constant',
-  'variable-navy': 'text-code-syntax-variable-navy',
-} as const satisfies Record<CodeSyntax, string>;
 
 // 서버가 그린 수식 HTML을 넣는 부품이다. KaTeX CSS를 품어 수식이 있을 때만 받는다.
 const katexHtml = lazy(async () => {
@@ -258,7 +233,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
       case 'quote':
         return (
           <Quote key={index} className="w-full">
-            <p className={`w-full ${BODY_TEXT_CLASS_NAME}`}>{renderRichText(block.richText)}</p>
+            <p>{renderRichText(block.richText)}</p>
           </Quote>
         );
       case 'callout':
@@ -266,16 +241,19 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
           <Callout
             key={index}
             className="w-full"
-            icon={<Asset name="icons/ic_fluent_info_24_regular.svg" className="size-full" />}
+            icon={<Asset name="icons/ic_fluent_info_24_regular.svg" />}
           >
-            <p className={`w-full ${BODY_TEXT_CLASS_NAME}`}>{renderRichText(block.richText)}</p>
+            <p>{renderRichText(block.richText)}</p>
           </Callout>
         );
       case 'code':
         return (
-          <CodeBlock key={index} language={block.language} className="w-full">
-            {block.highlighted === undefined ? block.code : renderCodeLines(block.highlighted)}
-          </CodeBlock>
+          <CodeBlock
+            key={index}
+            language={block.language}
+            lines={block.highlighted ?? toPlainCodeLines(block.code)}
+            className="w-full"
+          />
         );
       case 'image': {
         const caption = getPlainText(block.caption);
@@ -449,40 +427,12 @@ function isListItemBlock(block: PostBlock): block is ListItemBlock {
 }
 
 /**
- * 강조된 코드 줄들을 그린다. 줄 사이는 줄바꿈 글자다(코드 블록이 `pre`라 그대로 줄이 바뀐다).
- * @param lines 줄마다의 글자 조각
- * @returns 강조된 코드
+ * 강조하지 않은 코드를 색 없는 글자 조각의 줄로 바꾼다. 코드 블록은 줄마다의 글자 조각을 받는다.
+ * @param code 코드
+ * @returns 줄마다의 글자 조각
  */
-function renderCodeLines(lines: readonly (readonly CodeToken[])[]): ReactNode {
-  return lines.map(
-    /**
-     * 코드 한 줄을 그린다.
-     * @param line 줄의 글자 조각
-     * @param lineIndex 줄 차례
-     * @returns 코드 한 줄
-     */
-    (line, lineIndex) => (
-      <Fragment key={lineIndex}>
-        {lineIndex > 0 && '\n'}
-        {line.map(
-          /**
-           * 글자 조각 하나를 강조 색으로 그린다. 색이 없으면 기본 코드 글자색이다.
-           * @param token 글자 조각
-           * @param tokenIndex 조각 차례
-           * @returns 글자
-           */
-          (token, tokenIndex) =>
-            token.syntax === null ? (
-              <Fragment key={tokenIndex}>{token.text}</Fragment>
-            ) : (
-              <span key={tokenIndex} className={codeSyntaxClassNames[token.syntax]}>
-                {token.text}
-              </span>
-            ),
-        )}
-      </Fragment>
-    ),
-  );
+function toPlainCodeLines(code: string): CodeToken[][] {
+  return code.split('\n').map((line) => [{ text: line, syntax: null }]);
 }
 
 /**

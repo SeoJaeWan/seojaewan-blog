@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect } from 'storybook/test';
 
+import listItemExport from '../../../figma/components/list-item/export.json';
+import { figmaFrame } from '../../story/figma-frame';
+import { ListGroup } from '../list-group/list-group';
 import { ListItem } from './list-item';
 
 // 피그마 Icon 속성의 기본 인스턴스(file/Document)다. Vite와 Next.js가 모두 파일 주소로 바꿔 준다.
@@ -46,28 +49,23 @@ const meta = {
     trailing: { control: 'text' },
     showTrailing: { control: 'boolean' },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 원본 너비 400으로 감싼다([[디자인 시스템:컴포넌트 조립 규칙]]).
   render: (args) => {
     const common = {
       selected: args.state === 'selected',
       title: args.title,
-      icon: <img src={documentIcon} alt="" className="size-full object-contain" />,
+      icon: <img src={documentIcon} alt="" />,
       trailing: args.trailing,
       showTrailing: args.showTrailing,
     };
-    return (
-      <div className="w-size-list-item-width">
-        {args.size === 'two-line' ? (
-          <ListItem
-            {...common}
-            size="two-line"
-            subtitle={args.subtitle}
-            showSubtitle={args.showSubtitle}
-          />
-        ) : (
-          <ListItem {...common} />
-        )}
-      </div>
+    return args.size === 'two-line' ? (
+      <ListItem
+        {...common}
+        size="two-line"
+        subtitle={args.subtitle}
+        showSubtitle={args.showSubtitle}
+      />
+    ) : (
+      <ListItem {...common} />
     );
   },
 } satisfies Meta<FigmaArgs>;
@@ -78,8 +76,11 @@ type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-// 피그마 변형 하나를 args 하나로 고른다.
-export const Figma: Story = {};
+// 피그마 변형 하나를 args 하나로 고른다. 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 크기로 감싼다
+// ([[디자인 시스템:컴포넌트 조립 규칙]]).
+export const Figma: Story = {
+  decorators: [figmaFrame(listItemExport)],
+};
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 /** 제목만 있는 한 줄이다. 오른쪽 보조 글자는 showTrailing을 켜기 전에는 없고, compact는 부제를 받지 않는다 */
@@ -111,10 +112,10 @@ export const Trailing: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** 제목과 부제 두 줄이다. showSubtitle을 끄면 부제를 숨긴다 */
+/** 제목과 부제 두 줄이다. showSubtitle을 끄면 부제를 숨긴다. 여러 줄은 ListItem을 담는 ListGroup에 넣는다 */
 export const TwoLine: Story = {
   render: () => (
-    <div className="flex flex-col">
+    <ListGroup showHeader={false}>
       <ListItem size="two-line" icon={<i aria-hidden="true" />} title="보이는 부제" />
       <ListItem
         size="two-line"
@@ -123,7 +124,7 @@ export const TwoLine: Story = {
         subtitle="숨겨진 설명"
         showSubtitle={false}
       />
-    </div>
+    </ListGroup>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByText('보조 설명')).toBeInTheDocument();
@@ -135,13 +136,13 @@ export const TwoLine: Story = {
 /** aria-selected는 option 역할에만 붙인다. 다른 역할이나 역할이 없는 줄은 선택돼도 붙이지 않는다 */
 export const Selected: Story = {
   render: () => (
-    <div className="flex flex-col">
+    <ListGroup showHeader={false}>
       <div role="listbox" aria-label="선택 목록">
         <ListItem selected role="option" title="옵션" icon={<i aria-hidden="true" />} />
       </div>
       <ListItem selected role="button" tabIndex={0} title="버튼" icon={<i aria-hidden="true" />} />
       <ListItem selected title="일반" icon={<i aria-hidden="true" />} />
-    </div>
+    </ListGroup>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('option', { name: '옵션' })).toHaveAttribute(

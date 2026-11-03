@@ -6,7 +6,7 @@ import { ImageAsset } from './image-asset';
 const meta = {
   title: 'Components/ImageAsset',
   component: ImageAsset,
-  args: { name: 'images/file-folder', className: 'size-size-icon-sm' },
+  args: { name: 'images/file-folder' },
 } satisfies Meta<typeof ImageAsset>;
 
 export default meta;

@@ -34,7 +34,7 @@ export function PinnedTile(props: PinnedTileProps): JSX.Element {
         className,
       )}
     >
-      <span className="inline-flex size-size-icon-xl shrink-shrink-none items-center justify-center">
+      <span className="inline-flex size-size-icon-xl shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {icon}
       </span>
       <span className="w-full shrink-shrink-none truncate text-center type-caption text-text-fill-primary">

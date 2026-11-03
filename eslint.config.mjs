@@ -313,39 +313,6 @@ const storyStylePendingFiles = [
   'apps/web/src/features/window/window-layer.stories.tsx',
   'apps/web/src/shared/components/message-box-duplicate-folder-name/message-box-duplicate-folder-name.stories.tsx',
   'apps/web/src/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin.stories.tsx',
-  'packages/design-system/src/components/best-match-card/best-match-card.stories.tsx',
-  'packages/design-system/src/components/breadcrumb/breadcrumb.stories.tsx',
-  'packages/design-system/src/components/browser-tab-strip/browser-tab-strip.stories.tsx',
-  'packages/design-system/src/components/browser-tab/browser-tab.stories.tsx',
-  'packages/design-system/src/components/callout/callout.stories.tsx',
-  'packages/design-system/src/components/code-block/code-block.stories.tsx',
-  'packages/design-system/src/components/explorer-address-row/explorer-address-row.stories.tsx',
-  'packages/design-system/src/components/explorer-tab/explorer-tab.stories.tsx',
-  'packages/design-system/src/components/file-item/file-item.stories.tsx',
-  'packages/design-system/src/components/file-row/file-row.stories.tsx',
-  'packages/design-system/src/components/flyout/flyout.stories.tsx',
-  'packages/design-system/src/components/image-asset/image-asset.stories.tsx',
-  'packages/design-system/src/components/list-group/list-group.stories.tsx',
-  'packages/design-system/src/components/list-item/list-item.stories.tsx',
-  'packages/design-system/src/components/menu/menu.stories.tsx',
-  'packages/design-system/src/components/navigation-item/navigation-item.stories.tsx',
-  'packages/design-system/src/components/navigation-pane/navigation-pane.stories.tsx',
-  'packages/design-system/src/components/pinned-tile/pinned-tile.stories.tsx',
-  'packages/design-system/src/components/popover/popover.stories.tsx',
-  'packages/design-system/src/components/profile-button/profile-button.stories.tsx',
-  'packages/design-system/src/components/quote/quote.stories.tsx',
-  'packages/design-system/src/components/scroll-area/scroll-area.stories.tsx',
-  'packages/design-system/src/components/search-results/search-results.stories.tsx',
-  'packages/design-system/src/components/snap-layout-option/snap-layout-option.stories.tsx',
-  'packages/design-system/src/components/start-menu-footer/start-menu-footer.stories.tsx',
-  'packages/design-system/src/components/taskbar-button/taskbar-button.stories.tsx',
-  'packages/design-system/src/components/taskbar-preview-list/taskbar-preview-list.stories.tsx',
-  'packages/design-system/src/components/taskbar/taskbar.stories.tsx',
-  'packages/design-system/src/components/tile-grid/tile-grid.stories.tsx',
-  'packages/design-system/src/components/toggle/toggle.stories.tsx',
-  'packages/design-system/src/components/window-frame/window-frame.stories.tsx',
-  'packages/design-system/src/components/window-preview/window-preview.stories.tsx',
-  'packages/design-system/src/components/window-title/window-title.stories.tsx',
 ];
 const STORY_STYLE_MESSAGE =
   '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';
@@ -904,9 +871,13 @@ export default defineConfig(
                 to: { element: { type: 'design-system', fileInternalPath: 'src/index.ts' } },
               },
             },
-            // 스토리 파일은 스토리 전용 진입점(`@seojaewan/design-system/story`)도 쓴다.
+            // 스토리 파일은 스토리 전용 진입점(`@seojaewan/design-system/story`)도 쓴다. 테스트도 스토리 데이터가
+            // 실제 결과와 같은지 확인하려고 쓴다(CodeBlock 강조 결과).
             {
-              from: { element: { type: '!design-system' }, file: { categories: 'story' } },
+              from: {
+                element: { type: '!design-system' },
+                file: { categories: ['story', 'test'] },
+              },
               allow: {
                 to: { element: { type: 'design-system', fileInternalPath: 'src/story.ts' } },
               },
