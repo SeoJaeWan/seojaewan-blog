@@ -20,10 +20,14 @@ export type FontSource = {
   woff2Dir: string;
   /** 쓰는 굵기의 CSS 파일 */
   files: readonly string[];
+  /** `@font-face`의 family 이름. 패키지 이름과 피그마 서체 이름이 다를 때 피그마 이름(토큰 값)으로 바꾼다. 없으면 패키지 이름을 그대로 쓴다 */
+  family?: string;
 };
 
 // @codocs [[디자인 기반:서체]]
+// @codocs [[피그마 연동:서체 구현]]
 // 굵기는 Regular·SemiBold·Bold만 쓰고(피그마가 제공하는 Pretendard 굵기와 같다), 코드 블록 서체는 Regular만 쓴다.
+// @font-face 이름은 피그마 서체 이름(토큰 값)에 맞춘다.
 // 글 본문의 기울임(`Body Large Italic`)은 Open Sans Italic Regular로 그려 브라우저가 기울임을 흉내 내지 않게 한다.
 // Pretendard에는 기울임 글꼴이 없어 한글은 기울이지 않는다.
 export const fontSources: readonly FontSource[] = [
@@ -42,11 +46,13 @@ export const fontSources: readonly FontSource[] = [
     files: ['400.css', '600.css', '700.css', '400-italic.css'],
   },
   {
-    output: 'cascadia-mono.css',
-    packageName: '@fontsource/cascadia-mono',
-    cssDir: '@fontsource/cascadia-mono',
+    output: 'nanum-gothic-coding.css',
+    packageName: '@fontsource/nanum-gothic-coding',
+    cssDir: '@fontsource/nanum-gothic-coding',
     woff2Dir: 'files',
     files: ['400.css'],
+    // 패키지는 'Nanum Gothic Coding'이고 피그마 서체 이름(font/family/code 값)은 'NanumGothicCoding'이다.
+    family: "'NanumGothicCoding'",
   },
 ];
 
@@ -90,9 +96,12 @@ function main(): void {
  */
 export function fontSourceCss(source: FontSource): string {
   const cssDir = path.join(nodeModulesDir, ...source.cssDir.split('/'));
-  const faces = source.files.flatMap((file) =>
-    parseFontFaces(readFileSync(path.join(cssDir, file), 'utf8'), source.woff2Dir),
-  );
+  const { family } = source;
+  const faces = source.files
+    .flatMap((file) =>
+      parseFontFaces(readFileSync(path.join(cssDir, file), 'utf8'), source.woff2Dir),
+    )
+    .map((face) => (family === undefined ? face : { ...face, family }));
   const fileDir = path
     .relative(sourceDir, path.join(cssDir, source.woff2Dir))
     .split(path.sep)

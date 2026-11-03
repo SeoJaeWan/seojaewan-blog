@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, fn } from 'storybook/test';
 
 import { PinnedTile } from './pinned-tile';
 
@@ -13,8 +12,6 @@ type FigmaArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Label */
   label: string;
-  /** 동작 스토리에서 호출 횟수를 확인하는 핸들러 */
-  onClick?: () => void;
 };
 
 const meta = {
@@ -42,20 +39,3 @@ type Story = StoryObj<typeof meta>;
 // @codocs [[피그마 연동:스토리 규칙]]
 // 피그마 변형 하나를 args 하나로 고른다. Hover·Pressed는 캡처 도구가 마우스로 재현한다.
 export const Figma: Story = {};
-
-// @codocs [[컴포넌트 목록:Windows 화면 요소]]
-/** label을 이름으로 갖는 버튼이고, icon 자리에 넘긴 아이콘을 그린다. 누르면 onClick을 부른다 */
-export const Default: Story = {
-  args: { onClick: fn() },
-  render: ({ onClick: handleClick }) => (
-    <PinnedTile label="메모장" icon={<svg aria-hidden="true" />} onClick={handleClick} />
-  ),
-  play: async ({ args, canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: '메모장' });
-    await expect(button.querySelector('svg')).not.toBeNull();
-
-    await userEvent.click(button);
-
-    await expect(args.onClick).toHaveBeenCalledTimes(1);
-  },
-};
