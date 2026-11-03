@@ -6,7 +6,8 @@
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@figma/*": ["./figma/*"]
     }
   },
   "include": [

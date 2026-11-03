@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import tocExport from '../../../figma/components/toc/export.json';
+import { figmaFrame } from '../../story/figma-frame';
 import { TocItem } from '../toc-item/toc-item';
 import { Toc } from './toc';
 
@@ -13,10 +15,11 @@ const meta = {
   argTypes: {
     state: { control: 'inline-radio', options: ['expanded', 'collapsed'] },
   },
-  // 너비는 쓰는 곳이 정하므로 피그마 폭 토큰(size/toc/width)으로 준다.
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 폭 토큰(size/toc/width)으로 감싼다.
   // Items 슬롯에는 피그마 슬롯 기본 내용(TocItem 4개)을 그대로 넣는다.
+  decorators: [figmaFrame(tocExport)],
   render: (args) => (
-    <Toc state={args.state} className="w-size-toc-width">
+    <Toc state={args.state}>
       <TocItem active label="use 훅" />
       <TocItem label="useActionState" />
       <TocItem label="useOptimistic" />

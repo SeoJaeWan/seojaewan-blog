@@ -274,6 +274,135 @@ const styleValueRestrictions = styleObjects.flatMap((object) =>
   })),
 );
 
+// @codocs [[테스트 작성 규칙:스토리 테스트]]
+// 스토리 파일(디자인 시스템과 앱)은 className·style과 `*ClassName` 속성을 쓰지 않고, 클래스 묶음 변수도 두지 않는다.
+const storyStyleFiles = [`${WEB_SRC}/**/*.stories.tsx`, `${DESIGN_SYSTEM}/src/**/*.stories.tsx`];
+const storyStyleMotionFiles = [`${DESIGN_SYSTEM}/src/motion-story/*.stories.tsx`];
+// 모션 견본 스토리에서만 허용하는 것: `motionClassName` 속성과 `className={motionClassName}`
+const MOTION_CLASS_NAME_EXCEPTION =
+  ':not([name.name="motionClassName"]):not([name.name="className"][value.expression.name="motionClassName"])';
+// 아직 도우미로 바꾸지 않은 스토리다. 영역별 PR이 바꾸면서 지운다(임시).
+const storyStylePendingFiles = [
+  'apps/web/src/features/chrome/chrome-window-layer.stories.tsx',
+  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-find-bar/chrome-find-bar.stories.tsx',
+  'apps/web/src/features/chrome/components/chrome-page-area/components/chrome-image-viewer/chrome-image-viewer.stories.tsx',
+  'apps/web/src/features/chrome/components/chrome-page/chrome-page.stories.tsx',
+  'apps/web/src/features/chrome/components/chrome-post-tab/chrome-post-tab.stories.tsx',
+  'apps/web/src/features/chrome/components/chrome-window/chrome-window.stories.tsx',
+  'apps/web/src/features/chrome/components/message-box-trashed-post/message-box-trashed-post.stories.tsx',
+  'apps/web/src/features/chrome/components/post-blocks/post-blocks.stories.tsx',
+  'apps/web/src/features/desktop/desktop-icons-layer.stories.tsx',
+  'apps/web/src/features/file-explorer/components/explorer-body/components/explorer-content/explorer-content.stories.tsx',
+  'apps/web/src/features/file-explorer/components/explorer-body/explorer-body.stories.tsx',
+  'apps/web/src/features/file-explorer/components/explorer-window/explorer-window.stories.tsx',
+  'apps/web/src/features/file-explorer/explorer-window-layer.stories.tsx',
+  'apps/web/src/features/start-menu/components/search-body/search-body.stories.tsx',
+  'apps/web/src/features/start-menu/components/search-panel/search-panel.stories.tsx',
+  'apps/web/src/features/start-menu/components/start-body/components/start-view-menu/start-view-menu.stories.tsx',
+  'apps/web/src/features/start-menu/components/start-body/start-body.stories.tsx',
+  'apps/web/src/features/start-menu/components/start-body/view-menu/menu-view-options.stories.tsx',
+  'apps/web/src/features/start-menu/components/start-menu-panel/start-menu-panel.stories.tsx',
+  'apps/web/src/features/start-menu/start-menu-layer.stories.tsx',
+  'apps/web/src/features/taskbar/components/taskbar-apps-layer/components/app-item/app-item-menu.stories.tsx',
+  'apps/web/src/features/taskbar/components/taskbar-apps-layer/components/app-item/app-item.stories.tsx',
+  'apps/web/src/features/taskbar/components/taskbar-apps-layer/taskbar-apps-layer.stories.tsx',
+  'apps/web/src/features/taskbar/components/taskbar-default/taskbar-default.stories.tsx',
+  'apps/web/src/features/taskbar/taskbar-layer.stories.tsx',
+  'apps/web/src/features/window/components/window-snap-assist/components/snap-assist/snap-assist.stories.tsx',
+  'apps/web/src/features/window/components/window-view/components/snap-layout-menu/snap-layout-menu.stories.tsx',
+  'apps/web/src/features/window/window-layer.stories.tsx',
+  'apps/web/src/shared/components/message-box-duplicate-folder-name/message-box-duplicate-folder-name.stories.tsx',
+  'apps/web/src/shared/components/message-box-empty-recycle-bin/message-box-empty-recycle-bin.stories.tsx',
+  'packages/design-system/src/components/address-bar/address-bar.stories.tsx',
+  'packages/design-system/src/components/best-match-card/best-match-card.stories.tsx',
+  'packages/design-system/src/components/breadcrumb/breadcrumb.stories.tsx',
+  'packages/design-system/src/components/browser-tab-strip/browser-tab-strip.stories.tsx',
+  'packages/design-system/src/components/browser-tab/browser-tab.stories.tsx',
+  'packages/design-system/src/components/browser-toolbar/browser-toolbar.stories.tsx',
+  'packages/design-system/src/components/callout/callout.stories.tsx',
+  'packages/design-system/src/components/code-block/code-block.stories.tsx',
+  'packages/design-system/src/components/column-header/column-header.stories.tsx',
+  'packages/design-system/src/components/empty-state/empty-state.stories.tsx',
+  'packages/design-system/src/components/equation/equation.stories.tsx',
+  'packages/design-system/src/components/explorer-address-row/explorer-address-row.stories.tsx',
+  'packages/design-system/src/components/explorer-command-bar/explorer-command-bar.stories.tsx',
+  'packages/design-system/src/components/explorer-status-bar/explorer-status-bar.stories.tsx',
+  'packages/design-system/src/components/explorer-tab/explorer-tab.stories.tsx',
+  'packages/design-system/src/components/figure/figure.stories.tsx',
+  'packages/design-system/src/components/file-item/file-item.stories.tsx',
+  'packages/design-system/src/components/file-row/file-row.stories.tsx',
+  'packages/design-system/src/components/flyout/flyout.stories.tsx',
+  'packages/design-system/src/components/image-asset/image-asset.stories.tsx',
+  'packages/design-system/src/components/list-group/list-group.stories.tsx',
+  'packages/design-system/src/components/list-item/list-item.stories.tsx',
+  'packages/design-system/src/components/menu-item/menu-item.stories.tsx',
+  'packages/design-system/src/components/menu-separator/menu-separator.stories.tsx',
+  'packages/design-system/src/components/menu/menu.stories.tsx',
+  'packages/design-system/src/components/navigation-item/navigation-item.stories.tsx',
+  'packages/design-system/src/components/navigation-pane/navigation-pane.stories.tsx',
+  'packages/design-system/src/components/pinned-tile/pinned-tile.stories.tsx',
+  'packages/design-system/src/components/popover/popover.stories.tsx',
+  'packages/design-system/src/components/post-cover/post-cover.stories.tsx',
+  'packages/design-system/src/components/post-nav-card/post-nav-card.stories.tsx',
+  'packages/design-system/src/components/profile-button/profile-button.stories.tsx',
+  'packages/design-system/src/components/quote/quote.stories.tsx',
+  'packages/design-system/src/components/scroll-area/scroll-area.stories.tsx',
+  'packages/design-system/src/components/scrollbar/scrollbar.stories.tsx',
+  'packages/design-system/src/components/search-box/search-box.stories.tsx',
+  'packages/design-system/src/components/search-results/search-results.stories.tsx',
+  'packages/design-system/src/components/section-title/section-title.stories.tsx',
+  'packages/design-system/src/components/selection-marquee/selection-marquee.stories.tsx',
+  'packages/design-system/src/components/separator/separator.stories.tsx',
+  'packages/design-system/src/components/snap-layout-option/snap-layout-option.stories.tsx',
+  'packages/design-system/src/components/snap-preview/snap-preview.stories.tsx',
+  'packages/design-system/src/components/start-menu-footer/start-menu-footer.stories.tsx',
+  'packages/design-system/src/components/table-cell/table-cell.stories.tsx',
+  'packages/design-system/src/components/table/table.stories.tsx',
+  'packages/design-system/src/components/taskbar-button/taskbar-button.stories.tsx',
+  'packages/design-system/src/components/taskbar-preview-list/taskbar-preview-list.stories.tsx',
+  'packages/design-system/src/components/taskbar/taskbar.stories.tsx',
+  'packages/design-system/src/components/tile-grid/tile-grid.stories.tsx',
+  'packages/design-system/src/components/toggle/toggle.stories.tsx',
+  'packages/design-system/src/components/unsupported-block/unsupported-block.stories.tsx',
+  'packages/design-system/src/components/window-frame/window-frame.stories.tsx',
+  'packages/design-system/src/components/window-preview/window-preview.stories.tsx',
+  'packages/design-system/src/components/window-title/window-title.stories.tsx',
+  'packages/design-system/src/motion-story/motion-boot-screen-enter.stories.tsx',
+  'packages/design-system/src/motion-story/motion-boot-screen-exit.stories.tsx',
+  'packages/design-system/src/motion-story/motion-flyout-enter.stories.tsx',
+  'packages/design-system/src/motion-story/motion-panel-enter.stories.tsx',
+  'packages/design-system/src/motion-story/motion-panel-exit.stories.tsx',
+  'packages/design-system/src/motion-story/motion-search-box-focus.stories.tsx',
+  'packages/design-system/src/motion-story/motion-start-jump-list-enter.stories.tsx',
+  'packages/design-system/src/motion-story/motion-start-jump-list-exit.stories.tsx',
+  'packages/design-system/src/motion-story/motion-window-close.stories.tsx',
+  'packages/design-system/src/motion-story/motion-window-minimize.stories.tsx',
+  'packages/design-system/src/motion-story/motion-window-open.stories.tsx',
+  'packages/design-system/src/motion-story/motion-window-restore.stories.tsx',
+  'packages/design-system/src/motion-story/motion-window-snap.stories.tsx',
+];
+const STORY_STYLE_MESSAGE =
+  '스토리에서 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(@seojaewan/design-system/story)로 준다.';
+
+/**
+ * 스토리의 className·style 금지 선택자를 만든다.
+ * @param attributeException JSX 속성 선택자 뒤에 붙일 예외(`:not(...)`)
+ * @returns no-restricted-syntax 제한 목록
+ */
+function storyStyleRestrictions(attributeException) {
+  return [
+    {
+      selector: `JSXAttribute[name.name=/^(className|style)$|ClassNames?$/]${attributeException}`,
+      message: STORY_STYLE_MESSAGE,
+    },
+    { selector: 'Property[key.name=/^className$|ClassNames?$/]', message: STORY_STYLE_MESSAGE },
+    {
+      selector: 'VariableDeclarator[id.name=/(ClassNames?|CLASS_NAMES?)$/]',
+      message: STORY_STYLE_MESSAGE,
+    },
+  ];
+}
+
 // @codocs [[피그마 연동:토큰 사용 강제]]
 // lint는 `.join()` 앞의 배열을 읽지 못하므로 className 안에서는 `cn`으로 조합한다.
 const classJoinRestrictions = [
@@ -419,12 +548,16 @@ const webImportPatterns = [
     message: '앱 안에서 상위 폴더는 `@/` 별칭으로 import한다.',
   },
   {
-    group: ['@seojaewan/design-system/*', '!@seojaewan/design-system/theme.css'],
+    group: [
+      '@seojaewan/design-system/*',
+      '!@seojaewan/design-system/theme.css',
+      '!@seojaewan/design-system/story',
+    ],
     message: '디자인 시스템은 공개 이름 `@seojaewan/design-system`으로만 import한다.',
   },
 ];
 const storyImportPattern = {
-  group: ['**/*.stories', '**/story-*'],
+  group: ['**/*.stories', '**/story-*', '@seojaewan/design-system/story', '@figma/*'],
   message: '스토리 파일과 스토리 데이터·도우미는 스토리와 테스트에서만 import한다.',
 };
 
@@ -805,6 +938,13 @@ export default defineConfig(
                 to: { element: { type: 'design-system', fileInternalPath: 'src/index.ts' } },
               },
             },
+            // 스토리 파일은 스토리 전용 진입점(`@seojaewan/design-system/story`)도 쓴다.
+            {
+              from: { element: { type: '!design-system' }, file: { categories: 'story' } },
+              allow: {
+                to: { element: { type: 'design-system', fileInternalPath: 'src/story.ts' } },
+              },
+            },
 
             // `app/`은 `shell/shell.tsx`만 import한다.
             {
@@ -949,6 +1089,31 @@ export default defineConfig(
     ignores: tokenScopeIgnores,
     rules: {
       'no-restricted-syntax': restrictedSyntax(styleValueRestrictions),
+    },
+  },
+
+  // @codocs [[테스트 작성 규칙:스토리 테스트]]
+  // 스토리 파일은 className·style을 직접 주지 않는다. 크기는 FigmaFrame, 배치는 StoryStage(`@seojaewan/design-system/story`)로만
+  // 준다. 도우미 파일은 `*.stories.tsx`가 아니라 걸리지 않는다. 스토리는 default export 예외 파일이라 그 목록을 함께 건다.
+  // 모션 견본 스토리는 모션 클래스를 컴포넌트에 거는 것 자체를 시험하므로 `motionClassName` 하나만 넘길 수 있다.
+  {
+    files: storyStyleFiles,
+    ignores: [...storyStyleMotionFiles, ...storyStylePendingFiles],
+    rules: {
+      'no-restricted-syntax': restrictedSyntax([
+        ...styleValueRestrictions,
+        ...storyStyleRestrictions(''),
+      ]),
+    },
+  },
+  {
+    files: storyStyleMotionFiles,
+    ignores: storyStylePendingFiles,
+    rules: {
+      'no-restricted-syntax': restrictedSyntax([
+        ...styleValueRestrictions,
+        ...storyStyleRestrictions(MOTION_CLASS_NAME_EXCEPTION),
+      ]),
     },
   },
 
