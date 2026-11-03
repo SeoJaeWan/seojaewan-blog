@@ -75,26 +75,6 @@ describe('PR 댓글 캡처 표', () => {
     expect(bodies[0]).toContain('캡처 실패: 스토리가 없다');
   });
 
-  it('빈 HUG 슬롯이라 뺀 변형은 그림 없이 "조립에서 확인"을 쓰고 실패로 세지 않는다', () => {
-    const { bodies, images } = renderComments(
-      {
-        rows: [
-          row('equation', 'state=empty', {
-            figma: null,
-            code: null,
-            diff: null,
-            emptyHugSlot: true,
-          }),
-        ],
-        fileErrors: [],
-      },
-      commentOptions,
-    );
-    expect(bodies[0]).toContain('| `state=empty` | | 조립에서 확인 | |');
-    expect(bodies[0]).not.toContain('캡처 실패');
-    expect(images).toEqual([]);
-  });
-
   it('대상 폴더 오류를 쓴다', () => {
     const { bodies } = renderComments(
       { rows: [], fileErrors: ['packages/design-system/figma/components/button/x.png이 없다'] },

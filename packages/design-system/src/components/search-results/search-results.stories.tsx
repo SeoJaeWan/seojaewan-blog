@@ -22,8 +22,6 @@ const documentIcon = (
 
 const meta = {
   title: 'Components/SearchResults',
-  // 가운데 정렬은 높이 545·465(홀수)가 반 픽셀에 놓여 선과 글자가 흐려지므로, 왼쪽 위에 붙여 정수 위치에 그린다.
-  parameters: { layout: 'padded' },
   args: { device: 'desktop' },
   argTypes: {
     device: { control: 'inline-radio', options: DEVICES },

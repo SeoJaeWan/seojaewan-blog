@@ -11,8 +11,6 @@ export const COMMENT_MARKER = 'figma-parity';
 export const COMMENT_LIMIT = 60_000;
 // 캡처 표 하나에 넣는 줄 수. 넘치면 같은 대상의 표를 이어서 하나 더 만든다(표 머리를 다시 쓴다).
 export const CAPTURE_ROWS_PER_TABLE = 40;
-// 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형의 코드 칸에 쓰는 글이다.
-export const EMPTY_HUG_SLOT_NOTE = '조립에서 확인';
 const tableHeader = ['| 변형 | 피그마 | 코드 | 차이 |', '|---|---|---|---|'];
 
 export type CommentOptions = {
@@ -111,16 +109,11 @@ function captureBlocks(
 
 /**
  * 캡처 표 한 줄을 쓴다. 만들지 못한 그림 칸은 비우고, 이유는 코드 칸에 쓴다.
- * 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형은 그림 없이 "조립에서 확인"만 쓴다.
- * @codocs [[피그마 연동:스토리 규칙]]
  * @param row 캡처 표 줄
  * @param options 이미지 주소
  * @returns 표 줄
  */
 function captureLine(row: CaptureRow, options: CommentOptions): string {
-  if (row.emptyHugSlot === true) {
-    return `| \`${row.variant}\` | | ${EMPTY_HUG_SLOT_NOTE} | |`;
-  }
   const figma = row.figma === null ? '' : image(row.figma, '피그마', options);
   const code =
     row.code === null

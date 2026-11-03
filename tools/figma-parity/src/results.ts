@@ -30,8 +30,6 @@ export type CaptureRow = {
   diff: string | null;
   /** 캡처하지 못한 이유 */
   error: string | null;
-  /** 빈 HUG 슬롯이 있어 단독 캡처에서 뺀 변형이면 true. 조립 캡처에서 확인한다. 예전 결과에는 없다 */
-  emptyHugSlot?: boolean;
 };
 
 export type CaptureSummary = {

@@ -1,29 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { noCodeVariables } from './code-variables';
-import { hasEmptyHugSlot, layerTree } from './layer-tree';
+import { layerTree } from './layer-tree';
 import type { NodeData } from './node-data';
 import { buttonRoot, node } from './node-data.fixture';
-
-/**
- * 슬롯을 만든다.
- * @param sizing 세로 크기 방식
- * @param children 안에 든 노드
- * @returns 슬롯
- */
-function slot(sizing: string, children: NodeData[] = []): NodeData {
-  return node({
-    path: 'Content',
-    type: 'SLOT',
-    children,
-    child: {
-      sizingHorizontal: 'FILL',
-      sizingVertical: sizing,
-      positioning: 'AUTO',
-      constraints: { horizontal: 'MIN', vertical: 'MIN' },
-    },
-  });
-}
 
 /**
  * 자식을 둔 변형 루트를 만든다.
@@ -33,36 +13,6 @@ function slot(sizing: string, children: NodeData[] = []): NodeData {
 function root(children: NodeData[]): NodeData {
   return node({ path: '', type: 'COMPONENT', child: null, children });
 }
-
-// @codocs [[피그마 연동:구조 검사]]
-describe('빈 HUG 슬롯', () => {
-  it('비어 있고 내용에 맞추는 축이 있는 슬롯을 찾는다', () => {
-    expect(hasEmptyHugSlot(root([slot('HUG')]))).toBe(true);
-    expect(
-      hasEmptyHugSlot(root([node({ path: 'a', type: 'FRAME', children: [slot('HUG')] })])),
-    ).toBe(true);
-  });
-
-  it('내용이 든 슬롯과 고정·채움 슬롯은 아니다', () => {
-    expect(hasEmptyHugSlot(root([slot('HUG', [node({ path: 'a', type: 'FRAME' })])]))).toBe(false);
-    expect(
-      hasEmptyHugSlot(
-        root([
-          node({
-            path: 'b',
-            type: 'SLOT',
-            child: {
-              sizingHorizontal: 'FILL',
-              sizingVertical: 'FILL',
-              positioning: 'AUTO',
-              constraints: { horizontal: 'MIN', vertical: 'MIN' },
-            },
-          }),
-        ]),
-      ),
-    ).toBe(false);
-  });
-});
 
 // @codocs [[피그마 연동:피그마 플러그인]]
 describe('레이어 트리', () => {
