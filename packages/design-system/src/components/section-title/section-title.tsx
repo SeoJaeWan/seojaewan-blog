@@ -5,8 +5,8 @@ import { cn } from '../../cn';
 type SectionTitleProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   /** 피그마 Title 속성. 제목 글자다 */
   title?: string;
-  /** 피그마 Show action 속성. 오른쪽 동작 자리를 보일지 정한다 */
-  showAction?: boolean;
+  /** 피그마 Has action 속성. 오른쪽 동작 자리를 보일지 정한다 */
+  hasAction?: boolean;
   /** 피그마 Action 속성. 오른쪽 동작 자리에 넣을 것(보통 DropDownButton)이다 */
   action?: ReactNode;
   /** 제목 태그의 id. 영역이 `aria-labelledby`로 이 제목을 가리킬 때 준다 */
@@ -21,14 +21,7 @@ type SectionTitleProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
  * @param props
  */
 export function SectionTitle(props: SectionTitleProps): JSX.Element {
-  const {
-    title = '섹션 제목',
-    showAction: hasAction = false,
-    action,
-    titleId,
-    className,
-    ...divProps
-  } = props;
+  const { title = '섹션 제목', hasAction = false, action, titleId, className, ...divProps } = props;
   return (
     <div {...divProps} className={cn('flex items-center overflow-clip', className)}>
       <h2

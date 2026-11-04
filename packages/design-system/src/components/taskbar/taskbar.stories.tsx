@@ -32,7 +32,7 @@ export const Figma: Story = {
         <>
           <TaskbarButton label="시작" icon={<Asset name="illustrations/logo-windows.svg" />} />
           <FigmaFrame source={taskbarExport} node="Center/검색">
-            <SearchBox appearance="taskbar" placeholder="검색" aria-label="검색" />
+            <SearchBox variant="taskbar" placeholder="검색" aria-label="검색" />
           </FigmaFrame>
           <TaskbarButton
             label="파일 탐색기"

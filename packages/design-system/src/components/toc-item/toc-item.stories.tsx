@@ -4,16 +4,16 @@ import { expect, within } from 'storybook/test';
 import { TocItem } from './toc-item';
 
 type FigmaArgs = {
-  active: boolean;
+  isActive: boolean;
 };
 
 const meta = {
   title: 'Components/TocItem',
-  args: { active: false },
+  args: { isActive: false },
   argTypes: {
-    active: { control: 'boolean' },
+    isActive: { control: 'boolean' },
   },
-  render: (args) => <TocItem active={args.active} />,
+  render: (args) => <TocItem isActive={args.isActive} />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
@@ -37,11 +37,11 @@ export const Default: Story = {
 };
 
 // @codocs [[컴포넌트 목록:상태]]
-/** active이면 aria-current가 붙는다 */
+/** isActive이면 aria-current가 붙는다 */
 export const Active: Story = {
-  render: () => <TocItem active label="소개" />,
+  render: () => <TocItem isActive label="소개" />,
   play: async ({ canvasElement, step }) => {
-    await step('active이면 aria-current가 location이다', async () => {
+    await step('isActive이면 aria-current가 location이다', async () => {
       const label = within(canvasElement).getByText('소개');
       await expect(label.parentElement).toHaveAttribute('aria-current', 'location');
     });

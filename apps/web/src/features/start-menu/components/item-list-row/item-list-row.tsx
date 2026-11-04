@@ -100,7 +100,7 @@ export function ItemListRow(props: ItemListRowProps): JSX.Element {
     ...rowAttributes,
     ref: rowRef,
     'aria-current': isSelected ? ('true' as const) : undefined,
-    selected: isSelected,
+    isSelected,
     title,
     icon,
     onClick: handleClick,

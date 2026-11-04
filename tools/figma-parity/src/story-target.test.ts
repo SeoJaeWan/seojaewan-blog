@@ -17,9 +17,25 @@ describe('스토리 규칙', () => {
     });
   });
 
-  it('True·False 값은 boolean arg가 된다', () => {
-    expect(storyTarget([['Selected', 'True']]).args).toEqual({ selected: true });
-    expect(storyArgsParam({ selected: true, style: 'accent' })).toBe('selected:!true;style:accent');
+  it('True·False 값은 boolean arg가 되고 이름에 is가 붙는다', () => {
+    expect(storyTarget([['Selected', 'True']]).args).toEqual({ isSelected: true });
+    expect(storyTarget([['Checked', 'False']]).args).toEqual({ isChecked: false });
+    expect(storyTarget([['Show Icon', 'True']]).args).toEqual({ isShowIcon: true });
+    expect(storyArgsParam({ isSelected: true, style: 'accent' })).toBe(
+      'isSelected:!true;style:accent',
+    );
+  });
+
+  it('이미 Has·Is·Can·Should로 시작하는 참/거짓 이름은 접두어를 더 붙이지 않는다', () => {
+    expect(storyTarget([['Has separator', 'True']]).args).toEqual({ hasSeparator: true });
+    expect(storyTarget([['Is open', 'False']]).args).toEqual({ isOpen: false });
+    expect(storyTarget([['Can close', 'True']]).args).toEqual({ canClose: true });
+    expect(storyTarget([['Should wrap', 'False']]).args).toEqual({ shouldWrap: false });
+  });
+
+  it('Has로 시작하는 낱말이 아닌 이름(Hash)에는 is를 붙이고, 참/거짓이 아닌 값은 이름을 그대로 쓴다', () => {
+    expect(storyTarget([['Hash', 'True']]).args).toEqual({ isHash: true });
+    expect(storyTarget([['Has icon', 'Left']]).args).toEqual({ hasIcon: 'left' });
   });
 
   it('State가 Hover·Pressed·Focused면 실제 마우스·키보드로 재현하고 state arg도 넘긴다', () => {
