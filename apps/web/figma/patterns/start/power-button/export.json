@@ -1,19 +1,10 @@
 {
-  "description": "Start 아래 줄의 전원 버튼과 전원 메뉴로, Start 메뉴 바닥 줄에 쓴다.",
+  "description": "Start 아래 줄의 전원 버튼과 전원 메뉴로, Start 메뉴 바닥 줄에 쓴다.\n@runtime 누르면 Menu가 열린다: 다시 시작",
   "name": "Start/PowerButton",
-  "nodeId": "554:5190",
-  "propertyDefinitions": {
-    "State": {
-      "default": "Closed",
-      "options": [
-        "Closed",
-        "Open"
-      ],
-      "type": "VARIANT"
-    }
-  },
+  "nodeId": "554:5157",
+  "propertyDefinitions": {},
   "variants": {
-    "state=closed": {
+    "default": {
       "node": {
         "height": 32,
         "width": 32,
@@ -21,9 +12,7 @@
         "y": 0
       },
       "nodeId": "554:5157",
-      "properties": {
-        "State": "Closed"
-      },
+      "properties": {},
       "tree": {
         "children": [
           {
@@ -34,7 +23,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_power_20_regular"
                         },
                         "component": "ic_fluent_power_20_regular",
@@ -54,7 +43,7 @@
                     ],
                     "component": "IconButton",
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -71,7 +60,7 @@
                     "name": "power button",
                     "properties": {
                       "State": "Rest",
-                      "Style": "Subtle"
+                      "Variant": "Subtle"
                     },
                     "radius": [
                       "radius/control",
@@ -129,7 +118,7 @@
             },
             "name": "popover",
             "properties": {
-              "Placement": "Top-End",
+              "Placement": "Top end",
               "State": "Closed"
             },
             "size": {
@@ -155,484 +144,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "State=Closed",
-        "size": {
-          "h": 32,
-          "w": 32
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "state=open": {
-      "node": {
-        "height": 32,
-        "width": 32,
-        "x": 234,
-        "y": 50
-      },
-      "nodeId": "554:5166",
-      "properties": {
-        "State": "Open"
-      },
-      "tree": {
-        "children": [
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "asset": {
-                          "color": "text-fill/primary",
-                          "path": "icons/ic_fluent_power_20_regular"
-                        },
-                        "component": "ic_fluent_power_20_regular",
-                        "height": "size/icon/sm",
-                        "name": "icon",
-                        "size": {
-                          "h": 16,
-                          "w": 16
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "FIXED"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/icon/sm"
-                      }
-                    ],
-                    "component": "IconButton",
-                    "fills": [
-                      "subtle-fill/transparent"
-                    ],
-                    "layout": {
-                      "counterAlign": "CENTER",
-                      "gap": 0,
-                      "mode": "HORIZONTAL",
-                      "padding": [
-                        "spacing/sm",
-                        "spacing/sm",
-                        "spacing/sm",
-                        "spacing/sm"
-                      ],
-                      "primaryAlign": "CENTER"
-                    },
-                    "name": "power button",
-                    "properties": {
-                      "State": "Rest",
-                      "Style": "Subtle"
-                    },
-                    "radius": [
-                      "radius/control",
-                      "radius/control",
-                      "radius/control",
-                      "radius/control"
-                    ],
-                    "size": {
-                      "h": 32,
-                      "w": 32
-                    },
-                    "sizing": {
-                      "h": "HUG",
-                      "v": "HUG"
-                    },
-                    "type": "INSTANCE"
-                  }
-                ],
-                "layout": {
-                  "counterAlign": "MIN",
-                  "gap": 0,
-                  "mode": "HORIZONTAL",
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    0
-                  ],
-                  "primaryAlign": "MIN"
-                },
-                "name": "Trigger",
-                "size": {
-                  "h": 32,
-                  "w": 32
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "type": "SLOT"
-              },
-              {
-                "absolute": {
-                  "horizontal": "STRETCH",
-                  "vertical": "MIN"
-                },
-                "children": [
-                  {
-                    "children": [
-                      {
-                        "children": [
-                          {
-                            "children": [
-                              {
-                                "children": [
-                                  {
-                                    "children": [
-                                      {
-                                        "children": [
-                                          {
-                                            "children": [
-                                              {
-                                                "asset": {
-                                                  "color": "text-fill/primary",
-                                                  "path": "icons/ic_fluent_arrow_clockwise_20_regular"
-                                                },
-                                                "component": "ic_fluent_arrow_clockwise_20_regular",
-                                                "height": "size/icon/sm",
-                                                "name": "icon",
-                                                "size": {
-                                                  "h": 16,
-                                                  "w": 16
-                                                },
-                                                "sizing": {
-                                                  "h": "FILL",
-                                                  "v": "FILL"
-                                                },
-                                                "type": "INSTANCE",
-                                                "width": "size/icon/sm"
-                                              }
-                                            ],
-                                            "height": "size/icon/sm",
-                                            "layout": {
-                                              "counterAlign": "CENTER",
-                                              "gap": "spacing/none",
-                                              "mode": "HORIZONTAL",
-                                              "padding": [
-                                                "spacing/none",
-                                                "spacing/none",
-                                                "spacing/none",
-                                                "spacing/none"
-                                              ],
-                                              "primaryAlign": "CENTER"
-                                            },
-                                            "name": "leading",
-                                            "size": {
-                                              "h": 16,
-                                              "w": 16
-                                            },
-                                            "sizing": {
-                                              "h": "FIXED",
-                                              "v": "FIXED"
-                                            },
-                                            "type": "FRAME",
-                                            "width": "size/icon/sm"
-                                          },
-                                          {
-                                            "fills": [
-                                              "text-fill/primary"
-                                            ],
-                                            "name": "label",
-                                            "size": {
-                                              "h": 20,
-                                              "w": 188
-                                            },
-                                            "sizing": {
-                                              "h": "FILL",
-                                              "v": "HUG"
-                                            },
-                                            "text": {
-                                              "autoResize": "HEIGHT",
-                                              "maxLines": 1,
-                                              "maxLinesVariable": null,
-                                              "segments": [
-                                                {
-                                                  "characters": "다시",
-                                                  "fill": "text-fill/primary",
-                                                  "textStyle": "Hangul/Body"
-                                                },
-                                                {
-                                                  "characters": " ",
-                                                  "fill": "text-fill/primary",
-                                                  "textStyle": "Body"
-                                                },
-                                                {
-                                                  "characters": "시작",
-                                                  "fill": "text-fill/primary",
-                                                  "textStyle": "Hangul/Body"
-                                                }
-                                              ],
-                                              "truncation": "ENDING"
-                                            },
-                                            "type": "TEXT"
-                                          }
-                                        ],
-                                        "fills": [
-                                          "subtle-fill/transparent"
-                                        ],
-                                        "layout": {
-                                          "counterAlign": "CENTER",
-                                          "gap": "spacing/md",
-                                          "mode": "HORIZONTAL",
-                                          "padding": [
-                                            "spacing/xs",
-                                            "spacing/md",
-                                            "spacing/xs",
-                                            "spacing/md"
-                                          ],
-                                          "primaryAlign": "MIN"
-                                        },
-                                        "name": "base",
-                                        "radius": [
-                                          "radius/control",
-                                          "radius/control",
-                                          "radius/control",
-                                          "radius/control"
-                                        ],
-                                        "size": {
-                                          "h": 28,
-                                          "w": 240
-                                        },
-                                        "sizing": {
-                                          "h": "FILL",
-                                          "v": "FILL"
-                                        },
-                                        "type": "FRAME"
-                                      }
-                                    ],
-                                    "component": "MenuItem",
-                                    "layout": {
-                                      "counterAlign": "CENTER",
-                                      "gap": "spacing/none",
-                                      "mode": "HORIZONTAL",
-                                      "padding": [
-                                        "spacing/2xs",
-                                        "spacing/xs",
-                                        "spacing/2xs",
-                                        "spacing/xs"
-                                      ],
-                                      "primaryAlign": "MIN"
-                                    },
-                                    "name": "item 다시 시작",
-                                    "properties": {
-                                      "Kind": "Default",
-                                      "Label": "다시 시작",
-                                      "Shortcut": "Ctrl+O",
-                                      "Show icon": true,
-                                      "Show shortcut": false,
-                                      "State": "Rest",
-                                      "Value": "100%"
-                                    },
-                                    "size": {
-                                      "h": 32,
-                                      "w": 248
-                                    },
-                                    "sizing": {
-                                      "h": "FILL",
-                                      "v": "HUG"
-                                    },
-                                    "type": "INSTANCE"
-                                  }
-                                ],
-                                "layout": {
-                                  "counterAlign": "MIN",
-                                  "gap": "spacing/none",
-                                  "mode": "VERTICAL",
-                                  "padding": [
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none",
-                                    "spacing/none"
-                                  ],
-                                  "primaryAlign": "CENTER"
-                                },
-                                "name": "Content",
-                                "radius": [
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control",
-                                  "radius/control"
-                                ],
-                                "size": {
-                                  "h": 32,
-                                  "w": 248
-                                },
-                                "sizing": {
-                                  "h": "FILL",
-                                  "v": "HUG"
-                                },
-                                "type": "SLOT"
-                              }
-                            ],
-                            "component": "Flyout",
-                            "effectStyle": "Surface/Flyout (Acrylic)",
-                            "fillStyle": "Material/Acrylic Default",
-                            "layout": {
-                              "counterAlign": "MIN",
-                              "gap": "spacing/none",
-                              "mode": "VERTICAL",
-                              "padding": [
-                                "spacing/2xs",
-                                "spacing/none",
-                                "spacing/2xs",
-                                "spacing/none"
-                              ],
-                              "primaryAlign": "MIN"
-                            },
-                            "name": "Flyout",
-                            "properties": {
-                              "Material": "Acrylic",
-                              "Padding": "Compact"
-                            },
-                            "radius": [
-                              "radius/overlay",
-                              "radius/overlay",
-                              "radius/overlay",
-                              "radius/overlay"
-                            ],
-                            "size": {
-                              "h": 38,
-                              "w": 250
-                            },
-                            "sizing": {
-                              "h": "FILL",
-                              "v": "HUG"
-                            },
-                            "strokeWeight": [
-                              "stroke-width/default",
-                              "stroke-width/default",
-                              "stroke-width/default",
-                              "stroke-width/default"
-                            ],
-                            "strokes": [
-                              "surface-stroke/flyout"
-                            ],
-                            "strokesIncludedInLayout": true,
-                            "type": "INSTANCE"
-                          }
-                        ],
-                        "component": "Menu",
-                        "layout": {
-                          "counterAlign": "MIN",
-                          "gap": "spacing/none",
-                          "mode": "VERTICAL",
-                          "padding": [
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none",
-                            "spacing/none"
-                          ],
-                          "primaryAlign": "MIN"
-                        },
-                        "name": "Menu",
-                        "size": {
-                          "h": 38,
-                          "w": 250
-                        },
-                        "sizing": {
-                          "h": "FIXED",
-                          "v": "HUG"
-                        },
-                        "type": "INSTANCE",
-                        "width": "size/menu/width"
-                      }
-                    ],
-                    "component": "Menu/Power",
-                    "layout": {
-                      "counterAlign": "MIN",
-                      "gap": "spacing/none",
-                      "mode": "VERTICAL",
-                      "padding": [
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none",
-                        "spacing/none"
-                      ],
-                      "primaryAlign": "MIN"
-                    },
-                    "name": "Menu/Power",
-                    "size": {
-                      "h": 38,
-                      "w": 250
-                    },
-                    "sizing": {
-                      "h": "HUG",
-                      "v": "HUG"
-                    },
-                    "type": "INSTANCE"
-                  }
-                ],
-                "height": "size/popover/slot",
-                "layout": {
-                  "counterAlign": "MAX",
-                  "gap": "spacing/none",
-                  "mode": "VERTICAL",
-                  "padding": [
-                    "spacing/none",
-                    "spacing/none",
-                    "spacing/xs",
-                    "spacing/none"
-                  ],
-                  "primaryAlign": "MAX"
-                },
-                "name": "Popup",
-                "size": {
-                  "h": 4,
-                  "w": 32
-                },
-                "sizing": {
-                  "h": "DERIVED",
-                  "v": "FIXED"
-                },
-                "type": "SLOT"
-              }
-            ],
-            "component": "Popover",
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": "spacing/xs",
-              "mode": "VERTICAL",
-              "padding": [
-                "spacing/none",
-                "spacing/none",
-                "spacing/none",
-                "spacing/none"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "name": "popover",
-            "properties": {
-              "Placement": "Top-End",
-              "State": "Open"
-            },
-            "size": {
-              "h": 32,
-              "w": 32
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "INSTANCE"
-          }
-        ],
-        "layout": {
-          "counterAlign": "MIN",
-          "gap": "spacing/none",
-          "mode": "HORIZONTAL",
-          "padding": [
-            "spacing/none",
-            "spacing/none",
-            "spacing/none",
-            "spacing/none"
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "State=Open",
+        "name": "Start/PowerButton",
         "size": {
           "h": 32,
           "w": 32
