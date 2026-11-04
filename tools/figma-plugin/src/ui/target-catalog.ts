@@ -21,7 +21,7 @@ export type CatalogItem = {
   variantCount: number | null;
 };
 
-/** 묶음 하나. 컴포넌트는 영역 섹션, 조립은 영역(PR 하나), 애니메이션은 하나 */
+/** 묶음 하나. 컴포넌트는 페이지(나누기 전 02 · Components는 영역 섹션), 조립은 영역(PR 하나), 애니메이션은 하나 */
 export type CatalogGroup = {
   key: string;
   kind: ItemKind;

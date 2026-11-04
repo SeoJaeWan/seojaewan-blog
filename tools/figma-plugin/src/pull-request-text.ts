@@ -17,6 +17,13 @@ const MOTION_BRANCH_PREFIX = 'feat/figma-motion-';
 /** 브랜치 이름에서 빼는 견본 이름 앞부분 */
 const MOTION_NAME_PREFIX_PATTERN = /^motion-/u;
 
+/** 미리보기 표 한 줄에 놓는 변형 수 */
+const PREVIEW_COLUMNS = 2;
+/** 미리보기 이미지 너비(px) */
+const PREVIEW_IMAGE_WIDTH = 360;
+/** 바뀐 변형이 이보다 많은 대상은 미리보기를 접는다 */
+const FOLD_VARIANT_COUNT = 4;
+
 /** PR 하나에 담긴 대상 하나의 변경(main 기준) */
 export type TargetChanges = {
   /** 피그마 컴포넌트 이름 */
@@ -133,7 +140,7 @@ export function targetCommitBody(names: readonly string[], summary: CommitSummar
 }
 
 /**
- * 컴포넌트 PR의 한국어 본문을 만든다. 바뀐 변형 목록과 피그마 미리보기를 담는다.
+ * 컴포넌트 PR의 한국어 본문을 만든다. 맨 위에 바뀐 변형 수 표를, 그 아래 바뀐 변형의 피그마 미리보기를 담는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param target 컴포넌트와 main 기준 변경
@@ -148,11 +155,8 @@ export function componentPullRequestBody(
   return [
     '## 변경',
     '',
-    `- 컴포넌트: ${target.name}`,
-    ...changeLines(target),
-    ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
-    '',
-    '## 피그마',
+    ...changeTable('컴포넌트', [target]),
+    ...noteLines([target], renamedFolders),
     '',
     ...variantPreviews(branch, [target]),
     '',
@@ -164,7 +168,7 @@ export function componentPullRequestBody(
 }
 
 /**
- * 조립 PR의 한국어 본문을 만든다. 조립마다 바뀐 변형 목록과 피그마 미리보기를 담는다.
+ * 조립 PR의 한국어 본문을 만든다. 맨 위에 조립별 바뀐 변형 수 표를, 그 아래 조립마다 바뀐 변형의 피그마 미리보기를 담는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param area 영역 폴더 이름
@@ -181,14 +185,10 @@ export function patternPullRequestBody(
   return [
     '## 변경',
     '',
-    `- 영역: \`${area}\``,
-    ...targets.flatMap((target) => [
-      `- 조립: ${target.name}`,
-      ...changeLines(target).map((line) => `  ${line}`),
-    ]),
-    ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
+    ...changeTable('조립', targets),
     '',
-    '## 피그마',
+    `- 영역: \`${area}\``,
+    ...noteLines(targets, renamedFolders),
     '',
     ...variantPreviews(branch, targets),
     '',
@@ -200,42 +200,122 @@ export function patternPullRequestBody(
 }
 
 /**
- * 바뀐 변형 목록 줄을 만든다.
- * @param target 대상과 main 기준 변경
- * @returns 목록 줄
+ * 대상별 바뀐 변형 수 표를 만든다. 변형 이름은 아래 미리보기에만 적는다.
+ * @param label 대상 종류(`컴포넌트`, `조립`)
+ * @param targets 대상과 main 기준 변경
+ * @returns 표 줄
  */
-function changeLines(target: TargetChanges): string[] {
-  const changed =
-    target.changedVariants.length === 0
-      ? ['- PNG가 바뀐 변형 없음']
-      : [
-          `- 새로 생기거나 PNG가 바뀐 변형 ${target.changedVariants.length}개`,
-          ...target.changedVariants.map((variant) => `  - \`${variant}\``),
-        ];
-  return [...changed, ...target.removedVariants.map((variant) => `- 사라진 변형: \`${variant}\``)];
+function changeTable(label: string, targets: readonly TargetChanges[]): string[] {
+  return [
+    `| ${label} | 바뀐 변형 |`,
+    '|---|---|',
+    ...targets.map(
+      (target) => `| ${tableCell(target.name)} | ${String(target.changedVariants.length)} |`,
+    ),
+  ];
 }
 
 /**
- * 바뀐 변형 이미지를 세로로 놓고, 바로 아래 변형 이름에서 최신 피그마 노드로 연결한다.
+ * 표 아래에 붙이는 사라진 변형과 이름이 바뀌어 지운 이전 폴더 줄을 만든다. 없으면 줄을 만들지 않는다.
+ * @param targets 대상과 main 기준 변경
+ * @param renamedFolders 이름이 바뀌어 지운 이전 폴더
+ * @returns 목록 줄(앞에 빈 줄 포함)
+ */
+function noteLines(targets: readonly TargetChanges[], renamedFolders: readonly string[]): string[] {
+  const lines = [
+    ...targets.flatMap((target) =>
+      target.removedVariants.map((variant) => `- ${target.name} 사라진 변형: \`${variant}\``),
+    ),
+    ...renamedFolders.map((folder) => `- 이름이 바뀌어 이전 폴더 삭제: \`${folder}\``),
+  ];
+  return lines.length === 0 ? [] : ['', ...lines];
+}
+
+/**
+ * 바뀐 변형 미리보기를 대상마다 만든다. 대상마다 `## 이름` 아래 표에 변형을 두 개씩 나란히 놓고, 이미지 아래 변형 이름에서
+ * 최신 피그마 노드로 연결한다. 바뀐 변형이 많은 대상은 이름과 변형 수만 보이게 접는다. 바뀐 변형이 없는 대상은 싣지 않는다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @param branch PR 브랜치
  * @param targets 대상과 main 기준 변경
- * @returns 이미지와 변형 링크 줄
+ * @returns 미리보기 줄
  */
 export function variantPreviews(branch: string, targets: readonly TargetChanges[]): string[] {
-  const lines: string[] = [];
+  const blocks: string[][] = [];
   for (const target of targets) {
-    for (const variant of target.variants) {
-      if (!target.changedVariants.includes(variant.name)) {
-        continue;
-      }
-      const label = targets.length > 1 ? `${target.name} / ${variant.name}` : variant.name;
-      const image = `${blobRoot(branch)}/${target.folder}/${pngFile(variant.name)}?raw=true`;
-      const url = `https://www.figma.com/design/${FILE_KEY}?node-id=${encodeURIComponent(variant.nodeId)}`;
-      lines.push(`![${variant.name}](${image})`, '', `[${label}](${url})`, '');
+    const cells = target.variants
+      .filter((variant) => target.changedVariants.includes(variant.name))
+      .map((variant) => previewCell(branch, target.folder, variant));
+    if (cells.length === 0) {
+      continue;
     }
+    const table = previewTable(cells);
+    blocks.push(
+      cells.length > FOLD_VARIANT_COUNT
+        ? [
+            `<details><summary><b>${htmlText(target.name)}</b> · 변형 ${String(cells.length)}개</summary>`,
+            '',
+            ...table,
+            '',
+            '</details>',
+          ]
+        : [`## ${target.name}`, '', ...table],
+    );
   }
-  return lines.length === 0 ? ['바뀐 변형이 없다.'] : lines.slice(0, -1);
+  return blocks.length === 0
+    ? ['바뀐 변형이 없다.']
+    : blocks.flatMap((block, index) => (index === 0 ? block : ['', ...block]));
+}
+
+/**
+ * 미리보기 칸을 두 개씩 줄로 묶은 HTML 표를 만든다.
+ * @param cells 미리보기 칸
+ * @returns 표 줄
+ */
+function previewTable(cells: readonly string[]): string[] {
+  const rows: string[] = [];
+  for (let index = 0; index < cells.length; index += PREVIEW_COLUMNS) {
+    rows.push('<tr>', ...cells.slice(index, index + PREVIEW_COLUMNS), '</tr>');
+  }
+  return ['<table>', ...rows, '</table>'];
+}
+
+/**
+ * 변형 하나의 미리보기 칸을 만든다. 이미지 아래 변형 이름이 피그마 노드 링크다.
+ * @param branch PR 브랜치
+ * @param folder 대상 폴더
+ * @param variant 변형 이름과 최신 피그마 노드 ID
+ * @returns `<td>` 한 줄
+ */
+function previewCell(
+  branch: string,
+  folder: string,
+  variant: TargetChanges['variants'][number],
+): string {
+  const image = `${blobRoot(branch)}/${encodeURI(`${folder}/${pngFile(variant.name)}`)}?raw=true`;
+  const url = `https://www.figma.com/design/${FILE_KEY}?node-id=${encodeURIComponent(variant.nodeId)}`;
+  return `<td align="center"><img src="${htmlText(image)}" width="${String(PREVIEW_IMAGE_WIDTH)}"><br><a href="${htmlText(url)}">${htmlText(variant.name)}</a></td>`;
+}
+
+/**
+ * HTML 글자와 속성 값에 넣을 수 있게 특수 문자를 바꾼다.
+ * @param text 글
+ * @returns 바꾼 글
+ */
+function htmlText(text: string): string {
+  return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
+/**
+ * Markdown 표 칸에 넣을 수 있게 `|`를 바꾼다.
+ * @param text 글
+ * @returns 바꾼 글
+ */
+function tableCell(text: string): string {
+  return text.replaceAll('|', '\\|');
 }
 
 /**

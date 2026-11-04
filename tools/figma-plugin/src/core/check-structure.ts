@@ -14,6 +14,7 @@ import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 // 2. CSS로 그릴 수 없는 피그마 기능
 // 3. 인스턴스 모양(칠·선·효과·불투명도)의 직접 덮어쓰기
 // 6. 이미지 자산의 비율 바꾸기, 7. 잘못된 `@` 줄과 빠진 필수 줄, 모션 변수 값이 아닌 변형 전환
+// 조립에서는 칠·선·효과를 가진 배치 프레임도 막는다(모양은 컴포넌트가 가진다).
 // 5번(변형을 자르는 조상)은 변형 트리가 아니라 대상의 조상을 보므로 checkClippingAncestors가 대상마다 한 번 검사한다.
 // 4번(모션 변수 값이 아닌 키프레임 시간·지연, 변수에 연결되지 않은 키프레임 이징)은 모션 견본을 보는 check-motion.ts에 있다.
 // 나머지 작성 규칙은 리뷰와 캡처 표로 지킨다.
@@ -31,6 +32,9 @@ export type Violation = {
 };
 
 type Add = (node: NodeData, reason: string, fix: string) => void;
+
+/** 검사하는 대상 종류. 조립(03 · Patterns)은 배치 프레임의 모양과 루트 크기를 컴포넌트와 다르게 본다 */
+export type CheckTargetKind = 'component' | 'pattern';
 
 /** 검사에 쓰는 파일 정보 */
 export type CheckContext = {
@@ -95,6 +99,7 @@ const FOCUSED_VARIANT_PATTERN = /=\s*Focused\b/u;
  * @param where 위치 접두어(`Button / Style=Accent, State=Rest`)
  * @param context 이름 있는 이미지 자산과 코드 전용 변수
  * @param directives 컴포넌트·변형 description의 `@` 줄
+ * @param kind 대상 종류(컴포넌트, 조립)
  * @returns 위반 목록(모두)
  */
 export function checkVariant(
@@ -102,6 +107,7 @@ export function checkVariant(
   where: string,
   context: CheckContext,
   directives: Directives = {},
+  kind: CheckTargetKind = 'component',
 ): Violation[] {
   const violations: Violation[] = [];
   /**
@@ -118,8 +124,13 @@ export function checkVariant(
       nodeId: node.id,
     });
   }
-  checkNode(root, true, context, add);
+  checkNode(root, true, context, kind, add);
   checkInstanceOverrides(root, add);
+  if (kind === 'pattern') {
+    for (const child of root.children) {
+      checkPlacementFrames(child, false, add);
+    }
+  }
   checkTransitions(root, context.motionVariables, directives, add);
   return violations;
 }
@@ -431,6 +442,46 @@ function checkInstanceOverrides(root: NodeData, add: Add): void {
 }
 
 /**
+ * 조립이 직접 놓은 배치 프레임(FRAME)이 칠·선·효과를 갖는지 검사한다. 인스턴스 안쪽은 컴포넌트의 것이라 보지 않고,
+ * 슬롯 안은 조립이 채운 내용이라 본다. 조립은 컴포넌트를 놓기만 하고 바탕·테두리·그림자 같은 모양은 컴포넌트가 가진다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @codocs [[디자인 시스템:조립]]
+ * @param node 노드
+ * @param isInsideInstance 인스턴스 안쪽(슬롯 밖)인지
+ * @param add 위반을 더하는 함수
+ */
+function checkPlacementFrames(node: NodeData, isInsideInstance: boolean, add: Add): void {
+  if (node.type === 'FRAME' && !isInsideInstance) {
+    const looks = [
+      ...(hasVisiblePaint(node.fills) ? ['칠'] : []),
+      ...(hasVisiblePaint(node.strokes) ? ['선'] : []),
+      ...((node.effects ?? []).some((effect) => effect.visible) ? ['효과'] : []),
+    ];
+    if (looks.length > 0) {
+      const list = looks.join('·');
+      add(
+        node,
+        `조립의 배치 프레임이 ${list}${objectParticle(list)} 가진다`,
+        '배치 프레임에서 칠·선·효과를 지우고, 그 모양을 가진 디자인 시스템 컴포넌트를 만들어 인스턴스로 놓는다.',
+      );
+    }
+  }
+  const isInside = node.type === 'SLOT' ? false : isInsideInstance || node.type === 'INSTANCE';
+  for (const child of node.children) {
+    checkPlacementFrames(child, isInside, add);
+  }
+}
+
+/**
+ * 보이는 칠(또는 선)이 있는지 본다. 섞인 칠은 있는 것으로 본다.
+ * @param paints 칠이나 선
+ * @returns 보이는 것이 있으면 true
+ */
+function hasVisiblePaint(paints: readonly PaintData[] | 'mixed' | null): boolean {
+  return paints === 'mixed' || (paints ?? []).some((paint) => paint.visible);
+}
+
+/**
  * 낱말 뒤에 붙는 목적격 조사(을/를)를 고른다.
  * @param word 낱말
  * @returns 받침이 있으면 '을', 없으면 '를'
@@ -445,14 +496,22 @@ function objectParticle(word: string): string {
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param context 이름 있는 이미지 자산
+ * @param kind 대상 종류(컴포넌트, 조립)
  * @param add 위반을 더하는 함수
  */
-function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: Add): void {
+function checkNode(
+  node: NodeData,
+  isRoot: boolean,
+  context: CheckContext,
+  kind: CheckTargetKind,
+  add: Add,
+): void {
   if (!isRoot && !checkType(node, add)) {
     return;
   }
   checkCommon(node, context.codeVariables ?? noCodeVariables, add);
-  checkSizes(node, isRoot, add);
+  // 조립 루트의 고정 크기는 화면·영역 크기라 변수 없는 숫자로 둔다.
+  checkSizes(node, isRoot, !(isRoot && kind === 'pattern'), add);
   if (node.asset !== null) {
     checkImageRatio(node, isRoot, add);
     for (const problem of node.asset.problems) {
@@ -483,7 +542,7 @@ function checkNode(node: NodeData, isRoot: boolean, context: CheckContext, add: 
     return;
   }
   for (const child of node.children) {
-    checkNode(child, false, context, add);
+    checkNode(child, false, context, kind, add);
   }
 }
 
@@ -795,15 +854,19 @@ function checkLayout(node: NodeData, add: Add): void {
  * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
  * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
  * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
+ * 조립 루트의 고정 너비·높이는 화면·영역 크기(변수 없는 숫자)라 검사하지 않는다(`shouldCheckFixed`가 false).
  * @codocs [[피그마 연동:구조 검사]]
  * @param node 노드
  * @param isRoot 변형 루트인지
+ * @param shouldCheckFixed 고정 너비·높이의 변수 연결을 검사하는지
  * @param add 위반을 더하는 함수
  */
-function checkSizes(node: NodeData, isRoot: boolean, add: Add): void {
+function checkSizes(node: NodeData, isRoot: boolean, shouldCheckFixed: boolean, add: Add): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
   if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
-    checkFixedSizes(node, horizontal, vertical, add);
+    if (shouldCheckFixed) {
+      checkFixedSizes(node, horizontal, vertical, add);
+    }
     checkHugSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [

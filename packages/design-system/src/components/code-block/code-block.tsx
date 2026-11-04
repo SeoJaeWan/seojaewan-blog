@@ -4,39 +4,12 @@ import { Fragment, useRef } from 'react';
 import { cn } from '../../cn';
 import { IconButton } from '../icon-button/icon-button';
 
-// 강조된 코드 글자 조각의 색이다(`code-syntax/*` 토큰). 키는 강조 색 갈래 이름이다.
-const CODE_SYNTAX_CLASS_NAMES = {
-  attribute: 'text-code-syntax-attribute',
-  comment: 'text-code-syntax-comment',
-  constant: 'text-code-syntax-constant',
-  escape: 'text-code-syntax-escape',
-  function: 'text-code-syntax-function',
-  invalid: 'text-code-syntax-invalid',
-  'key-value': 'text-code-syntax-key-value',
-  keyword: 'text-code-syntax-keyword',
-  'keyword-control': 'text-code-syntax-keyword-control',
-  parameter: 'text-code-syntax-parameter',
-  punctuation: 'text-code-syntax-punctuation',
-  regexp: 'text-code-syntax-regexp',
-  'regexp-group': 'text-code-syntax-regexp-group',
-  string: 'text-code-syntax-string',
-  tag: 'text-code-syntax-tag',
-  text: 'text-code-syntax-text',
-  type: 'text-code-syntax-type',
-  variable: 'text-code-syntax-variable',
-  'variable-constant': 'text-code-syntax-variable-constant',
-  'variable-navy': 'text-code-syntax-variable-navy',
-} as const;
-
-/** 코드 강조 색 갈래 이름(`code-syntax/*` 토큰 이름) */
-export type CodeBlockSyntax = keyof typeof CODE_SYNTAX_CLASS_NAMES;
-
 /** 강조된 코드의 글자 조각 하나 */
 export type CodeBlockToken = {
   /** 글자 */
   text: string;
-  /** 강조 색 갈래. null이면 기본 코드 글자색이다 */
-  syntax: CodeBlockSyntax | null;
+  /** 강조기가 준 글자 색(hex). null이면 기본 코드 글자색이다 */
+  color: string | null;
 };
 
 type CodeBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
@@ -51,7 +24,7 @@ type CodeBlockProps = Omit<ComponentProps<'div'>, 'children'> & {
 /**
  * 글 본문의 코드 블록(피그마 CodeBlock)을 그린다. 너비는 쓰는 곳이 `className`으로 정한다
  * (@codocs [[디자인 시스템:컴포넌트 조립 규칙]]). 코드는 강조기가 만든 줄마다의 글자 조각을 받아
- * 조각마다 `code-syntax` 색으로 칠한다(@codocs [[기술 스택:글 본문 처리]]). 복사 단추는 그려진 코드의 글자를 복사한다.
+ * 조각마다 강조기가 준 색으로 칠한다(@codocs [[기술 스택:글 본문 처리]]). 복사 단추는 그려진 코드의 글자를 복사한다.
  * 복사 단추는 IconButton(Style=Subtle) 인스턴스다.
  * @param props
  */
@@ -82,7 +55,7 @@ export function CodeBlock(props: CodeBlockProps): JSX.Element {
           onClick={handleCopy}
         />
       </div>
-      <pre className="w-full overflow-x-auto type-code text-code-syntax-text">
+      <pre className="w-full overflow-x-auto type-code text-text-fill-primary">
         <code ref={codeRef}>{renderCodeLines(lines)}</code>
       </pre>
     </div>
@@ -113,10 +86,12 @@ function renderCodeLines(lines: readonly (readonly CodeBlockToken[])[]): JSX.Ele
            * @returns 글자
            */
           (token, tokenIndex) =>
-            token.syntax === null ? (
+            token.color === null ? (
               <Fragment key={tokenIndex}>{token.text}</Fragment>
             ) : (
-              <span key={tokenIndex} className={CODE_SYNTAX_CLASS_NAMES[token.syntax]}>
+              // 강조기가 준 색을 그대로 칠하는 이 한 곳만 style에 색을 둔다. 실행 중에 받은 값이라 style 값 lint(리터럴 금지)에 걸리지 않는다.
+              // @codocs [[기술 스택:글 본문 처리]]
+              <span key={tokenIndex} style={{ color: token.color }}>
                 {token.text}
               </span>
             ),

@@ -69,7 +69,7 @@ export async function runMcpExport(options: McpExportOptions): Promise<McpExport
     ...pick(await listPatterns(), options.patterns ?? []).map((id) => ({ id, isPattern: true })),
   ];
   for (const { id, isPattern } of targets) {
-    const outcome = await exportTargetCore(id, SCALE, context);
+    const outcome = await exportTargetCore(id, SCALE, context, isPattern ? 'pattern' : 'component');
     if (!outcome.ok) {
       result.violations.push(...outcome.violations);
       continue;

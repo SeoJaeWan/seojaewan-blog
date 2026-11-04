@@ -93,7 +93,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
  * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록의 제목에 id를 단다.
  * 이어진 같은 종류의 목록 항목은 한 목록으로 묶고, 하위 블록은 32 들여 그린다. 할 일은 읽기 전용 Checkbox다.
  * 글자 조각(문단, 제목, 목록, 인용, 콜아웃, 토글 제목, 표 칸)의 서식과 링크는 RichText가 그린다.
- * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 `code-syntax` 색으로 칠하고, 없으면 글자 그대로다.
+ * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 강조기가 준 색으로 칠하고, 없으면 글자 그대로다.
  * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다. `onImageOpen`을 주면 이미지를 눌러 크게 보기를 연다.
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[Notion 블록:지원 블록]]
@@ -437,7 +437,7 @@ function isListItemBlock(block: PostBlock): block is ListItemBlock {
  * @returns 줄마다의 글자 조각
  */
 function toPlainCodeLines(code: string): CodeToken[][] {
-  return code.split('\n').map((line) => [{ text: line, syntax: null }]);
+  return code.split('\n').map((line) => [{ text: line, color: null }]);
 }
 
 /**
