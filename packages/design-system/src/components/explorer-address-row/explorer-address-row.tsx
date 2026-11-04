@@ -24,11 +24,11 @@ type ExplorerAddressRowProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 뒤로 버튼을 눌렀을 때 */
   onBack?: () => void;
   /** 뒤로 갈 곳이 없어 뒤로 버튼을 비활성(IconButton disabled)으로 둘지 */
-  backDisabled?: boolean;
+  isBackDisabled?: boolean;
   /** 앞으로 갈 곳이 없어 앞으로 버튼을 비활성으로 둘지. desktop만 보인다 */
-  forwardDisabled?: boolean;
+  isForwardDisabled?: boolean;
   /** 상위 위치가 없어 위로 버튼을 비활성으로 둘지. desktop만 보인다 */
-  upDisabled?: boolean;
+  isUpDisabled?: boolean;
   /** 앞으로 버튼을 눌렀을 때. desktop만 보인다 */
   onForward?: () => void;
   /** 위로 버튼을 눌렀을 때. desktop만 보인다 */
@@ -60,9 +60,9 @@ export function ExplorerAddressRow(props: ExplorerAddressRowProps): JSX.Element 
     children,
     locationIcon,
     onBack: handleBack,
-    backDisabled: isBackDisabled = false,
-    forwardDisabled: isForwardDisabled = false,
-    upDisabled: isUpDisabled = false,
+    isBackDisabled = false,
+    isForwardDisabled = false,
+    isUpDisabled = false,
     onForward: handleForward,
     onUp: handleUp,
     onRefresh: handleRefresh,
