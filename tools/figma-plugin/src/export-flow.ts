@@ -148,7 +148,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   const groups: ViolationGroup[] = [];
   for (const id of request.componentIds) {
     checkStep(`${await nodeName(id)} 검사·내보내는 중`);
-    const outcome = await exportTargetCore(id, SCALE, context);
+    const outcome = await exportTargetCore(id, SCALE, context, 'component');
     if (!outcome.ok) {
       log(`${outcome.name}: 위반 ${String(outcome.violations.length)}개`);
       groups.push({ target: outcome.name, kind: 'component', violations: outcome.violations });
@@ -168,7 +168,7 @@ export async function runExport(request: ExportRequest): Promise<ExportOutcome> 
   const patterns: PlacedPattern[] = [];
   for (const id of request.patternIds) {
     checkStep(`${await nodeName(id)} 검사·내보내는 중`);
-    const outcome = await exportTargetCore(id, SCALE, context);
+    const outcome = await exportTargetCore(id, SCALE, context, 'pattern');
     const name = outcome.ok ? outcome.target.manifest.name : outcome.name;
     const place = patternPlace(name);
     const violations: Violation[] = [];

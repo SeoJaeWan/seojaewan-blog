@@ -3,7 +3,7 @@
 /** 내보내는 피그마 파일 키 */
 export const FILE_KEY = 'XV9Y1UT5UH4tC5hSqLVipZ';
 
-/** 컴포넌트가 있는 "02 · Components" 페이지 */
+/** 컴포넌트를 한 페이지에 두던 "02 · Components" 페이지. 컴포넌트 페이지를 나누는 동안 이 페이지도 컴포넌트 페이지로 읽는다 */
 export const COMPONENTS_PAGE_ID = '1:2';
 
 /** 조립이 있는 "03 · Patterns" 페이지. 이름은 바뀔 수 있어 ID로 찾는다 */

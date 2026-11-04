@@ -1,4 +1,5 @@
 import { type CanvasBox, compareRankPaths, readingOrder } from './canvas-order';
+import { componentPages, isDocComponent } from './component-pages';
 import { ASSET_GROUP_PREFIX, ASSET_GROUPS } from './core/asset-groups';
 import type { CheckContext } from './core/check-structure';
 import {
@@ -28,12 +29,21 @@ import type { UsageInput, UsageStyle, UsageVariable } from './unused-tokens';
 const UNGROUPED = '묶음 밖';
 
 /**
- * "02 · Components" 페이지의 컴포넌트 세트와 단독 컴포넌트를 캔버스 순서로 찾는다. 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
+ * 컴포넌트 페이지(숫자로 시작하는 고정 페이지와 구분선 페이지를 뺀 모든 페이지)의 컴포넌트 세트와 단독 컴포넌트를
+ * 페이지 순서, 페이지 안은 캔버스 순서로 찾는다. 묶음은 페이지다.
+ * 컴포넌트 페이지를 나누기 전의 "02 · Components" 페이지도 읽고, 그 페이지의 묶음은 영역 섹션(페이지 바로 아래 섹션)이다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @codocs [[피그마 연동:플러그인 화면]]
  * @returns 컴포넌트 목록
  */
 export async function listComponents(): Promise<ComponentSummary[]> {
-  return listPageComponents(await loadPage(COMPONENTS_PAGE_ID), areaSectionName);
+  const summaries: ComponentSummary[] = [];
+  for (const info of componentPages(figma.root.children, COMPONENTS_PAGE_ID)) {
+    const page = await loadPage(info.id);
+    const groupOf = page.id === COMPONENTS_PAGE_ID ? areaSectionName : (): string => page.name;
+    summaries.push(...(await listPageComponents(page, groupOf)));
+  }
+  return summaries;
 }
 
 /**
@@ -66,7 +76,7 @@ export async function sortByCanvasOrder<T extends { readonly id: string }>(
 }
 
 /**
- * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾아 캔버스 순서로 정렬한다.
+ * 페이지의 컴포넌트 세트와 세트 밖 단독 컴포넌트를 찾아 캔버스 순서로 정렬한다. 이름이 점으로 시작하는 문서용 컴포넌트는 뺀다.
  * @param page 불러온 페이지
  * @param groupOf 노드의 묶음 이름을 정하는 함수
  * @returns 컴포넌트 목록
@@ -78,6 +88,9 @@ async function listPageComponents(
   const nodes = page.findAllWithCriteria({ types: ['COMPONENT_SET', 'COMPONENT'] });
   const summaries: ComponentSummary[] = [];
   for (const node of nodes) {
+    if (isDocComponent(node.name)) {
+      continue;
+    }
     if (node.type === 'COMPONENT_SET') {
       summaries.push({
         id: node.id,
@@ -329,7 +342,7 @@ export type ComponentTokenUsage = {
 };
 
 /**
- * "02 · Components" 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
+ * 컴포넌트 페이지의 컴포넌트마다 쓰는 변수와 스타일 이름을 읽는다. 인스턴스 안쪽 레이어도 본다.
  * 바뀐 토큰을 쓰는 컴포넌트를 찾아 토큰 PR에 그 변형 PNG를 다시 넣는 데 쓴다.
  * @codocs [[피그마 연동:피그마 플러그인]]
  * @returns 컴포넌트마다 쓰는 토큰 이름
