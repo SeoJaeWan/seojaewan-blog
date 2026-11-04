@@ -5,11 +5,11 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { CaptionButton } from './caption-button';
 
 // 피그마 CaptionButton의 변형 속성 값이다(정규화한 이름).
-const KINDS = ['default', 'close'] as const;
+const VARIANTS = ['default', 'close'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'inactive'] as const;
 
 type FigmaArgs = {
-  kind: (typeof KINDS)[number];
+  variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
   /** 동작 스토리가 호출 횟수를 확인하려고 받는다 */
   onClick?: ComponentProps<typeof CaptionButton>['onClick'];
@@ -17,18 +17,18 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/CaptionButton',
-  args: { kind: 'default', state: 'rest' },
+  args: { variant: 'default', state: 'rest' },
   argTypes: {
-    kind: { control: 'inline-radio', options: KINDS },
+    variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => {
     const { onClick: handleClick } = args;
     return (
       <CaptionButton
-        kind={args.kind}
-        label={args.kind === 'close' ? '닫기' : '최소화'}
-        inactive={args.state === 'inactive'}
+        variant={args.variant}
+        label={args.variant === 'close' ? '닫기' : '최소화'}
+        isInactive={args.state === 'inactive'}
         onClick={handleClick}
       />
     );
