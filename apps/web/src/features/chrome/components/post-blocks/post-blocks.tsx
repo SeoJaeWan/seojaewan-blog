@@ -4,12 +4,12 @@ import {
   Asset,
   Bookmark,
   Callout,
-  Checkbox,
   cn,
   CodeBlock,
   Equation,
   Figure,
   ImageAsset,
+  ListBlock,
   Quote,
   Separator,
   Table,
@@ -86,7 +86,7 @@ const BULLETS = ['•', '◦', '▪'] as const;
 /**
  * 글 본문 블록을 피그마 조립 `Chrome/PostBlocks`의 모양으로 그린다. 블록 사이 간격은 16이고 바탕은 페이지 바탕(`chrome/page-fill`)이다.
  * 제목은 제목 1·2·3을 글자 스타일 Title·Subtitle·Body Large Strong으로 그리고, 목차가 찾도록 맨 위 블록의 제목에 id를 단다.
- * 이어진 같은 종류의 목록 항목은 한 목록으로 묶고, 하위 블록은 32 들여 그린다. 할 일은 읽기 전용 Checkbox다.
+ * 이어진 같은 종류의 목록 항목은 한 목록으로 묶어 ListBlock으로 그리고, 표시(글머리표·번호)는 깊이와 순서로 정한다.
  * 글자 조각(문단, 제목, 목록, 인용, 콜아웃, 토글 제목, 표 칸)의 서식과 링크는 RichText가 그린다.
  * 코드 블록은 서버가 강조한 글자 조각(`highlighted`)이 있으면 강조기가 준 색으로 칠하고, 없으면 글자 그대로다.
  * 지원하지 않는 블록 자리는 UnsupportedBlock 안내 상자다. `onImageOpen`을 주면 이미지를 눌러 크게 보기를 연다.
@@ -149,44 +149,29 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
          * @returns 목록 항목
          */
         (item, index) => {
-          const isDone = item.type === 'to_do' && item.checked;
-          return (
-            <li key={index} className="flex w-full flex-col gap-spacing-xs">
-              {/* 피그마 `row` 배치 프레임. 표시(24×24)와 글 사이 간격은 8이다 */}
-              <div className="flex w-full items-start gap-spacing-sm">
-                {item.type === 'to_do' ? (
-                  <span className="flex size-size-post-block-marker shrink-shrink-none items-center justify-center">
-                    <Checkbox isChecked={item.checked} label={getPlainText(item.richText)} />
-                  </span>
-                ) : (
-                  <span
-                    aria-hidden
-                    className={cn(
-                      'flex size-size-post-block-marker shrink-shrink-none items-center type-body-large text-color-black-89',
-                      isNumbered ? 'justify-end' : 'justify-center',
-                    )}
-                  >
-                    {isNumbered ? getNumberMarker(index, depth) : getBullet(depth)}
-                  </span>
-                )}
-                <p
-                  className={cn(
-                    'min-w-size-none flex-flex-fill',
-                    isDone
-                      ? 'type-body-large-strikethrough text-color-black-61'
-                      : BODY_TEXT_CLASS_NAME,
-                  )}
-                >
-                  {renderRichText(item.richText)}
-                </p>
-              </div>
-              {item.children !== undefined && item.children.length > 0 && (
-                // 피그마 `children` 배치 프레임. 하위 블록은 표시 너비 + 간격(32)만큼 들여 쓴다
-                <div className="flex w-full flex-col gap-spacing-xs pl-spacing-3xl">
-                  {renderBlocks(item.children, depth + 1)}
-                </div>
-              )}
-            </li>
+          const hasChildren = item.children !== undefined && item.children.length > 0;
+          const subItems = hasChildren ? renderBlocks(item.children ?? [], depth + 1) : undefined;
+          return item.type === 'to_do' ? (
+            <ListBlock
+              key={index}
+              variant="to-do"
+              isChecked={item.checked}
+              label={getPlainText(item.richText)}
+              text={renderRichText(item.richText)}
+              hasChildren={hasChildren}
+            >
+              {subItems}
+            </ListBlock>
+          ) : (
+            <ListBlock
+              key={index}
+              variant={isNumbered ? 'numbered' : 'bulleted'}
+              marker={isNumbered ? getNumberMarker(index, depth) : getBullet(depth)}
+              text={renderRichText(item.richText)}
+              hasChildren={hasChildren}
+            >
+              {subItems}
+            </ListBlock>
           );
         },
       ),
