@@ -4,22 +4,22 @@ import { expect, within } from 'storybook/test';
 import { Tooltip } from './tooltip';
 
 // 피그마 Tooltip의 변형 속성 값이다(정규화한 이름).
-const TYPES = ['default', 'balloon'] as const;
+const VARIANTS = ['default', 'balloon'] as const;
 
 type FigmaArgs = {
-  type: (typeof TYPES)[number];
+  variant: (typeof VARIANTS)[number];
 };
 
 const meta = {
   title: 'Components/Tooltip',
-  args: { type: 'default' },
+  args: { variant: 'default' },
   argTypes: {
-    type: { control: 'inline-radio', options: TYPES },
+    variant: { control: 'inline-radio', options: VARIANTS },
   },
   // 글자는 피그마 Text·Message 속성의 기본값이다.
   render: (args) =>
-    args.type === 'balloon' ? (
-      <Tooltip type="balloon" message="메시지 내용" />
+    args.variant === 'balloon' ? (
+      <Tooltip variant="balloon" message="메시지 내용" />
     ) : (
       <Tooltip text="도움말" />
     ),
@@ -47,7 +47,7 @@ export const Default: Story = {
 // @codocs [[컴포넌트 목록:기본 컨트롤]]
 /** balloon은 메시지를 그리고 id 같은 div 속성을 넘긴다 */
 export const Balloon: Story = {
-  render: () => <Tooltip type="balloon" message="메시지 내용" id="tip" />,
+  render: () => <Tooltip variant="balloon" message="메시지 내용" id="tip" />,
   play: async ({ canvasElement, step }) => {
     await step('메시지를 그리고 div 속성을 넘긴다', async () => {
       const tooltip = within(canvasElement).getByRole('tooltip');
