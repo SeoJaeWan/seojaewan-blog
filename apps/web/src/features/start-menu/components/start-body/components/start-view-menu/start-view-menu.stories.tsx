@@ -24,10 +24,10 @@ function ViewMenuStage(): JSX.Element {
   }
 
   return (
-    <StoryStage placement="top-center" target>
+    <StoryStage placement="top-center" isTarget>
       <StartViewMenu
         label="간단히"
-        open={isOpen}
+        isOpen={isOpen}
         onOpenChange={handleOpenChange}
         menuItems={menuViewOptions}
       />
@@ -42,7 +42,7 @@ const meta = {
   title: 'Patterns/Start/ViewMenu',
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <StoryStage placement="top-center" target>
+    <StoryStage placement="top-center" isTarget>
       <StartViewMenu label="간단히" menuItems={menuViewOptions} />
     </StoryStage>
   ),

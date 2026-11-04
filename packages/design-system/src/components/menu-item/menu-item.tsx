@@ -18,7 +18,7 @@ type MenuItemCommonProps = {
   /** 오른쪽에 보이는 단축키(예: `Ctrl+O`, 피그마 Has shortcut) */
   shortcut?: string;
   /** 고를 수 없게 한다 */
-  disabled?: boolean;
+  isDisabled?: boolean;
   /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
@@ -107,7 +107,7 @@ const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-
  */
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const className = cn(ROW_CLASS_NAME, props.className);
-  const isDisabled = props.disabled ?? false;
+  const isDisabled = props.isDisabled ?? false;
   const icon = props.icon === undefined ? undefined : <MenuItemIcon name={props.icon} />;
   switch (props.variant) {
     case 'submenu':

@@ -30,7 +30,7 @@ type ChromeAddressSuggestionsProps = Pick<
   /** 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다 */
   selectedIndex?: number;
   /** 추천 목록을 열었는지(피그마 Popover State). 닫혀 있으면 평소 주소창 모양이다. 기본은 닫힌 모습이다 */
-  open?: boolean;
+  isOpen?: boolean;
   /** 주소창과 추천 목록의 너비(px). 도구 모음에서 남는 너비를 채운 주소창 너비다. 주지 않으면 바깥 배치(`className`)가 정한다 */
   width?: number;
   /** 추천 목록 요소의 id. 주소창의 `aria-controls`와 추천 줄 id에 쓴다 */
@@ -50,7 +50,7 @@ const suggestionIcons = {
 /**
  * Chrome 주소창과 입력하는 중 아래에 여는 추천 목록(피그마 조립 `Chrome/AddressSuggestions`, 피그마는 닫힌 모양)을 그린다.
  * 주소창(AddressBar, Suggesting)을 트리거로, 추천 목록(Flyout + ListItem)을 팝업으로 Popover에 붙인다.
- * 앱에서는 Chrome 도구 모음의 주소창 자리를 채우고, 열림(`open`)과 너비를 쓰는 곳이 정한다. 추천 줄을 눌러도 주소창의
+ * 앱에서는 Chrome 도구 모음의 주소창 자리를 채우고, 열림(`isOpen`)과 너비를 쓰는 곳이 정한다. 추천 줄을 눌러도 주소창의
  * 포커스는 그대로다(누를 때 기본 동작을 막는다).
  * @codocs [[디자인 시스템:조립]]
  * @codocs [[디자인 시스템:팝업]]
@@ -62,7 +62,7 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
     query,
     suggestions,
     selectedIndex,
-    open: isOpen = false,
+    isOpen = false,
     width,
     listId,
     onSuggestionSelect,

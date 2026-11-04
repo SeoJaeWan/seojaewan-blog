@@ -1080,7 +1080,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
   function renderItemsArea(area: ReactElement): ReactNode {
     return (
       <ContextMenuArea
-        open={menu !== null}
+        isOpen={menu !== null}
         onOpenChange={handleMenuOpenChange}
         onCloseComplete={handleMenuCloseComplete}
         items={menuEntries}
@@ -1168,7 +1168,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       </ExplorerContent>
       <MessageBoxDialog
         {...EMPTY_RECYCLE_BIN_MESSAGE}
-        open={isEmptyDialogOpen}
+        isOpen={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
         finalFocus={isEmptyDialogFromMenu ? false : undefined}
         onCloseComplete={handleEmptyDialogCloseComplete}

@@ -15,7 +15,7 @@ type FakeAnimation = {
 
 type PresenceProps = {
   /** 보여야 하는지 */
-  open: boolean;
+  isOpen: boolean;
   /** usePresence 설정 */
   options?: PresenceOptions;
 };
@@ -66,7 +66,7 @@ function stubGetAnimations(animations: Animation[]): ReturnType<typeof vi.fn> {
  */
 function renderPresence(initialProps: PresenceProps) {
   const ref = { current: document.createElement('div') };
-  return renderHook((props: PresenceProps) => usePresence(ref, props.open, props.options), {
+  return renderHook((props: PresenceProps) => usePresence(ref, props.isOpen, props.options), {
     initialProps,
   });
 }
@@ -80,10 +80,10 @@ describe('usePresence', () => {
   it('getAnimations가 없으면(jsdom) 열자마자 entered, 닫자마자 빠진다', () => {
     const handleExitComplete = vi.fn();
     const options = { onExitComplete: handleExitComplete };
-    const { result, rerender } = renderPresence({ open: true, options });
+    const { result, rerender } = renderPresence({ isOpen: true, options });
     expect(result.current.status).toBe('entered');
 
-    rerender({ open: false, options });
+    rerender({ isOpen: false, options });
 
     expect(result.current.isMounted).toBe(false);
     expect(handleExitComplete).toHaveBeenCalledTimes(1);
@@ -92,7 +92,7 @@ describe('usePresence', () => {
   it('처음에 닫혀 있으면 그리지 않고 onExitComplete도 부르지 않는다', () => {
     const handleExitComplete = vi.fn();
     const { result } = renderPresence({
-      open: false,
+      isOpen: false,
       options: { onExitComplete: handleExitComplete },
     });
     expect(result.current.isMounted).toBe(false);
@@ -100,11 +100,11 @@ describe('usePresence', () => {
   });
 
   it('사라지는 애니메이션이 끝날 때까지 data-ending-style을 달고 남았다가 빠진다', async () => {
-    const { result, rerender } = renderPresence({ open: true });
+    const { result, rerender } = renderPresence({ isOpen: true });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender({ open: false });
+    rerender({ isOpen: false });
     expect(result.current.isMounted).toBe(true);
     expect(result.current.status).toBe('exiting');
     expect(result.current.presenceProps).toHaveProperty('data-ending-style', '');
@@ -119,7 +119,7 @@ describe('usePresence', () => {
   it('들어가는 애니메이션이 끝나야 entered가 되고, 첫 프레임까지만 data-starting-style을 단다', async () => {
     const enter = createFakeAnimation();
     stubGetAnimations([enter.animation]);
-    const { result } = renderPresence({ open: true });
+    const { result } = renderPresence({ isOpen: true });
     expect(result.current.status).toBe('entering');
     expect(result.current.presenceProps).toHaveProperty('data-starting-style', '');
 
@@ -136,11 +136,11 @@ describe('usePresence', () => {
   });
 
   it('취소된 애니메이션(finished 거부)은 끝난 것으로 본다', async () => {
-    const { result, rerender } = renderPresence({ open: true });
+    const { result, rerender } = renderPresence({ isOpen: true });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender({ open: false });
+    rerender({ isOpen: false });
     await act(async () => {
       exit.cancel();
       await exit.promise.catch(() => undefined);
@@ -149,32 +149,32 @@ describe('usePresence', () => {
   });
 
   it('무한 반복 애니메이션은 기다리지 않는다', () => {
-    const { result, rerender } = renderPresence({ open: true });
+    const { result, rerender } = renderPresence({ isOpen: true });
     stubGetAnimations([createFakeAnimation(Infinity).animation]);
 
-    rerender({ open: false });
+    rerender({ isOpen: false });
     expect(result.current.isMounted).toBe(false);
   });
 
   it('subtree를 켜면 안쪽 요소의 애니메이션까지 묻는다', () => {
     const options = { subtree: true };
-    const { rerender } = renderPresence({ open: true, options });
+    const { rerender } = renderPresence({ isOpen: true, options });
     const getAnimations = stubGetAnimations([]);
 
-    rerender({ open: false, options });
+    rerender({ isOpen: false, options });
     expect(getAnimations).toHaveBeenCalledWith({ subtree: true });
   });
 
   it('사라지는 중에 다시 열면 남고, 앞서 기다리던 애니메이션이 끝나도 빠지지 않는다', async () => {
     const handleExitComplete = vi.fn();
     const options = { onExitComplete: handleExitComplete };
-    const { result, rerender } = renderPresence({ open: true, options });
+    const { result, rerender } = renderPresence({ isOpen: true, options });
     const exit = createFakeAnimation();
     stubGetAnimations([exit.animation]);
 
-    rerender({ open: false, options });
+    rerender({ isOpen: false, options });
     stubGetAnimations([]);
-    rerender({ open: true, options });
+    rerender({ isOpen: true, options });
     await act(async () => {
       exit.finish();
       await exit.promise;
@@ -186,9 +186,9 @@ describe('usePresence', () => {
 
   it('keepMounted면 사라진 뒤에도 빼지 않고 isHidden으로 알린다', () => {
     const options = { keepMounted: true };
-    const { result, rerender } = renderPresence({ open: true, options });
+    const { result, rerender } = renderPresence({ isOpen: true, options });
 
-    rerender({ open: false, options });
+    rerender({ isOpen: false, options });
 
     expect(result.current.isMounted).toBe(true);
     expect(result.current.status).toBe('exited');

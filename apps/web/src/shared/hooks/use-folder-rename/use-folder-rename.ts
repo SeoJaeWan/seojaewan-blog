@@ -271,7 +271,7 @@ export function useFolderRename(options: UseFolderRenameOptions = {}): FolderRen
     },
     messageBoxProps: {
       ...messageBoxContents[messageBox ?? 'reserved-name'],
-      open: messageBox !== null,
+      isOpen: messageBox !== null,
       onOpenChange: handleMessageBoxOpenChange,
       finalFocus: inputRef,
     },

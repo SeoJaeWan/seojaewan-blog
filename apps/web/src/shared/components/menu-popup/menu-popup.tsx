@@ -211,7 +211,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
           variant="checkbox"
           label={entry.label}
           isChecked={entry.checked}
-          disabled={entry.disabled}
+          isDisabled={entry.disabled}
           onCheckedChange={handleCheckedChange}
         />
       );
@@ -247,7 +247,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
           label={entry.label}
           icon={entry.icon}
           shortcut={entry.shortcut}
-          disabled={entry.disabled}
+          isDisabled={entry.disabled}
           onClick={handleClick}
         />
       );
@@ -271,7 +271,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
           variant="submenu"
           label={entry.label}
           icon={entry.icon}
-          disabled={entry.disabled}
+          isDisabled={entry.disabled}
         />
         <BaseMenu.Portal>
           <BaseMenu.Positioner side="inline-end" align="start" sideOffset={SUBMENU_OFFSET}>
@@ -284,7 +284,12 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
   return (
     // 닫은 모습이다. 마우스·키보드로 여는 하위 메뉴는 `entries`가 맡는다.
     <BaseMenu.SubmenuRoot open={false}>
-      <MenuItem variant="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
+      <MenuItem
+        variant="submenu"
+        label={entry.label}
+        icon={entry.icon}
+        isDisabled={entry.disabled}
+      />
     </BaseMenu.SubmenuRoot>
   );
 }

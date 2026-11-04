@@ -116,7 +116,7 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               surface="desktop"
               size={iconView}
               name={icon.name}
-              icon={<DesktopIconImage kind={icon.kind} full={icon.full} />}
+              icon={<DesktopIconImage kind={icon.kind} isFull={icon.full} />}
               isSelected={icon.selected}
               isRenaming={icon.renaming}
               isCut={icon.cut}

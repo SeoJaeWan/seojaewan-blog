@@ -24,7 +24,7 @@ type TaskbarAppItemProps = {
   /** 앱 버튼 아래 표시(피그마 TaskbarButton Indicator) */
   indicator?: TaskbarButtonIndicator;
   /** true면 창 미리보기 목록을 연 모습, false면 버튼만 보인다. 피그마 조립은 닫힌 모양만 그리고 열림은 `@runtime` 설명이다 */
-  open?: boolean;
+  isOpen?: boolean;
   /** 창 미리보기 목록 자리. 그 앱 창들의 `TaskbarWindowPreviewList`를 넣는다 */
   previews?: ReactNode;
   /** 앱 버튼을 눌렀을 때 부른다. 목록을 열고 닫는 일은 쓰는 곳이 한다 */
@@ -44,7 +44,7 @@ type TaskbarAppItemProps = {
   /** 앱 버튼 위에서 포인터를 눌렀을 때 부른다. 쓰는 곳이 끌어 순서 바꾸기를 시작한다 */
   onButtonPointerDown?: PointerEventHandler<HTMLButtonElement>;
   /** 목록을 버튼이 아닌 작업 표시줄 위 가운데에 띄울지. 모바일에서 화면 폭에 맞춘 목록을 가운데 놓을 때 쓴다 */
-  centered?: boolean;
+  isCentered?: boolean;
 };
 
 /**
@@ -53,7 +53,7 @@ type TaskbarAppItemProps = {
  * 열렸을 때 버튼의 `aria-expanded`가 true고 버튼은 Hover 모양이다(`data-preview-open` 변형 클래스, [[컴포넌트 목록:상태]]의 예외). 마우스를 올려 여닫는 시간은 쓰는 곳이 재고, 포인터 들어옴·나감만 받아 넘긴다.
  * `menuItems`를 주면 버튼을 우클릭(모바일은 길게 누르기)할 때 같은 `Top-Center` 자리에 우클릭 메뉴를 연다(`isMenuAtPointer`면 누른 자리 근처). 메뉴가 열려 있는 동안 버튼은 `Rest` 모양 그대로다
  * ([[컴포넌트 목록:상태]]). 창 미리보기가 마우스를 올려 여는 팝업이라 `Hover`인 것과 다르다.
- * `centered`면 목록의 기준을 버튼이 아닌 작업 표시줄(가장 가까운 위치 기준 조상)로 옮겨, 목록이 작업 표시줄 위 가운데에 뜬다.
+ * `isCentered`면 목록의 기준을 버튼이 아닌 작업 표시줄(가장 가까운 위치 기준 조상)로 옮겨, 목록이 작업 표시줄 위 가운데에 뜬다.
  * @codocs [[디자인 시스템:팝업]]
  * @codocs [[작업 표시줄:창 미리보기]]
  * @codocs [[컴포넌트 목록:상태]]
@@ -61,7 +61,7 @@ type TaskbarAppItemProps = {
  * @param props
  */
 export function TaskbarAppItem(props: TaskbarAppItemProps): JSX.Element {
-  const { app, indicator, open: isOpen = false, previews, centered: isCentered = false } = props;
+  const { app, indicator, isOpen = false, previews, isCentered = false } = props;
   // 버튼 동작을 받으면 목록을 여닫는 버튼이라 열림 상태를 알린다.
   const isToggle = props.onButtonClick !== undefined;
 
@@ -107,7 +107,7 @@ export function TaskbarAppItem(props: TaskbarAppItemProps): JSX.Element {
         ) : (
           <ContextMenuArea
             area={button}
-            open={props.isMenuOpen ?? false}
+            isOpen={props.isMenuOpen ?? false}
             onOpenChange={handleMenuOpenChange}
             items={props.menuItems}
             placement={props.isMenuAtPointer === true ? undefined : MENU_PLACEMENT}

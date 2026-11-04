@@ -10,9 +10,9 @@ type MessageBoxContentProps = Pick<
 
 type MessageBoxDialogProps = MessageBoxContentProps & {
   /** 열림 여부. 주면 쓰는 곳이 열고 닫기를 정한다 */
-  open?: boolean;
+  isOpen?: boolean;
   /** 처음 열림 여부(열림 여부를 쓰는 곳이 갖지 않을 때) */
-  defaultOpen?: boolean;
+  isDefaultOpen?: boolean;
   /** 열리거나 닫힐 때 부른다. 버튼, Esc가 닫는다 */
   onOpenChange?: (open: boolean) => void;
   /** 강조 버튼(확인)을 누르면 부른다. 부른 뒤 대화 상자를 닫는다 */
@@ -38,8 +38,8 @@ type MessageBoxDialogProps = MessageBoxContentProps & {
  */
 export function MessageBoxDialog(props: MessageBoxDialogProps): JSX.Element {
   const {
-    open: isOpen,
-    defaultOpen: isDefaultOpen,
+    isOpen,
+    isDefaultOpen,
     onOpenChange,
     onPrimaryClick,
     onSecondaryClick,

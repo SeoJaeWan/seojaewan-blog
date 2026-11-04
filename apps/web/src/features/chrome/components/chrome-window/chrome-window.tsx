@@ -161,7 +161,7 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
       <MenuButton
         trigger={button}
         items={moreMenuItems}
-        open={isMoreMenuOpen}
+        isOpen={isMoreMenuOpen}
         onOpenChange={handleMoreMenuOpenChange}
         finalFocus={moreMenuFinalFocus}
         align="end"

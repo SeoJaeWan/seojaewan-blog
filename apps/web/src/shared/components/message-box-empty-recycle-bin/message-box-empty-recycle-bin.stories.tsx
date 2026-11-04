@@ -13,7 +13,7 @@ const meta = {
   // 상자(피그마 노드)를 캡처 대상으로 표시한다.
   parameters: { layout: 'padded' },
   render: () => (
-    <StoryStage placement="padded" target>
+    <StoryStage placement="padded" isTarget>
       <MessageBoxEmptyRecycleBin />
     </StoryStage>
   ),

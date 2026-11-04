@@ -7,10 +7,10 @@ type MenuButtonProps = Pick<ComponentProps<typeof MenuPopup>, 'items' | 'width' 
   /** 메뉴를 여는 버튼. Base UI `Menu.Trigger`가 이 요소에 열림 상태와 동작 속성을 합쳐 그린다 */
   trigger: ReactElement;
   /** 메뉴가 열렸는지. 쓰는 곳이 정한다 */
-  open?: boolean;
+  isOpen?: boolean;
   /**
-   * 메뉴를 열거나 닫으려 할 때 부른다(트리거 클릭, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `open`을 바꾼다.
-   * 주지 않으면 `open`에 고정된다(조립 스토리)
+   * 메뉴를 열거나 닫으려 할 때 부른다(트리거 클릭, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다.
+   * 주지 않으면 `isOpen`에 고정된다(조립 스토리)
    */
   onOpenChange?: (isOpen: boolean) => void;
   /** 피그마 Popover Placement의 쪽. 트리거의 위(top)나 아래(bottom)에 붙는다 */
@@ -34,7 +34,7 @@ const POPUP_OFFSET = 4;
 export function MenuButton(props: MenuButtonProps): JSX.Element {
   const {
     trigger,
-    open: isOpen = false,
+    isOpen = false,
     side = 'bottom',
     align = 'start',
     items,

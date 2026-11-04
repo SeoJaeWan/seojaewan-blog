@@ -16,7 +16,7 @@ const meta = {
   parameters: { layout: 'fullscreen' },
   args: { onSelectZone: handleStoryZoneSelect },
   render: (args) => (
-    <StoryStage placement="top-center" target>
+    <StoryStage placement="top-center" isTarget>
       <SnapLayoutMenu {...args} />
     </StoryStage>
   ),

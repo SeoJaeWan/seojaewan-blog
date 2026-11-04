@@ -103,7 +103,7 @@ function ShellDesktop(props: ShellDesktopProps): JSX.Element {
   const getWindowTitle = useAppWindowTitle();
   return (
     <DesktopScene
-      inert={props.isInert}
+      isInert={props.isInert}
       className="size-full"
       icons={<DesktopIconsLayer />}
       taskbar={<TaskbarLayer renderWindow={renderWindow} getWindowTitle={getWindowTitle} />}

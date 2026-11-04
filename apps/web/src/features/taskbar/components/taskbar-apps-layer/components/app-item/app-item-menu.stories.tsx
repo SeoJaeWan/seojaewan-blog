@@ -24,7 +24,7 @@ function AppMenuStory(): JSX.Element {
   }
 
   return (
-    <StoryStage placement="bottom-center" target>
+    <StoryStage placement="bottom-center" isTarget>
       <TaskbarAppItem
         app="file-explorer"
         indicator="active"

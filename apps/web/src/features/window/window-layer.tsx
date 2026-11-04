@@ -252,8 +252,8 @@ export function WindowLayer(props: WindowLayerProps): JSX.Element {
             key={entry.window.id}
             window={entry.window}
             title={getWindowTitle(entry.window)}
-            closing={entry.isClosing}
-            active={!entry.isClosing && entry.window.id === frontId}
+            isClosing={entry.isClosing}
+            isActive={!entry.isClosing && entry.window.id === frontId}
             zIndex={stack.indexOf(entry.window.id) + 1}
             device={device}
             workArea={workArea}

@@ -340,7 +340,7 @@ function StartListView(props: StartListViewProps): JSX.Element {
     }
     return (
       <StartViewMenu
-        open={isViewMenuOpen}
+        isOpen={isViewMenuOpen}
         onOpenChange={handleViewMenuOpenChange}
         label={viewLabels[view]}
         menuItems={viewMenuItems}
@@ -617,7 +617,7 @@ function StartListRow(props: StartListRowProps): JSX.Element {
   }
   return (
     <ContextMenuArea
-      open={isMenuOpen}
+      isOpen={isMenuOpen}
       onOpenChange={handleMenuOpenChange}
       items={menuItems}
       area={row}

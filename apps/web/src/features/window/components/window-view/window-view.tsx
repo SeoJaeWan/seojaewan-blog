@@ -30,9 +30,9 @@ type WindowViewProps = {
   /** 창 제목. 창 영역의 접근성 이름이 된다 */
   title: string;
   /** 저장소에서 지워져 닫히는 애니메이션만 남은 창인지 */
-  closing: boolean;
+  isClosing: boolean;
   /** 맨 앞 창인지 */
-  active: boolean;
+  isActive: boolean;
   /** 쌓는 차례. 클수록 위다 */
   zIndex: number;
   /** 화면 방식. 모바일은 창이 늘 작업 영역을 채운다 */
@@ -100,8 +100,8 @@ export function WindowView(props: WindowViewProps): JSX.Element {
   const {
     window: target,
     title,
-    closing: isClosing,
-    active: isActive,
+    isClosing,
+    isActive,
     zIndex,
     device,
     workArea,

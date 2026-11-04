@@ -54,7 +54,7 @@ export function ChromeAddressField(props: ChromeAddressFieldProps): JSX.Element 
       <ChromeAddressSuggestions
         {...inputProps}
         aria-label={ADDRESS_FIELD_LABEL}
-        open={isListOpen}
+        isOpen={isListOpen}
         width={width}
         listId={listId}
         suggestions={suggestions}

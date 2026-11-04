@@ -340,6 +340,26 @@ const configFiles = [
 ];
 
 // @codocs [[코드 작성 규칙:식별자 이름]]
+// 우리 Props 타입(이름이 `Props`로 끝나는 type)에 직접 선언한 boolean 속성은 is·has·can·should로 시작한다.
+// naming-convention은 속성이 속한 타입 이름을 가리지 못해(앱 데이터 타입까지 걸린다) 문법 선택자로 건다.
+// `ComponentProps<...>`로 이어받은 HTML·Base UI 속성은 타입 리터럴에 선언되지 않아 걸리지 않는다.
+const BOOLEAN_PROP_MESSAGE =
+  'Props 타입에 선언한 boolean 속성은 is·has·can·should로 시작한다(예: isOpen, hasIcon, canGoBack, shouldAutoFocus).';
+const NON_PREFIXED_BOOLEAN_PROP =
+  'TSPropertySignature[key.type="Identifier"]:not([key.name=/^(is|has|can|should)[A-Z]/])';
+// `boolean`과 `boolean | undefined`(순서 무관)를 boolean으로 본다.
+const BOOLEAN_TYPE = 'typeAnnotation.typeAnnotation';
+const BOOLEAN_ANNOTATION = `:matches([${BOOLEAN_TYPE}.type="TSBooleanKeyword"], [${BOOLEAN_TYPE}.types.0.type="TSBooleanKeyword"], [${BOOLEAN_TYPE}.types.1.type="TSBooleanKeyword"])`;
+const propsTypeLiterals = [
+  'TSTypeAliasDeclaration[id.name=/Props$/] > TSTypeLiteral',
+  'TSTypeAliasDeclaration[id.name=/Props$/] > TSIntersectionType > TSTypeLiteral',
+];
+const propsBooleanRestrictions = propsTypeLiterals.map((typeLiteral) => ({
+  selector: `${typeLiteral} > ${NON_PREFIXED_BOOLEAN_PROP}${BOOLEAN_ANNOTATION}`,
+  message: BOOLEAN_PROP_MESSAGE,
+}));
+
+// @codocs [[코드 작성 규칙:식별자 이름]]
 // 상수는 모듈 최상위에서 리터럴이나 `as const`로 초기화한 const다. 그 밖의 값은 camelCase다.
 const CONSTANT_INIT = 'init.type=/^(Literal|TemplateLiteral|UnaryExpression)$/';
 const AS_CONST_INIT = 'init.type="TSAsExpression"][init.typeAnnotation.typeName.name="const"';
@@ -352,6 +372,7 @@ const topLevelConst = [
   'Program > ExportNamedDeclaration > VariableDeclaration[kind="const"]',
 ];
 const namingSyntaxRestrictions = [
+  ...propsBooleanRestrictions,
   ...topLevelConst.flatMap((declaration) => [
     {
       selector: `${declaration} > VariableDeclarator[${CONSTANT_INIT}] > Identifier.id:not([${UPPER_SNAKE}])`,
