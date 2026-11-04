@@ -26,7 +26,7 @@
       },
       "tree": {
         "fills": [
-          "accent-fill/default"
+          "color/blue/59"
         ],
         "height": "size/snap-option/height",
         "name": "State=Hover",
@@ -51,7 +51,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/on-accent-default"
+          "color/white/8"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT",
@@ -71,7 +71,7 @@
       },
       "tree": {
         "fills": [
-          "control-alt-fill/secondary"
+          "color/black/2"
         ],
         "height": "size/snap-option/height",
         "name": "State=Rest",
@@ -114,7 +114,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT",
