@@ -12,7 +12,7 @@
       ],
       "type": "VARIANT"
     },
-    "Tone": {
+    "Variant": {
       "default": "Accent",
       "options": [
         "Accent",
@@ -22,7 +22,7 @@
     }
   },
   "variants": {
-    "tone=accent,size=16": {
+    "variant=accent,size=16": {
       "node": {
         "height": 16,
         "width": 16,
@@ -32,13 +32,13 @@
       "nodeId": "16:233",
       "properties": {
         "Size": "16",
-        "Tone": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "accent-fill/default",
+              "color": "color/blue/59",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -68,7 +68,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=Accent, Size=16",
+        "name": "Variant=Accent, Size=16",
         "size": {
           "h": 16,
           "w": 16
@@ -81,7 +81,7 @@
         "width": "size/progress-ring/sm"
       }
     },
-    "tone=accent,size=32": {
+    "variant=accent,size=32": {
       "node": {
         "height": 32,
         "width": 32,
@@ -91,13 +91,13 @@
       "nodeId": "16:235",
       "properties": {
         "Size": "32",
-        "Tone": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "accent-fill/default",
+              "color": "color/blue/59",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -126,7 +126,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=Accent, Size=32",
+        "name": "Variant=Accent, Size=32",
         "size": {
           "h": 32,
           "w": 32
@@ -139,7 +139,7 @@
         "width": "size/progress-ring/md"
       }
     },
-    "tone=accent,size=64": {
+    "variant=accent,size=64": {
       "node": {
         "height": 64,
         "width": 64,
@@ -149,13 +149,13 @@
       "nodeId": "16:237",
       "properties": {
         "Size": "64",
-        "Tone": "Accent"
+        "Variant": "Accent"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "accent-fill/default",
+              "color": "color/blue/59",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -185,7 +185,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=Accent, Size=64",
+        "name": "Variant=Accent, Size=64",
         "size": {
           "h": 64,
           "w": 64
@@ -198,7 +198,7 @@
         "width": "size/progress-ring/lg"
       }
     },
-    "tone=on-dark,size=16": {
+    "variant=on-dark,size=16": {
       "node": {
         "height": 16,
         "width": 16,
@@ -208,13 +208,13 @@
       "nodeId": "16:239",
       "properties": {
         "Size": "16",
-        "Tone": "On dark"
+        "Variant": "On dark"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "boot-screen/foreground",
+              "color": "color/white",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -244,7 +244,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=On dark, Size=16",
+        "name": "Variant=On dark, Size=16",
         "radius": [
           "radius/control",
           "radius/control",
@@ -263,7 +263,7 @@
         "width": "size/progress-ring/sm"
       }
     },
-    "tone=on-dark,size=32": {
+    "variant=on-dark,size=32": {
       "node": {
         "height": 32,
         "width": 32,
@@ -273,13 +273,13 @@
       "nodeId": "16:241",
       "properties": {
         "Size": "32",
-        "Tone": "On dark"
+        "Variant": "On dark"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "boot-screen/foreground",
+              "color": "color/white",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -308,7 +308,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=On dark, Size=32",
+        "name": "Variant=On dark, Size=32",
         "radius": [
           "radius/control",
           "radius/control",
@@ -327,7 +327,7 @@
         "width": "size/progress-ring/md"
       }
     },
-    "tone=on-dark,size=64": {
+    "variant=on-dark,size=64": {
       "node": {
         "height": 64,
         "width": 64,
@@ -337,13 +337,13 @@
       "nodeId": "16:243",
       "properties": {
         "Size": "64",
-        "Tone": "On dark"
+        "Variant": "On dark"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "boot-screen/foreground",
+              "color": "color/white",
               "path": "shapes/progress-ring-arc"
             },
             "component": "progress-ring/Arc",
@@ -373,7 +373,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Tone=On dark, Size=64",
+        "name": "Variant=On dark, Size=64",
         "radius": [
           "radius/control",
           "radius/control",
