@@ -7,7 +7,7 @@ type BreadcrumbItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Label 속성. 위치 이름 글자다 */
   label?: string;
   /** 피그마 Current. 지금 위치(마지막 칸)인지 알린다. 모양은 같고 접근성 속성(`aria-current`)만 바뀐다 */
-  current?: boolean;
+  isCurrent?: boolean;
   /** 피그마 Show separator. 오른쪽 꺾쇠 구분자를 보일지 정한다 */
   showSeparator?: boolean;
   /** 위치 이름 버튼을 눌렀을 때 부른다. 구분자를 누른 것은 부르지 않는다 */
@@ -23,7 +23,7 @@ type BreadcrumbItemProps = Omit<ComponentProps<'div'>, 'children'> & {
 export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
   const {
     label = '위치 이름',
-    current: isCurrent = false,
+    isCurrent = false,
     showSeparator: hasSeparator = true,
     onLabelClick: handleLabelClick,
     className,

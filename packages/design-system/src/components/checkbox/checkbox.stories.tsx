@@ -4,16 +4,16 @@ import { expect, within } from 'storybook/test';
 import { Checkbox } from './checkbox';
 
 type FigmaArgs = {
-  checked: boolean;
+  isChecked: boolean;
 };
 
 const meta = {
   title: 'Components/Checkbox',
-  args: { checked: false },
+  args: { isChecked: false },
   argTypes: {
-    checked: { control: 'boolean' },
+    isChecked: { control: 'boolean' },
   },
-  render: (args) => <Checkbox checked={args.checked} label="할 일" />,
+  render: (args) => <Checkbox isChecked={args.isChecked} label="할 일" />,
 } satisfies Meta<FigmaArgs>;
 
 export default meta;
@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고른다(`Checked=True` → `checked: true`).
+// 피그마 변형 하나를 args 하나로 고른다(`Checked=True` → `isChecked: true`).
 export const Figma: Story = {};
 
 // @codocs [[Notion 블록:지원 블록]]
@@ -38,10 +38,10 @@ export const Default: Story = {
 
 // @codocs [[Notion 블록:지원 블록]]
 export const Checked: Story = {
-  args: { checked: true },
+  args: { isChecked: true },
   play: async ({ canvasElement, step }) => {
     // @codocs [[Notion 블록:지원 블록]]
-    await step('checked면 체크된 표시다', async () => {
+    await step('isChecked면 체크된 표시다', async () => {
       await expect(within(canvasElement).getByRole('checkbox', { name: '할 일' })).toHaveAttribute(
         'aria-checked',
         'true',

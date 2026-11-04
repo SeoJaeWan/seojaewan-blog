@@ -49,7 +49,7 @@ export function BootScreen(props: BootScreenProps): JSX.Element {
         className={cn('shrink-shrink-none', classNames.logo)}
       />
       <div aria-hidden className={cn('w-full shrink-shrink-none', classNames.gap)} />
-      <ProgressRing tone="on-dark" size="32" aria-label="다시 시작하는 중" />
+      <ProgressRing variant="on-dark" size="32" aria-label="다시 시작하는 중" />
     </div>
   );
 }
