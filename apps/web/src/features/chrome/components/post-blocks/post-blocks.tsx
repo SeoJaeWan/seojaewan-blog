@@ -277,7 +277,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               )
             }
             caption={caption}
-            showCaption={caption.length > 0}
+            hasCaption={caption.length > 0}
           />
         );
       }

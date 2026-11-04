@@ -7,8 +7,8 @@ type FigureProps = Omit<ComponentProps<'figure'>, 'children'> & {
   image: ReactNode;
   /** 피그마 `Caption` 속성. 이미지 아래 글이다 */
   caption?: string;
-  /** 피그마 `Show caption` 속성. 캡션을 보일지 정한다 */
-  showCaption?: boolean;
+  /** 피그마 `Has caption` 속성. 캡션을 보일지 정한다 */
+  hasCaption?: boolean;
 };
 
 /**
@@ -19,13 +19,7 @@ type FigureProps = Omit<ComponentProps<'figure'>, 'children'> & {
  * @param props
  */
 export function Figure(props: FigureProps): JSX.Element {
-  const {
-    image,
-    caption = '캡션',
-    showCaption: hasCaption = true,
-    className,
-    ...figureProps
-  } = props;
+  const { image, caption = '캡션', hasCaption = true, className, ...figureProps } = props;
   return (
     <figure
       {...figureProps}
