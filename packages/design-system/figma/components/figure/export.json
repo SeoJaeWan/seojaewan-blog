@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.",
+  "description": "글 본문의 이미지와 캡션으로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Figure",
   "nodeId": "1380:1111",
   "propertyDefinitions": {
@@ -7,12 +7,12 @@
       "default": "캡션",
       "type": "TEXT"
     },
-    "Image": {
-      "type": "INSTANCE_SWAP"
-    },
-    "Show caption": {
+    "Has caption": {
       "default": true,
       "type": "BOOLEAN"
+    },
+    "Image": {
+      "type": "INSTANCE_SWAP"
     }
   },
   "variants": {
@@ -84,7 +84,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "caption",
             "size": {
@@ -102,7 +102,7 @@
               "segments": [
                 {
                   "characters": "캡션",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -132,8 +132,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

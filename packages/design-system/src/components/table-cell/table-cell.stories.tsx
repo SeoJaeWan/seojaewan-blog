@@ -9,9 +9,9 @@ const meta = {
   title: 'Components/TableCell',
   component: TableCell,
   argTypes: {
-    type: { control: 'inline-radio', options: ['body', 'header'] },
+    variant: { control: 'inline-radio', options: ['body', 'header'] },
   },
-  args: { type: 'body' },
+  args: { variant: 'body' },
   // 가운데 배치는 칸 위치를 반 픽셀로 만들어 선이 흐려지므로 위쪽 왼쪽에 둔다.
   parameters: { layout: 'padded' },
   // 너비는 표와 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다. 칸은 표 안에서만 쓸 수 있어 표 구조로 감싸고,
@@ -35,7 +35,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형은 args로 고른다(`Type=Body` → `type: 'body'`).
+// 피그마 변형은 args로 고른다(`Variant=Body` → `variant: 'body'`).
 export const Figma: Story = {};
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
@@ -69,7 +69,7 @@ export const Header: Story = {
     <table>
       <tbody>
         <tr>
-          <TableCell type="header" scope="col">
+          <TableCell variant="header" scope="col">
             제목
           </TableCell>
         </tr>
