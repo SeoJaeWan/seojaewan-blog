@@ -170,14 +170,14 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           <WindowTitle
             appIcon={appIcon}
             title={title}
-            inactive={isInactive}
+            isInactive={isInactive}
             className="min-w-size-none flex-flex-fill"
           />
         )}
         <CaptionButtonGroup
-          placement={placement}
-          inactive={isInactive}
-          showMaximize={isMaximizeShown}
+          placement={placement === 'normal' ? 'default' : placement}
+          isInactive={isInactive}
+          hasMaximize={isMaximizeShown}
           onMinimize={handleMinimize}
           onMaximize={handleMaximize}
           onRestore={handleRestore}

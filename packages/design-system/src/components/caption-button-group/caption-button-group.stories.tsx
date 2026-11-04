@@ -5,14 +5,14 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { CaptionButtonGroup } from './caption-button-group';
 
 // 피그마 CaptionButtonGroup의 변형 속성 값이다(정규화한 이름).
-const PLACEMENTS = ['normal', 'maximized', 'snapped'] as const;
+const PLACEMENTS = ['default', 'maximized', 'snapped'] as const;
 const STATES = ['active', 'inactive'] as const;
 
 type FigmaArgs = {
   placement: (typeof PLACEMENTS)[number];
   state: (typeof STATES)[number];
   /** 동작 스토리가 쓴다 */
-  showMaximize?: boolean;
+  hasMaximize?: boolean;
   maximizeSlot?: ReactNode;
   onMinimize?: ComponentProps<typeof CaptionButtonGroup>['onMinimize'];
   onMaximize?: ComponentProps<typeof CaptionButtonGroup>['onMaximize'];
@@ -33,7 +33,7 @@ function buttonNames(root: HTMLElement): (string | null)[] {
 
 const meta = {
   title: 'Components/CaptionButtonGroup',
-  args: { placement: 'normal', state: 'active' },
+  args: { placement: 'default', state: 'active' },
   argTypes: {
     placement: { control: 'inline-radio', options: PLACEMENTS },
     state: { control: 'inline-radio', options: STATES },
@@ -48,8 +48,8 @@ const meta = {
     return (
       <CaptionButtonGroup
         placement={args.placement}
-        inactive={args.state === 'inactive'}
-        showMaximize={args.showMaximize}
+        isInactive={args.state === 'inactive'}
+        hasMaximize={args.hasMaximize}
         maximizeSlot={args.maximizeSlot}
         onMinimize={handleMinimize}
         onMaximize={handleMaximize}
@@ -75,7 +75,7 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('normal이면 최소화·최대화·닫기 버튼을 그린다', async () => {
+    await step('default이면 최소화·최대화·닫기 버튼을 그린다', async () => {
       await expect(buttonNames(canvasElement)).toEqual(['최소화', '최대화', '닫기']);
     });
 
@@ -134,13 +134,13 @@ export const Maximized: Story = {
 export const WithoutMaximize: Story = {
   args: {
     placement: 'maximized',
-    showMaximize: false,
+    hasMaximize: false,
     maximizeSlot: <button type="button">스냅</button>,
   },
   play: async ({ canvasElement, step }) => {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
     await step(
-      'showMaximize가 false면 최대화·복원 버튼과 maximizeSlot을 그리지 않는다',
+      'hasMaximize가 false면 최대화·복원 버튼과 maximizeSlot을 그리지 않는다',
       async () => {
         await expect(buttonNames(canvasElement)).toEqual(['최소화', '닫기']);
       },
@@ -154,7 +154,7 @@ export const CustomMaximize: Story = {
     const slot = <button type="button">스냅</button>;
     return (
       <div>
-        <div role="group" aria-label="normal">
+        <div role="group" aria-label="default">
           <CaptionButtonGroup maximizeSlot={slot} />
         </div>
         <div role="group" aria-label="snapped">
@@ -167,8 +167,8 @@ export const CustomMaximize: Story = {
     const canvas = within(canvasElement);
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('maximizeSlot은 normal에서 기본 최대화 버튼 대신 그려진다', async () => {
-      await expect(buttonNames(canvas.getByRole('group', { name: 'normal' }))).toEqual([
+    await step('maximizeSlot은 default에서 기본 최대화 버튼 대신 그려진다', async () => {
+      await expect(buttonNames(canvas.getByRole('group', { name: 'default' }))).toEqual([
         '최소화',
         '스냅',
         '닫기',
