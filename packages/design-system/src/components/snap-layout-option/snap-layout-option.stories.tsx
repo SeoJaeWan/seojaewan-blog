@@ -5,7 +5,7 @@ import { SnapLayoutFlyout } from '../snap-layout-flyout/snap-layout-flyout';
 import { SnapLayoutOption } from './snap-layout-option';
 
 // 피그마 SnapLayoutOption의 변형 속성 값이다(정규화한 이름).
-const LAYOUTS = ['half', 'twothirds', 'halfquarter', 'quad'] as const;
+const LAYOUTS = ['half', 'two-thirds', 'half-quarter', 'quad'] as const;
 
 type FigmaArgs = {
   layout: (typeof LAYOUTS)[number];
@@ -38,7 +38,7 @@ export const Default: SelectZoneStory = {
   args: { onSelectZone: fn() },
   render: (args) => {
     const { onSelectZone: handleSelectZone } = args;
-    return <SnapLayoutOption layout="halfquarter" onSelectZone={handleSelectZone} />;
+    return <SnapLayoutOption layout="half-quarter" onSelectZone={handleSelectZone} />;
   },
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);

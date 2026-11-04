@@ -47,7 +47,7 @@ export const Default: SelectZoneStory = {
       await userEvent.click(quad.getByRole('button', { name: '오른쪽 아래 4분의 1' }));
       await expect(args.onSelectZone).toHaveBeenCalledTimes(3);
       await expect(args.onSelectZone).toHaveBeenNthCalledWith(1, 'half', 1);
-      await expect(args.onSelectZone).toHaveBeenNthCalledWith(2, 'twothirds', 0);
+      await expect(args.onSelectZone).toHaveBeenNthCalledWith(2, 'two-thirds', 0);
       await expect(args.onSelectZone).toHaveBeenNthCalledWith(3, 'quad', 3);
     });
   },
