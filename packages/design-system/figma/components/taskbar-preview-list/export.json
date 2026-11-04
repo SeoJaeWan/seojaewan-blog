@@ -50,7 +50,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
@@ -68,17 +68,17 @@
                               "segments": [
                                 {
                                   "characters": "창",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Caption"
                                 },
                                 {
                                   "characters": "제목",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 }
                               ],
@@ -102,9 +102,9 @@
                         },
                         "name": "icon + title",
                         "properties": {
-                          "Kind": "Preview",
                           "State": "Active",
-                          "Title": "창 제목"
+                          "Title": "창 제목",
+                          "Variant": "Preview"
                         },
                         "size": {
                           "h": 16,
@@ -169,7 +169,7 @@
                       }
                     ],
                     "fills": [
-                      "solid-background-fill/base"
+                      "color/gray/4"
                     ],
                     "height": "size/window-preview/thumbnail-height",
                     "layout": {
@@ -206,7 +206,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "card-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "FRAME"
@@ -214,7 +214,7 @@
                 ],
                 "component": "WindowPreview",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -278,7 +278,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
@@ -296,17 +296,17 @@
                               "segments": [
                                 {
                                   "characters": "창",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Caption"
                                 },
                                 {
                                   "characters": "제목",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Caption"
                                 }
                               ],
@@ -330,9 +330,9 @@
                         },
                         "name": "icon + title",
                         "properties": {
-                          "Kind": "Preview",
                           "State": "Active",
-                          "Title": "창 제목"
+                          "Title": "창 제목",
+                          "Variant": "Preview"
                         },
                         "size": {
                           "h": 16,
@@ -397,7 +397,7 @@
                       }
                     ],
                     "fills": [
-                      "solid-background-fill/base"
+                      "color/gray/4"
                     ],
                     "height": "size/window-preview/thumbnail-height",
                     "layout": {
@@ -434,7 +434,7 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "card-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
                     "type": "FRAME"
@@ -442,7 +442,7 @@
                 ],
                 "component": "WindowPreview",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -538,7 +538,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/default"
+          "color/gray/51/40"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT"
