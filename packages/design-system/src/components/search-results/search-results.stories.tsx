@@ -30,8 +30,8 @@ const meta = {
       device={args.device}
       card={
         <BestMatchCard icon={documentIcon}>
-          <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
-          <MenuItem standalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
+          <MenuItem isStandalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+          <MenuItem isStandalone label="링크 복사" icon="icons/ic_fluent_link_20_regular.svg" />
         </BestMatchCard>
       }
     >
