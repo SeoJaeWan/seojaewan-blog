@@ -6,7 +6,7 @@ import { MenuSeparator } from './menu-separator';
 
 const meta = {
   title: 'Components/MenuSeparator',
-  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 놓이는 자리인 메뉴 너비(size/menu/width)로 감싼다.
+  // 너비는 쓰는 곳이 정하므로 견본 크기(@sample-size width)인 export.json 숫자로 FigmaFrame이 감싼다.
   decorators: [figmaFrame(menuSeparatorExport)],
   // 1px 선이 가운데 정렬에서 반 픽셀 위치에 놓여 번지지 않도록 위쪽부터 놓는다.
   parameters: { layout: 'padded' },

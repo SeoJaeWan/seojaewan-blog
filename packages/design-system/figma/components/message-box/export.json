@@ -38,7 +38,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "title",
                 "size": {
@@ -56,7 +56,7 @@
                   "segments": [
                     {
                       "characters": "제목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Subtitle"
                     }
                   ],
@@ -66,7 +66,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "message",
                 "size": {
@@ -84,17 +84,17 @@
                   "segments": [
                     {
                       "characters": "메시지",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "내용",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -104,7 +104,7 @@
               }
             ],
             "fills": [
-              "layer-fill/alt"
+              "color/white"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -135,7 +135,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-on-accent-fill/primary"
+                      "color/white"
                     ],
                     "name": "label",
                     "size": {
@@ -153,7 +153,7 @@
                       "segments": [
                         {
                           "characters": "확인",
-                          "fill": "text-on-accent-fill/primary",
+                          "fill": "color/white",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -164,7 +164,7 @@
                 ],
                 "component": "Button",
                 "fills": [
-                  "accent-fill/default"
+                  "color/blue/59"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -181,10 +181,10 @@
                 "minWidth": "size/button/min-width",
                 "name": "primary button",
                 "properties": {
+                  "Has icon": false,
                   "Label": "확인",
-                  "Show icon": false,
                   "State": "Rest",
-                  "Style": "Accent"
+                  "Variant": "Accent"
                 },
                 "radius": [
                   "radius/control",
@@ -212,7 +212,7 @@
               }
             ],
             "fills": [
-              "solid-background-fill/base"
+              "color/gray/4"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -242,7 +242,7 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "FRAME"
@@ -250,7 +250,7 @@
         ],
         "effectStyle": "Elevation/Dialog",
         "fills": [
-          "solid-background-fill/base"
+          "color/gray/4"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -286,7 +286,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/default"
+          "color/gray/51/40"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT",
@@ -310,7 +310,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "title",
                 "size": {
@@ -328,7 +328,7 @@
                   "segments": [
                     {
                       "characters": "제목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Subtitle"
                     }
                   ],
@@ -338,7 +338,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "message",
                 "size": {
@@ -356,17 +356,17 @@
                   "segments": [
                     {
                       "characters": "메시지",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "내용",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -376,7 +376,7 @@
               }
             ],
             "fills": [
-              "layer-fill/alt"
+              "color/white"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -407,7 +407,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-on-accent-fill/primary"
+                      "color/white"
                     ],
                     "name": "label",
                     "size": {
@@ -425,7 +425,7 @@
                       "segments": [
                         {
                           "characters": "확인",
-                          "fill": "text-on-accent-fill/primary",
+                          "fill": "color/white",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -436,7 +436,7 @@
                 ],
                 "component": "Button",
                 "fills": [
-                  "accent-fill/default"
+                  "color/blue/59"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -453,10 +453,10 @@
                 "minWidth": "size/button/min-width",
                 "name": "primary button",
                 "properties": {
+                  "Has icon": false,
                   "Label": "확인",
-                  "Show icon": false,
                   "State": "Rest",
-                  "Style": "Accent"
+                  "Variant": "Accent"
                 },
                 "radius": [
                   "radius/control",
@@ -486,7 +486,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -504,7 +504,7 @@
                       "segments": [
                         {
                           "characters": "취소",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -515,7 +515,7 @@
                 ],
                 "component": "Button",
                 "fills": [
-                  "control-fill/default"
+                  "color/white/70"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -532,10 +532,10 @@
                 "minWidth": "size/button/min-width",
                 "name": "secondary button",
                 "properties": {
+                  "Has icon": false,
                   "Label": "취소",
-                  "Show icon": false,
                   "State": "Rest",
-                  "Style": "Standard"
+                  "Variant": "Standard"
                 },
                 "radius": [
                   "radius/control",
@@ -563,7 +563,7 @@
               }
             ],
             "fills": [
-              "solid-background-fill/base"
+              "color/gray/4"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -593,7 +593,7 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": true,
             "type": "FRAME"
@@ -601,7 +601,7 @@
         ],
         "effectStyle": "Elevation/Dialog",
         "fills": [
-          "solid-background-fill/base"
+          "color/gray/4"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -637,7 +637,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/default"
+          "color/gray/51/40"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT",
