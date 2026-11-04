@@ -1,0 +1,201 @@
+{
+  "description": "탐색기 본문처럼 층 바탕과 위쪽 테두리를 가진 카드 바탕으로, 탐색기 창 본문에 쓴다.\n@sample-size width height",
+  "name": "LayerSurface",
+  "nodeId": "2460:6656",
+  "propertyDefinitions": {
+    "Content": {
+      "type": "SLOT"
+    }
+  },
+  "variants": {
+    "default": {
+      "node": {
+        "height": 330,
+        "width": 798,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2460:6656",
+      "properties": {},
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "height": "size/icon/sm",
+                    "name": "chevron space",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "FRAME",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "asset": {
+                      "path": "images/file-folder"
+                    },
+                    "component": "file/Folder",
+                    "fills": [
+                      "IMAGE"
+                    ],
+                    "height": "size/icon/sm",
+                    "name": "item icon",
+                    "size": {
+                      "h": 16,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/icon/sm"
+                  },
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "label",
+                    "size": {
+                      "h": 16,
+                      "w": 184
+                    },
+                    "sizing": {
+                      "h": "FILL",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "HEIGHT",
+                      "maxLines": 1,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "항목",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        },
+                        {
+                          "characters": " ",
+                          "fill": "color/black/89",
+                          "textStyle": "Caption"
+                        },
+                        {
+                          "characters": "이름",
+                          "fill": "color/black/89",
+                          "textStyle": "Hangul/Caption"
+                        }
+                      ],
+                      "truncation": "ENDING"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "component": "NavigationItem",
+                "height": "size/control/height",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": "spacing/xs",
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    "spacing/none",
+                    "spacing/sm",
+                    "spacing/none",
+                    "spacing/sm"
+                  ],
+                  "primaryAlign": "MIN"
+                },
+                "name": "NavigationItem",
+                "properties": {
+                  "Expand": "None",
+                  "Label": "항목 이름",
+                  "Level": "0",
+                  "State": "Rest"
+                },
+                "radius": [
+                  "radius/control",
+                  "radius/control",
+                  "radius/control",
+                  "radius/control"
+                ],
+                "size": {
+                  "h": 32,
+                  "w": 240
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "INSTANCE",
+                "width": "size/navigation-item/width"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/none",
+              "mode": "HORIZONTAL",
+              "padding": [
+                "spacing/none",
+                "spacing/none",
+                "spacing/none",
+                "spacing/none"
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "Content",
+            "size": {
+              "h": 329,
+              "w": 798
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "FILL"
+            },
+            "type": "SLOT"
+          }
+        ],
+        "fills": [
+          "color/white/50"
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/none",
+          "mode": "HORIZONTAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "LayerSurface",
+        "size": {
+          "h": 330,
+          "w": 798
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "FIXED"
+        },
+        "strokeWeight": [
+          "stroke-width/default",
+          0,
+          0,
+          0
+        ],
+        "strokes": [
+          "color/black/6"
+        ],
+        "strokesIncludedInLayout": true,
+        "type": "COMPONENT"
+      }
+    }
+  }
+}
