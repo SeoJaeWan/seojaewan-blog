@@ -6,21 +6,21 @@ import { RenameField } from '../rename-field/rename-field';
 type FileItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Surface. 바탕화면(기본)이나 탐색기 */
   surface?: 'desktop' | 'explorer';
-  /** 피그마 View. 탐색기에는 작은 아이콘(small) 보기가 없다 */
-  view?: 'large' | 'medium' | 'small';
+  /** 피그마 Size. 탐색기에는 작은 아이콘(small) 보기가 없다 */
+  size?: 'large' | 'medium' | 'small';
   /** 피그마 TEXT 속성 Name. 항목 이름이다 */
   name?: string;
-  /** 피그마 INSTANCE_SWAP 속성 Icon. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다. 크기는 View가 정한 칸에 맞춘다 */
+  /** 피그마 INSTANCE_SWAP 속성 Icon. 파일·폴더 아이콘은 쓰는 곳마다 달라 꼭 넘긴다. 크기는 Size가 정한 칸에 맞춘다 */
   icon: ReactNode;
   /** 피그마 State=Selected. 선택된 항목이면 바탕을 깔고 이름을 모두 보인다 */
-  selected?: boolean;
+  isSelected?: boolean;
   /** 피그마 State=Cut·Cut selected. 잘라낸 항목이면 아이콘과 이름을 흐리게 그린다 */
-  cut?: boolean;
+  isCut?: boolean;
   /** 피그마 State=Rename. 이름 대신 이름 바꾸기 입력 상자를 그린다. 탐색기에서는 선택 바탕을 함께 깐다 */
-  renaming?: boolean;
+  isRenaming?: boolean;
   /**
    * 이름 바꾸기 입력창(RenameField)에 넘길 값·동작·접근성 속성(`value`, `onValueChange`, `onKeyDown`, `onBlur`, `aria-label` 등).
-   * 생김새는 바꾸지 않는다. `renaming`일 때만 쓴다
+   * 생김새는 바꾸지 않는다. `isRenaming`일 때만 쓴다
    */
   renameFieldProps?: Omit<ComponentProps<typeof RenameField>, 'text' | 'className'>;
 };
@@ -57,12 +57,12 @@ const ICON_SIZE_CLASS_NAMES = {
 export function FileItem(props: FileItemProps): JSX.Element {
   const {
     surface = 'desktop',
-    view = 'large',
+    size = 'large',
     name = '파일 이름',
     icon,
-    selected: isSelected = false,
-    cut: isCut = false,
-    renaming: isRenaming = false,
+    isSelected = false,
+    isCut = false,
+    isRenaming = false,
     renameFieldProps,
     className,
     ...divProps
@@ -79,7 +79,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative flex flex-col items-center rounded-radius-control outline-none select-none',
         isDesktop ? 'gap-spacing-2xs px-spacing-2xs py-spacing-xs' : 'gap-spacing-xs p-spacing-xs',
-        WIDTH_CLASS_NAMES[surface][view],
+        WIDTH_CLASS_NAMES[surface][size],
         isSelected || (isRenaming && !isDesktop)
           ? isDesktop
             ? 'bg-color-white-25'
@@ -99,7 +99,7 @@ export function FileItem(props: FileItemProps): JSX.Element {
       <div
         className={cn(
           'flex shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain',
-          ICON_SIZE_CLASS_NAMES[view],
+          ICON_SIZE_CLASS_NAMES[size],
           dimClassName,
         )}
       >

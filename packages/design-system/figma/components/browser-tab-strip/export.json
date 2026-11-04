@@ -46,7 +46,7 @@
                   },
                   {
                     "fills": [
-                      "chrome/text-primary"
+                      "color/gray/88"
                     ],
                     "name": "title",
                     "size": {
@@ -64,22 +64,22 @@
                       "segments": [
                         {
                           "characters": "React 19 ",
-                          "fill": "chrome/text-primary",
+                          "fill": "color/gray/88",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "훅",
-                          "fill": "chrome/text-primary",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "chrome/text-primary",
+                          "fill": "color/gray/88",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "정리",
-                          "fill": "chrome/text-primary",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -89,7 +89,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_dismiss_20_regular"
                     },
                     "component": "ic_fluent_dismiss_20_regular",
@@ -109,7 +109,7 @@
                 ],
                 "component": "BrowserTab",
                 "fills": [
-                  "chrome/toolbar-fill"
+                  "color/white"
                 ],
                 "height": "size/browser-tab/height",
                 "layout": {
@@ -126,7 +126,7 @@
                 },
                 "name": "tab",
                 "properties": {
-                  "Show separator": true,
+                  "Has separator": true,
                   "State": "Active",
                   "Title": "React 19 훅 정리"
                 },
@@ -177,7 +177,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "chrome/text-secondary",
+                      "color": "color/gray/70",
                       "path": "icons/ic_fluent_add_20_regular"
                     },
                     "component": "ic_fluent_add_20_regular",
@@ -197,7 +197,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -214,7 +214,7 @@
                 "name": "new tab",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Chrome"
+                  "Variant": "Chrome"
                 },
                 "radius": [
                   "radius/control",
