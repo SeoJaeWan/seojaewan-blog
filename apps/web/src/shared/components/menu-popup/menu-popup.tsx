@@ -215,7 +215,7 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
         <MenuItem
           variant="checkbox"
           label={entry.label}
-          checked={entry.checked}
+          isChecked={entry.checked}
           disabled={entry.disabled}
           onCheckedChange={handleCheckedChange}
         />
