@@ -10,6 +10,8 @@ export type ComponentSummary = {
   variantCount: number;
   /** 묶음 이름. 컴포넌트는 페이지(나누기 전 02 · Components는 영역 섹션), 조립은 이름의 영역(`Menu/Folder` → `Menu`) */
   group: string;
+  /** 구분선 묶음 이름(구분선 페이지 이름에서 앞의 `-`와 공백을 뗀 글자). 첫 구분선 앞 페이지의 컴포넌트와 조립은 없다 */
+  band?: string | null;
 };
 
 /** UI 목록에 보이는 애니메이션 견본 */

@@ -5,7 +5,13 @@ import {
   noCodeVariables,
   pairedVariable,
 } from './code-variables';
-import { type Directives, FOCUS_TRIGGER, parseDirectives } from './directives';
+import {
+  type Directives,
+  FOCUS_TRIGGER,
+  parseDirectives,
+  type SampleAxis,
+  sampleSizeAxes,
+} from './directives';
 import type { MotionVariable } from './motion-data';
 import type { Bound, NodeData, PaintData, ReactionData } from './node-data';
 
@@ -33,8 +39,16 @@ export type Violation = {
 
 type Add = (node: NodeData, reason: string, fix: string) => void;
 
-/** 검사하는 대상 종류. 조립(03 · Patterns)은 배치 프레임의 모양과 루트 크기를 컴포넌트와 다르게 본다 */
+/** 검사하는 대상 종류. 조립(03 · Patterns)은 배치 프레임의 모양과 크기를 컴포넌트와 다르게 본다 */
 export type CheckTargetKind = 'component' | 'pattern';
+
+/** 크기 검사 방식 */
+type SizeRule = {
+  /** 크기(고정·내용 맞춤·최소·최대)의 변수 연결을 검사하는지. 조립 안의 크기는 변수 없는 숫자를 허용한다 */
+  shouldCheckSizes: boolean;
+  /** 변수 없는 고정 크기를 허용하는 루트 축(`@sample-size`로 표시한 견본 크기) */
+  sampleAxes: ReadonlySet<SampleAxis>;
+};
 
 /** 검사에 쓰는 파일 정보 */
 export type CheckContext = {
@@ -124,7 +138,13 @@ export function checkVariant(
       nodeId: node.id,
     });
   }
-  checkNode(root, true, context, kind, add);
+  checkNode(
+    root,
+    true,
+    context,
+    { shouldCheckSizes: kind === 'component', sampleAxes: sampleSizeAxes(directives) },
+    add,
+  );
   checkInstanceOverrides(root, add);
   if (kind === 'pattern') {
     for (const child of root.children) {
@@ -496,22 +516,24 @@ function objectParticle(word: string): string {
  * @param node 노드
  * @param isRoot 변형 루트인지
  * @param context 이름 있는 이미지 자산
- * @param kind 대상 종류(컴포넌트, 조립)
+ * @param sizes 크기 검사 방식
  * @param add 위반을 더하는 함수
  */
 function checkNode(
   node: NodeData,
   isRoot: boolean,
   context: CheckContext,
-  kind: CheckTargetKind,
+  sizes: SizeRule,
   add: Add,
 ): void {
   if (!isRoot && !checkType(node, add)) {
     return;
   }
   checkCommon(node, context.codeVariables ?? noCodeVariables, add);
-  // 조립 루트의 고정 크기는 화면·영역 크기라 변수 없는 숫자로 둔다.
-  checkSizes(node, isRoot, !(isRoot && kind === 'pattern'), add);
+  // 조립 안의 크기(루트, 인스턴스 크기 덮어쓰기, 배치 프레임)는 화면·영역 크기라 변수 없는 숫자로 둔다.
+  if (sizes.shouldCheckSizes) {
+    checkSizes(node, isRoot, isRoot ? sizes.sampleAxes : new Set(), add);
+  }
   if (node.asset !== null) {
     checkImageRatio(node, isRoot, add);
     for (const problem of node.asset.problems) {
@@ -542,7 +564,7 @@ function checkNode(
     return;
   }
   for (const child of node.children) {
-    checkNode(child, false, context, kind, add);
+    checkNode(child, false, context, sizes, add);
   }
 }
 
@@ -854,19 +876,22 @@ function checkLayout(node: NodeData, add: Add): void {
  * 양쪽 제약(STRETCH)인 축의 크기는 제약이 정하는 값이라 검사하지 않는다.
  * 배율 인스턴스(`scaleFactor`가 1이 아님) 자체의 고정 너비·높이는 검사하지 않는다.
  * 배율이 고정일 수도 칸에 맞춘 값일 수도 있어 결과 크기가 토큰이 아닐 수 있고, 피그마는 배율 인스턴스의 크기를 변수에 연결하면 배율을 풀기 때문이다. 크기는 그것을 담는 칸이 변수로 지킨다.
- * 조립 루트의 고정 너비·높이는 화면·영역 크기(변수 없는 숫자)라 검사하지 않는다(`shouldCheckFixed`가 false).
+ * 컴포넌트 변형 루트에서 `@sample-size`로 표시한 축의 고정 크기는 견본 크기(코드에서 부모를 채우는 컴포넌트를 혼자 보이려고 준 크기)라 검사하지 않는다.
  * @codocs [[피그마 연동:구조 검사]]
  * @param node 노드
  * @param isRoot 변형 루트인지
- * @param shouldCheckFixed 고정 너비·높이의 변수 연결을 검사하는지
+ * @param sampleAxes 변수 없는 고정 크기를 허용하는 축
  * @param add 위반을 더하는 함수
  */
-function checkSizes(node: NodeData, isRoot: boolean, shouldCheckFixed: boolean, add: Add): void {
+function checkSizes(
+  node: NodeData,
+  isRoot: boolean,
+  sampleAxes: ReadonlySet<SampleAxis>,
+  add: Add,
+): void {
   const { horizontal, vertical } = sizingOf(node, isRoot);
   if (node.instance === null || Math.abs(node.instance.scaleFactor - 1) <= EPSILON) {
-    if (shouldCheckFixed) {
-      checkFixedSizes(node, horizontal, vertical, add);
-    }
+    checkFixedSizes(node, horizontal, vertical, sampleAxes, add);
     checkHugSizes(node, horizontal, vertical, add);
   }
   for (const [label, bound] of [
@@ -951,25 +976,42 @@ function isChildrenSized(node: NodeData, axis: 'horizontal' | 'vertical', sizing
 }
 
 /**
- * 배율이 1인 노드의 고정 너비·높이가 크기 변수에 연결됐는지 검사한다.
+ * 배율이 1인 노드의 고정 너비·높이가 크기 변수에 연결됐는지 검사한다. 견본 크기로 표시한 축은 보지 않는다.
  * @param node 노드
  * @param horizontal 가로 크기 방식
  * @param vertical 세로 크기 방식
+ * @param sampleAxes 견본 크기로 표시한 축
  * @param add 위반을 더하는 함수
  */
-function checkFixedSizes(node: NodeData, horizontal: string, vertical: string, add: Add): void {
+function checkFixedSizes(
+  node: NodeData,
+  horizontal: string,
+  vertical: string,
+  sampleAxes: ReadonlySet<SampleAxis>,
+  add: Add,
+): void {
   // 비율을 잠근 레이어는 한 축이 정해지면 나머지 축이 비율에서 나온다.
   const isLocked = node.aspectRatio !== null;
   const isWidthDerived = isLocked && (vertical !== 'FIXED' || node.height.variable !== undefined);
   const isHeightDerived = isLocked && (horizontal !== 'FIXED' || node.width.variable !== undefined);
-  if (horizontal === 'FIXED' && node.width.variable === undefined && !isWidthDerived) {
+  if (
+    horizontal === 'FIXED' &&
+    node.width.variable === undefined &&
+    !isWidthDerived &&
+    !sampleAxes.has('width')
+  ) {
     add(
       node,
       `고정 너비 ${String(node.width.value)}가 크기 변수에 연결되어 있지 않다`,
       '너비를 size 변수에 연결하거나 HUG·FILL로 바꾼다.',
     );
   }
-  if (vertical === 'FIXED' && node.height.variable === undefined && !isHeightDerived) {
+  if (
+    vertical === 'FIXED' &&
+    node.height.variable === undefined &&
+    !isHeightDerived &&
+    !sampleAxes.has('height')
+  ) {
     add(
       node,
       `고정 높이 ${String(node.height.value)}가 크기 변수에 연결되어 있지 않다`,

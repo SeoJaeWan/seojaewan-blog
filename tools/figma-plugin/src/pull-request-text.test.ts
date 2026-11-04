@@ -295,4 +295,12 @@ describe('PR 본문의 피그마 미리보기', () => {
     expect(body).toContain('<details><summary><b>Menu/File</b> · 변형 6개</summary>');
     expect(body).not.toContain('현재 구현');
   });
+
+  // @codocs [[디자인 시스템:조립]]
+  it('조립 PR의 확인은 피그마 그림을 사람이 보고, 캡처 표는 이전 코드 그림과 비교한다고 적는다', () => {
+    const body = patternPullRequestBody('feat/figma-patterns-menu', 'menu', [button], []);
+    expect(body).toContain('조립은 피그마와 픽셀 비교하지 않으므로');
+    expect(body).toContain('이전 코드 그림(`parity-captures`)과 비교해 의도하지 않은 배치 변화');
+    expect(body).not.toContain('`피그마 | 코드 | 차이`');
+  });
 });
