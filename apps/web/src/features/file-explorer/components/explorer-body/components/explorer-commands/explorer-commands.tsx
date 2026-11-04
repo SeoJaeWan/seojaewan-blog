@@ -193,7 +193,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
               <Button
                 variant="subtle"
                 label={command.label}
-                showIcon
+                hasIcon
                 icon={command.icon}
                 className="min-w-size-none"
               />
