@@ -22,7 +22,7 @@ type StoryStageProps = {
   /** 배치 이름 */
   placement: StoryStagePlacement;
   /** 캡처 대상(피그마 변형 노드 자리)을 감싸 `data-parity-target`을 단다 */
-  target?: boolean;
+  isTarget?: boolean;
   /** 무대에 놓을 내용 */
   children: ReactNode;
 };
@@ -37,7 +37,7 @@ export function StoryStage(props: StoryStageProps): JSX.Element {
   const { placement, children } = props;
   return (
     <div data-story-stage={placement} className={STAGE_CLASS_NAMES[placement]}>
-      {props.target === true ? (
+      {props.isTarget === true ? (
         <div data-parity-target className="inline-flex">
           {children}
         </div>

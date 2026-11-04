@@ -140,7 +140,7 @@ export function StartMenuLayer(): JSX.Element {
         profilePhoto={<ImageAsset name={START_PROFILE.photo} />}
         powerButton={
           <StartPowerButton
-            open={isPowerMenuOpen}
+            isOpen={isPowerMenuOpen}
             onOpenChange={handlePowerMenuOpenChange}
             menuItems={powerMenuItems}
           />

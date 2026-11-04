@@ -699,7 +699,7 @@ export function DesktopIconsLayer(): JSX.Element {
       {
         id: icon.id,
         name: icon.name,
-        icon: <DesktopIconImage kind={icon.kind} full={icon.full} />,
+        icon: <DesktopIconImage kind={icon.kind} isFull={icon.full} />,
         origin: { x: dragAreaOrigin.x + origin.x, y: dragAreaOrigin.y + origin.y },
       },
     ];
@@ -746,7 +746,7 @@ export function DesktopIconsLayer(): JSX.Element {
   return (
     <>
       <ContextMenuArea
-        open={menu !== null}
+        isOpen={menu !== null}
         onOpenChange={handleMenuOpenChange}
         onCloseComplete={handleMenuCloseComplete}
         items={menuEntries}
@@ -774,7 +774,7 @@ export function DesktopIconsLayer(): JSX.Element {
       />
       <MessageBoxDialog
         {...EMPTY_RECYCLE_BIN_MESSAGE}
-        open={isEmptyDialogOpen}
+        isOpen={isEmptyDialogOpen}
         onOpenChange={handleEmptyDialogOpenChange}
         finalFocus={false}
         onCloseComplete={handleEmptyDialogCloseComplete}

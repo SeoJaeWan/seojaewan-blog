@@ -478,7 +478,7 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
       </ChromePageArea>
       <MessageBoxDialog
         {...TRASHED_POST_MESSAGE}
-        open={trashedSlug !== null}
+        isOpen={trashedSlug !== null}
         onOpenChange={handleTrashedDialogOpenChange}
         onPrimaryClick={handleTrashedPostRestore}
       />

@@ -6,7 +6,7 @@ type DesktopIconImageProps = {
   /** 아이콘 종류 */
   kind: 'recycle-bin' | 'folder' | 'post' | 'link';
   /** 휴지통에 항목이 있으면 찬 모양으로 그린다. 휴지통에만 쓴다 */
-  full?: boolean;
+  isFull?: boolean;
 };
 
 /**
@@ -21,7 +21,7 @@ export function DesktopIconImage(props: DesktopIconImageProps): JSX.Element {
       return (
         <ImageAsset
           name={
-            props.full === true ? 'images/file-recycle-bin-full' : 'images/file-recycle-bin-empty'
+            props.isFull === true ? 'images/file-recycle-bin-full' : 'images/file-recycle-bin-empty'
           }
         />
       );

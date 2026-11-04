@@ -26,9 +26,9 @@ type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
    */
   placement?: ContextMenuAreaPlacement;
   /** 메뉴가 열렸는지. 쓰는 곳이 정한다 */
-  open: boolean;
+  isOpen: boolean;
   /**
-   * 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `open`을 바꾼다.
+   * 메뉴를 열거나 닫으려 할 때 부른다(우클릭, 길게 누르기, Esc, 바깥 클릭, 항목 고르기). 쓰는 곳이 `isOpen`을 바꾼다.
    * 열 때는 우클릭·길게 누른 자리의 요소(`target`)를 함께 넘겨, 쓰는 곳이 어떤 메뉴를 보일지 정하게 한다
    */
   onOpenChange: (isOpen: boolean, target: Element | null) => void;
@@ -55,7 +55,7 @@ type ContextMenuAreaProps = Pick<ComponentProps<typeof MenuPopup>, 'items'> & {
  * @param props
  */
 export function ContextMenuArea(props: ContextMenuAreaProps): JSX.Element {
-  const { area, placement, open: isOpen, onOpenChange, onCloseComplete, items } = props;
+  const { area, placement, isOpen, onOpenChange, onCloseComplete, items } = props;
   const [returnFocusElement, setReturnFocusElement] = useState<HTMLElement | null>(null);
   const [areaElement, setAreaElement] = useState<HTMLElement | null>(null);
 

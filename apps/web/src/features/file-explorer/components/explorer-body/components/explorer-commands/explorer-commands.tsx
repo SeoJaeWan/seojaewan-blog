@@ -226,7 +226,7 @@ export function ExplorerCommands(props: ExplorerCommandsProps): JSX.Element {
               items={closeOnSelect(menu, () => {
                 setOpenMenu(null);
               })}
-              open={openMenu === menuName}
+              isOpen={openMenu === menuName}
               onOpenChange={(isOpen: boolean) => {
                 setOpenMenu(isOpen ? menuName : null);
               }}

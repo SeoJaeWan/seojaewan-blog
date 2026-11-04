@@ -24,8 +24,8 @@ function PowerButtonStage(): JSX.Element {
   }
 
   return (
-    <StoryStage placement="bottom-end" target>
-      <StartPowerButton open={isOpen} onOpenChange={handleOpenChange} menuItems={menuPower} />
+    <StoryStage placement="bottom-end" isTarget>
+      <StartPowerButton isOpen={isOpen} onOpenChange={handleOpenChange} menuItems={menuPower} />
     </StoryStage>
   );
 }
@@ -37,7 +37,7 @@ const meta = {
   title: 'Patterns/Start/PowerButton',
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <StoryStage placement="bottom-end" target>
+    <StoryStage placement="bottom-end" isTarget>
       <StartPowerButton menuItems={menuPower} />
     </StoryStage>
   ),

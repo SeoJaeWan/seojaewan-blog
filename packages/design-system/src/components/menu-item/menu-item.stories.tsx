@@ -194,7 +194,7 @@ export const Disabled: Story = {
   args: { onClick: fn() },
   render: ({ onClick: handleClick }) => (
     <OpenMenu>
-      <MenuItem label="열기" disabled onClick={handleClick} />
+      <MenuItem label="열기" isDisabled onClick={handleClick} />
     </OpenMenu>
   ),
   play: async ({ args, canvas, userEvent }) => {

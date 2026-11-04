@@ -73,7 +73,7 @@ export function StartTile(props: StartTileProps): JSX.Element {
   }
   return (
     <ContextMenuArea
-      open={isMenuOpen}
+      isOpen={isMenuOpen}
       onOpenChange={handleMenuOpenChange}
       items={menuItems}
       area={tile}

@@ -35,7 +35,7 @@ function Opener(props: OpenerProps): JSX.Element {
       <button type="button" onClick={handleOpenClick}>
         열기
       </button>
-      <MessageBoxDialog {...props} open={isOpen} onOpenChange={handleOpenChange} />
+      <MessageBoxDialog {...props} isOpen={isOpen} onOpenChange={handleOpenChange} />
     </>
   );
 }

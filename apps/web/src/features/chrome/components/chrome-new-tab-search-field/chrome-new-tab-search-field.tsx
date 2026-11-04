@@ -35,7 +35,7 @@ export function ChromeNewTabSearchField(props: ChromeNewTabSearchFieldProps): JS
   return (
     <ChromeNewTabSearch
       {...inputProps}
-      open={isListOpen}
+      isOpen={isListOpen}
       listId={listId}
       suggestions={suggestions}
       selectedIndex={selectedIndex}

@@ -31,7 +31,7 @@ type ChromeNewTabSearchProps = Pick<
   /** 추천 목록. 개수는 검색 결과에 따라 정해진다 */
   suggestions?: readonly ChromeNewTabSuggestion[];
   /** 추천 목록을 열었는지(피그마 Popover State). 열면 입력칸에 포커스를 준다(입력 중인 모습). 기본은 닫힌 모습이다 */
-  open?: boolean;
+  isOpen?: boolean;
   /** 고른(Selected) 추천의 순서. 없으면 고른 추천이 없다 */
   selectedIndex?: number;
   /** 추천 목록 요소의 id. 검색창의 `aria-controls`와 추천 줄 id에 쓴다 */
@@ -63,7 +63,7 @@ const suggestionIcons = {
 export function ChromeNewTabSearch(props: ChromeNewTabSearchProps): JSX.Element {
   const {
     suggestions = [],
-    open: isOpen = false,
+    isOpen = false,
     selectedIndex,
     listId,
     onSuggestionSelect,

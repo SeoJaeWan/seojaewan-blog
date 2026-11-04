@@ -436,7 +436,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
         key={app}
         app={app}
         indicator={getTaskbarAppIndicator(state, app)}
-        open={isPreviewOpen}
+        isOpen={isPreviewOpen}
         onButtonClick={handleButtonClick}
         onButtonPointerDown={handleButtonPointerDown}
         menuItems={menuItems}
@@ -444,7 +444,7 @@ export function TaskbarAppsLayer(props: TaskbarAppsLayerProps): JSX.Element {
         onMenuOpenChange={handleButtonMenuOpenChange}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={hover.handlePointerLeave}
-        centered={isMobile}
+        isCentered={isMobile}
         isMenuAtPointer={isMobile}
         previews={
           isPreviewOpen ? (

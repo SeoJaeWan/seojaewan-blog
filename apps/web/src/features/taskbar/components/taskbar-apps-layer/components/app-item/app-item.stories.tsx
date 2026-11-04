@@ -27,11 +27,11 @@ function AppPreviewStory(): JSX.Element {
   }
 
   return (
-    <StoryStage placement="bottom-center" target>
+    <StoryStage placement="bottom-center" isTarget>
       <TaskbarAppItem
         app="file-explorer"
         indicator="active"
-        open={isOpen}
+        isOpen={isOpen}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         previews={<PreviewListStory count={2} />}
