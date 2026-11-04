@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-import { capturePublishPlan, CAPTURES_BRANCH } from './parity-captures.ts';
+import { captureCommitSubject, capturePublishPlan, CAPTURES_BRANCH } from './parity-captures.ts';
 import { defaultResultsDir } from './paths.ts';
 import { CAPTURES_FILE, type CaptureSummary } from './results.ts';
 
@@ -76,7 +76,7 @@ function main(): void {
         'commit',
         '--quiet',
         '-m',
-        `chore: update parity captures for ${env.sha.slice(0, 7)}`,
+        captureCommitSubject(env.sha),
       ]);
       if (git(['push', '--quiet', remote, `captures:refs/heads/${CAPTURES_BRANCH}`])) {
         console.log(

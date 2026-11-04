@@ -70,6 +70,7 @@ jobs:
           {
             if [ -n "$targets" ]; then echo "has-range=true"; else echo "has-range=false"; fi
             echo "target-args=$(jq -r '[.targets[] | "--target " + .] | join(" ")' <<< "$range")"
+            echo "base=$base"
           } >> "$GITHUB_OUTPUT"
           if [ "$CAN_WRITE" != true ] && [ -n "$targets" ]; then
             echo "포크에서 온 PR이라 쓰기 토큰이 없어 캡처하지 않는다."
@@ -106,16 +107,18 @@ jobs:
         run: pnpm --filter @seojaewan/figma-parity exec playwright install --with-deps chromium
 
       # 1·2. 빌드와 캡처: 범위에 컴포넌트가 있으면 디자인 시스템 Storybook을, 조립이 있으면 앱 Storybook을
-      # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다. 조립은 origin/parity-captures의 이전 코드 그림과 비교한다
+      # 정적으로 빌드하고, 범위 안 대상을 캡처해 차이 그림을 만든다. 조립은 origin/parity-captures에서 범위와 같은 기준의
+      # merge-base 시점 캡처 커밋을 골라 그 이전 코드 그림과 비교한다
       - name: Capture
         id: capture
         if: steps.range.outputs.has-range == 'true' && env.CAN_WRITE == 'true'
         continue-on-error: true
         env:
           TARGET_ARGS: ${{ steps.range.outputs.target-args }}
+          BASE: ${{ steps.range.outputs.base }}
         run: |
           # shellcheck disable=SC2086 # 대상 이름([a-z0-9/-])마다 --target 인자로 나눈다
-          node tools/figma-parity/src/run-capture.ts --previous origin/parity-captures $TARGET_ARGS
+          node tools/figma-parity/src/run-capture.ts --base "$BASE" --previous origin/parity-captures $TARGET_ARGS
 
       - name: Comment results on PR
         if: >-

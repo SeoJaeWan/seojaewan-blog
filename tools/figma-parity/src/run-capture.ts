@@ -4,8 +4,15 @@ import path from 'node:path';
 
 import { type AffectedSelection, type PatternCode, selectAffected } from './affected.ts';
 import { designSystemExports, usedComponents } from './design-system-exports.ts';
-import { changedFilesSince, gitShow, resolveCommit } from './git-files.ts';
-import { DEFAULT_PREVIOUS_REF } from './parity-captures.ts';
+import {
+  changedFilesSince,
+  commitSubjects,
+  gitShow,
+  isAncestorOrSame,
+  mergeBaseWith,
+  resolveCommit,
+} from './git-files.ts';
+import { DEFAULT_PREVIOUS_REF, selectPreviousCapture } from './parity-captures.ts';
 import {
   COMPONENTS_SOURCE_DIR,
   defaultResultsDir,
@@ -35,6 +42,7 @@ import { loadTargets, type Target, variantResultDir } from './targets.ts';
 // 결과는 <결과 폴더>/captures.json과 대상·변형마다 code.png, diff.png와 비교한 그림이다.
 // 컴포넌트는 피그마 그림(figma.png)과, 조립은 parity-captures의 이전 코드 그림(previous.png)과 비교한다.
 // --previous: 조립의 이전 코드 그림을 읽을 parity-captures 참조. 기본은 origin/parity-captures다.
+//             그 이력에서 --base(기본 origin/main)와의 merge-base 시점의 캡처 커밋을 고른다.
 //             참조가 없으면(브랜치를 받지 않았으면) 조립은 지금 그림만 남긴다.
 // --target: 대상 이름(`button`, `patterns/menu/folder`)이나 피그마 이름(`Button`, `Menu/Folder`)으로 고른다.
 // --affected: 기준 브랜치와 비교해 바뀐 파일로 범위를 정한다([[피그마 연동:캡처 범위]]).
@@ -295,22 +303,35 @@ function listSources(dir: string): string[] {
 }
 
 /**
- * 조립의 이전 코드 그림을 읽을 parity-captures 커밋을 정한다.
+ * 조립의 이전 코드 그림을 읽을 parity-captures 커밋을 정한다. 커밋 메시지의 main 커밋이 기준 참조와의 merge-base이거나
+ * 그 조상인 가장 최근 커밋이다.
  * @codocs [[피그마 연동:CI]]
  * @param argv 명령 인자
- * @returns 커밋 SHA. 참조가 없으면 null
+ * @returns 커밋 SHA. 참조나 맞는 커밋이 없으면 null
  */
 function previousCaptures(argv: readonly string[]): string | null {
   const index = argv.indexOf(PREVIOUS_FLAG);
   const ref = index >= 0 ? (argv[index + 1] ?? '') : DEFAULT_PREVIOUS_REF;
-  const commit = resolveCommit(ref);
-  if (commit === undefined) {
+  if (resolveCommit(ref) === undefined) {
     console.log(
       `[figma-parity] ${ref}가 없어 조립은 이전 코드 그림 없이 지금 그림만 남긴다(git fetch origin parity-captures).`,
     );
     return null;
   }
-  console.log(`[figma-parity] 조립의 이전 코드 그림: ${ref} (${commit.slice(0, 7)})`);
+  const baseIndex = argv.indexOf(BASE_FLAG);
+  const mergeBase = mergeBaseWith(baseIndex >= 0 ? argv[baseIndex + 1] : undefined);
+  const commit = selectPreviousCapture(commitSubjects(ref), (main) =>
+    isAncestorOrSame(main, mergeBase),
+  );
+  if (commit === undefined) {
+    console.log(
+      `[figma-parity] ${ref}에 merge-base(${mergeBase.slice(0, 7)}) 이전의 캡처가 없어 조립은 지금 그림만 남긴다.`,
+    );
+    return null;
+  }
+  console.log(
+    `[figma-parity] 조립의 이전 코드 그림: ${ref} ${commit.slice(0, 7)} (merge-base ${mergeBase.slice(0, 7)} 기준)`,
+  );
   return commit;
 }
 

@@ -16,16 +16,58 @@ export function changedFilesSince(base: string | undefined): {
   mergeBase: string;
   files: string[];
 } {
-  const ref = base ?? DEFAULT_BASES.find(hasRef);
-  if (ref === undefined) {
-    throw new Error('비교 기준 브랜치를 찾지 못했다. --base <ref>로 정한다.');
-  }
-  const mergeBase = git(['merge-base', ref, 'HEAD']).trim();
+  const mergeBase = mergeBaseWith(base);
   const files = [
     ...git(['diff', '--name-only', '--no-renames', '-z', mergeBase]).split('\0'),
     ...git(['ls-files', '--others', '--exclude-standard', '--full-name', '-z']).split('\0'),
   ].filter(Boolean);
   return { mergeBase, files };
+}
+
+/**
+ * 기준 참조와 HEAD의 merge-base를 구한다.
+ * @param base 기준 참조. 없으면 DEFAULT_BASES에서 있는 것을 쓴다
+ * @returns merge-base 커밋
+ */
+export function mergeBaseWith(base: string | undefined): string {
+  const ref = base ?? DEFAULT_BASES.find(hasRef);
+  if (ref === undefined) {
+    throw new Error('비교 기준 브랜치를 찾지 못했다. --base <ref>로 정한다.');
+  }
+  return git(['merge-base', ref, 'HEAD']).trim();
+}
+
+/**
+ * 참조에서 거슬러 올라가는 커밋과 메시지 첫 줄을 최근 것부터 읽는다.
+ * @param ref 참조
+ * @returns 커밋과 메시지 첫 줄
+ */
+export function commitSubjects(ref: string): { commit: string; subject: string }[] {
+  return git(['log', '--format=%H%x09%s', ref])
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => {
+      const [commit = '', ...subject] = line.split('\t');
+      return { commit, subject: subject.join('\t') };
+    });
+}
+
+/**
+ * 커밋이 다른 커밋과 같거나 그 조상인지 본다.
+ * @param commit 확인할 커밋(앞부분 SHA도 된다)
+ * @param descendant 기준 커밋
+ * @returns 같거나 조상이면 true. 커밋을 찾지 못하면 false
+ */
+export function isAncestorOrSame(commit: string, descendant: string): boolean {
+  try {
+    execFileSync('git', ['merge-base', '--is-ancestor', `${commit}^{commit}`, descendant], {
+      cwd: repoRoot,
+      stdio: 'ignore',
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
