@@ -34,8 +34,9 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
   const isMobile = device === 'mobile';
   return (
     <ShellSurface device={device} className={className} style={style}>
-      {/* 피그마 `padding` 배치 프레임이다. 가로 여백 없이 위아래 32만 둔다. 모바일은 검색 줄과 본문 사이 간격 16을 둔다.
-          가로 여백은 줄마다 갖는다. 검색 줄(`search row`)은 자기 좌우 여백 16을 갖고, 본문은 패널 폭을 채우고 안에서 여백을 준다 */}
+      {/* 패널 폭 전체에 위아래 여백 32만 두고, 모바일은 검색 줄과 본문 사이 간격 16을 둔다.
+          좌우 여백은 줄마다 갖는다. 검색 줄은 자기 좌우 여백 16을 갖고, 본문은 패널 폭을 채우고 안에서 여백을 준다.
+          그래서 스크롤바는 패널 가장자리에 붙는다 */}
       <div className="flex size-full flex-col items-start gap-spacing-lg py-spacing-3xl">
         {isMobile && (
           <div className="flex w-full shrink-shrink-none px-spacing-lg">
