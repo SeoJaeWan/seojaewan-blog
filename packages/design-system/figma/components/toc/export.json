@@ -1,5 +1,5 @@
 {
-  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.",
+  "description": "글 페이지의 목차로, 넓은 창에서는 펼치고 좁은 창에서는 접어 쓴다.\n@sample-size width",
   "name": "Toc",
   "nodeId": "398:5502",
   "propertyDefinitions": {
@@ -31,7 +31,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "title",
             "size": {
@@ -49,7 +49,7 @@
               "segments": [
                 {
                   "characters": "목차",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -59,7 +59,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_chevron_down_20_regular"
             },
             "component": "ic_fluent_chevron_down_20_regular",
@@ -78,7 +78,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -114,11 +114,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/toc/width"
+        "type": "COMPONENT"
       }
     },
     "state=expanded": {
@@ -138,7 +137,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "heading",
                 "size": {
@@ -156,7 +155,7 @@
                   "segments": [
                     {
                       "characters": "목차",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Strong"
                     }
                   ],
@@ -180,7 +179,7 @@
             },
             "name": "title",
             "properties": {
-              "Show action": false,
+              "Has action": false,
               "Title": "목차"
             },
             "size": {
@@ -199,7 +198,7 @@
                 "children": [
                   {
                     "fills": [
-                      "accent-fill/default"
+                      "color/blue/59"
                     ],
                     "name": "indicator",
                     "size": {
@@ -215,7 +214,7 @@
                   },
                   {
                     "fills": [
-                      "accent-text-fill/primary"
+                      "color/blue/72"
                     ],
                     "name": "label",
                     "size": {
@@ -233,12 +232,12 @@
                       "segments": [
                         {
                           "characters": "use ",
-                          "fill": "accent-text-fill/primary",
+                          "fill": "color/blue/72",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "훅",
-                          "fill": "accent-text-fill/primary",
+                          "fill": "color/blue/72",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -280,7 +279,7 @@
                 "children": [
                   {
                     "fills": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "name": "indicator",
                     "size": {
@@ -296,7 +295,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "label",
                     "size": {
@@ -314,7 +313,7 @@
                       "segments": [
                         {
                           "characters": "useActionState",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Body"
                         }
                       ],
@@ -356,7 +355,7 @@
                 "children": [
                   {
                     "fills": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "name": "indicator",
                     "size": {
@@ -372,7 +371,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "label",
                     "size": {
@@ -390,7 +389,7 @@
                       "segments": [
                         {
                           "characters": "useOptimistic",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Body"
                         }
                       ],
@@ -432,7 +431,7 @@
                 "children": [
                   {
                     "fills": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "name": "indicator",
                     "size": {
@@ -448,7 +447,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "label",
                     "size": {
@@ -466,7 +465,7 @@
                       "segments": [
                         {
                           "characters": "마이그레이션",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -550,8 +549,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/toc/width"
+        "type": "COMPONENT"
       }
     }
   }

@@ -7,13 +7,13 @@ import { Asset } from '../asset/asset';
 type AddressBarProps = Omit<ComponentProps<typeof Input>, 'className' | 'defaultValue' | 'type'> & {
   /** 바깥 상자에 덧붙일 클래스. 너비 같은 바깥 배치에만 쓴다 */
   className?: string;
-  /** 피그마 TEXT 속성 Query. 추천 목록이 열린 동안(`suggesting`) 입력창의 처음 값이다 */
+  /** 피그마 TEXT 속성 Query. 추천 목록이 열린 동안(`isSuggesting`) 입력창의 처음 값이다 */
   query?: string;
   /**
    * 피그마 State=Suggesting. 입력하는 중이고 추천 목록이 열려 있음을 나타낸다.
    * 바탕이 흰 팝업 머리 모양(모서리 overlay, 그림자)이 되고 앞 아이콘이 돋보기로 바뀐다
    */
-  suggesting?: boolean;
+  isSuggesting?: boolean;
   /** 피그마 TEXT 속성 URL. 평소 입력창의 처음 값이다(`value`를 주면 url·query를 쓰지 않는다) */
   url?: string;
 };
@@ -37,7 +37,7 @@ const CONTAINER_CLASS_NAMES = {
  * Chrome 주소창(피그마 AddressBar)을 그린다. BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.
  * 입력과 접근성은 Base UI Input이 맡는다. 접근성 이름은 `aria-label`이나 label 요소로 붙인다.
  * 포커스를 받으면 주소 전체를 선택한다. 피그마 Focused의 주소 글자 모습은 실제 글자 선택(`::selection`)이다.
- * 추천 목록은 조립이 Popover로 붙이고, 열려 있는 동안 `suggesting`을 켠다.
+ * 추천 목록은 조립이 Popover로 붙이고, 열려 있는 동안 `isSuggesting`을 켠다.
  * 너비는 갖지 않고 쓰는 곳이 정한다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[Chrome:주소창]]
@@ -47,7 +47,7 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
   const {
     className,
     query = '검색어',
-    suggesting: isSuggesting = false,
+    isSuggesting = false,
     url = '웹 주소',
     value,
     onFocus,

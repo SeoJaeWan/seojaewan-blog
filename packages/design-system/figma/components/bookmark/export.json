@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 링크 카드로, 글 페이지에 쓴다.",
+  "description": "글 본문의 링크 카드로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Bookmark",
   "nodeId": "1380:6869",
   "propertyDefinitions": {
@@ -30,7 +30,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "title",
             "size": {
@@ -48,7 +48,7 @@
               "segments": [
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -58,7 +58,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "description",
             "size": {
@@ -76,7 +76,7 @@
               "segments": [
                 {
                   "characters": "설명",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -88,7 +88,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_link_20_regular"
                 },
                 "component": "ic_fluent_link_20_regular",
@@ -107,7 +107,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "address",
                 "size": {
@@ -125,7 +125,7 @@
                   "segments": [
                     {
                       "characters": "주소",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -159,7 +159,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -195,11 +195,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

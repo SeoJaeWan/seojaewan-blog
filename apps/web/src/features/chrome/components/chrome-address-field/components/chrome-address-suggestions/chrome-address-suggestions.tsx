@@ -81,7 +81,7 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
       trigger={
         <AddressBar
           {...addressBarProps}
-          suggesting={isOpen}
+          isSuggesting={isOpen}
           query={query}
           className={sizeClassName}
         />

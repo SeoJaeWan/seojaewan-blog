@@ -23,8 +23,8 @@ type FigmaArgs = {
   type: string;
   /** 피그마 TEXT 속성 Location */
   location: string;
-  /** 피그마 BOOLEAN 속성 Show location */
-  showLocation: boolean;
+  /** 피그마 BOOLEAN 속성 Has location */
+  hasLocation: boolean;
   /** 피그마 TEXT 속성 Original location */
   originalLocation: string;
   /** 피그마 TEXT 속성 Deleted date */
@@ -42,7 +42,7 @@ const meta = {
     date: '수정한 날짜',
     type: '유형',
     location: '위치',
-    showLocation: false,
+    hasLocation: false,
     originalLocation: '원래 위치',
     deletedDate: '삭제한 날짜',
   },
@@ -53,7 +53,7 @@ const meta = {
     date: { control: 'text' },
     type: { control: 'text' },
     location: { control: 'text' },
-    showLocation: { control: 'boolean' },
+    hasLocation: { control: 'boolean' },
     originalLocation: { control: 'text' },
     deletedDate: { control: 'text' },
   },
@@ -68,13 +68,13 @@ const meta = {
       date={args.date}
       type={args.type}
       location={args.location}
-      showLocation={args.showLocation}
+      hasLocation={args.hasLocation}
       originalLocation={args.originalLocation}
       deletedDate={args.deletedDate}
       icon={<img src={folderIcon} alt="" />}
-      selected={args.state === 'selected' || args.state === 'cut-selected'}
-      cut={args.state === 'cut' || args.state === 'cut-selected'}
-      renaming={args.state === 'rename'}
+      isSelected={args.state === 'selected' || args.state === 'cut-selected'}
+      isCut={args.state === 'cut' || args.state === 'cut-selected'}
+      isRenaming={args.state === 'rename'}
     />
   ),
 } satisfies Meta<FigmaArgs>;
@@ -90,7 +90,7 @@ export const Figma: Story = {};
 
 // @codocs [[컴포넌트 목록:상태]]
 // @codocs [[디자인 시스템:아이콘 자리]]
-/** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 showLocation을 켜기 전에는 없다 */
+/** 기본 글자와 icon 슬롯을 그린다. 위치 칸은 hasLocation을 켜기 전에는 없다 */
 export const Default: Story = {
   render: () => <FileRow icon={<i>아이콘</i>} />,
   play: async ({ canvas }) => {
@@ -103,9 +103,9 @@ export const Default: Story = {
 };
 
 // @codocs [[컴포넌트 목록:상태]]
-/** showLocation을 켜면 위치 칸을 그린다 */
+/** hasLocation을 켜면 위치 칸을 그린다 */
 export const WithLocation: Story = {
-  render: () => <FileRow icon={<i />} showLocation />,
+  render: () => <FileRow icon={<i />} hasLocation />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText('위치')).toBeInTheDocument();
   },
@@ -114,7 +114,7 @@ export const WithLocation: Story = {
 // @codocs [[컴포넌트 목록:상태]]
 /** recycle-bin 보기는 원래 위치와 삭제한 날짜 칸을 그리고 수정한 날짜·유형·위치 칸은 그리지 않는다 */
 export const RecycleBin: Story = {
-  render: () => <FileRow icon={<i />} view="recycle-bin" showLocation />,
+  render: () => <FileRow icon={<i />} view="recycle-bin" hasLocation />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText('원래 위치')).toBeInTheDocument();
     await expect(canvas.getByText('삭제한 날짜')).toBeInTheDocument();
@@ -125,9 +125,9 @@ export const RecycleBin: Story = {
 };
 
 // @codocs [[컴포넌트 목록:상태]]
-/** selected면 선택된 줄이다 */
+/** isSelected면 선택된 줄이다 */
 export const Selected: Story = {
-  render: () => <FileRow data-testid="row" icon={<i />} selected />,
+  render: () => <FileRow data-testid="row" icon={<i />} isSelected />,
   play: async ({ canvas }) => {
     await expect(canvas.getByTestId('row')).toHaveAttribute('data-state', 'selected');
   },
@@ -135,9 +135,9 @@ export const Selected: Story = {
 
 // @codocs [[컴포넌트 목록:상태]]
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
-/** cut이면 잘라낸 줄이다 */
+/** isCut이면 잘라낸 줄이다 */
 export const Cut: Story = {
-  render: () => <FileRow data-testid="row" icon={<i />} cut />,
+  render: () => <FileRow data-testid="row" icon={<i />} isCut />,
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   play: async ({ canvas }) => {
     await expect(canvas.getByTestId('row')).toHaveAttribute('data-state', 'cut');
@@ -145,14 +145,14 @@ export const Cut: Story = {
 };
 
 // @codocs [[컴포넌트 목록:상태]]
-/** renaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
+/** isRenaming이면 이름 대신 입력 상자를 이름으로 채워 그리고, renameFieldProps를 입력창에 넘긴다 */
 export const Renaming: Story = {
   render: () => (
     <FileRow
       data-testid="row"
       icon={<i />}
       name="보고서"
-      renaming
+      isRenaming
       renameFieldProps={{ 'aria-label': '새 이름' }}
     />
   ),
