@@ -32,10 +32,6 @@ type Story = StoryObj<typeof meta>;
 
 // 색은 바꾸지 않는다. Windows 모양을 유지하기로 함([[접근성:색 대비]]).
 export const Figma: Story = {
-  // KaTeX 그림 부품(CSS 포함)은 PostBlocks가 지연해 불러온다. 캡처가 그 전에 찍히지 않게 미리 불러 둔다.
-  beforeEach: async () => {
-    await import('./katex-html');
-  },
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
 };
 
@@ -128,8 +124,7 @@ export const Structure: Story = {
     });
 
     await step('서버가 KaTeX로 그린 수식 HTML을 Equation 자리에 넣는다', async () => {
-      // KaTeX 그림 부품은 lazy라 첫 조각을 받는 시간까지 기다린다
-      await expect(await canvas.findByText('수식 그림', {}, { timeout: 5000 })).toBeVisible();
+      await expect(canvas.getByText('수식 그림')).toBeVisible();
     });
 
     await step('서버가 그리지 못한 수식은 식 글자를 보인다', async () => {

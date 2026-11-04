@@ -81,7 +81,7 @@ export const codeBlockStorySample: {
       token('return', '#af00db'),
       token(' ', null),
       token('<', '#800000'),
-      token('Article', '#267f99'),
+      token('Article', '#257c96'),
       token(' ', null),
       token('post', '#e50000'),
       token('=', null),

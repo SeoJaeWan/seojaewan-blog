@@ -7,7 +7,11 @@ import { postPageBlocks } from '@/features/chrome/components/chrome-page/story-d
 import { sampleBlocks } from '@/features/chrome/components/post-blocks/story-data';
 import type { CodeToken, PostBlock } from '@/shared/utils/post-body/post-body';
 
-import { CODE_HIGHLIGHT_THEME, highlightCode } from './code-highlight';
+import {
+  CODE_HIGHLIGHT_COLOR_REPLACEMENTS,
+  CODE_HIGHLIGHT_THEME,
+  highlightCode,
+} from './code-highlight';
 
 vi.mock('server-only', () => ({}));
 
@@ -33,6 +37,27 @@ function colorOf(lines: readonly (readonly CodeToken[])[], text: string): string
     throw new Error(`"${text}" 조각이 없다: ${JSON.stringify(lines)}`);
   }
   return token.color;
+}
+
+/**
+ * 코드 블록 바탕(`#f9f9f9`) 위 글자색의 대비를 WCAG 식으로 잰다.
+ * @param hex 글자색(hex)
+ * @returns 대비
+ */
+function contrastOnCodeBackground(hex: string): number {
+  /**
+   * 상대 휘도를 구한다.
+   * @param color hex 색
+   * @returns 상대 휘도
+   */
+  function luminance(color: string): number {
+    const [red = 0, green = 0, blue = 0] = [1, 3, 5].map((start) => {
+      const channel = Number.parseInt(color.slice(start, start + 2), 16) / 255;
+      return channel <= 0.039_28 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  }
+  return (luminance('#f9f9f9') + 0.05) / (luminance(hex) + 0.05);
 }
 
 /**
@@ -72,12 +97,21 @@ describe('기술 스택:글 본문 처리', () => {
     expect(colorOf(lines, '// 글을 읽는다')).toBe('#008000');
     expect(colorOf(lines, '1')).toBe('#098658');
     expect(colorOf(lines, 'readPost')).toBe('#795e26');
-    expect(colorOf(lines, 'boolean')).toBe('#267f99');
+    expect(colorOf(lines, 'boolean')).toBe('#257c96');
     expect(colorOf(lines, 'post')).toBe('#0070c1');
     expect(colorOf(lines, '/>')).toBe('#800000');
     for (const token of lines.flat()) {
       expect(token.color === null || /^#[0-9a-f]{6}$/u.test(token.color), token.text).toBe(true);
     }
+  });
+
+  it('Light+의 #267f99(대비 4.35:1)는 #257c96(4.53:1)으로 바꿔 쓴다', async () => {
+    expect(CODE_HIGHLIGHT_COLOR_REPLACEMENTS).toEqual({ '#267f99': '#257c96' });
+    expect(contrastOnCodeBackground('#267f99')).toBeLessThan(4.5);
+    expect(contrastOnCodeBackground('#257c96')).toBeGreaterThanOrEqual(4.5);
+    const colors = (await highlightSource()).flat().map((token) => token.color);
+    expect(colors).toContain('#257c96');
+    expect(colors).not.toContain('#267f99');
   });
 
   it('테마의 기본 글자색인 조각은 색이 없다(null)', async () => {

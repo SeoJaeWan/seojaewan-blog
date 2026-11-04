@@ -27,7 +27,7 @@ export const Figma: Story = {
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Copy: Story = {
   render: () => (
-    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.plainLines} />
+    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.lines} />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
