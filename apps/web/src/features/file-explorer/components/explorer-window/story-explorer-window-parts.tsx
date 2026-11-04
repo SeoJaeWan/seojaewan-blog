@@ -174,7 +174,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
             key={label}
             label={label}
             isCurrent={isCurrent}
-            showSeparator={!isCurrent}
+            hasSeparator={!isCurrent}
             className="shrink-shrink-none"
           />
         );
@@ -191,7 +191,7 @@ export function getExplorerWindowParts(variant: ExplorerWindowVariant): Explorer
           key={item.label}
           level={item.level}
           expand={item.expand}
-          selected={'selected' in item}
+          isSelected={'selected' in item}
           label={item.label}
           icon={NAVIGATION_ICONS[item.icon]}
           className="w-size-navigation-item-width"
