@@ -876,7 +876,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           // 항목 바로 아래에 두고, 말풍선 꼬리가 Tooltip 위로 나온 만큼(spacing/sm) 띄운다.
           <Tooltip
             {...rename.errorBalloonProps}
-            type="balloon"
+            variant="balloon"
             message={rename.errorMessage}
             className="absolute top-full left-spacing-none z-layer-balloon mt-spacing-sm"
           />

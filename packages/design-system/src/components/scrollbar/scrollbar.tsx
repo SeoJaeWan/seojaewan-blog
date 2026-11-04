@@ -3,13 +3,11 @@ import type { ComponentProps, CSSProperties, JSX } from 'react';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-export type ScrollbarState = 'rest' | 'expanded';
-
 export type ScrollbarMaterial = 'acrylic' | 'solid';
 
 type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 State. rest는 얇은 막대만, expanded는 바탕과 양 끝 화살표를 함께 그리고 막대가 두꺼워진다 */
-  state?: ScrollbarState;
+  /** 피그마 State=Expanded. false(Rest)는 얇은 막대만, true는 바탕과 양 끝 화살표를 함께 그리고 막대가 두꺼워진다 */
+  isExpanded?: boolean;
   /** 피그마 Material(State=Expanded의 바탕). acrylic은 뒤가 흐리게 비치는 재질, solid는 재질 효과를 뺀 단색이다 */
   material?: ScrollbarMaterial;
   /** 막대(thumb)가 트랙 위쪽에서 떨어진 거리(px). 쓰는 곳(ScrollArea)이 실행 중에 정한다. 없으면 피그마 기본값 10이다 */
@@ -26,18 +24,17 @@ type ScrollbarProps = Omit<ComponentProps<'div'>, 'children'> & {
  */
 export function Scrollbar(props: ScrollbarProps): JSX.Element {
   const {
-    state = 'rest',
+    isExpanded = false,
     material = 'acrylic',
     thumbOffset,
     thumbLength,
     className,
     ...divProps
   } = props;
-  const isExpanded = state === 'expanded';
   const thumbStyle: CSSProperties = { top: thumbOffset, height: thumbLength };
   return (
     <div
-      data-state={state}
+      data-state={isExpanded ? 'expanded' : 'rest'}
       {...divProps}
       className={cn(
         // 길이 방향 크기는 쓰는 곳(ScrollArea)이 정하므로 루트는 두께(size/12)만 가진다.

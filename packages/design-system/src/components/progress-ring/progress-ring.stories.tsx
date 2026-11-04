@@ -5,11 +5,11 @@ import { expect } from 'storybook/test';
 import { ProgressRing } from './progress-ring';
 
 // 피그마 ProgressRing의 변형 속성 값이다(정규화한 이름).
-const TONES = ['accent', 'on-dark'] as const;
+const VARIANTS = ['accent', 'on-dark'] as const;
 const SIZES = ['16', '32', '64'] as const;
 
 type FigmaArgs = {
-  tone: (typeof TONES)[number];
+  variant: (typeof VARIANTS)[number];
   size: (typeof SIZES)[number];
 };
 
@@ -17,34 +17,34 @@ type FigmaArgs = {
  * on-dark 링은 흰 호라 기본(흰) 화면 위에서는 피그마 그림과 코드 그림이 모두 보이지 않는다.
  * 캡처 도구가 화면(body)의 배경색을 읽어 두 그림을 같은 색 위에 놓으므로, 쓰는 곳인 재부팅 화면의 바탕색을 화면에 깐다.
  * @param props
- * @param props.tone 피그마 Tone
+ * @param props.variant 피그마 Variant
  * @param props.children 그릴 링
  * @returns 링
  */
-function Backdrop(props: { tone: FigmaArgs['tone']; children: ReactNode }): JSX.Element {
-  const { tone, children } = props;
+function Backdrop(props: { variant: FigmaArgs['variant']; children: ReactNode }): JSX.Element {
+  const { variant, children } = props;
   useLayoutEffect(() => {
-    if (tone !== 'on-dark') {
+    if (variant !== 'on-dark') {
       return undefined;
     }
     document.body.style.backgroundColor = 'var(--color-black)';
     return () => {
       document.body.style.backgroundColor = '';
     };
-  }, [tone]);
+  }, [variant]);
   return <>{children}</>;
 }
 
 const meta = {
   title: 'Components/ProgressRing',
-  args: { tone: 'accent', size: '16' },
+  args: { variant: 'accent', size: '16' },
   argTypes: {
-    tone: { control: 'inline-radio', options: TONES },
+    variant: { control: 'inline-radio', options: VARIANTS },
     size: { control: 'inline-radio', options: SIZES },
   },
   render: (args) => (
-    <Backdrop tone={args.tone}>
-      <ProgressRing tone={args.tone} size={args.size} aria-label="불러오는 중" />
+    <Backdrop variant={args.variant}>
+      <ProgressRing variant={args.variant} size={args.size} aria-label="불러오는 중" />
     </Backdrop>
   ),
 } satisfies Meta<FigmaArgs>;
