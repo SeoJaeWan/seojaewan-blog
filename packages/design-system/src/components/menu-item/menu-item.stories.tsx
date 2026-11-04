@@ -9,7 +9,7 @@ import { FigmaFrame } from '../../story/figma-frame';
 import { MenuItem } from './menu-item';
 
 // 피그마 MenuItem의 변형 속성 값이다(정규화한 이름).
-const KINDS = [
+const VARIANTS = [
   'default',
   'submenu',
   'toggle-on',
@@ -24,12 +24,12 @@ const LABEL = '메뉴 항목';
 const SHORTCUT = 'Ctrl+O';
 
 type FigmaArgs = {
-  kind: (typeof KINDS)[number];
+  variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
-  /** 피그마 BOOLEAN 속성 Show icon */
-  showIcon: boolean;
-  /** 피그마 BOOLEAN 속성 Show shortcut */
-  showShortcut: boolean;
+  /** 피그마 BOOLEAN 속성 Has icon */
+  hasIcon: boolean;
+  /** 피그마 BOOLEAN 속성 Has shortcut */
+  hasShortcut: boolean;
   /** 동작 스토리에서 호출 횟수를 확인하는 핸들러 */
   onClick?: () => void;
   /** 동작 스토리에서 확인 항목이 켜짐 여부를 알리는 핸들러 */
@@ -47,12 +47,12 @@ const noInitialFocus: Record<string, unknown> = { initialFocus: false };
 
 const meta = {
   title: 'Components/MenuItem',
-  args: { kind: 'default', state: 'rest', showIcon: true, showShortcut: false },
+  args: { variant: 'default', state: 'rest', hasIcon: true, hasShortcut: false },
   argTypes: {
-    kind: { control: 'inline-radio', options: KINDS },
+    variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
-    showIcon: { control: 'boolean' },
-    showShortcut: { control: 'boolean' },
+    hasIcon: { control: 'boolean' },
+    hasShortcut: { control: 'boolean' },
   },
   render: (args) => (
     <OpenMenu args={args}>
@@ -96,7 +96,7 @@ export const Checkbox: Story = {
   render: ({ onCheckedChange: handleCheckedChange }) => (
     <OpenMenu>
       <MenuItem
-        kind="checkbox"
+        variant="checkbox"
         label="숨김 항목"
         defaultChecked
         onCheckedChange={handleCheckedChange}
@@ -120,8 +120,8 @@ export const Radio: Story = {
   render: () => (
     <OpenMenu>
       <Menu.RadioGroup defaultValue="name">
-        <MenuItem kind="radio" label="이름" value="name" />
-        <MenuItem kind="radio" label="날짜" value="date" />
+        <MenuItem variant="radio" label="이름" value="name" />
+        <MenuItem variant="radio" label="날짜" value="date" />
       </Menu.RadioGroup>
     </OpenMenu>
   ),
@@ -144,7 +144,7 @@ export const Submenu: Story = {
   render: () => (
     <OpenMenu>
       <Menu.SubmenuRoot>
-        <MenuItem kind="submenu" label="새로 만들기" />
+        <MenuItem variant="submenu" label="새로 만들기" />
       </Menu.SubmenuRoot>
     </OpenMenu>
   ),
@@ -164,7 +164,7 @@ export const Zoom: Story = {
   render: ({ onClick: handleClick }) => (
     <OpenMenu>
       <MenuItem label="열기" onClick={handleClick} />
-      <MenuItem kind="zoom" label="확대/축소" value="110%" isZoomInDisabled />
+      <MenuItem variant="zoom" label="확대/축소" value="110%" isZoomInDisabled />
     </OpenMenu>
   ),
   play: async ({ canvas, userEvent, step }) => {
@@ -232,7 +232,7 @@ export const Standalone: Story = {
   args: { onClick: fn() },
   render: ({ onClick: handleClick }) => (
     <MenuItem
-      standalone
+      isStandalone
       label="열기"
       icon="icons/ic_fluent_open_20_regular.svg"
       onClick={handleClick}
@@ -253,35 +253,35 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
   const common = {
     label: LABEL,
     disabled: props.state === 'disabled',
-    shortcut: props.showShortcut ? SHORTCUT : undefined,
+    shortcut: props.hasShortcut ? SHORTCUT : undefined,
   };
-  const icon = props.showIcon ? ('icons/ic_fluent_open_20_regular.svg' as const) : undefined;
-  switch (props.kind) {
+  const icon = props.hasIcon ? ('icons/ic_fluent_open_20_regular.svg' as const) : undefined;
+  switch (props.variant) {
     case 'default':
       return <MenuItem {...common} icon={icon} />;
     case 'submenu':
       return (
         <Menu.SubmenuRoot>
-          <MenuItem {...common} kind="submenu" icon={icon} />
+          <MenuItem {...common} variant="submenu" icon={icon} />
         </Menu.SubmenuRoot>
       );
     case 'toggle-on':
-      return <MenuItem {...common} kind="checkbox" defaultChecked />;
+      return <MenuItem {...common} variant="checkbox" defaultChecked />;
     case 'toggle-off':
-      return <MenuItem {...common} kind="checkbox" defaultChecked={false} />;
+      return <MenuItem {...common} variant="checkbox" defaultChecked={false} />;
     case 'radio-on':
       return (
         <Menu.RadioGroup defaultValue={LABEL}>
-          <MenuItem {...common} kind="radio" value={LABEL} />
+          <MenuItem {...common} variant="radio" value={LABEL} />
         </Menu.RadioGroup>
       );
     case 'zoom':
-      return <MenuItem {...common} kind="zoom" value="100%" />;
+      return <MenuItem {...common} variant="zoom" value="100%" />;
     case 'radio-off':
       // 묶음의 값이 이 항목과 달라 골라지지 않은 라디오 항목이다.
       return (
         <Menu.RadioGroup defaultValue="">
-          <MenuItem {...common} kind="radio" value={LABEL} />
+          <MenuItem {...common} variant="radio" value={LABEL} />
         </Menu.RadioGroup>
       );
   }
