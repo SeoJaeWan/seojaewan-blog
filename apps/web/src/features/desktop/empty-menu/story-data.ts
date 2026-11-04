@@ -22,14 +22,8 @@ export const desktopMenuOptions = {
   onNewFolder: ignoreMenuAction,
 } satisfies Parameters<typeof getDesktopMenuEntries>[0];
 
-// 피그마 Submenu 변형마다 펼친 하위 메뉴 항목의 이름이다.
-const OPEN_SUBMENUS = { none: undefined, view: '보기', sort: '정렬 기준' } as const;
+/** 실제 바탕화면 빈 곳 메뉴 항목. 하위 메뉴가 열리는 `play` 스토리가 쓴다 */
+export const menuDesktopLive = getDesktopMenuEntries(desktopMenuOptions);
 
-/**
- * 피그마 Menu/Desktop: 바탕화면 빈 곳 우클릭. 펼친 하위 메뉴(Submenu)에 따라 항목이 달라진다
- * @param submenu 펼친 하위 메뉴
- * @returns 메뉴 항목
- */
-export function menuDesktop(submenu: keyof typeof OPEN_SUBMENUS): readonly MenuPopupEntry[] {
-  return previewMenu(getDesktopMenuEntries(desktopMenuOptions), OPEN_SUBMENUS[submenu]);
-}
+/** 피그마 Menu/Desktop: 바탕화면 빈 곳 우클릭. 하위 메뉴는 닫은 모양이다 */
+export const menuDesktop: readonly MenuPopupEntry[] = previewMenu(menuDesktopLive);

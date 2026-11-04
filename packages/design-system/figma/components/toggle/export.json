@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 펼치고 접는 블록으로, 글 페이지에 쓴다.",
+  "description": "글 본문의 펼치고 접는 블록으로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Toggle",
   "nodeId": "1380:6849",
   "propertyDefinitions": {
@@ -39,7 +39,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -84,7 +84,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "title",
                 "size": {
@@ -102,7 +102,7 @@
                   "segments": [
                     {
                       "characters": "제목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     }
                   ],
@@ -156,8 +156,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     },
     "state=expanded": {
@@ -179,7 +178,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -228,7 +227,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "title",
                 "size": {
@@ -246,7 +245,7 @@
                   "segments": [
                     {
                       "characters": "제목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     }
                   ],
@@ -282,7 +281,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "text",
                 "size": {
@@ -300,42 +299,42 @@
                   "segments": [
                     {
                       "characters": "토글을",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "펼치면",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "보이는",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "글이다",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": ".",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     }
                   ],
@@ -389,8 +388,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

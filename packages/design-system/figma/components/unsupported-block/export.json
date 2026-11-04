@@ -1,5 +1,5 @@
 {
-  "description": "지원하지 않는 Notion 블록 자리의 안내 상자로, 글 페이지에 쓴다.",
+  "description": "지원하지 않는 Notion 블록 자리의 안내 상자로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "UnsupportedBlock",
   "nodeId": "1380:6880",
   "propertyDefinitions": {
@@ -22,7 +22,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_warning_24_regular"
             },
             "component": "ic_fluent_warning_24_regular",
@@ -41,7 +41,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "message",
             "size": {
@@ -59,52 +59,52 @@
               "segments": [
                 {
                   "characters": "지원하지",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "않는",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "블록",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": "(",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "유형",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": ")",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 }
               ],
@@ -114,7 +114,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -150,11 +150,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

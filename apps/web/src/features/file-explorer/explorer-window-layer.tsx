@@ -292,7 +292,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
                 key={`${String(index)}-${entry.location ?? 'desktop'}`}
                 label={entry.name}
                 isCurrent={isCurrent}
-                showSeparator={!isCurrent}
+                hasSeparator={!isCurrent}
                 onLabelClick={() => {
                   handleNavigate(entry.location);
                 }}
@@ -324,9 +324,9 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
             />
           ),
         )}
-        backDisabled={!canGoBack(content)}
-        forwardDisabled={!canGoForward(content)}
-        upDisabled={getParentLocation(workspace, location) === undefined}
+        canGoBack={canGoBack(content)}
+        canGoForward={canGoForward(content)}
+        canGoUp={getParentLocation(workspace, location) !== undefined}
         onBack={handleBack}
         onForward={handleForward}
         onUp={handleUp}
@@ -407,7 +407,7 @@ function NavigationTreeItem(props: NavigationTreeItemProps): JSX.Element {
     <NavigationItem
       level={row.level}
       expand={row.expand}
-      selected={row.selected || isDropTarget}
+      isSelected={row.selected || isDropTarget}
       {...{ [DROP_TARGET_ATTRIBUTE]: row.key, [DROP_TARGET_NAME_ATTRIBUTE]: row.label }}
       label={row.label}
       icon={icon}

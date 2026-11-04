@@ -7,7 +7,7 @@ import { UnsupportedBlock } from './unsupported-block';
 
 const meta = {
   title: 'Components/UnsupportedBlock',
-  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 피그마 원본 너비로 감싼다.
+  // 너비는 쓰는 곳이 정하므로 FigmaFrame이 export.json의 견본 너비로 감싼다.
   decorators: [figmaFrame(unsupportedBlockExport)],
   render: () => <UnsupportedBlock />,
 } satisfies Meta;

@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.",
+  "description": "Chrome 주소창으로, BrowserToolbar와 주소창 추천 조립의 트리거에 쓴다.\n@sample-size width",
   "name": "AddressBar",
   "nodeId": "36:582",
   "propertyDefinitions": {
@@ -40,7 +40,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_info_24_regular"
                 },
                 "component": "ic_fluent_info_24_regular",
@@ -61,7 +61,7 @@
                 "children": [
                   {
                     "fills": [
-                      "chrome/omnibox-selection-text"
+                      "color/gray/88"
                     ],
                     "name": "url",
                     "size": {
@@ -79,17 +79,17 @@
                       "segments": [
                         {
                           "characters": "웹",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "주소",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -99,7 +99,7 @@
                   }
                 ],
                 "fills": [
-                  "chrome/omnibox-selection-background"
+                  "color/blue/9"
                 ],
                 "layout": {
                   "counterAlign": "MIN",
@@ -151,7 +151,7 @@
           }
         ],
         "fills": [
-          "chrome/toolbar-fill"
+          "color/white"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -187,11 +187,10 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "chrome/omnibox-stroke-focus"
+          "color/blue/60"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/address-bar/width"
+        "type": "COMPONENT"
       }
     },
     "state=hover": {
@@ -211,7 +210,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_info_24_regular"
                 },
                 "component": "ic_fluent_info_24_regular",
@@ -230,7 +229,7 @@
               },
               {
                 "fills": [
-                  "chrome/text-primary"
+                  "color/gray/88"
                 ],
                 "name": "url",
                 "size": {
@@ -248,17 +247,17 @@
                   "segments": [
                     {
                       "characters": "웹",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "주소",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -293,7 +292,7 @@
           }
         ],
         "fills": [
-          "chrome/omnibox-fill-hover"
+          "color/gray/9"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -322,8 +321,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/address-bar/width"
+        "type": "COMPONENT"
       }
     },
     "state=rest": {
@@ -343,7 +341,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_info_24_regular"
                 },
                 "component": "ic_fluent_info_24_regular",
@@ -362,7 +360,7 @@
               },
               {
                 "fills": [
-                  "chrome/text-primary"
+                  "color/gray/88"
                 ],
                 "name": "url",
                 "size": {
@@ -380,17 +378,17 @@
                   "segments": [
                     {
                       "characters": "웹",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "주소",
-                      "fill": "chrome/omnibox-selection-text",
+                      "fill": "color/gray/88",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -425,7 +423,7 @@
           }
         ],
         "fills": [
-          "chrome/omnibox-fill"
+          "color/blue/5"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -472,8 +470,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/address-bar/width"
+        "type": "COMPONENT"
       }
     },
     "state=suggesting": {
@@ -493,7 +490,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_search_16_regular"
                 },
                 "component": "ic_fluent_search_16_regular",
@@ -512,7 +509,7 @@
               },
               {
                 "fills": [
-                  "chrome/text-primary"
+                  "color/gray/88"
                 ],
                 "name": "url",
                 "size": {
@@ -530,7 +527,7 @@
                   "segments": [
                     {
                       "characters": "검색어",
-                      "fill": "chrome/text-primary",
+                      "fill": "color/gray/88",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -566,7 +563,7 @@
         ],
         "effectStyle": "Elevation/Flyout",
         "fills": [
-          "chrome/toolbar-fill"
+          "color/white"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -595,8 +592,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/address-bar/width"
+        "type": "COMPONENT"
       }
     }
   }

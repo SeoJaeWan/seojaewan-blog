@@ -9,7 +9,7 @@ import type { GridCell } from '@/shared/utils/workspace-rules/workspace-rules';
 /** 바탕화면 아이콘 종류. 폴더·글·외부 링크는 종류로, 휴지통은 찬 모양인지로 아이콘이 정해진다 */
 export type DesktopIconKind = 'recycle-bin' | 'folder' | 'post' | 'link';
 
-/** 바탕화면 아이콘 크기. 피그마 FileItem View(큰·보통·작은 아이콘)다 */
+/** 바탕화면 아이콘 크기. 피그마 FileItem Size(큰·보통·작은 아이콘)다 */
 export type DesktopIconView = 'large' | 'medium' | 'small';
 
 /** 바탕화면 아이콘 하나 */
@@ -35,7 +35,7 @@ export type DesktopIcon = {
 /** 아이콘(FileItem)마다 더하는 동작·접근성 속성 */
 export type DesktopIconProps = Omit<
   ComponentProps<typeof FileItem>,
-  'icon' | 'name' | 'surface' | 'view' | 'selected' | 'renaming' | 'cut' | 'className'
+  'icon' | 'name' | 'surface' | 'size' | 'isSelected' | 'isRenaming' | 'isCut' | 'className'
 > & {
   /** 아이콘을 찾거나 놓을 곳을 표시하는 data 속성 */
   [attribute: `data-${string}`]: string | undefined;
@@ -114,12 +114,12 @@ export function DesktopIcons(props: DesktopIconsProps): JSX.Element {
               onClick={handleClick}
               {...getIconProps?.(icon)}
               surface="desktop"
-              view={iconView}
+              size={iconView}
               name={icon.name}
               icon={<DesktopIconImage kind={icon.kind} full={icon.full} />}
-              selected={icon.selected}
-              renaming={icon.renaming}
-              cut={icon.cut}
+              isSelected={icon.selected}
+              isRenaming={icon.renaming}
+              isCut={icon.cut}
               className={
                 origin === null
                   ? undefined
