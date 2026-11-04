@@ -29,7 +29,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_open_20_regular"
                                     },
                                     "component": "ic_fluent_open_20_regular",
@@ -74,7 +74,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -92,7 +92,7 @@
                                   "segments": [
                                     {
                                       "characters": "열기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -102,7 +102,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -149,13 +149,13 @@
                         },
                         "name": "item 열기",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "열기",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -172,7 +172,7 @@
                           {
                             "component": "Separator",
                             "fills": [
-                              "divider-stroke/default"
+                              "color/black/8"
                             ],
                             "height": "stroke-width/default",
                             "name": "Separator",
@@ -222,7 +222,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_delete_20_regular"
                                     },
                                     "component": "ic_fluent_delete_20_regular",
@@ -267,7 +267,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -285,17 +285,17 @@
                                   "segments": [
                                     {
                                       "characters": "휴지통",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "비우기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -305,7 +305,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -352,13 +352,13 @@
                         },
                         "name": "item 휴지통 비우기",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "휴지통 비우기",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -441,7 +441,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "surface-stroke/flyout"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -469,8 +469,7 @@
               "h": "FIXED",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/menu/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
