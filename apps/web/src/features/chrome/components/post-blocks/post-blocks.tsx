@@ -156,7 +156,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
               <div className="flex w-full items-start gap-spacing-sm">
                 {item.type === 'to_do' ? (
                   <span className="flex size-size-post-block-marker shrink-shrink-none items-center justify-center">
-                    <Checkbox checked={item.checked} label={getPlainText(item.richText)} />
+                    <Checkbox isChecked={item.checked} label={getPlainText(item.richText)} />
                   </span>
                 ) : (
                   <span
