@@ -6,14 +6,6 @@
     "Icon": {
       "type": "INSTANCE_SWAP"
     },
-    "Kind": {
-      "default": "Default",
-      "options": [
-        "Default",
-        "Close"
-      ],
-      "type": "VARIANT"
-    },
     "State": {
       "default": "Rest",
       "options": [
@@ -23,10 +15,18 @@
         "Inactive"
       ],
       "type": "VARIANT"
+    },
+    "Variant": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Close"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "kind=close,state=hover": {
+    "variant=close,state=hover": {
       "node": {
         "height": 32,
         "width": 46,
@@ -35,14 +35,14 @@
       },
       "nodeId": "18:176",
       "properties": {
-        "Kind": "Close",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Close"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "caption-button/close-glyph-hover",
+              "color": "color/white",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -61,7 +61,7 @@
           }
         ],
         "fills": [
-          "caption-button/close-fill-hover"
+          "color/red/56"
         ],
         "height": "size/caption-button/height",
         "layout": {
@@ -76,10 +76,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Close, State=Hover",
+        "name": "Variant=Close, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Close, State=Pressed",
+            "destination": "Variant=Close, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -107,7 +107,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=close,state=inactive": {
+    "variant=close,state=inactive": {
       "node": {
         "height": 32,
         "width": 46,
@@ -116,14 +116,14 @@
       },
       "nodeId": "18:182",
       "properties": {
-        "Kind": "Close",
-        "State": "Inactive"
+        "State": "Inactive",
+        "Variant": "Close"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/disabled",
+              "color": "color/black/36",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -154,7 +154,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Close, State=Inactive",
+        "name": "Variant=Close, State=Inactive",
         "size": {
           "h": 32,
           "w": 46
@@ -167,7 +167,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=close,state=pressed": {
+    "variant=close,state=pressed": {
       "node": {
         "height": 32,
         "width": 46,
@@ -176,14 +176,14 @@
       },
       "nodeId": "18:179",
       "properties": {
-        "Kind": "Close",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Close"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "caption-button/close-glyph-pressed",
+              "color": "color/white/70",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -202,7 +202,7 @@
           }
         ],
         "fills": [
-          "caption-button/close-fill-pressed"
+          "color/red/56/90"
         ],
         "height": "size/caption-button/height",
         "layout": {
@@ -217,7 +217,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Close, State=Pressed",
+        "name": "Variant=Close, State=Pressed",
         "size": {
           "h": 32,
           "w": 46
@@ -230,7 +230,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=close,state=rest": {
+    "variant=close,state=rest": {
       "node": {
         "height": 32,
         "width": 46,
@@ -239,14 +239,14 @@
       },
       "nodeId": "18:173",
       "properties": {
-        "Kind": "Close",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Close"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_dismiss_20_regular"
             },
             "component": "ic_fluent_dismiss_20_regular",
@@ -277,10 +277,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Close, State=Rest",
+        "name": "Variant=Close, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Close, State=Hover",
+            "destination": "Variant=Close, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -308,7 +308,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=default,state=hover": {
+    "variant=default,state=hover": {
       "node": {
         "height": 32,
         "width": 46,
@@ -317,14 +317,14 @@
       },
       "nodeId": "18:140",
       "properties": {
-        "Kind": "Default",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_subtract_20_regular"
             },
             "component": "ic_fluent_subtract_20_regular",
@@ -343,7 +343,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/caption-button/height",
         "layout": {
@@ -358,10 +358,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Default, State=Hover",
+        "name": "Variant=Default, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Default, State=Pressed",
+            "destination": "Variant=Default, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -389,7 +389,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=default,state=inactive": {
+    "variant=default,state=inactive": {
       "node": {
         "height": 32,
         "width": 46,
@@ -398,14 +398,14 @@
       },
       "nodeId": "18:146",
       "properties": {
-        "Kind": "Default",
-        "State": "Inactive"
+        "State": "Inactive",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/disabled",
+              "color": "color/black/36",
               "path": "icons/ic_fluent_subtract_20_regular"
             },
             "component": "ic_fluent_subtract_20_regular",
@@ -436,7 +436,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Default, State=Inactive",
+        "name": "Variant=Default, State=Inactive",
         "size": {
           "h": 32,
           "w": 46
@@ -449,7 +449,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=default,state=pressed": {
+    "variant=default,state=pressed": {
       "node": {
         "height": 32,
         "width": 46,
@@ -458,14 +458,14 @@
       },
       "nodeId": "18:143",
       "properties": {
-        "Kind": "Default",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_subtract_20_regular"
             },
             "component": "ic_fluent_subtract_20_regular",
@@ -484,7 +484,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/tertiary"
+          "color/black/2"
         ],
         "height": "size/caption-button/height",
         "layout": {
@@ -499,7 +499,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Default, State=Pressed",
+        "name": "Variant=Default, State=Pressed",
         "size": {
           "h": 32,
           "w": 46
@@ -512,7 +512,7 @@
         "width": "size/caption-button/width"
       }
     },
-    "kind=default,state=rest": {
+    "variant=default,state=rest": {
       "node": {
         "height": 32,
         "width": 46,
@@ -521,14 +521,14 @@
       },
       "nodeId": "18:137",
       "properties": {
-        "Kind": "Default",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_subtract_20_regular"
             },
             "component": "ic_fluent_subtract_20_regular",
@@ -559,10 +559,10 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Kind=Default, State=Rest",
+        "name": "Variant=Default, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Default, State=Hover",
+            "destination": "Variant=Default, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
