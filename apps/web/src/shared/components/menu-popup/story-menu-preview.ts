@@ -10,30 +10,20 @@ export function ignoreMenuAction(): void {
 
 /**
  * 실제 메뉴 함수가 만든 항목을 조립 스토리 모양으로 바꾼다. 실제 하위 메뉴(`entries`)는 마우스·키보드로 여닫는 항목이라,
- * 피그마 조립이 펼친 하위 메뉴 하나만 항목 옆에 연 모습(`submenu`)으로 바꾸고 나머지는 닫힌 하위 메뉴 항목으로 둔다.
+ * 피그마 조립처럼 하위 메뉴를 닫은 항목으로만 그린다. 하위 메뉴가 열리는 동작과 항목은 `play` 동작 스토리가 실제 메뉴로 확인한다.
  * @param entries 실제 메뉴 함수가 만든 항목
- * @param openSubmenu 펼친 하위 메뉴 항목의 이름. 없으면 모두 닫힌 모습이다
  * @returns 스토리에 그릴 항목
  */
-export function previewMenu(
-  entries: readonly MenuPopupEntry[],
-  openSubmenu?: string,
-): MenuPopupEntry[] {
+export function previewMenu(entries: readonly MenuPopupEntry[]): MenuPopupEntry[] {
   return entries.map(
     /**
-     * 하위 메뉴 항목이면 펼친 모습이나 닫힌 모습으로 바꾼다.
+     * 하위 메뉴 항목이면 닫은 모습으로 바꾼다.
      * @param entry 메뉴 한 줄
      * @returns 스토리에 그릴 메뉴 한 줄
      */
-    (entry) => {
-      if (entry.kind !== 'submenu') {
-        return entry;
-      }
-      const { entries: submenuEntries, ...trigger } = entry;
-      return {
-        ...trigger,
-        submenu: entry.label === openSubmenu ? submenuEntries : undefined,
-      };
-    },
+    (entry) =>
+      entry.kind === 'submenu'
+        ? { kind: 'submenu', label: entry.label, icon: entry.icon, disabled: entry.disabled }
+        : entry,
   );
 }
