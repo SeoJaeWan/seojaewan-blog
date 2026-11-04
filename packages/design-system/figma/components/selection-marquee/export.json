@@ -1,5 +1,5 @@
 {
-  "description": "끌어서 여러 항목을 고르는 선택 사각형으로, 바탕화면과 탐색기에 쓴다.",
+  "description": "끌어서 여러 항목을 고르는 선택 사각형으로, 바탕화면과 탐색기에 쓴다.\n@sample-size width height",
   "name": "SelectionMarquee",
   "nodeId": "90:2738",
   "propertyDefinitions": {},
@@ -15,9 +15,8 @@
       "properties": {},
       "tree": {
         "fills": [
-          "selection-marquee/fill"
+          "color/blue/5"
         ],
-        "height": "size/selection-marquee/height",
         "name": "SelectionMarquee",
         "size": {
           "h": 160,
@@ -34,11 +33,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "selection-marquee/stroke"
+          "color/blue/18"
         ],
         "strokesIncludedInLayout": false,
-        "type": "COMPONENT",
-        "width": "size/selection-marquee/width"
+        "type": "COMPONENT"
       }
     }
   }
