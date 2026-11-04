@@ -3,21 +3,13 @@
   "name": "BreadcrumbItem",
   "nodeId": "31:420",
   "propertyDefinitions": {
-    "Current": {
-      "default": "False",
-      "options": [
-        "False",
-        "True"
-      ],
-      "type": "VARIANT"
+    "Has separator": {
+      "default": true,
+      "type": "BOOLEAN"
     },
     "Label": {
       "default": "위치 이름",
       "type": "TEXT"
-    },
-    "Show separator": {
-      "default": true,
-      "type": "BOOLEAN"
     },
     "State": {
       "default": "Rest",
@@ -30,7 +22,7 @@
     }
   },
   "variants": {
-    "current=false,state=hover": {
+    "state=hover": {
       "node": {
         "height": 24,
         "width": 73,
@@ -39,7 +31,6 @@
       },
       "nodeId": "31:395",
       "properties": {
-        "Current": "False",
         "State": "Hover"
       },
       "tree": {
@@ -48,7 +39,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -66,17 +57,17 @@
                   "segments": [
                     {
                       "characters": "위치",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "이름",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -86,7 +77,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -120,7 +111,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -150,10 +141,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Current=False, State=Hover",
+        "name": "State=Hover",
         "reactions": [
           {
-            "destination": "Current=False, State=Pressed",
+            "destination": "State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -180,7 +171,7 @@
         "type": "COMPONENT"
       }
     },
-    "current=false,state=pressed": {
+    "state=pressed": {
       "node": {
         "height": 24,
         "width": 73,
@@ -189,7 +180,6 @@
       },
       "nodeId": "31:400",
       "properties": {
-        "Current": "False",
         "State": "Pressed"
       },
       "tree": {
@@ -198,7 +188,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -216,17 +206,17 @@
                   "segments": [
                     {
                       "characters": "위치",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "이름",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -236,7 +226,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -270,7 +260,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -300,7 +290,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Current=False, State=Pressed",
+        "name": "State=Pressed",
         "size": {
           "h": 24,
           "w": 73
@@ -312,7 +302,7 @@
         "type": "COMPONENT"
       }
     },
-    "current=false,state=rest": {
+    "state=rest": {
       "node": {
         "height": 24,
         "width": 73,
@@ -321,7 +311,6 @@
       },
       "nodeId": "31:390",
       "properties": {
-        "Current": "False",
         "State": "Rest"
       },
       "tree": {
@@ -330,7 +319,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -348,17 +337,17 @@
                   "segments": [
                     {
                       "characters": "위치",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Caption"
                     },
                     {
                       "characters": "이름",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -399,7 +388,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -429,439 +418,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Current=False, State=Rest",
+        "name": "State=Rest",
         "reactions": [
           {
-            "destination": "Current=False, State=Hover",
-            "navigation": "CHANGE_TO",
-            "transition": {
-              "bezier": [
-                0,
-                0,
-                1,
-                1
-              ],
-              "durationMs": 83,
-              "easing": "LINEAR",
-              "type": "SMART_ANIMATE"
-            },
-            "trigger": "ON_HOVER"
-          }
-        ],
-        "size": {
-          "h": 24,
-          "w": 73
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "current=true,state=hover": {
-      "node": {
-        "height": 24,
-        "width": 73,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "31:410",
-      "properties": {
-        "Current": "True",
-        "State": "Hover"
-      },
-      "tree": {
-        "children": [
-          {
-            "children": [
-              {
-                "fills": [
-                  "text-fill/primary"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 16,
-                  "w": 45
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "위치",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Caption"
-                    },
-                    {
-                      "characters": "이름",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
-            "fills": [
-              "subtle-fill/secondary"
-            ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/xs",
-                "spacing/sm-nudge",
-                "spacing/xs",
-                "spacing/sm-nudge"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "maxWidth": "size/breadcrumb-item/max-width",
-            "name": "hit",
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 24,
-              "w": 57
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "FRAME"
-          },
-          {
-            "asset": {
-              "color": "text-fill/secondary",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
-            "height": "size/icon/sm",
-            "name": "separator",
-            "size": {
-              "h": 16,
-              "w": 16
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/sm"
-          }
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/none",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Current=True, State=Hover",
-        "reactions": [
-          {
-            "destination": "Current=True, State=Pressed",
-            "navigation": "CHANGE_TO",
-            "transition": {
-              "bezier": [
-                0,
-                0,
-                1,
-                1
-              ],
-              "durationMs": 83,
-              "easing": "LINEAR",
-              "type": "SMART_ANIMATE"
-            },
-            "trigger": "ON_PRESS"
-          }
-        ],
-        "size": {
-          "h": 24,
-          "w": 73
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "current=true,state=pressed": {
-      "node": {
-        "height": 24,
-        "width": 73,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "31:415",
-      "properties": {
-        "Current": "True",
-        "State": "Pressed"
-      },
-      "tree": {
-        "children": [
-          {
-            "children": [
-              {
-                "fills": [
-                  "text-fill/primary"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 16,
-                  "w": 45
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "위치",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Caption"
-                    },
-                    {
-                      "characters": "이름",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
-            "fills": [
-              "subtle-fill/tertiary"
-            ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/xs",
-                "spacing/sm-nudge",
-                "spacing/xs",
-                "spacing/sm-nudge"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "maxWidth": "size/breadcrumb-item/max-width",
-            "name": "hit",
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 24,
-              "w": 57
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "FRAME"
-          },
-          {
-            "asset": {
-              "color": "text-fill/secondary",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
-            "height": "size/icon/sm",
-            "name": "separator",
-            "size": {
-              "h": 16,
-              "w": 16
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/sm"
-          }
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/none",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Current=True, State=Pressed",
-        "size": {
-          "h": 24,
-          "w": 73
-        },
-        "sizing": {
-          "h": "HUG",
-          "v": "HUG"
-        },
-        "type": "COMPONENT"
-      }
-    },
-    "current=true,state=rest": {
-      "node": {
-        "height": 24,
-        "width": 73,
-        "x": 0,
-        "y": 0
-      },
-      "nodeId": "31:405",
-      "properties": {
-        "Current": "True",
-        "State": "Rest"
-      },
-      "tree": {
-        "children": [
-          {
-            "children": [
-              {
-                "fills": [
-                  "text-fill/primary"
-                ],
-                "name": "label",
-                "size": {
-                  "h": 16,
-                  "w": 45
-                },
-                "sizing": {
-                  "h": "HUG",
-                  "v": "HUG"
-                },
-                "text": {
-                  "autoResize": "WIDTH_AND_HEIGHT",
-                  "maxLines": null,
-                  "maxLinesVariable": null,
-                  "segments": [
-                    {
-                      "characters": "위치",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Caption"
-                    },
-                    {
-                      "characters": "이름",
-                      "fill": "text-fill/primary",
-                      "textStyle": "Hangul/Caption"
-                    }
-                  ],
-                  "truncation": "DISABLED"
-                },
-                "type": "TEXT"
-              }
-            ],
-            "layout": {
-              "counterAlign": "MIN",
-              "gap": 0,
-              "mode": "HORIZONTAL",
-              "padding": [
-                "spacing/xs",
-                "spacing/sm-nudge",
-                "spacing/xs",
-                "spacing/sm-nudge"
-              ],
-              "primaryAlign": "MIN"
-            },
-            "maxWidth": "size/breadcrumb-item/max-width",
-            "name": "hit",
-            "radius": [
-              "radius/control",
-              "radius/control",
-              "radius/control",
-              "radius/control"
-            ],
-            "size": {
-              "h": 24,
-              "w": 57
-            },
-            "sizing": {
-              "h": "HUG",
-              "v": "HUG"
-            },
-            "type": "FRAME"
-          },
-          {
-            "asset": {
-              "color": "text-fill/secondary",
-              "path": "icons/ic_fluent_chevron_right_16_regular"
-            },
-            "component": "ic_fluent_chevron_right_16_regular",
-            "height": "size/icon/sm",
-            "name": "separator",
-            "size": {
-              "h": 16,
-              "w": 16
-            },
-            "sizing": {
-              "h": "FIXED",
-              "v": "FIXED"
-            },
-            "type": "INSTANCE",
-            "width": "size/icon/sm"
-          }
-        ],
-        "layout": {
-          "counterAlign": "CENTER",
-          "gap": "spacing/none",
-          "mode": "HORIZONTAL",
-          "padding": [
-            0,
-            0,
-            0,
-            0
-          ],
-          "primaryAlign": "MIN"
-        },
-        "name": "Current=True, State=Rest",
-        "reactions": [
-          {
-            "destination": "Current=True, State=Hover",
+            "destination": "State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [

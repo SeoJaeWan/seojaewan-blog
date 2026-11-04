@@ -3,7 +3,7 @@
   "name": "NavigationPane",
   "nodeId": "439:5773",
   "propertyDefinitions": {
-    "items": {
+    "Items": {
       "type": "SLOT"
     }
   },
@@ -25,7 +25,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -48,7 +48,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_desktop_20_regular"
                     },
                     "component": "ic_fluent_desktop_20_regular",
@@ -67,7 +67,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -85,17 +85,17 @@
                       "segments": [
                         {
                           "characters": "바탕",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "화면",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -160,7 +160,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -204,7 +204,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -222,7 +222,7 @@
                       "segments": [
                         {
                           "characters": "Blog",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -233,7 +233,7 @@
                 ],
                 "component": "NavigationItem",
                 "fills": [
-                  "control-alt-fill/tertiary"
+                  "color/black/6"
                 ],
                 "height": "size/control/height",
                 "layout": {
@@ -290,7 +290,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -330,7 +330,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -348,7 +348,7 @@
                       "segments": [
                         {
                           "characters": "React",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -448,7 +448,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -466,7 +466,7 @@
                       "segments": [
                         {
                           "characters": "Next.js",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -566,7 +566,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -584,7 +584,7 @@
                       "segments": [
                         {
                           "characters": "TypeScript",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -670,7 +670,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -688,7 +688,7 @@
                       "segments": [
                         {
                           "characters": "휴지통",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -748,7 +748,7 @@
               ],
               "primaryAlign": "MIN"
             },
-            "name": "items",
+            "name": "Items",
             "size": {
               "h": 192,
               "w": 240
