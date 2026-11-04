@@ -324,9 +324,9 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
             />
           ),
         )}
-        isBackDisabled={!canGoBack(content)}
-        isForwardDisabled={!canGoForward(content)}
-        isUpDisabled={getParentLocation(workspace, location) === undefined}
+        canGoBack={canGoBack(content)}
+        canGoForward={canGoForward(content)}
+        canGoUp={getParentLocation(workspace, location) !== undefined}
         onBack={handleBack}
         onForward={handleForward}
         onUp={handleUp}
