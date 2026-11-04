@@ -115,7 +115,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/secondary",
+                          "color": "color/black/61",
                           "path": "icons/ic_fluent_search_16_regular"
                         },
                         "component": "ic_fluent_search_16_regular",
@@ -134,7 +134,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/secondary"
+                          "color/black/61"
                         ],
                         "name": "label",
                         "size": {
@@ -152,7 +152,7 @@
                           "segments": [
                             {
                               "characters": "검색",
-                              "fill": "text-fill/secondary",
+                              "fill": "color/black/61",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -163,7 +163,7 @@
                     ],
                     "component": "SearchBox",
                     "fills": [
-                      "control-fill/default"
+                      "color/white/70"
                     ],
                     "height": "size/control/height",
                     "layout": {
@@ -180,11 +180,11 @@
                     },
                     "name": "검색",
                     "properties": {
-                      "Appearance": "Taskbar",
                       "Filled": "False",
                       "Placeholder": "검색",
                       "State": "Rest",
-                      "Value": "검색어"
+                      "Value": "검색어",
+                      "Variant": "Taskbar"
                     },
                     "radius": [
                       "radius/circular",
@@ -207,11 +207,10 @@
                       "stroke-width/default"
                     ],
                     "strokes": [
-                      "control-stroke/default"
+                      "color/black/6"
                     ],
                     "strokesIncludedInLayout": false,
-                    "type": "INSTANCE",
-                    "width": "size/search-box/taskbar-width"
+                    "type": "INSTANCE"
                   },
                   {
                     "children": [
@@ -364,7 +363,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "time",
                         "size": {
@@ -382,12 +381,12 @@
                           "segments": [
                             {
                               "characters": "오후",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Caption"
                             },
                             {
                               "characters": " 3:24",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             }
                           ],
@@ -397,7 +396,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "date",
                         "size": {
@@ -415,7 +414,7 @@
                           "segments": [
                             {
                               "characters": "2026-10-20",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             }
                           ],
@@ -488,7 +487,6 @@
             "component": "Taskbar",
             "effectStyle": "Material/Acrylic",
             "fillStyle": "Material/Acrylic Base",
-            "height": "size/taskbar/height",
             "layout": {
               "counterAlign": "CENTER",
               "gap": "spacing/none",
@@ -502,9 +500,7 @@
               "primaryAlign": "MIN"
             },
             "name": "Taskbar",
-            "properties": {
-              "Material": "Acrylic"
-            },
+            "properties": {},
             "size": {
               "h": 48,
               "w": 1280
@@ -520,7 +516,7 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": false,
             "type": "INSTANCE"
@@ -547,8 +543,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/taskbar/width"
+        "type": "COMPONENT"
       }
     },
     "search=button": {
@@ -653,7 +648,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_search_20_regular"
                         },
                         "component": "ic_fluent_search_20_regular",
@@ -858,7 +853,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "time",
                         "size": {
@@ -876,12 +871,12 @@
                           "segments": [
                             {
                               "characters": "오후",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Caption"
                             },
                             {
                               "characters": " 3:24",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             }
                           ],
@@ -891,7 +886,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "date",
                         "size": {
@@ -909,7 +904,7 @@
                           "segments": [
                             {
                               "characters": "2026-10-20",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             }
                           ],
@@ -982,7 +977,6 @@
             "component": "Taskbar",
             "effectStyle": "Material/Acrylic",
             "fillStyle": "Material/Acrylic Base",
-            "height": "size/taskbar/height",
             "layout": {
               "counterAlign": "CENTER",
               "gap": "spacing/none",
@@ -996,9 +990,7 @@
               "primaryAlign": "MIN"
             },
             "name": "Taskbar",
-            "properties": {
-              "Material": "Acrylic"
-            },
+            "properties": {},
             "size": {
               "h": 48,
               "w": 390
@@ -1014,7 +1006,7 @@
               0
             ],
             "strokes": [
-              "card-stroke/default"
+              "color/black/6"
             ],
             "strokesIncludedInLayout": false,
             "type": "INSTANCE"
@@ -1041,8 +1033,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/screen/mobile-width"
+        "type": "COMPONENT"
       }
     }
   }
