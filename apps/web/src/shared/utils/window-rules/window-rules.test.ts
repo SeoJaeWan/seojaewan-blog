@@ -205,7 +205,7 @@ describe('창 동작:창 조작 (최대화)', () => {
     const id = ids[0] ?? '';
     const once = toggleMaximizeWindow(state, id);
     expect(once.windows[id]?.placement).toBe('maximized');
-    expect(toggleMaximizeWindow(once, id).windows[id]?.placement).toBe('normal');
+    expect(toggleMaximizeWindow(once, id).windows[id]?.placement).toBe('default');
   });
 
   it('스냅한 창을 최대화했다가 복원하면 바로 앞 모습(스냅 칸)으로 돌아간다', () => {
@@ -395,7 +395,7 @@ describe('스냅:스냅된 창 - 끌어서 떼기', () => {
     const snapped = snapWindow(state, id, { layout: 'half', index: 0 });
     const bounds = { x: 300, y: 0, width: 1024, height: 640 };
     expect(detachWindow(snapped, id, bounds).windows[id]).toMatchObject({
-      placement: 'normal',
+      placement: 'default',
       snapZone: null,
       previous: null,
       bounds,
@@ -408,7 +408,7 @@ describe('스냅:스냅된 창 - 끌어서 떼기', () => {
     const maximized = maximizeWindow(snapWindow(state, id, { layout: 'half', index: 1 }), id);
     const bounds = { x: 0, y: 0, width: 1024, height: 640 };
     expect(detachWindow(maximized, id, bounds).windows[id]).toMatchObject({
-      placement: 'normal',
+      placement: 'default',
       previous: null,
     });
   });
