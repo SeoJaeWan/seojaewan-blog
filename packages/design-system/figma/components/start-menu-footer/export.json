@@ -1,5 +1,5 @@
 {
-  "description": "Start 메뉴 맨 아래 줄의 바탕으로, 프로필과 전원 버튼을 담아 Start 메뉴에 쓴다.",
+  "description": "Start 메뉴 맨 아래 줄의 바탕으로, 프로필과 전원 버튼을 담아 Start 메뉴에 쓴다.\n@sample-size width",
   "name": "StartMenuFooter",
   "nodeId": "414:5792",
   "propertyDefinitions": {
@@ -43,7 +43,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "profile name",
                     "size": {
@@ -61,7 +61,7 @@
                       "segments": [
                         {
                           "characters": "서재완",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -101,7 +101,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_power_20_regular"
                     },
                     "component": "ic_fluent_power_20_regular",
@@ -121,7 +121,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -138,7 +138,7 @@
                 "name": "power button",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -182,7 +182,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -212,11 +212,10 @@
           0
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/start-menu/footer-width"
+        "type": "COMPONENT"
       }
     }
   }

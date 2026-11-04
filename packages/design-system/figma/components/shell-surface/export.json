@@ -91,7 +91,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/default"
+          "color/gray/51/40"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -173,7 +173,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "surface-stroke/default"
+          "color/gray/51/40"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",

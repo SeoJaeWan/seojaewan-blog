@@ -1,3 +1,4 @@
+import { describeError } from './error-text';
 import { REPO_NAME, REPO_OWNER } from './plugin-config';
 import { treeChunks } from './tree-changes';
 
@@ -6,6 +7,8 @@ import { treeChunks } from './tree-changes';
 
 const API_ROOT = 'https://api.github.com';
 const REPO_PATH = `/repos/${REPO_OWNER}/${REPO_NAME}`;
+// 일시적 실패(5xx, 네트워크 실패, 한도 초과)를 다시 시도하기 전에 기다리는 시간. 길이가 곧 다시 시도하는 횟수다.
+const RETRY_DELAYS_MS = [1000, 2000, 4000] as const;
 
 /** 트리에 넣을 파일 변경. 내용은 미리 올린 blob이고, sha가 null이면 파일을 지운다. */
 export type TreeEntry = { path: string; sha: string | null };
@@ -20,10 +23,7 @@ export type TreeEntry = { path: string; sha: string | null };
 export async function readRepository(
   token: string,
 ): Promise<{ fullName: string; canPush: boolean }> {
-  const response = await fetch(`${API_ROOT}${REPO_PATH}`, {
-    method: 'GET',
-    headers: headers(token),
-  });
+  const response = await send(token, 'GET', REPO_PATH);
   if (response.status === 401) {
     throw new Error('토큰이 틀렸거나 만료됐다(401). 토큰을 새로 만들어 넣는다.');
   }
@@ -76,9 +76,8 @@ export async function getFileText(
   path: string,
   ref: string,
 ): Promise<string | null> {
-  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
-    method: 'GET',
-    headers: { ...headers(token), Accept: 'application/vnd.github.raw+json' },
+  const response = await send(token, 'GET', `${REPO_PATH}/contents/${path}?ref=${ref}`, {
+    accept: 'application/vnd.github.raw+json',
   });
   if (response.status === 404) {
     return null;
@@ -101,9 +100,8 @@ export async function getFileBytes(
   path: string,
   ref: string,
 ): Promise<Uint8Array | null> {
-  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
-    method: 'GET',
-    headers: { ...headers(token), Accept: 'application/vnd.github.raw+json' },
+  const response = await send(token, 'GET', `${REPO_PATH}/contents/${path}?ref=${ref}`, {
+    accept: 'application/vnd.github.raw+json',
   });
   if (response.status === 404) {
     return null;
@@ -218,7 +216,15 @@ export async function createCommit(
  * @param sha 커밋 SHA
  */
 export async function createBranch(token: string, branch: string, sha: string): Promise<void> {
-  await request(token, 'POST', `${REPO_PATH}/git/refs`, { ref: `refs/heads/${branch}`, sha });
+  try {
+    await request(token, 'POST', `${REPO_PATH}/git/refs`, { ref: `refs/heads/${branch}`, sha });
+  } catch (error) {
+    // 실패 응답을 받았어도 요청이 실제로는 성공했다면 브랜치가 이미 같은 커밋을 가리킨다.
+    if ((await findBranchCommit(token, branch).catch(() => null)) === sha) {
+      return;
+    }
+    throw error;
+  }
 }
 
 /**
@@ -258,10 +264,7 @@ export async function findOpenPullRequest(
  * @returns 끝 커밋 SHA, 브랜치가 없으면 null
  */
 export async function findBranchCommit(token: string, branch: string): Promise<string | null> {
-  const response = await fetch(`${API_ROOT}${REPO_PATH}/git/ref/heads/${branch}`, {
-    method: 'GET',
-    headers: headers(token),
-  });
+  const response = await send(token, 'GET', `${REPO_PATH}/git/ref/heads/${branch}`);
   if (response.status === 404) {
     return null;
   }
@@ -310,10 +313,7 @@ export async function listDirectory(
   path: string,
   ref: string,
 ): Promise<string[] | null> {
-  const response = await fetch(`${API_ROOT}${REPO_PATH}/contents/${path}?ref=${ref}`, {
-    method: 'GET',
-    headers: headers(token),
-  });
+  const response = await send(token, 'GET', `${REPO_PATH}/contents/${path}?ref=${ref}`);
   if (response.status === 404) {
     return null;
   }
@@ -344,7 +344,8 @@ export function commitUrl(sha: string): string {
 }
 
 /**
- * PR을 연다.
+ * PR을 연다. 요청이 실패해도 같은 머리 브랜치로 열린 PR이 이미 있으면 그 PR을 쓴다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
  * @param token GitHub 토큰
  * @param pullRequest 제목, 본문, 머리 브랜치, 기준 브랜치
  * @param pullRequest.title PR 제목
@@ -357,12 +358,21 @@ export async function createPullRequest(
   token: string,
   pullRequest: { title: string; body: string; head: string; base: string },
 ): Promise<string> {
-  const created = await request(token, 'POST', `${REPO_PATH}/pulls`, pullRequest);
-  return readString(created, ['html_url']);
+  try {
+    const created = await request(token, 'POST', `${REPO_PATH}/pulls`, pullRequest);
+    return readString(created, ['html_url']);
+  } catch (error) {
+    // 실패 응답을 받았어도 PR이 이미 열렸을 수 있다(GitHub 장애, 다시 보냈을 때의 422).
+    const existing = await findOpenPullRequest(token, pullRequest.head).catch(() => null);
+    if (existing === null) {
+      throw error;
+    }
+    return existing.url;
+  }
 }
 
 /**
- * GitHub API를 호출하고 JSON 응답을 돌려준다. 실패하면 상태 코드와 GitHub 메시지로 오류를 낸다.
+ * GitHub API를 호출하고 JSON 응답을 돌려준다. 일시적 실패는 다시 시도하고, 끝내 실패하면 상태 코드와 GitHub 메시지로 오류를 낸다.
  * @param token GitHub 토큰
  * @param method HTTP 메서드
  * @param path API 경로
@@ -375,18 +385,106 @@ async function request(
   path: string,
   body?: object,
 ): Promise<unknown> {
-  const response = await fetch(`${API_ROOT}${path}`, {
-    method,
-    headers: { ...headers(token), 'Content-Type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  const response = await send(token, method, path, { body });
   const text = await response.text();
-  const json: unknown = text === '' ? null : JSON.parse(text);
+  const json = parseJson(text);
   if (!response.ok) {
-    const message = readOptionalString(json, ['message']) ?? response.statusText;
-    throw new Error(`GitHub ${method} ${path} 실패 (${response.status}): ${message}`);
+    const message =
+      readOptionalString(json, ['message']) ??
+      (response.statusText === '' ? '응답 본문이 JSON이 아니다' : response.statusText);
+    throw new Error(`GitHub ${method} ${path} 실패 (${String(response.status)}): ${message}`);
+  }
+  if (json === undefined) {
+    throw new Error(`GitHub ${method} ${path} 응답이 JSON이 아니다 (${String(response.status)})`);
   }
   return json;
+}
+
+/**
+ * GitHub에 요청을 보낸다. 5xx, 429, 한도 초과를 알리는 403, 네트워크 실패(거부)는 `RETRY_DELAYS_MS`만큼 기다리며
+ * 다시 시도하고, 그 밖의 응답(4xx 포함)은 그대로 돌려준다. 다시 보내는 요청(blob·tree·commit·브랜치·PR)은
+ * 결과가 겹쳐도 문제가 없다. 같은 blob은 같은 SHA가 나오고, 중복 커밋은 브랜치가 가리키지 않으면 버려지며,
+ * 브랜치와 PR은 호출한 쪽이 이미 생겼는지 확인한다. 네트워크 실패가 끝내 이어지면 읽을 수 있는 문장의 오류를 낸다.
+ * @codocs [[피그마 연동:피그마 플러그인]]
+ * @param token GitHub 토큰
+ * @param method HTTP 메서드
+ * @param path API 경로
+ * @param options 요청 본문과 Accept 헤더
+ * @param options.body 요청 본문(JSON)
+ * @param options.accept Accept 헤더, 기본은 GitHub JSON
+ * @returns 응답
+ */
+async function send(
+  token: string,
+  method: 'GET' | 'POST' | 'PATCH',
+  path: string,
+  options: { body?: object; accept?: string } = {},
+): Promise<Response> {
+  for (let attempt = 0; ; attempt += 1) {
+    const delay: number | undefined = RETRY_DELAYS_MS[attempt];
+    try {
+      const response = await fetch(`${API_ROOT}${path}`, {
+        method,
+        headers: {
+          ...headers(token),
+          ...(options.accept === undefined ? {} : { Accept: options.accept }),
+          ...(options.body === undefined ? {} : { 'Content-Type': 'application/json' }),
+        },
+        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      });
+      if (delay === undefined || !isTransient(response)) {
+        return response;
+      }
+    } catch (error) {
+      if (delay === undefined) {
+        throw new Error(`GitHub ${method} ${path} 네트워크 실패: ${describeError(error)}`);
+      }
+    }
+    await sleep(delay);
+  }
+}
+
+/**
+ * 잠시 뒤 다시 시도하면 풀릴 수 있는 응답인지 본다.
+ * @param response GitHub 응답
+ * @returns 5xx, 429, 한도 초과를 알리는 403이면 true
+ */
+function isTransient(response: Response): boolean {
+  if (response.status >= 500 || response.status === 429) {
+    return true;
+  }
+  return (
+    response.status === 403 &&
+    (response.headers.has('retry-after') || response.headers.get('x-ratelimit-remaining') === '0')
+  );
+}
+
+/**
+ * 지정한 시간 동안 기다린다.
+ * @param milliseconds 기다릴 시간(밀리초)
+ * @returns 시간이 지나면 끝나는 Promise
+ */
+async function sleep(milliseconds: number): Promise<void> {
+  await new Promise<void>((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+}
+
+/**
+ * 응답 본문을 JSON으로 읽는다.
+ * @param text 응답 본문
+ * @returns JSON 값, 본문이 비었으면 null, JSON이 아니면(5xx HTML 등) undefined
+ */
+function parseJson(text: string): unknown {
+  if (text === '') {
+    return null;
+  }
+  try {
+    const parsed: unknown = JSON.parse(text);
+    return parsed;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
