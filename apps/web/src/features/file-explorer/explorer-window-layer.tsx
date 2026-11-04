@@ -291,7 +291,7 @@ export function ExplorerWindowLayer(props: ExplorerWindowLayerProps): JSX.Elemen
                 // 위치 이름은 겹칠 수 있어(다른 위치의 같은 이름 폴더) 차례를 함께 쓴다.
                 key={`${String(index)}-${entry.location ?? 'desktop'}`}
                 label={entry.name}
-                current={isCurrent}
+                isCurrent={isCurrent}
                 showSeparator={!isCurrent}
                 onLabelClick={() => {
                   handleNavigate(entry.location);

@@ -3,13 +3,13 @@ import type { ComponentProps, JSX } from 'react';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-export type ProgressRingTone = 'accent' | 'on-dark';
+export type ProgressRingVariant = 'accent' | 'on-dark';
 
 export type ProgressRingSize = '16' | '32' | '64';
 
 type ProgressRingProps = Omit<ComponentProps<'div'>, 'children'> & {
-  /** 피그마 Tone. accent는 밝은 바탕 위 강조색 호, on-dark는 재부팅 화면처럼 어두운 바탕 위 흰 호다 */
-  tone?: ProgressRingTone;
+  /** 피그마 Variant. accent는 밝은 바탕 위 강조색 호, on-dark는 재부팅 화면처럼 어두운 바탕 위 흰 호다 */
+  variant?: ProgressRingVariant;
   /** 피그마 Size. 링의 한 변 길이(px)다 */
   size?: ProgressRingSize;
 };
@@ -22,10 +22,10 @@ const sizeClassNames = {
 } as const satisfies Record<ProgressRingSize, string>;
 
 // 호 자산(progress-ring/Arc)은 한 가지 색이라 쓰는 곳의 색 변수로 칠한다.
-const toneClassNames = {
+const variantClassNames = {
   accent: 'text-color-blue-59',
   'on-dark': 'rounded-radius-control text-color-white',
-} as const satisfies Record<ProgressRingTone, string>;
+} as const satisfies Record<ProgressRingVariant, string>;
 
 /**
  * 끝을 모르는 진행 상태를 보여 주는 링(피그마 ProgressRing)을 그린다. 글을 불러올 때와 재부팅 화면에 쓴다.
@@ -34,7 +34,7 @@ const toneClassNames = {
  * @param props
  */
 export function ProgressRing(props: ProgressRingProps): JSX.Element {
-  const { tone = 'accent', size = '16', className, ...divProps } = props;
+  const { variant = 'accent', size = '16', className, ...divProps } = props;
   return (
     <div
       role="progressbar"
@@ -42,7 +42,7 @@ export function ProgressRing(props: ProgressRingProps): JSX.Element {
       className={cn(
         'flex shrink-shrink-none items-center justify-center',
         sizeClassNames[size],
-        toneClassNames[tone],
+        variantClassNames[variant],
         className,
       )}
     >

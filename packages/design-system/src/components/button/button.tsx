@@ -8,13 +8,13 @@ import { Asset } from '../asset/asset';
 export type ButtonVariant = 'accent' | 'standard' | 'subtle';
 
 type ButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Style. accent는 강조 채우기, standard는 기본 버튼, subtle은 배경 없는 버튼이다 */
+  /** 피그마 Variant. accent는 강조 채우기, standard는 기본 버튼, subtle은 배경 없는 버튼이다 */
   variant?: ButtonVariant;
   /** 피그마 Label. 버튼 글자이자 접근성 이름이다 */
   label: string;
-  /** 피그마 Show icon. 글자 앞에 16px 아이콘을 그린다 */
-  showIcon?: boolean;
-  /** 피그마 Icon. showIcon일 때 그릴 아이콘이며 기본은 더하기 아이콘이다 */
+  /** 피그마 Has icon. 글자 앞에 16px 아이콘을 그린다 */
+  hasIcon?: boolean;
+  /** 피그마 Icon. hasIcon일 때 그릴 아이콘이며 기본은 더하기 아이콘이다 */
   icon?: SvgAssetName;
   /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
@@ -55,7 +55,7 @@ export function Button(props: ButtonProps): JSX.Element {
   const {
     variant = 'standard',
     label,
-    showIcon: hasIcon = false,
+    hasIcon = false,
     icon = 'icons/ic_fluent_add_20_regular.svg',
     className,
     ...buttonProps

@@ -11,7 +11,7 @@ type SearchPanelProps = {
    */
   device?: SearchPanelDevice;
   /** 모바일 패널 위쪽 입력칸(SearchBox `Appearance=Pill`)에 넘길 속성. 데스크톱에서는 쓰지 않는다 */
-  searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'appearance' | 'className'>;
+  searchBoxProps?: Omit<ComponentProps<typeof SearchBox>, 'variant' | 'className'>;
   /** 본문 자리. 쓰는 쪽이 검색 본문(`Search/Body`)을 넣는다 */
   children?: ReactNode;
   /** 바깥 배치 클래스 */
@@ -41,7 +41,7 @@ export function SearchPanel(props: SearchPanelProps): JSX.Element {
           <div className="flex w-full shrink-shrink-none px-spacing-lg">
             <SearchBox
               {...searchBoxProps}
-              appearance="pill"
+              variant="pill"
               className="min-w-size-none flex-flex-fill"
             />
           </div>
