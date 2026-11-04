@@ -53,7 +53,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "preview title",
             "size": {
@@ -71,7 +71,7 @@
               "segments": [
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Subtitle"
                 }
               ],
@@ -81,7 +81,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "preview meta",
             "size": {
@@ -99,17 +99,17 @@
               "segments": [
                 {
                   "characters": "부가",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "정보",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -120,7 +120,7 @@
           {
             "component": "Separator",
             "fills": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "height": "stroke-width/default",
             "name": "divider",
@@ -147,7 +147,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_open_20_regular"
                             },
                             "component": "ic_fluent_open_20_regular",
@@ -192,7 +192,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "label",
                         "size": {
@@ -210,7 +210,7 @@
                           "segments": [
                             {
                               "characters": "열기",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -220,7 +220,7 @@
                       }
                     ],
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -267,13 +267,13 @@
                 },
                 "name": "open action",
                 "properties": {
-                  "Kind": "Default",
+                  "Has icon": true,
+                  "Has shortcut": false,
                   "Label": "열기",
                   "Shortcut": "Ctrl+O",
-                  "Show icon": true,
-                  "Show shortcut": false,
                   "State": "Rest",
-                  "Value": "100%"
+                  "Value": "100%",
+                  "Variant": "Default"
                 },
                 "size": {
                   "h": 32,
@@ -293,7 +293,7 @@
                         "children": [
                           {
                             "asset": {
-                              "color": "text-fill/primary",
+                              "color": "color/black/89",
                               "path": "icons/ic_fluent_link_20_regular"
                             },
                             "component": "ic_fluent_link_20_regular",
@@ -338,7 +338,7 @@
                       },
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "label",
                         "size": {
@@ -356,17 +356,17 @@
                           "segments": [
                             {
                               "characters": "링크",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Body"
                             },
                             {
                               "characters": "복사",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Body"
                             }
                           ],
@@ -376,7 +376,7 @@
                       }
                     ],
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -423,13 +423,13 @@
                 },
                 "name": "copy link action",
                 "properties": {
-                  "Kind": "Default",
+                  "Has icon": true,
+                  "Has shortcut": false,
                   "Label": "링크 복사",
                   "Shortcut": "Ctrl+O",
-                  "Show icon": true,
-                  "Show shortcut": false,
                   "State": "Rest",
-                  "Value": "100%"
+                  "Value": "100%",
+                  "Variant": "Default"
                 },
                 "size": {
                   "h": 32,
@@ -467,7 +467,7 @@
           }
         ],
         "fills": [
-          "card-background-fill/default"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -503,7 +503,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
