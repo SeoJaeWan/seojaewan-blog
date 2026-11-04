@@ -4,14 +4,14 @@ _codocs:
   parent:
     - 디자인 시스템
 개요: |
-  컴포넌트를 찾는 곳과 상태 변형의 이름과 뜻을 정한다. 어떤 컴포넌트가 있고 무엇에 쓰는지는 피그마 02 · Components 페이지의 컴포넌트 description에 있고, `packages/design-system`의 컴포넌트가 그 페이지와 같다.
+  컴포넌트를 찾는 곳, 상태 변형의 이름과 뜻, 속성 이름 짓는 규칙을 정한다. 어떤 컴포넌트가 있고 무엇에 쓰는지는 피그마 컴포넌트 페이지([[디자인 시스템:피그마 파일]])의 컴포넌트 description에 있고, `packages/design-system`의 컴포넌트가 그 페이지들과 같다.
   변형, 속성, 슬롯 같은 구조는 피그마가 보여 주고, 나누는 기준은 [[디자인 시스템:컴포넌트 조립 규칙]]에 있다. 내용을 채운 조립은 컴포넌트가 아니라 03 · Patterns에 있다([[디자인 시스템:조립]]).
 기본 컨트롤: |
-  여러 영역에서 쓰는 컴포넌트다. 목록과 용도는 피그마 02 · Components의 Controls 섹션에 있다.
+  여러 영역에서 쓰는 컴포넌트다. 목록과 용도는 피그마 `Controls (컨트롤)` 묶음의 컴포넌트 페이지에 있다.
 Windows 화면 요소: |
-  창, 작업 표시줄, 탐색기처럼 화면 한 영역에 속하는 컴포넌트다. 목록과 용도는 피그마 02 · Components의 영역 섹션에 있다.
+  창, 작업 표시줄, 탐색기처럼 화면 한 영역에 속하는 컴포넌트다. 목록과 용도는 피그마의 영역 묶음(`Window (창)`, `Explorer (탐색기)` 등) 컴포넌트 페이지에 있다.
 상태: |
-  상태 변형(`State`)의 이름과 뜻이다. 모든 컴포넌트가 모든 상태를 갖지는 않는다. 캡처할 때 상태를 재현하는 방법은 [[피그마 연동:스토리 규칙]]을 따른다.
+  상태 변형(`State`)의 이름과 뜻이다. 모든 컴포넌트가 모든 상태를 갖지는 않는다. `State`에는 상호작용 상태와 함께 상호작용이 아닌 값(`Selected`, `Open`, `Expanded`, `Rename`, `Cut` 등)도 두고, 실제로 나오는 조합만 그린다. 캡처할 때 상태를 재현하는 방법은 [[피그마 연동:스토리 규칙]]을 따른다.
 
   | 상태 | 뜻 | 캡처 재현 |
   |---|---|---|
@@ -38,3 +38,15 @@ Windows 화면 요소: |
   - 예외: 작업 표시줄 앱 버튼은 창 미리보기(`Taskbar/AppPreview`)가 떠 있는 동안 `Hover` 모양이다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다. 우클릭 메뉴(`Taskbar/AppMenu`)가 열렸을 때는 다른 트리거처럼 `Rest` 모양이다.
   - 예외: 창의 최대화 버튼은 스냅 레이아웃 메뉴(`Window/SnapLayoutMenu`)가 떠 있는 동안 `Hover` 모양이다. 스냅 레이아웃도 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다.
   - 메뉴가 열린 화면에서는 그 메뉴를 연 트리거를 담은 조립이 `Open`이다([[디자인 시스템:팝업]]).
+속성 이름: |
+  피그마 컴포넌트 속성과 코드 prop의 이름을 맞추는 규칙이다. 피그마 이름을 스토리 args와 prop 이름으로 옮기는 방법은 [[피그마 연동:스토리 규칙]]에 있다.
+
+  - 주된 모양 갈래 속성은 피그마 `Variant`, 코드 prop `variant`다. 예: Button·IconButton, SearchBox, CaptionButton·MenuItem·WindowTitle, ProgressRing, Tooltip, ListBlock(`Bulleted`·`Numbered`·`To do`).
+  - 크기 갈래는 `Size`다. 예: FileItem `Size=Large`·`Medium`·`Small`.
+  - 여러 컴포넌트에 걸치는 축(`Material`, `Device`, `Placement`·`Direction`·`Orientation`·`Align`)과 한 컴포넌트에만 있는 그 밖의 축(`Surface`, `View`(기본/휴지통), `Title bar`, `Layout`, `Expand`, `Level`, `Sort`, `Indicator`, `Buttons`, `Search`)은 그 이름을 쓴다.
+  - 상태는 `State`다([[컴포넌트 목록:상태]]).
+  - 참/거짓 변형은 모양이 바뀔 때만 둔다(`Checked`, `Filled`, `Active`). 참과 거짓의 그림이 같으면 변형으로 두지 않는다. 예: BreadcrumbItem은 현재 위치 변형이 없고, 코드의 `isCurrent` prop은 `aria-current`에만 쓴다.
+  - 기본값 이름: `State`의 기본은 `Rest`, `Variant` 같은 모양 갈래의 기본은 `Default`다. `Normal`은 쓰지 않고 성격에 맞춰 둘 중 하나로 쓴다. 실제로 "없음"을 뜻하는 `None`은 그대로 쓴다. Button은 기본 모양이 `Standard`(코드 기본값 `standard`)다.
+  - 값 철자: 피그마 값은 띄어 쓴 영어 단어(`Recycle bin`, `Two line`, `Two thirds`, `To do`), 코드 값은 소문자 하이픈(`recycle-bin`, `two-line`, `two-thirds`, `to-do`)으로 1:1로 맞춘다.
+  - 글자 속성 이름도 띄어 쓴 영어 단어의 철자를 따른다(`Body text`). 슬롯 속성 이름은 대문자로 시작한다(`Items`, `Tiles`).
+  - 켜고 끄는 불리언 속성은 `Has …`다. 예: 피그마 `Has separator`, 코드 `hasSeparator`. 코드 boolean prop의 이름 규칙은 [[코드 작성 규칙:식별자 이름]]에 있다.
