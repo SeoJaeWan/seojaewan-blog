@@ -53,7 +53,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -71,7 +71,7 @@
                                   "segments": [
                                     {
                                       "characters": "범주",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -81,7 +81,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -128,13 +128,13 @@
                         },
                         "name": "item 범주",
                         "properties": {
-                          "Kind": "Toggle off",
+                          "Has icon": false,
+                          "Has shortcut": false,
                           "Label": "범주",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": false,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Toggle off"
                         },
                         "size": {
                           "h": 32,
@@ -154,7 +154,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_checkmark_20_regular"
                                     },
                                     "component": "ic_fluent_checkmark_20_regular",
@@ -199,7 +199,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -217,7 +217,7 @@
                                   "segments": [
                                     {
                                       "characters": "그리드",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -227,7 +227,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -274,13 +274,13 @@
                         },
                         "name": "item 그리드",
                         "properties": {
-                          "Kind": "Toggle on",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "그리드",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Toggle on"
                         },
                         "size": {
                           "h": 32,
@@ -324,7 +324,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -342,7 +342,7 @@
                                   "segments": [
                                     {
                                       "characters": "간단히",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -352,7 +352,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -399,13 +399,13 @@
                         },
                         "name": "item 간단히",
                         "properties": {
-                          "Kind": "Toggle off",
+                          "Has icon": false,
+                          "Has shortcut": false,
                           "Label": "간단히",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": false,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Toggle off"
                         },
                         "size": {
                           "h": 32,
@@ -488,7 +488,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "surface-stroke/flyout"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -516,8 +516,7 @@
               "h": "FIXED",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/menu/view-options-width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
