@@ -103,9 +103,9 @@ type ExplorerBodyProps = Pick<
   | 'searchPlaceholder'
   | 'path'
   | 'navigation'
-  | 'backDisabled'
-  | 'forwardDisabled'
-  | 'upDisabled'
+  | 'canGoBack'
+  | 'canGoForward'
+  | 'canGoUp'
   | 'onBack'
   | 'onForward'
   | 'onUp'
@@ -137,7 +137,7 @@ type ExplorerSearchState = {
 // 항목을 표시하는 속성. 우클릭·길게 누른 자리와 방향키로 옮길 항목을 찾는 데 쓴다.
 const ITEM_ATTRIBUTE = 'data-explorer-item';
 
-// 아이콘 보기의 FileItem View다.
+// 아이콘 보기의 FileItem Size다.
 const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
 
 /**
@@ -896,11 +896,11 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
     const common = {
       ...getItemProps(item),
       name: item.name,
-      selected: isSelected || item.id === dragTargetId,
-      cut: cutSet.has(item.id),
+      isSelected: isSelected || item.id === dragTargetId,
+      isCut: cutSet.has(item.id),
       // 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
       'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
-      renaming: isRenaming,
+      isRenaming,
       renameFieldProps: isRenaming ? rename.renameFieldProps : undefined,
     };
     if (!isDetails) {
@@ -909,7 +909,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           key={item.id}
           {...common}
           surface="explorer"
-          view={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
+          size={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
           icon={renderItemIcon(item)}
         />
       );
@@ -921,7 +921,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           {...common}
           date={formatModifiedDate(item.date)}
           type={getItemTypeLabel(item.kind)}
-          showLocation
+          hasLocation
           location={getItemLocationLabel(workspace, item.parentId)}
           icon={renderItemIcon(item)}
           className="w-full"
@@ -1127,7 +1127,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         }
         itemCount={`항목 ${String(children.length)}개`}
         selection={`${String(selectedIds.length)}개 항목 선택함`}
-        showSelection={selectedIds.length > 0}
+        hasSelection={selectedIds.length > 0}
         onDetailsView={() => {
           changeIconView('details');
         }}
@@ -1152,7 +1152,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           <div className="flex w-full flex-col items-start">
             <DetailsHeader
               view={isRecycleBin && !isSearching ? 'recycle-bin' : 'default'}
-              showLocation={isSearching}
+              hasLocation={isSearching}
               sortColumn={getSortColumn(view.sortBy, isRecycleBin && !isSearching)}
               sortDirection={view.sortDirection === 'desc' ? 'descending' : 'ascending'}
               onSort={handleColumnSort}

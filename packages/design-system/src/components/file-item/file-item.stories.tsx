@@ -9,12 +9,12 @@ const folderIcon = new URL('../../assets/images/file-folder.webp', import.meta.u
 
 // 피그마 FileItem의 변형 속성 값이다(정규화한 이름). Hover는 캡처 도구가 마우스로, Focused는 Tab 키로 재현한다.
 const SURFACES = ['desktop', 'explorer'] as const;
-const VIEWS = ['large', 'medium', 'small'] as const;
+const SIZES = ['large', 'medium', 'small'] as const;
 const STATES = ['rest', 'hover', 'selected', 'focused', 'rename', 'cut', 'cut-selected'] as const;
 
 type FigmaArgs = {
   surface: (typeof SURFACES)[number];
-  view: (typeof VIEWS)[number];
+  size: (typeof SIZES)[number];
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Name */
   name: string;
@@ -47,10 +47,10 @@ function Backdrop(props: { surface: FigmaArgs['surface']; children: ReactNode })
 const meta = {
   title: 'Components/FileItem',
   // 글자는 피그마 Name 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { surface: 'desktop', view: 'large', state: 'rest', name: '파일 이름' },
+  args: { surface: 'desktop', size: 'large', state: 'rest', name: '파일 이름' },
   argTypes: {
     surface: { control: 'inline-radio', options: SURFACES },
-    view: { control: 'inline-radio', options: VIEWS },
+    size: { control: 'inline-radio', options: SIZES },
     state: { control: 'select', options: STATES },
     name: { control: 'text' },
   },
@@ -60,12 +60,12 @@ const meta = {
       <FileItem
         tabIndex={0}
         surface={args.surface}
-        view={args.view}
+        size={args.size}
         name={args.name}
         icon={<img src={folderIcon} alt="" />}
-        selected={args.state === 'selected' || args.state === 'cut-selected'}
-        cut={args.state === 'cut' || args.state === 'cut-selected'}
-        renaming={args.state === 'rename'}
+        isSelected={args.state === 'selected' || args.state === 'cut-selected'}
+        isCut={args.state === 'cut' || args.state === 'cut-selected'}
+        isRenaming={args.state === 'rename'}
         renameFieldProps={args.renameFieldProps}
       />
     </Backdrop>
@@ -101,7 +101,7 @@ export const Selected: Story = {
   args: { surface: 'explorer', state: 'selected', name: '긴 이름' },
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-    await step('selected면 선택된 항목으로 알린다', async () => {
+    await step('isSelected면 선택된 항목으로 알린다', async () => {
       await expect(canvasElement.firstElementChild).toHaveAttribute('data-selected', 'true');
     });
   },
@@ -115,7 +115,7 @@ export const Cut: Story = {
   parameters: { a11y: { config: { rules: [{ id: 'color-contrast', enabled: false }] } } },
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-    await step('cut이면 잘라낸 항목으로 알린다', async () => {
+    await step('isCut이면 잘라낸 항목으로 알린다', async () => {
       await expect(canvasElement.firstElementChild).toHaveAttribute('data-cut', 'true');
     });
   },
@@ -133,7 +133,7 @@ export const Renaming: Story = {
     const canvas = within(canvasElement);
 
     // @codocs [[컴포넌트 목록:Windows 화면 요소]]
-    await step('renaming이면 이름 대신 name을 처음 값으로 가진 입력창을 그린다', async () => {
+    await step('isRenaming이면 이름 대신 name을 처음 값으로 가진 입력창을 그린다', async () => {
       await expect(canvas.getByRole('textbox')).toHaveValue('문서');
       await expect(canvas.queryByText('문서')).not.toBeInTheDocument();
     });

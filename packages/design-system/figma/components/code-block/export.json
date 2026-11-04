@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 코드 블록으로, 글 페이지에 쓴다.",
+  "description": "글 본문의 코드 블록으로, 글 페이지에 쓴다.\n@sample-size width\n@runtime 코드는 강조기 색으로 칠한다",
   "name": "CodeBlock",
   "nodeId": "399:5519",
   "propertyDefinitions": {
@@ -27,7 +27,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "language",
                 "size": {
@@ -45,7 +45,7 @@
                   "segments": [
                     {
                       "characters": "언어",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -57,7 +57,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_copy_20_regular"
                     },
                     "component": "ic_fluent_copy_20_regular",
@@ -77,7 +77,7 @@
                 ],
                 "component": "IconButton",
                 "fills": [
-                  "subtle-fill/transparent"
+                  "color/white/0"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -94,7 +94,7 @@
                 "name": "copy",
                 "properties": {
                   "State": "Rest",
-                  "Style": "Subtle"
+                  "Variant": "Subtle"
                 },
                 "radius": [
                   "radius/control",
@@ -139,6 +139,9 @@
           {
             "children": [
               {
+                "fills": [
+                  "color/black"
+                ],
                 "name": "code",
                 "size": {
                   "h": 40,
@@ -154,123 +157,8 @@
                   "maxLinesVariable": null,
                   "segments": [
                     {
-                      "characters": "const",
-                      "fill": "code-syntax/keyword",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "post",
-                      "fill": "code-syntax/variable",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "=",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "use",
-                      "fill": "code-syntax/function",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "(",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "fetchPost",
-                      "fill": "code-syntax/function",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "(",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "slug",
-                      "fill": "code-syntax/variable",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "));\n",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "return",
-                      "fill": "code-syntax/keyword-control",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "<",
-                      "fill": "code-syntax/tag",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "Article",
-                      "fill": "code-syntax/type",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "post",
-                      "fill": "code-syntax/attribute",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "={",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "post",
-                      "fill": "code-syntax/variable",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "}",
-                      "fill": "code-syntax/punctuation",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": " ",
-                      "fill": "code-syntax/text",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": "/>",
-                      "fill": "code-syntax/tag",
-                      "textStyle": "Code"
-                    },
-                    {
-                      "characters": ";",
-                      "fill": "code-syntax/punctuation",
+                      "characters": "const post = use(fetchPost(slug));\nreturn <Article post={post} />;",
+                      "fill": "color/black",
                       "textStyle": "Code"
                     }
                   ],
@@ -304,7 +192,7 @@
           }
         ],
         "fills": [
-          "solid-background-fill/tertiary"
+          "color/gray/2"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -340,11 +228,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "card-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }
