@@ -9,6 +9,7 @@ export const DIRECTIVE_KEYS = [
   'hold',
   'runtime',
   'reduced-motion',
+  'sample-size',
 ] as const;
 
 export type DirectiveKey = (typeof DIRECTIVE_KEYS)[number];
@@ -22,6 +23,11 @@ export type ParsedDirectives = {
   /** 고쳐야 할 줄 */
   problems: string[];
 };
+
+/** `@sample-size`로 표시하는 견본 크기 축 */
+export type SampleAxis = 'width' | 'height';
+
+const sampleAxisNames: readonly SampleAxis[] = ['width', 'height'];
 
 /** 포커스 전환을 적는 `@trigger` 값 */
 export const FOCUS_TRIGGER = 'focus-visible';
@@ -89,7 +95,40 @@ function valueProblem(
   if (key === 'direction' && !directions.includes(value)) {
     return `${directions.join(', ')} 가운데 하나여야 한다`;
   }
+  if (key === 'sample-size') {
+    return sampleSizeProblem(value, known ?? []);
+  }
   return null;
+}
+
+/**
+ * `@sample-size` 값을 본다. 값은 `width`, `height`이고 두 축은 한 줄(`width height`)이나 두 줄로 적는다.
+ * @param value 값
+ * @param known 이미 읽은 값
+ * @returns 문제, 없으면 null
+ */
+function sampleSizeProblem(value: string, known: readonly string[]): string | null {
+  const words = value.split(/\s+/u);
+  if (!words.every((word) => sampleAxisNames.some((axis) => axis === word))) {
+    return `${sampleAxisNames.join(', ')}만 쓴다`;
+  }
+  const seen = known.flatMap((line) => line.split(/\s+/u));
+  if (words.some((word, index) => seen.includes(word) || words.indexOf(word) !== index)) {
+    return '같은 축을 두 번 적었다';
+  }
+  return null;
+}
+
+/**
+ * `@sample-size` 줄로 표시한 견본 크기 축을 모은다. 견본 크기는 코드에서 부모를 채우는 컴포넌트를 피그마에서 혼자 보이려고
+ * 원본 루트에 준 폭·높이라, 변수 없는 숫자로 둔다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param directives 읽은 `@` 줄
+ * @returns 축
+ */
+export function sampleSizeAxes(directives: Directives): Set<SampleAxis> {
+  const words = (directives['sample-size'] ?? []).flatMap((line) => line.split(/\s+/u));
+  return new Set(sampleAxisNames.filter((axis) => words.includes(axis)));
 }
 
 /**

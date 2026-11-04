@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseDirectives, parseDirectiveTexts } from './directives';
+import { parseDirectives, parseDirectiveTexts, sampleSizeAxes } from './directives';
 
 // @codocs [[피그마 연동:구조 검사]]
 describe('@ 줄', () => {
@@ -23,9 +23,22 @@ describe('@ 줄', () => {
     ['@repeat 0', '1 이상의 정수'],
     ['@repeat 1\n@repeat 2', '한 번만'],
     ['@direction sideways', 'alternate'],
+    ['@sample-size depth', 'width, height만'],
+    ['@sample-size width\n@sample-size width', '같은 축을 두 번'],
+    ['@sample-size width width', '같은 축을 두 번'],
   ])('%s를 고칠 줄로 돌려준다', (text, message) => {
     const [problem] = parseDirectives(text).problems;
     expect(problem).toContain(message);
+  });
+
+  it('@sample-size는 두 축을 한 줄이나 두 줄로 적는다', () => {
+    expect(sampleSizeAxes(parseDirectives('@sample-size width height').directives)).toEqual(
+      new Set(['width', 'height']),
+    );
+    const twoLines = parseDirectives('@sample-size height\n@sample-size width');
+    expect(twoLines.problems).toEqual([]);
+    expect(sampleSizeAxes(twoLines.directives)).toEqual(new Set(['width', 'height']));
+    expect(sampleSizeAxes({})).toEqual(new Set());
   });
 
   it('여러 글을 이어 읽는다', () => {

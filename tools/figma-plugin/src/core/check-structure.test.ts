@@ -1305,12 +1305,95 @@ describe('구조 검사: 조립', () => {
     expect(patternReasons(patternRoot([]))).toEqual([]);
   });
 
-  it('조립 안쪽 배치 프레임의 고정 크기와 루트의 최소·최대 크기는 그대로 변수에 연결해야 한다', () => {
-    const root = patternRoot([frame({ path: 'top space', height: { value: 96 } })]);
+  it('조립 안의 크기(루트, 인스턴스 크기 덮어쓰기, 배치 프레임의 고정·최소·최대 크기)는 변수 없는 숫자로 둘 수 있다', () => {
+    const shell = node({
+      path: 'ShellSurface',
+      type: 'INSTANCE',
+      width: { value: 642 },
+      height: { value: 726 },
+      child: {
+        sizingHorizontal: 'FIXED',
+        sizingVertical: 'FIXED',
+        positioning: 'AUTO',
+        constraints: { horizontal: 'MIN', vertical: 'MIN' },
+      },
+      instance: { component: 'ShellSurface', scaleFactor: 1, properties: {}, overrides: [] },
+    });
+    const root = patternRoot([frame({ path: 'top space', height: { value: 96 } }), shell]);
     root.maxWidth = { value: 1600 };
-    expect(patternReasons(root)).toEqual([
-      '최대 너비 1600가 변수에 연결되어 있지 않다',
-      '고정 높이 96가 크기 변수에 연결되어 있지 않다',
+    expect(patternReasons(root)).toEqual([]);
+  });
+
+  it('조립 안의 간격·여백은 그대로 변수에 연결해야 한다', () => {
+    const row = frame({
+      path: 'row',
+      layout: {
+        mode: 'HORIZONTAL',
+        wrap: 'NO_WRAP',
+        primaryAlign: 'MIN',
+        counterAlign: 'MIN',
+        primarySizing: 'FIXED',
+        counterSizing: 'FIXED',
+        padding: sides({ value: 12 }),
+        itemSpacing: { value: 8 },
+        counterAxisSpacing: null,
+      },
+      children: [frame({ path: 'row/a' }), frame({ path: 'row/b' })],
+    });
+    expect(patternReasons(patternRoot([row]))).toEqual([
+      '여백(top) 12가 변수에 연결되어 있지 않다',
+      '여백(right) 12가 변수에 연결되어 있지 않다',
+      '여백(bottom) 12가 변수에 연결되어 있지 않다',
+      '여백(left) 12가 변수에 연결되어 있지 않다',
+      '간격 8가 변수에 연결되어 있지 않다',
+    ]);
+  });
+});
+
+// @codocs [[피그마 연동:구조 검사]]
+describe('구조 검사: 컴포넌트 견본 크기(`@sample-size`)', () => {
+  /**
+   * 고정 크기 컴포넌트 루트를 만든다.
+   * @returns 루트
+   */
+  function fixedRoot(): NodeData {
+    return node({
+      path: '',
+      type: 'COMPONENT',
+      parentLayoutMode: null,
+      child: null,
+      width: { value: 320 },
+      height: { value: 40 },
+      children: [fixedChild({ path: 'icon', type: 'RECTANGLE', width: { value: 16 } })],
+    });
+  }
+
+  /**
+   * 루트를 `@` 줄과 함께 검사한 위반 이유를 돌려준다.
+   * @param directives `@` 줄
+   * @returns 위반 이유 목록
+   */
+  function sampleReasons(directives: Directives): string[] {
+    return checkVariant(fixedRoot(), 'FileRow / Default', context, directives).map(
+      (violation) => violation.reason,
+    );
+  }
+
+  it('`@sample-size`로 표시한 루트 축만 변수 없는 고정 크기를 허용한다', () => {
+    expect(sampleReasons({})).toEqual([
+      '고정 너비 320가 크기 변수에 연결되어 있지 않다',
+      '고정 높이 40가 크기 변수에 연결되어 있지 않다',
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+    expect(sampleReasons({ 'sample-size': ['width'] })).toEqual([
+      '고정 높이 40가 크기 변수에 연결되어 있지 않다',
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+    expect(sampleReasons({ 'sample-size': ['width height'] })).toEqual([
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+    expect(sampleReasons({ 'sample-size': ['height', 'width'] })).toEqual([
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
     ]);
   });
 });
