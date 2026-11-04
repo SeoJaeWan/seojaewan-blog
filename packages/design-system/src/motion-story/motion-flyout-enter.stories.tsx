@@ -24,13 +24,13 @@ export const Default: Story = {
       {(motionClassName) => (
         <Flyout className={motionClassName}>
           <FigmaFrame source={menuItemExport}>
-            <MenuItem standalone label="열기" />
+            <MenuItem isStandalone label="열기" />
           </FigmaFrame>
           <FigmaFrame source={menuItemExport}>
-            <MenuItem standalone label="이름 바꾸기" />
+            <MenuItem isStandalone label="이름 바꾸기" />
           </FigmaFrame>
           <FigmaFrame source={menuItemExport}>
-            <MenuItem standalone label="삭제" />
+            <MenuItem isStandalone label="삭제" />
           </FigmaFrame>
         </Flyout>
       )}

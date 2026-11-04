@@ -1,23 +1,18 @@
 {
-  "description": "메뉴의 한 줄 항목으로, Menu 안에서 우클릭 메뉴·전원 메뉴·보기 메뉴에 쓴다.",
+  "description": "메뉴의 한 줄 항목으로, Menu 안에서 우클릭 메뉴·전원 메뉴·보기 메뉴에 쓴다.\n@sample-size width",
   "name": "MenuItem",
   "nodeId": "14:205",
   "propertyDefinitions": {
+    "Has icon": {
+      "default": true,
+      "type": "BOOLEAN"
+    },
+    "Has shortcut": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
     "Icon": {
       "type": "INSTANCE_SWAP"
-    },
-    "Kind": {
-      "default": "Default",
-      "options": [
-        "Default",
-        "Submenu",
-        "Toggle on",
-        "Radio on",
-        "Toggle off",
-        "Radio off",
-        "Zoom"
-      ],
-      "type": "VARIANT"
     },
     "Label": {
       "default": "메뉴 항목",
@@ -26,14 +21,6 @@
     "Shortcut": {
       "default": "단축키",
       "type": "TEXT"
-    },
-    "Show icon": {
-      "default": true,
-      "type": "BOOLEAN"
-    },
-    "Show shortcut": {
-      "default": false,
-      "type": "BOOLEAN"
     },
     "State": {
       "default": "Rest",
@@ -48,10 +35,23 @@
     "Value": {
       "default": "100%",
       "type": "TEXT"
+    },
+    "Variant": {
+      "default": "Default",
+      "options": [
+        "Default",
+        "Submenu",
+        "Toggle on",
+        "Radio on",
+        "Toggle off",
+        "Radio off",
+        "Zoom"
+      ],
+      "type": "VARIANT"
     }
   },
   "variants": {
-    "kind=default,state=disabled": {
+    "variant=default,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -60,8 +60,8 @@
       },
       "nodeId": "14:123",
       "properties": {
-        "Kind": "Default",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -71,7 +71,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/disabled",
+                      "color": "color/black/36",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -116,7 +116,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -134,17 +134,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -154,7 +154,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -198,7 +198,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Default, State=Disabled",
+        "name": "Variant=Default, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -207,11 +207,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=default,state=hover": {
+    "variant=default,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -220,8 +219,8 @@
       },
       "nodeId": "14:111",
       "properties": {
-        "Kind": "Default",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -231,7 +230,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -276,7 +275,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -294,17 +293,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -314,7 +313,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -358,10 +357,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Default, State=Hover",
+        "name": "Variant=Default, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Default, State=Pressed",
+            "destination": "Variant=Default, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -385,11 +384,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=default,state=pressed": {
+    "variant=default,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -398,8 +396,8 @@
       },
       "nodeId": "14:117",
       "properties": {
-        "Kind": "Default",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -409,7 +407,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -454,7 +452,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -472,17 +470,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -492,7 +490,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -536,7 +534,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Default, State=Pressed",
+        "name": "Variant=Default, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -545,11 +543,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=default,state=rest": {
+    "variant=default,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -558,8 +555,8 @@
       },
       "nodeId": "14:105",
       "properties": {
-        "Kind": "Default",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Default"
       },
       "tree": {
         "children": [
@@ -569,7 +566,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -614,7 +611,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -632,17 +629,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -652,7 +649,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -696,10 +693,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Default, State=Rest",
+        "name": "Variant=Default, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Default, State=Hover",
+            "destination": "Variant=Default, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -723,11 +720,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-off,state=disabled": {
+    "variant=radio-off,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -736,8 +732,8 @@
       },
       "nodeId": "365:4878",
       "properties": {
-        "Kind": "Radio off",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Radio off"
       },
       "tree": {
         "children": [
@@ -771,7 +767,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -789,17 +785,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -809,7 +805,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -853,7 +849,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio off, State=Disabled",
+        "name": "Variant=Radio off, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -862,11 +858,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-off,state=hover": {
+    "variant=radio-off,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -875,8 +870,8 @@
       },
       "nodeId": "365:4866",
       "properties": {
-        "Kind": "Radio off",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Radio off"
       },
       "tree": {
         "children": [
@@ -910,7 +905,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -928,17 +923,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -948,7 +943,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -992,7 +987,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio off, State=Hover",
+        "name": "Variant=Radio off, State=Hover",
         "size": {
           "h": 32,
           "w": 250
@@ -1001,11 +996,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-off,state=pressed": {
+    "variant=radio-off,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1014,8 +1008,8 @@
       },
       "nodeId": "365:4872",
       "properties": {
-        "Kind": "Radio off",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Radio off"
       },
       "tree": {
         "children": [
@@ -1049,7 +1043,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -1067,17 +1061,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1087,7 +1081,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1131,7 +1125,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio off, State=Pressed",
+        "name": "Variant=Radio off, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -1140,11 +1134,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-off,state=rest": {
+    "variant=radio-off,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1153,8 +1146,8 @@
       },
       "nodeId": "365:4860",
       "properties": {
-        "Kind": "Radio off",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Radio off"
       },
       "tree": {
         "children": [
@@ -1188,7 +1181,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -1206,17 +1199,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1226,7 +1219,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1270,7 +1263,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio off, State=Rest",
+        "name": "Variant=Radio off, State=Rest",
         "size": {
           "h": 32,
           "w": 250
@@ -1279,11 +1272,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-on,state=disabled": {
+    "variant=radio-on,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1292,8 +1284,8 @@
       },
       "nodeId": "14:200",
       "properties": {
-        "Kind": "Radio on",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Radio on"
       },
       "tree": {
         "children": [
@@ -1303,7 +1295,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/disabled"
+                      "color/black/36"
                     ],
                     "height": "size/menu-item/bullet",
                     "name": "bullet",
@@ -1346,7 +1338,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -1364,17 +1356,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1384,7 +1376,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1428,7 +1420,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio on, State=Disabled",
+        "name": "Variant=Radio on, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -1437,11 +1429,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-on,state=hover": {
+    "variant=radio-on,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1450,8 +1441,8 @@
       },
       "nodeId": "14:190",
       "properties": {
-        "Kind": "Radio on",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Radio on"
       },
       "tree": {
         "children": [
@@ -1461,7 +1452,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "height": "size/menu-item/bullet",
                     "name": "bullet",
@@ -1504,7 +1495,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -1522,17 +1513,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1542,7 +1533,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1586,10 +1577,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio on, State=Hover",
+        "name": "Variant=Radio on, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Radio on, State=Pressed",
+            "destination": "Variant=Radio on, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -1613,11 +1604,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-on,state=pressed": {
+    "variant=radio-on,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1626,8 +1616,8 @@
       },
       "nodeId": "14:195",
       "properties": {
-        "Kind": "Radio on",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Radio on"
       },
       "tree": {
         "children": [
@@ -1637,7 +1627,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "height": "size/menu-item/bullet",
                     "name": "bullet",
@@ -1680,7 +1670,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -1698,17 +1688,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1718,7 +1708,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1762,7 +1752,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio on, State=Pressed",
+        "name": "Variant=Radio on, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -1771,11 +1761,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=radio-on,state=rest": {
+    "variant=radio-on,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1784,8 +1773,8 @@
       },
       "nodeId": "14:185",
       "properties": {
-        "Kind": "Radio on",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Radio on"
       },
       "tree": {
         "children": [
@@ -1795,7 +1784,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "height": "size/menu-item/bullet",
                     "name": "bullet",
@@ -1838,7 +1827,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -1856,17 +1845,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -1876,7 +1865,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -1920,10 +1909,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Radio on, State=Rest",
+        "name": "Variant=Radio on, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Radio on, State=Hover",
+            "destination": "Variant=Radio on, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -1947,11 +1936,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=submenu,state=disabled": {
+    "variant=submenu,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -1960,8 +1948,8 @@
       },
       "nodeId": "14:153",
       "properties": {
-        "Kind": "Submenu",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Submenu"
       },
       "tree": {
         "children": [
@@ -1971,7 +1959,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/disabled",
+                      "color": "color/black/36",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -2016,7 +2004,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -2034,17 +2022,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2054,7 +2042,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/disabled",
+                  "color": "color/black/36",
                   "path": "icons/ic_fluent_chevron_right_16_regular"
                 },
                 "component": "ic_fluent_chevron_right_16_regular",
@@ -2073,7 +2061,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2117,7 +2105,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Submenu, State=Disabled",
+        "name": "Variant=Submenu, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -2126,11 +2114,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=submenu,state=hover": {
+    "variant=submenu,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -2139,8 +2126,8 @@
       },
       "nodeId": "14:137",
       "properties": {
-        "Kind": "Submenu",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Submenu"
       },
       "tree": {
         "children": [
@@ -2150,7 +2137,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -2195,7 +2182,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -2213,17 +2200,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2233,7 +2220,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_chevron_right_16_regular"
                 },
                 "component": "ic_fluent_chevron_right_16_regular",
@@ -2252,7 +2239,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2296,10 +2283,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Submenu, State=Hover",
+        "name": "Variant=Submenu, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Submenu, State=Pressed",
+            "destination": "Variant=Submenu, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -2323,11 +2310,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=submenu,state=pressed": {
+    "variant=submenu,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -2336,8 +2322,8 @@
       },
       "nodeId": "14:145",
       "properties": {
-        "Kind": "Submenu",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Submenu"
       },
       "tree": {
         "children": [
@@ -2347,7 +2333,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -2392,7 +2378,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -2410,17 +2396,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2430,7 +2416,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_chevron_right_16_regular"
                 },
                 "component": "ic_fluent_chevron_right_16_regular",
@@ -2449,7 +2435,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2493,7 +2479,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Submenu, State=Pressed",
+        "name": "Variant=Submenu, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -2502,11 +2488,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=submenu,state=rest": {
+    "variant=submenu,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -2515,8 +2500,8 @@
       },
       "nodeId": "14:129",
       "properties": {
-        "Kind": "Submenu",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Submenu"
       },
       "tree": {
         "children": [
@@ -2526,7 +2511,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -2571,7 +2556,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -2589,17 +2574,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2609,7 +2594,7 @@
               },
               {
                 "asset": {
-                  "color": "text-fill/secondary",
+                  "color": "color/black/61",
                   "path": "icons/ic_fluent_chevron_right_16_regular"
                 },
                 "component": "ic_fluent_chevron_right_16_regular",
@@ -2628,7 +2613,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2672,10 +2657,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Submenu, State=Rest",
+        "name": "Variant=Submenu, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Submenu, State=Hover",
+            "destination": "Variant=Submenu, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -2699,11 +2684,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-off,state=disabled": {
+    "variant=toggle-off,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -2712,8 +2696,8 @@
       },
       "nodeId": "311:22701",
       "properties": {
-        "Kind": "Toggle off",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Toggle off"
       },
       "tree": {
         "children": [
@@ -2747,7 +2731,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -2765,17 +2749,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2785,7 +2769,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2829,7 +2813,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle off, State=Disabled",
+        "name": "Variant=Toggle off, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -2838,11 +2822,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-off,state=hover": {
+    "variant=toggle-off,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -2851,8 +2834,8 @@
       },
       "nodeId": "311:22689",
       "properties": {
-        "Kind": "Toggle off",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Toggle off"
       },
       "tree": {
         "children": [
@@ -2886,7 +2869,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -2904,17 +2887,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -2924,7 +2907,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -2968,10 +2951,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle off, State=Hover",
+        "name": "Variant=Toggle off, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Toggle off, State=Pressed",
+            "destination": "Variant=Toggle off, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -2995,11 +2978,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-off,state=pressed": {
+    "variant=toggle-off,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3008,8 +2990,8 @@
       },
       "nodeId": "311:22695",
       "properties": {
-        "Kind": "Toggle off",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Toggle off"
       },
       "tree": {
         "children": [
@@ -3043,7 +3025,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -3061,17 +3043,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3081,7 +3063,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3125,7 +3107,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle off, State=Pressed",
+        "name": "Variant=Toggle off, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -3134,11 +3116,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-off,state=rest": {
+    "variant=toggle-off,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3147,8 +3128,8 @@
       },
       "nodeId": "311:22683",
       "properties": {
-        "Kind": "Toggle off",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Toggle off"
       },
       "tree": {
         "children": [
@@ -3182,7 +3163,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -3200,17 +3181,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3220,7 +3201,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3264,10 +3245,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle off, State=Rest",
+        "name": "Variant=Toggle off, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Toggle off, State=Hover",
+            "destination": "Variant=Toggle off, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -3291,11 +3272,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-on,state=disabled": {
+    "variant=toggle-on,state=disabled": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3304,8 +3284,8 @@
       },
       "nodeId": "14:179",
       "properties": {
-        "Kind": "Toggle on",
-        "State": "Disabled"
+        "State": "Disabled",
+        "Variant": "Toggle on"
       },
       "tree": {
         "children": [
@@ -3315,7 +3295,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/disabled",
+                      "color": "color/black/36",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
@@ -3360,7 +3340,7 @@
               },
               {
                 "fills": [
-                  "text-fill/disabled"
+                  "color/black/36"
                 ],
                 "name": "label",
                 "size": {
@@ -3378,17 +3358,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/disabled",
+                      "fill": "color/black/36",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3398,7 +3378,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3442,7 +3422,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle on, State=Disabled",
+        "name": "Variant=Toggle on, State=Disabled",
         "size": {
           "h": 32,
           "w": 250
@@ -3451,11 +3431,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-on,state=hover": {
+    "variant=toggle-on,state=hover": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3464,8 +3443,8 @@
       },
       "nodeId": "14:167",
       "properties": {
-        "Kind": "Toggle on",
-        "State": "Hover"
+        "State": "Hover",
+        "Variant": "Toggle on"
       },
       "tree": {
         "children": [
@@ -3475,7 +3454,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
@@ -3520,7 +3499,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -3538,17 +3517,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3558,7 +3537,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/secondary"
+              "color/black/4"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3602,10 +3581,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle on, State=Hover",
+        "name": "Variant=Toggle on, State=Hover",
         "reactions": [
           {
-            "destination": "Kind=Toggle on, State=Pressed",
+            "destination": "Variant=Toggle on, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -3629,11 +3608,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-on,state=pressed": {
+    "variant=toggle-on,state=pressed": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3642,8 +3620,8 @@
       },
       "nodeId": "14:173",
       "properties": {
-        "Kind": "Toggle on",
-        "State": "Pressed"
+        "State": "Pressed",
+        "Variant": "Toggle on"
       },
       "tree": {
         "children": [
@@ -3653,7 +3631,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
@@ -3698,7 +3676,7 @@
               },
               {
                 "fills": [
-                  "text-fill/secondary"
+                  "color/black/61"
                 ],
                 "name": "label",
                 "size": {
@@ -3716,17 +3694,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/secondary",
+                      "fill": "color/black/61",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3736,7 +3714,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/tertiary"
+              "color/black/2"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3780,7 +3758,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle on, State=Pressed",
+        "name": "Variant=Toggle on, State=Pressed",
         "size": {
           "h": 32,
           "w": 250
@@ -3789,11 +3767,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=toggle-on,state=rest": {
+    "variant=toggle-on,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3802,8 +3779,8 @@
       },
       "nodeId": "14:161",
       "properties": {
-        "Kind": "Toggle on",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Toggle on"
       },
       "tree": {
         "children": [
@@ -3813,7 +3790,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_checkmark_20_regular"
                     },
                     "component": "ic_fluent_checkmark_20_regular",
@@ -3858,7 +3835,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -3876,17 +3853,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -3896,7 +3873,7 @@
               }
             ],
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -3940,10 +3917,10 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Toggle on, State=Rest",
+        "name": "Variant=Toggle on, State=Rest",
         "reactions": [
           {
-            "destination": "Kind=Toggle on, State=Hover",
+            "destination": "Variant=Toggle on, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -3967,11 +3944,10 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     },
-    "kind=zoom,state=rest": {
+    "variant=zoom,state=rest": {
       "node": {
         "height": 32,
         "width": 250,
@@ -3980,8 +3956,8 @@
       },
       "nodeId": "1846:7626",
       "properties": {
-        "Kind": "Zoom",
-        "State": "Rest"
+        "State": "Rest",
+        "Variant": "Zoom"
       },
       "tree": {
         "children": [
@@ -3991,7 +3967,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "text-fill/primary",
+                      "color": "color/black/89",
                       "path": "icons/ic_fluent_open_20_regular"
                     },
                     "component": "ic_fluent_open_20_regular",
@@ -4036,7 +4012,7 @@
               },
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "label",
                 "size": {
@@ -4054,17 +4030,17 @@
                   "segments": [
                     {
                       "characters": "메뉴",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body"
                     },
                     {
                       "characters": "항목",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -4078,7 +4054,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_subtract_20_regular"
                         },
                         "component": "ic_fluent_subtract_20_regular",
@@ -4098,7 +4074,7 @@
                     ],
                     "component": "IconButton",
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -4115,7 +4091,7 @@
                     "name": "zoom out button",
                     "properties": {
                       "State": "Rest",
-                      "Style": "Subtle"
+                      "Variant": "Subtle"
                     },
                     "radius": [
                       "radius/control",
@@ -4135,7 +4111,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "value",
                     "size": {
@@ -4153,7 +4129,7 @@
                       "segments": [
                         {
                           "characters": "100%",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Body"
                         }
                       ],
@@ -4166,7 +4142,7 @@
                     "children": [
                       {
                         "asset": {
-                          "color": "text-fill/primary",
+                          "color": "color/black/89",
                           "path": "icons/ic_fluent_add_20_regular"
                         },
                         "component": "ic_fluent_add_20_regular",
@@ -4186,7 +4162,7 @@
                     ],
                     "component": "IconButton",
                     "fills": [
-                      "subtle-fill/transparent"
+                      "color/white/0"
                     ],
                     "layout": {
                       "counterAlign": "CENTER",
@@ -4203,7 +4179,7 @@
                     "name": "zoom in button",
                     "properties": {
                       "State": "Rest",
-                      "Style": "Subtle"
+                      "Variant": "Subtle"
                     },
                     "radius": [
                       "radius/control",
@@ -4288,7 +4264,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Kind=Zoom, State=Rest",
+        "name": "Variant=Zoom, State=Rest",
         "size": {
           "h": 32,
           "w": 250
@@ -4297,8 +4273,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/menu/width"
+        "type": "COMPONENT"
       }
     }
   }
