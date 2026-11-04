@@ -1,5 +1,5 @@
 {
-  "description": "Chrome 이동 버튼과 주소창 줄로, Chrome 창의 탭 줄 아래에 쓴다.",
+  "description": "Chrome 이동 버튼과 주소창 줄로, Chrome 창의 탭 줄 아래에 쓴다.\n@sample-size width",
   "name": "BrowserToolbar",
   "nodeId": "36:591",
   "propertyDefinitions": {},
@@ -19,7 +19,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_arrow_left_20_regular"
                 },
                 "component": "ic_fluent_arrow_left_20_regular",
@@ -39,7 +39,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -56,7 +56,7 @@
             "name": "back",
             "properties": {
               "State": "Rest",
-              "Style": "Chrome"
+              "Variant": "Chrome"
             },
             "radius": [
               "radius/control",
@@ -78,7 +78,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_arrow_right_20_regular"
                 },
                 "component": "ic_fluent_arrow_right_20_regular",
@@ -98,7 +98,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -115,7 +115,7 @@
             "name": "forward",
             "properties": {
               "State": "Rest",
-              "Style": "Chrome"
+              "Variant": "Chrome"
             },
             "radius": [
               "radius/control",
@@ -137,7 +137,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_arrow_clockwise_20_regular"
                 },
                 "component": "ic_fluent_arrow_clockwise_20_regular",
@@ -157,7 +157,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -174,7 +174,7 @@
             "name": "refresh",
             "properties": {
               "State": "Rest",
-              "Style": "Chrome"
+              "Variant": "Chrome"
             },
             "radius": [
               "radius/control",
@@ -198,7 +198,7 @@
                 "children": [
                   {
                     "asset": {
-                      "color": "chrome/text-secondary",
+                      "color": "color/gray/70",
                       "path": "icons/ic_fluent_info_24_regular"
                     },
                     "component": "ic_fluent_info_24_regular",
@@ -217,7 +217,7 @@
                   },
                   {
                     "fills": [
-                      "chrome/text-primary"
+                      "color/gray/88"
                     ],
                     "name": "url",
                     "size": {
@@ -235,17 +235,17 @@
                       "segments": [
                         {
                           "characters": "웹",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Body"
                         },
                         {
                           "characters": " ",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Body"
                         },
                         {
                           "characters": "주소",
-                          "fill": "chrome/omnibox-selection-text",
+                          "fill": "color/gray/88",
                           "textStyle": "Hangul/Body"
                         }
                       ],
@@ -281,7 +281,7 @@
             ],
             "component": "AddressBar",
             "fills": [
-              "chrome/omnibox-fill"
+              "color/blue/5"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -321,7 +321,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "chrome/text-secondary",
+                  "color": "color/gray/70",
                   "path": "icons/ic_fluent_more_vertical_20_regular"
                 },
                 "component": "ic_fluent_more_vertical_20_regular",
@@ -341,7 +341,7 @@
             ],
             "component": "IconButton",
             "fills": [
-              "subtle-fill/transparent"
+              "color/white/0"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -358,7 +358,7 @@
             "name": "menu (⋮)",
             "properties": {
               "State": "Rest",
-              "Style": "Chrome"
+              "Variant": "Chrome"
             },
             "radius": [
               "radius/control",
@@ -378,7 +378,7 @@
           }
         ],
         "fills": [
-          "chrome/toolbar-fill"
+          "color/white"
         ],
         "height": "size/browser-toolbar/height",
         "layout": {
@@ -402,8 +402,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/browser-toolbar/width"
+        "type": "COMPONENT"
       }
     }
   }
