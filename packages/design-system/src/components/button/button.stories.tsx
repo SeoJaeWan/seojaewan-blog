@@ -5,16 +5,16 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { Button } from './button';
 
 // 피그마 Button의 변형 속성 값이다(정규화한 이름).
-const STYLES = ['accent', 'standard', 'subtle'] as const;
+const VARIANTS = ['accent', 'standard', 'subtle'] as const;
 const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focused'] as const;
 
 type FigmaArgs = {
-  style: (typeof STYLES)[number];
+  variant: (typeof VARIANTS)[number];
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Label */
   label: string;
-  /** 피그마 BOOLEAN 속성 Show icon */
-  showIcon: boolean;
+  /** 피그마 BOOLEAN 속성 Has icon */
+  hasIcon: boolean;
   /** 동작 스토리가 호출 횟수를 확인하려고 받는다 */
   onClick?: ComponentProps<typeof Button>['onClick'];
 };
@@ -22,21 +22,21 @@ type FigmaArgs = {
 const meta = {
   title: 'Components/Button',
   // 글자는 피그마 Label 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { style: 'accent', state: 'rest', label: '버튼', showIcon: false },
+  args: { variant: 'standard', state: 'rest', label: '버튼', hasIcon: false },
   argTypes: {
-    style: { control: 'inline-radio', options: STYLES },
+    variant: { control: 'inline-radio', options: VARIANTS },
     state: { control: 'inline-radio', options: STATES },
     label: { control: 'text' },
-    showIcon: { control: 'boolean' },
+    hasIcon: { control: 'boolean' },
   },
   render: (args) => {
     const { onClick: handleClick } = args;
     return (
       <Button
-        variant={args.style}
+        variant={args.variant}
         label={args.label}
         disabled={args.state === 'disabled'}
-        showIcon={args.showIcon}
+        hasIcon={args.hasIcon}
         onClick={handleClick}
       />
     );
