@@ -896,27 +896,18 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
     const common = {
       ...getItemProps(item),
       name: item.name,
-      selected: isSelected || item.id === dragTargetId,
-      cut: cutSet.has(item.id),
+      isSelected: isSelected || item.id === dragTargetId,
+      isCut: cutSet.has(item.id),
       // 끄는 항목이 놓일 폴더를 스토리 테스트가 상태로 확인하도록 속성으로 알린다. 잘라냄은 FileItem이 `data-cut`으로 알린다.
       'data-drop-active': item.id === dragTargetId ? 'true' : undefined,
-      renaming: isRenaming,
+      isRenaming,
       renameFieldProps: isRenaming ? rename.renameFieldProps : undefined,
     };
     if (!isDetails) {
-      const {
-        selected: isItemSelected,
-        cut: isItemCut,
-        renaming: isItemRenaming,
-        ...itemProps
-      } = common;
       return (
         <FileItem
           key={item.id}
-          {...itemProps}
-          isSelected={isItemSelected}
-          isCut={isItemCut}
-          isRenaming={isItemRenaming}
+          {...common}
           surface="explorer"
           size={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
           icon={renderItemIcon(item)}
@@ -930,7 +921,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
           {...common}
           date={formatModifiedDate(item.date)}
           type={getItemTypeLabel(item.kind)}
-          showLocation
+          hasLocation
           location={getItemLocationLabel(workspace, item.parentId)}
           icon={renderItemIcon(item)}
           className="w-full"
