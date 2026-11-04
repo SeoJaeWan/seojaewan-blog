@@ -18,7 +18,7 @@ const SEARCHES = ['closed', 'open'] as const;
 const figmaItems = (
   <>
     <BreadcrumbItem label="바탕 화면" />
-    <BreadcrumbItem label="Blog" current showSeparator={false} />
+    <BreadcrumbItem label="Blog" isCurrent showSeparator={false} />
   </>
 );
 
