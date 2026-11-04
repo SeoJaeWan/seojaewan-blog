@@ -1,5 +1,5 @@
 {
-  "description": "검색 패널 안의 본문으로, 입력 전 최근·추천 목록과 검색 결과, 결과 없음 안내에 쓴다.",
+  "description": "검색 패널 안의 본문으로, 입력 전 최근·추천 목록과 검색 결과, 결과 없음 안내에 쓴다.\n@runtime 스크롤바는 패널 가장자리에 붙는다",
   "name": "Search/Body",
   "nodeId": "557:4078",
   "propertyDefinitions": {
@@ -42,7 +42,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -60,7 +60,7 @@
                       "segments": [
                         {
                           "characters": "최근",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Strong"
                         }
                       ],
@@ -125,12 +125,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 522
+                              "w": 586
                             },
                             "sizing": {
                               "h": "FILL",
@@ -143,7 +143,7 @@
                               "segments": [
                                 {
                                   "characters": "Blog",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -167,7 +167,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 522
+                          "w": 586
                         },
                         "sizing": {
                           "h": "FILL",
@@ -192,8 +192,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -208,7 +208,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -243,12 +243,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 522
+                              "w": 586
                             },
                             "sizing": {
                               "h": "FILL",
@@ -261,22 +261,22 @@
                               "segments": [
                                 {
                                   "characters": "React 19 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -300,7 +300,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 522
+                          "w": 586
                         },
                         "sizing": {
                           "h": "FILL",
@@ -325,8 +325,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -341,7 +341,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -373,12 +373,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 522
+                              "w": 586
                             },
                             "sizing": {
                               "h": "FILL",
@@ -391,7 +391,7 @@
                               "segments": [
                                 {
                                   "characters": "GitHub",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -415,7 +415,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 522
+                          "w": 586
                         },
                         "sizing": {
                           "h": "FILL",
@@ -440,8 +440,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -456,7 +456,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -477,10 +477,10 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "items",
+                "name": "Items",
                 "size": {
                   "h": 112,
-                  "w": 574
+                  "w": 638
                 },
                 "sizing": {
                   "h": "FILL",
@@ -504,11 +504,11 @@
             },
             "name": "group 최근",
             "properties": {
-              "Show header": true
+              "Has header": true
             },
             "size": {
               "h": 146,
-              "w": 574
+              "w": 638
             },
             "sizing": {
               "h": "FILL",
@@ -522,7 +522,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -540,7 +540,7 @@
                       "segments": [
                         {
                           "characters": "추천",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Strong"
                         }
                       ],
@@ -605,12 +605,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -623,22 +623,22 @@
                               "segments": [
                                 {
                                   "characters": "React 19 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -648,7 +648,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -666,7 +666,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-20",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -690,7 +690,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -715,9 +715,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
                       "Title": "React 19 훅 정리",
@@ -731,7 +731,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -766,12 +766,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -784,37 +784,37 @@
                               "segments": [
                                 {
                                   "characters": "리액트",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "서버",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "컴포넌트",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "이해하기",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -824,7 +824,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -842,7 +842,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-12",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -866,7 +866,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -891,9 +891,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-12",
                       "Title": "리액트 서버 컴포넌트 이해하기",
@@ -907,7 +907,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -942,12 +942,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -960,12 +960,12 @@
                               "segments": [
                                 {
                                   "characters": "Next.js App Router ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "캐시",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -975,7 +975,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -993,7 +993,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-03",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -1017,7 +1017,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1042,9 +1042,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-03",
                       "Title": "Next.js App Router 캐시",
@@ -1058,7 +1058,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1093,12 +1093,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1111,22 +1111,22 @@
                               "segments": [
                                 {
                                   "characters": "TypeScript 5.6 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "새",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "기능",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -1136,7 +1136,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -1154,7 +1154,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-09-25",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -1178,7 +1178,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1203,9 +1203,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-09-25",
                       "Title": "TypeScript 5.6 새 기능",
@@ -1219,7 +1219,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1254,12 +1254,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1272,12 +1272,12 @@
                               "segments": [
                                 {
                                   "characters": "CSS Container Queries ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -1287,7 +1287,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -1305,7 +1305,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-09-18",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -1329,7 +1329,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1354,9 +1354,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-09-18",
                       "Title": "CSS Container Queries 정리",
@@ -1370,7 +1370,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1405,12 +1405,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 506
+                              "w": 570
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1423,32 +1423,32 @@
                               "segments": [
                                 {
                                   "characters": "Zustand ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "상태",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "관리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "패턴",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -1458,7 +1458,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -1476,7 +1476,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-09-10",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -1500,7 +1500,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 506
+                          "w": 570
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1525,9 +1525,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-09-10",
                       "Title": "Zustand 상태 관리 패턴",
@@ -1541,7 +1541,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 574
+                      "w": 638
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1562,10 +1562,10 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "items",
+                "name": "Items",
                 "size": {
                   "h": 322,
-                  "w": 574
+                  "w": 638
                 },
                 "sizing": {
                   "h": "FILL",
@@ -1589,11 +1589,11 @@
             },
             "name": "group 추천",
             "properties": {
-              "Show header": true
+              "Has header": true
             },
             "size": {
               "h": 356,
-              "w": 574
+              "w": 638
             },
             "sizing": {
               "h": "FILL",
@@ -1602,16 +1602,15 @@
             "type": "INSTANCE"
           }
         ],
-        "height": "size/search-body/height",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/2xs",
           "mode": "VERTICAL",
           "padding": [
             "spacing/none",
-            "spacing/3xl",
             "spacing/none",
-            "spacing/3xl"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
@@ -1624,8 +1623,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/content-width"
+        "type": "COMPONENT"
       }
     },
     "view=before-typing,device=mobile": {
@@ -1648,7 +1646,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -1666,7 +1664,7 @@
                       "segments": [
                         {
                           "characters": "최근",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Strong"
                         }
                       ],
@@ -1731,12 +1729,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 304
+                              "w": 336
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1749,7 +1747,7 @@
                               "segments": [
                                 {
                                   "characters": "Blog",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -1773,7 +1771,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 304
+                          "w": 336
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1798,8 +1796,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -1814,7 +1812,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1849,12 +1847,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 304
+                              "w": 336
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1867,22 +1865,22 @@
                               "segments": [
                                 {
                                   "characters": "React 19 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -1906,7 +1904,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 304
+                          "w": 336
                         },
                         "sizing": {
                           "h": "FILL",
@@ -1931,8 +1929,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -1947,7 +1945,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -1979,12 +1977,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 304
+                              "w": 336
                             },
                             "sizing": {
                               "h": "FILL",
@@ -1997,7 +1995,7 @@
                               "segments": [
                                 {
                                   "characters": "GitHub",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 }
                               ],
@@ -2021,7 +2019,7 @@
                         "name": "text",
                         "size": {
                           "h": 20,
-                          "w": 304
+                          "w": 336
                         },
                         "sizing": {
                           "h": "FILL",
@@ -2046,8 +2044,8 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
+                      "Has subtitle": true,
+                      "Has trailing": false,
                       "Size": "Compact",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
@@ -2062,7 +2060,7 @@
                     ],
                     "size": {
                       "h": 36,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -2083,10 +2081,10 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "items",
+                "name": "Items",
                 "size": {
                   "h": 112,
-                  "w": 356
+                  "w": 388
                 },
                 "sizing": {
                   "h": "FILL",
@@ -2110,11 +2108,11 @@
             },
             "name": "group 최근",
             "properties": {
-              "Show header": true
+              "Has header": true
             },
             "size": {
               "h": 146,
-              "w": 356
+              "w": 388
             },
             "sizing": {
               "h": "FILL",
@@ -2128,7 +2126,7 @@
                 "children": [
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -2146,7 +2144,7 @@
                       "segments": [
                         {
                           "characters": "추천",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Body Strong"
                         }
                       ],
@@ -2211,12 +2209,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 288
+                              "w": 320
                             },
                             "sizing": {
                               "h": "FILL",
@@ -2229,22 +2227,22 @@
                               "segments": [
                                 {
                                   "characters": "React 19 ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "훅",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "정리",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -2254,7 +2252,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -2272,7 +2270,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-20",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -2296,7 +2294,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 288
+                          "w": 320
                         },
                         "sizing": {
                           "h": "FILL",
@@ -2321,9 +2319,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-20",
                       "Title": "React 19 훅 정리",
@@ -2337,7 +2335,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -2372,12 +2370,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 288
+                              "w": 320
                             },
                             "sizing": {
                               "h": "FILL",
@@ -2390,37 +2388,37 @@
                               "segments": [
                                 {
                                   "characters": "리액트",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "서버",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "컴포넌트",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 },
                                 {
                                   "characters": " ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "이해하기",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -2430,7 +2428,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -2448,7 +2446,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-12",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -2472,7 +2470,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 288
+                          "w": 320
                         },
                         "sizing": {
                           "h": "FILL",
@@ -2497,9 +2495,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-12",
                       "Title": "리액트 서버 컴포넌트 이해하기",
@@ -2513,7 +2511,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -2548,12 +2546,12 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "title",
                             "size": {
                               "h": 20,
-                              "w": 288
+                              "w": 320
                             },
                             "sizing": {
                               "h": "FILL",
@@ -2566,12 +2564,12 @@
                               "segments": [
                                 {
                                   "characters": "Next.js App Router ",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Body"
                                 },
                                 {
                                   "characters": "캐시",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body"
                                 }
                               ],
@@ -2581,7 +2579,7 @@
                           },
                           {
                             "fills": [
-                              "text-fill/secondary"
+                              "color/black/61"
                             ],
                             "name": "subtitle",
                             "size": {
@@ -2599,7 +2597,7 @@
                               "segments": [
                                 {
                                   "characters": "2026-10-03",
-                                  "fill": "text-fill/secondary",
+                                  "fill": "color/black/61",
                                   "textStyle": "Caption"
                                 }
                               ],
@@ -2623,7 +2621,7 @@
                         "name": "text",
                         "size": {
                           "h": 36,
-                          "w": 288
+                          "w": 320
                         },
                         "sizing": {
                           "h": "FILL",
@@ -2648,9 +2646,9 @@
                     },
                     "name": "ListItem",
                     "properties": {
-                      "Show subtitle": true,
-                      "Show trailing": false,
-                      "Size": "Two-line",
+                      "Has subtitle": true,
+                      "Has trailing": false,
+                      "Size": "Two line",
                       "State": "Rest",
                       "Subtitle": "2026-10-03",
                       "Title": "Next.js App Router 캐시",
@@ -2664,7 +2662,7 @@
                     ],
                     "size": {
                       "h": 52,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -2685,10 +2683,10 @@
                   ],
                   "primaryAlign": "MIN"
                 },
-                "name": "items",
+                "name": "Items",
                 "size": {
                   "h": 160,
-                  "w": 356
+                  "w": 388
                 },
                 "sizing": {
                   "h": "FILL",
@@ -2712,11 +2710,11 @@
             },
             "name": "group 추천",
             "properties": {
-              "Show header": true
+              "Has header": true
             },
             "size": {
               "h": 194,
-              "w": 356
+              "w": 388
             },
             "sizing": {
               "h": "FILL",
@@ -2725,16 +2723,15 @@
             "type": "INSTANCE"
           }
         ],
-        "height": "size/search-body/mobile-height",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/2xs",
           "mode": "VERTICAL",
           "padding": [
             "spacing/none",
-            "spacing/lg",
             "spacing/none",
-            "spacing/lg"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
@@ -2747,8 +2744,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/mobile-content-width"
+        "type": "COMPONENT"
       }
     },
     "view=no-results,device=desktop": {
@@ -2767,7 +2763,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "message",
             "size": {
@@ -2785,7 +2781,7 @@
               "segments": [
                 {
                   "characters": "검색 결과 없음",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -2794,16 +2790,15 @@
             "type": "TEXT"
           }
         ],
-        "height": "size/search-body/height",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
           "mode": "VERTICAL",
           "padding": [
             "spacing/none",
-            "spacing/3xl",
             "spacing/none",
-            "spacing/3xl"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "CENTER"
         },
@@ -2816,8 +2811,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/content-width"
+        "type": "COMPONENT"
       }
     },
     "view=no-results,device=mobile": {
@@ -2836,7 +2830,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "message",
             "size": {
@@ -2854,7 +2848,7 @@
               "segments": [
                 {
                   "characters": "검색 결과 없음",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -2863,16 +2857,15 @@
             "type": "TEXT"
           }
         ],
-        "height": "size/search-body/mobile-height",
         "layout": {
           "counterAlign": "CENTER",
           "gap": "spacing/none",
           "mode": "VERTICAL",
           "padding": [
             "spacing/none",
-            "spacing/lg",
             "spacing/none",
-            "spacing/lg"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "CENTER"
         },
@@ -2885,8 +2878,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/mobile-content-width"
+        "type": "COMPONENT"
       }
     },
     "view=results,device=desktop": {
@@ -2913,7 +2905,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -2931,7 +2923,7 @@
                               "segments": [
                                 {
                                   "characters": "최고 일치",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -2996,7 +2988,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "title",
                                     "size": {
@@ -3014,27 +3006,27 @@
                                       "segments": [
                                         {
                                           "characters": "리액트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " 19 ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "훅",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "정리",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         }
                                       ],
@@ -3044,7 +3036,7 @@
                                   },
                                   {
                                     "fills": [
-                                      "text-fill/secondary"
+                                      "color/black/61"
                                     ],
                                     "name": "subtitle",
                                     "size": {
@@ -3062,7 +3054,7 @@
                                       "segments": [
                                         {
                                           "characters": "글",
-                                          "fill": "text-fill/secondary",
+                                          "fill": "color/black/61",
                                           "textStyle": "Hangul/Caption"
                                         }
                                       ],
@@ -3097,7 +3089,7 @@
                             ],
                             "component": "ListItem",
                             "fills": [
-                              "control-alt-fill/tertiary"
+                              "color/black/6"
                             ],
                             "height": "size/list-item/two-line-height",
                             "layout": {
@@ -3114,9 +3106,9 @@
                             },
                             "name": "ListItem",
                             "properties": {
-                              "Show subtitle": true,
-                              "Show trailing": false,
-                              "Size": "Two-line",
+                              "Has subtitle": true,
+                              "Has trailing": false,
+                              "Size": "Two line",
                               "State": "Selected",
                               "Subtitle": "글",
                               "Title": "리액트 19 훅 정리",
@@ -3151,7 +3143,7 @@
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "items",
+                        "name": "Items",
                         "size": {
                           "h": 52,
                           "w": 300
@@ -3178,7 +3170,7 @@
                     },
                     "name": "group 최고 일치",
                     "properties": {
-                      "Show header": true
+                      "Has header": true
                     },
                     "size": {
                       "h": 86,
@@ -3196,7 +3188,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -3214,7 +3206,7 @@
                               "segments": [
                                 {
                                   "characters": "폴더",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -3279,7 +3271,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "title",
                                     "size": {
@@ -3297,7 +3289,7 @@
                                       "segments": [
                                         {
                                           "characters": "리액트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         }
                                       ],
@@ -3346,8 +3338,8 @@
                             },
                             "name": "ListItem",
                             "properties": {
-                              "Show subtitle": true,
-                              "Show trailing": false,
+                              "Has subtitle": true,
+                              "Has trailing": false,
                               "Size": "Compact",
                               "State": "Rest",
                               "Subtitle": "2026-10-20",
@@ -3383,7 +3375,7 @@
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "items",
+                        "name": "Items",
                         "size": {
                           "h": 36,
                           "w": 300
@@ -3410,7 +3402,7 @@
                     },
                     "name": "group 폴더",
                     "properties": {
-                      "Show header": true
+                      "Has header": true
                     },
                     "size": {
                       "h": 70,
@@ -3428,7 +3420,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -3446,7 +3438,7 @@
                               "segments": [
                                 {
                                   "characters": "글",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -3511,7 +3503,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "title",
                                     "size": {
@@ -3529,37 +3521,37 @@
                                       "segments": [
                                         {
                                           "characters": "리액트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "서버",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "컴포넌트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "이해하기",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         }
                                       ],
@@ -3608,8 +3600,8 @@
                             },
                             "name": "ListItem",
                             "properties": {
-                              "Show subtitle": true,
-                              "Show trailing": false,
+                              "Has subtitle": true,
+                              "Has trailing": false,
                               "Size": "Compact",
                               "State": "Rest",
                               "Subtitle": "2026-10-20",
@@ -3659,7 +3651,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "title",
                                     "size": {
@@ -3677,37 +3669,37 @@
                                       "segments": [
                                         {
                                           "characters": "리액트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "쿼리",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "캐시",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "전략",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         }
                                       ],
@@ -3756,8 +3748,8 @@
                             },
                             "name": "ListItem",
                             "properties": {
-                              "Show subtitle": true,
-                              "Show trailing": false,
+                              "Has subtitle": true,
+                              "Has trailing": false,
                               "Size": "Compact",
                               "State": "Rest",
                               "Subtitle": "2026-10-20",
@@ -3793,7 +3785,7 @@
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "items",
+                        "name": "Items",
                         "size": {
                           "h": 74,
                           "w": 300
@@ -3820,7 +3812,7 @@
                     },
                     "name": "group 글",
                     "properties": {
-                      "Show header": true
+                      "Has header": true
                     },
                     "size": {
                       "h": 108,
@@ -3838,7 +3830,7 @@
                         "children": [
                           {
                             "fills": [
-                              "text-fill/primary"
+                              "color/black/89"
                             ],
                             "name": "label",
                             "size": {
@@ -3856,7 +3848,7 @@
                               "segments": [
                                 {
                                   "characters": "외부 링크",
-                                  "fill": "text-fill/primary",
+                                  "fill": "color/black/89",
                                   "textStyle": "Hangul/Body Strong"
                                 }
                               ],
@@ -3918,7 +3910,7 @@
                                 "children": [
                                   {
                                     "fills": [
-                                      "text-fill/primary"
+                                      "color/black/89"
                                     ],
                                     "name": "title",
                                     "size": {
@@ -3936,27 +3928,27 @@
                                       "segments": [
                                         {
                                           "characters": "리액트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "스터디",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         },
                                         {
                                           "characters": " ",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Body"
                                         },
                                         {
                                           "characters": "노트",
-                                          "fill": "text-fill/primary",
+                                          "fill": "color/black/89",
                                           "textStyle": "Hangul/Body"
                                         }
                                       ],
@@ -4005,8 +3997,8 @@
                             },
                             "name": "ListItem",
                             "properties": {
-                              "Show subtitle": true,
-                              "Show trailing": false,
+                              "Has subtitle": true,
+                              "Has trailing": false,
                               "Size": "Compact",
                               "State": "Rest",
                               "Subtitle": "2026-10-20",
@@ -4042,7 +4034,7 @@
                           ],
                           "primaryAlign": "MIN"
                         },
-                        "name": "items",
+                        "name": "Items",
                         "size": {
                           "h": 36,
                           "w": 300
@@ -4069,7 +4061,7 @@
                     },
                     "name": "group 외부 링크",
                     "properties": {
-                      "Show header": true
+                      "Has header": true
                     },
                     "size": {
                       "h": 70,
@@ -4131,7 +4123,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "preview title",
                     "size": {
@@ -4149,17 +4141,17 @@
                       "segments": [
                         {
                           "characters": "리액트",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Subtitle"
                         },
                         {
                           "characters": " 19 ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Subtitle"
                         },
                         {
                           "characters": "훅 정리",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Subtitle"
                         }
                       ],
@@ -4169,7 +4161,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/secondary"
+                      "color/black/61"
                     ],
                     "name": "preview meta",
                     "size": {
@@ -4187,12 +4179,12 @@
                       "segments": [
                         {
                           "characters": "글",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " · 2026-10-20",
-                          "fill": "text-fill/secondary",
+                          "fill": "color/black/61",
                           "textStyle": "Caption"
                         }
                       ],
@@ -4203,7 +4195,7 @@
                   {
                     "component": "Separator",
                     "fills": [
-                      "divider-stroke/default"
+                      "color/black/8"
                     ],
                     "height": "stroke-width/default",
                     "name": "divider",
@@ -4212,7 +4204,7 @@
                     },
                     "size": {
                       "h": 1,
-                      "w": 224
+                      "w": 288
                     },
                     "sizing": {
                       "h": "FILL",
@@ -4230,7 +4222,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_open_20_regular"
                                     },
                                     "component": "ic_fluent_open_20_regular",
@@ -4275,12 +4267,12 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
                                   "h": 20,
-                                  "w": 164
+                                  "w": 228
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -4293,7 +4285,7 @@
                                   "segments": [
                                     {
                                       "characters": "열기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -4303,7 +4295,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -4326,7 +4318,7 @@
                             ],
                             "size": {
                               "h": 28,
-                              "w": 216
+                              "w": 280
                             },
                             "sizing": {
                               "h": "FILL",
@@ -4350,17 +4342,17 @@
                         },
                         "name": "open action",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "열기",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
-                          "w": 224
+                          "w": 288
                         },
                         "sizing": {
                           "h": "FILL",
@@ -4376,7 +4368,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_link_20_regular"
                                     },
                                     "component": "ic_fluent_link_20_regular",
@@ -4421,12 +4413,12 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
                                   "h": 20,
-                                  "w": 164
+                                  "w": 228
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -4439,17 +4431,17 @@
                                   "segments": [
                                     {
                                       "characters": "링크",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "복사",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -4459,7 +4451,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -4482,7 +4474,7 @@
                             ],
                             "size": {
                               "h": 28,
-                              "w": 216
+                              "w": 280
                             },
                             "sizing": {
                               "h": "FILL",
@@ -4506,17 +4498,17 @@
                         },
                         "name": "copy link action",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "링크 복사",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
-                          "w": 224
+                          "w": 288
                         },
                         "sizing": {
                           "h": "FILL",
@@ -4540,7 +4532,7 @@
                     "name": "Actions",
                     "size": {
                       "h": 72,
-                      "w": 224
+                      "w": 288
                     },
                     "sizing": {
                       "h": "FILL",
@@ -4551,7 +4543,7 @@
                 ],
                 "component": "BestMatchCard",
                 "fills": [
-                  "card-background-fill/default"
+                  "color/white/70"
                 ],
                 "layout": {
                   "counterAlign": "CENTER",
@@ -4578,7 +4570,7 @@
                 ],
                 "size": {
                   "h": 654,
-                  "w": 258
+                  "w": 322
                 },
                 "sizing": {
                   "h": "FILL",
@@ -4591,7 +4583,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "card-stroke/default"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE",
@@ -4617,7 +4609,7 @@
             },
             "size": {
               "h": 654,
-              "w": 574
+              "w": 638
             },
             "sizing": {
               "h": "FILL",
@@ -4626,16 +4618,15 @@
             "type": "INSTANCE"
           }
         ],
-        "height": "size/search-body/height",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
           "mode": "VERTICAL",
           "padding": [
             "spacing/none",
-            "spacing/3xl",
             "spacing/none",
-            "spacing/3xl"
+            "spacing/none",
+            "spacing/none"
           ],
           "primaryAlign": "MIN"
         },
@@ -4648,8 +4639,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/content-width"
+        "type": "COMPONENT"
       }
     },
     "view=results,device=mobile": {
@@ -4699,7 +4689,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "preview title",
                                 "size": {
@@ -4717,17 +4707,17 @@
                                   "segments": [
                                     {
                                       "characters": "리액트",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Subtitle"
                                     },
                                     {
                                       "characters": " 19 ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Subtitle"
                                     },
                                     {
                                       "characters": "훅 정리",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Subtitle"
                                     }
                                   ],
@@ -4737,7 +4727,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/secondary"
+                                  "color/black/61"
                                 ],
                                 "name": "preview meta",
                                 "size": {
@@ -4755,12 +4745,12 @@
                                   "segments": [
                                     {
                                       "characters": "글",
-                                      "fill": "text-fill/secondary",
+                                      "fill": "color/black/61",
                                       "textStyle": "Hangul/Caption"
                                     },
                                     {
                                       "characters": " · 2026-10-20",
-                                      "fill": "text-fill/secondary",
+                                      "fill": "color/black/61",
                                       "textStyle": "Caption"
                                     }
                                   ],
@@ -4771,7 +4761,7 @@
                               {
                                 "component": "Separator",
                                 "fills": [
-                                  "divider-stroke/default"
+                                  "color/black/8"
                                 ],
                                 "height": "stroke-width/default",
                                 "name": "divider",
@@ -4780,7 +4770,7 @@
                                 },
                                 "size": {
                                   "h": 1,
-                                  "w": 322
+                                  "w": 354
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -4798,7 +4788,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "text-fill/primary",
+                                                  "color": "color/black/89",
                                                   "path": "icons/ic_fluent_open_20_regular"
                                                 },
                                                 "component": "ic_fluent_open_20_regular",
@@ -4843,12 +4833,12 @@
                                           },
                                           {
                                             "fills": [
-                                              "text-fill/primary"
+                                              "color/black/89"
                                             ],
                                             "name": "label",
                                             "size": {
                                               "h": 20,
-                                              "w": 262
+                                              "w": 294
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -4861,7 +4851,7 @@
                                               "segments": [
                                                 {
                                                   "characters": "열기",
-                                                  "fill": "text-fill/primary",
+                                                  "fill": "color/black/89",
                                                   "textStyle": "Hangul/Body"
                                                 }
                                               ],
@@ -4871,7 +4861,7 @@
                                           }
                                         ],
                                         "fills": [
-                                          "subtle-fill/transparent"
+                                          "color/white/0"
                                         ],
                                         "layout": {
                                           "counterAlign": "CENTER",
@@ -4894,7 +4884,7 @@
                                         ],
                                         "size": {
                                           "h": 28,
-                                          "w": 314
+                                          "w": 346
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -4918,17 +4908,17 @@
                                     },
                                     "name": "open action",
                                     "properties": {
-                                      "Kind": "Default",
+                                      "Has icon": true,
+                                      "Has shortcut": false,
                                       "Label": "열기",
                                       "Shortcut": "Ctrl+O",
-                                      "Show icon": true,
-                                      "Show shortcut": false,
                                       "State": "Rest",
-                                      "Value": "100%"
+                                      "Value": "100%",
+                                      "Variant": "Default"
                                     },
                                     "size": {
                                       "h": 32,
-                                      "w": 322
+                                      "w": 354
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -4944,7 +4934,7 @@
                                             "children": [
                                               {
                                                 "asset": {
-                                                  "color": "text-fill/primary",
+                                                  "color": "color/black/89",
                                                   "path": "icons/ic_fluent_link_20_regular"
                                                 },
                                                 "component": "ic_fluent_link_20_regular",
@@ -4989,12 +4979,12 @@
                                           },
                                           {
                                             "fills": [
-                                              "text-fill/primary"
+                                              "color/black/89"
                                             ],
                                             "name": "label",
                                             "size": {
                                               "h": 20,
-                                              "w": 262
+                                              "w": 294
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -5007,17 +4997,17 @@
                                               "segments": [
                                                 {
                                                   "characters": "링크",
-                                                  "fill": "text-fill/primary",
+                                                  "fill": "color/black/89",
                                                   "textStyle": "Hangul/Body"
                                                 },
                                                 {
                                                   "characters": " ",
-                                                  "fill": "text-fill/primary",
+                                                  "fill": "color/black/89",
                                                   "textStyle": "Body"
                                                 },
                                                 {
                                                   "characters": "복사",
-                                                  "fill": "text-fill/primary",
+                                                  "fill": "color/black/89",
                                                   "textStyle": "Hangul/Body"
                                                 }
                                               ],
@@ -5027,7 +5017,7 @@
                                           }
                                         ],
                                         "fills": [
-                                          "subtle-fill/transparent"
+                                          "color/white/0"
                                         ],
                                         "layout": {
                                           "counterAlign": "CENTER",
@@ -5050,7 +5040,7 @@
                                         ],
                                         "size": {
                                           "h": 28,
-                                          "w": 314
+                                          "w": 346
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -5074,17 +5064,17 @@
                                     },
                                     "name": "copy link action",
                                     "properties": {
-                                      "Kind": "Default",
+                                      "Has icon": true,
+                                      "Has shortcut": false,
                                       "Label": "링크 복사",
                                       "Shortcut": "Ctrl+O",
-                                      "Show icon": true,
-                                      "Show shortcut": false,
                                       "State": "Rest",
-                                      "Value": "100%"
+                                      "Value": "100%",
+                                      "Variant": "Default"
                                     },
                                     "size": {
                                       "h": 32,
-                                      "w": 322
+                                      "w": 354
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -5108,7 +5098,7 @@
                                 "name": "Actions",
                                 "size": {
                                   "h": 72,
-                                  "w": 322
+                                  "w": 354
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -5119,7 +5109,7 @@
                             ],
                             "component": "BestMatchCard",
                             "fills": [
-                              "card-background-fill/default"
+                              "color/white/70"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -5146,7 +5136,7 @@
                             ],
                             "size": {
                               "h": 255,
-                              "w": 356
+                              "w": 388
                             },
                             "sizing": {
                               "h": "FILL",
@@ -5159,7 +5149,7 @@
                               "stroke-width/default"
                             ],
                             "strokes": [
-                              "card-stroke/default"
+                              "color/black/6"
                             ],
                             "strokesIncludedInLayout": true,
                             "type": "INSTANCE"
@@ -5172,7 +5162,7 @@
                                     "children": [
                                       {
                                         "fills": [
-                                          "text-fill/primary"
+                                          "color/black/89"
                                         ],
                                         "name": "label",
                                         "size": {
@@ -5190,7 +5180,7 @@
                                           "segments": [
                                             {
                                               "characters": "최고 일치",
-                                              "fill": "text-fill/primary",
+                                              "fill": "color/black/89",
                                               "textStyle": "Hangul/Body Strong"
                                             }
                                           ],
@@ -5255,12 +5245,12 @@
                                             "children": [
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
                                                   "h": 20,
-                                                  "w": 288
+                                                  "w": 320
                                                 },
                                                 "sizing": {
                                                   "h": "FILL",
@@ -5273,27 +5263,27 @@
                                                   "segments": [
                                                     {
                                                       "characters": "리액트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " 19 ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "훅",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "정리",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     }
                                                   ],
@@ -5303,7 +5293,7 @@
                                               },
                                               {
                                                 "fills": [
-                                                  "text-fill/secondary"
+                                                  "color/black/61"
                                                 ],
                                                 "name": "subtitle",
                                                 "size": {
@@ -5321,7 +5311,7 @@
                                                   "segments": [
                                                     {
                                                       "characters": "글",
-                                                      "fill": "text-fill/secondary",
+                                                      "fill": "color/black/61",
                                                       "textStyle": "Hangul/Caption"
                                                     }
                                                   ],
@@ -5345,7 +5335,7 @@
                                             "name": "text",
                                             "size": {
                                               "h": 36,
-                                              "w": 288
+                                              "w": 320
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -5356,7 +5346,7 @@
                                         ],
                                         "component": "ListItem",
                                         "fills": [
-                                          "control-alt-fill/tertiary"
+                                          "color/black/6"
                                         ],
                                         "height": "size/list-item/two-line-height",
                                         "layout": {
@@ -5373,9 +5363,9 @@
                                         },
                                         "name": "ListItem",
                                         "properties": {
-                                          "Show subtitle": true,
-                                          "Show trailing": false,
-                                          "Size": "Two-line",
+                                          "Has subtitle": true,
+                                          "Has trailing": false,
+                                          "Size": "Two line",
                                           "State": "Selected",
                                           "Subtitle": "글",
                                           "Title": "리액트 19 훅 정리",
@@ -5389,7 +5379,7 @@
                                         ],
                                         "size": {
                                           "h": 52,
-                                          "w": 356
+                                          "w": 388
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -5410,10 +5400,10 @@
                                       ],
                                       "primaryAlign": "MIN"
                                     },
-                                    "name": "items",
+                                    "name": "Items",
                                     "size": {
                                       "h": 52,
-                                      "w": 356
+                                      "w": 388
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -5437,11 +5427,11 @@
                                 },
                                 "name": "group 최고 일치",
                                 "properties": {
-                                  "Show header": true
+                                  "Has header": true
                                 },
                                 "size": {
                                   "h": 86,
-                                  "w": 356
+                                  "w": 388
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -5455,7 +5445,7 @@
                                     "children": [
                                       {
                                         "fills": [
-                                          "text-fill/primary"
+                                          "color/black/89"
                                         ],
                                         "name": "label",
                                         "size": {
@@ -5473,7 +5463,7 @@
                                           "segments": [
                                             {
                                               "characters": "폴더",
-                                              "fill": "text-fill/primary",
+                                              "fill": "color/black/89",
                                               "textStyle": "Hangul/Body Strong"
                                             }
                                           ],
@@ -5538,12 +5528,12 @@
                                             "children": [
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
                                                   "h": 20,
-                                                  "w": 304
+                                                  "w": 336
                                                 },
                                                 "sizing": {
                                                   "h": "FILL",
@@ -5556,7 +5546,7 @@
                                                   "segments": [
                                                     {
                                                       "characters": "리액트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     }
                                                   ],
@@ -5580,7 +5570,7 @@
                                             "name": "text",
                                             "size": {
                                               "h": 20,
-                                              "w": 304
+                                              "w": 336
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -5605,8 +5595,8 @@
                                         },
                                         "name": "ListItem",
                                         "properties": {
-                                          "Show subtitle": true,
-                                          "Show trailing": false,
+                                          "Has subtitle": true,
+                                          "Has trailing": false,
                                           "Size": "Compact",
                                           "State": "Rest",
                                           "Subtitle": "2026-10-20",
@@ -5621,7 +5611,7 @@
                                         ],
                                         "size": {
                                           "h": 36,
-                                          "w": 356
+                                          "w": 388
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -5642,10 +5632,10 @@
                                       ],
                                       "primaryAlign": "MIN"
                                     },
-                                    "name": "items",
+                                    "name": "Items",
                                     "size": {
                                       "h": 36,
-                                      "w": 356
+                                      "w": 388
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -5669,11 +5659,11 @@
                                 },
                                 "name": "group 폴더",
                                 "properties": {
-                                  "Show header": true
+                                  "Has header": true
                                 },
                                 "size": {
                                   "h": 70,
-                                  "w": 356
+                                  "w": 388
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -5687,7 +5677,7 @@
                                     "children": [
                                       {
                                         "fills": [
-                                          "text-fill/primary"
+                                          "color/black/89"
                                         ],
                                         "name": "label",
                                         "size": {
@@ -5705,7 +5695,7 @@
                                           "segments": [
                                             {
                                               "characters": "글",
-                                              "fill": "text-fill/primary",
+                                              "fill": "color/black/89",
                                               "textStyle": "Hangul/Body Strong"
                                             }
                                           ],
@@ -5770,12 +5760,12 @@
                                             "children": [
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
                                                   "h": 20,
-                                                  "w": 304
+                                                  "w": 336
                                                 },
                                                 "sizing": {
                                                   "h": "FILL",
@@ -5788,37 +5778,37 @@
                                                   "segments": [
                                                     {
                                                       "characters": "리액트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "서버",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "컴포넌트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "이해하기",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     }
                                                   ],
@@ -5842,7 +5832,7 @@
                                             "name": "text",
                                             "size": {
                                               "h": 20,
-                                              "w": 304
+                                              "w": 336
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -5867,8 +5857,8 @@
                                         },
                                         "name": "ListItem",
                                         "properties": {
-                                          "Show subtitle": true,
-                                          "Show trailing": false,
+                                          "Has subtitle": true,
+                                          "Has trailing": false,
                                           "Size": "Compact",
                                           "State": "Rest",
                                           "Subtitle": "2026-10-20",
@@ -5883,7 +5873,7 @@
                                         ],
                                         "size": {
                                           "h": 36,
-                                          "w": 356
+                                          "w": 388
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -5918,12 +5908,12 @@
                                             "children": [
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
                                                   "h": 20,
-                                                  "w": 304
+                                                  "w": 336
                                                 },
                                                 "sizing": {
                                                   "h": "FILL",
@@ -5936,37 +5926,37 @@
                                                   "segments": [
                                                     {
                                                       "characters": "리액트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "쿼리",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "캐시",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "전략",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     }
                                                   ],
@@ -5990,7 +5980,7 @@
                                             "name": "text",
                                             "size": {
                                               "h": 20,
-                                              "w": 304
+                                              "w": 336
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -6015,8 +6005,8 @@
                                         },
                                         "name": "ListItem",
                                         "properties": {
-                                          "Show subtitle": true,
-                                          "Show trailing": false,
+                                          "Has subtitle": true,
+                                          "Has trailing": false,
                                           "Size": "Compact",
                                           "State": "Rest",
                                           "Subtitle": "2026-10-20",
@@ -6031,7 +6021,7 @@
                                         ],
                                         "size": {
                                           "h": 36,
-                                          "w": 356
+                                          "w": 388
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -6052,10 +6042,10 @@
                                       ],
                                       "primaryAlign": "MIN"
                                     },
-                                    "name": "items",
+                                    "name": "Items",
                                     "size": {
                                       "h": 74,
-                                      "w": 356
+                                      "w": 388
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -6079,11 +6069,11 @@
                                 },
                                 "name": "group 글",
                                 "properties": {
-                                  "Show header": true
+                                  "Has header": true
                                 },
                                 "size": {
                                   "h": 108,
-                                  "w": 356
+                                  "w": 388
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -6097,7 +6087,7 @@
                                     "children": [
                                       {
                                         "fills": [
-                                          "text-fill/primary"
+                                          "color/black/89"
                                         ],
                                         "name": "label",
                                         "size": {
@@ -6115,7 +6105,7 @@
                                           "segments": [
                                             {
                                               "characters": "외부 링크",
-                                              "fill": "text-fill/primary",
+                                              "fill": "color/black/89",
                                               "textStyle": "Hangul/Body Strong"
                                             }
                                           ],
@@ -6177,12 +6167,12 @@
                                             "children": [
                                               {
                                                 "fills": [
-                                                  "text-fill/primary"
+                                                  "color/black/89"
                                                 ],
                                                 "name": "title",
                                                 "size": {
                                                   "h": 20,
-                                                  "w": 304
+                                                  "w": 336
                                                 },
                                                 "sizing": {
                                                   "h": "FILL",
@@ -6195,27 +6185,27 @@
                                                   "segments": [
                                                     {
                                                       "characters": "리액트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "스터디",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     },
                                                     {
                                                       "characters": " ",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Body"
                                                     },
                                                     {
                                                       "characters": "노트",
-                                                      "fill": "text-fill/primary",
+                                                      "fill": "color/black/89",
                                                       "textStyle": "Hangul/Body"
                                                     }
                                                   ],
@@ -6239,7 +6229,7 @@
                                             "name": "text",
                                             "size": {
                                               "h": 20,
-                                              "w": 304
+                                              "w": 336
                                             },
                                             "sizing": {
                                               "h": "FILL",
@@ -6264,8 +6254,8 @@
                                         },
                                         "name": "ListItem",
                                         "properties": {
-                                          "Show subtitle": true,
-                                          "Show trailing": false,
+                                          "Has subtitle": true,
+                                          "Has trailing": false,
                                           "Size": "Compact",
                                           "State": "Rest",
                                           "Subtitle": "2026-10-20",
@@ -6280,7 +6270,7 @@
                                         ],
                                         "size": {
                                           "h": 36,
-                                          "w": 356
+                                          "w": 388
                                         },
                                         "sizing": {
                                           "h": "FILL",
@@ -6301,10 +6291,10 @@
                                       ],
                                       "primaryAlign": "MIN"
                                     },
-                                    "name": "items",
+                                    "name": "Items",
                                     "size": {
                                       "h": 36,
-                                      "w": 356
+                                      "w": 388
                                     },
                                     "sizing": {
                                       "h": "FILL",
@@ -6328,11 +6318,11 @@
                                 },
                                 "name": "group 외부 링크",
                                 "properties": {
-                                  "Show header": true
+                                  "Has header": true
                                 },
                                 "size": {
                                   "h": 70,
-                                  "w": 356
+                                  "w": 388
                                 },
                                 "sizing": {
                                   "h": "FILL",
@@ -6356,7 +6346,7 @@
                             "name": "Results",
                             "size": {
                               "h": 340,
-                              "w": 356
+                              "w": 388
                             },
                             "sizing": {
                               "h": "FILL",
@@ -6386,7 +6376,7 @@
                         ],
                         "size": {
                           "h": 611,
-                          "w": 356
+                          "w": 388
                         },
                         "sizing": {
                           "h": "FILL",
@@ -6414,7 +6404,7 @@
                     },
                     "size": {
                       "h": 611,
-                      "w": 356
+                      "w": 388
                     },
                     "sizing": {
                       "h": "FILL",
@@ -6429,9 +6419,9 @@
                   "mode": "VERTICAL",
                   "padding": [
                     "spacing/none",
-                    "spacing/lg",
                     "spacing/none",
-                    "spacing/lg"
+                    "spacing/none",
+                    "spacing/none"
                   ],
                   "primaryAlign": "MIN"
                 },
@@ -6458,7 +6448,7 @@
                       "vertical": "MIN"
                     },
                     "fills": [
-                      "control-strong-fill/default"
+                      "color/black/45"
                     ],
                     "height": "size/scrollbar/thumb-length",
                     "name": "thumb",
@@ -6539,7 +6529,6 @@
             "type": "INSTANCE"
           }
         ],
-        "height": "size/search-body/mobile-height",
         "layout": {
           "counterAlign": "MIN",
           "gap": "spacing/none",
@@ -6561,8 +6550,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/shell/mobile-content-width"
+        "type": "COMPONENT"
       }
     }
   }
