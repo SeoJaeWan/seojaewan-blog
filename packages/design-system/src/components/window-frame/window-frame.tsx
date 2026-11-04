@@ -175,9 +175,9 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           />
         )}
         <CaptionButtonGroup
-          placement={placement}
-          inactive={isInactive}
-          showMaximize={isMaximizeShown}
+          placement={placement === 'normal' ? 'default' : placement}
+          isInactive={isInactive}
+          hasMaximize={isMaximizeShown}
           onMinimize={handleMinimize}
           onMaximize={handleMaximize}
           onRestore={handleRestore}
