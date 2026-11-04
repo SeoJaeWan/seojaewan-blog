@@ -1,5 +1,5 @@
 {
-  "description": "글 본문의 인용으로, 글 페이지에 쓴다.",
+  "description": "글 본문의 인용으로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "Quote",
   "nodeId": "1380:1125",
   "propertyDefinitions": {
@@ -23,7 +23,7 @@
             "children": [
               {
                 "fills": [
-                  "text-fill/primary"
+                  "color/black/89"
                 ],
                 "name": "text",
                 "size": {
@@ -41,72 +41,72 @@
                   "segments": [
                     {
                       "characters": "인용",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "블록의",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "글이다",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": ". ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "출처나",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "강조할",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "문장을",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": " ",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     },
                     {
                       "characters": "담는다",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Hangul/Body Large"
                     },
                     {
                       "characters": ".",
-                      "fill": "text-fill/primary",
+                      "fill": "color/black/89",
                       "textStyle": "Body Large"
                     }
                   ],
@@ -167,11 +167,10 @@
           "stroke-width/indicator"
         ],
         "strokes": [
-          "control-strong-stroke/default"
+          "color/black/61"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }

@@ -56,7 +56,7 @@ export function PreviewListStory(props: PreviewListStoryProps): JSX.Element {
                   navigation={parts.navigation}
                   itemCount={parts.itemCount}
                   selection={parts.selection}
-                  showSelection={parts.showSelection}
+                  hasSelection={parts.hasSelection}
                 >
                   {parts.items}
                 </ExplorerContent>
