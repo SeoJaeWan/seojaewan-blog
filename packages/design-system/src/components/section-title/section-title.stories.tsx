@@ -34,7 +34,7 @@ export const Heading: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** showAction이 꺼져 있으면 action을 그리지 않는다 */
+/** hasAction이 꺼져 있으면 action을 그리지 않는다 */
 export const Default: Story = {
   render: () => <SectionTitle title="고정됨" action={<button type="button">보기</button>} />,
   play: async ({ canvasElement, step }) => {
@@ -51,9 +51,9 @@ export const Default: Story = {
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-/** showAction이 켜지면 action을 그린다 */
+/** hasAction이 켜지면 action을 그린다 */
 export const WithAction: Story = {
-  render: () => <SectionTitle showAction action={<button type="button">보기</button>} />,
+  render: () => <SectionTitle hasAction action={<button type="button">보기</button>} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
