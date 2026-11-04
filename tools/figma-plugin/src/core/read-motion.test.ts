@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { readMotionSample } from './read-motion';
+import { listMotionSamples, readMotionSample } from './read-motion';
 
 /** 피그마 노드를 흉내 낸 객체 */
 type FakeNode = Record<string, unknown>;
@@ -65,6 +65,69 @@ function stubSample(children: FakeNode[]): void {
   };
   vi.stubGlobal('figma', { getNodeByIdAsync: () => Promise.resolve(frame) });
 }
+
+/**
+ * 묶음 노드(프레임 또는 섹션)를 만든다.
+ * @param type 노드 종류
+ * @param name 노드 이름
+ * @param children 자식
+ * @returns 가짜 묶음 노드
+ */
+function container(type: 'FRAME' | 'SECTION', name: string, children: FakeNode[]): FakeNode {
+  return { id: `${name}-id`, type, name, children };
+}
+
+/**
+ * 01 · Foundations 페이지를 피그마 전역에 심는다.
+ * @param nodes 페이지 안에서 찾아지는 프레임·섹션
+ */
+function stubFoundationsPage(nodes: FakeNode[]): void {
+  const page = {
+    name: '01 · Foundations',
+    loadAsync: () => Promise.resolve(),
+    findAllWithCriteria: ({ types }: { types: string[] }) =>
+      nodes.filter((node) => types.includes(node.type as string)),
+  };
+  vi.stubGlobal('figma', { root: { children: [page] } });
+}
+
+// @codocs [[디자인 기반:모션 견본]]
+describe('모션 견본 목록', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('Foundations / Motion 프레임 바로 아래의 motion- 견본 프레임을 찾는다', async () => {
+    stubFoundationsPage([
+      container('FRAME', 'Foundations / Motion', [
+        { id: '1:1', type: 'FRAME', name: 'motion-window-open' },
+        { id: '1:2', type: 'FRAME', name: '설명' },
+        { id: '1:3', type: 'TEXT', name: 'motion-text' },
+      ]),
+      container('FRAME', 'Foundations / Assets', [
+        { id: '2:1', type: 'FRAME', name: 'motion-other' },
+      ]),
+    ]);
+    expect(await listMotionSamples()).toEqual([{ id: '1:1', name: 'motion-window-open' }]);
+  });
+
+  it('옛 Motion 섹션의 견본도 찾는다', async () => {
+    stubFoundationsPage([
+      container('SECTION', 'Motion', [{ id: '3:1', type: 'FRAME', name: 'motion-menu-open' }]),
+    ]);
+    expect(await listMotionSamples()).toEqual([{ id: '3:1', name: 'motion-menu-open' }]);
+  });
+
+  it('이름이 Motion인 프레임이나 Foundations / Motion 섹션은 묶음으로 보지 않는다', async () => {
+    stubFoundationsPage([
+      container('FRAME', 'Motion', [{ id: '4:1', type: 'FRAME', name: 'motion-a' }]),
+      container('SECTION', 'Foundations / Motion', [
+        { id: '4:2', type: 'FRAME', name: 'motion-b' },
+      ]),
+    ]);
+    expect(await listMotionSamples()).toEqual([]);
+  });
+});
 
 // @codocs [[피그마 연동:모션]]
 describe('모션 견본 읽기', () => {

@@ -11,7 +11,7 @@ import type {
 } from './motion-data';
 import { annotationTexts, assetGroupOf } from './read-node';
 
-// 피그마 Motion 섹션의 견본과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
+// 피그마 `Foundations / Motion` 프레임의 견본과 모션 변수를 motion-data.ts의 순수 데이터로 읽는다. 노드를 바꾸지 않는다(읽기 전용).
 // 플러그인과 피그마 MCP(use_figma) 양쪽에서 같은 코드가 실행된다.
 
 /** UI 목록에 보이는 견본 */
@@ -19,8 +19,10 @@ export type MotionSampleSummary = { id: string; name: string };
 
 /** 견본이 있는 페이지 이름에 든 글자(01 · Foundations) */
 const FOUNDATIONS_PAGE_KEYWORD = 'Foundations';
-/** 견본을 담는 섹션 이름 */
-const MOTION_SECTION_NAME = 'Motion';
+/** 견본을 담는 프레임 이름 */
+const MOTION_FRAME_NAME = 'Foundations / Motion';
+/** 견본을 담던 옛 섹션 이름. 피그마 파일이 프레임으로 바뀌기 전까지 함께 받는다 */
+const LEGACY_MOTION_SECTION_NAME = 'Motion';
 /** 견본 프레임 이름 앞부분 */
 const MOTION_SAMPLE_PREFIX = 'motion-';
 /** 모션 변수 이름 앞부분 */
@@ -33,7 +35,7 @@ const MAX_SOURCE_DEPTH = 8;
 const MAX_ALIAS_DEPTH = 10;
 
 /**
- * 01 · Foundations 페이지 `Motion` 섹션 안의 견본 프레임(이름이 `motion-`으로 시작)을 문서 순서대로 찾는다.
+ * 01 · Foundations 페이지 `Foundations / Motion` 프레임(옛 `Motion` 섹션도 함께) 바로 아래의 견본 프레임(이름이 `motion-`으로 시작)을 문서 순서대로 찾는다.
  * 페이지 ID가 정해져 있지 않아 이름에 `Foundations`가 든 페이지를 읽는다.
  * @codocs [[디자인 기반:모션 견본]]
  * @returns 견본 목록
@@ -45,11 +47,11 @@ export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
       continue;
     }
     await page.loadAsync();
-    for (const section of page.findAllWithCriteria({ types: ['SECTION'] })) {
-      if (section.name !== MOTION_SECTION_NAME) {
+    for (const container of page.findAllWithCriteria({ types: ['FRAME', 'SECTION'] })) {
+      if (!isMotionContainer(container)) {
         continue;
       }
-      for (const child of section.children) {
+      for (const child of container.children) {
         if (child.type === 'FRAME' && child.name.startsWith(MOTION_SAMPLE_PREFIX)) {
           samples.push({ id: child.id, name: child.name });
         }
@@ -57,6 +59,18 @@ export async function listMotionSamples(): Promise<MotionSampleSummary[]> {
     }
   }
   return samples;
+}
+
+/**
+ * 견본을 담는 묶음인지 본다. 새 구조는 `Foundations / Motion` 프레임, 옛 구조는 `Motion` 섹션이다.
+ * @codocs [[디자인 기반:모션 견본]]
+ * @param node 프레임 또는 섹션
+ * @returns 견본 묶음이면 true
+ */
+function isMotionContainer(node: FrameNode | SectionNode): boolean {
+  return node.type === 'FRAME'
+    ? node.name === MOTION_FRAME_NAME
+    : node.name === LEGACY_MOTION_SECTION_NAME;
 }
 
 /**
