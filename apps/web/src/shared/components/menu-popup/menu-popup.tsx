@@ -300,7 +300,7 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
   return (
     // 트리거(항목)가 메뉴 폭을 채우므로 Popover도 같은 폭으로 둔다.
     <Popover
-      open
+      isOpen
       placement="right-start"
       className="w-full"
       trigger={trigger}
