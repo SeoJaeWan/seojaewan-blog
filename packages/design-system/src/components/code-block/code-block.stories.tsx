@@ -16,17 +16,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 슬롯 기본 내용(코드 2줄)을 실제 강조기 결과로 그린 모습이다([[기술 스택:글 본문 처리]]).
+// 피그마 슬롯 기본 내용(코드 2줄)을 색 없이 그린 모습이다. 피그마 견본이 한 가지 색이라 캡처는 색 없는 코드로 그리고,
+// 색이 실제 강조 결과인지는 앱 단위 테스트가 본다([[기술 스택:글 본문 처리]]).
 export const Figma: Story = {
   render: () => (
-    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.lines} />
+    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.plainLines} />
   ),
 };
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const Copy: Story = {
   render: () => (
-    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.lines} />
+    <CodeBlock language={codeBlockStorySample.label} lines={codeBlockStorySample.plainLines} />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -34,7 +35,7 @@ export const Copy: Story = {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
     await step('언어와 코드 자리를 그린다', async () => {
       await expect(canvas.getByText(codeBlockStorySample.label)).toBeInTheDocument();
-      await expect(canvas.getByText('fetchPost')).toBeInTheDocument();
+      await expect(canvas.getByText(/fetchPost/u)).toBeInTheDocument();
     });
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]

@@ -4,7 +4,7 @@
 // `lines`와 같은지 확인한다(@codocs [[기술 스택:글 본문 처리]]).
 
 import codeBlockExport from '../../../figma/components/code-block/export.json';
-import type { CodeBlockSyntax, CodeBlockToken } from './code-block';
+import type { CodeBlockToken } from './code-block';
 
 type FigmaTextNode = {
   name?: string;
@@ -34,11 +34,11 @@ function findFigmaText(node: FigmaTextNode, name: string): string | undefined {
 /**
  * 강조된 코드 글자 조각을 만든다.
  * @param text 글자
- * @param syntax 강조 색 갈래. 없으면 기본 코드 글자색
+ * @param color 강조기가 준 색(hex). 없으면 기본 코드 글자색
  * @returns 코드 글자 조각
  */
-function token(text: string, syntax: CodeBlockSyntax | null = null): CodeBlockToken {
-  return { text, syntax };
+function token(text: string, color: string | null): CodeBlockToken {
+  return { text, color };
 }
 
 const figmaCode = findFigmaText(codeBlockExport.variants.default.tree, 'code');
@@ -51,47 +51,47 @@ if (figmaCode === undefined) {
  * - `code`: 피그마 Code 슬롯의 글자
  * - `label`: 피그마 Language 속성 기본값(머리에 보이는 언어 이름). Shiki 언어가 아니다
  * - `language`: 강조할 때 쓴 Shiki 언어. 코드가 JSX를 쓰는 TypeScript라 `tsx`다
- * - `lines`: `highlightCode(code, language)` 결과
+ * - `lines`: `highlightCode(code, language)` 결과(Light+ 색). 동작 스토리가 쓴다
+ * - `plainLines`: `code`를 색 없이 둔 것. 캡처용 `Figma` 스토리가 쓴다(피그마 견본이 한 가지 색이다)
  */
 export const codeBlockStorySample: {
   readonly code: string;
   readonly label: string;
   readonly language: string;
   readonly lines: readonly (readonly CodeBlockToken[])[];
+  readonly plainLines: readonly (readonly CodeBlockToken[])[];
 } = {
   code: figmaCode,
   label: codeBlockExport.propertyDefinitions.Language.default,
   language: 'tsx',
   lines: [
     [
-      token('const', 'keyword'),
-      token(' '),
-      token('post', 'variable-constant'),
-      token(' '),
-      token('=', 'punctuation'),
-      token(' '),
-      token('use', 'function'),
-      token('('),
-      token('fetchPost', 'function'),
-      token('('),
-      token('slug', 'variable'),
-      token('))'),
-      token(';', 'punctuation'),
+      token('const', '#0000ff'),
+      token(' ', null),
+      token('post', '#0070c1'),
+      token(' = ', null),
+      token('use', '#795e26'),
+      token('(', null),
+      token('fetchPost', '#795e26'),
+      token('(', null),
+      token('slug', '#001080'),
+      token('));', null),
     ],
     [
-      token('return', 'keyword-control'),
-      token(' '),
-      token('<', 'tag'),
-      token('Article', 'type'),
-      token(' '),
-      token('post', 'attribute'),
-      token('=', 'punctuation'),
-      token('{', 'keyword'),
-      token('post', 'variable'),
-      token('}', 'keyword'),
-      token(' '),
-      token('/>', 'tag'),
-      token(';', 'punctuation'),
+      token('return', '#af00db'),
+      token(' ', null),
+      token('<', '#800000'),
+      token('Article', '#267f99'),
+      token(' ', null),
+      token('post', '#e50000'),
+      token('=', null),
+      token('{', '#0000ff'),
+      token('post', '#001080'),
+      token('}', '#0000ff'),
+      token(' ', null),
+      token('/>', '#800000'),
+      token(';', null),
     ],
   ],
+  plainLines: figmaCode.split('\n').map((line) => [token(line, null)]),
 };

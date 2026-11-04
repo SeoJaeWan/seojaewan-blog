@@ -15,7 +15,7 @@ describe('기술 스택:글 본문 처리', () => {
     const [block] = await renderPostBlocks([CODE_BLOCK]);
     expect(block?.type === 'code' && block.highlighted?.[0]).toContainEqual({
       text: 'true',
-      syntax: 'keyword',
+      color: '#0000ff',
     });
   });
 
