@@ -15,7 +15,7 @@ const folderIcon = <ImageAsset name="images/file-folder" />;
 const documentIcon = <ImageAsset name="images/file-document" />;
 const linkIcon = <Asset name="illustrations/file-link.svg" />;
 
-// 피그마 `tiles` 슬롯의 기본 내용이다. 변형마다 기본 내용이 달라 변형별로 둔다.
+// 피그마 `Tiles` 슬롯의 기본 내용이다. 변형마다 기본 내용이 달라 변형별로 둔다.
 const defaultTiles: Record<TileGridAlign, { label: string; icon: ReactNode }[]> = {
   start: [
     {
@@ -49,7 +49,7 @@ const meta = {
   argTypes: {
     align: { control: 'inline-radio', options: ALIGNS },
   },
-  // 너비는 FigmaFrame이 피그마 원본 너비(새 탭 최신 글 자리의 크기 토큰)로 감싼다.
+  // 너비는 FigmaFrame이 피그마 원본 너비(견본 크기 숫자)로 감싼다.
   decorators: [figmaFrame(tileGridExport)],
   render: (args) => (
     <TileGrid align={args.align}>
@@ -65,5 +65,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // @codocs [[피그마 연동:스토리 규칙]]
-// 피그마 변형 하나를 args 하나로 고르고, `tiles` 슬롯에 피그마 기본 내용과 같은 PinnedTile을 넣는다.
+// 피그마 변형 하나를 args 하나로 고르고, `Tiles` 슬롯에 피그마 기본 내용과 같은 PinnedTile을 넣는다.
 export const Figma: Story = {};
