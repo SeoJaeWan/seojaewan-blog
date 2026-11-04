@@ -13,7 +13,7 @@ type PopoverProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Placement. 팝업이 트리거의 어느 쪽에 어느 끝을 맞춰 붙는지다 */
   placement?: PopoverPlacement;
   /** 피그마 State. true면 팝업을 보이고(Open), false면 트리거만 보인다(Closed) */
-  open?: boolean;
+  isOpen?: boolean;
 };
 
 // 자리별 팝업 위치다. 트리거와 팝업 사이 간격은 spacing/4 하나다.
@@ -39,7 +39,7 @@ export function Popover(props: PopoverProps): JSX.Element {
     trigger,
     popup,
     placement = 'bottom-start',
-    open: isOpen = false,
+    isOpen = false,
     className,
     ...divProps
   } = props;
