@@ -15,13 +15,13 @@ type BrowserToolbarProps = Omit<ComponentProps<'div'>, 'children'> & {
    */
   addressBar?: ReactNode;
   /** 앞으로 버튼을 그린다. 모바일 Chrome 창은 피그마 인스턴스에서 이 레이어를 숨겨 끈다(⋮ 메뉴로 옮긴다) */
-  showForward?: boolean;
+  hasForward?: boolean;
   /** 새로고침 버튼을 그린다. 모바일 Chrome 창은 피그마 인스턴스에서 이 레이어를 숨겨 끈다(⋮ 메뉴로 옮긴다) */
-  showRefresh?: boolean;
+  hasRefresh?: boolean;
   /** 뒤로 버튼을 비활성으로 둔다(뒤로 갈 기록이 없을 때) */
-  backDisabled?: boolean;
+  isBackDisabled?: boolean;
   /** 앞으로 버튼을 비활성으로 둔다(앞으로 갈 기록이 없을 때) */
-  forwardDisabled?: boolean;
+  isForwardDisabled?: boolean;
   /** 뒤로 버튼의 접근성 이름 */
   backLabel?: string;
   /** 앞으로 버튼의 접근성 이름 */
@@ -61,10 +61,10 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
     url,
     onUrlChange: handleUrlChange,
     addressBar,
-    showForward: isForwardShown = true,
-    showRefresh: isRefreshShown = true,
-    backDisabled: isBackDisabled = false,
-    forwardDisabled: isForwardDisabled = false,
+    hasForward = true,
+    hasRefresh = true,
+    isBackDisabled = false,
+    isForwardDisabled = false,
     backLabel = '뒤로',
     forwardLabel = '앞으로',
     refreshLabel = '새로고침',
@@ -103,7 +103,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
         onClick={handleBack}
         className="shrink-shrink-none"
       />
-      {isForwardShown && (
+      {hasForward && (
         <IconButton
           variant="chrome"
           label={forwardLabel}
@@ -113,7 +113,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
           className="shrink-shrink-none"
         />
       )}
-      {isRefreshShown && (
+      {hasRefresh && (
         <IconButton
           variant="chrome"
           label={refreshLabel}

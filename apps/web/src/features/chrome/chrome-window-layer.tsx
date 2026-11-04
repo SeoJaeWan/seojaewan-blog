@@ -435,8 +435,8 @@ export function ChromeWindowLayer(props: ChromeWindowLayerProps): JSX.Element {
           onSubmit={handleAddressSubmit}
         />
       }
-      backDisabled={!canGoBack(content)}
-      forwardDisabled={!canGoForward(content)}
+      isBackDisabled={!canGoBack(content)}
+      isForwardDisabled={!canGoForward(content)}
       onBack={handleBack}
       onForward={handleForward}
       onRefresh={handleRefresh}

@@ -15,8 +15,8 @@ type FigmaArgs = {
   state: (typeof STATES)[number];
   /** 피그마 TEXT 속성 Title */
   title: string;
-  /** 피그마 불리언 속성 Show separator */
-  showSeparator: boolean;
+  /** 피그마 불리언 속성 Has separator */
+  hasSeparator: boolean;
   onClick?: ComponentProps<typeof BrowserTab>['onClick'];
   onClose?: ComponentProps<typeof BrowserTab>['onClose'];
 };
@@ -24,11 +24,11 @@ type FigmaArgs = {
 const meta = {
   title: 'Components/BrowserTab',
   // 글자는 피그마 Title 속성의 기본값과 같아야 한다([[피그마 연동:스토리 규칙]]).
-  args: { state: 'rest', title: '페이지 제목', showSeparator: true },
+  args: { state: 'rest', title: '페이지 제목', hasSeparator: true },
   argTypes: {
     state: { control: 'inline-radio', options: STATES },
     title: { control: 'text' },
-    showSeparator: { control: 'boolean' },
+    hasSeparator: { control: 'boolean' },
   },
   // 탭은 tablist 안에서만 쓴다. 감싸는 요소는 크기를 더하지 않는다.
   render: (args) => {
@@ -38,9 +38,9 @@ const meta = {
         <Tabs.List aria-label="탭">
           <BrowserTab
             value={0}
-            active={args.state === 'active'}
+            isActive={args.state === 'active'}
             title={args.title}
-            showSeparator={args.showSeparator}
+            hasSeparator={args.hasSeparator}
             favicon={<img src={faviconImage} alt="" />}
             onClick={handleClick}
             onClose={handleClose}
@@ -105,7 +105,7 @@ export const Selected: Story = {
     const tab = within(canvasElement).getByRole('tab');
 
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('active면 선택된 탭이고 구분선을 그리지 않는다', async () => {
+    await step('isActive면 선택된 탭이고 구분선을 그리지 않는다', async () => {
       await expect(tab).toHaveAttribute('aria-selected', 'true');
       await expect(tab.parentElement).toHaveAttribute('data-separator', 'false');
     });
@@ -114,10 +114,10 @@ export const Selected: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const WithoutSeparator: Story = {
-  args: { showSeparator: false },
+  args: { hasSeparator: false },
   play: async ({ canvasElement, step }) => {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('showSeparator=false면 선택되지 않은 탭도 구분선을 그리지 않는다', async () => {
+    await step('hasSeparator=false면 선택되지 않은 탭도 구분선을 그리지 않는다', async () => {
       const tab = within(canvasElement).getByRole('tab');
       await expect(tab).toHaveAttribute('aria-selected', 'false');
       await expect(tab.parentElement).toHaveAttribute('data-separator', 'false');

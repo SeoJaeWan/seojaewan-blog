@@ -12,7 +12,7 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
   /** 피그마 Expand. none은 꺾쇠 자리만 비우고, collapsed는 오른쪽, expanded는 아래를 가리키는 꺾쇠를 그린다 */
   expand?: 'none' | 'collapsed' | 'expanded';
   /** 피그마 State=Selected. 지금 고른 항목이면 바탕을 깐다. Hover는 CSS hover로 그린다 */
-  selected?: boolean;
+  isSelected?: boolean;
   /** 피그마 TEXT 속성 Label. 항목 이름이다 */
   label?: string;
   /** 피그마 INSTANCE_SWAP 속성 Item icon. 이름 앞 16px 아이콘이다. 항목마다 다르므로 필수다 */
@@ -25,7 +25,7 @@ type NavigationItemProps = Omit<ComponentProps<'div'>, 'children' | 'title'> & {
 
 /**
  * 탐색기 NavigationPane의 폴더 트리 항목(피그마 NavigationItem)을 그린다.
- * 너비는 쓰는 곳이 정한다(피그마 원본은 240). Rest·Hover·Selected 모양은 selected와 CSS hover로 바꾼다.
+ * 너비는 쓰는 곳이 정한다(피그마 원본은 240). Rest·Hover·Selected 모양은 isSelected와 CSS hover로 바꾼다.
  * @codocs [[컴포넌트 목록:Windows 화면 요소]]
  * @codocs [[디자인 시스템:아이콘 자리]]
  * @param props
@@ -34,7 +34,7 @@ export function NavigationItem(props: NavigationItemProps): JSX.Element {
   const {
     level = 0,
     expand = 'none',
-    selected: isSelected = false,
+    isSelected = false,
     label = '항목 이름',
     icon,
     chevron,

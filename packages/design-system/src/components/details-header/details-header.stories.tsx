@@ -9,8 +9,8 @@ const VIEWS = ['default', 'recycle-bin'] as const;
 
 type FigmaArgs = {
   view: (typeof VIEWS)[number];
-  /** 피그마 BOOLEAN 속성 Show location */
-  showLocation: boolean;
+  /** 피그마 BOOLEAN 속성 Has location */
+  hasLocation: boolean;
   /** 동작 스토리가 열 제목을 누른 결과를 확인하려고 받는다 */
   onSort?: ComponentProps<typeof DetailsHeader>['onSort'];
 };
@@ -28,14 +28,14 @@ function columnTitles(root: HTMLElement): (string | null)[] {
 
 const meta = {
   title: 'Components/DetailsHeader',
-  args: { view: 'default', showLocation: false },
+  args: { view: 'default', hasLocation: false },
   argTypes: {
     view: { control: 'inline-radio', options: VIEWS },
-    showLocation: { control: 'boolean' },
+    hasLocation: { control: 'boolean' },
   },
   render: (args) => {
     const { onSort: handleSort } = args;
-    return <DetailsHeader view={args.view} showLocation={args.showLocation} onSort={handleSort} />;
+    return <DetailsHeader view={args.view} hasLocation={args.hasLocation} onSort={handleSort} />;
   },
 } satisfies Meta<FigmaArgs>;
 
@@ -84,10 +84,10 @@ export const Default: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const WithLocation: Story = {
-  args: { showLocation: true },
+  args: { hasLocation: true },
   play: async ({ canvasElement, step }) => {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
-    await step('showLocation이면 위치 열을 더한다', async () => {
+    await step('hasLocation이면 위치 열을 더한다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '위치' })).toBeInTheDocument();
     });
   },
@@ -95,12 +95,12 @@ export const WithLocation: Story = {
 
 // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
 export const RecycleBin: Story = {
-  // 휴지통 보기는 showLocation을 따르지 않는다.
-  args: { view: 'recycle-bin', showLocation: true, onSort: fn() },
+  // 휴지통 보기는 hasLocation을 따르지 않는다.
+  args: { view: 'recycle-bin', hasLocation: true, onSort: fn() },
   play: async ({ args, canvasElement, step }) => {
     // @codocs [[디자인 시스템:컴포넌트 조립 규칙]]
     await step(
-      '휴지통 보기는 이름·원래 위치·삭제한 날짜 열이고 showLocation을 따르지 않는다',
+      '휴지통 보기는 이름·원래 위치·삭제한 날짜 열이고 hasLocation을 따르지 않는다',
       async () => {
         await expect(columnTitles(canvasElement)).toEqual(['이름', '원래 위치', '삭제한 날짜']);
       },

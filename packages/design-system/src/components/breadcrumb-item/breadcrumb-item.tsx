@@ -6,17 +6,17 @@ import { Asset } from '../asset/asset';
 type BreadcrumbItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Label 속성. 위치 이름 글자다 */
   label?: string;
-  /** 피그마 Current. 지금 위치(마지막 칸)인지 알린다. 모양은 같고 접근성 속성(`aria-current`)만 바뀐다 */
+  /** 지금 위치(마지막 칸)인지 알린다. 피그마에는 없는 코드 전용 속성이다. 모양은 같고 접근성 속성(`aria-current`)만 바뀐다 */
   isCurrent?: boolean;
-  /** 피그마 Show separator. 오른쪽 꺾쇠 구분자를 보일지 정한다 */
-  showSeparator?: boolean;
+  /** 피그마 Has separator. 오른쪽 꺾쇠 구분자를 보일지 정한다 */
+  hasSeparator?: boolean;
   /** 위치 이름 버튼을 눌렀을 때 부른다. 구분자를 누른 것은 부르지 않는다 */
   onLabelClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 /**
  * 경로의 한 칸(피그마 BreadcrumbItem)을 그린다. Breadcrumb의 Items 슬롯에 쓴다.
- * Rest·Hover·Pressed 모양은 CSS hover와 active로 바꾼다. Current는 모양이 같다.
+ * Rest·Hover·Pressed 모양은 CSS hover와 active로 바꾼다. isCurrent는 모양이 같아 피그마 변형에 없다.
  * @codocs [[컴포넌트 목록:상태]]
  * @param props
  */
@@ -24,7 +24,7 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
   const {
     label = '위치 이름',
     isCurrent = false,
-    showSeparator: hasSeparator = true,
+    hasSeparator = true,
     onLabelClick: handleLabelClick,
     className,
     ...divProps
