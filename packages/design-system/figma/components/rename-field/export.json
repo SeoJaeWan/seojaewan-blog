@@ -24,7 +24,7 @@
             "children": [
               {
                 "fills": [
-                  "text-on-accent-fill/selected-text"
+                  "color/white"
                 ],
                 "name": "text",
                 "size": {
@@ -42,7 +42,7 @@
                   "segments": [
                     {
                       "characters": "이름",
-                      "fill": "text-on-accent-fill/selected-text",
+                      "fill": "color/white",
                       "textStyle": "Hangul/Caption"
                     }
                   ],
@@ -52,7 +52,7 @@
               }
             ],
             "fills": [
-              "accent-fill/selected-text-background"
+              "color/blue/50"
             ],
             "layout": {
               "counterAlign": "MIN",
@@ -79,7 +79,7 @@
           }
         ],
         "fills": [
-          "control-fill/input-active"
+          "color/white"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -109,7 +109,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-strong-stroke/default"
+          "color/black/61"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT"
