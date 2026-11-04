@@ -52,7 +52,7 @@ type WindowFrameControlProps = Pick<
 // 도구 모음에 그대로 넘기는 이동 버튼 속성이다.
 type ToolbarProps = Pick<
   ComponentProps<typeof BrowserToolbar>,
-  'backDisabled' | 'forwardDisabled' | 'onBack' | 'onForward' | 'onRefresh' | 'addressBar'
+  'isBackDisabled' | 'isForwardDisabled' | 'onBack' | 'onForward' | 'onRefresh' | 'addressBar'
 >;
 
 type ChromeWindowProps = WindowFrameControlProps &
@@ -116,8 +116,8 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     onTabClose,
     onTabMove,
     onNewTab: handleNewTab,
-    backDisabled: isBackDisabled,
-    forwardDisabled: isForwardDisabled,
+    isBackDisabled,
+    isForwardDisabled,
     onBack: handleBack,
     onForward: handleForward,
     onRefresh: handleRefresh,
@@ -208,10 +208,10 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
     <BrowserToolbar
       url={url}
       addressBar={addressBar}
-      showForward={isDesktop}
-      showRefresh={isDesktop}
-      backDisabled={isBackDisabled}
-      forwardDisabled={isForwardDisabled}
+      hasForward={isDesktop}
+      hasRefresh={isDesktop}
+      isBackDisabled={isBackDisabled}
+      isForwardDisabled={isForwardDisabled}
       onBack={handleBack}
       onForward={handleForward}
       onRefresh={handleRefresh}
@@ -278,9 +278,9 @@ export function ChromeWindow(props: ChromeWindowProps): JSX.Element {
                     <BrowserTab
                       key={tab.id ?? `${String(index)}-${tab.title}`}
                       value={index}
-                      active={tab.active}
+                      isActive={tab.active}
                       // 선택된 탭 바로 왼쪽 탭은 구분선을 그리지 않는다.
-                      showSeparator={tabs[index + 1]?.active !== true}
+                      hasSeparator={tabs[index + 1]?.active !== true}
                       favicon={tabFavicon}
                       title={tab.title}
                       onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
