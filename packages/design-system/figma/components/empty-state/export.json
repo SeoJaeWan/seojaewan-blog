@@ -1,11 +1,15 @@
 {
-  "description": "내용을 보여 줄 수 없을 때의 안내로, 페이지를 찾을 수 없음 화면에 쓴다.",
+  "description": "내용을 보여 줄 수 없을 때의 안내로, 페이지를 찾을 수 없음 화면에 쓴다.\n@sample-size width",
   "name": "EmptyState",
   "nodeId": "399:5549",
   "propertyDefinitions": {
     "Code": {
       "default": "오류 코드",
       "type": "TEXT"
+    },
+    "Has button": {
+      "default": true,
+      "type": "BOOLEAN"
     },
     "Heading": {
       "default": "제목",
@@ -14,10 +18,6 @@
     "Message": {
       "default": "메시지 내용",
       "type": "TEXT"
-    },
-    "Show button": {
-      "default": true,
-      "type": "BOOLEAN"
     }
   },
   "variants": {
@@ -34,7 +34,7 @@
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_document_20_regular"
             },
             "component": "ic_fluent_document_20_regular",
@@ -53,7 +53,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "heading",
             "size": {
@@ -71,7 +71,7 @@
               "segments": [
                 {
                   "characters": "제목",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Subtitle"
                 }
               ],
@@ -81,7 +81,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "message",
             "size": {
@@ -99,17 +99,17 @@
               "segments": [
                 {
                   "characters": "메시지",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "내용",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -119,7 +119,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "code",
             "size": {
@@ -137,17 +137,17 @@
               "segments": [
                 {
                   "characters": "오류",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "코드",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -159,7 +159,7 @@
             "children": [
               {
                 "fills": [
-                  "text-on-accent-fill/primary"
+                  "color/white"
                 ],
                 "name": "label",
                 "size": {
@@ -177,7 +177,7 @@
                   "segments": [
                     {
                       "characters": "새로고침",
-                      "fill": "text-on-accent-fill/primary",
+                      "fill": "color/white",
                       "textStyle": "Hangul/Body"
                     }
                   ],
@@ -188,7 +188,7 @@
             ],
             "component": "Button",
             "fills": [
-              "accent-fill/default"
+              "color/blue/59"
             ],
             "layout": {
               "counterAlign": "CENTER",
@@ -205,10 +205,10 @@
             "minWidth": "size/button/min-width",
             "name": "reload",
             "properties": {
+              "Has icon": false,
               "Label": "새로고침",
-              "Show icon": false,
               "State": "Rest",
-              "Style": "Accent"
+              "Variant": "Accent"
             },
             "radius": [
               "radius/control",
@@ -256,8 +256,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/empty-state/width"
+        "type": "COMPONENT"
       }
     }
   }
