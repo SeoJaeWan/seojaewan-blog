@@ -98,7 +98,7 @@ export const Checkbox: Story = {
       <MenuItem
         variant="checkbox"
         label="숨김 항목"
-        defaultChecked
+        isDefaultChecked
         onCheckedChange={handleCheckedChange}
       />
     </OpenMenu>
@@ -266,9 +266,9 @@ function FigmaMenuItem(props: FigmaArgs): JSX.Element {
         </Menu.SubmenuRoot>
       );
     case 'toggle-on':
-      return <MenuItem {...common} variant="checkbox" defaultChecked />;
+      return <MenuItem {...common} variant="checkbox" isDefaultChecked />;
     case 'toggle-off':
-      return <MenuItem {...common} variant="checkbox" defaultChecked={false} />;
+      return <MenuItem {...common} variant="checkbox" isDefaultChecked={false} />;
     case 'radio-on':
       return (
         <Menu.RadioGroup defaultValue={LABEL}>
