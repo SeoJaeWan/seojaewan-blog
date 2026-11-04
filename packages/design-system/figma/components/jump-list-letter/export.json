@@ -35,7 +35,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/disabled"
+              "color/black/36"
             ],
             "name": "label",
             "size": {
@@ -53,7 +53,7 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/disabled",
+                  "fill": "color/black/36",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -63,7 +63,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/disabled"
+          "color/white/0"
         ],
         "height": "size/jump-list-letter/box",
         "layout": {
@@ -112,7 +112,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -130,7 +130,7 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -140,7 +140,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "height": "size/jump-list-letter/box",
         "layout": {
@@ -177,7 +177,7 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT",
@@ -199,7 +199,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -217,7 +217,7 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -227,7 +227,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "height": "size/jump-list-letter/box",
         "layout": {
@@ -276,7 +276,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -294,7 +294,7 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -304,7 +304,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/tertiary"
+          "color/black/2"
         ],
         "height": "size/jump-list-letter/box",
         "layout": {
@@ -353,7 +353,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -371,7 +371,7 @@
               "segments": [
                 {
                   "characters": "글자",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -381,7 +381,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "height": "size/jump-list-letter/box",
         "layout": {
