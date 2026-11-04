@@ -236,6 +236,23 @@ const misreadTokenClasses = themeVariableNames.filter((name) =>
 );
 
 // @codocs [[피그마 연동:토큰 사용 강제]]
+// 숫자로 끝나는 토큰 이름(`color-gray-11`, `color-white-70`)이다. 클래스는 유틸리티 + 토큰 이름이라, 이 이름으로 끝나는
+// 클래스(`text-color-gray-11`)는 숫자 값 클래스 규칙에서 뺀다. 투명도 덧붙임(`/50`)이 붙으면 이름으로 끝나지 않아 걸린다.
+const numericTokenNames = [
+  ...new Set(
+    [
+      ...readFileSync(`${rootDir}/packages/design-system/src/tokens.css`, 'utf8').matchAll(
+        /^\s+--([a-z0-9-]+[0-9]):/gmu,
+      ),
+    ].map((match) => match[1]),
+  ),
+];
+const numericTokenLookahead =
+  numericTokenNames.length === 0
+    ? ''
+    : `(?!(?:.*:)?[a-z-]+?-(?:${numericTokenNames.join('|')})!?$)`;
+
+// @codocs [[피그마 연동:토큰 사용 강제]]
 // 이름이 `ClassName`·`CLASS_NAME`(복수 포함)로 끝나는 변수의 문자열·배열·객체 값과 `*ClassName` 속성도 클래스로 검사한다.
 // 객체의 `className` 키 값(`createElement('ul', { className: '…' })`, 스토리 `args: { className: '…' }`)도 검사한다.
 // 함수 인자, 변수 초기값, JSX 속성 값 안의 객체를 본다. 셀렉터는 함수 호출·함수 경계를 넘어가지 않는다.
@@ -708,10 +725,11 @@ export default defineConfig(
                 '"$0"으로 움직임을 직접 주지 않는다. motion.css의 motion-* 클래스를 쓴다([[디자인 기반:모션]]).',
             },
             // @codocs [[피그마 연동:토큰 사용 강제]]
-            // 클래스에는 숫자 값이 들어가지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 토큰 이름도 숫자로 끝나지 않으므로
-            // 값이 숫자인 Tailwind 기본 유틸리티(`shrink-0`, `rotate-180`, `z-10`)와 비율(`w-1/2`), 투명도(`bg-x/50`)만 걸린다.
+            // 클래스에는 숫자 값이 들어가지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 숫자로 끝나는 클래스 가운데
+            // 토큰 이름의 클래스(`text-color-gray-11`)만 두고, Tailwind 기본 숫자 클래스(`shrink-0`, `rotate-180`, `z-10`),
+            // 비율(`w-1/2`), 투명도 덧붙임(`bg-x/50`), 토큰에 없는 이름(`text-color-gray-12`)을 막는다.
             {
-              pattern: '^.*[0-9]%?!?$',
+              pattern: `^${numericTokenLookahead}.*[0-9]%?!?$`,
               message:
                 '숫자 값 클래스("$0")는 쓰지 않는다. 피그마 토큰 이름의 클래스를 쓰고, 없으면 피그마에 변수를 더한다.',
             },

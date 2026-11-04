@@ -71,7 +71,7 @@ export function TaskbarDefault(props: TaskbarDefaultProps): JSX.Element {
               icon={
                 <Asset
                   name="icons/ic_fluent_search_20_regular.svg"
-                  className="text-text-fill-primary"
+                  className="text-color-black-89"
                 />
               }
             />

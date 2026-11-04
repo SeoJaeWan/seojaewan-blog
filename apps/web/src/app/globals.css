@@ -20,9 +20,9 @@
  * 강조 이름은 `use-page-find`가 문서의 강조 목록에 넣는다.
  */
 ::highlight(chrome-find) {
-  background-color: var(--chrome-find-highlight);
+  background-color: var(--color-yellow-3);
 }
 
 ::highlight(chrome-find-current) {
-  background-color: var(--chrome-find-highlight-current);
+  background-color: var(--color-orange-28);
 }

@@ -27,7 +27,7 @@ export function ProfileButton(props: ProfileButtonProps): JSX.Element {
       <span className="flex size-size-avatar-profile shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {photo}
       </span>
-      <span className="type-body whitespace-nowrap text-text-fill-primary">{name}</span>
+      <span className="type-body whitespace-nowrap text-color-black-89">{name}</span>
     </button>
   );
 }

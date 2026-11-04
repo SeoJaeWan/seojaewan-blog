@@ -28,16 +28,16 @@ export function PinnedTile(props: PinnedTileProps): JSX.Element {
       className={cn(
         'relative inline-flex h-size-pinned-tile-height w-size-pinned-tile-width flex-col items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-xs py-spacing-sm select-none inner-border-w-stroke-width-default',
         'motion-control-state',
-        'bg-subtle-fill-transparent',
-        'hover:bg-control-fill-secondary hover:not-active:inner-border-control-stroke-default',
-        'active:bg-control-fill-tertiary',
+        'bg-color-white-0',
+        'hover:bg-color-gray-3-50 hover:not-active:inner-border-color-black-6',
+        'active:bg-color-gray-2-30',
         className,
       )}
     >
       <span className="inline-flex size-size-icon-xl shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
         {icon}
       </span>
-      <span className="w-full shrink-shrink-none truncate text-center type-caption text-text-fill-primary">
+      <span className="w-full shrink-shrink-none truncate text-center type-caption text-color-black-89">
         {label}
       </span>
     </BaseButton>

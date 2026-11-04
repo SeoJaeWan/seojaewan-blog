@@ -21,6 +21,7 @@ export type PathGroup = {
 
 /** 경로 규칙 표. 긴 앞부분이 먼저 맞도록 묶음끼리 겹치지 않게 둔다 */
 export const pathGroups: readonly PathGroup[] = [
+  { prefix: 'color', namespaces: ['--color'] },
   { prefix: 'spacing', namespaces: ['--spacing'] },
   { prefix: 'size', namespaces: ['--size'] },
   { prefix: 'radius', namespaces: ['--radius'] },

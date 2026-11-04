@@ -44,7 +44,7 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
       {...divProps}
       className={cn(
         'group flex w-size-window-preview-width flex-col gap-spacing-sm rounded-radius-control p-spacing-sm select-none',
-        'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
+        'bg-color-white-0 hover:bg-color-black-4',
         'motion-control-state',
         className,
       )}
@@ -73,7 +73,7 @@ export function WindowPreview(props: WindowPreviewProps): JSX.Element {
       {/* 피그마 안쪽 선은 레이아웃에 들어가지 않아, CSS border 대신 내용 위에 겹친 고리(inner-border)로 그린다. */}
       <div
         aria-hidden
-        className="inner-border-card-stroke-default relative isolate flex h-size-window-preview-thumbnail-height flex-col items-center justify-center overflow-clip rounded-radius-control bg-solid-background-fill-base inner-border-w-stroke-width-default"
+        className="inner-border-color-black-6 relative isolate flex h-size-window-preview-thumbnail-height flex-col items-center justify-center overflow-clip rounded-radius-control bg-color-gray-4 inner-border-w-stroke-width-default"
       >
         {thumbnail}
       </div>

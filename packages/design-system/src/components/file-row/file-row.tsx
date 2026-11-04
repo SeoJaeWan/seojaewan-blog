@@ -91,10 +91,8 @@ export function FileRow(props: FileRowProps): JSX.Element {
       className={cn(
         // 포커스 선은 아래 `focus-visible:` 고리로 그리므로 브라우저 기본 외곽선은 그리지 않는다.
         'relative flex h-size-control-height items-center gap-spacing-sm rounded-radius-control px-spacing-sm py-spacing-none outline-none select-none',
-        isSelected || isRenaming
-          ? 'bg-file-item-explorer-fill-selected'
-          : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
-        'focus-visible:inner-border-file-item-explorer-stroke-focus focus-visible:inner-border-w-stroke-width-default',
+        isSelected || isRenaming ? 'bg-color-blue-9' : 'bg-color-white-0 hover:bg-color-blue-5',
+        'focus-visible:inner-border-color-blue-18 focus-visible:inner-border-w-stroke-width-default',
         className,
       )}
     >
@@ -112,7 +110,7 @@ export function FileRow(props: FileRowProps): JSX.Element {
         ) : (
           <span
             className={cn(
-              'min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary',
+              'min-w-size-none flex-flex-fill truncate type-caption text-color-black-89',
               dimClassName,
             )}
           >
@@ -122,23 +120,23 @@ export function FileRow(props: FileRowProps): JSX.Element {
       </div>
       {view === 'recycle-bin' ? (
         <>
-          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
             {originalLocation}
           </span>
-          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
             {deletedDate}
           </span>
         </>
       ) : (
         <>
-          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
             {date}
           </span>
-          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
+          <span className="w-size-file-row-narrow-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
             {type}
           </span>
           {isLocationShown && (
-            <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-text-fill-secondary">
+            <span className="w-size-file-row-wide-cell-width shrink-shrink-none truncate type-caption text-color-black-61">
               {location}
             </span>
           )}

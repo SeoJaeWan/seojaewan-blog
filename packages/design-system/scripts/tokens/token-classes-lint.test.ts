@@ -21,6 +21,8 @@ const motionCss = readFileSync(path.join(packageRoot, 'src', 'motion.css'), 'utf
 // 이름공간이 Tailwind 기본 이름공간과 같아 Tailwind 기본 유틸리티로 쓰는 토큰이다(별칭 변수가 경로 전체를 붙인다).
 // 이름공간마다 그 유틸리티가 정해야 하는 CSS 속성이다.
 const intendedBuiltIn: readonly (readonly [string, RegExp])[] = [
+  // 원색은 Tailwind 색 이름공간이라 색을 받는 기본 유틸리티(글자, 배경, 선, 바깥 선, 칠 등)가 모두 읽는다.
+  ['--color-', /./u],
   ['--spacing-', /./u],
   ['--radius-', /radius:/u],
   ['--opacity-', /opacity/u],
@@ -136,7 +138,7 @@ describe('토큰 사용 강제', () => {
   it('tokens.css의 @utility가 만든 토큰 클래스와 값 종류 토큰의 Tailwind 기본 클래스는 lint가 안다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-default text-text-fill-primary w-size-menu-width border-stroke-width-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default p-spacing-md rounded-radius-control',
+        'bg-color-blue-59 text-color-black-89 border-color-black-6 outline-color-black-89 inner-border-color-black-6 w-size-menu-width border-stroke-width-default type-body surface-flyout-acrylic text-shadow-elevation-desktop-label material-acrylic-default p-spacing-md rounded-radius-control',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([]);
@@ -170,11 +172,11 @@ describe('토큰 사용 강제', () => {
   it('토큰에 없는 이름의 클래스는 lint가 막는다', async () => {
     await expect(
       lintClassErrors(
-        'bg-accent-fill-missing w-missing-width type-missing surface-missing',
+        'bg-color-missing w-missing-width type-missing surface-missing',
         UNKNOWN_CLASS_RULE,
       ),
     ).resolves.toEqual([
-      'Unknown class detected: bg-accent-fill-missing',
+      'Unknown class detected: bg-color-missing',
       'Unknown class detected: w-missing-width',
       'Unknown class detected: type-missing',
       'Unknown class detected: surface-missing',
@@ -183,14 +185,14 @@ describe('토큰 사용 강제', () => {
 
   it('cn 인자 안의 토큰에 없는 클래스도 lint가 막는다', async () => {
     await expect(
-      lintClassErrors('bg-accent-fill-missing w-size-menu-width', UNKNOWN_CLASS_RULE, true),
-    ).resolves.toEqual(['Unknown class detected: bg-accent-fill-missing']);
+      lintClassErrors('bg-color-missing w-size-menu-width', UNKNOWN_CLASS_RULE, true),
+    ).resolves.toEqual(['Unknown class detected: bg-color-missing']);
   }, 60_000);
 
   it('이름이 ClassNames·CLASS_NAMES로 끝나는 객체의 값도 lint가 검사한다', async () => {
     const prelude = [
       "const SIZE_CLASS_NAMES = { wide: 'w-missing-a', narrow: 'w-size-menu-width' } as const;",
-      "const toneClassNames: Readonly<Record<string, string>> = { on: 'bg-accent-fill-missing' };",
+      "const toneClassNames: Readonly<Record<string, string>> = { on: 'bg-color-missing' };",
       "const toneStyles = { on: 'bg-not-class-object' };",
       'export const probe = [SIZE_CLASS_NAMES, toneClassNames, toneStyles];',
     ].join('\n');
@@ -198,7 +200,7 @@ describe('토큰 사용 강제', () => {
       lintClassErrors('w-size-menu-width', UNKNOWN_CLASS_RULE, false, prelude),
     ).resolves.toEqual([
       'Unknown class detected: w-missing-a',
-      'Unknown class detected: bg-accent-fill-missing',
+      'Unknown class detected: bg-color-missing',
     ]);
   }, 60_000);
 
@@ -286,7 +288,8 @@ describe('토큰 사용 강제', () => {
       'w-1/2',
       'aspect-3/2',
       'mask-l-from-50%',
-      'bg-accent-fill-default/50',
+      'bg-color-white-70/50',
+      'text-color-gray-12',
       'hover:rotate-45',
       'laptop:shrink-0',
       'shrink-0!',
@@ -299,23 +302,11 @@ describe('토큰 사용 강제', () => {
   it('토큰 이름의 클래스와 숫자가 아닌 기본 클래스는 숫자 규칙에 걸리지 않는다', async () => {
     await expect(
       lintClassErrors(
-        'p-spacing-2xs w-size-icon-2xl size-size-icon-3xl shrink-shrink-none rotate-rotate-half rounded-full w-full',
+        'p-spacing-2xs w-size-icon-2xl size-size-icon-3xl shrink-shrink-none rotate-rotate-half rounded-full w-full text-color-black-89 hover:bg-color-white-70 inner-border-color-black-6 border-color-blue-59!',
         RESTRICTED_CLASS_RULE,
       ),
     ).resolves.toEqual([]);
   }, 60_000);
-
-  it('클래스를 만드는 토큰 이름과 유틸리티는 숫자로 끝나지 않는다', () => {
-    const theme = tokensCss.split('@theme static {')[1]?.split('\n}')[0] ?? '';
-    const names = [
-      ...[...theme.matchAll(/^\s+--([a-z0-9-]+):/gmu)].map((match) => match[1] ?? ''),
-      ...[...`${tokensCss}${motionCss}`.matchAll(/^@utility ([a-z0-9-]+) \{/gmu)].map(
-        (match) => match[1] ?? '',
-      ),
-    ];
-    expect(names.length).toBeGreaterThan(0);
-    expect(names.filter((name) => /[0-9]$/u.test(name))).toEqual([]);
-  });
 
   it('text-shadow 값 변수를 box-shadow로 읽은 shadow-text-* 클래스는 lint가 막는다', async () => {
     const className = 'shadow-text-elevation-desktop-label';
@@ -326,7 +317,6 @@ describe('토큰 사용 강제', () => {
 
   it('Tailwind 기본 유틸리티가 토큰 변수를 다른 속성으로 읽은 클래스는 lint가 막는다', async () => {
     const classes = await misreadBuiltInClasses();
-    expect(classes).toContain('text-fill-primary');
     const errors = await lintClassErrors(classes.join(' '), RESTRICTED_CLASS_RULE);
     expect({ classes, count: errors.length }).toEqual({ classes, count: classes.length });
   }, 60_000);

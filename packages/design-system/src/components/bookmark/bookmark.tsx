@@ -24,22 +24,18 @@ export function Bookmark(props: BookmarkProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex flex-col items-start gap-spacing-xs rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary px-spacing-lg py-spacing-md',
+        'flex flex-col items-start gap-spacing-xs rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-gray-3-50 px-spacing-lg py-spacing-md',
         className,
       )}
     >
-      <p className="w-full shrink-shrink-none type-body-strong text-text-fill-primary">{title}</p>
-      <p className="w-full shrink-shrink-none type-caption text-text-fill-secondary">
-        {description}
-      </p>
+      <p className="w-full shrink-shrink-none type-body-strong text-color-black-89">{title}</p>
+      <p className="w-full shrink-shrink-none type-caption text-color-black-61">{description}</p>
       <div className="flex w-full shrink-shrink-none items-center gap-spacing-sm-nudge">
         <Asset
           name="icons/ic_fluent_link_20_regular.svg"
-          className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
+          className="size-size-icon-sm shrink-shrink-none text-color-black-61"
         />
-        <p className="min-w-size-none flex-flex-fill type-caption text-text-fill-secondary">
-          {url}
-        </p>
+        <p className="min-w-size-none flex-flex-fill type-caption text-color-black-61">{url}</p>
       </div>
     </div>
   );

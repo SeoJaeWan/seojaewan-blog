@@ -71,7 +71,7 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'flex flex-col items-start gap-spacing-lg bg-chrome-image-viewer-backdrop p-spacing-lg outline-none',
+        'flex flex-col items-start gap-spacing-lg bg-color-black-80 p-spacing-lg outline-none',
         className,
       )}
     >
@@ -93,7 +93,7 @@ export function ChromeImageViewer(props: ChromeImageViewerProps): JSX.Element {
       >
         {image}
         {caption !== undefined && (
-          <p className="w-full text-center type-body text-chrome-image-viewer-text">{caption}</p>
+          <p className="w-full text-center type-body text-color-white">{caption}</p>
         )}
       </div>
     </div>

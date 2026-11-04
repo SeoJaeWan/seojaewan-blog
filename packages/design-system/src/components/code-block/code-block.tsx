@@ -40,12 +40,12 @@ export function CodeBlock(props: CodeBlockProps): JSX.Element {
       {...divProps}
       // 피그마에서 테두리가 레이아웃에 들어가므로 CSS border를 쓴다.
       className={cn(
-        'flex flex-col items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-solid-background-fill-tertiary pt-spacing-sm pr-spacing-sm pb-spacing-lg pl-spacing-lg',
+        'flex flex-col items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-gray-2 pt-spacing-sm pr-spacing-sm pb-spacing-lg pl-spacing-lg',
         className,
       )}
     >
       <div className="flex w-full items-center overflow-clip">
-        <span className="min-w-size-none flex-flex-fill type-caption text-text-fill-secondary">
+        <span className="min-w-size-none flex-flex-fill type-caption text-color-black-61">
           {language}
         </span>
         <IconButton
@@ -55,7 +55,7 @@ export function CodeBlock(props: CodeBlockProps): JSX.Element {
           onClick={handleCopy}
         />
       </div>
-      <pre className="w-full overflow-x-auto type-code text-text-fill-primary">
+      <pre className="w-full overflow-x-auto type-code text-color-black">
         <code ref={codeRef}>{renderCodeLines(lines)}</code>
       </pre>
     </div>

@@ -22,8 +22,8 @@ export function SnapZone(props: SnapZoneProps): JSX.Element {
       {...buttonProps}
       aria-label={label}
       className={cn(
-        'block h-size-snap-option-height w-size-snap-option-zone-width rounded-radius-control border-stroke-width-default border-control-stroke-default bg-control-alt-fill-secondary',
-        'hover:border-control-stroke-on-accent-default hover:bg-accent-fill-default',
+        'block h-size-snap-option-height w-size-snap-option-zone-width rounded-radius-control border-stroke-width-default border-color-black-6 bg-color-black-2',
+        'hover:border-color-white-8 hover:bg-color-blue-59',
         className,
       )}
     />

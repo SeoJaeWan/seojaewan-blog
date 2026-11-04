@@ -66,8 +66,9 @@ const SEOJAEWAN_EXTENSION = 'com.seojaewan';
 // 글자 스타일 확장 필드에서 받는 기울임·글자 장식 값이다. 기본값(normal, none)은 플러그인이 적지 않는다.
 const FONT_STYLES = ['italic'] as const;
 const TEXT_DECORATIONS = ['underline', 'line-through'] as const;
-// Primitive 변수 모음이다. 컴포넌트는 Semantic·Component 변수를 쓰므로 클래스를 만들지 않는다.
-const PRIMITIVE_COLLECTION = 'Primitive';
+// 원색 경로 규칙(`color/*`)의 이름공간이다. 글자·배경·선·바깥 선 색은 Tailwind 기본 유틸리티가 별칭을 읽고,
+// 안쪽 선 고리 색만 `@utility inner-border-*`로 만든다.
+const COLOR_NAMESPACE = '--color';
 // 배경 흐림이 있는 효과 스타일은 그림자와 배경 흐림을 이 접미사의 변수 둘로 나눈다.
 const SHADOW_SUFFIX = 'shadow';
 const BACKDROP_BLUR_SUFFIX = 'backdrop-blur';
@@ -323,7 +324,7 @@ function convertTokens(json: unknown): Converted {
 
   const colorGroups = uniqueSorted([
     ...variableTokens
-      .filter((token) => token.type === 'color' && collectionOf(token) !== PRIMITIVE_COLLECTION)
+      .filter((token) => token.type === 'color' && pathGroupOf(token.path.join('/')) === undefined)
       .map(groupOf),
     ...paints.filter((token) => token.type === 'color').map(groupOf),
   ]);
@@ -612,6 +613,15 @@ function namespaceUtilities(
       add(namespace, [propertyUtility(group.utility.prefix, [group.utility.property])]);
     }
   }
+  if (hasNamespace(COLOR_NAMESPACE)) {
+    add(COLOR_NAMESPACE, [
+      {
+        prefix: 'inner-border',
+        css: '안쪽 선 고리(색)',
+        declarations: (value) => ringBlock(value),
+      },
+    ]);
+  }
   // motion/* 변수로는 유틸리티를 만들지 않는다. motion.css의 motion-* 클래스가 var()로 쓴다(:root에 남는다).
   return result.sort(([, a], [, b]) => naturalCompare(a.prefix, b.prefix));
 }
@@ -757,7 +767,7 @@ function header(
     '다시 만들기: pnpm --filter @seojaewan/design-system generate:tokens',
     '',
     'CSS 이름은 `--` + 피그마 경로를 `-`로 이은 것이다(스타일은 스타일 이름 경로).',
-    '유틸리티가 읽는 변수는 @theme static에, 나머지(Primitive 색, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.',
+    '유틸리티가 읽는 변수는 @theme static에, 나머지(경로 이름 변수, 글자 스타일이 쓰는 서체 값, motion.css가 쓰는 모션 값 등)는 :root에 둔다.',
     '',
     '| 클래스 | CSS | 변수 |',
     '|---|---|---|',
@@ -1797,17 +1807,6 @@ function scopesOf(token: FlatToken): string[] {
   const figma = token.extensions[FIGMA_EXTENSION];
   const scopes = isRecord(figma) ? figma.scopes : undefined;
   return Array.isArray(scopes) ? scopes.filter((scope) => typeof scope === 'string') : [];
-}
-
-/**
- * 피그마 변수 모음 이름을 구한다.
- * @param token 변수 토큰
- * @returns 모음 이름, 없으면 undefined
- */
-function collectionOf(token: FlatToken): string | undefined {
-  const figma = token.extensions[FIGMA_EXTENSION];
-  const collection = isRecord(figma) ? figma.collection : undefined;
-  return typeof collection === 'string' ? collection : undefined;
 }
 
 /**

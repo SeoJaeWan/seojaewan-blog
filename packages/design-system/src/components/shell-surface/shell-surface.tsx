@@ -34,7 +34,7 @@ export function ShellSurface(props: ShellSurfaceProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex flex-col items-start border-stroke-width-default border-surface-stroke-default',
+        'relative flex flex-col items-start border-stroke-width-default border-color-gray-51-40',
         MATERIAL_CLASS_NAME,
         deviceClassNames[device],
         className,

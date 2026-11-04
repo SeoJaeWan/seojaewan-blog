@@ -37,11 +37,11 @@ export function EmptyState(props: EmptyStateProps): JSX.Element {
     <div {...divProps} className={cn('flex flex-col items-start gap-spacing-lg', className)}>
       <Asset
         name="icons/ic_fluent_document_20_regular.svg"
-        className="size-size-icon-2xl shrink-shrink-none text-text-fill-primary"
+        className="size-size-icon-2xl shrink-shrink-none text-color-black-89"
       />
-      <h2 className="self-stretch type-subtitle break-words text-text-fill-primary">{heading}</h2>
-      <p className="self-stretch type-body break-words text-text-fill-secondary">{message}</p>
-      <p className="self-stretch type-caption break-words text-text-fill-secondary">{code}</p>
+      <h2 className="self-stretch type-subtitle break-words text-color-black-89">{heading}</h2>
+      <p className="self-stretch type-body break-words text-color-black-61">{message}</p>
+      <p className="self-stretch type-caption break-words text-color-black-61">{code}</p>
       {hasButton && <Button variant="accent" label="새로고침" onClick={handleReload} />}
     </div>
   );

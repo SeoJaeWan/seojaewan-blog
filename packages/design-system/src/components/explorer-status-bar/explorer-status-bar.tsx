@@ -47,7 +47,7 @@ export function ExplorerStatusBar(props: ExplorerStatusBarProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex items-center gap-spacing-lg overflow-clip bg-layer-fill-default py-spacing-2xs pr-spacing-sm pl-spacing-lg type-caption text-text-fill-primary',
+        'flex items-center gap-spacing-lg overflow-clip bg-color-white-50 py-spacing-2xs pr-spacing-sm pl-spacing-lg type-caption text-color-black-89',
         className,
       )}
     >

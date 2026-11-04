@@ -28,7 +28,7 @@ export function Flyout(props: FlyoutProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex flex-col items-start justify-start gap-spacing-none rounded-radius-overlay border-stroke-width-default border-surface-stroke-flyout px-spacing-none py-spacing-2xs',
+        'relative flex flex-col items-start justify-start gap-spacing-none rounded-radius-overlay border-stroke-width-default border-color-black-6 px-spacing-none py-spacing-2xs',
         materialClassNames[material],
         className,
       )}

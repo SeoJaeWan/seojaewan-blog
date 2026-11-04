@@ -1,9 +1,11 @@
 import type { JSX } from 'react';
 
+import listItemExport from '../../figma/components/list-item/export.json';
 import { cn } from '../cn';
 import { JumpListLetter } from '../components/jump-list-letter/jump-list-letter';
 import { ListItem } from '../components/list-item/list-item';
 import { TileGrid } from '../components/tile-grid/tile-grid';
+import { FigmaFrame } from '../story/figma-frame';
 
 const folderIcon = new URL('../assets/images/file-folder.webp', import.meta.url).href;
 const documentIcon = new URL('../assets/images/file-document.webp', import.meta.url).href;
@@ -40,7 +42,8 @@ type SampleJumpListProps = {
 /**
  * Start 글자 목록 모션 견본(motion-start-jump-list-*)을 디자인 시스템 컴포넌트로 비슷하게 그린다.
  * 견본의 `Start/JumpList` 조립은 앱에 있어 여기서는 TileGrid + JumpListLetter로 글자 격자를,
- * ListItem 몇 개로 견본의 `list` 레이어(앱 목록)를 그린다. 격자는 목록 위에 겹친다.
+ * ListItem 몇 개로 견본의 `list` 레이어(앱 목록)를 그린다. 격자는 목록과 같은 칸에 겹치고, 높이는 둘 가운데 큰 내용에 맞춘다.
+ * ListItem 너비는 피그마 원본 크기(FigmaFrame, ListItem export.json)로 준다.
  * 모션 클래스는 둘을 감싼 요소에 걸고, 격자에 data-jump-list="grid", 목록에 data-jump-list="list"를 둔다(motion.css의 약속).
  * 격자와 목록이 모두 투명도를 움직이므로, 키프레임 값 검사가 json 트랙과 짝짓도록 data-motion-node에 json의 노드 이름
  * (`Start/JumpList`, `list`)을 단다.
@@ -51,19 +54,18 @@ type SampleJumpListProps = {
 export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
   const { motionClassName } = props;
   return (
-    <div
-      className={cn(
-        'relative h-size-start-body-height w-size-list-item-width overflow-hidden',
-        motionClassName,
-      )}
-    >
-      <div data-jump-list="list" data-motion-node="list" className="flex flex-col">
+    <div className={cn('grid overflow-hidden', motionClassName)}>
+      <div
+        data-jump-list="list"
+        data-motion-node="list"
+        className="col-start-grid-start row-start-grid-start flex flex-col"
+      >
         {listItems.map((item) => renderListItem(item))}
       </div>
       <div
         data-jump-list="grid"
         data-motion-node="Start/JumpList"
-        className="absolute inset-spacing-none flex justify-center"
+        className="col-start-grid-start row-start-grid-start flex justify-center"
       >
         <TileGrid align="center" className="w-size-jump-list-grid-width">
           {letters.map((letter) => renderLetter(letter))}
@@ -80,17 +82,18 @@ export function SampleJumpList(props: SampleJumpListProps): JSX.Element {
  */
 function renderListItem(item: SampleListItem): JSX.Element {
   return (
-    <ListItem
-      key={item.title}
-      title={item.title}
-      icon={
-        <img
-          src={item.isFolder ? folderIcon : documentIcon}
-          alt=""
-          className="size-full object-contain"
-        />
-      }
-    />
+    <FigmaFrame key={item.title} source={listItemExport} args={{ size: 'compact' }}>
+      <ListItem
+        title={item.title}
+        icon={
+          <img
+            src={item.isFolder ? folderIcon : documentIcon}
+            alt=""
+            className="size-full object-contain"
+          />
+        }
+      />
+    </FigmaFrame>
   );
 }
 

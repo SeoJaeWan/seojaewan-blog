@@ -22,7 +22,7 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex h-size-control-height items-center gap-spacing-xs overflow-clip rounded-radius-control border-stroke-width-default border-control-stroke-default bg-control-fill-default px-spacing-sm',
+        'flex h-size-control-height items-center gap-spacing-xs overflow-clip rounded-radius-control border-stroke-width-default border-color-black-6 bg-color-white-70 px-spacing-sm',
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function Breadcrumb(props: BreadcrumbProps): JSX.Element {
       </span>
       <Asset
         name="icons/ic_fluent_chevron_right_16_regular.svg"
-        className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
+        className="size-size-icon-sm shrink-shrink-none text-color-black-61"
       />
       {/* 피그마 Items 슬롯의 배치(가로, 간격 spacing/xs)다 */}
       <div className="flex items-center gap-spacing-xs">{children}</div>

@@ -31,8 +31,7 @@ const FLYOUT_OFFSET = 4;
 
 // 선택지가 열려 있는 동안(aria-expanded) 최대화 버튼을 CaptionButton Hover 모습(바탕 subtle-fill/secondary, 아이콘
 // text-fill/primary)으로 둔다. 선택지는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다.
-const OPEN_TRIGGER_CLASS_NAME =
-  'aria-expanded:bg-subtle-fill-secondary aria-expanded:text-text-fill-primary';
+const OPEN_TRIGGER_CLASS_NAME = 'aria-expanded:bg-color-black-4 aria-expanded:text-color-black-89';
 
 /**
  * 창 최대화 버튼과 그 아래 가운데에 뜨는 스냅 레이아웃 선택지(피그마 조립 `Window/SnapLayoutMenu`)를 그린다.

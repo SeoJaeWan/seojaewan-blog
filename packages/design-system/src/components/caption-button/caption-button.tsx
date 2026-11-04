@@ -23,14 +23,14 @@ type CaptionButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 
 // 상태 색은 실제 CSS 상태(hover, active)로 바꾼다. Inactive는 바탕 없이 아이콘만 흐리고, 마우스를 올리거나 누르면 그 상태 색이 이긴다.
 const kindClassNames = {
   default: [
-    'bg-subtle-fill-transparent',
-    'hover:bg-subtle-fill-secondary hover:text-text-fill-primary',
-    'active:bg-subtle-fill-tertiary active:text-text-fill-secondary',
+    'bg-color-white-0',
+    'hover:bg-color-black-4 hover:text-color-black-89',
+    'active:bg-color-black-2 active:text-color-black-61',
   ],
   close: [
-    'bg-subtle-fill-transparent',
-    'hover:bg-caption-button-close-fill-hover hover:text-caption-button-close-glyph-hover',
-    'active:bg-caption-button-close-fill-pressed active:text-caption-button-close-glyph-pressed',
+    'bg-color-white-0',
+    'hover:bg-color-red-56 hover:text-color-white',
+    'active:bg-color-red-56-90 active:text-color-white-70',
   ],
 } as const satisfies Record<CaptionButtonKind, readonly string[]>;
 
@@ -56,7 +56,7 @@ export function CaptionButton(props: CaptionButtonProps): JSX.Element {
       className={cn(
         'inline-flex h-size-caption-button-height w-size-caption-button-width items-center justify-center select-none',
         'motion-control-state',
-        isInactive ? 'text-text-fill-disabled' : 'text-text-fill-primary',
+        isInactive ? 'text-color-black-36' : 'text-color-black-89',
         ...kindClassNames[kind],
         className,
       )}

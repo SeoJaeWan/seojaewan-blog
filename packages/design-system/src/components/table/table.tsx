@@ -21,7 +21,7 @@ export function Table(props: TableProps): JSX.Element {
       {...tableProps}
       // 피그마에서 왼쪽·위쪽 선이 레이아웃에 들어가므로 CSS border를 쓴다.
       className={cn(
-        'w-full table-fixed border-separate border-spacing-border-spacing-none border-t-stroke-width-default border-l-stroke-width-default border-divider-stroke-default',
+        'w-full table-fixed border-separate border-spacing-border-spacing-none border-t-stroke-width-default border-l-stroke-width-default border-color-black-8',
         className,
       )}
     >

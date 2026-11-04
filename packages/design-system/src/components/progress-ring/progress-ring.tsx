@@ -23,8 +23,8 @@ const sizeClassNames = {
 
 // 호 자산(progress-ring/Arc)은 한 가지 색이라 쓰는 곳의 색 변수로 칠한다.
 const toneClassNames = {
-  accent: 'text-accent-fill-default',
-  'on-dark': 'rounded-radius-control text-boot-screen-foreground',
+  accent: 'text-color-blue-59',
+  'on-dark': 'rounded-radius-control text-color-white',
 } as const satisfies Record<ProgressRingTone, string>;
 
 /**

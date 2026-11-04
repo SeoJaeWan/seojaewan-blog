@@ -52,12 +52,12 @@ export function MessageBox(props: MessageBoxProps): JSX.Element {
       aria-describedby={messageId}
       {...divProps}
       className={cn(
-        'relative flex w-size-message-box-width flex-col overflow-hidden rounded-radius-overlay bg-solid-background-fill-base shadow-elevation-dialog',
-        'inner-border-surface-stroke-default inner-border-w-stroke-width-default',
+        'relative flex w-size-message-box-width flex-col overflow-hidden rounded-radius-overlay bg-color-gray-4 shadow-elevation-dialog',
+        'inner-border-color-gray-51-40 inner-border-w-stroke-width-default',
         className,
       )}
     >
-      <div className="flex flex-col gap-spacing-md self-stretch bg-layer-fill-alt p-spacing-2xl break-words text-text-fill-primary">
+      <div className="flex flex-col gap-spacing-md self-stretch bg-color-white p-spacing-2xl break-words text-color-black-89">
         <h2 id={titleId} className="type-subtitle">
           {title}
         </h2>
@@ -65,7 +65,7 @@ export function MessageBox(props: MessageBoxProps): JSX.Element {
           {message}
         </p>
       </div>
-      <div className="flex items-start gap-spacing-sm self-stretch border-t-stroke-width-default border-card-stroke-default bg-solid-background-fill-base p-spacing-2xl">
+      <div className="flex items-start gap-spacing-sm self-stretch border-t-stroke-width-default border-color-black-6 bg-color-gray-4 p-spacing-2xl">
         <Button
           variant="accent"
           label={primaryLabel}

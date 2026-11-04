@@ -5,7 +5,7 @@
 
 /** 바뀐 토큰을 쓰는 클래스와 변수 */
 export type TokenUsage = {
-  /** 바뀐 클래스 이름(변형 접두어 없이, `bg-subtle-fill-secondary`, `type-body`) */
+  /** 바뀐 클래스 이름(변형 접두어 없이, `bg-color-black-4`, `type-body`) */
   classes: Set<string>;
   /** 이 접두어로 시작하는 클래스는 모두 바뀌었다(`border-gradient-elevation-`) */
   prefixes: string[];

@@ -71,9 +71,7 @@ const LOCATION_ICONS = {
 } as const;
 
 const NAVIGATION_ICONS = {
-  desktop: (
-    <Asset name="icons/ic_fluent_desktop_20_regular.svg" className="text-text-fill-primary" />
-  ),
+  desktop: <Asset name="icons/ic_fluent_desktop_20_regular.svg" className="text-color-black-89" />,
   folder: <ImageAsset name="images/file-folder" />,
   'recycle-bin': <ImageAsset name="images/file-recycle-bin-full" />,
 } as const;

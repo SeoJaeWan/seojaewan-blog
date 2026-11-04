@@ -41,6 +41,7 @@ _codocs:
 
   | 피그마 경로 | 이름공간(별칭 앞부분) | 클래스 예 | 값 |
   |---|---|---|---|
+  | `color/*` | `--color` | `text-color-black-89`, `bg-color-white-70`, `border-color-black-6`, `inner-border-color-black-6` | 색 |
   | `spacing/*` | `--spacing` | `p-spacing-sm`, `-top-spacing-sm` | px |
   | `size/*` | `--size` | `w-size-control-height`, `min-w-size-none` | px |
   | `radius/*` | `--radius` | `rounded-radius-control` | px |
@@ -59,6 +60,7 @@ _codocs:
   | `flex/*`(코드 전용) | `--flex`와 `@utility flex-*` | `flex-flex-fill` | 숫자 |
   | `breakpoint/*`(코드 전용) | 클래스 없음(`:root`) | `laptop:`, `mobile:` | px |
 
+  색의 안쪽 선 고리(`inner-border-color-*`, [[피그마 연동:컨트롤 테두리 구현]])는 Tailwind 기본 유틸리티가 없어 `--color-*`를 읽는 `@utility inner-border-*`를 더한다.
   `shrink`와 `flex`는 Tailwind 기본 유틸리티가 테마를 읽지 않아 `@utility`를 더한다. 기본 유틸리티(`shrink-0`, `flex-1`, `flex`)와 함께 있어도 된다.
 
   문자 변수: STRING 변수는 `font/family/*`, `font/weight/*`, `motion/*`, 코드 전용 묶음에만 쓴다. 코드 전용 묶음과 `motion/*`의 값은 `$type: string`으로 담아 CSS에 그대로 옮긴다. 그 밖의 이름은 내보내기를 막는다. FLOAT 변수의 `$type`도 이름으로 정한다. 코드 전용 묶음은 `number`이고 단위는 위 표를 따른다(`variableType`이 회전을 px로 내보내지 않게 한다).
@@ -115,7 +117,6 @@ _codocs:
   - class 안의 값은 ESLint `better-tailwindcss`가 막는다. 모르는 클래스(`no-unknown-classes`)와 임의 값(`bg-[#fff]`, `p-[13px]`)은 lint 오류다. 그래서 토큰에 없는 값은 코드에 들어올 수 없다.
   - `style`의 값 자리에 리터럴(문자열·숫자)을 쓰면 예외 없이 lint 오류다. 끌기 위치처럼 실행 중에 계산하는 값(변수·식)만 허용한다.
   - 토큰이 될 수 없는 CSS 기능(예: `scrollbar-width: none`)은 디자인 시스템의 `reset.css`(`theme.css`가 불러온다)에 속성 선택자로 둔다(`[data-scrollbar-hidden]`). 컴포넌트는 그 속성만 단다.
-  - 모션 견본 무대의 배율은 `motion.css`의 `motion-stage-half` 유틸리티로 준다.
   - 토큰 이름의 첫 마디가 Tailwind 기본 이름공간과 겹치면(예: `text-fill/*` 같은 이름은 `--text-*`가 글자 크기 이름공간이다) Tailwind 기본 유틸리티가 그 변수를 다른 속성으로 읽은 클래스(`text-fill-primary`가 글자 크기)를 함께 만든다. 이런 클래스는 `no-restricted-classes`로 막는다. 목록은 `tokens.css`를 Tailwind에 넣어 보고 자동으로 모으며, 테스트가 지킨다.
   - 클래스에 숫자 값을 직접 쓰지 않는다. 모든 값은 피그마 토큰이 붙인 이름으로 온다. 숫자로 끝나는 클래스 가운데 Tailwind 기본 숫자 클래스(`shrink-0`, `rotate-180`, `z-10`, `w-1/2`, `aspect-3/2`, `mask-l-from-50%`), 투명도 덧붙임(`bg-x/50`), 토큰에 없는 이름을 `no-restricted-classes`로 막고, 변형이 붙어도 같다. `tokens.css` 토큰 이름에서 나온 클래스는 이름이 숫자로 끝나도(`text-color-gray-11`, `bg-color-white-70`) 허용한다. 숫자가 그 토큰 이름의 일부이기 때문이다. `rounded-full`, `w-full`처럼 숫자가 아닌 기본 클래스는 해당하지 않는다. 숫자가 필요하면 피그마에 이름 있는 변수를 더한다.
   - 움직임은 `motion-*` 클래스로만 준다([[피그마 연동:모션 클래스]]). 토큰 없이도 Tailwind 기본 유틸리티로 움직임을 줄 수 있으므로(`duration-150`은 숫자를 그대로 ms로 쓴다) `duration-`·`ease-`·`delay-`·`transition`·`animate-`로 시작하는 클래스를 `no-restricted-classes`로 막고, `motion-*` 클래스를 쓰라고 알린다.
@@ -449,14 +450,14 @@ CI: |
   테두리의 모양·칠 스타일은 Guide `Shadow` > 컨트롤 테두리, 작성 규칙은 [[디자인 기반:컨트롤 테두리]]에 있다.
 
   - 변환 스크립트가 이 스타일을 CSS 그라데이션 값으로 옮긴다([[피그마 연동:토큰 생성]]). 피그마 정지점 위치는 노드 높이 대비 비율이라 CSS에서도 같은 비율(`to bottom`, 90.58% 등)로 둔다. 그래서 피그마와 같은 높이의 컨트롤에서 같은 결과가 나온다.
-  - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 고리 모양으로 가리고 그라데이션을 칠한다. 고리 두께는 피그마 선 두께 변수에 대응하는 `inner-border-w-<두께 토큰>`(예: `inner-border-w-default`)으로 함께 정한다. 다른 그라데이션 테두리 구현을 고르지 않은 이유는 [[피그마 연동:검토한 대안]]에서 확인한다.
+  - 코드에서는 `border-gradient-*` 유틸리티로 그린다(예: `border-gradient-elevation-control-border`). 요소의 `::before`를 고리 모양으로 가리고 그라데이션을 칠한다. 고리 두께는 피그마 선 두께 변수에 대응하는 `inner-border-w-<두께 토큰>`(예: `inner-border-w-stroke-width-default`)으로 함께 정한다. 다른 그라데이션 테두리 구현을 고르지 않은 이유는 [[피그마 연동:검토한 대안]]에서 확인한다.
   - 피그마 안쪽 선(inside stroke)처럼 요소 크기 안에, 자식 위에 그린다. 피그마는 프레임의 선을 절대 위치 자식(예: SearchBox의 포커스 아래 선)보다도 위에 그리므로 `::before`는 `z-index: 1`이다. `::before`가 요소에 맞춰지도록 요소에 `relative` 같은 위치 지정이, 고리가 요소 밖의 형제를 덮지 않도록 쌓임 맥락(`isolate`)이 있어야 한다.
-  - 단색 안쪽 선은 같은 방식의 `inner-border-*` 유틸리티로 색 토큰 이름으로 그린다(예: `inner-border-control-stroke-default`). 두께는 그라데이션 선과 같이 `inner-border-w-<두께 토큰>`으로 정한다. Pressed·Disabled처럼 상태에 따라 그라데이션 선과 단색 선을 바꾸는 컨트롤이 같은 자리에 그리게 하기 위해서다. 안쪽 선을 CSS `border`로 그리지 않는 이유는 [[피그마 연동:검토한 대안]]에서 확인한다.
+  - 단색 안쪽 선은 같은 방식의 `inner-border-*` 유틸리티로 색 토큰 이름으로 그린다(예: `inner-border-color-black-6`). 두께는 그라데이션 선과 같이 `inner-border-w-<두께 토큰>`으로 정한다. Pressed·Disabled처럼 상태에 따라 그라데이션 선과 단색 선을 바꾸는 컨트롤이 같은 자리에 그리게 하기 위해서다. 안쪽 선을 CSS `border`로 그리지 않는 이유는 [[피그마 연동:검토한 대안]]에서 확인한다.
   - 피그마에서 선이 레이아웃에 들어가는 프레임(strokes included in layout, 예: Flyout)은 CSS `border`와 같으므로 `border`를 쓴다.
 포커스 구현: |
   포커스 선의 모양은 Guide `Shadow` > 포커스, 결정은 [[디자인 기반:포커스 표현]]에 있다.
 
-  - 코드는 바깥쪽 선을 Tailwind outline 유틸리티로 그린다. 색은 `outline-<색 토큰>`, 두께는 `outline-<두께 토큰>`이다(예: `outline-focus-stroke-outer outline-focus-outer`). Tailwind v4에는 `outline-w-*`가 없고 outline 유틸리티가 색과 두께를 모두 받는다. CSS outline은 레이아웃 크기를 바꾸지 않고 요소 바깥에 그려져 피그마 바깥쪽 선과 같다.
+  - 코드는 바깥쪽 선을 Tailwind outline 유틸리티로 그린다. 색은 `outline-<색 토큰>`, 두께는 `outline-<두께 토큰>`이다(예: `outline-color-black-89 outline-stroke-width-focus-outer`). Tailwind v4에는 `outline-w-*`가 없고 outline 유틸리티가 색과 두께를 모두 받는다. CSS outline은 레이아웃 크기를 바꾸지 않고 요소 바깥에 그려져 피그마 바깥쪽 선과 같다.
   - `FileItem`·`FileRow`의 포커스 선은 피그마에서 크기에 넣지 않고 안쪽에 겹치는 단색 선이라 outline이 아니라 `focus-visible:inner-border-*`로 그린다([[피그마 연동:컨트롤 테두리 구현]]). 브라우저 기본 외곽선은 `outline-none`으로 끈다.
 회전 구현: |
   쓰는 각도와 사용처는 Guide `Size` > 회전에 있다.

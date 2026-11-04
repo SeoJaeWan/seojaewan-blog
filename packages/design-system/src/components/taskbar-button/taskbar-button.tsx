@@ -19,14 +19,14 @@ type TaskbarButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 
 // Active는 Rest부터 바탕이 깔려 있고, 나머지는 마우스를 올리거나 누를 때만 깔린다. 누르는 중에는 더 옅다.
 // 테두리 자리는 항상 두어 상태가 바뀌어도 아이콘과 표시줄이 움직이지 않게 한다.
 const surfaceClassNames = {
-  none: 'bg-subtle-fill-transparent',
-  running: 'bg-subtle-fill-transparent',
-  active: 'bg-control-fill-default',
+  none: 'bg-color-white-0',
+  running: 'bg-color-white-0',
+  active: 'bg-color-white-70',
 } as const satisfies Record<TaskbarButtonIndicator, string>;
 
 const indicatorClassNames = {
-  running: 'w-size-taskbar-button-indicator-running bg-control-strong-fill-default',
-  active: 'w-size-taskbar-button-indicator-active bg-accent-fill-default',
+  running: 'w-size-taskbar-button-indicator-running bg-color-black-45',
+  active: 'w-size-taskbar-button-indicator-active bg-color-blue-59',
 } as const satisfies Record<Exclude<TaskbarButtonIndicator, 'none'>, string>;
 
 /**
@@ -46,10 +46,10 @@ export function TaskbarButton(props: TaskbarButtonProps): JSX.Element {
       className={cn(
         'group relative inline-flex size-size-taskbar-item items-center justify-center rounded-radius-control border-stroke-width-default select-none',
         'motion-control-state',
-        'border-transparent hover:border-control-stroke-default active:border-control-stroke-default',
+        'border-transparent hover:border-color-black-6 active:border-color-black-6',
         surfaceClassNames[indicator],
-        indicator === 'active' && 'border-control-stroke-default',
-        'hover:bg-control-fill-default active:bg-control-fill-tertiary',
+        indicator === 'active' && 'border-color-black-6',
+        'hover:bg-color-white-70 active:bg-color-gray-2-30',
         className,
       )}
     >

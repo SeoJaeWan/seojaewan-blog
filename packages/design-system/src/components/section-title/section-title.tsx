@@ -33,7 +33,7 @@ export function SectionTitle(props: SectionTitleProps): JSX.Element {
     <div {...divProps} className={cn('flex items-center overflow-clip', className)}>
       <h2
         id={titleId}
-        className="min-w-size-none flex-flex-fill type-body-strong text-text-fill-primary"
+        className="min-w-size-none flex-flex-fill type-body-strong text-color-black-89"
       >
         {title}
       </h2>

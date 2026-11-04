@@ -110,7 +110,7 @@ export function ScrollArea(props: ScrollAreaProps): JSX.Element {
       className={cn(
         'relative isolate flex flex-col overflow-hidden',
         // 스크롤 영역 자신이 키보드 포커스를 받으면 루트에 포커스 고리를 그린다. 루트가 내용을 자르므로 영역에 그리면 보이지 않는다.
-        'has-[>[data-scrollbar-hidden]:focus-visible]:outline-stroke-width-focus-outer has-[>[data-scrollbar-hidden]:focus-visible]:outline-focus-stroke-outer has-[>[data-scrollbar-hidden]:focus-visible]:outline-solid',
+        'has-[>[data-scrollbar-hidden]:focus-visible]:outline-stroke-width-focus-outer has-[>[data-scrollbar-hidden]:focus-visible]:outline-color-black-89 has-[>[data-scrollbar-hidden]:focus-visible]:outline-solid',
         className,
       )}
     >

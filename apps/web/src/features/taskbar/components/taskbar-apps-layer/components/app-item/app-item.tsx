@@ -13,7 +13,7 @@ import { TaskbarAppButton } from './components/taskbar-app/taskbar-app';
 // 둔다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있다고 보기 때문이다. 버튼 동작이 없는 조립(스토리)에서도
 // 보이도록 `aria-expanded` 대신 열림 표시를 따로 단다.
 const OPEN_TRIGGER_CLASS_NAME =
-  'data-preview-open:border-control-stroke-default data-preview-open:bg-control-fill-default';
+  'data-preview-open:border-color-black-6 data-preview-open:bg-color-white-70';
 
 // 우클릭 메뉴(Menu/TaskbarApp)는 피그마 Popover `Top-Center`처럼 버튼 위 가운데에 붙는다. 버튼과 메뉴 사이 간격은 spacing/4다.
 const MENU_PLACEMENT = { side: 'top', align: 'center', offset: 4 } as const;

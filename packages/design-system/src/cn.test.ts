@@ -59,22 +59,22 @@ describe('스타일링', () => {
   });
 
   it('토큰 두께 클래스와 색 클래스를 서로 다른 속성으로 보고 둘 다 남긴다', () => {
-    expect(cn('border-stroke-width-focus-outer border-focus-stroke-outer')).toBe(
-      'border-stroke-width-focus-outer border-focus-stroke-outer',
+    expect(cn('border-stroke-width-focus-outer border-color-black-89')).toBe(
+      'border-stroke-width-focus-outer border-color-black-89',
     );
-    expect(cn('border-b-stroke-width-focus-outer border-accent-fill-default')).toBe(
-      'border-b-stroke-width-focus-outer border-accent-fill-default',
+    expect(cn('border-b-stroke-width-focus-outer border-color-blue-59')).toBe(
+      'border-b-stroke-width-focus-outer border-color-blue-59',
     );
-    expect(cn('outline-stroke-width-focus-outer outline-focus-stroke-outer')).toBe(
-      'outline-stroke-width-focus-outer outline-focus-stroke-outer',
+    expect(cn('outline-stroke-width-focus-outer outline-color-black-89')).toBe(
+      'outline-stroke-width-focus-outer outline-color-black-89',
     );
-    expect(cn('type-body text-text-fill-primary')).toBe('type-body text-text-fill-primary');
+    expect(cn('type-body text-color-black-89')).toBe('type-body text-color-black-89');
   });
 
   it('사용처의 className이 같은 속성의 기본 클래스를 덮어쓴다', () => {
-    expect(
-      cn('px-spacing-md bg-control-fill-default', 'px-spacing-lg bg-accent-fill-default'),
-    ).toBe('px-spacing-lg bg-accent-fill-default');
+    expect(cn('px-spacing-md bg-color-white-70', 'px-spacing-lg bg-color-blue-59')).toBe(
+      'px-spacing-lg bg-color-blue-59',
+    );
     expect(cn('rounded-radius-control', 'rounded-radius-circular')).toBe('rounded-radius-circular');
     expect(cn('w-size-menu-width', 'w-full')).toBe('w-full');
   });

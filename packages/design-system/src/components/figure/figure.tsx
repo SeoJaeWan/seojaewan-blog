@@ -35,7 +35,7 @@ export function Figure(props: FigureProps): JSX.Element {
         {image}
       </div>
       {hasCaption && (
-        <figcaption className="w-full type-body text-text-fill-secondary">{caption}</figcaption>
+        <figcaption className="w-full type-body text-color-black-61">{caption}</figcaption>
       )}
     </figure>
   );

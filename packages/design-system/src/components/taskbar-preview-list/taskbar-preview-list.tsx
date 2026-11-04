@@ -21,7 +21,7 @@ export function TaskbarPreviewList(props: TaskbarPreviewListProps): JSX.Element 
     <div
       {...divProps}
       className={cn(
-        'relative flex items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-surface-stroke-default p-spacing-xs',
+        'relative flex items-start gap-spacing-xs overflow-clip rounded-radius-overlay border-stroke-width-default border-color-gray-51-40 p-spacing-xs',
         // 재질 칠과 효과(피그마 칠·효과 스타일: 그림자와 배경 흐림)다. 앱은 아크릴만 쓴다.
         'material-acrylic-base surface-shell-acrylic',
         className,

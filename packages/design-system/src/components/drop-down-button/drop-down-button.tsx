@@ -27,12 +27,12 @@ export function DropDownButton(props: DropDownButtonProps): JSX.Element {
       {...buttonProps}
       className={cn(
         'relative inline-flex items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-md py-spacing-sm-nudge whitespace-nowrap select-none',
-        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         'motion-control-state',
-        'bg-subtle-fill-transparent text-text-fill-primary',
-        'hover:not-data-disabled:bg-subtle-fill-secondary',
-        'active:not-data-disabled:bg-subtle-fill-tertiary active:not-data-disabled:text-text-fill-secondary',
-        'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+        'bg-color-white-0 text-color-black-89',
+        'hover:not-data-disabled:bg-color-black-4',
+        'active:not-data-disabled:bg-color-black-2 active:not-data-disabled:text-color-black-61',
+        'data-disabled:bg-color-white-0 data-disabled:text-color-black-36',
         className,
       )}
     >

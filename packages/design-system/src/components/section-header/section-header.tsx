@@ -19,8 +19,7 @@ type SectionHeaderProps = Omit<ComponentProps<'div'>, 'children' | 'onClick'> & 
  */
 export function SectionHeader(props: SectionHeaderProps): JSX.Element {
   const { label = '머리글', onClick: handleClick, className, ...divProps } = props;
-  const textClassName =
-    'shrink-shrink-none type-body-strong whitespace-nowrap text-text-fill-primary';
+  const textClassName = 'shrink-shrink-none type-body-strong whitespace-nowrap text-color-black-89';
   if (handleClick === undefined) {
     return (
       <div

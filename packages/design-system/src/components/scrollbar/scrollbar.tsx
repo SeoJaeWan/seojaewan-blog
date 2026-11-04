@@ -55,13 +55,13 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
       {isExpanded && (
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
-          className="size-size-icon-2xs shrink-shrink-none rotate-rotate-half text-control-strong-fill-default"
+          className="size-size-icon-2xs shrink-shrink-none rotate-rotate-half text-color-black-45"
         />
       )}
       {/* 막대는 가운데 정렬한 절대 위치 자식이다. 위치·길이의 피그마 기본값은 위에서 10(spacing/md-nudge), 길이 size/scrollbar/thumb-length다. */}
       <div
         className={cn(
-          'absolute top-spacing-md-nudge left-position-half h-size-scrollbar-thumb-length -translate-x-position-half rounded-radius-circular bg-control-strong-fill-default',
+          'absolute top-spacing-md-nudge left-position-half h-size-scrollbar-thumb-length -translate-x-position-half rounded-radius-circular bg-color-black-45',
           isExpanded ? 'w-size-scrollbar-thumb-hover' : 'w-size-scrollbar-thumb-rest',
         )}
         style={thumbStyle}
@@ -69,7 +69,7 @@ export function Scrollbar(props: ScrollbarProps): JSX.Element {
       {isExpanded && (
         <Asset
           name="icons/ic_fluent_chevron_down_16_regular.svg"
-          className="size-size-icon-2xs shrink-shrink-none text-control-strong-fill-default"
+          className="size-size-icon-2xs shrink-shrink-none text-color-black-45"
         />
       )}
     </div>

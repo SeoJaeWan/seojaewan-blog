@@ -74,7 +74,7 @@ export function ChromeFindBar(props: ChromeFindBarProps): JSX.Element {
           aria-label={FIND_LABEL}
           className="min-w-size-none flex-flex-fill"
         />
-        <span className="shrink-shrink-none type-body whitespace-nowrap text-text-fill-secondary">
+        <span className="shrink-shrink-none type-body whitespace-nowrap text-color-black-61">
           {`${String(current)}/${String(total)}`}
         </span>
         <Separator orientation="vertical" />

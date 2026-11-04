@@ -126,7 +126,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
             [DROP_TARGET_ATTRIBUTE]: dropTarget.id,
             [DROP_TARGET_NAME_ATTRIBUTE]: dropTarget.name,
           })}
-      className="flex flex-col overflow-clip bg-layer-on-mica-base-alt-fill-default outline-none"
+      className="flex flex-col overflow-clip bg-color-white-70 outline-none"
     >
       <ExplorerAddressRow
         device={device}
@@ -148,7 +148,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
         {path}
       </ExplorerAddressRow>
       <ExplorerCommandBar>{commands}</ExplorerCommandBar>
-      <div className="flex min-h-size-none flex-flex-fill overflow-clip border-t-stroke-width-default border-card-stroke-default bg-layer-fill-default">
+      <div className="flex min-h-size-none flex-flex-fill overflow-clip border-t-stroke-width-default border-color-black-6 bg-color-white-50">
         {isDesktop && (
           <>
             {/* 폴더 트리가 길면 세로로 스크롤한다. */}
@@ -157,7 +157,7 @@ export function ExplorerContent(props: ExplorerContentProps): JSX.Element {
                 {navigation}
               </NavigationPane>
             </ScrollArea>
-            <div className="w-size-explorer-splitter-width shrink-shrink-none bg-divider-stroke-default" />
+            <div className="w-size-explorer-splitter-width shrink-shrink-none bg-color-black-8" />
           </>
         )}
         {/* 항목이 넘치면 세로로 스크롤한다. */}

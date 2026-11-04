@@ -25,24 +25,24 @@ type ButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'childr
 // 키보드 포커스는 피그마 바깥 선(F1)처럼 outline으로 그린다. 포커스일 때는 안쪽 선을 그리지 않는다.
 const variantClassNames = {
   accent: [
-    'bg-accent-fill-default text-text-on-accent-fill-primary',
+    'bg-color-blue-59 text-color-white',
     'not-data-disabled:not-active:not-focus-visible:border-gradient-elevation-accent-control-border',
-    'hover:not-data-disabled:bg-accent-fill-secondary',
-    'active:not-data-disabled:bg-accent-fill-tertiary active:not-data-disabled:text-text-on-accent-fill-secondary active:not-data-disabled:inner-border-control-stroke-on-accent-default',
-    'data-disabled:bg-accent-fill-disabled data-disabled:text-text-on-accent-fill-disabled',
+    'hover:not-data-disabled:bg-color-blue-59-90',
+    'active:not-data-disabled:bg-color-blue-59-80 active:not-data-disabled:text-color-white-70 active:not-data-disabled:inner-border-color-white-8',
+    'data-disabled:bg-color-black-22 data-disabled:text-color-white',
   ],
   standard: [
-    'bg-control-fill-default text-text-fill-primary',
+    'bg-color-white-70 text-color-black-89',
     'not-data-disabled:not-active:not-focus-visible:border-gradient-elevation-control-border',
-    'hover:not-data-disabled:bg-control-fill-secondary',
-    'active:not-data-disabled:bg-control-fill-tertiary active:not-data-disabled:text-text-fill-secondary active:not-data-disabled:inner-border-control-stroke-default',
-    'data-disabled:bg-control-fill-disabled data-disabled:text-text-fill-disabled data-disabled:inner-border-control-stroke-default',
+    'hover:not-data-disabled:bg-color-gray-3-50',
+    'active:not-data-disabled:bg-color-gray-2-30 active:not-data-disabled:text-color-black-61 active:not-data-disabled:inner-border-color-black-6',
+    'data-disabled:bg-color-gray-2-30 data-disabled:text-color-black-36 data-disabled:inner-border-color-black-6',
   ],
   subtle: [
-    'bg-subtle-fill-transparent text-text-fill-primary',
-    'hover:not-data-disabled:bg-subtle-fill-secondary',
-    'active:not-data-disabled:bg-subtle-fill-tertiary active:not-data-disabled:text-text-fill-secondary',
-    'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+    'bg-color-white-0 text-color-black-89',
+    'hover:not-data-disabled:bg-color-black-4',
+    'active:not-data-disabled:bg-color-black-2 active:not-data-disabled:text-color-black-61',
+    'data-disabled:bg-color-white-0 data-disabled:text-color-black-36',
   ],
 } as const satisfies Record<ButtonVariant, readonly string[]>;
 
@@ -65,7 +65,7 @@ export function Button(props: ButtonProps): JSX.Element {
       {...buttonProps}
       className={cn(
         'relative isolate inline-flex min-w-size-button-min-width items-center justify-center gap-spacing-sm rounded-radius-control px-spacing-md py-spacing-sm-nudge whitespace-nowrap select-none',
-        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         'motion-control-state',
         ...variantClassNames[variant],
         className,

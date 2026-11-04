@@ -19,7 +19,7 @@ type TooltipProps = Omit<ComponentProps<'div'>, 'children'> & {
 
 // 바탕 테두리와 모서리다. 피그마에서 테두리가 레이아웃에 들어가므로(strokes included in layout) CSS border를 쓴다.
 const SURFACE_CLASS_NAME =
-  'rounded-radius-control border-stroke-width-default border-surface-stroke-flyout';
+  'rounded-radius-control border-stroke-width-default border-color-black-6';
 
 /**
  * 짧은 안내 말풍선(피그마 Tooltip)을 그린다. 띄우는 위치는 쓰는 곳(Popover)이 정한다.
@@ -44,27 +44,27 @@ export function Tooltip(props: TooltipProps): JSX.Element {
       >
         <div
           className={cn(
-            'flex flex-col gap-spacing-xs bg-solid-background-fill-quarternary p-spacing-md',
+            'flex flex-col gap-spacing-xs bg-color-white p-spacing-md',
             SURFACE_CLASS_NAME,
           )}
         >
           <div className="flex items-start gap-spacing-sm self-stretch overflow-hidden">
             <Asset
               name="icons/ic_fluent_warning_24_regular.svg"
-              className="size-size-icon-sm shrink-shrink-none text-system-fill-caution"
+              className="size-size-icon-sm shrink-shrink-none text-color-yellow-54"
             />
-            <span className="min-w-size-none flex-flex-fill type-caption text-text-fill-primary">
+            <span className="min-w-size-none flex-flex-fill type-caption text-color-black-89">
               {message}
             </span>
           </div>
         </div>
         <Asset
           name="shapes/tooltip-tail-fill.svg"
-          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-solid-background-fill-quarternary"
+          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-color-white"
         />
         <Asset
           name="shapes/tooltip-tail-border.svg"
-          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-surface-stroke-flyout"
+          className="absolute -top-spacing-sm left-spacing-lg h-size-tooltip-tail-height w-size-tooltip-tail-width text-color-black-6"
         />
       </div>
     );
@@ -74,7 +74,7 @@ export function Tooltip(props: TooltipProps): JSX.Element {
       role="tooltip"
       {...divProps}
       className={cn(
-        'inline-flex max-w-size-tooltip-max-width flex-col px-spacing-sm py-spacing-sm-nudge type-caption text-text-fill-primary',
+        'inline-flex max-w-size-tooltip-max-width flex-col px-spacing-sm py-spacing-sm-nudge type-caption text-color-black-89',
         SURFACE_CLASS_NAME,
         // 피그마 칠 스타일 Material/Acrylic Default와 효과 스타일 Surface/Tooltip (Acrylic)이다.
         'material-acrylic-default surface-tooltip-acrylic',

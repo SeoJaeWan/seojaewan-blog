@@ -22,23 +22,23 @@ type IconButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'ch
 // 안쪽 선은 ::before 고리(border-gradient-*, inner-border-*)로, 키보드 포커스는 outline으로 그린다.
 const variantClassNames = {
   standard: [
-    'bg-control-fill-default text-text-fill-primary',
+    'bg-color-white-70 text-color-black-89',
     'not-data-disabled:not-active:not-focus-visible:border-gradient-elevation-control-border',
-    'hover:not-data-disabled:bg-control-fill-secondary',
-    'active:not-data-disabled:bg-control-fill-tertiary active:not-data-disabled:text-text-fill-secondary active:not-data-disabled:inner-border-control-stroke-default',
-    'data-disabled:bg-control-fill-disabled data-disabled:text-text-fill-disabled data-disabled:inner-border-control-stroke-default',
+    'hover:not-data-disabled:bg-color-gray-3-50',
+    'active:not-data-disabled:bg-color-gray-2-30 active:not-data-disabled:text-color-black-61 active:not-data-disabled:inner-border-color-black-6',
+    'data-disabled:bg-color-gray-2-30 data-disabled:text-color-black-36 data-disabled:inner-border-color-black-6',
   ],
   subtle: [
-    'bg-subtle-fill-transparent text-text-fill-primary',
-    'hover:not-data-disabled:bg-subtle-fill-secondary',
-    'active:not-data-disabled:bg-subtle-fill-tertiary active:not-data-disabled:text-text-fill-secondary',
-    'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+    'bg-color-white-0 text-color-black-89',
+    'hover:not-data-disabled:bg-color-black-4',
+    'active:not-data-disabled:bg-color-black-2 active:not-data-disabled:text-color-black-61',
+    'data-disabled:bg-color-white-0 data-disabled:text-color-black-36',
   ],
   chrome: [
-    'bg-subtle-fill-transparent text-chrome-text-secondary',
-    'hover:not-data-disabled:bg-subtle-fill-secondary',
-    'active:not-data-disabled:bg-subtle-fill-tertiary',
-    'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+    'bg-color-white-0 text-color-gray-70',
+    'hover:not-data-disabled:bg-color-black-4',
+    'active:not-data-disabled:bg-color-black-2',
+    'data-disabled:bg-color-white-0 data-disabled:text-color-black-36',
   ],
 } as const satisfies Record<IconButtonVariant, readonly string[]>;
 
@@ -61,7 +61,7 @@ export function IconButton(props: IconButtonProps): JSX.Element {
       aria-label={label}
       className={cn(
         'relative isolate inline-flex size-size-control-height items-center justify-center rounded-radius-control select-none',
-        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'inner-border-w-stroke-width-default focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         'motion-control-state',
         ...variantClassNames[variant],
         className,

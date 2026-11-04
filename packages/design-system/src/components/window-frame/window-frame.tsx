@@ -64,7 +64,7 @@ type WindowFrameProps = WindowFrameDefaultTitleBarProps | WindowFrameCustomTitle
 // 재질별 바탕 칠(피그마 칠 스타일)이다. 마이카 바탕은 반투명 색과 배경 흐림을 함께 건다.
 const materialClassNames = {
   mica: 'material-mica-base',
-  chrome: 'bg-chrome-frame-fill',
+  chrome: 'bg-color-gray-13',
 } as const satisfies Record<WindowFrameMaterial, string>;
 
 // 떠 있는 창(Placement=Normal)의 효과 스타일이다. 마이카는 그림자와 배경 흐림을 함께 거는 Surface 스타일을 쓴다.
@@ -144,7 +144,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
         'flex flex-col overflow-clip',
         materialClassNames[material],
         isFloating && [
-          'rounded-radius-overlay border-stroke-width-default border-surface-stroke-default',
+          'rounded-radius-overlay border-stroke-width-default border-color-gray-51-40',
           (isInactive ? inactiveShadowClassNames : activeShadowClassNames)[material],
         ],
         className,

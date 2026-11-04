@@ -29,13 +29,13 @@ export function TocItem(props: TocItemProps): JSX.Element {
       <div
         className={cn(
           'h-full w-stroke-stroke-width-indicator shrink-shrink-none',
-          isActive ? 'bg-accent-fill-default' : 'bg-divider-stroke-default',
+          isActive ? 'bg-color-blue-59' : 'bg-color-black-8',
         )}
       />
       <p
         className={cn(
           'shrink-shrink-none type-body whitespace-nowrap',
-          isActive ? 'text-accent-text-fill-primary' : 'text-text-fill-secondary',
+          isActive ? 'text-color-blue-72' : 'text-color-black-61',
         )}
       >
         {label}

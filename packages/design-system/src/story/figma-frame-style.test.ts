@@ -3,13 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { TOKEN_NAMES } from '../token-names';
-import {
-  cssVariableName,
-  type FigmaExport,
-  figmaFrameStyle,
-  type FigmaNode,
-} from './figma-frame-style';
+import { type FigmaExport, figmaFrameStyle, type FigmaNode } from './figma-frame-style';
 
 /**
  * 크기 방식만 가진 노드를 만든다.
@@ -28,15 +22,14 @@ const listItem: FigmaExport = {
       properties: { Size: 'Compact', State: 'Rest' },
       tree: figmaNode('Size=Compact, State=Rest', {
         sizing: { h: 'FIXED', v: 'HUG' },
-        width: 'size/list-item/width',
+        size: { w: 400, h: 36 },
       }),
     },
     'size=two-line,state=rest': {
       properties: { Size: 'Two-line', State: 'Rest' },
       tree: figmaNode('Size=Two-line, State=Rest', {
         sizing: { h: 'FIXED', v: 'FIXED' },
-        width: 'size/list-item/width',
-        height: 'size/list-item/two-line-height',
+        size: { w: 400, h: 52 },
       }),
     },
   },
@@ -49,7 +42,7 @@ const footer: FigmaExport = {
       properties: {},
       tree: figmaNode('StartMenuFooter', {
         sizing: { h: 'FIXED', v: 'HUG' },
-        width: 'size/start-menu/footer-width',
+        size: { w: 638, h: 65 },
         layout: { mode: 'HORIZONTAL' },
         children: [
           figmaNode('Content', {
@@ -68,14 +61,14 @@ const footer: FigmaExport = {
 
 // @codocs [[피그마 연동:스토리 규칙]]
 describe('figmaFrameStyle', () => {
-  it('args로 변형을 골라 고정 축에 연결한 크기 변수를 주고 HUG 축은 비운다', () => {
+  it('args로 변형을 골라 고정 축에 export.json의 크기 숫자를 주고 HUG 축은 비운다', () => {
     expect(figmaFrameStyle(listItem, { size: 'compact', state: 'rest' })).toEqual({
-      width: 'var(--size-list-item-width)',
+      width: '400px',
       flexShrink: 0,
     });
     expect(figmaFrameStyle(listItem, { size: 'two-line' })).toEqual({
-      width: 'var(--size-list-item-width)',
-      height: 'var(--size-list-item-two-line-height)',
+      width: '400px',
+      height: '52px',
       flexShrink: 0,
     });
   });
@@ -102,25 +95,31 @@ describe('figmaFrameStyle', () => {
     });
   });
 
-  it('피그마 변수 경로를 토큰 생성 규칙대로 CSS 변수 이름으로 바꾼다', () => {
-    expect(cssVariableName('size/start-menu/footer-width')).toBe('--size-start-menu-footer-width');
-    expect(cssVariableName('Surface/Flyout (Acrylic)')).toBe('--surface-flyout-acrylic');
+  it('고정 축에 크기 숫자가 없으면 오류다', () => {
+    const broken: FigmaExport = {
+      name: 'Broken',
+      variants: {
+        default: {
+          properties: {},
+          tree: figmaNode('Broken', { sizing: { h: 'FIXED', v: 'HUG' } }),
+        },
+      },
+    };
+    expect(() => figmaFrameStyle(broken, {})).toThrow('크기 숫자');
   });
 
-  it('컴포넌트 export.json의 모든 고정 크기 변수는 토큰에 있다', () => {
-    const tokens = new Set<string>(Object.values(TOKEN_NAMES).flat());
+  it('컴포넌트 export.json의 모든 고정 크기 노드는 크기 숫자를 가진다', () => {
     const componentsDir = path.join(import.meta.dirname, '../../figma/components');
     const missing: string[] = [];
     /**
-     * 노드와 자식의 크기 변수를 모은다.
+     * 고정 크기인데 크기 숫자가 없는 노드를 모은다.
      * @param node 노드
      * @param where 오류 문구에 쓸 위치
      */
     function check(node: FigmaNode, where: string): void {
-      for (const variable of [node.width, node.height]) {
-        if (variable !== undefined && !tokens.has(cssVariableName(variable).slice(2))) {
-          missing.push(`${where}: ${variable}`);
-        }
+      const isFixed = node.sizing?.h === 'FIXED' || node.sizing?.v === 'FIXED';
+      if (isFixed && node.size === undefined) {
+        missing.push(`${where}: ${node.name}`);
       }
       for (const child of node.children ?? []) {
         check(child, where);
