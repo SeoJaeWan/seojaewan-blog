@@ -32,7 +32,7 @@
         "children": [
           {
             "fills": [
-              "divider-stroke/default"
+              "color/black/8"
             ],
             "name": "indicator",
             "size": {
@@ -48,7 +48,7 @@
           },
           {
             "fills": [
-              "text-fill/secondary"
+              "color/black/61"
             ],
             "name": "label",
             "size": {
@@ -66,17 +66,17 @@
               "segments": [
                 {
                   "characters": "목차",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "항목",
-                  "fill": "text-fill/secondary",
+                  "fill": "color/black/61",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -125,7 +125,7 @@
         "children": [
           {
             "fills": [
-              "accent-fill/default"
+              "color/blue/59"
             ],
             "name": "indicator",
             "size": {
@@ -141,7 +141,7 @@
           },
           {
             "fills": [
-              "accent-text-fill/primary"
+              "color/blue/72"
             ],
             "name": "label",
             "size": {
@@ -159,17 +159,17 @@
               "segments": [
                 {
                   "characters": "목차",
-                  "fill": "accent-text-fill/primary",
+                  "fill": "color/blue/72",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "accent-text-fill/primary",
+                  "fill": "color/blue/72",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "항목",
-                  "fill": "accent-text-fill/primary",
+                  "fill": "color/blue/72",
                   "textStyle": "Hangul/Body"
                 }
               ],
