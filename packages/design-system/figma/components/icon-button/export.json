@@ -17,7 +17,7 @@
       ],
       "type": "VARIANT"
     },
-    "Style": {
+    "Variant": {
       "default": "Standard",
       "options": [
         "Standard",
@@ -28,7 +28,7 @@
     }
   },
   "variants": {
-    "style=chrome,state=disabled": {
+    "variant=chrome,state=disabled": {
       "node": {
         "height": 32,
         "width": 32,
@@ -38,13 +38,13 @@
       "nodeId": "704:8260",
       "properties": {
         "State": "Disabled",
-        "Style": "Chrome"
+        "Variant": "Chrome"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/disabled",
+              "color": "color/black/36",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -63,7 +63,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/disabled"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -77,7 +77,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Chrome, State=Disabled",
+        "name": "Variant=Chrome, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -95,7 +95,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=chrome,state=focused": {
+    "variant=chrome,state=focused": {
       "node": {
         "height": 32,
         "width": 32,
@@ -105,13 +105,13 @@
       "nodeId": "704:8263",
       "properties": {
         "State": "Focused",
-        "Style": "Chrome"
+        "Variant": "Chrome"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -130,7 +130,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -144,7 +144,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Chrome, State=Focused",
+        "name": "Variant=Chrome, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -166,13 +166,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=chrome,state=hover": {
+    "variant=chrome,state=hover": {
       "node": {
         "height": 32,
         "width": 32,
@@ -182,13 +182,13 @@
       "nodeId": "704:8254",
       "properties": {
         "State": "Hover",
-        "Style": "Chrome"
+        "Variant": "Chrome"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -207,7 +207,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -221,7 +221,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Chrome, State=Hover",
+        "name": "Variant=Chrome, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -239,7 +239,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=chrome,state=pressed": {
+    "variant=chrome,state=pressed": {
       "node": {
         "height": 32,
         "width": 32,
@@ -249,13 +249,13 @@
       "nodeId": "704:8257",
       "properties": {
         "State": "Pressed",
-        "Style": "Chrome"
+        "Variant": "Chrome"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -274,7 +274,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/tertiary"
+          "color/black/2"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -288,7 +288,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Chrome, State=Pressed",
+        "name": "Variant=Chrome, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -306,7 +306,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=chrome,state=rest": {
+    "variant=chrome,state=rest": {
       "node": {
         "height": 32,
         "width": 32,
@@ -316,13 +316,13 @@
       "nodeId": "704:8251",
       "properties": {
         "State": "Rest",
-        "Style": "Chrome"
+        "Variant": "Chrome"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "chrome/text-secondary",
+              "color": "color/gray/70",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -341,7 +341,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -355,7 +355,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Chrome, State=Rest",
+        "name": "Variant=Chrome, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -373,7 +373,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=disabled": {
+    "variant=standard,state=disabled": {
       "node": {
         "height": 32,
         "width": 32,
@@ -383,13 +383,13 @@
       "nodeId": "13:84",
       "properties": {
         "State": "Disabled",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/disabled",
+              "color": "color/black/36",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -408,7 +408,7 @@
           }
         ],
         "fills": [
-          "control-fill/disabled"
+          "color/gray/2/30"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -422,7 +422,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Standard, State=Disabled",
+        "name": "Variant=Standard, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -444,13 +444,13 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=focused": {
+    "variant=standard,state=focused": {
       "node": {
         "height": 32,
         "width": 32,
@@ -460,13 +460,13 @@
       "nodeId": "13:87",
       "properties": {
         "State": "Focused",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -485,7 +485,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -499,7 +499,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Standard, State=Focused",
+        "name": "Variant=Standard, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -521,13 +521,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=hover": {
+    "variant=standard,state=hover": {
       "node": {
         "height": 32,
         "width": 32,
@@ -537,13 +537,13 @@
       "nodeId": "13:78",
       "properties": {
         "State": "Hover",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -562,7 +562,7 @@
           }
         ],
         "fills": [
-          "control-fill/secondary"
+          "color/gray/3/50"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -576,7 +576,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Standard, State=Hover",
+        "name": "Variant=Standard, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -585,7 +585,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Standard, State=Pressed",
+            "destination": "Variant=Standard, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -620,7 +620,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=pressed": {
+    "variant=standard,state=pressed": {
       "node": {
         "height": 32,
         "width": 32,
@@ -630,13 +630,13 @@
       "nodeId": "13:81",
       "properties": {
         "State": "Pressed",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -655,7 +655,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -669,7 +669,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Standard, State=Pressed",
+        "name": "Variant=Standard, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -691,13 +691,13 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=standard,state=rest": {
+    "variant=standard,state=rest": {
       "node": {
         "height": 32,
         "width": 32,
@@ -707,13 +707,13 @@
       "nodeId": "13:75",
       "properties": {
         "State": "Rest",
-        "Style": "Standard"
+        "Variant": "Standard"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -732,7 +732,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -746,7 +746,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Standard, State=Rest",
+        "name": "Variant=Standard, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -755,7 +755,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Standard, State=Hover",
+            "destination": "Variant=Standard, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -790,7 +790,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=disabled": {
+    "variant=subtle,state=disabled": {
       "node": {
         "height": 32,
         "width": 32,
@@ -800,13 +800,13 @@
       "nodeId": "13:99",
       "properties": {
         "State": "Disabled",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/disabled",
+              "color": "color/black/36",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -825,7 +825,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/disabled"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -839,7 +839,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Subtle, State=Disabled",
+        "name": "Variant=Subtle, State=Disabled",
         "radius": [
           "radius/control",
           "radius/control",
@@ -857,7 +857,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=focused": {
+    "variant=subtle,state=focused": {
       "node": {
         "height": 32,
         "width": 32,
@@ -867,13 +867,13 @@
       "nodeId": "13:102",
       "properties": {
         "State": "Focused",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -892,7 +892,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -906,7 +906,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Subtle, State=Focused",
+        "name": "Variant=Subtle, State=Focused",
         "radius": [
           "radius/control",
           "radius/control",
@@ -928,13 +928,13 @@
           "stroke-width/focus-outer"
         ],
         "strokes": [
-          "focus-stroke/outer"
+          "color/black/89"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=hover": {
+    "variant=subtle,state=hover": {
       "node": {
         "height": 32,
         "width": 32,
@@ -944,13 +944,13 @@
       "nodeId": "13:93",
       "properties": {
         "State": "Hover",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -969,7 +969,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -983,7 +983,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Subtle, State=Hover",
+        "name": "Variant=Subtle, State=Hover",
         "radius": [
           "radius/control",
           "radius/control",
@@ -992,7 +992,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Subtle, State=Pressed",
+            "destination": "Variant=Subtle, State=Pressed",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
@@ -1019,7 +1019,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=pressed": {
+    "variant=subtle,state=pressed": {
       "node": {
         "height": 32,
         "width": 32,
@@ -1029,13 +1029,13 @@
       "nodeId": "13:96",
       "properties": {
         "State": "Pressed",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -1054,7 +1054,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/tertiary"
+          "color/black/2"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1068,7 +1068,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Subtle, State=Pressed",
+        "name": "Variant=Subtle, State=Pressed",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1086,7 +1086,7 @@
         "type": "COMPONENT"
       }
     },
-    "style=subtle,state=rest": {
+    "variant=subtle,state=rest": {
       "node": {
         "height": 32,
         "width": 32,
@@ -1096,13 +1096,13 @@
       "nodeId": "13:90",
       "properties": {
         "State": "Rest",
-        "Style": "Subtle"
+        "Variant": "Subtle"
       },
       "tree": {
         "children": [
           {
             "asset": {
-              "color": "text-fill/primary",
+              "color": "color/black/89",
               "path": "icons/ic_fluent_more_horizontal_20_regular"
             },
             "component": "ic_fluent_more_horizontal_20_regular",
@@ -1121,7 +1121,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/transparent"
+          "color/white/0"
         ],
         "layout": {
           "counterAlign": "CENTER",
@@ -1135,7 +1135,7 @@
           ],
           "primaryAlign": "CENTER"
         },
-        "name": "Style=Subtle, State=Rest",
+        "name": "Variant=Subtle, State=Rest",
         "radius": [
           "radius/control",
           "radius/control",
@@ -1144,7 +1144,7 @@
         ],
         "reactions": [
           {
-            "destination": "Style=Subtle, State=Hover",
+            "destination": "Variant=Subtle, State=Hover",
             "navigation": "CHANGE_TO",
             "transition": {
               "bezier": [
