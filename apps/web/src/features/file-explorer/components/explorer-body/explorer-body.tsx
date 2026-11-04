@@ -137,7 +137,7 @@ type ExplorerSearchState = {
 // 항목을 표시하는 속성. 우클릭·길게 누른 자리와 방향키로 옮길 항목을 찾는 데 쓴다.
 const ITEM_ATTRIBUTE = 'data-explorer-item';
 
-// 아이콘 보기의 FileItem View다.
+// 아이콘 보기의 FileItem Size다.
 const ICON_VIEWS = { large: 'large', medium: 'medium' } as const;
 
 /**
@@ -904,12 +904,21 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
       renameFieldProps: isRenaming ? rename.renameFieldProps : undefined,
     };
     if (!isDetails) {
+      const {
+        selected: isItemSelected,
+        cut: isItemCut,
+        renaming: isItemRenaming,
+        ...itemProps
+      } = common;
       return (
         <FileItem
           key={item.id}
-          {...common}
+          {...itemProps}
+          isSelected={isItemSelected}
+          isCut={isItemCut}
+          isRenaming={isItemRenaming}
           surface="explorer"
-          view={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
+          size={ICON_VIEWS[view.view === 'large' ? 'large' : 'medium']}
           icon={renderItemIcon(item)}
         />
       );
@@ -1127,7 +1136,7 @@ export function ExplorerBody(props: ExplorerBodyProps): JSX.Element {
         }
         itemCount={`항목 ${String(children.length)}개`}
         selection={`${String(selectedIds.length)}개 항목 선택함`}
-        showSelection={selectedIds.length > 0}
+        hasSelection={selectedIds.length > 0}
         onDetailsView={() => {
           changeIconView('details');
         }}
