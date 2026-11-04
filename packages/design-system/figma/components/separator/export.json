@@ -1,5 +1,5 @@
 {
-  "description": "구분선으로, 메뉴·카드·목록 사이를 나눌 때 쓴다.",
+  "description": "구분선으로, 메뉴·카드·목록 사이를 나눌 때 쓴다.\n@sample-size width",
   "name": "Separator",
   "nodeId": "509:5923",
   "propertyDefinitions": {
@@ -26,7 +26,7 @@
       },
       "tree": {
         "fills": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "height": "stroke-width/default",
         "name": "Orientation=Horizontal",
@@ -38,8 +38,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/separator/width"
+        "type": "COMPONENT"
       }
     },
     "orientation=vertical": {
@@ -55,7 +54,7 @@
       },
       "tree": {
         "fills": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "height": "size/separator/height",
         "name": "Orientation=Vertical",

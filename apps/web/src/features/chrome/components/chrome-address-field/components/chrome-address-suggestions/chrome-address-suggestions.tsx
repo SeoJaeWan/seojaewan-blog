@@ -116,8 +116,8 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
                       role="option"
                       title={suggestion.title}
                       icon={suggestionIcons[suggestion.kind]}
-                      selected={index === selectedIndex}
-                      showTrailing={suggestion.kind === 'post'}
+                      isSelected={index === selectedIndex}
+                      hasTrailing={suggestion.kind === 'post'}
                       trailing={suggestion.kind === 'post' ? suggestion.url : undefined}
                       onMouseDown={handleSuggestionMouseDown}
                       onClick={() => {

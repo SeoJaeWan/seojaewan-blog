@@ -324,7 +324,7 @@ function SearchResultsPage(
                   size="two-line"
                   title={result.title}
                   subtitle={result.date}
-                  showTrailing={isWide}
+                  hasTrailing={isWide}
                   trailing={result.url}
                   icon={<ImageAsset name="images/file-document" />}
                   className="w-full"
