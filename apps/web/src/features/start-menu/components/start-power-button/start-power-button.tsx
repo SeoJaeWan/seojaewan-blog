@@ -6,7 +6,7 @@ import { MenuButton } from '@/shared/components/menu-button/menu-button';
 import type { MenuPopupEntry } from '@/shared/components/menu-popup/menu-popup';
 
 type StartPowerButtonProps = {
-  /** 피그마 State. true면 전원 메뉴(`Menu/Power`)를 연 모습(Open), false면 버튼만 보인다(Closed) */
+  /** 전원 메뉴(`Menu/Power`)가 열렸는지. 피그마 조립은 닫은 모양만 그리고 열림은 `@runtime`이다 */
   open?: boolean;
   /** 전원 메뉴를 열거나 닫으려 할 때 부른다. 쓰는 곳이 `open`을 바꾼다. 주지 않으면 `open`에 고정된다 */
   onOpenChange?: (isOpen: boolean) => void;
