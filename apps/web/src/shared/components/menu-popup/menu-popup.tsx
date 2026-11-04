@@ -1,7 +1,7 @@
 import { Menu as BaseMenu } from '@base-ui/react/menu';
 import type { ComponentProps, JSX } from 'react';
 
-import { Menu, MenuItem, MenuSeparator, Popover } from '@seojaewan/design-system';
+import { Menu, MenuItem, MenuSeparator } from '@seojaewan/design-system';
 
 type MenuItemIcon = ComponentProps<typeof MenuItem>['icon'];
 
@@ -29,12 +29,7 @@ export type MenuPopupSubmenu = {
   icon?: MenuItemIcon;
   /** 고를 수 없게 한다 */
   disabled?: boolean;
-  /** 펼쳐 보일 하위 메뉴 항목. 있으면 항목 오른쪽에 하위 메뉴를 연 모습으로 그린다(조립 스토리) */
-  submenu?: readonly MenuPopupEntry[];
-  /**
-   * 실제로 여닫는 하위 메뉴 항목. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 연다(앱의 메뉴).
-   * `submenu`와 함께 쓰지 않는다
-   */
+  /** 실제로 여닫는 하위 메뉴 항목. 있으면 마우스를 올리거나 →·Enter 키로 항목 오른쪽에 하위 메뉴를 연다(앱의 메뉴). 없으면 닫은 모습으로만 그린다(조립 스토리) */
   entries?: readonly MenuPopupEntry[];
 };
 
@@ -261,9 +256,8 @@ function MenuEntry(props: { entry: MenuPopupEntry }): JSX.Element {
 }
 
 /**
- * 하위 메뉴 항목을 그린다. 펼칠 하위 메뉴가 있으면 Popover(오른쪽, 위 맞춤)로 항목 옆에 하위 메뉴를 붙이고,
- * 항목은 하위 메뉴가 열린 모습(강조)으로 그린다. 피그마 조립은 하위 메뉴를 Popover `Popup` 슬롯이 아니라 조립 최상위의 형제로
- * 같은 자리에 두는데, 코드는 하위 메뉴가 부모 메뉴 바탕 밖의 팝업이라 그림자를 한 번만 그려 모습이 같다.
+ * 하위 메뉴 항목을 그린다. 여닫을 하위 메뉴(`entries`)가 있으면 항목 오른쪽에 위를 맞춰 붙이는 실제 하위 메뉴로 그리고,
+ * 없으면 닫은 모습으로 그린다. 피그마 조립은 하위 메뉴를 닫은 모양으로만 그린다.
  * @param props
  * @param props.entry 하위 메뉴 항목
  */
@@ -287,25 +281,11 @@ function SubmenuEntry(props: { entry: MenuPopupSubmenu }): JSX.Element {
       </BaseMenu.SubmenuRoot>
     );
   }
-  const isExpanded = entry.submenu !== undefined;
-  const trigger = (
-    // 하위 메뉴를 연 상태면 Base UI가 항목에 data-popup-open을 달아 MenuItem이 강조 색을 칠한다.
-    <BaseMenu.SubmenuRoot open={isExpanded}>
+  return (
+    // 닫은 모습이다. 마우스·키보드로 여는 하위 메뉴는 `entries`가 맡는다.
+    <BaseMenu.SubmenuRoot open={false}>
       <MenuItem variant="submenu" label={entry.label} icon={entry.icon} disabled={entry.disabled} />
     </BaseMenu.SubmenuRoot>
-  );
-  if (entry.submenu === undefined) {
-    return trigger;
-  }
-  return (
-    // 트리거(항목)가 메뉴 폭을 채우므로 Popover도 같은 폭으로 둔다.
-    <Popover
-      isOpen
-      placement="right-start"
-      className="w-full"
-      trigger={trigger}
-      popup={<MenuPanel items={entry.submenu} />}
-    />
   );
 }
 
