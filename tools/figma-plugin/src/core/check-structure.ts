@@ -9,6 +9,7 @@ import {
   type Directives,
   FOCUS_TRIGGER,
   parseDirectives,
+  parseDirectiveTexts,
   type SampleAxis,
   sampleSizeAxes,
 } from './directives';
@@ -532,7 +533,7 @@ function checkNode(
   checkCommon(node, context.codeVariables ?? noCodeVariables, add);
   // 조립 안의 크기(루트, 인스턴스 크기 덮어쓰기, 배치 프레임)는 화면·영역 크기라 변수 없는 숫자로 둔다.
   if (sizes.shouldCheckSizes) {
-    checkSizes(node, isRoot, isRoot ? sizes.sampleAxes : new Set(), add);
+    checkSizes(node, isRoot, ownSampleAxes(node, isRoot ? sizes.sampleAxes : new Set()), add);
   }
   if (node.asset !== null) {
     checkImageRatio(node, isRoot, add);
@@ -645,6 +646,19 @@ function requirePair(
       `값을 ${variables.map((variable) => variable.name).join(', ')} 가운데 하나로 맞추거나 코드 전용 변수를 더한다.`,
     );
   }
+}
+
+/**
+ * 견본 크기로 표시한 축을 모은다. 변형 루트는 컴포넌트 description의 축에 더해, 안쪽 레이어(Equation의 `formula` 등)는
+ * 그 레이어 주석의 `@sample-size` 줄로 표시한 축이다.
+ * @codocs [[피그마 연동:구조 검사]]
+ * @param node 노드
+ * @param inherited description에서 읽은 축(변형 루트만)
+ * @returns 변수 없는 고정 크기를 허용하는 축
+ */
+function ownSampleAxes(node: NodeData, inherited: ReadonlySet<SampleAxis>): Set<SampleAxis> {
+  const { directives } = parseDirectiveTexts(node.annotations);
+  return new Set([...inherited, ...sampleSizeAxes(directives)]);
 }
 
 /**
