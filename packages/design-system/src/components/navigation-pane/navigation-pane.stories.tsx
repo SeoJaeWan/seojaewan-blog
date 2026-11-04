@@ -25,7 +25,7 @@ const meta = {
         />
       </FigmaFrame>
       <FigmaFrame source={navigationPaneExport} node={['items', 'nav/Blog']}>
-        <NavigationItem level={1} expand="expanded" selected label="Blog" icon={folderIcon} />
+        <NavigationItem level={1} expand="expanded" isSelected label="Blog" icon={folderIcon} />
       </FigmaFrame>
       <FigmaFrame source={navigationPaneExport} node={['items', 'nav/React']}>
         <NavigationItem level={2} expand="collapsed" label="React" icon={folderIcon} />
