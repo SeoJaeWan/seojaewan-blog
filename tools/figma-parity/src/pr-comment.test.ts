@@ -4,6 +4,7 @@ import {
   CAPTURE_ROWS_PER_TABLE,
   COMMENT_LIMIT,
   markerIndex,
+  NO_PREVIOUS,
   renderComments,
   reportImageUrl,
 } from './pr-comment.ts';
@@ -23,11 +24,14 @@ const commentOptions = {
  */
 function row(target: string, variant: string, change: Partial<CaptureRow> = {}): CaptureRow {
   const dir = `${target}/${variant}`;
+  const isPattern = target.startsWith('patterns/');
   return {
     target,
+    kind: isPattern ? 'pattern' : 'component',
     name: target,
     variant,
-    figma: `${dir}/figma.png`,
+    figma: isPattern ? null : `${dir}/figma.png`,
+    previous: isPattern ? `${dir}/previous.png` : null,
     code: `${dir}/code.png`,
     diff: `${dir}/diff.png`,
     error: null,
@@ -90,6 +94,112 @@ describe('PR 댓글 캡처 표', () => {
     const all = renderComments({ rows, fileErrors: [] }, commentOptions).bodies.join('\n');
     expect(all.split('| 변형 | 피그마 | 코드 | 차이 |')).toHaveLength(3);
     expect(all).toContain(`<details open><summary>search-box (계속) (${String(rows.length)}개)`);
+  });
+});
+
+// @codocs [[피그마 연동:캡처 표]]
+describe('PR 댓글 조립 캡처 표', () => {
+  it('조립은 피그마가 아니라 이전 코드 | 지금 코드 | 차이로 놓고, 읽은 parity-captures 커밋을 머리에 쓴다', () => {
+    const { bodies, images } = renderComments(
+      {
+        rows: [row('patterns/menu/folder', 'default', { name: 'Menu/Folder' })],
+        fileErrors: [],
+        previousCommit: 'f4437a64b515335b061d5cf898d4e6e0504f1844',
+      },
+      commentOptions,
+    );
+    const body = bodies[0] ?? '';
+    expect(body).toContain('`parity-captures`에 저장된 이전 코드 그림과 비교한다');
+    expect(body).toContain('이전 코드 그림: `parity-captures` f4437a6.');
+    expect(body).toContain('<details open><summary>Menu/Folder (1개)</summary>');
+    expect(body).toContain('| 변형 | 이전 코드 | 지금 코드 | 차이 |');
+    expect(body).not.toContain('| 변형 | 피그마 | 코드 | 차이 |');
+    expect(body).toContain(
+      '| `default` | <img src="https://img/patterns/menu/folder/default/previous.png" alt="이전 코드"> | <img src="https://img/patterns/menu/folder/default/code.png" alt="지금 코드"> | <img src="https://img/patterns/menu/folder/default/diff.png" alt="차이"> |',
+    );
+    expect(images).toEqual([
+      'patterns/menu/folder/default/previous.png',
+      'patterns/menu/folder/default/code.png',
+      'patterns/menu/folder/default/diff.png',
+    ]);
+  });
+
+  it('이전 그림이 하나도 없는 조립(새 조립)은 지금 코드만 보이고 제목에 그렇다고 쓴다', () => {
+    const { bodies, images } = renderComments(
+      {
+        rows: [
+          row('patterns/menu/new', 'default', { name: 'Menu/New', previous: null, diff: null }),
+        ],
+        fileErrors: [],
+        previousCommit: 'a'.repeat(40),
+      },
+      commentOptions,
+    );
+    const body = bodies[0] ?? '';
+    expect(body).toContain(
+      '<details open><summary>Menu/New (1개, 새 조립: 이전 코드 그림이 없어 지금 그림만 보인다)</summary>',
+    );
+    expect(body).toContain('| 변형 | 지금 코드 |');
+    expect(body).toContain(
+      '| `default` | <img src="https://img/patterns/menu/new/default/code.png" alt="지금 코드"> |',
+    );
+    expect(images).toEqual(['patterns/menu/new/default/code.png']);
+  });
+
+  it('이전 그림이 있는 조립에 새로 생긴 변형은 이전 코드 칸에 그렇다고 쓰고 차이 칸을 비운다', () => {
+    const { bodies } = renderComments(
+      {
+        rows: [
+          row('patterns/menu/folder', 'default'),
+          row('patterns/menu/folder', 'state=hover', { previous: null, diff: null }),
+        ],
+        fileErrors: [],
+        previousCommit: 'a'.repeat(40),
+      },
+      commentOptions,
+    );
+    expect(bodies[0]).toContain(
+      `| \`state=hover\` | ${NO_PREVIOUS} | <img src="https://img/patterns/menu/folder/state=hover/code.png" alt="지금 코드"> |  |`,
+    );
+  });
+
+  it('parity-captures를 읽지 못한 실행은 머리에 지금 그림만 있다고 쓴다', () => {
+    const { bodies } = renderComments(
+      {
+        rows: [row('patterns/menu/folder', 'default', { previous: null, diff: null })],
+        fileErrors: [],
+        previousCommit: null,
+      },
+      commentOptions,
+    );
+    expect(bodies[0]).toContain('이번 실행은 `parity-captures`를 읽지 못해 지금 그림만 있다.');
+  });
+
+  it('컴포넌트와 조립이 섞이면 대상마다 자기 표 머리를 쓴다', () => {
+    const { bodies } = renderComments(
+      {
+        rows: [row('button', 'state=rest'), row('patterns/menu/folder', 'default')],
+        fileErrors: [],
+        previousCommit: 'a'.repeat(40),
+      },
+      commentOptions,
+    );
+    const body = bodies[0] ?? '';
+    expect(body.indexOf('| 변형 | 피그마 | 코드 | 차이 |')).toBeLessThan(
+      body.indexOf('| 변형 | 이전 코드 | 지금 코드 | 차이 |'),
+    );
+  });
+
+  it('조립 표가 댓글 하나보다 길어 나뉘면 나뉜 조각에도 조립 표 머리를 다시 쓴다', () => {
+    const rows = Array.from({ length: 600 }, (_, index) =>
+      row(
+        'patterns/menu/folder',
+        `state=s${String(index)},show-icon=true,long-name=${'x'.repeat(20)}`,
+      ),
+    );
+    const all = renderComments({ rows, fileErrors: [] }, commentOptions).bodies.join('\n');
+    expect(all).not.toContain('| 변형 | 피그마 | 코드 | 차이 |');
+    expect(all.split('| 변형 | 이전 코드 | 지금 코드 | 차이 |').length).toBeGreaterThan(2);
   });
 });
 

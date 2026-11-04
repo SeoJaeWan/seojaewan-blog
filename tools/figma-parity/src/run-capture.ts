@@ -4,7 +4,8 @@ import path from 'node:path';
 
 import { type AffectedSelection, type PatternCode, selectAffected } from './affected.ts';
 import { designSystemExports, usedComponents } from './design-system-exports.ts';
-import { changedFilesSince, gitShow } from './git-files.ts';
+import { changedFilesSince, gitShow, resolveCommit } from './git-files.ts';
+import { DEFAULT_PREVIOUS_REF } from './parity-captures.ts';
 import {
   COMPONENTS_SOURCE_DIR,
   defaultResultsDir,
@@ -21,6 +22,7 @@ import {
   type CaptureRow,
   CAPTURES_FILE,
   type CaptureSummary,
+  PREVIOUS_COMMIT_ENV,
   RESULTS_DIR_ENV,
   SELECTION_FILE,
 } from './results.ts';
@@ -28,9 +30,12 @@ import { PATTERN_TITLE_PREFIX } from './story-target.ts';
 import { loadTargets, type Target, variantResultDir } from './targets.ts';
 
 // 사용법: node src/run-capture.ts [--affected] [--base <ref>] [--target <대상>]... [--no-build] [--out <폴더>]
-//                                [--print-range]
+//                                [--previous <ref>] [--print-range]
 // 캡처할 대상(컴포넌트와 조립)을 고르고 Storybook을 빌드한 뒤 Playwright Test로 캡처한다.
-// 결과는 <결과 폴더>/captures.json과 대상·변형마다 figma.png, code.png, diff.png다.
+// 결과는 <결과 폴더>/captures.json과 대상·변형마다 code.png, diff.png와 비교한 그림이다.
+// 컴포넌트는 피그마 그림(figma.png)과, 조립은 parity-captures의 이전 코드 그림(previous.png)과 비교한다.
+// --previous: 조립의 이전 코드 그림을 읽을 parity-captures 참조. 기본은 origin/parity-captures다.
+//             참조가 없으면(브랜치를 받지 않았으면) 조립은 지금 그림만 남긴다.
 // --target: 대상 이름(`button`, `patterns/menu/folder`)이나 피그마 이름(`Button`, `Menu/Folder`)으로 고른다.
 // --affected: 기준 브랜치와 비교해 바뀐 파일로 범위를 정한다([[피그마 연동:캡처 범위]]).
 // --print-range: 범위만 정해 JSON 한 줄(`{ targets, storybooks, reason }`)로 출력한다. 빌드·캡처를 하지 않는다.
@@ -40,6 +45,7 @@ const NO_BUILD_FLAG = '--no-build';
 const TARGET_FLAG = '--target';
 const OUT_FLAG = '--out';
 const PRINT_RANGE_FLAG = '--print-range';
+const PREVIOUS_FLAG = '--previous';
 const SOURCE_FILE_PATTERN = /\.(ts|tsx)$/u;
 const NON_RENDERING_FILE_PATTERN = /\.(test|fixture)\.tsx?$/u;
 
@@ -69,7 +75,7 @@ function main(): void {
   mkdirSync(resultsDir, { recursive: true });
   if (selected.targets.length === 0) {
     console.log('[figma-parity] 캡처할 대상이 없다.');
-    writeSummary(resultsDir, { rows: [], fileErrors });
+    writeSummary(resultsDir, { rows: [], fileErrors, previousCommit: null });
     process.exitCode = fileErrors.length > 0 ? 1 : 0;
     return;
   }
@@ -83,6 +89,9 @@ function main(): void {
       });
     }
   }
+  const previousCommit = selected.targets.some((target) => target.kind === 'pattern')
+    ? previousCaptures(argv)
+    : null;
   writeFileSync(
     path.join(resultsDir, SELECTION_FILE),
     `${JSON.stringify(selected.targets.map((target) => target.id))}\n`,
@@ -92,14 +101,14 @@ function main(): void {
     ['exec', 'playwright', 'test', '-c', 'playwright.config.ts', '--pass-with-no-tests'],
     {
       cwd: toolRoot,
-      env: { [RESULTS_DIR_ENV]: resultsDir },
+      env: { [RESULTS_DIR_ENV]: resultsDir, [PREVIOUS_COMMIT_ENV]: previousCommit ?? '' },
     },
   );
   rmSync(path.join(resultsDir, SELECTION_FILE), { force: true });
   const rows = selected.targets.flatMap((target) =>
     target.variants.map((variant) => readRow(resultsDir, target, variant.variant)),
   );
-  writeSummary(resultsDir, { rows, fileErrors });
+  writeSummary(resultsDir, { rows, fileErrors, previousCommit });
   const failed = rows.filter((row) => row.error !== null);
   console.log(
     `[figma-parity] ${String(rows.length)}개 변형 캡처, ${String(failed.length)}개 실패. 결과: ${resultsDir}`,
@@ -286,6 +295,26 @@ function listSources(dir: string): string[] {
 }
 
 /**
+ * 조립의 이전 코드 그림을 읽을 parity-captures 커밋을 정한다.
+ * @codocs [[피그마 연동:CI]]
+ * @param argv 명령 인자
+ * @returns 커밋 SHA. 참조가 없으면 null
+ */
+function previousCaptures(argv: readonly string[]): string | null {
+  const index = argv.indexOf(PREVIOUS_FLAG);
+  const ref = index >= 0 ? (argv[index + 1] ?? '') : DEFAULT_PREVIOUS_REF;
+  const commit = resolveCommit(ref);
+  if (commit === undefined) {
+    console.log(
+      `[figma-parity] ${ref}가 없어 조립은 이전 코드 그림 없이 지금 그림만 남긴다(git fetch origin parity-captures).`,
+    );
+    return null;
+  }
+  console.log(`[figma-parity] 조립의 이전 코드 그림: ${ref} (${commit.slice(0, 7)})`);
+  return commit;
+}
+
+/**
  * 대상들의 Storybook을 구한다.
  * @param targets 대상
  * @returns Storybook 이름
@@ -306,9 +335,11 @@ function readRow(resultsDir: string, target: Target, variant: string): CaptureRo
   if (!existsSync(file)) {
     return {
       target: target.id,
+      kind: target.kind,
       name: target.name,
       variant,
       figma: null,
+      previous: null,
       code: null,
       diff: null,
       error: '캡처 테스트가 결과를 남기지 못했다(Playwright 출력 확인)',

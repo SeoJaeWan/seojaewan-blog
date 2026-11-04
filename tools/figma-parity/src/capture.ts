@@ -2,6 +2,7 @@ import type { Locator, Page } from '@playwright/test';
 
 // 캡처 표의 세 그림(피그마, 코드, 차이)을 만든다. 피그마 변형 PNG와 코드 캡처를 같은 배율·여백·배경으로 맞추고,
 // 둘을 Chromium 캔버스에서 `difference`로 겹쳐 차이 그림을 만든다. 판정하지 않는다. 사람이 PR 댓글에서 본다.
+// 조립은 피그마 그림 대신 parity-captures의 이전 코드 그림을 기준 그림으로 같은 차이 그림을 만든다.
 
 // 캡처 대상(피그마는 변형 노드) 둘레에 두는 가장 작은 여백(CSS px)이다. 그림자가 이보다 넓으면 그만큼 넓힌다.
 export const CAPTURE_MARGIN = 24;
@@ -168,17 +169,17 @@ export function commonCanvas(...sizes: Size[]): Size {
 }
 
 /**
- * 스토리를 열 화면 크기를 정한다. 기본 화면(Playwright 기기 설정)에 피그마 PNG와 여유분이 들어가면 그대로 두고,
- * 들어가지 않는 방향만 피그마 PNG 크기에 여유분을 더한 만큼 키운다. 작은 대상은 화면이 그대로라 캡처가 바뀌지 않는다.
+ * 스토리를 열 화면 크기를 정한다. 기본 화면(Playwright 기기 설정)에 대상(컴포넌트는 피그마 PNG, 조립은 코드 대상)과 여유분이
+ * 들어가면 그대로 두고, 들어가지 않는 방향만 대상 크기에 여유분을 더한 만큼 키운다. 작은 대상은 화면이 그대로라 캡처가 바뀌지 않는다.
  * @codocs [[피그마 연동:캡처 표]]
- * @param figma 피그마 PNG의 크기(CSS px, 배율로 나눈 값. 노드와 그 둘레로 나간 부분)
+ * @param content 대상 크기(CSS px, 배율로 나눈 값. 노드와 그 둘레로 나간 부분)
  * @param viewport 기본 화면 크기
  * @returns 스토리를 열 화면 크기(CSS px, 정수)
  */
-export function captureViewport(figma: Size, viewport: Size): Size {
+export function captureViewport(content: Size, viewport: Size): Size {
   return {
-    width: Math.max(viewport.width, Math.ceil(figma.width + VIEWPORT_SLACK)),
-    height: Math.max(viewport.height, Math.ceil(figma.height + VIEWPORT_SLACK)),
+    width: Math.max(viewport.width, Math.ceil(content.width + VIEWPORT_SLACK)),
+    height: Math.max(viewport.height, Math.ceil(content.height + VIEWPORT_SLACK)),
   };
 }
 
@@ -535,27 +536,27 @@ export async function captureCode(
 }
 
 /**
- * 피그마 그림과 코드 그림의 차이 그림을 만든다. 두 그림을 같은 크기(큰 쪽)의 배경색 캔버스에 왼쪽 위를 맞춰 놓고,
- * 캔버스 `globalCompositeOperation = 'difference'`로 겹친다. 같은 곳은 검정, 다른 곳은 밝게 보인다.
- * 두 그림은 이미 같은 배율·여백·배경으로 맞춰 왼쪽 위가 캡처 대상의 같은 자리다.
+ * 기준 그림(컴포넌트는 피그마 그림, 조립은 이전 코드 그림)과 코드 그림의 차이 그림을 만든다. 두 그림을 같은 크기(큰 쪽)의
+ * 배경색 캔버스에 왼쪽 위를 맞춰 놓고, 캔버스 `globalCompositeOperation = 'difference'`로 겹친다. 같은 곳은 검정, 다른 곳은
+ * 밝게 보인다. 두 그림은 같은 배율·여백·배경으로 맞춰 왼쪽 위가 캡처 대상의 같은 자리다.
  * @codocs [[피그마 연동:캡처 표]]
  * @param page 브라우저 맥락을 가져올 페이지
- * @param figma 피그마 그림(captureFigma 결과)
+ * @param reference 기준 그림(captureFigma 결과나 parity-captures의 이전 코드 그림)
  * @param code 코드 그림(captureCode 결과)
  * @param background 두 그림의 배경색
  * @returns 차이 그림 PNG
  */
 export async function diffImage(
   page: Page,
-  figma: Buffer,
+  reference: Buffer,
   code: Buffer,
   background: string,
 ): Promise<Buffer> {
-  const figmaSize = pngSize(figma);
+  const referenceSize = pngSize(reference);
   const codeSize = pngSize(code);
   const size = {
-    width: Math.max(figmaSize.width, codeSize.width),
-    height: Math.max(figmaSize.height, codeSize.height),
+    width: Math.max(referenceSize.width, codeSize.width),
+    height: Math.max(referenceSize.height, codeSize.height),
   };
   const composer = await page.context().newPage();
   try {
@@ -563,7 +564,7 @@ export async function diffImage(
       /**
        * 브라우저에서 두 그림을 배경색 캔버스에 놓고 difference로 겹친다.
        * @param input 그림 두 장(data URL), 캔버스 크기(기기 픽셀), 배경색
-       * @param input.figma 피그마 그림
+       * @param input.reference 기준 그림
        * @param input.code 코드 그림
        * @param input.width 캔버스 너비
        * @param input.height 캔버스 높이
@@ -571,7 +572,7 @@ export async function diffImage(
        * @returns 차이 그림 data URL
        */
       async (input: {
-        figma: string;
+        reference: string;
         code: string;
         width: number;
         height: number;
@@ -606,8 +607,11 @@ export async function diffImage(
           context.drawImage(image, 0, 0);
           return canvas;
         }
-        const [figmaImage, codeImage] = await Promise.all([load(input.figma), load(input.code)]);
-        const result = onBackground(figmaImage);
+        const [referenceImage, codeImage] = await Promise.all([
+          load(input.reference),
+          load(input.code),
+        ]);
+        const result = onBackground(referenceImage);
         const context = result.getContext('2d');
         if (context === null) {
           throw new Error('캔버스 2D 맥락을 만들 수 없다.');
@@ -617,7 +621,7 @@ export async function diffImage(
         return result.toDataURL('image/png');
       },
       {
-        figma: `${PNG_DATA_URL_PREFIX}${figma.toString('base64')}`,
+        reference: `${PNG_DATA_URL_PREFIX}${reference.toString('base64')}`,
         code: `${PNG_DATA_URL_PREFIX}${code.toString('base64')}`,
         width: size.width,
         height: size.height,

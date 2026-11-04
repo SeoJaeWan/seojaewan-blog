@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { capturePublishPlan } from './parity-captures.ts';
+import { capturePath, capturePublishPlan } from './parity-captures.ts';
 import type { CaptureRow } from './results.ts';
 
 /**
@@ -13,9 +13,11 @@ import type { CaptureRow } from './results.ts';
 function row(target: string, variant: string, change: Partial<CaptureRow> = {}): CaptureRow {
   return {
     target,
+    kind: target.startsWith('patterns/') ? 'pattern' : 'component',
     name: target,
     variant,
     figma: null,
+    previous: null,
     code: `${target}/${variant}/code.png`,
     diff: null,
     error: null,
@@ -44,5 +46,13 @@ describe('parity-captures 브랜치', () => {
     ]);
     expect([...plan.files.keys()]).toEqual(['menu-item/state=rest.png']);
     expect(plan.replaced).toEqual([]);
+  });
+
+  it('PR의 조립 캡처는 병합 때 쓴 것과 같은 경로에서 이전 코드 그림을 읽는다', () => {
+    const plan = capturePublishPlan([row('patterns/menu/folder', 'state=hover')]);
+    expect(capturePath('patterns/menu/folder', 'state=hover')).toBe([...plan.files.keys()][0]);
+    expect(capturePath('patterns/menu/folder', 'state=hover')).toBe(
+      'patterns/menu/folder/state=hover.png',
+    );
   });
 });

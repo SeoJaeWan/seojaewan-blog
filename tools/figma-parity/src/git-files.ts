@@ -61,6 +61,37 @@ export function gitShow(commit: string, file: string): string | undefined {
 }
 
 /**
+ * 커밋의 파일 내용을 바이트로 읽는다(그림 파일).
+ * @param commit 커밋
+ * @param file 커밋 기준 경로
+ * @returns 내용. 그 커밋에 파일이 없으면 undefined
+ */
+export function gitShowBuffer(commit: string, file: string): Buffer | undefined {
+  try {
+    return execFileSync('git', ['show', `${commit}:${file}`], {
+      cwd: repoRoot,
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * 참조가 가리키는 커밋을 구한다.
+ * @param ref 참조
+ * @returns 커밋 SHA. 참조가 없으면 undefined
+ */
+export function resolveCommit(ref: string): string | undefined {
+  try {
+    return git(['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]).trim();
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * git 참조가 있는지 본다.
  * @param ref 참조
  * @returns 있으면 true
