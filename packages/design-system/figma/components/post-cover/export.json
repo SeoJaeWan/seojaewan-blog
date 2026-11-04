@@ -1,5 +1,5 @@
 {
-  "description": "글 머리 위의 커버 이미지로, 글 페이지에 쓴다.",
+  "description": "글 머리 위의 커버 이미지로, 글 페이지에 쓴다.\n@sample-size width",
   "name": "PostCover",
   "nodeId": "1380:1105",
   "propertyDefinitions": {
@@ -67,8 +67,7 @@
           "h": "FIXED",
           "v": "FIXED"
         },
-        "type": "COMPONENT",
-        "width": "size/post/width"
+        "type": "COMPONENT"
       }
     }
   }
