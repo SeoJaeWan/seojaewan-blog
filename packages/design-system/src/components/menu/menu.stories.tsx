@@ -17,17 +17,17 @@ type Story = StoryObj<typeof meta>;
 export const Figma: Story = {
   render: () => (
     <Menu>
-      <MenuItem standalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
-      <MenuItem standalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
+      <MenuItem isStandalone label="열기" icon="icons/ic_fluent_open_20_regular.svg" />
+      <MenuItem isStandalone label="새 창에서 열기" icon="icons/ic_fluent_window_20_regular.svg" />
       <MenuSeparator />
       <MenuItem
-        standalone
+        isStandalone
         label="이름 바꾸기"
         icon="icons/ic_fluent_rename_20_regular.svg"
         shortcut="F2"
       />
       <MenuItem
-        standalone
+        isStandalone
         label="삭제"
         icon="icons/ic_fluent_delete_20_regular.svg"
         shortcut="Delete"
