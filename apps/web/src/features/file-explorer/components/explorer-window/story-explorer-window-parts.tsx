@@ -100,10 +100,10 @@ function renderFolderItems(folder: 'blog' | 'react', isSelected: boolean): React
       <FileItem
         key={item.name}
         surface="explorer"
-        view="medium"
+        size="medium"
         name={item.name}
         icon={ITEM_ICONS[item.kind]}
-        selected={isSelected && index === 0}
+        isSelected={isSelected && index === 0}
       />
     ),
   );
