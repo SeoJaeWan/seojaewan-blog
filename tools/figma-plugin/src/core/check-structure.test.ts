@@ -1422,4 +1422,36 @@ describe('구조 검사: 컴포넌트 견본 크기(`@sample-size`)', () => {
       '고정 너비 16가 크기 변수에 연결되어 있지 않다',
     ]);
   });
+
+  it('안쪽 레이어는 그 레이어 주석의 `@sample-size`로 표시한 축만 허용한다', () => {
+    const root = fixedRoot();
+    const icon = must(root.children[0]);
+    /**
+     * 안쪽 레이어에 주석을 달고 검사한 위반 이유를 돌려준다.
+     * @param annotations 레이어 주석
+     * @returns 위반 이유 목록
+     */
+    function reasons(annotations: string[]): string[] {
+      return checkVariant(
+        { ...root, children: [node({ ...icon, height: { value: 16 }, annotations })] },
+        'Equation / Default',
+        context,
+        { 'sample-size': ['width height'] },
+      ).map((violation) => violation.reason);
+    }
+    expect(reasons([])).toEqual([
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+    expect(reasons(['@sample-size width'])).toEqual([
+      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+    expect(reasons(['@sample-size width height'])).toEqual([]);
+    // 잘못된 줄은 축으로 치지 않고 따로 막는다.
+    expect(reasons(['@sample-size depth'])).toEqual([
+      '주석의 `@sample-size depth`: width, height만 쓴다',
+      '고정 너비 16가 크기 변수에 연결되어 있지 않다',
+      '고정 높이 16가 크기 변수에 연결되어 있지 않다',
+    ]);
+  });
 });
