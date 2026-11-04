@@ -75,7 +75,7 @@ export function ChromeAddressSuggestions(props: ChromeAddressSuggestionsProps): 
   const sizeClassName = width === undefined ? FIGMA_WIDTH_CLASS_NAME : 'w-full';
   return (
     <Popover
-      open={isOpen}
+      isOpen={isOpen}
       placement="bottom-start"
       className={className}
       trigger={
