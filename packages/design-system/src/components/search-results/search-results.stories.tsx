@@ -38,7 +38,7 @@ const meta = {
       <ListGroup label="최고 일치">
         <ListItem
           size="two-line"
-          selected
+          isSelected
           title="리액트 19 훅 정리"
           subtitle="글"
           icon={documentIcon}
