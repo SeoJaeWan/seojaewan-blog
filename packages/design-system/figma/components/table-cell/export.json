@@ -1,9 +1,9 @@
 {
-  "description": "글 본문 표의 칸 하나로, 표 안에 쓴다.",
+  "description": "글 본문 표의 칸 하나로, 표 안에 쓴다.\n@sample-size width",
   "name": "TableCell",
   "nodeId": "1380:6858",
   "propertyDefinitions": {
-    "Body Text": {
+    "Body text": {
       "default": "칸 내용",
       "type": "TEXT"
     },
@@ -11,7 +11,7 @@
       "default": "칸 내용",
       "type": "TEXT"
     },
-    "Type": {
+    "Variant": {
       "default": "Body",
       "options": [
         "Body",
@@ -21,7 +21,7 @@
     }
   },
   "variants": {
-    "type=body": {
+    "variant=body": {
       "node": {
         "height": 37,
         "width": 240,
@@ -30,13 +30,13 @@
       },
       "nodeId": "1380:6854",
       "properties": {
-        "Type": "Body"
+        "Variant": "Body"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "text",
             "size": {
@@ -54,17 +54,17 @@
               "segments": [
                 {
                   "characters": "칸",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body"
                 },
                 {
                   "characters": "내용",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body"
                 }
               ],
@@ -85,7 +85,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Type=Body",
+        "name": "Variant=Body",
         "size": {
           "h": 37,
           "w": 240
@@ -101,14 +101,13 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/table-cell/width"
+        "type": "COMPONENT"
       }
     },
-    "type=header": {
+    "variant=header": {
       "node": {
         "height": 37,
         "width": 240,
@@ -117,13 +116,13 @@
       },
       "nodeId": "1380:6856",
       "properties": {
-        "Type": "Header"
+        "Variant": "Header"
       },
       "tree": {
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "text",
             "size": {
@@ -141,17 +140,17 @@
               "segments": [
                 {
                   "characters": "칸",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Body Strong"
                 },
                 {
                   "characters": "내용",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Body Strong"
                 }
               ],
@@ -161,7 +160,7 @@
           }
         ],
         "fills": [
-          "subtle-fill/secondary"
+          "color/black/4"
         ],
         "layout": {
           "counterAlign": "MIN",
@@ -175,7 +174,7 @@
           ],
           "primaryAlign": "MIN"
         },
-        "name": "Type=Header",
+        "name": "Variant=Header",
         "size": {
           "h": 37,
           "w": 240
@@ -191,11 +190,10 @@
           0
         ],
         "strokes": [
-          "divider-stroke/default"
+          "color/black/8"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/table-cell/width"
+        "type": "COMPONENT"
       }
     }
   }

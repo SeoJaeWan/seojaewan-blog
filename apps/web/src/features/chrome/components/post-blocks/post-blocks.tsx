@@ -318,7 +318,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                       (cell, cellIndex) => (
                         <TableCell
                           key={cellIndex}
-                          type={isHeader ? 'header' : 'body'}
+                          variant={isHeader ? 'header' : 'body'}
                           scope={isHeader ? 'col' : undefined}
                         >
                           {renderRichText(cell, 'inherit')}
