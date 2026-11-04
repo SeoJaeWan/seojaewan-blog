@@ -29,7 +29,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_open_20_regular"
                                     },
                                     "component": "ic_fluent_open_20_regular",
@@ -74,7 +74,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -92,7 +92,7 @@
                                   "segments": [
                                     {
                                       "characters": "열기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -102,7 +102,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -149,13 +149,13 @@
                         },
                         "name": "item 열기",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "열기",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -175,7 +175,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_link_20_regular"
                                     },
                                     "component": "ic_fluent_link_20_regular",
@@ -220,7 +220,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -238,17 +238,17 @@
                                   "segments": [
                                     {
                                       "characters": "링크",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "복사",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -258,7 +258,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -305,13 +305,13 @@
                         },
                         "name": "item 링크 복사",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "링크 복사",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -331,7 +331,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_pin_20_regular"
                                     },
                                     "component": "ic_fluent_pin_20_regular",
@@ -376,7 +376,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -394,27 +394,27 @@
                                   "segments": [
                                     {
                                       "characters": "시작",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "화면에",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     },
                                     {
                                       "characters": " ",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Body"
                                     },
                                     {
                                       "characters": "고정",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -424,7 +424,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -471,13 +471,13 @@
                         },
                         "name": "item 시작 화면에 고정",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": false,
                           "Label": "시작 화면에 고정",
                           "Shortcut": "Ctrl+O",
-                          "Show icon": true,
-                          "Show shortcut": false,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -494,7 +494,7 @@
                           {
                             "component": "Separator",
                             "fills": [
-                              "divider-stroke/default"
+                              "color/black/8"
                             ],
                             "height": "stroke-width/default",
                             "name": "Separator",
@@ -544,7 +544,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_cut_20_regular"
                                     },
                                     "component": "ic_fluent_cut_20_regular",
@@ -589,7 +589,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -607,7 +607,7 @@
                                   "segments": [
                                     {
                                       "characters": "잘라내기",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -617,7 +617,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/secondary"
+                                  "color/black/61"
                                 ],
                                 "name": "shortcut",
                                 "size": {
@@ -635,7 +635,7 @@
                                   "segments": [
                                     {
                                       "characters": "Ctrl+X",
-                                      "fill": "text-fill/secondary",
+                                      "fill": "color/black/61",
                                       "textStyle": "Caption"
                                     }
                                   ],
@@ -645,7 +645,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -692,13 +692,13 @@
                         },
                         "name": "item 잘라내기",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": true,
                           "Label": "잘라내기",
                           "Shortcut": "Ctrl+X",
-                          "Show icon": true,
-                          "Show shortcut": true,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -718,7 +718,7 @@
                                 "children": [
                                   {
                                     "asset": {
-                                      "color": "text-fill/primary",
+                                      "color": "color/black/89",
                                       "path": "icons/ic_fluent_delete_20_regular"
                                     },
                                     "component": "ic_fluent_delete_20_regular",
@@ -763,7 +763,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/primary"
+                                  "color/black/89"
                                 ],
                                 "name": "label",
                                 "size": {
@@ -781,7 +781,7 @@
                                   "segments": [
                                     {
                                       "characters": "삭제",
-                                      "fill": "text-fill/primary",
+                                      "fill": "color/black/89",
                                       "textStyle": "Hangul/Body"
                                     }
                                   ],
@@ -791,7 +791,7 @@
                               },
                               {
                                 "fills": [
-                                  "text-fill/secondary"
+                                  "color/black/61"
                                 ],
                                 "name": "shortcut",
                                 "size": {
@@ -809,7 +809,7 @@
                                   "segments": [
                                     {
                                       "characters": "Delete",
-                                      "fill": "text-fill/secondary",
+                                      "fill": "color/black/61",
                                       "textStyle": "Caption"
                                     }
                                   ],
@@ -819,7 +819,7 @@
                               }
                             ],
                             "fills": [
-                              "subtle-fill/transparent"
+                              "color/white/0"
                             ],
                             "layout": {
                               "counterAlign": "CENTER",
@@ -866,13 +866,13 @@
                         },
                         "name": "item 삭제",
                         "properties": {
-                          "Kind": "Default",
+                          "Has icon": true,
+                          "Has shortcut": true,
                           "Label": "삭제",
                           "Shortcut": "Delete",
-                          "Show icon": true,
-                          "Show shortcut": true,
                           "State": "Rest",
-                          "Value": "100%"
+                          "Value": "100%",
+                          "Variant": "Default"
                         },
                         "size": {
                           "h": 32,
@@ -955,7 +955,7 @@
                   "stroke-width/default"
                 ],
                 "strokes": [
-                  "surface-stroke/flyout"
+                  "color/black/6"
                 ],
                 "strokesIncludedInLayout": true,
                 "type": "INSTANCE"
@@ -983,8 +983,7 @@
               "h": "FIXED",
               "v": "HUG"
             },
-            "type": "INSTANCE",
-            "width": "size/menu/width"
+            "type": "INSTANCE"
           }
         ],
         "layout": {
