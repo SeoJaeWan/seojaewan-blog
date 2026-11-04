@@ -14,7 +14,7 @@ const meta = {
   title: 'Components/Taskbar',
   // 미리보기 너비(1280)에 기본 여백을 두면 오른쪽 끝이 화면 밖으로 잘린다.
   parameters: { layout: 'fullscreen' },
-  // 크기는 FigmaFrame이 피그마 원본 크기(size/taskbar/width × height)로 감싼다.
+  // 크기는 FigmaFrame이 export.json 숫자(너비는 @sample-size)와 높이 토큰으로 감싼다.
   decorators: [figmaFrame(taskbarExport)],
 } satisfies Meta;
 

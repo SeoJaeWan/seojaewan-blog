@@ -57,7 +57,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -75,17 +75,17 @@
               "segments": [
                 {
                   "characters": "앱",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -95,7 +95,7 @@
           }
         ],
         "fills": [
-          "control-fill/secondary"
+          "color/gray/3/50"
         ],
         "height": "size/pinned-tile/height",
         "layout": {
@@ -150,7 +150,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": false,
         "type": "COMPONENT",
@@ -193,7 +193,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -211,17 +211,17 @@
               "segments": [
                 {
                   "characters": "앱",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -231,7 +231,7 @@
           }
         ],
         "fills": [
-          "control-fill/tertiary"
+          "color/gray/2/30"
         ],
         "height": "size/pinned-tile/height",
         "layout": {
@@ -301,7 +301,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "label",
             "size": {
@@ -319,17 +319,17 @@
               "segments": [
                 {
                   "characters": "앱",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 },
                 {
                   "characters": " ",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Caption"
                 },
                 {
                   "characters": "이름",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
