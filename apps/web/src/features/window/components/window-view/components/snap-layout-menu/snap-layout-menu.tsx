@@ -57,7 +57,7 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
     return (
       <Popover
         placement="bottom-center"
-        open={isFixedOpen}
+        isOpen={isFixedOpen}
         className={className}
         trigger={
           <CaptionButton

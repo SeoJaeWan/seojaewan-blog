@@ -43,7 +43,7 @@ const meta = {
   render: (args) => (
     <Popover
       placement={args.placement}
-      open={args.state === 'open'}
+      isOpen={args.state === 'open'}
       trigger={
         <IconButton variant="subtle" label="전원" icon="icons/ic_fluent_power_20_regular.svg" />
       }
