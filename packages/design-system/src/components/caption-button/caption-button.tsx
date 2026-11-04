@@ -5,23 +5,23 @@ import type { SvgAssetName } from '../../assets/asset-data';
 import { cn } from '../../cn';
 import { Asset } from '../asset/asset';
 
-export type CaptionButtonKind = 'default' | 'close';
+export type CaptionButtonVariant = 'default' | 'close';
 
 type CaptionButtonProps = Omit<ComponentProps<typeof BaseButton>, 'className' | 'children'> & {
-  /** 피그마 Kind. default는 최소화·최대화 버튼, close는 닫기 버튼이다 */
-  kind?: CaptionButtonKind;
+  /** 피그마 Variant. default는 최소화·최대화 버튼, close는 닫기 버튼이다 */
+  variant?: CaptionButtonVariant;
   /** 피그마 State=Inactive. 창이 활성 상태가 아니면 아이콘을 흐리게 그린다 */
-  inactive?: boolean;
+  isInactive?: boolean;
   /** 접근성 이름. 글자가 없는 버튼이라 aria-label로 붙인다 */
   label: string;
-  /** 가운데 그릴 16px 아이콘. kind가 default일 때만 쓰고 기본은 최소화 아이콘이다. close는 닫기 아이콘으로 고정이다 */
+  /** 가운데 그릴 16px 아이콘. variant가 default일 때만 쓰고 기본은 최소화 아이콘이다. close는 닫기 아이콘으로 고정이다 */
   icon?: SvgAssetName;
   /** 덧붙이거나 덮어쓸 클래스 */
   className?: string;
 };
 
 // 상태 색은 실제 CSS 상태(hover, active)로 바꾼다. Inactive는 바탕 없이 아이콘만 흐리고, 마우스를 올리거나 누르면 그 상태 색이 이긴다.
-const kindClassNames = {
+const variantClassNames = {
   default: [
     'bg-color-white-0',
     'hover:bg-color-black-4 hover:text-color-black-89',
@@ -32,7 +32,7 @@ const kindClassNames = {
     'hover:bg-color-red-56 hover:text-color-white',
     'active:bg-color-red-56-90 active:text-color-white-70',
   ],
-} as const satisfies Record<CaptionButtonKind, readonly string[]>;
+} as const satisfies Record<CaptionButtonVariant, readonly string[]>;
 
 /**
  * 창 제목 표시줄의 최소화·최대화·닫기 버튼 하나(피그마 CaptionButton)를 그린다. 동작과 접근성은 Base UI Button이 맡는다.
@@ -42,8 +42,8 @@ const kindClassNames = {
  */
 export function CaptionButton(props: CaptionButtonProps): JSX.Element {
   const {
-    kind = 'default',
-    inactive: isInactive = false,
+    variant = 'default',
+    isInactive = false,
     label,
     icon = 'icons/ic_fluent_subtract_20_regular.svg',
     className,
@@ -57,12 +57,12 @@ export function CaptionButton(props: CaptionButtonProps): JSX.Element {
         'inline-flex h-size-caption-button-height w-size-caption-button-width items-center justify-center select-none',
         'motion-control-state',
         isInactive ? 'text-color-black-36' : 'text-color-black-89',
-        ...kindClassNames[kind],
+        ...variantClassNames[variant],
         className,
       )}
     >
       <Asset
-        name={kind === 'close' ? 'icons/ic_fluent_dismiss_20_regular.svg' : icon}
+        name={variant === 'close' ? 'icons/ic_fluent_dismiss_20_regular.svg' : icon}
         className="size-size-icon-sm"
       />
     </BaseButton>
