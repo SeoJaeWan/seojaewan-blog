@@ -36,7 +36,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "time",
             "size": {
@@ -54,7 +54,7 @@
               "segments": [
                 {
                   "characters": "시간",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -64,7 +64,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "date",
             "size": {
@@ -82,7 +82,7 @@
               "segments": [
                 {
                   "characters": "날짜",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -92,7 +92,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/taskbar/item",
         "layout": {
@@ -129,7 +129,7 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
         "type": "COMPONENT"
@@ -150,7 +150,7 @@
         "children": [
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "time",
             "size": {
@@ -168,7 +168,7 @@
               "segments": [
                 {
                   "characters": "시간",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
@@ -178,7 +178,7 @@
           },
           {
             "fills": [
-              "text-fill/primary"
+              "color/black/89"
             ],
             "name": "date",
             "size": {
@@ -196,7 +196,7 @@
               "segments": [
                 {
                   "characters": "날짜",
-                  "fill": "text-fill/primary",
+                  "fill": "color/black/89",
                   "textStyle": "Hangul/Caption"
                 }
               ],
