@@ -1,5 +1,5 @@
 {
-  "description": "타일을 가로로 늘어놓고 줄바꿈하는 묶음으로, Start 고정됨·그리드 보기와 새 탭 최신 글에 쓴다.",
+  "description": "타일을 가로로 늘어놓고 줄바꿈하는 묶음으로, Start 고정됨·그리드 보기와 새 탭 최신 글에 쓴다.\n@sample-size width",
   "name": "TileGrid",
   "nodeId": "389:5073",
   "propertyDefinitions": {
@@ -11,7 +11,7 @@
       ],
       "type": "VARIANT"
     },
-    "tiles": {
+    "Tiles": {
       "type": "SLOT"
     }
   },
@@ -56,7 +56,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -74,22 +74,22 @@
                       "segments": [
                         {
                           "characters": "React 19 ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "훅",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "정리",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -159,7 +159,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -177,27 +177,27 @@
                       "segments": [
                         {
                           "characters": "리액트",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "서버",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "컴포넌트",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -267,7 +267,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -285,12 +285,12 @@
                       "segments": [
                         {
                           "characters": "Next.js ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "캐시",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -360,7 +360,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -378,7 +378,7 @@
                       "segments": [
                         {
                           "characters": "TypeScript 5.6",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -448,7 +448,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -466,12 +466,12 @@
                       "segments": [
                         {
                           "characters": "Vitest ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "테스트",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -541,7 +541,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -559,22 +559,22 @@
                       "segments": [
                         {
                           "characters": "Figma ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "일치",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "검사",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -633,7 +633,7 @@
               "primaryAlign": "CENTER",
               "wrap": true
             },
-            "name": "tiles",
+            "name": "Tiles",
             "size": {
               "h": 84,
               "w": 576
@@ -666,8 +666,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/new-tab/grid-width"
+        "type": "COMPONENT"
       }
     },
     "align=start": {
@@ -710,7 +709,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -728,7 +727,7 @@
                       "segments": [
                         {
                           "characters": "File Explorer",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -798,7 +797,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -816,7 +815,7 @@
                       "segments": [
                         {
                           "characters": "Chrome",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -886,7 +885,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -904,7 +903,7 @@
                       "segments": [
                         {
                           "characters": "Blog",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -971,7 +970,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -989,7 +988,7 @@
                       "segments": [
                         {
                           "characters": "GitHub",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -1056,7 +1055,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -1074,7 +1073,7 @@
                       "segments": [
                         {
                           "characters": "이력서",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -1141,7 +1140,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -1159,17 +1158,17 @@
                       "segments": [
                         {
                           "characters": "사이드",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "프로젝트",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -1239,7 +1238,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -1257,7 +1256,7 @@
                       "segments": [
                         {
                           "characters": "React",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         }
                       ],
@@ -1327,7 +1326,7 @@
                   },
                   {
                     "fills": [
-                      "text-fill/primary"
+                      "color/black/89"
                     ],
                     "name": "label",
                     "size": {
@@ -1345,22 +1344,22 @@
                       "segments": [
                         {
                           "characters": "React 19 ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "훅",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         },
                         {
                           "characters": " ",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Caption"
                         },
                         {
                           "characters": "정리",
-                          "fill": "text-fill/primary",
+                          "fill": "color/black/89",
                           "textStyle": "Hangul/Caption"
                         }
                       ],
@@ -1419,7 +1418,7 @@
               "primaryAlign": "MIN",
               "wrap": true
             },
-            "name": "tiles",
+            "name": "Tiles",
             "size": {
               "h": 168,
               "w": 576
@@ -1452,8 +1451,7 @@
           "h": "FIXED",
           "v": "HUG"
         },
-        "type": "COMPONENT",
-        "width": "size/new-tab/grid-width"
+        "type": "COMPONENT"
       }
     }
   }
