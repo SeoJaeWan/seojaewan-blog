@@ -23,7 +23,7 @@ type TaskbarAppItemProps = {
   app: TaskbarAppId;
   /** 앱 버튼 아래 표시(피그마 TaskbarButton Indicator) */
   indicator?: TaskbarButtonIndicator;
-  /** 피그마 State. true면 창 미리보기 목록을 연 모습(Open), false면 버튼만 보인다(Closed) */
+  /** true면 창 미리보기 목록을 연 모습, false면 버튼만 보인다. 피그마 조립은 닫힌 모양만 그리고 열림은 `@runtime` 설명이다 */
   open?: boolean;
   /** 창 미리보기 목록 자리. 그 앱 창들의 `TaskbarWindowPreviewList`를 넣는다 */
   previews?: ReactNode;

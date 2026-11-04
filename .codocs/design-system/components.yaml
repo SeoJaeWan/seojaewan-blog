@@ -33,11 +33,11 @@ Windows 화면 요소: |
   | `Open` | 팝업이나 하위 메뉴가 열려 있음 | args |
 
   - `FileItem`·`FileRow`의 포커스(`Focused`)는 `:focus-visible`로 그리고 포커스를 주는 prop을 두지 않는다. 키보드로 포커스가 옮겨 갈 때만 보이고 마우스로 누를 때는 보이지 않으며, 선택과 상관없이 그린다.
-  - `Closed`·`Open`은 `Popover` 컴포넌트만 갖는다. 트리거 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)와, 트리거와 팝업을 묶은 조립(예: `Start/PowerButton`, `Taskbar/AppMenu`)은 `Open` 변형을 갖지 않는다. 조립은 닫은 모양만 그린다([[디자인 시스템:팝업]]).
+  - `Closed`·`Open`은 `Popover`가 갖는다. 트리거와 팝업을 묶은 조립(예: `Start/PowerButton`, `Taskbar/AppMenu`)은 닫은 모양으로만 그린다. 트리거 컴포넌트(IconButton, Button, DropDownButton, TaskbarButton, 하위 메뉴가 있는 MenuItem)는 `Open` 변형을 갖지 않는다.
   - 팝업이 열려 있어도 트리거는 `Rest` 모양 그대로다. Windows(WinUI)도 팝업이 뜨면 바깥 클릭을 받는 막이 마우스를 가져가 트리거가 평소 모양으로 돌아간다. 코드에서는 열림 상태(`aria-expanded`)로만 구분한다.
   - 예외: 작업 표시줄 앱 버튼은 창 미리보기(`Taskbar/AppPreview`)가 떠 있는 동안 `Hover` 모양이다. 창 미리보기는 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다. 우클릭 메뉴(`Taskbar/AppMenu`)가 열렸을 때는 다른 트리거처럼 `Rest` 모양이다.
   - 예외: 창의 최대화 버튼은 스냅 레이아웃 메뉴(`Window/SnapLayoutMenu`)가 떠 있는 동안 `Hover` 모양이다. 스냅 레이아웃도 마우스를 올려 여는 팝업이라 그동안 마우스가 버튼 위에 있기 때문이다.
-  - 메뉴가 열린 모습과 항목은 트리거를 담은 조립 설명의 `@runtime` 줄에 적고, 열림 동작은 코드의 `play` 동작 스토리로 확인한다([[디자인 시스템:팝업]]).
+  - 메뉴가 열린 화면에서는 그 메뉴를 연 트리거를 담은 조립이 `Open`이다([[디자인 시스템:팝업]]).
 속성 이름: |
   피그마 컴포넌트 속성과 코드 prop의 이름을 맞추는 규칙이다. 피그마 이름을 스토리 args와 prop 이름으로 옮기는 방법은 [[피그마 연동:스토리 규칙]]에 있다.
 
