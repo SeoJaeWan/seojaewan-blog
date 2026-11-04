@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 import {
   captureCode,
@@ -14,7 +14,10 @@ import {
   pngSize,
   readOverflowExtents,
   readRenderExtents,
+  type Size,
 } from './capture.ts';
+import { gitShowBuffer } from './git-files.ts';
+import { capturePath } from './parity-captures.ts';
 import { storybookStaticDir } from './paths.ts';
 import {
   CAPTURE_RESULT_FILE,
@@ -22,6 +25,8 @@ import {
   CODE_CAPTURE_FILE,
   DIFF_CAPTURE_FILE,
   FIGMA_CAPTURE_FILE,
+  PREVIOUS_CAPTURE_FILE,
+  PREVIOUS_COMMIT_ENV,
   RESULTS_DIR_ENV,
   SELECTION_FILE,
 } from './results.ts';
@@ -32,12 +37,15 @@ import { figmaImagePath, loadTargets, type Target, variantResultDir } from './ta
 import type { VariantEntry } from './variant-name.ts';
 
 // @codocs [[피그마 연동:캡처 표]]
-// 변형과 상태마다 피그마와 코드를 같은 조건(배율, 여백, 배경, 상태 재현)으로 캡처하고 차이 그림을 만든다.
+// 변형과 상태마다 코드를 캡처하고 차이 그림을 만든다. 컴포넌트는 피그마 그림과 같은 조건(배율, 여백, 배경, 상태 재현)으로
+// 맞춰 비교하고, 조립은 parity-captures에 저장된 이전 코드 그림과 비교한다(의도하지 않은 배치 변화만 본다).
 // 판정은 하지 않는다. 보통은 run-capture.ts가 범위를 정하고 Storybook을 빌드한 뒤 이 파일을 실행한다.
 const resultsDir = process.env[RESULTS_DIR_ENV] ?? '';
 if (resultsDir === '') {
   throw new Error(`${RESULTS_DIR_ENV} 환경 변수로 결과 폴더를 정한다(run-capture.ts가 정한다).`);
 }
+// 조립의 이전 코드 그림을 읽을 parity-captures 커밋. 비어 있으면 조립은 지금 그림만 남긴다.
+const previousCommit = process.env[PREVIOUS_COMMIT_ENV] ?? '';
 const selectionFile = path.join(resultsDir, SELECTION_FILE);
 const selected = existsSync(selectionFile)
   ? new Set(JSON.parse(readFileSync(selectionFile, 'utf8')) as string[])
@@ -74,7 +82,7 @@ test.afterAll(
   },
 );
 
-// 피그마 PNG와 같은 배율로 찍는다.
+// 피그마 PNG와 같은 배율로 찍는다. 조립도 같은 배율로 찍어 parity-captures에 둔다.
 test.use({ deviceScaleFactor: scale });
 
 for (const target of targets) {
@@ -85,6 +93,9 @@ for (const target of targets) {
     });
   }
 }
+
+/** 변형 결과 폴더에 그림을 쓰고 결과 폴더 기준 경로를 돌려주는 함수 */
+type WriteImage = (file: string, png: Buffer) => string;
 
 /**
  * 변형 하나를 캡처하고 결과 파일을 남긴다.
@@ -99,20 +110,24 @@ async function captureVariant(
   variant: VariantEntry,
 ): Promise<CaptureRow> {
   const outputDir = variantResultDir(resultsDir, target, variant.variant);
+  mkdirSync(outputDir, { recursive: true });
   /**
-   * 변형 결과 폴더의 파일을 결과 폴더 기준 경로로 바꾼다.
+   * 변형 결과 폴더에 그림을 쓴다.
    * @param file 파일 이름
+   * @param png 그림
    * @returns 결과 폴더 기준 경로
    */
-  function relative(file: string): string {
+  function write(file: string, png: Buffer): string {
+    writeFileSync(path.join(outputDir, file), png);
     return path.relative(resultsDir, path.join(outputDir, file)).split(path.sep).join('/');
   }
-  mkdirSync(outputDir, { recursive: true });
   const row: CaptureRow = {
     target: target.id,
+    kind: target.kind,
     name: target.name,
     variant: variant.variant,
     figma: null,
+    previous: null,
     code: null,
     diff: null,
     error: null,
@@ -126,64 +141,167 @@ async function captureVariant(
     if (!story.ok) {
       throw new Error(story.message);
     }
-    const figmaPng = figmaImagePath(target, variant.variant);
-    if (!existsSync(figmaPng)) {
-      throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
-    }
-    const figmaSource = readFileSync(figmaPng);
-    const sourceSize = pngSize(figmaSource);
-    // 화면보다 큰 대상은 화면을 피그마 PNG 크기에 맞춰 키운다. 배치와 상태 재현이 바뀐 화면에서 일어나도록
-    // 스토리를 열기 전에 바꾼다(Playwright 문서도 페이지를 열기 전에 화면 크기를 정하라고 한다).
-    const viewport = page.viewportSize();
-    if (viewport !== null) {
-      const wanted = captureViewport(
-        { width: sourceSize.width / scale, height: sourceSize.height / scale },
-        viewport,
-      );
-      if (wanted.width !== viewport.width || wanted.height !== viewport.height) {
-        await page.setViewportSize(wanted);
+    // 아래 함수 선언 안에서도 좁혀진 값을 쓰도록 꺼내 둔다.
+    const { server } = storybook;
+    const storyId = story.id;
+    /**
+     * 스토리를 열고 상태를 재현한다.
+     * @returns 캡처 대상
+     */
+    async function open(): Promise<Locator> {
+      const { args, interaction } = storyTarget(variant.properties);
+      const opened = await openStory(page, server.url, storyId, args, interaction);
+      if (!opened.ok) {
+        throw new Error(opened.message);
       }
+      return opened.target;
     }
-    const { args, interaction } = storyTarget(variant.properties);
-    const opened = await openStory(page, storybook.server.url, story.id, args, interaction);
-    if (!opened.ok) {
-      throw new Error(opened.message);
+    if (target.kind === 'component') {
+      await captureComponent(page, target, variant, open, row, write);
+    } else {
+      await capturePattern(page, target, variant, open, row, write);
     }
-    // 피그마 PNG 안 노드 위치는 export.json에서 읽고, 없으면 코드 루트 그림자의 폭으로 짐작한다.
-    const extents = await readRenderExtents(opened.target);
-    const layout = figmaNodeLayout(
-      { width: sourceSize.width / scale, height: sourceSize.height / scale },
-      variant.node,
-      extents,
-    );
-    const margin = captureMargin(extents, await readOverflowExtents(opened.target), layout.extents);
-    const code = await captureCode(page, opened.target, margin);
-    const codeSize = pngSize(code.png);
-    // 두 그림을 같은 크기로 만든다. 노드 크기가 다르면 큰 쪽에 맞춘다.
-    const canvas = commonCanvas(
-      { width: codeSize.width / scale, height: codeSize.height / scale },
-      { width: layout.size.width + margin * 2, height: layout.size.height + margin * 2 },
-    );
-    const codePng = await fitCanvas(page, code.png, scale, canvas, code.background);
-    writeFileSync(path.join(outputDir, CODE_CAPTURE_FILE), codePng);
-    row.code = relative(CODE_CAPTURE_FILE);
-    const figma = await captureFigma(page, figmaSource, {
-      scale,
-      background: code.background,
-      extents: layout.extents,
-      margin,
-      canvas,
-    });
-    writeFileSync(path.join(outputDir, FIGMA_CAPTURE_FILE), figma);
-    row.figma = relative(FIGMA_CAPTURE_FILE);
-    writeFileSync(
-      path.join(outputDir, DIFF_CAPTURE_FILE),
-      await diffImage(page, figma, codePng, code.background),
-    );
-    row.diff = relative(DIFF_CAPTURE_FILE);
   } catch (error) {
     row.error = error instanceof Error ? error.message : String(error);
   }
   writeFileSync(path.join(outputDir, CAPTURE_RESULT_FILE), `${JSON.stringify(row, null, 2)}\n`);
   return row;
+}
+
+/**
+ * 컴포넌트 변형을 피그마 PNG와 같은 조건으로 찍고 `피그마 | 코드 | 차이`를 남긴다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param page Playwright 페이지
+ * @param target 대상
+ * @param variant 변형
+ * @param open 스토리를 여는 함수
+ * @param row 채울 캡처 표 줄
+ * @param write 그림을 쓰는 함수
+ */
+async function captureComponent(
+  page: Page,
+  target: Target,
+  variant: VariantEntry,
+  open: () => Promise<Locator>,
+  row: CaptureRow,
+  write: WriteImage,
+): Promise<void> {
+  const figmaPng = figmaImagePath(target, variant.variant);
+  if (!existsSync(figmaPng)) {
+    throw new Error(`피그마 그림이 없다: ${path.basename(figmaPng)}`);
+  }
+  const figmaSource = readFileSync(figmaPng);
+  const sourceSize = pngSize(figmaSource);
+  // 화면보다 큰 대상은 화면을 피그마 PNG 크기에 맞춰 키운다. 배치와 상태 재현이 바뀐 화면에서 일어나도록
+  // 스토리를 열기 전에 바꾼다(Playwright 문서도 페이지를 열기 전에 화면 크기를 정하라고 한다).
+  await growViewport(page, { width: sourceSize.width / scale, height: sourceSize.height / scale });
+  const storyTarget = await open();
+  // 피그마 PNG 안 노드 위치는 export.json에서 읽고, 없으면 코드 루트 그림자의 폭으로 짐작한다.
+  const extents = await readRenderExtents(storyTarget);
+  const layout = figmaNodeLayout(
+    { width: sourceSize.width / scale, height: sourceSize.height / scale },
+    variant.node,
+    extents,
+  );
+  const margin = captureMargin(extents, await readOverflowExtents(storyTarget), layout.extents);
+  const code = await captureCode(page, storyTarget, margin);
+  const codeSize = pngSize(code.png);
+  // 두 그림을 같은 크기로 만든다. 노드 크기가 다르면 큰 쪽에 맞춘다.
+  const canvas = commonCanvas(
+    { width: codeSize.width / scale, height: codeSize.height / scale },
+    { width: layout.size.width + margin * 2, height: layout.size.height + margin * 2 },
+  );
+  const codePng = await fitCanvas(page, code.png, scale, canvas, code.background);
+  row.code = write(CODE_CAPTURE_FILE, codePng);
+  const figma = await captureFigma(page, figmaSource, {
+    scale,
+    background: code.background,
+    extents: layout.extents,
+    margin,
+    canvas,
+  });
+  row.figma = write(FIGMA_CAPTURE_FILE, figma);
+  row.diff = write(DIFF_CAPTURE_FILE, await diffImage(page, figma, codePng, code.background));
+}
+
+/**
+ * 조립 변형을 피그마 그림 없이 찍고, parity-captures의 이전 코드 그림이 있으면 `이전 코드 | 지금 코드 | 차이`를 남긴다.
+ * 코드 그림은 캡처 대상의 테두리 상자에 여백을 더한 크기 그대로다(피그마 PNG 크기에 맞추지 않는다).
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param page Playwright 페이지
+ * @param target 대상
+ * @param variant 변형
+ * @param open 스토리를 여는 함수
+ * @param row 채울 캡처 표 줄
+ * @param write 그림을 쓰는 함수
+ */
+async function capturePattern(
+  page: Page,
+  target: Target,
+  variant: VariantEntry,
+  open: () => Promise<Locator>,
+  row: CaptureRow,
+  write: WriteImage,
+): Promise<void> {
+  let storyTarget = await open();
+  // 화면보다 큰 대상은 화면을 대상 크기에 맞춰 키우고 다시 연다. 배치와 상태 재현이 키운 화면에서 일어나게 한다.
+  const footprint = await targetFootprint(storyTarget);
+  if (await growViewport(page, footprint)) {
+    storyTarget = await open();
+  }
+  const margin = captureMargin(
+    await readRenderExtents(storyTarget),
+    await readOverflowExtents(storyTarget),
+  );
+  const code = await captureCode(page, storyTarget, margin);
+  row.code = write(CODE_CAPTURE_FILE, code.png);
+  const previous =
+    previousCommit === ''
+      ? undefined
+      : gitShowBuffer(previousCommit, capturePath(target.id, variant.variant));
+  if (previous === undefined) {
+    return;
+  }
+  row.previous = write(PREVIOUS_CAPTURE_FILE, previous);
+  row.diff = write(DIFF_CAPTURE_FILE, await diffImage(page, previous, code.png, code.background));
+}
+
+/**
+ * 캡처 대상과 그 둘레로 나간 그림자·자식을 합친 크기를 잰다(피그마 PNG 크기와 같은 뜻).
+ * @param target 캡처 대상
+ * @returns CSS px 크기
+ */
+async function targetFootprint(target: Locator): Promise<Size> {
+  const box = await target.boundingBox();
+  if (box === null) {
+    throw new Error('캡처 대상이 화면에 보이지 않는다.');
+  }
+  const render = await readRenderExtents(target);
+  const overflow = await readOverflowExtents(target);
+  return {
+    width:
+      box.width + Math.max(render.left, overflow.left) + Math.max(render.right, overflow.right),
+    height:
+      box.height + Math.max(render.top, overflow.top) + Math.max(render.bottom, overflow.bottom),
+  };
+}
+
+/**
+ * 대상이 화면에 들어가지 않으면 화면을 키운다.
+ * @codocs [[피그마 연동:캡처 표]]
+ * @param page Playwright 페이지
+ * @param size 대상 크기(CSS px, 둘레로 나간 부분 포함)
+ * @returns 화면을 바꿨으면 true
+ */
+async function growViewport(page: Page, size: Size): Promise<boolean> {
+  const viewport = page.viewportSize();
+  if (viewport === null) {
+    return false;
+  }
+  const wanted = captureViewport(size, viewport);
+  if (wanted.width === viewport.width && wanted.height === viewport.height) {
+    return false;
+  }
+  await page.setViewportSize(wanted);
+  return true;
 }
