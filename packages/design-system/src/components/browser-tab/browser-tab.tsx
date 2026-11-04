@@ -57,8 +57,8 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
         'group relative flex h-size-browser-tab-height w-size-browser-tab-width items-center gap-spacing-sm py-spacing-none pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
         isActive
-          ? 'rounded-t-radius-overlay bg-chrome-toolbar-fill'
-          : 'rounded-t-radius-overlay bg-transparent hover:rounded-radius-overlay hover:bg-chrome-tab-fill-hover',
+          ? 'rounded-t-radius-overlay bg-color-white'
+          : 'rounded-t-radius-overlay bg-transparent hover:rounded-radius-overlay hover:bg-color-white-50',
         className,
       )}
     >
@@ -71,13 +71,13 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
         aria-keyshortcuts="Delete"
         className={cn(
           'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
-          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         )}
       >
         <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
           {favicon}
         </span>
-        <span className="min-w-size-none flex-flex-fill truncate type-caption text-chrome-text-primary">
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-color-gray-88">
           {title}
         </span>
       </Tabs.Tab>
@@ -91,14 +91,14 @@ export function BrowserTab(props: BrowserTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-chrome-text-secondary [&>*]:size-full [&>*]:object-contain"
+        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-color-gray-70 [&>*]:size-full [&>*]:object-contain"
       >
         {closeIcon}
       </button>
       {!isActive && hasSeparator && (
         <span
           aria-hidden
-          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-chrome-tab-separator group-hover:hidden"
+          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-color-black-22 group-hover:hidden"
         />
       )}
     </div>

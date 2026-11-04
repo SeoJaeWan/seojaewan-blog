@@ -26,17 +26,17 @@ export function BestMatchCard(props: BestMatchCardProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex w-size-best-match-card-width flex-col items-center gap-spacing-sm overflow-clip rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-card-background-fill-default px-spacing-lg pt-spacing-2xl pb-spacing-lg',
+        'flex w-size-best-match-card-width flex-col items-center gap-spacing-sm overflow-clip rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-white-70 px-spacing-lg pt-spacing-2xl pb-spacing-lg',
         className,
       )}
     >
       <div className="size-size-icon-3xl shrink-shrink-none [&>*]:size-full [&>*]:object-contain">
         {icon}
       </div>
-      <p className="shrink-shrink-none type-subtitle whitespace-nowrap text-text-fill-primary">
+      <p className="shrink-shrink-none type-subtitle whitespace-nowrap text-color-black-89">
         {title}
       </p>
-      <p className="shrink-shrink-none type-caption whitespace-nowrap text-text-fill-secondary">
+      <p className="shrink-shrink-none type-caption whitespace-nowrap text-color-black-61">
         {meta}
       </p>
       <Separator className="w-full" />

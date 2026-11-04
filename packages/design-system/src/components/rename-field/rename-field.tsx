@@ -50,9 +50,9 @@ export function RenameField(props: RenameFieldProps): JSX.Element {
       value={value}
       defaultValue={value === undefined ? text : undefined}
       className={cn(
-        'block field-sizing-content border-stroke-width-default border-control-strong-stroke-default bg-control-fill-input-active px-spacing-xs py-spacing-2xs',
-        'type-caption whitespace-nowrap text-text-fill-primary outline-none',
-        'selection:bg-accent-fill-selected-text-background selection:text-text-on-accent-fill-selected-text',
+        'block field-sizing-content border-stroke-width-default border-color-black-61 bg-color-white px-spacing-xs py-spacing-2xs',
+        'type-caption whitespace-nowrap text-color-black-89 outline-none',
+        'selection:bg-color-blue-50 selection:text-color-white',
         className,
       )}
     />

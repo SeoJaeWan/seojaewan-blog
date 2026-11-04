@@ -35,16 +35,16 @@ export function Toc(props: TocProps): JSX.Element {
       <div
         {...divProps}
         className={cn(
-          'flex items-center overflow-clip rounded-radius-control border-stroke-width-default border-card-stroke-default bg-card-background-fill-secondary px-spacing-md py-spacing-sm',
+          'flex items-center overflow-clip rounded-radius-control border-stroke-width-default border-color-black-6 bg-color-gray-3-50 px-spacing-md py-spacing-sm',
           className,
         )}
       >
-        <p className="min-w-size-none flex-flex-fill type-body-strong text-text-fill-primary">
+        <p className="min-w-size-none flex-flex-fill type-body-strong text-color-black-89">
           {title}
         </p>
         <Asset
           name="icons/ic_fluent_chevron_down_20_regular.svg"
-          className="size-size-icon-md shrink-shrink-none text-text-fill-primary"
+          className="size-size-icon-md shrink-shrink-none text-color-black-89"
         />
       </div>
     );

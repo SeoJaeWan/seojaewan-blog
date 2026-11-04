@@ -72,13 +72,13 @@ type PostBlocksProps = {
 // 제목 단계와 단계마다의 글자 스타일이다([[Notion 블록:지원 블록]]).
 const HEADING_LEVELS = { heading_1: 1, heading_2: 2, heading_3: 3 } as const;
 const headingClassNames = {
-  heading_1: 'w-full type-title text-text-fill-primary',
-  heading_2: 'w-full type-subtitle text-text-fill-primary',
-  heading_3: 'w-full type-body-large-strong text-text-fill-primary',
+  heading_1: 'w-full type-title text-color-black-89',
+  heading_2: 'w-full type-subtitle text-color-black-89',
+  heading_3: 'w-full type-body-large-strong text-color-black-89',
 } as const satisfies Record<HeadingBlock['type'], string>;
 
 // 본문 글자의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`). 글자 서식과 링크는 RichText가 그린다.
-const BODY_TEXT_CLASS_NAME = 'type-body-large text-text-fill-primary';
+const BODY_TEXT_CLASS_NAME = 'type-body-large text-color-black-89';
 
 // 목록 단계마다의 글머리표다(Notion과 같이 단계마다 모양이 바뀐다).
 const BULLETS = ['•', '◦', '▪'] as const;
@@ -162,7 +162,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                   <span
                     aria-hidden
                     className={cn(
-                      'flex size-size-post-block-marker shrink-shrink-none items-center type-body-large text-text-fill-primary',
+                      'flex size-size-post-block-marker shrink-shrink-none items-center type-body-large text-color-black-89',
                       isNumbered ? 'justify-end' : 'justify-center',
                     )}
                   >
@@ -173,7 +173,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
                   className={cn(
                     'min-w-size-none flex-flex-fill',
                     isDone
-                      ? 'type-body-large-strikethrough text-text-fill-secondary'
+                      ? 'type-body-large-strikethrough text-color-black-61'
                       : BODY_TEXT_CLASS_NAME,
                   )}
                 >
@@ -403,10 +403,7 @@ export function PostBlocks(props: PostBlocksProps): JSX.Element {
 
   return (
     <div
-      className={cn(
-        'flex w-full flex-col items-start gap-spacing-lg bg-chrome-page-fill',
-        className,
-      )}
+      className={cn('flex w-full flex-col items-start gap-spacing-lg bg-color-white', className)}
     >
       {renderBlocks(blocks, 0)}
     </div>
@@ -535,7 +532,7 @@ export function renderTemporaryImage(block: PostImageBlock, className?: string):
  * @returns 수식
  */
 function renderServerEquation(block: PostEquationBlock): ReactNode {
-  const text = <code className="type-code text-text-fill-primary">{block.expression}</code>;
+  const text = <code className="type-code text-color-black-89">{block.expression}</code>;
   if (block.html === undefined) {
     return text;
   }

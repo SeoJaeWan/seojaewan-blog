@@ -147,7 +147,7 @@ export function SearchBody(props: SearchBodyProps): JSX.Element {
     case 'no-results':
       return (
         <div className={cn('flex items-center justify-center', contentClassName)}>
-          <p className="type-body whitespace-nowrap text-text-fill-secondary">검색 결과 없음</p>
+          <p className="type-body whitespace-nowrap text-color-black-61">검색 결과 없음</p>
         </div>
       );
   }

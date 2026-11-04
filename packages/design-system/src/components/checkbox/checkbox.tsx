@@ -29,15 +29,15 @@ export function Checkbox(props: CheckboxProps): JSX.Element {
       className={cn(
         'flex size-size-checkbox-box shrink-shrink-none items-center justify-center rounded-radius-control',
         isChecked
-          ? 'bg-accent-fill-default'
-          : 'border-stroke-width-default border-control-strong-stroke-default bg-control-alt-fill-secondary',
+          ? 'bg-color-blue-59'
+          : 'border-stroke-width-default border-color-black-61 bg-color-black-2',
         className,
       )}
     >
       {isChecked ? (
         <Asset
           name="icons/ic_fluent_checkmark_20_regular.svg"
-          className="size-size-icon-sm shrink-shrink-none text-text-on-accent-fill-primary"
+          className="size-size-icon-sm shrink-shrink-none text-color-white"
         />
       ) : null}
     </div>

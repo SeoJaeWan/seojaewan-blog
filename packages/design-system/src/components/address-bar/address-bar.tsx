@@ -26,11 +26,11 @@ type InputMouseEvent = Parameters<NonNullable<AddressBarProps['onMouseDown']>>[0
 // 그래서 CSS border로 그려 입력 줄(36) 바깥에 2px씩 더한다.
 const CONTAINER_CLASS_NAMES = {
   rest: [
-    'rounded-radius-circular bg-chrome-omnibox-fill',
-    'hover:not-focus-within:bg-chrome-omnibox-fill-hover',
-    'focus-within:border-stroke-width-focus-outer focus-within:border-chrome-omnibox-stroke-focus focus-within:bg-chrome-toolbar-fill',
+    'rounded-radius-circular bg-color-blue-5',
+    'hover:not-focus-within:bg-color-gray-9',
+    'focus-within:border-stroke-width-focus-outer focus-within:border-color-blue-60 focus-within:bg-color-white',
   ],
-  suggesting: 'rounded-radius-overlay bg-chrome-toolbar-fill shadow-elevation-flyout',
+  suggesting: 'rounded-radius-overlay bg-color-white shadow-elevation-flyout',
 } as const;
 
 /**
@@ -94,7 +94,7 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
               ? 'icons/ic_fluent_search_16_regular.svg'
               : 'icons/ic_fluent_info_24_regular.svg'
           }
-          className="size-size-icon-sm shrink-shrink-none text-chrome-text-secondary"
+          className="size-size-icon-sm shrink-shrink-none text-color-gray-70"
         />
         <Input
           {...inputProps}
@@ -108,8 +108,8 @@ export function AddressBar(props: AddressBarProps): JSX.Element {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           className={cn(
-            'min-w-size-none flex-flex-fill truncate type-body text-chrome-text-primary outline-none',
-            'selection:bg-chrome-omnibox-selection-background selection:text-chrome-omnibox-selection-text',
+            'min-w-size-none flex-flex-fill truncate type-body text-color-gray-88 outline-none',
+            'selection:bg-color-blue-9 selection:text-color-gray-88',
           )}
         />
       </div>

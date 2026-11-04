@@ -22,9 +22,9 @@ export function SystemTray(props: SystemTrayProps): JSX.Element {
       {...divProps}
       className={cn(
         'flex h-size-taskbar-item flex-col items-end justify-center rounded-radius-control px-spacing-md select-none',
-        'type-caption text-text-fill-primary',
+        'type-caption text-color-black-89',
         'motion-control-state',
-        'hover:border-stroke-width-default hover:border-control-stroke-default hover:bg-control-fill-default',
+        'hover:border-stroke-width-default hover:border-color-black-6 hover:bg-color-white-70',
         className,
       )}
     >

@@ -53,9 +53,7 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
       className={cn(
         'group relative flex h-size-control-height w-size-explorer-tab-width items-center gap-spacing-sm rounded-t-radius-overlay py-spacing-sm pr-spacing-sm pl-spacing-md select-none',
         'motion-control-state',
-        isSelected
-          ? 'bg-layer-on-mica-base-alt-fill-default'
-          : 'bg-subtle-fill-transparent hover:bg-layer-on-mica-base-alt-fill-secondary',
+        isSelected ? 'bg-color-white-70' : 'bg-color-white-0 hover:bg-color-black-4',
         className,
       )}
     >
@@ -68,13 +66,13 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
         aria-keyshortcuts="Delete"
         className={cn(
           'flex min-w-size-none flex-flex-fill items-center gap-spacing-sm rounded-radius-control',
-          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+          'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         )}
       >
         <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center [&>*]:size-full [&>*]:object-contain">
           {icon}
         </span>
-        <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-color-black-89">
           {title}
         </span>
       </Tabs.Tab>
@@ -88,14 +86,14 @@ export function ExplorerTab(props: ExplorerTabProps): JSX.Element {
           event.stopPropagation();
           onClose?.(event);
         }}
-        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-secondary"
+        className="inline-flex size-size-icon-sm shrink-shrink-none items-center justify-center text-color-black-61"
       >
         <Asset name="icons/ic_fluent_dismiss_20_regular.svg" className="size-size-icon-sm" />
       </button>
       {!isSelected && hasSeparator && (
         <span
           aria-hidden
-          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-divider-stroke-default group-hover:hidden"
+          className="absolute top-position-half right-spacing-none h-size-separator-height w-stroke-stroke-width-default -translate-y-position-half bg-color-black-8 group-hover:hidden"
         />
       )}
     </div>

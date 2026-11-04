@@ -18,7 +18,7 @@ export function SnapPreview(props: SnapPreviewProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative rounded-radius-overlay border-stroke-width-default border-surface-stroke-flyout material-acrylic-default surface-flyout-acrylic',
+        'relative rounded-radius-overlay border-stroke-width-default border-color-black-6 material-acrylic-default surface-flyout-acrylic',
         className,
       )}
     />

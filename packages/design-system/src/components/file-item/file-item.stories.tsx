@@ -36,7 +36,7 @@ function Backdrop(props: { surface: FigmaArgs['surface']; children: ReactNode })
     if (surface !== 'desktop') {
       return undefined;
     }
-    document.body.style.backgroundColor = 'var(--boot-screen-background)';
+    document.body.style.backgroundColor = 'var(--color-black)';
     return () => {
       document.body.style.backgroundColor = '';
     };

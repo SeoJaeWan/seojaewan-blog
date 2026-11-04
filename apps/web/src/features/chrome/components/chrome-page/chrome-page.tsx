@@ -182,10 +182,8 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
             className={isWide ? 'w-full' : 'h-size-post-cover-narrow-height w-full'}
           />
         )}
-        <p className="w-full type-caption text-text-fill-secondary">{meta}</p>
-        <h1
-          className={cn('w-full text-text-fill-primary', isWide ? 'type-title' : 'type-subtitle')}
-        >
+        <p className="w-full type-caption text-color-black-61">{meta}</p>
+        <h1 className={cn('w-full text-color-black-89', isWide ? 'type-title' : 'type-subtitle')}>
           {title}
         </h1>
         {!isWide && hasToc && (
@@ -252,7 +250,7 @@ function NewTabPage(props: ChromeNewTabPageProps & { layout: ChromePageLayout })
     >
       {/* 피그마 `top space` 배치 프레임. wide에서 로고 자리를 아래로 내린다 */}
       {isWide && <div className="h-size-chrome-page-top-space self-stretch" />}
-      <p className={cn('text-text-fill-primary', isWide ? 'type-display' : 'type-title')}>
+      <p className={cn('text-color-black-89', isWide ? 'type-display' : 'type-title')}>
         {WORDMARK}
       </p>
       {search}
@@ -303,7 +301,7 @@ function SearchResultsPage(
       )}
     >
       <section className="flex w-full max-w-size-post-width flex-col items-start gap-spacing-sm">
-        <h1 className="w-full type-subtitle text-text-fill-primary">
+        <h1 className="w-full type-subtitle text-color-black-89">
           {`‘${query}’ 검색 결과 ${String(results.length)}개`}
         </h1>
         <div className="flex w-full flex-col gap-spacing-sm overflow-clip">
@@ -393,10 +391,7 @@ export function ChromePage(props: ChromePageProps): JSX.Element {
     }
   }
   return (
-    <div
-      ref={scrollRef}
-      className={cn('flex flex-col overflow-y-auto bg-chrome-page-fill', className)}
-    >
+    <div ref={scrollRef} className={cn('flex flex-col overflow-y-auto bg-color-white', className)}>
       {zoom === undefined ? (
         content
       ) : (

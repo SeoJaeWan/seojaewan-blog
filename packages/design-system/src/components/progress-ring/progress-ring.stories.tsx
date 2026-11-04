@@ -27,7 +27,7 @@ function Backdrop(props: { tone: FigmaArgs['tone']; children: ReactNode }): JSX.
     if (tone !== 'on-dark') {
       return undefined;
     }
-    document.body.style.backgroundColor = 'var(--boot-screen-background)';
+    document.body.style.backgroundColor = 'var(--color-black)';
     return () => {
       document.body.style.backgroundColor = '';
     };

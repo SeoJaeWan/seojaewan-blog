@@ -44,7 +44,7 @@ type ChromeAddressSuggestionsProps = Pick<
 // 글 아이콘은 래스터 자산(file/Document), 검색은 돋보기 아이콘이다(피그마 추천 줄의 leading icon).
 const suggestionIcons = {
   post: <ImageAsset name="images/file-document" />,
-  search: <Asset name="icons/ic_fluent_search_16_regular.svg" className="text-text-fill-primary" />,
+  search: <Asset name="icons/ic_fluent_search_16_regular.svg" className="text-color-black-89" />,
 } as const satisfies Record<ChromeAddressSuggestion['kind'], ReactNode>;
 
 // 피그마 조립의 주소창·추천 목록 너비(size/640)다.

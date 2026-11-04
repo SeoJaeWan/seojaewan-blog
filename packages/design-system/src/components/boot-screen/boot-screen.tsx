@@ -39,7 +39,7 @@ export function BootScreen(props: BootScreenProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex shrink-shrink-none flex-col items-center justify-center bg-boot-screen-background',
+        'flex shrink-shrink-none flex-col items-center justify-center bg-color-black',
         classNames.screen,
         className,
       )}

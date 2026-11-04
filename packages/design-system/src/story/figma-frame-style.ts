@@ -7,10 +7,8 @@ type FigmaSizing = 'FIXED' | 'HUG' | 'FILL';
 export type FigmaNode = {
   name: string;
   sizing?: { h: FigmaSizing; v: FigmaSizing };
-  /** 너비에 연결한 피그마 변수 경로(`size/list-item/width`) */
-  width?: string;
-  /** 높이에 연결한 피그마 변수 경로 */
-  height?: string;
+  /** 피그마 노드의 크기 숫자(px) */
+  size?: { w: number; h: number };
   layout?: { mode?: string };
   children?: readonly FigmaNode[];
 };
@@ -66,25 +64,6 @@ function argValue(value: string): string | boolean {
 }
 
 /**
- * 피그마 변수 경로를 CSS 사용자 속성 이름으로 바꾼다(`size/list-item/width` → `--size-list-item-width`).
- * 토큰 생성 스크립트의 이름 규칙과 같다.
- * @param path 피그마 변수 경로
- * @returns CSS 사용자 속성 이름
- */
-export function cssVariableName(path: string): string {
-  return `--${path.split('/').map(kebabSegment).join('-')}`;
-}
-
-/**
- * 경로 조각 하나를 소문자 kebab-case로 바꾼다. 공백은 `-`가 되고 괄호는 빠진다.
- * @param segment 경로 조각(`Flyout (Acrylic)`)
- * @returns kebab-case 조각(`flyout-acrylic`)
- */
-function kebabSegment(segment: string): string {
-  return normalizeName(segment.replace(/[()]/gu, '').trim());
-}
-
-/**
  * 경로(`Content/ProfileButton`)의 노드와 그 부모의 방향을 찾는다. 경로가 없으면 루트다.
  * @param root 변형의 루트 노드
  * @param node 노드 이름 경로
@@ -106,7 +85,7 @@ function findNode(root: FigmaNode, node: FigmaNodePath | undefined): NodeSizing 
 /**
  * 노드의 크기 방식을 감싸는 요소의 style로 바꾼다.
  * - HUG: 크기를 주지 않는다(감싼 요소가 내용에 맞춘다).
- * - FIXED: 피그마가 연결한 크기 변수를 주고 줄어들지 않게 한다.
+ * - FIXED: export.json의 크기 숫자를 주고 줄어들지 않게 한다. 견본 크기(`@sample-size`)처럼 변수가 없는 크기도 같다.
  * - FILL: 부모 방향을 따라 남는 공간을 채운다(주축은 늘리고, 교차축은 늘여 맞춘다).
  * @param sizing 노드와 부모의 방향
  * @param label 오류 문구에 쓸 이름
@@ -119,15 +98,15 @@ function sizingStyle(sizing: NodeSizing, label: string): CSSProperties {
   }
   const style: CSSProperties = {};
   const axes = [
-    { sizing: node.sizing.h, variable: node.width, size: 'width', main: 'HORIZONTAL' },
-    { sizing: node.sizing.v, variable: node.height, size: 'height', main: 'VERTICAL' },
+    { sizing: node.sizing.h, value: node.size?.w, size: 'width', main: 'HORIZONTAL' },
+    { sizing: node.sizing.v, value: node.size?.h, size: 'height', main: 'VERTICAL' },
   ] as const;
   for (const axis of axes) {
     if (axis.sizing === 'FIXED') {
-      if (axis.variable === undefined) {
-        throw new Error(`${label}: 고정 ${axis.size}에 연결한 크기 변수가 없다`);
+      if (axis.value === undefined) {
+        throw new Error(`${label}: export.json에 고정 ${axis.size}의 크기 숫자(size)가 없다`);
       }
-      style[axis.size] = `var(${cssVariableName(axis.variable)})`;
+      style[axis.size] = `${String(axis.value)}px`;
       style.flexShrink = 0;
     } else if (axis.sizing === 'FILL') {
       if (parentMode === axis.main) {

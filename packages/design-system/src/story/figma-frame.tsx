@@ -18,9 +18,9 @@ type FigmaFrameProps = {
 };
 
 /**
- * 피그마 export.json의 크기 방식(HUG·FIXED·FILL)과 연결한 크기 변수대로 스토리 내용을 감싼다.
- * 스토리는 크기를 손으로 고르지 않고 이 요소로만 준다. 크기 변수 이름은 실행 중에 정해져 Tailwind가 클래스를
- * 만들 수 없으므로 CSS 변수를 style로 준다.
+ * 피그마 export.json의 크기 방식(HUG·FIXED·FILL)과 크기 숫자대로 스토리 내용을 감싼다.
+ * 스토리는 크기를 손으로 고르지 않고 이 요소로만 준다. 크기는 실행 중에 export.json에서 읽어 Tailwind가 클래스를
+ * 만들 수 없으므로 style로 준다.
  * @codocs [[피그마 연동:스토리 규칙]]
  * @codocs [[테스트 작성 규칙:스토리 테스트]]
  * @param props

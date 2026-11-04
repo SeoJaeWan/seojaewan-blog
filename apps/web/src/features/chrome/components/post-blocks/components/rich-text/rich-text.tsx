@@ -25,8 +25,8 @@ type RichTextProps = {
 
 // 글자 서식의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`). 서식마다 굵기·기울임·줄·서체 하나씩만 바꾼다.
 const LINK_CLASS_NAMES = {
-  'body-large': 'type-body-large-link text-accent-text-fill-primary underline',
-  inherit: 'text-accent-text-fill-primary underline',
+  'body-large': 'type-body-large-link text-color-blue-72 underline',
+  inherit: 'text-color-blue-72 underline',
 } as const;
 
 /**
@@ -46,7 +46,7 @@ function wrapMark(mark: RichTextMark, content: ReactNode): JSX.Element {
     case 'strikethrough':
       return <s className="line-through">{content}</s>;
     case 'code':
-      return <code className="type-code-inline text-post-inline-code">{content}</code>;
+      return <code className="type-code-inline text-color-red-56">{content}</code>;
   }
 }
 

@@ -55,18 +55,18 @@ export function Toggle(props: ToggleProps): JSX.Element {
         aria-expanded={isExpanded}
         aria-controls={isExpanded ? contentId : undefined}
         onClick={handleHeaderClick}
-        className="flex min-h-size-post-block-icon-box w-full cursor-pointer items-start gap-spacing-none rounded-radius-control p-spacing-none text-left outline-none focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid"
+        className="flex min-h-size-post-block-icon-box w-full cursor-pointer items-start gap-spacing-none rounded-radius-control p-spacing-none text-left outline-none focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid"
       >
         <span className="flex size-size-post-block-icon-box shrink-shrink-none items-center justify-center">
           <Asset
             name="icons/ic_fluent_chevron_right_16_regular.svg"
             className={cn(
-              'size-size-icon-sm shrink-shrink-none text-text-fill-primary',
+              'size-size-icon-sm shrink-shrink-none text-color-black-89',
               isExpanded && 'rotate-rotate-quarter',
             )}
           />
         </span>
-        <span className="min-w-size-none flex-flex-fill type-body-large text-text-fill-primary">
+        <span className="min-w-size-none flex-flex-fill type-body-large text-color-black-89">
           {title}
         </span>
       </button>
@@ -75,7 +75,7 @@ export function Toggle(props: ToggleProps): JSX.Element {
         // 슬롯 글자는 글 본문 글자(Body Large)다. 제목·목록처럼 다른 글자 블록은 그 블록이 글자 스타일을 갖는다.
         <div
           id={contentId}
-          className="flex w-full min-w-size-none flex-col gap-spacing-sm pl-spacing-2xl type-body-large text-text-fill-primary"
+          className="flex w-full min-w-size-none flex-col gap-spacing-sm pl-spacing-2xl type-body-large text-color-black-89"
         >
           {children}
         </div>

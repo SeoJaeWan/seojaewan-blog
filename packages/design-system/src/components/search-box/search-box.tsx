@@ -36,17 +36,17 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
       className={cn(
         'group relative isolate flex items-center justify-start gap-spacing-sm overflow-hidden inner-border-w-stroke-width-default',
         isDisabled
-          ? 'bg-control-fill-disabled'
-          : 'bg-control-fill-default focus-within:bg-control-fill-input-active hover:not-focus-within:bg-control-fill-secondary',
+          ? 'bg-color-gray-2-30'
+          : 'bg-color-white-70 focus-within:bg-color-white hover:not-focus-within:bg-color-gray-3-50',
         isDefault &&
-          'inner-border-control-stroke-default h-size-control-height rounded-radius-control py-spacing-sm-nudge pr-spacing-sm pl-spacing-md motion-control-state',
+          'inner-border-color-black-6 h-size-control-height rounded-radius-control py-spacing-sm-nudge pr-spacing-sm pl-spacing-md motion-control-state',
         appearance === 'pill' &&
-          'inner-border-control-stroke-default h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-search-box-focus-state',
+          'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-search-box-focus-state',
         appearance === 'taskbar' &&
-          'inner-border-control-stroke-default h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
+          'inner-border-color-black-6 h-size-control-height rounded-radius-circular px-spacing-lg py-spacing-sm-nudge motion-search-box-focus-state',
         appearance === 'web' &&
-          'inner-border-control-stroke-default h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-control-state',
-        isWindowsSearch && !isDisabled && 'active:bg-control-fill-input-active',
+          'inner-border-color-black-6 h-size-search-box-tall-height rounded-radius-circular px-spacing-lg py-spacing-sm motion-control-state',
+        isWindowsSearch && !isDisabled && 'active:bg-color-white',
         className,
       )}
     >
@@ -56,7 +56,7 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
             'size-size-icon-sm shrink-shrink-none',
-            isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
+            isDisabled ? 'text-color-black-36' : 'text-color-black-61',
           )}
         />
       )}
@@ -66,14 +66,14 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
         {...inputProps}
         type="text"
         disabled={isDisabled}
-        className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary outline-none placeholder:text-text-fill-secondary disabled:text-text-fill-disabled disabled:placeholder:text-text-fill-disabled"
+        className="min-w-size-none flex-flex-fill truncate type-body text-color-black-89 outline-none placeholder:text-color-black-61 disabled:text-color-black-36 disabled:placeholder:text-color-black-36"
       />
       {isDefault && (
         <Asset
           name="icons/ic_fluent_search_16_regular.svg"
           className={cn(
             'size-size-icon-sm shrink-shrink-none',
-            isDisabled ? 'text-text-fill-disabled' : 'text-text-fill-secondary',
+            isDisabled ? 'text-color-black-36' : 'text-color-black-61',
           )}
         />
       )}
@@ -84,8 +84,8 @@ export function SearchBox(props: SearchBoxProps): JSX.Element {
           className={cn(
             'pointer-events-none absolute inset-x-spacing-none bottom-spacing-none',
             isDisabled
-              ? 'h-stroke-stroke-width-default bg-control-stroke-default'
-              : 'hidden group-focus-within:block group-focus-within:h-stroke-stroke-width-focus-outer group-focus-within:bg-accent-fill-default',
+              ? 'h-stroke-stroke-width-default bg-color-black-6'
+              : 'hidden group-focus-within:block group-focus-within:h-stroke-stroke-width-focus-outer group-focus-within:bg-color-blue-59',
           )}
         />
       )}
@@ -112,10 +112,10 @@ function SearchIcons({ isDisabled }: { isDisabled: boolean }): JSX.Element {
           className={cn(
             'col-start-grid-start row-start-grid-start size-size-icon-sm',
             isDisabled
-              ? 'text-text-fill-disabled'
+              ? 'text-color-black-36'
               : shouldUseSolidIcon
-                ? 'text-text-fill-secondary group-focus-within:motion-search-box-focus-rest group-focus-within:text-accent-fill-default group-hover:motion-search-box-focus-rest group-hover:text-accent-fill-default'
-                : 'text-text-fill-secondary group-focus-within:hidden group-hover:hidden',
+                ? 'text-color-black-61 group-focus-within:motion-search-box-focus-rest group-focus-within:text-color-blue-59 group-hover:motion-search-box-focus-rest group-hover:text-color-blue-59'
+                : 'text-color-black-61 group-focus-within:hidden group-hover:hidden',
           )}
         />
         {!isDisabled && !shouldUseSolidIcon && (

@@ -13,10 +13,10 @@ type JumpListLetterProps = Omit<ComponentProps<typeof BaseButton>, 'className' |
 // 색은 Button의 Subtle과 같다. 상태 색은 실제 CSS 상태(hover, active, focus-visible, disabled)로 바꾼다.
 // 키보드 포커스는 Button처럼 피그마 바깥 선을 outline으로 그린다.
 const stateClassNames = [
-  'bg-subtle-fill-transparent text-text-fill-primary',
-  'hover:not-data-disabled:bg-subtle-fill-secondary',
-  'active:not-data-disabled:bg-subtle-fill-tertiary active:not-data-disabled:text-text-fill-secondary',
-  'data-disabled:bg-subtle-fill-disabled data-disabled:text-text-fill-disabled',
+  'bg-color-white-0 text-color-black-89',
+  'hover:not-data-disabled:bg-color-black-4',
+  'active:not-data-disabled:bg-color-black-2 active:not-data-disabled:text-color-black-61',
+  'data-disabled:bg-color-white-0 data-disabled:text-color-black-36',
 ];
 
 /**
@@ -32,7 +32,7 @@ export function JumpListLetter(props: JumpListLetterProps): JSX.Element {
       {...buttonProps}
       className={cn(
         'inline-flex size-size-jump-list-letter-box items-center justify-center rounded-radius-control select-none',
-        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-focus-stroke-outer focus-visible:outline-solid',
+        'focus-visible:outline-stroke-width-focus-outer focus-visible:outline-color-black-89 focus-visible:outline-solid',
         'motion-control-state',
         ...stateClassNames,
         className,

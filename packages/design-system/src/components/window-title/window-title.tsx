@@ -46,7 +46,7 @@ export function WindowTitle(props: WindowTitleProps): JSX.Element {
       <p
         className={cn(
           'min-w-size-none flex-flex-fill truncate type-caption',
-          isInactive ? 'text-text-fill-tertiary' : 'text-text-fill-primary',
+          isInactive ? 'text-color-black-56' : 'text-color-black-89',
         )}
       >
         {title}

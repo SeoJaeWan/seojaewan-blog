@@ -24,7 +24,7 @@ export function SnapLayoutFlyout(props: SnapLayoutFlyoutProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'relative flex w-fit items-start gap-spacing-md rounded-radius-overlay border-stroke-width-default border-surface-stroke-flyout p-spacing-md',
+        'relative flex w-fit items-start gap-spacing-md rounded-radius-overlay border-stroke-width-default border-color-black-6 p-spacing-md',
         'material-acrylic-default surface-flyout-acrylic',
         className,
       )}

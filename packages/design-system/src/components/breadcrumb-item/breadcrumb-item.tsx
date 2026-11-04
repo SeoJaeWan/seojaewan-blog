@@ -42,18 +42,18 @@ export function BreadcrumbItem(props: BreadcrumbItemProps): JSX.Element {
         onClick={handleLabelClick}
         className={cn(
           'flex max-w-size-breadcrumb-item-max-width items-start overflow-clip rounded-radius-control px-spacing-sm-nudge py-spacing-xs select-none',
-          'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary active:bg-subtle-fill-tertiary',
+          'bg-color-white-0 hover:bg-color-black-4 active:bg-color-black-2',
           'motion-control-state',
         )}
       >
-        <span className="min-w-size-none flex-flex-fill truncate type-caption text-text-fill-primary">
+        <span className="min-w-size-none flex-flex-fill truncate type-caption text-color-black-89">
           {label}
         </span>
       </button>
       {hasSeparator ? (
         <Asset
           name="icons/ic_fluent_chevron_right_16_regular.svg"
-          className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
+          className="size-size-icon-sm shrink-shrink-none text-color-black-61"
         />
       ) : null}
     </div>

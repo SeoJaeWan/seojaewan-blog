@@ -18,7 +18,7 @@ export function StartMenuFooter(props: StartMenuFooterProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex items-center overflow-clip border-t-stroke-width-default border-card-stroke-default bg-subtle-fill-secondary px-spacing-5xl py-spacing-lg',
+        'flex items-center overflow-clip border-t-stroke-width-default border-color-black-6 bg-color-black-4 px-spacing-5xl py-spacing-lg',
         className,
       )}
     >

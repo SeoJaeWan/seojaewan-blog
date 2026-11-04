@@ -169,9 +169,13 @@ describe('토큰 생성', () => {
   it('유틸리티가 읽는 변수만 @theme에 두고 나머지는 :root에 둔다', () => {
     const root = css.slice(css.indexOf(':root {'), css.indexOf('@theme static {'));
     const theme = css.slice(css.indexOf('@theme static {'));
-    // Primitive 색은 클래스를 만들지 않는다
+    // 원색은 경로 이름 변수를 :root에 두고, 클래스(`text-color-black-6`)는 @theme의 별칭이 만든다.
+    // 안쪽 선 고리 색만 @utility로 만든다. 경로 이름 변수가 @theme에 없어 `bg-black-6` 꼴 클래스는 생기지 않는다.
     expect(root).toContain('--color-black-6:');
+    expect(theme).toContain('--color-color-black-6: var(--color-black-6);');
+    expect(theme).not.toMatch(/^\s+--color-black-6:/mu);
     expect(css).not.toContain('@utility bg-color-*');
+    expect(utilityBlock('inner-border-*')).toContain('background: --value(--color-*);');
     // 글자 스타일만 쓰는 서체 값
     expect(root).toContain('--font-size-body:');
     expect(root).toContain('--surface-flyout-acrylic-backdrop-blur:');

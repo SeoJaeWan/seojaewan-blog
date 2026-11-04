@@ -83,22 +83,21 @@ const ROW_CLASS_NAME =
 // 피그마 Disabled는 바탕이 투명(subtle-fill/transparent)이고 글자만 흐리다.
 const baseClassName = cn(
   'flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch overflow-hidden rounded-radius-control px-spacing-md py-spacing-xs',
-  'bg-subtle-fill-transparent text-text-fill-primary motion-control-state',
-  'group-data-highlighted:bg-subtle-fill-secondary group-data-popup-open:bg-subtle-fill-secondary',
-  'group-active:group-data-highlighted:bg-subtle-fill-tertiary group-active:group-data-highlighted:text-text-fill-secondary',
-  'group-data-disabled:text-text-fill-disabled',
+  'bg-color-white-0 text-color-black-89 motion-control-state',
+  'group-data-highlighted:bg-color-black-4 group-data-popup-open:bg-color-black-4',
+  'group-active:group-data-highlighted:bg-color-black-2 group-active:group-data-highlighted:text-color-black-61',
+  'group-data-disabled:text-color-black-36',
 );
 
 // 메뉴 밖에 홀로 둔 항목(standalone)의 상태 색이다. Base UI 강조 대신 hover·focus-visible·active로 바꾼다.
 const STANDALONE_BASE_CLASS_NAME =
-  'group-enabled:group-hover:bg-subtle-fill-secondary group-focus-visible:bg-subtle-fill-secondary group-enabled:group-active:bg-subtle-fill-tertiary group-enabled:group-active:text-text-fill-secondary';
+  'group-enabled:group-hover:bg-color-black-4 group-focus-visible:bg-color-black-4 group-enabled:group-active:bg-color-black-2 group-enabled:group-active:text-color-black-61';
 
 // 확대/축소 줄(Kind=Zoom)의 기본 아이콘이다.
 const ZOOM_DEFAULT_ICON = 'icons/ic_fluent_zoom_in_20_regular.svg';
 
 // 단축키·꺾쇠처럼 흐린 글자 색이다.
-const SECONDARY_TEXT_CLASS_NAME =
-  'text-text-fill-secondary group-data-disabled:text-text-fill-disabled';
+const SECONDARY_TEXT_CLASS_NAME = 'text-color-black-61 group-data-disabled:text-color-black-36';
 
 /**
  * 메뉴 항목(피그마 MenuItem)을 그린다. Base UI Menu의 Popup 안에 둔다.
@@ -154,7 +153,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             {...props}
             leading={
               <Menu.RadioItemIndicator className="flex">
-                <span className="size-size-menu-item-bullet rounded-full bg-text-fill-primary motion-control-state group-data-disabled:bg-text-fill-disabled group-active:group-data-highlighted:bg-text-fill-secondary" />
+                <span className="size-size-menu-item-bullet rounded-full bg-color-black-89 motion-control-state group-data-disabled:bg-color-black-36 group-active:group-data-highlighted:bg-color-black-61" />
               </Menu.RadioItemIndicator>
             }
           />
@@ -242,10 +241,10 @@ function MenuZoomRow(props: MenuZoomRowProps): JSX.Element {
       )}
     >
       <div className="flex flex-flex-fill items-center justify-start gap-spacing-md self-stretch pr-spacing-xs pl-spacing-md">
-        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center text-text-fill-primary">
+        <span className="flex size-size-icon-sm shrink-shrink-none items-center justify-center text-color-black-89">
           {icon !== undefined && <MenuItemIcon name={icon} />}
         </span>
-        <span className="min-w-size-none flex-flex-fill truncate type-body text-text-fill-primary">
+        <span className="min-w-size-none flex-flex-fill truncate type-body text-color-black-89">
           {label}
         </span>
         <div className="flex shrink-shrink-none items-center justify-start gap-spacing-xs">
@@ -262,7 +261,7 @@ function MenuZoomRow(props: MenuZoomRowProps): JSX.Element {
               />
             }
           />
-          <span className="w-size-menu-item-value-width shrink-shrink-none text-center type-body text-text-fill-primary">
+          <span className="w-size-menu-item-value-width shrink-shrink-none text-center type-body text-color-black-89">
             {value}
           </span>
           <Menu.Item

@@ -82,17 +82,17 @@ export function FileItem(props: FileItemProps): JSX.Element {
         WIDTH_CLASS_NAMES[surface][view],
         isSelected || (isRenaming && !isDesktop)
           ? isDesktop
-            ? 'bg-file-item-desktop-fill-selected'
-            : 'bg-file-item-explorer-fill-selected'
+            ? 'bg-color-white-25'
+            : 'bg-color-blue-9'
           : isRenaming
-            ? 'bg-subtle-fill-transparent'
+            ? 'bg-color-white-0'
             : isDesktop
-              ? 'bg-subtle-fill-transparent hover:bg-file-item-desktop-fill-hover'
-              : 'bg-subtle-fill-transparent hover:bg-file-item-explorer-fill-hover',
+              ? 'bg-color-white-0 hover:bg-color-white-15'
+              : 'bg-color-white-0 hover:bg-color-blue-5',
         'focus-visible:inner-border-w-stroke-width-default',
         isDesktop
-          ? 'focus-visible:inner-border-file-item-desktop-stroke-focus'
-          : 'focus-visible:inner-border-file-item-explorer-stroke-focus',
+          ? 'focus-visible:inner-border-color-white-50'
+          : 'focus-visible:inner-border-color-blue-18',
         className,
       )}
     >
@@ -112,8 +112,8 @@ export function FileItem(props: FileItemProps): JSX.Element {
           className={cn(
             'w-full text-center type-caption wrap-break-word',
             isDesktop
-              ? 'text-file-item-desktop-label text-shadow-elevation-desktop-label'
-              : 'text-text-fill-primary',
+              ? 'text-color-white text-shadow-elevation-desktop-label'
+              : 'text-color-black-89',
             isSelected ? undefined : 'line-clamp-line-clamp-two',
             dimClassName,
           )}

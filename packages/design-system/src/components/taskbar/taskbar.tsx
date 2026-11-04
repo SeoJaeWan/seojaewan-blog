@@ -33,7 +33,7 @@ export function Taskbar(props: TaskbarProps): JSX.Element {
       {/* 위쪽 선이다. 피그마 안쪽 선은 레이아웃에 들어가지 않아, CSS border로 그리면 내용이 0.5px 내려간다. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-spacing-none top-spacing-none h-stroke-stroke-width-default bg-card-stroke-default"
+        className="pointer-events-none absolute inset-x-spacing-none top-spacing-none h-stroke-stroke-width-default bg-color-black-6"
       />
       {/* 피그마 left space다. Right와 같은 너비를 차지해 Center를 가운데에 둔다. */}
       <div aria-hidden className="h-full min-w-size-none flex-flex-fill" />

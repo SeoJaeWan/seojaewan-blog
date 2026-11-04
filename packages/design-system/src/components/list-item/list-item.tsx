@@ -67,9 +67,7 @@ export function ListItem(props: ListItemProps): JSX.Element {
         'flex items-center gap-spacing-md rounded-radius-control px-spacing-md py-spacing-xs select-none',
         isTwoLine ? 'h-size-list-item-two-line-height' : 'h-size-list-item-compact-height',
         'motion-control-state',
-        isSelected
-          ? 'bg-control-alt-fill-tertiary'
-          : 'bg-subtle-fill-transparent hover:bg-subtle-fill-secondary',
+        isSelected ? 'bg-color-black-6' : 'bg-color-white-0 hover:bg-color-black-4',
         className,
       )}
     >
@@ -82,13 +80,13 @@ export function ListItem(props: ListItemProps): JSX.Element {
         {icon}
       </span>
       <div className="flex min-w-size-none flex-flex-fill flex-col items-start overflow-clip">
-        <p className="w-full truncate type-body text-text-fill-primary">{title}</p>
+        <p className="w-full truncate type-body text-color-black-89">{title}</p>
         {isTwoLine && isSubtitleShown && (
-          <p className="w-full truncate type-caption text-text-fill-secondary">{subtitle}</p>
+          <p className="w-full truncate type-caption text-color-black-61">{subtitle}</p>
         )}
       </div>
       {isTrailingShown && (
-        <p className="shrink-shrink-none type-caption whitespace-nowrap text-text-fill-tertiary">
+        <p className="shrink-shrink-none type-caption whitespace-nowrap text-color-black-56">
           {trailing}
         </p>
       )}

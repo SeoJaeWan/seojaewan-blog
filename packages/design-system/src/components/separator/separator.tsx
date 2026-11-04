@@ -23,7 +23,7 @@ export function Separator(props: SeparatorProps): JSX.Element {
       aria-orientation={orientation}
       {...divProps}
       className={cn(
-        'shrink-shrink-none bg-divider-stroke-default',
+        'shrink-shrink-none bg-color-black-8',
         isVertical
           ? 'h-size-separator-height w-stroke-stroke-width-default'
           : 'h-stroke-stroke-width-default',

@@ -21,15 +21,15 @@ export function UnsupportedBlock(props: UnsupportedBlockProps): JSX.Element {
       {...divProps}
       // 피그마에서 테두리가 레이아웃에 들어가므로 CSS border를 쓴다.
       className={cn(
-        'flex items-center gap-spacing-sm rounded-radius-overlay border-stroke-width-default border-card-stroke-default bg-subtle-fill-secondary px-spacing-lg py-spacing-md',
+        'flex items-center gap-spacing-sm rounded-radius-overlay border-stroke-width-default border-color-black-6 bg-color-black-4 px-spacing-lg py-spacing-md',
         className,
       )}
     >
       <Asset
         name="icons/ic_fluent_warning_24_regular.svg"
-        className="size-size-icon-sm shrink-shrink-none text-text-fill-secondary"
+        className="size-size-icon-sm shrink-shrink-none text-color-black-61"
       />
-      <p className="min-w-size-none flex-flex-fill type-body break-words text-text-fill-secondary">
+      <p className="min-w-size-none flex-flex-fill type-body break-words text-color-black-61">
         {`지원하지 않는 블록(${typeName})`}
       </p>
     </div>

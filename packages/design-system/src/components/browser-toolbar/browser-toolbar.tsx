@@ -91,7 +91,7 @@ export function BrowserToolbar(props: BrowserToolbarProps): JSX.Element {
     <div
       {...divProps}
       className={cn(
-        'flex h-size-browser-toolbar-height items-center gap-spacing-xs bg-chrome-toolbar-fill px-spacing-sm',
+        'flex h-size-browser-toolbar-height items-center gap-spacing-xs bg-color-white px-spacing-sm',
         className,
       )}
     >
