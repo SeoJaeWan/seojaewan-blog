@@ -11,8 +11,8 @@ type EmptyStateProps = Omit<ComponentProps<'div'>, 'children'> & {
   message: string;
   /** 피그마 Code. 설명 아래 작은 오류 코드 글자다 */
   code: string;
-  /** 피그마 Show button. 새로고침 버튼을 그릴지 정한다 */
-  showButton?: boolean;
+  /** 피그마 Has button. 새로고침 버튼을 그릴지 정한다 */
+  hasButton?: boolean;
   /** 새로고침 버튼을 누르면 부른다 */
   onReload?: MouseEventHandler<HTMLElement>;
 };
@@ -28,7 +28,7 @@ export function EmptyState(props: EmptyStateProps): JSX.Element {
     heading,
     message,
     code,
-    showButton: hasButton = true,
+    hasButton = true,
     onReload: handleReload,
     className,
     ...divProps
