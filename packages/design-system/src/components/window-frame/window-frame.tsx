@@ -170,7 +170,7 @@ export function WindowFrame(props: WindowFrameProps): JSX.Element {
           <WindowTitle
             appIcon={appIcon}
             title={title}
-            inactive={isInactive}
+            isInactive={isInactive}
             className="min-w-size-none flex-flex-fill"
           />
         )}

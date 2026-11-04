@@ -100,7 +100,7 @@ export function TaskbarAppItem(props: TaskbarAppItemProps): JSX.Element {
       onPointerLeave={props.onPointerLeave}
       className={isCentered ? 'static' : undefined}
       placement="top-center"
-      open={isOpen}
+      isOpen={isOpen}
       trigger={
         props.menuItems === undefined ? (
           button

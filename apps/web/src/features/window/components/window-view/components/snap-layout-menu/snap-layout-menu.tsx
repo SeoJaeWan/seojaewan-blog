@@ -57,13 +57,13 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
     return (
       <Popover
         placement="bottom-center"
-        open={isFixedOpen}
+        isOpen={isFixedOpen}
         className={className}
         trigger={
           <CaptionButton
             label="최대화"
             icon="icons/ic_fluent_maximize_20_regular.svg"
-            inactive={isInactive}
+            isInactive={isInactive}
             aria-expanded={isFixedOpen}
             className={OPEN_TRIGGER_CLASS_NAME}
             onClick={handleMaximize}
@@ -107,7 +107,7 @@ export function SnapLayoutMenu(props: SnapLayoutMenuProps): JSX.Element {
             <CaptionButton
               label="최대화"
               icon="icons/ic_fluent_maximize_20_regular.svg"
-              inactive={isInactive}
+              isInactive={isInactive}
               className={OPEN_TRIGGER_CLASS_NAME}
               onClick={handleMaximizeClick}
             />
