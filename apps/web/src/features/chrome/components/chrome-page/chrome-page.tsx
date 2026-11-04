@@ -154,7 +154,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         <TocItem
           key={String(index) + item.label}
           label={item.label}
-          active={item.active}
+          isActive={item.active}
           {...(onTocItemSelect === undefined
             ? {}
             : getOpenableRowProps(() => {

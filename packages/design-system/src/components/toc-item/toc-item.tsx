@@ -4,7 +4,7 @@ import { cn } from '../../cn';
 
 type TocItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   /** 피그마 Active 변형. 지금 읽는 목차 항목인지 정한다. 표시줄과 글자 색이 바뀐다 */
-  active?: boolean;
+  isActive?: boolean;
   /** 피그마 Label 속성. 목차 항목 글자다 */
   label?: string;
 };
@@ -16,7 +16,7 @@ type TocItemProps = Omit<ComponentProps<'div'>, 'children'> & {
  * @param props
  */
 export function TocItem(props: TocItemProps): JSX.Element {
-  const { active: isActive = false, label = '목차 항목', className, ...divProps } = props;
+  const { isActive = false, label = '목차 항목', className, ...divProps } = props;
   return (
     <div
       {...divProps}
