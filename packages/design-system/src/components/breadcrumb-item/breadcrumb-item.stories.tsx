@@ -8,7 +8,7 @@ import { BreadcrumbItem } from './breadcrumb-item';
 const STATES = ['rest', 'hover', 'pressed'] as const;
 
 type FigmaArgs = {
-  current: boolean;
+  isCurrent: boolean;
   state: (typeof STATES)[number];
   /** 동작 스토리가 쓰는 값이다. 주지 않으면 피그마 기본 글자다 */
   label?: string;
@@ -18,16 +18,16 @@ type FigmaArgs = {
 
 const meta = {
   title: 'Components/BreadcrumbItem',
-  args: { current: false, state: 'rest' },
+  args: { isCurrent: false, state: 'rest' },
   argTypes: {
-    current: { control: 'boolean' },
+    isCurrent: { control: 'boolean' },
     state: { control: 'inline-radio', options: STATES },
   },
   render: (args) => {
     const { onLabelClick: handleLabelClick } = args;
     return (
       <BreadcrumbItem
-        current={args.current}
+        isCurrent={args.isCurrent}
         label={args.label}
         showSeparator={args.showSeparator}
         onLabelClick={handleLabelClick}
@@ -66,10 +66,10 @@ export const Default: Story = {
 
 // @codocs [[컴포넌트 목록:상태]]
 export const Current: Story = {
-  args: { current: true, label: '문서', showSeparator: false },
+  args: { isCurrent: true, label: '문서', showSeparator: false },
   play: async ({ canvasElement, step }) => {
     // @codocs [[컴포넌트 목록:상태]]
-    await step('current는 aria-current를 붙이고 showSeparator를 끄면 구분자가 없다', async () => {
+    await step('isCurrent는 aria-current를 붙이고 showSeparator를 끄면 구분자가 없다', async () => {
       await expect(within(canvasElement).getByRole('button', { name: '문서' })).toHaveAttribute(
         'aria-current',
         'page',
