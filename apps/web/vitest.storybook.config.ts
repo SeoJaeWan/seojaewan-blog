@@ -11,7 +11,6 @@ export default defineProject({
   plugins: [storybookTest({ configDir: path.join(import.meta.dirname, '.storybook') })],
   test: {
     name: 'storybook-web',
-    setupFiles: ['./vitest.storybook.setup.ts'],
     browser: {
       // 스토리 기본 화면(`pc`, `BREAKPOINTS`의 노트북 경계값)과 같게 두어 파일마다 화면 크기를 두 번 바꾸지 않게 한다.
       // 패키지 진입점은 Vite 설정 로더가 읽지 못하고 앱의 상위 폴더 import는 lint가 막아 값을 직접 적는다.

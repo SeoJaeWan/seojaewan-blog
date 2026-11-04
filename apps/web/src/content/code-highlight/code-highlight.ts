@@ -7,6 +7,13 @@ import type { CodeToken } from '@/shared/utils/post-body/post-body';
 /** 코드 강조 테마. Shiki에 들어 있는 VS Code 기본 밝은 테마(Light+)를 그대로 쓴다. */
 export const CODE_HIGHLIGHT_THEME = 'light-plus';
 
+/**
+ * Light+ 색 가운데 코드 블록 바탕(`#f9f9f9`)에서 대비가 4.5:1에 못 미치는 색을 같은 계열로 살짝 어둡게 바꾼다.
+ * 타입 이름 `#267f99`(4.35:1)를 `#257c96`(4.53:1)로 쓴다.
+ * @codocs [[접근성:색 대비]]
+ */
+export const CODE_HIGHLIGHT_COLOR_REPLACEMENTS = { '#267f99': '#257c96' } as const;
+
 // 강조기는 한 번만 만들어 계속 쓴다(Shiki는 오래 사는 하나의 강조기를 쓰라고 한다). 언어는 처음 쓸 때 불러온다.
 let highlighterRequest: Promise<Highlighter> | null = null;
 
@@ -31,7 +38,11 @@ export async function highlightCode(
   if (!highlighter.getLoadedLanguages().includes(lang)) {
     await highlighter.loadLanguage(lang);
   }
-  const { tokens, fg } = highlighter.codeToTokens(code, { lang, theme: CODE_HIGHLIGHT_THEME });
+  const { tokens, fg } = highlighter.codeToTokens(code, {
+    lang,
+    theme: CODE_HIGHLIGHT_THEME,
+    colorReplacements: CODE_HIGHLIGHT_COLOR_REPLACEMENTS,
+  });
   return tokens.map((line) =>
     mergeTokens(
       line.map((token) => ({ text: token.content, color: toTokenColor(token.color, fg) })),

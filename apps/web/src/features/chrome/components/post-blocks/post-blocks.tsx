@@ -1,4 +1,4 @@
-import { createElement, type JSX, lazy, type ReactNode, Suspense } from 'react';
+import { createElement, type JSX, type ReactNode } from 'react';
 
 import {
   Asset,
@@ -31,6 +31,7 @@ import {
 } from '@/shared/utils/post-body/post-body';
 
 import { RichText } from './components/rich-text/rich-text';
+import { KatexHtml } from './katex-html';
 
 /** 이미지 블록 */
 export type PostImageBlock = Extract<PostBlock, { type: 'image' }>;
@@ -78,12 +79,6 @@ const headingClassNames = {
 
 // 본문 글자의 모양이다(피그마 Chrome/PostBlocks `paragraph with formatting`). 글자 서식과 링크는 RichText가 그린다.
 const BODY_TEXT_CLASS_NAME = 'type-body-large text-text-fill-primary';
-
-// 서버가 그린 수식 HTML을 넣는 부품이다. KaTeX CSS를 품어 수식이 있을 때만 받는다.
-const katexHtml = lazy(async () => {
-  const { KatexHtml } = await import('./katex-html');
-  return { default: KatexHtml };
-});
 
 // 목록 단계마다의 글머리표다(Notion과 같이 단계마다 모양이 바뀐다).
 const BULLETS = ['•', '◦', '▪'] as const;
@@ -533,8 +528,8 @@ export function renderTemporaryImage(block: PostImageBlock, className?: string):
 }
 
 /**
- * 서버가 KaTeX로 그려 보낸 수식을 넣는다. KaTeX CSS와 폰트는 수식이 있는 글을 열 때만 받도록 지연해 불러오고,
- * 받는 동안과 서버가 그리지 못한 식(`html` 없음)은 식 글자를 코드 서체로 보인다.
+ * 서버가 KaTeX로 그려 보낸 수식을 넣는다. KaTeX CSS와 폰트는 글 화면과 함께 처음부터 불러와 수식이 깜빡이지 않는다.
+ * 서버가 그리지 못한 식(`html` 없음)은 식 글자를 코드 서체로 보인다.
  * @codocs [[기술 스택:글 본문 처리]]
  * @param block 수식 블록
  * @returns 수식
@@ -544,7 +539,7 @@ function renderServerEquation(block: PostEquationBlock): ReactNode {
   if (block.html === undefined) {
     return text;
   }
-  return <Suspense fallback={text}>{createElement(katexHtml, { html: block.html })}</Suspense>;
+  return <KatexHtml html={block.html} />;
 }
 
 /**
