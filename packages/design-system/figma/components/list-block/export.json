@@ -1,0 +1,690 @@
+{
+  "description": "글 본문의 목록 항목(글머리표 · 번호 · 할 일) 하나로, 글 페이지 본문의 목록에 쓴다.\n@sample-size width\n@runtime 표시는 깊이와 순서로 정한다",
+  "name": "ListBlock",
+  "nodeId": "2466:62",
+  "propertyDefinitions": {
+    "Checked": {
+      "default": "False",
+      "options": [
+        "False",
+        "True"
+      ],
+      "type": "VARIANT"
+    },
+    "Children": {
+      "type": "SLOT"
+    },
+    "Has children": {
+      "default": false,
+      "type": "BOOLEAN"
+    },
+    "Marker": {
+      "default": "1.",
+      "type": "TEXT"
+    },
+    "Text": {
+      "default": "목록 항목",
+      "type": "TEXT"
+    },
+    "Variant": {
+      "default": "Bulleted",
+      "options": [
+        "Bulleted",
+        "Numbered",
+        "To do"
+      ],
+      "type": "VARIANT"
+    }
+  },
+  "variants": {
+    "variant=bulleted,checked=false": {
+      "node": {
+        "height": 24,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2466:39",
+      "properties": {
+        "Checked": "False",
+        "Variant": "Bulleted"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "marker text",
+                    "size": {
+                      "h": 24,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "1.",
+                          "fill": "color/black/89",
+                          "textStyle": "Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "height": "size/post-block/marker",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "marker",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/marker"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 688
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "목록 항목",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "row",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=Bulleted, Checked=False",
+        "size": {
+          "h": 24,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "variant=numbered,checked=false": {
+      "node": {
+        "height": 24,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2466:45",
+      "properties": {
+        "Checked": "False",
+        "Variant": "Numbered"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "fills": [
+                      "color/black/89"
+                    ],
+                    "name": "marker text",
+                    "size": {
+                      "h": 24,
+                      "w": 16
+                    },
+                    "sizing": {
+                      "h": "HUG",
+                      "v": "HUG"
+                    },
+                    "text": {
+                      "autoResize": "WIDTH_AND_HEIGHT",
+                      "maxLines": null,
+                      "maxLinesVariable": null,
+                      "segments": [
+                        {
+                          "characters": "1.",
+                          "fill": "color/black/89",
+                          "textStyle": "Body Large"
+                        }
+                      ],
+                      "truncation": "DISABLED"
+                    },
+                    "type": "TEXT"
+                  }
+                ],
+                "height": "size/post-block/marker",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "MAX"
+                },
+                "name": "marker",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/marker"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 688
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "목록 항목",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "row",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=Numbered, Checked=False",
+        "size": {
+          "h": 24,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "variant=to-do,checked=false": {
+      "node": {
+        "height": 24,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2466:51",
+      "properties": {
+        "Checked": "False",
+        "Variant": "To do"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "component": "Checkbox",
+                    "fills": [
+                      "color/black/2"
+                    ],
+                    "height": "size/checkbox/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "checkbox",
+                    "properties": {
+                      "Checked": "False"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 20,
+                      "w": 20
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "strokeWeight": [
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default",
+                      "stroke-width/default"
+                    ],
+                    "strokes": [
+                      "color/black/61"
+                    ],
+                    "strokesIncludedInLayout": true,
+                    "type": "INSTANCE",
+                    "width": "size/checkbox/box"
+                  }
+                ],
+                "height": "size/post-block/marker",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "marker",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/marker"
+              },
+              {
+                "fills": [
+                  "color/black/89"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 688
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "목록 항목",
+                      "fill": "color/black/89",
+                      "textStyle": "Hangul/Body Large"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "row",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=To do, Checked=False",
+        "size": {
+          "h": 24,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    },
+    "variant=to-do,checked=true": {
+      "node": {
+        "height": 24,
+        "width": 720,
+        "x": 0,
+        "y": 0
+      },
+      "nodeId": "2466:60",
+      "properties": {
+        "Checked": "True",
+        "Variant": "To do"
+      },
+      "tree": {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "asset": {
+                          "color": "color/white",
+                          "path": "icons/ic_fluent_checkmark_20_regular"
+                        },
+                        "component": "ic_fluent_checkmark_20_regular",
+                        "height": "size/icon/sm",
+                        "name": "checkmark",
+                        "size": {
+                          "h": 16,
+                          "w": 16
+                        },
+                        "sizing": {
+                          "h": "FIXED",
+                          "v": "FIXED"
+                        },
+                        "type": "INSTANCE",
+                        "width": "size/icon/sm"
+                      }
+                    ],
+                    "component": "Checkbox",
+                    "fills": [
+                      "color/blue/59"
+                    ],
+                    "height": "size/checkbox/box",
+                    "layout": {
+                      "counterAlign": "CENTER",
+                      "gap": 0,
+                      "mode": "HORIZONTAL",
+                      "padding": [
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none",
+                        "spacing/none"
+                      ],
+                      "primaryAlign": "CENTER"
+                    },
+                    "name": "checkbox",
+                    "properties": {
+                      "Checked": "True"
+                    },
+                    "radius": [
+                      "radius/control",
+                      "radius/control",
+                      "radius/control",
+                      "radius/control"
+                    ],
+                    "size": {
+                      "h": 20,
+                      "w": 20
+                    },
+                    "sizing": {
+                      "h": "FIXED",
+                      "v": "FIXED"
+                    },
+                    "type": "INSTANCE",
+                    "width": "size/checkbox/box"
+                  }
+                ],
+                "height": "size/post-block/marker",
+                "layout": {
+                  "counterAlign": "CENTER",
+                  "gap": 0,
+                  "mode": "HORIZONTAL",
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "primaryAlign": "CENTER"
+                },
+                "name": "marker",
+                "size": {
+                  "h": 24,
+                  "w": 24
+                },
+                "sizing": {
+                  "h": "FIXED",
+                  "v": "FIXED"
+                },
+                "type": "FRAME",
+                "width": "size/post-block/marker"
+              },
+              {
+                "fills": [
+                  "color/black/61"
+                ],
+                "name": "text",
+                "size": {
+                  "h": 24,
+                  "w": 688
+                },
+                "sizing": {
+                  "h": "FILL",
+                  "v": "HUG"
+                },
+                "text": {
+                  "autoResize": "HEIGHT",
+                  "maxLines": null,
+                  "maxLinesVariable": null,
+                  "segments": [
+                    {
+                      "characters": "목록 항목",
+                      "fill": "color/black/61",
+                      "textStyle": "Hangul/Body Large Strikethrough"
+                    }
+                  ],
+                  "truncation": "DISABLED"
+                },
+                "type": "TEXT"
+              }
+            ],
+            "layout": {
+              "counterAlign": "MIN",
+              "gap": "spacing/sm",
+              "mode": "HORIZONTAL",
+              "padding": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "primaryAlign": "MIN"
+            },
+            "name": "row",
+            "size": {
+              "h": 24,
+              "w": 720
+            },
+            "sizing": {
+              "h": "FILL",
+              "v": "HUG"
+            },
+            "type": "FRAME"
+          }
+        ],
+        "layout": {
+          "counterAlign": "MIN",
+          "gap": "spacing/xs",
+          "mode": "VERTICAL",
+          "padding": [
+            "spacing/none",
+            "spacing/none",
+            "spacing/none",
+            "spacing/none"
+          ],
+          "primaryAlign": "MIN"
+        },
+        "name": "Variant=To do, Checked=True",
+        "size": {
+          "h": 24,
+          "w": 720
+        },
+        "sizing": {
+          "h": "FIXED",
+          "v": "HUG"
+        },
+        "type": "COMPONENT"
+      }
+    }
+  }
+}

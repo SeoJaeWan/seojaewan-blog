@@ -1,5 +1,5 @@
 {
-  "description": "현재 위치 경로를 보여 주는 줄로, 탐색기 주소 줄에 쓴다.",
+  "description": "현재 위치 경로를 보여 주는 줄로, 탐색기 주소 줄에 쓴다.\n@sample-size width",
   "name": "Breadcrumb",
   "nodeId": "31:430",
   "propertyDefinitions": {
@@ -45,7 +45,7 @@
           },
           {
             "asset": {
-              "color": "text-fill/secondary",
+              "color": "color/black/61",
               "path": "icons/ic_fluent_chevron_right_16_regular"
             },
             "component": "ic_fluent_chevron_right_16_regular",
@@ -70,7 +70,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "label",
                         "size": {
@@ -88,17 +88,17 @@
                           "segments": [
                             {
                               "characters": "바탕",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Caption"
                             },
                             {
                               "characters": " ",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             },
                             {
                               "characters": "화면",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Hangul/Caption"
                             }
                           ],
@@ -139,7 +139,7 @@
                   },
                   {
                     "asset": {
-                      "color": "text-fill/secondary",
+                      "color": "color/black/61",
                       "path": "icons/ic_fluent_chevron_right_16_regular"
                     },
                     "component": "ic_fluent_chevron_right_16_regular",
@@ -172,9 +172,8 @@
                 },
                 "name": "crumb/바탕 화면",
                 "properties": {
-                  "Current": "False",
+                  "Has separator": true,
                   "Label": "바탕 화면",
-                  "Show separator": true,
                   "State": "Rest"
                 },
                 "size": {
@@ -193,7 +192,7 @@
                     "children": [
                       {
                         "fills": [
-                          "text-fill/primary"
+                          "color/black/89"
                         ],
                         "name": "label",
                         "size": {
@@ -211,7 +210,7 @@
                           "segments": [
                             {
                               "characters": "Blog",
-                              "fill": "text-fill/primary",
+                              "fill": "color/black/89",
                               "textStyle": "Caption"
                             }
                           ],
@@ -266,9 +265,8 @@
                 },
                 "name": "crumb/Blog",
                 "properties": {
-                  "Current": "True",
+                  "Has separator": false,
                   "Label": "Blog",
-                  "Show separator": false,
                   "State": "Rest"
                 },
                 "size": {
@@ -307,7 +305,7 @@
           }
         ],
         "fills": [
-          "control-fill/default"
+          "color/white/70"
         ],
         "height": "size/control/height",
         "layout": {
@@ -344,11 +342,10 @@
           "stroke-width/default"
         ],
         "strokes": [
-          "control-stroke/default"
+          "color/black/6"
         ],
         "strokesIncludedInLayout": true,
-        "type": "COMPONENT",
-        "width": "size/breadcrumb/width"
+        "type": "COMPONENT"
       }
     }
   }

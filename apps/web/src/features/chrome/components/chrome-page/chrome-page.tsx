@@ -188,7 +188,7 @@ function PostPage(props: ChromePostPageProps & { layout: ChromePageLayout }): JS
         </h1>
         {!isWide && hasToc && (
           <Toc
-            state={isTocExpanded ? 'expanded' : 'collapsed'}
+            isExpanded={isTocExpanded}
             className="w-full"
             {...(onTocToggle === undefined ? {} : getTocToggleProps(isTocExpanded, onTocToggle))}
           >

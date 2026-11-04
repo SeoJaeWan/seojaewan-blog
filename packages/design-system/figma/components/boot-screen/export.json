@@ -48,7 +48,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "boot-screen/foreground",
+                  "color": "color/white",
                   "path": "shapes/progress-ring-arc"
                 },
                 "component": "progress-ring/Arc",
@@ -81,7 +81,7 @@
             "name": "progress ring",
             "properties": {
               "Size": "32",
-              "Tone": "On dark"
+              "Variant": "On dark"
             },
             "radius": [
               "radius/control",
@@ -102,7 +102,7 @@
           }
         ],
         "fills": [
-          "boot-screen/background"
+          "color/black"
         ],
         "height": "size/boot-screen/height",
         "layout": {
@@ -165,7 +165,7 @@
             "children": [
               {
                 "asset": {
-                  "color": "boot-screen/foreground",
+                  "color": "color/white",
                   "path": "shapes/progress-ring-arc"
                 },
                 "component": "progress-ring/Arc",
@@ -198,7 +198,7 @@
             "name": "progress ring",
             "properties": {
               "Size": "32",
-              "Tone": "On dark"
+              "Variant": "On dark"
             },
             "radius": [
               "radius/control",
@@ -219,7 +219,7 @@
           }
         ],
         "fills": [
-          "boot-screen/background"
+          "color/black"
         ],
         "height": "size/screen/mobile-height",
         "layout": {

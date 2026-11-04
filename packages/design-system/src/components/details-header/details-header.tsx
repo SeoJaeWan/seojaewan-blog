@@ -9,8 +9,8 @@ type DetailsHeaderColumn =
 type DetailsHeaderProps = {
   /** 피그마 View. 휴지통(recycle-bin)이면 날짜·유형·위치 대신 원래 위치·삭제한 날짜 열을 그린다 */
   view?: 'default' | 'recycle-bin';
-  /** 피그마 Show location 속성. 위치 열을 보인다(View=Default에만 있다) */
-  showLocation?: boolean;
+  /** 피그마 Has location 속성. 위치 열을 보인다(View=Default에만 있다) */
+  hasLocation?: boolean;
   /** 정렬 기준 열이다. 피그마 기본은 이름 열 */
   sortColumn?: DetailsHeaderColumn;
   /** 정렬 방향이다. 피그마 기본은 ascending */
@@ -48,7 +48,7 @@ function sortOf(
 export function DetailsHeader(props: DetailsHeaderProps): JSX.Element {
   const {
     view = 'default',
-    showLocation: hasLocation = false,
+    hasLocation = false,
     sortColumn = 'name',
     sortDirection = 'ascending',
     onSort,
